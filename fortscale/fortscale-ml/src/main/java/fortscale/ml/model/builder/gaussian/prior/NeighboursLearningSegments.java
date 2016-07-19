@@ -38,9 +38,9 @@ public class NeighboursLearningSegments implements LearningSegments {
 					.toArray();
 			MutablePair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
 			if (segment != null && (segmentCenter <= maxCenterToNotDiscardBecauseOfBadRatio ||
-					(segment.getRight() - segment.getLeft()) / Math.max(0.000001, segmentCenter) <= maxRatioBetweenSegmentSizeToCenter)) {
-				segment.setLeft(segment.getLeft() - padding);
-				segment.setRight(segment.getRight() + padding);
+					(segment.right - segment.left) / Math.max(0.000001, segmentCenter) <= maxRatioBetweenSegmentSizeToCenter)) {
+				segment.left -= padding;
+				segment.right += padding;
 				segments.add(segment);
 			}
 		}
@@ -49,48 +49,86 @@ public class NeighboursLearningSegments implements LearningSegments {
 	private MutablePair<Double, Double> createSegmentAroundCenter(double[] sortedMeans,
 																  double segmentCenter,
 																  int numberOfNeighbours) {
-		int firstModelToTheRightOfCenterIndex = Arrays.binarySearch(sortedMeans, segmentCenter);
-		if (firstModelToTheRightOfCenterIndex < 0) {
-			firstModelToTheRightOfCenterIndex = -firstModelToTheRightOfCenterIndex - 1;
-		}
+		int modelIndexClosestToSegmentCenter = findModelIndexClosestToSegmentCenter(sortedMeans, segmentCenter);
 		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
-				(int) Math.floor(firstModelToTheRightOfCenterIndex - (numberOfNeighbours - 1) / 2),
-				(int) Math.ceil(firstModelToTheRightOfCenterIndex + (numberOfNeighbours - 1) / 2)
+				modelIndexClosestToSegmentCenter,
+				modelIndexClosestToSegmentCenter
 		);
-		if (segmentCenter < sortedMeans[segmentIndices.getLeft()]) {
-			// Make sure the segment center is inside the segment
-			segmentIndices.setLeft(segmentIndices.getLeft() - 1);
-		}
-		cropSegmentAccordingToBounds(segmentIndices, sortedMeans);
-		if (segmentIndices.getRight() - segmentIndices.getLeft() + 1 < numberOfNeighbours) {
-			// not enough neighbours
-			return null;
+		while (getNumOfModelsInsideSegment(segmentIndices) < numberOfNeighbours) {
+			expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
+			if (segmentIndices.left == 0 && segmentIndices.right < sortedMeans.length - 1) {
+				segmentIndices.right++;
+			} else if (segmentIndices.left > 0 && segmentIndices.right == sortedMeans.length - 1) {
+				segmentIndices.left--;
+			} else if (segmentIndices.left == 0 && segmentIndices.right == sortedMeans.length - 1) {
+				return null;
+			} else {
+				MutablePair<Integer, Integer> segmentIndicesAdvancedLeft =
+						new MutablePair<>(segmentIndices.left - 1, segmentIndices.right);
+				expandSegmentIndicesUntilSymmetric(segmentIndicesAdvancedLeft, segmentCenter, sortedMeans);
+				MutablePair<Integer, Integer> segmentIndicesAdvancedRight =
+						new MutablePair<>(segmentIndices.left, segmentIndices.right + 1);
+				expandSegmentIndicesUntilSymmetric(segmentIndicesAdvancedRight, segmentCenter, sortedMeans);
+				segmentIndices =
+						(getNumOfModelsInsideSegment(segmentIndicesAdvancedLeft) < getNumOfModelsInsideSegment(segmentIndicesAdvancedRight)) ?
+								segmentIndicesAdvancedLeft :
+								segmentIndicesAdvancedRight;
+			}
 		}
 		MutablePair<Double, Double> segment = new MutablePair<>(
-				sortedMeans[segmentIndices.getLeft()],
-				sortedMeans[segmentIndices.getRight()]
+				sortedMeans[segmentIndices.left],
+				sortedMeans[segmentIndices.right]
 		);
-		if (segmentCenter < segment.getLeft() || segment.getRight() < segmentCenter) {
+		if (segmentCenter < segment.left || segment.right < segmentCenter) {
 			// the segment's center must be inside the segment
 			return null;
 		}
-		double radius = Math.max(segmentCenter - segment.getLeft(), segment.getRight() - segmentCenter);
-		segment.setLeft(segmentCenter - radius);
-		segment.setRight(segmentCenter + radius);
+		double radius = Math.max(segmentCenter - segment.left, segment.right - segmentCenter);
+		segment.left = segmentCenter - radius;
+		segment.right = segmentCenter + radius;
 		return segment;
 	}
 
-	private void cropSegmentAccordingToBounds(MutablePair<Integer, Integer> segmentIndices, double[] sortedMeans) {
-		if (segmentIndices.getLeft() < 0) {
-			// there aren't enough neighbours to the left of the segment center - so extend the segment's right end
-			segmentIndices.setRight(segmentIndices.getRight() + Math.abs(segmentIndices.getLeft()));
-			segmentIndices.setLeft(0);
+	private int findModelIndexClosestToSegmentCenter(double[] sortedMeans, double segmentCenter) {
+		int modelIndexClosestToCenter = Arrays.binarySearch(sortedMeans, segmentCenter);
+		if (modelIndexClosestToCenter < 0) {
+			modelIndexClosestToCenter = -modelIndexClosestToCenter - 1;
+			if (modelIndexClosestToCenter == sortedMeans.length) {
+				modelIndexClosestToCenter--;
+			} else if (segmentCenter - sortedMeans[modelIndexClosestToCenter - 1] < sortedMeans[modelIndexClosestToCenter] - segmentCenter) {
+				modelIndexClosestToCenter--;
+			}
 		}
-		if (segmentIndices.getRight() >= sortedMeans.length) {
-			// there aren't enough neighbours to the right of the segment center - so extend the segment's left end
-			segmentIndices.setLeft(segmentIndices.getLeft() - Math.abs(segmentIndices.getRight()));
-			segmentIndices.setRight(0);
+		return modelIndexClosestToCenter;
+	}
+
+	private void expandSegmentIndicesUntilSymmetric(MutablePair<Integer, Integer> segmentIndices,
+													double segmentCenter,
+													double[] sortedMeans) {
+		double distFromLeft = segmentCenter - sortedMeans[segmentIndices.left];
+		double distFromRight = sortedMeans[segmentIndices.right] - segmentCenter;
+		if (distFromLeft < distFromRight) {
+			while (segmentIndices.left > 0 && segmentCenter - sortedMeans[segmentIndices.left - 1] < distFromRight) {
+				segmentIndices.left--;
+			}
+		} else if (distFromLeft > distFromRight) {
+			while (segmentIndices.right < sortedMeans.length - 1 && distFromLeft > sortedMeans[segmentIndices.right + 1] - segmentCenter) {
+				segmentIndices.right++;
+			}
 		}
+	}
+
+	private void expandSegmentIndicesWithoutChangingWidth(MutablePair<Integer, Integer> segmentIndices, double[] sortedMeans) {
+		while (segmentIndices.left > 0 && sortedMeans[segmentIndices.left] == sortedMeans[segmentIndices.left - 1]) {
+			segmentIndices.left--;
+		}
+		while (segmentIndices.right < sortedMeans.length - 1 && sortedMeans[segmentIndices.right] == sortedMeans[segmentIndices.right + 1]) {
+			segmentIndices.right++;
+		}
+	}
+
+	private int getNumOfModelsInsideSegment(MutablePair<Integer, Integer> segmentIndices) {
+		return segmentIndices.right - segmentIndices.left + 1;
 	}
 
 	@Override

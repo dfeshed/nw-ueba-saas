@@ -89,6 +89,24 @@ public class NeighboursLearningSegmentsTest {
 	}
 
 	@Test
+	public void shouldCreateSmallestPossibleSegmentWhichContainDesiredNumberOfNeighbours() {
+		double segmentCenter = 1;
+		double optimalSegmentRadius = 0.1;
+		List<ContinuousDataModel> models = createModels(
+				segmentCenter - 2 * optimalSegmentRadius,
+				segmentCenter,
+				segmentCenter + optimalSegmentRadius / 2,
+				segmentCenter + optimalSegmentRadius
+		);
+		NeighboursLearningSegments segments = new NeighboursLearningSegments(
+				models, 3, Arrays.asList(segmentCenter), 100000, 0, 0);
+		Assert.assertEquals(1, segments.size());
+		Pair<Double, Double> segment = segments.get(0);
+		Assert.assertEquals(segmentCenter - optimalSegmentRadius, segment.getLeft(), 0.00001);
+		Assert.assertEquals(segmentCenter + optimalSegmentRadius, segment.getRight(), 0.00001);
+	}
+
+	@Test
 	public void shouldHandleUnsortedModels() {
 		Double[] segmentCenters = {1D};
 		List<ContinuousDataModel> models = createModels(0.0, 2.0, 6.0, 6.0, 1.0);

@@ -14,7 +14,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *
  * Segments can overlap. In this case, it means that the overlapping area should be used in the learning process
  * of the two segments's GaussianPriorModel. Later on, when a ContinuousDataModel with a mean inside the overlapping
- * area will request a GaussianPriorModel, the one which is associated with the segment with the nearest center
+ * area will request a GaussianPriorModel, the one which is associated with the segment with the closest center
  * will be used:
  *
  *    all of the models inside s1
@@ -24,7 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
  *          /            \
  *         -------s1-------          when a model with mean x needs
  *                      ____________ some GaussianPriorModel, s1's will
- *                    /              be chosen (because it's nearer)
+ *                    /              be chosen (because it's closer)
  * ------------------x----------------------------------------------------> (real line of all
  *                                                                           possible model means)
  *                ---------s2--------
