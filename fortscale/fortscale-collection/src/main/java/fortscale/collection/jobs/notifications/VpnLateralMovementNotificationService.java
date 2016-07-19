@@ -221,6 +221,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		for (Map<String, Object> result: results) {
 			if (user != null) {
 				result.put(DISPLAY_NAME, user.getDisplayName());
+				result.put(ENTITY_ID, user.getId());
 			}
 			result.put(DATE_TIME_UNIX, result.get(START_TIME_UTC));
 		}

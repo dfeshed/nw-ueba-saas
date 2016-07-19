@@ -75,13 +75,8 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.
 					toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getUsername());
 			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getUsername());
-			Map<String, Object> additionalInformationValues = new HashMap<>();
-			additionalInformationValues.put(TARGET_MACHINE, "");
-			additionalInformationValues.put(DATA_SOURCE, VPN_SESSION);
-			additionalInformationValues.put(DISPLAY_NAME, displayName);
-			additionalInformationValues.put(NORMALIZED_USERNAME, evidence.getEntityName());
-			additionalInformationValues.put(ENTITY_ID, evidence.getEntityName());
-			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
+			additionalInformationMap.put(supportingInformationKey, createAdditionalInformationValues("", VPN_SESSION,
+					displayName, evidence.getEntityName(), vpnSessionOverlap.getEntity_id()));
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
 			long time = vpnLateralMovement.getEvent_time_utc();
@@ -93,18 +88,26 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(Long.
 					toString(startTimeInMillis), vpnLateralMovement.getUsername());
 			vpnLateralMovementMap.put(supportingInformationKey, vpnLateralMovement.getUsername());
-			Map<String, Object> additionalInformationValues = new HashMap<>();
-			additionalInformationValues.put(TARGET_MACHINE, vpnLateralMovement.getNormalized_dst_machine());
-			additionalInformationValues.put(DATA_SOURCE, vpnLateralMovement.getData_source());
-			additionalInformationValues.put(DISPLAY_NAME, displayName);
-			additionalInformationValues.put(NORMALIZED_USERNAME, vpnLateralMovement.getNormalized_username());
-			additionalInformationValues.put(ENTITY_ID, vpnLateralMovement.getEntity_id());
-			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
+			additionalInformationMap.put(supportingInformationKey,
+					createAdditionalInformationValues(vpnLateralMovement.getNormalized_dst_machine(),
+							vpnLateralMovement.getData_source(), displayName,
+							vpnLateralMovement.getNormalized_username(), vpnLateralMovement.getEntity_id()));
 		}
         SupportingInformationGenericData<String> supportingInformationData =
 				new SupportingInformationGenericData<>(vpnLateralMovementMap);
         supportingInformationData.setAdditionalInformation(additionalInformationMap);
         return supportingInformationData;
     }
+
+	private Map<String, Object> createAdditionalInformationValues(String targetMachine, String dataSource,
+			String displayName, String normalizedUsername, String entityId) {
+		Map<String, Object> additionalInformationValues = new HashMap<>();
+		additionalInformationValues.put(TARGET_MACHINE, targetMachine);
+		additionalInformationValues.put(DATA_SOURCE, dataSource);
+		additionalInformationValues.put(DISPLAY_NAME, displayName);
+		additionalInformationValues.put(NORMALIZED_USERNAME, normalizedUsername);
+		additionalInformationValues.put(ENTITY_ID, entityId);
+		return additionalInformationValues;
+	}
 
 }
