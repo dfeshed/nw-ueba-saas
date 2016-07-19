@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -48,7 +49,10 @@ public class NeighboursLearningSegments implements LearningSegments {
 	private MutablePair<Double, Double> createSegmentAroundCenter(double[] sortedMeans,
 																  double segmentCenter,
 																  int numberOfNeighbours) {
-		int firstModelToTheRightOfCenterIndex = 0;
+		int firstModelToTheRightOfCenterIndex = Arrays.binarySearch(sortedMeans, segmentCenter);
+		if (firstModelToTheRightOfCenterIndex < 0) {
+			firstModelToTheRightOfCenterIndex = -firstModelToTheRightOfCenterIndex - 1;
+		}
 		while (firstModelToTheRightOfCenterIndex < sortedMeans.length - 1 &&
 				sortedMeans[firstModelToTheRightOfCenterIndex] < segmentCenter) {
 			firstModelToTheRightOfCenterIndex++;
