@@ -56,26 +56,46 @@ public class NeighboursLearningSegments implements LearningSegments {
 		);
 		expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
 		while (getNumOfModelsInsideSegment(segmentIndices) < numberOfNeighbours) {
-			if (segmentIndices.left == 0 && segmentIndices.right < sortedMeans.length - 1) {
-				segmentIndices.right++;
-			} else if (segmentIndices.left > 0 && segmentIndices.right == sortedMeans.length - 1) {
-				segmentIndices.left--;
-			} else if (segmentIndices.left == 0 && segmentIndices.right == sortedMeans.length - 1) {
+			segmentIndices = enlargeSegmentBySmallestPossibleAddition(sortedMeans, segmentCenter, segmentIndices);
+			if (segmentIndices == null) {
 				return null;
-			} else {
-				MutablePair<Integer, Integer> segmentIndicesAdvancedLeft =
-						new MutablePair<>(segmentIndices.left - 1, segmentIndices.right);
-				expandSegmentIndicesUntilSymmetric(segmentIndicesAdvancedLeft, segmentCenter, sortedMeans);
-				MutablePair<Integer, Integer> segmentIndicesAdvancedRight =
-						new MutablePair<>(segmentIndices.left, segmentIndices.right + 1);
-				expandSegmentIndicesUntilSymmetric(segmentIndicesAdvancedRight, segmentCenter, sortedMeans);
-				segmentIndices =
-						(getNumOfModelsInsideSegment(segmentIndicesAdvancedLeft) < getNumOfModelsInsideSegment(segmentIndicesAdvancedRight)) ?
-								segmentIndicesAdvancedLeft :
-								segmentIndicesAdvancedRight;
 			}
 			expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
 		}
+		return createSegment(segmentIndices, segmentCenter, sortedMeans);
+	}
+
+	private MutablePair<Integer, Integer> enlargeSegmentBySmallestPossibleAddition(double[] sortedMeans, double segmentCenter, MutablePair<Integer, Integer> segmentIndices) {
+		if (segmentIndices.left == 0 && segmentIndices.right < sortedMeans.length - 1) {
+			// nothing to add from the left - we must add from the right
+			segmentIndices.right++;
+		} else if (segmentIndices.left > 0 && segmentIndices.right == sortedMeans.length - 1) {
+			// nothing to add from the right - we must add from the left
+			segmentIndices.left--;
+		} else if (segmentIndices.left == 0 && segmentIndices.right == sortedMeans.length - 1) {
+			// nothing to add from the left or right - fail
+			return null;
+		} else {
+			// try expanding left
+			MutablePair<Integer, Integer> segmentIndicesAdvancedLeft =
+					new MutablePair<>(segmentIndices.left - 1, segmentIndices.right);
+			expandSegmentIndicesUntilSymmetricAroundCenter(segmentIndicesAdvancedLeft, segmentCenter, sortedMeans);
+			// try expanding right
+			MutablePair<Integer, Integer> segmentIndicesAdvancedRight =
+					new MutablePair<>(segmentIndices.left, segmentIndices.right + 1);
+			expandSegmentIndicesUntilSymmetricAroundCenter(segmentIndicesAdvancedRight, segmentCenter, sortedMeans);
+			// pick the thinner segment option
+			segmentIndices =
+					(getNumOfModelsInsideSegment(segmentIndicesAdvancedLeft) < getNumOfModelsInsideSegment(segmentIndicesAdvancedRight)) ?
+							segmentIndicesAdvancedLeft :
+							segmentIndicesAdvancedRight;
+		}
+		return segmentIndices;
+	}
+
+	private MutablePair<Double, Double> createSegment(MutablePair<Integer, Integer> segmentIndices,
+													  double segmentCenter,
+													  double[] sortedMeans) {
 		MutablePair<Double, Double> segment = new MutablePair<>(
 				sortedMeans[segmentIndices.left],
 				sortedMeans[segmentIndices.right]
@@ -103,9 +123,9 @@ public class NeighboursLearningSegments implements LearningSegments {
 		return modelIndexClosestToCenter;
 	}
 
-	private void expandSegmentIndicesUntilSymmetric(MutablePair<Integer, Integer> segmentIndices,
-													double segmentCenter,
-													double[] sortedMeans) {
+	private void expandSegmentIndicesUntilSymmetricAroundCenter(MutablePair<Integer, Integer> segmentIndices,
+																double segmentCenter,
+																double[] sortedMeans) {
 		double distFromLeft = segmentCenter - sortedMeans[segmentIndices.left];
 		double distFromRight = sortedMeans[segmentIndices.right] - segmentCenter;
 		if (distFromLeft < distFromRight) {
