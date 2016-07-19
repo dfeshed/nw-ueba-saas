@@ -6,7 +6,6 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -20,15 +19,14 @@ public class NeighboursLearningSegments implements LearningSegments {
 
 	public NeighboursLearningSegments(List<ContinuousDataModel> models,
 									  int numberOfNeighbours,
-									  Iterator<Double> segmentCentersIterator,
+									  Iterable<Double> segmentCenters,
 									  double validRatioBetweenSegmentSizeAndMean) {
 		Assert.notNull(models, "models can't be null");
 		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours must be positive");
-		Assert.notNull(segmentCentersIterator, "segmentCentersIterator can't be null");
+		Assert.notNull(segmentCenters, "segmentCenters can't be null");
 		Assert.isTrue(validRatioBetweenSegmentSizeAndMean > 0, "validRatioBetweenSegmentSizeAndMean must be positive");
 		segments = new ArrayList<>();
-		while (segmentCentersIterator.hasNext()) {
-			double segmentCenter = segmentCentersIterator.next();
+		for (double segmentCenter : segmentCenters) {
 			Pair<Double, Double> segment = createSegmentAroundCenter(models, segmentCenter);
 			if (segment != null) {
 				segments.add(segment);

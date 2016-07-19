@@ -5,7 +5,10 @@ import fortscale.ml.model.builder.gaussian.prior.NeighboursLearningSegments;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class NeighboursLearningSegmentsTest {
 	private List<ContinuousDataModel> createModels(Double... means) {
@@ -20,12 +23,12 @@ public class NeighboursLearningSegmentsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenNullAsModels() {
-        new NeighboursLearningSegments(null, 100, Collections.emptyIterator(), 0.1);
+        new NeighboursLearningSegments(null, 100, Collections.emptyList(), 0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenZeroAsNumberOfNeighbours() {
-        new NeighboursLearningSegments(createModels(), 0, Collections.emptyIterator(), 0.1);
+        new NeighboursLearningSegments(createModels(), 0, Collections.emptyList(), 0.1);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -35,29 +38,27 @@ public class NeighboursLearningSegmentsTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfGivenZeroAsValidRatio() {
-        new NeighboursLearningSegments(createModels(), 100, Collections.emptyIterator(), 0);
+        new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0);
     }
 
     @Test
 	public void shouldCreateNoSegmentIfThereAreNoSegmentCenters() {
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				createModels(0.0, 0.0, 0.0, 0.0, 0.0), 1, Collections.emptyIterator(), 100000);
+				createModels(0.0, 0.0, 0.0, 0.0, 0.0), 1, Collections.emptyList(), 100000);
 		Assert.assertEquals(0, segments.size());
 	}
 
 	@Test
 	public void shouldCreateOneSegmentPerSegmentCenterIfEnoughData() {
 		Double[] segmentCenters = {0D, 1D, 2D, 3D};
-		Iterator<Double> segmentCentersIterator = Arrays.asList(segmentCenters).iterator();
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				createModels(segmentCenters), 1, segmentCentersIterator, 100000);
+				createModels(segmentCenters), 1, Arrays.asList(segmentCenters), 100000);
 		Assert.assertEquals(segmentCenters.length, segments.size());
 	}
 
 	@Test
 	public void shouldCreateSegmentsOnlyForCentersWhichContainEnoughConcentrationOfMeans() {
-		Double[] segmentCenters = {0D, 1D, 2D, 3D};
-		Iterator<Double> segmentCentersIterator = Arrays.asList(segmentCenters).iterator();
+		Iterable<Double> segmentCentersIterator = Arrays.asList(0D, 1D, 2D, 3D);
 		Double[] means = {0D, 3D};
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
 				createModels(means), 1, segmentCentersIterator, 100000);
