@@ -7,6 +7,7 @@ package fortscale.common.event;
 public enum NotificationAnomalyType {
     VPN_GEO_HOPPING("vpn_geo_hopping","country"),
     VPN_USER_CREDS_SHARE("VPN_user_creds_share", "sessions_cnt"),
+    VPN_LATERAL_MOVEMENT("VPN_user_lateral_movement", "normalized_username"),
     ADMIN_GROUP_REMOVED("admin_group_removed", "admin_group"),
     HAS_NEW_ADMIN_GROUP("has_new_admin_group","admin_group"),
     USER_WAS_CREATED("user_was_created", null),

@@ -28,8 +28,10 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
     private static final String SUPPORTING_INFORMATION_COUNT_BY_TIME_POPULATOR = "supportingInformationCountByTimePopulator";
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_SESSION_POPULATOR_BEAN = "supportingInformationVPNSessionPopulator";
     private static final String SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN = "supportingInformationVPNOverlappingSessionPopulator";
+	private static final String SUPPORTING_INFORMATION_QUERY_VPN_LATERAL_MOVEMENT_POPULATOR_BEAN = "supportingInformationVPNLateralMovementPopulator";
 
     private static final String VPN_OVERLAPPING_SESSION = NotificationAnomalyType.VPN_USER_CREDS_SHARE.getType();
+	private static final String VPN_LATERAL_MOVEMENT = NotificationAnomalyType.VPN_LATERAL_MOVEMENT.getType();
 
     private ApplicationContext applicationContext;
 
@@ -73,6 +75,12 @@ public class SupportingInformationPopulatorFactory implements ApplicationContext
                 return (SupportingInformationVPNOverlappingSessionPopulator) applicationContext.getBean(SUPPORTING_INFORMATION_QUERY_VPN_OVERLAPPING_SESSION_POPULATOR_BEAN);
             }
         }
+		else if (SupportingInformationAggrFunc.TimeIntervals.name().equalsIgnoreCase(aggregationFunction)) {
+			if (VPN_LATERAL_MOVEMENT.equalsIgnoreCase(featureName)) {
+				return (SupportingInformationVPNLateralMovementPopulator) applicationContext.
+						getBean(SUPPORTING_INFORMATION_QUERY_VPN_LATERAL_MOVEMENT_POPULATOR_BEAN);
+			}
+		}
 
 
         throw new UnsupportedOperationException("Could not find supporting information populator for feature name " + featureName + " with aggregation function " + aggregationFunction);

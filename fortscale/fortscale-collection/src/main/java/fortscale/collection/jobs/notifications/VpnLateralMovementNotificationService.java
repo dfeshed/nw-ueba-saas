@@ -7,12 +7,17 @@ import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
+import fortscale.common.event.NotificationAnomalyType;
+import fortscale.domain.core.User;
 import fortscale.domain.core.VpnLateralMovementSupportingInformation;
+import fortscale.services.UserService;
+import fortscale.services.impl.UsernameService;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
@@ -42,12 +47,15 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private static final String TABLE_NAME = "table_name";
     private static final String DATASOURCE_USERNAME = "datasource_username";
     private static final String DATASOURCE_IP = "datasource_ip";
-    private static final String NOTIFICATION_NAME = "VPN_user_lateral_movement";
 	private static final String EVENT_TIME_UTC = "event_time_utc";
+	private static final String DISPLAY_NAME = "display_name";
 	private static final List<String> dataSources = Arrays.asList("kerberos_logins", "kerberos_tgt", "ssh", "crmsf",
 			"prnlog", "oracle");
 
 	private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
+
+	@Autowired
+	private UserService userService;
 
     @Value("${impala.table.fields.source_ip}")
     private String sourceIpFieldName;
@@ -162,6 +170,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(), -1,
                 DataQueryDTOImpl.class);
 		List<Map<String, Object>> results = runQuery(dataQueryDTO);
+		User user = userService.findByUsername(username);
+		if (user != null) {
+			for (Map<String, Object> result: results) {
+				result.put(DISPLAY_NAME, user.getDisplayName());
+			}
+		}
 		addSupportingInformation(lateralMovement, results,
 				VpnLateralMovementSupportingInformation.USER_ACTIVITY_EVENTS);
     }
@@ -273,8 +287,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         long startTime = Long.parseLong(lateralMovementEvent.startTime);
         long endTime = Long.parseLong(lateralMovementEvent.endTime);
         String normalizedUsername = lateralMovementEvent.normalizedUsername;
-		return createNotification(startTime, endTime, normalizedUsername, NOTIFICATION_NAME,
-                normalizedUsername);
+		return createNotification(startTime, endTime, normalizedUsername, NotificationAnomalyType.
+				VPN_LATERAL_MOVEMENT.getType(), normalizedUsername);
     }
 
     private class VPNSessionEvent {
