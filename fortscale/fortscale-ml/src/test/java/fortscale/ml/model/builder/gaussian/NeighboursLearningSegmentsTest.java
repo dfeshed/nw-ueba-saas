@@ -45,12 +45,22 @@ public class NeighboursLearningSegmentsTest {
 		Assert.assertEquals(0, segments.size());
 	}
 
-    @Test
+	@Test
 	public void shouldCreateOneSegmentPerSegmentCenterIfEnoughData() {
 		Double[] segmentCenters = {0D, 1D, 2D, 3D};
 		Iterator<Double> segmentCentersIterator = Arrays.asList(segmentCenters).iterator();
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
 				createModels(segmentCenters), 1, segmentCentersIterator, 100000);
 		Assert.assertEquals(segmentCenters.length, segments.size());
+	}
+
+	@Test
+	public void shouldCreateSegmentsOnlyForCentersWhichContainEnoughConcentrationOfMeans() {
+		Double[] segmentCenters = {0D, 1D, 2D, 3D};
+		Iterator<Double> segmentCentersIterator = Arrays.asList(segmentCenters).iterator();
+		Double[] means = {0D, 3D};
+		NeighboursLearningSegments segments = new NeighboursLearningSegments(
+				createModels(means), 1, segmentCentersIterator, 100000);
+		Assert.assertEquals(means.length, segments.size());
 	}
 }

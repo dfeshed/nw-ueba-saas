@@ -37,7 +37,14 @@ public class NeighboursLearningSegments implements LearningSegments {
 	}
 
 	private Pair<Double, Double> createSegmentAroundCenter(List<ContinuousDataModel> models, double segmentCenter) {
-		return new ImmutablePair<>(segmentCenter, segmentCenter);
+		if (models.stream()
+				.mapToDouble(ContinuousDataModel::getMean)
+				.filter(mean -> mean == segmentCenter)
+				.findFirst()
+				.isPresent()) {
+			return new ImmutablePair<>(segmentCenter, segmentCenter);
+		}
+		return null;
 	}
 
 	@Override
