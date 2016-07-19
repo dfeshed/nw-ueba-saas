@@ -43,7 +43,7 @@ public class NeighboursLearningSegmentsTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailIfGivenNegativeMaxCenterToNotDiscardBecauseOfBadRatio() {
+	public void shouldFailIfGivenNegativeAsMaxSegmentWidthToNotDiscardBecauseOfBadRatio() {
 		new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0.1, -1, 0);
 	}
 
@@ -156,11 +156,11 @@ public class NeighboursLearningSegmentsTest {
 	}
 
 	@Test
-	public void shouldDiscardSegmentsTooBigRelativeToTheirCenterOnlyIfCenterIsBiggerThanMaxCenterToNotDiscardBecauseOfBadRatio() {
+	public void shouldDiscardSegmentsTooBigRelativeToTheirCenterOnlyIfBiggerThanMaxSegmentWidthToNotDiscardBecauseOfBadRatio() {
 		Double[] segmentCenters = {1.0, 2.0};
-		List<ContinuousDataModel> models = createModels(0.0, 1.0, 2.0, 3.0);
+		List<ContinuousDataModel> models = createModels(0.0, 1.0, 2.0, 4.0);
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				models, 3, Arrays.asList(segmentCenters), 0.0001, 1, 0);
+				models, 3, Arrays.asList(segmentCenters), 0.0001, 2, 0);
 		Assert.assertEquals(1, segments.size());
 		Pair<Double, Double> segment = segments.get(0);
 		Assert.assertEquals(0.0, segment.getLeft(), 0.00001);

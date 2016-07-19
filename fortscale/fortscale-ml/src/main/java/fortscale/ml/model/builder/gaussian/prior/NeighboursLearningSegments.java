@@ -22,13 +22,13 @@ public class NeighboursLearningSegments implements LearningSegments {
 									  int numberOfNeighbours,
 									  Iterable<Double> segmentCenters,
 									  double maxRatioBetweenSegmentSizeToCenter,
-									  double maxCenterToNotDiscardBecauseOfBadRatio,
+									  double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
 									  double padding) {
 		Assert.notNull(models, "models can't be null");
 		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours must be positive");
 		Assert.notNull(segmentCenters, "segmentCenters can't be null");
 		Assert.isTrue(maxRatioBetweenSegmentSizeToCenter > 0, "maxRatioBetweenSegmentSizeToCenter must be positive");
-		Assert.isTrue(maxCenterToNotDiscardBecauseOfBadRatio >= 0, "maxCenterToNotDiscardBecauseOfBadRatio must be non-negative");
+		Assert.isTrue(maxSegmentWidthToNotDiscardBecauseOfBadRatio >= 0, "maxSegmentWidthToNotDiscardBecauseOfBadRatio must be non-negative");
 		Assert.isTrue(padding >= 0, "padding must be non-negative");
 		segments = new ArrayList<>();
 		double[] sortedMeans = models.stream()
@@ -37,8 +37,10 @@ public class NeighboursLearningSegments implements LearningSegments {
 				.toArray();
 		for (double segmentCenter : segmentCenters) {
 			MutablePair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
-			if (segment != null && (segmentCenter <= maxCenterToNotDiscardBecauseOfBadRatio ||
-					(segment.right - segment.left) / Math.max(0.000001, segmentCenter) <= maxRatioBetweenSegmentSizeToCenter)) {
+			if (segment != null && segment.right - segment.left <= Math.max(
+					maxRatioBetweenSegmentSizeToCenter * segmentCenter,
+					maxSegmentWidthToNotDiscardBecauseOfBadRatio
+			)) {
 				segment.left -= padding;
 				segment.right += padding;
 				segments.add(segment);
