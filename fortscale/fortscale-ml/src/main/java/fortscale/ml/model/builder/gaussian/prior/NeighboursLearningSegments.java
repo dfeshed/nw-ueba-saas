@@ -27,26 +27,56 @@ public class NeighboursLearningSegments implements LearningSegments {
 		Assert.isTrue(validRatioBetweenSegmentSizeAndMean > 0, "validRatioBetweenSegmentSizeAndMean must be positive");
 		segments = new ArrayList<>();
 		for (double segmentCenter : segmentCenters) {
-			Pair<Double, Double> segment = createSegmentAroundCenter(models, segmentCenter);
-			if (segment != null) {
+			Pair<Double, Double> segment = createSegmentAroundCenter(models, segmentCenter, numberOfNeighbours);
+			if (segment != null && (segment.getRight() - segment.getLeft()) / Math.max(0.000001, segmentCenter) < validRatioBetweenSegmentSizeAndMean) {
 				segments.add(segment);
 			}
 		}
 	}
 
-	private Pair<Double, Double> createSegmentAroundCenter(List<ContinuousDataModel> models, double segmentCenter) {
-		if (models.stream()
-				.mapToDouble(ContinuousDataModel::getMean)
-				.filter(mean -> mean == segmentCenter)
-				.findFirst()
-				.isPresent()) {
-			return new ImmutablePair<>(segmentCenter, segmentCenter);
+	private Pair<Double, Double> createSegmentAroundCenter(List<ContinuousDataModel> models,
+														   double segmentCenter,
+														   double numberOfNeighbours) {
+		int firstModelToTheRightOfCenterIndex = 0;
+		while (firstModelToTheRightOfCenterIndex < models.size() - 1 &&
+				models.get(firstModelToTheRightOfCenterIndex).getMean() < segmentCenter) {
+			firstModelToTheRightOfCenterIndex++;
 		}
-		return null;
+		int leftModelIndex = (int) Math.floor(firstModelToTheRightOfCenterIndex - (numberOfNeighbours - 1) / 2);
+		int rightModelIndex = (int) Math.ceil(firstModelToTheRightOfCenterIndex + (numberOfNeighbours - 1) / 2);
+		if (segmentCenter < models.get(leftModelIndex).getMean()) {
+			// Make sure the segment center is inside the segment
+			leftModelIndex--;
+		}
+		if (leftModelIndex < 0) {
+			// there aren't enough neighbours to the left of the segment center - so extend the segment's right end
+			rightModelIndex += Math.abs(leftModelIndex);
+			leftModelIndex = 0;
+		}
+		if (rightModelIndex >= models.size()) {
+			// there aren't enough neighbours to the right of the segment center - so extend the segment's left end
+			leftModelIndex -= Math.abs(rightModelIndex);
+			rightModelIndex = 0;
+		}
+		if (rightModelIndex - leftModelIndex + 1 < numberOfNeighbours) {
+			// not enough neighbours
+			return null;
+		}
+		ImmutablePair<Double, Double> segment = new ImmutablePair<>(models.get(leftModelIndex).getMean(), models.get(rightModelIndex).getMean());
+		if (segmentCenter < segment.getLeft() || segment.getRight() < segmentCenter) {
+			// the segment's center must be inside the segment
+			return null;
+		}
+		return segment;
 	}
 
 	@Override
 	public int size() {
 		return segments.size();
+	}
+
+	@Override
+	public Pair<Double, Double> get(int index) {
+		return segments.get(index);
 	}
 }

@@ -1,5 +1,7 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
+import org.apache.commons.lang3.tuple.Pair;
+
 /**
  * LearningSegments is a collection of segments.
  * Each segment contains an interval of ContinuousDataModel means.
@@ -11,4 +13,6 @@ package fortscale.ml.model.builder.gaussian.prior;
  */
 public interface LearningSegments {
 	int size();
+
+	Pair<Double, Double> get(int index);
 }

@@ -2,6 +2,7 @@ package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.NeighboursLearningSegments;
+import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -61,7 +62,19 @@ public class NeighboursLearningSegmentsTest {
 		Iterable<Double> segmentCentersIterator = Arrays.asList(0D, 1D, 2D, 3D);
 		Double[] means = {0D, 3D};
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				createModels(means), 1, segmentCentersIterator, 100000);
+				createModels(means), 1, segmentCentersIterator, 0.000001);
 		Assert.assertEquals(means.length, segments.size());
+	}
+
+	@Test
+	public void shouldCreateSegmentBigEnoughToContainDesiredNumberOfNeighbours() {
+		Double[] segmentCenters = {1D};
+		List<ContinuousDataModel> models = createModels(0.0, 0.5, 1.0, 1.5, 2.0);
+		NeighboursLearningSegments segments = new NeighboursLearningSegments(
+				models, 3, Arrays.asList(segmentCenters), 100000);
+		Assert.assertEquals(1, segments.size());
+		Pair<Double, Double> segment = segments.get(0);
+		Assert.assertEquals(0.5, segment.getLeft(), 0.00001);
+		Assert.assertEquals(1.5, segment.getRight(), 0.00001);
 	}
 }
