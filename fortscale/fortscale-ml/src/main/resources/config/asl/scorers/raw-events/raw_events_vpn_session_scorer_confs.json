@@ -122,9 +122,9 @@
               "reduction-configs": [
                 {
                   "reducingFeatureName": "readbytes",
-                  "reducingFactor": 0.4,
-                  "maxValueForFullyReduce": 100000000,
-                  "minValueForNotReduce": 500000000
+                  "reducingFactor": 1,
+                  "maxValueForFullyReduce": 25000000,
+                  "minValueForNotReduce": 300000000
                 }
               ]
             }

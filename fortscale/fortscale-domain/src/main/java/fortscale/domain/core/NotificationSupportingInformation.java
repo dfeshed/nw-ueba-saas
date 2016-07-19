@@ -17,9 +17,9 @@ import java.util.List;
         @JsonSubTypes.Type(value = VpnOverlappingSupportingInformation.class,name="vpnOverlappingSupportingInformation")})
 public class NotificationSupportingInformation extends EntitySupportingInformation {
 
-    public NotificationSupportingInformation(){}
+    public NotificationSupportingInformation() {}
 
-    public void setData(Evidence evidence, String json, boolean isBDPRunning){
+    public void setData(String json, boolean isBDPRunning) {
         throw new AbstractMethodError("Notification Supporting information is abstract!!");
     }
 
