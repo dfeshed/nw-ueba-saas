@@ -34,7 +34,7 @@
                                    <property name="limitToTimeFrames" value="${alert_type.cred_share.timeframes:Daily}"/>
                             </bean>
                             <bean class="fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl$AlertTypeConfiguration">
-                                   <property name="evidenceType" value="${alert_type.lateral_movement.evidence_type:VPN_lateral_movement}"></property>
+                                   <property name="evidenceType" value="${alert_type.lateral_movement.evidence_type:VPN_user_lateral_movement}"></property>
                                    <property name="alertTitle"   value="${alert_type.lateral_movement.alert_name:VPN_lateral_movement}"></property>
                                    <property name="namePriority" value="${alert_type.lateral_movement.name_priority:3}"></property>
                                    <property name="scorePriority" value="${alert_type.lateral_movement.score_priority:1}"></property>
