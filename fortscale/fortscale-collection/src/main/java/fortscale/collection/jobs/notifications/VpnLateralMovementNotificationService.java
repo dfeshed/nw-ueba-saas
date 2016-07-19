@@ -212,6 +212,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1,
 				DataQueryDTOImpl.class);
 		List<Map<String, Object>> results = runQuery(dataQueryDTO);
+		User user = userService.findByUsername(lateralMovement.getAsString(normalizedUsernameField));
+		if (user != null) {
+			for (Map<String, Object> result: results) {
+				result.put(DISPLAY_NAME, user.getDisplayName());
+			}
+		}
 		addSupportingInformation(lateralMovement, results, VpnLateralMovementSupportingInformation.VPN_SESSION_EVENTS);
     }
 

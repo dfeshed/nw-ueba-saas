@@ -64,15 +64,15 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime - duration);
 			Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime);
 			SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.
-					toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getUsername());
-			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getUsername());
+					toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getDisplay_name());
+			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getDisplay_name());
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
 			long time = vpnLateralMovement.getEvent_time_utc();
 			Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(time);
 			SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(Long.
 					toString(startTimeInMillis), vpnLateralMovement.getDisplay_name());
-			vpnLateralMovementMap.put(supportingInformationKey, vpnLateralMovement.getUsername());
+			vpnLateralMovementMap.put(supportingInformationKey, vpnLateralMovement.getDisplay_name());
 		}
         SupportingInformationGenericData<String> supportingInformationData =
 				new SupportingInformationGenericData<>(vpnLateralMovementMap);
