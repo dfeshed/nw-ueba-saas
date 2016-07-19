@@ -77,7 +77,7 @@ public class DHCPEventsProcessJob extends EventProcessJob implements Initializin
 			dhcpResolver.addDhcpEvent(dhcpEvent);
 			return record;
 		} catch (Exception e) {
-			logger.warn(String.format("error writing record %s to mongo. Exception: %s", record.toString()), e);
+			logger.warn(String.format("error writing record %s to mongo. Exception: %s", record.toString(), e));
 			return null;
 		}			
 	}
@@ -91,8 +91,7 @@ public class DHCPEventsProcessJob extends EventProcessJob implements Initializin
 	@Override protected void closeStreamingAppender() throws JobExecutionException {}
 
 	@Override public void afterPropertiesSet() throws Exception {
-		 recordToBeanItemConverter =
-				new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job",statsService);
+		 recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job",statsService);
 
 	}
 }
