@@ -109,14 +109,25 @@ public class NeighboursLearningSegmentsTest {
 
 	@Test
 	public void shouldAddPaddingToTheCreatedSegment() {
-		Double[] segmentCenters = {1D};
+		double segmentCenter = 1;
 		List<ContinuousDataModel> models = createModels(1.0);
 		double padding = 0.3;
 		NeighboursLearningSegments segments = new NeighboursLearningSegments(
-				models, 1, Arrays.asList(segmentCenters), 100000, padding);
+				models, 1, Arrays.asList(segmentCenter), 100000, padding);
 		Assert.assertEquals(1, segments.size());
 		Pair<Double, Double> segment = segments.get(0);
-		Assert.assertEquals(segmentCenters[0] - padding, segment.getLeft(), 0.00001);
-		Assert.assertEquals(segmentCenters[0] + padding, segment.getRight(), 0.00001);
+		Assert.assertEquals(segmentCenter - padding, segment.getLeft(), 0.00001);
+		Assert.assertEquals(segmentCenter + padding, segment.getRight(), 0.00001);
+	}
+
+	@Test
+	public void shouldDiscardSegmentsTooBigRelativeToTheirCenter() {
+		List<ContinuousDataModel> models = createModels(94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0);
+		NeighboursLearningSegments segments = new NeighboursLearningSegments(
+				models, 3, Arrays.asList(100.0, 1000.0), 0.1, 0);
+		Assert.assertEquals(1, segments.size());
+		Pair<Double, Double> segment = segments.get(0);
+		Assert.assertEquals(950.0, segment.getLeft(), 0.00001);
+		Assert.assertEquals(1050.0, segment.getRight(), 0.00001);
 	}
 }

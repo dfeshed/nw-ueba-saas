@@ -34,7 +34,7 @@ public class NeighboursLearningSegments implements LearningSegments {
 					.sorted()
 					.toArray();
 			MutablePair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
-			if (segment != null && (segment.getRight() - segment.getLeft()) / Math.max(0.000001, segmentCenter) < validRatioBetweenSegmentSizeAndMean) {
+			if (segment != null && (segment.getRight() - segment.getLeft()) / Math.max(0.000001, segmentCenter) <= validRatioBetweenSegmentSizeAndMean) {
 				segment.setLeft(segment.getLeft() - padding);
 				segment.setRight(segment.getRight() + padding);
 				segments.add(segment);
