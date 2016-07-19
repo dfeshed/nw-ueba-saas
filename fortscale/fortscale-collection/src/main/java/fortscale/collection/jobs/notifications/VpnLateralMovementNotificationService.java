@@ -11,7 +11,6 @@ import fortscale.common.event.NotificationAnomalyType;
 import fortscale.domain.core.User;
 import fortscale.domain.core.VpnLateralMovementSupportingInformation;
 import fortscale.services.UserService;
-import fortscale.services.impl.UsernameService;
 import fortscale.utils.CustomedFilter;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -38,7 +37,7 @@ import java.util.stream.Collectors;
  */
 public class VpnLateralMovementNotificationService extends NotificationGeneratorServiceAbstract {
 
-	private static final String APP_CONF_PREFIX = "lateral_movement_notification";
+    private static final String APP_CONF_PREFIX = "lateral_movement_notification";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
 	private static final String SOURCE_IP_FIELD = "source_ip";
     private static final String VPN_START_TIME = "vpn_session_start";
@@ -51,10 +50,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	private static final String DISPLAY_NAME = "display_name";
 	private static final String START_TIME_UTC = "start_time_utc";
 	private static final String DATE_TIME_UNIX = "date_time_unix";
+    private static final String DATA_SOURCE = "data_source";
 	private static final List<String> dataSources = Arrays.asList("kerberos_logins", "kerberos_tgt", "ssh", "crmsf",
 			"prnlog", "oracle");
+    public static final String ENTITY_ID = "entity_id";
 
-	private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
+    private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
 	@Autowired
 	private UserService userService;
@@ -176,6 +177,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		if (user != null) {
 			for (Map<String, Object> result: results) {
 				result.put(DISPLAY_NAME, user.getDisplayName());
+                result.put(DATA_SOURCE, entityId);
+                result.put(ENTITY_ID, user.getId());
 			}
 		}
 		addSupportingInformation(lateralMovement, results,
@@ -218,6 +221,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		for (Map<String, Object> result: results) {
 			if (user != null) {
 				result.put(DISPLAY_NAME, user.getDisplayName());
+                result.put(DATA_SOURCE, user.getId());
 			}
 			result.put(DATE_TIME_UNIX, result.get(START_TIME_UTC));
 		}
