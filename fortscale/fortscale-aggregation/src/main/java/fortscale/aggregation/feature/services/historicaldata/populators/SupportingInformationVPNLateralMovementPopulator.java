@@ -63,16 +63,24 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			long duration = vpnSessionOverlap.getDuration();
 			Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime - duration);
 			Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime);
+			String displayName = vpnSessionOverlap.getDisplay_name();
+			if (displayName == null) {
+				displayName = vpnSessionOverlap.getUsername();
+			}
 			SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.
-					toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getDisplay_name());
-			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getDisplay_name());
+					toString(startTimeInMillis), Long.toString(endTimeInMillis), displayName);
+			vpnLateralMovementMap.put(supportingInformationKey, displayName);
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
 			long time = vpnLateralMovement.getEvent_time_utc();
 			Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(time);
+			String displayName = vpnLateralMovement.getDisplay_name();
+			if (displayName == null) {
+				displayName = vpnLateralMovement.getUsername();
+			}
 			SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(Long.
-					toString(startTimeInMillis), vpnLateralMovement.getDisplay_name());
-			vpnLateralMovementMap.put(supportingInformationKey, vpnLateralMovement.getDisplay_name());
+					toString(startTimeInMillis), displayName);
+			vpnLateralMovementMap.put(supportingInformationKey, displayName);
 		}
         SupportingInformationGenericData<String> supportingInformationData =
 				new SupportingInformationGenericData<>(vpnLateralMovementMap);
