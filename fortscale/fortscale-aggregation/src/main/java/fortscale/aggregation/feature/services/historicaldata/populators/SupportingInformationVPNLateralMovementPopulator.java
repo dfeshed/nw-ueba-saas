@@ -70,6 +70,9 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.
 					toString(startTimeInMillis), Long.toString(endTimeInMillis), displayName);
 			vpnLateralMovementMap.put(supportingInformationKey, displayName);
+			Map<String, Object> additionalInformationValues = new HashMap<>();
+			additionalInformationValues.put("TARGET_MACHINE", "");
+			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
 			long time = vpnLateralMovement.getEvent_time_utc();
@@ -81,6 +84,9 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(Long.
 					toString(startTimeInMillis), displayName);
 			vpnLateralMovementMap.put(supportingInformationKey, displayName);
+			Map<String, Object> additionalInformationValues = new HashMap<>();
+			additionalInformationValues.put("TARGET_MACHINE", vpnLateralMovement.getNormalized_dst_machine());
+			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
         SupportingInformationGenericData<String> supportingInformationData =
 				new SupportingInformationGenericData<>(vpnLateralMovementMap);
