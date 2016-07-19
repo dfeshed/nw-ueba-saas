@@ -51,13 +51,13 @@ public class NeighboursLearningSegments implements LearningSegments {
 	private MutablePair<Double, Double> createSegmentAroundCenter(double[] sortedMeans,
 																  double segmentCenter,
 																  int numberOfNeighbours) {
-		int modelIndexClosestToSegmentCenter = findModelIndexClosestToSegmentCenter(sortedMeans, segmentCenter);
+		int meanIndexClosestToSegmentCenter = findMeanIndexClosestToSegmentCenter(sortedMeans, segmentCenter);
 		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
-				modelIndexClosestToSegmentCenter,
-				modelIndexClosestToSegmentCenter
+				meanIndexClosestToSegmentCenter,
+				meanIndexClosestToSegmentCenter
 		);
 		expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
-		while (getNumOfModelsInsideSegment(segmentIndices) < numberOfNeighbours) {
+		while (getNumOfMeansInsideSegment(segmentIndices) < numberOfNeighbours) {
 			segmentIndices = enlargeSegmentBySmallestPossibleAddition(sortedMeans, segmentCenter, segmentIndices);
 			if (segmentIndices == null) {
 				return null;
@@ -88,7 +88,7 @@ public class NeighboursLearningSegments implements LearningSegments {
 			expandSegmentIndicesUntilSymmetricAroundCenter(segmentIndicesAdvancedRight, segmentCenter, sortedMeans);
 			// pick the thinner segment option
 			segmentIndices =
-					(getNumOfModelsInsideSegment(segmentIndicesAdvancedLeft) < getNumOfModelsInsideSegment(segmentIndicesAdvancedRight)) ?
+					(getNumOfMeansInsideSegment(segmentIndicesAdvancedLeft) < getNumOfMeansInsideSegment(segmentIndicesAdvancedRight)) ?
 							segmentIndicesAdvancedLeft :
 							segmentIndicesAdvancedRight;
 		}
@@ -112,17 +112,17 @@ public class NeighboursLearningSegments implements LearningSegments {
 		return segment;
 	}
 
-	private int findModelIndexClosestToSegmentCenter(double[] sortedMeans, double segmentCenter) {
-		int modelIndexClosestToCenter = Arrays.binarySearch(sortedMeans, segmentCenter);
-		if (modelIndexClosestToCenter < 0) {
-			modelIndexClosestToCenter = -modelIndexClosestToCenter - 1;
-			if (modelIndexClosestToCenter == sortedMeans.length) {
-				modelIndexClosestToCenter--;
-			} else if (segmentCenter - sortedMeans[modelIndexClosestToCenter - 1] < sortedMeans[modelIndexClosestToCenter] - segmentCenter) {
-				modelIndexClosestToCenter--;
+	private int findMeanIndexClosestToSegmentCenter(double[] sortedMeans, double segmentCenter) {
+		int meanIndexClosestToCenter = Arrays.binarySearch(sortedMeans, segmentCenter);
+		if (meanIndexClosestToCenter < 0) {
+			meanIndexClosestToCenter = -meanIndexClosestToCenter - 1;
+			if (meanIndexClosestToCenter == sortedMeans.length) {
+				meanIndexClosestToCenter--;
+			} else if (segmentCenter - sortedMeans[meanIndexClosestToCenter - 1] < sortedMeans[meanIndexClosestToCenter] - segmentCenter) {
+				meanIndexClosestToCenter--;
 			}
 		}
-		return modelIndexClosestToCenter;
+		return meanIndexClosestToCenter;
 	}
 
 	private void expandSegmentIndicesUntilSymmetricAroundCenter(MutablePair<Integer, Integer> segmentIndices,
@@ -150,7 +150,7 @@ public class NeighboursLearningSegments implements LearningSegments {
 		}
 	}
 
-	private int getNumOfModelsInsideSegment(MutablePair<Integer, Integer> segmentIndices) {
+	private int getNumOfMeansInsideSegment(MutablePair<Integer, Integer> segmentIndices) {
 		return segmentIndices.right - segmentIndices.left + 1;
 	}
 
