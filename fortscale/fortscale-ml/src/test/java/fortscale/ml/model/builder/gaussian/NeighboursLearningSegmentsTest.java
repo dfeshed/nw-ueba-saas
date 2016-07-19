@@ -38,7 +38,7 @@ public class NeighboursLearningSegmentsTest {
     }
 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailIfGivenZeroAsValidRatio() {
+	public void shouldFailIfGivenZeroAsMaxRatio() {
 		new NeighboursLearningSegments(createModels(), 100, Collections.emptyList(), 0, 0);
 	}
 
