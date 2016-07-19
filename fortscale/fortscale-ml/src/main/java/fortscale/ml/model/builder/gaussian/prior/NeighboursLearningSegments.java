@@ -2,6 +2,7 @@ package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
@@ -36,38 +37,48 @@ public class NeighboursLearningSegments implements LearningSegments {
 
 	private Pair<Double, Double> createSegmentAroundCenter(List<ContinuousDataModel> models,
 														   double segmentCenter,
-														   double numberOfNeighbours) {
+														   int numberOfNeighbours) {
 		int firstModelToTheRightOfCenterIndex = 0;
 		while (firstModelToTheRightOfCenterIndex < models.size() - 1 &&
 				models.get(firstModelToTheRightOfCenterIndex).getMean() < segmentCenter) {
 			firstModelToTheRightOfCenterIndex++;
 		}
-		int leftModelIndex = (int) Math.floor(firstModelToTheRightOfCenterIndex - (numberOfNeighbours - 1) / 2);
-		int rightModelIndex = (int) Math.ceil(firstModelToTheRightOfCenterIndex + (numberOfNeighbours - 1) / 2);
-		if (segmentCenter < models.get(leftModelIndex).getMean()) {
+		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
+				(int) Math.floor(firstModelToTheRightOfCenterIndex - (numberOfNeighbours - 1) / 2),
+				(int) Math.ceil(firstModelToTheRightOfCenterIndex + (numberOfNeighbours - 1) / 2)
+		);
+		if (segmentCenter < models.get(segmentIndices.getLeft()).getMean()) {
 			// Make sure the segment center is inside the segment
-			leftModelIndex--;
+			segmentIndices.setLeft(segmentIndices.getLeft() - 1);
 		}
-		if (leftModelIndex < 0) {
-			// there aren't enough neighbours to the left of the segment center - so extend the segment's right end
-			rightModelIndex += Math.abs(leftModelIndex);
-			leftModelIndex = 0;
-		}
-		if (rightModelIndex >= models.size()) {
-			// there aren't enough neighbours to the right of the segment center - so extend the segment's left end
-			leftModelIndex -= Math.abs(rightModelIndex);
-			rightModelIndex = 0;
-		}
-		if (rightModelIndex - leftModelIndex + 1 < numberOfNeighbours) {
+		cropSegmentAccordingToBounds(segmentIndices, models);
+		if (segmentIndices.getRight() - segmentIndices.getLeft() + 1 < numberOfNeighbours) {
 			// not enough neighbours
 			return null;
 		}
-		ImmutablePair<Double, Double> segment = new ImmutablePair<>(models.get(leftModelIndex).getMean(), models.get(rightModelIndex).getMean());
+		ImmutablePair<Double, Double> segment = new ImmutablePair<>(
+				models.get(segmentIndices.getLeft()).getMean(),
+				models.get(segmentIndices.getRight()).getMean()
+		);
 		if (segmentCenter < segment.getLeft() || segment.getRight() < segmentCenter) {
 			// the segment's center must be inside the segment
 			return null;
 		}
 		return segment;
+	}
+
+	private void cropSegmentAccordingToBounds(MutablePair<Integer, Integer> segmentIndices,
+											  List<ContinuousDataModel> models) {
+		if (segmentIndices.getLeft() < 0) {
+			// there aren't enough neighbours to the left of the segment center - so extend the segment's right end
+			segmentIndices.setRight(segmentIndices.getRight() + Math.abs(segmentIndices.getLeft()));
+			segmentIndices.setLeft(0);
+		}
+		if (segmentIndices.getRight() >= models.size()) {
+			// there aren't enough neighbours to the right of the segment center - so extend the segment's left end
+			segmentIndices.setLeft(segmentIndices.getLeft() - Math.abs(segmentIndices.getRight()));
+			segmentIndices.setRight(0);
+		}
 	}
 
 	@Override
