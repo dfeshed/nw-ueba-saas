@@ -10,6 +10,9 @@ public class VpnLateralMovement {
 	private String source_ip;
 	private String normalized_src_machine;
 	private String normalized_dst_machine;
+	private String display_name;
+	private String entity_id;
+	private String data_source;
 	private long event_time_utc;
 
 	public String getUsername() {
@@ -58,6 +61,30 @@ public class VpnLateralMovement {
 
 	public void setEvent_time_utc(long event_time_utc) {
 		this.event_time_utc = event_time_utc;
+	}
+
+	public String getDisplay_name() {
+		return display_name;
+	}
+
+	public void setDisplay_name(String display_name) {
+		this.display_name = display_name;
+	}
+
+	public String getEntity_id() {
+		return entity_id;
+	}
+
+	public void setEntity_id(String entity_id) {
+		this.entity_id = entity_id;
+	}
+
+	public String getData_source() {
+		return data_source;
+	}
+
+	public void setData_source(String data_source) {
+		this.data_source = data_source;
 	}
 
 }
