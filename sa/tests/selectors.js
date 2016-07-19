@@ -44,7 +44,7 @@ export default Ember$.extend({}, BaseSelectors, {
         'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
         'incSection': 'section[class$=rsa-d3list]',
         'incTile': {
-          'editButton': 'button[class^=rsa-edit-tool]',
+          'editButton': 'div[class^=rsa-edit-tool]',
           'assigneeSelect': 'div[class^=rsa-incident-tile-assignee]',
           'assigneeLabel': 'div[class^=rsa-incident-tile-assignee]',
           'statusSelect': '.rsa-incident-tile-status-selector select',
@@ -58,8 +58,8 @@ export default Ember$.extend({}, BaseSelectors, {
         'columns': 'div[class^=rsa-respond-list__grid__header] div[class*=rsa-grid-column]'
       },
       'toggleViewHeader': 'header[class$=rsa-respond-index-header]',
-      'listViewBtn': 'button[class^=rsa-respond-index-header__list-btn]',
-      'cardViewBtn': 'button[class^=rsa-respond-index-header__card-btn]',
+      'listViewBtn': 'div[class^=rsa-respond-index-header__list-btn]',
+      'cardViewBtn': 'div[class^=rsa-respond-index-header__card-btn]',
       'incidentsPanel': {
         'myQueueButton': '.js-test-respond-incs-my-queue-btn',
         'allIncidentsButton': '.js-test-respond-incs-all-inc-btn',

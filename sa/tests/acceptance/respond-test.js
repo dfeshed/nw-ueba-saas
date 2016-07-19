@@ -1,4 +1,4 @@
-import { test, skip } from 'qunit';
+import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
 import config from 'sa/config/environment';
@@ -8,6 +8,20 @@ import Ember from 'ember';
 const { Logger } = Ember;
 
 let oldFeatureFlags;
+
+/**
+ * @description navigates to /monitor route in order to generate a willTransition action call into respond route to
+ * close existing streams
+ * @private
+ */
+function navigateToMonitor() {
+  Logger.log(' Navigating to /monitor...');
+  visit('/do/monitor');
+
+  andThen(function() {
+    Logger.log(' Landed to /monitor');
+  });
+}
 
 moduleForAcceptance('Acceptance | respond', {
   beforeEach() {
@@ -51,10 +65,12 @@ test('enable respond feature flag, visiting /do/respond and check DOM ', functio
 
   andThen(function() {
     assert.equal(find('.rsa-header-nav-respond').length, 1, '.rsa-header-nav-respond should be in dom');
+
+    navigateToMonitor();
   });
 });
 
-skip('Landing Page card components should be displayed on load by default', function(assert) {
+test('Landing Page card components should be displayed on load by default', function(assert) {
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
@@ -64,6 +80,7 @@ skip('Landing Page card components should be displayed on load by default', func
     assert.equal(respondHeader.length, 1, 'Respond header is visible');
 
     let el = find(selectors.pages.respond.card.incTile.editButton);
+
     assert.notOk(el.hasClass('hide'), 'Edit button is invisible by default');
     triggerEvent(el[0], 'mouseover');
 
@@ -72,12 +89,15 @@ skip('Landing Page card components should be displayed on load by default', func
       click(el[0]);
       andThen(function() {
         assert.notOk(el.hasClass('active'), 'Edit button is active on click');
+
+        navigateToMonitor();
+
       });
     });
   });
 });
 
-skip('Selectors should be visible on click', function(assert) {
+test('Selectors should be visible on click', function(assert) {
   assert.expect(3);
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
@@ -93,12 +113,14 @@ skip('Selectors should be visible on click', function(assert) {
         assert.notEqual(el.length, 0, 'Assignee select box is visible on click');
         el = find(selectors.pages.respond.card.incTile.prioritySelect);
         assert.notEqual(el.length, 0, 'Priority select box is visible on click');
+
+        navigateToMonitor();
       });
     });
   });
 });
 
-skip('User should be able to setStatus, Assignee and Priority', function(assert) {
+test('User should be able to setStatus, Assignee and Priority', function(assert) {
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(() => {
@@ -130,6 +152,7 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
             let priorityVal = priorityLabel.text().trim();
             assert.equal(priorityVal.toLowerCase(), 'medium', 'Verified that priority is set correctly');
 
+            navigateToMonitor();
           });
         });
       });
@@ -137,7 +160,7 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
   });
 });
 
-skip('Toggle list button renders incidents list view with right number of columns', function(assert) {
+test('Toggle list button renders incidents list view with right number of columns', function(assert) {
 
   asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
@@ -154,6 +177,7 @@ skip('Toggle list button renders incidents list view with right number of column
       assert.ok(columns, 'Table has columns');
       assert.equal(columns.length, 8, 'Table displays proper number of columns');
 
+      navigateToMonitor();
     });
   });
 });
