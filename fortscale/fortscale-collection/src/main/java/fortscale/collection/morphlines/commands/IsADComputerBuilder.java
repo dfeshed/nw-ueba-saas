@@ -59,17 +59,21 @@ public class IsADComputerBuilder implements CommandBuilder {
 				String hostname = (String) inputRecord.getFirstValue(hostnameField);
 				boolean isInAD = computerService.isHostnameInAD(hostname);
 
-				if (isInAD){
-					morphlineMetrics.computerServiceFoundInAD++;
-				}else{
-					morphlineMetrics.computerServiceNotInAD++;
+				if (morphlineMetrics != null) {
+					if (isInAD) {
+						morphlineMetrics.computerServiceFoundInAD++;
+					} else {
+						morphlineMetrics.computerServiceNotInAD++;
+					}
 				}
 				inputRecord.put(outputField, isInAD);
 			}
 
 			else {
 				inputRecord.put(outputField, false);
-				morphlineMetrics.computerServiceNotInAD++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.computerServiceNotInAD++;
+				}
 			}
 			return super.doProcess(inputRecord);
 		}

@@ -102,7 +102,9 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 			if (m.matches()) {
 				serviceName = m.replaceAll(regexReplacement);
 			} else {
-				morphlineMetrics.serviceNameNotMatchRegularExpression++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.serviceNameNotMatchRegularExpression++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 						CollectionMessages.SERVICE_NAME_NOT_MATCH_REGULAR_EXPRESSION);
 				return true;
@@ -111,11 +113,15 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 			serviceName = serviceName.toUpperCase();
 			boolean isMachine = machinesCache.getUnchecked(serviceName);
 			if (isMachine) {
-				morphlineMetrics.serviceNameIsComputer++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.serviceNameIsComputer++;
+				}
 				return super.doProcess(inputRecord);
 			} else {
 				logger.debug("Filter event since service name [{}] is not a computer.", serviceName);
-				morphlineMetrics.serviceNameIsNotComputer++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.serviceNameIsNotComputer++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 						CollectionMessages.SERVICE_NAME_IS_NOT_COMPUTER);
 				return true;

@@ -126,10 +126,14 @@ public class HDFSPartitionsWriteMorphCmdBuilder implements CommandBuilder{
 			if (output!=null) {
 				Long timestamp = RecordExtensions.getLongValue(inputRecord, timestampField);
 				try {
-					morphlineMetrics.writtenToHdfs++;
+					if (morphlineMetrics != null) {
+						morphlineMetrics.writtenToHdfs++;
+					}
 					appender.writeLine(output, timestamp.longValue());
 				} catch (IOException e) {
-					morphlineMetrics.errorWritingToHdfs++;
+					if (morphlineMetrics != null) {
+						morphlineMetrics.errorWritingToHdfs++;
+					}
 					logger.error("got an exception in HDFSPartitionsWrite command", e);
 				}
 			}

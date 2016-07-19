@@ -86,9 +86,13 @@ public class ParseKerberosTicketOptionsBuilder implements CommandBuilder {
 					checkFieldMask(inputRecord, ticketBytes, 26, renewRequestField);
 					checkFieldMask(inputRecord, ticketBytes, 10, constraintDelegationField);
 
-					morphlineMetrics.kerberosTicketConverted++;
+					if (morphlineMetrics != null) {
+						morphlineMetrics.kerberosTicketConverted++;
+					}
 				} catch (IllegalArgumentException e) {
-					morphlineMetrics.errorConvertingKerberosTicket++;
+					if (morphlineMetrics != null) {
+						morphlineMetrics.errorConvertingKerberosTicket++;
+					}
 					logger.warn("error converting ticket option '{}' to byte array for record '{}'", ticket, inputRecord);
 				}
 			}		

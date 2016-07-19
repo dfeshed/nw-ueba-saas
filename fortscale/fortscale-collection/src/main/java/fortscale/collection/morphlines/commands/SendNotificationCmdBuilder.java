@@ -52,7 +52,9 @@ public class SendNotificationCmdBuilder implements CommandBuilder {
 			//The specific Morphline metric
 			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
 
-			morphlineMetrics.sendNotification++;
+			if (morphlineMetrics != null) {
+				morphlineMetrics.sendNotification++;
+			}
 			return super.doProcess(inputRecord);
 
 		}

@@ -81,9 +81,13 @@ public class FilterAccountNameIsNotComputerCmdBuilder implements CommandBuilder 
 				record.replaceValues("account_name", account_name);
 				String account_domain = (String)record.get("account_domain").get(this.indexOfAccountName);
 				record.replaceValues("account_domain", account_domain);
-				morphlineMetrics.accountNameComputer++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.accountNameComputer++;
+				}
 			} else{
-				morphlineMetrics.accountNameNoComputer++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.accountNameNoComputer++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.ACCOUNT_NAME_IS_NOT_COMPUTER);
 				return true;
 			}

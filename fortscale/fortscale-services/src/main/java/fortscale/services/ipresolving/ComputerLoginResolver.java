@@ -85,7 +85,9 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	
 	public ComputerLoginEvent getComputerLoginEvent(String ip, long ts) {
 		if(computerLoginEventRepository == null){
-			metrics.computerLoginEventRepositoryNull++;
+			if (metrics != null) {
+				metrics.computerLoginEventRepositoryNull++;
+			}
 			return null;
 		}
 		ts = TimestampUtils.convertToMilliSeconds(ts);
@@ -96,7 +98,9 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		//	Than the ip is not in the cache or MongoDB and we should skip it.
 		Range<Long> timeRange = ipBlackListCache.get(ip);
 		if (shouldUseBlackList && timeRange != null && timeRange.contains(ts)) {
-			metrics.ipInBlackListAndTsInTimeRange++;
+			if (metrics != null) {
+				metrics.ipInBlackListAndTsInTimeRange++;
+			}
 			if (logger.isDebugEnabled()) {
 				logger.debug(String.format("IP %s is in the black list and the ts %s is between time range %s - %s. Skipping it.", ip, ts, timeRange.getMinimum(), timeRange.getMaximum()));
 			}
@@ -113,7 +117,9 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 					loginEvent.getTimestampepoch() >= lowerLimitTs &&
 					loginEvent.getTimestampepoch() <= upperLimitTs) {
 
-				metrics.foundComputerLoginEventInCache++;
+				if (metrics != null) {
+					metrics.foundComputerLoginEventInCache++;
+				}
 				return loginEvent;
 			}
 		}
@@ -133,13 +139,16 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 			long tsMiliSec = TimestampUtils.convertToMilliSeconds(ts) + TimestampUtils.convertToMilliSeconds(graceTimeInSec);
 
 			if (!resolving.isPartOfVpn() ||( tsMiliSec <= TimestampUtils.convertToMilliSeconds(resolving.getExpirationVpnSessiondt()) && tsMiliSec >= TimestampUtils.convertToMilliSeconds(resolving.getTimestampepoch())) ) {
-
-				metrics.computerLoginEventFoundInRepository++;
+				if (metrics != null) {
+					metrics.computerLoginEventFoundInRepository++;
+				}
 				return resolving;
 			}
 		}
 		addToBlackList(ip, ts, upperLimitTs);
-		metrics.computerLoginIpAddedToBlackList++;
+		if (metrics != null) {
+			metrics.computerLoginIpAddedToBlackList++;
+		}
 		return null;
 	}
 	
@@ -147,7 +156,9 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	    // save all events in the 
 		List<ComputerLoginEvent> eventsToSaveInDB = new ArrayList<>();
 	    for (ComputerLoginEvent event : events){
-			metrics.checkingIfComputerLoginNeedsUpdate++;
+			if (metrics != null) {
+				metrics.checkingIfComputerLoginNeedsUpdate++;
+			}
 	    	if(isToUpdate(event)){
 	    		eventsToSaveInDB.add(event);
 	    		cache.put(event.getIpaddress(), event);
@@ -159,7 +170,9 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 	}
 	
 	public void addComputerLogin(ComputerLoginEvent event) {
-		metrics.checkingIfComputerLoginNeedsUpdate++;
+		if (metrics != null) {
+			metrics.checkingIfComputerLoginNeedsUpdate++;
+		}
 		checkNotNull(event);
 		String ip = event.getIpaddress();
 		checkNotNull(ip);
@@ -181,18 +194,24 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 		// check if the event is in the cache
 		ComputerLoginEvent cachedEvent =  cache.get(ip);
 		if (cachedEvent==null) {
-			metrics.computerLoginUpdated++;
+			if (metrics != null) {
+				metrics.computerLoginUpdated++;
+			}
 			return true;
 		} else {
 			// if the event is in the cache, check if the new event has a different hostname
 			// if the event is in the cache and has the same hostname, update it only if the ticket expiration time passed
 			if ((!event.getHostname().equals(cachedEvent.getHostname())) || (event.getTimestampepoch() > cachedEvent.getTimestampepoch() +  (ipToHostNameUpdateResolutionInMins * 60 * 1000))) {
-				metrics.computerLoginUpdated++;
+				if (metrics != null) {
+					metrics.computerLoginUpdated++;
+				}
 				return true;
 			}
 		}
 
-		metrics.computerLoginNotUpdated++;
+		if (metrics != null) {
+			metrics.computerLoginNotUpdated++;
+		}
 		return false;
 	}
 

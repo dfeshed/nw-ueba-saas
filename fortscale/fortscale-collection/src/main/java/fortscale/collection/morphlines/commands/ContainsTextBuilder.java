@@ -68,7 +68,9 @@ public class ContainsTextBuilder implements CommandBuilder {
 				for (Object result : results) {
 					for (Object value : values) {
 						if (value!=null && value.toString().contains(result.toString())) {
-							morphlineMetrics.containsCommandFoundMatch++;
+							if (morphlineMetrics!= null) {
+								morphlineMetrics.containsCommandFoundMatch++;
+							}
 							found = true;
 							break;
 						}
@@ -76,7 +78,9 @@ public class ContainsTextBuilder implements CommandBuilder {
 					if (found) break;
 				}
 				if (!found) {
-					morphlineMetrics.containsCommandDidntFindMatch++;
+					if (morphlineMetrics!= null) {
+						morphlineMetrics.containsCommandDidntFindMatch++;
+					}
 					if (LOG.isDebugEnabled()) {
 						LOG.debug(
 								"Contains command failed because it could not find any of {} in values: {} for command: {}",
@@ -87,7 +91,5 @@ public class ContainsTextBuilder implements CommandBuilder {
 			}
 			return super.doProcess(record);
 		}
-
 	}
-
 }

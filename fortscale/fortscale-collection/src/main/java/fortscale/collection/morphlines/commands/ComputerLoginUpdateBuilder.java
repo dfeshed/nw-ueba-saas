@@ -76,7 +76,10 @@ public class ComputerLoginUpdateBuilder implements CommandBuilder{
 
 			if(computerLoginResolver == null){
 				logger.error("computerLoginResolver is null");
-				morphlineMetrics.computerLoginResolverNull++;
+				if (morphlineMetrics != null) {
+					morphlineMetrics.computerLoginResolverNull++;
+				}
+
 				return super.doProcess(inputRecord);
 			}
 			try{
