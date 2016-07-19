@@ -27,37 +27,41 @@ public class NeighboursLearningSegments implements LearningSegments {
 		Assert.isTrue(validRatioBetweenSegmentSizeAndMean > 0, "validRatioBetweenSegmentSizeAndMean must be positive");
 		segments = new ArrayList<>();
 		for (double segmentCenter : segmentCenters) {
-			Pair<Double, Double> segment = createSegmentAroundCenter(models, segmentCenter, numberOfNeighbours);
+			double[] sortedMeans = models.stream()
+					.mapToDouble(ContinuousDataModel::getMean)
+					.sorted()
+					.toArray();
+			Pair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
 			if (segment != null && (segment.getRight() - segment.getLeft()) / Math.max(0.000001, segmentCenter) < validRatioBetweenSegmentSizeAndMean) {
 				segments.add(segment);
 			}
 		}
 	}
 
-	private Pair<Double, Double> createSegmentAroundCenter(List<ContinuousDataModel> models,
+	private Pair<Double, Double> createSegmentAroundCenter(double[] sortedMeans,
 														   double segmentCenter,
 														   int numberOfNeighbours) {
 		int firstModelToTheRightOfCenterIndex = 0;
-		while (firstModelToTheRightOfCenterIndex < models.size() - 1 &&
-				models.get(firstModelToTheRightOfCenterIndex).getMean() < segmentCenter) {
+		while (firstModelToTheRightOfCenterIndex < sortedMeans.length - 1 &&
+				sortedMeans[firstModelToTheRightOfCenterIndex] < segmentCenter) {
 			firstModelToTheRightOfCenterIndex++;
 		}
 		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
 				(int) Math.floor(firstModelToTheRightOfCenterIndex - (numberOfNeighbours - 1) / 2),
 				(int) Math.ceil(firstModelToTheRightOfCenterIndex + (numberOfNeighbours - 1) / 2)
 		);
-		if (segmentCenter < models.get(segmentIndices.getLeft()).getMean()) {
+		if (segmentCenter < sortedMeans[segmentIndices.getLeft()]) {
 			// Make sure the segment center is inside the segment
 			segmentIndices.setLeft(segmentIndices.getLeft() - 1);
 		}
-		cropSegmentAccordingToBounds(segmentIndices, models);
+		cropSegmentAccordingToBounds(segmentIndices, sortedMeans);
 		if (segmentIndices.getRight() - segmentIndices.getLeft() + 1 < numberOfNeighbours) {
 			// not enough neighbours
 			return null;
 		}
 		MutablePair<Double, Double> segment = new MutablePair<>(
-				models.get(segmentIndices.getLeft()).getMean(),
-				models.get(segmentIndices.getRight()).getMean()
+				sortedMeans[segmentIndices.getLeft()],
+				sortedMeans[segmentIndices.getRight()]
 		);
 		if (segmentCenter < segment.getLeft() || segment.getRight() < segmentCenter) {
 			// the segment's center must be inside the segment
@@ -69,14 +73,13 @@ public class NeighboursLearningSegments implements LearningSegments {
 		return segment;
 	}
 
-	private void cropSegmentAccordingToBounds(MutablePair<Integer, Integer> segmentIndices,
-											  List<ContinuousDataModel> models) {
+	private void cropSegmentAccordingToBounds(MutablePair<Integer, Integer> segmentIndices, double[] sortedMeans) {
 		if (segmentIndices.getLeft() < 0) {
 			// there aren't enough neighbours to the left of the segment center - so extend the segment's right end
 			segmentIndices.setRight(segmentIndices.getRight() + Math.abs(segmentIndices.getLeft()));
 			segmentIndices.setLeft(0);
 		}
-		if (segmentIndices.getRight() >= models.size()) {
+		if (segmentIndices.getRight() >= sortedMeans.length) {
 			// there aren't enough neighbours to the right of the segment center - so extend the segment's left end
 			segmentIndices.setLeft(segmentIndices.getLeft() - Math.abs(segmentIndices.getRight()));
 			segmentIndices.setRight(0);

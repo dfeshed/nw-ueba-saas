@@ -79,6 +79,18 @@ public class NeighboursLearningSegmentsTest {
 	}
 
 	@Test
+	public void shouldHandleUnsortedModels() {
+		Double[] segmentCenters = {1D};
+		List<ContinuousDataModel> models = createModels(0.0, 2.0, 6.0, 6.0, 1.0);
+		NeighboursLearningSegments segments = new NeighboursLearningSegments(
+				models, 3, Arrays.asList(segmentCenters), 100000);
+		Assert.assertEquals(1, segments.size());
+		Pair<Double, Double> segment = segments.get(0);
+		Assert.assertEquals(0.0, segment.getLeft(), 0.00001);
+		Assert.assertEquals(2.0, segment.getRight(), 0.00001);
+	}
+
+	@Test
 	public void shouldCreateSegmentSymmetricallyAroundCenter() {
 		Double[] segmentCenters = {1D};
 		List<ContinuousDataModel> models = createModels(0.0, 1.0, 1.1);
