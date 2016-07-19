@@ -18,6 +18,8 @@ public class VpnSessionOverlap {
     private long databucket;
     private String hostname;
     private String country;
+	private String display_name;
+	private String entity_id;
 
     public long getDate_time_unix() {
         return date_time_unix;
@@ -122,4 +124,21 @@ public class VpnSessionOverlap {
 	public void setEventscore(long eventscore) {
 		this.eventscore = eventscore;
 	}
+
+	public String getDisplay_name() {
+		return display_name;
+	}
+
+	public void setDisplay_name(String display_name) {
+		this.display_name = display_name;
+	}
+
+	public String getEntity_id() {
+		return entity_id;
+	}
+
+	public void setEntity_id(String entity_id) {
+		this.entity_id = entity_id;
+	}
+
 }

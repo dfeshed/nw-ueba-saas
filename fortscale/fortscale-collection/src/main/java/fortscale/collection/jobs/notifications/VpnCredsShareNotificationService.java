@@ -1,19 +1,15 @@
 package fortscale.collection.jobs.notifications;
 
-import fortscale.common.dataentity.DataEntitiesConfig;
-import fortscale.common.dataqueries.querydto.*;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.dataqueries.querydto.DataQueryField;
+import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
-import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
-import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
 import fortscale.domain.core.VpnSessionOverlap;
-import fortscale.services.impl.ApplicationConfigurationHelper;
 import net.minidev.json.JSONObject;
-
 import org.apache.commons.lang3.tuple.ImmutablePair;
-
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
@@ -46,28 +42,13 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
     private static final String APP_CONF_PREFIX = "creds_share_notification";
-    private static final String LASTEST_TS = "latest_ts";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
-    private static final int DAY_IN_SECONDS = 86400;
 
 
     private  ApplicationContext applicationContext;
 
-    @Autowired
-    DataQueryHelper dataQueryHelper;
-    @Autowired
-    protected MySqlQueryRunner queryRunner;
-
-    @Autowired
-    private DataQueryRunnerFactory dataQueryRunnerFactory;
 
     private String fieldManipulatorBeanName;
-
-    @Autowired
-    private DataEntitiesConfig dataEntitiesConfig;
-
-    @Autowired
-    private ApplicationConfigurationHelper applicationConfigurationHelper;
 
 
 
@@ -76,19 +57,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     private Set<String> hostnameDomainMarkers;
 
     private String tableName;
-    private String dataEntity;
-    int numberOfConcurrentSessions;
 
-    // fields for creating the notification
-    private String notificationScoreField;
-    private String notificationValueField;
-    private String normalizedUsernameField;
-    private String notificationDataSourceField;
-    private String notificationStartTimestampField;
-    private String notificationEndTimestampField;
-    private String notificationTypeField;
-    private String notificationSupportingInformationField;
-    private double notificationFixedScore;
+    int numberOfConcurrentSessions;
 
     private String hostnameCondition;
 
@@ -120,7 +90,11 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
-        initConfigurationFromApplicationConfiguration();
+        initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(
+				new ImmutablePair(LASTEST_TS, TS_PARAM),
+                new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
+                new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
+                new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
 
         this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
         this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);
@@ -130,32 +104,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
 
     }
-
-    private void initConfigurationFromApplicationConfiguration() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-
-
-        applicationConfigurationHelper.syncWithConfiguration(APP_CONF_PREFIX, this, Arrays.asList(
-                new ImmutablePair(LASTEST_TS,"latestTimestamp"),
-                new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
-                new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
-
-                new ImmutablePair("notificationScoreField", "notificationScoreField"),
-                new ImmutablePair("notificationTypeField", "notificationTypeField"),
-                new ImmutablePair("notificationValueField", "notificationValueField"),
-
-                new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"),
-                new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"),
-                new ImmutablePair("notificationSupportingInformationField", "notificationSupportingInformationField"),
-
-                new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"),
-                new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName"),
-                new ImmutablePair("notificationFixedScore", "notificationFixedScore")
-        ));
-
-
-    }
-
-
 
     private List<JSONObject> addRawEventsToCredsShare( List<JSONObject> credsShareNotifications ) {
 
@@ -191,8 +139,8 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         for (Map<String, Object> rawEvent : queryList) { // each map is a single event, each pair is column and value
             rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent));
         }
-        credsShare.put("supportingInformation", rawEvents);
-        credsShare.put("notification_num_of_events",rawEvents.size());
+        credsShare.put(notificationSupportingInformationField, rawEvents);
+        credsShare.put(notificationNumOfEventsField, rawEvents.size());
     }
 
 
@@ -254,24 +202,14 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
         //TODO delete the parallel code from notification to evidence job!
 
-        JSONObject vpnCredsShare = new JSONObject();
-
         long startTime = getLongValueFromEvent(credsShareEvent, "start_time");
         long endTime = getLongValueFromEvent(credsShareEvent, "end_time");
         int sessionsCount = getIntegerValueFromEvent(credsShareEvent, "sessions_count");
         String normalizedUsername = getStringValueFromEvent(credsShareEvent, "normalized_username");
 
-        vpnCredsShare.put(notificationScoreField, notificationFixedScore);
-        vpnCredsShare.put(notificationStartTimestampField, startTime);
-        vpnCredsShare.put(notificationEndTimestampField, endTime);
-        vpnCredsShare.put(notificationTypeField, "VPN_user_creds_share");
-        vpnCredsShare.put(notificationValueField, sessionsCount);
-        vpnCredsShare.put(normalizedUsernameField, normalizedUsername);
-        List<String> entities = new ArrayList();
-        entities.add(dataEntity);
-        vpnCredsShare.put(notificationDataSourceField, entities);
+		return createNotification(startTime, endTime, normalizedUsername, "VPN_user_creds_share",
+                Integer.toString(sessionsCount));
 
-        return vpnCredsShare;
     }
 
     /**
@@ -295,27 +233,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         vpnSessionOverlap.setUsername(getStringValueFromEvent(impalaEvent,"normalized_username"));
 
         return vpnSessionOverlap;
-    }
-
-    private String getStringValueFromEvent(Map<String, Object> impalaEvent,String field){
-        if( impalaEvent.containsKey(field)){
-            return  impalaEvent.get(field).toString();
-        }
-        else return "";
-    }
-
-    private int getIntegerValueFromEvent(Map<String, Object> impalaEvent,String field){
-        if( impalaEvent.containsKey(field)){
-            return  Integer.parseInt(impalaEvent.get(field).toString());
-        }
-        else return 0;
-    }
-
-    private long getLongValueFromEvent(Map<String, Object> impalaEvent,String field){
-        if( impalaEvent.containsKey(field)){
-            return  Long.parseLong(impalaEvent.get(field).toString());
-        }
-        else return 0L;
     }
 
 
@@ -360,70 +277,6 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
         this.numberOfConcurrentSessions = numberOfConcurrentSessions;
     }
 
-    public String getNotificationScoreField() {
-        return notificationScoreField;
-    }
-
-    public void setNotificationScoreField(String notificationScoreField) {
-        this.notificationScoreField = notificationScoreField;
-    }
-
-    public String getNotificationValueField() {
-        return notificationValueField;
-    }
-
-    public void setNotificationValueField(String notificationValueField) {
-        this.notificationValueField = notificationValueField;
-    }
-
-    public String getNormalizedUsernameField() {
-        return normalizedUsernameField;
-    }
-
-    public void setNormalizedUsernameField(String normalizedUsernameField) {
-        this.normalizedUsernameField = normalizedUsernameField;
-    }
-
-    public String getNotificationDataSourceField() {
-        return notificationDataSourceField;
-    }
-
-    public void setNotificationDataSourceField(String notificationDataSourceField) {
-        this.notificationDataSourceField = notificationDataSourceField;
-    }
-
-    public String getNotificationStartTimestampField() {
-        return notificationStartTimestampField;
-    }
-
-    public void setNotificationStartTimestampField(String notificationStartTimestampField) {
-        this.notificationStartTimestampField = notificationStartTimestampField;
-    }
-
-    public String getNotificationEndTimestampField() {
-        return notificationEndTimestampField;
-    }
-
-    public void setNotificationEndTimestampField(String notificationEndTimestampField) {
-        this.notificationEndTimestampField = notificationEndTimestampField;
-    }
-
-    public String getNotificationTypeField() {
-        return notificationTypeField;
-    }
-
-    public void setNotificationTypeField(String notificationTypeField) {
-        this.notificationTypeField = notificationTypeField;
-    }
-
-    public String getNotificationSupportingInformationField() {
-        return notificationSupportingInformationField;
-    }
-
-    public void setNotificationSupportingInformationField(String notificationSupportingInformationField) {
-        this.notificationSupportingInformationField = notificationSupportingInformationField;
-    }
-
     public String getFieldManipulatorBeanName() {
         return fieldManipulatorBeanName;
     }
@@ -433,11 +286,11 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
     }
 
     /**
-	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for fred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
+	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for cred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
 	 * @return
 	 * @throws InvalidQueryException
 	 */
-    protected long fetchEarliesEvent() throws  InvalidQueryException{
+    protected long fetchEarliestEvent() throws  InvalidQueryException{
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
         DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
         dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
@@ -456,17 +309,9 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
     }
 
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 
-    public void setNotificationFixedScore(double notificationFixedScore) {
-        this.notificationFixedScore = notificationFixedScore;
-    }
-
-    public double getNotificationFixedScore() {
-        return notificationFixedScore;
-    }
 }

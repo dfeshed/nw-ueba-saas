@@ -56,9 +56,9 @@
           "reduction-configs": [
             {
               "reducingFeatureName": "aggregated_feature_value",
-              "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 2,
-              "minValueForNotReduce": 3
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3,
+              "minValueForNotReduce": 4
             }
           ]
         }
@@ -120,9 +120,9 @@
           "reduction-configs": [
             {
               "reducingFeatureName": "aggregated_feature_value",
-              "reducingFactor": 0.1,
-              "maxValueForFullyReduce": 2,
-              "minValueForNotReduce": 3
+              "reducingFactor": 0,
+              "maxValueForFullyReduce": 3,
+              "minValueForNotReduce": 4
             }
           ]
         }
