@@ -31,7 +31,11 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 
 	private static Logger logger = Logger.getLogger(SupportingInformationVPNLateralMovementPopulator.class);
 
-	private static final String TARGET_MACHINE = "TARGET_MACHINE";
+	private static final String TARGET_MACHINE = "target_machine";
+	private static final String DATA_SOURCE = "data_source";
+	private static final String DISPLAY_NAME = "display_name";
+	private static final String ENTITY_ID = "entity_id";
+	private static final String VPN_SESSION = "vpn_session";
 
     /**
      * Populates the supporting information data based on the context value, evidence time and anomaly value.
@@ -70,10 +74,13 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 				displayName = vpnSessionOverlap.getUsername();
 			}
 			SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.
-					toString(startTimeInMillis), Long.toString(endTimeInMillis), displayName);
-			vpnLateralMovementMap.put(supportingInformationKey, displayName);
+					toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getUsername());
+			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getUsername());
 			Map<String, Object> additionalInformationValues = new HashMap<>();
 			additionalInformationValues.put(TARGET_MACHINE, "");
+			additionalInformationValues.put(DATA_SOURCE, VPN_SESSION);
+			additionalInformationValues.put(DISPLAY_NAME, displayName);
+			additionalInformationValues.put(ENTITY_ID, evidence.getEntityName());
 			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
@@ -84,10 +91,13 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 				displayName = vpnLateralMovement.getUsername();
 			}
 			SupportingInformationKey supportingInformationKey = new SupportingInformationSingleKey(Long.
-					toString(startTimeInMillis), displayName);
-			vpnLateralMovementMap.put(supportingInformationKey, displayName);
+					toString(startTimeInMillis), vpnLateralMovement.getUsername());
+			vpnLateralMovementMap.put(supportingInformationKey, vpnLateralMovement.getUsername());
 			Map<String, Object> additionalInformationValues = new HashMap<>();
 			additionalInformationValues.put(TARGET_MACHINE, vpnLateralMovement.getNormalized_dst_machine());
+			additionalInformationValues.put(DATA_SOURCE, vpnLateralMovement.getData_source());
+			additionalInformationValues.put(DISPLAY_NAME, displayName);
+			additionalInformationValues.put(ENTITY_ID, vpnLateralMovement.getEntity_id());
 			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
         SupportingInformationGenericData<String> supportingInformationData =

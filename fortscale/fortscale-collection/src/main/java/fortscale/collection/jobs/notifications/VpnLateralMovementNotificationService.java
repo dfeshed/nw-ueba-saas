@@ -174,12 +174,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                 DataQueryDTOImpl.class);
 		List<Map<String, Object>> results = runQuery(dataQueryDTO);
 		User user = userService.findByUsername(username);
-		if (user != null) {
-			for (Map<String, Object> result: results) {
+		for (Map<String, Object> result: results) {
+			if (user != null) {
 				result.put(DISPLAY_NAME, user.getDisplayName());
-                result.put(DATA_SOURCE, entityId);
-                result.put(ENTITY_ID, user.getId());
+				result.put(ENTITY_ID, user.getId());
 			}
+			result.put(DATA_SOURCE, entityId);
 		}
 		addSupportingInformation(lateralMovement, results,
 				VpnLateralMovementSupportingInformation.USER_ACTIVITY_EVENTS);
@@ -221,7 +221,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		for (Map<String, Object> result: results) {
 			if (user != null) {
 				result.put(DISPLAY_NAME, user.getDisplayName());
-                result.put(DATA_SOURCE, user.getId());
 			}
 			result.put(DATE_TIME_UNIX, result.get(START_TIME_UTC));
 		}
@@ -252,9 +251,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                     "t1.date_time_unix %s, t1.normalized_username %s, t2.normalized_username %s, " +
                     "t1.source_ip vpn_source_ip, t2.%s %s, t1.hostname as hostname, '%s' as %s from " +
                     "vpnsessiondatares t1 inner join %s t2 on t1.yearmonthday = %s and t2.yearmonthday = %s " +
-                    "and t1.local_ip = t2.%s and t2.date_time_unix between t1.date_time_unix - t1.duration and " +
-                    "t1.date_time_unix and t1.normalized_username != t2.normalized_username", VPN_START_TIME,
-					VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField, DATASOURCE_IP, tableName, TABLE_NAME,
+                    "and t1.local_ip != \"\" and t1.local_ip = t2.%s and t2.date_time_unix between " +
+					"t1.date_time_unix - t1.duration and t1.date_time_unix and t1.normalized_username != " +
+					"t2.normalized_username", VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField,
+					DATASOURCE_IP, tableName, TABLE_NAME,
 					tableName, dateStr, dateStr, ipField);
             List<Map<String, Object>> rows = queryRunner.executeQuery(query);
             if (!CollectionUtils.isEmpty(rows)) {
