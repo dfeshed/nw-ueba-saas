@@ -29,7 +29,9 @@ import java.util.Map;
 @Scope("prototype")
 public class SupportingInformationVPNLateralMovementPopulator implements SupportingInformationDataPopulator {
 
-    private static Logger logger = Logger.getLogger(SupportingInformationVPNLateralMovementPopulator.class);
+	private static Logger logger = Logger.getLogger(SupportingInformationVPNLateralMovementPopulator.class);
+
+	private static final String TARGET_MACHINE = "TARGET_MACHINE";
 
     /**
      * Populates the supporting information data based on the context value, evidence time and anomaly value.
@@ -71,7 +73,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 					toString(startTimeInMillis), Long.toString(endTimeInMillis), displayName);
 			vpnLateralMovementMap.put(supportingInformationKey, displayName);
 			Map<String, Object> additionalInformationValues = new HashMap<>();
-			additionalInformationValues.put("TARGET_MACHINE", "");
+			additionalInformationValues.put(TARGET_MACHINE, "");
 			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
@@ -85,7 +87,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 					toString(startTimeInMillis), displayName);
 			vpnLateralMovementMap.put(supportingInformationKey, displayName);
 			Map<String, Object> additionalInformationValues = new HashMap<>();
-			additionalInformationValues.put("TARGET_MACHINE", vpnLateralMovement.getNormalized_dst_machine());
+			additionalInformationValues.put(TARGET_MACHINE, vpnLateralMovement.getNormalized_dst_machine());
 			additionalInformationMap.put(supportingInformationKey, additionalInformationValues);
 		}
         SupportingInformationGenericData<String> supportingInformationData =
