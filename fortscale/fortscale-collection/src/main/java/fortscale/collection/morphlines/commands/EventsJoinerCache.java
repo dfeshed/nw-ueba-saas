@@ -34,6 +34,8 @@ import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 @Configurable(preConstruction=true)
 public class EventsJoinerCache implements Closeable {
 
+	private static final String ITEM_CONTEXT = "ITEM_CONTEXT";
+
 	// /////////////////////////////////////////////////////////////////////////////
 	// Static accessors: 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -163,7 +165,9 @@ public class EventsJoinerCache implements Closeable {
 				CachedRecord cachedRecord = new CachedRecord();
 				cachedRecord.setCacheName(instanceId);
 				cachedRecord.setKey(key);
-				cachedRecord.setRecord(records.get(key));
+				Record record = records.get(key);
+				record.removeAll(ITEM_CONTEXT);
+				cachedRecord.setRecord(record);
 				//only if need to use ttl mechanism
 				if (deprecationTs != -1) {
 					long recordTs = convertToSeconds(getLongValue(cachedRecord.getRecord(), currentRecordDateField, 0L));
