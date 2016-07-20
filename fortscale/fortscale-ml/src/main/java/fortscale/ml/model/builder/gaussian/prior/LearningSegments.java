@@ -56,7 +56,10 @@ public class LearningSegments {
 				.sorted()
 				.toArray();
 		segments = StreamSupport.stream(segmentCenters.spliterator(), false)
-				.map(segmentCenter -> segmentor.createSegment(sortedMeans, segmentCenter))
+				.map(segmentCenter -> {
+					Assert.isTrue(segmentCenter >= 0, "segment centers can't be negative");
+					return segmentor.createSegment(sortedMeans, segmentCenter);
+				})
 				.filter(Objects::nonNull).collect(Collectors.toList());
 	}
 

@@ -54,6 +54,11 @@ public class LearningSegmentsTest {
 		new LearningSegments(createModels(), Collections.emptyList(), null);
 	}
 
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailIfGivenNegativeSegmentCenter() {
+		new LearningSegments(createModels(), Collections.singletonList(-1.0), segmentorMock);
+	}
+
     @Test
 	public void shouldCreateNoSegmentIfThereAreNoSegmentCenters() {
 		LearningSegments segments = new LearningSegments(createModels(0.0, 1.0, 2.0),
