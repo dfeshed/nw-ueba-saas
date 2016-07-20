@@ -216,6 +216,11 @@ public class EventProcessJob implements Job {
 							Math.round(((float)totalDone / (float)totalFiles) * 100));
 				}
 			}
+
+			catch(Exception e)
+			{
+				logger.error("unexpected error during file processing  : {}",e);
+			}
 			finally {
 				// make sure all close are called, hence the horror below of nested finally blocks
 				try {
@@ -251,7 +256,6 @@ public class EventProcessJob implements Job {
 			}
 
 			refreshImpala();
-
 			taskMonitoringHelper.finishStep(currentStep);
 			jobMetircs.processExecutionsSuccessfully++;
 		} catch (JobExecutionException e) {
