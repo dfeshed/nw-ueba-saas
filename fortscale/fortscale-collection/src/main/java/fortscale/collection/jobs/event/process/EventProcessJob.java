@@ -215,19 +215,35 @@ public class EventProcessJob implements Job {
 					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
 							Math.round(((float)totalDone / (float)totalFiles) * 100));
 				}
-			} finally {
+			}
+			finally {
 				// make sure all close are called, hence the horror below of nested finally blocks
 				try {
 					morphline.close();
-				} finally {
+				}
+				catch (Exception e)
+				{
+					logger.error("unexpected error during morphline {} close : {}",morphline.toString(),e);
+				}
+				finally{
 					try {
 						if (morphlineEnrichment != null) {
 							morphlineEnrichment.close();
 						}
-					} finally {
+					}
+					catch (Exception e )
+					{
+						logger.error("unexpected error during morphline {} close : {}",morphlineEnrichment.toString(),e);
+					}
+					finally{
 						try {
 							closeOutputAppender();
-						} finally {
+						}
+						catch (Exception e)
+						{
+							logger.error("unexpected error during out put appender closing  : {}",e);
+						}
+						finally {
 							closeStreamingAppender();
 						}
 					}
