@@ -79,12 +79,17 @@ public class NeighboursSegmentor implements Segmentor {
 		double distFromLeft = segmentCenter - sortedMeans[segmentIndices.left];
 		double distFromRight = sortedMeans[segmentIndices.right] - segmentCenter;
 		if (distFromLeft < distFromRight) {
-			while (segmentIndices.left > 0 && segmentCenter - sortedMeans[segmentIndices.left - 1] < distFromRight) {
-				segmentIndices.left--;
+			segmentIndices.left = Arrays.binarySearch(sortedMeans, segmentCenter - distFromRight);
+			if (segmentIndices.left < 0) {
+				segmentIndices.left = -segmentIndices.left - 1;
 			}
 		} else if (distFromLeft > distFromRight) {
-			while (segmentIndices.right < sortedMeans.length - 1 && distFromLeft > sortedMeans[segmentIndices.right + 1] - segmentCenter) {
-				segmentIndices.right++;
+			segmentIndices.right = Arrays.binarySearch(sortedMeans, segmentCenter + distFromLeft);
+			if (segmentIndices.right < 0) {
+				segmentIndices.right = -segmentIndices.right - 1;
+				if (segmentIndices.right == sortedMeans.length) {
+					segmentIndices.right--;
+				}
 			}
 		}
 	}
