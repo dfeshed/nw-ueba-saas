@@ -1,0 +1,110 @@
+$data-table-col-resize-handle-width: 9px !default;  /* should be small but not too small to grab */
+$data-table-max-z-index: 1000 !default; /* should be larger than the total # of columns in table */
+
+.rsa-data-table {
+  @include rsa-col(justify,fill);
+  overflow: hidden; /* Hides header cells that spill outside viewport */
+
+  &-header {
+    @include rsa-vendor-prefix(flex-shrink, 1);
+  }
+
+  &-body {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    position: relative;
+    overflow: auto;
+  }
+
+  &-body-row,
+  &-header-row {
+    white-space: nowrap;
+    position: relative;
+  }
+
+  &-header-row {
+    @include rsa-font(header, small);
+  }
+
+  &-body-row {
+    position: absolute;
+    left: 0;
+    min-width: 100%;
+    @include rsa-font(light, small);
+  }
+
+  &-body-cell,
+  &-header-cell {
+    display: inline-block;
+    overflow: hidden;
+  }
+
+  &-header-cell {
+    position: relative; /* enables absolute positioning for the .resize-handle children */
+
+    /* enables re-ordering columns via drag, with animation. @see ember-sortable */
+    transition: transform 0.125s;
+
+    &.is-dragging {
+      transition-duration: 0s;
+      z-index: $data-table-max-z-index;
+    }
+    &.is-dropping {
+      z-index: $data-table-max-z-index;
+    }
+
+    .title {
+      white-space: nowrap;
+      z-index: 1;
+    }
+
+    &-resizer {
+      z-index: 2;
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: $data-table-col-resize-handle-width;
+      cursor: ew-resize;
+
+      &.left {
+        left: 0;
+        transform: translate(-50%,0);
+      }
+      &.right {
+        right: 0;
+        transform: translate(50%,0);
+      }
+    }
+
+    .js-move-handle {
+      cursor: move;
+    }
+  }
+
+  /* Hide the left resize handle for the first column. */
+  &-header-cell:first-of-type {
+    .rsa-data-table-header-cell-resizer.left {
+      display: none;
+    }
+  }
+
+  /* Color choices. */
+  &.dark {
+    .rsa-data-table {
+      &-body-row,
+      &-header-row {
+        border-bottom: 1px solid rsa-color(black);
+      }
+    }
+  }
+  &.monochrome {
+    .rsa-data-table {
+      &-body-row {
+        border-bottom: 1px solid rsa-color(black);
+      }
+      &-header-row {
+        background-color: rsa-color(black);
+      }
+    }
+  }
+
+}

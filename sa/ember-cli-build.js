@@ -19,7 +19,7 @@ module.exports = function(defaults) {
     // modules that you would like to import into your application
     // please specify an object with the list of modules as keys
     // along with the exports of each module as its value.
-    
+
     // ClipboardJS library: for Copy To Clipboard functionality.
     app.import(app.bowerDirectory + '/clipboard/dist/clipboard.js');
 
@@ -33,6 +33,9 @@ module.exports = function(defaults) {
     // Dropdown libraries: tether & drop (drop depends on tether)
     app.import(app.bowerDirectory + "/tether/dist/js/tether.js");
     app.import(app.bowerDirectory + "/tether-drop/dist/js/drop.js");
+
+    // Library to detect resize events in any DOM element: detect-element-resize
+    app.import(app.bowerDirectory + "/javascript-detect-element-resize/detect-element-resize.js");
 
     // Mock websocket library: MockSocket (only imported with mirage)
     (function(){

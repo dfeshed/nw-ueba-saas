@@ -1,0 +1,21 @@
+{{#if table.columnsDefinedDeclaratively}}
+
+  {{!assume the block defines the markup}}
+  {{yield item index}}
+
+{{else}}
+
+  {{!columns are declared imperatively, so assume we have a `column` model}}
+  {{#if hasBlock}}
+
+    {{!a custom block was given, so just yield that}}
+    {{yield item index column}}
+
+  {{else}}
+
+    {{!no block was given, so render default content, i.e. the field value from the data item}}
+    <span title="{{get item column.field}}">{{get item column.field}}</span>
+
+  {{/if}}
+
+{{/if}}

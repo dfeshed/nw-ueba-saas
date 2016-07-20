@@ -13,7 +13,8 @@
     "Faker": "3.0.1",
     "sockjs": "0.3.4",
     "stomp-websocket": "2.3.4",
-    "tether-drop": "1.4.2"
+    "tether-drop": "1.4.2",
+    "javascript-detect-element-resize": "0.5.3"
   },
   "devDependencies": {
     "blanket": "5e94fc30f2e694bb5c3718ddcbf60d467f4b4d26"

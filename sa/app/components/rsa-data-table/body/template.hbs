@@ -1,0 +1,35 @@
+{{!render a container as tall as all the items, to ensure the scrollbar's range can reach all items even with lazy rendering}}
+{{#rsa-data-table/body-rows minHeight=_minScrollHeight}}
+
+  {{!always render the very first item (if any) so that it can be measured}}
+  {{#if items.length}}
+
+    {{#component rowComponentClass
+      isSizeSample=true
+      item=items.firstObject
+      height=_rowHeight
+      relativeIndex=0
+      relativeIndexOffset=0
+      clickAction=(action "rowClick" target=table)
+      as |firstRowItem firstRowIndex column|}}
+      {{yield firstRowItem firstRowIndex column}}
+    {{/component}}
+
+  {{/if}}
+
+  {{!also render each of the items that fit within the current viewport}}
+  {{#each _visibleItems as |item index|}}
+
+    {{#component rowComponentClass
+      item=item
+      height=_rowHeight
+      relativeIndex=index
+      relativeIndexOffset=_firstBufferedIndex
+      clickAction=(action "rowClick" target=table)
+      as |rowItem rowIndex column|}}
+      {{yield rowItem rowIndex column}}
+    {{/component}}
+
+  {{/each}}
+
+{{/rsa-data-table/body-rows}}
