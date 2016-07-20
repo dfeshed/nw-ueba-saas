@@ -18,7 +18,7 @@ import java.util.Map;
  *
  * Supporting information for VPN Lateral Movement
  */
-@JsonTypeName("VpnLateralMovementSupportingInformation")
+@JsonTypeName("vpnLateralMovementSupportingInformation")
 public class VpnLateralMovementSupportingInformation extends NotificationSupportingInformation {
 
 	private static Logger logger = Logger.getLogger(VpnLateralMovementSupportingInformation.class);

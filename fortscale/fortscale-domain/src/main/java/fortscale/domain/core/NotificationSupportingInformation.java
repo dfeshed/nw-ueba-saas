@@ -15,7 +15,7 @@ import java.util.List;
 @JsonTypeInfo(use= JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.WRAPPER_OBJECT,property="type")
 @JsonSubTypes({@JsonSubTypes.Type(value = VpnGeoHoppingSupportingInformation.class,name="vpnGeoHoppingSupportingInformation"),
         @JsonSubTypes.Type(value = VpnOverlappingSupportingInformation.class,name="vpnOverlappingSupportingInformation"),
-        @JsonSubTypes.Type(value = VpnLateralMovementSupportingInformation.class,name="VpnLateralMovementSupportingInformation")})
+        @JsonSubTypes.Type(value = VpnLateralMovementSupportingInformation.class,name="vpnLateralMovementSupportingInformation")})
 public class NotificationSupportingInformation extends EntitySupportingInformation {
 
     public NotificationSupportingInformation() {}
