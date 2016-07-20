@@ -1,0 +1,28 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category}}
+        {{#spec-member title="Without Title and Version"}}
+          <code>
+            &#123;{rsa-application-footer}}
+          </code>
+        {{/spec-member}}
+        
+        {{#spec-member title="With Title and Version"}}
+          <code>
+            &#123;{rsa-application-footer title="Style Guide" version="1.0"}}
+          </code>        
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}
+
+
+

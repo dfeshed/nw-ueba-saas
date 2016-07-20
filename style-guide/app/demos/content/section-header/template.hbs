@@ -1,0 +1,21 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category}}
+        {{#spec-member}}
+          {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
+
+          <code>
+            &#123;{#rsa-content-section-header label='Section Heading'}}Content&#123;{/rsa-content-section-header}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

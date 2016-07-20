@@ -1,0 +1,42 @@
+.rsa-content-ip-connections {
+  color: $contentIpConnectionsTypeColor;
+
+  .circle {
+    border: 1px solid $contentIpConnectionsCircleColor;
+    width: .65rem;
+    height: .65rem;
+    border-radius: 10rem;
+    display: inline-block;
+    margin-right: rsa-whitespace(least);
+  }
+    
+  .direction {
+    margin: 0;
+    height: .65rem;
+    width: .65rem;
+    text-align: center;
+    overflow: hidden;
+    display: block;
+    border: 1px solid transparent;
+    color: $contentIpConnectionsDirectionIconColor;
+  }
+    
+  .rsa-form-button.is-standard {
+    font-weight: normal;
+    padding: 0;
+    vertical-align: baseline;
+    
+    i {
+      position: relative;
+      top: 1px;
+    }
+    
+    ul {
+      top: 1.15rem;
+      left: 0;
+      right: auto;
+      max-height: 8.5rem;
+      overflow: scroll;
+    }
+  }
+}

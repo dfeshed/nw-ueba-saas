@@ -1,0 +1,198 @@
+/* PRIVATE USE VARS */
+/* Variables specific to Grid implementation */
+
+$columnCount: 12;
+
+/* PRIVATE USE MIXIN */
+/* Used by child element to offset default padding within Grid column */
+@mixin rsa-grid-fill-area {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right:0;
+  bottom: 0;
+}
+
+/* PRIVATE USE MIXIN */
+/* Used to calculate width of Grid column */
+@mixin rsa-grid-column($span) {
+  width: calc((100% / #{$columnCount}) * #{$span});
+}
+
+/* PUBLIC USE CLASS */
+/* Parent grid wrapper */
+.rsa-grid {
+  display: flex;
+  flex-direction: column;
+  flex-grow:1;
+  height:100%;
+}
+
+/* PUBLIC USE CLASS */
+/* Define a grid row */
+.rsa-grid-row {
+  position: relative;
+  box-sizing: border-box !important;  
+  display: flex;
+  flex-direction: row;
+  flex-grow:1;
+
+  
+  &.collapse-height {
+    flex-grow: 0;
+  }
+  
+  &.expand-height {
+    height: 100%;
+  }
+
+}
+
+/* PUBLIC USE CLASS */
+/* Define a grid column */
+.rsa-grid-column {
+  position: relative;
+  box-sizing: border-box !important;  
+
+  /* PUBLIC USE CLASS */
+  /* Define a scroll box inside a Grid column */
+  > .rsa-grid-scroll-box {
+    @include rsa-grid-fill-area;
+    overflow-y: scroll;
+  }
+
+  /* PUBLIC USE CLASS */
+  /* Declare a column to contain a nested Grid */
+  &.is-nested-grid {
+    > .rsa-grid {
+      @include rsa-grid-fill-area;
+
+      > .rsa-grid-row {
+        position: relative;
+        box-sizing: border-box;
+      }
+
+      > .rsa-grid-column {
+        position: relative;
+        box-sizing: border-box;  
+
+      }
+    }
+    
+    .rsa-grid-column {
+      background: none;
+    }
+  }
+
+  /* PUBLIC USE CLASS */
+  &.center-child {
+    display: flex;
+    align-items: center;
+    
+    > * {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  } 
+  
+  &.is-danger {
+    background-image: linear-gradient(180deg, #{rsa-color(red)}, #{rsa-color(red, dark)})!important;
+  }
+  
+  &.is-high {
+    background-image: linear-gradient(180deg, rsa-color(orange), rsa-color(orange, dark));
+  }
+  
+  &.is-medium {
+    background-image: linear-gradient(180deg, rsa-color(amber), rsa-color(amber, dark));
+  }
+  
+  &.is-low {
+    background-image: linear-gradient(180deg, rsa-color(green), rsa-color(green, dark));
+  }
+
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 12 out of 12 */
+.rsa-grid-column-span-12 {
+  @include rsa-grid-column(12); 
+  @extend .rsa-grid-column;
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 12 out of 12 */
+.rsa-grid-column-span-11 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(11); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 10 out of 12 */
+.rsa-grid-column-span-10 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(10); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 9 out of 12 */
+.rsa-grid-column-span-9 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(9); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 8 out of 12 */
+.rsa-grid-column-span-8 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(8); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 7 out of 12 */
+.rsa-grid-column-span-7 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(7); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 6 out of 12 */
+.rsa-grid-column-span-6 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(6); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 5 out of 12 */
+.rsa-grid-column-span-5 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(5); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 4 out of 12 */
+.rsa-grid-column-span-4 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(4); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 3 out of 12 */
+.rsa-grid-column-span-3 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(3); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 2 out of 12 */
+.rsa-grid-column-span-2 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(2); 
+}
+
+/* PUBLIC USE CLASS */
+/* Define a column as 1 out of 12 */
+.rsa-grid-column-span-1 { 
+  @extend .rsa-grid-column;
+  @include rsa-grid-column(1); 
+}

@@ -1,5 +1,15 @@
 {{#if asTimeAgo}}
-  {{moment-from-now timestamp locale=i18n.locale timeZone=timezone.selected}}
+  <span class="time-ago">
+    ({{moment-from-now timestamp locale=i18n.locale timeZone=timezone.selected}})  
+  </span>    
 {{else}}
-  {{moment-format timestamp outputFormat locale=i18n.locale timeZone=timezone.selected}}
+  <span class="datetime">
+    {{moment-format timestamp outputFormat locale=i18n.locale timeZone=timezone.selected}}
+  </span>
+  
+  {{#if withTimeAgo}}
+    <span class="time-ago">
+      ({{moment-from-now timestamp locale=i18n.locale timeZone=timezone.selected}})  
+    </span>    
+  {{/if}}
 {{/if}}

@@ -1,0 +1,29 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category title="Examples"}}
+        {{#spec-member title="Open"}}
+          {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+
+          <code>
+            &#123;{#rsa-content-accordion label='Accordion Label'}}Sample content example.&#123;{/rsa-content-accordion}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Closed"}}
+          {{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+
+          <code>
+            &#123;{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.&#123;{/rsa-content-accordion}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

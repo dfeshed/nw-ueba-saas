@@ -1,3 +1,7 @@
-@import 'base/manifest';
-@import 'themes/light/manifest';
-@import 'themes/dark/manifest';
+@import './base/design/manifest';
+@import './base/keyframes/manifest';
+@import './base/application/manifest';
+@import './base/form/manifest';
+@import './base/content/manifest';
+@import './base/nav/manifest';
+

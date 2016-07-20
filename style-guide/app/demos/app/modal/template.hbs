@@ -1,0 +1,44 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category}}
+        {{#spec-member}}
+          {{#rsa-application-modal eventId='example'}}
+            <div class='modal-trigger'>
+              Modal Trigger
+            </div>
+            
+            <div class='modal-content'>
+              Modal Content
+            </div>
+          {{/rsa-application-modal}}
+
+          <code>
+            <div>
+              &#123;{#rsa-application-modal eventId='example'}}
+              <div>
+                &lt;div class='modal-trigger'>
+                  Modal Trigger
+                &lt;/div>                
+              </div>
+              
+              <div>
+                &lt;div class='modal-content'>
+                  Modal Content
+                &lt;/div>                
+              </div>
+              &#123;{/rsa-application-modal}}
+            </div>
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}
+

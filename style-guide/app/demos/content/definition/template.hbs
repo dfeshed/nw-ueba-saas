@@ -1,0 +1,21 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category}}
+        {{#spec-member}}
+          {{rsa-content-definition label='Data 1' value='A value with a long length'}}
+
+          <code>
+            &#123;{rsa-content-definition label='Data 1' value='A value with a long length'}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

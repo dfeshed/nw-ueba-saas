@@ -1,0 +1,51 @@
+$contentAccordionBorderColor: rsa-color(gray, darkest);
+$contentAccordionHeaderBackgroundColor: rsa-color(gray, darker, $rsa-nearly-opaque);
+$contentAccordionHeaderHoverBackgroundColor: rsa-color(gray, darker);
+$contentAccordionHeaderTypeColor: rsa-color(gray, light);
+$contentAccordionBodyTypeColor: rsa-color(gray, lighter);
+$contentAccordionBodyBackgroundColor: rsa-color(gray, dark, $rsa-nearly-opaque);
+
+$contentBadgeIconColor: rsa-color(gray, lightest);
+$contentBadgeIconLabelColor: rsa-color(gray, light);
+
+$contentBadgeScoreCircleColor: rsa-color(gray, lightest);
+$contentBadgeScoreLabelColor: rsa-color(gray, lightest);
+
+$contentCardBackgroundColor: rsa-color(black, null, $rsa-translucent);
+$contentCardBorderColor: rsa-color(gray, darker);
+
+$contentDefinitionLabelColor: rsa-color(gray, light);
+$contentDefinitionValueColor: rsa-color(gray, lighter);
+
+$contentIpConnectionsTypeColor: rsa-color(gray, lighter);
+$contentIpConnectionsCircleColor: rsa-color(gray, light);
+$contentIpConnectionsDirectionIconColor: rsa-color(gray, light);
+
+$contentLabelColor: rsa-color(white);
+$contentLabelInvertedColor: rsa-color(black);
+
+$contentSectionHeaderBackgroundColor: rsa-color(gray, darkest, $rsa-nearly-opaque);
+$contentSectionHeaderTypeColor: rsa-color(gray, lightest);
+$contentSectionHeaderBorderColor: 1px solid rsa-color(gray, darkest);
+
+$contentLogoTitleColor: rsa-color(gray, lighter);
+
+$contentUpdateIndicatorBackgroundColor: rsa-color(blue);
+$contentUpdateIndicatorBorderColor: rsa-color(gray, lightest);
+$contentUpdateIndicatorTypeColor: rsa-color(gray, light);
+
+@import 'carousel';
+@import 'content-accordion';
+@import 'content-badge-icon';
+@import 'content-badge-score';
+@import 'content-card';
+@import 'content-datetime';
+@import 'content-definition';
+@import 'content-ip-connections';
+@import 'content-label';
+@import 'content-section-header';
+@import 'icons';
+@import 'loader';
+@import 'logo';
+@import 'spacer';
+@import 'update-indicator';

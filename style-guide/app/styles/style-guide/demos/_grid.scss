@@ -1,0 +1,13 @@
+.sg-demo-grid {
+  border: 1px solid rsa-color(gray);
+  text-align: center;
+  
+  .rsa-grid {
+    border: none;
+  }
+
+  .rsa-grid-column {
+    line-height: 3rem;
+    border: 1px solid rsa-color(gray);
+  }
+}

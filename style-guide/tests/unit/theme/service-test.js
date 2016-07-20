@@ -15,11 +15,10 @@ test('it uses the correct localStorageKey', function(assert) {
 
 test('it provides the correct options', function(assert) {
   let service = this.subject();
-  assert.equal(service.get('options.length'), 2);
+  assert.equal(service.get('options.length'), 1);
   let options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.contains('light'));
   assert.ok(options.contains('dark'));
 });
 

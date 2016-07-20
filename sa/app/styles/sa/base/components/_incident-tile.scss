@@ -2,9 +2,8 @@
   position:relative;
   color: rsa-color(white);
 
-  .rsa-grid-column,
-  .rsa-grid-row{
-    border: 0;
+  .rsa-grid-column {
+    padding: rsa-whitespace();
   }
 
   .rsa-incident-tile-header {
@@ -86,13 +85,6 @@
         color: rsa-color(gray);
         letter-spacing: 0.1rem;
       }
-    }
-  }
-
-  .rsa-form-select {
-    .rsa-form-label {
-      @include rsa-font(header, small);
-      color: rsa-color(white);
     }
   }
 

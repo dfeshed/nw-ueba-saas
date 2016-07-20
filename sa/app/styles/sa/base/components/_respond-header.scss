@@ -1,22 +1,21 @@
 .rsa-respond-index-header {
-  display: block;
   border-bottom: 1px solid rsa-color(gray, light);
-  height: 3.1rem;
-  margin: 0;
+  overflow: hidden;
   background-color: rsa-color(gray, darker, $rsa-translucent);
   padding: 0 rsa-whitespace(most);
 
   &__label {
     @include rsa-font(header, large);
     float: left;
-    padding: rsa-whitespace() 0 0 0;
+    padding: rsa-whitespace() 0;
     color: rsa-color(white);
     text-transform: capitalize;
   }
 
   &__options {
     float: right;
-    margin-right: rsa-whitespace(most);
+    vertical-align: middle;
+    padding: rsa-whitespace(least) 0;
 
     .rsa-respond-index-header__list-btn {
       .rsa-form-button {
@@ -25,8 +24,8 @@
     }
 
     .rsa-form-button {
-      padding-right: 0;
-      padding-left: 0;
+      vertical-align: middle;
+      
       .rsa-icon {
         color: rsa-color(gray);
       }

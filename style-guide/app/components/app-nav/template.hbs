@@ -1,19 +1,150 @@
-{{#rsa-nav-link-list header="Design"}}
-  {{#each model as |spec|}}
-    {{#unless spec.isComponent}}
-      <li>
-        {{#link-to "spec" spec}}{{spec.title}}{{/link-to}}
-      </li>
-    {{/unless}}
-  {{/each}}
+{{#rsa-nav-link-list header="Guides"}}
+  <li>
+    <a href="https://bedfordjira.na.rsa.net/secure/StructureBoard.jspa?s=102" target="_blank">Jira Planning Board</a>
+  </li>
+
+  <li>
+    <a href="https://wiki.na.rsa.net/display/NextGenWeb/UI+Core+Client+Backlog" target="_blank">UI Wiki</a>
+  </li>
+
+  <li>
+    <a href="https://wiki.na.rsa.net/pages/viewpage.action?spaceKey=ASOCPM&title=SA11UX" target="_blank">UX Wiki</a>
+  </li>
+
+  <li>
+    <a href="https://wiki.na.rsa.net/display/AIH/Guidelines+for+UI+Review" target="_blank">UI Review Guidelines</a>
+  </li>
+  
+  <li>
+    <a href="https://asoc-jenkins.rsa.lab.emc.com/job/sa-ui-style-guide/" target="_blank">Jenkins Style Guide Job</a>
+  </li>
 {{/rsa-nav-link-list}}
 
-{{#rsa-nav-link-list header="Components"}}
-  {{#each model as |spec|}}
-    {{#if spec.isComponent}}
-      <li>
-        {{#link-to "spec" spec}}{{spec.title}}{{/link-to}}
-      </li>
-    {{/if}}
-  {{/each}}
+{{#rsa-nav-link-list header="Design"}}
+  <li>
+    {{#link-to 'design.typography'}}Typography{{/link-to}}
+  </li>
+
+  <li>
+    {{#link-to 'design.colors'}}Colors{{/link-to}}
+  </li>
+
+  <li>
+    {{#link-to 'design.whitespace'}}Whitespace{{/link-to}}
+  </li>
+
+  <li>
+    {{#link-to 'design.layers'}}Layers{{/link-to}}
+  </li>
+
+  <li>
+    {{#link-to 'design.opacity'}}Opacity{{/link-to}}
+  </li>
+
+  <li>
+    {{#link-to 'design.grid'}}Grid{{/link-to}}
+  </li>
+{{/rsa-nav-link-list}}
+
+{{#rsa-nav-link-list header="Generic Components"}}
+  <li>
+    {{#link-to 'demos.logo'}}RSA Logo{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.icons'}}Icons{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.loader'}}Loader{{/link-to}}  
+  </li>
+{{/rsa-nav-link-list}}
+
+{{#rsa-nav-link-list header="Application Components"}}
+  <li>
+    {{#link-to 'demos.app.header'}}Application Header{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.app.content'}}Application Content{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.app.footer'}}Application Footer{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.app.modal'}}Modal{{/link-to}}  
+  </li>
+{{/rsa-nav-link-list}}
+
+{{#rsa-nav-link-list header="Form Components"}}
+  <li>
+    {{#link-to 'demos.form.buttons'}}Buttons{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.form.inputs'}}Text Inputs{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.form.textareas'}}Textareas{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.form.selects'}}Selects{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.form.checkboxes'}}Checkboxes{{/link-to}}  
+  </li>
+  <li>
+    {{#link-to 'demos.form.radios'}}Radios{{/link-to}}  
+  </li>
+{{/rsa-nav-link-list}}
+
+{{#rsa-nav-link-list header="Content Components"}}
+  <li>
+    {{#link-to 'demos.content.accordion'}}Accordion{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.content.badgeIcon'}}Badge Icon{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.content.badgeScore'}}Badge Score{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.content.datetime'}}Datetime{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.content.definition'}}Definition{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.content.label'}}Label{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.content.sectionHeader'}}Section Header{{/link-to}}  
+  </li>
+
+  <li>
+    {{#link-to 'demos.content.ipConnections'}}IP Connections{{/link-to}}  
+  </li>
+{{/rsa-nav-link-list}}
+
+{{#rsa-nav-link-list header="Nav Components"}}
+  <li>
+    {{#link-to 'demos.nav.linkList'}}Link List{{/link-to}}  
+  </li>
+{{/rsa-nav-link-list}}
+
+{{#rsa-nav-link-list header="Routable Components"}}
+  <li>
+    {{#link-to 'demos.routableLogin'}}Routable Login{{/link-to}}  
+  </li>
 {{/rsa-nav-link-list}}

@@ -6,11 +6,11 @@
   {{#rsa-grid}}
     {{#rsa-grid-row}}
       
-      {{#rsa-grid-column class="app-nav" tagName="nav" span=3 isScrollable=true}}
-        {{app-nav class="style-guide__nav" model=model}}
+      {{#rsa-grid-column class="style-guide-nav" span=3 isScrollable=true}}
+        {{app-nav}}
       {{/rsa-grid-column}}
             
-      {{#rsa-grid-column span=9 isNestedGrid=true isScrollable=true}}
+      {{#rsa-grid-column class="style-guide-content" span=9}}
         {{outlet}}
       {{/rsa-grid-column}}  
       

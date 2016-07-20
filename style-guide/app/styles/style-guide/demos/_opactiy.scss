@@ -1,20 +1,19 @@
 .sg-demo-opacity {
   padding: rsa-whitespace(more);
-  border:1px solid rsa-color(white);
   box-sizing: border-box;
   color: rsa-color(black);
-  
+    
   &.overlay {
-    @rsa-layer(above);
     position: absolute;
-    top:5rem;
-    left:rsa-whitespace();
-    right:rsa-whitespace();
+    height: 50%;
+    top: 0;
+    left: 0;
+    right: 0;
+    @include rsa-layer(above);
     
     &.transparent {
       background-color: rsa-color(white, null, $rsa-transparent);
       color: rsa-color(white);
-
     }
     
     &.nearly-transparent {

@@ -1,0 +1,60 @@
+.rsa-application-header {
+  @include global-nav();
+  @include rsa-layer(controls);
+  background: $applicationHeaderBackground;
+  height: $applicationHeaderHeight;
+  top: 0;
+
+  > a {
+    display: inline-block;
+    position: relative;
+    padding: 0 rsa-whitespace();
+    @include rsa-font(navigation, large);
+    text-decoration: none;
+    color: $applicationHeaderLinkColor;
+    line-height: $applicationHeaderHeight;
+
+    &:hover {
+      color: $applicationHeaderLinkHoverColor;
+    }
+
+    &.active {
+      color: $applicationHeaderLinkActiveColor;
+      
+      &:after {
+        content: '';
+        display: block;
+        position: absolute;
+        overflow: hidden;
+        bottom: 0;
+        left: calc(50% - (#{$applicationHeaderLinkActiveArrowSize} / 2));
+        width: 0; 
+        height: 0; 
+        margin: 0 auto;
+        border-left: $applicationHeaderLinkActiveArrowSize solid transparent;
+        border-right: $applicationHeaderLinkActiveArrowSize solid transparent;        
+        border-bottom: $applicationHeaderLinkActiveArrowSize solid $applicationHeaderLinkActiveArrowColor;
+      }
+    }
+  }
+
+  .global {
+    position: absolute;
+    right: 0;
+    top: 1px;
+    line-height: $applicationHeaderHeight;
+    
+    .rsa-form-button {
+      border-width: 0;
+      
+      .expand {
+        left: 0;
+      }
+    }
+    
+    ul {
+      margin-right: rsa-whitespace();
+    }
+  }  
+}
+

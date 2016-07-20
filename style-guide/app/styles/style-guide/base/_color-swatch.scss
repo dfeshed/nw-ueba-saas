@@ -1,19 +1,26 @@
 .color-swatch {
-  display: inline-block;
-  margin-right: rsa-whitespace(less);
-  margin-bottom: rsa-whitespace(less);
-  min-width: 12.5rem;
-  text-align: center;
-  white-space: nowrap;
-  padding: 0 0 rsa-whitespace(less) 0;
+  display: block;
+  background-color: rsa-color(white);
+  border: 1px solid rsa-color(black);  
+  margin-bottom: rsa-whitespace();
+  background-color: rsa-color(gray, darker, $rsa-nearly-transparent);
+  color: rsa-color(gray, lighter);
+  
+  &:last-child {
+    margin-bottom: 0;  
+  }
+  
+  h2 {
+    @include rsa-font(header, small);
+  }
 
   .preview {
-    margin-bottom: rsa-whitespace(less);
     height: 5rem;
   }
   
-  p {
-    margin-top:rsa-whitespace(least);
+  section {
+    background: rsa-color(black);
+    padding: rsa-whitespace();
   }
 }
 

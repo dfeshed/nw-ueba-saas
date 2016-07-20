@@ -48,7 +48,7 @@ test('Iteration: verify all options are available in components', function(asser
     assert.deepEqual(find('#modalDestination .theme-radio-group .rsa-form-radio')
         .map(function() {
           return $(this).text().trim();
-        }).get(), ['Light', 'Dark'], 'Theme');
+        }).get(), ['Dark'], 'Theme');
 
     // iterate spacing options.
     assert.deepEqual(find('#modalDestination .spacing-radio-group .rsa-form-radio')
@@ -59,7 +59,7 @@ test('Iteration: verify all options are available in components', function(asser
 });
 
 test('User can set preferences and the values are stored in local storage', function(assert) {
-  assert.expect(9);
+  assert.expect(8);
 
   visit('/do/monitor');
   click('.user-preferences-trigger');
@@ -75,8 +75,6 @@ test('User can set preferences and the values are stored in local storage', func
   click('#modalDestination .time-format-radio-group .rsa-form-radio:first-of-type input');
   // set default landing page to Admin
   fillIn('#modalDestination .js-test-default-landing-page-select select', 'protected.admin');
-  // set theme to light
-  click('#modalDestination .theme-radio-group .rsa-form-radio:first-of-type input');
   // set spacing to tight
   click('#modalDestination .spacing-radio-group .rsa-form-radio:first-of-type input');
   // set notifications to uncheck
@@ -96,8 +94,6 @@ test('User can set preferences and the values are stored in local storage', func
      '12hr', 'Time Format');
     assert.equal(localStorage['rsa::securityAnalytics::landingPagePreference'],
      'protected.admin', 'Default Landing Page');
-    assert.equal(localStorage['rsa::securityAnalytics::themePreference'],
-     'light', 'Theme');
     assert.equal(localStorage['rsa::securityAnalytics::spacingPreference'],
      'tight', 'Spacing');
     assert.equal(localStorage['rsa::securityAnalytics::notificationsPreference'],
@@ -108,14 +104,13 @@ test('User can set preferences and the values are stored in local storage', func
 });
 
 test('Preference panel can load preference values from local storage.', function(assert) {
-  assert.expect(9);
+  assert.expect(8);
 
   localStorage.setItem('rsa-i18n-default-locale', 'ja');
   localStorage.setItem('rsa::securityAnalytics::timeZonePreference', 'UTC');
   localStorage.setItem('rsa::securityAnalytics::dateFormatPreference', 'YYYY/MM/DD');
   localStorage.setItem('rsa::securityAnalytics::timeFormatPreference', '12hr');
   localStorage.setItem('rsa::securityAnalytics::landingPagePreference', 'protected.admin');
-  localStorage.setItem('rsa::securityAnalytics::themePreference', 'light');
   localStorage.setItem('rsa::securityAnalytics::spacingPreference', 'tight');
   localStorage.setItem('rsa::securityAnalytics::notificationsPreference', 'false');
   localStorage.setItem('rsa::securityAnalytics::contextMenuPreference', 'false');
@@ -139,9 +134,6 @@ test('Preference panel can load preference values from local storage.', function
     // verify default landing page is Admin
     assert.equal(find('#modalDestination .js-test-default-landing-page-select select' +
         ' option:selected').text(), 'ja_Admin', 'Default Landing Page');
-    // verify theme is Light
-    assert.equal(find('#modalDestination .theme-radio-group' +
-        ' .rsa-form-radio.is-selected').text().trim(), 'ja_Light', 'Theme');
     // verify spacing is Tight
     assert.equal(find('#modalDestination .spacing-radio-group' +
         ' .rsa-form-radio.is-selected').text().trim(), 'ja_Tight', 'Spacing');

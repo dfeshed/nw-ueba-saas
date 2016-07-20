@@ -1,0 +1,95 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category title="Block Style"}}
+        {{#spec-member title="Default"}}
+          {{rsa-form-input label='Input Label' placeholder='Input Placeholder'}}
+          
+          <code>
+            &#123;{rsa-form-input label='Input Label' placeholder='Input Placeholder'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Read Only"}}
+          {{rsa-form-input value='Form input value' label='Input Label' isReadOnly=true}}
+          
+          <code>
+            &#123;{rsa-form-input value='Form input value' label='Input Label' isReadOnly=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Disabled"}}
+          {{rsa-form-input label='Input Label' isDisabled=true}}
+          
+          <code>
+            &#123;{rsa-form-input label='Input Label' isDisabled=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Success"}}
+          {{rsa-form-input label='Input Label' isSuccess=true}}
+
+          <code>
+            &#123;{rsa-form-input label='Input Label' isSuccess=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Error"}}
+          {{rsa-form-input value='Form input value' label='Input Label' isError=true errorMessage='Example error message on the input'}}
+
+          <code>
+            &#123;{rsa-form-input value='Form input value' label='Input Label' isError=true errorMessage='Example error message on the input'}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+      
+      {{#spec-category title="Inline Style"}}
+        {{#spec-member title="Default"}}
+          {{rsa-form-input label='Input Label' isInline=true}}
+
+          <code>
+            &#123;{rsa-form-input label='Input Label' isInline=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Read Only"}}
+          {{rsa-form-input value='Form input value' label='Input Label' isInline=true isReadOnly=true}}
+
+          <code>
+            &#123;{rsa-form-input value='Form input value' label='Input Label' isInline=true isReadOnly=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Disabled"}}
+          {{rsa-form-input label='Input Label' isInline=true isDisabled=true}}
+
+          <code>
+            &#123;{rsa-form-input label='Input Label' isInline=true isDisabled=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Success"}}
+          {{rsa-form-input value='Form input value' label='Input Label' isInline=true isSuccess=true}}
+
+          <code>
+            &#123;{rsa-form-input value='Form input value' label='Input Label' isInline=true isSuccess=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Error"}}
+          {{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true errorMessage='Example error message on the input'}}
+
+          <code>
+            &#123;{rsa-form-input value='Form input value' label='Input Label' isInline=true isError=true errorMessage='Example error message on the input'}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

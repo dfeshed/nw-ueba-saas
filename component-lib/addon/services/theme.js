@@ -13,10 +13,6 @@ export default Service.extend({
   localStorageKey: 'rsa::securityAnalytics::themePreference',
 
   options: [{
-    key: 'light',
-    label: 'userPreferences.theme.light',
-    styleClass: 'rsa-light'
-  }, {
     key: 'dark',
     label: 'userPreferences.theme.dark',
     styleClass: 'rsa-dark'

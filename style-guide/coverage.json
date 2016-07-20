@@ -1,18 +1,18 @@
 {
   "stats": {
-    "suites": 379,
-    "tests": 566,
-    "passes": 563,
+    "suites": 423,
+    "tests": 610,
+    "passes": 610,
     "pending": 0,
-    "failures": 3,
-    "start": "2016-07-14T19:28:42.706Z",
-    "end": "2016-07-14T19:28:53.288Z"
+    "failures": 0,
+    "start": "2016-07-15T17:31:30.147Z",
+    "end": "2016-07-15T17:31:41.256Z"
   },
   "coverage": {
     "total": {
-      "statementsTotal": 389,
-      "statementsCovered": 323,
-      "percentage": 83.03
+      "statementsTotal": 600,
+      "statementsCovered": 449,
+      "percentage": 74.83
     },
     "files": [
       {
@@ -23,14 +23,14 @@
       },
       {
         "name": "style-guide/router",
-        "statementsTotal": 6,
-        "statementsCovered": 4,
-        "percentage": 66.67
+        "statementsTotal": 44,
+        "statementsCovered": 5,
+        "percentage": 11.36
       },
       {
         "name": "style-guide/components/app-nav/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
@@ -41,32 +41,8 @@
       },
       {
         "name": "style-guide/components/color-swatch/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/hbs-example/component",
-        "statementsTotal": 11,
-        "statementsCovered": 7,
-        "percentage": 63.64
-      },
-      {
-        "name": "style-guide/components/svg-clipboard/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/hbs-preview/component",
-        "statementsTotal": 11,
-        "statementsCovered": 11,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/hbs-snippet/component",
-        "statementsTotal": 7,
-        "statementsCovered": 7,
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
@@ -143,8 +119,8 @@
       },
       {
         "name": "style-guide/locales/en/translations",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
@@ -346,40 +322,34 @@
         "percentage": 100
       },
       {
-        "name": "style-guide/components/spec-body-category/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/spec-body-member/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/spec-body/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/components/spec-doc/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
+        "name": "style-guide/components/spec-category/component",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
         "name": "style-guide/components/spec-masthead/component",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
-        "name": "style-guide/components/spec-nav/component",
+        "name": "style-guide/components/spec-member/component",
         "statementsTotal": 3,
-        "statementsCovered": 2,
-        "percentage": 66.67
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/or",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
+        "name": "style-guide/components/svg-clipboard/component",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
       },
       {
         "name": "style-guide/adapters/application",
@@ -389,27 +359,15 @@
       },
       {
         "name": "style-guide/application/route",
-        "statementsTotal": 7,
+        "statementsTotal": 2,
         "statementsCovered": 2,
-        "percentage": 28.57
+        "percentage": 100
       },
       {
         "name": "style-guide/index/route",
         "statementsTotal": 2,
         "statementsCovered": 2,
         "percentage": 100
-      },
-      {
-        "name": "style-guide/spec/model",
-        "statementsTotal": 7,
-        "statementsCovered": 2,
-        "percentage": 28.57
-      },
-      {
-        "name": "style-guide/spec/route",
-        "statementsTotal": 3,
-        "statementsCovered": 2,
-        "percentage": 66.67
       },
       {
         "name": "style-guide/services/theme",
@@ -419,9 +377,9 @@
       },
       {
         "name": "style-guide/app",
-        "statementsTotal": 8,
-        "statementsCovered": 6,
-        "percentage": 75
+        "statementsTotal": 10,
+        "statementsCovered": 8,
+        "percentage": 80
       },
       {
         "name": "style-guide/initializers/app-version",
@@ -514,6 +472,12 @@
         "percentage": 100
       },
       {
+        "name": "style-guide/initializers/truth-helpers",
+        "statementsTotal": 16,
+        "statementsCovered": 4,
+        "percentage": 25
+      },
+      {
         "name": "style-guide/instance-initializers/ember-data",
         "statementsTotal": 2,
         "statementsCovered": 2,
@@ -568,10 +532,220 @@
         "percentage": 100
       },
       {
+        "name": "style-guide/demos/app/content/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/app/footer/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/app/header/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/app/modal/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/accordion/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/badge-icon/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/badge-score/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/card/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/datetime/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/definition/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/ip-connections/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/label/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/section-header/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/form/buttons/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/form/checkboxes/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/form/inputs/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/form/radios/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/form/selects/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/form/textareas/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/icons/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/loader/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/logo/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/nav/link-list/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/routable-login/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/design/colors/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/design/grid/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/design/layers/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/design/opacity/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/design/typography/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/design/whitespace/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/helpers/and",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
+        "name": "style-guide/helpers/eq",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
+        "name": "style-guide/helpers/gt",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
+        "name": "style-guide/helpers/gte",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
         "name": "style-guide/helpers/is-after",
         "statementsTotal": 2,
         "statementsCovered": 2,
         "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/is-array",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
       },
       {
         "name": "style-guide/helpers/is-before",
@@ -604,6 +778,18 @@
         "percentage": 100
       },
       {
+        "name": "style-guide/helpers/lt",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
+        "name": "style-guide/helpers/lte",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
         "name": "style-guide/helpers/moment-calendar",
         "statementsTotal": 2,
         "statementsCovered": 2,
@@ -620,6 +806,18 @@
         "statementsTotal": 2,
         "statementsCovered": 2,
         "percentage": 100
+      },
+      {
+        "name": "style-guide/helpers/not-eq",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
+        "name": "style-guide/helpers/not",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
       },
       {
         "name": "style-guide/helpers/now",
@@ -640,6 +838,12 @@
         "percentage": 100
       },
       {
+        "name": "style-guide/helpers/xor",
+        "statementsTotal": 7,
+        "statementsCovered": 5,
+        "percentage": 71.43
+      },
+      {
         "name": "style-guide/locales/ja/config",
         "statementsTotal": 2,
         "statementsCovered": 2,
@@ -647,8 +851,8 @@
       },
       {
         "name": "style-guide/locales/ja/translations",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
+        "statementsTotal": 3,
+        "statementsCovered": 3,
         "percentage": 100
       },
       {
@@ -689,9 +893,9 @@
       },
       {
         "name": "style-guide/transitions",
-        "statementsTotal": 10,
-        "statementsCovered": 3,
-        "percentage": 30
+        "statementsTotal": 11,
+        "statementsCovered": 4,
+        "percentage": 36.36
       }
     ]
   }

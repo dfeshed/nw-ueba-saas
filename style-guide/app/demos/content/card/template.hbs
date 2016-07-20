@@ -1,0 +1,29 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category}}
+        {{#spec-member title="Collapsed"}}
+          {{#rsa-content-card isCollapsed=true}}Content{{/rsa-content-card}}
+        
+          <code>
+            &#123;{#rsa-content-card isCollapsed=true}}Content&#123;{/rsa-content-card}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Expanded"}}
+          {{#rsa-content-card isCollapsed=true}}Content{{/rsa-content-card}}
+    
+          <code>
+            &#123;{#rsa-content-card isCollapsed=true}}Content&#123;{/rsa-content-card}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

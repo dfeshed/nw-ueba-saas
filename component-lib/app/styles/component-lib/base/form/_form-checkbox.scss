@@ -1,0 +1,113 @@
+.rsa-form-checkbox {
+  display: block;
+  margin: rsa-whitespace(less) 0;
+
+  .outer-wrapper {
+    display: inline-block;
+    width: calc(1rem + 1px);
+    height: calc(1rem + 1px);
+    line-height: calc(1rem + 1px);
+    box-sizing: border-box;
+    vertical-align: middle;
+    border: 1px solid $formCheckboxBorderColor;
+    position: relative;
+    top: -1px;
+    overflow: hidden;
+
+    .inner-wrapper {
+      box-sizing: border-box;
+      margin: 2px;
+      display: block;
+      width: calc(.5rem + 2px);
+      height: calc(.5rem + 2px);
+      line-height: calc(.5rem + 2px);
+      vertical-align: middle;
+      overflow: hidden;
+      
+      .rsa-icon {
+        top: 3px;
+        left: 2px;
+        position: absolute;
+        font-size: .7rem;
+      }
+
+      input {
+         position: relative;
+         left: -100rem;
+         display: block;
+       }
+    }
+  }  
+  
+  &:hover:not(.is-disabled):not(.is-read-only) {
+    cursor: pointer;
+  
+    .outer-wrapper {
+      border-color: $formCheckboxHoverBorderColor;
+    }
+  }
+
+  &.is-selected:not(.is-disabled):not(.is-read-only):not(.is-error) {
+    .inner-wrapper {
+      color: $formCheckboxSelectedColor;
+    }
+  }
+
+  &.is-active:not(.is-disabled):not(.is-read-only):not(.is-error) {
+    .outer-wrapper {
+      border-color: $formCheckboxActiveColor;  
+    }
+  }
+
+  &.is-error {  
+    .rsa-form-label {
+      color: $formCheckboxErrorColor;
+    }  
+
+    .outer-wrapper {
+      border-color: $formCheckboxErrorColor;      
+    }
+  }
+
+  &.is-error.is-selected {
+    .inner-wrapper {
+      color: $formCheckboxErrorColor;
+    }
+  }
+
+  &.is-disabled {  
+    .rsa-form-label {
+      color: $formCheckboxDisabledColor;
+    }  
+
+    .outer-wrapper {
+      color: $formCheckboxDisabledColor;
+    }
+  }
+
+  &.is-disabled.is-selected {
+    .inner-wrapper {
+      color: $formCheckboxDisabledColor;
+    }
+  }
+
+  &.is-read-only {  
+    .outer-wrapper {
+      color: $formCheckboxDisabledColor;
+    }
+  }
+
+  &.is-read-only.is-selected {
+    .inner-wrapper {
+        color: $formCheckboxDisabledColor;
+    }
+  }
+
+  .rsa-form-label {
+    color: $formCheckboxLabelColor;
+    display: inline-block;
+    margin-left: rsa-whitespace(least);
+    @include rsa-font(body);
+    vertical-align: middle;
+  }
+}

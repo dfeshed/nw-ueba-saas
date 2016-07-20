@@ -1,0 +1,266 @@
+.rsa-form-select {
+  position: relative;
+  overflow: visible;
+
+  select {
+    @include rsa-font(body);
+    @include rsa-layer(controls);
+    box-sizing: border-box;
+    min-width: 100%;
+    position: absolute;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    outline:none;
+    border-right: 1px solid $formSelectActiveBorderColor;
+    border-left: 1px solid $formSelectActiveBorderColor;
+    border-bottom: 1px solid $formSelectActiveBorderColor;
+    background: $formSelectActiveBackgroundColor;
+
+    option {
+      display: block;
+      margin:0;
+      box-shadow: none;
+      border-radius: 0;
+      position: relative;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      border: none;
+      border-bottom: 1px solid $formSelectOptionBorderColor;
+      padding: rsa-whitespace(less) rsa-whitespace(less);
+      color: $formSelectOptionTypeColor;
+      
+      &:hover {
+        background: $formSelectOptionHoverBackgroundColor;
+      }
+
+      &:last-child {
+        border: none;
+      }
+      
+      &:checked {
+        padding: rsa-whitespace(less) 0;
+        height: 1.35rem;
+      }
+
+      &:checked:after {
+        height: calc(1.35rem + 1px);
+        position: relative;
+        top: -2rem;
+        content: attr(data-text);
+        width: 100%;
+        border: none;
+        display: block;
+        padding: rsa-whitespace(less) rsa-whitespace(less);
+        background: $formSelectOptionSelectedBackgroundColor;
+        color: $formSelectOptionSelectedTypeColor;
+      }
+    }
+  }
+
+  .rsa-form-label {
+    display: block;
+    vertical-align: bottom;
+    box-sizing: border-box;
+    color: $formSelectLabelColor;
+  }
+
+  .prompt {
+    @include rsa-font(body);
+    box-sizing: border-box;
+    line-height: 1.4rem;
+    color: $formSelectPromptTypeColor;
+    padding: rsa-whitespace(less) rsa-whitespace(more) rsa-whitespace(least) 0;
+    border-bottom: 1px solid $formSelectActiveBorderColor;
+
+    div {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+  }
+
+  .rsa-icon-arrow-down-12 {
+    position: absolute;
+    right: rsa-whitespace(less);
+    top: 1.85rem;
+    color: $formSelectIconColor;
+    
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
+  .option-tag {
+    background-color: $formSelectTagBackgroundColor;
+    border-radius: .25rem;
+    position: relative;
+    color: $formSelectTagTypeColor;
+    padding: 0 rsa-whitespace(more) 0 rsa-whitespace(less);
+    margin-right: rsa-whitespace(least);
+    margin-bottom: rsa-whitespace(least);
+    display: inline-block;
+    top: rsa-whitespace(least);
+
+    i {
+      position: absolute;
+      right: rsa-whitespace(less);
+      top: .45rem;
+      font-size: .65rem;
+      
+      &:hover {
+        cursor: pointer;
+      }
+    }
+  }
+
+  &.options-collapsed {
+    select {
+      display: none;
+    }
+
+    .prompt {
+      border-bottom: 1px solid $formSelectBorderColor;
+    }
+  }
+
+  &.has-single-value {
+    .prompt {
+      color: $formSelectTypeColor;  
+    }
+  }
+
+  &.has-multiple-values {
+    .prompt {
+      padding-top: .35rem;
+    }
+  }
+  
+  &:hover:not(.is-disabled):not(.is-read-only) {
+    cursor: pointer;
+
+    .rsa-icon-arrow-down-12 {
+      color: $formSelectIconHoverColor;
+    }
+  
+    .prompt {
+      border-color: $formSelectHoverBorderColor;
+    }
+      
+    &:not(.options-collapsed) {
+      .prompt {
+        border-color: $formSelectActiveHoverBorderColor;  
+      }               
+    }
+    
+    &.is-error {
+      .prompt {
+        border-color: $formSelectHoverErrorBorderColor;  
+      }
+      
+      .rsa-icon-arrow-down-12 {
+        color: $formSelectHoverErrorIconColor;
+      }
+      
+      &:not(.options-collapsed) {
+        .prompt {
+          border-color: $formSelectErrorBorderColor;  
+        }               
+      }
+    }
+  }
+  
+  &.is-disabled, &.is-read-only {
+    .prompt {
+      color: $formSelectDisabledTypeColor;
+      border-bottom: 1px solid $formSelectDisabledBorderColor;
+    }
+
+    .rsa-icon-arrow-down-12 {
+      color: $formSelectDisabledIconColor;
+    }
+
+    .option-tag {
+      background-color: $formSelectDisabledTagBackgroundColor;
+      color: $formSelectDisabledTagTypeColor;
+    }
+  }
+
+  &.is-read-only {
+    .prompt {
+      color: $formSelectReadOnlyTypeColor;
+    }
+    
+    .option-tag {
+      background-color: $formSelectReadOnlyTagBackgroundColor;
+      color: $formSelectReadOnlyTagTypeColor;
+    }
+  }
+  
+  &.is-error {
+    .rsa-form-label {
+      color: $formSelectErrorLabelColor;
+    }
+
+    .prompt, select {
+      border-color: $formSelectErrorBorderColor;
+    }
+
+    .prompt {
+      color: $formSelectErrorTypeColor;
+      background-color: $formSelectErrorBackgroundColor;
+    }
+
+    .rsa-icon-arrow-down-12 {
+      color: $formSelectErrorIconColor;
+    }
+
+    select option:checked:after {
+      background: $formSelectErrorOptionSelectedBackgroundColor;
+    }
+    
+    option {
+      &:hover {
+        background: $formSelectErrorOptionHoverBackgroundColor;
+      }
+    }
+  }
+
+  &.is-inline {
+    &:after {
+      content: ".";
+      visibility: hidden;
+      display: block;
+      height: 0;
+      clear: both;
+    }
+
+    .rsa-icon-arrow-down-12 {
+      top: 1.15rem;
+    }
+
+    .prompt {
+      width: calc(((100% / 12) * 9) - 2px);
+      float: right;
+    }
+
+    .rsa-form-label {
+      padding: .8rem 0 0;
+      float: left;
+      vertical-align: baseline;
+      width: calc(((100% / 12) * 3) - 2px);
+    }
+
+    select {
+      top: 2.3rem;
+      width: calc(((100% / 12) * 9) - 2px);
+      min-width: auto;
+      right: 0;
+    }
+  }
+}
+

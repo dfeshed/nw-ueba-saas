@@ -1,0 +1,28 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category}}
+        {{#spec-member title="Standard Usage"}}
+          <code>
+            <div>
+              &#123;{#rsa-application-content}}
+              <div>
+                &#123;{outlet}}
+              </div>
+              &#123;{/rsa-application-content}}
+            </div>
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}
+
+
+

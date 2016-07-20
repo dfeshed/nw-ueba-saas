@@ -6,8 +6,14 @@ export default Component.extend({
 
   classNames: 'color-swatch',
 
-  classNameBindings: ['model.id'],
+  classNameBindings: ['backgroundClass'],
 
-  model: null
+  title: null,
+
+  color: null,
+
+  hex: null,
+
+  sass: null
 
 });

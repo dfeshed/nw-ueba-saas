@@ -1,0 +1,31 @@
+.spec-category {
+  margin: rsa-whitespace();
+  margin-bottom: rsa-whitespace(most);
+  
+  &:last-of-type {
+    margin-bottom: 0;  
+  }
+  
+  header {
+    > .title {
+      @include rsa-font(header, large);
+      margin-bottom: rsa-whitespace(less);
+      color: rsa-color(gray, lightest);
+    }
+    
+    > .subtitle {
+      @include rsa-font(paragraph, small);    
+      margin-bottom: rsa-whitespace();
+      color: rsa-color(gray, lightest);
+    }
+    
+    > .description {
+      @include rsa-font(paragraph);
+      color: rsa-color(gray, light);
+    }  
+  }
+
+  > .members {
+    margin: rsa-whitespace() 0;
+  }
+}

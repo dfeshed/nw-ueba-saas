@@ -15,10 +15,14 @@
     {{content-for 'head-footer'}}
   </head>
   <body class="rsa-application-loading">
+  
+    <div class="rsa-loader is-largest">
+      <div class="rsa-loader__wheel"></div>
+      <div class="rsa-loader__text"></div>
+    </div>
+
     {{content-for 'body'}}
     
-    <i class="rsa-application-loading rsa-icon is-filled rsa-icon-loading-1">
-
     <script src="assets/vendor.js"></script>
     <script src="assets/style-guide.js"></script>
 

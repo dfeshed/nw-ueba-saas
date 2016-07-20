@@ -1,0 +1,42 @@
+.rsa-update-indicator {
+  @include rsa-font(body, small);
+  @include rsa-font(light);
+  color: $contentUpdateIndicatorTypeColor;
+  text-transform:lowercase;
+  display: inline;
+
+  &__divider {
+    margin-left: 6px;
+  }
+
+  &__dot {
+    content: ' ';
+    display:inline-block;
+    margin: 0 3px;
+    border-radius: 99px;
+    height: 7px;
+    width: 7px;
+    background: $contentUpdateIndicatorBackgroundColor;
+    border: solid thin $contentUpdateIndicatorBorderColor;
+  }
+
+  &.is-icon-only {
+    .rsa-update-indicator__dot {
+      display: block;
+      height: 10px;
+      width: 10px;
+    }
+  }
+
+  &.on-tile {
+    .rsa-update-indicator__dot {
+      position: absolute;
+      right: -8px;
+      top: 0px;
+    }
+  }
+
+  &.is-hidden {
+    visibility: hidden;
+  }
+}

@@ -1,0 +1,128 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category title="Labels"}}
+        {{#spec-member title="With Label"}}
+          <div style="width:100px">
+            {{rsa-content-badge-score score=7.7 label='Risk Score'}}  
+          </div>
+          
+          <code>
+            &#123;{rsa-content-badge-score score=7.7 label='Risk Score'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Without Label"}}
+          <div style="width:100px">
+            {{rsa-content-badge-score score=7.7}}
+          </div>
+          
+          <code>
+            &#123;{rsa-content-badge-score score=7.7}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+
+      {{#spec-category title="Styles"}}      
+        {{#spec-member title="Low"}}
+          <div style="width:100px">
+            {{rsa-content-badge-score score=33 label='Risk Score' style='low'}}
+          </div>
+          
+          <code>
+            &#123;{rsa-content-badge-score score=33 label='Risk Score' style='low'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Medium"}}
+          <div style="width:100px">
+            {{rsa-content-badge-score score=50 label='Risk Score' style='medium'}}
+          </div>
+          
+          <code>
+            &#123;{rsa-content-badge-score score=50 label='Risk Score' style='medium'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="High"}}
+          <div style="width:100px">
+            {{rsa-content-badge-score score=75 label='Risk Score' style='high'}}
+          </div>
+          
+          <code>
+            &#123;{rsa-content-badge-score score=75 label='Risk Score' style='high'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Danger"}}
+          <div style="width:100px">
+            {{rsa-content-badge-score score=100 label='Risk Score' style='danger'}}
+          </div>
+          
+          <code>
+            &#123;{rsa-content-badge-score score=100 label='Risk Score' style='danger'}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+
+      {{#spec-category title="Sizes"}}
+        {{#spec-member title="Default"}}
+          <div style="width:100px">
+            {{rsa-content-badge-score score=75 label='Risk Score'}}
+          </div>
+
+          <code>
+            &#123;{rsa-content-badge-score score=75 label='Risk Score'}}
+          </code>
+        {{/spec-member}}
+
+
+        {{#spec-member title="Small"}}
+          <div style="width:60px">
+            {{rsa-content-badge-score score=75 label='Risk Score' size='small'}}
+          </div>
+
+          <code>
+            &#123;{rsa-content-badge-score score=75 label='Risk Score' size='small'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Large"}}
+          <div style="width:150px">
+            {{rsa-content-badge-score score=75 label='Risk Score' size='large'}}
+          </div>
+          
+          <code>
+            &#123;{rsa-content-badge-score score=75 label='Risk Score' size='large'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member}}
+          <div style="width:200px">
+            {{rsa-content-badge-score score=75 label='Risk Score' size='larger'}}
+          </div>
+
+          <code>
+            &#123;{rsa-content-badge-score score=75 label='Risk Score' size='larger'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Largest"}}        
+          <div style="width:250px">
+            {{rsa-content-badge-score score=75 label='Risk Score' size='largest'}}
+          </div>
+        
+          <code>
+            &#123;{rsa-content-badge-score score=75 label='Risk Score' size='largest'}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

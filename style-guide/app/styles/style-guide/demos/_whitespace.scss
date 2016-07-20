@@ -1,6 +1,12 @@
 .sg-demo-whitespace {
   background-color: rsa-color(black);
-  float: left;
+  display: inline-block;
+  vertical-align: top;
+  border: 1px solid rsa-color(gray, lightest);
+  
+  div {
+    @include rsa-font(paragraph);
+  }
 
   &.left, &.right {
     &.least {

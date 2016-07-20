@@ -1,0 +1,129 @@
+/* Style placeholder */
+@mixin rsa-input-placeholder($color) {
+  &::-webkit-input-placeholder { 
+    color: $color;
+    line-height: 1.45rem;
+  }
+
+  &::-moz-placeholder {
+    color: $color;  
+    line-height: 1.45rem;
+  }
+
+  &:-ms-input-placeholder {  
+    color: $color;  
+    line-height: 1.45rem;
+  }
+}
+
+/* http://stackoverflow.com/questions/29580704/change-input-background-to-transparent-on-autocomplete-form */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 9999999s ease-in-out 0s;
+  -webkit-text-fill-color: $formInputPlaceholderColor;
+}
+
+.rsa-form-input, .rsa-form-textarea {
+  display: block;
+  box-sizing: border-box;
+  position: relative;
+  
+  .rsa-form-label {
+    display: block;    
+    vertical-align: text-top;
+    margin-bottom: rsa-whitespace(least);
+    color: $formInputLabelColor;
+  }
+
+  input, textarea {
+    width: 100%;
+    box-sizing: border-box;
+    padding: rsa-whitespace(less);
+    @include rsa-font();
+    @include rsa-input-placeholder($formInputPlaceholderColor)
+    color: $formInputTypeColor;
+        
+    &:focus {
+      border-color: $formInputFocusBorderColor;
+      outline: none;
+    }
+  }
+
+  input {
+    border-bottom: 1px solid $formInputBorderColor;
+  }
+
+  textarea {
+    border: 1px solid $formInputBorderColor;
+    background: none;
+    outline: none;
+    min-height: 10rem;
+  }
+    
+  &.is-success {
+    input, textarea {
+      color: $formInputSuccessTypeColor;
+      border-color: $formInputSuccessBorderColor;      
+    }
+  }
+
+  &.is-read-only {
+    input, textarea {
+      border-color: $formInputReadOnlyBorderColor;
+      cursor: default;
+      color: $formInputReadOnlyTypeColor;
+    }
+  }
+
+  &.is-disabled {
+    input, textarea {
+      @include rsa-input-placeholder($formInputDisabledPlaceholderColor);
+      color: $formInputDisabledTypeColor;
+      border-color: $formInputDisabledBorderColor;
+      cursor: default;  
+    }
+  }
+
+  &.is-error {
+    input, textarea {
+      @include rsa-input-placeholder($formInputErrorPlaceholderColor);
+      color: $formInputErrorTypeColor;
+      background-color: $formInputErrorBackgroundColor;
+      border-color: $formInputErrorBorderColor;
+    }
+    
+    .error-icon {
+      position: absolute;
+      right: rsa-whitespace(less);
+      top: 1.75rem;
+      color: $formInputErrorIconColor;
+    }
+  }
+
+  &.is-inline {
+    padding-top: 1.5rem;
+    overflow: hidden;
+
+    .rsa-form-label {
+      padding: .8rem 0 0;
+      float: left;
+      vertical-align: baseline;
+      width: calc(((100% / 12) * 3) - 2px);      
+    }
+    
+    &.is-error {  
+      .error-icon {
+        top: 2rem;
+      }
+    }
+
+    input, textarea {
+      float: right;
+      box-sizing: border-box;
+      width: calc(((100% / 12) * 9) - 2px);
+      display: inline-block;
+    }
+  }  
+}

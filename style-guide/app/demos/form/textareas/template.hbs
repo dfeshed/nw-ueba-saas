@@ -1,0 +1,54 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category title="States"}}
+        {{#spec-member title="Default"}}
+          {{rsa-form-textarea label='Input Label'}}
+
+          <code>
+            &#123;{rsa-form-textarea label='Input Label'}}
+          </code>
+        {{/spec-member}}
+        
+        {{#spec-member title="Read Only"}}
+          {{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
+
+          <code>
+            &#123;{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
+          </code>
+        {{/spec-member}}
+        
+        {{#spec-member title="Disabled"}}
+          {{rsa-form-textarea label='Input Label' isDisabled=true}}
+
+          <code>
+            &#123;{rsa-form-textarea label='Input Label' isDisabled=true}}
+          </code>
+        {{/spec-member}}
+        
+        {{#spec-member title="Success"}}
+          {{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
+
+          <code>
+            &#123;{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
+          </code>
+        {{/spec-member}}
+        
+        {{#spec-member title="Error"}}
+          {{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
+
+          <code>
+            &#123;{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
+          </code>
+        {{/spec-member}}
+        
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

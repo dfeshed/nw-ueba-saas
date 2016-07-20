@@ -1,0 +1,52 @@
+.rsa-content-badge-icon {
+  display: inline-block;
+  text-align: center;
+  margin-right: rsa-whitespace(more);
+  vertical-align: top;
+
+  i {
+    margin-bottom: rsa-whitespace(least);
+    color: $contentBadgeIconColor;
+  }
+
+  h5 {
+    margin-top: rsa-whitespace(least);
+    @include rsa-font(header, small);
+    text-overflow: ellipsis;
+    overflow: hidden;
+    min-width: 3rem;
+    max-width: 7.5rem;
+    color: $contentBadgeIconLabelColor;
+  }
+  
+  
+  &.is-danger {
+    i {
+      color: rsa-color(red);
+    }
+  }
+  
+  &.is-high {
+    i {
+      color: rsa-color(orange);
+    }
+  }
+  
+  &.is-passive {
+    i {
+      color: rsa-color(gray);
+    }
+  }
+  
+  &.is-medium {
+    i {
+      color: rsa-color(amber);
+    }
+  }
+  
+  &.is-low {
+    i {
+      color: rsa-color(green);
+    }
+  }
+}

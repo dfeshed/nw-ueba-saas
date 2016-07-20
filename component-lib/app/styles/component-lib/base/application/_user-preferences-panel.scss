@@ -1,0 +1,41 @@
+.user-preferences-panel {
+  width: $userPreferencesPanelWidth;
+
+  h3 { 
+    @include rsa-font(header, larger);
+    background-color: $userPreferencesPanelHeaderBackgroundColor;
+    padding: rsa-whitespace();
+  }
+
+  form {
+    padding: rsa-whitespace() 0;
+  }
+
+  .rsa-form-input, .rsa-form-radio, .rsa-form-select {
+    margin-bottom: rsa-whitespace();
+  }
+
+  .rsa-form-radio {
+    display: inline-block;
+    margin-right: rsa-whitespace();
+  }
+
+  .rsa-grid-column {
+    padding: 0 rsa-whitespace();
+  }
+
+  .button-group {
+    .rsa-grid-column {
+      margin-top: rsa-whitespace();
+
+      &:first-child {
+        padding-right: rsa-whitespace(less);
+      }
+
+      &:last-child {
+        padding-left: rsa-whitespace(less);
+      }
+    }
+  }
+
+}

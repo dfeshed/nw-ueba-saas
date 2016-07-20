@@ -1,0 +1,129 @@
+.rsa-content-badge-score {
+  position: relative;
+  overflow: hidden;
+
+  svg {
+    margin: 0;
+    
+    circle {
+      stroke: $contentBadgeScoreCircleColor;
+      stroke-width: 2;
+      fill: transparent;
+    }
+  }
+
+  .details {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    transform: translateY(-60%);
+    text-align: center;
+    
+    .score, .label {
+      color: $contentBadgeScoreLabelColor;
+    }
+    
+    .score {
+      @include rsa-font(default, light);
+      font-size: 3em;
+    }
+    
+    .label {
+      @include rsa-font(header, small);
+      width: 80%;
+      margin: 0 auto;
+    }
+  }
+  
+  &.is-small {
+    .score {
+      font-size: 2rem;      
+    }    
+  }
+
+  &.is-large {
+    .score {
+      font-size: 4rem;
+    }    
+  }
+
+  &.is-larger {
+    .score {
+      font-size: 6rem;
+      
+    }    
+  }
+
+  &.is-largest {
+    .score {
+      font-size: 8rem;
+    }    
+  }
+
+  &.hide-label {
+    .label {
+      display: none;
+    }
+  }
+
+  :not(&.is-inline) {
+    &.is-danger {
+      background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+    }
+
+    &.is-high {
+      background-image: linear-gradient(180deg, rsa-color(orange), rsa-color(orange, dark));
+    }
+
+    &.is-medium {
+      background-image: linear-gradient(180deg, rsa-color(amber), rsa-color(amber, dark));
+    }
+
+    &.is-low {
+      background-image: linear-gradient(180deg, rsa-color(green), rsa-color(green, dark));
+    }
+  }
+
+  &.is-inline {
+    @include rsa-flex-direction(row);
+    flex-wrap: nowrap;
+    align-items: center;
+    justify-content: flex-start;
+
+    .progress-bar {
+      margin-left: rsa-whitespace(least);
+      height: 0.9rem;
+    }
+
+    @for $i from 10 through 100 {
+      &.progress-bar-length-#{$i} {
+        .progress-bar {
+          $rsa-flex-grow-val: $i / 100;
+          @include rsa-vendor-prefix(flex-grow, $rsa-flex-grow-val);
+        }
+      }
+    }
+
+    &.is-danger {
+      .progress-bar {
+        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(red, dark));
+      }
+    }
+    &.is-high {
+      .progress-bar {
+        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(orange, dark));
+      }
+    }
+    &.is-medium {
+      .progress-bar {
+        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(amber, dark));
+      }
+    }
+    &.is-low {
+      .progress-bar {
+        background-image: linear-gradient(90deg, rsa-color(white, null, $rsa-transparent), rsa-color(green, dark));
+      }
+    }
+  }
+}

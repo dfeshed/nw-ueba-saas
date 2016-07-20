@@ -1,0 +1,12 @@
+.rsa-application-content {
+  @include global-nav();
+  @include rsa-layer(panel);
+  top: $applicationHeaderHeight;
+  bottom: $applicationFooterHeight;
+  overflow-y: scroll;
+
+  &.has-blur {
+    -webkit-filter: blur($applicationContentBlur);
+    filter: blur($applicationContentBlur);
+  }
+}

@@ -21,11 +21,6 @@ module.exports = function(environment) {
       }
     },
     APP: {
-      // Default theme to be applied when no theme preference is found in localeStorage.
-      themes: {
-        defaultTheme: "dark",
-        includedThemes: ['dark', 'light']
-      },
       rootElement: 'body',
       // Optional artificial delay (in millisec) for testing the app's loading animation.
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
@@ -35,7 +30,7 @@ module.exports = function(environment) {
       // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
       // Should match a DOM node in index.html.
       // Used by app's ready() handler to find & hide the loading animation.
-      appLoadingSelector: '.rsa-application-loading.rsa-icon',
+      appLoadingSelector: '.rsa-application-loading .rsa-loader',
       bodyLoadingClass: 'rsa-application-loading'
     },
     'ember-simple-auth': {

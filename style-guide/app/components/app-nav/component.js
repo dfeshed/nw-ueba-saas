@@ -6,7 +6,6 @@ export default Component.extend({
 
   tagName: 'nav',
 
-  classNames: 'app-nav',
+  classNames: 'app-nav'
 
-  model: null
 });

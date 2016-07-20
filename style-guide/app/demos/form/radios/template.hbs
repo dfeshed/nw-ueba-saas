@@ -1,0 +1,61 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category title="States"}}
+        {{#spec-member title="Default"}}
+          <div class='rsa-form-radio-group'>
+            <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
+            {{rsa-form-radio model=model value='bar' label='Bar'}}
+            {{rsa-form-radio model=model value='foo' label='Foo'}}
+          </div>
+
+          <code>
+            <div>
+              &lt;div class='rsa-form-radio-group'>
+              <div>
+                &lt;h4 class='rsa-form-radio-group-label'>Radio Group Label&lt;/h4>                  
+              </div>
+              <div>
+                &#123;{rsa-form-radio model=model value='bar' label='Bar'}}
+              </div>
+              <div>
+                &#123;{rsa-form-radio model=model value='foo' label='Foo'}}
+              </div>
+              &lt;/div>
+            </div>
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Read Only"}}
+          {{rsa-form-radio label='Input Label' isReadOnly=true}}
+
+          <code>
+            &#123;{rsa-form-radio label='Input Label' isReadOnly=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Disabled"}}
+          {{rsa-form-radio label='Input Label' isDisabled=true}}
+
+          <code>
+            &#123;{rsa-form-radio label='Input Label' isDisabled=true}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Error"}}
+          {{rsa-form-radio label='Input Label' isError=true}}
+
+          <code>
+            &#123;{rsa-form-radio label='Input Label' isError=true}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

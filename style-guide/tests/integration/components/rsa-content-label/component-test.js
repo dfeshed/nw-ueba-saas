@@ -78,7 +78,7 @@ test('it includes the proper classes when size is large', function(assert) {
 });
 
 test('it includes the icon', function(assert) {
-  this.render(hbs `{{#rsa-content-label label='Foo'}}{{rsa-icon name='atomic-bomb'}}{{/rsa-content-label}}`);
+  this.render(hbs `{{#rsa-content-label label='Foo'}}{{rsa-icon name='account-circle-1'}}{{/rsa-content-label}}`);
   let iconCount = this.$().find('.rsa-content-label .rsa-icon').length;
   assert.equal(iconCount, 1);
 });

@@ -1,31 +1,27 @@
-.app-nav {
+.style-guide-nav {
+  background: rsa-color(gray, darkest, $rsa-translucent);
+  
   header {
-    text-align: center;
-    
-    a {
-      text-decoration: none;
-    }
-    
     .rsa-logo {
-      svg {
-        height: 2.5rem;      
-      }
-      
       h2 {
-        margin: rsa-whitespace(least) 0 rsa-whitespace();
+        color: rsa-color(white);    
       }      
-    }
-    
-    .theme-picker {
-      button {
-        margin: rsa-whitespace(least);
-        margin-bottom:0;
-        min-width: 8.5rem;
-      }
     }
   }
   
-  section.rsa-grid-row {
-    flex-grow: 50;    
+  .rsa-grid-column {
+    background: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  }
+  
+  .rsa-grid-scroll-box {
+    padding: rsa-whitespace();
+  }
+  
+  .rsa-nav-link-list {
+    margin-bottom: rsa-whitespace();
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
   }
 }

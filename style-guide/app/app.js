@@ -18,8 +18,8 @@ App = Application.extend({
   Resolver,
 
   ready() {
-    $(config.APP.appLoadingSelector).toggleClass('hide');
-    $(config.APP.rootElement).toggleClass(config.APP.bodyLoadingClass);
+    $(config.APP.appLoadingSelector).remove();
+    $(config.APP.rootElement).removeClass(config.APP.bodyLoadingClass);
   }
 });
 

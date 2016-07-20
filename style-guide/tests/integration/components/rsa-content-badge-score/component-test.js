@@ -24,7 +24,7 @@ test('it sets the score', function(assert) {
 });
 
 test('it includes the proper classes when there is no label', function(assert) {
-  this.render(hbs `{{rsa-content-badge-score icon="atomic-bomb"}}`);
+  this.render(hbs `{{rsa-content-badge-score icon='account-circle-1'}}`);
   let badge = this.$().find('.rsa-content-badge-score').first();
   assert.ok(badge.hasClass('hide-label'));
 });

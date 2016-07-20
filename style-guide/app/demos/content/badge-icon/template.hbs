@@ -1,0 +1,61 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category title="Styles"}}
+        {{#spec-member title="Default"}}
+          {{rsa-content-badge-icon icon='account-circle-1' label='Badge Label'}}
+
+          <code>
+            &#123;{rsa-content-badge-icon icon='account-circle-1' label='Badge Label'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Passive"}}
+          {{rsa-content-badge-icon isPassive=true icon='account-circle-1' label='Badge Label'}}
+
+          <code>
+            &#123;{rsa-content-badge-icon isPassive=true icon='account-circle-1' label='Badge Label'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Low"}}
+          {{rsa-content-badge-icon isLow=true icon='account-circle-1' label='Badge Label'}}
+
+          <code>
+            &#123;{rsa-content-badge-icon isLow=true icon='account-circle-1' label='Badge Label'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Medium"}}
+          {{rsa-content-badge-icon isMedium=true icon='account-circle-1' label='Badge Label'}}
+
+          <code>
+            &#123;{rsa-content-badge-icon isMedium=true icon='account-circle-1' label='Badge Label'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="High"}}
+          {{rsa-content-badge-icon isHigh=true icon='account-circle-1' label='Badge Label'}}
+
+          <code>
+            &#123;{rsa-content-badge-icon isHigh=true icon='account-circle-1' label='Badge Label'}}
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Danger"}}
+          {{rsa-content-badge-icon isDanger=true icon='account-circle-1' label='Badge Label'}}
+
+          <code>
+            &#123;{rsa-content-badge-icon isDanger=true icon='account-circle-1' label='Badge Label'}}
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

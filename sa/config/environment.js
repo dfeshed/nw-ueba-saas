@@ -92,12 +92,6 @@ module.exports = function(environment) {
         appLoadingSelector: '.rsa-application-loading .rsa-loader',
         bodyLoadingClass: 'rsa-application-loading',
         rootElement: 'body',
-
-        // Default theme to be applied when no theme preference is found in localeStorage.
-        themes: {
-          defaultTheme: 'dark',
-          includedThemes: ['dark', 'light']
-        }
       },
     'ember-simple-auth': {
         authenticate: 'authenticator:authenticator',

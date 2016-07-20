@@ -1,0 +1,5 @@
+$navLinkListHeaderTypeColor: rsa-color(gray);
+$navLinkListAnchorTypeColor: rsa-color(white);
+$navLinkListAnchorHoverTypeColor: rsa-color(gray, base, $rsa-nearly-transparent);
+
+@import 'nav-link-list';

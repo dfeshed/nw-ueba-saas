@@ -1,0 +1,99 @@
+{{#rsa-grid}}
+  {{#rsa-grid-row collapseHeight=true}}
+    {{#rsa-grid-column span=12}}
+      {{spec-masthead model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column span=12 isScrollable=true}}
+      {{#spec-category title="States"}}
+        {{#spec-member title="Default"}}
+          {{#rsa-form-select label='Select Label'}}
+            <option value='1'>Val 1</option>
+            <option value='2'>Val 2</option>
+            <option value='3'>Val 3</option>
+          {{/rsa-form-select}}
+          
+          <code>
+            <div>
+              &#123;{#rsa-form-select label='Select Label'}}
+              <div>&lt;option value='1'>Val 1&lt;/option></div>
+              <div>&lt;option value='2'>Val 2&lt;/option></div>
+              <div>&lt;option value='3'>Val 3&lt;/option></div>
+              &#123;{/rsa-form-select}}
+            </div>
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Inline"}}
+          {{#rsa-form-select isInline=true label='Select Label'}}
+            <option value='1'>Val 1</option>
+            <option value='2'>Val 2</option>
+            <option value='3'>Val 3</option>
+          {{/rsa-form-select}}
+          
+          <code>
+            <div>
+              &#123;{#rsa-form-select isInline=true label='Select Label'}}
+              <div>&lt;option value='1'>Val 1&lt;/option></div>
+              <div>&lt;option value='2'>Val 2&lt;/option></div>
+              <div>&lt;option value='3'>Val 3&lt;/option></div>
+              &#123;{/rsa-form-select}}
+            </div>
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Danger"}}
+          {{#rsa-form-select label='Select Label' isError=true}}
+            <option value='1'>Val 1</option>
+            <option value='2'>Val 2</option>
+            <option value='3'>Val 3</option>
+          {{/rsa-form-select}}
+
+          <code>
+            <div>
+              &#123;{#rsa-form-select label='Select Label' isError=true}}
+              <div>&lt;option value='1'>Val 1&lt;/option></div>
+              <div>&lt;option value='2'>Val 2&lt;/option></div>
+              <div>&lt;option value='3'>Val 3&lt;/option></div>
+              &#123;{/rsa-form-select}}
+            </div>
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Read Only"}}
+          {{#rsa-form-select label='Select Label' isDisabled=true}}
+            <option value='1'>Val 1</option>
+            <option value='2'>Val 2</option>
+          {{/rsa-form-select}}
+
+          <code>
+            <div>
+              &#123;{#rsa-form-select label='Select Label' isDisabled=true}}
+              <div>&lt;option value='1'>Val 1&lt;/option></div>
+              <div>&lt;option value='2'>Val 2&lt;/option></div>
+              &#123;{/rsa-form-select}}
+            </div>
+          </code>
+        {{/spec-member}}
+
+        {{#spec-member title="Disabled"}}
+          {{#rsa-form-select label='Select Label' isReadOnly=true}}
+            <option value='1'>Val 1</option>
+            <option value='2'>Val 2</option>
+          {{/rsa-form-select}}
+
+          <code>
+            <div>
+              &#123;{#rsa-form-select label='Select Label' isReadOnly=true}}
+              <div>&lt;option value='1'>Val 1&lt;/option></div>
+              <div>&lt;option value='2'>Val 2&lt;/option></div>
+              &#123;{/rsa-form-select}}
+            </div>
+          </code>
+        {{/spec-member}}
+      {{/spec-category}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

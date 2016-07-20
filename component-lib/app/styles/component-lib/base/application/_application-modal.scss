@@ -1,0 +1,66 @@
+#modalDestination,
+.rsa-application-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include rsa-layer(modals);
+  align-items: center;
+  flex-direction: row;
+}
+
+#modalDestination {
+  display: none;
+  
+  &.active {
+    display: flex;
+    
+    .rsa-application-modal-content {
+      display: block;
+    }
+  }
+
+  .rsa-application-modal-content {
+    display: none;
+    position: relative;
+    @include rsa-layer(above);
+    border: 1px solid $applicationModalBorderColor;
+    background-color: $applicationModalBackgroundColor;
+    color: $applicationModalTypeColor;
+    margin: 0 auto;
+    
+    .close-modal {
+      position: absolute;
+      top: -1.25rem;
+      right: -1.25rem;
+      color: $applicationModalCloseLinkColor; 
+      
+      i {
+        vertical-align: middle;
+        font-weight: bold;
+      }
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
+        
+    .modal-trigger {
+      display: none;
+    }
+  }
+}
+
+.rsa-application-overlay {
+  @include rsa-layer(overlay);
+  background-color: $applicationModalOverlayColor;
+}
+
+.rsa-application-modal {
+  display: inline-block;
+    
+  .modal-content {
+    display: none;
+  }
+}
