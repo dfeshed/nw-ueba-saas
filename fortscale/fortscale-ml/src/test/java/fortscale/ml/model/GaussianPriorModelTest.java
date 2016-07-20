@@ -67,20 +67,44 @@ public class GaussianPriorModelTest {
 	}
 
 	@Test
-	public void shouldReturnThePriorsAverageWhenInsideTwoSegments() {
+	public void shouldReturnThePriorsWeightedAverageWhenInsideTwoSegments() {
 		GaussianPriorModel model = new GaussianPriorModel();
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean1 = 1;
 		double prior1 = 12;
-		double supportRadiusAroundMean1 = 10;
-		priors.add(new GaussianPriorModel.SegmentPrior(mean1, prior1, supportRadiusAroundMean1));
+		priors.add(new GaussianPriorModel.SegmentPrior(mean1, prior1, 10));
 		double mean2 = 4;
 		double prior2 = 3;
-		double supportRadiusAroundMean2 = 10;
-		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, supportRadiusAroundMean2));
+		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, 10));
 		model.init(priors);
 
 		double weightOn2 = 2.0/3;
 		Assert.assertEquals(weightOn2 * prior2 + (1 - weightOn2) * prior1, model.getPrior(mean1 + (mean2 - mean1) * weightOn2), 0.0000);
+	}
+
+	@Test
+	public void shouldReturnThePriorOfTheCloserSegmentIfThereAreTwoContainingSegmentsFromTheSameSide() {
+		GaussianPriorModel model = new GaussianPriorModel();
+		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
+		double mean = 1;
+		double prior1 = 12;
+		priors.add(new GaussianPriorModel.SegmentPrior(mean + 1, prior1, 10));
+		double prior2 = 3;
+		priors.add(new GaussianPriorModel.SegmentPrior(mean + 2, prior2, 10));
+		model.init(priors);
+
+		Assert.assertEquals(prior1, model.getPrior(mean), 0.0000);
+	}
+
+	@Test
+	public void shouldReturnNullIfOutsideTheCloserSegmentSupportButInsideTheFarSegmentSupport() {
+		GaussianPriorModel model = new GaussianPriorModel();
+		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
+		double mean = 1;
+		priors.add(new GaussianPriorModel.SegmentPrior(mean + 1, 1, 0));
+		priors.add(new GaussianPriorModel.SegmentPrior(mean + 2, 2, 10));
+		model.init(priors);
+
+		Assert.assertNull(model.getPrior(mean));
 	}
 }
