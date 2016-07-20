@@ -19,7 +19,8 @@ public class AggrInternalAndKafkaEventTopologyService extends AggrKafkaEventTopo
 	public AggrInternalAndKafkaEventTopologyService() {
 		metrics = new AggrInternalAndKafkaEventTopologyServiceMetrics(statsService);
 	}
-	
+
+
 	@Override
 	public boolean sendEvent(JSONObject event) {
 		boolean isSucceed = super.sendEvent(event);
