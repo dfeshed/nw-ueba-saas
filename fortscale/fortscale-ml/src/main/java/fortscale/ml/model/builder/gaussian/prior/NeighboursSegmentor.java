@@ -1,13 +1,10 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
-import fortscale.ml.model.ContinuousDataModel;
 import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * NeighboursLearningSegments implements a segmenting strategy by which for every possible discrete segment center
@@ -15,56 +12,24 @@ import java.util.List;
  * A neighborhood is defined to be the ContinuousDataModels whose means are the closest.
  * If the neighborhood spreads too far, the segment is discarded.
  */
-public class NeighboursLearningSegments implements LearningSegments {
-	private List<Pair<Double, Double>> segments;
+public class NeighboursSegmentor implements Segmentor {
+	private int numberOfNeighbours;
+	private double maxRatioBetweenSegmentSizeToCenter;
+	private double maxSegmentWidthToNotDiscardBecauseOfBadRatio;
+	private double padding;
 
-	public NeighboursLearningSegments(List<ContinuousDataModel> models,
-									  int numberOfNeighbours,
-									  Iterable<Double> segmentCenters,
-									  double maxRatioBetweenSegmentSizeToCenter,
-									  double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
-									  double padding) {
-		Assert.notNull(models, "models can't be null");
+	public NeighboursSegmentor(int numberOfNeighbours,
+							   double maxRatioBetweenSegmentSizeToCenter,
+							   double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
+							   double padding) {
 		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours must be positive");
-		Assert.notNull(segmentCenters, "segmentCenters can't be null");
 		Assert.isTrue(maxRatioBetweenSegmentSizeToCenter > 0, "maxRatioBetweenSegmentSizeToCenter must be positive");
 		Assert.isTrue(maxSegmentWidthToNotDiscardBecauseOfBadRatio >= 0, "maxSegmentWidthToNotDiscardBecauseOfBadRatio must be non-negative");
 		Assert.isTrue(padding >= 0, "padding must be non-negative");
-		segments = new ArrayList<>();
-		double[] sortedMeans = models.stream()
-				.mapToDouble(ContinuousDataModel::getMean)
-				.sorted()
-				.toArray();
-		for (double segmentCenter : segmentCenters) {
-			MutablePair<Double, Double> segment = createSegmentAroundCenter(sortedMeans, segmentCenter, numberOfNeighbours);
-			if (segment != null && segment.right - segment.left <= Math.max(
-					maxRatioBetweenSegmentSizeToCenter * segmentCenter,
-					maxSegmentWidthToNotDiscardBecauseOfBadRatio
-			)) {
-				segment.left -= padding;
-				segment.right += padding;
-				segments.add(segment);
-			}
-		}
-	}
-
-	private MutablePair<Double, Double> createSegmentAroundCenter(double[] sortedMeans,
-																  double segmentCenter,
-																  int numberOfNeighbours) {
-		int meanIndexClosestToSegmentCenter = findMeanIndexClosestToSegmentCenter(sortedMeans, segmentCenter);
-		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
-				meanIndexClosestToSegmentCenter,
-				meanIndexClosestToSegmentCenter
-		);
-		expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
-		while (getNumOfMeansInsideSegment(segmentIndices) < numberOfNeighbours) {
-			segmentIndices = enlargeSegmentBySmallestPossibleAddition(sortedMeans, segmentCenter, segmentIndices);
-			if (segmentIndices == null) {
-				return null;
-			}
-			expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
-		}
-		return createSegment(segmentIndices, segmentCenter, sortedMeans);
+		this.numberOfNeighbours = numberOfNeighbours;
+		this.maxRatioBetweenSegmentSizeToCenter = maxRatioBetweenSegmentSizeToCenter;
+		this.maxSegmentWidthToNotDiscardBecauseOfBadRatio = maxSegmentWidthToNotDiscardBecauseOfBadRatio;
+		this.padding = padding;
 	}
 
 	private MutablePair<Integer, Integer> enlargeSegmentBySmallestPossibleAddition(double[] sortedMeans, double segmentCenter, MutablePair<Integer, Integer> segmentIndices) {
@@ -93,23 +58,6 @@ public class NeighboursLearningSegments implements LearningSegments {
 							segmentIndicesAdvancedRight;
 		}
 		return segmentIndices;
-	}
-
-	private MutablePair<Double, Double> createSegment(MutablePair<Integer, Integer> segmentIndices,
-													  double segmentCenter,
-													  double[] sortedMeans) {
-		MutablePair<Double, Double> segment = new MutablePair<>(
-				sortedMeans[segmentIndices.left],
-				sortedMeans[segmentIndices.right]
-		);
-		if (segmentCenter < segment.left || segment.right < segmentCenter) {
-			// the segment's center must be inside the segment
-			return null;
-		}
-		double radius = Math.max(segmentCenter - segment.left, segment.right - segmentCenter);
-		segment.left = segmentCenter - radius;
-		segment.right = segmentCenter + radius;
-		return segment;
 	}
 
 	private int findMeanIndexClosestToSegmentCenter(double[] sortedMeans, double segmentCenter) {
@@ -154,13 +102,48 @@ public class NeighboursLearningSegments implements LearningSegments {
 		return segmentIndices.right - segmentIndices.left + 1;
 	}
 
-	@Override
-	public int size() {
-		return segments.size();
+	private MutablePair<Double, Double> createSegmentFromIndices(MutablePair<Integer, Integer> segmentIndices,
+																 double segmentCenter,
+																 double[] sortedMeans) {
+		MutablePair<Double, Double> segment = new MutablePair<>(
+				sortedMeans[segmentIndices.left],
+				sortedMeans[segmentIndices.right]
+		);
+		if (segmentCenter < segment.left || segment.right < segmentCenter) {
+			// the segment's center must be inside the segment
+			return null;
+		}
+		double radius = Math.max(segmentCenter - segment.left, segment.right - segmentCenter);
+		segment.left = segmentCenter - radius;
+		segment.right = segmentCenter + radius;
+
+		if (segment.right - segment.left > Math.max(
+				maxRatioBetweenSegmentSizeToCenter * segmentCenter,
+				maxSegmentWidthToNotDiscardBecauseOfBadRatio
+		)) {
+			return null;
+		}
+		segment.left -= padding;
+		segment.right += padding;
+
+		return segment;
 	}
 
 	@Override
-	public Pair<Double, Double> get(int index) {
-		return segments.get(index);
+	public Pair<Double, Double> createSegment(double[] sortedMeans, double segmentCenter) {
+		int meanIndexClosestToSegmentCenter = findMeanIndexClosestToSegmentCenter(sortedMeans, segmentCenter);
+		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
+				meanIndexClosestToSegmentCenter,
+				meanIndexClosestToSegmentCenter
+		);
+		expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
+		while (getNumOfMeansInsideSegment(segmentIndices) < numberOfNeighbours) {
+			segmentIndices = enlargeSegmentBySmallestPossibleAddition(sortedMeans, segmentCenter, segmentIndices);
+			if (segmentIndices == null) {
+				return null;
+			}
+			expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
+		}
+		return createSegmentFromIndices(segmentIndices, segmentCenter, sortedMeans);
 	}
 }
