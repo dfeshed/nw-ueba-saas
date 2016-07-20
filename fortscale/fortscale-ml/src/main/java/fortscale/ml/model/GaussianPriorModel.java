@@ -2,10 +2,14 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class GaussianPriorModel implements Model {
@@ -27,23 +31,36 @@ public class GaussianPriorModel implements Model {
 		}
 	}
 
-	private List<SegmentPrior> priors;
+	private List<SegmentPrior> segmentPriors;
 
 	public GaussianPriorModel() {
-		this.priors = new ArrayList<>();
+		this.segmentPriors = new ArrayList<>();
 	}
 
 	public void init(List<SegmentPrior> priors) {
 		Assert.notNull(priors);
-		this.priors = priors;
+		Set<Double> means = new HashSet<>();
+		priors.forEach(segmentPrior -> Assert.isTrue(means.add(segmentPrior.mean)));
+		this.segmentPriors = priors;
 	}
 
 	public Double getPrior(double mean) {
-		return priors.stream()
+		List<ImmutablePair<Double, Double>> priorsAndDistances = segmentPriors.stream()
 				.filter(s -> s.mean - s.supportFromLeftOfMean <= mean && mean <= s.mean + s.supportFromRightOfMean)
-				.findFirst()
-				.map(s -> s.priorAtMean)
-				.orElse(null);
+				.map(s -> new ImmutablePair<>(s.priorAtMean, Math.abs(mean - s.mean)))
+				.collect(Collectors.toList());
+		if (priorsAndDistances.size() == 0) {
+			return null;
+		}
+		if (priorsAndDistances.size() == 1) {
+			return priorsAndDistances.get(0).left;
+		}
+		double distancesSum = priorsAndDistances.stream()
+				.mapToDouble(priorAndDistance -> priorAndDistance.right)
+				.sum();
+		return priorsAndDistances.stream()
+				.mapToDouble(priorAndDistance -> priorAndDistance.left * (distancesSum - priorAndDistance.right) / distancesSum)
+				.sum();
 	}
 
 	@Override
