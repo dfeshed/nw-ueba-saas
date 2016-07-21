@@ -64,10 +64,10 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
         }
         Map<SupportingInformationKey, Map> additionalInformationMap = new HashMap<>();
 		for (VpnSessionOverlap vpnSessionOverlap: vpnLateralMovementEvents.getVpn_session_events()) {
-			long endTime = vpnSessionOverlap.getDate_time_unix();
+			long startTime = vpnSessionOverlap.getDate_time_unix();
 			long duration = vpnSessionOverlap.getDuration();
-			Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime - duration);
-			Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(endTime);
+			Long endTimeInMillis = TimestampUtils.convertToMilliSeconds(startTime + duration);
+			Long startTimeInMillis = TimestampUtils.convertToMilliSeconds(startTime);
 			String displayName = vpnSessionOverlap.getDisplay_name();
 			if (displayName == null) {
 				displayName = vpnSessionOverlap.getUsername();
