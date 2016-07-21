@@ -1,12 +1,12 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 /**
@@ -42,7 +42,7 @@ import java.util.stream.StreamSupport;
  *              will be used for learning
  *                 a GaussianPriorModel
  */
-public class LearningSegments implements Iterable<Pair<Double, Double>> {
+public class LearningSegments implements Iterable<Pair<Double, Pair<Double, Double>>> {
 	private Iterable<Double> segmentCenters;
 	private Segmentor segmentor;
 	private double[] sortedMeans;
@@ -62,13 +62,15 @@ public class LearningSegments implements Iterable<Pair<Double, Double>> {
 	}
 
 	@Override
-	public Iterator<Pair<Double, Double>> iterator() {
+	public Iterator<Pair<Double, Pair<Double, Double>>> iterator() {
 		return StreamSupport.stream(segmentCenters.spliterator(), false)
 				.map(segmentCenter -> {
 					Assert.isTrue(segmentCenter >= 0, "segment centers can't be negative");
-					return segmentor.createSegment(sortedMeans, segmentCenter);
+					Pair<Double, Pair<Double, Double>> centerToSegment =
+							new ImmutablePair<>(segmentCenter, segmentor.createSegment(sortedMeans, segmentCenter));
+					return centerToSegment;
 				})
-				.filter(Objects::nonNull)
+				.filter(centerToSegment -> centerToSegment.getRight() != null)
 				.iterator();
 	}
 }

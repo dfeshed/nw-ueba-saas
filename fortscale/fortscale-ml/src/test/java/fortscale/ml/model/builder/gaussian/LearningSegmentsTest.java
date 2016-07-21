@@ -62,25 +62,16 @@ public class LearningSegmentsTest {
 	}
 
 	@Test
-	public void shouldPassAllSegmentCentersToSegmentor() {
-		List<Double> segmentCenters = Arrays.asList(0.0, 1.0, 2.0);
-		double[] means = {0.0, 1.0, 2.0};
-		new LearningSegments(createModels(means), segmentCenters, segmentorMock).forEach(doubleDoublePair -> {});
-
-		segmentCenters.forEach(segmentCenter -> Mockito.verify(segmentorMock).createSegment(means, segmentCenter));
-		Mockito.verifyNoMoreInteractions(segmentorMock);
-	}
-
-	@Test
 	public void shouldSaveAllSegmentsTheSegmentorCreates() {
-		List<Double> segmentCenters = Arrays.asList(0.0, 1.0, 2.0);
+		double segmentCenterResultingInSegment = 1;
+		List<Double> segmentCenters = Arrays.asList(0.0, segmentCenterResultingInSegment, 2.0);
 		double[] means = {0.0, 1.0, 2.0};
 		Pair<Double, Double> segment = new ImmutablePair<>(0.0, 2.0);
-		Mockito.when(segmentorMock.createSegment(means, segmentCenters.get(1))).thenReturn(segment);
+		Mockito.when(segmentorMock.createSegment(means, segmentCenterResultingInSegment)).thenReturn(segment);
 		LearningSegments segments = new LearningSegments(createModels(means), segmentCenters, segmentorMock);
 
-		Iterator<Pair<Double, Double>> it = segments.iterator();
-		Assert.assertEquals(segment, it.next());
+		Iterator<Pair<Double, Pair<Double, Double>>> it = segments.iterator();
+		Assert.assertEquals(new ImmutablePair<>(segmentCenterResultingInSegment, segment), it.next());
 		Assert.assertFalse(it.hasNext());
 	}
 
