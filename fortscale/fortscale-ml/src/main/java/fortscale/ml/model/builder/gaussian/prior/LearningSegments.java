@@ -1,12 +1,13 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
-import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.StreamSupport;
 
 /**
@@ -42,7 +43,33 @@ import java.util.stream.StreamSupport;
  *              will be used for learning
  *                 a GaussianPriorModel
  */
-public class LearningSegments implements Iterable<Pair<Double, Pair<Double, Double>>> {
+public class LearningSegments implements Iterable<LearningSegments.Segment> {
+	public static class Segment {
+		public double center;
+		public double left;
+		public double right;
+
+		public Segment(Double center, double left, double right) {
+			this.center = center;
+			this.left = left;
+			this.right = right;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (obj == null || !(obj instanceof Segment)) {
+				return false;
+			}
+			Segment o = (Segment) obj;
+			return o.center == center && o.left == left && o.right == right;
+		}
+
+		@Override
+		public int hashCode() {
+			return new HashCodeBuilder().append(center).append(left).append(right).hashCode();
+		}
+	}
+
 	private Iterable<Double> segmentCenters;
 	private Segmentor segmentor;
 	private double[] sortedMeans;
@@ -62,15 +89,17 @@ public class LearningSegments implements Iterable<Pair<Double, Pair<Double, Doub
 	}
 
 	@Override
-	public Iterator<Pair<Double, Pair<Double, Double>>> iterator() {
+	public Iterator<Segment> iterator() {
 		return StreamSupport.stream(segmentCenters.spliterator(), false)
 				.map(segmentCenter -> {
 					Assert.isTrue(segmentCenter >= 0, "segment centers can't be negative");
-					Pair<Double, Pair<Double, Double>> centerToSegment =
-							new ImmutablePair<>(segmentCenter, segmentor.createSegment(sortedMeans, segmentCenter));
-					return centerToSegment;
+					Pair<Double, Double> segment = segmentor.createSegment(sortedMeans, segmentCenter);
+					if (segment == null) {
+						return null;
+					}
+					return new Segment(segmentCenter, segment.getLeft(), segment.getRight());
 				})
-				.filter(centerToSegment -> centerToSegment.getRight() != null)
+				.filter(Objects::nonNull)
 				.iterator();
 	}
 }

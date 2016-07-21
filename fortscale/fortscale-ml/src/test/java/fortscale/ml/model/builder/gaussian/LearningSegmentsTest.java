@@ -70,8 +70,9 @@ public class LearningSegmentsTest {
 		Mockito.when(segmentorMock.createSegment(means, segmentCenterResultingInSegment)).thenReturn(segment);
 		LearningSegments segments = new LearningSegments(createModels(means), segmentCenters, segmentorMock);
 
-		Iterator<Pair<Double, Pair<Double, Double>>> it = segments.iterator();
-		Assert.assertEquals(new ImmutablePair<>(segmentCenterResultingInSegment, segment), it.next());
+		Iterator<LearningSegments.Segment> it = segments.iterator();
+		LearningSegments.Segment expectedSegment = new LearningSegments.Segment(segmentCenterResultingInSegment, segment.getLeft(), segment.getRight());
+		Assert.assertEquals(expectedSegment, it.next());
 		Assert.assertFalse(it.hasNext());
 	}
 

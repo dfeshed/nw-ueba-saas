@@ -72,6 +72,11 @@ public class GaussianPriorModel implements Model {
 		return this;
 	}
 
+	public SegmentPrior[] getSegmentPriors() {
+		return segmentPriors;
+	}
+
+	//TODO: move this function to the scorer
 	public Double getPrior(double mean) {
 		Set<SegmentPrior> containingSegmentPriors = findNearestContainingSegmentPriorsFromEachSide(mean);
 		if (containingSegmentPriors.size() == 0) {
