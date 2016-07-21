@@ -1,7 +1,7 @@
 {
-  "id": 31,
-  "title": "Models - Feature buckets",
-  "originalTitle": "Models - Feature buckets",
+  "id": 33,
+  "title": "Models - Aggregated feature values",
+  "originalTitle": "Models - Aggregated feature values",
   "tags": [
     "Streaming models"
   ],
@@ -51,11 +51,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -72,18 +72,12 @@
                 },
                 {
                   "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -91,7 +85,7 @@
                 [
                   {
                     "params": [
-                      "featureBuckets"
+                      "retrieve"
                     ],
                     "type": "field"
                   },
@@ -101,7 +95,7 @@
                   },
                   {
                     "params": [
-                      "featureBuckets"
+                      "retrieve"
                     ],
                     "type": "alias"
                   }
@@ -112,19 +106,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Processed feature buckets",
+          "title": "Retrieve calls",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -155,7 +143,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Processed feature buckets"
+      "title": "Retrieve calls"
     },
     {
       "collapse": false,
@@ -201,7 +189,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -217,39 +205,33 @@
                   "type": "tag"
                 },
                 {
-                  "type": "tag",
-                  "params": [
-                    "featureName"
-                  ]
-                },
-                {
                   "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
-                      "featureBuckets"
-                    ]
+                      "aggregatedFeatureEvents"
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "mean",
-                    "params": []
+                    "params": [],
+                    "type": "mean"
                   },
                   {
-                    "type": "alias",
                     "params": [
-                      "featureBuckets"
-                    ]
+                      "aggregatedFeatureEvents"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -258,19 +240,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Processed feature buckets per conf",
+          "title": "Aggregated feature events counter",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -301,7 +277,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Processed feature buckets per conf"
+      "title": "Aggregated feature events counter"
     },
     {
       "collapse": false,
@@ -343,11 +319,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -364,18 +340,12 @@
                 },
                 {
                   "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -383,7 +353,7 @@
                 [
                   {
                     "params": [
-                      "retrieveAllFeatureValues"
+                      "getContextId"
                     ],
                     "type": "field"
                   },
@@ -393,7 +363,7 @@
                   },
                   {
                     "params": [
-                      "retrieveAllFeatureValues"
+                      "getContextId"
                     ],
                     "type": "alias"
                   }
@@ -404,19 +374,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Retrieve all feature values",
+          "title": "Get context ID calls",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -447,7 +411,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Retrieve all feature values"
+      "title": "Get context ID calls"
     },
     {
       "collapse": false,
@@ -489,11 +453,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -510,18 +474,12 @@
                 },
                 {
                   "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -529,7 +487,7 @@
                 [
                   {
                     "params": [
-                      "retrieveSingleFeatureValue"
+                      "getEventFeatureNames"
                     ],
                     "type": "field"
                   },
@@ -539,7 +497,7 @@
                   },
                   {
                     "params": [
-                      "retrieveSingleFeatureValue"
+                      "getEventFeatureNames"
                     ],
                     "type": "alias"
                   }
@@ -550,19 +508,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Retrieve single feature value",
+          "title": "Get event feature names calls",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -593,7 +545,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Retrieve single feature value"
+      "title": "Get event feature names calls"
     },
     {
       "collapse": false,
@@ -635,11 +587,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -656,18 +608,12 @@
                 },
                 {
                   "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -675,7 +621,7 @@
                 [
                   {
                     "params": [
-                      "replacePattern"
+                      "getContextFieldNames"
                     ],
                     "type": "field"
                   },
@@ -685,7 +631,7 @@
                   },
                   {
                     "params": [
-                      "replacePattern"
+                      "getContextFieldNames"
                     ],
                     "type": "alias"
                   }
@@ -696,19 +642,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Replace pattern",
+          "title": "Get context field names calls",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -739,11 +679,11 @@
         }
       ],
       "showTitle": false,
-      "title": "Replace pattern"
+      "title": "Get context field names calls"
     }
   ],
   "time": {
-    "from": "now-24h",
+    "from": "now-7d",
     "to": "now"
   },
   "timepicker": {
@@ -795,251 +735,330 @@
             "selected": true
           },
           {
-            "text": "city_crmsf_daily",
-            "value": "city_crmsf_daily",
+            "text": "distinct_number_of_countries_crmsf_daily",
+            "value": "distinct_number_of_countries_crmsf_daily",
             "selected": false
           },
           {
-            "text": "city_vpn_daily",
-            "value": "city_vpn_daily",
+            "text": "distinct_number_of_countries_crmsf_hourly",
+            "value": "distinct_number_of_countries_crmsf_hourly",
             "selected": false
           },
           {
-            "text": "city_vpn_session_daily",
-            "value": "city_vpn_session_daily",
+            "text": "distinct_number_of_countries_vpn_daily",
+            "value": "distinct_number_of_countries_vpn_daily",
             "selected": false
           },
           {
-            "text": "normalized_dst_machine_kerberos_logins_daily",
-            "value": "normalized_dst_machine_kerberos_logins_daily",
+            "text": "distinct_number_of_countries_vpn_hourly",
+            "value": "distinct_number_of_countries_vpn_hourly",
             "selected": false
           },
           {
-            "text": "normalized_dst_machine_oracle_daily",
-            "value": "normalized_dst_machine_oracle_daily",
+            "text": "distinct_number_of_db_objects_oracle_daily",
+            "value": "distinct_number_of_db_objects_oracle_daily",
             "selected": false
           },
           {
-            "text": "normalized_dst_machine_ssh_daily",
-            "value": "normalized_dst_machine_ssh_daily",
+            "text": "distinct_number_of_db_objects_oracle_hourly",
+            "value": "distinct_number_of_db_objects_oracle_hourly",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_kerberos_logins_daily",
-            "value": "normalized_src_machine_kerberos_logins_daily",
+            "text": "distinct_number_of_db_usernames_oracle_daily",
+            "value": "distinct_number_of_db_usernames_oracle_daily",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_kerberos_tgt_daily",
-            "value": "normalized_src_machine_kerberos_tgt_daily",
+            "text": "distinct_number_of_db_usernames_oracle_hourly",
+            "value": "distinct_number_of_db_usernames_oracle_hourly",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_ntlm_daily",
-            "value": "normalized_src_machine_ntlm_daily",
+            "text": "distinct_number_of_events_prnlog_daily",
+            "value": "distinct_number_of_events_prnlog_daily",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_oracle_daily",
-            "value": "normalized_src_machine_oracle_daily",
+            "text": "distinct_number_of_events_prnlog_hourly",
+            "value": "distinct_number_of_events_prnlog_hourly",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_prnlog_daily",
-            "value": "normalized_src_machine_prnlog_daily",
+            "text": "distinct_number_of_file_size_bytes_prnlog_daily",
+            "value": "distinct_number_of_file_size_bytes_prnlog_daily",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_ssh_daily",
-            "value": "normalized_src_machine_ssh_daily",
+            "text": "distinct_number_of_file_size_bytes_prnlog_hourly",
+            "value": "distinct_number_of_file_size_bytes_prnlog_hourly",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_vpn_daily",
-            "value": "normalized_src_machine_vpn_daily",
+            "text": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily",
+            "value": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_vpn_session_daily",
-            "value": "normalized_src_machine_vpn_session_daily",
+            "text": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly",
             "selected": false
           },
           {
-            "text": "normalized_username_crmsf_daily",
-            "value": "normalized_username_crmsf_daily",
+            "text": "distinct_number_of_normalized_dst_machine_oracle_daily",
+            "value": "distinct_number_of_normalized_dst_machine_oracle_daily",
             "selected": false
           },
           {
-            "text": "normalized_username_gwame_daily",
-            "value": "normalized_username_gwame_daily",
+            "text": "distinct_number_of_normalized_dst_machine_oracle_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_oracle_hourly",
             "selected": false
           },
           {
-            "text": "normalized_username_kerberos_logins_daily",
-            "value": "normalized_username_kerberos_logins_daily",
+            "text": "distinct_number_of_normalized_dst_machine_ssh_daily",
+            "value": "distinct_number_of_normalized_dst_machine_ssh_daily",
             "selected": false
           },
           {
-            "text": "normalized_username_kerberos_tgt_daily",
-            "value": "normalized_username_kerberos_tgt_daily",
+            "text": "distinct_number_of_normalized_dst_machine_ssh_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_ssh_hourly",
             "selected": false
           },
           {
-            "text": "normalized_username_ntlm_daily",
-            "value": "normalized_username_ntlm_daily",
+            "text": "distinct_number_of_normalized_src_machine_kerberos_logins_daily",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_logins_daily",
             "selected": false
           },
           {
-            "text": "normalized_username_oracle_daily",
-            "value": "normalized_username_oracle_daily",
+            "text": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly",
             "selected": false
           },
           {
-            "text": "normalized_username_prnlog_daily",
-            "value": "normalized_username_prnlog_daily",
+            "text": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
             "selected": false
           },
           {
-            "text": "normalized_username_ssh_daily",
-            "value": "normalized_username_ssh_daily",
+            "text": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
             "selected": false
           },
           {
-            "text": "normalized_username_vpn_daily",
-            "value": "normalized_username_vpn_daily",
+            "text": "distinct_number_of_normalized_src_machine_ntlm_daily",
+            "value": "distinct_number_of_normalized_src_machine_ntlm_daily",
             "selected": false
           },
           {
-            "text": "normalized_username_vpn_session_daily",
-            "value": "normalized_username_vpn_session_daily",
+            "text": "distinct_number_of_normalized_src_machine_ntlm_hourly",
+            "value": "distinct_number_of_normalized_src_machine_ntlm_hourly",
             "selected": false
           },
           {
-            "text": "normalized_username_wame_daily",
-            "value": "normalized_username_wame_daily",
+            "text": "distinct_number_of_normalized_src_machine_oracle_daily",
+            "value": "distinct_number_of_normalized_src_machine_oracle_daily",
             "selected": false
           },
           {
-            "text": "target_machine_prnlog_daily",
-            "value": "target_machine_prnlog_daily",
+            "text": "distinct_number_of_normalized_src_machine_oracle_hourly",
+            "value": "distinct_number_of_normalized_src_machine_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_prnlog_daily",
+            "value": "distinct_number_of_normalized_src_machine_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_prnlog_hourly",
+            "value": "distinct_number_of_normalized_src_machine_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ssh_daily",
+            "value": "distinct_number_of_normalized_src_machine_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ssh_hourly",
+            "value": "distinct_number_of_normalized_src_machine_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_vpn_daily",
+            "value": "distinct_number_of_normalized_src_machine_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_vpn_hourly",
+            "value": "distinct_number_of_normalized_src_machine_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_total_pages_prnlog_daily",
+            "value": "distinct_number_of_total_pages_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_total_pages_prnlog_hourly",
+            "value": "distinct_number_of_total_pages_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_gwame_daily",
+            "value": "number_of_events_gwame_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_gwame_hourly",
+            "value": "number_of_events_gwame_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_wame_daily",
+            "value": "number_of_events_wame_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_wame_hourly",
+            "value": "number_of_events_wame_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_crmsf_daily",
+            "value": "number_of_failed_crmsf_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_crmsf_hourly",
+            "value": "number_of_failed_crmsf_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_logins_daily",
+            "value": "number_of_failed_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_logins_hourly",
+            "value": "number_of_failed_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_tgt_daily",
+            "value": "number_of_failed_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_tgt_hourly",
+            "value": "number_of_failed_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ntlm_daily",
+            "value": "number_of_failed_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ntlm_hourly",
+            "value": "number_of_failed_ntlm_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_oracle_daily",
+            "value": "number_of_failed_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_oracle_hourly",
+            "value": "number_of_failed_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ssh_daily",
+            "value": "number_of_failed_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ssh_events_hourly",
+            "value": "number_of_failed_ssh_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_vpn_daily",
+            "value": "number_of_failed_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_vpn_events_hourly",
+            "value": "number_of_failed_vpn_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_crmsf_events_daily",
+            "value": "number_of_successful_crmsf_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_crmsf_events_hourly",
+            "value": "number_of_successful_crmsf_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_logins_daily",
+            "value": "number_of_successful_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_logins_hourly",
+            "value": "number_of_successful_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_tgt_events_daily",
+            "value": "number_of_successful_kerberos_tgt_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_tgt_events_hourly",
+            "value": "number_of_successful_kerberos_tgt_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ntlm_events_daily",
+            "value": "number_of_successful_ntlm_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ntlm_events_hourly",
+            "value": "number_of_successful_ntlm_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_oracle_events_daily",
+            "value": "number_of_successful_oracle_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_oracle_events_hourly",
+            "value": "number_of_successful_oracle_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ssh_daily",
+            "value": "number_of_successful_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ssh_events_hourly",
+            "value": "number_of_successful_ssh_events_hourly",
             "selected": false
           }
         ],
-        "query": "SHOW TAG VALUES FROM \"streaming.model.retriever.feature-bucket\" WITH KEY = \"confName\"",
+        "query": "SHOW TAG VALUES FROM \"streaming.model.retriever.aggregated-feature-value\" WITH KEY = \"confName\"",
         "refresh": 1,
+        "regex": "",
         "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "tags": [],
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "feature",
-        "multi": true,
-        "name": "feature",
-        "options": [
-          {
-            "text": "All",
-            "value": "$__all",
-            "selected": true
-          },
-          {
-            "text": "action_type_histogram",
-            "value": "action_type_histogram",
-            "selected": false
-          },
-          {
-            "text": "auth_method_histogram",
-            "value": "auth_method_histogram",
-            "selected": false
-          },
-          {
-            "text": "country_histogram",
-            "value": "country_histogram",
-            "selected": false
-          },
-          {
-            "text": "databucket_histogram",
-            "value": "databucket_histogram",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix_histogram",
-            "value": "date_time_unix_histogram",
-            "selected": false
-          },
-          {
-            "text": "db_object_histogram",
-            "value": "db_object_histogram",
-            "selected": false
-          },
-          {
-            "text": "db_username_histogram",
-            "value": "db_username_histogram",
-            "selected": false
-          },
-          {
-            "text": "failure_code_histogram",
-            "value": "failure_code_histogram",
-            "selected": false
-          },
-          {
-            "text": "file_size_histogram",
-            "value": "file_size_histogram",
-            "selected": false
-          },
-          {
-            "text": "hostname_histogram",
-            "value": "hostname_histogram",
-            "selected": false
-          },
-          {
-            "text": "normalized_dst_machine_histogram",
-            "value": "normalized_dst_machine_histogram",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine_histogram",
-            "value": "normalized_src_machine_histogram",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_histogram",
-            "value": "normalized_username_histogram",
-            "selected": false
-          },
-          {
-            "text": "return_code_histogram",
-            "value": "return_code_histogram",
-            "selected": false
-          },
-          {
-            "text": "status_histogram",
-            "value": "status_histogram",
-            "selected": false
-          },
-          {
-            "text": "target_machine_histogram",
-            "value": "target_machine_histogram",
-            "selected": false
-          },
-          {
-            "text": "total_pages_histogram",
-            "value": "total_pages_histogram",
-            "selected": false
-          }
-        ],
-        "query": "SHOW TAG VALUES FROM \"streaming.model.retriever.feature-bucket\" WITH KEY = \"featureName\" WHERE \"confName\" =~ /^$conf$/",
-        "refresh": 0,
-        "type": "query",
-        "useTags": false
       }
     ]
   },
@@ -1048,6 +1067,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 2,
+  "version": 1,
   "links": []
 }

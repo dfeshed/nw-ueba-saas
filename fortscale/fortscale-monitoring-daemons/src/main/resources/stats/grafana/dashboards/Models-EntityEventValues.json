@@ -1,7 +1,7 @@
 {
-  "id": 31,
-  "title": "Models - Feature buckets",
-  "originalTitle": "Models - Feature buckets",
+  "id": 34,
+  "title": "Models - Entity event values",
+  "originalTitle": "Models - Entity event values",
   "tags": [
     "Streaming models"
   ],
@@ -51,11 +51,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -72,18 +72,12 @@
                 },
                 {
                   "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.entity-event-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -91,7 +85,7 @@
                 [
                   {
                     "params": [
-                      "featureBuckets"
+                      "retrieveWithContextId"
                     ],
                     "type": "field"
                   },
@@ -101,7 +95,7 @@
                   },
                   {
                     "params": [
-                      "featureBuckets"
+                      "retrieveWithContextId"
                     ],
                     "type": "alias"
                   }
@@ -112,19 +106,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Processed feature buckets",
+          "title": "Context retrieve calls",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -155,7 +143,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Processed feature buckets"
+      "title": "Context retrieve calls"
     },
     {
       "collapse": false,
@@ -201,7 +189,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -217,39 +205,33 @@
                   "type": "tag"
                 },
                 {
-                  "type": "tag",
-                  "params": [
-                    "featureName"
-                  ]
-                },
-                {
                   "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.entity-event-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
-                      "featureBuckets"
-                    ]
+                      "retrieveWithNoContextId"
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "mean",
-                    "params": []
+                    "params": [],
+                    "type": "mean"
                   },
                   {
-                    "type": "alias",
                     "params": [
-                      "featureBuckets"
-                    ]
+                      "retrieveWithNoContextId"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -258,19 +240,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Processed feature buckets per conf",
+          "title": "Global retrieve calls",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -301,7 +277,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Processed feature buckets per conf"
+      "title": "Global retrieve calls"
     },
     {
       "collapse": false,
@@ -343,11 +319,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -364,18 +340,12 @@
                 },
                 {
                   "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.entity-event-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -383,7 +353,7 @@
                 [
                   {
                     "params": [
-                      "retrieveAllFeatureValues"
+                      "contextIds"
                     ],
                     "type": "field"
                   },
@@ -393,7 +363,7 @@
                   },
                   {
                     "params": [
-                      "retrieveAllFeatureValues"
+                      "contextIds"
                     ],
                     "type": "alias"
                   }
@@ -404,19 +374,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Retrieve all feature values",
+          "title": "Global retrieve context IDs counter",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -447,7 +411,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Retrieve all feature values"
+      "title": "Global retrieve context IDs counter"
     },
     {
       "collapse": false,
@@ -489,11 +453,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName.$tag_featureName",
+              "alias": "$tag_confName",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -510,18 +474,12 @@
                 },
                 {
                   "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
                     "null"
                   ],
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.retriever.feature-bucket",
+              "measurement": "streaming.model.retriever.entity-event-value",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -529,7 +487,7 @@
                 [
                   {
                     "params": [
-                      "retrieveSingleFeatureValue"
+                      "entityEventsData"
                     ],
                     "type": "field"
                   },
@@ -539,7 +497,7 @@
                   },
                   {
                     "params": [
-                      "retrieveSingleFeatureValue"
+                      "entityEventsData"
                     ],
                     "type": "alias"
                   }
@@ -550,19 +508,13 @@
                   "key": "confName",
                   "operator": "=~",
                   "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "Retrieve single feature value",
+          "title": "Entity event data documents counter",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -593,153 +545,7 @@
         }
       ],
       "showTitle": false,
-      "title": "Retrieve single feature value"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 5,
-          "interval": ">60s",
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": false,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_confName.$tag_featureName",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "confName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "featureName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "streaming.model.retriever.feature-bucket",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "replacePattern"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "replacePattern"
-                    ],
-                    "type": "alias"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "confName",
-                  "operator": "=~",
-                  "value": "/^$conf$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "featureName",
-                  "operator": "=~",
-                  "value": "/^$feature$/"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "Replace pattern",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "ops",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "showTitle": false,
-      "title": "Replace pattern"
+      "title": "Entity event data documents counter"
     }
   ],
   "time": {
@@ -795,251 +601,60 @@
             "selected": true
           },
           {
-            "text": "city_crmsf_daily",
-            "value": "city_crmsf_daily",
+            "text": "anomalous_admin_activity_normalized_username_daily",
+            "value": "anomalous_admin_activity_normalized_username_daily",
             "selected": false
           },
           {
-            "text": "city_vpn_daily",
-            "value": "city_vpn_daily",
+            "text": "anomalous_admin_activity_normalized_username_hourly",
+            "value": "anomalous_admin_activity_normalized_username_hourly",
             "selected": false
           },
           {
-            "text": "city_vpn_session_daily",
-            "value": "city_vpn_session_daily",
+            "text": "brute_force_normalized_username_daily",
+            "value": "brute_force_normalized_username_daily",
             "selected": false
           },
           {
-            "text": "normalized_dst_machine_kerberos_logins_daily",
-            "value": "normalized_dst_machine_kerberos_logins_daily",
+            "text": "brute_force_normalized_username_hourly",
+            "value": "brute_force_normalized_username_hourly",
             "selected": false
           },
           {
-            "text": "normalized_dst_machine_oracle_daily",
-            "value": "normalized_dst_machine_oracle_daily",
+            "text": "data_exfiltration_normalized_username_daily",
+            "value": "data_exfiltration_normalized_username_daily",
             "selected": false
           },
           {
-            "text": "normalized_dst_machine_ssh_daily",
-            "value": "normalized_dst_machine_ssh_daily",
+            "text": "data_exfiltration_normalized_username_hourly",
+            "value": "data_exfiltration_normalized_username_hourly",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_kerberos_logins_daily",
-            "value": "normalized_src_machine_kerberos_logins_daily",
+            "text": "normalized_username_daily",
+            "value": "normalized_username_daily",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_kerberos_tgt_daily",
-            "value": "normalized_src_machine_kerberos_tgt_daily",
+            "text": "normalized_username_hourly",
+            "value": "normalized_username_hourly",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_ntlm_daily",
-            "value": "normalized_src_machine_ntlm_daily",
+            "text": "snooping_normalized_username_daily",
+            "value": "snooping_normalized_username_daily",
             "selected": false
           },
           {
-            "text": "normalized_src_machine_oracle_daily",
-            "value": "normalized_src_machine_oracle_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine_prnlog_daily",
-            "value": "normalized_src_machine_prnlog_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine_ssh_daily",
-            "value": "normalized_src_machine_ssh_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine_vpn_daily",
-            "value": "normalized_src_machine_vpn_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine_vpn_session_daily",
-            "value": "normalized_src_machine_vpn_session_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_crmsf_daily",
-            "value": "normalized_username_crmsf_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_gwame_daily",
-            "value": "normalized_username_gwame_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_kerberos_logins_daily",
-            "value": "normalized_username_kerberos_logins_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_kerberos_tgt_daily",
-            "value": "normalized_username_kerberos_tgt_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_ntlm_daily",
-            "value": "normalized_username_ntlm_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_oracle_daily",
-            "value": "normalized_username_oracle_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_prnlog_daily",
-            "value": "normalized_username_prnlog_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_ssh_daily",
-            "value": "normalized_username_ssh_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_vpn_daily",
-            "value": "normalized_username_vpn_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_vpn_session_daily",
-            "value": "normalized_username_vpn_session_daily",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_wame_daily",
-            "value": "normalized_username_wame_daily",
-            "selected": false
-          },
-          {
-            "text": "target_machine_prnlog_daily",
-            "value": "target_machine_prnlog_daily",
+            "text": "snooping_normalized_username_hourly",
+            "value": "snooping_normalized_username_hourly",
             "selected": false
           }
         ],
-        "query": "SHOW TAG VALUES FROM \"streaming.model.retriever.feature-bucket\" WITH KEY = \"confName\"",
+        "query": "SHOW TAG VALUES FROM \"streaming.model.retriever.entity-event-value\" WITH KEY = \"confName\"",
         "refresh": 1,
+        "regex": "",
         "type": "query"
-      },
-      {
-        "allFormat": "glob",
-        "current": {
-          "tags": [],
-          "text": "All",
-          "value": [
-            "$__all"
-          ]
-        },
-        "datasource": null,
-        "hide": 0,
-        "includeAll": true,
-        "label": "feature",
-        "multi": true,
-        "name": "feature",
-        "options": [
-          {
-            "text": "All",
-            "value": "$__all",
-            "selected": true
-          },
-          {
-            "text": "action_type_histogram",
-            "value": "action_type_histogram",
-            "selected": false
-          },
-          {
-            "text": "auth_method_histogram",
-            "value": "auth_method_histogram",
-            "selected": false
-          },
-          {
-            "text": "country_histogram",
-            "value": "country_histogram",
-            "selected": false
-          },
-          {
-            "text": "databucket_histogram",
-            "value": "databucket_histogram",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix_histogram",
-            "value": "date_time_unix_histogram",
-            "selected": false
-          },
-          {
-            "text": "db_object_histogram",
-            "value": "db_object_histogram",
-            "selected": false
-          },
-          {
-            "text": "db_username_histogram",
-            "value": "db_username_histogram",
-            "selected": false
-          },
-          {
-            "text": "failure_code_histogram",
-            "value": "failure_code_histogram",
-            "selected": false
-          },
-          {
-            "text": "file_size_histogram",
-            "value": "file_size_histogram",
-            "selected": false
-          },
-          {
-            "text": "hostname_histogram",
-            "value": "hostname_histogram",
-            "selected": false
-          },
-          {
-            "text": "normalized_dst_machine_histogram",
-            "value": "normalized_dst_machine_histogram",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine_histogram",
-            "value": "normalized_src_machine_histogram",
-            "selected": false
-          },
-          {
-            "text": "normalized_username_histogram",
-            "value": "normalized_username_histogram",
-            "selected": false
-          },
-          {
-            "text": "return_code_histogram",
-            "value": "return_code_histogram",
-            "selected": false
-          },
-          {
-            "text": "status_histogram",
-            "value": "status_histogram",
-            "selected": false
-          },
-          {
-            "text": "target_machine_histogram",
-            "value": "target_machine_histogram",
-            "selected": false
-          },
-          {
-            "text": "total_pages_histogram",
-            "value": "total_pages_histogram",
-            "selected": false
-          }
-        ],
-        "query": "SHOW TAG VALUES FROM \"streaming.model.retriever.feature-bucket\" WITH KEY = \"featureName\" WHERE \"confName\" =~ /^$conf$/",
-        "refresh": 0,
-        "type": "query",
-        "useTags": false
       }
     ]
   },
@@ -1048,6 +663,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 2,
+  "version": 1,
   "links": []
 }
