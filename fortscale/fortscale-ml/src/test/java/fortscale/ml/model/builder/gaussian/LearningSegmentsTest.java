@@ -14,10 +14,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class LearningSegmentsTest {
@@ -54,21 +51,21 @@ public class LearningSegmentsTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfGivenNegativeSegmentCenter() {
-		new LearningSegments(createModels(), Collections.singletonList(-1.0), segmentorMock);
+		new LearningSegments(createModels(), Collections.singletonList(-1.0), segmentorMock).forEach(doubleDoublePair -> {});
 	}
 
     @Test
 	public void shouldCreateNoSegmentIfThereAreNoSegmentCenters() {
 		LearningSegments segments = new LearningSegments(createModels(0.0, 1.0, 2.0),
 				Collections.emptyList(), segmentorMock);
-		Assert.assertEquals(0, segments.size());
+		Assert.assertFalse(segments.iterator().hasNext());
 	}
 
 	@Test
 	public void shouldPassAllSegmentCentersToSegmentor() {
 		List<Double> segmentCenters = Arrays.asList(0.0, 1.0, 2.0);
 		double[] means = {0.0, 1.0, 2.0};
-		new LearningSegments(createModels(means), segmentCenters, segmentorMock);
+		new LearningSegments(createModels(means), segmentCenters, segmentorMock).forEach(doubleDoublePair -> {});
 
 		segmentCenters.forEach(segmentCenter -> Mockito.verify(segmentorMock).createSegment(means, segmentCenter));
 		Mockito.verifyNoMoreInteractions(segmentorMock);
@@ -82,15 +79,17 @@ public class LearningSegmentsTest {
 		Mockito.when(segmentorMock.createSegment(means, segmentCenters.get(1))).thenReturn(segment);
 		LearningSegments segments = new LearningSegments(createModels(means), segmentCenters, segmentorMock);
 
-		Assert.assertEquals(1, segments.size());
-		Assert.assertEquals(segment, segments.get(0));
+		Iterator<Pair<Double, Double>> it = segments.iterator();
+		Assert.assertEquals(segment, it.next());
+		Assert.assertFalse(it.hasNext());
 	}
 
 	@Test
 	public void shouldPassSortedMeansToSegmentor() {
 		double[] means = {1, 3, 2, 0};
 		double segmentCenter = 1;
-		new LearningSegments(createModels(means), Collections.singletonList(segmentCenter), segmentorMock);
+		new LearningSegments(createModels(means), Collections.singletonList(segmentCenter), segmentorMock)
+				.forEach(doubleDoublePair -> {});
 
 		Mockito.verify(segmentorMock).createSegment(new double[] {0, 1, 2, 3}, segmentCenter);
 	}
