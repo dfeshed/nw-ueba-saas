@@ -54,6 +54,7 @@ public class ApiAlertController extends BaseController {
 	public static final String START_TIME_COLUMN_NAME = "Start Time";
 	public static final String NUMBER_OF_INDICATORS_COLUMN_NAME = "# of Indicators";
 	public static final String STATUS_COLUMN_NAME = "Status";
+	public static final String FEEDBACK_COLUMN_NAME = "Feedback";
 	public static final String SEVERITY_COLUMN_NAME = "Severity";
 	public static final String ALERTS_CSV_FILE_NAME = "alerts.csv";
 	public static final String CSV_CONTENT_TYPE = "text/plain; charset=utf-8";
@@ -255,7 +256,21 @@ public class ApiAlertController extends BaseController {
 		AlertStatisticsEntity results = new AlertStatisticsEntity(	);
 
 		//Add statuses
-		Map<String,Integer> statusCounts = alertsService.groupCount(STATUS_COLUMN_NAME.toLowerCase(), null, null, null, startRange,null, null,null, null);
+		Map<String,Integer> statusCounts = new HashMap<>();
+		statusCounts.put(AlertStatus.Open.name(), 0);
+		statusCounts.put(AlertStatus.Closed.name(), 0);
+		//this temporary map is designed to map the 3 values (Approved, Rejected and None) into 2 values (Open, Closed)
+		//since we changed the status/feedback only on the UI
+		Map<String,Integer> tempCounts = alertsService.groupCount(FEEDBACK_COLUMN_NAME.toLowerCase(), null, null,
+				null, startRange, null, null, null, null);
+		for (Map.Entry<String, Integer> entry: tempCounts.entrySet()) {
+			if (!entry.getKey().equals(AlertFeedback.None.name())) {
+				statusCounts.put(AlertStatus.Closed.name(), entry.getValue() +
+						statusCounts.get(AlertStatus.Closed.name()));
+			} else {
+				statusCounts.put(AlertStatus.Open.name(), entry.getValue() + statusCounts.get(AlertStatus.Open.name()));
+			}
+		}
 		results.setAlertStatus(statusCounts);
 
 		//Add severities
