@@ -63,12 +63,13 @@ public class GaussianPriorModel implements Model {
 		this.segmentPriors = new SegmentPrior[]{};
 	}
 
-	public void init(List<SegmentPrior> segmentPriors) {
+	public GaussianPriorModel init(List<SegmentPrior> segmentPriors) {
 		Assert.notNull(segmentPriors);
 		Set<Double> means = new HashSet<>();
 		segmentPriors.forEach(segmentPrior -> Assert.isTrue(means.add(segmentPrior.mean)));
 		Collections.sort(segmentPriors);
 		this.segmentPriors = segmentPriors.toArray(new SegmentPrior[]{});
+		return this;
 	}
 
 	public Double getPrior(double mean) {

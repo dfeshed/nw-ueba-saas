@@ -25,25 +25,23 @@ public class GaussianPriorModelTest {
 
 	@Test
 	public void shouldReturnTheSamePriorAsWasPassedToInitWhenOnlyOneSegment() {
-		GaussianPriorModel model = new GaussianPriorModel();
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean = 1;
 		double prior = 2;
 		priors.add(new GaussianPriorModel.SegmentPrior(mean, prior, 0, 0));
-		model.init(priors);
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
 		Assert.assertEquals(prior, model.getPrior(mean), 0.00001);
 	}
 
 	@Test
 	public void shouldReturnTheSamePriorAsWasPassedToInitWhenInTheSupportWhenOnlyOneSegment() {
-		GaussianPriorModel model = new GaussianPriorModel();
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean = 1;
 		double prior = 2;
 		double supportRadiusAroundMean = 0.5;
 		priors.add(new GaussianPriorModel.SegmentPrior(mean, prior, supportRadiusAroundMean));
-		model.init(priors);
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
 		Assert.assertEquals(prior, model.getPrior(mean + supportRadiusAroundMean), 0.0000);
 		Assert.assertNull(model.getPrior(mean + supportRadiusAroundMean + 0.00001));
@@ -51,7 +49,6 @@ public class GaussianPriorModelTest {
 
 	@Test
 	public void shouldReturnThePriorOfFirstSegmentIfOutsideTheSecondSegment() {
-		GaussianPriorModel model = new GaussianPriorModel();
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean1 = 1;
 		double prior1 = 2;
@@ -61,14 +58,13 @@ public class GaussianPriorModelTest {
 		double prior2 = 2000;
 		double supportRadiusAroundMean2 = 0.5;
 		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, supportRadiusAroundMean2));
-		model.init(priors);
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
 		Assert.assertEquals(prior1, model.getPrior(mean1 + supportRadiusAroundMean1), 0.0000);
 	}
 
 	@Test
 	public void shouldReturnThePriorsWeightedAverageWhenInsideTwoSegments() {
-		GaussianPriorModel model = new GaussianPriorModel();
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean1 = 1;
 		double prior1 = 12;
@@ -76,7 +72,7 @@ public class GaussianPriorModelTest {
 		double mean2 = 4;
 		double prior2 = 3;
 		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, 10));
-		model.init(priors);
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
 		double weightOn2 = 2.0/3;
 		Assert.assertEquals(weightOn2 * prior2 + (1 - weightOn2) * prior1, model.getPrior(mean1 + (mean2 - mean1) * weightOn2), 0.0000);
@@ -84,26 +80,24 @@ public class GaussianPriorModelTest {
 
 	@Test
 	public void shouldReturnThePriorOfTheCloserSegmentIfThereAreTwoContainingSegmentsFromTheSameSide() {
-		GaussianPriorModel model = new GaussianPriorModel();
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean = 1;
 		double prior1 = 12;
 		priors.add(new GaussianPriorModel.SegmentPrior(mean + 1, prior1, 10));
 		double prior2 = 3;
 		priors.add(new GaussianPriorModel.SegmentPrior(mean + 2, prior2, 10));
-		model.init(priors);
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
 		Assert.assertEquals(prior1, model.getPrior(mean), 0.0000);
 	}
 
 	@Test
 	public void shouldReturnNullIfOutsideTheCloserSegmentSupportButInsideTheFarSegmentSupport() {
-		GaussianPriorModel model = new GaussianPriorModel();
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean = 1;
 		priors.add(new GaussianPriorModel.SegmentPrior(mean + 1, 1, 0));
 		priors.add(new GaussianPriorModel.SegmentPrior(mean + 2, 2, 10));
-		model.init(priors);
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
 		Assert.assertNull(model.getPrior(mean));
 	}
