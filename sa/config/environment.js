@@ -43,7 +43,7 @@ module.exports = function(environment) {
         }
       },
       incident: {
-        socketUrl: '/response',
+        socketUrl: '/response/socket',
         stream: {
           defaultStreamLimit: 100000,
           subscriptionDestination: '/topic/incidents/%@',
