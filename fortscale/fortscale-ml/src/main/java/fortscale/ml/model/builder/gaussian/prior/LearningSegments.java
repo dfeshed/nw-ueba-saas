@@ -4,6 +4,7 @@ import fortscale.ml.model.ContinuousDataModel;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -42,7 +43,7 @@ import java.util.stream.StreamSupport;
  *              will be used for learning
  *                 a GaussianPriorModel
  */
-public class LearningSegments {
+public class LearningSegments implements Iterable<Pair<Double, Double>> {
 	private List<Pair<Double, Double>> segments;
 
 	public LearningSegments(List<ContinuousDataModel> models,
@@ -69,5 +70,10 @@ public class LearningSegments {
 
 	public Pair<Double, Double> get(int index) {
 		return segments.get(index);
+	}
+
+	@Override
+	public Iterator<Pair<Double, Double>> iterator() {
+		return segments.iterator();
 	}
 }
