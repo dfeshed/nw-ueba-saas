@@ -1,4 +1,4 @@
-package fortscale.ml.model.builder;
+package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
 import org.junit.Assert;
