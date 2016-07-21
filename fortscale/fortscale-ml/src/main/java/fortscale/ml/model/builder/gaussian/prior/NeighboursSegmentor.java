@@ -66,7 +66,7 @@ public class NeighboursSegmentor implements Segmentor {
 			meanIndexClosestToCenter = -meanIndexClosestToCenter - 1;
 			if (meanIndexClosestToCenter == sortedMeans.length) {
 				meanIndexClosestToCenter--;
-			} else if (segmentCenter > 0 &&
+			} else if (meanIndexClosestToCenter > 0 &&
 					segmentCenter - sortedMeans[meanIndexClosestToCenter - 1] < sortedMeans[meanIndexClosestToCenter] - segmentCenter) {
 				meanIndexClosestToCenter--;
 			}
