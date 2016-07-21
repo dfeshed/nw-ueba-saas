@@ -3,8 +3,6 @@ package fortscale.ml.model.builder.gaussian;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.LearningSegments;
 import fortscale.ml.model.builder.gaussian.prior.Segmentor;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -66,12 +64,12 @@ public class LearningSegmentsTest {
 		double segmentCenterResultingInSegment = 1;
 		List<Double> segmentCenters = Arrays.asList(0.0, segmentCenterResultingInSegment, 2.0);
 		double[] means = {0.0, 1.0, 2.0};
-		Pair<Double, Double> segment = new ImmutablePair<>(0.0, 2.0);
+		Segmentor.Segment segment = new Segmentor.Segment(0, 2, 0, 1);
 		Mockito.when(segmentorMock.createSegment(means, segmentCenterResultingInSegment)).thenReturn(segment);
 		LearningSegments segments = new LearningSegments(createModels(means), segmentCenters, segmentorMock);
 
 		Iterator<LearningSegments.Segment> it = segments.iterator();
-		LearningSegments.Segment expectedSegment = new LearningSegments.Segment(segmentCenterResultingInSegment, segment.getLeft(), segment.getRight());
+		LearningSegments.Segment expectedSegment = new LearningSegments.Segment(segmentCenterResultingInSegment, segment);
 		Assert.assertEquals(expectedSegment, it.next());
 		Assert.assertFalse(it.hasNext());
 	}

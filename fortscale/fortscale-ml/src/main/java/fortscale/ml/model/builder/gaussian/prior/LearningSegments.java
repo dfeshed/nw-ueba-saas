@@ -2,7 +2,6 @@ package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
 import java.util.Iterator;
@@ -45,14 +44,12 @@ import java.util.stream.StreamSupport;
  */
 public class LearningSegments implements Iterable<LearningSegments.Segment> {
 	public static class Segment {
-		public double center;
-		public double left;
-		public double right;
+		private double center;
+		private Segmentor.Segment segment;
 
-		public Segment(Double center, double left, double right) {
+		public Segment(Double center, Segmentor.Segment segment) {
 			this.center = center;
-			this.left = left;
-			this.right = right;
+			this.segment = segment;
 		}
 
 		@Override
@@ -61,12 +58,32 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 				return false;
 			}
 			Segment o = (Segment) obj;
-			return o.center == center && o.left == left && o.right == right;
+			return o.center == center && o.segment.equals(segment);
 		}
 
 		@Override
 		public int hashCode() {
-			return new HashCodeBuilder().append(center).append(left).append(right).hashCode();
+			return new HashCodeBuilder().append(center).append(segment).hashCode();
+		}
+
+		public double getCenter() {
+			return center;
+		}
+
+		public int getLeftModelIndex() {
+			return segment.leftModelIndex;
+		}
+
+		public int getRightModelIndex() {
+			return segment.rightModelIndex;
+		}
+
+		public double getLeftMean() {
+			return segment.leftMean;
+		}
+
+		public double getRightMean() {
+			return segment.rightMean;
 		}
 	}
 
@@ -93,11 +110,11 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 		return StreamSupport.stream(segmentCenters.spliterator(), false)
 				.map(segmentCenter -> {
 					Assert.isTrue(segmentCenter >= 0, "segment centers can't be negative");
-					Pair<Double, Double> segment = segmentor.createSegment(sortedMeans, segmentCenter);
+					Segmentor.Segment segment = segmentor.createSegment(sortedMeans, segmentCenter);
 					if (segment == null) {
 						return null;
 					}
-					return new Segment(segmentCenter, segment.getLeft(), segment.getRight());
+					return new Segment(segmentCenter, segment);
 				})
 				.filter(Objects::nonNull)
 				.iterator();

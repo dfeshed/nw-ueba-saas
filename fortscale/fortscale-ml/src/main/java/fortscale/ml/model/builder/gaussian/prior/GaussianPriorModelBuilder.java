@@ -6,7 +6,10 @@ import fortscale.ml.model.Model;
 import fortscale.ml.model.builder.IModelBuilder;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 public class GaussianPriorModelBuilder implements IModelBuilder {
@@ -40,15 +43,16 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		models = getModelsWithEnoughSamples(models);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
 		for (LearningSegments.Segment segment : createLearningSegments(models)) {
-			OptionalDouble maxValueInsideSegment = getModelsInsideSegment(models, segment).stream()
+			OptionalDouble maxValueInsideSegment = models
+					.subList(segment.getLeftModelIndex(), segment.getRightModelIndex() + 1).stream()
 					.mapToDouble(ContinuousDataModel::getMaxValue)
 					.max();
 			if (maxValueInsideSegment.isPresent()) {
 				segmentPriors.add(new GaussianPriorModel.SegmentPrior(
-						segment.center,
+						segment.getCenter(),
 						maxValueInsideSegment.getAsDouble(),
-						segment.center - segment.left,
-						segment.right - segment.center)
+						segment.getCenter() - segment.getLeftMean(),
+						segment.getRightMean() - segment.getCenter())
 				);
 			}
 		}
@@ -59,33 +63,6 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		return models.stream()
 				.filter(model -> model.getNumOfSamples() >= conf.getMinNumOfSamplesToLearnFrom())
 				.collect(Collectors.toList());
-	}
-
-	private List<ContinuousDataModel> getModelsInsideSegment(List<ContinuousDataModel> models, LearningSegments.Segment segment) {
-		int leftIndex = Collections.binarySearch(
-				models,
-				new ContinuousDataModel().setParameters(0, segment.left, 0, 0),
-				MODELS_COMPARATOR
-		);
-		if (leftIndex < 0) {
-			leftIndex = -leftIndex - 1;
-		}
-		while (leftIndex > 0 && models.get(leftIndex - 1).getMean() == models.get(leftIndex).getMean()) {
-			leftIndex--;
-		}
-		int rightIndex = Collections.binarySearch(
-				models,
-				new ContinuousDataModel().setParameters(0, segment.right, 0, 0),
-				MODELS_COMPARATOR
-		);
-		if (rightIndex < 0) {
-			rightIndex = -rightIndex - 1;
-			rightIndex = Math.max(0, rightIndex - 1);
-		}
-		while (rightIndex < models.size() - 1 && models.get(rightIndex + 1).getMean() == models.get(rightIndex).getMean()) {
-			rightIndex++;
-		}
-		return models.subList(leftIndex, rightIndex + 1);
 	}
 
 	private List<ContinuousDataModel> castModelBuilderData(Object modelBuilderData) {

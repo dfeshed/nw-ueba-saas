@@ -1,7 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
 import java.util.Arrays;
@@ -108,9 +107,9 @@ public class NeighboursSegmentor implements Segmentor {
 		return segmentIndices.right - segmentIndices.left + 1;
 	}
 
-	private MutablePair<Double, Double> createSegmentFromIndices(MutablePair<Integer, Integer> segmentIndices,
-																 double segmentCenter,
-																 double[] sortedMeans) {
+	private MutablePair<Double, Double> createMeansSegmentFromIndices(MutablePair<Integer, Integer> segmentIndices,
+																	  double segmentCenter,
+																	  double[] sortedMeans) {
 		MutablePair<Double, Double> segment = new MutablePair<>(
 				sortedMeans[segmentIndices.left],
 				sortedMeans[segmentIndices.right]
@@ -136,7 +135,7 @@ public class NeighboursSegmentor implements Segmentor {
 	}
 
 	@Override
-	public Pair<Double, Double> createSegment(double[] sortedMeans, double segmentCenter) {
+	public Segment createSegment(double[] sortedMeans, double segmentCenter) {
 		int meanIndexClosestToSegmentCenter = findMeanIndexClosestToSegmentCenter(sortedMeans, segmentCenter);
 		MutablePair<Integer, Integer> segmentIndices = new MutablePair<>(
 				meanIndexClosestToSegmentCenter,
@@ -150,6 +149,10 @@ public class NeighboursSegmentor implements Segmentor {
 			}
 			expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedMeans);
 		}
-		return createSegmentFromIndices(segmentIndices, segmentCenter, sortedMeans);
+		MutablePair<Double, Double> meansSegment = createMeansSegmentFromIndices(segmentIndices, segmentCenter, sortedMeans);
+		if (meansSegment == null) {
+			return null;
+		}
+		return new Segment(meansSegment.left, meansSegment.right, segmentIndices.left, segmentIndices.right);
 	}
 }

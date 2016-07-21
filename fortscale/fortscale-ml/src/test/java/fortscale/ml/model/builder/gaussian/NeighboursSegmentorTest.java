@@ -1,10 +1,11 @@
 package fortscale.ml.model.builder.gaussian;
 
 import fortscale.ml.model.builder.gaussian.prior.NeighboursSegmentor;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
+import fortscale.ml.model.builder.gaussian.prior.Segmentor;
 import org.junit.Assert;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 public class NeighboursSegmentorTest {
     @Test(expected = IllegalArgumentException.class)
@@ -27,12 +28,40 @@ public class NeighboursSegmentorTest {
 		new NeighboursSegmentor(100, 0.1, 0, -1);
 	}
 
+	private void assertSegmentEquals(double[] sortedMeans,
+									 double expectedPadding,
+									 double expectedLeftMean,
+									 double expectedRightMean,
+									 Segmentor.Segment actualSegment) {
+		Assert.assertEquals(new Segmentor.Segment(
+				expectedLeftMean,
+				expectedRightMean,
+				Arrays.binarySearch(sortedMeans, expectedLeftMean + expectedPadding),
+				Arrays.binarySearch(sortedMeans, expectedRightMean - expectedPadding)
+		), actualSegment);
+	}
+
+	private void assertSegmentEquals(double expectedLeftMean,
+									 double expectedRightMean,
+									 int leftModelIndex,
+									 int rightModelIndex,
+									 Segmentor.Segment actualSegment) {
+		Assert.assertEquals(new Segmentor.Segment(
+				expectedLeftMean,
+				expectedRightMean,
+				leftModelIndex,
+				rightModelIndex
+		), actualSegment);
+	}
+
 	@Test
 	public void shouldCreateSegmentOfZeroWidthWhenNumberOfNeighboursIsOne() {
 		double segmentCenter = 1;
-		Pair<Double, Double> segment = new NeighboursSegmentor(1, 0.1, 10, 0)
-				.createSegment(new double[]{segmentCenter - 1, segmentCenter, segmentCenter + 1}, segmentCenter);
-		Assert.assertEquals(new ImmutablePair<>(segmentCenter, segmentCenter), segment);
+		double[] sortedMeans = {segmentCenter - 1, segmentCenter, segmentCenter + 1};
+		int padding = 0;
+		Segmentor.Segment segment = new NeighboursSegmentor(1, 0.1, 10, padding)
+				.createSegment(sortedMeans, segmentCenter);
+		assertSegmentEquals(sortedMeans, padding, segmentCenter, segmentCenter, segment);
 	}
 
 	@Test
@@ -46,60 +75,63 @@ public class NeighboursSegmentorTest {
 	public void shouldCreateSegmentBigEnoughToContainDesiredNumberOfNeighbours() {
 		double segmentCenter = 10;
 		double segmentRadius = 1;
-		double[] means = {
+		double[] sortedMeans = {
 				segmentCenter - 2 * segmentRadius,
 				segmentCenter - segmentRadius,
 				segmentCenter,
 				segmentCenter + segmentRadius,
 				segmentCenter + 2 * segmentRadius
 		};
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, 0);
-		Pair<Double, Double> segment = segments.createSegment(means, segmentCenter);
+		int padding = 0;
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, padding);
+		Segmentor.Segment segment = segments.createSegment(sortedMeans, segmentCenter);
 
-		Assert.assertEquals(new ImmutablePair<>(segmentCenter - segmentRadius, segmentCenter + segmentRadius),
-				segment);
+		assertSegmentEquals(sortedMeans, padding, segmentCenter - segmentRadius, segmentCenter + segmentRadius, segment);
 	}
 
 	@Test
 	public void shouldCreateSmallestSymmetricPossibleSegmentWhichContainDesiredNumberOfNeighbours() {
 		double segmentCenter = 10;
 		double segmentRadius = 1;
-		double[] means = {
+		double[] sortedMeans = {
 				segmentCenter - 2 * segmentRadius,
 				segmentCenter,
 				segmentCenter + segmentRadius / 2,
 				segmentCenter + segmentRadius
 		};
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, 0);
-		Pair<Double, Double> segment = segments.createSegment(means, segmentCenter);
+		int padding = 0;
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, padding);
+		Segmentor.Segment segment = segments.createSegment(sortedMeans, segmentCenter);
 
-		Assert.assertEquals(new ImmutablePair<>(segmentCenter - segmentRadius, segmentCenter + segmentRadius),
-				segment);
+		assertSegmentEquals(segmentCenter - segmentRadius, segmentCenter + segmentRadius, 1, 3, segment);
 	}
 
 	@Test
 	public void shouldAddPaddingToTheCreatedSegment() {
 		double segmentCenter = 1;
 		double padding = 1;
-		Pair<Double, Double> segment = new NeighboursSegmentor(1, 0.1, 10, padding)
-				.createSegment(new double[]{segmentCenter}, segmentCenter);
-		Assert.assertEquals(new ImmutablePair<>(segmentCenter - padding, segmentCenter + padding), segment);
+		double[] sortedMeans = {segmentCenter};
+		Segmentor.Segment segment = new NeighboursSegmentor(1, 0.1, 10, padding)
+				.createSegment(sortedMeans, segmentCenter);
+		assertSegmentEquals(sortedMeans, padding, segmentCenter - padding, segmentCenter + padding, segment);
 	}
 
 	@Test
 	public void shouldDiscardSegmentIfTooBigRelativeToItsCenter() {
-		double[] means = {94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0};
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 0, 0);
+		double[] sortedMeans = {94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0};
+		int padding = 0;
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 0, padding);
 
-		Assert.assertNull(segments.createSegment(means, 100));
-		Assert.assertEquals(new ImmutablePair<>(950.0, 1050.0), segments.createSegment(means, 1000));
+		Assert.assertNull(segments.createSegment(sortedMeans, 100));
+		assertSegmentEquals(sortedMeans, padding, 950, 1050, segments.createSegment(sortedMeans, 1000));
 	}
 
 	@Test
 	public void shouldDiscardSegmentIfTooBigRelativeToItsCenterOnlyIfBiggerThanMaxSegmentWidthToNotDiscardBecauseOfBadRatio() {
-		double[] means = {94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0};
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 100000, 0);
+		double[] sortedMeans = {94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0};
+		int padding = 0;
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 100000, padding);
 
-		Assert.assertEquals(new ImmutablePair<>(94.9, 105.1), segments.createSegment(means, 100));
+		assertSegmentEquals(sortedMeans, padding,94.9, 105.1, segments.createSegment(sortedMeans, 100));
 	}
 }
