@@ -27,12 +27,14 @@ public class ContinuousDataModel implements Model {
 	 * @param mean		new mean.
 	 * @param sd		new standard deviation.
 	 * @param maxValue	new maximal value.
+	 * @return			this (for chaining).
 	 */
-	public void setParameters(long N, double mean, double sd, double maxValue) {
+	public ContinuousDataModel setParameters(long N, double mean, double sd, double maxValue) {
 		this.N = N;
 		this.mean = mean;
 		this.sd = sd;
 		this.maxValue = maxValue;
+		return this;
 	}
 
 	@Override

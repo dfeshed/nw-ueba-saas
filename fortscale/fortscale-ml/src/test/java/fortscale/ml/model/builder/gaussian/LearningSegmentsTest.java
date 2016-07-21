@@ -24,9 +24,7 @@ public class LearningSegmentsTest {
 	private List<ContinuousDataModel> createModels(double... means) {
 		List<ContinuousDataModel> models = new ArrayList<>();
 		for (Double mean : means) {
-			ContinuousDataModel model = new ContinuousDataModel();
-			model.setParameters(0, mean, 0, 0);
-			models.add(model);
+			models.add(new ContinuousDataModel().setParameters(0, mean, 0, 0));
 		}
 		return models;
 	}

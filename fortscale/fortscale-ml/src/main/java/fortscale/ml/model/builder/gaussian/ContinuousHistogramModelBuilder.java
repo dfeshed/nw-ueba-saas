@@ -39,9 +39,7 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
         }
         double sd = Math.sqrt(sum / totalCount);
 
-        ContinuousDataModel model = new ContinuousDataModel();
-        model.setParameters((long)totalCount, round(mean), round(sd), round(maxValue));
-        return model;
+        return new ContinuousDataModel().setParameters((long)totalCount, round(mean), round(sd), round(maxValue));
     }
 
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {

@@ -16,8 +16,8 @@ public class ContinuousHistogramModelBuilderTest {
                                    double expectedMean,
                                    double expectedSD,
                                    double expectedMaxValue) {
-        ContinuousDataModel expectedModel = new ContinuousDataModel();
-        expectedModel.setParameters(expectedN, expectedMean, expectedSD, expectedMaxValue);
+        ContinuousDataModel expectedModel = new ContinuousDataModel()
+				.setParameters(expectedN, expectedMean, expectedSD, expectedMaxValue);
         Assert.assertEquals(expectedModel, actualModel);
     }
 

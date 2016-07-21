@@ -34,9 +34,7 @@ public class UniformSegmentCentersTest {
         List<ContinuousDataModel> models = new ArrayList<>();
         double[] means = {2, 2.2};
         for (double mean : means) {
-            ContinuousDataModel model = new ContinuousDataModel();
-            model.setParameters(0, mean, 0, 0);
-            models.add(model);
+            models.add(new ContinuousDataModel().setParameters(0, mean, 0, 0));
         }
 
         UniformSegmentCenters segmentCenters = new UniformSegmentCenters(models, 1);
