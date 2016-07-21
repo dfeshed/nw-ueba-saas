@@ -55,6 +55,12 @@ public class GaussianPriorModel implements Model {
 				return 0;
 			}
 		}
+
+		@Override
+		public String toString() {
+			return String.format("<SegmentPrior: mean=%f, priorAtMean=%f, supportFromLeftOfMean=%f, supportFromRightOfMean=%f>",
+					mean, priorAtMean, supportFromLeftOfMean, supportFromRightOfMean);
+		}
 	}
 
 	private SegmentPrior[] segmentPriors;

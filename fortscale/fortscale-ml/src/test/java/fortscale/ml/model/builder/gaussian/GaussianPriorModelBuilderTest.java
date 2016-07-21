@@ -32,9 +32,10 @@ public class GaussianPriorModelBuilderTest {
 	}
 
 	@Test
-	public void shouldBuildPriorFromOneModel() {
-		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(1, 1, 1, 1, 0, 0);
-		ContinuousDataModel model = new ContinuousDataModel().setParameters(0, 5, 0, 6);
+	public void shouldBuildOneSegmentPriorFromOneModel() {
+		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(1, 1, 0.0001, 0, 0, 0);
+		int mean = 2;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(0, mean, 0, 3);
 		GaussianPriorModel priorModel = (GaussianPriorModel) new GaussianPriorModelBuilder(conf)
 				.build(Collections.singletonList(model));
 
@@ -44,8 +45,23 @@ public class GaussianPriorModelBuilderTest {
 	}
 
 	@Test
-	public void shouldBuildPriorFromTwoModels() {
-		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(1, 1, 1, 1, 0, 0);
+	public void shouldBuildMultipleSegmentPriorsFromOneModelIfMaxRatioBetweenSegmentSizeToCenterAllowsIt() {
+		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(1, 1, 0.0001, 1000, 0, 0);
+		int mean = 2;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(0, mean, 0, 3);
+		GaussianPriorModel priorModel = (GaussianPriorModel) new GaussianPriorModelBuilder(conf)
+				.build(Collections.singletonList(model));
+
+		Assert.assertArrayEquals(new GaussianPriorModel.SegmentPrior[]{
+				new GaussianPriorModel.SegmentPrior(0, model.getMaxValue(), 2, 2),
+				new GaussianPriorModel.SegmentPrior(1, model.getMaxValue(), 1, 1),
+				new GaussianPriorModel.SegmentPrior(2, model.getMaxValue(), 0, 0)
+		}, priorModel.getSegmentPriors());
+	}
+
+	@Test
+	public void shouldBuildPriorFromTwoModelsInTheSameLearningSegment() {
+		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(1, 1, 0.0001, 0, 0, 0);
 		double mean = 5;
 		ContinuousDataModel model1 = new ContinuousDataModel().setParameters(0, mean, 0, 5);
 		ContinuousDataModel model2 = new ContinuousDataModel().setParameters(0, mean, 0, 6);
@@ -60,7 +76,7 @@ public class GaussianPriorModelBuilderTest {
 	@Test
 	public void shouldDiscardModelsWithoutEnoughSamples() {
 		int minNumOfSamplesToLearnFrom = 10;
-		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(1, 1, 1, 1, 0, minNumOfSamplesToLearnFrom);
+		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(1, 1, 0.0001, 0, 0, minNumOfSamplesToLearnFrom);
 		double mean = 5;
 		ContinuousDataModel model1 = new ContinuousDataModel().setParameters(minNumOfSamplesToLearnFrom, mean, 0, 5);
 		ContinuousDataModel model2 = new ContinuousDataModel().setParameters(0, mean, 0, 6);
@@ -69,6 +85,22 @@ public class GaussianPriorModelBuilderTest {
 
 		GaussianPriorModel.SegmentPrior expectedSegmentPrior =
 				new GaussianPriorModel.SegmentPrior(mean, model1.getMaxValue(), 0, 0);
+		Assert.assertArrayEquals(new GaussianPriorModel.SegmentPrior[]{expectedSegmentPrior}, priorModel.getSegmentPriors());
+	}
+
+	@Test
+	public void shouldDiscardModelIfOutsideTheLearningSegment() {
+		int padding = 1;
+		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(10000, 1, 0.00001, 0, padding, 0);
+		double mean = 0;
+		ContinuousDataModel model1 = new ContinuousDataModel().setParameters(0, mean, 0, 5);
+		ContinuousDataModel model2 = new ContinuousDataModel().setParameters(0, mean + 1, 0, 6);
+		ContinuousDataModel modelOutsideLearningSegment = new ContinuousDataModel().setParameters(0, mean + 10, 0, 7);
+		GaussianPriorModel priorModel = (GaussianPriorModel) new GaussianPriorModelBuilder(conf)
+				.build(Arrays.asList(model1, model2, modelOutsideLearningSegment));
+
+		GaussianPriorModel.SegmentPrior expectedSegmentPrior =
+				new GaussianPriorModel.SegmentPrior(mean, Math.max(model1.getMaxValue(), model2.getMaxValue()), padding, padding);
 		Assert.assertArrayEquals(new GaussianPriorModel.SegmentPrior[]{expectedSegmentPrior}, priorModel.getSegmentPriors());
 	}
 }

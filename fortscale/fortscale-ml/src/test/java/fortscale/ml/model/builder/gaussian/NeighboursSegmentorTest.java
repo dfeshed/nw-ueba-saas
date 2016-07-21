@@ -134,4 +134,13 @@ public class NeighboursSegmentorTest {
 
 		assertSegmentEquals(sortedMeans, padding,94.9, 105.1, segments.createSegment(sortedMeans, 100));
 	}
+
+	@Test
+	public void shouldCreateSegmentContainingTheCenterEvenIfModelsAreOnOneSideOfTheCenter() {
+		int mean = 5;
+		NeighboursSegmentor segments = new NeighboursSegmentor(1, 0.1, 100000, 0);
+		Segmentor.Segment segment = segments.createSegment(new double[]{mean}, 0);
+
+		assertSegmentEquals(-mean, mean, 0, 0, segment);
+	}
 }
