@@ -22,6 +22,8 @@ export default Route.extend({
   // Array holding the list of all subscriptions
   currentStreams: [],
 
+  listViewCube: null,
+
   /*
    * Creates a new stream object.
    * @param filter - array of object to filter the stream data
@@ -222,7 +224,7 @@ export default Route.extend({
       let incidentsCube = IncidentsCube.create({
         array: []
       });
-
+      this.set('listViewCube', incidentsCube);
       // Kick off the initial page load data request.
       this._createStream([{ field: 'statusSort', values: incidentStatusIds }],
         [{ field: 'prioritySort', descending: true }],
@@ -247,6 +249,13 @@ export default Route.extend({
   },
 
   actions: {
+    sortAction(field, direction) {
+      // gets the list view cube and calls the cube sort method
+      let cube = this.get('listViewCube');
+      run(() => {
+        cube.sort(field, (direction === 'desc'));
+      });
+    },
     /**
      * @name willTransition
      * @description when the router will transit to another route, the opened stream are being closed

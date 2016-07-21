@@ -2,7 +2,7 @@
   &__status-header {
     height: 1.5rem;
     padding-top: rsa-whitespace();
-    margin: rsa-whitespace(least) rsa-whitespace(most) rsa-whitespace() rsa-whitespace(most);
+    margin: rsa-whitespace(least) rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
 
     @include rsa-font(header, large);
     border-bottom: 1px solid rsa-color(gray, light);

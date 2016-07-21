@@ -47,6 +47,26 @@ export default Base.extend({
       getter(d) {
         return (d.riskScore || 0);
       }
+    },
+    'dateCreated': {
+      getter(d) {
+        return d.created || 0;
+      }
+    },
+    'alertCount': {
+      getter(d) {
+        return d.alertCount || 0;
+      }
+    },
+    'sources': {
+      getter(d) {
+        return d.sources || '';
+      }
+    },
+    'eventCount': {
+      getter(d) {
+        return d.eventCount || 0;
+      }
     }
   },
 

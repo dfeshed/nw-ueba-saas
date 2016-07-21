@@ -1,10 +1,13 @@
-<span class="rsa-respond-index-header__label">{{t "respond.myQueue"}}</span>
+<span class="rsa-respond-index-header__label">
+  {{t "respond.myQueue"}}
+  {{#if listViewActive}} ({{modelCount}}){{/if}}
+</span>
 <span class="rsa-respond-index-header__options">
   {{#rsa-form-button class=(concat 'rsa-respond-index-header__tile-btn' (unless listViewActive ' is-active')) isIconOnly=true click=(action 'tileIconClicked')}}
-    {{rsa-icon name='view-module-1'}}
+    {{rsa-icon size='small' name='view-module-1'}}
   {{/rsa-form-button}}
   {{#rsa-form-button class=(concat 'rsa-respond-index-header__list-btn' (if listViewActive ' is-active')) isIconOnly=true click=(action 'listIconClicked')}}
-    {{rsa-icon name='view-headline'}}
+    {{rsa-icon size='small' name='view-headline'}}
   {{/rsa-form-button}}
 </span>
 
