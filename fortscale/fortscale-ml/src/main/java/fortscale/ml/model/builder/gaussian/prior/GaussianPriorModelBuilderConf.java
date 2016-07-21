@@ -16,18 +16,21 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private double maxRatioBetweenSegmentSizeToCenter;
 	private double maxSegmentWidthToNotDiscardBecauseOfBadRatio;
 	private double padding;
+	private int minNumOfSamplesToLearnFrom;
 
 	@JsonCreator
 	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentsCenter") double distanceBetweenSegmentsCenter,
 										 @JsonProperty("numberOfNeighbours") int numberOfNeighbours,
 										 @JsonProperty("maxRatioBetweenSegmentSizeToCenter") double maxRatioBetweenSegmentSizeToCenter,
 										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
-										 @JsonProperty("padding") double padding) {
+										 @JsonProperty("padding") double padding,
+										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom) {
 		setDistanceBetweenSegmentsCenter(distanceBetweenSegmentsCenter);
 		setNumberOfNeighbours(numberOfNeighbours);
 		setMaxRatioBetweenSegmentSizeToCenter(maxRatioBetweenSegmentSizeToCenter);
 		setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(maxSegmentWidthToNotDiscardBecauseOfBadRatio);
 		setPadding(padding);
+		setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom);
 	}
 
 	@Override
@@ -60,6 +63,11 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.padding = padding;
 	}
 
+	public void setMinNumOfSamplesToLearnFrom(int minNumOfSamplesToLearnFrom) {
+		Assert.isTrue(minNumOfSamplesToLearnFrom >= 0, "minNumOfSamplesToLearnFrom is mandatory and must be a non-negative double.");
+		this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
+	}
+
 	public double getDistanceBetweenSegmentsCenter() {
 		return distanceBetweenSegmentsCenter;
 	}
@@ -78,5 +86,9 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 
 	public double getPadding() {
 		return padding;
+	}
+
+	public int getMinNumOfSamplesToLearnFrom() {
+		return minNumOfSamplesToLearnFrom;
 	}
 }

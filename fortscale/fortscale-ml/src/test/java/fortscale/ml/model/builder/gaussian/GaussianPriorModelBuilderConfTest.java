@@ -7,27 +7,32 @@ import org.junit.Test;
 public class GaussianPriorModelBuilderConfTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfDistanceBetweenSegmentsCenterIsZero() {
-		new GaussianPriorModelBuilderConf(0, 1, 1, 1, 1);
+		new GaussianPriorModelBuilderConf(0, 1, 1, 1, 1, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfNumberOfNeighboursIsZero() {
-		new GaussianPriorModelBuilderConf(1, 0, 1, 1, 1);
+		new GaussianPriorModelBuilderConf(1, 0, 1, 1, 1, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfMaxRatioBetweenSegmentSizeToCenterIsZero() {
-		new GaussianPriorModelBuilderConf(1, 1, 0, 1, 1);
+		new GaussianPriorModelBuilderConf(1, 1, 0, 1, 1, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfMaxSegmentWidthToNotDiscardBecauseOfBadRatioIsNegative() {
-		new GaussianPriorModelBuilderConf(1, 1, 1, -1, 1);
+		new GaussianPriorModelBuilderConf(1, 1, 1, -1, 1, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfPaddingIsNegative() {
-		new GaussianPriorModelBuilderConf(1, 1, 1, 1, -1);
+		new GaussianPriorModelBuilderConf(1, 1, 1, 1, -1, 1);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailIfMinNumOfSamplesToLearnFromIsNegative() {
+		new GaussianPriorModelBuilderConf(1, 1, 1, 1, 1, -1);
 	}
 
 	@Test
@@ -37,12 +42,14 @@ public class GaussianPriorModelBuilderConfTest {
 		int maxRatioBetweenSegmentSizeToCenter = 3;
 		int maxSegmentWidthToNotDiscardBecauseOfBadRatio = 4;
 		int padding = 5;
+		int minNumOfSamplesToLearnFrom = 6;
 		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(
 				distanceBetweenSegmentsCenter,
 				numberOfNeighbours,
 				maxRatioBetweenSegmentSizeToCenter,
 				maxSegmentWidthToNotDiscardBecauseOfBadRatio,
-				padding
+				padding,
+				minNumOfSamplesToLearnFrom
 		);
 
 		Assert.assertEquals(distanceBetweenSegmentsCenter, conf.getDistanceBetweenSegmentsCenter(), 0.00001);
@@ -50,6 +57,7 @@ public class GaussianPriorModelBuilderConfTest {
 		Assert.assertEquals(maxRatioBetweenSegmentSizeToCenter, conf.getMaxRatioBetweenSegmentSizeToCenter(), 0.00001);
 		Assert.assertEquals(maxSegmentWidthToNotDiscardBecauseOfBadRatio, conf.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(), 0.00001);
 		Assert.assertEquals(padding, conf.getPadding(), 0.00001);
+		Assert.assertEquals(minNumOfSamplesToLearnFrom, conf.getMinNumOfSamplesToLearnFrom(), 0.00001);
 		Assert.assertEquals("gaussian_prior_model_builder", conf.getFactoryName());
 	}
 }
