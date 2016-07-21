@@ -18,7 +18,7 @@ function fail {
 
 # if previous command has error, print message and exit
 function checkError {
-  local status=$? 
+  local status=$?
   if [[ $status != "0" ]]
   then
     fail "$1"
@@ -33,14 +33,20 @@ function pathExists {
   echo $_need
 }
 
+# variables required for NPM installs to function properly
+# Comment these out if running locally
 function setWebProxy {
-  # variables required for NPM installs to function properly
-  # Comment these out if running locally
   export http_proxy=http://10.253.136.253:82
-  # export https_proxy=http://10.253.136.253:82
 }
 
 function unsetWebProxy {
   unset http_proxy
-  # unset https_proxy
+}
+
+function setHttpsProxy {
+  export https_proxy=http://10.253.136.253:82
+}
+
+function unsetHttpsProxy {
+  unset https_proxy
 }

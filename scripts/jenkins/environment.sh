@@ -88,6 +88,7 @@ echo -e "Verifying environment for:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_C
 createDirectoryIfNecessary $LOCAL_CACHE_ROOT
 
 setWebProxy
+setHttpsProxy
 
 # install node.js/NPM
 installNodeTarballIfNecessary
@@ -107,6 +108,7 @@ installNPMLibraryIfNecessary "bower" "bower" $BOWER_COMMAND $BOWER_VERSION
 installNPMLibraryIfNecessary "ember-cli" "ember" $EMBER_CLI_COMMAND $EMBER_CLI_VERSION
 
 unsetWebProxy
+unsetHttpsProxy
 
 success "Environment setup complete"
 info "***********************"

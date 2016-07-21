@@ -56,8 +56,11 @@ function buildEmberApp {
   # 'ember test'
   runEmberTest $1
 
-  # 'ember build'
-  runEmberBuild $1
+  # 'ember build' when running full build
+  if [ "$EXTENT" == "FULL" ]
+  then
+    runEmberBuild $1
+  fi
 
   success "$1 is good!"
 }
@@ -92,10 +95,13 @@ setWebProxy
 buildEmberApp component-lib
 buildEmberApp style-guide
 
-#### Deploy style guide to host
-rm -rf /mnt/libhq-SA/SAStyle/production/*
-cp -r style-guide/dist/* /mnt/libhq-SA/SAStyle/production/
-success "Hosted style guide has been updated"
+#### Deploy style guide to host if running full build
+if [ "$EXTENT" == "FULL" ]
+then
+  rm -rf /mnt/libhq-SA/SAStyle/production/*
+  cp -r style-guide/dist/* /mnt/libhq-SA/SAStyle/production/
+  success "Hosted style guide has been updated"
+fi
 
 buildEmberApp sa
 

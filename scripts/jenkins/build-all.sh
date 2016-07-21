@@ -22,17 +22,29 @@ scriptDir="$(dirname "$0")"
 . $scriptDir/../_util.sh
 . $scriptDir/_settings.sh
 
+if [ -z ${EXTENT+x} ]
+then
+  fail "Please export EXTENT variable:"
+  fail "export EXTENT=FULL"
+  fail "or"
+  fail "export EXTENT=TEST"
+  exit 1
+fi
+
 #### Setup environment ####
 . $scriptDir/environment.sh
 
 #### Build Apps ####
 . $scriptDir/apps.sh
 
-#### Build RPM
-. $scriptDir/rpm.sh
+if [ "$EXTENT" == "FULL" ]
+then
+  #### Build RPM if running full build
+  . $scriptDir/rpm.sh
 
-#### Moving RPM to Yum directory
-. $scriptDir/yum.sh
+  #### Moving RPM to Yum directory if running full build
+  . $scriptDir/yum.sh
+fi
 
 #### Victory, poppin bottles
 success "Finished Build!"
