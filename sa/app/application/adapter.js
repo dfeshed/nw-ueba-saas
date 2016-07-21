@@ -79,9 +79,13 @@ export default RESTAdapter.extend({
    * @see http://emberjs.com/api/data/classes/DS.RESTAdapter.html#method_updateRecord
    * @public
    * Overrides the adapters updateRecord method.
+   * @param {DS.Store} store
+   * @param {DS.Model} type
+   * @param {DS.Snapshot} snapshot
+   * @param {Object} query - hash of socket request params
    */
-  updateRecord(store, type, snapshot) {
-    return this._trySocket('updateRecord', store, type, null, null, snapshot) || this._super(...arguments);
+  updateRecord(store, type, snapshot, query=null) {
+    return this._trySocket('updateRecord', store, type, query, null, snapshot) || this._super(...arguments);
   },
 
   /**
@@ -89,6 +93,11 @@ export default RESTAdapter.extend({
    * Typically a run-time error would only be thrown if there is no config defined in `sa/config/environment.js` for
    * the requested modelName-method pair.
    * @param {string} method One of: 'query', 'queryRecord', 'findRecord', 'findAll', 'createRecord', 'updateRecord', 'deleteRecord'.
+   * @param {DS.Store} store
+   * @param {DS.Model} type
+   * @param {Object} query
+   * @param {String} id
+   * @param {DS.Snapshot} snapshot
    * @returns {*}
    * @private
    */

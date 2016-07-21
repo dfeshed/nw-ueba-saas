@@ -4,7 +4,7 @@
  * @public
  */
 import Ember from 'ember';
-import { incidentStatusIds, incidentPriorityIds } from 'sa/incident/constants';
+import IncidentConstants from 'sa/incident/constants';
 import IncidentHelper from 'sa/incident/helpers';
 
 const {
@@ -27,6 +27,7 @@ export default Component.extend({
   classNames: 'rsa-incident-tile',
   classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
   eventBus: service('event-bus'),
+
   /**
    * The incident data record to be rendered.
    * @type Object
@@ -162,13 +163,11 @@ export default Component.extend({
         if (isEmpty(this.get('model.assignee'))) {
           this.set('model.assignee', {});
         }
-
         this.setProperties({
-          'model.statusSort': pendingStatus,
-          'model.prioritySort': pendingPriority,
+          'model.status': IncidentConstants.incidentStatusString[ pendingStatus ],
+          'model.priority': IncidentConstants.incidentPriorityString[ pendingPriority ],
           'model.assignee.id': pendingAssignee
         });
-
         this.sendAction('saveAction', this.get('model'));
       }
 
@@ -237,7 +236,7 @@ export default Component.extend({
    * @public
    */
   statusList: computed(function() {
-    return incidentStatusIds;
+    return IncidentConstants.incidentStatusIds;
   }),
 
   /**
@@ -247,7 +246,7 @@ export default Component.extend({
    * @public
    */
   priorityList: computed(function() {
-    return incidentPriorityIds;
+    return IncidentConstants.incidentPriorityIds;
   }),
 
   /**

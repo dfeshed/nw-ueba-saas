@@ -77,11 +77,7 @@ export default Route.extend({
         .autoStart()
         .subscribe((response) => {
           let { data } = response;
-          // notificationCode 0 => incidents was added, 1 => incidents were edited, 2 => incidents were deleted
-          // @TODO: not handling the delete incidents case yet
-          if (response.notificationCode !== 2) {
-            this._updateCube(data, cubes, filterFunc);
-          }
+          this._updateCube(data, cubes, filterFunc, response.notificationCode);
         }, function() {
           Logger.error('Error processing notify call for incident model');
         });
@@ -94,29 +90,62 @@ export default Route.extend({
    * @param incidents - array of incidents that has to be updated
    * @private
    */
-  _updateCube(incidents, cubes, filterFunc) {
+  _updateCube(incidents, cubes, filterFunc, notificationCode) {
     incidents.setEach('asyncUpdate', true);
 
-    let currentCubes = cubes,
-      filteredIncidents = filterFunc(incidents);
+    // If the user is in card view and the status is not in 'new', 'assigned' or 'in progress' remove it
+    if (this.get('respondMode.selected') === 'card') {
+      let incidentsToBeRemoved = [],
+      cardViewStatuses = [incStatus.ASSIGNED,incStatus.IN_PROGRESS, incStatus.NEW ];
+      incidentsToBeRemoved = incidents.filter((incident) => {
+        return (cardViewStatuses.indexOf(incident.statusSort) < 0);
+      });
+      cubes.forEach((cube) => {
+        incidentsToBeRemoved.forEach((incident, index) => {
+          let records = cube.get('records');
+          if (records.findBy('id', incident.id)) {
+            records.edit(incident.id, {}, true);
+            incidentsToBeRemoved.splice(index, 1);
+          }
+        });
+      });
+    }
+
+    let filteredIncidents = filterFunc(incidents),
+      [newIncidentsCube, inProgressCube] = cubes;
 
     filteredIncidents.forEach((incidents, index) => {
       // For each of the updated incident, check if the incident already exists in the cube.
       // If so, edit with the latest value, else add it to the list of records
-      let records = currentCubes[ index ].get('records'),
+      let records = cubes[ index ].get('records'),
         recordsToAdd = [];
-      incidents.forEach((incident) => {
-        if (records.findBy('id', incident.id)) {
-          records.edit(incident.id, incident);
-        } else {
-          /*
-           add the incident to be pushed to cube to a temporary array. we don't want
-           to trigger cube's calculations for every single push.
-           we'll do a bulk push to trigger the cube calculations just once.
-           */
-          recordsToAdd.pushObject(incident);
-        }
-      });
+
+      // notificationCode 0 => incidents was added, 1 => incidents were edited, 2 => incidents were deleted
+      if (notificationCode === 0) {
+        records.pushObjects(incidents);
+      } else if (notificationCode === 1) {
+        incidents.forEach((incident) => {
+          // For each of the updated incident, check if the incident already exists in the cube.
+          // If so, edit with the latest value, else add it to the list of records
+          if (records.findBy('id', incident.id)) {
+            records.edit(incident.id, incident);
+          } else {
+            /*
+             add the incident to be pushed to cube to a temporary array. we don't want
+             to trigger cube's calculations for every single push.
+             we'll do a bulk push to trigger the cube calculations just once.
+             */
+            recordsToAdd.pushObject(incident);
+            // Remove the updated items from the other cube (for ex, when status is changed, we need to delete the incident from the
+            // older cube instance)
+            if (incident.statusSort === incStatus.NEW) {
+              inProgressCube.get('records').edit(incident.id, {}, true);
+            } else if (incident.statusSort === incStatus.IN_PROGRESS || incident.statusSort === incStatus.ASSIGNED) {
+              newIncidentsCube.get('records').edit(incident.id, {}, true);
+            }
+          }
+        });
+      }
       if (recordsToAdd.length > 0) {
         records.pushObjects(recordsToAdd);
       }
@@ -256,8 +285,8 @@ export default Route.extend({
           Logger.log(`incident ${ model.id } found`);
 
           model.setProperties({
-            'statusSort': json.statusSort,
-            'prioritySort': json.prioritySort
+            'status': json.status,
+            'priority': json.priority
           });
 
           // Saving the assignee

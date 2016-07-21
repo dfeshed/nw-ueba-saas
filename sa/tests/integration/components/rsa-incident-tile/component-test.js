@@ -454,7 +454,7 @@ test('Incident status changed after press save', function(assert) {
   assert.equal(incident.statusSort, preStatusValue, 'After updating the Select, the incident status has its prev value before saving the model');
 
   container.find('.rsa-edit-tool').trigger('click');
-  assert.equal(incident.statusSort, newStatusValue, 'After clicking Save, Incident status has changed to its new value');
+  assert.equal(incident.status, 'ASSIGNED', 'After clicking Save, Incident status has changed to its new value');
 
 });
 
@@ -498,7 +498,7 @@ test('Incident priority changed after press save', function(assert) {
   assert.equal(incident.prioritySort, prePriorityValue, 'After updating the Select, the incident model priority has its prev value before saving the model');
 
   container.find('.rsa-edit-tool').trigger('click');
-  assert.equal(incident.prioritySort, newPriorityValue, 'After clicking Save, Incident priority has changed to its new value');
+  assert.equal(incident.priority, 'MEDIUM', 'After clicking Save, Incident priority has changed to its new value');
 
 });
 

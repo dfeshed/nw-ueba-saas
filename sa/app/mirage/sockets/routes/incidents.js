@@ -82,12 +82,27 @@ export default function(server) {
         incident.riskScore = Math.min(99, (10 + Math.round(100 * Math.random())));
         response.push(incident);
       });
+      // to mock async add/update/delete change the notificationCode here
+      // notificationCode can be 0/1/2 -> incident(s) in the response were added/updated/deleted respectively
+      // TODO: not handling delete incident use case yet. Will add it once back-end is ready
+      response.notificationCode = 0;
+      if (response.notificationCode === 0) {
+        // create a new incident
+        response.push(IncidentSamples.newIncident, IncidentSamples.assignedIncident, IncidentSamples.inProgressIncident);
 
-      response.push(IncidentSamples.newIncident, IncidentSamples.assignedIncident, IncidentSamples.inProgressIncident);
+        server.mirageServer.db.incident.insert(IncidentSamples.newIncident);
+        server.mirageServer.db.incident.insert(IncidentSamples.assignedIncident);
+        server.mirageServer.db.incident.insert(IncidentSamples.inProgressIncident);
 
-      server.mirageServer.db.incident.insert(IncidentSamples.newIncident);
-      server.mirageServer.db.incident.insert(IncidentSamples.assignedIncident);
-      server.mirageServer.db.incident.insert(IncidentSamples.inProgressIncident);
+      } else if (response.notificationCode === 1) {
+        // update the first 10 incidents
+        someIncidents.forEach((incident) => {
+          incident.statusSort = 1;
+          response.push(incident);
+        });
+        response.push(IncidentSamples.newIncident);
+        server.mirageServer.db.incident.insert(IncidentSamples.newIncident);
+      }
 
       server.streamList(
         response,
@@ -127,7 +142,7 @@ export default function(server) {
 
   server.route('incident', 'updateRecord', function(message, frames, server) {
     let frame = (frames && frames[0]) || {},
-      incident = server.mirageServer.db.incident.update(frame.body.id, frame.body);
+    incident = server.mirageServer.db.incident.update(frame.body.incidentId, frame.body.updates);
 
     server.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',

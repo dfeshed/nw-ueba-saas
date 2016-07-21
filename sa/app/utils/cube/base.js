@@ -57,8 +57,7 @@ function indexOfBy(key, value) {
 // @param {object|String} record Either the array item to be edited, or the value of its id field.
 // @param {object} [delta] A hash of key-value pairs to be applied to the record.
 // @returns {object} The modified record, if successful.
-function edit(record, delta) {
-
+function edit(record, delta, remove=false) {
   // Find the index for the specified record.
   let index = -1;
   if (record !== null) {
@@ -86,7 +85,12 @@ function edit(record, delta) {
     }
 
     // Remove & reinsert the record using Ember's KVO-compliant MutableArray.replace() method.
-    this.replace(index, 1, [record]);
+    if (remove) {
+      this.removeAt(index, 1);
+    } else {
+      this.replace(index, 1, [record]);
+    }
+
   }
   return record;
 }
