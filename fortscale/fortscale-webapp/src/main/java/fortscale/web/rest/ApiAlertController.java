@@ -259,6 +259,8 @@ public class ApiAlertController extends BaseController {
 		Map<String,Integer> statusCounts = new HashMap<>();
 		statusCounts.put(AlertStatus.Open.name(), 0);
 		statusCounts.put(AlertStatus.Closed.name(), 0);
+		//this temporary map is designed to map the 3 values (Approved, Rejected and None) into 2 values (Open, Closed)
+		//since we changed the status/feedback only on the UI
 		Map<String,Integer> tempCounts = alertsService.groupCount(FEEDBACK_COLUMN_NAME.toLowerCase(), null, null,
 				null, startRange, null, null, null, null);
 		for (Map.Entry<String, Integer> entry: tempCounts.entrySet()) {
