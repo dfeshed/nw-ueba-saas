@@ -44,7 +44,7 @@ test('it includes the proper classes when isError is true', function(assert) {
 test('it updates the value', function(assert) {
   this.set('model', false);
   this.render(hbs `{{rsa-form-checkbox value=model}}`);
-  this.$('input:first').attr('checked', true).trigger('change');
+  this.$('input:first').prop('checked', true).trigger('change');
   let that = this;
   return wait().then(function() {
     assert.equal(that.get('model'), true);
