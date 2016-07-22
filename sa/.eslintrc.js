@@ -1,25 +1,22 @@
 module.exports = {
-
   'plugins': [
     'ember-suave'
   ],
-
   'parserOptions': {
     'ecmaVersion': 6,
     'sourceType': 'module'
   },
-
   rules: {
     // SUAVE RULES
-
     // not available yet
     //'ember-suave/prefer-destructuring': 'error',
-
     'ember-suave/no-direct-property-access': 'error',
     'ember-suave/require-access-in-comments': 'error',
     'ember-suave/require-const-for-ember-properties': 'error',
 
     // BASIC ESLINT RULES
+    // STARTED WITH SUAVE, BUT MOVED AWAY
+    'radix': ['error', 'always'],
     'no-empty': 'error',
     'brace-style': ['error', '1tbs', {
       'allowSingleLine': false
@@ -29,9 +26,7 @@ module.exports = {
       'uninitialized': 'always',
       'initialized': 'never'
     }],
-    // 'operator-linebreak': ['error', 'before'],
     'operator-linebreak': ['error', 'after'],
-
     'key-spacing': ['error', {
       'beforeColon': false,
       'afterColon': true
@@ -58,15 +53,12 @@ module.exports = {
     'curly': ['error', 'all'],
     'dot-notation': 'error',
     'object-shorthand': 'error',
-    // 'newline-after-var': ['error', 'always'],
     'arrow-parens': 'error',
     'semi': ['error', 'always'],
     'space-infix-ops': 'error',
     'keyword-spacing': 'error',
     'spaced-comment': ['error', 'always'],
     'space-before-blocks': ['error', 'always'],
-
-    // 'array-bracket-spacing': ['error', 'always'],
     'prefer-spread': 'error',
     'prefer-template': 'error',
     'indent': ['error', 2, {
