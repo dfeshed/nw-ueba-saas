@@ -69,6 +69,15 @@ export default $.extend({}, BaseTranslations, {
       createdTimestamp: 'jp_created ',
       updatedTimestamp: 'jp_updated '
     },
+    details: {
+      createdOn: 'ja_created on',
+      updatedOn: 'ja_updated on',
+      sourceIp: 'ja_Source IP',
+      destinationIp: 'ja_Destination IP',
+      actions: 'ja_Incident Actions',
+      closeIncident: 'ja_Close Incident',
+      escalateIncident: 'ja_Escalate Incident'
+    },
     list: {
       id: 'ja_ID',
       name: 'ja_Name',

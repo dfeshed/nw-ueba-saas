@@ -1,1 +1,7 @@
-{{outlet}}
+{{#rsa-grid class='rsa-respond-incident'}}
+  {{#rsa-grid-row collapseHeight=true class='rsa-respond-incident__top-panel'}}
+    {{#rsa-grid-column span=12 }}
+      {{rsa-incident-detail-header model=model.incident users=model.users saveAction="saveIncident"}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

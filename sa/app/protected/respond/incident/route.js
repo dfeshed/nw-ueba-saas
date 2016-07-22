@@ -1,10 +1,16 @@
 import Ember from 'ember';
 
-const { Route } = Ember;
+const { Route,
+  RSVP: {
+    hash
+    }
+  } = Ember;
 
 export default Route.extend({
   model(params) {
-    // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
-    return this.store.findRecord('incident', params.incident_id);
+    return hash({
+      incident: this.store.findRecord('incident', params.incident_id),
+      users: this.store.findAll('user')
+    });
   }
 });

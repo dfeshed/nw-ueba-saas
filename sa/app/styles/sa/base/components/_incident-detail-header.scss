@@ -1,0 +1,135 @@
+.rsa-incident-detail-header {
+  color: rsa-color(white);
+  position: relative;
+  border-bottom: solid thin rsa-color(white, null, $rsa-transparent);
+  background-color: rsa-color(black, null, $rsa-translucent);
+
+  &__score {
+    padding: 0;
+  }
+
+  &__col-details {
+    @include rsa-flex-direction(row);
+    justify-content: space-between;
+    flex-wrap: nowrap;
+    align-items: center;
+    margin: 0;
+    padding: 0 rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less);
+  }
+
+  &__details {
+    flex-grow: 2;
+    padding-right: rsa-whitespace();
+
+    &__title {
+      @include rsa-font(header, large);
+      @include rsa-flex-direction(row);
+      justify-content: space-between;
+      align-items: baseline;
+
+      list-style-type: none;
+      width: 100%;
+      flex-wrap: wrap;
+
+      .rsa-incident-detail-header__id {
+        display: block;
+      }
+
+      .rsa-incident-detail-header__name {
+        display: block;
+        text-transform: none;
+        flex-grow: 1;
+      }
+    }
+
+    &__body {
+      @include rsa-flex-direction(row);
+      justify-content: space-between;
+      align-items: stretch;
+
+      list-style-type: none;
+      width: 100%;
+      flex-wrap: nowrap;
+      align-content: space-between;
+      margin: rsa-whitespace() 0;
+
+      li {
+        display: block;
+
+        .rsa-content-definition {
+          .title {
+            @include rsa-font(navigation, small);
+            color: rsa-color(white);
+            font-size: .7rem;
+            font-weight: 700;
+            white-space: nowrap;
+          }
+          label {
+            @include rsa-font(light);
+            line-height: 35px;
+          }
+
+          .rsa-content-label {
+            margin-top: rsa-whitespace(less);
+          }
+        }
+
+        .rsa-form-select {
+          .rsa-form-label {
+            @include rsa-font(header, small);
+            color: rsa-color(white);
+          }
+        }
+
+        .rsa-incident-detail-header__status {
+          min-width: 14rem;
+        }
+
+        .rsa-incident-detail-header__priority {
+          min-width: 6rem;
+        }
+
+        .rsa-incident-detail-header__assignee {
+          min-width: 8rem;
+        }
+      }
+    }
+
+    &__footer {
+      @include rsa-font(header, small);
+      display: block;
+      color: rsa-color(gray);
+      letter-spacing: 0.05rem;
+    }
+  }
+
+  &__buttons {
+    flex-grow: 0;
+    min-width: 11rem;
+
+    &__close-incident {
+      @include rsa-font(body, small);
+      display: block;
+    }
+
+    &__others {
+      @include rsa-font(body, small);
+      display: block;
+      margin-top: rsa-whitespace(less);
+    }
+  }
+}
+
+@include from(base) {
+  .rsa-incident-detail-header__details__body {
+    justify-content: flex-start;
+
+    li {
+      margin: 0 rsa-whitespace(base);
+
+      &:first-child {
+        margin-left: 0;
+      }
+    }
+  }
+}

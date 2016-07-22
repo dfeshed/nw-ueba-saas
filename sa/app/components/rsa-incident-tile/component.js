@@ -233,47 +233,20 @@ export default Component.extend({
 
   /**
    * @name statusList
-   * @desciption Returns a list of available status. Each element has an id, text and selected attributes
+   * @desciption Returns a list of available status.
    * @type number[]
    * @public
    */
-  statusList: computed(function() {
-    return IncidentConstants.incidentStatusIds;
-  }),
+  statusList: IncidentConstants.incidentStatusIds,
 
   /**
    * @name priorityList
-   * @description Returns a list of available priorities. Each element has an id, text and selected attributes
+   * @description Returns a list of available priorities.
    * @type number[]
    * @public
    */
-  priorityList: computed(function() {
-    return IncidentConstants.incidentPriorityIds;
-  }),
+  priorityList: IncidentConstants.incidentPriorityIds,
 
-  /**
-   * @assigneeFullName
-   * @description Returns Incident' current assignee full name. If the assignee id is not found in the list of users,
-   * null is returned instead.
-   * @type current assignee First and Last name
-   * @public
-   */
-  assigneeFullName: computed('model.assignee.id', function() {
-    let currentAssigneeId = this.get('model.assignee.id');
-    let currentAssignee = null;
-
-    if (currentAssigneeId) {
-      currentAssignee = this.get('users').findBy('id', currentAssigneeId);
-    }
-
-    if (currentAssignee) {
-      // @TODO: Replace firstName with friendlyName once the back-end support is available.
-      // See http://bedfordjira.na.rsa.net/browse/ASOC-19171
-      return `${ currentAssignee.get('firstName') }`;
-    } else {
-      return null;
-    }
-  }),
 
   /**
    * @name incidentSources
@@ -284,10 +257,7 @@ export default Component.extend({
   incidentSources: computed('model.sources', function() {
     let sources = this.get('model.sources');
     if (sources) {
-      let res = this.get('model.sources').map(function(source) {
-        return IncidentHelper.sourceShortName(source);
-      });
-      return res;
+      return sources.map((source) => IncidentHelper.sourceShortName(source));
     }
   }),
 
@@ -298,7 +268,6 @@ export default Component.extend({
    * @public
    */
   contextualTimestamp: computed('isIncidentNew', 'model.created', 'model.lastUpdated', function() {
-    let timestamp = (this.get('isIncidentNew')) ? this.get('model.created') : this.get('model.lastUpdated');
-    return timestamp;
+    return (this.get('isIncidentNew')) ? this.get('model.created') : this.get('model.lastUpdated');
   })
 });

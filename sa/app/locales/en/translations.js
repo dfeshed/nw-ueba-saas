@@ -79,6 +79,15 @@ export default $.extend({}, BaseTranslations, {
       alertCount: 'Alerts',
       sources: 'Source'
     },
+    details: {
+      createdOn: 'created on',
+      updatedOn: 'updated on',
+      sourceIp: 'Source IP',
+      destinationIp: 'Destination IP',
+      actions: 'Incident Actions',
+      closeIncident: 'Close Incident',
+      escalateIncident: 'Escalate Incident'
+    },
     status: {
       0: 'New',
       1: 'Assigned',
