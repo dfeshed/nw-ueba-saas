@@ -42,7 +42,7 @@ export default Component.extend({
       this.get('onSubmit')(
         this.get('coreServiceOptions.firstObject.id'),  // hard-code: first available service
         parseInt(+(new Date()) / 1000 - 60 * 60, 10), // hard-code: now minus 1 hour, in seconds
-        parseInt(+(new Date()) / 1000) // hard-code: now, in seconds
+        parseInt(+(new Date()) / 1000, 10) // hard-code: now, in seconds
       );
     }
   }
