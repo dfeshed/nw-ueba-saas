@@ -1,0 +1,10 @@
+.rsa-light {
+  .rsa-content-help-trigger {
+    color: rsa-color(gray, lighter);
+    
+    &:hover {
+      color: rsa-color(gray, lightest);
+    }  
+  }  
+}
+

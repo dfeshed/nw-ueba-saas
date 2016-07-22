@@ -1,20 +1,26 @@
 {
   "stats": {
-    "suites": 423,
-    "tests": 610,
-    "passes": 610,
+    "suites": 440,
+    "tests": 642,
+    "passes": 642,
     "pending": 0,
     "failures": 0,
-    "start": "2016-07-15T17:31:30.147Z",
-    "end": "2016-07-15T17:31:41.256Z"
+    "start": "2016-07-21T20:14:42.785Z",
+    "end": "2016-07-21T20:14:55.061Z"
   },
   "coverage": {
     "total": {
-      "statementsTotal": 600,
-      "statementsCovered": 449,
-      "percentage": 74.83
+      "statementsTotal": 610,
+      "statementsCovered": 457,
+      "percentage": 74.92
     },
     "files": [
+      {
+        "name": "style-guide/resolver",
+        "statementsTotal": 2,
+        "statementsCovered": 2,
+        "percentage": 100
+      },
       {
         "name": "style-guide/config/environment",
         "statementsTotal": 8,
@@ -23,9 +29,9 @@
       },
       {
         "name": "style-guide/router",
-        "statementsTotal": 44,
+        "statementsTotal": 45,
         "statementsCovered": 5,
-        "percentage": 11.36
+        "percentage": 11.11
       },
       {
         "name": "style-guide/components/app-nav/component",
@@ -274,6 +280,12 @@
         "percentage": 100
       },
       {
+        "name": "style-guide/components/rsa-content-help-trigger",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
         "name": "style-guide/components/rsa-content-ip-connections",
         "statementsTotal": 3,
         "statementsCovered": 3,
@@ -287,6 +299,18 @@
       },
       {
         "name": "style-guide/components/rsa-content-section-header",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/rsa-content-tooltip",
+        "statementsTotal": 3,
+        "statementsCovered": 3,
+        "percentage": 100
+      },
+      {
+        "name": "style-guide/components/ember-tether",
         "statementsTotal": 3,
         "statementsCovered": 3,
         "percentage": 100
@@ -520,18 +544,6 @@
         "percentage": 100
       },
       {
-        "name": "style-guide/controllers/array",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/controllers/object",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
-        "percentage": 100
-      },
-      {
         "name": "style-guide/demos/app/content/route",
         "statementsTotal": 4,
         "statementsCovered": 3,
@@ -605,6 +617,12 @@
       },
       {
         "name": "style-guide/demos/content/section-header/route",
+        "statementsTotal": 4,
+        "statementsCovered": 3,
+        "percentage": 75
+      },
+      {
+        "name": "style-guide/demos/content/tooltip/route",
         "statementsTotal": 4,
         "statementsCovered": 3,
         "percentage": 75
@@ -853,12 +871,6 @@
         "name": "style-guide/locales/ja/translations",
         "statementsTotal": 3,
         "statementsCovered": 3,
-        "percentage": 100
-      },
-      {
-        "name": "style-guide/resolver",
-        "statementsTotal": 2,
-        "statementsCovered": 2,
         "percentage": 100
       },
       {

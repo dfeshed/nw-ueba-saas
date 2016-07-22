@@ -49,6 +49,7 @@ Router.map(function() {
       this.route('datetime');
       this.route('label');
       this.route('ipConnections');
+      this.route('tooltip');
     });
 
     this.route('nav', function() {

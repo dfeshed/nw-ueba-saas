@@ -26,7 +26,7 @@ $contentLabelInvertedColor: rsa-color(black);
 
 $contentSectionHeaderBackgroundColor: rsa-color(gray, darkest, $rsa-nearly-opaque);
 $contentSectionHeaderTypeColor: rsa-color(gray, lightest);
-$contentSectionHeaderBorderColor: 1px solid rsa-color(gray, darkest);
+$contentSectionHeaderBorderColor: rsa-color(gray, darkest);
 
 $contentLogoTitleColor: rsa-color(gray, lighter);
 
@@ -49,3 +49,5 @@ $contentUpdateIndicatorTypeColor: rsa-color(gray, light);
 @import 'logo';
 @import 'spacer';
 @import 'update-indicator';
+@import 'content-tooltip';
+@import 'content-help-trigger';

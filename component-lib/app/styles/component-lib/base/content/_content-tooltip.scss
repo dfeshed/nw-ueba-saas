@@ -1,0 +1,134 @@
+.ember-tether {
+  @include rsa-layer(above);
+}
+
+.tooltip-content {
+  background: rsa-color(gray, darker);
+  color: rsa-color(gray, lighter);
+  width: 15rem;
+  text-align: left;
+  position: relative;
+  @include rsa-layer(above);
+  box-shadow: 1px 1px 2px rsa-color(black, base, $rsa-translucent);
+
+  .close-icon, .next-icon {
+    position: absolute;
+    top: rsa-whitespace();
+    right: rsa-whitespace();
+
+    i {
+      top: 0;
+      color: rsa-color(gray, lighter);
+
+      &:hover {
+        color: rsa-color(gray, lightest);
+        cursor: pointer;
+      }
+    }
+  }
+
+  .next-icon {
+    right: calc(#{rsa-whitespace(more)} + #{rsa-whitespace(least)});
+  }
+
+  header {
+    @include rsa-font(header);
+    padding: rsa-whitespace() rsa-whitespace(most) 0 rsa-whitespace();
+  }
+
+  section {
+    padding: rsa-whitespace() rsa-whitespace(more) rsa-whitespace() rsa-whitespace();
+    @include rsa-font(paragraph, small);
+    color: rsa-color(gray, lighter);
+  }
+
+  &.standard {
+    border: 1px solid rsa-color(gray, light);
+
+    svg line {
+      stroke: rsa-color(gray, light);
+    }
+  }
+
+  &.primary {
+    border: 1px solid rsa-color(blue);
+
+    header {
+      color: rsa-color(blue);
+    }
+
+    svg line {
+      stroke: rsa-color(blue);
+    }
+  }
+
+  &.error {
+    border: 1px solid rsa-color(red);
+
+    header {
+      color: rsa-color(red);
+    }
+
+    svg line {
+      stroke: rsa-color(red);
+    }
+  }
+
+  &.top {
+    top: -1.25rem;
+
+    svg {
+      transform: rotate(0deg);
+      right: calc(50% - 7px);
+      bottom: -14px;
+    }
+  }
+
+  &.bottom {
+    top: 1.25rem;
+
+    svg {
+      transform: rotate(180deg);
+      right: calc(50% - 7px);
+      top: -14px;
+    }
+  }
+
+  &.left {
+    left: -1.25rem;
+
+    svg {
+      transform: rotate(-90deg);
+      right: -14px;
+      top: calc(50% - 7px);
+    }
+  }
+
+  &.right {
+    left: 1.25rem;
+
+    svg {
+      transform: rotate(90deg);
+      left: -14px;
+      top: calc(50% - 7px);
+    }
+  }
+
+  svg {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+
+    polygon {
+      fill: rsa-color(gray, darker);
+    }
+
+    line {
+      stroke-width: 1;
+
+      &.bottom {
+        stroke: rsa-color(gray, darker);
+      }
+    }
+  }
+}

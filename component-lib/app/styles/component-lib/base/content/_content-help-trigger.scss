@@ -1,0 +1,9 @@
+.rsa-content-help-trigger {
+  vertical-align: middle;
+  color: rsa-color(gray, lighter);
+
+  &:hover {
+    cursor: pointer;
+    color: rsa-color(gray, lightest);
+  }
+}

@@ -1,0 +1,25 @@
+{{#if isDisplayed}}
+  {{#ember-tether target=targetClass attachment=attachment}}
+    <div class="tooltip-content {{position}} {{style}}">
+      {{#if displayClose}}
+        <span class="close-icon" {{action 'toggleTooltip'}}>  
+          {{rsa-icon name="close" size="small"}}
+        </span>
+      {{/if}}
+      
+      {{yield}}
+      
+      <div class="triangle">
+          <div class="inner-triangle"></div>
+      </div>    
+      
+      <svg>
+        <line class="left" x1="0" y1="0" x2="7" y2="10"></line>
+        <line class="right" x1="7" y1="10" x2="14" y2="0"></line>
+        <line class="bottom" x1="14" y1="0" x2="0" y2="0"></line>
+        <polygon points="0,0 7,10 14,0"></polygon>
+      </svg>
+
+    </div>
+  {{/ember-tether}}
+{{/if}}
