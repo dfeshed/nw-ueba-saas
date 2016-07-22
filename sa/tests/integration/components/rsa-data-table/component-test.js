@@ -149,9 +149,9 @@ test('it renders only a subset of the data when lazy rendering is enabled', func
     {{/rsa-data-table}}
   `);
 
-  let $table = this.$('.rsa-data-table'),
-    $header = this.$('.rsa-data-table-header'),
-    rowHeight = $header.outerHeight() || 12;
+  let $table = this.$('.rsa-data-table');
+  let $header = this.$('.rsa-data-table-header');
+  let rowHeight = $header.outerHeight() || 12;
 
   $table.css('height', `${rowHeight}px`);
   let initialRowCount = $table.find('.rsa-data-table-body-row').length;

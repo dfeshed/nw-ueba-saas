@@ -18,26 +18,26 @@ test('it exists and supports incident fields', function(assert) {
 
   // Add some data.
   obj.get('records').pushObjects([
-      {
-        id: 1,
-        prioritySort: 0,
-        riskScore: 0,
-        statusSort: 1,
-        assignee: { name: 'Ian RSA', login: 'ian' }
-      },
-      {
-        id: 2,
-        prioritySort: 3,
-        riskScore: 100,
-        statusSort: 0
-      },
-      {
-        id: 3,
-        prioritySort: 0,
-        riskScore: 20,
-        statusSort: 1,
-        assignee: { name: 'Tony RSA', login: 'tony' }
-      }
+    {
+      id: 1,
+      prioritySort: 0,
+      riskScore: 0,
+      statusSort: 1,
+      assignee: { name: 'Ian RSA', login: 'ian' }
+    },
+    {
+      id: 2,
+      prioritySort: 3,
+      riskScore: 100,
+      statusSort: 0
+    },
+    {
+      id: 3,
+      prioritySort: 0,
+      riskScore: 20,
+      statusSort: 1,
+      assignee: { name: 'Tony RSA', login: 'tony' }
+    }
   ]);
 
   // Try sorting by priority field, which is an alias for the prioritySort property.

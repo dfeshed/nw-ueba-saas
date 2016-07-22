@@ -82,11 +82,13 @@ export default Component.extend(HasTableParent, {
    * @private
    */
   _measureMe() {
-    let { column, side } = this.getProperties('column', 'side'),
-      target = column;
+    let { column, side } = this.getProperties('column', 'side');
+    let target = column;
+
     if (side === 'left') {
-      let columns = this.get('table.columns'),
-        index = columns.indexOf(column);
+      let columns = this.get('table.columns');
+      let index = columns.indexOf(column);
+
       if (index > 0) {
         target = columns[index - 1];
       }
@@ -117,8 +119,9 @@ export default Component.extend(HasTableParent, {
    * @private
    */
   _resizeMe() {
-    let target = this._resizeColumn,
-      initial = this._initialWidth;
+    let target = this._resizeColumn;
+    let initial = this._initialWidth;
+
     if (target && !isNaN(initial)) {
       let width = initial + this._dragDelta[0];
       width = Math.max(this.get('minWidth'), Math.min(width, this.get('maxWidth')));

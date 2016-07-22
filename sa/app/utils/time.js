@@ -12,15 +12,15 @@ const enumUNITS = {
 };
 
 // Number of millisec in an hour.
-const MS_PER_HOUR = 60 * 60 * 1000,
+const MS_PER_HOUR = 60 * 60 * 1000;
 
 // Maps time units to number of millisec.
-  MS_PER_UNIT = {
-    H: MS_PER_HOUR,
-    D: MS_PER_HOUR * 24,
-    W: MS_PER_HOUR * 24 * 7,
-    M: MS_PER_HOUR * 24 * 30
-  };
+const MS_PER_UNIT = {
+  H: MS_PER_HOUR,
+  D: MS_PER_HOUR * 24,
+  W: MS_PER_HOUR * 24 * 7,
+  M: MS_PER_HOUR * 24 * 30
+};
 
 export default {
   /**

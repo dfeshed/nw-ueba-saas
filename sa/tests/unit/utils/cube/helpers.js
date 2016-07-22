@@ -32,9 +32,9 @@ export function arrayCompare(arr, length, field, values, assert, errMessage) {
   if (arr && field && values) {
     for (let k in values) {
       if (values.hasOwnProperty(k)) {
-        let idx = parseInt(k, 10),
-            found = arr[idx] && arr[idx][field],
-            expected = values[idx];
+        let idx = parseInt(k, 10);
+        let found = arr[idx] && arr[idx][field];
+        let expected = values[idx];
         assert.equal(found, expected, `Unexpected value in result at index: ${idx}${errMessage}`);
       }
     }

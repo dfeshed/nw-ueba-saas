@@ -7,10 +7,8 @@ import Ember from 'ember';
 
 const { Helper: { helper } } = Ember;
 
-export function isEqual(params/*, hash*/) {
+export function isEqual(params /* , hash */) {
   let [leftSide, rightSide, notStrict] = params;
-
-  /*jshint eqeqeq:false */
   return notStrict ?  (leftSide == rightSide) : (leftSide === rightSide);
 }
 

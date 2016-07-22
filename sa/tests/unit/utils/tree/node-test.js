@@ -16,9 +16,9 @@ test('it can be instantiated as an orphan without parent and children', function
 test('children can be added and removed from it', function(assert) {
   assert.expect(5);
 
-  let parent = TreeNode.create({ value: 0 }),
-    child1 = TreeNode.create({ value: 1 }),
-    child2 = TreeNode.create({ value: 2 });
+  let parent = TreeNode.create({ value: 0 });
+  let child1 = TreeNode.create({ value: 1 });
+  let child2 = TreeNode.create({ value: 2 });
 
   parent.addChild(child1).addChild(child2);
 

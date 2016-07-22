@@ -51,8 +51,8 @@ export default Route.extend({
    * @private
    */
   _createNotify(cubes, filterFunc) {
-    let username,
-      _currentSession = this.get('session');
+    let username, stream;
+    let _currentSession = this.get('session');
 
     if (_currentSession) {
       username = _currentSession.session.content.authenticated.username;
@@ -67,10 +67,8 @@ export default Route.extend({
      logged in user has been changed. The 2nd subscription will return any other incidents
      that the user is allowed to see based on their privileges.
      */
-    let updateSocketParams = [username, 'all_incidents'],
-      stream;
 
-    updateSocketParams.forEach((subDestinationUrlParams) => {
+    [username, 'all_incidents'].forEach((subDestinationUrlParams) => {
       stream = this.store.notify('incident',
         { subDestinationUrlParams },
         { requireRequestId: false })
@@ -95,8 +93,9 @@ export default Route.extend({
 
     // If the user is in card view and the status is not in 'new', 'assigned' or 'in progress' remove it
     if (this.get('respondMode.selected') === 'card') {
-      let incidentsToBeRemoved = [],
-      cardViewStatuses = [incStatus.ASSIGNED,incStatus.IN_PROGRESS, incStatus.NEW ];
+      let incidentsToBeRemoved = [];
+      let cardViewStatuses = [incStatus.ASSIGNED,incStatus.IN_PROGRESS, incStatus.NEW ];
+
       incidentsToBeRemoved = incidents.filter((incident) => {
         return (cardViewStatuses.indexOf(incident.statusSort) < 0);
       });
@@ -111,14 +110,14 @@ export default Route.extend({
       });
     }
 
-    let filteredIncidents = filterFunc(incidents),
-      [newIncidentsCube, inProgressCube] = cubes;
+    let filteredIncidents = filterFunc(incidents);
+    let [newIncidentsCube, inProgressCube] = cubes;
 
     filteredIncidents.forEach((incidents, index) => {
       // For each of the updated incident, check if the incident already exists in the cube.
       // If so, edit with the latest value, else add it to the list of records
-      let records = cubes[ index ].get('records'),
-        recordsToAdd = [];
+      let records = cubes[ index ].get('records');
+      let recordsToAdd = [];
 
       // notificationCode 0 => incidents was added, 1 => incidents were edited, 2 => incidents were deleted
       if (notificationCode === 0) {
@@ -146,6 +145,7 @@ export default Route.extend({
           }
         });
       }
+
       if (recordsToAdd.length > 0) {
         records.pushObjects(recordsToAdd);
       }
@@ -188,11 +188,11 @@ export default Route.extend({
 
     if (this.get('respondMode.selected') === 'card') {
       let newCube =  IncidentsCube.create({
-          array: []
-        }),
-        inProgressCube =  IncidentsCube.create({
-          array: []
-        });
+        array: []
+      });
+      let inProgressCube =  IncidentsCube.create({
+        array: []
+      });
 
       // Kick off the initial page load data request.
       this._createStream([{ field: 'statusSort', value: incStatus.NEW }],

@@ -29,8 +29,9 @@ const {
  */
 function _shouldParseBody(message) {
   if (message) {
-    let hdrs = message.headers,
-      type = hdrs && hdrs['content-type'];
+    let hdrs = message.headers;
+    let type = hdrs && hdrs['content-type'];
+
     return type ?
       (type.indexOf('application/json') >= 0) :
       (typeof message.body === 'string');
@@ -52,8 +53,9 @@ function _wrapCallback(callback) {
       if (_shouldParseBody(message) && message.body) {
         try {
           message.body = JSON.parse(message.body);
+        } catch (e) {
+          // do nothing
         }
-        catch(e) {}
       }
       return callback(message);
     });
@@ -163,7 +165,7 @@ export default EmberObject.extend({
    */
   send(destination, headers, body) {
     headers = headers || {};
-    switch (typeof body){
+    switch (typeof body) {
       case 'object':
         body = JSON.stringify(body);
         break;
@@ -204,9 +206,9 @@ export default EmberObject.extend({
   subscribe(destination, callback, headers) {
 
     // Check for the requested subscription in the cache.
-    let me = this,
-      subs = this.get('subscriptions'),
-      sub = subs.find(destination, callback);
+    let me = this;
+    let subs = this.get('subscriptions');
+    let sub = subs.find(destination, callback);
 
     // We don't have this subscription cached, so create it and cache it now.
     if (!sub) {
@@ -244,7 +246,7 @@ export default EmberObject.extend({
 
     let url = this.get('url');
     if (!url) {
-      throw('Invalid socket URL for STOMP client connection.');
+      throw ('Invalid socket URL for STOMP client connection.');
     }
 
     let stompClient = Stomp.over(

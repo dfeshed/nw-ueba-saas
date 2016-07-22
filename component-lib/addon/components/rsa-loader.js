@@ -21,17 +21,18 @@ export default Component.extend({
   ],
 
   loaderSizeLabels: [
-      'small',
-      'medium',
-      'large',
-      'larger',
-      'largest'
+    'small',
+    'medium',
+    'large',
+    'larger',
+    'largest'
   ],
 
   size: 'small',
   isSmall: computed('loaderSizeLabels', 'size', function() {
-    let loaderSizeLabels = this.get('loaderSizeLabels'),
-        size = this.get('size');
+    let loaderSizeLabels = this.get('loaderSizeLabels');
+    let size = this.get('size');
+
     return (!loaderSizeLabels.contains(size) || size === 'small');
   }),
   isMedium: equal('size', 'medium'),

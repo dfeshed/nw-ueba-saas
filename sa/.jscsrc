@@ -1,6 +1,0 @@
-{
-  "preset": "ember-suave",
-  "validateQuoteMarks": { "mark": "'", "escape": true },
-  "disallowMultipleVarDecl": null,
-  "disallowConstOutsideModuleScope": null
-}

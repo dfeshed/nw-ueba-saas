@@ -132,8 +132,9 @@ export default EmberObject.extend({
       return this;
     }
 
-    let addType = _typeOfFilterValue(val),
-        curr = this.get('value');
+    let addType = _typeOfFilterValue(val);
+    let curr = this.get('value');
+
     switch (this.get('type')) {
       case ENUM_TYPE.EXACT:
         if (val !== curr) {
@@ -148,12 +149,11 @@ export default EmberObject.extend({
         switch (addType) {
           case ENUM_TYPE.EXACT:
             val = [val];
-            /* jshint -W086 */
             // fall through to LIST case
           case ENUM_TYPE.LIST:
-            /* jshint +W086 */
-            let arr = [].concat(curr),
-              changed = false;
+            let arr = [].concat(curr);
+            let changed = false;
+
             val.forEach(function(item) {
               if (arr.indexOf(item) === -1) {
                 arr.push(item);
@@ -196,8 +196,9 @@ export default EmberObject.extend({
       return this;
     }
 
-    let removeType = _typeOfFilterValue(val),
-        curr = this.get('value');
+    let removeType = _typeOfFilterValue(val);
+    let curr = this.get('value');
+
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
         return this;
@@ -210,10 +211,8 @@ export default EmberObject.extend({
         switch (removeType) {
           case ENUM_TYPE.EXACT:
             val = [val];
-            /* jshint -W086 */
             // fall through to LIST case
           case ENUM_TYPE.LIST:
-            /* jshint +W086 */
             let arr = [].concat(curr);
             val.forEach(function(item) {
               let index = arr.indexOf(item);

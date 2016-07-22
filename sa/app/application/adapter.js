@@ -84,7 +84,7 @@ export default RESTAdapter.extend({
    * @param {DS.Snapshot} snapshot
    * @param {Object} query - hash of socket request params
    */
-  updateRecord(store, type, snapshot, query=null) {
+  updateRecord(store, type, snapshot, query = null) {
     return this._trySocket('updateRecord', store, type, query, null, snapshot) || this._super(...arguments);
   },
 
@@ -104,7 +104,7 @@ export default RESTAdapter.extend({
   _trySocket(method, store, type, query, id, snapshot) {
     try {
       return this._useSocket(method, store, type, query, id, snapshot);
-    } catch(e) {
+    } catch (e) {
       return null;
     }
   },

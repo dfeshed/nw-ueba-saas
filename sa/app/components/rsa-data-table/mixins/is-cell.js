@@ -25,9 +25,10 @@ function _parseNumberAndUnits(value) {
     if (value === 'auto') {
       return { auto: true };
     } else {
-      let match = String(value).match(/([\d\.]+)([^\d]*)/),
-        num = match && Number(match[1]),
-        units = (match && match[2]) || '';
+      let match = String(value).match(/([\d\.]+)([^\d]*)/);
+      let num = match && Number(match[1]);
+      let units = (match && match[2]) || '';
+
       if (!isNaN(num)) {
         return { num, units };
       }

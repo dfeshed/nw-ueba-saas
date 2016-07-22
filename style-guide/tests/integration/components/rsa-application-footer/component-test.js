@@ -13,8 +13,9 @@ test('it includes the proper classes', function(assert) {
 
 test('it includes the label', function(assert) {
   this.render(hbs `{{rsa-application-footer title='Foo' version='1.0'}}`);
-  let label = this.$().find('.application-name').text().trim(),
-      version = this.$().find('.application-version').text().trim();
+  let label = this.$().find('.application-name').text().trim();
+  let version = this.$().find('.application-version').text().trim();
+
   assert.equal(label, 'Foo');
   assert.equal(version, '1.0');
 });

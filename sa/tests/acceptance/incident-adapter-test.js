@@ -18,11 +18,11 @@ moduleForAcceptance('Acceptance | Incident adapter', {
 test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
   visit('/');
 
-  let websocket = Websocket.create(),
-    adapter = Adapter.create({ websocket }),
-    store = Store.create(),
-    type = { modelName: 'test' },
-    { socketUrl } = config.socketRoutes.test;
+  let websocket = Websocket.create();
+  let adapter = Adapter.create({ websocket });
+  let store = Store.create();
+  let type = { modelName: 'test' };
+  let { socketUrl } = config.socketRoutes.test;
 
   andThen(function() {
     return adapter.findRecord(store, type, 'id1', {}).then((response) => {
@@ -40,11 +40,11 @@ test('it can redirect calls to a socket and get a response from a mock server', 
 
   visit('/');
 
-  let websocket = Websocket.create(),
-    adapter = Adapter.create({ websocket }),
-    store = Store.create(),
-    type = { modelName: 'test' },
-    { socketUrl } = config.socketRoutes.test;
+  let websocket = Websocket.create();
+  let adapter = Adapter.create({ websocket });
+  let store = Store.create();
+  let type = { modelName: 'test' };
+  let { socketUrl } = config.socketRoutes.test;
 
   let snapShot = { 'id': 1,
                   changedAttributes() {

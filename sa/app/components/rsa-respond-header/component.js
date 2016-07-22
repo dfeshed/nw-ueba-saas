@@ -10,8 +10,8 @@ const {
   }
 } = Ember;
 
-const _PAGE_CARD = 'card',
-  _PAGE_LIST = 'list';
+const _PAGE_CARD = 'card';
+const _PAGE_LIST = 'list';
 
 export default Component.extend({
   tagName: 'header',

@@ -108,10 +108,12 @@ MockServer.prototype.sendFrame = function(command, headers, body, delay) {
       headers['content-type'] = 'application/json';
     }
   }
-  let me = this,
-    doSend = function() {
-      me.send(Stomp.Frame.marshall(command, headers, body));
-    };
+
+  let me = this;
+  let doSend = function() {
+    me.send(Stomp.Frame.marshall(command, headers, body));
+  };
+
   if (delay) {
     run.later(this, doSend, delay);
   } else {
@@ -131,7 +133,9 @@ MockServer.prototype.sendList = function(items, page, total, frames, delay, noti
   // If paging is requested, slice off the request subset of items.
   items = _getItemsPage(page, items);
 
-  this.sendFrame('MESSAGE', {
+  this.sendFrame(
+    'MESSAGE',
+    {
       subscription: (frame.headers || {}).id || '',
       'content-type': 'application/json'
     }, {
@@ -143,7 +147,8 @@ MockServer.prototype.sendList = function(items, page, total, frames, delay, noti
         total: total || (items && items.length) || 0
       }
     },
-    delay);
+    delay
+  );
 };
 
 /**
@@ -199,9 +204,10 @@ MockServer.prototype.init = function() {
  * @private
  */
 MockServer.prototype._handle = function(message) {
-  let me = this,
-    { frames } = Stomp.Frame.unmarshall(message),
-    body = frames && frames[0] && frames[0].body;
+  let me = this;
+  let { frames } = Stomp.Frame.unmarshall(message);
+  let body = frames && frames[0] && frames[0].body;
+
   if (body && (typeof body === 'string')) {
     frames[0].body = JSON.parse(body);
   }

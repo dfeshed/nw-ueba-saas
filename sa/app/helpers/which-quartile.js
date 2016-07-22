@@ -7,7 +7,7 @@ import Ember from 'ember';
 
 const { Helper: { helper } } = Ember;
 
-export function whichQuartile(params/*, hash*/) {
+export function whichQuartile(params/* , hash */) {
   let num = parseInt(params[0], 10) || 0;
   return Math.max(0, Math.min(3, parseInt(num / 25, 10)));
 }

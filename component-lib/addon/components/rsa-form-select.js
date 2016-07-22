@@ -92,8 +92,8 @@ export default Component.extend({
         that.set('optionCount', options.length);
 
         options.each(function(i, optionEl) {
-          let option = $(optionEl),
-              text = option.text();
+          let option = $(optionEl);
+          let text = option.text();
 
           option.attr('data-text', text);
         });

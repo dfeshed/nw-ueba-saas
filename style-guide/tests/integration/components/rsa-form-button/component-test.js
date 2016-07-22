@@ -60,10 +60,10 @@ test('it includes the proper classes when isCollapsed', function(assert) {
 
 test('it includes displays dropdown options after click', function(assert) {
   this.render(hbs `{{#rsa-form-button dropdown='standard'}}Label{{/rsa-form-button}}`);
-  let button = this.$().find('.rsa-form-button-wrapper'),
-      expand = this.$().find('.expand');
-  assert.ok(button.hasClass('is-collapsed'));
+  let button = this.$().find('.rsa-form-button-wrapper');
+  let expand = this.$().find('.expand');
 
+  assert.ok(button.hasClass('is-collapsed'));
   expand.click();
   assert.notOk(button.hasClass('is-collapsed'));
 });

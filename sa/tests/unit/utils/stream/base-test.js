@@ -90,12 +90,12 @@ test('it stops notifying subscribers after it errors', function(assert) {
 
 test('it stops notifying subscribes once they unsubscribe', function(assert) {
   assert.expect(1);
-  let stream = Stream.create(),
-    subscription = stream.subscribe(
-      function(val) {
-        assert.equal(val, INPUT, 'onNext callback was invoked with expected input param');
-      }
-    );
+  let stream = Stream.create();
+  let subscription = stream.subscribe(
+    function(val) {
+      assert.equal(val, INPUT, 'onNext callback was invoked with expected input param');
+    }
+  );
 
   stream.next(INPUT);
   subscription.dispose();

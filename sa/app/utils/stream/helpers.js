@@ -8,8 +8,9 @@ import config from 'sa/config/environment';
 
 export default {
   findSocketConfig(modelName, method) {
-    let modelConfig = ((config.socketRoutes || {})[modelName] || {}),
-      methodConfig = modelConfig[method];
+    let modelConfig = ((config.socketRoutes || {})[modelName] || {});
+    let methodConfig = modelConfig[method];
+
     if (methodConfig) {
       methodConfig.socketUrl = modelConfig.socketUrl;
     }

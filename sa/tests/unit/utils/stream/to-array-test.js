@@ -4,8 +4,8 @@ import { module, test } from 'qunit';
 module('Unit | Utility | stream/to array');
 
 test('it pushes payloads to the target array', function(assert) {
-  let stream = Stream.create().autoStart(),
-    target = [];
+  let stream = Stream.create().autoStart();
+  let target = [];
 
   stream.toArray(target);
   stream.next('foo');
@@ -28,10 +28,10 @@ test('it copies the expected properties to the target array', function(assert) {
     page: { foo: 'bar' }
   };
 
-  let propNames = Object.keys(PROPS),
-    propCount = propNames.length,
-    stream = Stream.create(PROPS).autoStart(),
-    target = [];
+  let propNames = Object.keys(PROPS);
+  let propCount = propNames.length;
+  let stream = Stream.create(PROPS).autoStart();
+  let target = [];
 
   stream.toArray(target);
   stream.next(0);

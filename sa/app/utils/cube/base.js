@@ -24,9 +24,10 @@ const {
 // We want the index, and we want to find it quickly because the array might be large, so we do it here
 // the quick & dirty way without callbacks. It's verbose but it will perform well!
 function indexOfBy(key, value) {
-  let index = -1,
-    len = this.length,
-    i;
+  let index = -1;
+  let len = this.length;
+  let i;
+
   if (len) {
     if (this[0].get) {
       for (i = 0; i < len; i++) {
@@ -57,7 +58,7 @@ function indexOfBy(key, value) {
 // @param {object|String} record Either the array item to be edited, or the value of its id field.
 // @param {object} [delta] A hash of key-value pairs to be applied to the record.
 // @returns {object} The modified record, if successful.
-function edit(record, delta, remove=false) {
+function edit(record, delta, remove = false) {
   // Find the index for the specified record.
   let index = -1;
   if (record !== null) {
@@ -204,9 +205,9 @@ export default EmberObject.extend({
    * @public
    */
   results: computed('lastRecalc', function() {
+    let sortField = this.get('sortField') || this.get('idField');
+    let fieldObject = this.get(`fields.${sortField}`) || this.addField(sortField);
 
-    let sortField = this.get('sortField') || this.get('idField'),
-      fieldObject = this.get(`fields.${sortField}`) || this.addField(sortField);
     // The dimension caches sorted results in descending order. Use 'bottom' for ascending.
     return fieldObject.get('dimension')[this.get('sortDesc') ? 'top' : 'bottom'](Infinity);
   }),
@@ -289,15 +290,16 @@ export default EmberObject.extend({
     }
 
     // Apply each given field filter.
-    let changed = {},
-        me = this;
+    let changed = {};
+    let me = this;
+
     arr.forEach(function(item) {
 
       // Get the dimension object for the field.
-      let fieldObject = me.get(`fields.${item.field}`) || me.addField(item.field),
-          opts = item.options || {},
-          methodName = opts.remove ? 'remove' : (opts.add ? 'add' : 'reset'),
-          nativeFilter = fieldObject.get('filter')[methodName](item.value).get('native');
+      let fieldObject = me.get(`fields.${item.field}`) || me.addField(item.field);
+      let opts = item.options || {};
+      let methodName = opts.remove ? 'remove' : (opts.add ? 'add' : 'reset');
+      let nativeFilter = fieldObject.get('filter')[methodName](item.value).get('native');
 
       fieldObject.get('dimension').filter(nativeFilter);
       changed[item.field] = true;
@@ -330,12 +332,14 @@ export default EmberObject.extend({
    * @public
    */
   filters() {
-    let out = [],
-        fields = this.get('fields');
+    let out = [];
+    let fields = this.get('fields');
+
     if (fields) {
       Object.keys(fields).forEach(function(key) {
-        let fieldObject = fields.get(key),
-          value = fieldObject.get('filter.value');
+        let fieldObject = fields.get(key);
+        let value = fieldObject.get('filter.value');
+
         if (value !== null) {
           out.push({ field: key, value });
         }
@@ -363,8 +367,8 @@ export default EmberObject.extend({
     this._array.edit = edit;
 
     // Generate the field objects from the given configs.
-    let cfg = this.get('fieldsConfig'),
-      me  = this;
+    let cfg = this.get('fieldsConfig');
+    let me  = this;
     if (cfg) {
       Object.keys(cfg).forEach(function(key) {
         me.addField(key, cfg[key]);
@@ -410,9 +414,9 @@ export default EmberObject.extend({
       const idField = this.get('idField');
 
       // Remove all the current filters, one dimension at a time, temporarily caching them.
-      let xfilter = this.get('crossfilter'),
-          fields = this.get('fields'),
-          filters = {};
+      let xfilter = this.get('crossfilter');
+      let fields = this.get('fields');
+      let filters = {};
 
       Object.keys(fields).forEach(function(f) {
         let filter = fields[f].get('filter.native');

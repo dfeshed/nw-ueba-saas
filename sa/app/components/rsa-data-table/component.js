@@ -181,8 +181,9 @@ export default Component.extend(DomWatcher, {
       if (!columns || !columns.length || !this.get('enableReorderColumns')) {
         return;
       }
-      let fromIndex = columns.indexOf(draggedColumn),
-        toIndex = newColumns.indexOf(draggedColumn);
+      let fromIndex = columns.indexOf(draggedColumn);
+      let toIndex = newColumns.indexOf(draggedColumn);
+
       if (fromIndex !== toIndex) {
 
         let fn = this.get('onReorderColumns');
@@ -222,7 +223,7 @@ export default Component.extend(DomWatcher, {
      * passed into this action.
      * @public
      */
-    rowClick(/*item, index, e */) {
+    rowClick(/* item, index, e */) {
       let fn = this.get('onRowClick');
       if ($.isFunction(fn)) {
         fn.apply(this, arguments);

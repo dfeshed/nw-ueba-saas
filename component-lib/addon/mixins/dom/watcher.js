@@ -141,13 +141,15 @@ export default Mixin.create({
       return;
     }
 
-    let changed = false,
-      last = this._lastWatchedValues,
-      replace = {},
-      diff = {};
+    let changed = false;
+    let last = this._lastWatchedValues;
+    let replace = {};
+    let diff = {};
+
     this._watchBindings.forEach((prop) => {
-      let current = element[prop],
-        was = last[prop];
+      let current = element[prop];
+      let was = last[prop];
+
       if (current !== was) {
         last[prop] = replace[prop] = current;
         diff[prop] = { was, current };

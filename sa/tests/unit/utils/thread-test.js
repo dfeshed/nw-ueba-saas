@@ -7,8 +7,8 @@ test('it works', function(assert) {
   assert.expect(2);
 
   // Kick off a thread that pushes a queue of values into a result array.
-  let queue = [0, 1, 2],
-    result = [];
+  let queue = [0, 1, 2];
+  let result = [];
 
   Thread.create({
     queue,

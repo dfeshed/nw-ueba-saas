@@ -76,12 +76,14 @@ export default DefaultDim.extend({
    * @public
    */
   groups: computed('grouping', 'cube.results', function() {
-    let results = this.get('cube.results'),
-      totalCount = results && results.length,
-      groups = this.get('grouping').value();
+    let results = this.get('cube.results');
+    let totalCount = results && results.length;
+    let groups = this.get('grouping').value();
+
     groups.all = function() {
-      let newObject = [],
-        key;
+      let newObject = [];
+      let key;
+
       for (key in this) {
         if (this.hasOwnProperty(key) && key !== 'all') {
           newObject.push({
@@ -92,20 +94,22 @@ export default DefaultDim.extend({
       }
       return newObject;
     };
-    let all = groups.all(),
-      maxCount = all.reduce(function(p, v) {
-        return (p > v.value ? p : v.value);
-      }, 1),
-      out = all.map(function(group) {
-        return {
-          key: group.key,
-          value: group.value,
-          valuePercent: totalCount ? group.value / totalCount : group.value,
-          max: maxCount,
-          maxPercent: maxCount ? group.value / maxCount : group.value
-        };
-      }),
-      hash = {};
+
+    let all = groups.all();
+    let maxCount = all.reduce(function(p, v) {
+      return (p > v.value ? p : v.value);
+    }, 1);
+    let out = all.map(function(group) {
+      return {
+        key: group.key,
+        value: group.value,
+        valuePercent: totalCount ? group.value / totalCount : group.value,
+        max: maxCount,
+        maxPercent: maxCount ? group.value / maxCount : group.value
+      };
+    });
+    let hash = {};
+
     out.forEach(function(item) {
       hash[item.key] = item;
     });

@@ -24,10 +24,11 @@ test('it converts $date: ### to ###', function(assert) {
 });
 
 test('it converts ISODate("XXX") to Date.parse(XXX)', function(assert) {
-  let now = new Date(),
-    str = now.toISOString(),
-    parsed = Date.parse(str);
+  let now = new Date();
+  let str = now.toISOString();
+  let parsed = Date.parse(str);
   let result = bson.toJson(`{"created": ISODate("${str}")}`);
+
   assert.ok(result.indexOf(`"created": ${parsed}`) > -1);
 });
 

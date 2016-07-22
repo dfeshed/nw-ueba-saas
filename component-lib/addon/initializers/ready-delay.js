@@ -5,8 +5,8 @@
  */
 
 export function initialize(app) {
-  let config = app.resolveRegistration('config:environment'),
-      delay = 0;
+  let config = app.resolveRegistration('config:environment');
+  let delay = 0;
 
   if (config) {
     delay = config.APP.readyDelay || 0;

@@ -29,9 +29,9 @@ export default Route.extend({
   model(params, transition) {
     const state = this.modelFor('protected.investigate');
 
-    let { filter, eventId } = params,
-      [ serviceId, startTime, endTime, metaFilter ] = (filter || '').split('/'),
-      filterParams = { serviceId, startTime, endTime, metaFilter };
+    let { filter, eventId } = params;
+    let [ serviceId, startTime, endTime, metaFilter ] = (filter || '').split('/');
+    let filterParams = { serviceId, startTime, endTime, metaFilter };
 
     // Does the app state's current event match the incoming params?
     if ((state.get('currentEvent.eventId') !== eventId) || (state.get('currentEvent.serviceId') !== serviceId)) {

@@ -33,10 +33,10 @@ export default function(server) {
     // Wait until after all incidents DB has been loaded from a JSON file.
 
     server.asyncFixturesPromise.then(() => {
-      let { filter } = frames[0].body,
-        statusFilter = (filter || []).findBy('field', 'statusSort') || {},
-        records = server.mirageServer.db.incident,
-        filteredRecords = [];
+      let { filter } = frames[0].body;
+      let statusFilter = (filter || []).findBy('field', 'statusSort') || {};
+      let records = server.mirageServer.db.incident;
+      let filteredRecords = [];
 
       if (statusFilter && typeOf(statusFilter.value) !== 'undefined') {
         filteredRecords = records.where({ statusSort: statusFilter.value });
@@ -72,9 +72,9 @@ export default function(server) {
     // Wait until after all incidents DB has been loaded from a JSON file.
 
     server.asyncFixturesPromise.then(() => {
+      let response = [];
+      let incident = server.mirageServer.db.incident.where({ 'statusSort': 0 });
 
-      let response = [],
-        incident = server.mirageServer.db.incident.where({ 'statusSort': 0 });
       incident = incident.toArray();
       // update the first 10 incidents
       let someIncidents = incident.slice(0, 10);
@@ -113,9 +113,9 @@ export default function(server) {
   });
 
   server.route('incident', 'findRecord', function(message, frames, server) {
-    let frame = (frames && frames[0]) || {},
-      incident = server.mirageServer.db.incident.find(frame.body.id),
-      map = _makeAlertsMap(server.mirageServer.db.alerts);
+    let frame = (frames && frames[0]) || {};
+    let incident = server.mirageServer.db.incident.find(frame.body.id);
+    let map = _makeAlertsMap(server.mirageServer.db.alerts);
 
     if (map) {
       incident.alerts = !map[incident.id] ? [] : map[incident.id].map((alert) => {
@@ -130,19 +130,18 @@ export default function(server) {
     incident.type = 'incident';
 
     server.sendFrame('MESSAGE', {
-        subscription: (frame.headers || {}).id || '',
-        'content-type': 'application/json'
-      },
-      {
-        code: 0,
-        data: incident,
-        request: frame.body
-      });
+      subscription: (frame.headers || {}).id || '',
+      'content-type': 'application/json'
+    }, {
+      code: 0,
+      data: incident,
+      request: frame.body
+    });
   });
 
   server.route('incident', 'updateRecord', function(message, frames, server) {
-    let frame = (frames && frames[0]) || {},
-    incident = server.mirageServer.db.incident.update(frame.body.incidentId, frame.body.updates);
+    let frame = (frames && frames[0]) || {};
+    let incident = server.mirageServer.db.incident.update(frame.body.incidentId, frame.body.updates);
 
     server.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',

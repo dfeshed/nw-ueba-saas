@@ -143,7 +143,7 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
     this._subscriptions.forEach(function(sub) {
       let o = sub.observer;
       if (o[type]) {
-        o[type].apply(o, resolvedArgs);
+        o[type](...resolvedArgs);
       }
     });
     return this;

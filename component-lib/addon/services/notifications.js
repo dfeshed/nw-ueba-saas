@@ -16,8 +16,8 @@ export default Service.extend({
   },
 
   init() {
-    let localStorageSpacing = localStorage[this.get('localStorageKey')],
-        currentSelection = null;
+    let localStorageSpacing = localStorage[this.get('localStorageKey')];
+    let currentSelection = null;
 
     if ((localStorageSpacing === 'true') || (localStorageSpacing === true)) {
       currentSelection = true;

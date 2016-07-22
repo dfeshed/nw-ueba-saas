@@ -34,8 +34,9 @@ export default EmberObject.extend({
    * @public
    */
   find(destination, callback) {
-    let cache = this.get('_lookup'),
-      found = (cache[destination] || []).findBy('callback', callback);
+    let cache = this.get('_lookup');
+    let found = (cache[destination] || []).findBy('callback', callback);
+
     return found && found.sub;
   },
   /**
@@ -47,8 +48,9 @@ export default EmberObject.extend({
    * @public
    */
   add(destination, callback, sub) {
-    let cache = this.get('_lookup'),
-      arr = cache[destination];
+    let cache = this.get('_lookup');
+    let arr = cache[destination];
+
     if (!arr) {
       cache[destination] = arr = [];
     }
@@ -65,8 +67,9 @@ export default EmberObject.extend({
    * @public
    */
   remove(destination, sub) {
-    let cache = this.get('_lookup'),
-      found = (cache[destination] || []).findBy('sub', sub);
+    let cache = this.get('_lookup');
+    let found = (cache[destination] || []).findBy('sub', sub);
+
     if (found) {
       cache[destination].removeObject(found);
     }

@@ -42,13 +42,14 @@ export default RESTSerializer.extend({
    * @see http://emberjs.com/api/data/classes/DS.RESTSerializer.html#method_normalizeResponse
    * @public
    */
-  normalizeResponse(store, primaryModelClass, payload/*, id, requestType*/) {
-    let { modelName } = primaryModelClass,
-      isArrayB = isArray(payload.data),
-      dataArray = isArrayB ? payload.data : [payload.data],
-      normalizedArray = dataArray.map((datum) => {
-        return normalizeHash(modelName, datum);
-      });
+  normalizeResponse(store, primaryModelClass, payload/* , id, requestType */) {
+    let { modelName } = primaryModelClass;
+    let isArrayB = isArray(payload.data);
+    let dataArray = isArrayB ? payload.data : [payload.data];
+
+    let normalizedArray = dataArray.map((datum) => {
+      return normalizeHash(modelName, datum);
+    });
 
     payload.data = isArrayB ? normalizedArray : normalizedArray[0];
     return payload;

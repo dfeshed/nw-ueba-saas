@@ -59,8 +59,9 @@ export default EmberObject.extend({
    * @public
    */
   dimension: computed('cube.crossfilter', 'getter', function() {
-    const xfilter = this.get('cube.crossfilter'),
-        getter = this.get('getter');
+    const xfilter = this.get('cube.crossfilter');
+    const getter = this.get('getter');
+
     return xfilter && getter && xfilter.dimension(getter);
   }),
 
@@ -87,22 +88,23 @@ export default EmberObject.extend({
    * @public
    */
   groups: computed('grouping', 'cube.results', function() {
-    let results = this.get('cube.results'),
-        totalCount = results && results.length,
-        all = this.get('grouping').all(),
-            maxCount = all.reduce(function(p, v) {
-              return (p > v.value ? p : v.value);
-            }, 1),
-        out = all.map(function(group) {
-          return {
-            key: group.key,
-            value: group.value,
-            valuePercent: totalCount ? group.value / totalCount : group.value,
-            max: maxCount,
-            maxPercent: maxCount ? group.value / maxCount : group.value
-          };
-        }),
-        hash = {};
+    let results = this.get('cube.results');
+    let totalCount = results && results.length;
+    let all = this.get('grouping').all();
+    let maxCount = all.reduce(function(p, v) {
+      return (p > v.value ? p : v.value);
+    }, 1);
+    let out = all.map(function(group) {
+      return {
+        key: group.key,
+        value: group.value,
+        valuePercent: totalCount ? group.value / totalCount : group.value,
+        max: maxCount,
+        maxPercent: maxCount ? group.value / maxCount : group.value
+      };
+    });
+    let hash = {};
+
     out.forEach(function(item) {
       hash[item.key] = item;
     });

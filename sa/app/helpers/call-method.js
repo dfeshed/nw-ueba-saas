@@ -7,10 +7,10 @@ import Ember from 'ember';
 
 const { Helper: { helper } } = Ember;
 
-export function callMethod(params/*, hash*/) {
+export function callMethod(params /* , hash */) {
   let [ctxt, methodName] = params;
   if (ctxt && methodName && (typeof ctxt[methodName] === 'function')) {
-    return ctxt[methodName].apply(ctxt, params.slice(2));
+    return ctxt[methodName](...params.slice(2));
   } else {
     return undefined;
   }

@@ -130,11 +130,11 @@ export default Mixin.create({
   _resolvedSocketRequestParams: computed('socketRequestParams', '_resolvedSocketConfig', function() {
 
     // Merge `socketRequestParams` with defaults from the resolved socket config.
-    let cfg = this.get('_resolvedSocketConfig'),
-      params = merge(
-        merge({}, cfg.defaultQueryParams || {}),
-        this.get('socketRequestParams') || {}
-      );
+    let cfg = this.get('_resolvedSocketConfig');
+    let params = merge(
+      merge({}, cfg.defaultQueryParams || {}),
+      this.get('socketRequestParams') || {}
+    );
 
     // Auto-generate a request id, if needed.
     if (this.get('requireRequestId')) {
@@ -200,7 +200,7 @@ export default Mixin.create({
     if (!cfg || !cfg.socketUrl || !cfg.subscriptionDestination || !cfg.requestDestination) {
       let { modelName, method } = this.get('socketConfigType') || {};
       Logger.error(`Invalid socket stream configuration: ${modelName} ${method}`);
-      throw(`Invalid socket stream configuration: ${modelName} ${method}`);
+      throw (`Invalid socket stream configuration: ${modelName} ${method}`);
     }
 
     // Resolve request params: Ensure given params always include an id & stream.limit; set them if necessary.
@@ -221,8 +221,9 @@ export default Mixin.create({
     }
 
     // Connect to socket server.
-    let me = this,
-      callback = run.bind(this, this._onmessage);
+    let me = this;
+    let callback = run.bind(this, this._onmessage);
+
     this.get('websocket').connect(cfg.socketUrl)
       .then(function(conn) {
         me._connection = conn;
@@ -246,8 +247,8 @@ export default Mixin.create({
   _stopFromSocket() {
     if (this._connection) {
       if (this.get('isStreaming')) {
-        let dest = this.get('_resolvedSocketConfig.cancelDestination'),
-          id = this.get('_resolvedSocketRequestParams.id');
+        let dest = this.get('_resolvedSocketConfig.cancelDestination');
+        let id = this.get('_resolvedSocketRequestParams.id');
 
         if (dest && id) {
           this._connection.send(dest, {}, { id, cancel: true });
@@ -272,8 +273,8 @@ export default Mixin.create({
    * @private
    */
   _onmessage(message) {
-    let response = message && message.body,
-      request = response && response.request;
+    let response = message && message.body;
+    let request = response && response.request;
 
     // If we require response ids, validate that the response & request ids match.
     if (this.get('requireRequestId')) {
@@ -294,17 +295,18 @@ export default Mixin.create({
     } else {
 
       // The response has no error code; update stream properties & notify observers.
-      let { data, meta } = response,
+      let { data, meta } = response;
 
-        // The `count` is just a running counter computed from measuring `response.data.length`.
-        added = (data && data.length) || 0,
-        count = added + this.get('count'),
+      // The `count` is just a running counter computed from measuring `response.data.length`.
+      let added = (data && data.length) || 0;
+      let count = added + this.get('count');
 
-        // The `total` property is read from the optional `response.meta`, if given.
-        total = meta && meta.total,
+      // The `total` property is read from the optional `response.meta`, if given.
+      let total = meta && meta.total;
 
         // The `goal` property is derived from `total`, `page.index` & `page.size`, if given.
-        goal = total;
+      let goal = total;
+
       if (total && request) {
         let { page } = request;
         if (page && page.size) {  // Watch out for page.size === 0, which means fetch all records.

@@ -124,17 +124,17 @@ export default Component.extend({
   * @public
   */
   isLoginDisabled: computed('username', 'password', 'status', function() {
-    let uid = this.get('username'),
-    password = this.get('password'),
-    uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0),
-    pwFails = (typeOf(password) !== 'string') || (password.trim().length === 0);
+    let uid = this.get('username');
+    let password = this.get('password');
+    let uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0);
+    let pwFails = (typeOf(password) !== 'string') || (password.trim().length === 0);
 
     return (uidFails || pwFails || (this.get('status') === _STATUS.WAIT));
   }),
 
   isResetDisabled: computed('username', 'status', function() {
-    let uid = this.get('username'),
-    uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0);
+    let uid = this.get('username');
+    let uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0);
 
     return (uidFails || (this.get('status') === _STATUS.WAIT));
   }),
@@ -179,14 +179,14 @@ export default Component.extend({
       // Update status to that UI can indicate that a login is in progress.
       this.set('status', _STATUS.WAIT);
 
-      let me = this,
-        credentials = this.getProperties('username', 'password'),
-        session = this.get('session');
+      let me = this;
+      let credentials = this.getProperties('username', 'password');
+      let session = this.get('session');
 
       if (session) {
         // Calls the custom sa-authenticator app/authenticators/sa-authenticator
-        let config = getOwner(this).resolveRegistration('config:environment'),
-            auth = config['ember-simple-auth'].authenticate;
+        let config = getOwner(this).resolveRegistration('config:environment');
+        let auth = config['ember-simple-auth'].authenticate;
 
         session.authenticate(auth, credentials).then(
           // Auth succeeded

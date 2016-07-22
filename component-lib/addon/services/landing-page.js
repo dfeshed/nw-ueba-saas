@@ -26,9 +26,9 @@ export default Service.extend({
   defaultSelection: 'protected.monitor',
 
   init() {
-    let localStorageSpacing = localStorage[this.get('localStorageKey')],
-        defaultSelection = this.get('defaultSelection'),
-        currentSelection = null;
+    let localStorageSpacing = localStorage[this.get('localStorageKey')];
+    let defaultSelection = this.get('defaultSelection');
+    let currentSelection = null;
 
     if (localStorageSpacing) {
       currentSelection = localStorageSpacing;

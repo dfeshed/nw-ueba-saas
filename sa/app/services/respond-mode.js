@@ -15,9 +15,9 @@ export default Service.extend({
   defaultSelection: 'card',
 
   init() {
-    let localStorageRespondMode = localStorage[this.get('localStorageKey')],
-      defaultSelection = this.get('defaultSelection'),
-      currentSelection = null;
+    let localStorageRespondMode = localStorage[this.get('localStorageKey')];
+    let defaultSelection = this.get('defaultSelection');
+    let currentSelection = null;
 
     if (localStorageRespondMode) {
       currentSelection = localStorageRespondMode;

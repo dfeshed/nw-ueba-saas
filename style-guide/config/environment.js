@@ -1,5 +1,3 @@
-/* jshint node: true */
-
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'style-guide',
@@ -26,7 +24,7 @@ module.exports = function(environment) {
       // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
       // delete the initializer, remove this line, or set value to zero.
       readyDelay: 1250, //1500,
-      
+
       // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
       // Should match a DOM node in index.html.
       // Used by app's ready() handler to find & hide the loading animation.
@@ -63,7 +61,7 @@ module.exports = function(environment) {
     // keep test console output quieter
     ENV.APP.LOG_ACTIVE_GENERATION = false;
     ENV.APP.LOG_VIEW_LOOKUPS = false;
-    
+
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
   }

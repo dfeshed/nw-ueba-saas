@@ -41,8 +41,9 @@ test('Serializer normalizes correctly for a payload with basic single object', f
     }
   };
 
-  let store = getOwner(this).lookup('service:store'),
-    result = this.subject().normalizeResponse(store, { modelName }, inputHash);
+  let store = getOwner(this).lookup('service:store');
+  let result = this.subject().normalizeResponse(store, { modelName }, inputHash);
+
   assert.deepEqual(result, expectedOutputHash, 'Unexpected result.');
 });
 
@@ -85,8 +86,8 @@ test('Serializer normalizes correctly for a payload with an array of two objects
     ]
   };
 
-  let store = getOwner(this).lookup('service:store'),
-    result = this.subject().normalizeResponse(store, { modelName }, inputHash);
+  let store = getOwner(this).lookup('service:store');
+  let result = this.subject().normalizeResponse(store, { modelName }, inputHash);
 
   assert.deepEqual(result, expectedOutputHash, 'Unexpected result.');
 });

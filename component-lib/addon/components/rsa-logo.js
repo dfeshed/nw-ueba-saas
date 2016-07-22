@@ -66,11 +66,12 @@ export default Component.extend({
 
     // Parse the 'delays' property into an array of integers.
     let delays = String(this.get('delays'))
-        .split(',')
-        .map(function(arg) {
-          return Math.max(0, parseInt(arg, 10) || 0);
-        }),
-      maxIndex = delays.length - 1;
+      .split(',')
+      .map(function(arg) {
+        return Math.max(0, parseInt(arg, 10) || 0);
+      });
+    let maxIndex = delays.length - 1;
+
     if (maxIndex < 0) {
       delays = [0];
       maxIndex = 0;
@@ -81,9 +82,10 @@ export default Component.extend({
     this.$(`[${_HTML_ATTR}]`).css('animationDelay', function() {
 
       // Read the node's delay index and the corresponding delay value (ms).
-      let $el = me.$(this),
-        index = parseInt($el.attr(_HTML_ATTR), 10) || 0,
-        delay = delays[Math.min(maxIndex, index)];
+      let $el = me.$(this);
+      let index = parseInt($el.attr(_HTML_ATTR), 10) || 0;
+      let delay = delays[Math.min(maxIndex, index)];
+
       return `${delay}ms`;
     });
     return this;

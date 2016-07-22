@@ -45,7 +45,7 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   currentPageIndex: computed('pages.length', {
-    get(/*key*/) {
+    get(/* key */) {
       return Math.min(this._currentPageIndex || 0, this.get('pages.length') - 1);
     },
     set(key, value) {
@@ -130,19 +130,21 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   pages: computed('_columnsPerPage', 'items.length', function() {
-    let { items, allowMultipleRows, _columnsPerPage } = this.getProperties('items', 'allowMultipleRows', '_columnsPerPage'),
-      len = (items && items.length) || 0,
-      pages = [];
+    let { items, allowMultipleRows, _columnsPerPage } = this.getProperties('items', 'allowMultipleRows', '_columnsPerPage');
+    let len = (items && items.length) || 0;
+    let pages = [];
 
     if (len) {
       if (allowMultipleRows) {
         pages.pushObject({ firstItemIndex: 0, lastItemIndex: len - 1 });
       } else {
-        let pageCount = (len && _columnsPerPage) ? Math.ceil(len / _columnsPerPage) : 0,
-          i;
+        let pageCount = (len && _columnsPerPage) ? Math.ceil(len / _columnsPerPage) : 0;
+        let i;
+
         for (i = 0; i < pageCount; i++) {
-          let firstItemIndex = _columnsPerPage * i,
-            lastItemIndex = Math.min(firstItemIndex + _columnsPerPage - 1, len - 1);
+          let firstItemIndex = _columnsPerPage * i;
+          let lastItemIndex = Math.min(firstItemIndex + _columnsPerPage - 1, len - 1);
+
           pages.pushObject({
             firstItemIndex,
             lastItemIndex
@@ -183,17 +185,18 @@ export default Component.extend(DomWatcher, {
    * @public
    */
   currentPageItems: computed('currentPage', 'items.[]', '_columnsPerPage', function() {
-    let { currentPage, items, _columnsPerPage } = this.getProperties('currentPage', 'items', '_columnsPerPage'),
-      pageItems =  (items && currentPage) ? items.slice(currentPage.firstItemIndex, currentPage.lastItemIndex + 1) : [],
-      len = pageItems.length;
+    let { currentPage, items, _columnsPerPage } = this.getProperties('currentPage', 'items', '_columnsPerPage');
+    let pageItems =  (items && currentPage) ? items.slice(currentPage.firstItemIndex, currentPage.lastItemIndex + 1) : [];
+    let len = pageItems.length;
 
     // Add placeholder items to fill in empty spots in last row (if any).
     let diff = (_columnsPerPage && len % _columnsPerPage) ?
       (_columnsPerPage - (pageItems.length % _columnsPerPage)) : 0;
     if (diff > 0) {
-      let width = this.get('_itemWidth'),
-        height = this.get('_itemHeight'),
-        i;
+      let width = this.get('_itemWidth');
+      let height = this.get('_itemHeight');
+      let i;
+
       for (i = 0; i < diff; i++) {
         pageItems.push({ isPlaceholder: true, width, height });
       }
@@ -229,8 +232,9 @@ export default Component.extend(DomWatcher, {
      * @public
      */
     nextPage() {
-      let curr = this.get('currentPageIndex'),
-        len = this.get('pages.length');
+      let curr = this.get('currentPageIndex');
+      let len = this.get('pages.length');
+
       if (len) {
         this.set('currentPageIndex', (curr < len - 1) ? (curr + 1) : 0);
       }

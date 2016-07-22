@@ -19,9 +19,10 @@ function recursiveFind(value, node) {
     if ((typeof node.isEqual === 'function') ? node.isEqual(value) : (value === nodeValue)) {
       return node;
     }
-    let children = get(node, 'children'),
-      len = (children && children.length) || 0,
-      i;
+    let children = get(node, 'children');
+    let len = (children && children.length) || 0;
+    let i;
+
     for (i = 0; i < len; i++) {
       if (recursiveFind(value, children[i])) {
         return children[i];

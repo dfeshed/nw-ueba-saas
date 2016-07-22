@@ -123,14 +123,16 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @private
    */
   _visibleItems: computed('items.[]', '_firstBufferedIndex', '_lastBufferedIndex', function() {
-    let items = this.get('items'),
-      len = items && items.length;
+    let items = this.get('items');
+    let len = items && items.length;
+
     if (!len) {
       return [];
     }
 
-    let first = this.get('_firstBufferedIndex'),
-      last = this.get('_lastBufferedIndex');
+    let first = this.get('_firstBufferedIndex');
+    let last = this.get('_lastBufferedIndex');
+
     return items.slice(first, last + 1);
   }),
 

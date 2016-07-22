@@ -60,13 +60,13 @@ export default function(server) {
     // Respond with dummy confirmation.
     let frame = (frames && frames[0]) || {};
     server.sendFrame('MESSAGE', {
-        subscription: (frame.headers || {}).id || '',
-        'content-type': 'application/json'
-      }, {
-        code: 0,
-        data: { id: 'dummy' },
-        request: frame.body
-      });
+      subscription: (frame.headers || {}).id || '',
+      'content-type': 'application/json'
+    }, {
+      code: 0,
+      data: { id: 'dummy' },
+      request: frame.body
+    });
   });
 
 }

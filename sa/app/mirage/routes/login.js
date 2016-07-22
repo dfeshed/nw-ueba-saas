@@ -18,5 +18,5 @@ export default function(config) {
   });
 
   config.post('/user/logout', function() {
-    });
+  });
 }

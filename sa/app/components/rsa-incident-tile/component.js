@@ -78,6 +78,7 @@ export default Component.extend({
    */
   badgeStyle: computed('model.riskScore', function() {
     let riskScore = this.get('model.riskScore');
+
     return IncidentHelper.riskScoreToBadgeLevel(riskScore);
   }),
 
@@ -103,6 +104,7 @@ export default Component.extend({
   didInsertElement() {
     this._super(...arguments);
     let _this = this;
+
     this.get('eventBus').on('rsa-application-click', function(targetEl) {
       if (_this.$()) {
         if (_this.get('editModeActive') === true && _this.$().has(targetEl).length === 0) {
@@ -146,9 +148,9 @@ export default Component.extend({
       if (!this.get('editModeActive')) {
         Logger.log('Updating Incident and calling saveAction action to save it');
 
-        let pendingPriority = this.get('pendingPriority'),
-          pendingStatus = this.get('pendingStatus'),
-          pendingAssignee = this.get('pendingAssignee');
+        let pendingPriority = this.get('pendingPriority');
+        let pendingStatus = this.get('pendingStatus');
+        let pendingAssignee = this.get('pendingAssignee');
 
         if (typeof pendingPriority === 'undefined') {
           pendingPriority = this.get('model.prioritySort');
@@ -257,8 +259,9 @@ export default Component.extend({
    * @public
    */
   assigneeFullName: computed('model.assignee.id', function() {
-    let currentAssigneeId = this.get('model.assignee.id'),
-      currentAssignee = null;
+    let currentAssigneeId = this.get('model.assignee.id');
+    let currentAssignee = null;
+
     if (currentAssigneeId) {
       currentAssignee = this.get('users').findBy('id', currentAssigneeId);
     }
