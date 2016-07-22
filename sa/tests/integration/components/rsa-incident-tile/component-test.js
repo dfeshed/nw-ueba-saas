@@ -21,6 +21,7 @@ test('The tile component is rendered properly.', function(assert) {
     },
     'createdBy': 'Suspected Command & Control Communication By Domain',
     'alertCount': 1,
+    'eventCount': 5,
     'categories': [],'sources': ['Event Stream Analysis'],'lastUpdated': 1452485774539,
     'ruleId': '5681b379e4b0947bc54e6c9d',
     'summary': 'SA detected communications with www.media.gwu.edu that may be malware command and control.\n\n1. Evaluate if the domain is legitimate (online radio, news feed, partner, automated testing, etc.).\n2. Review domain registration for suspect information (Registrant country, registrar, no registration data found, etc).\n3. If the domain is suspect, go to the Investigations module to locate other activity to/from it.',
@@ -186,8 +187,7 @@ test('The tile component is rendered properly.', function(assert) {
   this.set('users', users);
 
   this.render(hbs`{{rsa-incident-tile model=testInc users=users}}`);
-
-  assert.equal(this.$('.rsa-update-indicator__dot').length, 1, 'Testing to see if the update indicator element exists.');
+  assert.equal(this.$('.rsa-update-indicator__dot').length, 1, 'The rsa-update-indicator__dot element was not found.');
   assert.equal(this.$('.rsa-incident-tile').length, 1, 'Testing to see if a rsa-incident-tile element exists.');
   assert.equal(this.$('.rsa-incident-tile-section').length, 1, 'Testing to see if a rsa-incident-tile-section element exists.');
   assert.equal(this.$('.rsa-incident-tile-id').length, 1, 'Testing to see if a rsa-incident-id elements exist.');
@@ -206,13 +206,13 @@ test('The tile component is rendered properly.', function(assert) {
   assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'Incident tile alert count not found in DOM');
   assert.equal(this.$('.rsa-incident-tile-alert-count').text().trim(), '1', 'Unexpected alert count value');
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'Incident tile Event count not found in DOM');
-  assert.equal(this.$('.rsa-incident-tile-event-count').text().trim(), '1', 'Unexpected Event count value');
+  assert.equal(this.$('.rsa-incident-tile-event-count').text().trim(), '5', 'Unexpected Event count value');
   assert.equal(this.$('.rsa-incident-tile-sources').length, 1, 'Incident tile sources not found in DOM');
   assert.equal(this.$('.rsa-incident-tile-sources').text().trim(), ['ESA'], 'Unexpected alert count value');
   assert.equal(this.$('.rsa-incident-tile-score .label').text().trim(), 'Risk Score', 'Incident tile does include risk score label in DOM');
 
   this.render(hbs`{{rsa-incident-tile model=testInc users=users size='small'}}`);
-  assert.equal(this.$('.rsa-update-indicator__dot').length, 1, 'Testing to see if the update indicator element exists.');
+  assert.equal(this.$('.rsa-update-indicator__dot').length, 1, 'The rsa-update-indicator__dot element was not found.');
   assert.equal(this.$('.rsa-incident-tile-status-selector').length, 0, 'Small incident tile does not include status selector in DOM');
   assert.equal(this.$('.rsa-incident-tile-priority-selector').length, 0, 'Small incident tile does not include priority selector in DOM');
   assert.equal(this.$('.rsa-incident-tile-assignee-selector').length, 0, 'Small incident tile does not include assignee selector in DOM');
@@ -221,7 +221,9 @@ test('The tile component is rendered properly.', function(assert) {
   assert.equal(this.$('.rsa-incident-tile-name').length, 1, 'Small incident tile name not found in DOM');
   assert.equal(this.$('.rsa-incident-tile-score .label').text().trim().length, 0, 'Small incident tile does not include risk score label in DOM');
   assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'Small Incident tile alert count is present in DOM');
+  assert.equal(this.$('.rsa-incident-tile-alert-count').text().trim(), '1', 'Small Incident tile alert count contains the proper number of alerts.');
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'Small incident tile Event count is present in DOM');
+  assert.equal(this.$('.rsa-incident-tile-event-count').text().trim(), '5', 'Small Incident tile event count contains the proper number of events.');
   assert.equal(this.$('.rsa-incident-tile-sources').length, 1, 'Small incident tile sources not found in DOM');
 });
 
@@ -593,4 +595,38 @@ test('The update indicator component is rendered properly when an asynchronous u
 
   assert.equal(this.$('.rsa-update-indicator.is-icon-only').length, 1, 'Testing to see if the update indicator element exists with the is-icon-only class.');
   assert.equal(this.$('.rsa-update-indicator.is-icon-only.is-hidden').length, 1, 'Testing to see if the update indicator element exists with the is-icon-only and is-hidden classes.');
+});
+
+test('If the alert count is missing, then the default value is "-".', function(assert) {
+
+  let testInc = EmberObject.create({
+    'id': 'INC-490',
+    'name': 'Suspected command and control communication with www.media.gwu.edu',
+    'eventCount': 5
+  });
+  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' })];
+
+  this.set('testInc', testInc);
+  this.set('users', users);
+
+  this.render(hbs`{{rsa-incident-tile model=testInc users=users}}`);
+  assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'The .rsa-incident-tile-alert-count element was not found in the DOM.');
+  assert.equal(this.$('.rsa-incident-tile-alert-count').text().trim(), '-', 'The default value for missing alerts "-" was not found.');
+});
+
+test('If the event count is missing, then the default value is "-".', function(assert) {
+
+  let testInc = EmberObject.create({
+    'id': 'INC-490',
+    'name': 'Suspected command and control communication with www.media.gwu.edu',
+    'alertCount': 5
+  });
+  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' })];
+
+  this.set('testInc', testInc);
+  this.set('users', users);
+
+  this.render(hbs`{{rsa-incident-tile model=testInc users=users}}`);
+  assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'The .rsa-incident-tile-event-count element was not found in the DOM.');
+  assert.equal(this.$('.rsa-incident-tile-event-count').text().trim(), '-', 'The default value for missing events "-" was not found.');
 });

@@ -10,7 +10,7 @@
           <label class="rsa-incident-tile-id">{{unbound model.id}}</label>
         </li>
         <li class="rsa-incident-tile-name">
-          {{unbound model.name}}
+          {{model.name}}
         </li>
         {{#if isLargeSize}}
           <li class="rsa-incident-tile-status">
@@ -48,10 +48,10 @@
   {{#rsa-grid-row}}
     {{#rsa-grid-column span=6 class="rsa-incident-tile-alert-col" }}
       {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
-        <label class="rsa-incident-tile-alert-count">{{unbound model.alertCount}}</label>
+        <label class="rsa-incident-tile-alert-count">{{if model.alertCount model.alertCount '-'}}</label>
       {{/rsa-content-definition}}
       {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
-        <label class="rsa-incident-tile-event-count">{{if model.alerts.firstObject.alert.numEvents model.alerts.firstObject.alert.numEvents '0'}}</label>
+        <label class="rsa-incident-tile-event-count">{{if model.eventCount model.eventCount '-'}}</label>
       {{/rsa-content-definition}}
     {{/rsa-grid-column}}
     {{#rsa-grid-column span=6 class="rsa-incident-tile-source-col" }}
