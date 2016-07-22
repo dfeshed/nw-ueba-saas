@@ -1,0 +1,1071 @@
+{
+  "id": 16,
+  "title": "Streaming - Key value (DB based) cache",
+  "originalTitle": "Streaming - Key value (DB based) cache",
+  "tags": [
+    "Streaming"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_process.$tag_name",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "name"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.key-value-db-based-cache",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "get"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "get"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "name",
+                  "operator": "=~",
+                  "value": "/^$name$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Key value (DB based) cache - gets",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "gets"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 2,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_process.$tag_name",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "name"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.key-value-db-based-cache",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "getNotFound"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "getNotFound"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "name",
+                  "operator": "=~",
+                  "value": "/^$name$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Key value (DB based) cache - getNotFound",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "getNotFound"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_process.$tag_name",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "name"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.key-value-db-based-cache",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "put"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "put"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "name",
+                  "operator": "=~",
+                  "value": "/^$name$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Key value (DB based) cache - puts",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "puts"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_process.$tag_name",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "name"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.key-value-db-based-cache",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "remove"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "remove"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "name",
+                  "operator": "=~",
+                  "value": "/^$name$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Key value (DB based) cache - removes",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "removes"
+    }
+  ],
+  "time": {
+    "from": "2016-06-25T23:03:23.743Z",
+    "to": "2016-06-26T05:04:24.183Z"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "streaming",
+          "value": [
+            "streaming"
+          ]
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "processGroup",
+        "multi": true,
+        "name": "processGroup",
+        "options": [
+          {
+            "text": "All",
+            "value": "$__all",
+            "selected": false
+          },
+          {
+            "text": "UNKNOWN-PROCESS-GROUP-NAME",
+            "value": "UNKNOWN-PROCESS-GROUP-NAME",
+            "selected": false
+          },
+          {
+            "text": "collection",
+            "value": "collection",
+            "selected": false
+          },
+          {
+            "text": "external",
+            "value": "external",
+            "selected": false
+          },
+          {
+            "text": "monitoring",
+            "value": "monitoring",
+            "selected": false
+          },
+          {
+            "text": "streaming",
+            "value": "streaming",
+            "selected": true
+          }
+        ],
+        "query": "SHOW TAG VALUES WITH KEY = \"processGroup\"",
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": true,
+        "multi": true,
+        "name": "process",
+        "options": [
+          {
+            "text": "All",
+            "value": "$__all",
+            "selected": true
+          },
+          {
+            "text": "4769-events-filter",
+            "value": "4769-events-filter",
+            "selected": false
+          },
+          {
+            "text": "aggregated-feature-events-scoring-task",
+            "value": "aggregated-feature-events-scoring-task",
+            "selected": false
+          },
+          {
+            "text": "aggregation-events-streaming",
+            "value": "aggregation-events-streaming",
+            "selected": false
+          },
+          {
+            "text": "alert-generator-task",
+            "value": "alert-generator-task",
+            "selected": false
+          },
+          {
+            "text": "computer-tagging-normalization",
+            "value": "computer-tagging-normalization",
+            "selected": false
+          },
+          {
+            "text": "entity-events-scoring-task",
+            "value": "entity-events-scoring-task",
+            "selected": false
+          },
+          {
+            "text": "entity-events-streaming",
+            "value": "entity-events-streaming",
+            "selected": false
+          },
+          {
+            "text": "evidence-creation-task",
+            "value": "evidence-creation-task",
+            "selected": false
+          },
+          {
+            "text": "fortscale-event-scoring-persistency-task",
+            "value": "fortscale-event-scoring-persistency-task",
+            "selected": false
+          },
+          {
+            "text": "hdfs-events-writer-task",
+            "value": "hdfs-events-writer-task",
+            "selected": false
+          },
+          {
+            "text": "ip-resolving",
+            "value": "ip-resolving",
+            "selected": false
+          },
+          {
+            "text": "model-building-streaming",
+            "value": "model-building-streaming",
+            "selected": false
+          },
+          {
+            "text": "raw-events-scoring-task",
+            "value": "raw-events-scoring-task",
+            "selected": false
+          },
+          {
+            "text": "service-account-tagging",
+            "value": "service-account-tagging",
+            "selected": false
+          },
+          {
+            "text": "user-mongo-update-task",
+            "value": "user-mongo-update-task",
+            "selected": false
+          },
+          {
+            "text": "user-score-task",
+            "value": "user-score-task",
+            "selected": false
+          },
+          {
+            "text": "username-normalization-tagging-task",
+            "value": "username-normalization-tagging-task",
+            "selected": false
+          },
+          {
+            "text": "vpn-events-filter",
+            "value": "vpn-events-filter",
+            "selected": false
+          },
+          {
+            "text": "vpn-geolocation-session-update-task",
+            "value": "vpn-geolocation-session-update-task",
+            "selected": false
+          }
+        ],
+        "query": "SHOW TAG VALUES WITH KEY = \"process\"  WHERE \"processGroup\" =~ /^$processGroup$/",
+        "refresh": 1,
+        "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "name",
+        "multi": true,
+        "name": "name",
+        "options": [
+          {
+            "text": "All",
+            "value": "$__all",
+            "selected": true
+          },
+          {
+            "text": "computer",
+            "value": "computer",
+            "selected": false
+          },
+          {
+            "text": "computerService",
+            "value": "computerService",
+            "selected": false
+          },
+          {
+            "text": "crmsf/ScoringTask",
+            "value": "crmsf/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "crmsf/VpnEnrichTask",
+            "value": "crmsf/VpnEnrichTask",
+            "selected": false
+          },
+          {
+            "text": "dhcp",
+            "value": "dhcp",
+            "selected": false
+          },
+          {
+            "text": "gwame/ScoringTask",
+            "value": "gwame/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "gwame/UsernameNormalizationAndTaggingTask",
+            "value": "gwame/UsernameNormalizationAndTaggingTask",
+            "selected": false
+          },
+          {
+            "text": "ise",
+            "value": "ise",
+            "selected": false
+          },
+          {
+            "text": "kerberos_logins/ComputerTaggingNormalizationTask",
+            "value": "kerberos_logins/ComputerTaggingNormalizationTask",
+            "selected": false
+          },
+          {
+            "text": "kerberos_logins/ScoringTask",
+            "value": "kerberos_logins/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "kerberos_logins/UsernameNormalizationAndTaggingTask",
+            "value": "kerberos_logins/UsernameNormalizationAndTaggingTask",
+            "selected": false
+          },
+          {
+            "text": "kerberos_tgt/ComputerTaggingNormalizationTask",
+            "value": "kerberos_tgt/ComputerTaggingNormalizationTask",
+            "selected": false
+          },
+          {
+            "text": "kerberos_tgt/ScoringTask",
+            "value": "kerberos_tgt/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "kerberos_tgt/UsernameNormalizationAndTaggingTask",
+            "value": "kerberos_tgt/UsernameNormalizationAndTaggingTask",
+            "selected": false
+          },
+          {
+            "text": "login",
+            "value": "login",
+            "selected": false
+          },
+          {
+            "text": "main",
+            "value": "main",
+            "selected": false
+          },
+          {
+            "text": "ntlm/ComputerTaggingNormalizationTask",
+            "value": "ntlm/ComputerTaggingNormalizationTask",
+            "selected": false
+          },
+          {
+            "text": "ntlm/ScoringTask",
+            "value": "ntlm/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "oracle/ComputerTaggingNormalizationTask",
+            "value": "oracle/ComputerTaggingNormalizationTask",
+            "selected": false
+          },
+          {
+            "text": "oracle/ScoringTask",
+            "value": "oracle/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "prnlog/ComputerTaggingNormalizationTask",
+            "value": "prnlog/ComputerTaggingNormalizationTask",
+            "selected": false
+          },
+          {
+            "text": "prnlog/ScoringTask",
+            "value": "prnlog/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "prnlog/UsernameNormalizationAndTaggingTask",
+            "value": "prnlog/UsernameNormalizationAndTaggingTask",
+            "selected": false
+          },
+          {
+            "text": "pxGrid",
+            "value": "pxGrid",
+            "selected": false
+          },
+          {
+            "text": "samAccountNameStore",
+            "value": "samAccountNameStore",
+            "selected": false
+          },
+          {
+            "text": "sensitiveMachineService",
+            "value": "sensitiveMachineService",
+            "selected": false
+          },
+          {
+            "text": "ssh/ComputerTaggingNormalizationTask",
+            "value": "ssh/ComputerTaggingNormalizationTask",
+            "selected": false
+          },
+          {
+            "text": "ssh/IpResolvingStreamTask",
+            "value": "ssh/IpResolvingStreamTask",
+            "selected": false
+          },
+          {
+            "text": "ssh/ScoringTask",
+            "value": "ssh/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "ssh/etl",
+            "value": "ssh/etl",
+            "selected": false
+          },
+          {
+            "text": "userService",
+            "value": "userService",
+            "selected": false
+          },
+          {
+            "text": "usernameStore",
+            "value": "usernameStore",
+            "selected": false
+          },
+          {
+            "text": "vpn/ScoringTask",
+            "value": "vpn/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "vpn/UsernameNormalizationAndTaggingTask",
+            "value": "vpn/UsernameNormalizationAndTaggingTask",
+            "selected": false
+          },
+          {
+            "text": "vpn/VpnEnrichTask",
+            "value": "vpn/VpnEnrichTask",
+            "selected": false
+          },
+          {
+            "text": "vpn_session/ScoringTask",
+            "value": "vpn_session/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "wame/ScoringTask",
+            "value": "wame/ScoringTask",
+            "selected": false
+          },
+          {
+            "text": "wame/UsernameNormalizationAndTaggingTask",
+            "value": "wame/UsernameNormalizationAndTaggingTask",
+            "selected": false
+          }
+        ],
+        "query": "SHOW TAG VALUES WITH KEY = \"name\"",
+        "refresh": 1,
+        "type": "query",
+        "useTags": false
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 12,
+  "version": 1,
+  "links": []
+}

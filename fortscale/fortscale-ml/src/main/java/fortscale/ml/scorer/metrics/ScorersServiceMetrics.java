@@ -4,6 +4,7 @@ import fortscale.ml.scorer.ScorersService;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
@@ -23,6 +24,7 @@ public class ScorersServiceMetrics extends StatsMetricsGroup {
                 // Create anonymous attribute class with initializer block since it does not have ctor
                 new StatsMetricsGroupAttributes() {
                     {
+
                         addTag("dataSource",dataSource);
                     }
                 }
@@ -35,6 +37,10 @@ public class ScorersServiceMetrics extends StatsMetricsGroup {
     // amount of scorers per data source. loaded once at ScorersService initiation
     @StatsLongMetricParams
     public long dataSourceScorers;
+
+
+    @StatsDateMetricParams
+    public long calculateScoreTime;
 
 
 }

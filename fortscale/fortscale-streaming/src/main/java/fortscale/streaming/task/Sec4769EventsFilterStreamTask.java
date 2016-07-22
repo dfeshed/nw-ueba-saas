@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 import static fortscale.utils.ConversionUtils.convertToBoolean;
 import static fortscale.utils.ConversionUtils.convertToString;
 
-public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
+public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask {
 	private static final String NAT_SRC_MACHINE = "nat_src_machine";
 
 
@@ -58,6 +58,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 		if (configKey == null){
 			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
+			++taskMetrics.cantExtractStateMessage;
 			return false;
 		}
 		// filter events with account_name that match $account_regex parameter
@@ -65,6 +66,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		if (accountNamePattern!=null && StringUtils.isNotBlank(account_name) && 
 				(accountNamePattern.matcher(account_name).matches() ||  account_name.startsWith("krbtgt"))){
 			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.ACCOUNT_NAME_MATCH_TO_REGEX);
+			++taskMetrics.accountNameMatchesLoginAccountRegex;
 			return false;
 		}
 
@@ -72,6 +74,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		String service_name = convertToString(message.get("service_name"));
 		if (destinationPattern!=null && StringUtils.isNotBlank(service_name) && destinationPattern.matcher(service_name).matches()) {
 			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.SERVICE_NAME_MATCH_TO_REGEX);
+			++taskMetrics.serviceNameMatchesLoginServiceRegex;
 			return false;
 		}
 		
@@ -79,6 +82,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 		String machine_name = convertToString(message.get("machine_name"));
 		if (StringUtils.isNotBlank(machine_name) && machine_name.equalsIgnoreCase(service_name)){
 			taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.SERVICE_NAME_MATCH_COMPUTER_NAME);
+			++taskMetrics.serviceNameMatchesComputerName;
 			return false;
 		}
 		
@@ -103,6 +107,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask{
 					message.put("normalized_src_machine", "");
 					message.put(NAT_SRC_MACHINE, "");
 					message.put("is_nat", true);
+					++taskMetrics.sourceIpInVpnAddressPool;
 				}
 			}
 		}

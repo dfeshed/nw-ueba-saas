@@ -4,6 +4,7 @@ import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.RecordExtensions;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.utils.time.TimestampUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -69,44 +70,41 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 		
 		@Override
 		protected boolean doProcess(Record inputRecord) {
-			
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			// get the key fields from the record and look for the record to merge from
 			String key = EventsJoinerCache.buildKey(inputRecord, keys);
 			Record previousEvent = (dropFromCache)? cache.fetch(key) : cache.peek(key);
 
 			if (previousEvent==null && dropWhenNoMatch) {
 				// drop record, halt current record execution
+				if (morphlineMetrics != null) {
+					morphlineMetrics.eventDropped++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord, CollectionMessages.NO_PREVIOUS_EVENT_AND_DROP_WHEN_NO_MATCH_IS_TRUE);
 				return true;
 			}
 
             if (previousEvent!=null ) {
-
-
                 //in case that we have time to cache - check if it doesn't expire
                 if (timeToCacheMiliSec > -1 && !timeField.equals(""))
                 {
-
-
                     long current_record_utc_date_time = TimestampUtils.convertToMilliSeconds(RecordExtensions.getLongValue(inputRecord, timeField));
-
 
                     long prev_utc_date_time = TimestampUtils.convertToMilliSeconds(RecordExtensions.getLongValue(previousEvent,timeField));
 
                     long delta = current_record_utc_date_time - timeToCacheMiliSec;
-
 
                     // in case that the prev event caching was expired
                     if (prev_utc_date_time < delta)
                     {
                         //remove the prev event from cache
                         cache.fetch(key);
+
                         // continue processing in the command chain
                         return super.doProcess(inputRecord);
-
                     }
-
-
                 }
 
                 // get the fields to merge from the previous record and put them
@@ -140,8 +138,5 @@ public class EventsJoinerMergeBuilder implements CommandBuilder {
 			}
 			super.doNotify(notification);
 		}
-		
 	}
-
-
 }

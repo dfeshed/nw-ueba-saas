@@ -40,7 +40,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     final String INPUT_TOPIC = "topic-1";
     final String DATA_SOURCE = "data-source";
     final String LAST_STATE = "last-state";
-    final String MESSAGE_TEMPLATE = "{ \"name\": \"user1\",  \"time\": 1, ,  \"%s\": \"%s\", ,  \"%s\": \"%s\" }";
+    final String MESSAGE_TEMPLATE = "{ \"name\": \"user1\",  \"date_time_unix\": 1, ,  \"%s\": \"%s\", ,  \"%s\": \"%s\" }";
     final String MESSAGE = String.format(MESSAGE_TEMPLATE, DATA_SOURCE_FIELD_NAME, DATA_SOURCE, LAST_STATE_FIELD_NAME, LAST_STATE);
 
 
@@ -91,6 +91,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         when(vpnEnrichService.processVpnEvent(any(JSONObject.class), eq(messageCollector))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         when(vpnEnrichService.getUsernameFieldName()).thenReturn("username");
+        when(vpnEnrichService.getTimeStampFieldName()).thenReturn("date_time_unix");
 
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
@@ -128,11 +129,13 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         when(vpnEnrichService.processVpnEvent(any(JSONObject.class), eq(messageCollector))).thenReturn(new JSONObject(map));
         when(systemStreamPartition.getSystemStream()).thenReturn(systemStream);
         when(vpnEnrichService.getUsernameFieldName()).thenReturn("username");
+        when(vpnEnrichService.getTimeStampFieldName()).thenReturn("date_time_unix");
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
+        task.wrappedCreateTaskMetrics();
         task.wrappedProcess(envelope , messageCollector, taskCoordinator);
         task.wrappedClose();
 

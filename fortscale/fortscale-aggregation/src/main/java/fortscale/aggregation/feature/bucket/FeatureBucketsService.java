@@ -1,26 +1,33 @@
 package fortscale.aggregation.feature.bucket;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import org.apache.commons.lang.StringUtils;
-
-import fortscale.common.feature.Feature;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyData;
 import fortscale.aggregation.feature.bucket.strategy.FeatureBucketStrategyService;
-import fortscale.common.event.Event;
-import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.aggregation.feature.functions.IAggrFeatureFunctionsService;
+import fortscale.common.event.Event;
+import fortscale.common.feature.Feature;
+import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
+import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.*;
 
 public abstract class FeatureBucketsService {
 	private static final Logger logger = Logger.getLogger(FeatureBucketsService.class);
 	private static final String BUCKET_ID_BUILDER_SEPARATOR = "###";
-	
+
+	@Autowired
+	private StatsService statsService;
+
+	private Map<String, FeatureBucketsServiceMetrics> dataSourceToMetrics = new HashMap<>();
+
+	private FeatureBucketsServiceMetrics getMetrics(String dataSource) {
+		if (!dataSourceToMetrics.containsKey(dataSource)) {
+			dataSourceToMetrics.put(dataSource, new FeatureBucketsServiceMetrics(statsService, dataSource));
+		}
+		return dataSourceToMetrics.get(dataSource);
+	}
 
 	public List<FeatureBucket> updateFeatureBucketsWithNewBucketEndTime(List<FeatureBucketConf> featureBucketConfs, List<FeatureBucketStrategyData> updatedFeatureBucketStrategyData){
 		if(updatedFeatureBucketStrategyData == null || updatedFeatureBucketStrategyData.isEmpty()){
@@ -46,12 +53,14 @@ public abstract class FeatureBucketsService {
 
 	public List<FeatureBucket> updateFeatureBucketsWithNewEvent(Event event, List<FeatureBucketConf> featureBucketConfs) {
 		List<FeatureBucket> newFeatureBuckets = new ArrayList<>();
+		FeatureBucketsServiceMetrics metrics = getMetrics(event.getDataSource());
 		for (FeatureBucketConf featureBucketConf : featureBucketConfs) {
 			List<FeatureBucketStrategyData> featureBucketStrategyDataList = getFeatureBucketStrategyService().getFeatureBucketStrategyData(event, featureBucketConf);
 			try {
 				for (FeatureBucketStrategyData strategyData : featureBucketStrategyDataList) {
 					String bucketId = getBucketId(event, featureBucketConf, strategyData.getStrategyId());
 					if (bucketId == null) {
+						metrics.nullBucketIds++;
 						break;
 					}
 					FeatureBucket featureBucket = getFeatureBucketsStore().getFeatureBucket(featureBucketConf, bucketId);
@@ -63,11 +72,13 @@ public abstract class FeatureBucketsService {
 							newFeatureBuckets.add(featureBucket);
 						}
 					}
+					metrics.featureBucketUpdates++;
 					updateFeatureBucket(event, featureBucket, featureBucketConf);
 					storeFeatureBucket(featureBucket, featureBucketConf);
 				}
 			} catch (Exception e) {
 				logger.error("Got an exception while updating buckets with new event", e);
+				metrics.exceptionsUpdatingWithNewEvents++;
 			}
 		}
 		return newFeatureBuckets;
@@ -112,7 +123,9 @@ public abstract class FeatureBucketsService {
 
 	private FeatureBucket createNewFeatureBucket(Event event, FeatureBucketConf featureBucketConf, FeatureBucketStrategyData strategyData) {
 		String bucketId = getBucketId(event, featureBucketConf, strategyData.getStrategyId());
+		FeatureBucketsServiceMetrics metrics = getMetrics(event.getDataSource());
 		if (bucketId == null) {
+			metrics.nullBucketIds++;
 			return null;
 		}
 
@@ -130,6 +143,7 @@ public abstract class FeatureBucketsService {
 			String contextValue = (String)event.get(contextFieldName);
 			ret.addToContextFieldNameToValueMap(contextFieldName, contextValue);
 		}
+		metrics.buckets++;
 
 		return ret;
 	}

@@ -10,6 +10,8 @@ import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.services.CachingService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.cache.SimpleLRUCache;
+import fortscale.services.impl.metrics.UsernameServiceMetrics;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang3.EnumUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
@@ -22,7 +24,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class UsernameService implements InitializingBean, CachingService{
+public class UsernameService implements InitializingBean, CachingService {
 
 	private static final String USER_ID_TO_LOG_USERNAME_DELIMITER = "###";
 
@@ -35,6 +37,9 @@ public class UsernameService implements InitializingBean, CachingService{
 	// maps log event id to a map of username to user id , e.g. :
 	// vpn -> {gils -> 11111111, gabi -> 22222222, ami -> 333333333}
 	private Map<String, Map<String, String>> normalizedUsernameToUserIdCache = new HashMap<>();
+
+	@Autowired
+	private StatsService statsService;
 
 	@Autowired
 	private UserRepository userRepository;
@@ -63,6 +68,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	private int usernameServicePageSize;
 
 	private boolean isLazyUsernameCachesUpdate = true;
+	private UsernameServiceMetrics serviceMetrics;
 
 	// For unit tests only
 	protected int getPageSize() {
@@ -116,7 +122,8 @@ public class UsernameService implements InitializingBean, CachingService{
 		return isUsernameExist(username, null);
 	}
 
-	public boolean isUsernameExist(String normalizedUsername, LogEventsEnum logEventsEnum){
+	public boolean isUsernameExist(String normalizedUsername, LogEventsEnum logEventsEnum) {
+		serviceMetrics.lookingForUsername++;
 		if (usernameToUserIdCache.containsKey(normalizedUsername)) {
 			return true;
 		}
@@ -134,10 +141,12 @@ public class UsernameService implements InitializingBean, CachingService{
 			return true;
 		}
 
+		serviceMetrics.usernameNotFound++;
 		return false;
 	}
 
 	public String getUserId(String username, String logEventName){
+		serviceMetrics.lookingForUserId++;
 		if (usernameToUserIdCache.containsKey(username))
 			return usernameToUserIdCache.get(username);
 
@@ -154,17 +163,20 @@ public class UsernameService implements InitializingBean, CachingService{
 			return user.getId();
 		}
 
+		serviceMetrics.userIdNotFound++;
 		return null;
 	}
 
 	public void updateUsernameInCache(User user){
+		serviceMetrics.checkingUsernameInCache++;
 		if (!usernameToUserIdCache.containsKey(user.getUsername())) {
+			serviceMetrics.usernameAddedToCache++;
 			usernameToUserIdCache.put(user.getUsername(), user.getId());
 		}
 	}
 
 	public boolean isLogUsernameExist(String logEventName, String logUsername, String userId) {
-
+		serviceMetrics.lookingForLogUsername++;
 		if (logUsernamesCache.containsKey(logEventName) && logUsernamesCache.get(logEventName).contains(formatUserIdWithLogUsername(userId, logUsername))) {
 			return true;
 		}
@@ -177,6 +189,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		// TODO!!!!!
 		// TODO: maintain a "blacklist" of usernames not found instead of re-querying mongodb
 
+		serviceMetrics.logUsernameNotFound++;
 		return false;
 	}
 
@@ -185,6 +198,7 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	public void updateUsernameCaches() {
+		serviceMetrics.updateUsernameCache++;
 		// Get number of users and calculate number of pages
 		long count = userRepository.count();
 		int numOfPages = (int)(((count - 1) / usernameServicePageSize) + 1);
@@ -221,7 +235,9 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	public void addUsernameToCache(String logEventName, String userId, String normalizedUsername){
+		serviceMetrics.checkingNormalizedUsernameInCache++;
 		if (!normalizedUsernameToUserIdCache.containsKey(logEventName)) {
+			serviceMetrics.normalizedUsernameAddedToCache++;
 			createLogEventToUserIdMap(logEventName);
 		}
 
@@ -239,24 +255,27 @@ public class UsernameService implements InitializingBean, CachingService{
 	}
 
 	public void addLogUsernameToCache(String logEventName, String logUsername, String userId){
+		serviceMetrics.updateLogUsernameCache++;
 		if (!logUsernamesCache.containsKey(logEventName)) {
+			serviceMetrics.logUsernameAddedToCache++;
 			createLogEventIdToUserEntry(logEventName);
 		}
 
 		logUsernamesCache.get(logEventName).add(formatUserIdWithLogUsername(userId, logUsername));
 	}
 
+	/**
+	 * This method return username (For AD users the username is equivalent to Fortscale noramlized_username ) of a given dn that represent a User , if the user doesn't exist the method return null
+	 * @param dn
+	 * @return
+	 */
+	public String getUserNameByDn(String dn){
 
-    /**
-     * This method return username (For AD users the username is equivalent to Fortscale noramlized_username ) of a given dn that represent a User , if the user doesn't exist the method return null
-     * @param dn
-     * @return
-     */
-    public String getUserNameByDn(String dn)
-    {
-        //if this DN exist at the cache
-        if (dNToUserName.containsKey(dn))
-            return dNToUserName.get(dn);
+		serviceMetrics.getUsernameByDn++;
+		//if this DN exist at the cache
+		if (dNToUserName.containsKey(dn)){
+			return dNToUserName.get(dn);
+		}
 
         User user = userRepository.findByAdInfoDn(dn);
 
@@ -266,10 +285,11 @@ public class UsernameService implements InitializingBean, CachingService{
             dNToUserName.put(dn,username);
             updateUsernameInCache(user);
 
-            return username;
-        }
-        return null;
-    }
+			return username;
+		}
+		serviceMetrics.userNameNotFoundByDn++;
+		return null;
+	}
 
 	/**
 	 * This method return username based on other AD field information (i.e - username--->DN_value)
@@ -278,15 +298,13 @@ public class UsernameService implements InitializingBean, CachingService{
 	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
 	 * @return
 	 */
-	public String getUserNameByADField(String aDFieldName, String aDFieldValue,boolean partOrFullFlag)
-	{
+	public String getUserNameByADField(String aDFieldName, String aDFieldValue,boolean partOrFullFlag) {
+
+		serviceMetrics.getUsernameByAd++;
 		String username =null;
 
-		//in case this filed name doesnt have any <value,username> cache - create it
-		if (adFieldToUserCahce == null ||  !adFieldToUserCahce.containsKey(aDFieldName))
-
-		{
-
+		//in case this filed name doesn't have any <value,username> cache - create it
+		if (adFieldToUserCahce == null || !adFieldToUserCahce.containsKey(aDFieldName)) {
 			if (adFieldToUserCahce == null)
 				adFieldToUserCahce = new HashMap<>();
 
@@ -306,7 +324,12 @@ public class UsernameService implements InitializingBean, CachingService{
 
 			this.adFieldToUserCahce.put(aDFieldName,cache);
 
-			return StringUtils.isEmpty(username) ? null : username;
+			if (StringUtils.isEmpty(username)) {
+				serviceMetrics.usernameNotFoundByAd++;
+				return null;
+			}
+
+			return username;
 		}
 
 		Cache cache = adFieldToUserCahce.get(aDFieldName);
@@ -318,6 +341,8 @@ public class UsernameService implements InitializingBean, CachingService{
 			if(!StringUtils.isEmpty(username) ) {
 				cache.put(aDFieldValue, username);
 				this.adFieldToUserCahce.put(aDFieldName, cache);
+			} else {
+				serviceMetrics.usernameNotFoundByAd++;
 			}
 		}
 
@@ -330,6 +355,7 @@ public class UsernameService implements InitializingBean, CachingService{
 		if (!isLazyUsernameCachesUpdate) {
 			updateUsernameCaches();
 		}
+		serviceMetrics = new UsernameServiceMetrics(statsService);
 	}
 
 	public void setLazyUsernameCachesUpdate(boolean isLazyUsernameCachesUpdate) {

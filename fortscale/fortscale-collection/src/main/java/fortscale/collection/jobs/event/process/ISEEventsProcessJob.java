@@ -5,6 +5,7 @@ import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.IseEvent;
 import fortscale.services.ipresolving.IseResolver;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -28,7 +29,11 @@ public class ISEEventsProcessJob extends EventProcessJob {
     @Autowired
     private JobDataMapExtension jobDataMapExtension;
 
-    private RecordToBeanItemConverter<IseEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<IseEvent>(new IseEvent());
+    @Autowired
+    private StatsService statsService;
+
+    private RecordToBeanItemConverter<IseEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<IseEvent>(
+            new IseEvent(),"ise-event-job",statsService);
 
     @Override
     protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -49,6 +54,7 @@ public class ISEEventsProcessJob extends EventProcessJob {
 
         // skip records that failed on parsing
         if (record==null) {
+            jobMetircs.linesFailuresInMorphline++;
             return null;
         }
 
