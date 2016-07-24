@@ -5,7 +5,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -88,7 +91,7 @@ public class GaussianPriorModel implements Model {
 		if (containingSegmentPriors.size() == 0) {
 			return null;
 		} else if (containingSegmentPriors.size() == 1) {
-			return new LinkedList<>(containingSegmentPriors).get(0).priorAtMean;
+			return containingSegmentPriors.iterator().next().priorAtMean;
 		}
 		List<ImmutablePair<Double, Double>> priorsAndDistances = containingSegmentPriors.stream()
 				.map(segmentPrior -> new ImmutablePair<>(
