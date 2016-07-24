@@ -15,10 +15,12 @@ import java.util.PriorityQueue;
  */
 public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 	private double quantile;
+	private Double minMaxValue;
 
-	public PriorBuilderMaxAllowedValue(double quantile) {
+	public PriorBuilderMaxAllowedValue(double quantile, Double minMaxValue) {
 		Assert.isTrue(quantile >= 0 && quantile <= 1);
 		this.quantile = quantile;
+		this.minMaxValue = minMaxValue;
 	}
 
 	@Override
@@ -35,6 +37,9 @@ public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 		double maxValueOverModels = 0;
 		for (int i = 0; i <= (models.size() - 1) * quantile; i++) {
 			maxValueOverModels = queue.poll();
+		}
+		if (minMaxValue != null) {
+			maxValueOverModels = Math.max(maxValueOverModels, minMaxValue);
 		}
 		// for normal distribution, getting a value that is at most two standard
  		// deviations from the mean has ~0.95 probability, so return std such that

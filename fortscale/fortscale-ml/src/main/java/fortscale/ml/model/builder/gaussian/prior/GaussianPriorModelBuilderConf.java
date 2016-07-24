@@ -18,6 +18,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private double padding;
 	private int minNumOfSamplesToLearnFrom;
 	private double quantile;
+	private Double minMaxValue;
 
 	@JsonCreator
 	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentsCenter") double distanceBetweenSegmentsCenter,
@@ -26,7 +27,8 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
 										 @JsonProperty("padding") double padding,
 										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
-										 @JsonProperty("quantile") double quantile) {
+										 @JsonProperty("quantile") double quantile,
+										 @JsonProperty("minMaxValue") Double minMaxValue) {
 		setDistanceBetweenSegmentsCenter(distanceBetweenSegmentsCenter);
 		setNumberOfNeighbours(numberOfNeighbours);
 		setMaxRatioBetweenSegmentSizeToCenter(maxRatioBetweenSegmentSizeToCenter);
@@ -34,6 +36,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		setPadding(padding);
 		setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom);
 		setQuantile(quantile);
+		setMinMaxValue(minMaxValue);
 	}
 
 	@Override
@@ -76,6 +79,10 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.quantile = quantile;
 	}
 
+	private void setMinMaxValue(Double minMaxValue) {
+		this.minMaxValue = minMaxValue;
+	}
+
 	public double getDistanceBetweenSegmentsCenter() {
 		return distanceBetweenSegmentsCenter;
 	}
@@ -102,5 +109,9 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 
 	public double getQuantile() {
 		return quantile;
+	}
+
+	public Double getMinMaxValue() {
+		return minMaxValue;
 	}
 }
