@@ -9,22 +9,21 @@ import java.util.List;
 /**
  * Generate candidates for segment centers uniformly from 0 to the maximal ContinuousDataModel mean available.
  */
-public class UniformSegmentCenters implements Iterable<Double> {
+public class UniformSegmentCenters implements SegmentCenters {
 	private double distanceBetweenSegmentsCenter;
-	private double maxMean;
 
-	public UniformSegmentCenters(List<ContinuousDataModel> models, double distanceBetweenSegmentsCenter) {
-		Assert.notNull(models, "models can't be null");
+	public UniformSegmentCenters(double distanceBetweenSegmentsCenter) {
 		Assert.isTrue(distanceBetweenSegmentsCenter > 0, "distanceBetweenSegmentsCenter must be positive");
 		this.distanceBetweenSegmentsCenter = distanceBetweenSegmentsCenter;
-		maxMean = models.stream()
-				.mapToDouble(ContinuousDataModel::getMean)
-				.max()
-				.orElse(-1);
 	}
 
 	@Override
-	public Iterator<Double> iterator() {
+	public Iterator<Double> iterate(List<ContinuousDataModel> models) {
+		Assert.notNull(models, "models can't be null");
+		double maxMean = models.stream()
+				.mapToDouble(ContinuousDataModel::getMean)
+				.max()
+				.orElse(-1);
 		return new Iterator<Double>() {
 			private double nextSegmentCenter = 0;
 

@@ -7,6 +7,7 @@ import org.springframework.util.Assert;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 /**
@@ -87,27 +88,30 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 		}
 	}
 
-	private Iterable<Double> segmentCenters;
+	private List<ContinuousDataModel> models;
+	private SegmentCenters segmentCenters;
 	private Segmentor segmentor;
-	private double[] sortedMeans;
 
 	public LearningSegments(List<ContinuousDataModel> models,
-							Iterable<Double> segmentCenters,
+							SegmentCenters segmentCenters,
 							Segmentor segmentor) {
 		Assert.notNull(models, "models can't be null");
 		Assert.notNull(segmentCenters, "segmentCenters can't be null");
 		Assert.notNull(segmentor, "segmentor can't be null");
+		this.models = models;
 		this.segmentCenters = segmentCenters;
 		this.segmentor = segmentor;
-		sortedMeans = models.stream()
-				.mapToDouble(ContinuousDataModel::getMean)
-				.sorted()
-				.toArray();
 	}
 
 	@Override
 	public Iterator<Segment> iterator() {
-		return StreamSupport.stream(segmentCenters.spliterator(), false)
+		double[] sortedMeans = models.stream()
+				.mapToDouble(ContinuousDataModel::getMean)
+				.sorted()
+				.toArray();
+		Stream<Double> segmentCentersStream =
+				StreamSupport.stream(((Iterable<Double>) () -> segmentCenters.iterate(models)).spliterator(), false);
+		return segmentCentersStream
 				.map(segmentCenter -> {
 					Assert.isTrue(segmentCenter >= 0, "segment centers can't be negative");
 					Segmentor.Segment segment = segmentor.createSegment(sortedMeans, segmentCenter);

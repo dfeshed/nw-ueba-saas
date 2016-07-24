@@ -73,7 +73,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 	}
 
 	private LearningSegments createLearningSegments(List<ContinuousDataModel> models) {
-		UniformSegmentCenters segmentsCenter = new UniformSegmentCenters(models, conf.getDistanceBetweenSegmentsCenter());
+		UniformSegmentCenters segmentsCenter = new UniformSegmentCenters(conf.getDistanceBetweenSegmentsCenter());
 		Segmentor segmentor = new NeighboursSegmentor(
 				conf.getNumberOfNeighbours(),
 				conf.getMaxRatioBetweenSegmentSizeToCenter(),

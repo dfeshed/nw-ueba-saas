@@ -6,27 +6,24 @@ import org.apache.commons.collections.IteratorUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class UniformSegmentCentersTest {
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailIfGivenNullAsModels() {
-        new UniformSegmentCenters(null, 1);
+    public void shouldFailIfGivenZeroAsDistanceBetweenSegmentCenters() {
+        new UniformSegmentCenters(0);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void shouldFailIfGivenZeroAsDistanceBetweenSegmentCenters() {
-        new UniformSegmentCenters(Collections.emptyList(), 0);
+    public void shouldFailIfGivenNullAsModels() {
+        new UniformSegmentCenters(1).iterate(null);
     }
 
     @Test
     public void shouldGenerateNothingIfGivenEmptyModels() {
-        UniformSegmentCenters segmentCenters = new UniformSegmentCenters(Collections.emptyList(), 1);
+        Iterator<Double> segmentCentersIter = new UniformSegmentCenters(1).iterate(Collections.emptyList());
 
-        Assert.assertEquals(0, IteratorUtils.toList(segmentCenters.iterator()).size());
+        Assert.assertEquals(0, IteratorUtils.toList(segmentCentersIter).size());
     }
 
     @Test
@@ -37,8 +34,8 @@ public class UniformSegmentCentersTest {
             models.add(new ContinuousDataModel().setParameters(0, mean, 0, 0));
         }
 
-        UniformSegmentCenters segmentCenters = new UniformSegmentCenters(models, 1);
+        UniformSegmentCenters segmentCenters = new UniformSegmentCenters(1);
 
-        Assert.assertEquals(Arrays.asList(0.0, 1.0, 2.0, 3.0), IteratorUtils.toList(segmentCenters.iterator()));
+        Assert.assertEquals(Arrays.asList(0.0, 1.0, 2.0, 3.0), IteratorUtils.toList(segmentCenters.iterate(models)));
     }
 }
