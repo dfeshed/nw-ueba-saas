@@ -16,7 +16,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  * Metrics for EventProcessJob
 
  */
-@StatsMetricsGroupParams(name = "etl.event-process.job")
+@StatsMetricsGroupParams(name = "ETL.event-process.job")
 public class ETLCommonJobMetircs extends StatsMetricsGroup {
 
     public ETLCommonJobMetircs(StatsService statsService, String dataSource) {
