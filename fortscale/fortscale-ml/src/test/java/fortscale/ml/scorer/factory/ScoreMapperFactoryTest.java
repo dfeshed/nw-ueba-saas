@@ -103,8 +103,7 @@ public class ScoreMapperFactoryTest {
         HashMap<Double, Double> mapping = new HashMap<>();
         double mappedScore = 50;
         mapping.put(score, mappedScore);
-        ScoreMapping.ScoreMappingConf scoreMappingConf = new ScoreMapping.ScoreMappingConf();
-        scoreMappingConf.setMapping(mapping);
+        ScoreMapping.ScoreMappingConf scoreMappingConf = new ScoreMapping.ScoreMappingConf().setMapping(mapping);
 
         Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);
     }

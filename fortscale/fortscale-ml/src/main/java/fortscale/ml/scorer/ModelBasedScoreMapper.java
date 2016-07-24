@@ -19,6 +19,12 @@ import java.util.List;
 
 @Configurable(preConstruction = true)
 public class ModelBasedScoreMapper extends AbstractScorer {
+	private static final ScoreMapping.ScoreMappingConf ZERO_SCORE_MAPPING_CONF = new ScoreMapping.ScoreMappingConf()
+			.setMapping(new HashMap<Double, Double>() {{
+				put(0D, 0D);
+				put(100D, 0D);
+			}});
+
 	private final Scorer baseScorer;
 	private String modelName;
 	private List<String> contextFieldNames;
@@ -68,11 +74,7 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		if (model != null) {
 			scoreMappingConf = model.getScoreMappingConf();
 		} else {
-			scoreMappingConf = new ScoreMapping.ScoreMappingConf();
-			scoreMappingConf.setMapping(new HashMap<Double, Double>() {{
-				put(0D, 0D);
-				put(100D, 0D);
-			}});
+			scoreMappingConf = ZERO_SCORE_MAPPING_CONF;
 		}
 		return scoreMappingConf;
 	}

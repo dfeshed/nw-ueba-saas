@@ -23,12 +23,13 @@ public class ScoreMapping {
 			return mapping;
 		}
 
-		public void setMapping(Map<Double, Double> mapping) {
+		public ScoreMappingConf setMapping(Map<Double, Double> mapping) {
 			Assert.notNull(mapping);
 			mapping.put(0D, mapping.getOrDefault(0D, 0D));
 			mapping.put(100D, mapping.getOrDefault(100D, 100D));
 			Assert.isTrue(isMonotonic(mapping));
 			this.mapping = mapping;
+			return this;
 		}
 
 		private boolean isMonotonic(Map<Double, Double> mapping) {
