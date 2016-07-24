@@ -17,6 +17,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private double maxSegmentWidthToNotDiscardBecauseOfBadRatio;
 	private double padding;
 	private int minNumOfSamplesToLearnFrom;
+	private double quantile;
 
 	@JsonCreator
 	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentsCenter") double distanceBetweenSegmentsCenter,
@@ -24,13 +25,15 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 										 @JsonProperty("maxRatioBetweenSegmentSizeToCenter") double maxRatioBetweenSegmentSizeToCenter,
 										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
 										 @JsonProperty("padding") double padding,
-										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom) {
+										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
+										 @JsonProperty("quantile") double quantile) {
 		setDistanceBetweenSegmentsCenter(distanceBetweenSegmentsCenter);
 		setNumberOfNeighbours(numberOfNeighbours);
 		setMaxRatioBetweenSegmentSizeToCenter(maxRatioBetweenSegmentSizeToCenter);
 		setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(maxSegmentWidthToNotDiscardBecauseOfBadRatio);
 		setPadding(padding);
 		setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom);
+		setQuantile(quantile);
 	}
 
 	@Override
@@ -38,34 +41,39 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		return GAUSSIAN_PRIOR_MODEL_BUILDER;
 	}
 
-	public void setDistanceBetweenSegmentsCenter(double distanceBetweenSegmentsCenter) {
+	private void setDistanceBetweenSegmentsCenter(double distanceBetweenSegmentsCenter) {
 		Assert.isTrue(distanceBetweenSegmentsCenter > 0, "distanceBetweenSegmentsCenter is mandatory and must be a positive double.");
 		this.distanceBetweenSegmentsCenter = distanceBetweenSegmentsCenter;
 	}
 
-	public void setNumberOfNeighbours(int numberOfNeighbours) {
+	private void setNumberOfNeighbours(int numberOfNeighbours) {
 		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours is mandatory and must be a positive double.");
 		this.numberOfNeighbours = numberOfNeighbours;
 	}
 
-	public void setMaxRatioBetweenSegmentSizeToCenter(double maxRatioBetweenSegmentSizeToCenter) {
+	private void setMaxRatioBetweenSegmentSizeToCenter(double maxRatioBetweenSegmentSizeToCenter) {
 		Assert.isTrue(maxRatioBetweenSegmentSizeToCenter > 0, "maxRatioBetweenSegmentSizeToCenter is mandatory and must be a positive double.");
 		this.maxRatioBetweenSegmentSizeToCenter = maxRatioBetweenSegmentSizeToCenter;
 	}
 
-	public void setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(double maxSegmentWidthToNotDiscardBecauseOfBadRatio) {
+	private void setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(double maxSegmentWidthToNotDiscardBecauseOfBadRatio) {
 		Assert.isTrue(maxSegmentWidthToNotDiscardBecauseOfBadRatio >= 0, "maxSegmentWidthToNotDiscardBecauseOfBadRatio is mandatory and must be a non-negative double.");
 		this.maxSegmentWidthToNotDiscardBecauseOfBadRatio = maxSegmentWidthToNotDiscardBecauseOfBadRatio;
 	}
 
-	public void setPadding(double padding) {
+	private void setPadding(double padding) {
 		Assert.isTrue(padding >= 0, "padding is mandatory and must be a non-negative double.");
 		this.padding = padding;
 	}
 
-	public void setMinNumOfSamplesToLearnFrom(int minNumOfSamplesToLearnFrom) {
+	private void setMinNumOfSamplesToLearnFrom(int minNumOfSamplesToLearnFrom) {
 		Assert.isTrue(minNumOfSamplesToLearnFrom >= 0, "minNumOfSamplesToLearnFrom is mandatory and must be a non-negative double.");
 		this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
+	}
+
+	private void setQuantile(double quantile) {
+		Assert.isTrue(quantile >= 0 && quantile <= 1, "quantile is mandatory and must be between 0 to 1.");
+		this.quantile = quantile;
 	}
 
 	public double getDistanceBetweenSegmentsCenter() {
@@ -90,5 +98,9 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 
 	public int getMinNumOfSamplesToLearnFrom() {
 		return minNumOfSamplesToLearnFrom;
+	}
+
+	public double getQuantile() {
+		return quantile;
 	}
 }
