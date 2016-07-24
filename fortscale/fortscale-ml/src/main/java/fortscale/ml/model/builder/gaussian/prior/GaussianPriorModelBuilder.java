@@ -9,7 +9,6 @@ import org.springframework.util.Assert;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 public class GaussianPriorModelBuilder implements IModelBuilder {
@@ -31,10 +30,12 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 	};
 
 	private GaussianPriorModelBuilderConf conf;
+	private final GaussianPrior gaussianPrior;
 
 	public GaussianPriorModelBuilder(GaussianPriorModelBuilderConf conf) {
 		Assert.notNull(conf);
 		this.conf = conf;
+		gaussianPrior = new GaussianPriorMaxAllowedValue();
 	}
 
 	@Override
@@ -43,14 +44,14 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		models = getModelsWithEnoughSamples(models);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
 		for (LearningSegments.Segment segment : createLearningSegments(models)) {
-			OptionalDouble maxValueInsideSegment = models
-					.subList(segment.getLeftModelIndex(), segment.getRightModelIndex() + 1).stream()
-					.mapToDouble(ContinuousDataModel::getMaxValue)
-					.max();
-			if (maxValueInsideSegment.isPresent()) {
+			Double priorAtMean = gaussianPrior.calcPrior(
+					models.subList(segment.getLeftModelIndex(), segment.getRightModelIndex() + 1),
+					segment.getCenter()
+			);
+			if (priorAtMean != null) {
 				segmentPriors.add(new GaussianPriorModel.SegmentPrior(
 						segment.getCenter(),
-						maxValueInsideSegment.getAsDouble(),
+						priorAtMean,
 						segment.getCenter() - segment.getLeftMean(),
 						segment.getRightMean() - segment.getCenter())
 				);
