@@ -6,7 +6,6 @@ import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
-import fortscale.ml.scorer.config.ScoreMappingConf;
 import fortscale.ml.scorer.factory.ScoreMapperFactory;
 import fortscale.utils.factory.FactoryService;
 import org.apache.commons.lang.StringUtils;
@@ -61,15 +60,15 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		ScoreMappingModel model = (ScoreMappingModel) eventModelsCacheService.getModel(
 				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
-		return ScoreMapper.mapScore(baseScore.getScore(), createScoreMappingConf(model));
+		return ScoreMapping.mapScore(baseScore.getScore(), createScoreMappingConf(model));
 	}
 
-	private ScoreMappingConf createScoreMappingConf(ScoreMappingModel model) {
-		ScoreMappingConf scoreMappingConf;
+	private ScoreMapping.ScoreMappingConf createScoreMappingConf(ScoreMappingModel model) {
+		ScoreMapping.ScoreMappingConf scoreMappingConf;
 		if (model != null) {
 			scoreMappingConf = model.getScoreMappingConf();
 		} else {
-			scoreMappingConf = new ScoreMappingConf();
+			scoreMappingConf = new ScoreMapping.ScoreMappingConf();
 			scoreMappingConf.setMapping(new HashMap<Double, Double>() {{
 				put(0D, 0D);
 				put(100D, 0D);

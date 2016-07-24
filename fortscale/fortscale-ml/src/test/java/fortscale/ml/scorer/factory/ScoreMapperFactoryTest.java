@@ -3,10 +3,10 @@ package fortscale.ml.scorer.factory;
 import fortscale.common.event.Event;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.ScoreMapper;
+import fortscale.ml.scorer.ScoreMapping;
 import fortscale.ml.scorer.Scorer;
 import fortscale.ml.scorer.config.IScorerConf;
 import fortscale.ml.scorer.config.ScoreMapperConf;
-import fortscale.ml.scorer.config.ScoreMappingConf;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -41,7 +41,7 @@ public class ScoreMapperFactoryTest {
         scoreMapperFactory.getProduct(() -> "factory-name");
     }
 
-    public ScoreMapper createScorer(ScoreMappingConf scoreMappingConf, String scorerName) {
+    public ScoreMapper createScorer(ScoreMapping.ScoreMappingConf scoreMappingConf, String scorerName) {
         IScorerConf baseScorerConf = new IScorerConf() {
             @Override public String getName() {
                 return "base-scorer";
@@ -62,16 +62,16 @@ public class ScoreMapperFactoryTest {
         return scoreMapperFactory.getProduct(conf);
     }
 
-    public ScoreMapper createScorer(ScoreMappingConf scoreMappingConf) {
+    public ScoreMapper createScorer(ScoreMapping.ScoreMappingConf scoreMappingConf) {
         return createScorer(scoreMappingConf, "scorerName");
     }
 
     public ScoreMapper createScorer(String scorerName) {
-        return createScorer(new ScoreMappingConf(), scorerName);
+        return createScorer(new ScoreMapping.ScoreMappingConf(), scorerName);
     }
 
     public ScoreMapper createScorer() {
-        return createScorer(new ScoreMappingConf(), "scorerName");
+        return createScorer(new ScoreMapping.ScoreMappingConf(), "scorerName");
     }
 
     @Test
@@ -103,7 +103,7 @@ public class ScoreMapperFactoryTest {
         HashMap<Double, Double> mapping = new HashMap<>();
         double mappedScore = 50;
         mapping.put(score, mappedScore);
-        ScoreMappingConf scoreMappingConf = new ScoreMappingConf();
+        ScoreMapping.ScoreMappingConf scoreMappingConf = new ScoreMapping.ScoreMappingConf();
         scoreMappingConf.setMapping(mapping);
 
         Assert.assertEquals(mappedScore, createScorer(scoreMappingConf).calculateScore(eventMessage, evenEpochTime).getScore(), 0.0001);

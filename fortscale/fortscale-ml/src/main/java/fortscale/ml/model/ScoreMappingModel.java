@@ -2,23 +2,23 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import fortscale.ml.scorer.config.ScoreMappingConf;
+import fortscale.ml.scorer.ScoreMapping;
 
 import java.util.Map;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ScoreMappingModel implements Model {
-	private ScoreMappingConf scoreMappingConf;
+	private ScoreMapping.ScoreMappingConf scoreMappingConf;
 
 	public ScoreMappingModel() {
-		scoreMappingConf = new ScoreMappingConf();
+		scoreMappingConf = new ScoreMapping.ScoreMappingConf();
 	}
 
 	public void init(Map<Double, Double> mapping) {
 		scoreMappingConf.setMapping(mapping);
 	}
 
-	public ScoreMappingConf getScoreMappingConf() {
+	public ScoreMapping.ScoreMappingConf getScoreMappingConf() {
 		return scoreMappingConf;
 	}
 
