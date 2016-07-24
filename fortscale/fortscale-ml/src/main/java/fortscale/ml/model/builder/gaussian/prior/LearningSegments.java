@@ -1,6 +1,7 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
 
@@ -59,7 +60,7 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 				return false;
 			}
 			Segment o = (Segment) obj;
-			return o.center == center && o.segment.equals(segment);
+			return new EqualsBuilder().append(o.center, center).append(o.segment, segment).isEquals();
 		}
 
 		@Override

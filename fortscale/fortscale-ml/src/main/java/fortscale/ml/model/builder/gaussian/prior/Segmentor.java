@@ -1,5 +1,6 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 public interface Segmentor {
@@ -22,10 +23,12 @@ public interface Segmentor {
 				return false;
 			}
 			Segment o = (Segment) obj;
-			return o.leftMean == leftMean &&
-					o.rightMean == rightMean &&
-					o.leftModelIndex == leftModelIndex &&
-					o.rightModelIndex == rightModelIndex;
+			return new EqualsBuilder()
+					.append(o.leftMean, leftMean)
+					.append(o.rightMean, rightMean)
+					.append(o.leftModelIndex, leftModelIndex)
+					.append(o.rightModelIndex, rightModelIndex)
+					.isEquals();
 		}
 
 		@Override
