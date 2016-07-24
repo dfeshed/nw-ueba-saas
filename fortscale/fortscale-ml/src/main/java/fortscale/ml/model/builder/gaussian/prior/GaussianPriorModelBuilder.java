@@ -29,22 +29,33 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		}
 	};
 
-	private GaussianPriorModelBuilderConf conf;
-	private final GaussianPrior gaussianPrior;
+	private SegmentCenters segmentsCenter;
+	private Segmentor segmentor;
+	private PriorBuilder priorBuilder;
+	private int minNumOfSamplesToLearnFrom;
 
-	public GaussianPriorModelBuilder(GaussianPriorModelBuilderConf conf) {
-		Assert.notNull(conf);
-		this.conf = conf;
-		gaussianPrior = new GaussianPriorMaxAllowedValue();
+	public GaussianPriorModelBuilder(SegmentCenters segmentCenters,
+									 Segmentor segmentor,
+									 PriorBuilder priorBuilder,
+									 int minNumOfSamplesToLearnFrom) {
+		Assert.notNull(segmentCenters);
+		Assert.notNull(priorBuilder);
+		Assert.notNull(segmentor);
+		Assert.isTrue(minNumOfSamplesToLearnFrom >= 0);
+		this.segmentsCenter = segmentCenters;
+		this.segmentor = segmentor;
+		this.priorBuilder = priorBuilder;
+		this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
 	}
 
 	@Override
 	public Model build(Object modelBuilderData) {
 		List<ContinuousDataModel> models = castModelBuilderData(modelBuilderData);
 		models = getModelsWithEnoughSamples(models);
+		models.sort(MODELS_COMPARATOR);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
-		for (LearningSegments.Segment segment : createLearningSegments(models)) {
-			Double priorAtMean = gaussianPrior.calcPrior(
+		for (LearningSegments.Segment segment : new LearningSegments(models, segmentsCenter, segmentor)) {
+			Double priorAtMean = priorBuilder.calcPrior(
 					models.subList(segment.getLeftModelIndex(), segment.getRightModelIndex() + 1),
 					segment.getCenter()
 			);
@@ -62,7 +73,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 
 	private List<ContinuousDataModel> getModelsWithEnoughSamples(List<ContinuousDataModel> models) {
 		return models.stream()
-				.filter(model -> model.getNumOfSamples() >= conf.getMinNumOfSamplesToLearnFrom())
+				.filter(model -> model.getNumOfSamples() >= minNumOfSamplesToLearnFrom)
 				.collect(Collectors.toList());
 	}
 
@@ -70,17 +81,5 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		Assert.notNull(modelBuilderData, NULL_MODEL_BUILDER_DATA_ERROR_MSG);
 		Assert.isInstanceOf(List.class, modelBuilderData, MODEL_BUILDER_DATA_TYPE_ERROR_MSG);
 		return (List<ContinuousDataModel>) modelBuilderData;
-	}
-
-	private LearningSegments createLearningSegments(List<ContinuousDataModel> models) {
-		UniformSegmentCenters segmentsCenter = new UniformSegmentCenters(conf.getDistanceBetweenSegmentsCenter());
-		Segmentor segmentor = new NeighboursSegmentor(
-				conf.getNumberOfNeighbours(),
-				conf.getMaxRatioBetweenSegmentSizeToCenter(),
-				conf.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(),
-				conf.getPadding()
-		);
-		models.sort(MODELS_COMPARATOR);
-		return new LearningSegments(models, segmentsCenter, segmentor);
 	}
 }

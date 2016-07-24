@@ -5,7 +5,7 @@ import fortscale.ml.model.ContinuousDataModel;
 import java.util.List;
 import java.util.OptionalDouble;
 
-public class GaussianPriorMaxAllowedValue implements GaussianPrior {
+public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 	@Override
 	public Double calcPrior(List<ContinuousDataModel> models, double mean) {
 		OptionalDouble maxValueOverModels = models.stream()

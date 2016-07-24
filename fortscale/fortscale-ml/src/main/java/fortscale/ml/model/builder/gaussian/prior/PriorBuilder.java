@@ -4,6 +4,6 @@ import fortscale.ml.model.ContinuousDataModel;
 
 import java.util.List;
 
-public interface GaussianPrior {
+public interface PriorBuilder {
 	Double calcPrior(List<ContinuousDataModel> models, double mean);
 }
