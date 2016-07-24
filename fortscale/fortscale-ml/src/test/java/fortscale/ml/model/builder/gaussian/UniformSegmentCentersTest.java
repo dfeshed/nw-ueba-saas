@@ -6,7 +6,12 @@ import org.apache.commons.collections.IteratorUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 public class UniformSegmentCentersTest {
     @Test(expected = IllegalArgumentException.class)
@@ -27,15 +32,12 @@ public class UniformSegmentCentersTest {
     }
 
     @Test
-    public void shouldUniformlyGenerateNumbersUntilMaximalMean() {
-        List<ContinuousDataModel> models = new ArrayList<>();
-        double[] means = {2, 2.2};
-        for (double mean : means) {
-            models.add(new ContinuousDataModel().setParameters(0, mean, 0, 0));
-        }
-
+    public void shouldUniformlyGenerateNumbersFromMinMeanToMaxMean() {
         UniformSegmentCenters segmentCenters = new UniformSegmentCenters(1);
+        List<ContinuousDataModel> models = DoubleStream.of(2.1, 2.2, 5.1)
+                .mapToObj(mean -> new ContinuousDataModel().setParameters(0, mean, 0, 0))
+                .collect(Collectors.toList());
 
-        Assert.assertEquals(Arrays.asList(0.0, 1.0, 2.0, 3.0), IteratorUtils.toList(segmentCenters.iterate(models)));
+        Assert.assertEquals(Arrays.asList(2.0, 3.0, 4.0, 5.0, 6.0), IteratorUtils.toList(segmentCenters.iterate(models)));
     }
 }

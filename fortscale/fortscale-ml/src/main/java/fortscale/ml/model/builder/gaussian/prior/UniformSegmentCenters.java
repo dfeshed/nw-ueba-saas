@@ -24,8 +24,12 @@ public class UniformSegmentCenters implements SegmentCenters {
 				.mapToDouble(ContinuousDataModel::getMean)
 				.max()
 				.orElse(-1);
+		double minMean = models.stream()
+				.mapToDouble(ContinuousDataModel::getMean)
+				.min()
+				.orElse(-1);
 		return new Iterator<Double>() {
-			private double nextSegmentCenter = 0;
+			private double nextSegmentCenter = Math.floor(minMean);
 
 			@Override
 			public boolean hasNext() {
