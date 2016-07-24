@@ -101,4 +101,18 @@ public class GaussianPriorModelTest {
 
 		Assert.assertNull(model.getPrior(mean));
 	}
+
+	@Test
+	public void shouldHandleUnsortedSegmentPriors() {
+		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
+		double mean1 = 4;
+		double prior1 = 3;
+		priors.add(new GaussianPriorModel.SegmentPrior(mean1, prior1, 10));
+		double mean2 = 1;
+		double prior2 = 12;
+		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, 10));
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
+
+		Assert.assertEquals(prior2, model.getPrior(mean2), 0.0000);
+	}
 }

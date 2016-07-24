@@ -73,8 +73,8 @@ public class GaussianPriorModel implements Model {
 		Assert.notNull(segmentPriors);
 		Set<Double> means = new HashSet<>();
 		segmentPriors.forEach(segmentPrior -> Assert.isTrue(means.add(segmentPrior.mean)));
-		Collections.sort(segmentPriors);
 		this.segmentPriors = segmentPriors.toArray(new SegmentPrior[]{});
+		Arrays.sort(this.segmentPriors);
 		return this;
 	}
 
