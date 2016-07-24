@@ -29,7 +29,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		}
 	};
 
-	private SegmentCenters segmentsCenter;
+	private SegmentCenters segmentCenters;
 	private Segmentor segmentor;
 	private PriorBuilder priorBuilder;
 	private int minNumOfSamplesToLearnFrom;
@@ -42,7 +42,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		Assert.notNull(priorBuilder);
 		Assert.notNull(segmentor);
 		Assert.isTrue(minNumOfSamplesToLearnFrom >= 0);
-		this.segmentsCenter = segmentCenters;
+		this.segmentCenters = segmentCenters;
 		this.segmentor = segmentor;
 		this.priorBuilder = priorBuilder;
 		this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
@@ -54,7 +54,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 		models = getModelsWithEnoughSamples(models);
 		models.sort(MODELS_COMPARATOR);
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
-		for (LearningSegments.Segment segment : new LearningSegments(models, segmentsCenter, segmentor)) {
+		for (LearningSegments.Segment segment : new LearningSegments(models, segmentCenters, segmentor)) {
 			Double priorAtMean = priorBuilder.calcPrior(
 					models.subList(segment.getLeftModelIndex(), segment.getRightModelIndex() + 1),
 					segment.getCenter()

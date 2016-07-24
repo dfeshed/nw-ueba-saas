@@ -6,7 +6,7 @@ import org.junit.Test;
 
 public class GaussianPriorModelBuilderConfTest {
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailIfDistanceBetweenSegmentsCenterIsZero() {
+	public void shouldFailIfDistanceBetweenSegmentCentersIsZero() {
 		new GaussianPriorModelBuilderConf(0, 1, 1, 1, 1, 1, 1, null);
 	}
 
@@ -47,7 +47,7 @@ public class GaussianPriorModelBuilderConfTest {
 
 	@Test
 	public void shouldGetAndSetStuff() {
-		double distanceBetweenSegmentsCenter = 1;
+		double distanceBetweenSegmentCenters = 1;
 		int numberOfNeighbours = 2;
 		int maxRatioBetweenSegmentSizeToCenter = 3;
 		int maxSegmentWidthToNotDiscardBecauseOfBadRatio = 4;
@@ -56,7 +56,7 @@ public class GaussianPriorModelBuilderConfTest {
 		double quantile = 0.9;
 		Double minMaxValue = 7.0;
 		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(
-				distanceBetweenSegmentsCenter,
+				distanceBetweenSegmentCenters,
 				numberOfNeighbours,
 				maxRatioBetweenSegmentSizeToCenter,
 				maxSegmentWidthToNotDiscardBecauseOfBadRatio,
@@ -66,7 +66,7 @@ public class GaussianPriorModelBuilderConfTest {
 				minMaxValue
 		);
 
-		Assert.assertEquals(distanceBetweenSegmentsCenter, conf.getDistanceBetweenSegmentsCenter(), 0.00001);
+		Assert.assertEquals(distanceBetweenSegmentCenters, conf.getDistanceBetweenSegmentCenters(), 0.00001);
 		Assert.assertEquals(numberOfNeighbours, conf.getNumberOfNeighbours(), 0.00001);
 		Assert.assertEquals(maxRatioBetweenSegmentSizeToCenter, conf.getMaxRatioBetweenSegmentSizeToCenter(), 0.00001);
 		Assert.assertEquals(maxSegmentWidthToNotDiscardBecauseOfBadRatio, conf.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(), 0.00001);

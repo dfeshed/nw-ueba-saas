@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	public static final String GAUSSIAN_PRIOR_MODEL_BUILDER = "gaussian_prior_model_builder";
 
-	private double distanceBetweenSegmentsCenter;
+	private double distanceBetweenSegmentCenters;
 	private int numberOfNeighbours;
 	private double maxRatioBetweenSegmentSizeToCenter;
 	private double maxSegmentWidthToNotDiscardBecauseOfBadRatio;
@@ -21,7 +21,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private Double minMaxValue;
 
 	@JsonCreator
-	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentsCenter") double distanceBetweenSegmentsCenter,
+	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentCenters") double distanceBetweenSegmentCenters,
 										 @JsonProperty("numberOfNeighbours") int numberOfNeighbours,
 										 @JsonProperty("maxRatioBetweenSegmentSizeToCenter") double maxRatioBetweenSegmentSizeToCenter,
 										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
@@ -29,7 +29,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
 										 @JsonProperty("quantile") double quantile,
 										 @JsonProperty("minMaxValue") Double minMaxValue) {
-		setDistanceBetweenSegmentsCenter(distanceBetweenSegmentsCenter);
+		setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters);
 		setNumberOfNeighbours(numberOfNeighbours);
 		setMaxRatioBetweenSegmentSizeToCenter(maxRatioBetweenSegmentSizeToCenter);
 		setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(maxSegmentWidthToNotDiscardBecauseOfBadRatio);
@@ -44,9 +44,9 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		return GAUSSIAN_PRIOR_MODEL_BUILDER;
 	}
 
-	private void setDistanceBetweenSegmentsCenter(double distanceBetweenSegmentsCenter) {
-		Assert.isTrue(distanceBetweenSegmentsCenter > 0, "distanceBetweenSegmentsCenter is mandatory and must be a positive double.");
-		this.distanceBetweenSegmentsCenter = distanceBetweenSegmentsCenter;
+	private void setDistanceBetweenSegmentCenters(double distanceBetweenSegmentCenters) {
+		Assert.isTrue(distanceBetweenSegmentCenters > 0, "distanceBetweenSegmentCenters is mandatory and must be a positive double.");
+		this.distanceBetweenSegmentCenters = distanceBetweenSegmentCenters;
 	}
 
 	private void setNumberOfNeighbours(int numberOfNeighbours) {
@@ -83,8 +83,8 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.minMaxValue = minMaxValue;
 	}
 
-	public double getDistanceBetweenSegmentsCenter() {
-		return distanceBetweenSegmentsCenter;
+	public double getDistanceBetweenSegmentCenters() {
+		return distanceBetweenSegmentCenters;
 	}
 
 	public int getNumberOfNeighbours() {

@@ -16,7 +16,7 @@ public class GaussianPriorModelBuilderFactory extends AbstractServiceAutowiringF
 	@Override
 	public IModelBuilder getProduct(FactoryConfig factoryConfig) {
 		GaussianPriorModelBuilderConf config = (GaussianPriorModelBuilderConf) factoryConfig;
-		UniformSegmentCenters segmentsCenter = new UniformSegmentCenters(config.getDistanceBetweenSegmentsCenter());
+		UniformSegmentCenters segmentCenters = new UniformSegmentCenters(config.getDistanceBetweenSegmentCenters());
 		NeighboursSegmentor segmentor = new NeighboursSegmentor(
 				config.getNumberOfNeighbours(),
 				config.getMaxRatioBetweenSegmentSizeToCenter(),
@@ -25,7 +25,7 @@ public class GaussianPriorModelBuilderFactory extends AbstractServiceAutowiringF
 		);
 		PriorBuilderMaxAllowedValue gaussianPrior = new PriorBuilderMaxAllowedValue(config.getQuantile(), config.getMinMaxValue());
 		return new GaussianPriorModelBuilder(
-				segmentsCenter,
+				segmentCenters,
 				segmentor,
 				gaussianPrior,
 				config.getMinNumOfSamplesToLearnFrom()

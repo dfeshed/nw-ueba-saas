@@ -42,7 +42,7 @@ public class UniformSegmentCentersTest {
     }
 
     @Test
-    public void shouldStartFromTheMinMeanRoundedAccordingToDistanceBetweenSegmentsCenter() {
+    public void shouldStartFromTheMinMeanRoundedAccordingToDistanceBetweenSegmentCenters() {
         UniformSegmentCenters segmentCenters = new UniformSegmentCenters(0.5);
 
         ContinuousDataModel model = new ContinuousDataModel().setParameters(0, 2.6, 0, 0);
