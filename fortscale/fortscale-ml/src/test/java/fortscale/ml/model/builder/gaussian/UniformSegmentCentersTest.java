@@ -34,10 +34,19 @@ public class UniformSegmentCentersTest {
     @Test
     public void shouldUniformlyGenerateNumbersFromMinMeanToMaxMean() {
         UniformSegmentCenters segmentCenters = new UniformSegmentCenters(1);
-        List<ContinuousDataModel> models = DoubleStream.of(2.1, 2.2, 5.1)
+        List<ContinuousDataModel> models = DoubleStream.of(2.0, 2.2, 5.1)
                 .mapToObj(mean -> new ContinuousDataModel().setParameters(0, mean, 0, 0))
                 .collect(Collectors.toList());
 
         Assert.assertEquals(Arrays.asList(2.0, 3.0, 4.0, 5.0, 6.0), IteratorUtils.toList(segmentCenters.iterate(models)));
+    }
+
+    @Test
+    public void shouldStartFromTheMinMeanRoundedAccordingToDistanceBetweenSegmentsCenter() {
+        UniformSegmentCenters segmentCenters = new UniformSegmentCenters(0.5);
+
+        ContinuousDataModel model = new ContinuousDataModel().setParameters(0, 2.6, 0, 0);
+        Iterator<Double> centers = segmentCenters.iterate(Collections.singletonList(model));
+        Assert.assertEquals(Arrays.asList(2.5, 3.0), IteratorUtils.toList(centers));
     }
 }

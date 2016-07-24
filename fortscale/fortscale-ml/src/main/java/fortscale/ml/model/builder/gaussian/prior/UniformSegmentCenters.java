@@ -29,7 +29,7 @@ public class UniformSegmentCenters implements SegmentCenters {
 				.min()
 				.orElse(-1);
 		return new Iterator<Double>() {
-			private double nextSegmentCenter = Math.floor(minMean);
+			private double nextSegmentCenter = ((int) (minMean / distanceBetweenSegmentsCenter)) * distanceBetweenSegmentsCenter;
 
 			@Override
 			public boolean hasNext() {
