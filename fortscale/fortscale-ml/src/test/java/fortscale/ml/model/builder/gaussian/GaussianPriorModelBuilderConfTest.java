@@ -5,44 +5,194 @@ import org.junit.Assert;
 import org.junit.Test;
 
 public class GaussianPriorModelBuilderConfTest {
+	private static class GaussianPriorModelBuilderConfBuilder {
+		private double distanceBetweenSegmentCenters;
+		private int numberOfNeighbours;
+		private double maxRatioBetweenSegmentSizeToCenter;
+		private double maxSegmentWidthToNotDiscardBecauseOfBadRatio;
+		private double padding;
+		private int minNumOfSamplesToLearnFrom;
+		private double quantile;
+		private Double minMaxValue;
+
+		public GaussianPriorModelBuilderConfBuilder setDistanceBetweenSegmentCenters(double distanceBetweenSegmentCenters) {
+			this.distanceBetweenSegmentCenters = distanceBetweenSegmentCenters;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConfBuilder setNumberOfNeighbours(int numberOfNeighbours) {
+			this.numberOfNeighbours = numberOfNeighbours;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConfBuilder setMaxRatioBetweenSegmentSizeToCenter(double maxRatioBetweenSegmentSizeToCenter) {
+			this.maxRatioBetweenSegmentSizeToCenter = maxRatioBetweenSegmentSizeToCenter;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConfBuilder setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(double maxSegmentWidthToNotDiscardBecauseOfBadRatio) {
+			this.maxSegmentWidthToNotDiscardBecauseOfBadRatio = maxSegmentWidthToNotDiscardBecauseOfBadRatio;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConfBuilder setPadding(double padding) {
+			this.padding = padding;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConfBuilder setMinNumOfSamplesToLearnFrom(int minNumOfSamplesToLearnFrom) {
+			this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConfBuilder setQuantile(double quantile) {
+			this.quantile = quantile;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConfBuilder setMinMaxValue(Double minMaxValue) {
+			this.minMaxValue = minMaxValue;
+			return this;
+		}
+
+		public GaussianPriorModelBuilderConf build() {
+			return new GaussianPriorModelBuilderConf(
+					distanceBetweenSegmentCenters,
+					numberOfNeighbours,
+					maxRatioBetweenSegmentSizeToCenter,
+					maxSegmentWidthToNotDiscardBecauseOfBadRatio,
+					padding,
+					minNumOfSamplesToLearnFrom,
+					quantile,
+					minMaxValue
+			);
+		}
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfDistanceBetweenSegmentCentersIsZero() {
-		new GaussianPriorModelBuilderConf(0, 1, 1, 1, 1, 1, 1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(0)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(1)
+				.setMinMaxValue(null)
+				.build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfNumberOfNeighboursIsZero() {
-		new GaussianPriorModelBuilderConf(1, 0, 1, 1, 1, 1, 1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(0)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(1)
+				.setMinMaxValue(null)
+				.build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfMaxRatioBetweenSegmentSizeToCenterIsZero() {
-		new GaussianPriorModelBuilderConf(1, 1, 0, 1, 1, 1, 1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(0)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(1)
+				.setMinMaxValue(null)
+				.build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfMaxSegmentWidthToNotDiscardBecauseOfBadRatioIsNegative() {
-		new GaussianPriorModelBuilderConf(1, 1, 1, -1, 1, 1, 1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(-1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(1)
+				.setMinMaxValue(null)
+				.build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfPaddingIsNegative() {
-		new GaussianPriorModelBuilderConf(1, 1, 1, 1, -1, 1, 1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(-1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(1)
+				.setMinMaxValue(null)
+				.build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfMinNumOfSamplesToLearnFromIsNegative() {
-		new GaussianPriorModelBuilderConf(1, 1, 1, 1, 1, -1, 1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(-1)
+				.setQuantile(1)
+				.setMinMaxValue(null)
+				.build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfQuantileIsNegative() {
-		new GaussianPriorModelBuilderConf(1, 1, 1, 1, 1, -1, -1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(-1)
+				.setMinMaxValue(null)
+				.build();
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfQuantileIsGreaterThanOne() {
-		new GaussianPriorModelBuilderConf(1, 1, 1, 1, 1, -1, 1.1, null);
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(1.1)
+				.setMinMaxValue(null)
+				.build();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailIfMinMaxValueIsNegative() {
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setNumberOfNeighbours(1)
+				.setMaxRatioBetweenSegmentSizeToCenter(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setPadding(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setQuantile(1)
+				.setMinMaxValue(-1.0)
+				.build();
 	}
 
 	@Test
@@ -55,16 +205,16 @@ public class GaussianPriorModelBuilderConfTest {
 		int minNumOfSamplesToLearnFrom = 6;
 		double quantile = 0.9;
 		Double minMaxValue = 7.0;
-		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConf(
-				distanceBetweenSegmentCenters,
-				numberOfNeighbours,
-				maxRatioBetweenSegmentSizeToCenter,
-				maxSegmentWidthToNotDiscardBecauseOfBadRatio,
-				padding,
-				minNumOfSamplesToLearnFrom,
-				quantile,
-				minMaxValue
-		);
+		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters)
+				.setNumberOfNeighbours(numberOfNeighbours)
+				.setMaxRatioBetweenSegmentSizeToCenter(maxRatioBetweenSegmentSizeToCenter)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(maxSegmentWidthToNotDiscardBecauseOfBadRatio)
+				.setPadding(padding)
+				.setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom)
+				.setQuantile(quantile)
+				.setMinMaxValue(minMaxValue)
+				.build();
 
 		Assert.assertEquals(distanceBetweenSegmentCenters, conf.getDistanceBetweenSegmentCenters(), 0.00001);
 		Assert.assertEquals(numberOfNeighbours, conf.getNumberOfNeighbours(), 0.00001);

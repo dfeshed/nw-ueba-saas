@@ -80,6 +80,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	}
 
 	private void setMinMaxValue(Double minMaxValue) {
+		Assert.isTrue(minMaxValue == null || minMaxValue >= 0, "minMaxValue can't be negative");
 		this.minMaxValue = minMaxValue;
 	}
 
