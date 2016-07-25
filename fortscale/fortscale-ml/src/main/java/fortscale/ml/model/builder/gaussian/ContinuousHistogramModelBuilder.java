@@ -18,27 +18,20 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Double> histogram = castModelBuilderData(modelBuilderData).getHistogramMap();
-
-        // Calculate mean and maxValue
         double totalCount = 0;
         double sum = 0;
+        double squaredSum = 0;
         double maxValue = 0;
         for (Map.Entry<String, Double> entry : histogram.entrySet()) {
             double count = entry.getValue();
             totalCount += count;
             Double value = convertToDouble(entry.getKey());
             sum += value * count;
+            squaredSum += value * value * count;
             maxValue = Math.max(maxValue, value);
         }
         double mean = sum / totalCount;
-
-        // Calculate standard deviation
-        sum = 0;
-        for (Map.Entry<String, Double> entry : histogram.entrySet()) {
-            sum += Math.pow(convertToDouble(entry.getKey()) - mean, 2) * entry.getValue();
-        }
-        double sd = Math.sqrt(sum / totalCount);
-
+        double sd = Math.sqrt((squaredSum / totalCount) - mean * mean);
         return new ContinuousDataModel().setParameters((long)totalCount, round(mean), round(sd), round(maxValue));
     }
 
