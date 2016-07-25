@@ -11,6 +11,9 @@ public class GaussianModelScorerAlgorithm {
 			// TDistribution can't handle less than two samples
 			return 0;
 		}
+		if (value <= model.getMean()) {
+			return 0;
+		}
 		return 100;
 	}
 }
