@@ -67,6 +67,7 @@ public class GaussianPriorModel implements Model {
 	}
 
 	private SegmentPrior[] segmentPriors;
+	private Double minPrior;
 
 	public GaussianPriorModel() {
 		this.segmentPriors = new SegmentPrior[]{};
@@ -78,11 +79,20 @@ public class GaussianPriorModel implements Model {
 		segmentPriors.forEach(segmentPrior -> Assert.isTrue(means.add(segmentPrior.mean)));
 		this.segmentPriors = segmentPriors.toArray(new SegmentPrior[]{});
 		Arrays.sort(this.segmentPriors);
+		minPrior = Stream.of(this.segmentPriors)
+				.map(segmentPrior -> segmentPrior.priorAtMean)
+				.min(Double::compare)
+				.orElse(null);
 		return this;
 	}
 
 	public SegmentPrior[] getSegmentPriors() {
 		return segmentPriors;
+	}
+
+	//TODO: move this function to the scorer
+	public Double getBackupPrior() {
+		return minPrior;
 	}
 
 	//TODO: move this function to the scorer

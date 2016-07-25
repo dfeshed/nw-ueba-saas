@@ -43,7 +43,7 @@ public class GaussianPriorModelTest {
 		priors.add(new GaussianPriorModel.SegmentPrior(mean, prior, supportRadiusAroundMean));
 		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
-		Assert.assertEquals(prior, model.getPrior(mean + supportRadiusAroundMean), 0.0000);
+		Assert.assertEquals(prior, model.getPrior(mean + supportRadiusAroundMean), 0.00001);
 		Assert.assertNull(model.getPrior(mean + supportRadiusAroundMean + 0.00001));
 	}
 
@@ -60,7 +60,7 @@ public class GaussianPriorModelTest {
 		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, supportRadiusAroundMean2));
 		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
-		Assert.assertEquals(prior1, model.getPrior(mean1 + supportRadiusAroundMean1), 0.0000);
+		Assert.assertEquals(prior1, model.getPrior(mean1 + supportRadiusAroundMean1), 0.00001);
 	}
 
 	@Test
@@ -75,7 +75,7 @@ public class GaussianPriorModelTest {
 		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
 		double weightOn2 = 2.0/3;
-		Assert.assertEquals(weightOn2 * prior2 + (1 - weightOn2) * prior1, model.getPrior(mean1 + (mean2 - mean1) * weightOn2), 0.0000);
+		Assert.assertEquals(weightOn2 * prior2 + (1 - weightOn2) * prior1, model.getPrior(mean1 + (mean2 - mean1) * weightOn2), 0.00001);
 	}
 
 	@Test
@@ -88,7 +88,7 @@ public class GaussianPriorModelTest {
 		priors.add(new GaussianPriorModel.SegmentPrior(mean + 2, prior2, 10));
 		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
-		Assert.assertEquals(prior1, model.getPrior(mean), 0.0000);
+		Assert.assertEquals(prior1, model.getPrior(mean), 0.00001);
 	}
 
 	@Test
@@ -113,6 +113,20 @@ public class GaussianPriorModelTest {
 		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, 10));
 		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
-		Assert.assertEquals(prior2, model.getPrior(mean2), 0.0000);
+		Assert.assertEquals(prior2, model.getPrior(mean2), 0.00001);
+	}
+
+	@Test
+	public void shouldUseTheMinimalOrganizationPriorAsBackup() {
+		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
+		double mean1 = 1;
+		double prior1 = 12;
+		priors.add(new GaussianPriorModel.SegmentPrior(mean1, prior1, 10));
+		double mean2 = 4;
+		double prior2 = 3;
+		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, 10));
+		GaussianPriorModel model = new GaussianPriorModel().init(priors);
+
+		Assert.assertEquals(Math.min(prior1, prior2), model.getBackupPrior(), 0.00001);
 	}
 }
