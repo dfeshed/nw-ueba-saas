@@ -21,7 +21,6 @@ public class UserAdInfo {
 	public static final String whenCreatedField = "whenCreated";
 	public static final String disableAccountTimeField = "disableAccountTime";
 	public static final String isAccountDisabledField = "isAccountDisabled";
-	public static final String terminationDateField = "terminationDate";
 
 	@Field(objectGUIDField)
 	private String objectGUID;
@@ -32,7 +31,6 @@ public class UserAdInfo {
 	private String employeeID;
 
 	private String employeeNumber;
-
 
 	private String firstname;
 	@Field(lastnameField)
@@ -95,19 +93,11 @@ public class UserAdInfo {
 
 	private String roomNumber;
 
-	@Field(terminationDateField)
-	private DateTime terminationDate;
-
 	@Field(disableAccountTimeField)
 	private DateTime disableAccountTime;
 
 	@Field(isAccountDisabledField)
 	private boolean isAccountDisabled;
-
-
-
-
-
 
 	public String getObjectGUID() {
 		return objectGUID;
@@ -394,9 +384,6 @@ public class UserAdInfo {
 		this.groups = groups;
 	}
 
-
-
-
 	public void addGroup(AdUserGroup adUserGroup) {
 
 		Assert.notNull(adUserGroup);
@@ -432,14 +419,5 @@ public class UserAdInfo {
 
 	public void setIsAccountDisabled(boolean isAccountIsDisabled) {
 		this.isAccountDisabled = isAccountIsDisabled;
-	}
-
-
-	public DateTime getTerminationDate() {
-		return terminationDate;
-	}
-
-	public void setTerminationDate(DateTime terminationDate) {
-		this.terminationDate = terminationDate;
 	}
 }
