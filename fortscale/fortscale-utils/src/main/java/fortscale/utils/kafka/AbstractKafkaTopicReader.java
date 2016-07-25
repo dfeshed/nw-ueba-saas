@@ -45,6 +45,9 @@ public abstract class AbstractKafkaTopicReader {
 	private long millisToSleepBetweenFetchRequests;
 
 	private Thread thread;
+	private String clientId;
+	private String topic;
+	private int partition;
 	private volatile boolean isRunning;
 
 	/**
@@ -57,9 +60,13 @@ public abstract class AbstractKafkaTopicReader {
 		Assert.hasText(topic);
 		Assert.isTrue(partition >= 0);
 
+		this.clientId = clientId;
+		this.topic = topic;
+		this.partition = partition;
 		thread = new Thread(() -> {
 			run(clientId, topic, partition);
 		});
+		thread.setDaemon(true);
 	}
 
 	/**
@@ -81,10 +88,16 @@ public abstract class AbstractKafkaTopicReader {
 	 */
 	@SuppressWarnings("EmptyCatchBlock")
 	public void end() {
-		isRunning = false;
-		try {
-			thread.join();
-		} catch (InterruptedException e) {}
+		if(isRunning) {
+			isRunning = false;
+			try {
+				logger.info("waiting for the thread running this reader to end. client id: {}, topic: {}, partition: {}", clientId, topic, partition);
+				thread.join();
+				logger.info("the thread running this reader ended. client id: {}, topic: {}, partition: {}", clientId, topic, partition);
+			} catch (InterruptedException e) {
+				logger.info("got InterruptedException while waiting for the thread running this reader to end. client id: {}, topic: {}, partition: {}", clientId, topic, partition);
+			}
+		}
 	}
 
 	/**

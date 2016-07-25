@@ -61,7 +61,16 @@ public class ModelBuildingSyncService {
 	}
 
 	public void close() {
-		reader.end();
+		try {
+			reader.end();
+		} catch (Exception e){
+			logger.error("got an exception while ending the ModelBuildingSummaryReader", e);
+		}
+		try {
+			writer.close();
+		} catch (Exception e){
+			logger.error("got an exception while closing the KafkaEventsWriter", e);
+		}
 	}
 
 	public void buildModelsIfNeeded(long currentTimeInSeconds) throws TimeoutException {

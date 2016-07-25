@@ -108,21 +108,25 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 
 	@Override
 	protected void runSteps() throws Exception {
-		simpleMetricsReader.start();
-		featureBucketSyncService.init();
-		modelBuildingSyncService.init();
+		try {
+			simpleMetricsReader.start();
+			featureBucketSyncService.init();
+			modelBuildingSyncService.init();
 
-		if (buildModelsFirst) {
-			modelBuildingSyncService.buildModelsForcefully(latestEventTime - deltaTimeInSec);
+			if (buildModelsFirst) {
+				modelBuildingSyncService.buildModelsForcefully(latestEventTime - deltaTimeInSec);
+			}
+
+			super.runSteps();
+			waitForEventWithEpochtimeToReachAggregation(lastEpochtimeSent);
+			long lastSyncEpochtime = (lastEpochtimeSent / secondsBetweenSyncs) * secondsBetweenSyncs + secondsBetweenSyncs;
+			featureBucketSyncService.syncForcefully(lastSyncEpochtime);
+		} catch (Exception e){
+			logger.error("got an exception while running step SAM", e);
+		} finally {
+			simpleMetricsReader.end();
+			modelBuildingSyncService.close();
 		}
-
-		super.runSteps();
-		waitForEventWithEpochtimeToReachAggregation(lastEpochtimeSent);
-		long lastSyncEpochtime = (lastEpochtimeSent / secondsBetweenSyncs) * secondsBetweenSyncs + secondsBetweenSyncs;
-		featureBucketSyncService.syncForcefully(lastSyncEpochtime);
-
-		simpleMetricsReader.end();
-		modelBuildingSyncService.close();
 
 		if (removeModelsFinally) {
 			logger.info("Removing models with session ID {} finally.", sessionId);
@@ -154,7 +158,7 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		return String.format("%s_%s_%d", getClass().getSimpleName(), dataSource, currentTimeSeconds);
 	}
 
-	private void waitForEventWithEpochtimeToReachAggregation(int numOfResults, long epochtime) throws TimeoutException {
+	private void waitForEventWithEpochtimeToReachAggregation(int numOfResults, long epochtime) throws TimeoutException{
 		if (numOfResults > 0) {
 			waitForEventWithEpochtimeToReachAggregation(epochtime);
 		}
