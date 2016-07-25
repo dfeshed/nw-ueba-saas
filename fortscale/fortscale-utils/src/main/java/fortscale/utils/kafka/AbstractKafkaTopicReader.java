@@ -81,10 +81,13 @@ public abstract class AbstractKafkaTopicReader {
 	 */
 	@SuppressWarnings("EmptyCatchBlock")
 	public void end() {
-		isRunning = false;
-		try {
-			thread.join();
-		} catch (InterruptedException e) {}
+		if(isRunning) {
+			isRunning = false;
+			try {
+				thread.join();
+			} catch (InterruptedException e) {
+			}
+		}
 	}
 
 	/**
