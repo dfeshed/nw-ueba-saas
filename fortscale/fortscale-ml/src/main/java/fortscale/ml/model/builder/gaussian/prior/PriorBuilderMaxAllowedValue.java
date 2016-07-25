@@ -3,8 +3,9 @@ package fortscale.ml.model.builder.gaussian.prior;
 import fortscale.ml.model.ContinuousDataModel;
 import org.springframework.util.Assert;
 
+import java.util.Comparator;
 import java.util.List;
-import java.util.PriorityQueue;
+import java.util.stream.Collectors;
 
 /**
  * This PriorBuilder gives a standard deviation prior such that encountering values below some value V will be reasonable.
@@ -29,15 +30,12 @@ public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 			return null;
 		}
 
-		PriorityQueue<Double> queue = new PriorityQueue<>();
-		models.stream()
-				.mapToDouble(ContinuousDataModel::getMaxValue)
-				.forEach(queue::add);
+		double maxValueOverModels = models.stream()
+				.sorted(Comparator.comparing(ContinuousDataModel::getMaxValue))
+				.collect(Collectors.toList())
+				.get((int) Math.floor((models.size() - 1) * quantile))
+				.getMaxValue();
 
-		double maxValueOverModels = 0;
-		for (int i = 0; i <= (models.size() - 1) * quantile; i++) {
-			maxValueOverModels = queue.poll();
-		}
 		if (minMaxValue != null) {
 			maxValueOverModels = Math.max(maxValueOverModels, minMaxValue);
 		}
