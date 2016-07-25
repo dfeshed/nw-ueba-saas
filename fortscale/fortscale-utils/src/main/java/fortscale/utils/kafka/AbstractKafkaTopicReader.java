@@ -60,6 +60,7 @@ public abstract class AbstractKafkaTopicReader {
 		thread = new Thread(() -> {
 			run(clientId, topic, partition);
 		});
+		thread.setDaemon(true);
 	}
 
 	/**
