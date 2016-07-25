@@ -1,11 +1,15 @@
 package fortscale.ml.model.builder.gaussian;
 
+import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.builder.gaussian.prior.NeighboursSegmentor;
 import fortscale.ml.model.builder.gaussian.prior.Segmentor;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
 public class NeighboursSegmentorTest {
     @Test(expected = IllegalArgumentException.class)
@@ -28,119 +32,120 @@ public class NeighboursSegmentorTest {
 		new NeighboursSegmentor(100, 0.1, 0, -1);
 	}
 
-	private void assertSegmentEquals(double[] sortedMeans,
-									 double expectedPadding,
-									 double expectedLeftMean,
-									 double expectedRightMean,
-									 Segmentor.Segment actualSegment) {
-		Assert.assertEquals(new Segmentor.Segment(
-				expectedLeftMean,
-				expectedRightMean,
-				Arrays.binarySearch(sortedMeans, expectedLeftMean + expectedPadding),
-				Arrays.binarySearch(sortedMeans, expectedRightMean - expectedPadding)
-		), actualSegment);
-	}
-
-	private void assertSegmentEquals(double expectedLeftMean,
-									 double expectedRightMean,
-									 int leftModelIndex,
-									 int rightModelIndex,
-									 Segmentor.Segment actualSegment) {
-		Assert.assertEquals(new Segmentor.Segment(
-				expectedLeftMean,
-				expectedRightMean,
-				leftModelIndex,
-				rightModelIndex
-		), actualSegment);
+	private List<ContinuousDataModel> createModels(double... means) {
+		return DoubleStream.of(means)
+				.mapToObj(mean -> new ContinuousDataModel().setParameters(0, mean, 0, 0))
+				.collect(Collectors.toList());
 	}
 
 	@Test
 	public void shouldCreateSegmentOfZeroWidthWhenNumberOfNeighboursIsOne() {
 		double segmentCenter = 1;
-		double[] sortedMeans = {segmentCenter - 1, segmentCenter, segmentCenter + 1};
-		int padding = 0;
-		Segmentor.Segment segment = new NeighboursSegmentor(1, 0.1, 10, padding)
-				.createSegment(sortedMeans, segmentCenter);
-		assertSegmentEquals(sortedMeans, padding, segmentCenter, segmentCenter, segment);
+		List<ContinuousDataModel> sortedModels = createModels(segmentCenter - 1, segmentCenter, segmentCenter + 1);
+		Segmentor.Segment segment = new NeighboursSegmentor(1, 0.1, 10, 0)
+				.createSegment(sortedModels, segmentCenter);
+		Assert.assertEquals(segmentCenter, segment.leftMean, 0.00001);
+		Assert.assertEquals(segmentCenter, segment.rightMean, 0.00001);
+		Assert.assertEquals(sortedModels.subList(1, 2), segment.models);
 	}
 
 	@Test
 	public void shouldNotCreateSegmentIfNotBigEnoughConcentrationOfMeans() {
-		double[] means = {0.0, 1.0};
 		NeighboursSegmentor segments = new NeighboursSegmentor(1, 0.000001, 0, 0);
-		Assert.assertNull(segments.createSegment(means, 100.0));
+		List<ContinuousDataModel> sortedModels = createModels(0, 1);
+		Assert.assertNull(segments.createSegment(sortedModels, 100.0));
 	}
 
 	@Test
 	public void shouldCreateSegmentBigEnoughToContainDesiredNumberOfNeighbours() {
 		double segmentCenter = 10;
 		double segmentRadius = 1;
-		double[] sortedMeans = {
+		List<ContinuousDataModel> sortedModels = createModels(
 				segmentCenter - 2 * segmentRadius,
 				segmentCenter - segmentRadius,
 				segmentCenter,
 				segmentCenter + segmentRadius,
 				segmentCenter + 2 * segmentRadius
-		};
-		int padding = 0;
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, padding);
-		Segmentor.Segment segment = segments.createSegment(sortedMeans, segmentCenter);
+		);
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, 0);
+		Segmentor.Segment segment = segments.createSegment(sortedModels, segmentCenter);
 
-		assertSegmentEquals(sortedMeans, padding, segmentCenter - segmentRadius, segmentCenter + segmentRadius, segment);
+		Assert.assertEquals(segmentCenter - segmentRadius, segment.leftMean, 0.00001);
+		Assert.assertEquals(segmentCenter + segmentRadius, segment.rightMean, 0.00001);
+		Assert.assertEquals(sortedModels.subList(1, 4), segment.models);
 	}
 
 	@Test
 	public void shouldCreateSmallestSymmetricPossibleSegmentWhichContainDesiredNumberOfNeighbours() {
 		double segmentCenter = 10;
 		double segmentRadius = 1;
-		double[] sortedMeans = {
+		List<ContinuousDataModel> sortedModels = createModels(
 				segmentCenter - 2 * segmentRadius,
 				segmentCenter,
 				segmentCenter + segmentRadius / 2,
 				segmentCenter + segmentRadius
-		};
-		int padding = 0;
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, padding);
-		Segmentor.Segment segment = segments.createSegment(sortedMeans, segmentCenter);
+		);
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 100000, 0, 0);
+		Segmentor.Segment segment = segments.createSegment(sortedModels, segmentCenter);
 
-		assertSegmentEquals(segmentCenter - segmentRadius, segmentCenter + segmentRadius, 1, 3, segment);
+		Assert.assertEquals(segmentCenter - segmentRadius, segment.leftMean, 0.00001);
+		Assert.assertEquals(segmentCenter + segmentRadius, segment.rightMean, 0.00001);
+		Assert.assertEquals(sortedModels.subList(1, 4), segment.models);
 	}
 
 	@Test
 	public void shouldAddPaddingToTheCreatedSegment() {
 		double segmentCenter = 1;
 		double padding = 1;
-		double[] sortedMeans = {segmentCenter};
+		List<ContinuousDataModel> sortedModels = createModels(segmentCenter);
 		Segmentor.Segment segment = new NeighboursSegmentor(1, 0.1, 10, padding)
-				.createSegment(sortedMeans, segmentCenter);
-		assertSegmentEquals(sortedMeans, padding, segmentCenter - padding, segmentCenter + padding, segment);
+				.createSegment(sortedModels, segmentCenter);
+
+		Assert.assertEquals(segmentCenter - padding, segment.leftMean, 0.00001);
+		Assert.assertEquals(segmentCenter + padding, segment.rightMean, 0.00001);
+		Assert.assertEquals(sortedModels, segment.models);
 	}
 
 	@Test
 	public void shouldDiscardSegmentIfTooBigRelativeToItsCenter() {
-		double[] sortedMeans = {94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0};
-		int padding = 0;
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 0, padding);
+		List<ContinuousDataModel> sortedModelsCluster1 = createModels(94.9, 100.0, 105.1);
+		List<ContinuousDataModel> sortedModelsCluster2 = createModels(950.0, 1000.0, 1050.0);
+		List<ContinuousDataModel> sortedModelsAll = Stream
+				.concat(sortedModelsCluster1.stream(), sortedModelsCluster2.stream())
+				.collect(Collectors.toList());
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 0, 0);
 
-		Assert.assertNull(segments.createSegment(sortedMeans, 100));
-		assertSegmentEquals(sortedMeans, padding, 950, 1050, segments.createSegment(sortedMeans, 1000));
+		Assert.assertNull(segments.createSegment(sortedModelsAll, 100));
+		Segmentor.Segment segment = segments.createSegment(sortedModelsAll, 1000);
+		Assert.assertEquals(950, segment.leftMean, 0.00001);
+		Assert.assertEquals(1050, segment.rightMean, 0.00001);
+		Assert.assertEquals(sortedModelsCluster2, segment.models);
 	}
 
 	@Test
 	public void shouldDiscardSegmentIfTooBigRelativeToItsCenterOnlyIfBiggerThanMaxSegmentWidthToNotDiscardBecauseOfBadRatio() {
-		double[] sortedMeans = {94.9, 100.0, 105.1, 950.0, 1000.0, 1050.0};
-		int padding = 0;
-		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 100000, padding);
+		List<ContinuousDataModel> sortedModelsCluster1 = createModels(94.9, 100.0, 105.1);
+		List<ContinuousDataModel> sortedModelsCluster2 = createModels(950.0, 1000.0, 1050.0);
+		List<ContinuousDataModel> sortedModelsAll = Stream
+				.concat(sortedModelsCluster1.stream(), sortedModelsCluster2.stream())
+				.collect(Collectors.toList());
+		NeighboursSegmentor segments = new NeighboursSegmentor(3, 0.1, 100000, 0);
+		Segmentor.Segment segment = segments.createSegment(sortedModelsAll, 100);
 
-		assertSegmentEquals(sortedMeans, padding,94.9, 105.1, segments.createSegment(sortedMeans, 100));
+		Assert.assertEquals(94.9, segment.leftMean, 0.00001);
+		Assert.assertEquals(105.1, segment.rightMean, 0.00001);
+		Assert.assertEquals(sortedModelsCluster2, segment.models);
 	}
 
 	@Test
 	public void shouldCreateSegmentContainingTheCenterEvenIfModelsAreOnOneSideOfTheCenter() {
 		int mean = 5;
+		List<ContinuousDataModel> sortedModels = createModels(mean);
 		NeighboursSegmentor segments = new NeighboursSegmentor(1, 0.1, 100000, 0);
-		Segmentor.Segment segment = segments.createSegment(new double[]{mean}, 0);
+		Segmentor.Segment segment = segments.createSegment(sortedModels, 0);
 
-		assertSegmentEquals(-mean, mean, 0, 0, segment);
+		Assert.assertEquals(-mean, segment.leftMean, 0.00001);
+		Assert.assertEquals(mean, segment.rightMean, 0.00001);
+		Assert.assertEquals(sortedModels, segment.models);
 	}
 }

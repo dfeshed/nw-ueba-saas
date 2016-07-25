@@ -5,9 +5,11 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.util.Assert;
 
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -72,12 +74,8 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 			return center;
 		}
 
-		public int getLeftModelIndex() {
-			return segment.leftModelIndex;
-		}
-
-		public int getRightModelIndex() {
-			return segment.rightModelIndex;
+		public List<ContinuousDataModel> getModels() {
+			return segment.models;
 		}
 
 		public double getLeftMean() {
@@ -89,7 +87,7 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 		}
 	}
 
-	private List<ContinuousDataModel> models;
+	private List<ContinuousDataModel> sortedModels;
 	private SegmentCenters segmentCenters;
 	private Segmentor segmentor;
 
@@ -99,23 +97,21 @@ public class LearningSegments implements Iterable<LearningSegments.Segment> {
 		Assert.notNull(models, "models can't be null");
 		Assert.notNull(segmentCenters, "segmentCenters can't be null");
 		Assert.notNull(segmentor, "segmentor can't be null");
-		this.models = models;
 		this.segmentCenters = segmentCenters;
 		this.segmentor = segmentor;
+		sortedModels = models.stream()
+				.sorted(Comparator.comparing(ContinuousDataModel::getMean))
+				.collect(Collectors.toList());
 	}
 
 	@Override
 	public Iterator<Segment> iterator() {
-		double[] sortedMeans = models.stream()
-				.mapToDouble(ContinuousDataModel::getMean)
-				.sorted()
-				.toArray();
 		Stream<Double> segmentCentersStream =
-				StreamSupport.stream(((Iterable<Double>) () -> segmentCenters.iterate(models)).spliterator(), false);
+				StreamSupport.stream(((Iterable<Double>) () -> segmentCenters.iterate(sortedModels)).spliterator(), false);
 		return segmentCentersStream
 				.map(segmentCenter -> {
 					Assert.isTrue(segmentCenter >= 0, "segment centers can't be negative");
-					Segmentor.Segment segment = segmentor.createSegment(sortedMeans, segmentCenter);
+					Segmentor.Segment segment = segmentor.createSegment(sortedModels, segmentCenter);
 					if (segment == null) {
 						return null;
 					}

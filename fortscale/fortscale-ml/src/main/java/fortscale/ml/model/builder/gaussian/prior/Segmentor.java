@@ -1,20 +1,23 @@
 package fortscale.ml.model.builder.gaussian.prior;
 
+import fortscale.ml.model.ContinuousDataModel;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+
+import java.util.List;
 
 public interface Segmentor {
 	class Segment {
 		public double leftMean;
 		public double rightMean;
-		public int leftModelIndex;
-		public int rightModelIndex;
+		public List<ContinuousDataModel> models;
 
-		public Segment(double leftMean, double rightMean, int leftModelIndex, int rightModelIndex) {
+		public Segment(double leftMean,
+					   double rightMean,
+					   List<ContinuousDataModel> models) {
 			this.leftMean = leftMean;
 			this.rightMean = rightMean;
-			this.leftModelIndex = leftModelIndex;
-			this.rightModelIndex = rightModelIndex;
+			this.models = models;
 		}
 
 		@Override
@@ -26,8 +29,7 @@ public interface Segmentor {
 			return new EqualsBuilder()
 					.append(o.leftMean, leftMean)
 					.append(o.rightMean, rightMean)
-					.append(o.leftModelIndex, leftModelIndex)
-					.append(o.rightModelIndex, rightModelIndex)
+					.append(o.models, models)
 					.isEquals();
 		}
 
@@ -36,11 +38,10 @@ public interface Segmentor {
 			return new HashCodeBuilder()
 					.append(leftMean)
 					.append(rightMean)
-					.append(leftModelIndex)
-					.append(rightModelIndex)
-					.hashCode();
+					.append(models)
+  					.hashCode();
 		}
 	}
 
-	Segment createSegment(double[] sortedMeans, double segmentCenter);
+	Segment createSegment(List<ContinuousDataModel> sortedModels, double segmentCenter);
 }

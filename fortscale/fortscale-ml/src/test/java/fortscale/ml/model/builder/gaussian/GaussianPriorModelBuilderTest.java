@@ -83,7 +83,7 @@ public class GaussianPriorModelBuilderTest {
 		double segmentRightMean = 100;
 		GaussianPriorModel gaussianPriorModel = (GaussianPriorModel) new GaussianPriorModelBuilder(
 				models -> IteratorUtils.arrayIterator(new double[]{meanWithSuccessfulPrior, meanWithoutSuccessfulPrior}),
-				(sortedMeans, segmentCenter) -> new Segmentor.Segment(segmentLeftMean, segmentRightMean, 0, sortedMeans.length - 1),
+				(sortedModels, segmentCenter) -> new Segmentor.Segment(segmentLeftMean, segmentRightMean, sortedModels),
 				(models, mean) -> {
 					if (mean == meanWithSuccessfulPrior) {
 						return prior;
@@ -109,7 +109,11 @@ public class GaussianPriorModelBuilderTest {
 		ContinuousDataModel modelWithouEnoughSamples = new ContinuousDataModel().setParameters(0, mean, 0, 6);
 		new GaussianPriorModelBuilder(
 				models -> IteratorUtils.singletonIterator(mean),
-				(sortedMeans, segmentCenter) -> new Segmentor.Segment(sortedMeans[0], sortedMeans[sortedMeans.length - 1], 0, sortedMeans.length - 1),
+				(sortedModels, segmentCenter) -> new Segmentor.Segment(
+						sortedModels.get(0).getMean(),
+						sortedModels.get(sortedModels.size() - 1).getMean(),
+						sortedModels
+				),
 				priorBuilder,
 				minNumOfSamplesToLearnFrom
 		).build(Arrays.asList(modelWithEnoughSamples, modelWithouEnoughSamples));
@@ -125,7 +129,7 @@ public class GaussianPriorModelBuilderTest {
 		ContinuousDataModel modelOutsideTheLearningSegment = new ContinuousDataModel().setParameters(minNumOfSamplesToLearnFrom, mean + 10, 0, 6);
 		new GaussianPriorModelBuilder(
 				models -> IteratorUtils.singletonIterator(mean),
-				(sortedMeans, segmentCenter) -> new Segmentor.Segment(sortedMeans[0], sortedMeans[0], 0, 0),
+				(sortedModels, segmentCenter) -> new Segmentor.Segment(sortedModels.get(0).getMean(), sortedModels.get(0).getMean(), sortedModels.subList(0, 1)),
 				priorBuilder,
 				minNumOfSamplesToLearnFrom
 		).build(Arrays.asList(modelInsideTheLearningSegment, modelOutsideTheLearningSegment));
