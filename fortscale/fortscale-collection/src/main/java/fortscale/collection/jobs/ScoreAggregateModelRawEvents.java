@@ -158,13 +158,13 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		return String.format("%s_%s_%d", getClass().getSimpleName(), dataSource, currentTimeSeconds);
 	}
 
-	private void waitForEventWithEpochtimeToReachAggregation(int numOfResults, long epochtime) throws TimeoutException, InterruptedException {
+	private void waitForEventWithEpochtimeToReachAggregation(int numOfResults, long epochtime) throws TimeoutException{
 		if (numOfResults > 0) {
 			waitForEventWithEpochtimeToReachAggregation(epochtime);
 		}
 	}
 
-	private void waitForEventWithEpochtimeToReachAggregation(long epochtime) throws TimeoutException, InterruptedException {
+	private void waitForEventWithEpochtimeToReachAggregation(long epochtime) throws TimeoutException {
 		if (throttlingSleepField == null || throttlingSleepField <= 0 || epochtime <= 0) {
 			return;
 		} else {
