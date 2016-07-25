@@ -10,6 +10,11 @@ import java.util.stream.IntStream;
 
 
 public class GaussianModelScorerAlgorithmTest {
+    @Test(expected = IllegalArgumentException.class)
+    public void shouldFailWhenGivenNullAsPriorModel() {
+        GaussianModelScorerAlgorithm.calculate(null, new GaussianPriorModel(), 0);
+    }
+
     @Test
     public void shouldScore0WhenLessThanTwoSamples() {
         GaussianPriorModel priorModel = new GaussianPriorModel();
