@@ -226,9 +226,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			}
 
 			// add the tags to the event - checks in memory-cache and mongo if the user exists with tags
-			if (usernameNormalizationConfig.getShouldBeTagged())
+			if (usernameNormalizationConfig.getShouldBeTagged()) {
 				taskMetrics.mayBeTaggedMessages++;
 				tagService.addTagsToEvent(normalizedUsername, message);
+			}
 
 			// send the event to the output topic
 			String outputTopic = usernameNormalizationConfig.getOutputTopic();
