@@ -7,7 +7,6 @@ import fortscale.ml.model.builder.IModelBuilder;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,7 +41,6 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 	public Model build(Object modelBuilderData) {
 		List<ContinuousDataModel> models = castModelBuilderData(modelBuilderData);
 		models = getModelsWithEnoughSamples(models);
-		models.sort(Comparator.comparing(ContinuousDataModel::getMean));
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
 		for (LearningSegments.Segment segment : new LearningSegments(models, segmentCenters, segmentor)) {
 			Double priorAtMean = priorBuilder.calcPrior(
