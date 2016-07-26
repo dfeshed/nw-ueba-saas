@@ -7,12 +7,15 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.env.PropertySource;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.lang.management.ManagementFactory;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -282,20 +285,21 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
     protected void deleteNonRunningPidFiles()
     {
         File[] pidFiles = getAllProcessPidFiles();
-
-        // delete non-running process pid files
-        Arrays.stream(pidFiles).forEach(file -> {
-            int pidFileValue = readPidFile(file);
-            if (pidFileValue != -1 && !isPidRunningAndIsJavaProcess(pidFileValue)) {
-                Path filePath = file.toPath();
-                try {
-                    logger.warn("deleting pidFile={} of pid={} since process is not running",filePath.toString(),Files.lines(filePath).findFirst() );
-                } catch (IOException e) {
-                    logger.warn("could not read pid from pidFile={}",filePath.toString());
+        if (pidFiles != null) {
+            // delete non-running process pid files
+            Arrays.stream(pidFiles).forEach(file -> {
+                int pidFileValue = readPidFile(file);
+                if (pidFileValue != -1 && !isPidRunningAndIsJavaProcess(pidFileValue)) {
+                    Path filePath = file.toPath();
+                    try {
+                        logger.warn("deleting pidFile={} of pid={} since process is not running", filePath.toString(), Files.lines(filePath).findFirst());
+                    } catch (IOException e) {
+                        logger.warn("could not read pid from pidFile={}", filePath.toString());
+                    }
+                    deletePidFile(file.getAbsolutePath());
                 }
-                deletePidFile(file.getAbsolutePath());
-            }
-        });
+            });
+        }
     }
 
     /**
@@ -384,8 +388,17 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         PrintWriter writer;
         try {
             File pidFile = new File(pidFilePath);
-            if (pidFile.getParentFile() != null) {
-                pidFile.getParentFile().mkdirs();
+            File pidDirectory = pidFile.getParentFile();
+            if (pidDirectory != null) {
+                if(!pidDirectory.exists())
+                {
+                    boolean dirCreated = pidFile.getParentFile().mkdirs();
+                    if(!dirCreated)
+                    {
+                        String msg = String.format("error creating pid directory %s", pidDirectory.getPath());
+                        throw new RuntimeException(msg);
+                    }
+                }
             }
             if (pidFile.exists()) {
                 logger.warn("Pid file: {} already exist... overriding file", pidFilePath);
@@ -445,7 +458,7 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
      */
     protected void deletePidFile(String path) {
         try {
-            Files.delete(Paths.get(path));
+            Files.deleteIfExists(Paths.get(path));
             logger.info("Deleted pid file: {}", path);
         } catch (IOException e) {
             logger.error(String.format("ERROR: failed to delete pidfile %s", path), e);
