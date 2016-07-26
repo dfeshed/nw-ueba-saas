@@ -19,16 +19,6 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 			ContinuousDataModel.class.getSimpleName()
 	);
 
-	private static Comparator<ContinuousDataModel> MODELS_COMPARATOR = (model1, model2) -> {
-		if (model1.getMean() < model2.getMean()) {
-			return -1;
-		} else if (model1.getMean() > model2.getMean()) {
-			return 1;
-		} else {
-			return 0;
-		}
-	};
-
 	private SegmentCenters segmentCenters;
 	private Segmentor segmentor;
 	private PriorBuilder priorBuilder;
@@ -52,7 +42,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 	public Model build(Object modelBuilderData) {
 		List<ContinuousDataModel> models = castModelBuilderData(modelBuilderData);
 		models = getModelsWithEnoughSamples(models);
-		models.sort(MODELS_COMPARATOR);
+		models.sort(Comparator.comparing(ContinuousDataModel::getMean));
 		List<GaussianPriorModel.SegmentPrior> segmentPriors = new ArrayList<>();
 		for (LearningSegments.Segment segment : new LearningSegments(models, segmentCenters, segmentor)) {
 			Double priorAtMean = priorBuilder.calcPrior(

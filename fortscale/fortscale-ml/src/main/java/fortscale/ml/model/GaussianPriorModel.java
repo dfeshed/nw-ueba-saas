@@ -5,16 +5,13 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class GaussianPriorModel implements Model {
-	public static class SegmentPrior implements Comparable<SegmentPrior> {
+	public static class SegmentPrior {
 		public double mean;
 		public double priorAtMean;
 		public double supportFromLeftOfMean;
@@ -49,17 +46,6 @@ public class GaussianPriorModel implements Model {
 		}
 
 		@Override
-		public int compareTo(SegmentPrior o) {
-			if (mean < o.mean) {
-				return -1;
-			} else if (mean > o.mean) {
-				return 1;
-			} else {
-				return 0;
-			}
-		}
-
-		@Override
 		public String toString() {
 			return String.format("<SegmentPrior: mean=%f, priorAtMean=%f, supportFromLeftOfMean=%f, supportFromRightOfMean=%f>",
 					mean, priorAtMean, supportFromLeftOfMean, supportFromRightOfMean);
@@ -78,7 +64,7 @@ public class GaussianPriorModel implements Model {
 		Set<Double> means = new HashSet<>();
 		segmentPriors.forEach(segmentPrior -> Assert.isTrue(means.add(segmentPrior.mean)));
 		this.segmentPriors = segmentPriors.toArray(new SegmentPrior[]{});
-		Arrays.sort(this.segmentPriors);
+		Arrays.sort(this.segmentPriors, Comparator.comparingDouble(segmentPrior -> segmentPrior.mean));
 		minPrior = Stream.of(this.segmentPriors)
 				.map(segmentPrior -> segmentPrior.priorAtMean)
 				.min(Double::compare)
@@ -119,7 +105,11 @@ public class GaussianPriorModel implements Model {
 
 	private Set<SegmentPrior> findNearestContainingSegmentPriorsFromEachSide(double mean) {
 		int closestSegmentPriorIndexFromRight =
-				Arrays.binarySearch(segmentPriors, new SegmentPrior(mean, 0, 0));
+				Arrays.binarySearch(
+						segmentPriors,
+						new SegmentPrior(mean, 0, 0),
+						Comparator.comparingDouble(segmentPrior -> segmentPrior.mean)
+				);
 		if (closestSegmentPriorIndexFromRight < 0) {
 			closestSegmentPriorIndexFromRight = -closestSegmentPriorIndexFromRight - 1;
 		}
