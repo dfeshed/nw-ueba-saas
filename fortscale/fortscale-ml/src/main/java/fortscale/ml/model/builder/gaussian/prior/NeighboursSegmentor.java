@@ -2,7 +2,6 @@ package fortscale.ml.model.builder.gaussian.prior;
 
 import fortscale.ml.model.ContinuousDataModel;
 import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.MutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.util.Assert;
 
@@ -57,7 +56,7 @@ public class NeighboursSegmentor implements Segmentor {
 	@Override
 	public Segment createSegment(List<ContinuousDataModel> sortedModels, double segmentCenter) {
 		int meanIndexClosestToSegmentCenter = findModelIndexClosestToMean(sortedModels, segmentCenter);
-		Pair<Double, Double> segmentMeans = IntStream.range(-numberOfNeighbours + 1, 1)
+		Double segmentMeansRadius = IntStream.range(-numberOfNeighbours + 1, 1)
 				// create segment candidates
 				.mapToObj(offset -> new ImmutablePair<>(
 						meanIndexClosestToSegmentCenter + offset,
@@ -65,46 +64,32 @@ public class NeighboursSegmentor implements Segmentor {
 				))
 				// filter out ones which will cause ArrayIndexOutOfBoundsException
 				.filter(segmentIndices -> segmentIndices.left >= 0 && segmentIndices.right < sortedModels.size())
-				// map a segment candidate (indices of models) to its means segment (the means interval which
-				// it contains). Do it such that the means will be symmetric around the center
-				.map(segmentIndices -> createSymmetricSegmentMeansFromSegmentIndices(
-						segmentIndices,
-						segmentCenter,
-						sortedModels
+				// map a segment candidate (indices of models) to the radius of its means segment
+				// (the means interval which it contains). The means segment is be symmetric around the center
+				.map(segmentIndices -> Math.max(
+						segmentCenter - sortedModels.get(segmentIndices.getLeft()).getMean(),
+						sortedModels.get(segmentIndices.getRight()).getMean() - segmentCenter
 				))
-				// find the thinner segment
-				.min(Comparator.comparingDouble(symmetricSegmentMeans -> symmetricSegmentMeans.getRight() - symmetricSegmentMeans.getLeft()))
+				// find the thinnest segment
+				.min(Double::compare)
 				// make sure it's thin enough
-				.filter(symmetricSegmentMeans -> symmetricSegmentMeans.getRight() - symmetricSegmentMeans.getLeft() <= Math.max(
+				.filter(radius -> 2 * radius <= Math.max(
 						maxRatioBetweenSegmentSizeToCenter * segmentCenter,
 						maxSegmentWidthToNotDiscardBecauseOfBadRatio
 				))
 				.orElse(null);
-		if (segmentMeans == null) {
+		if (segmentMeansRadius == null) {
 			// there are no candidates at all (not enough models) or they are too wide
 			return null;
 		}
 		Pair<Double, Double> paddedSegmentMeans =
-				new ImmutablePair<>(segmentMeans.getLeft() - padding, segmentMeans.getRight() + padding);
+				new ImmutablePair<>(segmentCenter - segmentMeansRadius - padding, segmentCenter + segmentMeansRadius + padding);
 		Pair<Integer, Integer> segmentIndices = createSegmentIndicesFromSegmentMeans(paddedSegmentMeans, sortedModels);
 		return new Segment(
 				paddedSegmentMeans.getLeft(),
 				paddedSegmentMeans.getRight(),
 				sortedModels.subList(segmentIndices.getLeft(), segmentIndices.getRight() + 1)
 		);
-	}
-
-	private Pair<Double, Double> createSymmetricSegmentMeansFromSegmentIndices(Pair<Integer, Integer> segmentIndices,
-																			   double segmentCenter,
-																			   List<ContinuousDataModel> sortedModels) {
-		MutablePair<Double, Double> segment = new MutablePair<>(
-				sortedModels.get(segmentIndices.getLeft()).getMean(),
-				sortedModels.get(segmentIndices.getRight()).getMean()
-		);
-		double radius = Math.max(segmentCenter - segment.left, segment.right - segmentCenter);
-		segment.left = segmentCenter - radius;
-		segment.right = segmentCenter + radius;
-		return segment;
 	}
 
 	private Pair<Integer, Integer> createSegmentIndicesFromSegmentMeans(Pair<Double, Double> segmentMeans,
