@@ -37,7 +37,7 @@ public class NeighboursSegmentor implements Segmentor {
 		this.padding = padding;
 	}
 
-	private int findMeanIndexClosestToMean(List<ContinuousDataModel> sortedModels, double mean) {
+	private int findModelIndexClosestToMean(List<ContinuousDataModel> sortedModels, double mean) {
 		int meanIndexClosestToCenter = Collections.binarySearch(
 				sortedModels,
 				new ContinuousDataModel().setParameters(0, mean, 0, 0), Comparator.comparing(ContinuousDataModel::getMean)
@@ -54,20 +54,10 @@ public class NeighboursSegmentor implements Segmentor {
 		return meanIndexClosestToCenter;
 	}
 
-	private void expandSegmentIndicesWithoutChangingWidth(MutablePair<Integer, Integer> segmentIndices,
-														  List<ContinuousDataModel> sortedModels) {
-		while (segmentIndices.left > 0 && sortedModels.get(segmentIndices.left).getMean() == sortedModels.get(segmentIndices.left - 1).getMean()) {
-			segmentIndices.left--;
-		}
-		while (segmentIndices.right < sortedModels.size() - 1 && sortedModels.get(segmentIndices.right).getMean() == sortedModels.get(segmentIndices.right + 1).getMean()) {
-			segmentIndices.right++;
-		}
-	}
-
 	@Override
 	public Segment createSegment(List<ContinuousDataModel> sortedModels, double segmentCenter) {
-		int meanIndexClosestToSegmentCenter = findMeanIndexClosestToMean(sortedModels, segmentCenter);
-		return IntStream.range(-numberOfNeighbours + 1, 1)
+		int meanIndexClosestToSegmentCenter = findModelIndexClosestToMean(sortedModels, segmentCenter);
+		Pair<Double, Double> segmentMeans = IntStream.range(-numberOfNeighbours + 1, 1)
 				// create segment candidates
 				.mapToObj(offset -> new ImmutablePair<>(
 						meanIndexClosestToSegmentCenter + offset,
@@ -89,23 +79,19 @@ public class NeighboursSegmentor implements Segmentor {
 						maxRatioBetweenSegmentSizeToCenter * segmentCenter,
 						maxSegmentWidthToNotDiscardBecauseOfBadRatio
 				))
-				// add some padding
-				.map(symmetricSegmentMeans -> new ImmutablePair<>(
-						symmetricSegmentMeans.getLeft() - padding,
-						symmetricSegmentMeans.getRight() + padding
-				))
-				// create a result Segment which contains the model indices with mean inside the padded segment
-				.map(paddedSymmetricSegmentMeans -> {
-					Pair<Integer, Integer> segmentIndices =
-							createSegmentIndicesFromSegmentMeans(paddedSymmetricSegmentMeans, sortedModels);
-					return new Segment(
-							paddedSymmetricSegmentMeans.getLeft(),
-							paddedSymmetricSegmentMeans.getRight(),
-							sortedModels.subList(segmentIndices.getLeft(), segmentIndices.getRight() + 1)
-					);
-				})
-				// resort to null if there are no candidates at all (not enough models) or they are too wide
 				.orElse(null);
+		if (segmentMeans == null) {
+			// there are no candidates at all (not enough models) or they are too wide
+			return null;
+		}
+		Pair<Double, Double> paddedSegmentMeans =
+				new ImmutablePair<>(segmentMeans.getLeft() - padding, segmentMeans.getRight() + padding);
+		Pair<Integer, Integer> segmentIndices = createSegmentIndicesFromSegmentMeans(paddedSegmentMeans, sortedModels);
+		return new Segment(
+				paddedSegmentMeans.getLeft(),
+				paddedSegmentMeans.getRight(),
+				sortedModels.subList(segmentIndices.getLeft(), segmentIndices.getRight() + 1)
+		);
 	}
 
 	private Pair<Double, Double> createSymmetricSegmentMeansFromSegmentIndices(Pair<Integer, Integer> segmentIndices,
@@ -115,12 +101,6 @@ public class NeighboursSegmentor implements Segmentor {
 				sortedModels.get(segmentIndices.getLeft()).getMean(),
 				sortedModels.get(segmentIndices.getRight()).getMean()
 		);
-		if (segmentCenter < segment.left) {
-			segment.left = segmentCenter - (segment.right - segmentCenter);
-		}
-		if (segment.right < segmentCenter) {
-			segment.right = segmentCenter + (segmentCenter - segment.left);
-		}
 		double radius = Math.max(segmentCenter - segment.left, segment.right - segmentCenter);
 		segment.left = segmentCenter - radius;
 		segment.right = segmentCenter + radius;
@@ -129,17 +109,14 @@ public class NeighboursSegmentor implements Segmentor {
 
 	private Pair<Integer, Integer> createSegmentIndicesFromSegmentMeans(Pair<Double, Double> segmentMeans,
 																		List<ContinuousDataModel> sortedModels) {
-		int meanIndexClosestToLeftMean = findMeanIndexClosestToMean(sortedModels, segmentMeans.getLeft());
+		int meanIndexClosestToLeftMean = findModelIndexClosestToMean(sortedModels, segmentMeans.getLeft() - Double.MIN_VALUE);
 		if (sortedModels.get(meanIndexClosestToLeftMean).getMean() < segmentMeans.getLeft()) {
 			meanIndexClosestToLeftMean++;
 		}
-		int meanIndexClosestToRightMean = findMeanIndexClosestToMean(sortedModels, segmentMeans.getRight());
+		int meanIndexClosestToRightMean = findModelIndexClosestToMean(sortedModels, segmentMeans.getRight() + Double.MIN_VALUE);
 		if (sortedModels.get(meanIndexClosestToRightMean).getMean() > segmentMeans.getRight()) {
 			meanIndexClosestToRightMean--;
 		}
-		MutablePair<Integer, Integer> segmentIndices =
-				new MutablePair<>(meanIndexClosestToLeftMean, meanIndexClosestToRightMean);
-		expandSegmentIndicesWithoutChangingWidth(segmentIndices, sortedModels);
-		return segmentIndices;
+		return new ImmutablePair<>(meanIndexClosestToLeftMean, meanIndexClosestToRightMean);
 	}
 }
