@@ -92,7 +92,7 @@ public class GaussianModelScorerAlgorithmTest {
 	}
 
 	@Test
-	public void shouldIgnorePriorIfResultsInNull() {
+	public void shouldIgnorePriorWhenNull() {
 		double mean = 10.2;
 		double sd = 1.2;
 		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, sd, 0);
@@ -100,5 +100,19 @@ public class GaussianModelScorerAlgorithmTest {
 		double scoreWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, null, 10, mean + 1 * sd);
 		double scoreWithPriorResultsInNull = GaussianModelScorerAlgorithm.calculate(model, new GaussianPriorModel(), 10, mean + 1 * sd);
 		Assert.assertEquals(scoreWithNoPrior, scoreWithPriorResultsInNull, 0.01);
+	}
+
+	@Test
+	public void shouldIgnorePriorWhenLessThenSdOfModel() {
+		double mean = 10.2;
+		double sd = 1.2;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, sd, 0);
+		GaussianPriorModel priorModel = new GaussianPriorModel()
+				.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior(mean, sd - 1, 0)));
+
+		double scoreWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, null, 10, mean + 1 * sd);
+		double scoreWithPriorLessThanSd = GaussianModelScorerAlgorithm.calculate(model, priorModel, 10, mean + 1 * sd);
+
+		Assert.assertEquals(scoreWithNoPrior, scoreWithPriorLessThanSd, 0.00000001);
 	}
 }

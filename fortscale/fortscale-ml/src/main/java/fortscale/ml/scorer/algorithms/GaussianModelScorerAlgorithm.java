@@ -16,7 +16,7 @@ public class GaussianModelScorerAlgorithm {
 			return 0;
 		}
 		Double prior = calcPrior(priorModel, model);
-		globalInfluence = calcGlobalInfluence(globalInfluence, prior);
+		globalInfluence = calcGlobalInfluence(globalInfluence, model, prior);
 		double posterior = calcPosterior(model, prior, globalInfluence);
 		double tScore = (value - model.getMean()) / (posterior + 0.00000001);
 		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
@@ -24,8 +24,8 @@ public class GaussianModelScorerAlgorithm {
 		return Math.max(0, 100 * (2 * probOfGettingLessThanValue - 1));
 	}
 
-	private static int calcGlobalInfluence(int globalInfluence, Double prior) {
-		if (prior == null) {
+	private static int calcGlobalInfluence(int globalInfluence, ContinuousDataModel model, Double prior) {
+		if (prior == null || prior <= model.getSd()) {
 			return 0;
 		}
 		return globalInfluence;
