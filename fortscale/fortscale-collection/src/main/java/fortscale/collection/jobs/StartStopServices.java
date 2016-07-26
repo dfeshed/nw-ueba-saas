@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class StartStopServices extends FortscaleJob {
 
-    private static Logger logger = Logger.getLogger(MongoToKafkaJob.class);
+    private static Logger logger = Logger.getLogger(StartStopServices.class);
 
     private static final String SERVICE_PARAM = "service";
 
