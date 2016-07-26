@@ -27,9 +27,9 @@ function runAppBowerInstall {
 }
 
 function runEmberTest {
-  info "Running 'ember test' for $1"
+  info "Running 'ember test' for $1 on port $2"
   cd $1
-  ember test
+  ember test --test-port $2
   checkError "Ember test failed for $1"
   success "'ember test' for $1 was successful"
   cd $CWD
@@ -54,7 +54,7 @@ function buildEmberApp {
   runAppBowerInstall $1
 
   # 'ember test'
-  runEmberTest $1
+  runEmberTest $1 $2
 
   # 'ember build' when running full build
   if [ "$EXTENT" == "FULL" ]
@@ -92,8 +92,8 @@ handleBowerArchive
 # setting this before that will break artifactory fetch
 setWebProxy
 
-buildEmberApp component-lib
-buildEmberApp style-guide
+buildEmberApp component-lib 7355
+buildEmberApp style-guide 7356
 
 #### Deploy style guide to host if running full build
 if [ "$EXTENT" == "FULL" ]
@@ -103,7 +103,7 @@ then
   success "Hosted style guide has been updated"
 fi
 
-buildEmberApp sa
+buildEmberApp sa 7357
 
 unsetWebProxy
 
