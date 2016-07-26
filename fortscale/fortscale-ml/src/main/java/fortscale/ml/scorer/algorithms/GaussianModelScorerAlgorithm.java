@@ -15,19 +15,36 @@ public class GaussianModelScorerAlgorithm {
 			// TDistribution can't handle less than two samples
 			return 0;
 		}
-		double tScore = (value - model.getMean()) / (calcSd(model, priorModel, globalInfluence) + 0.00000001);
-		double probOfGettingLessThanValue = new TDistribution(calcDegreesOfFreedom(model, priorModel, globalInfluence))
-				.cumulativeProbability(tScore);
+		Double prior = calcPrior(priorModel, model);
+		globalInfluence = calcGlobalInfluence(globalInfluence, prior);
+		double posterior = calcPosterior(model, prior, globalInfluence);
+		double tScore = (value - model.getMean()) / (posterior + 0.00000001);
+		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
+		double probOfGettingLessThanValue = new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
 		return Math.max(0, 100 * (2 * probOfGettingLessThanValue - 1));
 	}
 
-	private static double calcSd(ContinuousDataModel model,
-								 GaussianPriorModel priorModel,
-								 int globalInfluence) {
+	private static int calcGlobalInfluence(int globalInfluence, Double prior) {
+		if (prior == null) {
+			return 0;
+		}
+		return globalInfluence;
+	}
+
+	private static Double calcPrior(GaussianPriorModel priorModel, ContinuousDataModel model) {
 		if (priorModel == null) {
+			return null;
+		}
+		return priorModel.getPrior(model.getMean());
+	}
+
+	private static double calcPosterior(ContinuousDataModel model,
+										Double prior,
+										int globalInfluence) {
+		if (prior == null) {
 			return model.getSd();
 		}
-		return (globalInfluence * priorModel.getPrior(model.getMean()) + model.getSd() * model.getN()) /
+		return (globalInfluence * prior + model.getSd() * model.getN()) /
 				(globalInfluence + model.getN());
 	}
 

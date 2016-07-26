@@ -90,4 +90,15 @@ public class GaussianModelScorerAlgorithmTest {
 
 		assertScoresMonotonicity(scores, false);
 	}
+
+	@Test
+	public void shouldIgnorePriorIfResultsInNull() {
+		double mean = 10.2;
+		double sd = 1.2;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, sd, 0);
+
+		double scoreWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, null, 10, mean + 1 * sd);
+		double scoreWithPriorResultsInNull = GaussianModelScorerAlgorithm.calculate(model, new GaussianPriorModel(), 10, mean + 1 * sd);
+		Assert.assertEquals(scoreWithNoPrior, scoreWithPriorResultsInNull, 0.01);
+	}
 }
