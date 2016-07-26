@@ -6,27 +6,30 @@ import fortscale.ml.scorer.algorithms.GaussianModelScorerAlgorithm;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 
 public class GaussianModelScorerAlgorithmTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailWhenGivenNullAsPriorModel() {
-        GaussianModelScorerAlgorithm.calculate(null, new GaussianPriorModel(), 0);
+        GaussianModelScorerAlgorithm.calculate(null, new GaussianPriorModel(), 10, 0);
     }
 
     @Test
     public void shouldScore0WhenLessThanTwoSamples() {
         IntStream.of(0, 1)
                 .mapToObj(N -> new ContinuousDataModel().setParameters(N, 0, 0, 0))
-                .mapToDouble(model -> GaussianModelScorerAlgorithm.calculate(model, null, 1))
+                .mapToDouble(model -> GaussianModelScorerAlgorithm.calculate(model, null, 10, 1))
                 .forEach(score -> Assert.assertEquals(0, score, 0.0000001));
-        Assert.assertTrue(GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(2, 0, 0, 0), null, 1) > 0);
+        Assert.assertTrue(GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(2, 0, 0, 0), null, 10, 1) > 0);
     }
 
     @Test
     public void shouldScore100WhenSdIsZero() {
-        Assert.assertEquals(100, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(10, 0, 0, 0), null, 1), 0.0000001);
+        Assert.assertEquals(100, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(10, 0, 0, 0), null, 10, 1), 0.0000001);
     }
 
     @Test
@@ -34,7 +37,7 @@ public class GaussianModelScorerAlgorithmTest {
         double mean = 5;
         ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, 0, 0);
         IntStream.range(0, (int) mean)
-                .mapToDouble(value -> GaussianModelScorerAlgorithm.calculate(model, null, value))
+                .mapToDouble(value -> GaussianModelScorerAlgorithm.calculate(model, null, 10, value))
                 .forEach(score -> Assert.assertEquals(0, score, 0.0000001));
     }
 
@@ -45,17 +48,46 @@ public class GaussianModelScorerAlgorithmTest {
         // so we expect to get the scores a gaussian would give
         double sd = 1.4;
         int N = 100000000;
-        Assert.assertEquals(68.27, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, 0, sd, 0), null, 1 * sd), 0.01);
-        Assert.assertEquals(95.45, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, 0, sd, 0), null, 2 * sd), 0.01);
-        Assert.assertEquals(99.73, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, 0, sd, 0), null, 3 * sd), 0.01);
+		double mean = 4.3;
+		Assert.assertEquals(68.27, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 1 * sd), 0.01);
+        Assert.assertEquals(95.45, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 2 * sd), 0.01);
+        Assert.assertEquals(99.73, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 3 * sd), 0.01);
     }
 
-    @Test
-    public void shouldScoreAlmostAccordingTo65__95__99dot7_ruleWhenNIsSmall() {
-        double sd = 1.4;
-        int N = 10;
-        Assert.assertEquals(65.65, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, 0, sd, 0), null, 1 * sd), 0.01);
-        Assert.assertEquals(92.34, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, 0, sd, 0), null, 2 * sd), 0.01);
-        Assert.assertEquals(98.5, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, 0, sd, 0), null, 3 * sd), 0.01);
-    }
+	@Test
+	public void shouldScoreAlmostAccordingTo65__95__99dot7_ruleWhenNIsSmall() {
+		double sd = 1.4;
+		int N = 10;
+		double mean = 4.3;
+		Assert.assertEquals(65.65, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 1 * sd), 0.01);
+		Assert.assertEquals(92.34, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 2 * sd), 0.01);
+		Assert.assertEquals(98.5, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 3 * sd), 0.01);
+	}
+
+	private void assertScoresMonotonicity(List<Double> scores, boolean isIncreasing) {
+		int sign = isIncreasing ? 1 : -1;
+		Assert.assertTrue(IntStream.range(0, scores.size() - 1)
+				.allMatch(i -> sign * scores.get(i) <= sign * scores.get(i + 1)));
+		Assert.assertTrue(sign * scores.get(0) < sign * scores.get(scores.size() - 1));
+	}
+
+	@Test
+	public void shouldScoreDecreasinglyAsPriorIncreases() {
+		double mean = 10.2;
+		double sd = 1.2;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, sd, 0);
+
+		List<Double> scores = IntStream.range(0, 100)
+				.mapToDouble(prior -> GaussianModelScorerAlgorithm.calculate(
+						model,
+						new GaussianPriorModel()
+								.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior(mean, sd + prior, 0))),
+						10,
+						mean + sd
+				))
+				.boxed()
+				.collect(Collectors.toList());
+
+		assertScoresMonotonicity(scores, false);
+	}
 }
