@@ -24,6 +24,13 @@ public class GaussianPriorModelTest {
 	}
 
 	@Test
+	public void shouldReturnNullWhenContainsNoSegmentPriors() {
+		GaussianPriorModel model = new GaussianPriorModel();
+
+		Assert.assertNull(model.getPrior(0));
+	}
+
+	@Test
 	public void shouldReturnTheSamePriorAsWasPassedToInitWhenOnlyOneSegment() {
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean = 1;

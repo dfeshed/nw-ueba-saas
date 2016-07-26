@@ -104,6 +104,9 @@ public class GaussianPriorModel implements Model {
 	}
 
 	private Set<SegmentPrior> findNearestContainingSegmentPriorsFromEachSide(double mean) {
+		if (segmentPriors.length == 0) {
+			return Collections.emptySet();
+		}
 		int closestSegmentPriorIndexFromRight =
 				Arrays.binarySearch(
 						segmentPriors,
