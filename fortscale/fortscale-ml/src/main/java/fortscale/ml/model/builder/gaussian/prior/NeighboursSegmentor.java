@@ -67,7 +67,7 @@ public class NeighboursSegmentor implements Segmentor {
 	@Override
 	public Segment createSegment(List<ContinuousDataModel> sortedModels, double segmentCenter) {
 		int meanIndexClosestToSegmentCenter = findMeanIndexClosestToMean(sortedModels, segmentCenter);
-		return IntStream.range(-numberOfNeighbours, 1)
+		return IntStream.range(-numberOfNeighbours + 1, 1)
 				// create segment candidates
 				.mapToObj(offset -> new ImmutablePair<>(
 						meanIndexClosestToSegmentCenter + offset,
