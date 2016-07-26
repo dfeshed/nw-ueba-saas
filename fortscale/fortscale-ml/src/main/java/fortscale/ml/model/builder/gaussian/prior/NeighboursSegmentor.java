@@ -37,20 +37,20 @@ public class NeighboursSegmentor implements Segmentor {
 	}
 
 	private int findModelIndexClosestToMean(List<ContinuousDataModel> sortedModels, double mean) {
-		int meanIndexClosestToCenter = Collections.binarySearch(
+		int meanIndexClosestToMean = Collections.binarySearch(
 				sortedModels,
 				new ContinuousDataModel().setParameters(0, mean, 0, 0), Comparator.comparing(ContinuousDataModel::getMean)
 		);
-		if (meanIndexClosestToCenter < 0) {
-			meanIndexClosestToCenter = -meanIndexClosestToCenter - 1;
-			if (meanIndexClosestToCenter == sortedModels.size()) {
-				meanIndexClosestToCenter--;
-			} else if (meanIndexClosestToCenter > 0 &&
-					mean - sortedModels.get(meanIndexClosestToCenter - 1).getMean() < sortedModels.get(meanIndexClosestToCenter).getMean() - mean) {
-				meanIndexClosestToCenter--;
+		if (meanIndexClosestToMean < 0) {
+			meanIndexClosestToMean = -meanIndexClosestToMean - 1;
+			if (meanIndexClosestToMean == sortedModels.size()) {
+				meanIndexClosestToMean--;
+			} else if (meanIndexClosestToMean > 0 &&
+					mean - sortedModels.get(meanIndexClosestToMean - 1).getMean() < sortedModels.get(meanIndexClosestToMean).getMean() - mean) {
+				meanIndexClosestToMean--;
 			}
 		}
-		return meanIndexClosestToCenter;
+		return meanIndexClosestToMean;
 	}
 
 	@Override
