@@ -39,7 +39,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
     private static final String APP_CONF_PREFIX = "lateral_movement_notification";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
-	private static final String SOURCE_IP_FIELD = "source_ip";
+    private static final String SOURCE_IP_FIELD = "source_ip";
     private static final String VPN_START_TIME = "vpn_session_start";
     private static final String VPN_END_TIME = "vpn_session_end";
     private static final String VPN_USERNAME = "vpn_username";
@@ -54,6 +54,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	private static final List<String> dataSources = Arrays.asList("kerberos_logins", "kerberos_tgt", "ssh", "crmsf",
 			"prnlog", "oracle");
     public static final String ENTITY_ID = "entity_id";
+    public static final String SOURCE_IP_COLUMN = "source_ip";
 
     private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
@@ -161,28 +162,41 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     private void addUserActivity(JSONObject lateralMovement, String tableName, String username, String ip) {
         //select * from tableName where username='#{username}' and ipfield = ip and date_time_unix>=#{start_time}
         // and date_time_unix<=#{end_time}
-		String entityId = tableToEntityIdAndIPField.get(tableName).getLeft();
-		String ipField = tableToEntityIdAndIPField.get(tableName).getRight();
-        List<Term> conditions = new ArrayList<>();
-        conditions.add(dataQueryHelper.createUserTerm(entityId, username));
-        CustomedFilter filter = new CustomedFilter(ipField, "equals", ip);
-        conditions.add(dataQueryHelper.createCustomTerm(entityId, filter));
-        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(entityId, EVENT_TIME_UTC,
-                (Long)lateralMovement.get(notificationStartTimestampField),
-                (Long)lateralMovement.get(notificationEndTimestampField)));
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(), -1,
-                DataQueryDTOImpl.class);
-		List<Map<String, Object>> results = runQuery(dataQueryDTO);
-		User user = userService.findByUsername(username);
-		for (Map<String, Object> result: results) {
-			if (user != null) {
-				result.put(DISPLAY_NAME, user.getDisplayName());
-				result.put(ENTITY_ID, user.getId());
-			}
-			result.put(DATA_SOURCE, entityId);
-		}
-		addSupportingInformation(lateralMovement, results,
-				VpnLateralMovementSupportingInformation.USER_ACTIVITY_EVENTS);
+        try {
+            String entityId = tableToEntityIdAndIPField.get(tableName).getLeft();
+
+            List<Term> conditions = new ArrayList<>();
+            conditions.add(dataQueryHelper.createUserTerm(entityId, username));
+            CustomedFilter filter = new CustomedFilter(SOURCE_IP_COLUMN, "equals", ip);
+            conditions.add(dataQueryHelper.createCustomTerm(entityId, filter));
+            conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(entityId, EVENT_TIME_UTC,
+                    (Long) lateralMovement.get(notificationStartTimestampField),
+                    (Long) lateralMovement.get(notificationEndTimestampField)));
+            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(), -1,
+                    DataQueryDTOImpl.class);
+            List<Map<String, Object>> results = runQuery(dataQueryDTO);
+            if (results!=null && results.size() > 0) {
+                User user = userService.findByUsername(username);
+                for (Map<String, Object> result : results) {
+                    if (user != null) {
+                        result.put(DISPLAY_NAME, user.getDisplayName());
+                        result.put(ENTITY_ID, user.getId());
+                    }
+                    result.put(DATA_SOURCE, entityId);
+                }
+                addSupportingInformation(lateralMovement, results,
+                        VpnLateralMovementSupportingInformation.USER_ACTIVITY_EVENTS);
+            } else {
+                if (results == null) {
+                    logger.error("Cannot build query for table "+tableName);
+                } else { //Results empty
+                    logger.error("Query must return at least one value from "+tableName);
+                }
+
+            }
+        } catch (Exception e){
+            logger.error("Can't handle user activity for "+tableName+","+username+", "+ip);
+        }
     }
 
 	private void addSupportingInformation(JSONObject lateralMovement, List<Map<String, Object>> results, String name) {
