@@ -71,4 +71,10 @@ public class GaussianModelScorerTest {
         GaussianModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
         scorer.calculateScore(new ContinuousDataModel(), Collections.singletonList(new GaussianPriorModel()), new Feature("name", "a"));
     }
+
+    @Test
+    public void shouldGiveScoreWhenEverythingIsOk() {
+        GaussianModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
+        scorer.calculateScore(new ContinuousDataModel(), Collections.singletonList(new GaussianPriorModel()), new Feature("name", 1.0));
+    }
 }
