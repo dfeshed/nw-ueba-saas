@@ -24,11 +24,11 @@ public class SMARTValuesModelScorerAlgorithm {
         if (value == 0){
             return 0;
         }
-        double probOfGreaterOrEqualToValue = DoubleStream.of(0, globalInfluence)
+        return DoubleStream.of(0, globalInfluence)
                 .map(globalInfluence -> calcProbOfGreaterOrEqualTo(model, globalModel, globalInfluence, value))
-                .max()
+                .map(probOfGreaterOrEqualToValue -> 100 * (1 - probOfGreaterOrEqualToValue))
+                .min()
                 .getAsDouble();
-        return 100 * (1 - probOfGreaterOrEqualToValue);
     }
 
     private double calcProbOfGreaterOrEqualTo(SMARTValuesModel model,
