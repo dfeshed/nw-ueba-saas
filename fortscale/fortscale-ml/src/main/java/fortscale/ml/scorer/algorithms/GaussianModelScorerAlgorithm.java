@@ -18,7 +18,7 @@ public class GaussianModelScorerAlgorithm {
 		Double prior = calcPrior(priorModel, model);
 		globalInfluence = calcGlobalInfluence(globalInfluence, model, prior);
 		double posterior = calcPosterior(model, prior, globalInfluence);
-		double tScore = (value - model.getMean()) / (posterior + 0.00000001);
+		double tScore = (value - model.getMean()) / Math.max(0.00000001, posterior);
 		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
 		double probOfGettingLessThanValue = new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
 		return Math.max(0, 100 * (2 * probOfGettingLessThanValue - 1));

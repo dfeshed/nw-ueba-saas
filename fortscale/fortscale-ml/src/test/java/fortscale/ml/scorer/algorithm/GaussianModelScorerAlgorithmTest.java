@@ -47,7 +47,7 @@ public class GaussianModelScorerAlgorithmTest {
         // consult https://en.wikipedia.org/wiki/68%E2%80%9395%E2%80%9399.7_rule for details.
         // When number of samples is really big the TDistribution is approximately gaussian,
         // so we expect to get the scores a gaussian would give
-        double sd = 1.4;
+        double sd = 0.00004;
         int N = 100000000;
 		double mean = 4.3;
 		Assert.assertEquals(68.27, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 1 * sd), 0.01);
@@ -57,7 +57,7 @@ public class GaussianModelScorerAlgorithmTest {
 
 	@Test
 	public void shouldScoreAlmostAccordingTo65__95__99dot7_ruleWhenNIsSmall() {
-		double sd = 1.4;
+		double sd = 0.00004;
 		int N = 10;
 		double mean = 4.3;
 		Assert.assertEquals(65.65, GaussianModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(N, mean, sd, 0), null, 10, mean + 1 * sd), 0.01);
