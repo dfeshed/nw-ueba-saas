@@ -23,7 +23,8 @@
 				<group>USER</group>
 				<job-name>SCORE</job-name>
 				<job-group>USER</job-group>
-				<cron-expression>0 0 12 1/1 * ?</cron-expression>
+				<cron-expression>0 0 3 * * ?</cron-expression>
+
 			</cron>
 		</trigger>
 	</schedule>
