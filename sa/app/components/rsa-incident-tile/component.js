@@ -4,6 +4,8 @@
  * @public
  */
 import Ember from 'ember';
+import computed, { equal } from 'ember-computed-decorators';
+
 import IncidentConstants from 'sa/incident/constants';
 import IncidentHelper from 'sa/incident/helpers';
 
@@ -11,10 +13,6 @@ const {
   Component,
   inject: {
     service
-  },
-  computed,
-  computed: {
-    equal
   },
   Logger,
   isEmpty
@@ -39,9 +37,7 @@ export default Component.extend({
    * @description determines whether or not an incident is considered new.
    * @public
    */
-  isIncidentNew: computed('model.statusSort', function() {
-    return (this.get('model.statusSort') === 0);
-  }),
+  @equal('model.statusSort', 0) isIncidentNew,
 
   /**
    * @description List of users to be displayed in the Assignee dropdown field
@@ -63,7 +59,7 @@ export default Component.extend({
    * @return boolean
    * @public
    */
-  isLargeSize: equal('size', 'large'),
+  @equal('size', 'large') isLargeSize,
   /**
    * @name editModeActive
    * @description Defines when the tile allows user to interact with the content and save the changes;
@@ -76,11 +72,8 @@ export default Component.extend({
    * @description define the badge style based on the incident risk score
    * @public
    */
-  badgeStyle: computed('model.riskScore', function() {
-    let riskScore = this.get('model.riskScore');
-
-    return IncidentHelper.riskScoreToBadgeLevel(riskScore);
-  }),
+  @computed('model.riskScore')
+  badgeStyle: (riskScore) => IncidentHelper.riskScoreToBadgeLevel(riskScore),
 
   /**
    * @name click
@@ -186,16 +179,15 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  selectedStatus: computed('model.statusSort', {
-    get() {
-      return [this.get('model.statusSort')];
-    },
+  @computed('model.statusSort')
+  selectedStatus: {
+    get: (statusSort) => [statusSort],
 
-    set(key, value) {
-      this.set('pendingStatus', value.get('firstObject'));
-      return value;
+    set(statusSorts) {
+      this.set('pendingStatus', statusSorts.get('firstObject'));
+      return statusSorts;
     }
-  }),
+  },
 
   /**
    * @name selectedPriority
@@ -203,16 +195,15 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  selectedPriority: computed('model.prioritySort', {
-    get() {
-      return [this.get('model.prioritySort')];
-    },
+  @computed('model.prioritySort')
+  selectedPriority: {
+    get: (prioritySort) => [prioritySort],
 
-    set(key, value) {
-      this.set('pendingPriority', value.get('firstObject'));
-      return value;
+    set(prioritySorts) {
+      this.set('pendingPriority', prioritySorts.get('firstObject'));
+      return prioritySorts;
     }
-  }),
+  },
 
   /**
    * @name selectedAssignee
@@ -220,16 +211,15 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  selectedAssignee: computed('model.assignee.id', {
-    get() {
-      return [this.get('model.assignee.id') || -1];
-    },
+  @computed('model.assignee.id')
+  selectedAssignee: {
+    get: (assigneeId) => [assigneeId || -1],
 
-    set(key, value) {
-      this.set('pendingAssignee', value.get('firstObject'));
-      return value;
+    set(assigneeIds) {
+      this.set('pendingAssignee', assigneeIds.get('firstObject'));
+      return assigneeIds;
     }
-  }),
+  },
 
   /**
    * @name statusList
@@ -254,12 +244,12 @@ export default Component.extend({
    * @returns Array
    * @public
    */
-  incidentSources: computed('model.sources', function() {
-    let sources = this.get('model.sources');
+  @computed('model.sources')
+  incidentSources(sources) {
     if (sources) {
       return sources.map((source) => IncidentHelper.sourceShortName(source));
     }
-  }),
+  },
 
   /**
    * @name contextualTimestamp
@@ -267,7 +257,6 @@ export default Component.extend({
    * @returns Number
    * @public
    */
-  contextualTimestamp: computed('isIncidentNew', 'model.created', 'model.lastUpdated', function() {
-    return (this.get('isIncidentNew')) ? this.get('model.created') : this.get('model.lastUpdated');
-  })
+  @computed('isIncidentNew', 'model.created', 'model.lastUpdated')
+  contextualTimestamp: (isIncidentNew, created, lastUpdated) => (isIncidentNew) ? created : lastUpdated
 });

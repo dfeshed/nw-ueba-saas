@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import Model from 'ember-data/model';
 import attr from 'ember-data/attr';
-
-const { computed } = Ember;
+import computed, { or } from 'ember-computed-decorators';
 
 export default Model.extend({
 
@@ -30,21 +29,19 @@ export default Model.extend({
 
   code: attr(),
 
-  testFilterURL: computed('testFilter', function() {
-    let prefix = '/tests?filter=';
-    let filter = this.get('testFilter');
+  @or('testFilter', 'jsRepo', 'styleRepo', 'templateRepo') hasReferenceLinks,
 
+  @computed('testFilter')
+  testFilterURL(filter) {
+    let prefix = '/tests?filter=';
     if (filter) {
       return prefix.concat(filter);
     }
-  }),
+  },
 
-  hasReferenceLinks: computed('testFilter', 'jsRepo', 'styleRepo', 'templateRepo', function() {
-    return this.get('testFilter') || this.get('jsRepo') || this.get('styleRepo') || this.get('templateRepo');
-  }),
-
-  isComponent: computed('dataType', function() {
-    return this.get('dataType') === 'comp' || this.get('dataType') === 'demoComp';
-  })
+  @computed('dataType')
+  isComponent(dataType) {
+    return dataType === 'comp' || dataType === 'demoComp';
+  }
 
 });

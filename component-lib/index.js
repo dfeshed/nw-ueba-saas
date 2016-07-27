@@ -29,6 +29,13 @@ module.exports = {
 
     // Script & data assets can remain in vendor.
     app.import('vendor/component-lib.json', { destDir: 'vendor/' });
+  },
+
+  init: function(app) {
+    this._super.init && this._super.init.apply(this, arguments);
+    this.options = this.options || {};
+    this.options.babel = this.options.babel || {};
+    this.options.babel.stage = 0;
   }
 
 };

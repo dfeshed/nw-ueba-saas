@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 import layout from '../templates/components/rsa-application-user-preferences';
 
 const {
@@ -7,7 +8,6 @@ const {
   inject: {
     service
   },
-  computed,
   isEmpty,
   run,
   isNone
@@ -62,137 +62,129 @@ export default Component.extend({
     });
   },
 
-  hasPasswordError: computed('password', 'passwordConfirm', function() {
-    return !isEmpty(this.get('password')) && !isEmpty(this.get('passwordConfirm')) && (this.get('password') !== this.get('passwordConfirm'));
-  }),
+  @computed('password', 'passwordConfirm')
+  hasPasswordError(password, passwordConfirm) {
+    return !isEmpty(password) && !isEmpty(passwordConfirm) && (password !== passwordConfirm);
+  },
 
-  locales: computed('i18n.locales', function() {
-    if (this.get('i18n.locales')) {
-      return this.get('i18n.locales').uniq();
+  @computed('i18n.locales')
+  locales(locales) {
+    if (locales) {
+      return locales.uniq();
     } else {
       return [];
     }
-  }),
+  },
 
-  selectedFriendlyName: computed('usernameFormat.friendlyUsername', {
-    get() {
-      return this.get('usernameFormat.friendlyUsername');
-    },
+  @computed('usernameFormat.friendlyUsername')
+  selectedFriendlyName: {
+    get: (userName) => userName,
 
-    set(key, value) {
+    set(userName) {
       this.set('withoutChanges', false);
-      this.set('pendingFriendlyName', value);
-      return value;
+      this.set('pendingFriendlyName', userName);
+      return userName;
     }
-  }),
+  },
 
-  selectedLocale: computed('i18n.locale', {
-    get() {
-      return [this.get('i18n.locale')];
-    },
+  @computed('i18n.locale')
+  selectedLocale: {
+    get: (locale) => [locale],
 
-    set(key, value) {
+    set(locales) {
       this.set('withoutChanges', false);
-      this.set('pendingLocale', value);
-      return value;
+      this.set('pendingLocale', locales);
+      return locales;
     }
-  }),
+  },
 
-  selectedTimeFormat: computed('timeFormat.selected', {
-    get() {
-      return this.get('timeFormat.selected');
-    },
+  @computed('timeFormat.selected')
+  selectedTimeFormat: {
+    get: (selectedTimeformat) => selectedTimeformat,
 
-    set(key, value) {
+    set(selectedTimeFormat) {
       this.set('withoutChanges', false);
-      this.set('pendingTimeFormat', value);
-      return value;
+      this.set('pendingTimeFormat', selectedTimeFormat);
+      return selectedTimeFormat;
     }
-  }),
+  },
 
-  selectedTheme: computed('theme.selected', {
-    get() {
-      return this.get('theme.selected');
-    },
+  @computed('theme.selected')
+  selectedTheme: {
+    get: (selectedTheme) => selectedTheme,
 
-    set(key, value) {
+    set(selectedTheme) {
       this.set('withoutChanges', false);
-      this.set('pendingTheme', value);
-      return value;
+      this.set('pendingTheme', selectedTheme);
+      return selectedTheme;
     }
-  }),
+  },
 
-  selectedSpacing: computed('spacing.selected', {
-    get() {
-      return this.get('spacing.selected');
-    },
+  @computed('spacing.selected')
+  selectedSpacing: {
+    get: (selectedSpacing) => selectedSpacing,
 
-    set(key, value) {
+    set(selectedSpacing) {
       this.set('withoutChanges', false);
-      this.set('pendingSpacing', value);
-      return value;
+      this.set('pendingSpacing', selectedSpacing);
+      return selectedSpacing;
     }
-  }),
+  },
 
-  selectedLandingPage: computed('landingPage.selected.key', {
-    get() {
-      return [this.get('landingPage.selected.key')];
-    },
+  @computed('landingPage.selected.key')
+  selectedLandingPage: {
+    get: (selectedLandingPage) => [selectedLandingPage],
 
-    set(key, value) {
+    set(selectedLandingPages) {
       this.set('withoutChanges', false);
-      this.set('pendingLandingPage', value.get('firstObject'));
-      return value;
+      this.set('pendingLandingPage', selectedLandingPages.get('firstObject'));
+      return selectedLandingPages;
     }
-  }),
+  },
 
-  selectedTimeZone: computed('timezone.selected', {
-    get() {
-      return [this.get('timezone.selected')];
-    },
+  @computed('timezone.selected')
+  selectedTimeZone: {
+    get: (selectedTimeZone) => [selectedTimeZone],
 
-    set(key, value) {
+    set(selectedTimeZones) {
       this.set('withoutChanges', false);
-      this.set('pendingTimezone', value);
-      return value;
+      this.set('pendingTimezone', selectedTimeZones);
+      return selectedTimeZones;
     }
-  }),
+  },
 
-  selectedDateFormat: computed('dateFormat.selected', {
-    get() {
-      return [this.get('dateFormat.selected.key')];
-    },
+  @computed('dateFormat.selected')
+  selectedDateFormat: {
+    get: (selectedDateFormat) => [selectedDateFormat.key],
 
-    set(key, value) {
+    set(selectedDateFormats) {
       this.set('withoutChanges', false);
-      this.set('pendingDateFormat', value.get('firstObject'));
-      return value;
+      this.set('pendingDateFormat', selectedDateFormats.get('firstObject'));
+      return selectedDateFormats;
     }
-  }),
+  },
 
-  selectedNotifications: computed('notifications.enabled', {
-    get() {
-      return this.get('notifications.enabled');
-    },
+  @computed('notifications.enabled')
+  selectedNotifications: {
+    get: (selectedNotifications) => selectedNotifications,
 
-    set(key, value) {
+    set(selectedNotifications) {
       this.set('withoutChanges', false);
-      this.set('pendingNotifications', value);
-      return value;
+      this.set('pendingNotifications', selectedNotifications);
+      return selectedNotifications;
     }
-  }),
+  },
 
-  selectedContextMenus: computed('contextMenus.enabled', {
-    get() {
-      return this.get('contextMenus.enabled');
-    },
+  @computed('contextMenus.enabled')
+  selectedContextMenus: {
+    get: (selectedContextMenus) => selectedContextMenus,
 
-    set(key, value) {
+    set(selectedContextMenus) {
       this.set('withoutChanges', false);
-      this.set('pendingContextMenus', value);
-      return value;
+      this.set('pendingContextMenus', selectedContextMenus);
+      return selectedContextMenus;
     }
-  }),
+  },
 
   saveUserPreferences() {
     this.set('password', null);

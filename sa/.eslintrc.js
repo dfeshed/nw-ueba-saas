@@ -6,6 +6,7 @@ module.exports = {
     'ecmaVersion': 6,
     'sourceType': 'module'
   },
+  parser: 'babel-eslint',
   rules: {
     // SUAVE RULES
     // not available yet

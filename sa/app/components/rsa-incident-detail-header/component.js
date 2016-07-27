@@ -1,17 +1,14 @@
 import Ember from 'ember';
+import computed, { equal } from 'ember-computed-decorators';
 import IncidentConstants from 'sa/incident/constants';
 import IncidentHelper from 'sa/incident/helpers';
 
 const {
   Component,
-  computed,
-  computed: {
-    equal
-  },
   Logger,
   isEmpty,
   run
-  } = Ember;
+} = Ember;
 
 export default Component.extend({
 
@@ -23,17 +20,15 @@ export default Component.extend({
    * @description returns true if the incident's status is closed
    * @public
    */
-  incidentIsClosed: equal('model.statusSort', IncidentConstants.incStatus.CLOSED),
+  @equal('model.statusSort', IncidentConstants.incStatus.CLOSED) incidentIsClosed,
 
   /**
    * @name badgeStyle
    * @description define the badge style based on the incident risk score
    * @public
    */
-  badgeStyle: computed('model.riskScore', function() {
-    let riskScore = this.get('model.riskScore');
-    return IncidentHelper.riskScoreToBadgeLevel(riskScore);
-  }),
+  @computed('model.riskScore')
+  badgeStyle: (riskScore) => IncidentHelper.riskScoreToBadgeLevel(riskScore),
 
   /**
    * @name statusList
@@ -57,104 +52,105 @@ export default Component.extend({
    * @returns Array
    * @public
    */
-  incidentSources: computed('model.sources', function() {
-    let sources = this.get('model.sources');
+  @computed('model.sources')
+  incidentSources(sources) {
     if (sources) {
       return sources.map((source) => IncidentHelper.sourceShortName(source));
     }
-  }),
+  },
 
   /**
    * @name selectedStatus
    * @description Returns a list of one element with the current status id. This is consumed by rsa-form-select
    * @public
    */
-  selectedStatus: computed('model.statusSort', {
-    get() {
-      return [this.get('model.statusSort')];
-    },
+  @computed('model.statusSort')
+  selectedStatus: {
+    get: (statusSort) => [statusSort],
 
-    set(key, value) {
-      Logger.log(`Status changed detected: ${ value.get('firstObject') }`);
+    set(statusSorts) {
+      const statusSort = statusSorts.get('firstObject');
+      Logger.log(`Status changed detected: ${ statusSort }`);
       run.once(() => {
-        let statusVal = parseInt(value.get('firstObject'), 10);
+        let statusVal = parseInt(statusSort, 10);
         this.setProperties({
           'model.statusSort': statusVal,
           'model.status': IncidentConstants.incidentStatusString[ statusVal ]
         });
         this._saveIncident();
       });
-      return value;
+      return statusSorts;
     }
-  }),
+  },
 
   /**
    * @name selectedPriority
    * @description Returns a list of one element with the current priority id. This is consumed by rsa-form-select
    * @public
    */
-  selectedPriority: computed('model.prioritySort', {
-    get() {
-      return [this.get('model.prioritySort')];
-    },
+  @computed('model.prioritySort')
+  selectedPriority: {
+    get: (prioritySort) => [prioritySort],
 
-    set(key, value) {
-      Logger.log(`Priority change detected: ${ value.get('firstObject') }`);
+    set(prioritySorts) {
+      const prioritySort = prioritySorts.get('firstObject');
+      Logger.log(`Priority change detected: ${ prioritySort }`);
 
       run.once(() => {
-        let priorityVal = parseInt(value.get('firstObject'), 10);
+        let priorityVal = parseInt(prioritySort, 10);
         this.setProperties({
           'model.prioritySort': priorityVal,
           'model.priority': IncidentConstants.incidentPriorityString[ priorityVal ]
         });
         this._saveIncident();
       });
-      return value;
+      return prioritySorts;
     }
-  }),
+  },
 
   /**
    * @name selectedAssignee
    * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
    * @public
    */
-  selectedAssignee: computed('model.assignee.id', {
-    get() {
-      return [this.get('model.assignee.id') || -1];
-    },
-    set(key, value) {
-      Logger.log(`Assignee change detected: ${ value.get('firstObject') }`);
+  @computed('model.assignee.id')
+  selectedAssignee: {
+    get: (assigneeId) => [assigneeId || -1],
+
+    set(assigneeIds) {
+      const assigneeId = assigneeIds.get('firstObject');
+      Logger.log(`Assignee change detected: ${ assigneeId }`);
       run.once(() => {
         // Incident has no assignee
-        if (value.get('firstObject') === '-1') {
+        if (assigneeId === '-1') {
           this.set('model.assignee', undefined);
         } else {
           if (isEmpty(this.get('model.assignee'))) {
             this.set('model.assignee', {});
           }
-          this.set('model.assignee.id', parseInt(value.get('firstObject'), 10));
+          this.set('model.assignee.id', parseInt(assigneeId, 10));
         }
         this._saveIncident();
       });
-      return value;
+      return assigneeIds;
     }
-  }),
+  },
 
   /**
    * @name nameDidChange
    * @description Detects when the name has changed and saves its value into the model
    * @public
    */
-  incidentName: computed('model.name', {
-    get() {
-      return this.get('model.name');
-    },
-    set(key, value) {
-      Logger.log(`Name changed: ${ value }`);
-      this.set('model.name', value);
-      return value;
+  @computed('model.name')
+  incidentName: {
+    get: (name) => name,
+
+    set(name) {
+      Logger.log(`Name changed: ${ name }`);
+      this.set('model.name', name);
+      return name;
     }
-  }),
+  },
 
   /**
    * @name _saveIncident
