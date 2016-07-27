@@ -1,6 +1,10 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 
+const trimText = function() {
+  return window.$(this).text().trim();
+};
+
 moduleForAcceptance('Acceptance | preference panel', {
   // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
   // throw an error when it tries to re-create them.
@@ -20,41 +24,35 @@ test('Iteration: verify all options are available in components', function(asser
   andThen(function() {
     // iterate language select options
     assert.deepEqual(find('#modalDestination .js-test-language-select select option')
-        .map(function() {
-          return $(this).text().trim();
-        }).get(), ['English', 'Japanese'], 'Language');
+        .map(trimText).get(),
+        ['English', 'Japanese'], 'Language');
 
     // time zone has too many options. Skip it.
 
     // iterate date format options.
     assert.deepEqual(find('#modalDestination .js-test-date-format-select select option')
-        .map(function() {
-          return $(this).text().trim();
-        }).get(), ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY/MM/DD'], 'Date Format');
+        .map(trimText).get(),
+        ['MM/DD/YYYY', 'DD/MM/YYYY', 'YYYY/MM/DD'], 'Date Format');
 
     // iterate time format options.
     assert.deepEqual(find('#modalDestination .time-format-radio-group .rsa-form-radio')
-        .map(function() {
-          return $(this).text().trim();
-        }).get(), ['12hr', '24hr'], 'Time Format');
+        .map(trimText).get(),
+        ['12hr', '24hr'], 'Time Format');
 
     // iterate default landing page options.
     assert.deepEqual(find('#modalDestination .js-test-default-landing-page-select select option')
-        .map(function() {
-          return $(this).text().trim();
-        }).get(), ['Respond', 'Monitor', 'Admin', 'Investigate'], 'Default Landing Page');
+        .map(trimText).get(),
+        ['Respond', 'Monitor', 'Admin', 'Investigate'], 'Default Landing Page');
 
     // iterate theme options.
     assert.deepEqual(find('#modalDestination .theme-radio-group .rsa-form-radio')
-        .map(function() {
-          return $(this).text().trim();
-        }).get(), ['Dark'], 'Theme');
+        .map(trimText).get(),
+        ['Dark'], 'Theme');
 
     // iterate spacing options.
     assert.deepEqual(find('#modalDestination .spacing-radio-group .rsa-form-radio')
-        .map(function() {
-          return $(this).text().trim();
-        }).get(), ['Tight', 'Loose'], 'Spacing');
+        .map(trimText).get(),
+        ['Tight', 'Loose'], 'Spacing');
   });
 });
 

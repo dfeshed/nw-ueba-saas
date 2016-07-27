@@ -134,6 +134,7 @@ export default EmberObject.extend({
 
     let addType = _typeOfFilterValue(val);
     let curr = this.get('value');
+    let arr, changed;
 
     switch (this.get('type')) {
       case ENUM_TYPE.EXACT:
@@ -151,8 +152,8 @@ export default EmberObject.extend({
             val = [val];
             // fall through to LIST case
           case ENUM_TYPE.LIST:
-            let arr = [].concat(curr);
-            let changed = false;
+            arr = [].concat(curr);
+            changed = false;
 
             val.forEach(function(item) {
               if (arr.indexOf(item) === -1) {
@@ -177,7 +178,6 @@ export default EmberObject.extend({
         } else {
           return this.reset(val); // adding range + non-range is not supported yet
         }
-        break;
     }
     return this;
   },
@@ -198,6 +198,7 @@ export default EmberObject.extend({
 
     let removeType = _typeOfFilterValue(val);
     let curr = this.get('value');
+    let arr;
 
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
@@ -213,7 +214,7 @@ export default EmberObject.extend({
             val = [val];
             // fall through to LIST case
           case ENUM_TYPE.LIST:
-            let arr = [].concat(curr);
+            arr = [].concat(curr);
             val.forEach(function(item) {
               let index = arr.indexOf(item);
               if (index > -1) {
@@ -228,11 +229,9 @@ export default EmberObject.extend({
               default:
                 return this.reset(arr);
             }
-            break;
           default:
             return this.reset(null);    // removing ranges or functions from lists isn't supported yet
         }
-        break;
       default:
         return this.reset(null);    // removing from ranges or functions isn't supported yet
     }

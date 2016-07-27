@@ -37,7 +37,7 @@ export default Component.extend({
    * @description determines whether or not an incident is considered new.
    * @public
    */
-  @equal('model.statusSort', 0) isIncidentNew,
+  @equal('model.statusSort', 0) isIncidentNew: null,
 
   /**
    * @description List of users to be displayed in the Assignee dropdown field
@@ -59,7 +59,7 @@ export default Component.extend({
    * @return boolean
    * @public
    */
-  @equal('size', 'large') isLargeSize,
+  @equal('size', 'large') isLargeSize: null,
   /**
    * @name editModeActive
    * @description Defines when the tile allows user to interact with the content and save the changes;

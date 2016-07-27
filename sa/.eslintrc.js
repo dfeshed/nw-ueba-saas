@@ -1,16 +1,13 @@
 module.exports = {
-  'plugins': [
-    'ember-suave'
+  plugins: [
+    'ember-suave' // using custom suave rules, so importing plugin, will be more later
   ],
-  'parserOptions': {
-    'ecmaVersion': 6,
-    'sourceType': 'module'
-  },
-  parser: 'babel-eslint',
+  extends: [
+    require.resolve('ember-cli-eslint/coding-standard/ember-application.js')
+  ],
   rules: {
-    // SUAVE RULES
-    // not available yet
-    //'ember-suave/prefer-destructuring': 'error',
+    // SUAVE CUSTOM RULES
+    // 'ember-suave/prefer-destructuring': 'error',  // not available yet
     'ember-suave/no-direct-property-access': 'error',
     'ember-suave/require-access-in-comments': 'error',
     'ember-suave/require-const-for-ember-properties': 'error',

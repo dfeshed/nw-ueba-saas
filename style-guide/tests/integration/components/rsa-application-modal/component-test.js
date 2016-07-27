@@ -64,8 +64,9 @@ test('it closes the modal when clicking the overlay', function(assert) {
 test('it closes the modal when clicking ESC', function(assert) {
   this.render(hbs `<div id="modalDestination"></div>{{#rsa-application-modal isOpen=true}}<button class='modal-trigger'>Click</button>{{/rsa-application-modal}}`);
 
+  // this.$ does not have "Event" on it, use window
   // eslint-disable-next-line new-cap
-  let e = $.Event('keyup');
+  let e = window.$.Event('keyup');
   e.keyCode = 27;
 
   this.$('.rsa-application-modal').trigger(e);

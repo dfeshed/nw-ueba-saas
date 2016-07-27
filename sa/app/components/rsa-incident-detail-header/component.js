@@ -20,7 +20,7 @@ export default Component.extend({
    * @description returns true if the incident's status is closed
    * @public
    */
-  @equal('model.statusSort', IncidentConstants.incStatus.CLOSED) incidentIsClosed,
+  @equal('model.statusSort', IncidentConstants.incStatus.CLOSED) incidentIsClosed: null,
 
   /**
    * @name badgeStyle

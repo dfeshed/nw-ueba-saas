@@ -1,3 +1,6 @@
+/* global server */
+/* global withFeature */
+
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';

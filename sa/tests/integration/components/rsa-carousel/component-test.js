@@ -52,11 +52,11 @@ test('The navigational arrow buttons react properly to user clicks.', function(a
       {{/rsa-carousel}}
     </div>
   `);
-  assert.equal($('.rsa-carousel__footer .dot:nth-child(1)').attr('class').indexOf('is-selected') !== -1, true, 'On initial load, the first navigational dot should be selected.');
-  $('.rsa-carousel__arrow i.rsa-icon-arrow-right-12').trigger('click');
-  assert.equal($('.rsa-carousel__footer .dot:nth-child(2)').attr('class').indexOf('is-selected') !== -1, true, 'After the right arrow is clicked, the second navigational dot should be selected.');
-  $('.rsa-carousel__arrow i.rsa-icon-arrow-left-12').trigger('click');
-  assert.equal($('.rsa-carousel__footer .dot:nth-child(1)').attr('class').indexOf('is-selected') !== -1, true, 'After the left arrow is clicked, the first navigational dot should be selected.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:nth-child(1)').attr('class').indexOf('is-selected') !== -1, true, 'On initial load, the first navigational dot should be selected.');
+  this.$('.rsa-carousel__arrow i.rsa-icon-arrow-right-12').trigger('click');
+  assert.equal(this.$('.rsa-carousel__footer .dot:nth-child(2)').attr('class').indexOf('is-selected') !== -1, true, 'After the right arrow is clicked, the second navigational dot should be selected.');
+  this.$('.rsa-carousel__arrow i.rsa-icon-arrow-left-12').trigger('click');
+  assert.equal(this.$('.rsa-carousel__footer .dot:nth-child(1)').attr('class').indexOf('is-selected') !== -1, true, 'After the left arrow is clicked, the first navigational dot should be selected.');
 });
 
 test('The navigational dots react properly to user clicks.', function(assert) {
@@ -68,9 +68,9 @@ test('The navigational dots react properly to user clicks.', function(assert) {
       {{/rsa-carousel}}
     </div>
   `);
-  assert.equal($('.rsa-carousel__footer .dot:nth-child(1)').attr('class').indexOf('is-selected') !== -1, true, 'On initial load, the first navigational dot should be selected.');
-  $('.rsa-carousel__footer .dot:nth-child(2)').trigger('click');
-  assert.equal($('.rsa-carousel__footer .dot:nth-child(2)').attr('class').indexOf('is-selected') !== -1, true, 'After the second navigational dot is clicked, the second navigational dot should be selected.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:nth-child(1)').attr('class').indexOf('is-selected') !== -1, true, 'On initial load, the first navigational dot should be selected.');
+  this.$('.rsa-carousel__footer .dot:nth-child(2)').trigger('click');
+  assert.equal(this.$('.rsa-carousel__footer .dot:nth-child(2)').attr('class').indexOf('is-selected') !== -1, true, 'After the second navigational dot is clicked, the second navigational dot should be selected.');
 });
 
 test('The number of dots increases in accordance with the model receiving new elements.', function(assert) {
@@ -82,9 +82,9 @@ test('The number of dots increases in accordance with the model receiving new el
       {{/rsa-carousel}}
     </div>
   `);
-  assert.equal($('.rsa-carousel__footer .dot').length, 4, 'On initial load, with 10 items in the model there should be 4 navigational dots.');
+  assert.equal(this.$('.rsa-carousel__footer .dot').length, 4, 'On initial load, with 10 items in the model there should be 4 navigational dots.');
   this.set('mock', ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']);
-  assert.equal($('.rsa-carousel__footer .dot').length, 7, 'After receiving 10 additional items, there should be 7 navigational dots.');
+  assert.equal(this.$('.rsa-carousel__footer .dot').length, 7, 'After receiving 10 additional items, there should be 7 navigational dots.');
 });
 
 test('The carousel component can properly handle the multiple rows feature.', function(assert) {
@@ -96,6 +96,6 @@ test('The carousel component can properly handle the multiple rows feature.', fu
       {{/rsa-carousel}}
     </div>
   `);
-  assert.equal($('.rsa-carousel__visible-items .rsa-content-card').length, 20, 'On initial load, with 20 items in the model and allowMultipleRows set to true there should be 20 items shown.');
-  assert.equal($('.rsa-carousel__footer .dot').length, 0, 'On initial load, with 20 items in the model and allowMultipleRows set to true there should be 0 navigational dots shown.');
+  assert.equal(this.$('.rsa-carousel__visible-items .rsa-content-card').length, 20, 'On initial load, with 20 items in the model and allowMultipleRows set to true there should be 20 items shown.');
+  assert.equal(this.$('.rsa-carousel__footer .dot').length, 0, 'On initial load, with 20 items in the model and allowMultipleRows set to true there should be 0 navigational dots shown.');
 });
