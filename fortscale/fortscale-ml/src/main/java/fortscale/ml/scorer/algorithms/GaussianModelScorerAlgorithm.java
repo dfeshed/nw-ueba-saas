@@ -32,14 +32,14 @@ public class GaussianModelScorerAlgorithm {
 									  GaussianPriorModel priorModel,
 									  int globalInfluence,
 									  double value) {
-		Double prior = calcPrior(priorModel, model);
-		double posterior = calcPosterior(model, prior, globalInfluence);
-		double tScore = (value - model.getMean()) / Math.max(0.00000001, posterior);
+		Double priorSd = calcPriorSd(priorModel, model);
+		double posteriorSd = calcPosteriorSd(model, priorSd, globalInfluence);
+		double tScore = (value - model.getMean()) / Math.max(0.00000001, posteriorSd);
 		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
 		return new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
 	}
 
-	private static Double calcPrior(GaussianPriorModel priorModel, ContinuousDataModel model) {
+	private static Double calcPriorSd(GaussianPriorModel priorModel, ContinuousDataModel model) {
 		if (priorModel == null) {
 			return null;
 		}
@@ -50,14 +50,14 @@ public class GaussianModelScorerAlgorithm {
 		return prior;
 	}
 
-	private static double calcPosterior(ContinuousDataModel model,
-										Double prior,
-										int globalInfluence) {
-		if (prior == null) {
+	private static double calcPosteriorSd(ContinuousDataModel model,
+										  Double priorSd,
+										  int globalInfluence) {
+		if (priorSd == null) {
 			return model.getSd();
 		}
-		return (globalInfluence * prior + model.getSd() * model.getN()) /
-				(globalInfluence + model.getN());
+		return Math.sqrt((globalInfluence * priorSd * priorSd + model.getN() * model.getSd() * model.getSd()) /
+				(globalInfluence + model.getN()));
 	}
 
 	private static double calcDegreesOfFreedom(ContinuousDataModel model,
