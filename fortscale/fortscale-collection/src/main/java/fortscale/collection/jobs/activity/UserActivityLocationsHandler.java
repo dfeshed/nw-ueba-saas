@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.activity;
 
+import fortscale.aggregation.feature.functions.AggGenericNAFeatureValues;
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityLocationConfigurationService;
 import fortscale.common.feature.Feature;
@@ -53,6 +54,9 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
             for (Map.Entry<String, Double> histogramEntry : countryHistogram.entrySet()) {
                 String key = histogramEntry.getKey();
+				if (key.equals(AggGenericNAFeatureValues.NOT_AVAILABLE)) {
+					continue;
+				}
                 double value = histogramEntry.getValue();
 
                 double oldValue = organizationActivityLocationHistogram.get(key) == null ? 0 : organizationActivityLocationHistogram.get(key);

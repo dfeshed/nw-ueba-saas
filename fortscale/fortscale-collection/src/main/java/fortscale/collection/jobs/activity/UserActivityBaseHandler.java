@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.functions.AggGenericNAFeatureValues;
 import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.feature.Feature;
@@ -302,6 +303,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
             Map<String, Double> bucketHistogram = featureAsHistogram.getHistogramMap();
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
+				if (entry.getKey().equals(AggGenericNAFeatureValues.NOT_AVAILABLE)) {
+					continue;
+				}
                 double oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
                 double newValue = entry.getValue();
                 histogramOfUser.put(entry.getKey(), oldValue + valueReducer().apply(newValue));
