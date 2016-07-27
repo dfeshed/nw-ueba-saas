@@ -6,20 +6,24 @@ import org.apache.commons.math3.distribution.TDistribution;
 import org.springframework.util.Assert;
 
 public class GaussianModelScorerAlgorithm {
-	public static double calculate(ContinuousDataModel model,
-								   GaussianPriorModel priorModel,
-								   int globalInfluence,
-								   double value) {
+	private int globalInfluence;
+
+	public GaussianModelScorerAlgorithm(int globalInfluence) {
+		Assert.isTrue(globalInfluence >= 0, String.format("globalInfluence must be >= 0: %d", globalInfluence));
+		this.globalInfluence = globalInfluence;
+	}
+
+	public double calculate(ContinuousDataModel model, GaussianPriorModel priorModel, double value) {
 		Assert.notNull(model);
 		if (model.getN() <= 1) {
 			// TDistribution can't handle less than two samples
 			return 0;
 		}
 		Double prior = calcPrior(priorModel, model);
-		globalInfluence = calcGlobalInfluence(globalInfluence, model, prior);
-		double posterior = calcPosterior(model, prior, globalInfluence);
+		int globalInfluenceToUse = calcGlobalInfluence(globalInfluence, model, prior);
+		double posterior = calcPosterior(model, prior, globalInfluenceToUse);
 		double tScore = (value - model.getMean()) / Math.max(0.00000001, posterior);
-		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
+		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluenceToUse);
 		double probOfGettingLessThanValue = new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
 		return Math.max(0, 100 * (2 * probOfGettingLessThanValue - 1));
 	}
