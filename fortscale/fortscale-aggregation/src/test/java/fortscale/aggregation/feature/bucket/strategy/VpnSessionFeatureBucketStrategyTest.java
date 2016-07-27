@@ -1,22 +1,20 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.JsonMappingException;
 import fortscale.common.event.EventMessage;
+import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import com.fasterxml.jackson.databind.JsonMappingException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import net.minidev.json.JSONObject;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = { "classpath*:META-INF/spring/bucketconf-context-test.xml" })
@@ -30,7 +28,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		String sourceIp = "1.1.1.1";
 		long epochtime = 1435737600;
 		String status = "SUCCESS";
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 		JSONObject event = createDataSourceEvent(username, sourceIp, epochtime, status);
 		JSONObject eventAfterMaxSessionDuration = createDataSourceEvent(username, sourceIp, epochtime + MAX_SESSION_DURATION + 1, status);
@@ -52,7 +50,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		long epochtime = 1435737600;
 		String openStatus = "SUCCESS";
 		String closeStatus = "CLOSED";
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 		JSONObject openEvent = createDataSourceEvent(username, sourceIp, epochtime, openStatus);
 		JSONObject closeEvent = createDataSourceEvent(username, sourceIp, epochtime + 1, closeStatus);
@@ -75,7 +73,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		String sourceIp = "1.1.1.1";
 		long epochtime = 1435737600;
 		String status = "SUCCESS";
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 		JSONObject event = createDataSourceEvent(username, sourceIp, epochtime, status);
 		String strategyContextId = String.format("%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username);
@@ -97,7 +95,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		String openStatus = "SUCCESS";
 		String closeStatus = "CLOSED";
 
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 		JSONObject openEvent1 = createDataSourceEvent(username, sourceIp, epochtime, openStatus);
 		JSONObject closeEvent = createDataSourceEvent(username, sourceIp, epochtime + 1, closeStatus);
@@ -129,7 +127,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		JSONObject close_event2 = createDataSourceEvent(username, sourceIp2, epochtime + (MAX_SESSION_DURATION / 2), "CLOSED");
 
 		String strategyContextId = String.format("%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username);
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 		Map<String, String> contextMap1 = new HashMap<>();
 		contextMap1.put(VpnSessionFeatureBucketStrategy.SOURCE_IP_CONTEXT_FIELD_NAME, sourceIp1);
@@ -173,7 +171,7 @@ public class VpnSessionFeatureBucketStrategyTest {
 		JSONObject success_event1 = createDataSourceEvent(username, sourceIp1, epochtime, "SUCCESS");
 
 		String strategyContextId1 = String.format("%s_%s", VpnSessionFeatureBucketStrategyFactory.STRATEGY_TYPE, username);
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		strategy.update(new EventMessage(success_event1));

@@ -1,17 +1,15 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import fortscale.common.event.EventMessage;
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import com.fasterxml.jackson.databind.JsonMappingException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/bucketconf-context-test.xml"})
@@ -23,7 +21,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_but_should_not_update_the_end_time_afterwards() throws Exception {
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user1";
@@ -52,7 +50,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void getStrategyConextId_from_StrategyId() throws Exception{
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user2";
@@ -71,7 +69,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_and_update_the_end_time_afterwards() throws Exception {
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user2";
@@ -102,7 +100,7 @@ public class UserInactivityFeatureBucketStrategyTest {
 
 	@Test
 	public void update_method_should_create_new_data_twice() throws Exception {
-		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore();
+		FeatureBucketStrategyStore store = new FeatureBucketStrategyInMemoryStore(null);
 		FeatureBucketStrategy strategy = createStrategyWithFactory(store, createDefaultParams());
 
 		String username = "user3";

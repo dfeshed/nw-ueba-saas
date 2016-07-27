@@ -1,7 +1,6 @@
 package fortscale.aggregation.feature.bucket.strategy;
 
 import fortscale.utils.monitoring.stats.StatsService;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,13 +8,10 @@ import java.util.List;
 import java.util.Map;
 
 public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategyStore {
-	@Autowired
-	private StatsService statsService;
-	
 	private Map<String, List<FeatureBucketStrategyData>> startegyEventContextIdToData = new HashMap<String, List<FeatureBucketStrategyData>>();
 	private FeatureBucketStrategyStoreMetrics metrics;
 
-	public FeatureBucketStrategyInMemoryStore() {
+	public FeatureBucketStrategyInMemoryStore(StatsService statsService) {
 		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "inMemory");
 	}
 
