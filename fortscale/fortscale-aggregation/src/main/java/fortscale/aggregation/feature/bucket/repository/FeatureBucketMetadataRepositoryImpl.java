@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket.repository;
 
 import com.mongodb.WriteResult;
 import fortscale.utils.monitoring.stats.StatsService;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -13,7 +14,7 @@ import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadataRepositoryCustom {
+public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadataRepositoryCustom, InitializingBean {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -21,7 +22,8 @@ public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadat
 
 	private FeatureBucketMetadataRepositoryMetrics metrics;
 
-	public FeatureBucketMetadataRepositoryImpl() {
+	@Override
+	public void afterPropertiesSet() throws Exception {
 		metrics = new FeatureBucketMetadataRepositoryMetrics(statsService);
 	}
 
