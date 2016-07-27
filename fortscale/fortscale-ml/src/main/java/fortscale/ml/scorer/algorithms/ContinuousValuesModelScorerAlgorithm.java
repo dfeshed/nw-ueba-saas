@@ -6,7 +6,7 @@ import org.apache.commons.math3.distribution.TDistribution;
 public class ContinuousValuesModelScorerAlgorithm {
 	public static final int SEPARATOR_BETWEEN_SMALL_AND_LARGE_VALUE_DENSITY = 1;
 
-	public static double calculate(ContinuousDataModel model, double value) {
+	public static double calculateScore(double value, ContinuousDataModel model) {
 		if (model.getN() <= 1) {
 			return 0;
 		}

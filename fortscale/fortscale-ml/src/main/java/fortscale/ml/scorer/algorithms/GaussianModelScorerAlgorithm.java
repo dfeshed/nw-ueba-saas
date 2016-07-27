@@ -15,7 +15,7 @@ public class GaussianModelScorerAlgorithm {
 		this.globalInfluence = globalInfluence;
 	}
 
-	public double calculate(ContinuousDataModel model, GaussianPriorModel priorModel, double value) {
+	public double calculateScore(double value, ContinuousDataModel model, GaussianPriorModel priorModel) {
 		Assert.notNull(model);
 		if (model.getN() <= 1) {
 			// TDistribution can't handle less than two samples

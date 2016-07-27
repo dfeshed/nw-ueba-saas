@@ -2,8 +2,8 @@ package fortscale.ml.scorer;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
-import fortscale.ml.model.Model;
 import fortscale.ml.model.ContinuousDataModel;
+import fortscale.ml.model.Model;
 import fortscale.ml.scorer.algorithms.ContinuousValuesModelScorerAlgorithm;
 import fortscale.ml.scorer.config.QuadPolyCalibrationConf;
 import org.springframework.util.Assert;
@@ -43,7 +43,7 @@ public class ContinuousValuesModelScorer extends AbstractModelScorer {
 		Assert.isInstanceOf(FeatureNumericValue.class, feature.getValue(), FEATURE_VALUE_TYPE_ERROR_MSG);
 
 		double value = ((FeatureNumericValue)feature.getValue()).getValue().doubleValue();
-		double score = ContinuousValuesModelScorerAlgorithm.calculate((ContinuousDataModel)model, value);
+		double score = ContinuousValuesModelScorerAlgorithm.calculateScore(value, (ContinuousDataModel)model);
 		return quadPolyCalibration.calibrateScore(score);
 	}
 }

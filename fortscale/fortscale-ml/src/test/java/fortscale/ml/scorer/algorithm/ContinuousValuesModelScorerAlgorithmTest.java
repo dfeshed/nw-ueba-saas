@@ -12,7 +12,7 @@ import org.junit.Test;
 public class ContinuousValuesModelScorerAlgorithmTest {
     @Test
     public void testZeroSd() {
-        double score = ContinuousValuesModelScorerAlgorithm.calculate(new ContinuousDataModel().setParameters(100, 0, 0, 0), 50);
+        double score = ContinuousValuesModelScorerAlgorithm.calculateScore(50, new ContinuousDataModel().setParameters(100, 0, 0, 0));
         Assert.assertEquals(1, score, 0.0);
     }
 }
