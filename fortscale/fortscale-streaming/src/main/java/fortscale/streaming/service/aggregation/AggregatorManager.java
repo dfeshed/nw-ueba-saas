@@ -108,9 +108,10 @@ public class AggregatorManager {
 
 	public void processEvent(JSONObject event, MessageCollector collector) throws Exception {
 		Long timestamp = ConversionUtils.convertToLong(event.get(timestampFieldName));
+		AggregatorManagerMetrics metrics = getMetrics(event.getAsString(dataSourceFieldName));
 		if (timestamp == null) {
 			logger.warn("Event message {} contains no timestamp in field {}", event.toJSONString(), timestampFieldName);
-			getMetrics(event.getAsString(dataSourceFieldName)).messagesWithoutTimestamp++;
+			metrics.messagesWithoutTimestamp++;
 			return;
 		}
 		aggrEventTopologyService.setMessageCollector(collector);
@@ -124,6 +125,7 @@ public class AggregatorManager {
 		dataSourcesSyncTimer.process(event);
 		List<FeatureBucketStrategyData> updatedFeatureBucketStrategyDataList = featureBucketStrategyService.updateStrategies(event);
 		List<FeatureBucketConf> featureBucketConfs = bucketConfigurationService.getRelatedBucketConfs(event);
+		AggregatorManagerMetrics metrics = getMetrics(event.getDataSource());
 		if (featureBucketConfs != null && !featureBucketConfs.isEmpty()) {
 			//TODO: routeEventsToOtherContexts
 			List<FeatureBucket> updatedFeatureBucketsWithNewEndTime = featureBucketsService.updateFeatureBucketsWithNewBucketEndTime(featureBucketConfs, updatedFeatureBucketStrategyDataList);
@@ -134,7 +136,7 @@ public class AggregatorManager {
 				featureEventService.newFeatureBuckets(newFeatureBuckets);
 			}
 		} else {
-			getMetrics(event.getDataSource()).missingFeatureBucketConfs++;
+			metrics.missingFeatureBucketConfs++;
 		}
 	}
 
