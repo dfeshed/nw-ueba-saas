@@ -6,6 +6,8 @@ import fortscale.domain.core.EvidenceType;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -16,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class LimitNotificationAlertAmountCreation implements AlertPreAlertDeciderFilter {
 
-
+	private static Logger logger = LoggerFactory.getLogger(LimitNotificationAlertAmountCreation.class);
 
     public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY ="limitNotificationAlertAmountCreation.maxAmountOfNotificationsAlertinDay";
     public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY ="limitNotificationAlertAmountCreation.maxAmountOfNotificationsAlertinHour";
@@ -47,6 +49,8 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
 
         String title = alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName(), timeframe);
         if (title == null) {
+			logger.warn("No alert name can be found for type - " + evidencesOrEntityEvents.getAnomalyTypeFieldName() +
+					" and timeframe - " + timeframe);
             return false;
         }
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
