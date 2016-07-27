@@ -5,6 +5,8 @@ import fortscale.ml.model.GaussianPriorModel;
 import org.apache.commons.math3.distribution.TDistribution;
 import org.springframework.util.Assert;
 
+import java.util.stream.IntStream;
+
 public class GaussianModelScorerAlgorithm {
 	private int globalInfluence;
 
@@ -19,20 +21,22 @@ public class GaussianModelScorerAlgorithm {
 			// TDistribution can't handle less than two samples
 			return 0;
 		}
-		Double prior = calcPrior(priorModel, model);
-		int globalInfluenceToUse = calcGlobalInfluence(globalInfluence, model, prior);
-		double posterior = calcPosterior(model, prior, globalInfluenceToUse);
-		double tScore = (value - model.getMean()) / Math.max(0.00000001, posterior);
-		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluenceToUse);
-		double probOfGettingLessThanValue = new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
-		return Math.max(0, 100 * (2 * probOfGettingLessThanValue - 1));
+		return IntStream.of(0, globalInfluence)
+				.mapToDouble(globalInfluence -> calcProbOfLessThan(model, priorModel, globalInfluence, value))
+				.map(probOfLessThanValue -> Math.max(0, 100 * (2 * probOfLessThanValue - 1)))
+				.min()
+				.getAsDouble();
 	}
 
-	private static int calcGlobalInfluence(int globalInfluence, ContinuousDataModel model, Double prior) {
-		if (prior == null || prior <= model.getSd()) {
-			return 0;
-		}
-		return globalInfluence;
+	private double calcProbOfLessThan(ContinuousDataModel model,
+									  GaussianPriorModel priorModel,
+									  int globalInfluence,
+									  double value) {
+		Double prior = calcPrior(priorModel, model);
+		double posterior = calcPosterior(model, prior, globalInfluence);
+		double tScore = (value - model.getMean()) / Math.max(0.00000001, posterior);
+		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
+		return new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
 	}
 
 	private static Double calcPrior(GaussianPriorModel priorModel, ContinuousDataModel model) {
