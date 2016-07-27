@@ -35,7 +35,11 @@ public class GaussianModelScorerAlgorithm {
 		if (priorModel == null) {
 			return null;
 		}
-		return priorModel.getPrior(model.getMean());
+		Double prior = priorModel.getPrior(model.getMean());
+		if (prior == null) {
+			prior = priorModel.getMinPrior();
+		}
+		return prior;
 	}
 
 	private static double calcPosterior(ContinuousDataModel model,

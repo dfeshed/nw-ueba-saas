@@ -124,7 +124,7 @@ public class GaussianPriorModelTest {
 	}
 
 	@Test
-	public void shouldUseTheMinimalOrganizationPriorAsBackup() {
+	public void shouldRetrieveTheMinimalOrganizationPrior() {
 		ArrayList<GaussianPriorModel.SegmentPrior> priors = new ArrayList<>();
 		double mean1 = 1;
 		double prior1 = 12;
@@ -134,6 +134,6 @@ public class GaussianPriorModelTest {
 		priors.add(new GaussianPriorModel.SegmentPrior(mean2, prior2, 10));
 		GaussianPriorModel model = new GaussianPriorModel().init(priors);
 
-		Assert.assertEquals(Math.min(prior1, prior2), model.getBackupPrior(), 0.00001);
+		Assert.assertEquals(Math.min(prior1, prior2), model.getMinPrior(), 0.00001);
 	}
 }

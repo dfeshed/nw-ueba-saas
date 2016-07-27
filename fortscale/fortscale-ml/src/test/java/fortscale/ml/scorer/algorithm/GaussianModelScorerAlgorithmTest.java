@@ -6,6 +6,7 @@ import fortscale.ml.scorer.algorithms.GaussianModelScorerAlgorithm;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -96,9 +97,12 @@ public class GaussianModelScorerAlgorithmTest {
 		double mean = 10.2;
 		double sd = 1.2;
 		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, sd, 0);
+		double value = mean + 1 * sd;
+		int globalInfluence = 10;
 
-		double scoreWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, null, 10, mean + 1 * sd);
-		double scoreWithPriorResultsInNull = GaussianModelScorerAlgorithm.calculate(model, new GaussianPriorModel(), 10, mean + 1 * sd);
+		double scoreWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, null, globalInfluence, value);
+		double scoreWithPriorResultsInNull = GaussianModelScorerAlgorithm.calculate(model, new GaussianPriorModel(), globalInfluence, value);
+
 		Assert.assertEquals(scoreWithNoPrior, scoreWithPriorResultsInNull, 0.01);
 	}
 
@@ -109,10 +113,36 @@ public class GaussianModelScorerAlgorithmTest {
 		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, sd, 0);
 		GaussianPriorModel priorModel = new GaussianPriorModel()
 				.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior(mean, sd - 1, 0)));
+		double value = mean + 1 * sd;
+		int globalInfluence = 10;
 
-		double scoreWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, null, 10, mean + 1 * sd);
-		double scoreWithPriorLessThanSd = GaussianModelScorerAlgorithm.calculate(model, priorModel, 10, mean + 1 * sd);
+		double scoreWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, null, globalInfluence, value);
+		double scoreWithPriorLessThanSd = GaussianModelScorerAlgorithm.calculate(model, priorModel, globalInfluence, value);
 
 		Assert.assertEquals(scoreWithNoPrior, scoreWithPriorLessThanSd, 0.00000001);
+	}
+
+	@Test
+	public void shouldResortToMinimalPriorOverOrganizationWhenNoPriorForGivenModel() {
+		double meanOfModel = 10;
+		double otherMean1 = 20;
+		double otherMean2 = 30;
+		double sd = 1.2;
+		double priorSmall = sd + 1;
+		double priorBig = priorSmall + 1;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, meanOfModel, sd, 0);
+		int globalInfluence = 10;
+
+		double value = meanOfModel + 1 * sd;
+		double scoreForModelWithSmallPrior = GaussianModelScorerAlgorithm.calculate(model, new GaussianPriorModel().init(Arrays.asList(
+				new GaussianPriorModel.SegmentPrior(meanOfModel, priorSmall, 0),
+				new GaussianPriorModel.SegmentPrior(otherMean1, priorBig, 0)
+		)), globalInfluence, value);
+		double scoreForModelWithNoPrior = GaussianModelScorerAlgorithm.calculate(model, new GaussianPriorModel().init(Arrays.asList(
+				new GaussianPriorModel.SegmentPrior(otherMean2, priorSmall, 0),
+				new GaussianPriorModel.SegmentPrior(otherMean1, priorBig, 0)
+		)), globalInfluence, value);
+
+		Assert.assertEquals(scoreForModelWithSmallPrior, scoreForModelWithNoPrior, 0.00000001);
 	}
 }

@@ -77,7 +77,7 @@ public class GaussianPriorModel implements Model {
 	}
 
 	//TODO: move this function to the scorer
-	public Double getBackupPrior() {
+	public Double getMinPrior() {
 		return minPrior;
 	}
 
