@@ -34,8 +34,8 @@ public class AlertTypeConfigurationServiceImpl {
 
         //Sync set with application configuration
         try {
-            applicationConfigurationHelper.syncListOfObjectsWithConfiguration("alerts.congiruations", this,"alertTypeConfigurations",
-                    AlertTypeConfiguration.class,
+            applicationConfigurationHelper.syncListOfObjectsWithConfiguration("alerts.configurations", this,
+					"alertTypeConfigurations", AlertTypeConfiguration.class,
                     Arrays.asList(
                             new ImmutablePair("evidenceType","evidenceType"),
                             new ImmutablePair("alertTitle", "alertTitle"),
@@ -101,7 +101,7 @@ public class AlertTypeConfigurationServiceImpl {
         }
 
         //Return the configuration
-        if (alertTypeConfiguration.getLimitToTimeFrames().contains(alertTimeframe)){
+        if (alertTypeConfiguration.getLimitToTimeFrames().equals(alertTimeframe)){
             return  alertTypeConfiguration;
         } else {
             return  null;
@@ -125,13 +125,13 @@ public class AlertTypeConfigurationServiceImpl {
 
         private int namePriority;
         private int scorePriority;
-        private Set<AlertTimeframe> limitToTimeFrames;
+        private AlertTimeframe limitToTimeFrames;
 
 
         public AlertTypeConfiguration() {
         }
 
-        public AlertTypeConfiguration(String evidenceType, String alertTitle, int namePriority, int scorePriority, Set<AlertTimeframe> limitToTimeFrames) {
+        public AlertTypeConfiguration(String evidenceType, String alertTitle, int namePriority, int scorePriority, AlertTimeframe limitToTimeFrames) {
             this.evidenceType = evidenceType;
             this.alertTitle = alertTitle;
             this.namePriority = namePriority;
@@ -171,11 +171,11 @@ public class AlertTypeConfigurationServiceImpl {
             this.scorePriority = scorePriority;
         }
 
-        public Set<AlertTimeframe> getLimitToTimeFrames() {
+        public AlertTimeframe getLimitToTimeFrames() {
             return limitToTimeFrames;
         }
 
-        public void setLimitToTimeFrames(Set<AlertTimeframe> limitToTimeFrames) {
+        public void setLimitToTimeFrames(AlertTimeframe limitToTimeFrames) {
             this.limitToTimeFrames = limitToTimeFrames;
         }
     }
