@@ -16,10 +16,10 @@ public class AggrInternalAndKafkaEventTopologyService extends AggrKafkaEventTopo
 	private AggrInternalAndKafkaEventTopologyServiceMetrics metrics;
 	private AggregatorManager aggregatorManager;
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
+	public AggrInternalAndKafkaEventTopologyService() {
 		metrics = new AggrInternalAndKafkaEventTopologyServiceMetrics(statsService);
 	}
+
 
 	@Override
 	public boolean sendEvent(JSONObject event) {
@@ -40,4 +40,6 @@ public class AggrInternalAndKafkaEventTopologyService extends AggrKafkaEventTopo
 	public void setAggregatorManager(AggregatorManager aggregatorManager) {
 		this.aggregatorManager = aggregatorManager;
 	}
+	
+	
 }
