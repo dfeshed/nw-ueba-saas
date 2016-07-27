@@ -50,7 +50,7 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
         String title = alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName(), timeframe);
         if (title == null) {
 			logger.warn("No alert name can be found for type - " + evidencesOrEntityEvents.getAnomalyTypeFieldName() +
-					" and timeframe - " + timeframe);
+					" and timeframe - " + timeframe.name());
             return false;
         }
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
