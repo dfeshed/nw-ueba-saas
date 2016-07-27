@@ -46,6 +46,9 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long alertWindowStartDate, Long alertWindowEndTime,AlertTimeframe timeframe){
 
         String title = alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName(), timeframe);
+        if (title == null) {
+            return false;
+        }
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
 
         int maxAmountOfSameAlert = getMaxAmountOfNotifications(alertWindowStartDate, alertWindowEndTime);

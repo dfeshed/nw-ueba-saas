@@ -40,7 +40,8 @@ public class AlertTypeConfigurationServiceImpl {
                             new ImmutablePair("evidenceType","evidenceType"),
                             new ImmutablePair("alertTitle", "alertTitle"),
                             new ImmutablePair("namePriority", "namePriority"),
-                            new ImmutablePair("scorePriority", "scorePriority")
+                            new ImmutablePair("scorePriority", "scorePriority"),
+                            new ImmutablePair("limitToTimeFrames", "limitToTimeFrames")
                     ));
 
 
