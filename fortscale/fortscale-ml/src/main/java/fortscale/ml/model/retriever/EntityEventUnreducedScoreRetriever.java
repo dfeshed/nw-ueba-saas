@@ -2,7 +2,6 @@ package fortscale.ml.model.retriever;
 
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.EntityEvent;
-import fortscale.entity.event.EntityEventBuilder;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventMongoStore;
@@ -33,7 +32,7 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 
 	@Override
 	public Map<Long, List<Double>> retrieve(String contextId, Date endTime) {
-		Assert.isNull(contextId, this.getClass().getSimpleName() + " can't be used with a context");
+		Assert.isNull(contextId, String.format("%s can't be used with a context", this.getClass().getSimpleName()));
 		return entityEventMongoStore.getDateToTopEntityEvents(
 				config.getEntityEventConfName(),
 				endTime,
@@ -60,19 +59,17 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 	}
 
 	@Override
-	public String getContextId(Map<String, String> context) {
-		return EntityEventBuilder.getContextId(context);
-	}
-
-	@Override
 	public Set<String> getEventFeatureNames() {
 		return Collections.singleton(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME);
 	}
 
 	@Override
 	public List<String> getContextFieldNames() {
-		return entityEventConf.getContextFields().stream()
-				.map(contextField -> String.format("%s.%s", EntityEvent.ENTITY_EVENT_CONTEXT_FIELD_NAME, contextField))
-				.collect(Collectors.toList());
+		return Collections.emptyList();
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		return null;
 	}
 }

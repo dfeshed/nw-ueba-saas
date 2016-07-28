@@ -123,11 +123,6 @@ public class ModelBasedScoreMapperFactoryTest {
 					}
 
 					@Override
-					public String getContextId(Map<String, String> context) {
-						return null;
-					}
-
-					@Override
 					public Set<String> getEventFeatureNames() {
 						return Collections.singleton("feature name");
 					}
@@ -135,6 +130,11 @@ public class ModelBasedScoreMapperFactoryTest {
 					@Override
 					public List<String> getContextFieldNames() {
 						return Collections.singletonList(contextFieldName);
+					}
+
+					@Override
+					public String getContextId(Map<String, String> context) {
+						return null;
 					}
 				});
 		if (!isGlobal) {
