@@ -133,6 +133,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
 							eventList, startDate, endDate, timeframe);
 
+					if (evidencesEligibleForDecider != null && evidencesEligibleForDecider.isEmpty()) {
+						logger.warn("Failed to find eligible events for alert creation");
+						continue;
+					}
+
 					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
 
