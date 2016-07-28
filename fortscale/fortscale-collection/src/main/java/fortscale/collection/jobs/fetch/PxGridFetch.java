@@ -14,6 +14,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Calendar;
@@ -55,6 +56,7 @@ public class PxGridFetch extends FetchJob {
 	protected void fetch() throws Exception {
 		// create query we'll use to make call
 		// Set the query time frame
+		File outputTempFile = new File(outputDir, tempfilename);
 		fw = new FileWriter(outputTempFile);
 		Calendar begin = Calendar.getInstance();
 		begin.setTimeInMillis(TimestampUtils.convertToMilliSeconds(Long.parseLong(earliest)));

@@ -43,6 +43,7 @@ public class QRadar extends FetchJob {
 			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize,
 					maxNumberOfRetires, sleepInMilliseconds);
 			String queryResults = reader.getNextBatch();
+			File outputTempFile = new File(outputDir, tempfilename);
 			try (FileWriter fw = new FileWriter(outputTempFile)) {
 				while (queryResults != null) {
 					fw.write(queryResults);

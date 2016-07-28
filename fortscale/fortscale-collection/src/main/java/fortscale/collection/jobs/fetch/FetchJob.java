@@ -89,10 +89,10 @@ public abstract class FetchJob extends FortscaleJob {
 	protected boolean encloseQuotes = true;
 	//indicate if still have more pages to go over and fetch
 	protected boolean keepFetching = false;
-	protected File outputTempFile;
 	protected int ceilingTimePartInt;
 	protected int fetchDiffInSeconds;
 	protected String filename;
+	protected String tempfilename;
 
 	protected abstract boolean connect() throws Exception;
 	protected abstract void fetch() throws Exception;
@@ -129,6 +129,7 @@ public abstract class FetchJob extends FortscaleJob {
 			}
 			// try to create output file
 			createOutputFile(outputDir);
+			File outputTempFile = new File(outputDir, tempfilename);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			monitor.finishStep(getMonitorId(), "Prepare sink file");
 			try {
@@ -224,7 +225,8 @@ public abstract class FetchJob extends FortscaleJob {
 	protected void createOutputFile(File outputDir) throws JobExecutionException {
 		// generate filename according to the job name and time
 		filename = String.format(filenameFormat, (new Date()).getTime());
-		outputTempFile = new File(outputDir, filename + ".part");
+		tempfilename = filename + ".part";
+		File outputTempFile = new File(outputDir, tempfilename);
 		try {
 			if (!outputTempFile.createNewFile()) {
 				logger.error("cannot create output file {}", outputTempFile);
@@ -266,6 +268,7 @@ public abstract class FetchJob extends FortscaleJob {
 	 * @throws InterruptedException
 	 */
 	protected void sortOutput() throws InterruptedException {
+		File outputTempFile = new File(outputDir, tempfilename);
 		if (outputTempFile.length() == 0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
 			if (!outputTempFile.delete()) {
@@ -309,6 +312,7 @@ public abstract class FetchJob extends FortscaleJob {
 	 *
 	 */
 	protected void renameOutput() {
+		File outputTempFile = new File(outputDir, tempfilename);
 		if (outputTempFile.length() == 0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
 			if (!outputTempFile.delete()) {

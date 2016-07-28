@@ -9,6 +9,7 @@ import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -39,6 +40,7 @@ public class Splunk extends FetchJob {
 	@Override
 	protected void fetch() throws Exception {
 		// configure events handler to save events to csv file
+		File outputTempFile = new File(outputDir, tempfilename);
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
 		handler.setSearchReturnKeys(returnKeys);
 		handler.setDelimiter(delimiter);
