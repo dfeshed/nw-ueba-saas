@@ -91,11 +91,12 @@ public abstract class FetchJob extends FortscaleJob {
 	protected boolean keepFetching = false;
 	protected int ceilingTimePartInt;
 	protected int fetchDiffInSeconds;
-	protected String filename;
-	protected String tempfilename;
+
+	private String filename;
+	private String tempfilename;
 
 	protected abstract boolean connect() throws Exception;
-	protected abstract void fetch() throws Exception;
+	protected abstract boolean fetch(String filename, String tempfilename) throws Exception;
 
 	protected void finish() throws Exception {}
 
@@ -132,23 +133,28 @@ public abstract class FetchJob extends FortscaleJob {
 			File outputTempFile = new File(outputDir, tempfilename);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			monitor.finishStep(getMonitorId(), "Prepare sink file");
+			boolean success = false;
 			try {
-				fetch();
+				success = fetch(filename, tempfilename);
 			} catch (Exception ex) {
 				logger.error("failed to fetch - {}", ex);
 			}
-			// report to monitor the file size
-			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
-			if (sortShellScript != null) {
-				// sort the output
-				monitor.startStep(getMonitorId(), "Sort Output", 4);
-				sortOutput();
-				monitor.finishStep(getMonitorId(), "Sort Output");
+			if (success) {
+				// report to monitor the file size
+				monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
+				if (sortShellScript != null) {
+					// sort the output
+					monitor.startStep(getMonitorId(), "Sort Output", 4);
+					sortOutput();
+					monitor.finishStep(getMonitorId(), "Sort Output");
+				} else {
+					// rename output file once get from siem finished
+					monitor.startStep(getMonitorId(), "Rename Output", 4);
+					renameOutput();
+					monitor.finishStep(getMonitorId(), "Rename Output");
+				}
 			} else {
-				// rename output file once get from siem finished
-				monitor.startStep(getMonitorId(), "Rename Output", 4);
 				renameOutput();
-				monitor.finishStep(getMonitorId(), "Rename Output");
 			}
 			// update mongo with current fetch progress
 			updateMongoWithCurrentFetchProgress();

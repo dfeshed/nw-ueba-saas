@@ -37,7 +37,7 @@ public class QRadar extends FetchJob {
 	}
 
 	@Override
-	protected void fetch() throws Exception {
+	protected boolean fetch(String filename, String tempfilename) throws Exception {
 		try {
 			logger.debug("running QRadar saved query");
 			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize,
@@ -57,20 +57,9 @@ public class QRadar extends FetchJob {
 			logger.error("error running QRadar query", e);
 			monitor.error(getMonitorId(), "Query QRadar", "error during events from qradar to file " + filename + "\n" +
 					e.toString());
-			try {
-				boolean result = new File(filename).delete();
-				if (result == false) {
-					logger.error("cannot delete temp output file " + filename);
-					monitor.error(getMonitorId(), "Query QRadar", "cannot delete temporary events file " +
-							filename);
-				}
-			} catch (Exception ex) {
-				logger.error("cannot delete temp output file " + filename);
-				monitor.error(getMonitorId(), "Query QRadar", "cannot delete temporary events file " +
-						filename);
-			}
 			throw new JobExecutionException("error running QRadar query");
 		}
+		return true;
 	}
 
 }

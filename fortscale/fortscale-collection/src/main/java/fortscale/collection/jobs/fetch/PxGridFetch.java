@@ -53,7 +53,7 @@ public class PxGridFetch extends FetchJob {
 	}
 
 	@Override
-	protected void fetch() throws Exception {
+	protected boolean fetch(String filename, String tempfilename) throws Exception {
 		// create query we'll use to make call
 		// Set the query time frame
 		File outputTempFile = new File(outputDir, tempfilename);
@@ -76,10 +76,7 @@ public class PxGridFetch extends FetchJob {
 		// Flush & close the file stream
 		fw.flush();
 		fw.close();
-		// Rename the output file
-		renameOutput();
-		// Update the current run params in the repository
-		updateMongoWithCurrentFetchProgress();
+		return true;
 	}
 
 	@Override
