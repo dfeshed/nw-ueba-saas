@@ -66,6 +66,11 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         }
     }
 
+	@Override
+	protected boolean countNAValues() {
+		return false;
+	}
+
     @Override
     protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
         if (objectToConvert instanceof Feature && ((Feature) objectToConvert).getValue() instanceof GenericHistogram) {

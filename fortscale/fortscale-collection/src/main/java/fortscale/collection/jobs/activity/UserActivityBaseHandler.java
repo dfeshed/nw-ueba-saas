@@ -303,7 +303,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
             Map<String, Double> bucketHistogram = featureAsHistogram.getHistogramMap();
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
-				if (entry.getKey().equals(AggGenericNAFeatureValues.NOT_AVAILABLE)) {
+				if (entry.getKey().equals(AggGenericNAFeatureValues.NOT_AVAILABLE) && !countNAValues()) {
 					continue;
 				}
                 double oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
@@ -327,6 +327,10 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
 
     protected abstract String getCollectionName();
+
+	protected boolean countNAValues() {
+		return true;
+	}
 
     /**
      * returns the relevant fields from the aggregated features map
