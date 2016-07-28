@@ -1,22 +1,29 @@
 package fortscale.ml.model.store;
 
+import com.mongodb.DBObject;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.mongodb.FIndex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.util.StreamUtils;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+
+import static org.springframework.data.mongodb.core.aggregation.Aggregation.newAggregation;
 
 public class ModelStore {
 	private static final String COLLECTION_NAME_PREFIX = "model_";
@@ -50,6 +57,19 @@ public class ModelStore {
 		query.addCriteria(Criteria.where(ModelDAO.CONTEXT_ID_FIELD).is(contextId));
 		return mongoTemplate.find(query, ModelDAO.class, collectionName);
 
+	}
+
+	public List<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, long eventEpochtime) {
+		String modelGroupName = "model";
+		Aggregation agg = newAggregation(
+				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(eventEpochtime)),
+				Aggregation.sort(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD)),
+				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).first(ModelDAO.CONTEXT_ID_FIELD).as(modelGroupName)
+		);
+		AggregationResults<DBObject> results = mongoTemplate.aggregate(agg, getCollectionName(modelConf), DBObject.class);
+		return StreamUtils.createStreamFromIterator(results.iterator())
+				.map(res -> (ModelDAO) res.get(modelGroupName))
+				.collect(Collectors.toList());
 	}
 
 	public void removeModels(Collection<ModelConf> modelConfs, String sessionId) {
