@@ -84,7 +84,7 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
             return getApplicationConfigurarionOrUpdate(MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY,
                     DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_ALERT_IN_HOUR);
         } else { //Hourly
-            return getApplicationConfigurarionOrUpdate(MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY,
+            return getApplicationConfigurarionOrUpdate(MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY,
                     DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY);
         }
 
