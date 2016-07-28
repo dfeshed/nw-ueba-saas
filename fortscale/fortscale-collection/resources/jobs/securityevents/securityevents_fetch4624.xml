@@ -57,10 +57,6 @@
                     <key>filenameFormat</key>
                     <value>computer_SEC4624_%d.csv</value>
                 </entry>
-                <entry>
-                    <key>sortShellScript</key>
-                    <value>${collection.shell.scripts.dir.path}/sortCsvToCsv.sh</value>
-                </entry>
             </job-data-map>
         </job>
 
