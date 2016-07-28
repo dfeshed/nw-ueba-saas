@@ -4,6 +4,7 @@ import fortscale.collection.jobs.fetch.FetchJob;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -15,6 +16,7 @@ import java.io.FileWriter;
  * In the case the job doesn't get time frame as job params, will continue the fetch process of the data source from
  * the last saved time
  */
+@DisallowConcurrentExecution
 public class QRadar extends FetchJob {
 
 	public static final String SIEM_NAME = "qradar";
@@ -37,7 +39,7 @@ public class QRadar extends FetchJob {
 	}
 
 	@Override
-	protected boolean fetch(String filename, String tempfilename) throws Exception {
+	protected void fetch(String filename, String tempfilename) throws Exception {
 		try {
 			logger.debug("running QRadar saved query");
 			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize,
@@ -55,11 +57,8 @@ public class QRadar extends FetchJob {
 		} catch (Exception e) {
 			// log error and delete output
 			logger.error("error running QRadar query", e);
-			monitor.error(getMonitorId(), "Query QRadar", "error during events from qradar to file " + filename + "\n" +
-					e.toString());
 			throw new JobExecutionException("error running QRadar query");
 		}
-		return true;
 	}
 
 }

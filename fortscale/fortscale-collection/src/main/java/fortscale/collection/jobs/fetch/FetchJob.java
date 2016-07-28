@@ -1,7 +1,6 @@
 package fortscale.collection.jobs.fetch;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
@@ -9,10 +8,10 @@ import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ import java.util.Map;
  * Created by Amir Keren on 4/4/16.
  */
 @DisallowConcurrentExecution
-public abstract class FetchJob extends FortscaleJob {
+public abstract class FetchJob {
 
 	protected static Logger logger = LoggerFactory.getLogger(FetchJob.class);
 
@@ -96,7 +95,7 @@ public abstract class FetchJob extends FortscaleJob {
 	private String tempfilename;
 
 	protected abstract boolean connect() throws Exception;
-	protected abstract boolean fetch(String filename, String tempfilename) throws Exception;
+	protected abstract void fetch(String filename, String tempfilename) throws Exception;
 
 	protected void finish() throws Exception {}
 
@@ -107,10 +106,8 @@ public abstract class FetchJob extends FortscaleJob {
 		logger.info("fetch job started");
 		// ensure output path exists
 		logger.debug("creating output file at {}", outputPath);
-		monitor.startStep(getMonitorId(), "Prepare sink file", 1);
 		outputDir = ensureOutputDirectoryExists(outputPath);
 		// connect to repository
-		monitor.startStep(getMonitorId(), "Connect to repository", 2);
 		boolean connected;
 		try {
 			connected = connect();
@@ -122,7 +119,6 @@ public abstract class FetchJob extends FortscaleJob {
 			logger.error("failed to connect to repository");
 			return;
 		}
-		monitor.startStep(getMonitorId(), "Query repository", 3);
 		do {
 			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {
@@ -132,28 +128,16 @@ public abstract class FetchJob extends FortscaleJob {
 			createOutputFile(outputDir);
 			File outputTempFile = new File(outputDir, tempfilename);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
-			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			boolean success = false;
 			try {
-				success = fetch(filename, tempfilename);
+				fetch(filename, tempfilename);
 			} catch (Exception ex) {
 				logger.error("failed to fetch - {}", ex);
 			}
-			if (success) {
-				// report to monitor the file size
-				monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
-				if (sortShellScript != null) {
-					// sort the output
-					monitor.startStep(getMonitorId(), "Sort Output", 4);
-					sortOutput();
-					monitor.finishStep(getMonitorId(), "Sort Output");
-				} else {
-					// rename output file once get from siem finished
-					monitor.startStep(getMonitorId(), "Rename Output", 4);
-					renameOutput();
-					monitor.finishStep(getMonitorId(), "Rename Output");
-				}
+			if (sortShellScript != null) {
+				// sort the output
+				sortOutput();
 			} else {
+				// rename output file once get from siem finished
 				renameOutput();
 			}
 			// update mongo with current fetch progress
@@ -286,13 +270,30 @@ public abstract class FetchJob extends FortscaleJob {
 			if (pr == null) {
 				logger.error("Failed to sort output of file {} using {}", outputTempFile.getAbsolutePath(),
 						sortShellScript);
-				addError(String.format("got the following error while running the shell command %s.",sortShellScript));
 			} else if (pr.waitFor() != 0) { // wait for process to finish
 				// error (return code is different than 0)
-				handleCmdFailure(pr, sortShellScript);
+				logger.error("Failed to run cmd");
 			}
 			outputTempFile.delete();
 		}
+	}
+
+	protected Process runCmd(File workingDir, String... commands){
+		ProcessBuilder processBuilder;
+		Process pr;
+		try {
+			processBuilder = new ProcessBuilder(commands);
+			if (workingDir != null) {
+				processBuilder.directory(workingDir);
+			}
+			pr = processBuilder.start();
+
+		} catch (Exception e) {
+			String cmd = StringUtils.join(commands, " ");
+			logger.error(String.format("while running the command \"%s\", got the following exception", cmd), e);
+			return null;
+		}
+		return pr;
 	}
 
 	/**
@@ -312,6 +313,22 @@ public abstract class FetchJob extends FortscaleJob {
 		}
 	}
 
+	protected File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {
+		File outputDir = new File(outputPath);
+		try {
+			if (!outputDir.exists()) {
+				// try to create output directory
+				outputDir.mkdirs();
+			}
+
+			return outputDir;
+		} catch (SecurityException e) {
+			logger.error("cannot create output path - " + outputPath, e);
+			// stop execution, notify scheduler not to re-fire immediately
+			throw new JobExecutionException(e,  false);
+		}
+	}
+
 	/**
 	 *
 	 * This method renames the output file when process is finished
@@ -319,6 +336,7 @@ public abstract class FetchJob extends FortscaleJob {
 	 */
 	protected void renameOutput() {
 		File outputTempFile = new File(outputDir, tempfilename);
+
 		if (outputTempFile.length() == 0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
 			if (!outputTempFile.delete()) {
@@ -362,10 +380,11 @@ public abstract class FetchJob extends FortscaleJob {
 	 * This method gets the specific job parameters
 	 *
 	 * @param map
+	 * @paran jobDataMapExtension
 	 * @param configuredSIEM
 	 * @throws JobExecutionException
 	 */
-	protected void getJobParameters(JobDataMap map, String configuredSIEM)
+	protected void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, String configuredSIEM)
 			throws JobExecutionException {
 		Map<String, String> configuration = readGroupConfigurationService(SIEM_CONFIG_PREFIX);
 		if (configuration != null && !configuration.isEmpty()) {
@@ -425,19 +444,6 @@ public abstract class FetchJob extends FortscaleJob {
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
 		getExtraParameters(map, jobDataMapExtension);
-	}
-
-	@Override
-	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {}
-
-	@Override
-	protected int getTotalNumOfSteps() {
-		return 4;
-	}
-
-	@Override
-	protected boolean shouldReportDataReceived() {
-		return true;
 	}
 
 }

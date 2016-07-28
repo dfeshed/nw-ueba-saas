@@ -5,9 +5,9 @@ import fortscale.collection.jobs.fetch.FetchJob;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.util.Properties;
@@ -17,6 +17,7 @@ import java.util.Properties;
  * In the case the job doesn't get time frame as job params, will continue the fetch process of the
  * data source from the last saved time
  */
+@DisallowConcurrentExecution
 public class Splunk extends FetchJob {
 
 	public static final String SIEM_NAME = "splunk";
@@ -38,7 +39,7 @@ public class Splunk extends FetchJob {
 	}
 
 	@Override
-	protected boolean fetch(String filename, String tempfilename) throws Exception {
+	protected void fetch(String filename, String tempfilename) throws Exception {
 		// configure events handler to save events to csv file
 		File outputTempFile = new File(outputDir, tempfilename);
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
@@ -61,11 +62,8 @@ public class Splunk extends FetchJob {
 		} catch (Exception e) {
 			// log error and delete output
 			logger.error("error running splunk query", e);
-			monitor.error(getMonitorId(), "Query Splunk", "error during events from splunk to file " +
-					outputTempFile.getName() + "\n" + e.toString());
 			throw new JobExecutionException("error running splunk query");
 		}
-		return true;
 	}
 
 	/**

@@ -50,7 +50,7 @@ public class FetchFactory extends FortscaleJob {
 			case QRadar.SIEM_NAME: fetchJob = qradar; break;
 			default: throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
 		}
-		fetchJob.getJobParameters(map, configuredSIEM);
+		fetchJob.getJobParameters(map, jobDataMapExtension, configuredSIEM);
 	}
 
 	@Override
