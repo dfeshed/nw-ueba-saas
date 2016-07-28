@@ -57,7 +57,7 @@ function buildEmberApp {
   runEmberTest $1 $2
 
   # 'ember build' when running full build
-  if [ "$EXTENT" == "FULL" ]
+  if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
   then
     runEmberBuild $1
   fi
@@ -96,7 +96,7 @@ buildEmberApp component-lib 7355
 buildEmberApp style-guide 7356
 
 #### Deploy style guide to host if running full build
-if [ "$EXTENT" == "FULL" ]
+if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
 then
   rm -rf /mnt/libhq-SA/SAStyle/production/*
   cp -r style-guide/dist/* /mnt/libhq-SA/SAStyle/production/

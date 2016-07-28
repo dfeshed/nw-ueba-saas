@@ -27,6 +27,8 @@ then
   fail "Please export EXTENT variable:"
   fail "export EXTENT=FULL"
   fail "or"
+  fail "export EXTENT=RPM"
+  fail "or"
   fail "export EXTENT=TEST"
   exit 1
 fi
@@ -37,11 +39,14 @@ fi
 #### Build Apps ####
 . $scriptDir/apps.sh
 
+if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+then
+  #### Build RPM if running full or rpm build
+  . $scriptDir/rpm.sh
+fi
+
 if [ "$EXTENT" == "FULL" ]
 then
-  #### Build RPM if running full build
-  . $scriptDir/rpm.sh
-
   #### Moving RPM to Yum directory if running full build
   . $scriptDir/yum.sh
 fi
