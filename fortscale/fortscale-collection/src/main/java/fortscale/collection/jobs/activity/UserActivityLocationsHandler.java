@@ -54,7 +54,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
 
             for (Map.Entry<String, Double> histogramEntry : countryHistogram.entrySet()) {
                 String key = histogramEntry.getKey();
-				if (key.equals(AggGenericNAFeatureValues.NOT_AVAILABLE)) {
+				if (key.equals(AggGenericNAFeatureValues.NOT_AVAILABLE) && !countNAValues()) {
 					continue;
 				}
                 double value = histogramEntry.getValue();
