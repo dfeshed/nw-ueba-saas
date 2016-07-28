@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.io.File;
 import java.io.IOException;
@@ -89,9 +90,9 @@ public abstract class FetchJob extends FortscaleJob {
 	//indicate if still have more pages to go over and fetch
 	protected boolean keepFetching = false;
 	protected File outputTempFile;
-	protected File outputFile;
 	protected int ceilingTimePartInt;
 	protected int fetchDiffInSeconds;
+	protected String filename;
 
 	protected abstract boolean connect() throws Exception;
 	protected abstract void fetch() throws Exception;
@@ -130,7 +131,11 @@ public abstract class FetchJob extends FortscaleJob {
 			createOutputFile(outputDir);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			fetch();
+			try {
+				fetch();
+			} catch (Exception ex) {
+				logger.error("failed to fetch - {}", ex);
+			}
 			// report to monitor the file size
 			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
 			if (sortShellScript != null) {
@@ -139,7 +144,7 @@ public abstract class FetchJob extends FortscaleJob {
 				sortOutput();
 				monitor.finishStep(getMonitorId(), "Sort Output");
 			} else {
-				// rename output file once get from splunk finished
+				// rename output file once get from siem finished
 				monitor.startStep(getMonitorId(), "Rename Output", 4);
 				renameOutput();
 				monitor.finishStep(getMonitorId(), "Rename Output");
@@ -147,7 +152,7 @@ public abstract class FetchJob extends FortscaleJob {
 			// update mongo with current fetch progress
 			updateMongoWithCurrentFetchProgress();
 			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
-		} while(keepFetching);
+		} while (keepFetching);
 		finish();
 		logger.info("fetch job finished");
 	}
@@ -218,9 +223,8 @@ public abstract class FetchJob extends FortscaleJob {
 	 */
 	protected void createOutputFile(File outputDir) throws JobExecutionException {
 		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime());
+		filename = String.format(filenameFormat, (new Date()).getTime());
 		outputTempFile = new File(outputDir, filename + ".part");
-		outputFile = new File(outputDir, filename);
 		try {
 			if (!outputTempFile.createNewFile()) {
 				logger.error("cannot create output file {}", outputTempFile);
@@ -262,17 +266,19 @@ public abstract class FetchJob extends FortscaleJob {
 	 * @throws InterruptedException
 	 */
 	protected void sortOutput() throws InterruptedException {
-		if (outputTempFile.length()==0) {
+		if (outputTempFile.length() == 0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete())
+			if (!outputTempFile.delete()) {
 				logger.warn("cannot delete empty file {}", outputTempFile.getName());
+			}
 		} else {
-			Process pr =  runCmd(null, sortShellScript, outputTempFile.getAbsolutePath(), outputFile.getAbsolutePath());
-			if(pr == null){
+			File outputFile = new File(outputDir, filename);
+			Process pr = runCmd(null, sortShellScript, outputTempFile.getAbsolutePath(), outputFile.getAbsolutePath());
+			if (pr == null) {
 				logger.error("Failed to sort output of file {} using {}", outputTempFile.getAbsolutePath(),
 						sortShellScript);
 				addError(String.format("got the following error while running the shell command %s.",sortShellScript));
-			} else if(pr.waitFor() != 0){ // wait for process to finish
+			} else if (pr.waitFor() != 0) { // wait for process to finish
 				// error (return code is different than 0)
 				handleCmdFailure(pr, sortShellScript);
 			}
@@ -305,10 +311,14 @@ public abstract class FetchJob extends FortscaleJob {
 	protected void renameOutput() {
 		if (outputTempFile.length() == 0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete())
+			if (!outputTempFile.delete()) {
 				logger.warn("cannot delete empty file {}", outputTempFile.getName());
+			}
 		} else {
-			outputTempFile.renameTo(outputFile);
+			File outputFile = new File(outputDir, filename);
+			if (!outputTempFile.renameTo(outputFile)) {
+				logger.warn("cannot rename file {}", outputTempFile.getName());
+			}
 		}
 	}
 
@@ -325,7 +335,11 @@ public abstract class FetchJob extends FortscaleJob {
 		} else {
 			fetchConfiguration.setLastFetchTime(latest);
 		}
-		fetchConfigurationRepository.save(fetchConfiguration);
+		try {
+			fetchConfigurationRepository.save(fetchConfiguration);
+		} catch (OptimisticLockingFailureException ex) {
+			logger.warn("failed to save fetch configuration - {}", ex);
+		}
 		if (earliestDate != null && latestDate != null) {
 			if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
 				keepFetching = false;

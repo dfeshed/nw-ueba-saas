@@ -61,13 +61,6 @@ public class Splunk extends FetchJob {
 			logger.error("error running splunk query", e);
 			monitor.error(getMonitorId(), "Query Splunk", "error during events from splunk to file " +
 					outputTempFile.getName() + "\n" + e.toString());
-			try {
-				outputTempFile.delete();
-			} catch (Exception ex) {
-				logger.error("cannot delete temp output file " + outputTempFile.getName());
-				monitor.error(getMonitorId(), "Query Splunk", "cannot delete temporary events file " +
-						outputTempFile.getName());
-			}
 			throw new JobExecutionException("error running splunk query");
 		}
 	}

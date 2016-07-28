@@ -7,6 +7,7 @@ import fortscale.utils.qradar.result.SearchResultRequestReader;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.io.FileWriter;
 
 /**
@@ -53,14 +54,19 @@ public class QRadar extends FetchJob {
 		} catch (Exception e) {
 			// log error and delete output
 			logger.error("error running QRadar query", e);
-			monitor.error(getMonitorId(), "Query QRadar", "error during events from qradar to file " +
-					outputFile.getName() + "\n" + e.toString());
+			monitor.error(getMonitorId(), "Query QRadar", "error during events from qradar to file " + filename + "\n" +
+					e.toString());
 			try {
-				outputFile.delete();
+				boolean result = new File(filename).delete();
+				if (result == false) {
+					logger.error("cannot delete temp output file " + filename);
+					monitor.error(getMonitorId(), "Query QRadar", "cannot delete temporary events file " +
+							filename);
+				}
 			} catch (Exception ex) {
-				logger.error("cannot delete temp output file " + outputFile.getName());
+				logger.error("cannot delete temp output file " + filename);
 				monitor.error(getMonitorId(), "Query QRadar", "cannot delete temporary events file " +
-						outputFile.getName());
+						filename);
 			}
 			throw new JobExecutionException("error running QRadar query");
 		}
