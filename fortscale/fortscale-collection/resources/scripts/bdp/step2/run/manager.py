@@ -1,6 +1,7 @@
 import logging
-import sys
 import os
+import sys
+
 from job import run as run_job
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -41,10 +42,12 @@ class Manager(OnlineManager):
                                       batch_size_in_hours=batch_size_in_hours)
         self._timeout = timeout
         self._validation_batches_delay = validation_batches_delay
+        self._is_online_mode = is_online_mode
 
     def _run_batch(self, start_time_epoch):
         run_job(start_time_epoch=start_time_epoch,
-                batch_size_in_hours=self._batch_size_in_hours)
+                batch_size_in_hours=self._batch_size_in_hours,
+                is_online_mode=self._is_online_mode)
         validation_start_time = \
             start_time_epoch - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
         block_until_everything_is_validated(host=self._host,
