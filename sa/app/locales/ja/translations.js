@@ -76,7 +76,11 @@ export default $.extend({}, BaseTranslations, {
       destinationIp: 'ja_Destination IP',
       actions: 'ja_Incident Actions',
       closeIncident: 'ja_Close Incident',
-      escalateIncident: 'ja_Escalate Incident'
+      escalateIncident: 'ja_Escalate Incident',
+      storyline: {
+        header: 'ja-Storyline {{startDateTime}} to {{endDateTime}}',
+        cAndc: 'ja-Command & Control'
+      }
     },
     list: {
       id: 'ja_ID',

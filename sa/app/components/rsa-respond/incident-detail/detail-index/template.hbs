@@ -1,0 +1,28 @@
+{{#rsa-grid class='rsa-respond-incident'}}
+  {{#rsa-grid-row collapseHeight=true class='rsa-respond-incident__top-panel'}}
+    {{#rsa-grid-column span=12 }}
+      {{rsa-respond/incident-detail/detail-header model=model users=users}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}
+{{#rsa-grid}}
+  {{#rsa-grid-row class="rsa-response-detail__bottom-header"}}
+    {{#rsa-grid-column span=3}}
+      Overview
+    {{/rsa-grid-column}}
+    {{#rsa-grid-column span=9}}
+      Storyline {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}} to {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+  {{#rsa-grid-row}}
+    {{#rsa-grid-column class="rsa-response-detail__bottom-overview" span=3}}
+      Overview WIP
+      {{#if showJournal}}
+        <div class="rsa-response-detail__bottom-text">Add Journal Entry</div>
+      {{/if}}
+    {{/rsa-grid-column}}
+    {{#rsa-grid-column span=9}}
+      {{rsa-respond/incident-detail/detail-storyline journalAction=(action 'journalAction') entityAction=(action 'showEntity') model=model}}
+    {{/rsa-grid-column}}
+  {{/rsa-grid-row}}
+{{/rsa-grid}}

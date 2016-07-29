@@ -86,7 +86,11 @@ export default $.extend({}, BaseTranslations, {
       destinationIp: 'Destination IP',
       actions: 'Incident Actions',
       closeIncident: 'Close Incident',
-      escalateIncident: 'Escalate Incident'
+      escalateIncident: 'Escalate Incident',
+      storyline: {
+        header: 'Storyline {{startDateTime}} to {{endDateTime}}',
+        cAndc: 'Command & Control'
+      }
     },
     status: {
       0: 'New',
