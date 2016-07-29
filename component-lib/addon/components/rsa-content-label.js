@@ -5,9 +5,6 @@ const {
   Component,
   computed: {
     equal
-  },
-  inject: {
-    service
   }
 } = Ember;
 

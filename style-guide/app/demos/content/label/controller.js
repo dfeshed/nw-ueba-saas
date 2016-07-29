@@ -6,7 +6,7 @@ export default Controller.extend({
 
   actions: {
     removeLabel(toRemove) {
-      console.log('removeLabel');
+      alert(toRemove);
     }
   }
 });
