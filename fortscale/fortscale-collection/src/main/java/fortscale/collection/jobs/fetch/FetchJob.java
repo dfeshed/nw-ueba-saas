@@ -1,10 +1,8 @@
 package fortscale.collection.jobs.fetch;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
-import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
@@ -137,15 +135,13 @@ public abstract class FetchJob {
 			}
 			if (sortShellScript != null) {
 				// sort the output
-				sortOutput();
+				sortOrDeleteOutput();
 			} else {
 				// rename output file once get from siem finished
-				renameOutput();
+				renameOrDeleteOutput();
 			}
-			attemptToDeleteEmptyFile();
 			// update mongo with current fetch progress
 			updateMongoWithCurrentFetchProgress();
-			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
 		} while (keepFetching);
 		finish();
 		logger.info("fetch job finished");
@@ -215,13 +211,10 @@ public abstract class FetchJob {
 	 * This method attempts to delete a file if one is empty
 	 *
 	 */
-	private void attemptToDeleteEmptyFile() {
-		File outputTempFile = new File(outputDir, tempfilename);
-		if (outputTempFile.length() == 0) {
-			logger.debug("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete()) {
-				logger.warn("cannot delete empty file {}", outputTempFile.getName());
-			}
+	private void attemptToDeleteEmptyFile(File outputTempFile) {
+		logger.debug("deleting empty output file {}", outputTempFile.getName());
+		if (!outputTempFile.delete()) {
+			logger.warn("cannot delete empty file {}", outputTempFile.getName());
 		}
 	}
 
@@ -231,7 +224,7 @@ public abstract class FetchJob {
 	 *
 	 * @throws InterruptedException
 	 */
-	private void sortOutput() throws InterruptedException {
+	private void sortOrDeleteOutput() throws InterruptedException {
 		File outputTempFile = new File(outputDir, tempfilename);
 		if (outputTempFile.length() > 0) {
 			File outputFile = new File(outputDir, filename);
@@ -244,10 +237,12 @@ public abstract class FetchJob {
 				logger.error("Failed to run cmd");
 			}
 			outputTempFile.delete();
+		} else {
+			attemptToDeleteEmptyFile(outputTempFile);
 		}
 	}
 
-	private Process runCmd(File workingDir, String... commands){
+	private Process runCmd(File workingDir, String... commands) {
 		ProcessBuilder processBuilder;
 		Process pr;
 		try {
@@ -284,13 +279,15 @@ public abstract class FetchJob {
 	 * This method renames the output file when process is finished
 	 *
 	 */
-	private void renameOutput() {
+	private void renameOrDeleteOutput() {
 		File outputTempFile = new File(outputDir, tempfilename);
 		if (outputTempFile.length() > 0) {
 			File outputFile = new File(outputDir, filename);
 			if (!outputTempFile.renameTo(outputFile)) {
 				logger.warn("cannot rename file {}", outputTempFile.getName());
 			}
+		} else {
+			attemptToDeleteEmptyFile(outputTempFile);
 		}
 	}
 
