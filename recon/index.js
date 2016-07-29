@@ -9,7 +9,16 @@ module.exports = {
    * @see https://github.com/ember-cli/ember-cli/blob/master/ADDON_HOOKS.md#isdevelopingaddon
    * @public
    */
-  isDevelopingAddon: function() {
+  isDevelopingAddon() {
     return true;
+  },
+  init(app) {
+    this.options = this.options || {};
+    this.options.babel = this.options.babel || {};
+    this.options.babel.optional = this.options.babel.optional || [];
+
+    if (this.options.babel.optional.indexOf('es7.decorators') === -1) {
+      this.options.babel.optional.push('es7.decorators');
+    }
   }
 };
