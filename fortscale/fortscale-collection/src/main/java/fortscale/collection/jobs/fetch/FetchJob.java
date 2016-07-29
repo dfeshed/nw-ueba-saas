@@ -96,8 +96,6 @@ public abstract class FetchJob {
 								  String delimiter, boolean encloseQuotes, String earliest, String latest,
 								  String savedQuery) throws Exception;
 
-	protected void finish() throws Exception {}
-
 	protected void getExtraParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension)
 			throws JobExecutionException {}
 
@@ -143,7 +141,6 @@ public abstract class FetchJob {
 			// update mongo with current fetch progress
 			updateMongoWithCurrentFetchProgress();
 		} while (keepFetching);
-		finish();
 		logger.info("fetch job finished");
 	}
 

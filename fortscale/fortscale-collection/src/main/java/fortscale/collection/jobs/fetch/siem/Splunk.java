@@ -53,8 +53,8 @@ public class Splunk extends FetchJob {
 		properties.put("args.earliest", earliest);
 		properties.put("args.latest", latest);
 		// execute the search
+		logger.debug("running splunk saved query");
 		try {
-			logger.debug("running splunk saved query");
 			if (runSavedQuery) {
 				splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
 			} else {

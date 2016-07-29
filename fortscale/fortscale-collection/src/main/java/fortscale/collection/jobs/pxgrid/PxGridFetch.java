@@ -1,4 +1,4 @@
-package fortscale.collection.jobs.fetch;
+package fortscale.collection.jobs.pxgrid;
 
 import com.cisco.pxgrid.model.core.IPInterfaceIdentifier;
 import com.cisco.pxgrid.model.net.Session;
