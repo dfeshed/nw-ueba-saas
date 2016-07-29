@@ -29,7 +29,7 @@ public class Splunk extends FetchJob {
 	private boolean runSavedQuery;
 
 	@Override
-	protected boolean connect() throws Exception {
+	protected boolean connect(String hostName, String port, String username, String password) throws Exception {
 		// connect to Splunk
 		int portNumber = port == null ? DEFAULT_PORT : Integer.parseInt(port);
 		String user = username == null ? DEFAULT_USER : username;

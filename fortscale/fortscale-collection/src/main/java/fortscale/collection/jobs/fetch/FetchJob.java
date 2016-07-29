@@ -61,12 +61,6 @@ public abstract class FetchJob {
 	private static final String SIEM_USER_KEY = SIEM_CONFIG_PREFIX + ".user";
 	private static final String SIEM_PASSWORD_KEY = SIEM_CONFIG_PREFIX + ".password";
 
-	// get common data from configuration
-	protected String hostName;
-	protected String port;
-	protected String username;
-	protected String password;
-
 	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
 	// this parameters will be used
 	protected String earliest;
@@ -74,27 +68,32 @@ public abstract class FetchJob {
 	protected String savedQuery;
 	protected String returnKeys;
 	protected String sortShellScript;
-	protected String filenameFormat;
 	protected String delimiter;
-	//the type (data source) to bring saved configuration for.
-	protected String type;
 	// time limits as dates to allow easy paging - will be used in continues run
 	protected Date earliestDate;
 	protected Date latestDate;
 	protected File outputDir;
+	protected boolean encloseQuotes = true;
+
+	//the type (data source) to bring saved configuration for.
+	private String type;
+	private String filenameFormat;
 	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
 	//for manual fetch with time frame given as a parameter will keep the -1 default and the time frame won't be paged.
-	protected int fetchIntervalInSeconds = -1;
-	protected boolean encloseQuotes = true;
+	private int fetchIntervalInSeconds = -1;
 	//indicate if still have more pages to go over and fetch
-	protected boolean keepFetching = false;
-	protected int ceilingTimePartInt;
-	protected int fetchDiffInSeconds;
-
+	private boolean keepFetching = false;
+	private int fetchDiffInSeconds;
+	private int ceilingTimePartInt;
 	private String filename;
 	private String tempfilename;
+	// get common data from configuration
+	private String hostName;
+	private String port;
+	private String username;
+	private String password;
 
-	protected abstract boolean connect() throws Exception;
+	protected abstract boolean connect(String hostName, String port, String username, String password) throws Exception;
 	protected abstract void fetch(String filename, String tempfilename) throws Exception;
 
 	protected void finish() throws Exception {}
@@ -102,7 +101,7 @@ public abstract class FetchJob {
 	protected void getExtraParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension)
 			throws JobExecutionException {}
 
-	protected void runSteps() throws Exception {
+	public void runSteps() throws Exception {
 		logger.info("fetch job started");
 		// ensure output path exists
 		logger.debug("creating output file at {}", outputPath);
@@ -110,7 +109,7 @@ public abstract class FetchJob {
 		// connect to repository
 		boolean connected;
 		try {
-			connected = connect();
+			connected = connect(hostName, port, username, password);
 		} catch (Exception ex) {
 			logger.error("failed to connect to repository - " + ex);
 			return;
@@ -140,6 +139,7 @@ public abstract class FetchJob {
 				// rename output file once get from siem finished
 				renameOutput();
 			}
+			attemptToDeleteEmptyFile();
 			// update mongo with current fetch progress
 			updateMongoWithCurrentFetchProgress();
 			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
@@ -150,37 +150,10 @@ public abstract class FetchJob {
 
 	/**
 	 *
-	 * This reads configuration from the service
-	 *
-	 * @param key
-	 * @return
-	 */
-	protected String readFromConfigurationService(String key) {
-		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfiguration(key);
-		if (applicationConfiguration != null) {
-			return applicationConfiguration.getValue();
-		}
-		return null;
-	}
-
-	/**
-	 *
-	 * This reads configuration from the service
-	 *
-	 * @param prefix
-	 * @return
-	 */
-	protected Map<String, String> readGroupConfigurationService(String prefix) {
-		return applicationConfigurationService.getApplicationConfigurationByNamespace(prefix);
-	}
-
-	/**
-	 *
 	 * This method sets the parameters for specific page
 	 *
 	 */
-	protected void preparerFetchPageParams() {
+	private void preparerFetchPageParams() {
 		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
 		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
 		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
@@ -191,28 +164,12 @@ public abstract class FetchJob {
 
 	/**
 	 *
-	 * This method checks the number of events received
-	 *
-	 * @param output
-	 * @return
-	 */
-	protected JobDataReceived getJobDataReceived(File output) {
-		if (output.length() < 1024) {
-			return new JobDataReceived("Events", new Integer((int)output.length()), "Bytes");
-		} else {
-			int sizeInKB = (int) (output.length() / 1024);
-			return new JobDataReceived("Events", new Integer(sizeInKB), "KB");
-		}
-	}
-
-	/**
-	 *
 	 * This helper method creates the output file
 	 *
 	 * @param outputDir
 	 * @throws JobExecutionException
 	 */
-	protected void createOutputFile(File outputDir) throws JobExecutionException {
+	private void createOutputFile(File outputDir) throws JobExecutionException {
 		// generate filename according to the job name and time
 		filename = String.format(filenameFormat, (new Date()).getTime());
 		tempfilename = filename + ".part";
@@ -232,10 +189,9 @@ public abstract class FetchJob {
 	 *
 	 * This method gets the fetch times from Mongo
 	 *
-	 * @param map
 	 * @throws JobExecutionException
 	 */
-	protected void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException {
+	private void getRunTimeFrameFromMongo() throws JobExecutionException {
 		//set fetch until the ceiling of now (according to the given interval
 		latestDate = DateUtils.ceiling(new Date(), ceilingTimePartInt);
 		//shift the date by the configured diff
@@ -253,18 +209,28 @@ public abstract class FetchJob {
 
 	/**
 	 *
-	 * This method sorts the output file
+	 * This method attempts to delete a file if one is empty
 	 *
-	 * @throws InterruptedException
 	 */
-	protected void sortOutput() throws InterruptedException {
+	private void attemptToDeleteEmptyFile() {
 		File outputTempFile = new File(outputDir, tempfilename);
 		if (outputTempFile.length() == 0) {
 			logger.info("deleting empty output file {}", outputTempFile.getName());
 			if (!outputTempFile.delete()) {
 				logger.warn("cannot delete empty file {}", outputTempFile.getName());
 			}
-		} else {
+		}
+	}
+
+	/**
+	 *
+	 * This method sorts the output file
+	 *
+	 * @throws InterruptedException
+	 */
+	private void sortOutput() throws InterruptedException {
+		File outputTempFile = new File(outputDir, tempfilename);
+		if (outputTempFile.length() > 0) {
 			File outputFile = new File(outputDir, filename);
 			Process pr = runCmd(null, sortShellScript, outputTempFile.getAbsolutePath(), outputFile.getAbsolutePath());
 			if (pr == null) {
@@ -278,7 +244,7 @@ public abstract class FetchJob {
 		}
 	}
 
-	protected Process runCmd(File workingDir, String... commands){
+	private Process runCmd(File workingDir, String... commands){
 		ProcessBuilder processBuilder;
 		Process pr;
 		try {
@@ -287,7 +253,6 @@ public abstract class FetchJob {
 				processBuilder.directory(workingDir);
 			}
 			pr = processBuilder.start();
-
 		} catch (Exception e) {
 			String cmd = StringUtils.join(commands, " ");
 			logger.error(String.format("while running the command \"%s\", got the following exception", cmd), e);
@@ -296,31 +261,13 @@ public abstract class FetchJob {
 		return pr;
 	}
 
-	/**
-	 *
-	 * This method handles the exceptions that occur during the fetch process
-	 *
-	 * @param monitorId
-	 * @param e
-	 * @throws JobExecutionException
-	 */
-	protected void handleExecutionException(String monitorId, Exception e) throws JobExecutionException {
-		if (e instanceof JobExecutionException)
-			throw (JobExecutionException)e;
-		else {
-			logger.error("unexpected error during repository fetch " + e.toString());
-			throw new JobExecutionException(e);
-		}
-	}
-
-	protected File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {
+	private File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {
 		File outputDir = new File(outputPath);
 		try {
 			if (!outputDir.exists()) {
 				// try to create output directory
 				outputDir.mkdirs();
 			}
-
 			return outputDir;
 		} catch (SecurityException e) {
 			logger.error("cannot create output path - " + outputPath, e);
@@ -334,15 +281,9 @@ public abstract class FetchJob {
 	 * This method renames the output file when process is finished
 	 *
 	 */
-	protected void renameOutput() {
+	private void renameOutput() {
 		File outputTempFile = new File(outputDir, tempfilename);
-
-		if (outputTempFile.length() == 0) {
-			logger.info("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete()) {
-				logger.warn("cannot delete empty file {}", outputTempFile.getName());
-			}
-		} else {
+		if (outputTempFile.length() > 0) {
 			File outputFile = new File(outputDir, filename);
 			if (!outputTempFile.renameTo(outputFile)) {
 				logger.warn("cannot rename file {}", outputTempFile.getName());
@@ -355,7 +296,7 @@ public abstract class FetchJob {
 	 * This method updates Mongo with the latest time fetched
 	 *
 	 */
-	protected void updateMongoWithCurrentFetchProgress() {
+	private void updateMongoWithCurrentFetchProgress() {
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
 		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
 		if (fetchConfiguration == null) {
@@ -384,9 +325,10 @@ public abstract class FetchJob {
 	 * @param configuredSIEM
 	 * @throws JobExecutionException
 	 */
-	protected void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, String configuredSIEM)
+	public void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, String configuredSIEM)
 			throws JobExecutionException {
-		Map<String, String> configuration = readGroupConfigurationService(SIEM_CONFIG_PREFIX);
+		Map<String, String> configuration = applicationConfigurationService.
+				getApplicationConfigurationByNamespace(SIEM_CONFIG_PREFIX);
 		if (configuration != null && !configuration.isEmpty()) {
 			hostName = configuration.get(SIEM_HOST_KEY);
 			port = configuration.get(SIEM_PORT_KEY);
@@ -426,7 +368,7 @@ public abstract class FetchJob {
 			fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
 			ceilingTimePartInt = jobDataMapExtension.getJobDataMapIntValue(map, "ceilingTimePartInt", Calendar.HOUR);
 			fetchDiffInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchDiffInSeconds", 0);
-			getRunTimeFrameFromMongo(map);
+			getRunTimeFrameFromMongo();
 		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
 		if (savedQuery.startsWith("{") && savedQuery.endsWith("}")) {
