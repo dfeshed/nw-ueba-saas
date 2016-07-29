@@ -61,20 +61,20 @@ public abstract class FetchJob {
 	private static final String SIEM_USER_KEY = SIEM_CONFIG_PREFIX + ".user";
 	private static final String SIEM_PASSWORD_KEY = SIEM_CONFIG_PREFIX + ".password";
 
+	protected String sortShellScript;
+
 	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
 	// this parameters will be used
-	protected String earliest;
-	protected String latest;
-	protected String savedQuery;
-	protected String returnKeys;
-	protected String sortShellScript;
-	protected String delimiter;
+	private String earliest;
+	private String latest;
+	private String savedQuery;
+	private String returnKeys;
+	private String delimiter;
 	// time limits as dates to allow easy paging - will be used in continues run
-	protected Date earliestDate;
-	protected Date latestDate;
-	protected File outputDir;
-	protected boolean encloseQuotes = true;
-
+	private Date earliestDate;
+	private Date latestDate;
+	private File outputDir;
+	private boolean encloseQuotes = true;
 	//the type (data source) to bring saved configuration for.
 	private String type;
 	private String filenameFormat;
@@ -94,7 +94,9 @@ public abstract class FetchJob {
 	private String password;
 
 	protected abstract boolean connect(String hostName, String port, String username, String password) throws Exception;
-	protected abstract void fetch(String filename, String tempfilename) throws Exception;
+	protected abstract void fetch(String filename, String tempfilename, File outputDir, String returnKeys,
+								  String delimiter, boolean encloseQuotes, String earliest, String latest,
+								  String savedQuery) throws Exception;
 
 	protected void finish() throws Exception {}
 
@@ -128,7 +130,8 @@ public abstract class FetchJob {
 			File outputTempFile = new File(outputDir, tempfilename);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
 			try {
-				fetch(filename, tempfilename);
+				fetch(filename, tempfilename, outputDir, returnKeys, delimiter, encloseQuotes, earliest, latest,
+						savedQuery);
 			} catch (Exception ex) {
 				logger.error("failed to fetch - {}", ex);
 			}
@@ -215,7 +218,7 @@ public abstract class FetchJob {
 	private void attemptToDeleteEmptyFile() {
 		File outputTempFile = new File(outputDir, tempfilename);
 		if (outputTempFile.length() == 0) {
-			logger.info("deleting empty output file {}", outputTempFile.getName());
+			logger.debug("deleting empty output file {}", outputTempFile.getName());
 			if (!outputTempFile.delete()) {
 				logger.warn("cannot delete empty file {}", outputTempFile.getName());
 			}
@@ -362,7 +365,7 @@ public abstract class FetchJob {
 			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 		} else {
 			//calculate query run times from mongo in the case not provided as job params
-			logger.info("No Time frame was specified as input param, continuing from the previous run ");
+			logger.debug("No Time frame was specified as input param, continuing from the previous run ");
 			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 			//time back (default 1 hour)
 			fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);

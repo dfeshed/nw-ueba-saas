@@ -39,7 +39,8 @@ public class Splunk extends FetchJob {
 	}
 
 	@Override
-	protected void fetch(String filename, String tempfilename) throws Exception {
+	protected void fetch(String filename, String tempfilename, File outputDir, String returnKeys, String delimiter,
+						 boolean encloseQuotes, String earliest, String latest, String savedQuery) throws Exception {
 		// configure events handler to save events to csv file
 		File outputTempFile = new File(outputDir, tempfilename);
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());

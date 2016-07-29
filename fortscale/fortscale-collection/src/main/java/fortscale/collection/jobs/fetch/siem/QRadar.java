@@ -39,7 +39,8 @@ public class QRadar extends FetchJob {
 	}
 
 	@Override
-	protected void fetch(String filename, String tempfilename) throws Exception {
+	protected void fetch(String filename, String tempfilename, File outputDir, String returnKeys, String delimiter,
+						 boolean encloseQuotes, String earliest, String latest, String savedQuery) throws Exception {
 		try {
 			logger.debug("running QRadar saved query");
 			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize,
