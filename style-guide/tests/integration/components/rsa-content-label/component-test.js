@@ -82,3 +82,9 @@ test('it includes the icon', function(assert) {
   let iconCount = this.$().find('.rsa-content-label .rsa-icon').length;
   assert.equal(iconCount, 1);
 });
+
+test('it includes the close icon when click is defined', function(assert) {
+  this.render(hbs `{{rsa-content-label click=true label='Foo'}}`);
+  let iconCount = this.$().find('.rsa-content-label .rsa-icon-close').length;
+  assert.equal(iconCount, 1);
+});

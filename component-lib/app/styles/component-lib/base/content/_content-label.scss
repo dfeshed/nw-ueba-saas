@@ -16,7 +16,19 @@
   letter-spacing: 1px;
   padding: 0.35rem;
   @include rsa-form-label-color($contentLabelColor);
-  
+  vertical-align: middle;
+
+  i.rsa-icon-close {
+    position: relative;
+    top: -2px;
+    font-size: .70em;
+    vertical-align: middle;
+
+    &:hover {
+      cursor: pointer;
+    }
+  }
+
   &.is-inverted {
     @include rsa-form-label-color($contentLabelColor, $contentLabelInvertedColor, $contentLabelInvertedColor);
   }
@@ -36,34 +48,34 @@
   &.is-disabled {
     opacity: $rsa-translucent;
   }
-  
+
   &.is-low {
     @include rsa-form-label-color(rsa-color(green));
-  
+
     &.is-inverted {
       @include rsa-form-label-color($contentLabelColor, rsa-color(green), rsa-color(green));
     }
   }
-  
+
   &.is-medium {
     @include rsa-form-label-color(rsa-color(amber));
-  
+
     &.is-inverted {
       @include rsa-form-label-color($contentLabelColor, rsa-color(amber), rsa-color(amber));
     }
   }
-  
+
   &.is-high {
     @include rsa-form-label-color(rsa-color(orange));
-  
+
     &.is-inverted {
       @include rsa-form-label-color($contentLabelColor, rsa-color(orange), rsa-color(orange));
     }
   }
-  
+
   &.is-danger {
     @include rsa-form-label-color(rsa-color(red));
-  
+
     &.is-inverted {
       @include rsa-form-label-color($contentLabelColor, rsa-color(red), rsa-color(red));
     }

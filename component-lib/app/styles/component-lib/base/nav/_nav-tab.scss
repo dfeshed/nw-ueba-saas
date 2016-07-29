@@ -1,0 +1,47 @@
+.rsa-nav-tab-group {
+  display: flex;
+  flex-flow: row nowrap;
+  border-bottom: 1px solid $navTabBorderRightColor;
+}
+
+.rsa-nav-tab {
+  padding: rsa-whitespace();
+  border-right: 1px solid $navTabBorderRightColor;
+  flex-grow: 1;
+  box-sizing: border-box;
+
+
+  &:last-of-type {
+    border-right: none;
+  }
+
+  &:hover {
+    background-color: $navTabHoverBackgroundColor;
+    cursor: pointer;
+  }
+
+  &.is-active {
+    border-bottom: rsa-whitespace(least) solid $navTabActiveBorderBottomColor;
+    background-color: $navTabActiveBackgroundColor;
+    align-self: center;
+    cursor: default;
+
+    .imagery,
+    .label {
+      color: $navTabActiveTypeColor;
+    }
+  }
+
+  .imagery {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: rsa-whitespace(less);
+    color: $navTabImageryTypeColor;
+  }
+
+  .label {
+    @include rsa-font(navigation);
+    text-align: center;
+    color: $navTabLabelTypeColor;
+  }
+}

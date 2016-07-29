@@ -1,19 +1,20 @@
 .rsa-content-section-header {
-  margin: calc(#{rsa-whitespace()} * -1);
-  margin-bottom: rsa-whitespace();
   padding: rsa-whitespace(less) rsa-whitespace();
+  padding-right: 15rem;
   position: relative;
   background: $contentSectionHeaderBackgroundColor;
   color: $contentSectionHeaderTypeColor;
   border-bottom: 1px solid $contentSectionHeaderBorderColor;
-
-  h1 {
-    @include rsa-font(header, larger);
-  }
+  @include rsa-font(header, large);
 
   .controls {
     position:absolute;
-    top: 1rem;
-    right: 1rem;
-  }  
+    top: rsa-whitespace(less);
+    right: rsa-whitespace();
+    bottom: 0;
+
+    * {
+      display: inline-block;
+    }
+  }
 }

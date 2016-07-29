@@ -9,10 +9,29 @@
     {{#rsa-grid-column span=12 isScrollable=true}}
       {{#spec-category}}
         {{#spec-member}}
-          {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
+          {{#rsa-content-section-header label='Section Heading'}}
+            Header Label
+
+            <div class="controls">
+              {{rsa-icon name="close"}}
+            </div>
+          {{/rsa-content-section-header}}
 
           <code>
-            &#123;{#rsa-content-section-header label='Section Heading'}}Content&#123;{/rsa-content-section-header}}
+            <div>
+              &#123;{#rsa-content-section-header label='Section Heading'}}
+              <div>
+                Header Label
+              </div>
+              <div>
+                &lt;div class="controls">
+                <div>
+                  &#123;{rsa-icon name="close"}}
+                </div>
+                &lt;/div>
+              </div>
+              &#123;{/rsa-content-section-header}}
+            </div>
           </code>
         {{/spec-member}}
       {{/spec-category}}

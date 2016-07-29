@@ -2,4 +2,13 @@ $navLinkListHeaderTypeColor: rsa-color(gray);
 $navLinkListAnchorTypeColor: rsa-color(white);
 $navLinkListAnchorHoverTypeColor: rsa-color(gray, base, $rsa-nearly-transparent);
 
+$navTabBorderRightColor: rsa-color(gray);
+$navTabActiveBorderBottomColor: rsa-color(blue);
+$navTabActiveBackgroundColor: rsa-color(gray, darker, $rsa-translucent);
+$navTabActiveTypeColor: rsa-color(gray, lightest);
+$navTabImageryTypeColor: rsa-color(gray, lighter);
+$navTabLabelTypeColor: rsa-color(gray, light);
+$navTabHoverBackgroundColor: rsa-color(gray, darker, $rsa-translucent);
+
 @import 'nav-link-list';
+@import 'nav-tab';

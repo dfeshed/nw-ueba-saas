@@ -66,12 +66,12 @@ test('it renders a placeholder', function(assert) {
 
 test('it can be disabled', function(assert) {
   this.render(hbs `{{rsa-form-textarea isDisabled=true}}`);
-  let disabledCount = this.$().find('textarea[readonly]').length === 1;
+  let disabledCount = this.$().find('textarea[disabled]').length === 1;
   assert.equal(disabledCount, 1);
 });
 
 test('it is disabled when isReadOnly', function(assert) {
   this.render(hbs `{{rsa-form-textarea isReadOnly=true}}`);
-  let disabledCount = this.$().find('textarea[readonly]').length === 1;
+  let disabledCount = this.$().find('textarea[disabled]').length === 1;
   assert.equal(disabledCount, 1);
 });

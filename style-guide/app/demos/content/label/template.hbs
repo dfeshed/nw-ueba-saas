@@ -15,18 +15,28 @@
             &#123;{rsa-content-label label='label'}}
           </code>
         {{/spec-member}}
-        
+
+        {{#spec-member
+          title="With Remove Option"
+          subtitle="Adding a click handler and action adds the close icon for removing. What it means to remove a Label would be defined by the action called in the consumer."}}
+          {{rsa-content-label label='label' click=(action 'removeLabel')}}
+
+          <code>
+            &#123;{rsa-content-label label='label' click=(action 'removeLabel')}}
+          </code>
+        {{/spec-member}}
+
         {{#spec-member title="Disabled"}}
           {{rsa-content-label label='label' isDisabled=true}}
-        
+
           <code>
             &#123;{rsa-content-label label='label' isDisabled=true}}
           </code>
         {{/spec-member}}
-        
+
         {{#spec-member title="With Icon"}}
           {{#rsa-content-label label='label'}}{{rsa-icon name='account-circle-1'}}{{/rsa-content-label}}
-        
+
           <code>
             &#123;{#rsa-content-label label='label'}}&#123;{rsa-icon name='account-circle-1'}}&#123;{/rsa-content-label}}
           </code>
