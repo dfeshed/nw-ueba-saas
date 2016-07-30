@@ -69,7 +69,8 @@ public class SavedSearchJob extends SearchJob {
 		}
 
 		// Run a saved search and poll for completion
-		logger.info("Run the '{}' search ({}) with the following run time parameters: {}", savedSearch.getName(), savedSearch.getSearch(), dispatchArgs.toString());
+		logger.debug("Run the '{}' search ({}) with the following run time parameters: {}", savedSearch.getName(),
+				savedSearch.getSearch(), dispatchArgs.toString());
 		Job jobSavedSearch = null;
 
 		// Run the saved search
