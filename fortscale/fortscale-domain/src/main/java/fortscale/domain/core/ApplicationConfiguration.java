@@ -43,4 +43,23 @@ public class ApplicationConfiguration extends AbstractDocument {
     public void setValue(String value) {
         this.value = value;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ApplicationConfiguration)) return false;
+        if (!super.equals(o)) return false;
+
+        ApplicationConfiguration that = (ApplicationConfiguration) o;
+
+        return !(key != null ? !key.equals(that.key) : that.key != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (key != null ? key.hashCode() : 0);
+        return result;
+    }
 }
