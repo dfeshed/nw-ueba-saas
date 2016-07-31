@@ -10,6 +10,7 @@ import fortscale.services.*;
 import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,12 +99,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendNewAlertEmail(Alert alert) {
+		emailService.loadEmailConfiguration();
 		if (!emailService.isEmailConfigured()) {
 			logger.debug("no email configuration found");
 			return;
 		}
 		emailConfiguration = loadAlertEmailConfiguration();
-		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+		if (CollectionUtils.isEmpty(emailConfiguration)) {
 			logger.debug("no email alert configuration found");
 			return;
 		}
@@ -238,12 +240,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
+		emailService.loadEmailConfiguration();
 		if (!emailService.isEmailConfigured()) {
 			logger.debug("no email configuration found");
 			return;
 		}
 		emailConfiguration = loadAlertEmailConfiguration();
-		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+		if (CollectionUtils.isEmpty(emailConfiguration)) {
 			logger.debug("no email alert configuration found");
 			return;
 		}

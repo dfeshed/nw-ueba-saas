@@ -1,0 +1,14 @@
+[
+  {
+    "dcs": ["ldap://192.168.0.75:389"],
+    "domainBaseSearch": "DC=somebigcompany,DC=com",
+    "domainPassword": "iYTLjyA0VryKhpkvBrMMLQ==",
+    "domainUser": "administrator@somebigcompany.com"
+  },
+  {
+    "dcs": ["ldap://192.168.0.106:389"],
+    "domainBaseSearch": "DC=forest1,DC=fs",
+    "domainPassword": "iYTLjyA0VryKhpkvBrMMLQ==",
+    "domainUser": "administrator@forest1.fs"
+  }
+]

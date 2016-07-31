@@ -156,12 +156,12 @@ public class ApiUserController extends BaseController{
 		}
 
 		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
-			criteriaList.add(where("adInfo.terminationDate").exists(true));
+			criteriaList.add(where("terminationDate").exists(true));
 			criteriaList.add(new Criteria() {
 				@Override
 				public DBObject getCriteriaObject() {
 					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.adInfo.terminationDate < this.lastActivity");
+					obj.put("$where", "this.terminationDate < this.lastActivity");
 					return obj;
 				}
 			});

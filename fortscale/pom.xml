@@ -124,6 +124,7 @@
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
         <cxf.version>2.7.6</cxf.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>
