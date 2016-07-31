@@ -17,10 +17,6 @@ public class GaussianModelScorerAlgorithm {
 
 	public double calculateScore(double value, ContinuousDataModel model, GaussianPriorModel priorModel) {
 		Assert.notNull(model);
-		if (model.getN() <= 1) {
-			// TDistribution can't handle less than two samples
-			return 0;
-		}
 		return IntStream.of(0, globalInfluence)
 				.mapToDouble(globalInfluence -> calcProbOfLessThan(model, priorModel, globalInfluence, value))
 				.map(probOfLessThanValue -> Math.max(0, 100 * (2 * probOfLessThanValue - 1)))
@@ -32,10 +28,14 @@ public class GaussianModelScorerAlgorithm {
 									  GaussianPriorModel priorModel,
 									  int globalInfluence,
 									  double value) {
+		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
+		if (degreesOfFreedom <= 0) {
+			// TDistribution can't handle non-positive degrees of freedom
+			return 0;
+		}
 		Double priorSd = calcPriorSd(priorModel, model);
 		double posteriorSd = calcPosteriorSd(model, priorSd, globalInfluence);
 		double tScore = (value - model.getMean()) / Math.max(0.00000001, posteriorSd);
-		double degreesOfFreedom = calcDegreesOfFreedom(model, priorModel, globalInfluence);
 		return new TDistribution(degreesOfFreedom).cumulativeProbability(tScore);
 	}
 
