@@ -1,18 +1,13 @@
 package fortscale.web.rest;
 
-import com.sun.istack.NotNull;
-import fortscale.domain.ad.AdConnection;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
-import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
+import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.StringUtils;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -25,8 +20,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Size;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,12 +35,9 @@ public class ApiApplicationConfigurationController extends BaseController {
     private final String ITEMS_KEY_FIELD_NAME = "key";
     private final String ITEMS_VALUE_FIELD_NAME = "value";
     private final String ITEMS_META_FIELD_NAME = "meta";
-
     private final String META_ENCRYPT = "encrypt";
     private final String META_FIELDS = "fields";
 	private final String ENCRYPTION_DONE_PLACEHOLDER = "ENCRYPTION_DONE";
-
-    final String ACTIVE_DIRECTORY_KEY = "system.activeDirectory.settings";
 
     /**
      * Handles response errors.
@@ -69,7 +59,6 @@ public class ApiApplicationConfigurationController extends BaseController {
     @ResponseBody
     @LogException
     public DataBean<List<ApplicationConfiguration>> getConfigurations(String[] namespace) {
-
         DataBean<List<ApplicationConfiguration>> applicationConfigurationDataList = new DataBean<>();
         List<ApplicationConfiguration> applicationConfigurationList = null;
         if (namespace == null  || namespace.length==0) {
@@ -77,14 +66,13 @@ public class ApiApplicationConfigurationController extends BaseController {
         } else {
             Set<ApplicationConfiguration> applicationConfigurationSet = new HashSet<>();
             for (String singleNamesspace : namespace) {
-                applicationConfigurationSet.addAll(applicationConfigurationService.getApplicationConfigurationAsListByNamespace(singleNamesspace));
+                applicationConfigurationSet.addAll(applicationConfigurationService.
+						getApplicationConfigurationAsListByNamespace(singleNamesspace));
             }
             applicationConfigurationList= new ArrayList<>(applicationConfigurationSet);
         }
-
         applicationConfigurationDataList.setData(applicationConfigurationList);
         applicationConfigurationDataList.setTotal(applicationConfigurationList.size());
-
         return applicationConfigurationDataList;
     }
 
@@ -99,8 +87,6 @@ public class ApiApplicationConfigurationController extends BaseController {
     @HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
     @LogException
     public ResponseEntity updateConfigItems(@RequestBody String body) throws JSONException {
-
-
         // Parse json. Return BAD_REQUEST If can not parse
         JSONObject params;
         try {
@@ -109,7 +95,6 @@ public class ApiApplicationConfigurationController extends BaseController {
             return this.responseErrorHandler("Could not update config items. Failed to parse POST Body to JSON.",
                     HttpStatus.BAD_REQUEST);
         }
-
         // Get "Items" from body. Return BAD_REQUEST if items does not exist or is invalid.
         JSONArray jsonItems;
         try {
@@ -118,7 +103,6 @@ public class ApiApplicationConfigurationController extends BaseController {
             return this.responseErrorHandler("Could not update config items. POST Body did not have a valid 'items' list.",
                     HttpStatus.BAD_REQUEST);
         }
-
         // Create configItems Map. Iterate through jsonItems and for each one get key and value and store in map.
         Map<String, String> configItems = new HashMap<>();
         for (int i = 0; i < jsonItems.length(); i++) {
@@ -128,18 +112,16 @@ public class ApiApplicationConfigurationController extends BaseController {
                 key = jsonItems.getJSONObject(i).getString(this.ITEMS_KEY_FIELD_NAME);
             }
             catch (JSONException e) {
-                return this.responseErrorHandler("Could not update config items. Items item " + i + " does not have a '" +
-                        this.ITEMS_KEY_FIELD_NAME + "' property.", HttpStatus.BAD_REQUEST);
+                return this.responseErrorHandler("Could not update config items. Items item " + i +
+						" does not have a '" + this.ITEMS_KEY_FIELD_NAME + "' property.", HttpStatus.BAD_REQUEST);
             }
-
             try {
                 value = jsonItems.getJSONObject(i).get(this.ITEMS_VALUE_FIELD_NAME).toString();
             }
             catch (JSONException e) {
-                return this.responseErrorHandler("Could not update config items. Items item " + i + " does not have a '" +
-                        this.ITEMS_VALUE_FIELD_NAME + "' property.", HttpStatus.BAD_REQUEST);
+                return this.responseErrorHandler("Could not update config items. Items item " + i +
+						" does not have a '" + this.ITEMS_VALUE_FIELD_NAME + "' property.", HttpStatus.BAD_REQUEST);
             }
-
             if (jsonItems.getJSONObject(i).has(ITEMS_META_FIELD_NAME)) {
                 JSONObject meta = jsonItems.getJSONObject(i).getJSONObject(ITEMS_META_FIELD_NAME);
                 if (meta.has(META_ENCRYPT) && meta.getBoolean(META_ENCRYPT)) {
@@ -180,73 +162,11 @@ public class ApiApplicationConfigurationController extends BaseController {
                     }
                 }
             }
-
             configItems.put(key, value);
         }
-
         // Update config items.
         applicationConfigurationService.updateConfigItems(configItems);
-
         return new ResponseEntity(HttpStatus.NO_CONTENT);
-
-    }
-
-
-    /**
-     * Updates or creates config items.
-     *
-
-     * @return ResponseEntity
-     * @throws JSONException
-     */
-    @RequestMapping(method = RequestMethod.POST,value = "/active_directory")
-    @HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
-    @LogException
-    public ResponseEntity updateActiveDirectory(@Valid @RequestBody List<AdConnection> activeDirectoryDomains){
-
-
-
-        Map<String, String> configItems = new HashMap<>();
-
-        try {
-            for (AdConnection newAdConfiguration : activeDirectoryDomains) {
-                if (shouldEncryptPassword(newAdConfiguration)) { //Password is not already encrypted
-                    String encryptedPassword = EncryptionUtils.encrypt(newAdConfiguration.getDomainPassword()).trim();
-                    newAdConfiguration.setDomainPassword(encryptedPassword);
-                }
-            }
-
-            applicationConfigurationService.updateConfigItemAsObject(ACTIVE_DIRECTORY_KEY,activeDirectoryDomains);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (Exception e){
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
-        }
-    }
-
-    private boolean shouldEncryptPassword(AdConnection newAdConfiguration){
-        List<AdConnection> adConnectionsFromDB = applicationConfigurationService.getApplicationConfigurationAsObjects(ACTIVE_DIRECTORY_KEY, AdConnection.class);
-        if (adConnectionsFromDB == null || adConnectionsFromDB.isEmpty()){
-            return true;
-        }
-
-        for (AdConnection existsConnection:adConnectionsFromDB){
-            String domainFromNewConfiguration = newAdConfiguration.getDomainUser().split("@")[1];
-            String domainFromDBConfiguration = existsConnection.getDomainUser().split("@")[1];
-            String newPasswordFromNewConfiguration = newAdConfiguration.getDomainPassword();
-            String passwordFromOldConfiguration = existsConnection.getDomainPassword();
-
-            //Iterate all connections until found connection with the same domain.
-            //If password is the same - don't encrypt. If the password different- encrypt
-            if (domainFromDBConfiguration.equals(domainFromNewConfiguration)){
-                if (newPasswordFromNewConfiguration.equals(passwordFromOldConfiguration)) {
-                    return false;
-                } else {
-                    return  true;
-                }
-            }
-        }
-
-        return true; //The domain wasn't found. Encrypt the password
     }
 
 }
