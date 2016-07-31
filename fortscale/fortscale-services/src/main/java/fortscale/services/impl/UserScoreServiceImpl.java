@@ -133,8 +133,6 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return the new user socre
      */
     public double recalculateUserScore(String userName) {
-
-
         Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userName);
         double userScore = 0;
         for (Alert alert : alerts) {
@@ -151,13 +149,11 @@ public class UserScoreServiceImpl implements UserScoreService {
                 alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
 
-
-
             userScore += alert.getUserScoreContribution();
         }
         User user = userRepository.findByUsername(userName);
         user.setScore(userScore);
-
+        user.setAlertsCount(alerts.size());
 
         userRepository.save(user);
         return userScore;
