@@ -60,7 +60,7 @@
 		<thrift.version>0.9.0</thrift.version>
 		<commons-pool.version>1.4</commons-pool.version>
 		<commons-codec.version>1.5</commons-codec.version>
-		<kite-version>0.10.0</kite-version>
+		<kite-version>1.0.0</kite-version>
 		<!-- maven plugins versions -->
 		<maven-jar-plugin.version>2.4</maven-jar-plugin.version>
 	</properties>
