@@ -6,7 +6,10 @@ import fortscale.domain.core.EvidenceType;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 /**
  * Created by shays on 16/03/2016.
@@ -16,14 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
  */
 public class LimitNotificationAlertAmountCreation implements AlertPreAlertDeciderFilter {
 
-
+	private static Logger logger = LoggerFactory.getLogger(LimitNotificationAlertAmountCreation.class);
 
     public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY ="limitNotificationAlertAmountCreation.maxAmountOfNotificationsAlertinDay";
     public static String MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY ="limitNotificationAlertAmountCreation.maxAmountOfNotificationsAlertinHour";
-    public static int DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY =10;
-    public static int DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_ALERT_IN_HOUR =10;
-    public static int milisecInHour = 1000* 60 * 60;
+	public static int milisecInHour = 1000* 60 * 60;
 
+	@Value("${fortscale.alert.notification.limit.per.day:10}")
+	private int DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY;
+	@Value("${fortscale.alert.notification.limit.per.hour:10}")
+    private int DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_ALERT_IN_HOUR;
 
     @Autowired
     private AlertTypeConfigurationServiceImpl alertTypeConfigurationServiceImpl;
@@ -46,6 +51,11 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long alertWindowStartDate, Long alertWindowEndTime,AlertTimeframe timeframe){
 
         String title = alertTypeConfigurationServiceImpl.getAlertNameByAnonalyType(evidencesOrEntityEvents.getAnomalyTypeFieldName(), timeframe);
+        if (title == null) {
+			logger.warn("No alert name can be found for type - " + evidencesOrEntityEvents.getAnomalyTypeFieldName() +
+					" and timeframe - " + timeframe.name());
+            return false;
+        }
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
 
         int maxAmountOfSameAlert = getMaxAmountOfNotifications(alertWindowStartDate, alertWindowEndTime);
@@ -74,7 +84,7 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
             return getApplicationConfigurarionOrUpdate(MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY,
                     DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_ALERT_IN_HOUR);
         } else { //Hourly
-            return getApplicationConfigurarionOrUpdate(MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY_KEY,
+            return getApplicationConfigurarionOrUpdate(MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_HOUR_KEY,
                     DEFAULT_MAX_AMOUNT_OF_NOTIFICATIONS_ALERT_IN_DAY);
         }
 

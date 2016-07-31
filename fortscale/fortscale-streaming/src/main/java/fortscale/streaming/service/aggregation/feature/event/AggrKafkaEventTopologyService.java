@@ -85,8 +85,8 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
         if (outputTopic!=null && StringUtils.isNotEmpty(outputTopic)){
             try{
                 messageCollector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), event.toJSONString()));
-                getAggrFeatureMetrics(event).sent++;
                 aggregationMetricsService.sentEvent(event);
+                getAggrFeatureMetrics(event).sent++;
             } catch(Exception exception){
                 String errMsg = String.format(ERROR_MSG_FAILED_TO_SEND_EVENT, event.toString());
                 logger.error(errMsg, exception);

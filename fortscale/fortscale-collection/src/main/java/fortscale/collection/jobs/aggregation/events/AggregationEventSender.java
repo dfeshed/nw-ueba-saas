@@ -36,12 +36,22 @@ public class AggregationEventSender implements IAggregationEventSender {
 		aggrEventsSynchronizer = new AggregationEventSynchronizer(jobClassToMonitor,
 				jobToMonitor, TimeUnit.SECONDS.toMillis(timeToWaitInSeconds));
 
-		fTopicKafkaSender = new KafkaSender(null, batchSize, FTOPIC, "");
-		pTopicKafkaSender = new KafkaSender(null, batchSize, PTOPIC, "");
+
 		this.messagesCounter = 0;
 		this.totalMessegesCounter = 0;
 		this.fTypeMessagesCounter = 0;
 		this.batchSize = batchSize;
+	}
+
+	public void init() throws TimeoutException {
+		fTopicKafkaSender = new KafkaSender(null, batchSize, FTOPIC, "");
+		pTopicKafkaSender = new KafkaSender(null, batchSize, PTOPIC, "");
+		aggrEventsSynchronizer.init();
+	}
+
+	public void close(){
+		shutDown();
+		aggrEventsSynchronizer.close();
 	}
 
     @Override

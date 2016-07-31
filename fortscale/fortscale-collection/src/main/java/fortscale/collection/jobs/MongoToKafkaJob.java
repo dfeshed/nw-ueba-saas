@@ -224,7 +224,7 @@ public class MongoToKafkaJob extends FortscaleJob {
                 streamWriters.add(new KafkaEventsWriter(topicName));
             }
         } catch (Exception ex) {
-            logger.error("Bad topics format - {}", ex);
+            logger.error("Bad topics format - " + ex);
             throw new JobExecutionException();
         } finally {
             zkClient.close();
