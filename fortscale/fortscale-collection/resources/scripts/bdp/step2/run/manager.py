@@ -62,7 +62,9 @@ class Manager(OnlineManager):
         return True
 
     def run(self):
-        super(Manager, self).run()
+        is_success = super(Manager, self).run()
+        if not is_success:
+            return is_success
         logger.info('sending dummy event (so the last partial batch will be closed)...')
         validation_end_time = time_utils.get_epochtime(self._last_batch_end_time)
         send(logger=logger,
@@ -80,4 +82,4 @@ class Manager(OnlineManager):
                                             max_delay=self._max_delay,
                                             timeout=self._timeout,
                                             polling_interval=self._polling_interval)
-        logger.info('DONE')
+        return True

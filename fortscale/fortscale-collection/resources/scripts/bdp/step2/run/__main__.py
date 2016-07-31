@@ -145,19 +145,22 @@ def main():
     validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources] \
         if arguments.block_on_data_sources else None
-    Manager(host=arguments.host,
-            is_online_mode=arguments.is_online_mode,
-            start=arguments.start,
-            block_on_tables=block_on_tables,
-            calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
-            wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
-            min_free_memory_gb=arguments.min_free_memory_gb if 'min_free_memory_gb' in arguments else 0,
-            polling_interval=arguments.polling_interval * 60,
-            timeout=arguments.timeout * 60 if 'timeout' in arguments else None,
-            validation_batches_delay=arguments.validation_batches_delay,
-            max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
-            batch_size_in_hours=arguments.batch_size) \
-        .run()
+    if Manager(host=arguments.host,
+               is_online_mode=arguments.is_online_mode,
+               start=arguments.start,
+               block_on_tables=block_on_tables,
+               calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
+               wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
+               min_free_memory_gb=arguments.min_free_memory_gb if 'min_free_memory_gb' in arguments else 0,
+               polling_interval=arguments.polling_interval * 60,
+               timeout=arguments.timeout * 60 if 'timeout' in arguments else None,
+               validation_batches_delay=arguments.validation_batches_delay,
+               max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
+               batch_size_in_hours=arguments.batch_size) \
+            .run():
+        logger.info('finished successfully')
+    else:
+        logger.error('failed')
 
 
 if __name__ == '__main__':
