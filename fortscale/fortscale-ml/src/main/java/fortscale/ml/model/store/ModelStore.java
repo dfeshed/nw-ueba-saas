@@ -5,6 +5,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelConf;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -36,8 +37,13 @@ public class ModelStore {
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+	@Autowired
+	private StatsService statsService;
+
+	private ModelStoreMetrics metrics;
 
 	public void save(ModelConf modelConf, String sessionId, String contextId, Model model, Date startTime, Date endTime) {
+		getMetrics().saveModel++;
 		String collectionName = getCollectionName(modelConf);
 		ensureCollectionExists(collectionName);
 		Query query = new Query();
@@ -51,6 +57,7 @@ public class ModelStore {
 	}
 
 	public List<ModelDAO> getModelDaos(ModelConf modelConf, String contextId) {
+		getMetrics().getModelDaos++;
 		String collectionName = getCollectionName(modelConf);
 
 		Query query = new Query();
@@ -73,6 +80,8 @@ public class ModelStore {
 	}
 
 	public void removeModels(Collection<ModelConf> modelConfs, String sessionId) {
+		getMetrics().removeModels++;
+
 		modelConfs.forEach(modelConf -> {
 			String collectionName = getCollectionName(modelConf);
 
@@ -85,10 +94,13 @@ public class ModelStore {
 	}
 
 	private String getCollectionName(ModelConf modelConf) {
+		getMetrics().getCollectionName++;
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, modelConf.getName());
 	}
 
 	private void ensureCollectionExists(String collectionName) {
+		getMetrics().ensureCollectionExists++;
+
 		if (!mongoDbUtilService.collectionExists(collectionName)) {
 			mongoDbUtilService.createCollection(collectionName);
 
@@ -103,5 +115,13 @@ public class ModelStore {
 					.named(ModelDAO.CREATION_TIME_FIELD)
 					.on(ModelDAO.CREATION_TIME_FIELD, Direction.ASC));
 		}
+	}
+	public ModelStoreMetrics getMetrics()
+	{
+		if (metrics==null)
+		{
+			metrics = new ModelStoreMetrics(statsService);
+		}
+		return metrics;
 	}
 }

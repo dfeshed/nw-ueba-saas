@@ -7,6 +7,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
 import fortscale.ml.model.store.ModelDAO;
+import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -17,6 +18,7 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
@@ -38,6 +40,7 @@ import static org.mockito.Mockito.*;
 public class ModelServiceTest {
 	@Configuration
 	@ImportResource("classpath*:META-INF/spring/model-service-test-context.xml")
+	@Import(NullStatsServiceConfig.class)
 	static class ContextConfiguration {
 		@Bean
 		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {

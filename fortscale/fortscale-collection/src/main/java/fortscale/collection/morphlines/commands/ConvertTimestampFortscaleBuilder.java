@@ -3,6 +3,7 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.collection.services.time.FortscaleDateFormatService;
 import fortscale.collection.services.time.FortscaleDateFormatterException;
 import org.kitesdk.morphline.api.Command;
@@ -86,6 +87,9 @@ public class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     @Override
     protected boolean doProcess(Record record) {
 
+	  //The specific Morphline metric
+	  MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(record);
+
       String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
 
       String tzOutput = (String)record.getFirstValue(this.outputTimezoneField);
@@ -109,12 +113,16 @@ public class ConvertTimestampFortscaleBuilder implements CommandBuilder {
             iter.set(result);
           }
           else {
+			  if(morphlineMetrics != null )
+				morphlineMetrics.unparseableTimeStamps++;
             LOG.debug("Could not parse timestamp '{}' ", timestamp);
             commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
 
             return false;
           }
         } catch (FortscaleDateFormatterException e) {
+			if(morphlineMetrics != null )
+	      		morphlineMetrics.unparseableTimeStamps++;
           LOG.error("Exception while trying to parse timestamp '{}' :", timestamp, e);
           commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
 

@@ -76,9 +76,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 			String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields" + impalaTable);
 			String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields" + impalaTable);
 			outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator" + impalaTable);
-			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
-			handler.recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
-			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
+			handler.recordToStringProcessor = new RecordToStringItemsProcessor(outputSeparator, statsService,"etl-"+sourceName,  ImpalaParser.getTableFieldNamesAsArray(outputFields));
+			handler.recordToMessageString = new RecordToStringItemsProcessor(outputSeparator, statsService,"etl-"+sourceName,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
+			handler.recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, statsService,"etl-"+sourceName, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields" + impalaTable));
 
 
 			handler.hadoopPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopPath" + impalaTable);
@@ -89,8 +89,9 @@ public class SecurityEventsProcessJob extends EventProcessJob {
             handler.partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
 			
 			String streamingTopic = jobDataMapExtension.getJobDataMapStringValue(map, "streamingTopic" + impalaTable, "");
-			if (StringUtils.isNotEmpty(streamingTopic))
+			if (StringUtils.isNotEmpty(streamingTopic)) {
 				handler.streamWriter = new KafkaEventsWriter(streamingTopic);
+			}
 			
 			String[] eventsToProcessList = jobDataMapExtension.getJobDataMapStringValue(map, "eventsToProcess" + impalaTable).split(",");
 			for (String eventToProcess : eventsToProcessList) {
@@ -109,6 +110,7 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 		Record rec = morphline.process(line,itemContext);
 		Record record = null;
 		if (rec==null) {
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
 		// treat the event according to the event type
@@ -130,17 +132,18 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 				if (processedRecord!=null) {
 
 					//In case there is exist enrich morphline process the record with him
-					if (this.morphlineEnrichment != null)
-					{
+					if (this.morphlineEnrichment != null){
 						record = this.morphlineEnrichment.process(processedRecord, itemContext);
 						if (record == null) {
 							// record was filtered
+							jobMetircs.linesFailuresInMorphlineEnrichment++;
 							return null;
 						}
 
 					}
-					else
+					else {
 						record = processedRecord;
+					}
 
 					Boolean isComputer = (Boolean) record.getFirstValue("isComputer");
 					if(isComputer == null || !isComputer){
@@ -162,10 +165,17 @@ public class SecurityEventsProcessJob extends EventProcessJob {
 							}
 
 							return record;
+						} else {
+							jobMetircs.linesFailuresInTecordToHadoopString++;
 						}
 					}
 
+				} else {//Record is null
+					jobMetircs.linesFailuresInEventCodeMorphline++;
 				}
+			} else {
+				//Handler is null
+				jobMetircs.linesFailuresHandlerNotFound++;
 			}
 		}
 		return null;

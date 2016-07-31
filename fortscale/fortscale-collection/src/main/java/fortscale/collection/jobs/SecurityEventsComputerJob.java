@@ -39,6 +39,10 @@ public class SecurityEventsComputerJob extends GenericSecurityEventsJob {
 			MorphlinesItemsProcessor processor = jobDataMapExtension.getMorphlinesItemsProcessor(map, specificMorphlineKey);
 			morphlineForEventCode.put(eventCode, processor);
 		}
+
+        sourceName = jobExecutionContext.getJobDetail().getKey().getGroup();
+        jobMetircs = collectionStatsMetricsService.getETLCommonJobMetircs(sourceName);
+        morphlineMetrics = collectionStatsMetricsService.getMorphlineMetrics(sourceName);
 		
 	}
 	

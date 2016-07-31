@@ -1,10 +1,10 @@
 package fortscale.domain.eventscache;
 
-import java.util.List;
-
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface CachedRecordRepository  extends MongoRepository<CachedRecord, Long>, CachedRecordRepositoryCustom {
+import java.util.List;
+
+public interface CachedRecordRepository  extends MongoRepository<CachedRecord, String>, CachedRecordRepositoryCustom {
 
 	List<CachedRecord> findByCacheName(String cacheName);
 }

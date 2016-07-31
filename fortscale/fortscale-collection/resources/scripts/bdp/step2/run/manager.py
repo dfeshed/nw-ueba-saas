@@ -1,6 +1,7 @@
 import logging
-import sys
 import os
+import sys
+
 from job import run as run_job
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -39,12 +40,16 @@ class Manager(OnlineManager):
                                       polling_interval=polling_interval,
                                       max_delay=max_delay,
                                       batch_size_in_hours=batch_size_in_hours)
+        if is_online_mode and timeout is not None:
+            raise Exception('in online mode there should be no timeout')
         self._timeout = timeout
         self._validation_batches_delay = validation_batches_delay
+        self._is_online_mode = is_online_mode
 
     def _run_batch(self, start_time_epoch):
         run_job(start_time_epoch=start_time_epoch,
-                batch_size_in_hours=self._batch_size_in_hours)
+                batch_size_in_hours=self._batch_size_in_hours,
+                is_online_mode=self._is_online_mode)
         validation_start_time = \
             start_time_epoch - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
         block_until_everything_is_validated(host=self._host,
@@ -57,7 +62,9 @@ class Manager(OnlineManager):
         return True
 
     def run(self):
-        super(Manager, self).run()
+        is_success = super(Manager, self).run()
+        if not is_success:
+            return is_success
         logger.info('sending dummy event (so the last partial batch will be closed)...')
         validation_end_time = time_utils.get_epochtime(self._last_batch_end_time)
         send(logger=logger,
@@ -75,4 +82,4 @@ class Manager(OnlineManager):
                                             max_delay=self._max_delay,
                                             timeout=self._timeout,
                                             polling_interval=self._polling_interval)
-        logger.info('DONE')
+        return True

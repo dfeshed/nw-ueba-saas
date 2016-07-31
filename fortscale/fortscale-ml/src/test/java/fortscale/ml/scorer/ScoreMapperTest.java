@@ -2,7 +2,6 @@ package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
 import fortscale.domain.core.FeatureScore;
-import fortscale.ml.scorer.config.ScoreMappingConf;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -17,14 +16,14 @@ import java.util.Map;
 @RunWith(JUnit4.class)
 public class ScoreMapperTest {
     private Scorer baseScorer;
-    private ScoreMappingConf scoreMappingConf;
+    private ScoreMapping.ScoreMappingConf scoreMappingConf;
     private Event eventMessage;
     private long evenEpochTime;
 
     @Before
     public void setup() {
         baseScorer = Mockito.mock(Scorer.class);
-        scoreMappingConf = new ScoreMappingConf();
+        scoreMappingConf = new ScoreMapping.ScoreMappingConf();
         eventMessage = Mockito.mock(Event.class);
         evenEpochTime = 1234;
     }

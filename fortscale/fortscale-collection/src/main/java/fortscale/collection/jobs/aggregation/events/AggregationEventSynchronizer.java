@@ -37,17 +37,24 @@ public class AggregationEventSynchronizer {
     private long initialNumberOfProcessedEvents;
     private long initialNumberOfScoredAggrEvents;
 
-    public AggregationEventSynchronizer(String jobClassToMonitor, String jobToMonitor, long timeToWaitInMilliseconds) throws TimeoutException {
+    public AggregationEventSynchronizer(String jobClassToMonitor, String jobToMonitor, long timeToWaitInMilliseconds) {
         this.timeoutInMillis = timeToWaitInMilliseconds;
         metric = String.format("%s-received-message-count", jobToMonitor);
         
         entityEventsTaskMetricsReader = new SimpleMetricsReader("entityEventsTaskMetricsReader", 0,
                 jobToMonitor, jobClassToMonitor, Collections.singleton(metric));
+    }
 
+    public void init() throws TimeoutException{
         entityEventStreamTaskControlTopicWriter = new KafkaEventsWriter(ENTITY_EVENT_STREAM_TASK_CONTROL_TOPIC);
 
         entityEventsTaskMetricsReader.start();
         setInitialCounters();
+    }
+
+    public void close(){
+        entityEventsTaskMetricsReader.end();
+        entityEventStreamTaskControlTopicWriter.close();
     }
 
     private void setInitialCounters() throws TimeoutException {

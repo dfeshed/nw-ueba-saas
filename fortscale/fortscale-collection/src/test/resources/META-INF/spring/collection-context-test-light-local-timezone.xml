@@ -54,7 +54,7 @@
 
     <bean id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
     <bean id="computerLoginResolver" class="fortscale.services.ipresolving.ComputerLoginResolver"/>
-
+    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
     <mockito:mock id="applicationConfigurationService" class = "fortscale.services.ApplicationConfigurationService"/>
 
     <context:spring-configured />

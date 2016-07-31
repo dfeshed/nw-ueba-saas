@@ -12,17 +12,12 @@
         <job-class>fortscale.collection.jobs.notifications.NotificationJob</job-class>
         <durability>true</durability>
         <recover>true</recover>
-        <!-- when executing manually, all spring beans which implements
-        NotificationGeneratorServices will be executed one after another
-        If you want to define sublist of NotificationGeneratorServices add following to XML:
         <job-data-map>
                 <entry>
                     <key>notificationsServiceList</key>
-                    <value>vpnCredShareNotificationService</value>
+                    <value>vpnCredShareNotificationService,vpnLateralMovementNotificationService</value>
                 </entry>
-            </job-data-map>
-           -->
-
+        </job-data-map>
     </job>
 
     <!-- trigger the job every day at 23:30 minutes -->
@@ -32,12 +27,6 @@
             <group>Execution</group>
             <job-name>Notification</job-name>
             <job-group>Execution</job-group>
-            <job-data-map>
-                <entry>
-                    <key>notificationsServiceList</key>
-                    <value>vpnCredShareNotificationService</value>
-                </entry>
-            </job-data-map>
             <!--Each night at 12:30-->
             <cron-expression>0 30 0 * * ?</cron-expression>
         </cron>

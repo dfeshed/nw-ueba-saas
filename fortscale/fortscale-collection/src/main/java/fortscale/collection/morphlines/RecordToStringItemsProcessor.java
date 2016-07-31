@@ -1,5 +1,7 @@
 package fortscale.collection.morphlines;
 
+import fortscale.collection.metrics.RecordToStringItemsProcessorMetric;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
 
@@ -14,19 +16,24 @@ public class RecordToStringItemsProcessor {
 
 	private String[] fields;
 	private String separator;
+
+	private RecordToStringItemsProcessorMetric metric;
 	
-	public RecordToStringItemsProcessor(String separator, String... fields) throws IllegalArgumentException {
+	public RecordToStringItemsProcessor(String separator, StatsService statsService, String name, String... fields) throws IllegalArgumentException {
 		Assert.notNull(separator);
 		Assert.notNull(fields);
 		Assert.notEmpty(fields);
-		
+		initMetricsClass(statsService,name);
 		this.fields = fields;
 		this.separator = separator;
 	}
 	
 	public String process(Record record) {
-		if (record==null) 
+		metric.record++;
+		if (record==null) {
+			metric.recordFailedBecauseEmpty++;
 			return null;
+		}
 		
 		boolean firstItem = true;
 		boolean noValues = true;
@@ -45,15 +52,20 @@ public class RecordToStringItemsProcessor {
 			firstItem = false;
 		}
 		
-		if (noValues)
+		if (noValues) {
+			metric.recordFailedBecauseNoValues++;
 			return null;
-		else
+		} else {
 			return sb.toString();
+		}
 	}
 	
 	public String toJSON(Record record) {
-		if (record==null)
+		metric.record++;
+		if (record==null) {
+			metric.recordFailedBecauseNoValues++;
 			return null;
+		}
 			
 		JSONObject json = new JSONObject();
 		for (String field : fields) {
@@ -63,5 +75,9 @@ public class RecordToStringItemsProcessor {
 			}
 		}
 		return json.toJSONString(JSONStyle.NO_COMPRESS);
+	}
+
+	public void initMetricsClass(StatsService statsService, String name){
+		metric = new RecordToStringItemsProcessorMetric(statsService,name);
 	}
 }

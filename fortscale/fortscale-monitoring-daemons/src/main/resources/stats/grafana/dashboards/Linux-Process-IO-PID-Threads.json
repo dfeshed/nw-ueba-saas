@@ -1509,7 +1509,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"process\"  WHERE \"processGroup\" =~ /^$processGroup$/",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query",
         "useTags": false
       }

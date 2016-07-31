@@ -3,6 +3,10 @@ package fortscale.collection.morphlines.commands;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+
+import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
@@ -56,6 +60,8 @@ public class MatchIPTest {
 		// perpare record
 		Record record = new Record();
 		record.put("ipAddress", ipAddress);
+		record.put(MorphlineCommandMonitoringHelper.ITEM_CONTEXT,
+				new ItemContext("", null, new MorphlineMetrics(null, "dataSource")));
 		
 		// execute the parse
 		boolean result = command.doProcess(record);

@@ -1,22 +1,38 @@
-import subprocess
-import time
 import glob
-import signal
 import os
+import re
+import signal
+import subprocess
 import sys
 from cm_api.api_client import ApiResource
-from overrides import overrides as overrides_file
 
+import time
+from overrides import overrides as overrides_file
 from samza import restart_all_tasks
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, io
 from automatic_config.common.utils.mongo import get_collections_time_boundary
 
 
+def validate_bdp_flag(is_online_mode):
+    with open('/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties', 'r') as f:
+        for l in f.readlines():
+            match = re.findall('fortscale.bdp.run\W*=\W*(.+)', l)
+            if match:
+                if {'true': True, 'false': False}[match[0]] == is_online_mode:
+                    raise Exception('/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties has the line ' +
+                                    l + ', while it should be the opposite')
+                return
+    raise Exception('/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties doesn not '
+                    'specify the fortscale.bdp.run flag. Please specify it and try again')
+
+
 class Runner(object):
-    def __init__(self, name, logger, host, block, block_until_log_reached=None):
+    def __init__(self, name, logger, host, block, block_until_log_reached=None, is_online_mode=False):
         if not block and block_until_log_reached:
             raise Exception('block_until_log_reached can be specified only when block=True')
+        validate_bdp_flag(is_online_mode=is_online_mode)
         self._name = name
         self._logger = logger
         self._host = host
