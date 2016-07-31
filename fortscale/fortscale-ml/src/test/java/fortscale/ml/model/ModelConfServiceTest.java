@@ -1,11 +1,13 @@
 package fortscale.ml.model;
 
+import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.core.Ordered;
@@ -23,6 +25,7 @@ public class ModelConfServiceTest {
 	@Configuration
 	@EnableSpringConfigured
 	@EnableAnnotationConfiguration
+	@Import(NullStatsServiceConfig.class)
 	static class ContextConfiguration {
 		@Bean
 		public ModelConfService modelConfService() {

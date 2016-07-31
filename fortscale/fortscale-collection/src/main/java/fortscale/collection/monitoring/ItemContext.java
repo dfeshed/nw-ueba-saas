@@ -1,5 +1,6 @@
 package fortscale.collection.monitoring;
 
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 
 /**
@@ -10,12 +11,15 @@ public class ItemContext {
     private String sourceName;
     private TaskMonitoringHelper<String> taskMonitoringHelper;
 
+	private MorphlineMetrics morphlineMetrics;
+
     public ItemContext() {
     }
 
-    public ItemContext(String sourceName, TaskMonitoringHelper<String> taskMonitoringHelper) {
+    public ItemContext(String sourceName, TaskMonitoringHelper<String> taskMonitoringHelper,MorphlineMetrics morphlineMetrics) {
         this.sourceName = sourceName;
         this.taskMonitoringHelper = taskMonitoringHelper;
+		this.morphlineMetrics = morphlineMetrics;
     }
 
     public String getSourceName() {
@@ -33,4 +37,12 @@ public class ItemContext {
     public void setTaskMonitoringHelper(TaskMonitoringHelper<String> taskMonitoringHelper) {
         this.taskMonitoringHelper = taskMonitoringHelper;
     }
+
+	public MorphlineMetrics getMorphlineMetrics() {
+		return morphlineMetrics;
+	}
+
+	public void setMorphlineMetrics(MorphlineMetrics morphlineMetrics) {
+		this.morphlineMetrics = morphlineMetrics;
+	}
 }

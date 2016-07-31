@@ -10,6 +10,7 @@
     <bean id="featureBucketsStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
     <bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
     <bean id="supportingInformationService" class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationServiceImpl"/>
+    <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
 
     <context:spring-configured />
     <context:annotation-config />

@@ -36,6 +36,11 @@ public class ModelsCacheInfo {
 		return null;
 	}
 
+	public boolean notEmptyValidation()
+	{
+		return !modelDaos.isEmpty();
+	}
+
 	public void setModelDao(ModelDAO modelDao) {
 		if (modelDao != null) {
 			for (int i = 0; i < modelDaos.size(); i++) {

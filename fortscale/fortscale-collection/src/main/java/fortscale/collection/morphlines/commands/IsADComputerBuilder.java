@@ -3,6 +3,8 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -33,6 +35,8 @@ public class IsADComputerBuilder implements CommandBuilder {
 	@Configurable(preConstruction = true)
 	public static class IsADComputer extends AbstractCommand {
 
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
 		@Autowired
 		private ComputerService computerService;
 		
@@ -48,16 +52,29 @@ public class IsADComputerBuilder implements CommandBuilder {
 		
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			if (computerService != null) {
 				String hostname = (String) inputRecord.getFirstValue(hostnameField);
 				boolean isInAD = computerService.isHostnameInAD(hostname);
+
+				if (morphlineMetrics != null) {
+					if (isInAD) {
+						morphlineMetrics.computerServiceFoundInAD++;
+					} else {
+						morphlineMetrics.computerServiceNotInAD++;
+					}
+				}
 				inputRecord.put(outputField, isInAD);
 			}
 
-			else
+			else {
 				inputRecord.put(outputField, false);
-
-
+				if (morphlineMetrics != null) {
+					morphlineMetrics.computerServiceNotInAD++;
+				}
+			}
 			return super.doProcess(inputRecord);
 		}
 	}

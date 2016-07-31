@@ -12,8 +12,8 @@ public class pxGridTestInt {
 	public void testPrivateKeyGeneration(){
 		KeysGenerationHandler handler = new KeysGenerationHandler();
 		String password = "P@ssw0rd";
-		try {
-			/*handler.generatePrivateKey();
+		/*try {
+			handler.generatePrivateKey();
 			handler.generateCSRrequest();*/
 			//handler.generateSelfSignedCert();
 			/*handler.generatePKCS12(password);
@@ -21,13 +21,13 @@ public class pxGridTestInt {
 			handler.convertPemToDer();
 			handler.addISEIdentityCertToIdentityKeystore(password);
 			handler.importPxGridClientCertToIdentityKeystore(password);
-			handler.importIseIdentityCertToTrustKeystore(password);*/
+			handler.importIseIdentityCertToTrustKeystore(password);
 			String base64 = handler.generateKeySelfSignedCert();
 
 		}  catch (IOException e) {
 			e.printStackTrace();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

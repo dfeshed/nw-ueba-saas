@@ -16,7 +16,7 @@ import org.springframework.data.domain.Sort;
 public abstract class RequestFilterHelperImpl<T extends  RestFilter,R> {
 
     //Constants
-    protected static final int DEFAULT_PAGE_SIZE = 20;
+    protected static final int DEFAULT_PAGE_SIZE = 200;
 
     //Abstract methods
     protected abstract Sort getSort(T filterDTO);

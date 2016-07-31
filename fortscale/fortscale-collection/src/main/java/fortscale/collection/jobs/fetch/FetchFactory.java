@@ -23,9 +23,9 @@ public class FetchFactory extends FortscaleJob {
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
 	@Autowired
-	private QRadar qradar;
+	private QRadar qradarFetch;
 	@Autowired
-	private Splunk splunk;
+	private Splunk splunkFetch;
 
 	private FetchJob fetchJob;
 	private String configuredSIEM;
@@ -46,11 +46,11 @@ public class FetchFactory extends FortscaleJob {
 			configuredSIEM = DEFAULT_SIEM;
 		}
 		switch (configuredSIEM.toLowerCase()) {
-			case Splunk.SIEM_NAME: fetchJob = splunk; break;
-			case QRadar.SIEM_NAME: fetchJob = qradar; break;
+			case Splunk.SIEM_NAME: fetchJob = splunkFetch; break;
+			case QRadar.SIEM_NAME: fetchJob = qradarFetch; break;
 			default: throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
 		}
-		fetchJob.getJobParameters(map, configuredSIEM);
+		fetchJob.getJobParameters(map, jobDataMapExtension, configuredSIEM);
 	}
 
 	@Override

@@ -69,6 +69,8 @@ public class ScorersService{
         ScorersServiceMetrics metrics = getDataSourceMetric(dataSource);
         List<Scorer> dataSourceScorers = dataSourceToScorerListMap.get(dataSource);
 
+        metrics.calculateScoreTime = eventEpochTimeInSec;
+
         if (dataSourceScorers == null || dataSourceScorers.isEmpty()) {
             metrics.dataSourceScorerNotFound++;
             logger.error(NO_SCORERS_FOR_DATA_SOURCE_ERROR_MSG, dataSource, event.getJSONObject().toJSONString());

@@ -126,28 +126,36 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 
 	@Override protected void runSteps() throws Exception {
 		logger.info("************ Running build aggregated events job ************");
-		modelBuildingSyncService.init();
-
-		if (buildModelsFirst) {
-			logger.info("Starting to build models before creating the events...");
-			modelBuildingSyncService.buildModelsForcefully(batchStartTime);
-			logger.info("Finished to build models.");
-		}
-
 		// Create event sender
 		AggregationEventSender eventSender = new AggregationEventSender(batchSize, jobClassToMonitor, jobToMonitor,
-                eventProcessingSyncTimeoutInSeconds);
-		long endTimeGt = batchStartTime;
-		while(endTimeGt<batchEndTime){
-			long endTimeLte = Math.min(endTimeGt+ SECONDS_IN_HOUR, batchEndTime);
+				eventProcessingSyncTimeoutInSeconds);
+		try {
+			modelBuildingSyncService.init();
 
-			runStep(eventSender, endTimeGt, endTimeLte);
+			if (buildModelsFirst) {
+				logger.info("Starting to build models before creating the events...");
+				modelBuildingSyncService.buildModelsForcefully(batchStartTime);
+				logger.info("Finished to build models.");
+			}
 
-			endTimeGt = endTimeLte;
+			eventSender.init();
+			long endTimeGt = batchStartTime;
+			while (endTimeGt < batchEndTime) {
+				long endTimeLte = Math.min(endTimeGt + SECONDS_IN_HOUR, batchEndTime);
+
+				runStep(eventSender, endTimeGt, endTimeLte);
+
+				endTimeGt = endTimeLte;
+			}
+
+			eventSender.throttle(true);
+
+		} catch (Exception e){
+			logger.error("got an exception while building and sending aggregation events", e);
+		} finally {
+			eventSender.close();
+			modelBuildingSyncService.close();
 		}
-
-		eventSender.throttle(true);
-		modelBuildingSyncService.close();
 		if (removeModelsFinally) {
 			logger.info("Removing models with session ID {} finally.", sessionId);
 			modelStore.removeModels(modelConfs, sessionId);

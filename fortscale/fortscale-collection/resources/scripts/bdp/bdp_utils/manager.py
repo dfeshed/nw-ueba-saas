@@ -1,14 +1,15 @@
 import datetime
+import os
 import re
 import subprocess
 import sys
-import time
-import os
 
+import time
 from data_sources import data_source_to_score_tables
 from log import log_and_send_mail
 from run import Cleaner
 from samza import restart_task
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
 from automatic_config.common.utils.mongo import rename_documents
@@ -167,6 +168,7 @@ class OnlineManager(object):
                                                                             end=start,
                                                                             timeout=None)
             if len(count_per_time_bucket) > 0:
+                count_per_time_bucket = [count for time, count in count_per_time_bucket]
                 stats.append({
                     'table': table,
                     'last': impala_utils.get_last_event_time(connection=self._impala_connection,

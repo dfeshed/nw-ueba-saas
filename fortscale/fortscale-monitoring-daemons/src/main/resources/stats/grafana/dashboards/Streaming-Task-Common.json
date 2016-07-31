@@ -1225,7 +1225,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"process\" WHERE \"processGroup\" =~ /^streaming$/",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query",
         "useTags": false
       }

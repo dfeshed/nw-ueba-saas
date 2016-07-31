@@ -29,7 +29,7 @@ public class SearchQueryJob extends SearchJob {
 		for(Map.Entry<Object, Object> arg: arguments.entrySet()) {
 			search = search.replaceAll("\\$" + arg.getKey() + "\\$", arg.getValue().toString());
 		}
-		logger.info("running search job with the query = {}",search);
+		logger.debug("running search job with the query = {}", search);
 		Job job = null;
 		try {
 			search = "search " + search;

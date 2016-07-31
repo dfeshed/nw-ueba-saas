@@ -35,12 +35,10 @@ public class ApiEmailController extends BaseController {
     ResponseEntity sendTestEmail(@RequestParam(value = TO_PARAM) String to) {
         try {
             logger.info("Attempting to send test email");
+            emailService.loadEmailConfiguration();
             if (!emailService.isEmailConfigured()) {
-                emailService.loadEmailConfiguration();
-                if (!emailService.isEmailConfigured()) {
-                    logger.info("Email server not configured");
-                    return ResponseEntity.badRequest().body("{ \"message\": \"Email server not configured\"}");
-                }
+                logger.info("Email server not configured");
+                return ResponseEntity.badRequest().body("{ \"message\": \"Email server not configured\"}");
             }
             boolean success = emailService.sendEmail(new String[]{to}, null, null, "Test Email",
                     "This is a test email", null, true);

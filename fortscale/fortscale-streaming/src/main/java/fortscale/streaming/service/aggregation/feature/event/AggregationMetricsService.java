@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.HashMap;
 import java.util.Map;
 
+//TODO: delete this class once BDP is abandoned in favor of DPM
 @Configurable(preConstruction = true)
 public class AggregationMetricsService {
 	private static final String AGGREGATION_EVENT_TYPE_COUNTER_FORMAT = "aggregated-%s-event-sent-count";

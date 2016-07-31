@@ -17,7 +17,6 @@ public class EntitySupportingInformation {
 
     public EntitySupportingInformation() {}
 
-	public List<Map<String, Object>> generateResult(){return new ArrayList<>();}
-
+	public List<Map<String, Object>> generateResult() { return new ArrayList<>(); }
 
 }

@@ -6,21 +6,26 @@ import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
-import fortscale.ml.scorer.config.ScoreMapperConf;
-import fortscale.ml.scorer.config.ScoreMappingConf;
 import fortscale.ml.scorer.factory.ScoreMapperFactory;
+import fortscale.utils.factory.FactoryService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
 @Configurable(preConstruction = true)
 public class ModelBasedScoreMapper extends AbstractScorer {
+	private static final ScoreMapping.ScoreMappingConf ZERO_SCORE_MAPPING_CONF = new ScoreMapping.ScoreMappingConf()
+			.setMapping(new HashMap<Double, Double>() {{
+				put(0D, 0D);
+				put(100D, 0D);
+			}});
 
-	private IScorerConf baseScorerConf;
+	private final Scorer baseScorer;
 	private String modelName;
 	private List<String> contextFieldNames;
 	private String featureName;
@@ -30,6 +35,9 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 
 	@Autowired
 	private EventModelsCacheService eventModelsCacheService;
+
+	@Autowired
+	protected FactoryService<Scorer> factoryService;
 
 	public ModelBasedScoreMapper(String scorerName,
 								 String modelName,
@@ -44,29 +52,30 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
 		this.featureName = featureName;
-		this.baseScorerConf = baseScorerConf;
+		baseScorer = factoryService.getProduct(baseScorerConf);
 	}
 
 	@Override
 	public FeatureScore calculateScore(Event eventMessage, long eventEpochTimeInSec) throws Exception {
-		Feature feature = featureExtractService.extract(featureName, eventMessage);
-		ScoreMappingModel model = (ScoreMappingModel)eventModelsCacheService.getModel(
-				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
-		Scorer scoreMapper = scoreMapperFactory.getProduct(createScoreMapperConfig(model));
-		return scoreMapper.calculateScore(eventMessage, eventEpochTimeInSec);
+		FeatureScore baseScore = baseScorer.calculateScore(eventMessage, eventEpochTimeInSec);
+		double mappedScore = mapScore(eventMessage, eventEpochTimeInSec, baseScore);
+		return new FeatureScore(getName(), mappedScore, Collections.singletonList(baseScore));
 	}
 
-	private ScoreMapperConf createScoreMapperConfig(ScoreMappingModel model) {
-		ScoreMappingConf scoreMappingConf;
+	private double mapScore(Event eventMessage, long eventEpochTimeInSec, FeatureScore baseScore) {
+		Feature feature = featureExtractService.extract(featureName, eventMessage);
+		ScoreMappingModel model = (ScoreMappingModel) eventModelsCacheService.getModel(
+				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
+		return ScoreMapping.mapScore(baseScore.getScore(), createScoreMappingConf(model));
+	}
+
+	private ScoreMapping.ScoreMappingConf createScoreMappingConf(ScoreMappingModel model) {
+		ScoreMapping.ScoreMappingConf scoreMappingConf;
 		if (model != null) {
 			scoreMappingConf = model.getScoreMappingConf();
 		} else {
-			scoreMappingConf = new ScoreMappingConf();
-			scoreMappingConf.setMapping(new HashMap<Double, Double>() {{
-				put(0D, 0D);
-				put(100D, 0D);
-			}});
+			scoreMappingConf = ZERO_SCORE_MAPPING_CONF;
 		}
-		return new ScoreMapperConf(getName(), baseScorerConf, scoreMappingConf);
+		return scoreMappingConf;
 	}
 }

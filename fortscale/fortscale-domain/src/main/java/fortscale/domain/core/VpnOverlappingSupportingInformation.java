@@ -27,7 +27,7 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
     public VpnOverlappingSupportingInformation(){}
 
     @Override
-    public void setData(Evidence evidence, String json, boolean isBDPRunning) {
+    public void setData(String json, boolean isBDPRunning) {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         try {
@@ -38,20 +38,18 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
     }
 
 	@Override
-	public List<Map<String, Object>> generateResult()
-	{
+	public List<Map<String, Object>> generateResult() {
 		List<Map<String, Object>> resultMapList = new ArrayList<>();
-
 		//for sotring the list by date time unix
-		Comparator<VpnSessionOverlap> comparator = (c1, c2) -> new Long(c1.getDate_time_unix() - c2.getDate_time_unix()).intValue();
+		Comparator<VpnSessionOverlap> comparator = (c1, c2) -> new Long(c1.getDate_time_unix() -
+				c2.getDate_time_unix()).intValue();
 		rawEvents.sort(comparator);
-
-		for (VpnSessionOverlap vpnSessionOverlap : rawEvents)
-		{
+		for (VpnSessionOverlap vpnSessionOverlap : rawEvents) {
 			Map<String, Object> featuresMap = new HashMap<>();
 			featuresMap.put("username", vpnSessionOverlap.getUsername());
 			featuresMap.put("session_score", vpnSessionOverlap.getEventscore());
-			featuresMap.put("start_time", TimestampUtils.convertToMilliSeconds(vpnSessionOverlap.getDate_time_unix() - vpnSessionOverlap.getDuration()));
+			featuresMap.put("start_time", TimestampUtils.convertToMilliSeconds(vpnSessionOverlap.getDate_time_unix() -
+					vpnSessionOverlap.getDuration()));
 			featuresMap.put("end_time",TimestampUtils.convertToMilliSeconds(vpnSessionOverlap.getDate_time_unix()));
 			featuresMap.put("duration",vpnSessionOverlap.getDuration());
 			featuresMap.put("source_ip",vpnSessionOverlap.getSource_ip());
@@ -61,16 +59,10 @@ public class VpnOverlappingSupportingInformation extends NotificationSupportingI
 			featuresMap.put("data_bucket",vpnSessionOverlap.getDatabucket());
 			featuresMap.put("hostname",vpnSessionOverlap.getHostname());
 			featuresMap.put("country",vpnSessionOverlap.getCountry());
-
 			resultMapList.add(featuresMap);
-
 		}
-
 		return resultMapList;
 	}
-
-
-
 
     public void setRawEvents(List<VpnSessionOverlap> rawEvents) {
         this.rawEvents = rawEvents;

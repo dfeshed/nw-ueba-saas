@@ -1,6 +1,6 @@
 from impala.dbapi import connect as cn
-import time
 
+import time
 import time_utils
 
 
@@ -73,12 +73,12 @@ def _get_count_per_time_bucket(connection, table, partition, time_granularity_mi
     if 24 * 60 % time_granularity_minutes != 0:
         raise Exception('time_granularity_minutes must divide a day to equally sized buckets')
     c = connection.cursor()
-    c.execute('select floor(date_time_unix / (60 * ' + str(time_granularity_minutes) +
-              ')) time_bucket, count(*) from ' + table +
-              ' where yearmonthday = ' + partition +
-              ' group by time_bucket')
-    buckets = dict(((time_utils.get_epochtime(partition) + minute * 60) / (60 * time_granularity_minutes), 0)
+    time_granularity_seconds = 60 * time_granularity_minutes
+    c.execute('select floor(date_time_unix / ' + str(time_granularity_seconds) + ')' + ' * ' +
+              str(time_granularity_seconds) + ' time_bucket, count(*) from ' + table +
+              ' where yearmonthday = ' + partition + ' group by time_bucket')
+    buckets = dict(((time_utils.get_epochtime(partition) + minute * 60) / (time_granularity_seconds) * (time_granularity_seconds), 0)
                    for minute in xrange(60 * 24))
     buckets.update(dict(c))
     c.close()
-    return [count for time, count in sorted(buckets.iteritems())]
+    return sorted(buckets.iteritems())

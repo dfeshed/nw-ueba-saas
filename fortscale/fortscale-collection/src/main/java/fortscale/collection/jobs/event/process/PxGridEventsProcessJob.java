@@ -5,6 +5,7 @@ import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.ipresolving.PxGridResolver;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -28,7 +29,11 @@ public class PxGridEventsProcessJob extends EventProcessJob {
 	@Autowired
 	private JobDataMapExtension jobDataMapExtension;
 
-	private RecordToBeanItemConverter<PxGridIPEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<PxGridIPEvent>(new PxGridIPEvent());
+	@Autowired
+	private StatsService statsService;
+
+	private RecordToBeanItemConverter<PxGridIPEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<PxGridIPEvent>(
+			new PxGridIPEvent(),"pxgrid-event-job",statsService);
 
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
@@ -46,8 +51,10 @@ public class PxGridEventsProcessJob extends EventProcessJob {
 		// process each line
 		Record record = morphline.process(line, itemContext);
 
+
 		// skip records that failed on parsing
 		if (record==null) {
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
 		try {

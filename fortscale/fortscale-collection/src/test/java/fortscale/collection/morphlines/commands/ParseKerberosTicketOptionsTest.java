@@ -2,6 +2,10 @@ package fortscale.collection.morphlines.commands;
 
 import static org.mockito.Mockito.*;
 import static org.junit.Assert.*;
+
+import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 
@@ -32,8 +36,8 @@ public class ParseKerberosTicketOptionsTest {
 		config = mock(Config.class);
 		when(config.getString("ticketOptionsField")).thenReturn("ticketOptions");
 	}
-	
-	
+
+
 	@Test
 	public void parse_ticket_with_only_ticket_options_should_not_output_fields() {
 		// build the parse kerberos command
@@ -41,8 +45,7 @@ public class ParseKerberosTicketOptionsTest {
 		command = (ParseKerberosTicketOptions) builder.build(config, sink, sink, morphlineContext);
 		
 		// perpare record
-		Record record = new Record();
-		record.put("ticketOptions", "0x40810010");
+		Record record = getRecord("0x40810010");
 	
 		// execute the parse
 		boolean result = command.doProcess(record);
@@ -57,7 +60,17 @@ public class ParseKerberosTicketOptionsTest {
 		assertFalse(isRecordHasField(output, "renewRequest"));
 		assertFalse(isRecordHasField(output, "constraintDelegation"));
 	}
-	
+
+	private Record getRecord(String ticketOptions) {
+		Record record = new Record();
+		if (ticketOptions!=null){
+			record.put("ticketOptions", ticketOptions);
+		}
+		record.put(MorphlineCommandMonitoringHelper.ITEM_CONTEXT,
+				new ItemContext("", null, new MorphlineMetrics(null, "dataSource")));
+		return record;
+	}
+
 	@Test
 	public void parse_ticket_with_no_ticket_field_should_not_output_fields() {
 		// build the parse kerberos command
@@ -67,7 +80,7 @@ public class ParseKerberosTicketOptionsTest {
 		command = (ParseKerberosTicketOptions) builder.build(config, sink, sink, morphlineContext);
 		
 		// perpare record
-		Record record = new Record();
+		Record record = getRecord(null);
 	
 		// execute the parse
 		boolean result = command.doProcess(record);
@@ -92,8 +105,7 @@ public class ParseKerberosTicketOptionsTest {
 		command = (ParseKerberosTicketOptions) builder.build(config, sink, sink, morphlineContext);
 		
 		// perpare record
-		Record record = new Record();
-		record.put("ticketOptions", "0x20000000");
+		Record record = getRecord("0x20000000");
 	
 		// execute the parse
 		boolean result = command.doProcess(record);
@@ -119,8 +131,7 @@ public class ParseKerberosTicketOptionsTest {
 		command = (ParseKerberosTicketOptions) builder.build(config, sink, sink, morphlineContext);
 		
 		// perpare record
-		Record record = new Record();
-		record.put("ticketOptions", "0x40810010");
+		Record record = getRecord("0x40810010");
 	
 		// execute the parse
 		boolean result = command.doProcess(record);
@@ -156,8 +167,7 @@ public class ParseKerberosTicketOptionsTest {
 		command = (ParseKerberosTicketOptions) builder.build(config, sink, sink, morphlineContext);
 		
 		// perpare record
-		Record record = new Record();
-		record.put("ticketOptions", "0xFFFFFFFF");
+		Record record = getRecord("0xFFFFFFFF");
 	
 		// execute the parse
 		boolean result = command.doProcess(record);
@@ -201,8 +211,7 @@ public class ParseKerberosTicketOptionsTest {
 		command = (ParseKerberosTicketOptions) builder.build(config, sink, sink, morphlineContext);
 		
 		// perpare record
-		Record record = new Record();
-		record.put("ticketOptions", ticket);
+		Record record = getRecord(ticket);
 		
 		// execute the parse
 		boolean result = command.doProcess(record);

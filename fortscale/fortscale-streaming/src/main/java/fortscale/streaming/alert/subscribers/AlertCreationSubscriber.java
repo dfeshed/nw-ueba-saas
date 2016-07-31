@@ -13,6 +13,7 @@ import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -132,6 +133,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					//create the list of evidences to apply to the decider
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
 							eventList, startDate, endDate, timeframe);
+
+					if (CollectionUtils.isEmpty(evidencesEligibleForDecider)) {
+						logger.warn("Failed to find eligible events for alert creation");
+						continue;
+					}
 
 					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);

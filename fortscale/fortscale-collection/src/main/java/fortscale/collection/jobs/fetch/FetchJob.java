@@ -1,23 +1,21 @@
 package fortscale.collection.jobs.fetch;
 
 import fortscale.collection.JobDataMapExtension;
-import fortscale.collection.jobs.FortscaleJob;
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
-import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,7 +28,7 @@ import java.util.Map;
  * Created by Amir Keren on 4/4/16.
  */
 @DisallowConcurrentExecution
-public abstract class FetchJob extends FortscaleJob {
+public abstract class FetchJob {
 
 	protected static Logger logger = LoggerFactory.getLogger(FetchJob.class);
 
@@ -61,57 +59,55 @@ public abstract class FetchJob extends FortscaleJob {
 	private static final String SIEM_USER_KEY = SIEM_CONFIG_PREFIX + ".user";
 	private static final String SIEM_PASSWORD_KEY = SIEM_CONFIG_PREFIX + ".password";
 
-	// get common data from configuration
-	protected String hostName;
-	protected String port;
-	protected String username;
-	protected String password;
+	protected String sortShellScript;
 
 	// time limits sends to repository (can be epoch/dates/constant as -1h@h) - in the case of manual run,
 	// this parameters will be used
-	protected String earliest;
-	protected String latest;
-	protected String savedQuery;
-	protected String returnKeys;
-	protected String sortShellScript;
-	protected String filenameFormat;
-	protected String delimiter;
-	//the type (data source) to bring saved configuration for.
-	protected String type;
+	private String earliest;
+	private String latest;
+	private String savedQuery;
+	private String returnKeys;
+	private String delimiter;
 	// time limits as dates to allow easy paging - will be used in continues run
-	protected Date earliestDate;
-	protected Date latestDate;
-	protected File outputDir;
+	private Date earliestDate;
+	private Date latestDate;
+	private File outputDir;
+	private boolean encloseQuotes = true;
+	//the type (data source) to bring saved configuration for.
+	private String type;
+	private String filenameFormat;
 	//time interval to bring in one fetch (uses for both regular single fetch, and paging in the case of miss fetch).
 	//for manual fetch with time frame given as a parameter will keep the -1 default and the time frame won't be paged.
-	protected int fetchIntervalInSeconds = -1;
-	protected boolean encloseQuotes = true;
+	private int fetchIntervalInSeconds = -1;
 	//indicate if still have more pages to go over and fetch
-	protected boolean keepFetching = false;
-	protected File outputTempFile;
-	protected File outputFile;
-	protected int ceilingTimePartInt;
-	protected int fetchDiffInSeconds;
+	private boolean keepFetching = false;
+	private int fetchDiffInSeconds;
+	private int ceilingTimePartInt;
+	private String filename;
+	private String tempfilename;
+	// get common data from configuration
+	private String hostName;
+	private String port;
+	private String username;
+	private String password;
 
-	protected abstract boolean connect() throws Exception;
-	protected abstract void fetch() throws Exception;
-
-	protected void finish() throws Exception {}
+	protected abstract boolean connect(String hostName, String port, String username, String password) throws Exception;
+	protected abstract void fetch(String filename, String tempfilename, File outputDir, String returnKeys,
+								  String delimiter, boolean encloseQuotes, String earliest, String latest,
+								  String savedQuery) throws Exception;
 
 	protected void getExtraParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension)
 			throws JobExecutionException {}
 
-	protected void runSteps() throws Exception {
+	public void runSteps() throws Exception {
 		logger.info("fetch job started");
 		// ensure output path exists
 		logger.debug("creating output file at {}", outputPath);
-		monitor.startStep(getMonitorId(), "Prepare sink file", 1);
 		outputDir = ensureOutputDirectoryExists(outputPath);
 		// connect to repository
-		monitor.startStep(getMonitorId(), "Connect to repository", 2);
 		boolean connected;
 		try {
-			connected = connect();
+			connected = connect(hostName, port, username, password);
 		} catch (Exception ex) {
 			logger.error("failed to connect to repository - " + ex);
 			return;
@@ -120,7 +116,6 @@ public abstract class FetchJob extends FortscaleJob {
 			logger.error("failed to connect to repository");
 			return;
 		}
-		monitor.startStep(getMonitorId(), "Query repository", 3);
 		do {
 			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {
@@ -128,55 +123,25 @@ public abstract class FetchJob extends FortscaleJob {
 			}
 			// try to create output file
 			createOutputFile(outputDir);
+			File outputTempFile = new File(outputDir, tempfilename);
 			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
-			monitor.finishStep(getMonitorId(), "Prepare sink file");
-			fetch();
-			// report to monitor the file size
-			monitor.addDataReceived(getMonitorId(), getJobDataReceived(outputTempFile));
+			try {
+				fetch(filename, tempfilename, outputDir, returnKeys, delimiter, encloseQuotes, earliest, latest,
+						savedQuery);
+			} catch (Exception ex) {
+				logger.error("failed to fetch - {}", ex);
+			}
 			if (sortShellScript != null) {
 				// sort the output
-				monitor.startStep(getMonitorId(), "Sort Output", 4);
-				sortOutput();
-				monitor.finishStep(getMonitorId(), "Sort Output");
+				sortOrDeleteOutput();
 			} else {
-				// rename output file once get from splunk finished
-				monitor.startStep(getMonitorId(), "Rename Output", 4);
-				renameOutput();
-				monitor.finishStep(getMonitorId(), "Rename Output");
+				// rename output file once get from siem finished
+				renameOrDeleteOutput();
 			}
 			// update mongo with current fetch progress
 			updateMongoWithCurrentFetchProgress();
-			//support in smaller batches fetch - to avoid too big fetches - not relevant for manual fetches
-		} while(keepFetching);
-		finish();
+		} while (keepFetching);
 		logger.info("fetch job finished");
-	}
-
-	/**
-	 *
-	 * This reads configuration from the service
-	 *
-	 * @param key
-	 * @return
-	 */
-	protected String readFromConfigurationService(String key) {
-		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfiguration(key);
-		if (applicationConfiguration != null) {
-			return applicationConfiguration.getValue();
-		}
-		return null;
-	}
-
-	/**
-	 *
-	 * This reads configuration from the service
-	 *
-	 * @param prefix
-	 * @return
-	 */
-	protected Map<String, String> readGroupConfigurationService(String prefix) {
-		return applicationConfigurationService.getApplicationConfigurationByNamespace(prefix);
 	}
 
 	/**
@@ -184,7 +149,7 @@ public abstract class FetchJob extends FortscaleJob {
 	 * This method sets the parameters for specific page
 	 *
 	 */
-	protected void preparerFetchPageParams() {
+	private void preparerFetchPageParams() {
 		earliest = String.valueOf(TimestampUtils.convertToSeconds(earliestDate.getTime()));
 		Date pageLatestDate = DateUtils.addSeconds(earliestDate, fetchIntervalInSeconds);
 		pageLatestDate = pageLatestDate.before(latestDate) ? pageLatestDate : latestDate;
@@ -195,32 +160,16 @@ public abstract class FetchJob extends FortscaleJob {
 
 	/**
 	 *
-	 * This method checks the number of events received
-	 *
-	 * @param output
-	 * @return
-	 */
-	protected JobDataReceived getJobDataReceived(File output) {
-		if (output.length() < 1024) {
-			return new JobDataReceived("Events", new Integer((int)output.length()), "Bytes");
-		} else {
-			int sizeInKB = (int) (output.length() / 1024);
-			return new JobDataReceived("Events", new Integer(sizeInKB), "KB");
-		}
-	}
-
-	/**
-	 *
 	 * This helper method creates the output file
 	 *
 	 * @param outputDir
 	 * @throws JobExecutionException
 	 */
-	protected void createOutputFile(File outputDir) throws JobExecutionException {
+	private void createOutputFile(File outputDir) throws JobExecutionException {
 		// generate filename according to the job name and time
-		String filename = String.format(filenameFormat, (new Date()).getTime());
-		outputTempFile = new File(outputDir, filename + ".part");
-		outputFile = new File(outputDir, filename);
+		filename = String.format(filenameFormat, (new Date()).getTime());
+		tempfilename = filename + ".part";
+		File outputTempFile = new File(outputDir, tempfilename);
 		try {
 			if (!outputTempFile.createNewFile()) {
 				logger.error("cannot create output file {}", outputTempFile);
@@ -236,10 +185,9 @@ public abstract class FetchJob extends FortscaleJob {
 	 *
 	 * This method gets the fetch times from Mongo
 	 *
-	 * @param map
 	 * @throws JobExecutionException
 	 */
-	protected void getRunTimeFrameFromMongo(JobDataMap map) throws JobExecutionException {
+	private void getRunTimeFrameFromMongo() throws JobExecutionException {
 		//set fetch until the ceiling of now (according to the given interval
 		latestDate = DateUtils.ceiling(new Date(), ceilingTimePartInt);
 		//shift the date by the configured diff
@@ -257,43 +205,69 @@ public abstract class FetchJob extends FortscaleJob {
 
 	/**
 	 *
-	 * This method sorts the output file
+	 * This method attempts to delete a file if one is empty
 	 *
-	 * @throws InterruptedException
 	 */
-	protected void sortOutput() throws InterruptedException {
-		if (outputTempFile.length()==0) {
-			logger.info("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete())
-				logger.warn("cannot delete empty file {}", outputTempFile.getName());
-		} else {
-			Process pr =  runCmd(null, sortShellScript, outputTempFile.getAbsolutePath(), outputFile.getAbsolutePath());
-			if(pr == null){
-				logger.error("Failed to sort output of file {} using {}", outputTempFile.getAbsolutePath(),
-						sortShellScript);
-				addError(String.format("got the following error while running the shell command %s.",sortShellScript));
-			} else if(pr.waitFor() != 0){ // wait for process to finish
-				// error (return code is different than 0)
-				handleCmdFailure(pr, sortShellScript);
-			}
-			outputTempFile.delete();
+	private void attemptToDeleteEmptyFile(File outputTempFile) {
+		logger.debug("deleting empty output file {}", outputTempFile.getName());
+		if (!outputTempFile.delete()) {
+			logger.warn("cannot delete empty file {}", outputTempFile.getName());
 		}
 	}
 
 	/**
 	 *
-	 * This method handles the exceptions that occur during the fetch process
+	 * This method sorts the output file
 	 *
-	 * @param monitorId
-	 * @param e
-	 * @throws JobExecutionException
+	 * @throws InterruptedException
 	 */
-	protected void handleExecutionException(String monitorId, Exception e) throws JobExecutionException {
-		if (e instanceof JobExecutionException)
-			throw (JobExecutionException)e;
-		else {
-			logger.error("unexpected error during repository fetch " + e.toString());
-			throw new JobExecutionException(e);
+	private void sortOrDeleteOutput() throws InterruptedException {
+		File outputTempFile = new File(outputDir, tempfilename);
+		if (outputTempFile.length() > 0) {
+			File outputFile = new File(outputDir, filename);
+			Process pr = runCmd(null, sortShellScript, outputTempFile.getAbsolutePath(), outputFile.getAbsolutePath());
+			if (pr == null) {
+				logger.error("Failed to sort output of file {} using {}", outputTempFile.getAbsolutePath(),
+						sortShellScript);
+			} else if (pr.waitFor() != 0) { // wait for process to finish
+				// error (return code is different than 0)
+				logger.error("Failed to run cmd");
+			}
+			outputTempFile.delete();
+		} else {
+			attemptToDeleteEmptyFile(outputTempFile);
+		}
+	}
+
+	private Process runCmd(File workingDir, String... commands) {
+		ProcessBuilder processBuilder;
+		Process pr;
+		try {
+			processBuilder = new ProcessBuilder(commands);
+			if (workingDir != null) {
+				processBuilder.directory(workingDir);
+			}
+			pr = processBuilder.start();
+		} catch (Exception e) {
+			String cmd = StringUtils.join(commands, " ");
+			logger.error(String.format("while running the command \"%s\", got the following exception", cmd), e);
+			return null;
+		}
+		return pr;
+	}
+
+	private File ensureOutputDirectoryExists(String outputPath) throws JobExecutionException {
+		File outputDir = new File(outputPath);
+		try {
+			if (!outputDir.exists()) {
+				// try to create output directory
+				outputDir.mkdirs();
+			}
+			return outputDir;
+		} catch (SecurityException e) {
+			logger.error("cannot create output path - " + outputPath, e);
+			// stop execution, notify scheduler not to re-fire immediately
+			throw new JobExecutionException(e,  false);
 		}
 	}
 
@@ -302,13 +276,15 @@ public abstract class FetchJob extends FortscaleJob {
 	 * This method renames the output file when process is finished
 	 *
 	 */
-	protected void renameOutput() {
-		if (outputTempFile.length() == 0) {
-			logger.info("deleting empty output file {}", outputTempFile.getName());
-			if (!outputTempFile.delete())
-				logger.warn("cannot delete empty file {}", outputTempFile.getName());
+	private void renameOrDeleteOutput() {
+		File outputTempFile = new File(outputDir, tempfilename);
+		if (outputTempFile.length() > 0) {
+			File outputFile = new File(outputDir, filename);
+			if (!outputTempFile.renameTo(outputFile)) {
+				logger.warn("cannot rename file {}", outputTempFile.getName());
+			}
 		} else {
-			outputTempFile.renameTo(outputFile);
+			attemptToDeleteEmptyFile(outputTempFile);
 		}
 	}
 
@@ -317,7 +293,7 @@ public abstract class FetchJob extends FortscaleJob {
 	 * This method updates Mongo with the latest time fetched
 	 *
 	 */
-	protected void updateMongoWithCurrentFetchProgress() {
+	private void updateMongoWithCurrentFetchProgress() {
 		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
 		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
 		if (fetchConfiguration == null) {
@@ -325,7 +301,11 @@ public abstract class FetchJob extends FortscaleJob {
 		} else {
 			fetchConfiguration.setLastFetchTime(latest);
 		}
-		fetchConfigurationRepository.save(fetchConfiguration);
+		try {
+			fetchConfigurationRepository.save(fetchConfiguration);
+		} catch (OptimisticLockingFailureException ex) {
+			logger.warn("failed to save fetch configuration - {}", ex);
+		}
 		if (earliestDate != null && latestDate != null) {
 			if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
 				keepFetching = false;
@@ -338,12 +318,14 @@ public abstract class FetchJob extends FortscaleJob {
 	 * This method gets the specific job parameters
 	 *
 	 * @param map
+	 * @paran jobDataMapExtension
 	 * @param configuredSIEM
 	 * @throws JobExecutionException
 	 */
-	protected void getJobParameters(JobDataMap map, String configuredSIEM)
+	public void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, String configuredSIEM)
 			throws JobExecutionException {
-		Map<String, String> configuration = readGroupConfigurationService(SIEM_CONFIG_PREFIX);
+		Map<String, String> configuration = applicationConfigurationService.
+				getApplicationConfigurationByNamespace(SIEM_CONFIG_PREFIX);
 		if (configuration != null && !configuration.isEmpty()) {
 			hostName = configuration.get(SIEM_HOST_KEY);
 			port = configuration.get(SIEM_PORT_KEY);
@@ -377,13 +359,13 @@ public abstract class FetchJob extends FortscaleJob {
 			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 		} else {
 			//calculate query run times from mongo in the case not provided as job params
-			logger.info("No Time frame was specified as input param, continuing from the previous run ");
+			logger.debug("No Time frame was specified as input param, continuing from the previous run ");
 			type = jobDataMapExtension.getJobDataMapStringValue(map, "type");
 			//time back (default 1 hour)
 			fetchIntervalInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchIntervalInSeconds", 3600);
 			ceilingTimePartInt = jobDataMapExtension.getJobDataMapIntValue(map, "ceilingTimePartInt", Calendar.HOUR);
 			fetchDiffInSeconds = jobDataMapExtension.getJobDataMapIntValue(map, "fetchDiffInSeconds", 0);
-			getRunTimeFrameFromMongo(map);
+			getRunTimeFrameFromMongo();
 		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
 		if (savedQuery.startsWith("{") && savedQuery.endsWith("}")) {
@@ -401,19 +383,6 @@ public abstract class FetchJob extends FortscaleJob {
 		// try and retrieve the enclose quotes value, if present in the job data map
 		encloseQuotes = jobDataMapExtension.getJobDataMapBooleanValue(map, "encloseQuotes", true);
 		getExtraParameters(map, jobDataMapExtension);
-	}
-
-	@Override
-	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {}
-
-	@Override
-	protected int getTotalNumOfSteps() {
-		return 4;
-	}
-
-	@Override
-	protected boolean shouldReportDataReceived() {
-		return true;
 	}
 
 }

@@ -2,6 +2,8 @@ package fortscale.collection.morphlines.commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.typesafe.config.Config;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.utils.logging.Logger;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -24,6 +26,8 @@ import java.util.regex.Pattern;
 
 public final class GetTimezoneBuilder implements CommandBuilder {
 
+	private static MorphlineMetrics morphlineMetrics;
+
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList("GetTimezone");
@@ -40,6 +44,8 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 	@Configurable(preConstruction=true)
 	public static final class GetTimezone extends AbstractCommand {
 
+		MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
 		private final String sourceType;
 		private final String hostnameField;
 		private final String timezoneField;
@@ -53,11 +59,8 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 
 		public GetTimezone(CommandBuilder builder, Config config, Command parent,
 				Command child, MorphlineContext context) {
-			super(builder, config, parent, child, context);
 
-
-
-
+				super(builder, config, parent, child, context);
 			this.sourceType = getConfigs().getString(config, "sourceType");
 			this.hostnameField = getConfigs().getString(config, "hostnameField","");
 			this.timezoneField = getConfigs().getString(config, "timezoneOutputField");
@@ -79,17 +82,23 @@ public final class GetTimezoneBuilder implements CommandBuilder {
 		@Override
 		protected boolean doProcess(Record record) {
 
+			//The specific Morphline metric
+			morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(record);
+
 			if (tzConfig == null) {
 				// ####################################################################################################
 				// TEMP: Please refer to jira FV-3191
 				// ####################################################################################################
 				record.put(this.timezoneField, "UTC");
+				if (morphlineMetrics != null) {
+					morphlineMetrics.timeZoneNull++;
+				}
 			} else{
 				String hostname = (String)record.getFirstValue(hostnameField);
 				record.put(this.timezoneField, tzConfig.getTimeZone(sourceType, hostname));
-				
 			}
-			
+
+
 			// pass record to next command in chain:
 			return super.doProcess(record);
 		}

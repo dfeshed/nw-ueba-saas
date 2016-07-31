@@ -23,7 +23,7 @@ public class AdOUProcessJob extends AdProcessJob {
 	@Override
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
 		super.init(jobExecutionContext);
-		converter = new RecordToBeanItemConverter<>(getOutputFields());
+		converter = new RecordToBeanItemConverter<>("AdOUProcessJob", this.statsService, getOutputFields());
 	}
 
 	@Override

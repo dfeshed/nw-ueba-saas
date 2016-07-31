@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class StartStopServices extends FortscaleJob {
 
-    private static Logger logger = Logger.getLogger(MongoToKafkaJob.class);
+    private static Logger logger = Logger.getLogger(StartStopServices.class);
 
     private static final String SERVICE_PARAM = "service";
 
@@ -51,9 +51,9 @@ public class StartStopServices extends FortscaleJob {
         for (String service: services) {
             logger.info("{} service {}", action, service);
             if (clouderaService.startOrStopService(service, isStop)) {
-                logger.info("{} {} - successful");
+                logger.info("{} {} - successful", action, service);
             } else {
-                logger.error("{} {} - failed");
+                logger.error("{} {} - failed", action, service);
             }
         }
         finishStep();
