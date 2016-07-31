@@ -88,7 +88,42 @@ public class ApiUserController extends BaseController{
 			@RequestParam(required = false, value = "is_service_account") Boolean isServiceAccount,
 			@RequestParam(required = false, value = "search_field_contains") String searchFieldContains) {
 
+		Sort sortUserDesc = createSorting(sortField, sortDirection);
+		PageRequest pageRequest = createPaging(size, fromPage, sortUserDesc);
 
+		List<User> users = userService.findUsersByFilter(disabledSince, isDisabled, inactiveSince,
+				isDisabledWithActivity, isTerminatedWithActivity, isServiceAccount, searchFieldContains,
+				dataEntities, isTerminatedWithActivity, isServiceAccount, dataEntities, entityMinScore,
+				pageRequest);
+
+		setSeverityOnUsersList(users);
+		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
+		usersList.setOffset(pageRequest.getPageNumber()*pageRequest.getPageSize());
+		usersList.setTotal(userService.countUsersByFilter(disabledSince, isDisabled, inactiveSince,
+				isDisabledWithActivity, isTerminatedWithActivity, isServiceAccount, searchFieldContains,
+				dataEntities, isTerminatedWithActivity, isServiceAccount, dataEntities, entityMinScore));
+
+		return usersList;
+	}
+
+	private PageRequest createPaging(@RequestParam(required = false, value = "size") Integer size,
+			@RequestParam(required = false, value = "page") Integer fromPage, Sort sortUserDesc) {
+		// Create paging
+		Integer pageSize = 10;
+		if (size != null) {
+			pageSize = size;
+		}
+
+		Integer pageNumber = 0;
+		if (fromPage != null) {
+			pageNumber = fromPage - 1;
+		}
+
+		return new PageRequest(pageNumber, pageSize, sortUserDesc);
+	}
+
+	private Sort createSorting(@RequestParam(required = false, value = "sort_field") String sortField,
+			@RequestParam(required = false, value = "sort_direction") String sortDirection) {
 		// Create sorting
 		Sort sortUserDesc;
 		Sort.Direction sortDir = Sort.Direction.ASC;
@@ -107,99 +142,8 @@ public class ApiUserController extends BaseController{
 		} else {
 			sortUserDesc = new Sort(new Sort.Order(Sort.Direction.ASC, DEFAULT_SORT_FIELD));
 		}
-
-
-		// Create paging
-		Integer pageSize = 10;
-		if (size != null) {
-			pageSize = size;
-		}
-
-		Integer pageNumber = 0;
-		if (fromPage != null) {
-			pageNumber = fromPage - 1;
-		}
-
-		PageRequest pageRequest = new PageRequest(pageNumber, pageSize, sortUserDesc);
-
-		// Create criteria list
-		List<Criteria> criteriaList = new ArrayList<>();
-
-		if (disabledSince != null && !disabledSince.isEmpty()) {
-			criteriaList.add(where("adInfo.disableAccountTime")
-					.gte(new Date(Long.parseLong(disabledSince))));
-		}
-
-		if (isDisabled != null) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabled));
-		}
-
-		if (inactiveSince != null && !inactiveSince.isEmpty()) {
-			criteriaList.add(
-					new Criteria().orOperator(
-							where("lastActivity").lt(new Date(Long.parseLong(inactiveSince))),
-							where("lastActivity").not().ne(null)
-					)
-			);
-		}
-
-		if (isDisabledWithActivity != null && isDisabledWithActivity) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabledWithActivity));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
-			criteriaList.add(where("terminationDate").exists(true));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.terminationDate < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isServiceAccount != null && isServiceAccount) {
-			criteriaList.add(where("userServiceAccount").is(isServiceAccount));
-		}
-
-		if (searchFieldContains != null) {
-			criteriaList.add(where("sf").regex(searchFieldContains));
-		}
-
-		if (dataEntities != null) {
-            List<Criteria> wheres = new ArrayList<Criteria>();
-            for (String dataEntityName : dataEntities.split(",")) {
-                if (entityMinScore != null) {
-                    wheres.add(where("scores." + dataEntityName + ".score").gte(entityMinScore));
-                } else {
-                    wheres.add(where("scores." + dataEntityName).exists(true));
-                }
-			}
-            criteriaList.add(
-					new Criteria().orOperator(wheres.toArray(new Criteria[0]))
-			);
-		}
-
-		// Get users
-		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
-		setSeverityOnUsersList(users);
-		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
-
-		usersList.setOffset(pageNumber*pageSize);
-		usersList.setTotal(userRepository.countAllUsers(criteriaList));
-		return usersList;
+		return sortUserDesc;
 	}
-
-
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody

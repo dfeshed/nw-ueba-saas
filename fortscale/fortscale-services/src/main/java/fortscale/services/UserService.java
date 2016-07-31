@@ -7,6 +7,7 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
@@ -96,6 +97,7 @@ public interface UserService extends CachingService{
 	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
 
 	public User findByUsername(String username);
+
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username);
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
@@ -112,5 +114,16 @@ public interface UserService extends CachingService{
 	 * @return map of display names to users
 	 */
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
+
+	public List<User> findUsersByFilter(String disabledSince, Boolean isDisabled, String inactiveSince,
+			Boolean withActivity, Boolean disabledWithActivity, Boolean isDisabledWithActivity, String fieldContains,
+			String searchFieldContains, Boolean isTerminatedWithActivity, Boolean isServiceAccount, String dataEntities,
+			Integer entityMinScore, PageRequest pageRequest);
+
+	public Integer countUsersByFilter(String disabledSince, Boolean isDisabled, String inactiveSince,
+			Boolean isDisabledWithActivity, Boolean isTerminatedWithActivity, Boolean isServiceAccount,
+			String searchFieldContains, String dataEntities, Boolean isTerminatedWithActivity1, Boolean isServiceAccount1,
+			String dataEntities1, Integer entityMinScore);
+
 
 }
