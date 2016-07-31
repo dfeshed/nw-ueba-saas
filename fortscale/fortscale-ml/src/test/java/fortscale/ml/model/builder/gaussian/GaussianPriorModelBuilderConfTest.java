@@ -6,13 +6,13 @@ import org.junit.Test;
 
 public class GaussianPriorModelBuilderConfTest {
 	private static class GaussianPriorModelBuilderConfBuilder {
-		private double distanceBetweenSegmentCenters;
-		private int numberOfNeighbours;
-		private double maxRatioBetweenSegmentSizeToCenter;
-		private double maxSegmentWidthToNotDiscardBecauseOfBadRatio;
-		private double padding;
-		private int minNumOfSamplesToLearnFrom;
-		private double quantile;
+		private Double distanceBetweenSegmentCenters;
+		private Integer numberOfNeighbours;
+		private Double maxRatioBetweenSegmentSizeToCenter;
+		private Double maxSegmentWidthToNotDiscardBecauseOfBadRatio;
+		private Double padding;
+		private Integer minNumOfSamplesToLearnFrom;
+		private Double quantile;
 		private Double minMaxValue;
 
 		public GaussianPriorModelBuilderConfBuilder setDistanceBetweenSegmentCenters(double distanceBetweenSegmentCenters) {
@@ -217,12 +217,28 @@ public class GaussianPriorModelBuilderConfTest {
 				.build();
 
 		Assert.assertEquals(distanceBetweenSegmentCenters, conf.getDistanceBetweenSegmentCenters(), 0.00001);
-		Assert.assertEquals(numberOfNeighbours, conf.getNumberOfNeighbours(), 0.00001);
+		Assert.assertEquals(numberOfNeighbours, conf.getNumberOfNeighbours());
 		Assert.assertEquals(maxRatioBetweenSegmentSizeToCenter, conf.getMaxRatioBetweenSegmentSizeToCenter(), 0.00001);
 		Assert.assertEquals(maxSegmentWidthToNotDiscardBecauseOfBadRatio, conf.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(), 0.00001);
 		Assert.assertEquals(padding, conf.getPadding(), 0.00001);
-		Assert.assertEquals(minNumOfSamplesToLearnFrom, conf.getMinNumOfSamplesToLearnFrom(), 0.00001);
+		Assert.assertEquals(minNumOfSamplesToLearnFrom, conf.getMinNumOfSamplesToLearnFrom());
 		Assert.assertEquals(quantile, conf.getQuantile(), 0.00001);
+		Assert.assertEquals(minMaxValue, conf.getMinMaxValue(), 0.00001);
 		Assert.assertEquals("gaussian_prior_model_builder", conf.getFactoryName());
+	}
+
+	@Test
+	public void shouldUseProperDefaults() {
+		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.build();
+
+		Assert.assertEquals(100, conf.getNumberOfNeighbours());
+		Assert.assertEquals(0.1, conf.getMaxRatioBetweenSegmentSizeToCenter(), 0.00001);
+		Assert.assertEquals(1, conf.getPadding(), 0.00001);
+		Assert.assertEquals(0.99, conf.getQuantile(), 0.00001);
+		Assert.assertEquals(1, conf.getMinMaxValue(), 0.00001);
 	}
 }

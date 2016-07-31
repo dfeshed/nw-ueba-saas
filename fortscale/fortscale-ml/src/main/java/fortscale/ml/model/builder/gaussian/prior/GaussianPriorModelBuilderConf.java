@@ -11,6 +11,12 @@ import org.springframework.util.Assert;
 public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	public static final String GAUSSIAN_PRIOR_MODEL_BUILDER = "gaussian_prior_model_builder";
 
+	private static final int NUMBER_OF_NEIGHBOURS_DEFAULT_VALUE = 100;
+	private static final double MAX_RATIO_BETWEEN_SEGMENT_SIZE_TO_CENTER_DEFAULT_VALUE = 0.1;
+	private static final double PADDING_DEFAULT_VALUE = 1;
+	private static final double QUANTILE_DEFAULT_VALUE = 0.99;
+	private static final double MIN_MAX_VALUE_DEFAULT_VALUE = 1;
+
 	private double distanceBetweenSegmentCenters;
 	private int numberOfNeighbours;
 	private double maxRatioBetweenSegmentSizeToCenter;
@@ -18,16 +24,16 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private double padding;
 	private int minNumOfSamplesToLearnFrom;
 	private double quantile;
-	private Double minMaxValue;
+	private double minMaxValue;
 
 	@JsonCreator
 	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentCenters") double distanceBetweenSegmentCenters,
-										 @JsonProperty("numberOfNeighbours") int numberOfNeighbours,
-										 @JsonProperty("maxRatioBetweenSegmentSizeToCenter") double maxRatioBetweenSegmentSizeToCenter,
+										 @JsonProperty("numberOfNeighbours") Integer numberOfNeighbours,
+										 @JsonProperty("maxRatioBetweenSegmentSizeToCenter") Double maxRatioBetweenSegmentSizeToCenter,
 										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
-										 @JsonProperty("padding") double padding,
+										 @JsonProperty("padding") Double padding,
 										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
-										 @JsonProperty("quantile") double quantile,
+										 @JsonProperty("quantile") Double quantile,
 										 @JsonProperty("minMaxValue") Double minMaxValue) {
 		setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters);
 		setNumberOfNeighbours(numberOfNeighbours);
@@ -49,13 +55,19 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.distanceBetweenSegmentCenters = distanceBetweenSegmentCenters;
 	}
 
-	private void setNumberOfNeighbours(int numberOfNeighbours) {
+	private void setNumberOfNeighbours(Integer numberOfNeighbours) {
+		if (numberOfNeighbours == null) {
+			numberOfNeighbours = NUMBER_OF_NEIGHBOURS_DEFAULT_VALUE;
+		}
 		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours is mandatory and must be a positive double.");
 		this.numberOfNeighbours = numberOfNeighbours;
 	}
 
-	private void setMaxRatioBetweenSegmentSizeToCenter(double maxRatioBetweenSegmentSizeToCenter) {
-		Assert.isTrue(maxRatioBetweenSegmentSizeToCenter > 0, "maxRatioBetweenSegmentSizeToCenter is mandatory and must be a positive double.");
+	private void setMaxRatioBetweenSegmentSizeToCenter(Double maxRatioBetweenSegmentSizeToCenter) {
+		if (maxRatioBetweenSegmentSizeToCenter == null) {
+			maxRatioBetweenSegmentSizeToCenter = MAX_RATIO_BETWEEN_SEGMENT_SIZE_TO_CENTER_DEFAULT_VALUE;
+		}
+		Assert.isTrue(maxRatioBetweenSegmentSizeToCenter > 0, "maxRatioBetweenSegmentSizeToCenter must be a positive double.");
 		this.maxRatioBetweenSegmentSizeToCenter = maxRatioBetweenSegmentSizeToCenter;
 	}
 
@@ -64,8 +76,11 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.maxSegmentWidthToNotDiscardBecauseOfBadRatio = maxSegmentWidthToNotDiscardBecauseOfBadRatio;
 	}
 
-	private void setPadding(double padding) {
-		Assert.isTrue(padding >= 0, "padding is mandatory and must be a non-negative double.");
+	private void setPadding(Double padding) {
+		if (padding == null) {
+			padding = PADDING_DEFAULT_VALUE;
+		}
+		Assert.isTrue(padding >= 0, "padding must be a non-negative double.");
 		this.padding = padding;
 	}
 
@@ -74,13 +89,19 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.minNumOfSamplesToLearnFrom = minNumOfSamplesToLearnFrom;
 	}
 
-	private void setQuantile(double quantile) {
-		Assert.isTrue(quantile >= 0 && quantile <= 1, "quantile is mandatory and must be between 0 to 1.");
+	private void setQuantile(Double quantile) {
+		if (quantile == null) {
+			quantile = QUANTILE_DEFAULT_VALUE;
+		}
+		Assert.isTrue(quantile >= 0 && quantile <= 1, "quantile must be between 0 to 1.");
 		this.quantile = quantile;
 	}
 
 	private void setMinMaxValue(Double minMaxValue) {
-		Assert.isTrue(minMaxValue == null || minMaxValue >= 0, "minMaxValue can't be negative");
+		if (minMaxValue == null) {
+			minMaxValue = MIN_MAX_VALUE_DEFAULT_VALUE;
+		}
+		Assert.isTrue(minMaxValue >= 0, "minMaxValue can't be negative");
 		this.minMaxValue = minMaxValue;
 	}
 
