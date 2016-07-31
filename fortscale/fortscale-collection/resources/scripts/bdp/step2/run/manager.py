@@ -40,6 +40,8 @@ class Manager(OnlineManager):
                                       polling_interval=polling_interval,
                                       max_delay=max_delay,
                                       batch_size_in_hours=batch_size_in_hours)
+        if is_online_mode and timeout is not None:
+            raise Exception('in online mode there should be no timeout')
         self._timeout = timeout
         self._validation_batches_delay = validation_batches_delay
         self._is_online_mode = is_online_mode
