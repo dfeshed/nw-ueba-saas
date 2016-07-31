@@ -20,7 +20,7 @@ public interface ActiveDirectoryDAO {
     void getAndHandle(String filter, String
             adFields, int resultLimit, ActiveDirectoryResultHandler handler, List<AdConnection> adConnections)
             throws Exception;
-
     List<String> getDomainControllers(List<AdConnection> AdConnections) throws Exception;
+    String connectToAD(AdConnection adConnection) throws Exception;
 
 }

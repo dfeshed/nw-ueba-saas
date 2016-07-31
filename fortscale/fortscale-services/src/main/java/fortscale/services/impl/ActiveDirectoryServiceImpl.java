@@ -73,7 +73,19 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
 
-    @Override
+	@Override
+	public String canConnect(AdConnection adConnection) {
+		String result;
+		try {
+			result = activeDirectoryDAO.connectToAD(adConnection);
+		} catch (Exception ex) {
+			logger.error("failed to connect to ad - {}", ex);
+			result = ex.getLocalizedMessage();
+		}
+		return result;
+	}
+
+	@Override
     public List<String> getDomainControllers() {
         List<String> domainControllers = new ArrayList<>();
         try {
