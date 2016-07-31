@@ -1,5 +1,7 @@
 package fortscale.web.rest;
 
+import com.sun.istack.NotNull;
+import fortscale.domain.ad.AdConnection;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
@@ -8,6 +10,9 @@ import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,9 +25,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import javax.validation.Valid;
+import javax.validation.constraints.Size;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,6 +46,8 @@ public class ApiApplicationConfigurationController extends BaseController {
     private final String META_ENCRYPT = "encrypt";
     private final String META_FIELDS = "fields";
 	private final String ENCRYPTION_DONE_PLACEHOLDER = "ENCRYPTION_DONE";
+
+    final String ACTIVE_DIRECTORY_KEY = "system.activeDirectory.settings";
 
     /**
      * Handles response errors.
@@ -61,9 +68,19 @@ public class ApiApplicationConfigurationController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<ApplicationConfiguration>> getConfigurations() {
+    public DataBean<List<ApplicationConfiguration>> getConfigurations(String[] namespace) {
+
         DataBean<List<ApplicationConfiguration>> applicationConfigurationDataList = new DataBean<>();
-        List<ApplicationConfiguration> applicationConfigurationList = applicationConfigurationService.getApplicationConfiguration();
+        List<ApplicationConfiguration> applicationConfigurationList = null;
+        if (namespace == null  || namespace.length==0) {
+            applicationConfigurationList = applicationConfigurationService.getApplicationConfiguration();
+        } else {
+            Set<ApplicationConfiguration> applicationConfigurationSet = new HashSet<>();
+            for (String singleNamesspace : namespace) {
+                applicationConfigurationSet.addAll(applicationConfigurationService.getApplicationConfigurationAsListByNamespace(singleNamesspace));
+            }
+            applicationConfigurationList= new ArrayList<>(applicationConfigurationSet);
+        }
 
         applicationConfigurationDataList.setData(applicationConfigurationList);
         applicationConfigurationDataList.setTotal(applicationConfigurationList.size());
@@ -173,4 +190,63 @@ public class ApiApplicationConfigurationController extends BaseController {
         return new ResponseEntity(HttpStatus.NO_CONTENT);
 
     }
+
+
+    /**
+     * Updates or creates config items.
+     *
+
+     * @return ResponseEntity
+     * @throws JSONException
+     */
+    @RequestMapping(method = RequestMethod.POST,value = "/active_directory")
+    @HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
+    @LogException
+    public ResponseEntity updateActiveDirectory(@Valid @RequestBody List<AdConnection> activeDirectoryDomains){
+
+
+
+        Map<String, String> configItems = new HashMap<>();
+
+        try {
+            for (AdConnection newAdConfiguration : activeDirectoryDomains) {
+                if (shouldEncryptPassword(newAdConfiguration)) { //Password is not already encrypted
+                    String encryptedPassword = EncryptionUtils.encrypt(newAdConfiguration.getDomainPassword()).trim();
+                    newAdConfiguration.setDomainPassword(encryptedPassword);
+                }
+            }
+
+            applicationConfigurationService.updateConfigItemAsObject(ACTIVE_DIRECTORY_KEY,activeDirectoryDomains);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (Exception e){
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    private boolean shouldEncryptPassword(AdConnection newAdConfiguration){
+        List<AdConnection> adConnectionsFromDB = applicationConfigurationService.getApplicationConfigurationAsObjects(ACTIVE_DIRECTORY_KEY, AdConnection.class);
+        if (adConnectionsFromDB == null || adConnectionsFromDB.isEmpty()){
+            return true;
+        }
+
+        for (AdConnection existsConnection:adConnectionsFromDB){
+            String domainFromNewConfiguration = newAdConfiguration.getDomainUser().split("@")[1];
+            String domainFromDBConfiguration = existsConnection.getDomainUser().split("@")[1];
+            String newPasswordFromNewConfiguration = newAdConfiguration.getDomainPassword();
+            String passwordFromOldConfiguration = existsConnection.getDomainPassword();
+
+            //Iterate all connections until found connection with the same domain.
+            //If password is the same - don't encrypt. If the password different- encrypt
+            if (domainFromDBConfiguration.equals(domainFromNewConfiguration)){
+                if (newPasswordFromNewConfiguration.equals(passwordFromOldConfiguration)) {
+                    return false;
+                } else {
+                    return  true;
+                }
+            }
+        }
+
+        return true; //The domain wasn't found. Encrypt the password
+    }
+
 }
