@@ -14,6 +14,7 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
+import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Test;
@@ -44,11 +45,13 @@ public class ModelConfProductionConfFilesTest {
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 		@Mock private EntityEventDataReaderService entityEventDataReaderService;
 		@Mock private EntityEventMongoStore entityEventMongoStore;
+		@Mock private ModelStore modelStore;
 
 		@Bean public FeatureBucketsReaderService getFeatureBucketsReaderService() {return featureBucketsReaderService;}
 		@Bean public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {return aggregatedFeatureEventsReaderService;}
 		@Bean public EntityEventDataReaderService getEntityEventDataReaderService() {return entityEventDataReaderService;}
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
+		@Bean public ModelStore getModelStore() {return modelStore;}
 
 		@Bean
 		public BucketConfigurationService bucketConfigurationService() {
@@ -154,7 +157,7 @@ public class ModelConfProductionConfFilesTest {
 		}
 
 		int expRawEventsModelConfs = 53;
-		int expAggrEventsModelConfs = 64;
+		int expAggrEventsModelConfs = 72;
 		int expEntityEventsModelConfs = 30;
 		Assert.assertEquals(expRawEventsModelConfs + expAggrEventsModelConfs + expEntityEventsModelConfs, counter);
 	}
