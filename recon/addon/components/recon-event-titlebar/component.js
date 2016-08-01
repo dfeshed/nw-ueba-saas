@@ -5,6 +5,7 @@ const {Component} = Ember;
 
 export default Component.extend({
   layout,
+  tagName: 'hbox',
   /**
    * The title is the string to display as the title of the header
    * It will default to 'Event Reconstruction' if nothing is passed in
