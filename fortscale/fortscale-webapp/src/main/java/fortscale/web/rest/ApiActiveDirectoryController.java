@@ -69,8 +69,8 @@ public class ApiActiveDirectoryController {
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
 	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
-			@RequestBody Boolean encryptPassword) {
-		if (encryptPassword) {
+			@RequestBody Boolean encryptedPassword) {
+		if (!encryptedPassword) {
 			try {
 				activeDirectoryDomain.setDomainPassword(EncryptionUtils.encrypt(activeDirectoryDomain.
 						getDomainPassword()));
