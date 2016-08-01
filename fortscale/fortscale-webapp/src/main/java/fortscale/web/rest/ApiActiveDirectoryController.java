@@ -21,6 +21,7 @@ import java.util.List;
 /**
  * Created by Amir Keren on 7/31/16.
  */
+@RequestMapping(value = "/active_directory")
 public class ApiActiveDirectoryController {
 
 	private static final String ACTIVE_DIRECTORY_KEY = "system.activeDirectory.settings";
@@ -36,7 +37,7 @@ public class ApiActiveDirectoryController {
 	 * @return ResponseEntity
 	 * @throws JSONException
 	 */
-	@RequestMapping(method = RequestMethod.POST,value = "/active_directory")
+	@RequestMapping(method = RequestMethod.POST)
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
 	public ResponseEntity updateActiveDirectory(@Valid @RequestBody List<AdConnection> activeDirectoryDomains) {
@@ -61,7 +62,7 @@ public class ApiActiveDirectoryController {
 	 * @return ResponseEntity
 	 * @throws JSONException
 	 */
-	@RequestMapping(method = RequestMethod.POST,value = "/active_directory_test")
+	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
 	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain) {
@@ -97,4 +98,13 @@ public class ApiActiveDirectoryController {
 		return true; //The domain wasn't found. Encrypt the password
 	}
 
+
+	@RequestMapping(method = RequestMethod.GET)
+	@LogException
+	public List<AdConnection> getActiveDirectory(){
+
+		List<AdConnection> adConnectionsFromDB = applicationConfigurationService.getApplicationConfigurationAsObjects(ACTIVE_DIRECTORY_KEY, AdConnection.class);
+		return adConnectionsFromDB;
+
+	}
 }
