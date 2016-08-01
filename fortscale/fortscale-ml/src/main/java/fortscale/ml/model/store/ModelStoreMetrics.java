@@ -1,6 +1,5 @@
 package fortscale.ml.model.store;
 
-import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -33,6 +32,9 @@ public class ModelStoreMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long getModelDaos;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long getModelDaosWithNoContext;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long removeModels;

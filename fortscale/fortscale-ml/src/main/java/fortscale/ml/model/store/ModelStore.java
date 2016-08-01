@@ -67,6 +67,7 @@ public class ModelStore {
 	}
 
 	public List<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, long eventEpochtime) {
+		getMetrics().getModelDaosWithNoContext++;
 		String modelGroupName = "model";
 		Aggregation agg = newAggregation(
 				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(eventEpochtime)),
