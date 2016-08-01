@@ -1,12 +1,6 @@
 {{recon-event-titlebar title=title}}
 <grid responsive>
-  {{recon-event-header-item key='SERVICE' value='EMEA-Broker'}}
-  {{recon-event-header-item key='EVENT ID' value='12345678'}}
-  {{recon-event-header-item key='EVENT TYPE' value='Network Session'}}
-  {{recon-event-header-item key='FIRST PACKET TIME' value='12:00'}}
-  {{recon-event-header-item key='SIZE' value='7 KB'}}
-  {{recon-event-header-item key='SOURCE IP' value='192.168.4.24'}}
-  {{recon-event-header-item key='SOURCE PORT' value='36033'}}
-  {{recon-event-header-item key='DESTINATION IP' value='192.168.4.24'}}
-  {{recon-event-header-item key='DESTINATION PORT' value='80'}}
+  {{#each headerItems as |item|}}
+    {{recon-event-header-item key=item.key value=item.value}}
+  {{/each}}
 </grid>
