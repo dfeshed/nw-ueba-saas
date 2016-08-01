@@ -21,10 +21,6 @@ NPM_BINARY=$BINARIES/npm
 BOWER_COMMAND=$BINARIES/bower
 EMBER_CLI_COMMAND=$BINARIES/ember
 
-# Bower Registry Settings
-BOWER_REGISTRY=./bower_registry
-BOWER_ARCHIVE_JAR=./bower-registry.jar
-
 # RPM settings
 SA_ROOT=$CWD/sa
 SA_RPM_ROOT=$SA_ROOT/rpm

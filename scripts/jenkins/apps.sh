@@ -9,6 +9,8 @@
 #    (https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/)
 #
 
+PORTS=(7351 7352 7353 7354 7355 7356 7357 7358 7359 7360 7361 7362 7363 7364 7365 7366 7367 7368 7369 7370 7371 7372 7373 7374 7375 7376 7377 7378 7379 7380)
+
 function runAppNPMInstall {
   info "Running 'npm install' for $1"
   $NPM_BINARY --prefix $1/ i
@@ -18,18 +20,16 @@ function runAppNPMInstall {
 
 function runAppBowerInstall {
   info "Running 'bower install'' for $1"
-  bower install \
-  --config.cwd=$1 \
-  --offline \
-  --config.storage.registry=$BOWER_REGISTRY/bower_repository/registry \
-  --config.storage.packages=$BOWER_REGISTRY/bower_repository/packages
+  bower install --config.cwd=$1
+  checkError "Bower install failed for $1"
   success "Installed $1 bower dependencies"
 }
 
 function runEmberTest {
-  info "Running 'ember test' for $1 on port $2"
+  port=${PORTS[$RANDOM % ${#PORTS[@]} ]}
+  info "Running 'ember test' for $1 on port $port"
   cd $1
-  ember test --test-port $2
+  ember test --test-port $port
   checkError "Ember test failed for $1"
   success "'ember test' for $1 was successful"
   cd $CWD
@@ -54,7 +54,7 @@ function buildEmberApp {
   runAppBowerInstall $1
 
   # 'ember test'
-  runEmberTest $1 $2
+  runEmberTest $1
 
   # 'ember build' when running full build
   if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
@@ -65,35 +65,20 @@ function buildEmberApp {
   success "$1 is good!"
 }
 
-function handleBowerArchive {
-  info "Retrieving bower archive from artifactory"
-
-  # get latest snapshot of bower archive from artifactory
-  wget -O $BOWER_ARCHIVE_JAR http://repo1.rsa.lab.emc.com:8081/artifactory/asoc-snapshots/com/rsa/asoc/netwitness/ui/bower-registry/$NETWITNESS_VERSION-SNAPSHOT/bower-registry-$NETWITNESS_VERSION-SNAPSHOT.jar
-
-  # remove old bower registry, create new one with artifact unzip and cleanup the jar file
-  rm -rf $BOWER_REGISTRY
-  mkdir $BOWER_REGISTRY
-  cd $BOWER_REGISTRY
-  jar xvf ../$BOWER_ARCHIVE_JAR
-  cd $CWD
-  rm -rf $BOWER_ARCHIVE_JAR
-
-  info "Unzipped bower archive to $BOWER_REGISTRY"
-  success "Bower archive ready"
-}
-
 info "***********************"
 info "Building apps"
 
-handleBowerArchive
+# Run node script that will check bower versions for all projects
+node scripts/jenkins/check-bower-versions.js
 
-# doing this after bower archive has been retrieved as
-# setting this before that will break artifactory fetch
 setWebProxy
 
-buildEmberApp component-lib 7355
-buildEmberApp style-guide 7356
+# http://stackoverflow.com/questions/21789683/how-to-fix-bower-ecmderr
+# fixes ecmderr with bower install
+git config --global url."https://".insteadOf git://
+
+buildEmberApp component-lib
+buildEmberApp style-guide
 
 #### Deploy style guide to host if running full build
 if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
@@ -103,7 +88,7 @@ then
   success "Hosted style guide has been updated"
 fi
 
-buildEmberApp sa 7357
+buildEmberApp sa
 
 unsetWebProxy
 
