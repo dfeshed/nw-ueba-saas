@@ -4,7 +4,7 @@
  */
 
 export default function(config) {
-  config.get('/users', function(db) {
+  config.get('/api/users', function(db) {
 
     return {
       code: 0,

@@ -95,8 +95,11 @@ module.exports = function(environment) {
         authenticate: 'authenticator:authenticator',
         authorizer: 'authorizer:authorizer',
         /* Local storage key that holds the CSRF token returned by the server */
-        csrfLocalstorageKey: 'rsa-x-csrf-token'
-      },
+        csrfLocalstorageKey: 'rsa-x-csrf-token',
+        /* Local storage key that holds the OAuth token returned by the Security Server */
+        accessTokenKey: 'rsa-oauth2-jwt-access-token'
+
+    },
     contentSecurityPolicy: {
 
         // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
