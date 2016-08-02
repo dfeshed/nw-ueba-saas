@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -18,18 +19,30 @@ public abstract class UserActivityBaseRepository  {
 	@Autowired
 	protected MongoTemplate mongoTemplate;
 
-	protected  <T extends UserActivityDocument> List<T> getUserActivityEntries(@Nullable String username, int timeRangeInDays, String collectionName, Class<T> documentType) {
-		List<T> userActivityDocuments;
+	protected  <T extends UserActivityDocument> List<T> getUserActivityEntries(@Nullable String username, Integer timeRangeInDays, String collectionName, Class<T> documentType) {
+		List<T> userActivityDocuments = new ArrayList<T>();
+
 		if (mongoTemplate.collectionExists(collectionName)) {
-			Criteria jointCriteria = Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
+			List<Criteria> criteriaList = new ArrayList<>();
+			if (timeRangeInDays!=null) {
+				criteriaList.add(Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays))));
+			}
+			else{
+				getLogger().info("Argument 'timeRangeInDays' is null.");
+			}
 			if (username != null) {
 				Criteria idCriteria = Criteria.where(UserActivityLocationDocument.USER_NAME_FIELD_NAME).is(username);
-				jointCriteria.andOperator(idCriteria);
+				criteriaList.add(idCriteria);
 			}
 			else {
-				getLogger().info("Argument 'username' is null. Querying by start time only");
+				getLogger().info("Argument 'username' is null. Querying by start time only.");
 			}
-			Query query = new Query(jointCriteria);
+
+			Query query = new Query();
+			for (Criteria criteria: criteriaList) {
+				query.addCriteria(criteria);
+			}
+
 			userActivityDocuments = mongoTemplate.find(query, documentType, collectionName);
 		}
 		else {

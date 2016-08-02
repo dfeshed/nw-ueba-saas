@@ -290,10 +290,34 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         Query query = getQueryForAlertsRelevantToUserScore(username);
         query.fields().exclude(Alert.evidencesField);
 
-        List<Alert> userNames = mongoTemplate.find(query,Alert.class);
+        List<Alert> alerts = mongoTemplate.find(query,Alert.class);
 
-        return  new HashSet<>(userNames);
+        return  new HashSet<>(alerts);
     }
+
+	@Override
+	public Set<Alert> getAlertsForUserByFeedback(String userName, Set<AlertFeedback> feedbackSet) {
+
+		Query query = buildQueryByUserNameAndFeedback(userName, feedbackSet);
+		query.fields().exclude(Alert.evidencesField);
+
+		List<Alert> alerts = mongoTemplate.find(query, Alert.class);
+		return new HashSet<>(alerts);
+	}
+
+	private Query buildQueryByUserNameAndFeedback(String userName, Set<AlertFeedback> feedbackSet) {
+		Criteria criteria = new Criteria();
+		if (feedbackSet != null && !feedbackSet.isEmpty()) {
+			criteria.where(Alert.feedbackField).in(feedbackSet);
+		}
+
+		if (StringUtils.isNotBlank(userName)){
+			criteria.and(Alert.entityNameField).is(userName);
+		}
+		Query query = new Query();
+		query.addCriteria(criteria);
+		return query;
+	}
 
 	@Override
 	public void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag ){

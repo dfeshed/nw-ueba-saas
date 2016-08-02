@@ -125,5 +125,5 @@ public interface UserService extends CachingService{
 			String searchFieldContains, String dataEntities, Boolean isTerminatedWithActivity1, Boolean isServiceAccount1,
 			String dataEntities1, Integer entityMinScore);
 
-
+	public void recalculateNumberOfUserAlerts(String userName);
 }

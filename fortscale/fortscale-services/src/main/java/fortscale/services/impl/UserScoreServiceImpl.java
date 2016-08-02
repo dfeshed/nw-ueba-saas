@@ -6,6 +6,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
+import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
 import fortscale.utils.time.TimestampUtils;
@@ -65,7 +66,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private UserScorePercentilesRepository userScorePercentilesRepository;
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -75,9 +75,11 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private AlertsRepository alertsRepository;
 
-
     @Autowired
     private ApplicationConfigurationHelper applicationConfigurationHelper;
+
+    @Autowired
+    private UserService userService;
 
     private UserScoreConfiguration userScoreConfiguration;
 
@@ -153,7 +155,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         }
         User user = userRepository.findByUsername(userName);
         user.setScore(userScore);
-        user.setAlertsCount(alerts.size());
 
         userRepository.save(user);
         return userScore;
@@ -326,6 +327,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
+            userService.recalculateNumberOfUserAlerts(userName);
         }
         logger.info("Finish updating user score");
 

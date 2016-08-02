@@ -1,12 +1,12 @@
 package fortscale.web.rest;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;
@@ -16,6 +16,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
+import fortscale.web.beans.request.UserRestFilter;
+import fortscale.web.rest.Utils.UserActivityUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,7 +28,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -35,8 +36,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Controller
 @RequestMapping("/api/user")
@@ -64,46 +63,59 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
+	@Autowired
+	private UserActivityUtils userActivityUtils;
+
+	@Autowired
+	private AlertsService alertsService;
+
+	@Autowired
+	private UserActivityService userActivityService;
+
 	private static final String DEFAULT_SORT_FIELD = "username";
 
 
 	/**
 	 * The API to get all users. GET: /api/user
 	 */
-	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<UserDetailsBean>> getUsers(
-			@RequestParam(required = false, value = "sort_field") String sortField,
-			@RequestParam(required = false, value = "sort_direction") String sortDirection,
-			@RequestParam(required = false, value = "size") Integer size,
-			@RequestParam(required = false, value = "page") Integer fromPage,
-			@RequestParam(required = false, value = "disabled_since") String disabledSince,
-			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
-			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
-			@RequestParam(required = false, value = "is_terminated_with_activity") Boolean isTerminatedWithActivity,
-			@RequestParam(required = false, value = "inactive_since") String inactiveSince,
-			@RequestParam(required = false, value = "data_entities") String dataEntities,
-			@RequestParam(required = false, value = "entity_min_score") Integer entityMinScore,
-			@RequestParam(required = false, value = "is_service_account") Boolean isServiceAccount,
-			@RequestParam(required = false, value = "search_field_contains") String searchFieldContains) {
+	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
+	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
 
-		Sort sortUserDesc = createSorting(sortField, sortDirection);
-		PageRequest pageRequest = createPaging(size, fromPage, sortUserDesc);
+		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
+		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
-		List<User> users = userService.findUsersByFilter(disabledSince, isDisabled, inactiveSince,
-				isDisabledWithActivity, isTerminatedWithActivity, isServiceAccount, searchFieldContains,
-				dataEntities, isTerminatedWithActivity, isServiceAccount, dataEntities, entityMinScore,
-				pageRequest);
+		List<User> users = userService.findUsersByFilter(userRestFilter.getDisabledSince(), userRestFilter.getIsDisabled(),
+				userRestFilter.getInactiveSince(), userRestFilter.getIsDisabledWithActivity(),
+				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
+				userRestFilter.getSearchFieldContains(), userRestFilter.getDataEntities(),
+				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
+				userRestFilter.getDataEntities(), userRestFilter.getEntityMinScore(), pageRequest);
 
 		setSeverityOnUsersList(users);
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
-		usersList.setOffset(pageRequest.getPageNumber()*pageRequest.getPageSize());
-		usersList.setTotal(userService.countUsersByFilter(disabledSince, isDisabled, inactiveSince,
-				isDisabledWithActivity, isTerminatedWithActivity, isServiceAccount, searchFieldContains,
-				dataEntities, isTerminatedWithActivity, isServiceAccount, dataEntities, entityMinScore));
+		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
+		usersList.setTotal(userService.countUsersByFilter(userRestFilter.getDisabledSince(), userRestFilter.getIsDisabled(),
+				userRestFilter.getInactiveSince(), userRestFilter.getIsDisabledWithActivity(),
+				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
+				userRestFilter.getSearchFieldContains(), userRestFilter.getDataEntities(),
+				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
+				userRestFilter.getDataEntities(), userRestFilter.getEntityMinScore()));
+
+		if (userRestFilter.getAddAdditionalInfo() != null && userRestFilter.getAddAdditionalInfo()) {
+			setAdditionalInformation(usersList.getData());
+		}
 
 		return usersList;
+	}
+
+	private void setAdditionalInformation(List<UserDetailsBean> users) {
+		for (UserDetailsBean userDetailsBean: users) {
+			User user = userDetailsBean.getUser();
+			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
+			userDetailsBean.setAlerts(usersAlerts);
+			List<UserActivitySourceMachineDocument> userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(), null);
+			userDetailsBean.setDevices(userActivityUtils.convertDeviceDocumentsResponse(userSourceMachines, null));
+		}
 	}
 
 	private PageRequest createPaging(@RequestParam(required = false, value = "size") Integer size,

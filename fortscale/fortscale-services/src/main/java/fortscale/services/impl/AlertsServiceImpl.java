@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
@@ -64,6 +65,7 @@ public class AlertsServiceImpl implements AlertsService {
 		alert = userScoreService.updateAlertContirubtion(alert);
 		alert = alertsRepository.save(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
+		userService.recalculateNumberOfUserAlerts(alert.getEntityName());
 		return alert;
 	}
 
@@ -123,6 +125,7 @@ public class AlertsServiceImpl implements AlertsService {
 	public void add(Alert alert) {
 		alertsRepository.add(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
+		userService.recalculateNumberOfUserAlerts(alert.getEntityName());
 	}
 
 	@Override
@@ -213,4 +216,12 @@ public class AlertsServiceImpl implements AlertsService {
     public Set<Alert> getAlertsRelevantToUserScore(String userName){
         return  alertsRepository.getAlertsRelevantToUserScore(userName);
     }
+
+	@Override public Set<Alert> getOpenAlertsByUsername(String userName) {
+		Set<AlertFeedback> feedbackSet = new HashSet<>();
+		feedbackSet.add(AlertFeedback.Approved);
+		feedbackSet.add(AlertFeedback.None);
+
+		return alertsRepository.getAlertsForUserByFeedback(userName, feedbackSet);
+	}
 }

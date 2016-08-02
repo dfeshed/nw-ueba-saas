@@ -1,6 +1,7 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
@@ -114,6 +115,8 @@ public interface AlertsRepositoryCustom {
     Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
 
     Set<Alert> getAlertsRelevantToUserScore(String username);
+
+	Set<Alert> getAlertsForUserByFeedback(String username, Set<AlertFeedback> feedbackSet);
 
 	void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag );
 }
