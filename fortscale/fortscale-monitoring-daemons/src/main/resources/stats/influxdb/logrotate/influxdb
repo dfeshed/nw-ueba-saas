@@ -1,6 +1,6 @@
 /var/log/fortscale/monitoring/influxdb/influxdb.log {
     rotate 5
-    size 10m
+    size 10M
     missingok
     dateext
     copytruncate

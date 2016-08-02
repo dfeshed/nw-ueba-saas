@@ -4,6 +4,7 @@ import fortscale.domain.ad.AdConnection;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
@@ -25,6 +26,8 @@ import java.util.List;
 @Controller
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
+
+	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
 	private static final String ACTIVE_DIRECTORY_KEY = "system.activeDirectory.settings";
 
@@ -67,7 +70,17 @@ public class ApiActiveDirectoryController {
 	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
-	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain) {
+	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
+			@RequestBody Boolean encryptedPassword) {
+		if (!encryptedPassword) {
+			try {
+				activeDirectoryDomain.setDomainPassword(EncryptionUtils.encrypt(activeDirectoryDomain.
+						getDomainPassword()));
+			} catch (Exception ex) {
+				logger.error("failed to encrypt password");
+				return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+			}
+		}
 		String result = activeDirectoryService.canConnect(activeDirectoryDomain);
 		if (result.isEmpty()) {
 			return new ResponseEntity(HttpStatus.OK);
@@ -100,13 +113,12 @@ public class ApiActiveDirectoryController {
 		return true; //The domain wasn't found. Encrypt the password
 	}
 
-
 	@RequestMapping(method = RequestMethod.GET)
 	@LogException
 	public List<AdConnection> getActiveDirectory(){
-
-		List<AdConnection> adConnectionsFromDB = applicationConfigurationService.getApplicationConfigurationAsObjects(ACTIVE_DIRECTORY_KEY, AdConnection.class);
+		List<AdConnection> adConnectionsFromDB = applicationConfigurationService.
+				getApplicationConfigurationAsObjects(ACTIVE_DIRECTORY_KEY, AdConnection.class);
 		return adConnectionsFromDB;
-
 	}
+
 }
