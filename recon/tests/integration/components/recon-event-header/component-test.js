@@ -11,14 +11,5 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{recon-event-header}}`);
 
-  assert.equal(this.$().text().trim(), '');
-
-  // Template block usage:
-  this.render(hbs`
-    {{#recon-event-header}}
-      template block text
-    {{/recon-event-header}}
-  `);
-
-  assert.equal(this.$().text().trim(), 'template block text');
+  assert.equal(this.$().text().trim(), 'Event Reconstruction');
 });
