@@ -5,18 +5,14 @@
 * @public
 */
 
-import Ember from 'ember';
-import OAuth2BearerAuthorizer from 'ember-simple-auth/authorizers/oauth2-bearer';
-import oauthToken from '../mixins/oauth-token';
-const { isEmpty } = Ember;
-export default OAuth2BearerAuthorizer.extend(oauthToken, {
+import Base from 'ember-simple-auth/authorizers/base';
+import csrfToken from '../mixins/csrf-token';
 
-  authorize(data, block) {
-    const accessToken = data.access_token;
+export default Base.extend(csrfToken, {
 
-    if (!isEmpty(accessToken)) {
-      block('Authorization', `Bearer ${accessToken}`);
-    }
+  authorize(jqXHR) {
+    let csrfKey = this.get('csrfLocalstorageKey');
+    jqXHR.setRequestHeader('X-CSRF-TOKEN', localStorage.getItem(csrfKey));
   }
 
 });
