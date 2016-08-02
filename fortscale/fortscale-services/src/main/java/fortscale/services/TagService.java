@@ -10,6 +10,6 @@ public interface TagService {
 	List<Tag> getAllTags();
 	boolean addTag(Tag tag);
 	Tag getTag(String name);
-	void updateTag(Tag tag);
+	boolean updateTag(Tag tag);
 
 }
