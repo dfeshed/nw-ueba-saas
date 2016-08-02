@@ -1,9 +1,18 @@
+body{
+  background-color: #333333;
+  color: #8B8B8B;
+  margin: 0;
+}
 .recon-event-header {
-  background-color: lightgrey;
-  centered {
+  border: 1px solid #ffffff;
+  border-bottom: none;
+  .header-item {
     padding: 2px 5px;
+    .key{
+      color: #ffffff;
+    }
   }
 }
 .recon-event-content {
-  background-color: cyan;
+  border: 1px solid #ffffff;
 }
