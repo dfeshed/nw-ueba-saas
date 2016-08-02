@@ -8,7 +8,6 @@ import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
@@ -18,9 +17,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.util.StreamUtils;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -68,15 +65,17 @@ public class ModelStore {
 
 	public List<ModelDAO> getAllContextsModelDaosWithLatestEndTimeLte(ModelConf modelConf, long eventEpochtime) {
 		getMetrics().getModelDaosWithNoContext++;
-		String modelGroupName = "model";
+		String modelDaosGroupName = "modelDaos";
 		Aggregation agg = newAggregation(
 				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(new Date(eventEpochtime * 1000))),
-				Aggregation.sort(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD)),
-				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).first(Aggregation.ROOT).as(modelGroupName)
+				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).push(Aggregation.ROOT).as(modelDaosGroupName)
 		);
 		AggregationResults<DBObject> results = mongoTemplate.aggregate(agg, getCollectionName(modelConf), DBObject.class);
 		return StreamUtils.createStreamFromIterator(results.iterator())
-				.map(res -> mongoTemplate.getConverter().read(ModelDAO.class, (DBObject) res.get(modelGroupName)))
+				.map(modelDaoDbObjects -> {
+					ModelDAO[] modelDaos = mongoTemplate.getConverter().read(ModelDAO[].class, (DBObject) modelDaoDbObjects.get(modelDaosGroupName));
+					return Arrays.stream(modelDaos).max(Comparator.comparing(ModelDAO::getEndTime)).get();
+				})
 				.collect(Collectors.toList());
 	}
 
