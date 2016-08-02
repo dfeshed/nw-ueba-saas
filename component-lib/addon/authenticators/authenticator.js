@@ -58,7 +58,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   authenticate(identification, password, scope = []) {
     let accessTokenKey = this.get('accessTokenKey');
     return new RSVP.Promise((resolve, reject) => {
-      const data                = { client_id: 'nw_app', 'grant_type': 'password', username: identification.username, password: identification.password };
+      const data                = { client_id: 'nw_ui', 'grant_type': 'password', username: identification.username, password: identification.password };
       const serverTokenEndpoint = this.get('serverTokenEndpoint');
       const scopesString = makeArray(scope).join(' ');
       if (!isEmpty(scopesString)) {
