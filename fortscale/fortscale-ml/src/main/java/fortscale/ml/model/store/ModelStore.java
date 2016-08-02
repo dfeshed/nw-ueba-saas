@@ -70,13 +70,13 @@ public class ModelStore {
 		getMetrics().getModelDaosWithNoContext++;
 		String modelGroupName = "model";
 		Aggregation agg = newAggregation(
-				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(eventEpochtime)),
+				Aggregation.match(new Criteria(ModelDAO.END_TIME_FIELD).lte(new Date(eventEpochtime * 1000))),
 				Aggregation.sort(new Sort(Direction.DESC, ModelDAO.END_TIME_FIELD)),
-				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).first(ModelDAO.CONTEXT_ID_FIELD).as(modelGroupName)
+				Aggregation.group(ModelDAO.CONTEXT_ID_FIELD).first(Aggregation.ROOT).as(modelGroupName)
 		);
 		AggregationResults<DBObject> results = mongoTemplate.aggregate(agg, getCollectionName(modelConf), DBObject.class);
 		return StreamUtils.createStreamFromIterator(results.iterator())
-				.map(res -> (ModelDAO) res.get(modelGroupName))
+				.map(res -> mongoTemplate.getConverter().read(ModelDAO.class, (DBObject) res.get(modelGroupName)))
 				.collect(Collectors.toList());
 	}
 
