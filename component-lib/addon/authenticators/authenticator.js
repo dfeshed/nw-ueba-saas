@@ -6,24 +6,18 @@
 */
 
 import Ember from 'ember';
-import OAuth2PasswordGrant from 'ember-simple-auth/authenticators/oauth2-password-grant';
+import Base from 'ember-simple-auth/authenticators/base';
 import csrfToken from '../mixins/csrf-token';
-import oauthToken from '../mixins/oauth-token';
 
 const {
   inject: {
     service
   },
   RSVP,
-  isEmpty,
-  run,
-  merge,
-  makeArray
+  isEmpty
 } = Ember;
 
-export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
-
-  serverTokenEndpoint: '/oauth/token',
+export default Base.extend(csrfToken, {
 
   ajax: service(),
 
@@ -55,39 +49,25 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   * @param credentials.password {string} password of the user
   * @public
   */
-  authenticate(identification, password, scope = []) {
-    let accessTokenKey = this.get('accessTokenKey');
-    return new RSVP.Promise((resolve, reject) => {
-      const data                = { client_id: 'nw_ui', 'grant_type': 'password', username: identification.username, password: identification.password };
-      const serverTokenEndpoint = this.get('serverTokenEndpoint');
-      const scopesString = makeArray(scope).join(' ');
-      if (!isEmpty(scopesString)) {
-        data.scope = scopesString;
-      }
-      this.makeRequest(serverTokenEndpoint, data).then((response) => {
-        run(() => {
-          localStorage.setItem(accessTokenKey, response.access_token);
-          document.cookie = `access_token=${response.access_token};path=/`;
-          const expiresAt = this._absolutizeExpirationTime(response.expires_in);
-          this._scheduleAccessTokenRefresh(response.expires_in, expiresAt, response.refresh_token);
-          if (!isEmpty(expiresAt)) {
-            response = merge(response, { 'expires_at': expiresAt });
-          }
-          resolve(response);
-        });
-      }, (xhr) => {
-        run(null, reject, xhr.responseJSON || xhr.responseText);
-      });
+  authenticate(credentials) {
+    let csrfKey = this.get('csrfLocalstorageKey');
+    return this.get('ajax').raw('/api/user/login', {
+      type: 'POST',
+      data: credentials
+    }).then(function(result) {
+      let csrf = result.jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
+      localStorage.setItem(csrfKey, csrf);
+      // Promise must return a response so that it wil be cached in session.content.secure, which
+      // can later be accessed by other code to read the current user's login & authorizations.
+      return result && result.response;
     });
   },
-
 
   /**
   * @function invalidate
   * @public
   */
   invalidate() {
-    let accessTokenKey = this.get('accessTokenKey');
     let csrfKey = this.get('csrfLocalstorageKey');
     return this.get('ajax').raw('/api/user/logout', {
       type: 'POST',
@@ -98,11 +78,9 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
         '_csrf': localStorage.getItem(csrfKey)
       }
     }).then(function() {
-      localStorage.removeItem(accessTokenKey);
       localStorage.removeItem(csrfKey);
     }).catch(function() {
       // Server down? Timed out? - still invalidate!
-      localStorage.removeItem(accessTokenKey);
       localStorage.removeItem(csrfKey);
     });
   }
