@@ -185,7 +185,7 @@ test('The incident detail header component is rendered properly.', function(asse
   this.set('incident', incident);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-incident-detail-header model=incident users=users}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
 
   assert.equal(this.$('.rsa-incident-detail-header').length, 1, 'Testing rsa-incident-detail-header element exists');
   assert.equal(this.$('.rsa-incident-detail-header__id').length, 1, 'Testing rsa-incident-detail-header__id element exists');
@@ -393,7 +393,7 @@ test('The incident status, priority and assignee are saved', function(assert) {
   this.set('incident', incident);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-incident-detail-header model=incident users=users}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
 
   let statusVal = this.$('.rsa-incident-detail-header__status select').val();
   assert.equal(statusVal, 0, 'Tile displays the current Incident status.');
@@ -599,7 +599,7 @@ test('Clicking Close-Incident button disables editable fields', function(assert)
   this.set('incident', incident);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-incident-detail-header model=incident users=users}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
 
   this.$('.rsa-incident-detail-header__buttons__close-incident').click();
 
@@ -788,7 +788,7 @@ test('Manually changing the state of an incident to Closed disables editable fie
   this.set('incident', incident);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-incident-detail-header model=incident users=users}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
 
   this.$('.rsa-incident-detail-header__status .prompt').click();
   this.$('.rsa-incident-detail-header__status select').val(incStatus.CLOSED).trigger('change');

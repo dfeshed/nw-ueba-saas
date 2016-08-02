@@ -11,7 +11,7 @@ moduleForComponent('rsa-respond-header', 'Integration | Component | rsa respond 
 
 test('The respond header component is rendered properly.', function(assert) {
 
-  this.render(hbs`{{rsa-respond-header}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-header}}`);
 
   assert.equal(this.$('.rsa-respond-index-header__label').length, 1, 'Testing to see if a rsa-respond-index-header__label element exists.');
   assert.equal(this.$('.rsa-respond-index-header__tile-btn').length, 1, 'Testing to see if a rsa-respond-index-header__tile-btn exists.');
@@ -21,7 +21,7 @@ test('The respond header component is rendered properly.', function(assert) {
 
 test('The respond header saves the last selected view', function(assert) {
 
-  this.render(hbs`{{rsa-respond-header}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-header}}`);
 
   this.$('.rsa-respond-index-header__tile-btn').trigger('click');
   assert.equal(this.$('.rsa-respond-index-header__tile-btn.is-active').length, 1, 'When clicking on Tile-button, it is set to selected.');

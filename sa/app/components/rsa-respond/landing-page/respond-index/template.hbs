@@ -1,4 +1,4 @@
-{{rsa-respond-header}}
+{{rsa-respond/landing-page/respond-header}}
 {{#if isCardMode}}
   <article class="rsa-respond-card">
     <section class="rsa-respond-index__main-body">
@@ -9,7 +9,7 @@
         <section class='rsa-content-card-group'>
           {{#rsa-carousel class="rsa-incident-carousel" items=model.newIncidents.results as |incident|}}
             {{#rsa-content-card class="rsa-incident-content-card" }}
-              {{~rsa-incident-tile model=incident users=model.users clickAction=(action "gotoIncidentDetail") saveAction=(action "saveIncident")~}}
+              {{~rsa-respond/landing-page/incident-tile model=incident users=model.users clickAction=(action "gotoIncidentDetail") saveAction=(action "saveIncident")~}}
             {{/rsa-content-card}}
           {{/rsa-carousel}}
         </section>
@@ -23,7 +23,7 @@
         <section class='rsa-content-card-group'>
           {{#rsa-carousel class="rsa-incident-carousel" allowMultipleRows=true items=model.inProgressIncidents.results as |incident|}}
             {{#rsa-content-card class="rsa-incident-content-card small-size" }}
-              {{~rsa-incident-tile size='small' users=model.users model=incident clickAction=(action "gotoIncidentDetail")~}}
+              {{~rsa-respond/landing-page/incident-tile size='small' users=model.users model=incident clickAction=(action "gotoIncidentDetail")~}}
             {{/rsa-content-card}}
           {{/rsa-carousel}}
         </section>

@@ -6,8 +6,7 @@ moduleForComponent('rsa-respond-index', 'Integration | Component | rsa respond i
 });
 
 test('it renders', function(assert) {
-
-  this.render(hbs`{{rsa-respond-index}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index }}`);
 
   assert.equal(this.$('.rsa-respond-index-header').length, 1, 'Testing to see if a rsa-respond-index-header element exists.');
   assert.equal(this.$('.rsa-respond-card, .rsa-respond-list').length, 1, 'Testing to see if rsa-respond-card or rsa-respond-list exists.');

@@ -1,0 +1,79 @@
+.rsa-response-detail__bottom{
+  &-header{
+    @include rsa-font(header, large);
+    color: rsa-color(gray);
+    background-color: rsa-color(black, null, $rsa-translucent);
+    border-top: 1px solid rsa-color(gray);
+    padding: rsa-whitespace(less);
+    margin-bottom: rsa-whitespace(least);
+  }
+  &-text{
+    color: rsa-color(white);
+    padding: rsa-whitespace() 0 0 rsa-whitespace(more);
+  }
+  &-overview {
+    border-right: 1px solid rsa-color(gray);
+    height: 100%;
+    margin-right: 10px;
+    padding-bottom: 80%;
+  }
+}
+.rsa-response-storyline {
+    .journalAction{
+      visibility: hidden;
+    }
+    &__main-row:hover{
+      .journalAction{
+        visibility: visible;
+      }
+    }
+    &__time__text{
+      color: #EFBC98;
+      padding: 0 rsa-whitespace(least);
+    }
+    &__time{
+      color:#AE6900;
+      border-right: 2px dotted rsa-color(gray);
+      background-color: rsa-color(black, null, $rsa-translucent);
+    }
+    &__times{
+      padding: rsa-whitespace(less);
+    }
+    .end{
+      position: absolute;
+      bottom: 0;
+    }
+    .indicator_type{
+      color: rsa-color(blue);
+    }
+    &__timeSection{
+      text-align: center;
+      @include rsa-font(header, small);
+      margin-right: rsa-whitespace();
+    }
+    &__timedivider {
+      color: #007FB6;
+      padding: rsa-whitespace(least);
+    }
+
+    &__main,
+    &__subItem,
+    &__main_icon{
+      background-color: rsa-color(black, null, $rsa-translucent);
+      color: rsa-color(white);
+      border-bottom: 1px solid rsa-color(gray);
+    }
+    &__main,
+    &__subItem{
+      padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+    }
+    &__subItem{
+      margin-left: rsa-whitespace(more);
+    }
+    &__main_icon .rsa-form-button{
+      margin-top: rsa-whitespace(least);
+    }
+    .contextInfo{
+      text-decoration: underline;
+    }
+}
