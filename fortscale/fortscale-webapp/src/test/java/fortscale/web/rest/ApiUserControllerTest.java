@@ -261,7 +261,7 @@ public class ApiUserControllerTest {
 		UserActivityData.DeviceEntry device = new UserActivityData.DeviceEntry(deviceName, deviceCount, UserActivityData.DeviceType.Desktop);
 		deviceList.add(device);
 		when(userDeviceUtils.convertDeviceDocumentsResponse(anyListOf(UserActivityDeviceDocument.class), anyInt())).thenReturn(deviceList);
-		MvcResult result = mockMvc.perform(get("/api/user?addAdditionalInfo=true")
+		MvcResult result = mockMvc.perform(get("/api/user?addAlertsAndDevices=true")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
 				.andReturn();
