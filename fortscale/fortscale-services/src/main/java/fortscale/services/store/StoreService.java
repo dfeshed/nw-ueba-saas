@@ -79,7 +79,8 @@ public class StoreService extends CleanupDeletionUtil {
             } catch (IOException ex) {
                 logger.error("failed to delete state {} - {}", state, ex);
             }
-            boolean deleteSuccess = kafkaService.deleteEntities(Arrays.asList(state + "-changelog"), doValidate);
+            boolean deleteSuccess = kafkaService.deleteEntities(Arrays.asList(state + KafkaService.CHANGELOG_SUFFIX),
+					doValidate);
             if (doValidate) {
                 if (!stateDirectory.exists() && deleteSuccess) {
                     logger.info("deleted state {}", state);
