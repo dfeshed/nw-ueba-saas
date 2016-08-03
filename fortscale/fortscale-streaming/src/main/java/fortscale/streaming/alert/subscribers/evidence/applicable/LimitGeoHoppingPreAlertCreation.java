@@ -7,7 +7,9 @@ import fortscale.domain.core.VpnGeoHoppingSupportingInformation;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +17,17 @@ import java.util.Map;
 /**
  * Created by shays on 16/03/2016.
  */
-public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilter {
+public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilter, InitializingBean {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
+
+	@Value("${fortscale.alert.geo.hopping.limit.per.user:1}")
+	private int DEFAULT_MAX_IDENTICAL_GEO_HOPPING_PER_USER;
+	@Value("${fortscale.alert.geo.hopping.limit.global:3}")
+	private int DEFAULT_MAX_IDENTICAL_GEO_HOPPING_GLOBAL;
+	@Value("${fortscale.alert.geo.hopping.limit.per.city:10}")
+	private int DEFAULT_MAX_SINGLE_CITY;
 
     private final static String MAX_IDENTICAL_GEO_HOPPING_PER_USER = "LimitGeoHoppingPreAlertCreation.maxIdenticalGeoHoppingPerUser";
     private final static String MAX_IDENTICAL_GEO_HOPPING_GLOBAL = "LimitGeoHoppingPreAlertCreation.maxIdenticalGeoHoppingGlobal";
@@ -26,13 +35,7 @@ public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilt
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
-    private final static Map<String, Integer> DEFAULT_CONFIGURATIONS = new HashMap<>();
-    static {
-        DEFAULT_CONFIGURATIONS.put(MAX_IDENTICAL_GEO_HOPPING_PER_USER,1);
-        DEFAULT_CONFIGURATIONS.put(MAX_IDENTICAL_GEO_HOPPING_GLOBAL,3);
-        DEFAULT_CONFIGURATIONS.put(MAX_SINGLE_CITY,10);
-    }
-
+    private Map<String, Integer> DEFAULT_CONFIGURATIONS;
 
     public boolean canCreateAlert(EnrichedFortscaleEvent evidencesOrEntityEvents, Long startTime, Long endTime, AlertTimeframe timeframe){
 
@@ -78,9 +81,16 @@ public class LimitGeoHoppingPreAlertCreation implements AlertPreAlertDeciderFilt
             confValue = Integer.parseInt(conf.getValue());
         }
 
-        return value >= confValue;
+        return value > confValue;
 
     }
 
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		DEFAULT_CONFIGURATIONS = new HashMap<>();
+		DEFAULT_CONFIGURATIONS.put(MAX_IDENTICAL_GEO_HOPPING_PER_USER, DEFAULT_MAX_IDENTICAL_GEO_HOPPING_PER_USER);
+		DEFAULT_CONFIGURATIONS.put(MAX_IDENTICAL_GEO_HOPPING_GLOBAL, DEFAULT_MAX_IDENTICAL_GEO_HOPPING_GLOBAL);
+		DEFAULT_CONFIGURATIONS.put(MAX_SINGLE_CITY, DEFAULT_MAX_SINGLE_CITY);
+	}
 
 }

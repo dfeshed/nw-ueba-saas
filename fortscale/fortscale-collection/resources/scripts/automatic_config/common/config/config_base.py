@@ -31,6 +31,12 @@ FIXED_W_HOURLY = {
 BASE_ALPHA = 0.1
 BASE_BETA = 0.001
 
+F_REDUCER_TO_MIN_POSITIVE_SCORE = {
+    # uncomment the following line in order to make sure number_of_failed_kerberos_logins_hourly always gets score 0 for values <= 4
+    # 'number_of_failed_kerberos_logins_hourly': 5
+}
+DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE = 4
+
 dry = False
 
 show_graphs = False

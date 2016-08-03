@@ -388,12 +388,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public long getNumberOfInactiveAccounts() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.add(Calendar.MONTH, -1);
 		//condition is (user not disabled) AND (last activity date older than one month OR no last activity date found)
 		Criteria userActiveCriteria = Criteria.where(User.getAdInfoField(UserAdInfo.isAccountDisabledField)).is(false);
 		Criteria lastActivityDateCriteria = Criteria.where(User.lastActivityField).lt(calendar.getTime());
-		Criteria lastActivityDoesNotExistCriteria = Criteria.where(User.
-				getAdInfoField(User.lastActivityField)).exists(false);
+		Criteria lastActivityDoesNotExistCriteria = Criteria.where(User.lastActivityField).exists(false);
 		Query query = new Query(new Criteria().andOperator(userActiveCriteria,
 				new Criteria().orOperator(lastActivityDateCriteria, lastActivityDoesNotExistCriteria)));
 		return mongoTemplate.count(query, User.class);

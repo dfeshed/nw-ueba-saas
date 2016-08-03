@@ -3,6 +3,7 @@ package fortscale.collection.morphlines.commands;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.collection.services.time.FortscaleDateFormatService;
 import fortscale.collection.services.time.FortscaleDateFormatterException;
 import org.kitesdk.morphline.api.Command;
@@ -11,6 +12,8 @@ import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.kitesdk.morphline.base.Fields;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -31,12 +34,10 @@ import java.util.ListIterator;
  * *******************************************************************************************************************************************************************************************
  * *******************************************************************************************************************************************************************************************
  */
-@SuppressWarnings("unused")
-@Configurable(preConstruction = true)
-public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
 
-  @Autowired
-  private FortscaleDateFormatService fortscaleDateFormatService;
+public class ConvertTimestampFortscaleBuilder implements CommandBuilder {
+
+  private static Logger logger = LoggerFactory.getLogger(ConvertTimestampFortscaleBuilder.class);
 
   @Override
   public Collection<String> getNames() {
@@ -49,10 +50,11 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
   }
 
 
-  ///////////////////////////////////////////////////////////////////////////////
-  // Nested classes:
-  ///////////////////////////////////////////////////////////////////////////////
-  private final class ConvertTimestampFortscale extends AbstractCommand {
+  @Configurable(preConstruction=true)
+  public static final class ConvertTimestampFortscale extends AbstractCommand {
+
+	@Autowired
+	private FortscaleDateFormatService fortscaleDateFormatService;
 
     private final String fieldName;
     private final String inputTimezoneField;
@@ -62,15 +64,14 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
     private final String outputFormatField;
     private final List<String> inputFormatsField;
 
-    private static final String DEFAULT_TIME_ZONE = "UTC";
+    private  final String DEFAULT_TIME_ZONE = "UTC";
 
     MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
-    private static final String DEFAULT_OUTPUT_FORTSCALE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
+    private  final String DEFAULT_OUTPUT_FORTSCALE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
 
     public ConvertTimestampFortscale(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
       super(builder, config, parent, child, context);
-
       this.fieldName = getConfigs().getString(config, "field", Fields.TIMESTAMP);
       this.inputTimezoneField = config.hasPath("inputTimezoneField") ?  getConfigs().getString(config, "inputTimezoneField") : DEFAULT_TIME_ZONE;
       this.inputLocaleField = getConfigs().getString(config, "inputLocale", "");
@@ -82,9 +83,12 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
       validateArguments();
     }
 
-    @SuppressWarnings("unchecked")
+
     @Override
     protected boolean doProcess(Record record) {
+
+	  //The specific Morphline metric
+	  MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(record);
 
       String tzInput = (String)record.getFirstValue(this.inputTimezoneField);
 
@@ -109,12 +113,16 @@ public final class ConvertTimestampFortscaleBuilder implements CommandBuilder {
             iter.set(result);
           }
           else {
+			  if(morphlineMetrics != null )
+				morphlineMetrics.unparseableTimeStamps++;
             LOG.debug("Could not parse timestamp '{}' ", timestamp);
             commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
 
             return false;
           }
         } catch (FortscaleDateFormatterException e) {
+			if(morphlineMetrics != null )
+	      		morphlineMetrics.unparseableTimeStamps++;
           LOG.error("Exception while trying to parse timestamp '{}' :", timestamp, e);
           commandMonitoringHelper.addFilteredEventToMonitoring(record, CollectionMessages.CANNOT_PARSE_TIMESTAMP);
 

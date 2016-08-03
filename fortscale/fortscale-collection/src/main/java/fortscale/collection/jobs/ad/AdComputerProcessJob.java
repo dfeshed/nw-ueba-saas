@@ -27,7 +27,7 @@ public class AdComputerProcessJob extends AdProcessJob {
 	@Override
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
 		super.init(jobExecutionContext);
-		converter = new RecordToBeanItemConverter<>(getOutputFields());
+		converter = new RecordToBeanItemConverter<>("AdComputerProcessJob", this.statsService, getOutputFields());
 	}
 
 	@Override

@@ -16,14 +16,17 @@ import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.classifier.ClassifierHelper;
+import fortscale.services.impl.metrics.UserServiceMetrics;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.mortbay.log.Log;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -44,10 +47,13 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 @Service("userService")
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService, InitializingBean {
 	private static Logger logger = Logger.getLogger(UserServiceImpl.class);
 	private static final String SEARCH_FIELD_PREFIX = "##";
-	
+
+	@Autowired
+	private StatsService statsService;
+
 	@Autowired
 	private MongoOperations mongoTemplate;
 	
@@ -121,6 +127,7 @@ public class UserServiceImpl implements UserService{
 	@Autowired
 	private CacheHandler<String, List<String>> userTagsCache;
 
+	private UserServiceMetrics serviceMetrics;
 
 	public void setListOfBuiltInADUsers(String listOfBuiltInADUsers) {
 		this.listOfBuiltInADUsers = listOfBuiltInADUsers;
@@ -143,6 +150,7 @@ public class UserServiceImpl implements UserService{
 	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername) {
 		if(StringUtils.isEmpty(normalizedUsername)){
 			logger.warn("got a empty string {} username", classifierId);
+			serviceMetrics.emptyUsername++;
 			return;
 		}
 
@@ -157,6 +165,7 @@ public class UserServiceImpl implements UserService{
 		if(userId != null){
 			if(!usernameService.isLogUsernameExist(logEventId, logUsername, userId)){
 				// i.e. user exists but the log username is not updated ==> update the user with the new log username
+				serviceMetrics.updatedUsers++;
 				updateUser(logUsername, updateAppUsername, logEventId, userApplicationId, userId);
 			}
         } else{
@@ -165,11 +174,13 @@ public class UserServiceImpl implements UserService{
 	}
 
 	private void createNewUser(String classifierId, String normalizedUsername, String logUsername, String logEventId, String userApplicationId) {
+		serviceMetrics.attemptToCreateUser++;
 		User user = createUser(userApplicationId, normalizedUsername, logUsername);
 		usernameService.addLogUsername(user, logEventId, logUsername);
 		saveUser(user);
 		if(user == null || user.getId() == null){
             logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
+			serviceMetrics.failedToCreateUser++;
         } else{
             usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
             usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
@@ -216,9 +227,11 @@ public class UserServiceImpl implements UserService{
 		// get user by username
 		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
 
-
+		serviceMetrics.findByUsername++;
 
 		if (user == null) {
+
+			serviceMetrics.usernameNotFound++;
 
 			//in case that this user not need to be create in mongo (doesnt have data source info that related to OnlyUpdate flag = false)
 			if (udpateOnly(userInfo,dataSourceUpdateOnlyFlagMap)) {
@@ -231,10 +244,12 @@ public class UserServiceImpl implements UserService{
 
 
 			// need to create the user at mongo
+			serviceMetrics.attemptToCreateUser++;
 			user = createUser(ClassifierHelper.getUserApplicationId(classifierId), username, logUsernameValue);
 
 			saveUser(user);
 			if(user == null || user.getId() == null) {
+				serviceMetrics.failedToCreateUser++;
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, username, logUsernameValue);
 			}
 
@@ -291,10 +306,12 @@ public class UserServiceImpl implements UserService{
 
 			// update user
 			if (update != null) {
+				serviceMetrics.updatedUsers++;
 				mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update, User.class);
 			}
 
 		} catch (Exception e) {
+			serviceMetrics.failedToUpdate++;
 			logger.error("Failed to update last activity of user {} : {}", username, e.getMessage());
 		}
 
@@ -346,11 +363,15 @@ public class UserServiceImpl implements UserService{
 	@Override
 	public String getUserThumbnail(User user) {
 		String ret = null;
-		
+
+		serviceMetrics.findThumbnail++;
+
 		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.CREATED_AT_FIELD_NAME);
 		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailRepository.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
 		if(adUserThumbnails.size() > 0){
 			ret = adUserThumbnails.get(0).getThumbnailPhoto();
+		} else {
+			serviceMetrics.thumbnailNotFound++;
 		}
 		
 		return ret;
@@ -386,10 +407,12 @@ public class UserServiceImpl implements UserService{
 	public void updateUserWithADInfo(AdUser adUser) {
 		if(adUser.getObjectGUID() == null) {
 			logger.warn("got ad user with no ObjectGUID name field.");
+			serviceMetrics.emptyGUID++;
 			return;
 		}
 		if(adUser.getDistinguishedName() == null) {
 			logger.warn("got ad user with no distinguished name field.");
+			serviceMetrics.emptyDN++;
 			return;
 		}
 		
@@ -401,6 +424,7 @@ public class UserServiceImpl implements UserService{
 				whenChanged = adUserParser.parseDate(adUser.getWhenChanged());
 			}
 		} catch (ParseException e) {
+			serviceMetrics.dateParsingError++;
 			logger.error(String.format("got and exception while trying to parse active directory when changed field (%s)",adUser.getWhenChanged()), e);
 		}
 
@@ -457,6 +481,7 @@ public class UserServiceImpl implements UserService{
 				userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
 			}
 		} catch (ParseException e) {
+			serviceMetrics.dateParsingError++;
 			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
 		}
 		
@@ -472,6 +497,7 @@ public class UserServiceImpl implements UserService{
 			try {
 				userAdInfo.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
 			} catch (ParseException e) {
+				serviceMetrics.dateParsingError++;
 				logger.error(String.format("got and exception while trying to parse active directory account expires field (%s)",adUser.getAccountExpires()), e);
 			}
 		}
@@ -511,6 +537,7 @@ public class UserServiceImpl implements UserService{
 			username = username.toLowerCase();
 		} else{
 			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+			serviceMetrics.emptyUsername++;
 		}
 		
 		
@@ -543,6 +570,7 @@ public class UserServiceImpl implements UserService{
 					try {
 						deletedUser = duplicatedUserRepository.save(deletedUser);
 					} catch (Exception ex) {
+						serviceMetrics.failedToCreateDeletedUser++;
 						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);
 					}
 					userRepository.delete(oldUserRecord);
@@ -697,11 +725,12 @@ public class UserServiceImpl implements UserService{
 	}
 
 	private String getUserNameFromID(String uid) {
+		serviceMetrics.findById++;
 		User user = userRepository.findOne(uid);
 		if(user == null){
+			serviceMetrics.userIdNotFound++;
 			throw new UnknownResourceException(String.format("user with id [%s] does not exist", uid));
 		}
-		
 		return user.getUsername();
 	}
 	
@@ -865,9 +894,12 @@ public class UserServiceImpl implements UserService{
 		if (tags==null) {
 			// get tags from mongodb and add to cache
 			Set<String> tagSet = userRepository.getUserTags(username);
+			serviceMetrics.findTags++;
 			if (tagSet != null) {
 				tags = new ArrayList<String>(tagSet);
 				userTagsCache.put(username, tags);
+			} else {
+				serviceMetrics.tagsNotFound++;
 			}
 		}
 		return tags!=null && tags.contains(tag);
@@ -1113,4 +1145,14 @@ public class UserServiceImpl implements UserService{
 	@Override public String getUserId(String username) {
 		return usernameService.getUserId(username, null);
 	}
+
+	@Override
+	public void afterPropertiesSet() throws Exception {
+		initMetrics();
+	}
+
+	public void initMetrics() {
+		serviceMetrics = new UserServiceMetrics(statsService);
+	}
+
 }

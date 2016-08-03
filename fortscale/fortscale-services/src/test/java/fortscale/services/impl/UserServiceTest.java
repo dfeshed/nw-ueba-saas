@@ -137,6 +137,7 @@ public class UserServiceTest {
 		computersList.add(comp2);
 
 		when(computerRepository.getComputersFromNames(any(List.class))).thenReturn(computersList);
+		userService.initMetrics();
 		userService.getUserMachines("123");
 
 		assertEquals(machine1.getIsSensitive(), false);

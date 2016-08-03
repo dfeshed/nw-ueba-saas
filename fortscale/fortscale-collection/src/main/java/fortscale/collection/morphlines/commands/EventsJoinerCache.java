@@ -34,6 +34,8 @@ import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 @Configurable(preConstruction=true)
 public class EventsJoinerCache implements Closeable {
 
+	private static final String ITEM_CONTEXT = "ITEM_CONTEXT";
+
 	// /////////////////////////////////////////////////////////////////////////////
 	// Static accessors: 
 	// /////////////////////////////////////////////////////////////////////////////
@@ -160,7 +162,12 @@ public class EventsJoinerCache implements Closeable {
 			// store all cache records into mongo
 			List<CachedRecord> batchToInsert = new LinkedList<CachedRecord>();
 			for (String key : records.keySet()) {
-				CachedRecord cachedRecord = new CachedRecord(instanceId, key, records.get(key));
+				CachedRecord cachedRecord = new CachedRecord();
+				cachedRecord.setCacheName(instanceId);
+				cachedRecord.setKey(key);
+				Record record = records.get(key);
+				record.removeAll(ITEM_CONTEXT);
+				cachedRecord.setRecord(record);
 				//only if need to use ttl mechanism
 				if (deprecationTs != -1) {
 					long recordTs = convertToSeconds(getLongValue(cachedRecord.getRecord(), currentRecordDateField, 0L));
@@ -172,7 +179,13 @@ public class EventsJoinerCache implements Closeable {
 				batchToInsert.add(cachedRecord);
 			}
 			if (!batchToInsert.isEmpty())
-				repository.save(batchToInsert);
+				try {
+					repository.save(batchToInsert);
+				}
+				catch (Exception e)
+				{
+					logger.error("mongo persist was failed  {}",e);
+				}
 		} else {
 			// should be null when running in unit test context
 			logger.error("mongo repository not injected");

@@ -39,7 +39,7 @@
                 </entry>
                 <entry>
                     <key>delimiter</key>
-                    <value>|</value>
+                    <value>,</value>
                 </entry>
                 <entry>
                     <key>runSavedQuery</key>

@@ -18,7 +18,7 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 
 	private static final UserActivityType ACTIVITY = UserActivityType.NETWORK_AUTHENTICATION;
 	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS = "success_events_counter";
-	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE = "failure_events_counter";
+	private static final String AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE = "failed_events_counter";
 	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS;
 	private static final String AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE = "aggregatedFeatures." + AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE;
 
@@ -32,7 +32,10 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		if (dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_CRMSF_PROPERTY_NAME) ||
 				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_SSH_PROPERTY_NAME) ||
 				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_LOGINS_PROPERTY_NAME) ||
-				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME)) {
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_ORACLE_PROPERTY_NAME) ||
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_NTLM_PROPERTY_NAME) ||
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_VPN_PROPERTY_NAME) ||
+				dataSourceLowerCase.equals(UserActivityNetworkAuthenticationConfigurationService.DATA_SOURCE_KERBEROS_TGT_PROPERTY_NAME)) {
 			return new ArrayList<>(Arrays.asList(AGGREGATED_FEATURES_EVENTS_COUNTER_SUCCESS, AGGREGATED_FEATURES_EVENTS_COUNTER_FAILURE));
 		}
 		else {

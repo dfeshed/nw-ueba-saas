@@ -266,14 +266,9 @@ public class ApiUserActivityController extends DataQueryController {
     public DataBean<List<UserActivityData.DataUsageEntry>> getDataUsage(@PathVariable String id,
                 		@RequestParam(required = false, defaultValue = DEFAULT_TIME_RANGE,
 						value = "time_range") Integer timePeriodInDays) {
-
-         DataBean<List<UserActivityData.DataUsageEntry>> userActivity = getUserAttribute(
-                id,
-                timePeriodInDays,
-                0,
-				 userActivityService::getUserActivityDataUsageEntries,
-                (documentList, limit1)->convertDataUsageDocumentsResponse(documentList, limit1),
-                DATA_USAGE);
+         DataBean<List<UserActivityData.DataUsageEntry>> userActivity = getUserAttribute(id, timePeriodInDays, 0,
+                 userActivityService::getUserActivityDataUsageEntries, (documentList, limit1) ->
+                         convertDataUsageDocumentsResponse(documentList), DATA_USAGE);
         return userActivity;
 
     }
@@ -281,11 +276,10 @@ public class ApiUserActivityController extends DataQueryController {
     /**
      * Convert list of UserActivityDataUsageDocument to list of UserActivityData.DataUsageEntry
      * @param documentList
-     * @param limit
      * @return list of UserActivityData.DataUsageEntry
      */
-    private List<UserActivityData.DataUsageEntry> convertDataUsageDocumentsResponse(List<UserActivityDataUsageDocument> documentList, int limit){
-
+    private List<UserActivityData.DataUsageEntry> convertDataUsageDocumentsResponse(List<UserActivityDataUsageDocument>
+			documentList) {
         DecimalFormat df = new DecimalFormat("#.#");
         Map<String, UserActivityData.DataUsageEntry> dataUsageEntries = new HashMap();
         for (UserActivityDataUsageDocument userActivityDataUsageDocument: documentList) {
@@ -293,7 +287,7 @@ public class ApiUserActivityController extends DataQueryController {
                 String histogram = entry.getKey();
                 UserActivityData.DataUsageEntry dataUsageEntry = dataUsageEntries.get(histogram);
                 if (dataUsageEntry == null) {
-                    dataUsageEntry = new UserActivityData.DataUsageEntry(histogram, 0.0, 1);
+                    dataUsageEntry = new UserActivityData.DataUsageEntry(histogram, 0.0, 0);
                 }
                 dataUsageEntry.setDays(dataUsageEntry.getDays() + 1);
                 dataUsageEntry.setValue(dataUsageEntry.getValue() + entry.getValue());
@@ -303,11 +297,8 @@ public class ApiUserActivityController extends DataQueryController {
         for (UserActivityData.DataUsageEntry dataUsageEntry: dataUsageEntries.values()) {
             dataUsageEntry.setValue(Double.valueOf(df.format(dataUsageEntry.getValue() / dataUsageEntry.getDays())));
         }
-        return  new ArrayList<>(dataUsageEntries.values());
-
+        return new ArrayList<>(dataUsageEntries.values());
     }
-
-
 
     @RequestMapping(value= "/" + WORKING_HOURS, method= RequestMethod.GET)
     @ResponseBody
@@ -412,8 +403,9 @@ public class ApiUserActivityController extends DataQueryController {
             deviceNames.add(device.getDeviceName());
         });
         List<Computer> computers = computerService.findByNameValueIn(deviceNames.toArray(new String[deviceNames.size()]));
-        //Convert map of computer name to computer OS
-        Map<String, String> computerMap = computers.stream().collect(Collectors.toMap(Computer::getName, Computer::getOperatingSystem));
+        //Create map of computer name to computer OS
+        Map<String, String> computerMap = new HashMap<>();
+        computers.forEach(computer -> computerMap.put(computer.getName(), computer.getOperatingSystem()));
 
         //For each device
         sourceMachineEntries.forEach(device -> {
@@ -430,6 +422,5 @@ public class ApiUserActivityController extends DataQueryController {
         });
 
     }
-
 
 }

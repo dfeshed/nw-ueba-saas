@@ -123,39 +123,48 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	protected void runSteps() throws Exception {
 		startNewStep(STEP_NAME);
 		logger.info("**************** Start sending and scoring entity events job ****************");
-		modelBuildingSyncService.init();
+		try {
+			modelBuildingSyncService.init();
 
-		if (buildModelsFirst) {
-			logger.info("Building models before starting to create events...");
-			modelBuildingSyncService.buildModelsForcefully(startTimeInSeconds);
-			logger.info("Finished to build models.");
-		}
-
-		long currentTimeInSeconds = startTimeInSeconds;
-		Date currentStartTime;
-		Date currentEndTime;
-
-		sender = new MongoThrottlerEntityEventSender(batchSize, checkRetries, eventProcessingSyncTimeoutInSeconds);
-
-		while (currentTimeInSeconds < endTimeInSeconds) {
-			currentStartTime = new Date(TimestampUtils.convertToMilliSeconds(currentTimeInSeconds));
-			currentTimeInSeconds = Math.min(currentTimeInSeconds + timeIntervalInSeconds, endTimeInSeconds);
-			currentEndTime = new Date(TimestampUtils.convertToMilliSeconds(currentTimeInSeconds));
-
-			entityEventService.sendEntityEventsInTimeRange(currentStartTime, currentEndTime,
-					System.currentTimeMillis(), sender, false);
-
-			// Check and build models if needed
-			try {
-				modelBuildingSyncService.buildModelsIfNeeded(currentTimeInSeconds);
-			} catch (TimeoutException e) {
-				logger.error(e.getMessage());
-				throw e;
+			if (buildModelsFirst) {
+				logger.info("Building models before starting to create events...");
+				modelBuildingSyncService.buildModelsForcefully(startTimeInSeconds);
+				logger.info("Finished to build models.");
 			}
+
+			long currentTimeInSeconds = startTimeInSeconds;
+			Date currentStartTime;
+			Date currentEndTime;
+
+			sender = new MongoThrottlerEntityEventSender(batchSize, checkRetries, eventProcessingSyncTimeoutInSeconds);
+
+			while (currentTimeInSeconds < endTimeInSeconds) {
+				currentStartTime = new Date(TimestampUtils.convertToMilliSeconds(currentTimeInSeconds));
+				currentTimeInSeconds = Math.min(currentTimeInSeconds + timeIntervalInSeconds, endTimeInSeconds);
+				currentEndTime = new Date(TimestampUtils.convertToMilliSeconds(currentTimeInSeconds));
+
+				entityEventService.sendEntityEventsInTimeRange(currentStartTime, currentEndTime,
+						System.currentTimeMillis(), sender, false);
+
+				// Check and build models if needed
+				try {
+					modelBuildingSyncService.buildModelsIfNeeded(currentTimeInSeconds);
+				} catch (TimeoutException e) {
+					logger.error(e.getMessage());
+					throw e;
+				}
+			}
+
+			sender.throttle();
+		} catch (Exception e){
+			logger.error("got and exception while creating entity events.", e);
+		} finally {
+			if(sender != null){
+				sender.close();
+			}
+			modelBuildingSyncService.close();
 		}
 
-		sender.throttle();
-		modelBuildingSyncService.close();
 		if (removeModelsFinally) {
 			logger.info("Removing models with session ID {} finally.", sessionId);
 			modelStore.removeModels(modelConfs, sessionId);

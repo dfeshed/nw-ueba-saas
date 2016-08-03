@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.config;
 
+import fortscale.ml.scorer.ScoreMapping;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,7 +12,7 @@ import org.mockito.Mockito;
 public class ScoreMapperConfTest {
     @Test(expected = IllegalArgumentException.class)
     public void shouldFailIfNotGivenBaseScorerConf() {
-        new ScoreMapperConf("name", null, new ScoreMappingConf());
+        new ScoreMapperConf("name", null, new ScoreMapping.ScoreMappingConf());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -21,7 +22,7 @@ public class ScoreMapperConfTest {
 
     @Test
     public void shouldInitializeProperly() {
-        ScoreMappingConf scoreMappingConf = new ScoreMappingConf();
+        ScoreMapping.ScoreMappingConf scoreMappingConf = new ScoreMapping.ScoreMappingConf();
         IScorerConf baseScorerConf = Mockito.mock(IScorerConf.class);
         String name = "name";
         ScoreMapperConf conf = new ScoreMapperConf(name, baseScorerConf, scoreMappingConf);

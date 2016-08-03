@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.event.AggrEventEvidenceFilteringStrategyEnu
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
+import fortscale.domain.dto.DateRange;
 import fortscale.services.EvidencesService;
 import fortscale.services.TagService;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
@@ -272,7 +273,7 @@ public class EvidencesForAlertResolverService {
      */
     private List<Evidence> findExistingPEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
                                                   String dataSource, String anomalyType) {
-        return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataSource, anomalyType);
+        return evidencesService.findFeatureEvidences(entityType, entityValue, new DateRange(startDate,endDate), dataSource, anomalyType);
     }
     //</editor-fold>
 
@@ -331,7 +332,7 @@ public class EvidencesForAlertResolverService {
      */
     private List<Evidence> findFEvidences(EntityType entityType, String entityValue, Long startDate, Long endDate,
                                           String dataEntities, String featureName) {
-        return evidencesService.findFeatureEvidences(entityType, entityValue, startDate, endDate, dataEntities, featureName);
+        return evidencesService.findFeatureEvidences(entityType, entityValue, new DateRange(startDate,endDate), dataEntities, featureName);
     }
 
     /**

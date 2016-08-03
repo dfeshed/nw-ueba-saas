@@ -1,0 +1,1072 @@
+{
+  "id": 33,
+  "title": "Models - Aggregated feature values",
+  "originalTitle": "Models - Aggregated feature values",
+  "tags": [
+    "Streaming models"
+  ],
+  "style": "dark",
+  "timezone": "browser",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_confName",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "confName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "retrieve"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "retrieve"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "confName",
+                  "operator": "=~",
+                  "value": "/^$conf$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Retrieve calls",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": false,
+      "title": "Retrieve calls"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 2,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_confName",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "confName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "aggregatedFeatureEvents"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "aggregatedFeatureEvents"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "confName",
+                  "operator": "=~",
+                  "value": "/^$conf$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Aggregated feature events counter",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": false,
+      "title": "Aggregated feature events counter"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_confName",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "confName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "getContextId"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "getContextId"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "confName",
+                  "operator": "=~",
+                  "value": "/^$conf$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Get context ID calls",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": false,
+      "title": "Get context ID calls"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_confName",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "confName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "getEventFeatureNames"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "getEventFeatureNames"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "confName",
+                  "operator": "=~",
+                  "value": "/^$conf$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Get event feature names calls",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": false,
+      "title": "Get event feature names calls"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 5,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_confName",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "confName"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "streaming.model.retriever.aggregated-feature-value",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "getContextFieldNames"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "getContextFieldNames"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "confName",
+                  "operator": "=~",
+                  "value": "/^$conf$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Get context field names calls",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": false,
+      "title": "Get context field names calls"
+    }
+  ],
+  "time": {
+    "from": "now-7d",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "conf",
+        "multi": true,
+        "name": "conf",
+        "options": [
+          {
+            "text": "All",
+            "value": "$__all",
+            "selected": true
+          },
+          {
+            "text": "distinct_number_of_countries_crmsf_daily",
+            "value": "distinct_number_of_countries_crmsf_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_countries_crmsf_hourly",
+            "value": "distinct_number_of_countries_crmsf_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_countries_vpn_daily",
+            "value": "distinct_number_of_countries_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_countries_vpn_hourly",
+            "value": "distinct_number_of_countries_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_db_objects_oracle_daily",
+            "value": "distinct_number_of_db_objects_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_db_objects_oracle_hourly",
+            "value": "distinct_number_of_db_objects_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_db_usernames_oracle_daily",
+            "value": "distinct_number_of_db_usernames_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_db_usernames_oracle_hourly",
+            "value": "distinct_number_of_db_usernames_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_events_prnlog_daily",
+            "value": "distinct_number_of_events_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_events_prnlog_hourly",
+            "value": "distinct_number_of_events_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_file_size_bytes_prnlog_daily",
+            "value": "distinct_number_of_file_size_bytes_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_file_size_bytes_prnlog_hourly",
+            "value": "distinct_number_of_file_size_bytes_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily",
+            "value": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_oracle_daily",
+            "value": "distinct_number_of_normalized_dst_machine_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_oracle_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_ssh_daily",
+            "value": "distinct_number_of_normalized_dst_machine_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_ssh_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_kerberos_logins_daily",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ntlm_daily",
+            "value": "distinct_number_of_normalized_src_machine_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ntlm_hourly",
+            "value": "distinct_number_of_normalized_src_machine_ntlm_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_oracle_daily",
+            "value": "distinct_number_of_normalized_src_machine_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_oracle_hourly",
+            "value": "distinct_number_of_normalized_src_machine_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_prnlog_daily",
+            "value": "distinct_number_of_normalized_src_machine_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_prnlog_hourly",
+            "value": "distinct_number_of_normalized_src_machine_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ssh_daily",
+            "value": "distinct_number_of_normalized_src_machine_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ssh_hourly",
+            "value": "distinct_number_of_normalized_src_machine_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_vpn_daily",
+            "value": "distinct_number_of_normalized_src_machine_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_vpn_hourly",
+            "value": "distinct_number_of_normalized_src_machine_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_total_pages_prnlog_daily",
+            "value": "distinct_number_of_total_pages_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_total_pages_prnlog_hourly",
+            "value": "distinct_number_of_total_pages_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_gwame_daily",
+            "value": "number_of_events_gwame_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_gwame_hourly",
+            "value": "number_of_events_gwame_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_wame_daily",
+            "value": "number_of_events_wame_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_wame_hourly",
+            "value": "number_of_events_wame_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_crmsf_daily",
+            "value": "number_of_failed_crmsf_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_crmsf_hourly",
+            "value": "number_of_failed_crmsf_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_logins_daily",
+            "value": "number_of_failed_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_logins_hourly",
+            "value": "number_of_failed_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_tgt_daily",
+            "value": "number_of_failed_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_tgt_hourly",
+            "value": "number_of_failed_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ntlm_daily",
+            "value": "number_of_failed_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ntlm_hourly",
+            "value": "number_of_failed_ntlm_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_oracle_daily",
+            "value": "number_of_failed_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_oracle_hourly",
+            "value": "number_of_failed_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ssh_daily",
+            "value": "number_of_failed_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ssh_events_hourly",
+            "value": "number_of_failed_ssh_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_vpn_daily",
+            "value": "number_of_failed_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_vpn_events_hourly",
+            "value": "number_of_failed_vpn_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_crmsf_events_daily",
+            "value": "number_of_successful_crmsf_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_crmsf_events_hourly",
+            "value": "number_of_successful_crmsf_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_logins_daily",
+            "value": "number_of_successful_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_logins_hourly",
+            "value": "number_of_successful_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_tgt_events_daily",
+            "value": "number_of_successful_kerberos_tgt_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_tgt_events_hourly",
+            "value": "number_of_successful_kerberos_tgt_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ntlm_events_daily",
+            "value": "number_of_successful_ntlm_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ntlm_events_hourly",
+            "value": "number_of_successful_ntlm_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_oracle_events_daily",
+            "value": "number_of_successful_oracle_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_oracle_events_hourly",
+            "value": "number_of_successful_oracle_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ssh_daily",
+            "value": "number_of_successful_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_ssh_events_hourly",
+            "value": "number_of_successful_ssh_events_hourly",
+            "selected": false
+          }
+        ],
+        "query": "SHOW TAG VALUES FROM \"streaming.model.retriever.aggregated-feature-value\" WITH KEY = \"confName\"",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": false,
+  "schemaVersion": 12,
+  "version": 1,
+  "links": []
+}

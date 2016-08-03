@@ -36,30 +36,30 @@ public class LinuxBlockDeviceCollectorImplMetrics extends StatsMetricsGroup {
     long readsMerged;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    long sectorsRead;
-
-    @StatsDoubleMetricParams(rateSeconds = 1)
     long writesCompleted;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     long writesMerged;
 
-    @StatsDoubleMetricParams(rateSeconds = 1)
-    long sectorsWritten;
-
     @StatsLongMetricParams
     long IOCurrentlyInProgress;
 
-    @StatsDoubleMetricParams(rateSeconds = 1 , name = "readUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1,factor = 512, name="bytesRead")
+    long sectorsRead;
+
+    @StatsDoubleMetricParams(rateSeconds = 1,factor = 512, name="bytesWritten")
+    long sectorsWritten;
+
+    @StatsDoubleMetricParams(rateSeconds = 1 , name = "readUtilPercent", factor = 100.0/1000)
     long timeSpentReadingMilli;
 
-    @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "IOUtilPercent", factor = 100.0/1000)
     long timeSpentDoingIOMilli;
 
-    @StatsDoubleMetricParams(rateSeconds = 1, name = "wrightedUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "weightedUtilPercent", factor = 100.0/1000)
     long weightedTimeSpentDoingIOMilli;
 
-    @StatsDoubleMetricParams(rateSeconds = 1, name = "writeUtilPercent", factor = 100.0)
+    @StatsDoubleMetricParams(rateSeconds = 1, name = "writeUtilPercent", factor = 100.0/1000)
     long timeSpentWritingMilli;
 
 }

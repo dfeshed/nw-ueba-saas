@@ -1,17 +1,26 @@
 package fortscale.streaming.service.aggregation.feature.event;
 
 import fortscale.aggregation.feature.event.AggrEventTopologyService;
+import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
+import fortscale.streaming.service.aggregation.feature.event.metrics.AggrKafkaEventTopologyServiceAggrFeatureMetrics;
+import fortscale.streaming.service.aggregation.feature.event.metrics.AggrKafkaEventTopologyServiceMetrics;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.InitializingBean;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
+
 import java.io.FileReader;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,12 +41,21 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
     private MessageCollector messageCollector;
     private AggregationMetricsService aggregationMetricsService;
 
+    @Autowired
+    private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
+
+    private Map<Pair<String, String>, AggrKafkaEventTopologyServiceAggrFeatureMetrics> aggrFeatureTypeAndNameToMetrics = new HashMap<>();
+    private AggrKafkaEventTopologyServiceMetrics metrics;
+
+    @Autowired
+    private StatsService statsService;
 
     @Override
     public void afterPropertiesSet() throws Exception {
         if (StringUtils.isNotBlank(eventTopologyJsonFileName)) {
             loadEventTopologyFromFile(eventTopologyJsonFileName);
         }
+        metrics = new AggrKafkaEventTopologyServiceMetrics(statsService);
     }
 
     @SuppressWarnings("unchecked")
@@ -57,6 +75,7 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
 
         if(event==null) {
             logger.error(ERROR_MSG_NULL_EVENT);
+            metrics.nullEvents++;
             return false;
         }
 
@@ -67,20 +86,35 @@ public class AggrKafkaEventTopologyService implements AggrEventTopologyService, 
             try{
                 messageCollector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), event.toJSONString()));
                 aggregationMetricsService.sentEvent(event);
+                getAggrFeatureMetrics(event).sent++;
             } catch(Exception exception){
                 String errMsg = String.format(ERROR_MSG_FAILED_TO_SEND_EVENT, event.toString());
                 logger.error(errMsg, exception);
+                metrics.failedToSend++;
                 //TODO: should we throw an exception here?
                 return false;
             }
         } else {
             logger.warn(String.format(WARN_MSG_NO_OUTPUT_TOPIC_FOR_EVENT_TYPE, eventType));
+            metrics.noOutpuTopic++;
             return false;
         }
 
+        metrics.sent++;
         return true;
     }
 
+    private AggrKafkaEventTopologyServiceAggrFeatureMetrics getAggrFeatureMetrics(JSONObject event) {
+        ImmutablePair<String, String> typeAndName = new ImmutablePair<>(
+                aggrFeatureEventBuilderService.getAggregatedFeatureType(event),
+                aggrFeatureEventBuilderService.getAggregatedFeatureName(event)
+        );
+        if (!aggrFeatureTypeAndNameToMetrics.containsKey(typeAndName)) {
+            aggrFeatureTypeAndNameToMetrics.put(typeAndName, new AggrKafkaEventTopologyServiceAggrFeatureMetrics(statsService,
+                    typeAndName.getLeft(), typeAndName.getRight()));
+        }
+        return aggrFeatureTypeAndNameToMetrics.get(typeAndName);
+    }
 
     public String getTopicForEventType(String eventType) {
         return eventType==null?null:eventType2kafkaQueueNameMap.get(eventType);

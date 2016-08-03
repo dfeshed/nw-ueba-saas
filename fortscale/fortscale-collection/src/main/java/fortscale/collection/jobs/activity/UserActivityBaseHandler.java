@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.functions.AggGenericNAFeatureValues;
 import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.feature.Feature;
@@ -55,11 +56,11 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
         long fullExecutionStartTime = System.nanoTime();
 
-        UserActivityJobState userActivityJobState = loadAndUpdateJobState(numOfLastDaysToCalculate);
+        UserActivityJobState userActivityJobState = loadAndUpdateJobState(getActivityName(), numOfLastDaysToCalculate);
         final UserActivityConfigurationService userActivityConfigurationService = getUserActivityConfigurationService();
         UserActivityConfiguration userActivityConfiguration = userActivityConfigurationService.getUserActivityConfiguration();
         List<String> dataSources = userActivityConfiguration.getDataSources();
-        logger.info("Relevant data sources for activity: {}", getActivityName(), dataSources);
+        logger.info("Relevant data sources for activity {} : {}", getActivityName(), dataSources);
 
         DateTime dateStartTime = new DateTime(TimestampUtils.convertToMilliSeconds(startingTime), DateTimeZone.UTC);
         long firstBucketStartTime = TimestampUtils.convertToSeconds(dateStartTime.withTimeAtStartOfDay().getMillis());
@@ -148,15 +149,15 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return Collections.emptyMap();
     }
 
-    protected UserActivityJobState loadAndUpdateJobState(int numOfLastDaysToCalculate) {
-        Query query = new Query();
-        UserActivityJobState userActivityJobState = null;
+    protected UserActivityJobState loadAndUpdateJobState(String activityName, int numOfLastDaysToCalculate) {
+        Criteria criteria = Criteria.where(UserActivityJobState.ACTIVITY_NAME_FIELD).is(activityName);
 
-        userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
-
+        Query query = new Query(criteria);
+        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
 
         if (userActivityJobState == null) {
             userActivityJobState = new UserActivityJobState();
+            userActivityJobState.setActivityName(activityName);
             userActivityJobState.setLastRun(System.currentTimeMillis());
 
             mongoTemplate.save(userActivityJobState, UserActivityJobState.COLLECTION_NAME);
@@ -296,9 +297,15 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         final List<String> histogramFeatureNames = getRelevantAggregatedFeaturesFieldsNames();
         for (String histogramFeatureName : histogramFeatureNames) {
             Feature featureValue = aggregatedFeatures.get(histogramFeatureName);
+            if (featureValue == null) {
+                continue;
+            }
             final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
             Map<String, Double> bucketHistogram = featureAsHistogram.getHistogramMap();
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
+				if (entry.getKey().equals(AggGenericNAFeatureValues.NOT_AVAILABLE) && !countNAValues()) {
+					continue;
+				}
                 double oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
                 double newValue = entry.getValue();
                 histogramOfUser.put(entry.getKey(), oldValue + valueReducer().apply(newValue));
@@ -320,6 +327,10 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
 
     protected abstract String getCollectionName();
+
+	protected boolean countNAValues() {
+		return true;
+	}
 
     /**
      * returns the relevant fields from the aggregated features map

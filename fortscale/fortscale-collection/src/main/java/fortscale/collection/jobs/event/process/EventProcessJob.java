@@ -2,10 +2,13 @@ package fortscale.collection.jobs.event.process;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.io.BufferedLineReader;
+import fortscale.collection.metrics.ETLCommonJobMetircs;
 import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordExtensions;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
+import fortscale.collection.services.CollectionStatsMetricsService;
 import fortscale.services.UserService;
 import fortscale.services.classifier.Classifier;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -18,6 +21,7 @@ import fortscale.utils.hdfs.split.FileSplitStrategy;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.kafka.KafkaEventsWriter;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.*;
@@ -77,6 +81,8 @@ public class EventProcessJob implements Job {
 	protected KafkaEventsWriter streamWriter;
     protected PartitionStrategy partitionStrategy;
 
+	String sourceName;
+
 	String outputSeparator;
 
 	@Autowired
@@ -87,6 +93,15 @@ public class EventProcessJob implements Job {
 	
 	@Autowired
 	protected UserService userService;
+	@Autowired
+	protected CollectionStatsMetricsService collectionStatsMetricsService;
+
+	@Autowired
+	protected StatsService statsService;
+
+	protected ETLCommonJobMetircs jobMetircs;
+
+	private MorphlineMetrics morphlineMetrics;
 
 	/**
 	 * taskMonitoringHelper is holding all the steps, errors, arrived events, successfully processed events,
@@ -117,23 +132,31 @@ public class EventProcessJob implements Job {
 		String outputFields = jobDataMapExtension.getJobDataMapStringValue(map, "outputFields");
 		String messageOutputFields = jobDataMapExtension.getJobDataMapStringValue(map,"messageOutputFields");
 		outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
-		recordToHadoopString = new RecordToStringItemsProcessor(outputSeparator, ImpalaParser.getTableFieldNamesAsArray(outputFields));
-		recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
-		recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields"));
+		recordToHadoopString = new RecordToStringItemsProcessor(outputSeparator, statsService,"etl-"+sourceName, ImpalaParser.getTableFieldNamesAsArray(outputFields));
+		recordToMessageString = new RecordToStringItemsProcessor(outputSeparator,statsService,"etl-"+sourceName,ImpalaParser.getTableFieldNamesAsArray(messageOutputFields));
+		recordKeyExtractor = new RecordToStringItemsProcessor(outputSeparator, statsService,"etl-"+sourceName, jobDataMapExtension.getJobDataMapStringValue(map, "partitionKeyFields"));
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 		morphlineEnrichment = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineEnrichment");
 
+		// get the job group name to be used using monitoring
+
         String strategy = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
         partitionStrategy = PartitionsUtils.getPartitionStrategy(strategy);
+
+
 	}
 	
 	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
-		// get the job group name to be used using monitoring 
-		String sourceName = context.getJobDetail().getKey().getGroup();
+
+		sourceName = context.getJobDetail().getKey().getGroup();
+		jobMetircs = collectionStatsMetricsService.getETLCommonJobMetircs(sourceName);
+		morphlineMetrics = collectionStatsMetricsService.getMorphlineMetrics(sourceName);
+
 		String jobName = context.getJobDetail().getKey().getName();
-		
+
+		jobMetircs.processExecutions++;
 		logger.info("{} {} job started", jobName, sourceName);
 
 
@@ -167,14 +190,17 @@ public class EventProcessJob implements Job {
 			try {
 				for (File file : files) {
 					try {
+						jobMetircs.processFiles++;
 						logger.info("starting to process {}", file.getName());
 						
 						// transform events in file
 						boolean success = processFile(file);
 						
 						if (success) {
+							jobMetircs.processFilesSuccessfully++;
 							moveFileToFolder(file, finishPath);
 						} else {
+							jobMetircs.processFilesFailures++;
 							moveFileToFolder(file, errorPath);	
 						}
 			
@@ -189,19 +215,40 @@ public class EventProcessJob implements Job {
 					logger.info("{}/{} files processed - {}% done", totalDone, totalFiles,
 							Math.round(((float)totalDone / (float)totalFiles) * 100));
 				}
-			} finally {
+			}
+
+			catch(Exception e)
+			{
+				logger.error("unexpected error during file processing  : {}",e);
+			}
+			finally {
 				// make sure all close are called, hence the horror below of nested finally blocks
 				try {
 					morphline.close();
-				} finally {
+				}
+				catch (Exception e)
+				{
+					logger.error("unexpected error during morphline {} close : {}",morphline.toString(),e);
+				}
+				finally{
 					try {
 						if (morphlineEnrichment != null) {
 							morphlineEnrichment.close();
 						}
-					} finally {
+					}
+					catch (Exception e )
+					{
+						logger.error("unexpected error during morphline {} close : {}",morphlineEnrichment.toString(),e);
+					}
+					finally{
 						try {
 							closeOutputAppender();
-						} finally {
+						}
+						catch (Exception e)
+						{
+							logger.error("unexpected error during out put appender closing  : {}",e);
+						}
+						finally {
 							closeStreamingAppender();
 						}
 					}
@@ -209,14 +256,16 @@ public class EventProcessJob implements Job {
 			}
 
 			refreshImpala();
-
 			taskMonitoringHelper.finishStep(currentStep);
+			jobMetircs.processExecutionsSuccessfully++;
 		} catch (JobExecutionException e) {
 			taskMonitoringHelper.error(currentStep, e.toString());
+			jobMetircs.processExecutionsFailed++;
 			throw e;
 		} catch (Exception exp) {
 			logger.error("unexpected error during event process job: " + exp.toString());
 			taskMonitoringHelper.error(currentStep, exp.toString());
+			jobMetircs.processExecutionsFailed++;
 			throw new JobExecutionException(exp);
 		} finally {
 			//Before job goes down - all monitoring details will be saved to mongo
@@ -232,6 +281,7 @@ public class EventProcessJob implements Job {
 		File inputDir = new File(inputPath);
 		if (!inputDir.exists() || !inputDir.isDirectory()) {
 			logger.error("input path {} does not exists", inputDir.getAbsolutePath());
+			jobMetircs.processExecutionsFailedDirectoryNotExists++;
 			throw new JobExecutionException(String.format("input path %s does not exists", inputPath));
 		}
 
@@ -257,9 +307,10 @@ public class EventProcessJob implements Job {
 	 */
 	protected boolean processFile(File file) throws IOException {
 
+
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
-		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper);
+		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper,morphlineMetrics);
 
 		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
 		lnr.skip(Long.MAX_VALUE);
@@ -275,16 +326,22 @@ public class EventProcessJob implements Job {
 					numOfLines++;
 					//count that new event trying to processed from specific file
 					taskMonitoringHelper.handleNewEvent(file.getName());
+					jobMetircs.lines++;
 					Record record = processLine(line, itemContext);
 					if (record != null){
 						numOfSuccessfullyProcessedLines++;
 						//If success - write the event to monitoring. filed event monitoing handled by monitoring
 						Long timestamp = RecordExtensions.getLongValue(record, timestampField);
-						taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
+						if (timestamp!=null){
+							jobMetircs.lastEventTime = timestamp;
+							taskMonitoringHelper.handleUnFilteredEvents(itemContext.getSourceName(),timestamp);
+						}
+						jobMetircs.linesSuccessfully++;
 					}
 					if (linesPrintEnabled && numOfLines % linesPrintSkip == 0) {
 						logger.info("{}/{} lines processed - {}% done", numOfLines, totalLines,
 								Math.round(((float)numOfLines / (float)totalLines) * 100));
+						jobMetircs.linesTotalFailures++;
 					}
 				}
 			}
@@ -293,6 +350,9 @@ public class EventProcessJob implements Job {
 			
 			// flush hadoop
 			flushOutputAppender();
+			if (numOfLines != numOfSuccessfullyProcessedLines){
+				jobMetircs.processFilesSuccessfullyWithFailedLines++;
+			}
 		} catch (IOException e) {
 			logger.error("error processing file " + file.getName(), e);
 			taskMonitoringHelper.error("Process Files", e.toString());
@@ -311,6 +371,7 @@ public class EventProcessJob implements Job {
 				logger.warn("error processing file " + file.getName(), reader.getException());
 				taskMonitoringHelper.error("Process Files warning", reader.getException().toString());
 			}
+
 			return true;
 		}
 	}
@@ -324,11 +385,13 @@ public class EventProcessJob implements Job {
 		Record rec = morphline.process(line, itemContext);
 		Record record = null;
 		if(rec == null){
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
 		if (morphlineEnrichment != null) {
 			record = morphlineEnrichment.process(rec, itemContext);
 			if (record == null) {
+				jobMetircs.linesFailuresInMorphlineEnrichment++;
 				return null;
 			}
 		} else {
@@ -354,9 +417,12 @@ public class EventProcessJob implements Job {
 
 			return record;
 		} else {
+			jobMetircs.linesFailuresInTecordToHadoopString++;
 			return null;
 		}
 	}
+
+
 	
 	protected Classifier getClassifier(){
 		return null;
@@ -410,8 +476,10 @@ public class EventProcessJob implements Job {
 			logger.error("error refreshing impala", e);
 			taskMonitoringHelper.error("Process Files warning", "error refreshing impala - " + e.toString());
 		}
-		if (!exceptions.isEmpty())
+		if (!exceptions.isEmpty()) {
+
 			throw new JobExecutionException("got exception while refreshing impala", exceptions.get(0));
+		}
 	}
 	
 	protected void createOutputAppender() throws JobExecutionException {
@@ -489,5 +557,7 @@ public class EventProcessJob implements Job {
 		if (!file.renameTo(renamed))
 			logger.error("failed moving file {} to path {}", file.getName(), path);
 	}
+
+
 }
 

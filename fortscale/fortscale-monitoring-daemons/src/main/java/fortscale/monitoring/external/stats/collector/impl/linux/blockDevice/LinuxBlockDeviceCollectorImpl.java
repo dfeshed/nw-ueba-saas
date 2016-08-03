@@ -31,9 +31,7 @@ public class LinuxBlockDeviceCollectorImpl {
         this.deviceMetricsMap = new HashMap<>();
         this.statsService = statsService;
         this.excludedDevicesPrefix = excludedDevicesPrefixes;
-
         this.selfMetrics = selfMetrics;
-        parser = new LinuxProcFileKeyMultipleValueParser(PROC_DISKSTATS, " ", 3);
     }
 
     /**
@@ -45,6 +43,7 @@ public class LinuxBlockDeviceCollectorImpl {
 
         // get all devices names, that are not in excluded device list
         String regex = (String.format("^(%s).*$", String.join("|", excludedDevicesPrefix)));
+        parser = new LinuxProcFileKeyMultipleValueParser(PROC_DISKSTATS, " ", 3);
         String[] devices = parser.getKeys().stream().filter(x -> !x.matches(regex)).toArray(String[]::new);
 
         // collect metrics for devices
@@ -59,7 +58,18 @@ public class LinuxBlockDeviceCollectorImpl {
                     deviceMetricsMap.put(device, metrics);
                 }
 
-                // get stats
+//                parsing "/proc/diskstats"
+//                4 - reads completed successfully
+//                5 - reads merged
+//                6 - sectors read
+//                7 - time spent reading (ms)
+//                8 - writes completed
+//                9 - writes merged
+//                10 - sectors written
+//                11 - time spent writing (ms)
+//                12 - I/Os currently in progress
+//                13 - time spent doing I/Os (ms)
+//                14 - weighted time spent doing I/Os (ms)
                 metrics = deviceMetricsMap.get(device);
                 metrics.readsCompletedSuccessfully = parser.getLongValue(device, 4);
                 metrics.readsMerged = parser.getLongValue(device, 5);

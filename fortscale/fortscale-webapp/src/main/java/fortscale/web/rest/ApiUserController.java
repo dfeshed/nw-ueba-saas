@@ -156,12 +156,12 @@ public class ApiUserController extends BaseController{
 		}
 
 		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
-			criteriaList.add(where("adInfo.terminationDate").exists(true));
+			criteriaList.add(where("terminationDate").exists(true));
 			criteriaList.add(new Criteria() {
 				@Override
 				public DBObject getCriteriaObject() {
 					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.adInfo.terminationDate < this.lastActivity");
+					obj.put("$where", "this.terminationDate < this.lastActivity");
 					return obj;
 				}
 			});
@@ -391,9 +391,7 @@ public class ApiUserController extends BaseController{
 			return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
 		}
 		for (Tag tag: tags) {
-			try {
-				tagService.updateTag(tag);
-			} catch (Exception ex) {
+			if (!tagService.updateTag(tag)) {
 				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}

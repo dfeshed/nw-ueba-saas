@@ -1,16 +1,30 @@
 package fortscale.domain.ad;
 
+import org.hibernate.validator.constraints.NotEmpty;
+
 import java.util.ArrayList;
 import java.util.List;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created by Amir Keren on 17/05/2015.
  */
 public class AdConnection {
 
+    @Size(min = 1)
     private List<String> dcs;
+
+    @NotNull
+    @NotEmpty
     private String domainBaseSearch;
+
+    @NotNull
+    @NotEmpty
     private String domainUser;
+
+    @NotNull
+    @NotEmpty
     private String domainPassword;
 
     public AdConnection() {}

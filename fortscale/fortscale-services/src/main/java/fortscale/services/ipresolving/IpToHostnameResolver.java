@@ -2,7 +2,7 @@ package fortscale.services.ipresolving;
 
 import fortscale.domain.events.*;
 import fortscale.services.ComputerService;
-import fortscale.streaming.service.ipresolving.IpToHostnameResolverMetrics;
+import fortscale.services.ipresolving.metrics.IpToHostnameResolverMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang.StringUtils;

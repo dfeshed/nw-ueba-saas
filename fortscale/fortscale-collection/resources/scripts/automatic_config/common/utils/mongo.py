@@ -2,6 +2,8 @@ import pymongo
 import re
 import sys
 
+import time_utils
+
 
 def get_db(host):
     return pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
@@ -61,3 +63,32 @@ def get_collections_size(host, collection_names_regex, find_query={}):
     mongo_db = get_db(host)
     return sum(mongo_db[collection_name].find(find_query).count()
                for collection_name in get_collection_names(host=host, collection_names_regex=collection_names_regex))
+
+
+def update_models_time(logger, host, collection_names_regex, time=None, infer_start_from_collection_names_regex=None):
+    if not (time is None) ^ (infer_start_from_collection_names_regex is None):
+        raise Exception('exactly one of time or infer_start_from_collection_names_regex should be non None')
+    if infer_start_from_collection_names_regex is not None:
+        time = get_collections_time_boundary(host=host,
+                                             collection_names_regex=infer_start_from_collection_names_regex,
+                                             is_start=True)
+    time -= 1
+    logger.info('moving models back in time to ' + str(time) + '...')
+    time = time_utils.get_datetime(time)
+    for collection in iter_collections(host=host, collection_names_regex=collection_names_regex):
+        res = collection.update({}, {'$set': {'startTime': time, 'endTime': time}}, multi=True)
+        logger.info('updated ' + str(res['n']) + ' models in ' + collection.name)
+        if res['ok'] != 1:
+            logger.error('update failed')
+            return False
+    return True
+
+
+def rename_documents(logger, host, collection_names_regex, name_to_new_name_cb):
+    renames = 0
+    for collection in iter_collections(host=host, collection_names_regex=collection_names_regex):
+        new_name = name_to_new_name_cb(collection.name)
+        logger.info('renaming ' + collection.name + ' to ' + new_name + '...')
+        collection.rename(new_name, dropTarget=True)
+        renames += 1
+    return renames

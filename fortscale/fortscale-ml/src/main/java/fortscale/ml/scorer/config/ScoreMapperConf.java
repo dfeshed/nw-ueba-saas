@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import fortscale.ml.scorer.ScoreMapping;
 import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -11,13 +12,13 @@ public class ScoreMapperConf extends AbstractScorerConf {
 	public static final String SCORER_TYPE = "score-mapper";
 
 	private IScorerConf baseScorerConf;
-	private ScoreMappingConf scoreMappingConf;
+	private ScoreMapping.ScoreMappingConf scoreMappingConf;
 
 	@JsonCreator
 	public ScoreMapperConf(
 			@JsonProperty("name") String name,
 			@JsonProperty("base-scorer") IScorerConf baseScorerConf,
-			@JsonProperty("score-mapping-conf") ScoreMappingConf scoreMappingConf) {
+			@JsonProperty("score-mapping-conf") ScoreMapping.ScoreMappingConf scoreMappingConf) {
 
 		super(name);
 		Assert.notNull(baseScorerConf);
@@ -35,7 +36,7 @@ public class ScoreMapperConf extends AbstractScorerConf {
 		return baseScorerConf;
 	}
 
-	public ScoreMappingConf getScoreMappingConf() {
+	public ScoreMapping.ScoreMappingConf getScoreMappingConf() {
 		return scoreMappingConf;
 	}
 }

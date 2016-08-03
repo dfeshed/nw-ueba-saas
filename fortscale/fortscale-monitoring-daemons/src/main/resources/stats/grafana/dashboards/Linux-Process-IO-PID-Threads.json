@@ -1310,8 +1310,8 @@
     }
   ],
   "time": {
-    "from": "2016-06-21T12:27:23.142Z",
-    "to": "2016-06-22T14:50:49.478Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1509,7 +1509,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"process\"  WHERE \"processGroup\" =~ /^$processGroup$/",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query",
         "useTags": false
       }

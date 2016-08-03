@@ -47,6 +47,7 @@ public class User extends AbstractDocument {
 	public static final String tagsField = "tags";
     public static final String scoreField = "score";
     public static final String scoreSeverityField = "scoreSeverity";
+	public static final String terminationDateField = "terminationDate";
 
 	@Indexed
 	@Field(administratorAccountField)
@@ -110,7 +111,9 @@ public class User extends AbstractDocument {
     @Field(scoreField)
     private double score=0;
 
-	
+	@Field(terminationDateField)
+	private DateTime terminationDate;
+
 	public String getAdDn() {
 		return adDn;
 	}
@@ -128,7 +131,6 @@ public class User extends AbstractDocument {
 	public void setAdObjectGUID(String adObjectGUID) {
 		this.adObjectGUID = adObjectGUID;
 	}
-		
 		
 	public UserAdInfo getAdInfo() {
 		if(adInfo == null){
@@ -193,7 +195,6 @@ public class User extends AbstractDocument {
 	public Boolean getFollowed() {
 		return followed;
 	}
-
 
 	public void setFollowed(Boolean followed) {
 		this.followed = followed;
@@ -319,7 +320,6 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}
 
-
 	public Severity getScoreSeverity() {
 		return scoreSeverity;
 	}
@@ -335,4 +335,12 @@ public class User extends AbstractDocument {
     public double getScore() {
         return score;
     }
+
+	public DateTime getTerminationDate() {
+		return terminationDate;
+	}
+
+	public void setTerminationDate(DateTime terminationDate) {
+		this.terminationDate = terminationDate;
+	}
 }

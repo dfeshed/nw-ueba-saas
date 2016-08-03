@@ -36,14 +36,22 @@ start_optional = argparse.ArgumentParser(add_help=False)
 start_optional.add_argument('--start',
                             **start_args)
 
+end_args = {
+    'action': 'store',
+    'dest': 'end',
+    'help': 'The date until to run (excluding), '
+            'e.g. - "24 march 2016 13:00" / "20160324" / "1458824400"',
+    'type': _time_type
+}
 end = argparse.ArgumentParser(add_help=False)
 end.add_argument('--end',
-                 action='store',
-                 dest='end',
-                 help='The date until to run (excluding), '
-                      'e.g. - "24 march 2016 13:00" / "20160324" / "1458824400"',
                  required=True,
-                 type=_time_type)
+                 **end_args)
+
+end_optional = argparse.ArgumentParser(add_help=False)
+end_optional.add_argument('--end',
+                          **end_args)
+
 
 data_sources = argparse.ArgumentParser(add_help=False)
 data_sources.add_argument('--data_sources',
@@ -121,9 +129,9 @@ online_manager.add_argument('--wait_between_batches',
                             help='The minimum amount of time (in minutes) between successive batch runs',
                             type=int,
                             required=True)
-online_manager.add_argument('--min_free_memory',
+online_manager.add_argument('--min_free_memory_gb',
                             action='store',
-                            dest='min_free_memory',
+                            dest='min_free_memory_gb',
                             help='Whenever the amount of free memory in the system is below the given number (in GB), '
                                  'the script will block',
                             type=int,
@@ -144,6 +152,14 @@ online_manager.add_argument('--max_delay',
                             type=int,
                             default=3)
 
+def _throttling_force_type(i):
+    try:
+        splitted = [definition.strip().split('=') for definition in i.split(',')]
+        return dict((a, int(b)) for a, b in splitted)
+    except Exception:
+        raise argparse.ArgumentTypeError('must be of format <data_source>:<number>,<data_source>:<number>...')
+
+
 throttling = argparse.ArgumentParser(add_help=False)
 throttling.add_argument('--max_batch_size',
                         action='store',
@@ -158,9 +174,9 @@ throttling.add_argument('--force_max_batch_size_in_minutes',
                         help="The maximal batch size (in minutes) to read from impala. "
                              "This parameter overrides --max_batch_size. Use it only if you know what you're doing, "
                              "or if running the script without it results with too small batch size in minutes "
-                             "(in this case a warning will be displayed)",
-                        default=None,
-                        type=int)
+                             "(in this case a warning will be displayed). This should be a valid json with mapping "
+                             "from data source to int",
+                        type=_throttling_force_type)
 throttling.add_argument('--max_gap',
                         action='store',
                         dest='max_gap',
@@ -168,6 +184,15 @@ throttling.add_argument('--max_gap',
                              "This parameter is translated into BDP's maxSourceDestinationTimeGap parameter",
                         required=True,
                         type=int)
+throttling.add_argument('--force_max_gap_in_seconds',
+                        action='store',
+                        dest='force_max_gap_in_seconds',
+                        help="The maximal gap (in seconds) to read from impala. "
+                             "This parameter overrides --max_gap. Use it only if you know what you're doing, "
+                             "or if running the script without it results with too small batch size in minutes "
+                             "(in this case a warning will be displayed). This should be a valid json with mapping "
+                             "from data source to int",
+                        type=_throttling_force_type)
 throttling.add_argument('--convert_to_minutes_timeout',
                         action='store',
                         dest='convert_to_minutes_timeout',

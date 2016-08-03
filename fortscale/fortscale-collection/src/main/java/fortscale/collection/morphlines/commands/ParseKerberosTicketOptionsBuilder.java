@@ -3,6 +3,8 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.apache.commons.lang.StringUtils;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -32,7 +34,9 @@ public class ParseKerberosTicketOptionsBuilder implements CommandBuilder {
 	// Nested classes:
 	///////////////////////////////////////////////////////////////////////////////
 	public static final class ParseKerberosTicketOptions extends AbstractCommand {
-		
+
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
+
 		private static final Logger logger = LoggerFactory.getLogger(ParseKerberosTicketOptions.class);
 		
 		private String ticketOptionsField;
@@ -59,6 +63,10 @@ public class ParseKerberosTicketOptionsBuilder implements CommandBuilder {
 		
 		@Override
 		public boolean doProcess(Record inputRecord)  {
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			// get the ticket field
 			String ticket = (String)inputRecord.getFirstValue(ticketOptionsField);
 			if (ticket!=null) {
@@ -77,8 +85,14 @@ public class ParseKerberosTicketOptionsBuilder implements CommandBuilder {
 					checkFieldMask(inputRecord, ticketBytes, 2, postdatedField);
 					checkFieldMask(inputRecord, ticketBytes, 26, renewRequestField);
 					checkFieldMask(inputRecord, ticketBytes, 10, constraintDelegationField);
-				
+
+					if (morphlineMetrics != null) {
+						morphlineMetrics.kerberosTicketConverted++;
+					}
 				} catch (IllegalArgumentException e) {
+					if (morphlineMetrics != null) {
+						morphlineMetrics.errorConvertingKerberosTicket++;
+					}
 					logger.warn("error converting ticket option '{}' to byte array for record '{}'", ticket, inputRecord);
 				}
 			}		

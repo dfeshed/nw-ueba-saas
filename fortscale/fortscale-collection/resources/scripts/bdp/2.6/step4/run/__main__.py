@@ -50,14 +50,6 @@ Inner workings:
 
  Usage example:
      python 2.6/step4/run --timeout 5''')
-    parser.add_argument('--days_to_ignore',
-                        action='store',
-                        dest='days_to_ignore',
-                        help='number of days from the beginning to ignore when building the models. '
-                             'It should be big enough so the noise is ignored, but not too big - so we have enough '
-                             'data in order to build good models. If there is a big volume of data, 10 should do',
-                        type=int,
-                        required=True)
     return parser
 
 
@@ -70,8 +62,7 @@ def main():
 
     if Manager(host=arguments.host,
                validation_timeout=arguments.timeout * 60,
-               validation_polling=arguments.polling_interval * 60,
-               days_to_ignore=arguments.days_to_ignore).run():
+               validation_polling=arguments.polling_interval * 60).run():
         logger.info('finished successfully')
     else:
         logger.error('failed')

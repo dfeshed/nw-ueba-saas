@@ -1970,8 +1970,8 @@
     }
   ],
   "time": {
-    "from": "2016-06-23T22:18:54.093Z",
-    "to": "2016-06-24T03:50:35.117Z"
+    "from": "now-24h",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -2078,7 +2078,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"dataSource\"",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query",
         "useTags": false
       },
@@ -2135,7 +2135,7 @@
           }
         ],
         "query": "SHOW TAG VALUES WITH KEY = \"lastStep\"",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query",
         "useTags": false
       }
