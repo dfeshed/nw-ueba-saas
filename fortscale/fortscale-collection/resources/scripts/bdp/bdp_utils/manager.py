@@ -139,6 +139,8 @@ class OnlineManager(object):
                  polling_interval,
                  max_delay,
                  batch_size_in_hours):
+        if not is_online_mode and (wait_between_batches is not None or min_free_memory_gb is not None or max_delay is not None):
+            raise Exception('in offline mode some parameters are not allowed')
         if not (calc_block_on_tables_based_on_days is None) ^ (block_on_tables is None):
             raise Exception('you must specify either block_on_data_sources or calc_block_on_tables_based_on_days')
         self._logger = logger
