@@ -1,7 +1,5 @@
 package fortscale.services.impl;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
@@ -15,7 +13,6 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
 import fortscale.domain.rest.UserRestFilter;
-import fortscale.services.AlertsService;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
@@ -96,9 +93,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Autowired 
 	private ADParser adUserParser;
-
-	@Autowired
-	private AlertsService alertsService;
 
 	@Autowired
 	@Qualifier("groupByTagsCache")
@@ -1180,13 +1174,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
 
 		return userRepository.countAllUsers(criteriaList);
-	}
-
-	@Override public void recalculateNumberOfUserAlerts(String userName) {
-		Set<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
-		User user = findByUsername(userName);
-
-		user.setAlertsCount(alerts.size());
 	}
 
 	@Override public String getUserId(String username) {

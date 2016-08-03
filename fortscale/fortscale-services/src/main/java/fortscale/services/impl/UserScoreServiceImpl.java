@@ -9,16 +9,15 @@ import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import fortscale.utils.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -327,7 +326,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
-            userService.recalculateNumberOfUserAlerts(userName);
+            recalculateNumberOfUserAlerts(userName);
         }
         logger.info("Finish updating user score");
 
@@ -339,6 +338,12 @@ public class UserScoreServiceImpl implements UserScoreService {
         return scoresHistogram;
     }
 
+	@Override public void recalculateNumberOfUserAlerts(String userName) {
+		Set<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
+		User user = userService.findByUsername(userName);
+
+		user.setAlertsCount(alerts.size());
+	}
 
     /**
      * Translate the user score to severity, using the percentiles table and configuration.

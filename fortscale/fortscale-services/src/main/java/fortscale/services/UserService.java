@@ -116,9 +116,8 @@ public interface UserService extends CachingService{
 	 */
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
 
-	public void recalculateNumberOfUserAlerts(String userName);
-
 	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest);
 
 	public int countUsersByFilter(UserRestFilter userRestFilter);
+
 }

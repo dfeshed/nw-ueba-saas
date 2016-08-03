@@ -65,7 +65,7 @@ public class AlertsServiceImpl implements AlertsService {
 		alert = userScoreService.updateAlertContirubtion(alert);
 		alert = alertsRepository.save(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
-		userService.recalculateNumberOfUserAlerts(alert.getEntityName());
+		userScoreService.recalculateNumberOfUserAlerts(alert.getEntityName());
 		return alert;
 	}
 
@@ -125,7 +125,7 @@ public class AlertsServiceImpl implements AlertsService {
 	public void add(Alert alert) {
 		alertsRepository.add(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
-		userService.recalculateNumberOfUserAlerts(alert.getEntityName());
+		userScoreService.recalculateNumberOfUserAlerts(alert.getEntityName());
 	}
 
 	@Override

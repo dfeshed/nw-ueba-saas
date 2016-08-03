@@ -253,7 +253,6 @@
         <property name="usernameNormalizer" ref="ntlmNoarmalizer"/>
     </bean>
 
-    <bean id="alertsService" class="fortscale.services.impl.AlertsServiceImpl" scope="prototype" />
 
     <bean id="alertPrettifierService" class="fortscale.services.impl.AlertEmailPrettifier" scope="singleton" />
 
