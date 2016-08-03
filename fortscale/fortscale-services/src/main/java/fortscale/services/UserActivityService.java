@@ -15,7 +15,7 @@ public interface UserActivityService {
 
     List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String id, int timeRangeInDays);
 
-    List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, Integer timeRangeInDays);
+    List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
 
     List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String id, int timeRangeInDays);
 

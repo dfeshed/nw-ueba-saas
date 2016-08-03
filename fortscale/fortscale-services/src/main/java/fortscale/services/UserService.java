@@ -5,6 +5,7 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.User;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import org.springframework.data.domain.PageRequest;
@@ -115,15 +116,9 @@ public interface UserService extends CachingService{
 	 */
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
 
-	public List<User> findUsersByFilter(String disabledSince, Boolean isDisabled, String inactiveSince,
-			Boolean withActivity, Boolean disabledWithActivity, Boolean isDisabledWithActivity, String fieldContains,
-			String searchFieldContains, Boolean isTerminatedWithActivity, Boolean isServiceAccount, String dataEntities,
-			Integer entityMinScore, PageRequest pageRequest);
-
-	public Integer countUsersByFilter(String disabledSince, Boolean isDisabled, String inactiveSince,
-			Boolean isDisabledWithActivity, Boolean isTerminatedWithActivity, Boolean isServiceAccount,
-			String searchFieldContains, String dataEntities, Boolean isTerminatedWithActivity1, Boolean isServiceAccount1,
-			String dataEntities1, Integer entityMinScore);
-
 	public void recalculateNumberOfUserAlerts(String userName);
+
+	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest);
+
+	public int countUsersByFilter(UserRestFilter userRestFilter);
 }

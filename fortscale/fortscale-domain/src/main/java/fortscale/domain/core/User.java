@@ -129,7 +129,7 @@ public class User extends AbstractDocument {
 
 	@Indexed
 	@Field(alertsCountField)
-	private Integer alertsCount;
+	private int alertsCount;
 
 	public String getAdDn() {
 		return adDn;
@@ -141,14 +141,11 @@ public class User extends AbstractDocument {
 	
 	private String adObjectGUID;
 
-	public Integer getAlertsCount() {
-		if (alertsCount == null){
-			alertsCount = 0;
-		}
+	public int getAlertsCount() {
 		return alertsCount;
 	}
 
-	public void setAlertsCount(Integer alertsCount) {
+	public void setAlertsCount(int alertsCount) {
 		this.alertsCount = alertsCount;
 	}
 

@@ -1,7 +1,6 @@
 package fortscale.web.rest;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
-import fortscale.domain.core.Computer;
 import fortscale.domain.core.activities.*;
 import fortscale.services.ComputerService;
 import fortscale.services.UserActivityService;
@@ -11,11 +10,10 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
-import fortscale.web.rest.Utils.UserActivityUtils;
+import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserAndOrganizationActivityHelper;
 import fortscale.web.rest.entities.activity.UserActivityData;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +53,7 @@ public class ApiUserActivityController extends DataQueryController {
     private ComputerService computerService;
 
     @Autowired
-    private UserActivityUtils userActivityUtils;
+    private UserDeviceUtils userDeviceUtils;
 
     @Autowired()
     @Qualifier("usersToActivitiesCache")
@@ -99,7 +97,7 @@ public class ApiUserActivityController extends DataQueryController {
      * @return list of UserActivityData.LocationEntry
      */
     private List<UserActivityData.LocationEntry> convertLocationDocumentsResponse(List<UserActivityLocationDocument> documentList, int limit){
-        final UserActivityEntryHashMap userActivityDataEntries = userActivityUtils.getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getCountryValuesToFilter());
+        final UserActivityEntryHashMap userActivityDataEntries = userDeviceUtils.getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getCountryValuesToFilter());
         List<UserActivityData.LocationEntry>  locationEntries = getTopLocationEntries(userActivityDataEntries, limit);
         return  locationEntries;
     }
@@ -117,7 +115,7 @@ public class ApiUserActivityController extends DataQueryController {
                 timePeriodInDays,
                 limit,
 				userActivityService::getUserActivitySourceMachineEntries,
-                (documentList, limit1) -> userActivityUtils.convertDeviceDocumentsResponse(documentList, limit1),
+                (documentList, limit1) -> userDeviceUtils.convertDeviceDocumentsResponse(documentList, limit1),
                 SOURCE_DEVICES
                 );
 
@@ -136,7 +134,7 @@ public class ApiUserActivityController extends DataQueryController {
                 timePeriodInDays,
                 limit,
 				userActivityService::getUserActivityTargetDeviceEntries,
-                (documentList, limit1) -> userActivityUtils.convertDeviceDocumentsResponse(documentList, limit1),
+                (documentList, limit1) -> userDeviceUtils.convertDeviceDocumentsResponse(documentList, limit1),
                 TARGET_DEVICES
                 );
 
@@ -166,7 +164,7 @@ public class ApiUserActivityController extends DataQueryController {
      * @return list of UserActivityData.AuthenticationsEntry
      */
     private List<UserActivityData.AuthenticationsEntry> convertargetDeviceDocumentsResponse(List<UserActivityNetworkAuthenticationDocument> documentList, int limit){
-        final UserActivityEntryHashMap userActivityDataEntries = userActivityUtils.getUserActivityDataEntries(documentList, Collections.emptySet());
+        final UserActivityEntryHashMap userActivityDataEntries = userDeviceUtils.getUserActivityDataEntries(documentList, Collections.emptySet());
         final Double successes = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES);
         final Double failures = userActivityDataEntries.get(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES);
         UserActivityData.AuthenticationsEntry authenticationsEntry = new UserActivityData.AuthenticationsEntry(successes != null ? successes : 0, failures != null ? failures : 0);
@@ -286,7 +284,7 @@ public class ApiUserActivityController extends DataQueryController {
      */
     private List<UserActivityData.WorkingHourEntry> convertWorkingHourDocumentsResponse(List<UserActivityWorkingHoursDocument> documentList, int limit){
 
-        final UserActivityEntryHashMap userActivityDataEntries = userActivityUtils.getUserActivityDataEntries(documentList, null);
+        final UserActivityEntryHashMap userActivityDataEntries = userDeviceUtils.getUserActivityDataEntries(documentList, null);
 
         final Set<Map.Entry<String, Double>> hoursToAmount = userActivityDataEntries.entrySet();
 

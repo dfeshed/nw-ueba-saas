@@ -19,30 +19,18 @@ public abstract class UserActivityBaseRepository  {
 	@Autowired
 	protected MongoTemplate mongoTemplate;
 
-	protected  <T extends UserActivityDocument> List<T> getUserActivityEntries(@Nullable String username, Integer timeRangeInDays, String collectionName, Class<T> documentType) {
-		List<T> userActivityDocuments = new ArrayList<T>();
-
+	protected  <T extends UserActivityDocument> List<T> getUserActivityEntries(@Nullable String username, int timeRangeInDays, String collectionName, Class<T> documentType) {
+		List<T> userActivityDocuments;
 		if (mongoTemplate.collectionExists(collectionName)) {
-			List<Criteria> criteriaList = new ArrayList<>();
-			if (timeRangeInDays!=null) {
-				criteriaList.add(Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays))));
-			}
-			else{
-				getLogger().info("Argument 'timeRangeInDays' is null.");
-			}
+			Criteria jointCriteria = Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
 			if (username != null) {
 				Criteria idCriteria = Criteria.where(UserActivityLocationDocument.USER_NAME_FIELD_NAME).is(username);
-				criteriaList.add(idCriteria);
+				jointCriteria.andOperator(idCriteria);
 			}
 			else {
-				getLogger().info("Argument 'username' is null. Querying by start time only.");
+				getLogger().info("Argument 'username' is null. Querying by start time only");
 			}
-
-			Query query = new Query();
-			for (Criteria criteria: criteriaList) {
-				query.addCriteria(criteria);
-			}
-
+			Query query = new Query(jointCriteria);
 			userActivityDocuments = mongoTemplate.find(query, documentType, collectionName);
 		}
 		else {
@@ -53,8 +41,6 @@ public abstract class UserActivityBaseRepository  {
 
 		return userActivityDocuments;
 	}
-
-
 
 	protected long getStartTime(int timeRangeInDays) {
 		Calendar calendar = Calendar.getInstance();

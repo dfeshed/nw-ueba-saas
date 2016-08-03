@@ -82,7 +82,7 @@ public class UserScoreServiceTest extends UserScoreServiceTestAbstract {
         ArgumentCaptor<User> capture = ArgumentCaptor.forClass(User.class);
         Mockito.verify(userRepository, Mockito.times(1)).save(capture.capture());
         Assert.assertEquals(expectedScore, capture.getValue().getScore(), 0);
-        Assert.assertEquals(alertsSet.size(), capture.getValue().getAlertsCount().longValue());
+        Assert.assertEquals(alertsSet.size(), capture.getValue().getAlertsCount());
         Assert.assertEquals(USER_NAME, capture.getValue().getUsername());
 
     }

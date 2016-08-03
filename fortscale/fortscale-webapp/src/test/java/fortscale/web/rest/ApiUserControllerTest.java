@@ -4,12 +4,10 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.activities.UserActivityDeviceDocument;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
-import fortscale.web.beans.DataBean;
-import fortscale.web.rest.Utils.UserActivityUtils;
+import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.entities.activity.UserActivityData;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -23,7 +21,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.*;
 
@@ -63,7 +60,7 @@ public class ApiUserControllerTest {
 	private UserActivityService userActivityService;
 
 	@Mock
-	private UserActivityUtils userActivityUtils;
+	private UserDeviceUtils userDeviceUtils;
 
 	private MockMvc mockMvc;
 
@@ -209,12 +206,8 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 		user.setScore(90.0);
-		when(userService.findUsersByFilter(anyString(), anyBoolean(), anyString(),anyBoolean(), anyBoolean(), anyBoolean(), anyString(),
-				anyString(), anyBoolean(), anyBoolean(), anyString(),
-				anyInt(), any(PageRequest.class))).thenReturn(users);
-		when(userService.countUsersByFilter(anyString(), anyBoolean(), anyString(),anyBoolean(), anyBoolean(), anyBoolean(), anyString(),
-				anyString(), anyBoolean(), anyBoolean(), anyString(),
-				anyInt())).thenReturn(1);
+		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
+		when(userService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
 		MvcResult result = mockMvc.perform(get("/api/user")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
@@ -246,12 +239,8 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 		user.setScore(90.0);
-		when(userService.findUsersByFilter(anyString(), anyBoolean(), anyString(),anyBoolean(), anyBoolean(), anyBoolean(), anyString(),
-				anyString(), anyBoolean(), anyBoolean(), anyString(),
-				anyInt(), any(PageRequest.class))).thenReturn(users);
-		when(userService.countUsersByFilter(anyString(), anyBoolean(), anyString(),anyBoolean(), anyBoolean(), anyBoolean(), anyString(),
-				anyString(), anyBoolean(), anyBoolean(), anyString(),
-				anyInt())).thenReturn(1);
+		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
+		when(userService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
 		Set<Alert> alerts = new HashSet<>();
 		Alert alert = new Alert("Alert", 1, 2, EntityType.User, USER_NAME, null, 0, 100, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "1", AlertTimeframe.Daily, 1, true);
@@ -271,7 +260,7 @@ public class ApiUserControllerTest {
 		int deviceCount = 1;
 		UserActivityData.DeviceEntry device = new UserActivityData.DeviceEntry(deviceName, deviceCount, UserActivityData.DeviceType.Desktop);
 		deviceList.add(device);
-		when(userActivityUtils.convertDeviceDocumentsResponse(anyListOf(UserActivityDeviceDocument.class), anyInt())).thenReturn(deviceList);
+		when(userDeviceUtils.convertDeviceDocumentsResponse(anyListOf(UserActivityDeviceDocument.class), anyInt())).thenReturn(deviceList);
 		MvcResult result = mockMvc.perform(get("/api/user?addAdditionalInfo=true")
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON_VALUE))
@@ -292,7 +281,6 @@ public class ApiUserControllerTest {
 
 	public static class TestUser extends User{
 		private static final long serialVersionUID = 1L;
-
 
 		public void setId(String id) {
 			super.setId(id);

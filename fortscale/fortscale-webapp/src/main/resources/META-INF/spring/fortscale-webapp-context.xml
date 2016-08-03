@@ -124,6 +124,8 @@
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton" />
 
+	<bean id="userDeviceUtils" class="fortscale.web.rest.Utils.UserDeviceUtils" scope="singleton" />
+
 	<!--<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>-->
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>

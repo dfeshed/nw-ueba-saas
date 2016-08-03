@@ -12,7 +12,7 @@ public interface UserActivityRepositoryCustom {
 	List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String username, int timeRangeInDays);
 	List<OrganizationActivityLocationDocument> getOrganizationActivityLocationEntries(int timeRangeInDays);
 	List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String username, int timeRangeInDays);
-	List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, Integer timeRangeInDays);
+	List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
 	List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays);
 
 }

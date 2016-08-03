@@ -1,4 +1,4 @@
-package fortscale.web.beans.request;
+package fortscale.domain.rest;
 
 public class UserRestFilter extends RestFilter {
 
@@ -15,7 +15,7 @@ public class UserRestFilter extends RestFilter {
 	private Integer entityMinScore;
 	private Boolean isServiceAccount;
 	private String searchFieldContains;
-	private Boolean addAdditionalInfo;
+	private Boolean addAlertsAndDevices;
 
 	public String getSortField() {
 		return sortField;
@@ -121,12 +121,12 @@ public class UserRestFilter extends RestFilter {
 		this.searchFieldContains = searchFieldContains;
 	}
 
-	public Boolean getAddAdditionalInfo() {
-		return addAdditionalInfo;
+	public Boolean getAddAlertsAndDevices() {
+		return addAlertsAndDevices;
 	}
 
-	public void setAddAdditionalInfo(Boolean addAdditionalInfo) {
-		this.addAdditionalInfo = addAdditionalInfo;
+	public void setAddAlertsAndDevices(Boolean addAlertsAndDevices) {
+		this.addAlertsAndDevices = addAlertsAndDevices;
 	}
 
 }

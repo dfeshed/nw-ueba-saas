@@ -10,6 +10,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -306,16 +307,14 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	private Query buildQueryByUserNameAndFeedback(String userName, Set<AlertFeedback> feedbackSet) {
-		Criteria criteria = new Criteria();
-		if (feedbackSet != null && !feedbackSet.isEmpty()) {
-			criteria.where(Alert.feedbackField).in(feedbackSet);
+		Query query = new Query();
+		if (CollectionUtils.isEmpty(feedbackSet)) {
+			query.addCriteria(new Criteria().where(Alert.feedbackField).in(feedbackSet));
 		}
 
 		if (StringUtils.isNotBlank(userName)){
-			criteria.and(Alert.entityNameField).is(userName);
+			query.addCriteria(new Criteria().where(Alert.entityNameField).is(userName));
 		}
-		Query query = new Query();
-		query.addCriteria(criteria);
 		return query;
 	}
 

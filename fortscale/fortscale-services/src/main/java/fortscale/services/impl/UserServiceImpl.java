@@ -14,6 +14,7 @@ import fortscale.domain.core.dao.DeletedUserRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.AlertsService;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
@@ -1164,27 +1165,19 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return  userRepository.groupCount(User.displayNameField, displayNames);
 	}
 
-	@Override public List<User> findUsersByFilter(String disabledSince, Boolean isDisabled, String inactiveSince,
-			Boolean withActivity, Boolean disabledWithActivity, Boolean isDisabledWithActivity, String fieldContains,
-			String searchFieldContains, Boolean isTerminatedWithActivity, Boolean isServiceAccount, String dataEntities,
-			Integer entityMinScore, PageRequest pageRequest) {
+	@Override
+	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest){
 
-		List<Criteria> criteriaList = buildCriteria(disabledSince, isDisabled, inactiveSince,
-				isDisabledWithActivity, searchFieldContains, isTerminatedWithActivity, isServiceAccount,
-				dataEntities, entityMinScore);
+		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
 
 		// Get users
 		return userRepository.findAllUsers(criteriaList, pageRequest);
 	}
 
-	@Override public Integer countUsersByFilter(String disabledSince, Boolean isDisabled, String inactiveSince,
-			Boolean isDisabledWithActivity, Boolean isTerminatedWithActivity, Boolean isServiceAccount,
-			String searchFieldContains, String dataEntities, Boolean isTerminatedWithActivity1,
-			Boolean isServiceAccount1, String dataEntities1, Integer entityMinScore) {
+	@Override
+	public int countUsersByFilter(UserRestFilter userRestFilter){
 
-		List<Criteria> criteriaList = buildCriteria(disabledSince, isDisabled, inactiveSince,
-				isDisabledWithActivity, searchFieldContains, isTerminatedWithActivity, isServiceAccount,
-				dataEntities, entityMinScore);
+		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
 
 		return userRepository.countAllUsers(criteriaList);
 	}
@@ -1194,78 +1187,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		User user = findByUsername(userName);
 
 		user.setAlertsCount(alerts.size());
-	}
-
-	private List<Criteria> buildCriteria(String disabledSince, Boolean isDisabled, String inactiveSince,
-			Boolean isDisabledWithActivity, String searchFieldContains, Boolean isTerminatedWithActivity,
-			Boolean isServiceAccount, String dataEntities, Integer entityMinScore) {
-		// Create criteria list
-		List<Criteria> criteriaList = new ArrayList<>();
-
-		if (disabledSince != null && !disabledSince.isEmpty()) {
-			criteriaList.add(where("adInfo.disableAccountTime")
-					.gte(new Date(Long.parseLong(disabledSince))));
-		}
-
-		if (isDisabled != null) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabled));
-		}
-
-		if (inactiveSince != null && !inactiveSince.isEmpty()) {
-			criteriaList.add(
-					new Criteria().orOperator(
-							where("lastActivity").lt(new Date(Long.parseLong(inactiveSince))),
-							where("lastActivity").not().ne(null)
-					)
-			);
-		}
-
-		if (isDisabledWithActivity != null && isDisabledWithActivity) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabledWithActivity));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
-			criteriaList.add(where("terminationDate").exists(true));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.terminationDate < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isServiceAccount != null && isServiceAccount) {
-			criteriaList.add(where("userServiceAccount").is(isServiceAccount));
-		}
-
-		if (searchFieldContains != null) {
-			criteriaList.add(where("sf").regex(searchFieldContains));
-		}
-
-		if (dataEntities != null) {
-			List<Criteria> wheres = new ArrayList<Criteria>();
-			for (String dataEntityName : dataEntities.split(",")) {
-				if (entityMinScore != null) {
-					wheres.add(where("scores." + dataEntityName + ".score").gte(entityMinScore));
-				} else {
-					wheres.add(where("scores." + dataEntityName).exists(true));
-				}
-			}
-			criteriaList.add(
-					new Criteria().orOperator(wheres.toArray(new Criteria[0]))
-			);
-		}
-		return criteriaList;
 	}
 
 	@Override public String getUserId(String username) {

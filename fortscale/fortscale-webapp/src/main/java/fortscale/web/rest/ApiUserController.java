@@ -16,8 +16,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
-import fortscale.web.beans.request.UserRestFilter;
-import fortscale.web.rest.Utils.UserActivityUtils;
+import fortscale.domain.rest.UserRestFilter;
+import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -64,7 +64,7 @@ public class ApiUserController extends BaseController{
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
 	@Autowired
-	private UserActivityUtils userActivityUtils;
+	private UserDeviceUtils userDeviceUtils;
 
 	@Autowired
 	private AlertsService alertsService;
@@ -84,24 +84,14 @@ public class ApiUserController extends BaseController{
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
-		List<User> users = userService.findUsersByFilter(userRestFilter.getDisabledSince(), userRestFilter.getIsDisabled(),
-				userRestFilter.getInactiveSince(), userRestFilter.getIsDisabledWithActivity(),
-				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
-				userRestFilter.getSearchFieldContains(), userRestFilter.getDataEntities(),
-				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
-				userRestFilter.getDataEntities(), userRestFilter.getEntityMinScore(), pageRequest);
+		List<User> users = userService.findUsersByFilter(userRestFilter, pageRequest);
 
 		setSeverityOnUsersList(users);
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
-		usersList.setTotal(userService.countUsersByFilter(userRestFilter.getDisabledSince(), userRestFilter.getIsDisabled(),
-				userRestFilter.getInactiveSince(), userRestFilter.getIsDisabledWithActivity(),
-				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
-				userRestFilter.getSearchFieldContains(), userRestFilter.getDataEntities(),
-				userRestFilter.getIsTerminatedWithActivity(), userRestFilter.getIsServiceAccount(),
-				userRestFilter.getDataEntities(), userRestFilter.getEntityMinScore()));
+		usersList.setTotal(userService.countUsersByFilter(userRestFilter));
 
-		if (userRestFilter.getAddAdditionalInfo() != null && userRestFilter.getAddAdditionalInfo()) {
+		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
 			setAdditionalInformation(usersList.getData());
 		}
 
@@ -113,8 +103,8 @@ public class ApiUserController extends BaseController{
 			User user = userDetailsBean.getUser();
 			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
-			List<UserActivitySourceMachineDocument> userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(), null);
-			userDetailsBean.setDevices(userActivityUtils.convertDeviceDocumentsResponse(userSourceMachines, null));
+			List<UserActivitySourceMachineDocument> userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
+			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, null));
 		}
 	}
 

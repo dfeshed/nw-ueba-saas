@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
-public class UserActivityUtils {
+public class UserDeviceUtils {
 
 	@Autowired
 	private ComputerService computerService;
