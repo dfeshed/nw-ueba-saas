@@ -78,6 +78,7 @@ setWebProxy
 git config --global url."https://".insteadOf git://
 
 buildEmberApp component-lib
+buildEmberApp recon
 buildEmberApp style-guide
 
 #### Deploy style guide to host if running full build
@@ -94,4 +95,3 @@ unsetWebProxy
 
 success "All apps built"
 info "***********************"
-

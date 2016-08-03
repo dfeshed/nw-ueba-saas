@@ -3,14 +3,15 @@
 
 # Software versions kept in external file for repeated use
 # this brings the following variables in
-# NODE_VERSION 
-# EMBER_CLI_VERSION 
+# NODE_VERSION
+# EMBER_CLI_VERSION
 # BOWER_VERSION
+# PHANTOMJS_VERSION
 scriptDir="$(dirname "$0")"
 source $scriptDir/versions
 source $scriptDir/_util.sh
 
-echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_CLI_VERSION\nbower: $BOWER_VERSION\n"
+echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_CLI_VERSION\nbower: $BOWER_VERSION\nphantomjs-prebuilt: $PHANTOMJS_VERSION\n"
 
 function hasVersion {
   if [[ $($1 --version) =~ "$2" ]]
@@ -57,6 +58,16 @@ then
   success "Bower installed!"
 else
   info "Proper bower version already installed"
+fi
+
+# install phantomjs-prebuilt if it hasn't been
+if [[ "$(hasVersion "phantomjs-prebuilt" $PHANTOMJS_VERSION)" == "false" ]]
+then
+  info "Installing phantomjs-prebuilt"
+  npm install -g phantomjs-prebuilt@$PHANTOMJS_VERSION
+  success "phantomjs-prebuilt installed!"
+else
+  info "Proper phantomjs-prebuilt version already installed"
 fi
 
 # Yay!

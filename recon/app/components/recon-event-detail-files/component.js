@@ -1,0 +1,1 @@
+export { default } from 'recon/components/recon-event-detail-files/component';
