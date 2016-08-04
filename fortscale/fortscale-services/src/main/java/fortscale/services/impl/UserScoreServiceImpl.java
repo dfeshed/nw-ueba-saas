@@ -343,6 +343,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 		User user = userService.findByUsername(userName);
 
 		user.setAlertsCount(alerts.size());
+        userRepository.save(user);
 	}
 
     /**
