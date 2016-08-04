@@ -60,7 +60,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		if (numberOfNeighbours == null) {
 			numberOfNeighbours = NUMBER_OF_NEIGHBOURS_DEFAULT_VALUE;
 		}
-		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours is mandatory and must be a positive double.");
+		Assert.isTrue(numberOfNeighbours > 0, "numberOfNeighbours must be a positive double.");
 		this.numberOfNeighbours = numberOfNeighbours;
 	}
 
