@@ -6,18 +6,18 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
+import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import fortscale.utils.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -65,7 +65,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private UserScorePercentilesRepository userScorePercentilesRepository;
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -75,9 +74,11 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private AlertsRepository alertsRepository;
 
-
     @Autowired
     private ApplicationConfigurationHelper applicationConfigurationHelper;
+
+    @Autowired
+    private UserService userService;
 
     private UserScoreConfiguration userScoreConfiguration;
 
@@ -133,8 +134,6 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return the new user socre
      */
     public double recalculateUserScore(String userName) {
-
-
         Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userName);
         double userScore = 0;
         for (Alert alert : alerts) {
@@ -151,13 +150,10 @@ public class UserScoreServiceImpl implements UserScoreService {
                 alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
 
-
-
             userScore += alert.getUserScoreContribution();
         }
         User user = userRepository.findByUsername(userName);
         user.setScore(userScore);
-
 
         userRepository.save(user);
         return userScore;
@@ -330,6 +326,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
+            recalculateNumberOfUserAlerts(userName);
         }
         logger.info("Finish updating user score");
 
@@ -341,6 +338,13 @@ public class UserScoreServiceImpl implements UserScoreService {
         return scoresHistogram;
     }
 
+	@Override public void recalculateNumberOfUserAlerts(String userName) {
+		Set<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
+		User user = userService.findByUsername(userName);
+
+		user.setAlertsCount(alerts.size());
+        userRepository.save(user);
+	}
 
     /**
      * Translate the user score to severity, using the percentiles table and configuration.

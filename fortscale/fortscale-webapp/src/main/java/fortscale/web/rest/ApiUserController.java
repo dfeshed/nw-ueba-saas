@@ -1,12 +1,12 @@
 package fortscale.web.rest;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.*;
@@ -16,6 +16,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
+import fortscale.domain.rest.UserRestFilter;
+import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -26,7 +28,6 @@ import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -35,8 +36,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.*;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Controller
 @RequestMapping("/api/user")
@@ -64,31 +63,69 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
+	@Autowired
+	private UserDeviceUtils userDeviceUtils;
+
+	@Autowired
+	private AlertsService alertsService;
+
+	@Autowired
+	private UserActivityService userActivityService;
+
 	private static final String DEFAULT_SORT_FIELD = "username";
 
 
 	/**
 	 * The API to get all users. GET: /api/user
 	 */
-	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<UserDetailsBean>> getUsers(
-			@RequestParam(required = false, value = "sort_field") String sortField,
-			@RequestParam(required = false, value = "sort_direction") String sortDirection,
-			@RequestParam(required = false, value = "size") Integer size,
-			@RequestParam(required = false, value = "page") Integer fromPage,
-			@RequestParam(required = false, value = "disabled_since") String disabledSince,
-			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
-			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
-			@RequestParam(required = false, value = "is_terminated_with_activity") Boolean isTerminatedWithActivity,
-			@RequestParam(required = false, value = "inactive_since") String inactiveSince,
-			@RequestParam(required = false, value = "data_entities") String dataEntities,
-			@RequestParam(required = false, value = "entity_min_score") Integer entityMinScore,
-			@RequestParam(required = false, value = "is_service_account") Boolean isServiceAccount,
-			@RequestParam(required = false, value = "search_field_contains") String searchFieldContains) {
+	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
+	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
 
+		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
+		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
+		List<User> users = userService.findUsersByFilter(userRestFilter, pageRequest);
+
+		setSeverityOnUsersList(users);
+		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
+		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
+		usersList.setTotal(userService.countUsersByFilter(userRestFilter));
+
+		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
+			setAdditionalInformation(usersList.getData());
+		}
+
+		return usersList;
+	}
+
+	private void setAdditionalInformation(List<UserDetailsBean> users) {
+		for (UserDetailsBean userDetailsBean: users) {
+			User user = userDetailsBean.getUser();
+			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
+			userDetailsBean.setAlerts(usersAlerts);
+			List<UserActivitySourceMachineDocument> userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
+			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, null));
+		}
+	}
+
+	private PageRequest createPaging(@RequestParam(required = false, value = "size") Integer size,
+			@RequestParam(required = false, value = "page") Integer fromPage, Sort sortUserDesc) {
+		// Create paging
+		Integer pageSize = 10;
+		if (size != null) {
+			pageSize = size;
+		}
+
+		Integer pageNumber = 0;
+		if (fromPage != null) {
+			pageNumber = fromPage - 1;
+		}
+
+		return new PageRequest(pageNumber, pageSize, sortUserDesc);
+	}
+
+	private Sort createSorting(@RequestParam(required = false, value = "sort_field") String sortField,
+			@RequestParam(required = false, value = "sort_direction") String sortDirection) {
 		// Create sorting
 		Sort sortUserDesc;
 		Sort.Direction sortDir = Sort.Direction.ASC;
@@ -107,99 +144,8 @@ public class ApiUserController extends BaseController{
 		} else {
 			sortUserDesc = new Sort(new Sort.Order(Sort.Direction.ASC, DEFAULT_SORT_FIELD));
 		}
-
-
-		// Create paging
-		Integer pageSize = 10;
-		if (size != null) {
-			pageSize = size;
-		}
-
-		Integer pageNumber = 0;
-		if (fromPage != null) {
-			pageNumber = fromPage - 1;
-		}
-
-		PageRequest pageRequest = new PageRequest(pageNumber, pageSize, sortUserDesc);
-
-		// Create criteria list
-		List<Criteria> criteriaList = new ArrayList<>();
-
-		if (disabledSince != null && !disabledSince.isEmpty()) {
-			criteriaList.add(where("adInfo.disableAccountTime")
-					.gte(new Date(Long.parseLong(disabledSince))));
-		}
-
-		if (isDisabled != null) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabled));
-		}
-
-		if (inactiveSince != null && !inactiveSince.isEmpty()) {
-			criteriaList.add(
-					new Criteria().orOperator(
-							where("lastActivity").lt(new Date(Long.parseLong(inactiveSince))),
-							where("lastActivity").not().ne(null)
-					)
-			);
-		}
-
-		if (isDisabledWithActivity != null && isDisabledWithActivity) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabledWithActivity));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
-			criteriaList.add(where("terminationDate").exists(true));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.terminationDate < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isServiceAccount != null && isServiceAccount) {
-			criteriaList.add(where("userServiceAccount").is(isServiceAccount));
-		}
-
-		if (searchFieldContains != null) {
-			criteriaList.add(where("sf").regex(searchFieldContains));
-		}
-
-		if (dataEntities != null) {
-            List<Criteria> wheres = new ArrayList<Criteria>();
-            for (String dataEntityName : dataEntities.split(",")) {
-                if (entityMinScore != null) {
-                    wheres.add(where("scores." + dataEntityName + ".score").gte(entityMinScore));
-                } else {
-                    wheres.add(where("scores." + dataEntityName).exists(true));
-                }
-			}
-            criteriaList.add(
-					new Criteria().orOperator(wheres.toArray(new Criteria[0]))
-			);
-		}
-
-		// Get users
-		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
-		setSeverityOnUsersList(users);
-		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
-
-		usersList.setOffset(pageNumber*pageSize);
-		usersList.setTotal(userRepository.countAllUsers(criteriaList));
-		return usersList;
+		return sortUserDesc;
 	}
-
-
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody

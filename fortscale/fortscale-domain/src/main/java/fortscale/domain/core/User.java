@@ -57,6 +57,7 @@ public class User extends AbstractDocument {
     public static final String socreField = "score";
     public static final String scoreSeverityField = "scoreSeverity";
 	public static final String terminationDateField = "terminationDate";
+	public static final String alertsCountField = "alertsCount";
 
 	@Indexed
 	@Field(administratorAccountField)
@@ -126,6 +127,10 @@ public class User extends AbstractDocument {
 	@Field(terminationDateField)
 	private DateTime terminationDate;
 
+	@Indexed
+	@Field(alertsCountField)
+	private int alertsCount;
+
 	public String getAdDn() {
 		return adDn;
 	}
@@ -135,7 +140,15 @@ public class User extends AbstractDocument {
 	}
 	
 	private String adObjectGUID;
-	
+
+	public int getAlertsCount() {
+		return alertsCount;
+	}
+
+	public void setAlertsCount(int alertsCount) {
+		this.alertsCount = alertsCount;
+	}
+
 	public String getAdObjectGUID() {
 		return adObjectGUID;
 	}

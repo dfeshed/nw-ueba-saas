@@ -1,16 +1,9 @@
 package fortscale.web.beans.request;
 
 import fortscale.domain.core.DataSourceAnomalyTypePair;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.RequestParam;
+import fortscale.domain.rest.RestFilter;
 
-import javax.validation.constraints.Size;
-import java.util.Date;
-import java.util.List;
 import java.util.Set;
 
 

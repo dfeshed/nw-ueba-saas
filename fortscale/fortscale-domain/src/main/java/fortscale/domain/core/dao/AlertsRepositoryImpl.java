@@ -10,6 +10,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -290,10 +291,32 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         Query query = getQueryForAlertsRelevantToUserScore(username);
         query.fields().exclude(Alert.evidencesField);
 
-        List<Alert> userNames = mongoTemplate.find(query,Alert.class);
+        List<Alert> alerts = mongoTemplate.find(query,Alert.class);
 
-        return  new HashSet<>(userNames);
+        return  new HashSet<>(alerts);
     }
+
+	@Override
+	public Set<Alert> getAlertsForUserByFeedback(String userName, Set<AlertFeedback> feedbackSet) {
+
+		Query query = buildQueryByUserNameAndFeedback(userName, feedbackSet);
+		query.fields().exclude(Alert.evidencesField);
+
+		List<Alert> alerts = mongoTemplate.find(query, Alert.class);
+		return new HashSet<>(alerts);
+	}
+
+	private Query buildQueryByUserNameAndFeedback(String userName, Set<AlertFeedback> feedbackSet) {
+		Query query = new Query();
+		if (CollectionUtils.isEmpty(feedbackSet)) {
+			query.addCriteria(new Criteria().where(Alert.feedbackField).in(feedbackSet));
+		}
+
+		if (StringUtils.isNotBlank(userName)){
+			query.addCriteria(new Criteria().where(Alert.entityNameField).is(userName));
+		}
+		return query;
+	}
 
 	@Override
 	public void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag ){
