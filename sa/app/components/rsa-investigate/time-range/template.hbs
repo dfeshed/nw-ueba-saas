@@ -1,0 +1,9 @@
+{{#if _startTimeMilli}}
+  {{rsa-content-datetime class="rsa-time-range__datetime start" timestamp=_startTimeMilli asTimeAgo=false displayTime=true displayDate=true}}
+  {{#if _endTimeMilli}}
+    <span class="rsa-investigate-time-range__sep">-</span>
+  {{/if}}
+{{/if}}
+{{#if _endTimeMilli}}
+  {{rsa-content-datetime class="rsa-time-range__datetime end" timestamp=_endTimeMilli asTimeAgo=false displayTime=true displayDate=(unless _datesMatch true false)}}
+{{/if}}

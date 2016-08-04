@@ -1,0 +1,24 @@
+<span class="rsa-investigate-event-counter__count">
+  {{count}}
+</span>
+{{#if _isStatusBusy}}
+  {{#if stopAction}}
+    <span class="rsa-investigate-event-counter__stop" {{action "safeCallback" stopAction}}>
+      {{rsa-icon name="pause-button"}}
+    </span>
+  {{/if}}
+{{else if _isStatusError}}
+  {{#if retryAction}}
+    <span class="rsa-investigate-event-counter__retry" {{action "safeCallback" retryAction}}>
+      {{rsa-icon name="synchronize-1"}}
+    </span>
+  {{/if}}
+{{else}}
+  {{#unless _isStatusFinished}}
+    {{#if goAction}}
+      <span class="rsa-investigate-event-counter__go" {{action "safeCallback" goAction}}>
+        {{rsa-icon name="play-button2"}}
+      </span>
+    {{/if}}
+  {{/unless}}
+{{/if}}

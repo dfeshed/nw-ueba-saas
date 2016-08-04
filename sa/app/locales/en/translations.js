@@ -37,7 +37,30 @@ export default $.extend({}, BaseTranslations, {
   },
   investigate: {
     title: 'Investigate',
-    details: 'Investigate contents go here.'
+    loading: 'Loading',
+    loadMore: 'Load More',
+    tryAgain: 'Try Again',
+    service: 'Service',
+    timeRange: 'Time Range',
+    filter: 'Filter',
+    error: {
+      title: 'Unable to load data.',
+      description: 'An unexpected error occurred when attempting to fetch the data records.'
+    },
+    services: {
+      loading: 'Loading list of available services',
+      empty: {
+        title: 'Unable to find services.',
+        description: 'No brokers, concentrators or other services were detected. This may be due to a configuration or connectivity issue.'
+      },
+      error: {
+        title: 'Unable to load services.',
+        description: 'Unexpected error loading list of brokers, concentrators and other services to investigate. This may be due to a configuration or connectivity issue.'
+      }
+    },
+    customQuery: {
+      title: 'Enter a query.'
+    }
   },
   admin: {
     title: 'Admin',
@@ -118,7 +141,8 @@ export default $.extend({}, BaseTranslations, {
   },
   list: {
     items: 'items',
-    all: '(All)'
+    all: '(All)',
+    of: 'of'
   },
   sort: {
     ascending: 'Ascending',

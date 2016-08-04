@@ -4,6 +4,7 @@ const { Route } = Ember;
 
 export default Route.extend({
   model() {
+    // Expose the parent route's state data to this child route's template.
     return this.modelFor('protected.investigate');
   },
 

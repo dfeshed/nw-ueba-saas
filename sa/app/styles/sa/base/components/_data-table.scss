@@ -15,6 +15,10 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     overflow: auto;
   }
 
+  &-body-rows {
+    position: relative;
+  }
+
   &-body-row,
   &-header-row {
     white-space: nowrap;
@@ -65,6 +69,11 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       width: $data-table-col-resize-handle-width;
       cursor: ew-resize;
 
+      :hover,
+      .is-dragging {
+        background-color: rsa-color(blue);
+      }
+
       &.left {
         left: 0;
         transform: translate(-50%,0);
@@ -107,4 +116,20 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
   }
 
+  &-load-more {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    text-align: center;
+    margin: rsa-whitespace();
+
+    p {
+      margin: rsa-whitespace(less) 0 rsa-whitespace();
+    }
+
+    &.complete {
+      display: none;
+    }
+  }
 }

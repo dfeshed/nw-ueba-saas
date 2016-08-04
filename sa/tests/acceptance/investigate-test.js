@@ -28,7 +28,6 @@ test('disable investigate route feature flag and confirm route is missing from a
   andThen(function() {
     assert.equal(find(navLink).length, 0, 'link to investigate route should not be in dom.');
   });
-
 });
 
 test('enable investigate route feature flag and confirm route is accessible', function(assert) {
@@ -43,6 +42,7 @@ test('enable investigate route feature flag and confirm route is accessible', fu
   andThen(function() {
     assert.equal(currentPath(), 'protected.investigate.index', 'correct path was transitioned into.');
   });
+  visit('/do/monitor');
 });
 
 test('investigate route redirects to index subroute if invalid subroute is requested', function(assert) {
@@ -53,5 +53,6 @@ test('investigate route redirects to index subroute if invalid subroute is reque
   andThen(function() {
     assert.equal(currentPath(), 'protected.investigate.index', 'correct path was redirected into.');
   });
+  visit('/do/monitor');
 });
 

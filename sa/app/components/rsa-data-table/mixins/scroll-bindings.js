@@ -58,7 +58,7 @@ export default Mixin.create({
           scrollLeft: element.scrollLeft,
           scrollTop: element.scrollTop
         });
-      }, 100);
+      }, 51);
     });
     this.set('_scrollBindingsCallback', callback);
     this.$().on('scroll', callback);

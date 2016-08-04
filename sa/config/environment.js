@@ -1,3 +1,5 @@
+/* jshint node: true */
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'sa',
@@ -68,42 +70,56 @@ module.exports = function(environment) {
           subscriptionDestination: '/user/queue/investigate/endpoints',
           requestDestination: '/ws/investigate/endpoints'
         }
+      },
+      'core-event': {
+        socketUrl: '/investigate/socket',
+        stream: {
+          subscriptionDestination: '/user/queue/investigate/events',
+          requestDestination: '/ws/investigate/events/stream'
+        }
+      },
+      'core-event-count': {
+        socketUrl: '/investigate/socket',
+        stream: {
+          subscriptionDestination: '/user/queue/investigate/events/count',
+          requestDestination: '/ws/investigate/events/count'
+        }
       }
     },
     socketDebug: false,
     'i18n': {
-        defaultLocale: 'en',
-        includedLocales: ['en', 'ja']
-      },
+      defaultLocale: 'en',
+      includedLocales: ['en', 'ja']
+    },
     APP: {
-        // Here you can pass flags/options to your application instance
-        // when it is created
+      // Here you can pass flags/options to your application instance
+      // when it is created
 
-        // Optional artificial delay (in millisec) for testing the app's loading animation.
-        // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
-        // delete the initializer, remove this line, or set value to zero.
-        readyDelay: 1250, // 1500,
+      // Optional artificial delay (in millisec) for testing the app's loading animation.
+      // Used by the initializer "ready-delay". After animation has been sufficiently tested, either
+      // delete the initializer, remove this line, or set value to zero.
+      readyDelay: 1250, // 1500,
 
-        // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
-        // Should match a DOM node in index.html.
-        // Used by app's ready() handler to find & hide the loading animation.
-        appLoadingSelector: '.rsa-application-loading .rsa-loader',
-        bodyLoadingClass: 'rsa-application-loading',
-        rootElement: 'body',
-      },
+      // Optional DOM selector for the app's "loading" animation that is displayed until app is ready.
+      // Should match a DOM node in index.html.
+      // Used by app's ready() handler to find & hide the loading animation.
+      appLoadingSelector: '.rsa-application-loading .rsa-loader',
+      bodyLoadingClass: 'rsa-application-loading',
+      rootElement: 'body'
+    },
     'ember-simple-auth': {
-        authenticate: 'authenticator:authenticator',
-        authorizer: 'authorizer:authorizer',
-        /* Local storage key that holds the CSRF token returned by the server */
-        csrfLocalstorageKey: 'rsa-x-csrf-token'
-      },
+      authenticate: 'authenticator:authenticator',
+      authorizer: 'authorizer:authorizer',
+      /* Local storage key that holds the CSRF token returned by the server */
+      csrfLocalstorageKey: 'rsa-x-csrf-token'
+    },
     contentSecurityPolicy: {
 
-        // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
-        'img-src': "'self' data:",
-        'connect-src': "'self' ws:",
-        'font-src': "'self' data:"
-      }
+      // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
+      'img-src': "'self' data:",
+      'connect-src': "'self' ws:",
+      'font-src': "'self' data:"
+    }
   };
 
   if (environment === 'development') {

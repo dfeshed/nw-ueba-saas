@@ -37,7 +37,30 @@ export default $.extend({}, BaseTranslations, {
   },
   investigate: {
     title: 'ja_Investigate',
-    details: 'ja_Investigate contents go here.'
+    loading: 'ja_Loading',
+    loadMore: 'ja_Load More',
+    tryAgain: 'ja_Try Again',
+    service: 'ja_Service',
+    timeRange: 'ja_Time Range',
+    filter: 'ja_Filter',
+    error: {
+      title: 'ja_Unable to load data.',
+      description: 'ja_An unexpected error occurred when attempting to fetch the data records.'
+    },
+    services: {
+      loading: 'ja_Loading list of available services',
+      empty: {
+        title: 'ja_Unable to find services.',
+        description: 'ja_No brokers, concentrators or other services were detected. This may be due to a configuration or connectivity issue.'
+      },
+      error: {
+        title: 'ja_Unable to load services.',
+        description: 'ja_Unexpected error loading list of brokers, concentrators and other services to investigate. This may be due to a configuration or connectivity issue.'
+      }
+    },
+    customQuery: {
+      title: 'ja_Enter a query.'
+    }
   },
   admin: {
     title: 'ja_Admin',
@@ -118,7 +141,8 @@ export default $.extend({}, BaseTranslations, {
   },
   list: {
     items: 'ja_items',
-    all: 'ja_(All)'
+    all: 'ja_(All)',
+    of: 'ja_of'
   },
   sort: {
     ascending: 'ja_Ascending',

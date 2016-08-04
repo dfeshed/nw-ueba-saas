@@ -1,0 +1,19 @@
+.rsa-investigate-query-bar {
+  border: 1px solid rsa-color(white);
+  @include rsa-row(left, bottom);
+
+  &__service,
+  &__time-range,
+  &__text,
+  &__submit {
+    margin: rsa-whitespace(less);
+  }
+
+  &__xservice,
+  &__xtime-range {
+    width: 200px;
+  }
+  &__xtext {
+    width: 200px;
+  }
+}

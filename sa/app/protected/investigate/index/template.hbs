@@ -1,3 +1,29 @@
 <article class="rsa-investigate-index">
-  {{rsa-investigate/query-bar coreServiceOptions=model.coreServices onSubmit=(route-action "submitQuery")}}
+  <section class="rsa-investigate-index__body {{model.services.status}}">
+
+    <header class="rsa-investigate-index__body-header">
+      {{#with model.services.status as |status|}}
+        {{#if (is-equal status 'rejected')}}
+          <h2>{{t 'investigate.services.error.title'}}</h2>
+          <p>{{t 'investigate.services.error.description'}}</p>
+          {{#rsa-form-button style="danger"}}<span {{action (route-action "servicesGet" true)}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
+        {{else if (is-equal status 'wait')}}
+          {{rsa-loader size="large" label=(t 'investigate.services.loading')}}
+        {{else if (is-equal status 'resolved')}}
+          {{#if model.services.data.length}}
+            <h2>{{t 'investigate.customQuery.title'}}</h2>
+          {{else}}
+            <h2>{{t 'investigate.services.empty.title'}}</h2>
+            <p>{{t 'investigate.services.empty.description'}}</p>
+            {{#rsa-form-button style="danger"}}<span {{action (route-action "servicesGet" true)}}>Try Again</span>{{/rsa-form-button}}
+          {{/if}}
+        {{/if}}
+      {{/with}}
+    </header>
+
+    <section class="rsa-investigate-index__body-main">
+      {{rsa-investigate/query-bar services=model.services.data servicesStatus=model.services.status onSubmit=(route-action "submitQuery")}}
+    </section>
+
+  </section>
 </article>

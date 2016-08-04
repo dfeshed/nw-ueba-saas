@@ -1,0 +1,28 @@
+.rsa-progress-bar {
+  height: 2px;
+  @include rsa-row(left,fill);
+  transition-property: opacity;
+
+  &__fill {
+    transition-property: flex-basis;
+    background-color: rsa-color(blue);
+  }
+
+  &.enabled {
+    opacity: 1;
+    transition-duration: 0.2s;
+
+    .rsa-progress-bar_fill {
+      transition-duration: 0.2s;
+    }
+  }
+
+  &:not(.enabled) {
+    opacity: 0;
+    transition-duration: 2s;
+
+    .rsa-progress-bar__fill {
+      transition-duration: 0;
+    }
+  }
+}

@@ -143,7 +143,7 @@ export default Mixin.create({
 
     // Apply the default stream limit, if needed.
     params.stream = params.stream || {};
-    params.stream.limit = cfg.defaultStreamLimit || DEFAULT_STREAM_LIMIT;
+    params.stream.limit = params.stream.limit || cfg.defaultStreamLimit || DEFAULT_STREAM_LIMIT;
     return params;
   }),
 
@@ -178,6 +178,26 @@ export default Mixin.create({
       this._stopFromSocket();
     }
     return this._super();
+  },
+
+  /**
+   * Extends base method by unsubscribing from the Stomp client after notifying listeners.
+   * @public
+   */
+  error() {
+    let ret = this._super(...arguments);
+    this._stopFromSocket();
+    return ret;
+  },
+
+  /**
+   * Extends base method by unsubscribing from the Stomp client after notifying listeners.
+   * @public
+   */
+  completed() {
+    let ret = this._super(...arguments);
+    this._stopFromSocket();
+    return ret;
   },
 
   /**
@@ -229,7 +249,7 @@ export default Mixin.create({
         me._connection = conn;
 
         // Subscribe to destination.
-        let sub = conn.subscribe(subscriptionDestination, callback, null, me.get('reuseSubscription'));
+        let sub = me._socketSubscription = conn.subscribe(subscriptionDestination, callback, null);
 
         // Send query message for the stream.
         sub.send({}, params, cfg.requestDestination);
@@ -256,10 +276,9 @@ export default Mixin.create({
         }
       }
 
-      if (!this._connection.disconnected) {
-        this._connection.disconnect();
-        this._connection = null;
-      }
+      // Release this STOMP client connection to socket URL.
+      this._connection.disconnect();
+      this._connection = null;
     }
     return this;
   },
@@ -330,7 +349,10 @@ export default Mixin.create({
         }, meta || {}));
 
       this.next(response);
-      if (progress >= 100) {
+
+      // Fire completed if there is no more data coming. In order to detect that, sometimes we can compute `progress`;
+      // other times we can't, but the response will tell us it is complete by include `meta.complete: true`.
+      if ((progress >= 100) || (meta && meta.complete === true)) {
         this.completed(response);
       }
     }

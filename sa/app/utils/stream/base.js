@@ -105,7 +105,9 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @public
    */
   next() {
-    return this._notifyAll('onNext', arguments);
+    this._notifyAll('onNext', arguments);
+    this._super(...arguments);
+    return this;
   },
 
   /**
@@ -115,7 +117,9 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @public
    */
   error() {
-    return this._notifyAll('onError', arguments)._disposeAll();
+    this._notifyAll('onError', arguments)._disposeAll();
+    this._super(...arguments);
+    return this;
   },
 
   /**
@@ -125,7 +129,9 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @public
    */
   completed() {
-    return this._notifyAll('onCompleted', arguments)._disposeAll();
+    this._notifyAll('onCompleted', arguments)._disposeAll();
+    this._super(...arguments);
+    return this;
   },
 
   /**

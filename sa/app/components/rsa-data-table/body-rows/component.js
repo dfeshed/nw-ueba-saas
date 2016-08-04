@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
+import HasTableParent from '../mixins/has-table-parent';
 
-const { Component } = Ember;
+const { set, Component } = Ember;
 
-export default Component.extend(CspStyleMixin, {
+export default Component.extend(HasTableParent, CspStyleMixin, {
   tagName: 'section',
   classNames: 'rsa-data-table-body-rows',
 
@@ -19,5 +20,16 @@ export default Component.extend(CspStyleMixin, {
    * @type {number}
    * @public
    */
-  minHeight: 0
+  minHeight: 0,
+
+  /**
+   * Stores a reference to this component in the `body.rows` attribute of the parent `rsa-data-table` component.
+   * This allows other components within the `rsa-data-table` hierarchy to access this component's properties.
+   * For example, the `rsa-data-table/load-more` needs to access this component's `element` so that it insert markup.
+   * @private
+   */
+  init() {
+    this._super(...arguments);
+    set(this.get('table.body'), 'rows', this);
+  }
 });

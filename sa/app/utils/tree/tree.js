@@ -6,17 +6,18 @@
 import Ember from 'ember';
 
 const {
+  $,
   get,
   Object: EmberObject
 } = Ember;
 
 // Helper function that searches a tree's nodes recursively.
-// To test if the given node matches the given value, first tries to call `node.isEqual(value)` if defined;
+// To test if the given node matches the given value, first tries to call `node.get('value').isEqual` if defined;
 // otherwise, just uses triple equals with node's value.
 function recursiveFind(value, node) {
   if (node) {
     let nodeValue = get(node, 'value');
-    if ((typeof node.isEqual === 'function') ? node.isEqual(value) : (value === nodeValue)) {
+    if ($.isFunction(nodeValue.isEqual) ? nodeValue.isEqual(value) : (value === nodeValue)) {
       return node;
     }
     let children = get(node, 'children');

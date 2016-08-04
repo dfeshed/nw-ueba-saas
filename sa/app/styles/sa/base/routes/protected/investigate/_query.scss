@@ -1,0 +1,107 @@
+.rsa-investigate-query {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  @include rsa-col(justify,fill);
+
+  &__header {
+    background-color: $investigateBgLighterColor;
+    @include rsa-vendor-prefix(flex-shrink, 1);
+  }
+
+  &__summary {
+    @include rsa-row(justify,fill);
+    padding: rsa-whitespace(less) rsa-whitespace();
+
+    .rsa-investigate-breadcrumb {
+      @include rsa-vendor-prefix(flex-grow, 1);
+    }
+  }
+
+  &__stats {
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-col(right,fill);
+  }
+
+  &__sums-of {
+    color: $investigateTextDarkerColor;
+  }
+
+  &__body {
+    position: relative;   /* enables positioning of children */
+    @include rsa-vendor-prefix(flex-grow, 1);
+
+    &-header,
+    &-aside {
+      display: none;
+    }
+
+    &-main {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  &__aside,
+  &__footer {
+    display: none;
+  }
+
+  .rsa-investigate-breadcrumb {
+    @include rsa-font(header, small);
+
+    &__crumb {
+      color: rsa-color(gray, lighter);
+
+      &:last-of-type {
+        @include rsa-font(body);
+        color: rsa-color(white);
+        margin-top: rsa-whitespace(less);
+      }
+    }
+  }
+
+  .rsa-data-table {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    &-header-cell {
+      padding: rsa-whitespace(less) rsa-whitespace();
+      border-right: 1px solid rsa-color(gray, base, $rsa-translucent);
+    }
+
+    &-body-cell {
+      padding: rsa-whitespace();
+      border-right: 1px dashed $investigateBgDarkerColor;
+    }
+
+    &-body-row {
+      border-bottom: 1px solid $investigateBgDarkerColor;
+    }
+
+    &-header {
+      background-color: $investigateBgDarkerColor;
+    }
+  }
+
+  .rsa-investigate-time-range {
+    white-space: nowrap;
+    margin-bottom: rsa-whitespace(less);
+    @include rsa-font(header, small);
+
+    &__sep,
+    .date {
+      color: $investigateTextDarkerColor;
+      font-weight: normal;
+    }
+  }
+}

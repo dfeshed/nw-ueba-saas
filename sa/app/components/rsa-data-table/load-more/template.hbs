@@ -1,0 +1,13 @@
+{{#if hasBlock}}
+  {{yield status clickAction}}
+{{else}}
+  {{#if (is-equal status 'streaming')}}
+    {{rsa-loader size="small" label=(t 'investigate.loading')}}
+  {{else if (is-equal status 'idle')}}
+    {{#rsa-form-button}}<span {{action "safeCallback" clickAction}}>{{t 'investigate.loadMore'}}</span>{{/rsa-form-button}}
+  {{else if _isStatusError}}
+    <h2>{{t 'investigate.error.title'}}</h2>
+    <p>{{t 'investigate.error.description'}}</p>
+    {{#rsa-form-button}}<span {{action "safeCallback" clickAction}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
+  {{/if}}
+{{/if}}

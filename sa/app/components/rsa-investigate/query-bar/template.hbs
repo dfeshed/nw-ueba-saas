@@ -1,3 +1,20 @@
-{{!The sample content below is just a temporary placeholder.}}
-{{!In an upcoming PR, we will replace this content with actual content for entering a query.}}
-<button class="js-test-investigate-query-bar__submit" {{action "submit"}}>Run Query</button>
+{{#if (is-equal servicesStatus 'wait')}}
+  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds label=(t 'investigate.service') prompt=(t 'investigate.loading')}}
+  {{/rsa-form-select}}
+{{else if services.length}}
+  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds label=(t 'investigate.service')}}
+    {{#each services as |service|}}
+      <option value="{{service.id}}">{{service.name}}</option>
+    {{/each}}
+  {{/rsa-form-select}}
+{{/if}}
+{{#rsa-form-select class="rsa-investigate-query-bar__time-range" values=selectedTimeRangeIds label=(t 'investigate.timeRange')}}
+  {{#each timeRanges as |timeRange|}}
+    <option value="{{timeRange.id}}">{{timeRange.name}}</option>
+  {{/each}}
+{{/rsa-form-select}}
+{{rsa-form-input class="rsa-investigate-query-bar__text" type="text" isReadOnly=true label=(t 'investigate.filter') placeholder="(optional)"}}
+{{#rsa-form-button class="rsa-investigate-query-bar__submit"
+  style="primary" isDisabled=(unless _submitIsEnabled true false)}}
+  <span class="js-test-investigate-query-bar__submit" {{action "submit"}}>Run Query</span>
+{{/rsa-form-button}}

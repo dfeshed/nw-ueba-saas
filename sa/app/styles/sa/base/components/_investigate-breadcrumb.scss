@@ -1,0 +1,10 @@
+.rsa-investigate-breadcrumb {
+  &__crumb {
+    display: inline-block;
+    list-style: none;
+
+    &:last-of-type {
+      display: block;
+    }
+  }
+}

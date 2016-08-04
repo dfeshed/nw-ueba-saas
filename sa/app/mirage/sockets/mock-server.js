@@ -6,6 +6,8 @@ const { run } = Ember;
 /* global MockServer */
 /* global Stomp */
 
+const DEFAULT_STREAM_BATCH = 9;
+
 // Utility for slicing a given array according to given page parameters.
 // If `page.size` is zero or unspecified, no size limit is applied.
 function _getItemsPage(page, items) {
@@ -155,7 +157,7 @@ MockServer.prototype.sendList = function(items, page, total, frames, delay, noti
  * Sends a given array of items as a stream of socket responses.
  * @public
  */
-MockServer.prototype.streamList = function(items, page, total, frames, delay) {
+MockServer.prototype.streamList = function(items, page, total, frames, delay, sendCompletedMsg) {
 
   // Apply default arguments as needed.
   delay = (typeof delay === 'number') ? delay : 100;
@@ -167,7 +169,21 @@ MockServer.prototype.streamList = function(items, page, total, frames, delay) {
 
   // Send the requested items in batches of `rate` at a time, pausing between batches for `interval` millisec.
   let me = this;
-  let rateValue = (frames[0].body.stream && frames[0].body.stream.limit) ? frames[0].body.stream.limit : 9;
+  let [ frame ] = frames;
+  let { body } = frame;
+  let { stream } = body;
+  let rateValue = (stream && (stream.batch || stream.limit)) || DEFAULT_STREAM_BATCH;
+  let onCompleted = !sendCompletedMsg ? null : function() {
+    me.sendFrame('MESSAGE', {
+      subscription: (frame.headers || {}).id || '',
+      'content-type': 'application/json'
+    }, {
+      code: 0,
+      data: [],
+      request: frame.body,
+      meta: { complete: true }
+    });
+  };
   Thread.create({
     queue: items,
     interval: 17,
@@ -175,7 +191,8 @@ MockServer.prototype.streamList = function(items, page, total, frames, delay) {
     delay,
     onNextBatch(arr) {
       me.sendList(arr, null, total, frames, 0, notificationCode);
-    }
+    },
+    onCompleted
   }).start();
 };
 

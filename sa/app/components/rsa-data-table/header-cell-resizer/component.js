@@ -9,7 +9,7 @@ const {
 
 export default Component.extend(HasTableParent, {
   classNames: 'rsa-data-table-header-cell-resizer',
-  classNameBindings: ['side'],
+  classNameBindings: ['side', 'isDragging'],
 
   column: null,
 
@@ -19,6 +19,13 @@ export default Component.extend(HasTableParent, {
    * @public
    */
   side: 'left',
+
+  /**
+   * This will be set to `true` by the component while it is being dragged. Useful for styling.
+   * @type {boolean}
+   * @public
+   */
+  isDragging: false,
 
   /**
    * Configurable action to be invoked when user attempts to resize a column via drag-drop.
@@ -54,6 +61,8 @@ export default Component.extend(HasTableParent, {
       mousemove: this._mousemoveCallback,
       mouseup: this._mouseupCallback
     });
+    this.set('isDragging', true);
+    return false; // disables native browser text selection/highlighting when dragging
   },
 
   _dragMove(e) {
@@ -66,6 +75,7 @@ export default Component.extend(HasTableParent, {
   },
 
   _dragEnd() {
+    this.set('isDragging', false);
     $(document.body).off({
       mousemove: this._mousemoveCallback,
       mouseup: this._mouseupCallback

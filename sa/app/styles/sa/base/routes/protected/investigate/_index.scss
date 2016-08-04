@@ -1,0 +1,35 @@
+.rsa-investigate-index {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  @include rsa-row(center, middle);
+
+  &__body {
+
+    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-col(center, middle);
+    margin: 0 rsa-whitespace(most) rsa-whitespace() rsa-whitespace(most);
+
+    &-header {
+      text-align: center;
+      margin: rsa-whitespace();
+
+      h2 {
+        white-space: nowrap;
+      }
+      p {
+        margin: rsa-whitespace(less) 0 rsa-whitespace();
+      }
+
+      .rsa-form-button {
+        margin-top: rsa-whitespace();
+      }
+    }
+
+    .rsa-investigate-query-bar {
+      width: 100%;
+    }
+  }
+}

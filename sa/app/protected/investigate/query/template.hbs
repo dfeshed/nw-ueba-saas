@@ -1,12 +1,52 @@
 <article class="rsa-investigate-query">
   <header class="rsa-investigate-query__header">
-    <h2>Under Construction</h2>
-    {{!rsa-investigate/breadcrumb coming soon!}}
+    <div class="rsa-investigate-query__summary">
+      {{rsa-investigate/breadcrumb
+        query=model.query.value
+        services=model.services.data}}
+      <aside class="rsa-investigate-query__stats">
+        {{rsa-investigate/time-range
+          startTime=model.query.value.startTime
+          endTime=model.query.value.endTime}}
+        <span class="rsa-investigate-query__sums">
+          {{rsa-investigate/event-counter
+            class="rsa-investigate-query__sums-count"
+            count=model.events.data.length
+            status=model.events.status
+            goAction=(route-action "eventsGetMore")
+            stopAction=(route-action "eventsStop")
+            retryAction=(route-action "eventsGetMore")}}
+          {{#if model.eventCount.data}}
+            <span class="rsa-investigate-query__sums-of">{{t 'list.of'}}</span>
+          {{/if}}
+          {{rsa-investigate/event-counter
+            class="rsa-investigate-query__sums-total"
+            count=model.eventCount.data
+            status=model.eventCount.status
+            retryAction=(route-action "eventCountGet")}}
+        </span>
+      </aside>
+    </div>
+    {{rsa-progress-bar
+      percent=model.events.percent
+      enabled=(is-equal model.events.status 'streaming')}}
   </header>
   <section class="rsa-investigate-query__body">
+    <header class="rsa-investigate-query__body-header">
+    </header>
     <section class="rsa-investigate-query__body-main">
       {{!rsa-investigate/timeline coming soon!}}
-      {{!rsa-investigate/events-list coming soon!}}
+      {{#rsa-data-table lazy=true items=model.events.data columnsConfig=model.eventColumns}}
+        {{rsa-data-table/header}}
+        {{#rsa-data-table/body buffer=25 as |item index column|}}
+          {{#rsa-data-table/body-cell item=item index=index column=column}}
+            {{event-meta-value item column.field}}
+          {{/rsa-data-table/body-cell}}
+        {{/rsa-data-table/body}}
+        {{rsa-data-table/load-more
+          status=model.events.status
+          clickAction=(route-action "eventsGetMore")}}
+      {{/rsa-data-table}}
     </section>
     <aside class="rsa-investigate-query__body-aside">
       {{!rsa-investigate/facets coming soon!}}

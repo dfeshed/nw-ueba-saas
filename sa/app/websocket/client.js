@@ -146,12 +146,16 @@ export default EmberObject.extend({
    */
   disconnect() {
     let me = this;
-    me.set('disconnected', true);
-    return new RSVP.Promise(function(resolve) {
-      me.get('stompClient').disconnect(function() {
-        resolve(me);
+    if (me.get('disconnected')) {
+      return RSVP.Promise.resolve(me);
+    } else {
+      me.set('disconnected', true);
+      return new RSVP.Promise(function(resolve) {
+        me.get('stompClient').disconnect(function() {
+          resolve(me);
+        });
       });
-    });
+    }
   },
 
   /**
