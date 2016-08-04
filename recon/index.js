@@ -9,13 +9,13 @@ module.exports = {
    * @see https://github.com/ember-cli/ember-cli/blob/master/ADDON_HOOKS.md#isdevelopingaddon
    * @public
    */
-  isDevelopingAddon() {
+  isDevelopingAddon: function() {
     return true;
   },
-  included(app) {
+  included: function(app) {
     this._super.included(app);
   },
-  init() {
+  init: function() {
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
     this.options.babel = this.options.babel || {};
