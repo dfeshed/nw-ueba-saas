@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { Component } = Ember;
+const { Component, computed, String: {htmlSafe} } = Ember;
 
 export default Component.extend({
 
@@ -8,6 +8,10 @@ export default Component.extend({
 
   classNames: 'spec-masthead',
 
-  model: null
+  model: null,
+
+  description: computed('model.description', function() {
+    return htmlSafe(this.get('model.description'));
+  })
 
 });
