@@ -14,7 +14,9 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
@@ -89,5 +91,28 @@ public class AlertsRepositoryImplTest {
 
 	}
 
+	@Test
+	public void testGetAlertsForUserByFeedback(){
+		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 1, 90, Severity.Critical, AlertStatus.Open, AlertFeedback.None, "12345", null,0.0,true);
 
+		List<Evidence> evidences = new ArrayList<>();
+		List<String> dataEntitiesIds = new ArrayList<>();
+		dataEntitiesIds.add("dataSource");
+		Evidence evidence0 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "anomalyTypeField","anomalyValue",dataEntitiesIds,99, Severity.Critical,1, null);
+		Evidence evidence1 = new Evidence(EntityType.User,"entityTypeField","entityName",EvidenceType.AnomalySingleEvent,123L,123L, "anomalyTypeField","anomalyValue",dataEntitiesIds,99, Severity.Critical,1, null);
+
+		evidences.add(evidence0);
+		evidences.add(evidence1);
+
+		alert.setEvidences(evidences);
+		List<Alert> alerts = new ArrayList<>();
+		alerts.add(alert);
+
+		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alerts);
+		Set<AlertFeedback> feedbackSet = new HashSet<>();
+		feedbackSet.add(AlertFeedback.None);
+		Set<Alert> result = subject.getAlertsForUserByFeedback("user1", feedbackSet);
+		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
+		assertEquals("user1", ((Alert)result.toArray()[0]).getEntityName());
+	}
 }

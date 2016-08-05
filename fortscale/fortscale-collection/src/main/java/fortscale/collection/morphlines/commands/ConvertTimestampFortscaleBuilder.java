@@ -5,6 +5,7 @@ import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
 import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.collection.services.time.FortscaleDateFormatService;
+import fortscale.collection.services.time.FortscaleDateFormatServiceImpl;
 import fortscale.collection.services.time.FortscaleDateFormatterException;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
@@ -101,6 +102,10 @@ public class ConvertTimestampFortscaleBuilder implements CommandBuilder {
         String result;
 
         try {
+
+			if (fortscaleDateFormatService == null) {
+				fortscaleDateFormatService = new FortscaleDateFormatServiceImpl();
+			}
 
           if (inputFormatsField != null && !inputFormatsField.isEmpty()) { // i.e. explicit input formats
             result = fortscaleDateFormatService.formatDateTimestamp(timestamp, inputFormatsField, tzInput, outputFormatField, tzOutput);

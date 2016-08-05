@@ -139,21 +139,16 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             logger.warn("Active Directory configuration not found, trying to load configuration from file");
             List<AdConnection> adConnections;
             ObjectMapper mapper = new ObjectMapper();
-            File jsonFile;
-            try {
-                jsonFile = new File(adConnectionsFile);
-                if (!jsonFile.exists()) {
-                    throw new Exception("AdConnections json file does not exist");
-                }
-            } catch (Exception ex) {
-                logger.error("Error - Active Directory Json connection file does not exist or unreadable");
-                throw new Exception();
+            File jsonFile = new File(adConnectionsFile);
+            if (!jsonFile.exists()) {
+                logger.error("AdConnections json file does not exist");
+                return;
             }
             try {
                 adConnections = mapper.readValue(jsonFile, new TypeReference<List<AdConnection>>(){});
             } catch (Exception ex) {
                 logger.error("Error - Bad Active Directory Json connection file");
-                throw new Exception();
+                throw new Exception(ex);
             }
             applicationConfigurationService.insertConfigItemAsObject(AD_CONNECTIONS_CONFIGURATION_KEY, adConnections);
         }

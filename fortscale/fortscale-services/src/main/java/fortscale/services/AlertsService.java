@@ -1,6 +1,7 @@
 package fortscale.services;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
@@ -24,8 +25,6 @@ public interface AlertsService {
 	 * @param alert	The alert
 	 */
 	void saveAlertInRepository(Alert alert);
-
-
 
 	/**
 	 * returns a list of all alerts
@@ -104,4 +103,6 @@ public interface AlertsService {
     Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
 
     Set<Alert> getAlertsRelevantToUserScore(String userName);
+
+	Set<Alert> getOpenAlertsByUsername(String userName);
 }

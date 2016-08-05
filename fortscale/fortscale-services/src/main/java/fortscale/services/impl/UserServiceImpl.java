@@ -12,6 +12,7 @@ import fortscale.domain.core.dao.DeletedUserRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
@@ -1140,6 +1141,23 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames){
 		return  userRepository.groupCount(User.displayNameField, displayNames);
+	}
+
+	@Override
+	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest){
+
+		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
+
+		// Get users
+		return userRepository.findAllUsers(criteriaList, pageRequest);
+	}
+
+	@Override
+	public int countUsersByFilter(UserRestFilter userRestFilter){
+
+		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
+
+		return userRepository.countAllUsers(criteriaList);
 	}
 
 	@Override public String getUserId(String username) {
