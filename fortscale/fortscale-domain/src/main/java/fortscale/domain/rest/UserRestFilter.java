@@ -61,7 +61,7 @@ public class UserRestFilter extends RestFilter {
 		return isDisabled;
 	}
 
-	public void setDisabled(Boolean disabled) {
+	public void setIsDisabled(Boolean disabled) {
 		isDisabled = disabled;
 	}
 
@@ -69,16 +69,8 @@ public class UserRestFilter extends RestFilter {
 		return isDisabledWithActivity;
 	}
 
-	public void setDisabledWithActivity(Boolean disabledWithActivity) {
+	public void setIsDisabledWithActivity(Boolean disabledWithActivity) {
 		isDisabledWithActivity = disabledWithActivity;
-	}
-
-	public Boolean getIsTerminatedWithActivity() {
-		return isTerminatedWithActivity;
-	}
-
-	public void setTerminatedWithActivity(Boolean terminatedWithActivity) {
-		isTerminatedWithActivity = terminatedWithActivity;
 	}
 
 	public String getInactiveSince() {
@@ -109,7 +101,7 @@ public class UserRestFilter extends RestFilter {
 		return isServiceAccount;
 	}
 
-	public void setServiceAccount(Boolean serviceAccount) {
+	public void setIsServiceAccount(Boolean serviceAccount) {
 		isServiceAccount = serviceAccount;
 	}
 
@@ -129,4 +121,11 @@ public class UserRestFilter extends RestFilter {
 		this.addAlertsAndDevices = addAlertsAndDevices;
 	}
 
+	public Boolean getIsTerminatedWithActivity() {
+		return isTerminatedWithActivity;
+	}
+
+	public void setIsTerminatedWithActivity(Boolean terminatedWithActivity) {
+		isTerminatedWithActivity = terminatedWithActivity;
+	}
 }
