@@ -1,5 +1,7 @@
 package fortscale.domain.rest;
 
+import java.util.List;
+
 public class UserRestFilter extends RestFilter {
 
 	private String sortField;
@@ -16,6 +18,9 @@ public class UserRestFilter extends RestFilter {
 	private Boolean isServiceAccount;
 	private String searchFieldContains;
 	private Boolean addAlertsAndDevices;
+	private List<String> userTags;
+	private Boolean isWatched;
+	private Boolean isScored;
 
 	public String getSortField() {
 		return sortField;
@@ -73,7 +78,7 @@ public class UserRestFilter extends RestFilter {
 		isDisabledWithActivity = disabledWithActivity;
 	}
 
-	public String getInactiveSince() {
+		public String getInactiveSince() {
 		return inactiveSince;
 	}
 
@@ -121,6 +126,29 @@ public class UserRestFilter extends RestFilter {
 		this.addAlertsAndDevices = addAlertsAndDevices;
 	}
 
+	public List<String> getUserTags() {
+		return userTags;
+	}
+
+	public void setUserTags(List<String> userTags) {
+		this.userTags = userTags;
+	}
+
+	public Boolean getIsWatched() {
+		return isWatched;
+	}
+
+	public void setIsWatched(Boolean isWatched) {
+		this.isWatched = isWatched;
+	}
+
+	public Boolean getIsScored() {
+		return isScored;
+	}
+
+	public void setIsScored(Boolean isScored) {
+		this.isScored = isScored;
+	}
 	public Boolean getIsTerminatedWithActivity() {
 		return isTerminatedWithActivity;
 	}

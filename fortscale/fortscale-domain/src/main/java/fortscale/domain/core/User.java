@@ -54,7 +54,7 @@ public class User extends AbstractDocument {
 	public static final String administratorAccountField = "administratorAccount";
 	public static final String executiveAccountField = "executiveAccount";
 	public static final String tagsField = "tags";
-    public static final String socreField = "score";
+    public static final String scoreField = "score";
     public static final String scoreSeverityField = "scoreSeverity";
 	public static final String terminationDateField = "terminationDate";
 	public static final String alertsCountField = "alertsCount";
@@ -121,7 +121,7 @@ public class User extends AbstractDocument {
     @Field(scoreSeverityField)
     private Severity scoreSeverity;
 
-    @Field(socreField)
+    @Field(scoreField)
     private double score=0;
 
 	@Field(terminationDateField)
