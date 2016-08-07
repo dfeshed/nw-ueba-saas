@@ -2,10 +2,12 @@ package fortscale.domain.core;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
 import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -47,12 +49,20 @@ public class Tag extends AbstractDocument{
 		rules = new ArrayList<>();
 	}
 
+	@NotNull
+	@NotEmpty
 	private String name;
 
+	@NotNull
+	@NotEmpty
 	private String displayName;
 
+	@NotNull
+	@NotEmpty
 	private Boolean createsIndicator;
 
+	@NotNull
+	@NotEmpty
 	private List<String> rules;
 
 	public String getDisplayName() {

@@ -34,6 +34,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.*;
 
@@ -326,16 +327,7 @@ public class ApiUserController extends BaseController{
 
 	@RequestMapping(value="/user_tags", method=RequestMethod.POST)
 	@LogException
-	public ResponseEntity<String> updateTags(@RequestBody String body) {
-		JSONArray params = new JSONObject(body).getJSONArray("tags");
-		String errorMessage = "{json body is not in proper format: Array<{name: String, displayName: String, isFixed: "+
-			"boolean, createsIndicator: boolean}>}";
-		List<Tag> tags;
-		try {
-			tags = new ObjectMapper().readValue(params.toString(), new TypeReference<List<Tag>>(){});
-		} catch (IOException e) {
-			return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<String> updateTags(@RequestBody @Valid List<Tag> tags) {
 		for (Tag tag: tags) {
 			if (!tagService.updateTag(tag)) {
 				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
