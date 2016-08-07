@@ -308,7 +308,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	private Query buildQueryByUserNameAndFeedback(String userName, Set<AlertFeedback> feedbackSet) {
 		Query query = new Query();
-		if (CollectionUtils.isEmpty(feedbackSet)) {
+		if (CollectionUtils.isNotEmpty(feedbackSet)) {
 			query.addCriteria(new Criteria().where(Alert.feedbackField).in(feedbackSet));
 		}
 
