@@ -6,6 +6,10 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
 @Document(collection=Tag.collectionName)
 @CompoundIndexes({
 		// index for making sure our evidence is unique
@@ -18,7 +22,7 @@ public class Tag extends AbstractDocument{
 	public static final String nameField = "name";
 	public static final String displayNameField = "displayName";
 	public static final String createsIndicatorField = "createsIndicator";
-	public static final String isFixedField = "isFixed";
+	public static final String rulesField = "rules";
 
 	public Tag() {}
 
@@ -26,21 +30,21 @@ public class Tag extends AbstractDocument{
 		this.name = name;
 		displayName = name;
 		createsIndicator = false;
-		isFixed = false;
+		rules = new ArrayList<>();
 	}
 
-	public Tag(String name, String displayName, boolean setIsFixed) {
+	public Tag(String name, String displayName) {
 		this.name = name;
 		this.displayName = displayName;
-		isFixed = setIsFixed ? true : false;
 		createsIndicator = false;
+		rules = new ArrayList<>();
 	}
 
-	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean setIsFixed) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator) {
 		this.name = name;
 		this.displayName = displayName;
-		isFixed = setIsFixed ? true : false;
 		createsIndicator = setCreatesIndicator ? true : false;
+		rules = new ArrayList<>();
 	}
 
 	private String name;
@@ -49,7 +53,7 @@ public class Tag extends AbstractDocument{
 
 	private Boolean createsIndicator;
 
-	private Boolean isFixed;
+	private List<String> rules;
 
 	public String getDisplayName() {
 		return displayName;
@@ -75,19 +79,17 @@ public class Tag extends AbstractDocument{
 		this.name = name;
 	}
 
-	public Boolean getIsFixed() {
-		return isFixed;
+	public List<String> getRules() {
+		return rules;
 	}
 
-	public void setIsFixed(Boolean isFixed) {
-		this.isFixed = isFixed;
+	public void setRules(List<String> rules) {
+		this.rules = rules;
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(17, 31).
-				append(name).
-				toHashCode();
+		return Objects.hash(this.name);
 	}
 
 	@Override
@@ -99,9 +101,7 @@ public class Tag extends AbstractDocument{
 			return true;
 		}
 		Tag tag = (Tag)obj;
-		return new EqualsBuilder().
-				append(name, tag.name).
-				isEquals();
+		return new EqualsBuilder().append(name, tag.name).isEquals();
 	}
 
 }
