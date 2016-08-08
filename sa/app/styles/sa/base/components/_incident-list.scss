@@ -1,0 +1,33 @@
+.rsa-respond-list{
+  margin: 0 rsa-whitespace(less) 0 rsa-whitespace();
+
+  .rsa-data-table {
+    width: 100%;
+
+    &-header-cell .hideSort{
+      visibility: hidden;
+    }
+    &-header-cell:hover .hideSort{
+      visibility: visible;
+    }
+
+    &-header-cell,
+    &-body-cell{
+      overflow:visible;
+      .incident-id {
+        @include rsa-font(bold);
+      }
+      .rsa-respond-list-riskscore{
+        padding-right: rsa-whitespace(less);
+      }
+    }
+    button.expand {
+      padding-left: rsa-whitespace(less);
+    }
+  }
+
+  &-name{
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}

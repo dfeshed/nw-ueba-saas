@@ -7,6 +7,9 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-header {
     @include rsa-vendor-prefix(flex-shrink, 1);
+    padding: rsa-whitespace(less) 0;
+    margin: rsa-whitespace(less) 0;
+    border-bottom: 1px solid rsa-color(black);
   }
 
   &-body {
@@ -34,6 +37,8 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     left: 0;
     min-width: 100%;
     @include rsa-font(light, small);
+    border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+    padding: rsa-whitespace(least) 0;
   }
 
   &-body-cell,

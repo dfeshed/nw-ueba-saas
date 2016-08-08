@@ -2,7 +2,7 @@
   border-bottom: 1px solid rsa-color(gray, light);
   overflow: hidden;
   background-color: rsa-color(gray, darker, $rsa-translucent);
-  padding: 0 rsa-whitespace(most);
+  padding: 0 rsa-whitespace(most) 0 rsa-whitespace();
 
   &__label {
     @include rsa-font(header, large);
