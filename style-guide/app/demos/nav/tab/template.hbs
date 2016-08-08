@@ -1,61 +1,57 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category}}
-        {{#spec-member
-          title="Example"
-          subtitle="To use the tab, simply add an action click handler and call whatever action you need in the consuming scope."}}
-          <div class="rsa-nav-tab-group">
-            {{#rsa-nav-tab isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
-              <div class="imagery">1</div>
-              <div class="label">Option 1</div>
-            {{/rsa-nav-tab}}
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member
+        title="Example"
+        subtitle="To use the tab, simply add an action click handler and call whatever action you need in the consuming scope."}}
+        <div class="rsa-nav-tab-group">
+          {{#rsa-nav-tab isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+            <div class="imagery">1</div>
+            <div class="label">Option 1</div>
+          {{/rsa-nav-tab}}
 
-            {{#rsa-nav-tab isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
-              <div class="imagery">2</div>
-              <div class="label">Option 2</div>
-            {{/rsa-nav-tab}}
+          {{#rsa-nav-tab isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+            <div class="imagery">2</div>
+            <div class="label">Option 2</div>
+          {{/rsa-nav-tab}}
 
-            {{#rsa-nav-tab isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
-              <div class="imagery">3</div>
-              <div class="label">Option 3</div>
-            {{/rsa-nav-tab}}
-          </div>
+          {{#rsa-nav-tab isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
+            <div class="imagery">3</div>
+            <div class="label">Option 3</div>
+          {{/rsa-nav-tab}}
+        </div>
 
-          <code>
+        <code>
+          <div>
+            &lt;div class="rsa-nav-tab-group">
             <div>
-              &lt;div class="rsa-nav-tab-group">
-              <div>
-                &#123;{#rsa-nav-tab isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
-                <div>&lt;div class="imagery">1&lt;/div></div>
-                <div>&lt;div class="label">Option 1&lt;/div></div>
-                &#123;{/rsa-nav-tab}}
-              </div>
-
-              <div>
-                &#123;{#rsa-nav-tab isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
-                <div>&lt;div class="imagery">2&lt;/div></div>
-                <div>&lt;div class="label">Option 2&lt;/div></div>
-                &#123;{/rsa-nav-tab}}
-              </div>
-
-              <div>
-                &#123;{#rsa-nav-tab isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
-                <div>&lt;div class="imagery">3&lt;/div></div>
-                <div>&lt;div class="label">Option 3&lt;/div></div>
-                &#123;{/rsa-nav-tab}}
-              </div>
-              &lt;/div>
+              &#123;{#rsa-nav-tab isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+              <div>&lt;div class="imagery">1&lt;/div></div>
+              <div>&lt;div class="label">Option 1&lt;/div></div>
+              &#123;{/rsa-nav-tab}}
             </div>
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+
+            <div>
+              &#123;{#rsa-nav-tab isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+              <div>&lt;div class="imagery">2&lt;/div></div>
+              <div>&lt;div class="label">Option 2&lt;/div></div>
+              &#123;{/rsa-nav-tab}}
+            </div>
+
+            <div>
+              &#123;{#rsa-nav-tab isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
+              <div>&lt;div class="imagery">3&lt;/div></div>
+              <div>&lt;div class="label">Option 3&lt;/div></div>
+              &#123;{/rsa-nav-tab}}
+            </div>
+            &lt;/div>
+          </div>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

@@ -34,68 +34,69 @@
   </article>
 {{else}}
   <div class="rsa-respond-list">
-    {{#rsa-grid class="rsa-respond-list__grid" }}
-      {{#rsa-grid-row class='rsa-respond-list__grid__header' collapseHeight=true}}
-        {{#rsa-grid-column span=1}}
+    <vbox class="rsa-respond-list__grid">
+      <hbox class='rsa-respond-list__grid__header'>
+        <vbox xs="1">
           {{t 'incident.list.riskScore'}}
-        {{/rsa-grid-column}}
-        {{#rsa-grid-column span=1}}
+        </vbox>
+        <vbox xs="1">
           {{t 'incident.list.id'}}
-        {{/rsa-grid-column}}
-        {{#rsa-grid-column span=4}}
+        </vbox>
+        <vbox xs="4">
           {{t 'incident.list.name'}}
-        {{/rsa-grid-column}}
-        {{#rsa-grid-column span=2}}
+        </vbox>
+        <vbox xs="2">
           {{t 'incident.list.createdDate'}}
-        {{/rsa-grid-column}}
-        {{#rsa-grid-column span=1}}
+        </vbox>
+        <vbox xs="1">
           {{t 'incident.list.assignee'}}
-        {{/rsa-grid-column}}
-        {{#rsa-grid-column span=1}}
+        </vbox>
+        <vbox xs="1">
           {{t 'incident.list.status'}}
-        {{/rsa-grid-column}}
-        {{#rsa-grid-column span=1}}
+        </vbox>
+        <vbox xs="1">
           {{t 'incident.list.alertCount'}}
-        {{/rsa-grid-column}}
-        {{#rsa-grid-column span=1}}
+        </vbox>
+        <vbox xs="1">
           {{t 'incident.list.sources'}}
-        {{/rsa-grid-column}}
-      {{/rsa-grid-row}}
-
+        </vbox>
+      </hbox>
       {{#each model.allIncidents.results as |incident|}}
-        {{#rsa-grid-row class='rsa-respond-list__grid__row' collapseHeight=true}}
-          {{#rsa-grid-column class='incident-riskScore' span=1}}
+        <hbox class='rsa-respond-list__grid__row'>
+          <vbox xs="1" class='incident-riskScore'>
             {{rsa-content-badge-score score=incident.riskScore isInline=true style=(call-method this 'badgeStyle' incident.riskScore)}}
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column class='incident-id' span=1}}
+          </vbox>
+          <vbox xs="1" class='incident-id'>
             <label {{action "gotoIncidentDetail"}}>{{incident.id}}</label>
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column class='incident-name' span=4}}
+          </vbox>
+          <vbox xs="4" class='incident-name'>
             {{incident.name}}
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column class='incident-created' span=2}}
+          </vbox>
+          <vbox xs="2" class='incident-created'>
             {{rsa-content-datetime timestamp=incident.created}}
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column class='incident-assignee' span=1}}
+          </vbox>
+          <vbox xs="1" class='incident-assignee'>
             {{#if incident.assignee}}
               {{incident.assignee.login}}
             {{else}}
               {{t 'incident.assignee.none'}}
             {{/if}}
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column class='incident-status' span=1}}
+          </vbox>
+          <vbox xs="1" class='incident-status'>
             {{t (concat 'incident.status.' incident.statusSort)}}
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column class='incident-alertCount' span=1}}
+          </vbox>
+          <vbox xs="1" class='incident-alertCount'>
             {{incident.alertCount}}
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column class='incident-sources' span=1}}
-            {{#each incident.sources as |source|}}
-              {{rsa-content-label label=(call-method this 'sourceShortName' source)}}
-            {{/each}}
-          {{/rsa-grid-column}}
-        {{/rsa-grid-row}}
+          </vbox>
+          <vbox xs="1" class='incident-sources'>
+            <div class="source-tags">
+              {{#each incident.sources as |source|}}
+                {{rsa-content-label label=(call-method this 'sourceShortName' source)}}
+              {{/each}}
+            </div>
+          </vbox>
+        </hbox>
       {{/each}}
-    {{/rsa-grid}}
+    </vbox>
   </div>
 {{/if}}

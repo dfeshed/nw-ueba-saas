@@ -1,328 +1,321 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category
-        title="Typeface"
-        subtitle="Open Sans is used exclusively throughout RSA products."
-        description="While Open Sans is the only font used, use of the predefined styles below allow for easy communication of context. Size, weight, spacing, and case can be used to satisfy edge cases not already defined in the style options."}}
-        
-        {{#spec-member}}
-          <div class="rsa-font-header-larger">        
-            <div>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</div>
-            <div>a b c d e f g h i j k l m n o p q r s t u v w x y z</div>
-            <div>0 1 2 3 4 5 6 7 8 9</div>
-          </div>
-        {{/spec-member}}
-      {{/spec-category}}
-      
-      {{#spec-category
-        title="Styles"
-        subtitle="Predetermined styles that can be used in a variety of scenarios."
-        description=""}}
-        
-        {{#spec-member
-          title="Small Body"}}
-          <div class="rsa-font-body-small">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-body-small">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(body, small);
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member
-          title="Default Body"
-          subtitle="Default Body is a catch-all font style."}}
-          <div class="rsa-font-body">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-body">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(body);
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member
-          title="Paragraph"          
-          subtitle="Paragraph is similar to Default Body, but with an increased line-height."}}
-          <div class="rsa-font-paragraph">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-paragraph">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(paragraph);
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member
-          title="Small Header"}}
-          <div class="rsa-font-header-small">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-header-small">This is an example.&lt;/div>
-          </code>
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category
+      title="Typeface"
+      subtitle="Open Sans is used exclusively throughout RSA products."
+      description="While Open Sans is the only font used, use of the predefined styles below allow for easy communication of context. Size, weight, spacing, and case can be used to satisfy edge cases not already defined in the style options."}}
 
-          <code>
-            @include rsa-font(header, small);
-          </code>
-        {{/spec-member}}
+      {{#spec-member}}
+        <div class="rsa-font-header-larger">
+          <div>A B C D E F G H I J K L M N O P Q R S T U V W X Y Z</div>
+          <div>a b c d e f g h i j k l m n o p q r s t u v w x y z</div>
+          <div>0 1 2 3 4 5 6 7 8 9</div>
+        </div>
+      {{/spec-member}}
+    {{/spec-category}}
 
-        {{#spec-member
-          title="Default Header"}}
-          <div class="rsa-font-header-default">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-header-default">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(header);
-          </code>
-        {{/spec-member}}
+    {{#spec-category
+      title="Styles"
+      subtitle="Predetermined styles that can be used in a variety of scenarios."
+      description=""}}
 
-        {{#spec-member
-          title="Large Header"}}          
-          <div class="rsa-font-header-large">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-header-large">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(header, large);
-          </code>
-        {{/spec-member}}
+      {{#spec-member
+        title="Small Body"}}
+        <div class="rsa-font-body-small">
+          This is an example.
+        </div>
 
-        {{#spec-member
-          title="Larger Header"}}
-          <div class="rsa-font-header-larger">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-header-larger">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(header, larger);
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member
-          title="Small Navigation"}}
-          <div class="rsa-font-navigation-small">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-navigation-small">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(navigation, small);
-          </code>
-        {{/spec-member}}
+        <code>
+          &lt;div class="rsa-font-body-small">This is an example.&lt;/div>
+        </code>
 
-        {{#spec-member
-          title="Small Navigation"}}
-          <div class="rsa-font-navigation-default">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-navigation-default">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(navigation);
-          </code>
-        {{/spec-member}}
+        <code>
+          @include rsa-font(body, small);
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member
-          title="Large Navigation"}}
-          <div class="rsa-font-navigation-large">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-navigation-large">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(navigation, large);
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
+      {{#spec-member
+        title="Default Body"
+        subtitle="Default Body is a catch-all font style."}}
+        <div class="rsa-font-body">
+          This is an example.
+        </div>
 
-      {{#spec-category
-        title="Sizes"}}
-        
-        {{#spec-member
-          title="Smaller"}}
-          <div class="rsa-font-smaller">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-smaller">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(default, smaller);
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member
-          title="Small"}}
-          <div class="rsa-font-small">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-small">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(default, small);
-          </code>
-        {{/spec-member}}
+        <code>
+          &lt;div class="rsa-font-body">This is an example.&lt;/div>
+        </code>
 
-        {{#spec-member
-          title="Default"}}
-          <div class="rsa-font-default">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-default">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font();
-          </code>
-        {{/spec-member}}
+        <code>
+          @include rsa-font(body);
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member
-          title="Large"}}
-          <div class="rsa-font-large">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-large">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(default, large);
-          </code>
-        {{/spec-member}}
+      {{#spec-member
+        title="Paragraph"
+        subtitle="Paragraph is similar to Default Body, but with an increased line-height."}}
+        <div class="rsa-font-paragraph">
+          This is an example.
+        </div>
 
-        {{#spec-member
-          title="Larger"}}
-          <div class="rsa-font-larger">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-larger">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(default, larger);
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
+        <code>
+          &lt;div class="rsa-font-paragraph">This is an example.&lt;/div>
+        </code>
 
-      {{#spec-category
-        title="Weight"}}
-        {{#spec-member
-          title="Light"}}
-          <div class="rsa-font-light">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-light">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(light);
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member
-          title="Regular"}}
-          <div class="rsa-font-regular">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-regular">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font();
-          </code>
-        {{/spec-member}}
-                
-        {{#spec-member
-          title="Bold"}}
-          <div class="rsa-font-bold">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-bold">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(bold);
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member
-          title="Bolder"}}
-          <div class="rsa-font-bolder">
-            This is an example.
-          </div>
-          
-          <code>
-            &lt;div class="rsa-font-bolder">This is an example.&lt;/div>
-          </code>
-          
-          <code>
-            @include rsa-font(bolder);
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+        <code>
+          @include rsa-font(paragraph);
+        </code>
+      {{/spec-member}}
 
+      {{#spec-member
+        title="Small Header"}}
+        <div class="rsa-font-header-small">
+          This is an example.
+        </div>
 
+        <code>
+          &lt;div class="rsa-font-header-small">This is an example.&lt;/div>
+        </code>
 
+        <code>
+          @include rsa-font(header, small);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Default Header"}}
+        <div class="rsa-font-header-default">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-header-default">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(header);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Large Header"}}
+        <div class="rsa-font-header-large">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-header-large">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(header, large);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Larger Header"}}
+        <div class="rsa-font-header-larger">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-header-larger">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(header, larger);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Small Navigation"}}
+        <div class="rsa-font-navigation-small">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-navigation-small">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(navigation, small);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Small Navigation"}}
+        <div class="rsa-font-navigation-default">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-navigation-default">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(navigation);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Large Navigation"}}
+        <div class="rsa-font-navigation-large">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-navigation-large">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(navigation, large);
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category
+      title="Sizes"}}
+
+      {{#spec-member
+        title="Smaller"}}
+        <div class="rsa-font-smaller">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-smaller">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(default, smaller);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Small"}}
+        <div class="rsa-font-small">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-small">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(default, small);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Default"}}
+        <div class="rsa-font-default">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-default">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font();
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Large"}}
+        <div class="rsa-font-large">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-large">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(default, large);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Larger"}}
+        <div class="rsa-font-larger">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-larger">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(default, larger);
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+
+    {{#spec-category
+      title="Weight"}}
+      {{#spec-member
+        title="Light"}}
+        <div class="rsa-font-light">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-light">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(light);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Regular"}}
+        <div class="rsa-font-regular">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-regular">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font();
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Bold"}}
+        <div class="rsa-font-bold">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-bold">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(bold);
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Bolder"}}
+        <div class="rsa-font-bolder">
+          This is an example.
+        </div>
+
+        <code>
+          &lt;div class="rsa-font-bolder">This is an example.&lt;/div>
+        </code>
+
+        <code>
+          @include rsa-font(bolder);
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

@@ -1,58 +1,58 @@
-{{#rsa-grid class="rsa-response-storyline"}}
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=1 class='rsa-response-storyline__timeSection'}}
-      {{#rsa-grid class='rsa-response-storyline__time'}}
-        {{#rsa-grid-row collapseHeight=true}}
-          {{#rsa-grid-column class='rsa-response-storyline__timedivider' span=12}}
+<vbox class="rsa-response-storyline">
+  <hbox>
+    <vbox xs='1' class='rsa-response-storyline__timeSection'>
+      <div class='rsa-response-storyline__time'>
+        <hbox fit>
+          <vbox class='rsa-response-storyline__timedivider'>
             {{rsa-content-datetime displayTime=false timestamp=alerts.lastObject.alert.timestamp}}
-          {{/rsa-grid-column}}
-        {{/rsa-grid-row}}
-        {{#rsa-grid-row collapseHeight=true}}
-          {{#rsa-grid-column class='rsa-response-storyline__times' span=12}}
+          </vbox>
+        </hbox>
+        <hbox fit>
+          <vbox class='rsa-response-storyline__times'>
             {{rsa-content-datetime displayDate=false timestamp=alerts.lastObject.alert.timestamp}}
-          {{/rsa-grid-column}}
-        {{/rsa-grid-row}}
-        {{#rsa-grid-row}}
-          {{#rsa-grid-column class='rsa-response-storyline__time__text' span=12}}
+          </vbox>
+        </hbox>
+        <hbox>
+          <vbox class='rsa-response-storyline__time__text'>
             {{t 'incident.details.storyline.cAndc'}}
-          {{/rsa-grid-column}}
-        {{/rsa-grid-row}}
+          </vbox>
+        </hbox>
         {{#unless (is-equal alerts.lastObject.alert.timestamp alerts.firstObject.alert.timestamp)}}
-          {{#rsa-grid-row}}
-            {{#rsa-grid-column class='rsa-response-storyline__times end' span=12}}
+          <hbox>
+            <vbox class='rsa-response-storyline__times end'>
               {{rsa-content-datetime displayDate=false timestamp=alerts.firstObject.alert.timestamp}}
-            {{/rsa-grid-column}}
-          {{/rsa-grid-row}}
+            </vbox>
+          </hbox>
         {{/unless}}
-      {{/rsa-grid}}
-    {{/rsa-grid-column}}
-    {{#rsa-grid-column span=11}}
-      {{#rsa-grid}}
-        {{#rsa-grid-row class='rsa-response-storyline__main-row'}}
-          {{#rsa-grid-column class='rsa-response-storyline__main' span=11}}
+      </div>
+    </vbox>
+    <vbox xs='11'>
+      <div>
+        <hbox class='rsa-response-storyline__main-row'>
+          <vbox class='rsa-response-storyline__main' xs='11'>
             <span class='indicator_type'>Threat Analysis</span> detected C&C communication {{alertCount}} times from <span class="contextInfo">{{alerts.firstObject.alert.groupby_source_ip}}</span>
             to <span class="contextInfo">{{alerts.firstObject.alert.groupby_domain}}</span>
-          {{/rsa-grid-column}}
-          {{#rsa-grid-column  class='rsa-response-storyline__main_icon' span=1}}
+          </vbox>
+          <vbox class='rsa-response-storyline__main_icon' xs='1'>
             {{#rsa-form-button isIconOnly=true}}
               <span class="journalAction" {{action journalAction}}>{{rsa-icon name="bubble-chat-add-1" size="smaller"}}</span>
             {{/rsa-form-button}}
             {{#rsa-form-button isIconOnly=true}}
               <span {{action entityAction 'Indicator'}}>{{rsa-icon name="arrow-right-12" size="smaller"}}</span>
             {{/rsa-form-button}}
-          {{/rsa-grid-column}}
-        {{/rsa-grid-row}}
-        {{#rsa-grid-row}}
-          {{#rsa-grid-column class='rsa-response-storyline__subItem' span=12}}
+          </vbox>
+        </hbox>
+        <hbox>
+          <vbox class='rsa-response-storyline__subItem'>
             [Placeholder] Domain is new to the network
-          {{/rsa-grid-column}}
-        {{/rsa-grid-row}}
-        {{#rsa-grid-row}}
-          {{#rsa-grid-column class='rsa-response-storyline__subItem' span=12}}
+          </vbox>
+        </hbox>
+        <hbox>
+          <vbox class='rsa-response-storyline__subItem'>
             [Placeholder] whoIs information not available
-          {{/rsa-grid-column}}
-        {{/rsa-grid-row}}
-      {{/rsa-grid}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+          </vbox>
+        </hbox>
+      </div>
+    </vbox>
+  </hbox>
+</vbox>

@@ -6,7 +6,7 @@
   height: $applicationFooterHeight;
   padding: rsa-whitespace(less) rsa-whitespace();
   box-sizing: border-box;
-  
+
   a {
     display: inline-block;
   }
@@ -28,7 +28,7 @@
       line-height: calc(#{$applicationFooterHeight} - (#{rsa-whitespace(less)} * 2));
 
       .application-version {
-        @include rsa-font(light, smaller);  
+        @include rsa-font(light, smaller);
         letter-spacing: 1px;
         text-transform: lowercase;
       }
@@ -38,7 +38,7 @@
       position: relative;
       top: 5px;
       height: 13px;
-      line-height: calc($applicationFooterHeight - (#{rsa-whitespace(less)} * 2));
+      line-height: calc(#{$applicationFooterHeight} - (#{rsa-whitespace(less)} * 2));
       width: auto;
       float: left;
     }

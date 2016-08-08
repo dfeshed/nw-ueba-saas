@@ -3,110 +3,113 @@
   display: inline-block;
   box-sizing: border-box;
   position:relative;
-    
+
   .rsa-form-button {
     border: 1px solid transparent;
     padding: 0 rsa-whitespace();
-    line-height: calc(1.5em + #{rsa-whitespace(less)} + #{rsa-whitespace(less)});
+    height: 3rem;
+    line-height: 3rem;
     color: $formButtonTypeColor;
     box-sizing: border-box;
     text-align: center;
 
     &:hover {
       cursor: pointer;
-      color: $formButtonHoverTypeColor; 
+      color: $formButtonHoverTypeColor;
     }
-      
+
     i {
       font-size: 1.5em;
       margin-right: rsa-whitespace(least);
       vertical-align: text-bottom;
-    
-      &.is-smaller { font-size: .8em; }    
-      &.is-small { font-size: 1em; }    
-      &.is-large { font-size: 2em; }    
-      &.is-larger { font-size: 3em; }    
+
+      &.is-smaller { font-size: .8em; }
+      &.is-small { font-size: 1em; }
+      &.is-large { font-size: 2em; }
+      &.is-larger { font-size: 3em; }
       &.is-largest { font-size: 5em; }
     }
   }
-  
+
   .expand {
     display: none;
-    position: relative;
     left: rsa-whitespace(least);
-    top: -1px;
     cursor: pointer;
     box-sizing: border-box;
   }
-  
+
   &.is-full-width {
     display: block;
     text-align: center;
-    
+
     .rsa-form-button {
       display: block;
       width: 100%;
     }
-    
-    ul {
-      margin-right: 2px;  
-    }
   }
-  
+
   &.is-collapsed {
     ul {
       display: none;
     }
   }
-  
-  &.with-dropdown, &.with-dropdown:hover {
+
+  &.with-dropdown {
     ul {
       @include rsa-layer(above);
       box-sizing: border-box;
       position: absolute;
       right: 0;
       text-align: left;
+      margin-top: -2px;
       background-color: $formButtonDropdownBackgroundColor;
-  
+
       li {
         @include rsa-font(navigation, small);
         white-space: nowrap;
         display: block;
         padding: 0 rsa-whitespace();
         vertical-align: bottom;
+        line-height: 2.5rem;
         border-bottom: 1px solid $formButtonDropdownOptionBorderColor;
-          
+
         &:last-child {
-          border-bottom: none;        
+          border-bottom: none;
         }
-        
+
         &:hover {
           background-color: $formButtonDropdownOptionHoverBackgroundColor;
         }
       }
     }
   }
-  
+
   &.with-dropdown {
     .rsa-form-button {
       .expand {
         display: inline-block;
-      }    
+
+        i {
+          position: relative;
+          top: -2px;
+          left: 4px;
+        }
+      }
     }
   }
-  
+
   &.is-standard:not(.is-disabled):not(.is-icon-only) {
     .rsa-form-button {
       border-color: $formButtonBorderColor;
     }
-        
+
     &:not(.is-split) {
       &:hover, &.not-collapsed {
         .rsa-form-button {
           border-color: $formButtonHoverBorderColor;
         }
       }
-      
+
       &:active {
         background-color: $formButtonActiveBackgroundColor;
       }
@@ -116,7 +119,7 @@
   &.is-standard:not(.is-disabled) {
     ul {
       border: 1px solid $formButtonDropdownBorderColor;
-    
+
       li {
         &:hover {
           color: $formButtonDropdownOptionHoverTypeColor;
@@ -130,17 +133,17 @@
       border-color: $formButtonPrimaryBorderColor;
       background-color: $formButtonPrimaryBackgroundColor;
     }
-    
+
     ul {
       border: 1px solid $formButtonPrimaryDropdownBorderColor;
-    
+
       li {
         &:hover {
           background-color: $formButtonPrimaryDropdownOptionHoverBackgroundColor;
         }
       }
     }
-    
+
     &:not(.is-split) {
       &:hover, &.not-collapsed {
         .rsa-form-button {
@@ -148,12 +151,12 @@
           color: $formButtonPrimaryTypeColor;
         }
       }
-      
+
       &:active {
         .rsa-form-button {
           background-image: $formButtonPrimaryActiveBackgroundColor;
         }
-      }    
+      }
     }
   }
 
@@ -162,15 +165,15 @@
       border-color: $formButtonDangerBorderColor;
       background-color: $formButtonDangerBackgroundColor;
     }
-        
+
     &:not(.is-split) {
       &:hover, &.not-collapsed {
         .rsa-form-button {
-          background-image: $formButtonDangerHoverBackgroundColor;      
+          background-image: $formButtonDangerHoverBackgroundColor;
           color: $formButtonDangerTypeColor;
         }
       }
-      
+
       &:active {
         .rsa-form-button {
           background-image: $formButtonDangerActiveBackgroundColor;
@@ -179,10 +182,10 @@
     }
   }
 
-  &.is-danger:not(.is-disabled) {    
+  &.is-danger:not(.is-disabled) {
     ul {
       border: 1px solid $formButtonDangerDropdownBorderColor;
-    
+
       li {
         &:hover {
           background-color: $formButtonDangerDropdownOptionHoverBackgroundColor;
@@ -190,25 +193,25 @@
       }
     }
   }
-  
+
   &.is-disabled {
     .rsa-form-button {
       color: $formButtonDisabledTypeColor;
       cursor: default;
     }
-    
+
     .expand {
       cursor: default;
     }
   }
-  
+
   &.is-disabled:not(.is-icon-only) {
     .rsa-form-button {
       border-color: $formButtonDisabledBorderColor;
       background: none;
     }
   }
-  
+
   &.is-icon-only {
     padding: 0;
 
@@ -221,20 +224,27 @@
         margin-right: 0;
       }
     }
-    
-    .expand {
-      top: 2px;
+
+    &.with-dropdown {
+      .rsa-form-button {
+        .expand {
+          i {
+            top: 2px;
+            left: 0;
+          }
+        }
+      }
     }
-    
+
     ul {
       margin-top: rsa-whitespace(least);
     }
-    
+
     &.is-standard {
       .rsa-form-button {
         color: $formButtonTypeColor;
       }
-      
+
       &:hover, &.not-collapsed {
         .rsa-form-button {
           color: $formButtonIconHoverColor;
@@ -247,10 +257,10 @@
           background-color: $formButtonActiveBackgroundColor;
         }
       }
-      
+
       ul {
         border-color: $formButtonDropdownBorderColor;
-        
+
         li {
           &:hover {
             background-color: $formButtonPrimaryDropdownOptionHoverBackgroundColor;
@@ -260,10 +270,11 @@
     }
 
     &.is-danger {
+      background: none;
       .rsa-form-button {
         color: $formButtonDangerBorderColor;
       }
-      
+
       &:hover, &.not-collapsed {
         .rsa-form-button {
           color: $formButtonDangerIconHoverColor;
@@ -276,11 +287,11 @@
           background-color: $formButtonActiveBackgroundColor;
         }
       }
-      
+
       ul {
         border-color: $formButtonDangerBorderColor;
         color: $formButtonDangerTypeColor;
-        
+
         li {
           &:hover {
             background-color: $formButtonDangerHoverBackgroundColor;
@@ -288,12 +299,12 @@
         }
       }
     }
-    
+
     &.is-disabled {
       .rsa-form-button {
         color: $formButtonDisabledTypeColor;
       }
-      
+
       &:hover, &.not-collapsed {
         .rsa-form-button {
           color: $formButtonDisabledTypeColor;
@@ -301,49 +312,51 @@
       }
     }
 
-    
+
     .expand {
       font-size: .75rem;
       left: 2px;
     }
-    
+
     &:active:not(.is-disabled) {
       background-color: $formButtonActiveBackgroundColor;
     }
   }
-  
+
   &.is-split {
     .rsa-form-button {
       display: inline-block;
-      margin-right: -4px;      
+      margin-right: -4px;
     }
-    
+
     .expand {
       border: 1px solid $formButtonBorderColor;
       border-left: none;
-      height: calc(1.5em + #{rsa-whitespace(less)} + #{rsa-whitespace(less)} + 1px);
-      width: calc(1.5em + #{rsa-whitespace(less)} + #{rsa-whitespace(less)} + 1px);
+      height: 3rem;
+      line-height: 3rem;
+      width: 3rem;
       text-align: center;
       display: inline-block;
       box-sizing: border-box;
       top: -2px;
+      position: relative;
       left:0;
       vertical-align: middle;
 
       i {
         font-size: 1.25em;
         position: relative;
-        top: 1px;
+        top: 2px;
       }
     }
-    
+
     &.is-full-width {
       .rsa-form-button {
         display: inline-block;
         width: calc(100% - (1.5em + #{rsa-whitespace(less)} + #{rsa-whitespace(less)} + 2px) - #{rsa-whitespace(least)});
       }
     }
-    
+
     &.is-standard:not(.is-disabled):not(.is-icon-only) {
       &:hover, &.not-collapsed {
         .rsa-form-button, .expand {
@@ -351,7 +364,7 @@
           color: $formButtonHoverTypeColor;
         }
       }
-      
+
       &:active {
         .rsa-form-button, .expand {
           border-color: $formButtonHoverBorderColor;
@@ -366,42 +379,42 @@
         border-color: $formButtonPrimaryBorderColor;
         background-color: $formButtonPrimaryBackgroundColor;
       }
-      
+
       &:hover, &.not-collapsed {
         .rsa-form-button, .expand {
-          background-image: $formButtonPrimaryHoverBackgroundColor;      
+          background-image: $formButtonPrimaryHoverBackgroundColor;
           color: $formButtonPrimaryTypeColor;
         }
       }
-      
+
       &:active {
         .rsa-form-button, .expand {
           background-image: $formButtonPrimaryActiveBackgroundColor;
         }
       }
     }
-    
+
     &.is-danger:not(.is-disabled):not(.is-icon-only) {
       .expand {
         margin-left: 2px;
         border-color: $formButtonDangerBorderColor;
         background-color: $formButtonDangerBackgroundColor;
       }
-      
+
       &:hover, &.not-collapsed {
         .rsa-form-button, .expand {
-          background-image: $formButtonDangerHoverBackgroundColor;      
+          background-image: $formButtonDangerHoverBackgroundColor;
           color: $formButtonDangerTypeColor;
         }
       }
-      
+
       &:active {
         .rsa-form-button, .expand {
           background-image: $formButtonDangerActiveBackgroundColor;
         }
       }
     }
-    
+
     &.is-disabled:not(.is-icon-only) {
       .expand {
         border-color: $formButtonDisabledBorderColor;

@@ -27,7 +27,7 @@ module.exports = {
   transformAllElementLayoutAttributes: false,
 
   // grid and layout element gutters
-  gutterPadding: '.5rem',
+  gutterPadding: '0',
 
   // if false, no styles are included (trumps 'includeMediaCSS' and 'includeElementCSS')
   includeCSS: true

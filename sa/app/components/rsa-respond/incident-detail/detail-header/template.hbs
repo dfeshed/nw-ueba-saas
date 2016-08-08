@@ -1,80 +1,77 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true class='rsa-incident-detail-header__row'}}
-    {{#rsa-grid-column span=1 style=badgeStyle centerChild=true class='rsa-incident-detail-header__score' }}
-      {{rsa-content-badge-score label=(t 'incident.fields.riskScore') score=model.riskScore}}
-    {{/rsa-grid-column}}
+<hbox class='rsa-incident-detail-header__row'>
+  <vbox xs="1" class='rsa-incident-detail-header__score'>
+    {{rsa-content-badge-score label=(t 'incident.fields.riskScore') score=model.riskScore style=badgeStyle}}
+  </vbox>
 
-    {{#rsa-grid-column span=11 class='rsa-incident-detail-header__col-details'}}
-
-      <article class='rsa-incident-detail-header__details'>
-        <header class='rsa-incident-detail-header__details__title'>
-          <label class='rsa-incident-detail-header__id'>{{model.id}}:&nbsp;</label>
-          {{rsa-form-input class='rsa-incident-detail-header__name' value=incidentName isReadOnly=incidentIsClosed focusOut=(action 'nameLostFocus')}}
-        </header>
-        <ul class='rsa-incident-detail-header__details__body'>
-          <li>
-            {{#rsa-form-select label=(t 'incident.fields.priority') class='rsa-incident-detail-header__priority' values=selectedPriority isDisabled=incidentIsClosed}}
-              {{#each priorityList as |priority i|}}
-                <option value="{{i}}">{{t (concat 'incident.priority.' i) }}</option>
-              {{/each}}
-            {{/rsa-form-select}}
-          </li>
-          <li>
-            {{#rsa-content-definition label=(t 'incident.fields.alertCount') class='rsa-incident-detail-header__alerts'}}
-              <label>{{model.alertCount}}</label>
-            {{/rsa-content-definition}}
-          </li>
-          <li>
-            {{#rsa-content-definition label=(t 'incident.fields.events') class='rsa-incident-detail-header__events'}}
-              <label>{{if model.alerts.firstObject.alert.numEvents model.alerts.firstObject.alert.numEvents '0'}}</label>
-            {{/rsa-content-definition}}
-          </li>
-          <li>
-            {{#rsa-content-definition label=(t 'incident.fields.sources') class='rsa-incident-detail-header__sources'}}
-              {{#each incidentSources as |source|}}
-                {{rsa-content-label class="rsa-incident-tile-source" label=source}}
-              {{/each}}
-            {{/rsa-content-definition}}
-          </li>
-          <li>
-            {{#rsa-form-select label=(t 'incident.fields.assignee') class='rsa-incident-detail-header__assignee' values=selectedAssignee isDisabled=incidentIsClosed}}
-              <option value=-1>{{t 'incident.assignee.none'}}</option>
-              {{#each users as |user|}}
-                <option value={{user.id}}>{{user.firstName}}</option>
-              {{/each}}
-            {{/rsa-form-select}}
-          </li>
-          <li>
-            {{#rsa-form-select class='rsa-incident-detail-header__status' label=(t "incident.fields.status") values=selectedStatus}}
-              {{#each statusList as |status i|}}
-                <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
-              {{/each}}
-            {{/rsa-form-select}}
-          </li>
-          <li>
-            {{#rsa-content-definition label=(t 'incident.details.sourceIp') class='rsa-incident-detail-header__source-ip'}}
-              <label>{{if model.alerts.firstObject.alert.groupby_source_ip model.alerts.firstObject.alert.groupby_source_ip '-'}}</label>
-            {{/rsa-content-definition}}
-          </li>
-          <li>
-            {{#rsa-content-definition label=(t 'incident.details.destinationIp') class='rsa-incident-detail-header__destination-ip'}}
-              <label>{{if model.alerts.firstObject.alert.groupby_destination_ip model.alerts.firstObject.alert.groupby_destination_ip '-'}}</label>
-            {{/rsa-content-definition}}
-          </li>
-        </ul>
-        <footer class='rsa-incident-detail-header__details__footer'>
-          {{t 'incident.details.createdOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__created' timestamp=model.created}}{{rsa-content-datetime class='rsa-incident-detail-header__created_time-ago' timestamp=model.created asTimeAgo=true}} |
-          {{t 'incident.details.updatedOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated' timestamp=model.lastUpdated}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated_time-ago' timestamp=model.lastUpdated asTimeAgo=true}}
-        </footer>
-      </article>
-      <aside class="rsa-incident-detail-header__buttons">
-        {{#rsa-form-button style="danger" isFullWidth=true isDisabled=incidentIsClosed class='rsa-incident-detail-header__buttons__close-incident' click=(action 'closeIncidentBtn')}}
-          {{t 'incident.details.closeIncident'}}
-        {{/rsa-form-button}}
-        {{#rsa-form-button dropdown='standard' isFullWidth=true class='rsa-incident-detail-header__buttons__others'}}
-          {{t 'incident.details.escalateIncident'}}
-        {{/rsa-form-button}}
-      </aside>
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+  <vbox xs="11" class='rsa-incident-detail-header__col-details'>
+    <article class='rsa-incident-detail-header__details'>
+      <header class='rsa-incident-detail-header__details__title'>
+        <label class='rsa-incident-detail-header__id'>{{model.id}}:&nbsp;</label>
+        {{rsa-form-input class='rsa-incident-detail-header__name' value=incidentName isReadOnly=incidentIsClosed focusOut=(action 'nameLostFocus')}}
+      </header>
+      <ul class='rsa-incident-detail-header__details__body'>
+        <li>
+          {{#rsa-form-select label=(t 'incident.fields.priority') class='rsa-incident-detail-header__priority' values=selectedPriority isDisabled=incidentIsClosed}}
+            {{#each priorityList as |priority i|}}
+              <option value="{{i}}">{{t (concat 'incident.priority.' i) }}</option>
+            {{/each}}
+          {{/rsa-form-select}}
+        </li>
+        <li>
+          {{#rsa-content-definition label=(t 'incident.fields.alertCount') class='rsa-incident-detail-header__alerts'}}
+            <label>{{model.alertCount}}</label>
+          {{/rsa-content-definition}}
+        </li>
+        <li>
+          {{#rsa-content-definition label=(t 'incident.fields.events') class='rsa-incident-detail-header__events'}}
+            <label>{{if model.alerts.firstObject.alert.numEvents model.alerts.firstObject.alert.numEvents '0'}}</label>
+          {{/rsa-content-definition}}
+        </li>
+        <li>
+          {{#rsa-content-definition label=(t 'incident.fields.sources') class='rsa-incident-detail-header__sources'}}
+            {{#each incidentSources as |source|}}
+              {{rsa-content-label class="rsa-incident-tile-source" label=source}}
+            {{/each}}
+          {{/rsa-content-definition}}
+        </li>
+        <li>
+          {{#rsa-form-select label=(t 'incident.fields.assignee') class='rsa-incident-detail-header__assignee' values=selectedAssignee isDisabled=incidentIsClosed}}
+            <option value=-1>{{t 'incident.assignee.none'}}</option>
+            {{#each users as |user|}}
+              <option value={{user.id}}>{{user.firstName}}</option>
+            {{/each}}
+          {{/rsa-form-select}}
+        </li>
+        <li>
+          {{#rsa-form-select class='rsa-incident-detail-header__status' label=(t "incident.fields.status") values=selectedStatus}}
+            {{#each statusList as |status i|}}
+              <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
+            {{/each}}
+          {{/rsa-form-select}}
+        </li>
+        <li>
+          {{#rsa-content-definition label=(t 'incident.details.sourceIp') class='rsa-incident-detail-header__source-ip'}}
+            <label>{{if model.alerts.firstObject.alert.groupby_source_ip model.alerts.firstObject.alert.groupby_source_ip '-'}}</label>
+          {{/rsa-content-definition}}
+        </li>
+        <li>
+          {{#rsa-content-definition label=(t 'incident.details.destinationIp') class='rsa-incident-detail-header__destination-ip'}}
+            <label>{{if model.alerts.firstObject.alert.groupby_destination_ip model.alerts.firstObject.alert.groupby_destination_ip '-'}}</label>
+          {{/rsa-content-definition}}
+        </li>
+      </ul>
+      <footer class='rsa-incident-detail-header__details__footer'>
+        {{t 'incident.details.createdOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__created' timestamp=model.created}}{{rsa-content-datetime class='rsa-incident-detail-header__created_time-ago' timestamp=model.created asTimeAgo=true}} |
+        {{t 'incident.details.updatedOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated' timestamp=model.lastUpdated}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated_time-ago' timestamp=model.lastUpdated asTimeAgo=true}}
+      </footer>
+    </article>
+    <aside class="rsa-incident-detail-header__buttons">
+      {{#rsa-form-button style="danger" isFullWidth=true isDisabled=incidentIsClosed class='rsa-incident-detail-header__buttons__close-incident' click=(action 'closeIncidentBtn')}}
+        {{t 'incident.details.closeIncident'}}
+      {{/rsa-form-button}}
+      {{#rsa-form-button dropdown='standard' isFullWidth=true class='rsa-incident-detail-header__buttons__others'}}
+        {{t 'incident.details.escalateIncident'}}
+      {{/rsa-form-button}}
+    </aside>
+  </vbox>
+</hbox>

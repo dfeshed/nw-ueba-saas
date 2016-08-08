@@ -1,44 +1,39 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category}}
-        {{#spec-member}}
-          {{#rsa-application-modal eventId='example'}}
-            <div class='modal-trigger'>
-              Modal Trigger
-            </div>
-            
-            <div class='modal-content'>
-              Modal Content
-            </div>
-          {{/rsa-application-modal}}
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member}}
+        {{#rsa-application-modal eventId='example'}}
+          <div class='modal-trigger'>
+            Modal Trigger
+          </div>
 
-          <code>
+          <div class='modal-content'>
+            Modal Content
+          </div>
+        {{/rsa-application-modal}}
+
+        <code>
+          <div>
+            &#123;{#rsa-application-modal eventId='example'}}
             <div>
-              &#123;{#rsa-application-modal eventId='example'}}
-              <div>
-                &lt;div class='modal-trigger'>
-                  Modal Trigger
-                &lt;/div>                
-              </div>
-              
-              <div>
-                &lt;div class='modal-content'>
-                  Modal Content
-                &lt;/div>                
-              </div>
-              &#123;{/rsa-application-modal}}
+              &lt;div class='modal-trigger'>
+                Modal Trigger
+              &lt;/div>
             </div>
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
 
+            <div>
+              &lt;div class='modal-content'>
+                Modal Content
+              &lt;/div>
+            </div>
+            &#123;{/rsa-application-modal}}
+          </div>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

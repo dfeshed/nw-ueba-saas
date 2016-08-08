@@ -1,27 +1,23 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category title="Examples"}}
-        {{#spec-member title="Without Title"}}
-          {{rsa-routable-login}}
-          <code>
-            &#123;{rsa-routable-login}}
-          </code>
-        {{/spec-member}}
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category title="Examples"}}
+      {{#spec-member title="Without Title"}}
+        {{rsa-routable-login}}
+        <code>
+          &#123;{rsa-routable-login}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="With Title"}}
-          {{rsa-routable-login title='Style Guide Demo'}}
-          <code>
-            &#123;{rsa-routable-login title='Style Guide Demo'}}
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+      {{#spec-member title="With Title"}}
+        {{rsa-routable-login title='Style Guide Demo'}}
+        <code>
+          &#123;{rsa-routable-login title='Style Guide Demo'}}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

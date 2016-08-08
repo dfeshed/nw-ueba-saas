@@ -54,8 +54,8 @@ export default Ember$.extend({}, BaseSelectors, {
         }
       },
       'list': {
-        'table': 'div[class=rsa-respond-list]',
-        'columns': 'div[class^=rsa-respond-list__grid__header] div[class*=rsa-grid-column]'
+        'table': '.rsa-respond-list',
+        'columns': '.rsa-respond-list__grid__header vbox'
       },
       'toggleViewHeader': 'header[class$=rsa-respond-index-header]',
       'listViewBtn': 'div[class^=rsa-respond-index-header__list-btn]',

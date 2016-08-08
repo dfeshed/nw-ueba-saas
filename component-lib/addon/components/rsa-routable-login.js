@@ -32,7 +32,9 @@ export default Component.extend({
 
   layout,
 
-  classNames: ['rsa-grid', 'rsa-login'],
+  tagName: 'centered',
+
+  classNames: ['rsa-login'],
 
   title: null,
 

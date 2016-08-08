@@ -190,7 +190,7 @@ test('The tile component is rendered properly.', function(assert) {
 
   assert.equal(this.$('.rsa-update-indicator__dot').length, 1, 'The rsa-update-indicator__dot element was not found.');
   assert.equal(this.$('.rsa-incident-tile').length, 1, 'Testing to see if a rsa-incident-tile element exists.');
-  assert.equal(this.$('.rsa-incident-tile-section').length, 1, 'Testing to see if a rsa-incident-tile-section element exists.');
+  assert.equal(this.$('.rsa-incident-tile-section').length, 3, 'Testing to see if a rsa-incident-tile-section element exists.');
   assert.equal(this.$('.rsa-incident-tile-id').length, 1, 'Testing to see if a rsa-incident-id elements exist.');
   assert.ok(this.$('.rsa-incident-tile-header').length, 'Incident tile header not found in DOM');
   assert.ok((this.$('.rsa-incident-tile-score').text().indexOf(testInc.riskScore) >= 0), 'Unexpected incident risk score');

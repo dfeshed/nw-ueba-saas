@@ -42,11 +42,11 @@
 
   &__grid {
 
-    .rsa-grid-row {
+    hbox {
       border-bottom: 1px solid rsa-color(black);
     }
 
-    .rsa-grid-column {
+    hbox vbox {
       background-color: transparent;
       padding: rsa-whitespace(less);
       white-space: nowrap;

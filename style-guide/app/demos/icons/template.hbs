@@ -1,51 +1,46 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category title="Styles"}}
-        {{#spec-member title="Filled"}}
-          {{rsa-icon name='account-circle-1'}}
-          <code>
-            &#123;{rsa-icon name='account-circle-1'}}
-          </code>
-        {{/spec-member}}
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category title="Styles"}}
+      {{#spec-member title="Filled"}}
+        {{rsa-icon name='account-circle-1'}}
+        <code>
+          &#123;{rsa-icon name='account-circle-1'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Lined"}}
-          {{rsa-icon style='lined' name='account-circle-1'}}
-          <code>
-            &#123;{rsa-icon style='lined' name='account-circle-1'}}
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
+      {{#spec-member title="Lined"}}
+        {{rsa-icon style='lined' name='account-circle-1'}}
+        <code>
+          &#123;{rsa-icon style='lined' name='account-circle-1'}}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
 
-      {{#spec-category title="Sizes"}}
-        {{#spec-member title="Large"}}
-          {{rsa-icon size='large' name='account-circle-1'}}
-          <code>
-            &#123;{rsa-icon size='large' name='account-circle-1'}}
-          </code>
-        {{/spec-member}}
+    {{#spec-category title="Sizes"}}
+      {{#spec-member title="Large"}}
+        {{rsa-icon size='large' name='account-circle-1'}}
+        <code>
+          &#123;{rsa-icon size='large' name='account-circle-1'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Larger"}}
-          {{rsa-icon size='larger' name='account-circle-1'}}
-          <code>
-            &#123;{rsa-icon size='larger' name='account-circle-1'}}
-          </code>
-        {{/spec-member}}
+      {{#spec-member title="Larger"}}
+        {{rsa-icon size='larger' name='account-circle-1'}}
+        <code>
+          &#123;{rsa-icon size='larger' name='account-circle-1'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Largest"}}
-          {{rsa-icon size='largest' name='account-circle-1'}}
-          <code>
-            &#123;{rsa-icon size='largest' name='account-circle-1'}}
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}      
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
-
+      {{#spec-member title="Largest"}}
+        {{rsa-icon size='largest' name='account-circle-1'}}
+        <code>
+          &#123;{rsa-icon size='largest' name='account-circle-1'}}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

@@ -1,81 +1,74 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category}}
-        {{#spec-member title="Opaque"}}
-          <div class='sg-demo-opacity logo'>
-            {{rsa-logo}}
-          </div>
-        
-          <div class='sg-demo-opacity overlay opaque'>
-          </div>
-        
-          <code>
-            opacity: $rsa-opaque;
-          </code>
-        {{/spec-member}}
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Opaque"}}
+        <div class='sg-demo-opacity logo'>
+          {{rsa-logo}}
+        </div>
 
-        {{#spec-member title="Nearly Opaque"}}
-          <div class='sg-demo-opacity logo'>
-            {{rsa-logo}}
-          </div>
-          
-          <div class='sg-demo-opacity overlay nearly-opaque'>
-          </div>
+        <div class='sg-demo-opacity overlay opaque'>
+        </div>
 
-          <code>
-            opacity: $rsa-nearly-opaque;
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member title="Translucent"}}
-          <div class='sg-demo-opacity logo'>
-            {{rsa-logo}}
-          </div>
-          
-          <div class='sg-demo-opacity overlay translucent'>
-          </div>
-        
-          <code>
-            opacity: $rsa-translucent;
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member title="Nearly Transparent"}}
-          <div class='sg-demo-opacity logo'>
-            {{rsa-logo}}
-          </div>
-          
-          <div class='sg-demo-opacity overlay nearly-transparent'>
-          </div>
-        
-          <code>
-            opacity: $rsa-nearly-transparent;
-          </code>
-        {{/spec-member}}
-                
-        {{#spec-member title="Transparent"}}
-          <div class='sg-demo-opacity logo'>
-            {{rsa-logo}}
-          </div>
-          
-          <div class='sg-demo-opacity overlay transparent'>
-          </div>
-        
-          <code>
-            opacity: $rsa-transparent;
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+        <code>
+          opacity: $rsa-opaque;
+        </code>
+      {{/spec-member}}
 
+      {{#spec-member title="Nearly Opaque"}}
+        <div class='sg-demo-opacity logo'>
+          {{rsa-logo}}
+        </div>
 
+        <div class='sg-demo-opacity overlay nearly-opaque'>
+        </div>
 
+        <code>
+          opacity: $rsa-nearly-opaque;
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Translucent"}}
+        <div class='sg-demo-opacity logo'>
+          {{rsa-logo}}
+        </div>
+
+        <div class='sg-demo-opacity overlay translucent'>
+        </div>
+
+        <code>
+          opacity: $rsa-translucent;
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Nearly Transparent"}}
+        <div class='sg-demo-opacity logo'>
+          {{rsa-logo}}
+        </div>
+
+        <div class='sg-demo-opacity overlay nearly-transparent'>
+        </div>
+
+        <code>
+          opacity: $rsa-nearly-transparent;
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Transparent"}}
+        <div class='sg-demo-opacity logo'>
+          {{rsa-logo}}
+        </div>
+
+        <div class='sg-demo-opacity overlay transparent'>
+        </div>
+
+        <code>
+          opacity: $rsa-transparent;
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

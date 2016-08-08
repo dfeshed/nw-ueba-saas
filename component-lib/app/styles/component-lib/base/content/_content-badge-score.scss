@@ -1,10 +1,11 @@
 .rsa-content-badge-score {
   position: relative;
   overflow: hidden;
+  padding: rsa-whitespace(less);
 
   svg {
     margin: 0;
-    
+
     circle {
       stroke: $contentBadgeScoreCircleColor;
       stroke-width: 2;
@@ -19,46 +20,46 @@
     top: 50%;
     transform: translateY(-60%);
     text-align: center;
-    
+
     .score, .label {
       color: $contentBadgeScoreLabelColor;
     }
-    
+
     .score {
       @include rsa-font(default, light);
       font-size: 3em;
     }
-    
+
     .label {
       @include rsa-font(header, small);
       width: 80%;
       margin: 0 auto;
     }
   }
-  
+
   &.is-small {
     .score {
-      font-size: 2rem;      
-    }    
+      font-size: 2rem;
+    }
   }
 
   &.is-large {
     .score {
       font-size: 4rem;
-    }    
+    }
   }
 
   &.is-larger {
     .score {
       font-size: 6rem;
-      
-    }    
+
+    }
   }
 
   &.is-largest {
     .score {
       font-size: 8rem;
-    }    
+    }
   }
 
   &.hide-label {
@@ -67,7 +68,7 @@
     }
   }
 
-  :not(&.is-inline) {
+  &:not(.is-inline) {
     &.is-danger {
       background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
     }

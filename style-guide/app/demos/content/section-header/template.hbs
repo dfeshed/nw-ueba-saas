@@ -1,40 +1,17 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category}}
-        {{#spec-member}}
-          {{#rsa-content-section-header label='Section Heading'}}
-            Header Label
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member}}
+        {{#rsa-content-section-header label='Section Heading'}}Content{{/rsa-content-section-header}}
 
-            <div class="controls">
-              {{rsa-icon name="close"}}
-            </div>
-          {{/rsa-content-section-header}}
-
-          <code>
-            <div>
-              &#123;{#rsa-content-section-header label='Section Heading'}}
-              <div>
-                Header Label
-              </div>
-              <div>
-                &lt;div class="controls">
-                <div>
-                  &#123;{rsa-icon name="close"}}
-                </div>
-                &lt;/div>
-              </div>
-              &#123;{/rsa-content-section-header}}
-            </div>
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+        <code>
+          &#123;{#rsa-content-section-header label='Section Heading'}}Content&#123;{/rsa-content-section-header}}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

@@ -18,10 +18,10 @@
   white-space: nowrap;
 }
 
-/* 
- * Styles for rsa-content-card component 
- * Can be used stand-alone, or with rsa-content-card-group, rsa-content-card-row, etc 
- * Implementations will likely want to set min-width/max-width as needed 
+/*
+ * Styles for rsa-content-card component
+ * Can be used stand-alone, or with rsa-content-card-group, rsa-content-card-row, etc
+ * Implementations will likely want to set min-width/max-width as needed
  * Implementations will likely want to set section { min-height/max-height } as needed */
 .rsa-content-card {
   display: inline-block;
@@ -31,27 +31,7 @@
   vertical-align: top;
   white-space: normal;
   border-color: $contentCardBorderColor;
-  background-color: $contentCardBackgroundColor; 
+  background-color: $contentCardBackgroundColor;
 
   $inline-whitespace-adj: .225rem;
-  @include to(smallest) {
-    width: calc(100% - #{rsa-whitespace() * 2} - #{$inline-whitespace-adj});
-  }
-
-  @include at(smaller) {
-    width: calc(50% - #{rsa-whitespace() * 2} - #{$inline-whitespace-adj});
-  }
-
-  @include at(small) {
-    width: calc(33.333% - #{rsa-whitespace() * 2} - #{$inline-whitespace-adj});
-  }
-
-  @include between(base, large) {
-    width: calc(25% - #{rsa-whitespace() * 2} - #{$inline-whitespace-adj});
-  }
-
-  @include from(larger) {
-    width: calc(20% - #{rsa-whitespace() * 2} - #{$inline-whitespace-adj});
-  }
-
 }

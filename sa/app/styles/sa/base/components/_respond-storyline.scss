@@ -13,9 +13,6 @@
   }
   &-overview {
     border-right: 1px solid rsa-color(gray);
-    height: 100%;
-    margin-right: 10px;
-    padding-bottom: 80%;
   }
 }
 .rsa-response-storyline {
@@ -49,7 +46,6 @@
     &__timeSection{
       text-align: center;
       @include rsa-font(header, small);
-      margin-right: rsa-whitespace();
     }
     &__timedivider {
       color: #007FB6;

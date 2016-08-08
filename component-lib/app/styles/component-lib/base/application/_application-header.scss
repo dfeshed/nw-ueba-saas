@@ -20,7 +20,7 @@
 
     &.active {
       color: $applicationHeaderLinkActiveColor;
-      
+
       &:after {
         content: '';
         display: block;
@@ -28,11 +28,11 @@
         overflow: hidden;
         bottom: 0;
         left: calc(50% - (#{$applicationHeaderLinkActiveArrowSize} / 2));
-        width: 0; 
-        height: 0; 
+        width: 0;
+        height: 0;
         margin: 0 auto;
         border-left: $applicationHeaderLinkActiveArrowSize solid transparent;
-        border-right: $applicationHeaderLinkActiveArrowSize solid transparent;        
+        border-right: $applicationHeaderLinkActiveArrowSize solid transparent;
         border-bottom: $applicationHeaderLinkActiveArrowSize solid $applicationHeaderLinkActiveArrowColor;
       }
     }
@@ -43,18 +43,17 @@
     right: 0;
     top: 1px;
     line-height: $applicationHeaderHeight;
-    
+
     .rsa-form-button {
       border-width: 0;
-      
+
       .expand {
         left: 0;
       }
     }
-    
+
     ul {
       margin-right: rsa-whitespace();
     }
-  }  
+  }
 }
-

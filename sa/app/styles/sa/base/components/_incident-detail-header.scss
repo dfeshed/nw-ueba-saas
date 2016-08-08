@@ -120,16 +120,14 @@
   }
 }
 
-@include from(base) {
-  .rsa-incident-detail-header__details__body {
-    justify-content: flex-start;
+.rsa-incident-detail-header__details__body {
+  justify-content: flex-start;
 
-    li {
-      margin: 0 rsa-whitespace(base);
+  li {
+    margin: 0 rsa-whitespace(base);
 
-      &:first-child {
-        margin-left: 0;
-      }
+    &:first-child {
+      margin-left: 0;
     }
   }
 }

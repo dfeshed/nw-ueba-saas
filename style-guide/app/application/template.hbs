@@ -3,19 +3,17 @@
 {{rsa-application-header}}
 
 {{#rsa-application-content}}
-  {{#rsa-grid}}
-    {{#rsa-grid-row}}
-      
-      {{#rsa-grid-column class="style-guide-nav" span=3 isScrollable=true}}
+  <hbox>
+    <vbox xs="3" class="style-guide-nav">
+      <div class="scroll-box">
         {{app-nav}}
-      {{/rsa-grid-column}}
-            
-      {{#rsa-grid-column class="style-guide-content" span=9}}
-        {{outlet}}
-      {{/rsa-grid-column}}  
-      
-    {{/rsa-grid-row}}
-  {{/rsa-grid}}
+      </div>
+    </vbox>
+
+    <vbox xs="9" class="style-guide-content">
+      {{outlet}}
+    </vbox>
+  </hbox>
 {{/rsa-application-content}}
 
 {{rsa-application-footer title="Style Guide"}}

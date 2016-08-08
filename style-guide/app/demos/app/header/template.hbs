@@ -1,41 +1,34 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category}}
-        {{#spec-member title="Without Navigation"}}
-          <code>
-            &#123;{rsa-application-header}}
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member title="With Navigation"}}
-          <code>
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Without Navigation"}}
+        <code>
+          &#123;{rsa-application-header}}
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="With Navigation"}}
+        <code>
+          <div>
+            &#123;{#rsa-application-header}}
             <div>
-              &#123;{#rsa-application-header}}
-              <div>
-                &#123;{#link-to "routeA"}}
-                  Route A
-                &#123;{/link-to}}
-              </div>
-              <div>
-                &#123;{#link-to "routeB"}}
-                  Route B
-                &#123;{/link-to}}
-              </div>
-              &#123;{/rsa-application-header}}
+              &#123;{#link-to "routeA"}}
+                Route A
+              &#123;{/link-to}}
             </div>
-          </code>        
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
-
-
-
+            <div>
+              &#123;{#link-to "routeB"}}
+                Route B
+              &#123;{/link-to}}
+            </div>
+            &#123;{/rsa-application-header}}
+          </div>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

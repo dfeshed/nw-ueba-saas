@@ -7,7 +7,7 @@
 
 $rsa-whitespace: (
   least: .25rem,
-  less: .6rem,
+  less: .5rem,
   base: 1rem,
   more: 2rem,
   most: 3.5rem
@@ -17,13 +17,13 @@ $rsa-whitespace: (
 
 /* rsa-whitespace */
 
-/* 
+/*
  * Space: [ least,
  *          less,
  *          base,
  *          more,
  *          most ]
- * 
+ *
  * Examples: @include rsa-whitespace()
  *           @include rsa-whitespace(most)
  */
@@ -36,13 +36,13 @@ $rsa-whitespace: (
 
 /* rsa-whitespace-split */
 
-/* 
+/*
  * Space: [ least,
  *          less,
  *          base,
  *          more,
  *          most ]
- * 
+ *
  * Examples: @include rsa-whitespace-split(right)
  *           @include rsa-whitespace-split(bottom, most)
  */

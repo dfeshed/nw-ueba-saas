@@ -1,80 +1,76 @@
-{{#rsa-grid-row}}
-  {{#rsa-grid-column span=12 centerChild=true}}
-    <div class="login-wrapper {{if hasError 'has-error'}}">
-      <header>
-        {{rsa-logo title=(t 'application.title')}}
-      </header>
-            
-      {{#if willRequestPasswordReset}}
-        {{#if didRequestPasswordReset}}
-          <div class="thank-you">
-            <h3>{{t 'login.thankYou.title'}}</h3>
-            <p>{{t 'login.thankYou.description'}}</p>
-            
-            {{#rsa-form-button 
-              style="primary"              
-              isFullWidth=true 
-              click=(action 'resetComplete')
-              class="js-test-thank-you-submit-button"}}
-              {{t 'login.thankYou.back'}}
-            {{/rsa-form-button}}
-          </div>        
-        {{else}}
-          <form class="lost-password" autocomplete="off" {{action "requestPasswordReset" on="submit"}}>
-            <h3>{{t 'login.lostPassword.title'}}</h3>            
-            <p>{{t 'login.lostPassword.description'}}</p>
-            
-            {{rsa-form-input 
-              class="js-test-lost-password-username-input"
-              label=(t 'login.username')
-              isError=hasError
-              errorMessage=(t errorMessage)
-              value=username}}
-                  
-            {{#rsa-form-button click=(action 'resetComplete') class="js-test-lost-password-cancel-button"}}
-              {{t 'forms.cancel'}}
-            {{/rsa-form-button}}
-            
-            {{#rsa-form-button 
-              type="submit"
-              class="js-test-lost-password-submit-button"
-              isDisabled=isResetDisabled
-              style="primary"}}
-              {{t 'forms.submit'}}
-            {{/rsa-form-button}}
-          </form>
-        {{/if}}
-      {{else}}
-        <form class="login" autocomplete="off" {{action "authenticate" on="submit"}}>
-          {{rsa-form-input 
-            class="js-test-login-username-input"
-            label=(t 'login.username')
-            isError=hasError
-            errorMessage=(t errorMessage)
-            value=username}}
-        
-          {{rsa-form-input 
-            class="js-test-login-password-input"
-            label=(t 'login.password')
-            isError=hasError
-            value=password}}
-        
-          {{#rsa-form-button 
-            type="submit"
-            class="js-test-login-submit-button"
-            isDisabled=isLoginDisabled
-            isFullWidth=true
-            style="primary"}}
-            {{t "login.login"}}
-          {{/rsa-form-button}}
-          
-          <a class="lost-password js-test-login-lost-password-link" {{action 'initiatePasswordReset'}}>
-            {{t 'login.lostPasswordLink'}}
-          </a>
-          
-          <span class="version">{{t 'application.version'}}</span>
-        </form>      
-      {{/if}}      
-    </div>
-  {{/rsa-grid-column}}
-{{/rsa-grid-row}}
+<div class="login-wrapper {{if hasError 'has-error'}}">
+  <header>
+    {{rsa-logo title=(t 'application.title')}}
+  </header>
+
+  {{#if willRequestPasswordReset}}
+    {{#if didRequestPasswordReset}}
+      <div class="thank-you">
+        <h3>{{t 'login.thankYou.title'}}</h3>
+        <p>{{t 'login.thankYou.description'}}</p>
+
+        {{#rsa-form-button
+          style="primary"
+          isFullWidth=true
+          click=(action 'resetComplete')
+          class="js-test-thank-you-submit-button"}}
+          {{t 'login.thankYou.back'}}
+        {{/rsa-form-button}}
+      </div>
+    {{else}}
+      <form class="lost-password" autocomplete="off" {{action "requestPasswordReset" on="submit"}}>
+        <h3>{{t 'login.lostPassword.title'}}</h3>
+        <p>{{t 'login.lostPassword.description'}}</p>
+
+        {{rsa-form-input
+          class="js-test-lost-password-username-input"
+          label=(t 'login.username')
+          isError=hasError
+          errorMessage=(t errorMessage)
+          value=username}}
+
+        {{#rsa-form-button click=(action 'resetComplete') class="js-test-lost-password-cancel-button"}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+
+        {{#rsa-form-button
+          type="submit"
+          class="js-test-lost-password-submit-button"
+          isDisabled=isResetDisabled
+          style="primary"}}
+          {{t 'forms.submit'}}
+        {{/rsa-form-button}}
+      </form>
+    {{/if}}
+  {{else}}
+    <form class="login" autocomplete="off" {{action "authenticate" on="submit"}}>
+      {{rsa-form-input
+        class="js-test-login-username-input"
+        label=(t 'login.username')
+        isError=hasError
+        errorMessage=(t errorMessage)
+        value=username}}
+
+      {{rsa-form-input
+        class="js-test-login-password-input"
+        label=(t 'login.password')
+        isError=hasError
+        value=password}}
+
+      {{#rsa-form-button
+        type="submit"
+        class="js-test-login-submit-button"
+        isDisabled=isLoginDisabled
+        isFullWidth=true
+        style="primary"}}
+        {{t "login.login"}}
+      {{/rsa-form-button}}
+
+      <a class="lost-password js-test-login-lost-password-link" {{action 'initiatePasswordReset'}}>
+        {{t 'login.lostPasswordLink'}}
+      </a>
+
+      <span class="version">{{t 'application.version'}}</span>
+    </form>
+  {{/if}}
+</div>

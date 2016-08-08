@@ -1,54 +1,50 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category}}
-        {{#spec-member}}
-          <div class='sg-demo-layer below'>
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member}}
+        <div class='sg-demo-layer below'>
+          <code>
+            @include rsa-layer(below)
+          </code>
+
+          <div class='sg-demo-layer base'>
             <code>
-              @include rsa-layer(below)
+              @include rsa-layer()
             </code>
-            
-            <div class='sg-demo-layer base'>
+
+            <div class='sg-demo-layer panels'>
               <code>
-                @include rsa-layer()
+                @include rsa-layer(panels)
               </code>
-              
-              <div class='sg-demo-layer panels'>
+
+              <div class='sg-demo-layer controls'>
                 <code>
-                  @include rsa-layer(panels)
+                  @include rsa-layer(controls)
                 </code>
-                
-                <div class='sg-demo-layer controls'>
+
+                <div class='sg-demo-layer overlay'>
                   <code>
-                    @include rsa-layer(controls)
+                    @include rsa-layer(overlay)
                   </code>
-                  
-                  <div class='sg-demo-layer overlay'>
+
+                  <div class='sg-demo-layer modals'>
                     <code>
-                      @include rsa-layer(overlay)
+                      @include rsa-layer(modals)
                     </code>
-                    
-                    <div class='sg-demo-layer modals'>
+
+                    <div class='sg-demo-layer tooltips'>
                       <code>
-                        @include rsa-layer(modals)
+                        @include rsa-layer(tooltips)
                       </code>
-                      
-                      <div class='sg-demo-layer tooltips'>
+
+                      <div class='sg-demo-layer above'>
                         <code>
-                          @include rsa-layer(tooltips)
+                          @include rsa-layer(above)
                         </code>
-                        
-                        <div class='sg-demo-layer above'>
-                          <code>
-                            @include rsa-layer(above)
-                          </code>
-                        </div>
                       </div>
                     </div>
                   </div>
@@ -56,11 +52,8 @@
               </div>
             </div>
           </div>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
-
-
-
+        </div>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

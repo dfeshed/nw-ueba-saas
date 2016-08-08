@@ -1,113 +1,99 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category title="Styles"}}
-        {{#spec-member title="Default"}}
-          {{rsa-content-label label='label'}}
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category title="Styles"}}
+      {{#spec-member title="Default"}}
+        {{rsa-content-label label='label'}}
 
-          <code>
-            &#123;{rsa-content-label label='label'}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member
-          title="With Remove Option"
-          subtitle="Adding a click handler and action adds the close icon for removing. What it means to remove a Label would be defined by the action called in the consumer."}}
-          {{rsa-content-label label='label' click=(action 'removeLabel')}}
+      {{#spec-member title="Disabled"}}
+        {{rsa-content-label label='label' isDisabled=true}}
 
-          <code>
-            &#123;{rsa-content-label label='label' click=(action 'removeLabel')}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label' isDisabled=true}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Disabled"}}
-          {{rsa-content-label label='label' isDisabled=true}}
+      {{#spec-member title="With Icon"}}
+        {{#rsa-content-label label='label'}}{{rsa-icon name='account-circle-1'}}{{/rsa-content-label}}
 
-          <code>
-            &#123;{rsa-content-label label='label' isDisabled=true}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{#rsa-content-label label='label'}}&#123;{rsa-icon name='account-circle-1'}}&#123;{/rsa-content-label}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="With Icon"}}
-          {{#rsa-content-label label='label'}}{{rsa-icon name='account-circle-1'}}{{/rsa-content-label}}
+      {{#spec-member title="Low"}}
+        {{rsa-content-label label='label' style='low'}}
 
-          <code>
-            &#123;{#rsa-content-label label='label'}}&#123;{rsa-icon name='account-circle-1'}}&#123;{/rsa-content-label}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label' style='low'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Low"}}
-          {{rsa-content-label label='label' style='low'}}
+      {{#spec-member title="Medium"}}
+        {{rsa-content-label label='label' style='medium'}}
 
-          <code>
-            &#123;{rsa-content-label label='label' style='low'}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label' style='medium'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Medium"}}
-          {{rsa-content-label label='label' style='medium'}}
+      {{#spec-member title="High"}}
+        {{rsa-content-label label='label' style='high'}}
 
-          <code>
-            &#123;{rsa-content-label label='label' style='medium'}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label' style='high'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="High"}}
-          {{rsa-content-label label='label' style='high'}}
+      {{#spec-member title="Danger"}}
+        {{rsa-content-label label='label' style='danger'}}
 
-          <code>
-            &#123;{rsa-content-label label='label' style='high'}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label' style='danger'}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Danger"}}
-          {{rsa-content-label label='label' style='danger'}}
+      {{#spec-member title="Inverted"}}
+        {{rsa-content-label label='label' isInverted=true }}
 
-          <code>
-            &#123;{rsa-content-label label='label' style='danger'}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label' isInverted=true }}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Inverted"}}
-          {{rsa-content-label label='label' isInverted=true }}
+      {{#spec-member title="Inverted and Danger"}}
+        {{rsa-content-label label='label' isInverted=true style='danger'}}
 
-          <code>
-            &#123;{rsa-content-label label='label' isInverted=true }}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-label label='label' isInverted=true style='danger'}}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
 
-        {{#spec-member title="Inverted and Danger"}}
-          {{rsa-content-label label='label' isInverted=true style='danger'}}
+    {{#spec-category title="Sizes"}}
+      {{#spec-member title="Medium"}}
+        {{rsa-content-label label='label' size='medium'}}
 
-          <code>
-            &#123;{rsa-content-label label='label' isInverted=true style='danger'}}
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
+        <code>
+          &#123;{rsa-content-label label='label' size='medium'}}
+        </code>
+      {{/spec-member}}
 
-      {{#spec-category title="Sizes"}}
-        {{#spec-member title="Medium"}}
-          {{rsa-content-label label='label' size='medium'}}
+      {{#spec-member title="Large"}}
+        {{rsa-content-label label='label' size='large'}}
 
-          <code>
-            &#123;{rsa-content-label label='label' size='medium'}}
-          </code>
-        {{/spec-member}}
-
-        {{#spec-member title="Large"}}
-          {{rsa-content-label label='label' size='large'}}
-
-          <code>
-            &#123;{rsa-content-label label='label' size='large'}}
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+        <code>
+          &#123;{rsa-content-label label='label' size='large'}}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

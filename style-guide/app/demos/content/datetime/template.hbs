@@ -1,53 +1,49 @@
-{{#rsa-grid}}
-  {{#rsa-grid-row collapseHeight=true}}
-    {{#rsa-grid-column span=12}}
-      {{spec-masthead model=model}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
 
-  {{#rsa-grid-row}}
-    {{#rsa-grid-column span=12 isScrollable=true}}
-      {{#spec-category}}
-        {{#spec-member title="Default"}}
-          {{rsa-content-datetime timestamp=1464108661196}}
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Default"}}
+        {{rsa-content-datetime timestamp=1464108661196}}
 
-          <code>
-            &#123;{rsa-content-datetime timestamp=1464108661196}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-datetime timestamp=1464108661196}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Date Only"}}
-          {{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
+      {{#spec-member title="Date Only"}}
+        {{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
 
-          <code>
-            &#123;{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Time Only"}}
-          {{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
+      {{#spec-member title="Time Only"}}
+        {{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
 
-          <code>
-            &#123;{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
-          </code>
-        {{/spec-member}}
+        <code>
+          &#123;{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
+        </code>
+      {{/spec-member}}
 
-        {{#spec-member title="Time Ago"}}
-          {{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
-          
-          <code>
-            &#123;{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
-          </code>
-        {{/spec-member}}
-        
-        {{#spec-member title="Date and Time Ago"}}
-          {{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
-          
-          <code>
-            &#123;{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
-          </code>
-        {{/spec-member}}
-      {{/spec-category}}
-    {{/rsa-grid-column}}
-  {{/rsa-grid-row}}
-{{/rsa-grid}}
+      {{#spec-member title="Time Ago"}}
+        {{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
+
+        <code>
+          &#123;{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Date and Time Ago"}}
+        {{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
+
+        <code>
+          &#123;{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

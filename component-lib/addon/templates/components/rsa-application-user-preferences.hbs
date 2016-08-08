@@ -5,157 +5,163 @@
 {{/if}}
 
 <form {{action 'saveUserPreferences' on="submit"}}>
-  {{#rsa-grid}}
-    {{#if session.isAuthenticated}}
-      {{#rsa-grid-row fullWidth=true}}                
-        {{rsa-form-input 
+  {{#if session.isAuthenticated}}
+    <hbox>
+      <vbox xs="12">
+        {{rsa-form-input
           value=selectedFriendlyName
           label=(t 'userPreferences.friendlyName')
           class="js-test-friendly-username"}}
-      {{/rsa-grid-row}}
-    
-      {{#rsa-grid-row}}
-        {{#rsa-grid-column span=6}}
-          {{rsa-form-input 
-            type="password"
-            label=(t 'userPreferences.newPassword')
-            value=password
-            isError=hasPasswordError
-            class="js-test-new-password"
-            errorMessage=(t 'userPreferences.passwordMismatchError')}}
-        {{/rsa-grid-column}}
-        
-        {{#rsa-grid-column span=6}}
-          {{rsa-form-input 
-            type="password"
-            value=passwordConfirm
-            label=(t 'userPreferences.confirmPassword')
-            isError=hasPasswordError
-            class="js-test-confirm-password"
-            errorMessage=(t 'userPreferences.passwordMismatchError')}}
-        {{/rsa-grid-column}}
-      {{/rsa-grid-row}}  
-    {{/if}}
-    
-    {{#rsa-grid-row fullWidth=true}}            
-      {{#rsa-form-select 
+      </vbox>
+    </hbox>
+
+    <hbox>
+      <vbox xs="12">
+        {{rsa-form-input
+          type="password"
+          label=(t 'userPreferences.newPassword')
+          value=password
+          isError=hasPasswordError
+          class="js-test-new-password"
+          errorMessage=(t 'userPreferences.passwordMismatchError')}}
+      </vbox>
+    </hbox>
+
+    <hbox>
+      <vbox xs="12">
+        {{rsa-form-input
+          type="password"
+          value=passwordConfirm
+          label=(t 'userPreferences.confirmPassword')
+          isError=hasPasswordError
+          class="js-test-confirm-password"
+          errorMessage=(t 'userPreferences.passwordMismatchError')}}
+      </vbox>
+    </hbox>
+
+    <hbox>
+      <vbox xs="12">
+        {{#rsa-form-select
+          class="js-test-default-landing-page-select"
+          label=(t 'userPreferences.defaultLandingPage.label')
+          values=selectedLandingPage}}
+          {{#each landingPage.options as |option|}}
+            <option value={{option.key}}>{{t option.label}}</option>
+          {{/each}}
+        {{/rsa-form-select}}
+      </vbox>
+    </hbox>
+  {{/if}}
+
+  <hbox>
+    <vbox xs="6">
+      {{#rsa-form-select
         class="js-test-language-select"
-        label=(t 'userPreferences.language') 
+        label=(t 'userPreferences.language')
         values=selectedLocale}}
         {{#each locales as |locale|}}
           <option value={{locale}}>{{t (concat 'languages.' locale )}}</option>
         {{/each}}
       {{/rsa-form-select}}
-    {{/rsa-grid-row}}                
+    </vbox>
 
-    {{#rsa-grid-row fullWidth=true}}                
-      {{#rsa-form-select 
+    <vbox xs="6">
+      {{#rsa-form-select
         class="js-test-time-zone-select"
-        label=(t 'userPreferences.timeZone') 
+        label=(t 'userPreferences.timeZone')
         values=selectedTimeZone}}
         {{#each timezone.options as |timezone|}}
           <option value={{timezone}}>{{timezone}}</option>
         {{/each}}
       {{/rsa-form-select}}
-    {{/rsa-grid-row}}
+    </vbox>
+  </hbox>
 
-    {{#rsa-grid-row}}
-      {{#rsa-grid-column span=6}}
-        {{#rsa-form-select 
-          class="js-test-date-format-select"
-          label=(t 'userPreferences.dateFormat.label') 
-          values=selectedDateFormat}}
-          {{#each dateFormat.options as |option|}}
-            <option value={{option.key}}>{{t option.label}}</option>
-          {{/each}}                      
-        {{/rsa-form-select}}
-      {{/rsa-grid-column}}
-    
-      {{#rsa-grid-column span=6}}
-        <div class="rsa-form-radio-group time-format-radio-group">
-          <h4 class="rsa-form-radio-group-label">{{t 'userPreferences.timeFormat.label'}}</h4>
-          {{#each timeFormat.options as |option|}}
-            {{rsa-form-radio 
-              label=(t option.label) 
-              model=selectedTimeFormat 
-              value=option}}
-          {{/each}}
-        </div>
-      {{/rsa-grid-column}}
-    {{/rsa-grid-row}}
-    
-    {{#if session.isAuthenticated}}
-      {{#rsa-grid-row fullWidth=true}}                
-        {{#rsa-form-select 
-          class="js-test-default-landing-page-select"
-          label=(t 'userPreferences.defaultLandingPage.label') 
-          values=selectedLandingPage}}
-          {{#each landingPage.options as |option|}}
-            <option value={{option.key}}>{{t option.label}}</option>
-          {{/each}}                      
-        {{/rsa-form-select}}
-      {{/rsa-grid-row}}
-    {{/if}}   
-    
-    {{#rsa-grid-row}}
-      {{#rsa-grid-column span=6}}
-        <div class="rsa-form-radio-group theme-radio-group">
-          <h4 class="rsa-form-radio-group-label">{{t 'userPreferences.theme.label'}}</h4>
-          {{#each theme.options as |option|}}
-            {{rsa-form-radio 
-              label=(t option.label) 
-              model=selectedTheme 
-              value=option}}
-          {{/each}}
-        </div>
-      {{/rsa-grid-column}}
-    
-      {{#rsa-grid-column span=6}}
-        <div class="rsa-form-radio-group spacing-radio-group">
-          <h4 class="rsa-form-radio-group-label">{{t 'userPreferences.spacing.label'}}</h4>
-          {{#each spacing.options as |option|}}
-            {{rsa-form-radio 
-              label=(t option.label) 
-              model=selectedSpacing 
-              value=option}}
-          {{/each}}
-        </div>
-      {{/rsa-grid-column}}
-    {{/rsa-grid-row}}                
-    
-    {{#if session.isAuthenticated}}
-      {{#rsa-grid-row fullWidth=true}}
-        {{rsa-form-checkbox 
-          class="js-test-notifications-checkbox" 
-          label=(t 'userPreferences.notifications') 
+  <hbox>
+    <vbox xs="6">
+      {{#rsa-form-select
+        class="js-test-date-format-select"
+        label=(t 'userPreferences.dateFormat.label')
+        values=selectedDateFormat}}
+        {{#each dateFormat.options as |option|}}
+          <option value={{option.key}}>{{t option.label}}</option>
+        {{/each}}
+      {{/rsa-form-select}}
+    </vbox>
+
+    <vbox xs="6">
+      <div class="rsa-form-radio-group time-format-radio-group">
+        <h4 class="rsa-form-radio-group-label">{{t 'userPreferences.timeFormat.label'}}</h4>
+        {{#each timeFormat.options as |option|}}
+          {{rsa-form-radio
+            label=(t option.label)
+            model=selectedTimeFormat
+            value=option}}
+        {{/each}}
+      </div>
+    </vbox>
+  </hbox>
+
+  <hbox>
+    <vbox xs="6">
+      <div class="rsa-form-radio-group spacing-radio-group">
+        <h4 class="rsa-form-radio-group-label">{{t 'userPreferences.spacing.label'}}</h4>
+        {{#each spacing.options as |option|}}
+          {{rsa-form-radio
+            label=(t option.label)
+            model=selectedSpacing
+            value=option}}
+        {{/each}}
+      </div>
+    </vbox>
+
+    <vbox xs="6">
+      <div class="rsa-form-radio-group theme-radio-group">
+        <h4 class="rsa-form-radio-group-label">{{t 'userPreferences.theme.label'}}</h4>
+        {{#each theme.options as |option|}}
+          {{rsa-form-radio
+            label=(t option.label)
+            model=selectedTheme
+            value=option}}
+        {{/each}}
+      </div>
+    </vbox>
+  </hbox>
+
+  {{#if session.isAuthenticated}}
+    <hbox>
+      <vbox xs="12">
+        {{rsa-form-checkbox
+          class="js-test-notifications-checkbox"
+          label=(t 'userPreferences.notifications')
           value=selectedNotifications}}
-          
-        {{rsa-form-checkbox 
-          class="js-test-context-menus-checkbox" 
-          label=(t 'userPreferences.contextMenus') 
+
+        {{rsa-form-checkbox
+          class="js-test-context-menus-checkbox"
+          label=(t 'userPreferences.contextMenus')
           value=selectedContextMenus}}
-      {{/rsa-grid-row}}
-    {{/if}}
+      </vbox>
+    </hbox>
+  {{/if}}
 
-    {{#rsa-grid-row class="button-group"}}
-      {{#rsa-grid-column span=6}}
-        {{#rsa-form-button 
-          isFullWidth=true 
-          class="js-test-revert"}}
-          <span {{action 'revertUserPreferences'}}>{{t 'forms.reset'}}</span>
-        {{/rsa-form-button}}
-      {{/rsa-grid-column}}
+  <hbox>
+    <vbox xs="6">
+      {{#rsa-form-button
+        isFullWidth=true
+        class="js-test-revert"}}
+        <span {{action 'revertUserPreferences'}}>{{t 'forms.reset'}}</span>
+      {{/rsa-form-button}}
+    </vbox>
 
-      {{#rsa-grid-column span=6}}
-        {{#rsa-form-button 
-          class="js-test-apply" 
-          type="submit" 
-          isDisabled=withoutChanges 
-          style="primary" 
-          isFullWidth=true}}
-          {{t 'forms.apply'}}
-        {{/rsa-form-button}}
-      {{/rsa-grid-column}}
-    {{/rsa-grid-row}}                
-  {{/rsa-grid}}
+    <vbox xs="6">
+      {{#rsa-form-button
+        class="js-test-apply"
+        type="submit"
+        isDisabled=withoutChanges
+        style="primary"
+        isFullWidth=true}}
+        {{t 'forms.apply'}}
+      {{/rsa-form-button}}
+    </vbox>
+  </hbox>
 </form>

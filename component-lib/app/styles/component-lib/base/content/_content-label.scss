@@ -8,6 +8,7 @@
 .rsa-content-label {
   @include rsa-font(header, small);
   @include rsa-font();
+  flex: none;
   display: inline-block;
   border: thin solid;
   border-radius: rsa-whitespace(least);

@@ -2,12 +2,12 @@
   position:relative;
   color: rsa-color(white);
 
-  .rsa-grid-column {
-    padding: rsa-whitespace();
-  }
-
   .rsa-incident-tile-header {
     background-color: rsa-color(black, null, $rsa-nearly-opaque);
+
+    .rsa-incident-top {
+      padding: rsa-whitespace(less) rsa-whitespace(less) 0;
+    }
 
     .rsa-incident-tile-header-badge {
       padding: 0;
@@ -15,8 +15,6 @@
     }
 
     .rsa-incident-tile-header-info {
-      padding: rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(least) rsa-whitespace(less);
-
       .rsa-incident-tile-id {
         @include rsa-font(header, large);
         @include rsa-font(bold);
@@ -50,6 +48,10 @@
   }
 
   .rsa-incident-tile-section {
+
+    vbox {
+      padding: rsa-whitespace();
+    }
 
     .rsa-incident-tile-source-col, .rsa-incident-tile-alert-col {
       padding-bottom: 0;
@@ -91,7 +93,7 @@
   .rsa-edit-tool {
     background-color: rsa-color(black, null, $rsa-nearly-transparent);
     position: absolute;
-    bottom: 0;
+    bottom: 1px;
     right: 0;
     transition: visibility 0s, opacity 0.2s linear;
 

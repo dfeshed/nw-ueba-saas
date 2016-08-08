@@ -1,21 +1,19 @@
 .rsa-form-radio-group {
   .rsa-form-radio-group-label {
-    margin-bottom: rsa-whitespace(less);  
-    color: $formRadioGroupLabelColor;  
+    margin-bottom: rsa-whitespace(less);
+    color: $formRadioGroupLabelColor;
   }
 
   .rsa-form-radio {
-    margin-bottom: rsa-whitespace(least);    
-    
+    margin-bottom: rsa-whitespace(least);
+
     &:last-child {
-      margin-bottom: 0;        
+      margin-bottom: 0;
     }
   }
 }
 
 .rsa-form-radio {
-  display: block;
-    
   .outer-wrapper {
     display: inline-block;
     border-radius: 10rem;
@@ -27,7 +25,7 @@
     border: 1px solid $formRadioBorderColor;
     position: relative;
     top: -1px;
-      
+
     .inner-wrapper {
       box-sizing: border-box;
       margin: 2px;
@@ -46,71 +44,71 @@
        }
     }
   }
-  
+
   &:hover:not(.is-disabled):not(.is-read-only) {
     cursor: pointer;
-  
+
     .outer-wrapper {
       border-color: $formRadioHoverBorderColor;
     }
   }
-  
+
   &.is-selected:not(.is-disabled):not(.is-read-only):not(.is-error) {
     .inner-wrapper {
       background-color: $formRadioSelectedColor;
     }
   }
-  
+
   &.is-active:not(.is-disabled):not(.is-read-only):not(.is-error) {
     .outer-wrapper {
-      border-color: $formRadioActiveColor;  
+      border-color: $formRadioActiveColor;
     }
   }
-  
-  &.is-error {  
+
+  &.is-error {
     .rsa-form-label {
       color: $formRadioErrorColor;
-    }  
-    
+    }
+
     .outer-wrapper {
       border-color: $formRadioErrorColor;
     }
   }
-  
+
   &.is-error.is-selected {
     .inner-wrapper {
       background-color: $formRadioErrorColor;
     }
   }
 
-  &.is-disabled {  
+  &.is-disabled {
     .rsa-form-label {
       color: $formRadioDisabledColor;
-    }  
-    
+    }
+
     .outer-wrapper {
       color: $formRadioDisabledColor;
     }
   }
-  
+
   &.is-disabled.is-selected {
     .inner-wrapper {
       background-color: $formRadioDisabledColor;
     }
   }
 
-  &.is-read-only {  
+  &.is-read-only {
     .outer-wrapper {
       color: $formRadioReadOnlyColor;
     }
   }
-  
+
   &.is-read-only.is-selected {
     .inner-wrapper {
       background-color: $formRadioReadOnlyColor;
     }
   }
-    
+
   .rsa-form-label {
     color: $formRadioLabelColor;
     display: inline-block;

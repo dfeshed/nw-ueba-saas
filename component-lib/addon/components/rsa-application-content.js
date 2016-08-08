@@ -13,6 +13,8 @@ export default Component.extend({
 
   layout,
 
+  tagName: 'page',
+
   eventBus: service('event-bus'),
 
   classNames: ['rsa-application-content'],
