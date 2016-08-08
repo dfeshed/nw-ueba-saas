@@ -98,12 +98,24 @@ public class ApiUserController extends BaseController{
 		return usersList;
 	}
 
+	@RequestMapping(value="/count", method=RequestMethod.GET)
+	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
+		Integer count = userService.countUsersByFilter(userRestFilter);
+
+		DataBean<Integer> bean = new DataBean<>();
+		bean.setData(count);
+		bean.setTotal(count);
+
+		return bean;
+	}
+
 	private void setAdditionalInformation(List<UserDetailsBean> users) {
 		for (UserDetailsBean userDetailsBean: users) {
 			User user = userDetailsBean.getUser();
 			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
-			List<UserActivitySourceMachineDocument> userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
+			List<UserActivitySourceMachineDocument> userSourceMachines
+					= userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
 			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, null));
 		}
 	}
