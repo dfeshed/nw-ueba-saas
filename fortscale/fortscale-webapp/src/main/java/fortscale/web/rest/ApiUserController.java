@@ -20,6 +20,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
+import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
@@ -333,7 +334,18 @@ public class ApiUserController extends BaseController{
 				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
 			//if update was successful and tag is no longer active - remove that tag from all users
 			} else if (!tag.getActive()) {
-				//TODO - untag from users
+				String tagName = tag.getName();
+				UserTagService userTagService = userTaggingService.getUserTagService(tagName);
+				if (userTagService == null) {
+					userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
+				}
+				Set<String> usernames = userService.findUsernamesByTags(new String[] { tagName });
+				if (CollectionUtils.isNotEmpty(usernames)) {
+					logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
+					for (String username : usernames) {
+						userTagService.removeUserTag(username, tagName);
+					}
+				}
 			}
 		}
 		return new ResponseEntity("{}", HttpStatus.ACCEPTED);
