@@ -331,6 +331,9 @@ public class ApiUserController extends BaseController{
 		for (Tag tag: tags) {
 			if (!tagService.updateTag(tag)) {
 				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
+			//if update was successful and tag is no longer active - remove that tag from all users
+			} else if (!tag.getActive()) {
+				//TODO - untag from users
 			}
 		}
 		return new ResponseEntity("{}", HttpStatus.ACCEPTED);

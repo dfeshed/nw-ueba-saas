@@ -25,6 +25,7 @@ public class Tag extends AbstractDocument{
 	public static final String displayNameField = "displayName";
 	public static final String createsIndicatorField = "createsIndicator";
 	public static final String rulesField = "rules";
+	public static final String activeField = "active";
 
 	public Tag() {}
 
@@ -33,6 +34,7 @@ public class Tag extends AbstractDocument{
 		displayName = name;
 		createsIndicator = false;
 		rules = new ArrayList<>();
+		active = true;
 	}
 
 	public Tag(String name, String displayName) {
@@ -40,6 +42,7 @@ public class Tag extends AbstractDocument{
 		this.displayName = displayName;
 		createsIndicator = false;
 		rules = new ArrayList<>();
+		active = true;
 	}
 
 	public Tag(String name, String displayName, boolean setCreatesIndicator) {
@@ -47,6 +50,7 @@ public class Tag extends AbstractDocument{
 		this.displayName = displayName;
 		createsIndicator = setCreatesIndicator ? true : false;
 		rules = new ArrayList<>();
+		active = true;
 	}
 
 	@NotNull
@@ -60,6 +64,10 @@ public class Tag extends AbstractDocument{
 	@NotNull
 	@NotEmpty
 	private Boolean createsIndicator;
+
+	@NotNull
+	@NotEmpty
+	private Boolean active;
 
 	@NotNull
 	@NotEmpty
@@ -95,6 +103,14 @@ public class Tag extends AbstractDocument{
 
 	public void setRules(List<String> rules) {
 		this.rules = rules;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	@Override
