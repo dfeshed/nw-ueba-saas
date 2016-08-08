@@ -14,22 +14,24 @@ logger = logging.getLogger('monitoring')
 
 
 def validate_progress(host, collection_name, polling_interval, max_delay):
-    last_end_time = None
+    last_collection_end_time = None
     last_progress_time = time.time()
     while True:
-        end_time = mongo.get_collections_time_boundary(host=host,
-                                                       collection_names_regex=collection_name,
-                                                       is_start=False)
-        logger.info('end time: %s' % end_time)
-        if end_time != last_end_time:
-            last_end_time = end_time
+        collection_end_time = mongo.get_collections_time_boundary(host=host,
+                                                                  collection_names_regex=collection_name,
+                                                                  is_start=False)
+        logger.info('collection end time: %s' % collection_end_time)
+        if collection_end_time != last_collection_end_time:
+            last_collection_end_time = collection_end_time
             last_progress_time = time.time()
-        if (time.time() - last_progress_time) / 60 > max_delay:
-            log.log_and_send_mail.info('no new scored entities in %s for more than %d minutes. '
-                                       'last progress occurred at %s, in which the last scored entity event was %s' %
-                                       (collection_name,
-                                        (time.time() - last_progress_time) / 60,
-                                        time_utils.timestamp_to_str(last_progress_time),
-                                        time_utils.timestamp_to_str(last_end_time)))
+        if (time.time() - collection_end_time) / 60 > max_delay:
+            log.log_and_send_mail('there is a gap in %s of %d minutes. '
+                                  'last progress occurred at %s, in which the last scored entity event was %s' %
+                                  (
+                                      collection_name,
+                                      (time.time() - collection_end_time) / 60,
+                                      time_utils.timestamp_to_str(last_progress_time),
+                                      time_utils.timestamp_to_str(last_collection_end_time))
+                                  )
         logger.info('going to sleep for %d minutes...' % polling_interval)
         time.sleep(polling_interval * 60)

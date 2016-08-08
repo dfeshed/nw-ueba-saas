@@ -10,7 +10,18 @@ from bdp_utils import parsers, colorer, log
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host])
+    parser = argparse.ArgumentParser(parents=[parsers.host],
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
+                                     prog='monitor',
+                                     description=
+'''monitor
+-------
+Monitor the progress of the Fortscale product. This is done by making
+sure there's no essential gap between the last scored entity event
+available in mongo and system time. The maximal allowed gap is controlled
+by the --max_delay argument (in minutes). If the gap is crossed, an error
+mail will be sent.
+''')
     parser.add_argument('--collection_name',
                         action='store',
                         dest='collection_name',
@@ -26,7 +37,7 @@ def create_parser():
     parser.add_argument('--max_delay',
                         action='store',
                         dest='max_delay',
-                        help='the maximal delay (in minutes) of no progress before an error mail is sent',
+                        help='the maximal gap (in minutes) allowed between system time and the last scored entity',
                         type=int,
                         required=True)
 
@@ -47,4 +58,4 @@ if __name__ == '__main__':
                           polling_interval=arguments.polling_interval,
                           max_delay=arguments.max_delay)
     except Exception, e:
-        log.log_and_send_mail.info('monitoring script has failed and exited for the following reason: %s' % e)
+        log.log_and_send_mail('monitoring script has failed and exited for the following reason: %s' % e)
