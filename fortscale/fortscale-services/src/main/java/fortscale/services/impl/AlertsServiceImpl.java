@@ -3,24 +3,20 @@ package fortscale.services.impl;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
-import fortscale.domain.dto.SeveritiesCountDTO;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
-import fortscale.utils.time.TimestampUtils;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Services for managing the alerts
@@ -221,7 +217,10 @@ public class AlertsServiceImpl implements AlertsService {
 		Set<AlertFeedback> feedbackSet = new HashSet<>();
 		feedbackSet.add(AlertFeedback.Approved);
 		feedbackSet.add(AlertFeedback.None);
+		Set<Alert> alerts = alertsRepository.getAlertsForUserByFeedback(userName, feedbackSet);
 
-		return alertsRepository.getAlertsForUserByFeedback(userName, feedbackSet);
+		Comparator<? super Alert> sortBySeverity = (o1, o2) -> Integer.compare(o1.getSeverityCode(), o2.getSeverityCode());
+		Set<Alert> sortedAlerts = alerts.stream().sorted(sortBySeverity).collect(Collectors.toSet());
+		return sortedAlerts;
 	}
 }
