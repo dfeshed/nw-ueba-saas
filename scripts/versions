@@ -1,5 +1,5 @@
 # Central place to list/control versions for key tools
-${NODE_VERSION:="4.2.4"}
+${NODE_VERSION:="6.3.1"}
 ${EMBER_CLI_VERSION:="2.6.3"}
 ${BOWER_VERSION:="1.7.9"}
 ${PHANTOMJS_VERSION:="2.1.9"}
