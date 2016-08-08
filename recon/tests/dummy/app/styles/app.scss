@@ -1,18 +1,36 @@
-body{
-  background-color: #333333;
-  color: #8B8B8B;
+@charset "UTF-8";
+
+/* Imports all styles from component-lib addon. */
+@import 'component-lib/manifest';
+
+body {
+  color: rsa-color(gray, light);
   margin: 0;
 }
+
 .recon-event-header {
-  border: 1px solid #ffffff;
+  background-color: rsa-color(gray, dark);
+  border: 1px solid rsa-color(white);
   border-bottom: none;
+
+  .recon-event-titlebar {
+    h2 {
+      color: rsa-color(white);
+      font-size: 20px;
+      padding: 20px;
+    }
+  }
+
   .header-item {
     padding: 2px 5px;
-    .key{
-      color: #ffffff;
+
+    .key {
+      color: rsa-color(white);
     }
   }
 }
+
 .recon-event-content {
-  border: 1px solid #ffffff;
+  background-color: rsa-color(gray, dark);
+  border: 1px solid rsa-color(white);
 }

@@ -20,20 +20,20 @@ indent_style = space
 indent_size = 2
 ```
 
-## How do I configure JSHint?
+## How do I configure ESLint?
 
-We use [JSHint](http://jshint.com/about/) to detect problems in JavaScript source code (such as syntax errors or code style violations). IntelliJ can be configured to use JSHint for analyzing your code live as you write it.  
+We use [ESLint](http://eslint.org/docs/about/) to detect problems in JavaScript source code (such as syntax errors or code style violations). IntelliJ can be configured to use ESLint for analyzing your code live as you write it.  
 
-IntelliJS relies on a JSHint configuration file, `.jshintrc`, for this setup.  The `.jshintrc` file in your project's root should automatically be used by your IDE. But if for some reason it isn't, you can explicitly tell the IDE to use it, as follows:
+IntelliJ relies on an ESLint configuration file, `.eslintrc.js`, for this setup.  The `.eslintrc.js` file in your project's root should automatically be used by your IDE. But if for some reason it isn't, you can explicitly tell the IDE to use it, as follows:
 
 1. Go to the Preferences dialog (in Mac OS X, go to the app menu IntelliJ IDEA > Preferences).
-2. In Preferences, search for `jshint`. The search should uncover a section called: `Languages & Frameworks` > `Javascript` > `Code Quality Tools` > `JSHint`.  Select the `JSHint` section.
-3. In the `JSHint` section, click the `Enable` checkbox, and then check `Use config files`.
-4. There should be a radio button for `Default`, which is supposed to read the `.jshintrc` file in your project root. If that's working correctly, great. But if not, you can try choosing the radio button `Custom configuration file` and then explicitly choose the path of your `.jshintrc` file.
+2. In Preferences, search for `eslint`. The search should uncover a section called: `Languages & Frameworks` > `Javascript` > `Code Quality Tools` > `ESlint`.  Select the `ESLint` section.
+3. In the `ESLint` section, click the `Enable` checkbox, and then check `Use config files`.
+4. There should be a radio button for `Default`, which is supposed to read the `.eslintrc.js` file in your project root. If that's working correctly, great. But if not, you can try choosing the radio button `Custom configuration file` and then explicitly choose the path of your `.eslintrc.js` file.
 
 ## How do I configure ECMAScript6 (ES2015) support?
 
-[Ember CLI](http://www.ember-cli.com/) encourages your code to be written in [ES6](http://es6-features.org/), also known as [ES2015](https://themeteorchef.com/blog/what-is-es2015/).  Ember CLI will then transpile it to ES5 when you make a build. Therefore you should make sure that your IDE understands ES6 syntax.  If you don't do this, your IDE will mark all your ES6-specific code (e.g., `import` and `export` statements) as errors, which will make your IDE's JSHint functionality useless.
+[Ember CLI](http://www.ember-cli.com/) encourages your code to be written in [ES6](http://es6-features.org/), also known as [ES2015](https://themeteorchef.com/blog/what-is-es2015/).  Ember CLI will then transpile it to ES5 when you make a build. Therefore you should make sure that your IDE understands ES6 syntax.  If you don't do this, your IDE will mark all your ES6-specific code (e.g., `import` and `export` statements) as errors, which will make your IDE's ESLint functionality useless.
 
 1. In `IntelliJ IDEA` > `Preferences`, go to the section: `Languages & Frameworks` > `Javascript`.  
 2. In that section, you'll see a pulldown for picking JavaScript language version.  Choose `ECMAScript 6`.
