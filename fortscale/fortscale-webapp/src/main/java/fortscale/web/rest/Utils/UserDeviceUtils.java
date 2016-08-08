@@ -33,9 +33,14 @@ public class UserDeviceUtils {
 		final UserActivityEntryHashMap userActivityDataEntries = getUserActivityDataEntries(documentList, userAndOrganizationActivityHelper.getDeviceValuesToFilter());
 
 		final Set<Map.Entry<String, Double>> topEntries = userActivityDataEntries.getTopEntries(limit);
+
+		// Sorting the devices by the count from most popular to less
+		Comparator<UserActivityData.DeviceEntry> byCount = (e1, e2) -> Double.compare(e2.getCount(), e1.getCount());
+
 		List<UserActivityData.DeviceEntry> machineEntries = topEntries
 				.stream()
 				.map(entry -> new UserActivityData.DeviceEntry(entry.getKey(), entry.getValue(), null))
+				.sorted(byCount)
 				.collect(Collectors.toList());
 
 		setDeviceType(machineEntries);
