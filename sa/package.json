@@ -54,7 +54,7 @@
     "ember-sinon": "0.5.0",
     "ember-sortable": "1.8.1",
     "ember-wormhole": "^0.3.5",
-    "eslint-plugin-ember-suave": "0.1.0",
+    "eslint-plugin-ember-suave": "^0.1.2",
     "flexi": "1.1.9",
     "liquid-fire": "0.22.0",
     "loader.js": "^4.0.1"

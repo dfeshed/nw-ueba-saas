@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const { Component, computed, String: {htmlSafe} } = Ember;
+const { Component, computed, String: { htmlSafe } } = Ember;
 
 export default Component.extend({
 

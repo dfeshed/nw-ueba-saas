@@ -1,76 +1,87 @@
 module.exports = {
-  plugins: [
-    'ember-suave' // using custom suave rules, so importing plugin, will be more later
-  ],
   root: true,
+  parser: 'babel-eslint',
   parserOptions: {
     ecmaVersion: 6,
     sourceType: 'module'
   },
-  parser: 'babel-eslint',
+  plugins: [
+    'ember-suave' // using custom suave rules, so importing plugin, will be more later
+  ],
   extends: 'eslint:recommended',
   env: {
     'browser': true
   },
   rules: {
-    // SUAVE CUSTOM RULES
-    // 'ember-suave/prefer-destructuring': 'error',  // not available yet
-    'ember-suave/no-direct-property-access': 'error',
-    'ember-suave/require-access-in-comments': 'error',
-    'ember-suave/require-const-for-ember-properties': 'error',
-
     // BASIC ESLINT RULES
-    // STARTED WITH SUAVE, BUT MOVED AWAY
-    'radix': ['error', 'always'],
-    'no-empty': 'error',
+    //'array-bracket-spacing': ['error', 'never'], May enforce this in the future
+    'arrow-parens': 'error',
     'brace-style': ['error', '1tbs', {
       'allowSingleLine': false
     }],
+    'camelcase': ['error', {
+      'properties': 'never'
+    }],
+    'comma-dangle': ['error', 'never'],
+    'comma-style': ['error', 'last'],
+    'curly': ['error', 'all'],
+    'dot-notation': 'error',
+    'dot-location': ['error', 'property'],
+    'generator-star-spacing': ['error', {'before': false}],
+    'indent': ['error', 2, {
+      'SwitchCase': 1
+    }],
+    'key-spacing': ['error', {
+      'beforeColon': false,
+      'afterColon': true
+    }],
+    'keyword-spacing': 'error',
+    'max-statements-per-line': ['error', { 'max': 1 }],
+    'new-cap': ['error', {
+      // Capital variables that can be used without `new`
+      'capIsNewExceptions': [
+        'A' // Ember.A
+      ]
+    }],
+    'no-empty': 'error',
     'no-multiple-empty-lines': 'error',
+    'no-spaced-func': 'error',
+    'no-trailing-spaces': 'error',
+    'no-useless-concat': 'error',
+    'no-var': 'error',
+    'object-curly-spacing': ['error', 'always'],
+    'object-shorthand': 'error',
     'one-var': ['error', {
       'uninitialized': 'always',
       'initialized': 'never'
     }],
     'operator-linebreak': ['error', 'after'],
-    'key-spacing': ['error', {
-      'beforeColon': false,
-      'afterColon': true
+    //'prefer-const': 'error', // We will enable this later
+    'prefer-spread': 'error',
+    'prefer-template': 'error',
+    'quotes': ['error', 'single', {
+      'avoidEscape': true
     }],
-    'space-unary-ops': ['error', {
-      'words': false,
-      'nonwords': false
-    }],
+    'radix': ['error', 'always'],
+    'semi': ['error', 'always'],
     'semi-spacing': ['error', {
       'before': false,
       'after': true
     }],
+    'space-before-blocks': ['error', 'always'],
     'space-before-function-paren': ['error', 'never'],
     'space-in-parens': ['error', 'never'],
-    'no-spaced-func': 'error',
-    'comma-dangle': ['error', 'never'],
-    'no-trailing-spaces': 'error',
-    'no-var': 'error',
-    'camelcase': ['error', {
-      'properties': 'never'
-    }],
-    'new-cap': 'error',
-    'comma-style': ['error', 'last'],
-    'curly': ['error', 'all'],
-    'dot-notation': 'error',
-    'object-shorthand': 'error',
-    'arrow-parens': 'error',
-    'semi': ['error', 'always'],
     'space-infix-ops': 'error',
-    'keyword-spacing': 'error',
-    'spaced-comment': ['error', 'always'],
-    'space-before-blocks': ['error', 'always'],
-    'prefer-spread': 'error',
-    'prefer-template': 'error',
-    'indent': ['error', 2, {
-      'SwitchCase': 1
+    'space-unary-ops': ['error', {
+      'words': false,
+      'nonwords': false
     }],
-    'quotes': ['error', 'single', {
-      'avoidEscape': true
-    }]
+    'spaced-comment': ['error', 'always'],
+
+    // SUAVE CUSTOM RULES
+    'ember-suave/no-direct-property-access': 'error',
+    'ember-suave/prefer-destructuring': 'error',
+    'ember-suave/require-access-in-comments': 'error',
+    'ember-suave/require-const-for-ember-properties': 'error'
   }
 };
