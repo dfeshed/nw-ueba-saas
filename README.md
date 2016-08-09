@@ -2,8 +2,9 @@
 
 The NetWitness UI is split into three ember.js projects:
 * **component-lib** is an [Ember Addon](https://ember-cli.com/extending/#developing-addons-and-blueprints) containing components that are intended for reuse across multiple parts of the **sa** application.
+* **recon** is an [Ember Addon](https://ember-cli.com/extending/#developing-addons-and-blueprints) containing components used for event reconstruction
 * **sa** is the primary web application. It is the web app delivered with the NetWitness product.
-* **style-guide** is an app that showcases the components from **component-lib** and educates on their use. This web app is [hosted internally](https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/) and is updated with each successful Jenkins build. 
+* **style-guide** is an app that showcases the components from **component-lib** and educates on their use. This web app is [hosted internally](https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/) and is updated with each successful Jenkins build.
 
 ## Setting up the Client Application
 
@@ -21,6 +22,7 @@ This script will setup:
 * [Bower](http://bower.io/) for managing some client dependencies
 * [Ember CLI](http://www.ember-cli.com/) for Ember-ing like a Boss.
 * The **component-lib** addon's NPM/Bower dependencies
+* The **recon** addon's NPM/Bower dependencies
 * The **style-guide** app's NPM/Bower dependencies
 * The **sa** app's NPM/Bower dependencies
 
@@ -37,7 +39,7 @@ $ ember serve
 
 ### Development Mode
 
-Running the client application with a backend service, to develop and test the full application stack, you need 
+Running the client application with a backend service, to develop and test the full application stack, you need
 to tell Ember where the backend service is located.  To do this, add the `--proxy` flag to the Ember command:
 ```
 $ cd client/sa
