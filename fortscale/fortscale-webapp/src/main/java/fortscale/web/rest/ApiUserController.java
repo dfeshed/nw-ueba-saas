@@ -116,7 +116,7 @@ public class ApiUserController extends BaseController{
 			userDetailsBean.setAlerts(usersAlerts);
 			List<UserActivitySourceMachineDocument> userSourceMachines
 					= userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
-			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, null));
+			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
 		}
 	}
 
