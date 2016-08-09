@@ -1,11 +1,8 @@
 package fortscale.domain.core.dao;
 
 
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.CommandResult;
-import com.mongodb.DBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
@@ -276,6 +273,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     }
 
 
+
     @Override
     public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
 
@@ -285,7 +283,16 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         return  new HashSet<>(userNames);
     }
 
-    @Override
+	@Override public Set<String> getDistinctAlertNames(Set<String> feedbackSet) {
+
+		Query query = buildQueryByUserNameAndFeedback(null, feedbackSet);
+
+		List<String> alertNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME)
+				.distinct(Alert.nameField, query.getQueryObject());
+		return new HashSet<>(alertNames);
+	}
+
+	@Override
     public Set<Alert> getAlertsRelevantToUserScore(String username){
 
         Query query = getQueryForAlertsRelevantToUserScore(username);
@@ -297,7 +304,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     }
 
 	@Override
-	public Set<Alert> getAlertsForUserByFeedback(String userName, Set<AlertFeedback> feedbackSet) {
+	public Set<Alert> getAlertsForUserByFeedback(String userName, Set<String> feedbackSet) {
 
 		Query query = buildQueryByUserNameAndFeedback(userName, feedbackSet);
 		query.fields().exclude(Alert.evidencesField);
@@ -306,7 +313,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return new HashSet<>(alerts);
 	}
 
-	private Query buildQueryByUserNameAndFeedback(String userName, Set<AlertFeedback> feedbackSet) {
+	private Query buildQueryByUserNameAndFeedback(String userName, Set<String> feedbackSet) {
 		Query query = new Query();
 		if (CollectionUtils.isNotEmpty(feedbackSet)) {
 			query.addCriteria(new Criteria().where(Alert.feedbackField).in(feedbackSet));
