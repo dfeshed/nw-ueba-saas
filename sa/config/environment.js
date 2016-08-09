@@ -149,8 +149,8 @@ module.exports = function(environment) {
   }
 
   if (environment === 'production') {
-    ENV.featureFlags['show-respond-route'] = false;
-    ENV.featureFlags['show-investigate-route'] = false;
+    // Tweak feature flags for production here
+    // ENV.featureFlags['show-respond-route'] = false;
   }
 
   return ENV;
