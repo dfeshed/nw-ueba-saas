@@ -9,11 +9,6 @@
       padding: rsa-whitespace(less) rsa-whitespace(less) 0;
     }
 
-    .rsa-incident-tile-header-badge {
-      padding: 0;
-      margin: 0;
-    }
-
     .rsa-incident-tile-header-info {
       .rsa-incident-tile-id {
         @include rsa-font(header, large);
@@ -51,10 +46,6 @@
 
     vbox {
       padding: rsa-whitespace();
-    }
-
-    .rsa-incident-tile-source-col, .rsa-incident-tile-alert-col {
-      padding-bottom: 0;
     }
 
     .rsa-content-definition {
@@ -120,14 +111,6 @@
   &.small-size {
 
     .rsa-incident-tile-header {
-      .rsa-incident-tile-header-badge {
-        .rsa-content-badge-score {
-          .score {
-            top: 1.2rem;
-            font-size: 1.5rem;
-          }
-        }
-      }
       .rsa-incident-tile-header-info {
         .rsa-incident-tile-name {
           @include rsa-font(body, small);

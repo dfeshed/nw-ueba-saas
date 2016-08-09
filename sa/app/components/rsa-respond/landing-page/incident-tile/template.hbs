@@ -45,7 +45,7 @@
 {{#if isLargeSize}}
   <hbox class="rsa-incident-tile-section">
     <vbox xs="6">
-      {{#rsa-form-select label=(t "incident.fields.priority") values=selectedPriority class="rsa-incident-tile-priority-selector" isReadOnly=(if editModeActive false true)}}
+      {{#rsa-form-select optionMaxVisible=3 label=(t "incident.fields.priority") values=selectedPriority class="rsa-incident-tile-priority-selector" isReadOnly=(if editModeActive false true)}}
         {{#each priorityList as |priority i|}}
           <option value="{{i}}">{{t (concat 'incident.priority.' i) }}</option>
         {{/each}}
@@ -53,7 +53,7 @@
     </vbox>
 
     <vbox xs="6">
-      {{#rsa-form-select label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
+      {{#rsa-form-select optionMaxVisible=3 label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
         <option value=-1>{{t 'incident.assignee.none'}}</option>
         {{#each users as |user|}}
           <option value= {{user.id}}>{{user.firstName}}</option>

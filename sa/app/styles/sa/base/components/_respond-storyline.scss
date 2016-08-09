@@ -18,6 +18,7 @@
 .rsa-response-storyline {
     .journalAction{
       visibility: hidden;
+      margin-right: rsa-whitespace(least);
     }
     &__main-row:hover{
       .journalAction{
@@ -27,11 +28,6 @@
     &__time__text{
       color: #EFBC98;
       padding: 0 rsa-whitespace(least);
-    }
-    &__time{
-      color:#AE6900;
-      border-right: 2px dotted rsa-color(gray);
-      background-color: rsa-color(black, null, $rsa-translucent);
     }
     &__times{
       padding: rsa-whitespace(less);
@@ -46,6 +42,10 @@
     &__timeSection{
       text-align: center;
       @include rsa-font(header, small);
+      color:#AE6900;
+      border-right: 2px dotted rsa-color(gray);
+      background-color: rsa-color(black, null, $rsa-translucent);
+      margin-right: rsa-whitespace(less);
     }
     &__timedivider {
       color: #007FB6;
@@ -63,13 +63,16 @@
     &__subItem{
       padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
     }
+    &__main(){
+      margin-left: rsa-whitespace();
+    }
     &__subItem{
       margin-left: rsa-whitespace(more);
     }
-    &__main_icon .rsa-form-button{
-      margin-top: rsa-whitespace(least);
-    }
     .contextInfo{
       text-decoration: underline;
+    }
+    .rsa-form-button-wrapper.is-icon-only .rsa-form-button{
+      line-height: 2em;
     }
 }

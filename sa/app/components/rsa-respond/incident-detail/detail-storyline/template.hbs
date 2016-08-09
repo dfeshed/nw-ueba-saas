@@ -26,20 +26,24 @@
         {{/unless}}
       </div>
     </vbox>
-    <vbox xs='11'>
+    <vbox xs='7'>
       <div>
         <hbox class='rsa-response-storyline__main-row'>
           <vbox class='rsa-response-storyline__main' xs='11'>
-            <span class='indicator_type'>Threat Analysis</span> detected C&C communication {{alertCount}} times from <span class="contextInfo">{{alerts.firstObject.alert.groupby_source_ip}}</span>
-            to <span class="contextInfo">{{alerts.firstObject.alert.groupby_domain}}</span>
+            <div>
+              <span class='indicator_type'>Threat Analysis</span> detected C&C communication {{alertCount}} times from <span class="contextInfo">{{alerts.firstObject.alert.groupby_source_ip}}</span>
+              to <span class="contextInfo">{{alerts.firstObject.alert.groupby_domain}}</span>
+            </div>
           </vbox>
           <vbox class='rsa-response-storyline__main_icon' xs='1'>
-            {{#rsa-form-button isIconOnly=true}}
-              <span class="journalAction" {{action journalAction}}>{{rsa-icon name="bubble-chat-add-1" size="smaller"}}</span>
-            {{/rsa-form-button}}
-            {{#rsa-form-button isIconOnly=true}}
-              <span {{action entityAction 'Indicator'}}>{{rsa-icon name="arrow-right-12" size="smaller"}}</span>
-            {{/rsa-form-button}}
+            <div>
+              {{#rsa-form-button isIconOnly=true}}
+                <span class="journalAction" {{action journalAction}}>{{rsa-icon name="bubble-chat-add-1" size="smaller"}}</span>
+              {{/rsa-form-button}}
+              {{#rsa-form-button isIconOnly=true}}
+                <span {{action entityAction 'Indicator'}}>{{rsa-icon name="arrow-right-12" size="smaller"}}</span>
+              {{/rsa-form-button}}
+            </div>
           </vbox>
         </hbox>
         <hbox>
