@@ -11,6 +11,7 @@ import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -38,12 +39,16 @@ public class AlertsServiceImpl implements AlertsService {
 	@Autowired
 	private UserService userService;
 
-
-
     @Autowired
     private UserScoreService userScoreService;
 
+	private Set<String> feedbackNoRejectedSet;
 
+	{
+		feedbackNoRejectedSet = new HashSet<>();
+		feedbackNoRejectedSet.add(AlertFeedback.Approved.toString());
+		feedbackNoRejectedSet.add(AlertFeedback.None.toString());
+	}
 
 
 	@Override
@@ -214,13 +219,22 @@ public class AlertsServiceImpl implements AlertsService {
     }
 
 	@Override public Set<Alert> getOpenAlertsByUsername(String userName) {
-		Set<AlertFeedback> feedbackSet = new HashSet<>();
-		feedbackSet.add(AlertFeedback.Approved);
-		feedbackSet.add(AlertFeedback.None);
-		Set<Alert> alerts = alertsRepository.getAlertsForUserByFeedback(userName, feedbackSet);
+		Set<Alert> alerts = alertsRepository.getAlertsForUserByFeedback(userName, feedbackNoRejectedSet);
 
 		Comparator<? super Alert> sortBySeverity = (o1, o2) -> Integer.compare(o1.getSeverityCode(), o2.getSeverityCode());
 		Set<Alert> sortedAlerts = alerts.stream().sorted(sortBySeverity).collect(Collectors.toSet());
 		return sortedAlerts;
 	}
+
+	@Override public Set<String> getDistinctAlertNames(Boolean ignoreRejected) {
+		Set<String> alertNames;
+		if (BooleanUtils.isFalse(ignoreRejected)) {
+			alertNames = alertsRepository.getDistinctAlertNames(null);
+		} else {
+			alertNames = alertsRepository.getDistinctAlertNames(feedbackNoRejectedSet);
+		}
+
+		return alertNames.stream().sorted().collect(Collectors.toSet());
+	}
+
 }

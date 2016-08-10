@@ -38,10 +38,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -90,6 +87,20 @@ public class ApiAlertController extends BaseController {
 			response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
 		}
 		return response;
+	}
+
+	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Set<String>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
+		Set<String> distinctOpenAlertNames = alertsService.getDistinctAlertNames(ignoreRejected);
+
+		DataBean<Set<String>> result = new DataBean<>();
+
+		result.setData(distinctOpenAlertNames);
+		result.setTotal(distinctOpenAlertNames.size());
+
+		return result;
 	}
 
 	/**
