@@ -95,7 +95,7 @@ public class ApiUserController extends BaseController{
 		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
 
 		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
-			setAdditionalInformation(usersList.getData());
+			addAlertsAndDevices(usersList.getData());
 		}
 
 		return usersList;
@@ -113,7 +113,7 @@ public class ApiUserController extends BaseController{
 		return bean;
 	}
 
-	private void setAdditionalInformation(List<UserDetailsBean> users) {
+	private void addAlertsAndDevices(List<UserDetailsBean> users) {
 		for (UserDetailsBean userDetailsBean: users) {
 			User user = userDetailsBean.getUser();
 			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
@@ -214,7 +214,7 @@ public class ApiUserController extends BaseController{
 		DataBean<List<UserDetailsBean>> usersDetails = getUsersDetails(users);
 
 		if (BooleanUtils.isTrue(addAlertsAndDevices)){
-			setAdditionalInformation(usersDetails.getData());
+			addAlertsAndDevices(usersDetails.getData());
 		}
 
 		// Return detailed users
