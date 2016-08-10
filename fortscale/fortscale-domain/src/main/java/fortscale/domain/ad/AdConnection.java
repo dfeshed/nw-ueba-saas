@@ -13,25 +13,24 @@ import javax.validation.constraints.Size;
 public class AdConnection {
 
     @Size(min = 1)
-    private List<String> dcs;
+    protected List<String> dcs;
 
     @NotNull
     @NotEmpty
-    private String domainBaseSearch;
+	protected String domainBaseSearch;
 
     @NotNull
     @NotEmpty
-    private String domainUser;
+	protected String domainUser;
 
     @NotNull
     @NotEmpty
-    private String domainPassword;
+	protected String domainPassword;
 
     public AdConnection() {}
 
-    public AdConnection(String dc, String domainBaseSearch, String domainUser, String domainPassword) {
-        this.dcs = new ArrayList();
-        dcs.add(dc);
+    public AdConnection(List<String> dcs, String domainBaseSearch, String domainUser, String domainPassword) {
+        this.dcs = dcs;
         this.domainBaseSearch = domainBaseSearch;
         this.domainUser = domainUser;
         this.domainPassword = domainPassword;

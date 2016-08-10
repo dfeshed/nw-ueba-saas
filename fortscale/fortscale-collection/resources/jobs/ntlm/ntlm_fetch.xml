@@ -47,7 +47,7 @@
                 </entry>
                 <entry>
                     <key>returnKeys</key>
-                    <value>{getNTLMdata}}</value>
+                    <value>{getNTLMdata}</value>
                 </entry>
                 <entry>
                     <key>encloseQuotes</key>
