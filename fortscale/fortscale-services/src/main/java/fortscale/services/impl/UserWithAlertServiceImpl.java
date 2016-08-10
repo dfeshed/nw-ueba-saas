@@ -17,31 +17,29 @@ import java.util.Set;
 /**
  * Created by alexp on 09/08/2016.
  */
-@Service("userWithAlertService")
-public class UserWithAlertServiceImpl implements UserWithAlertService {
+@Service("userWithAlertService") public class UserWithAlertServiceImpl implements UserWithAlertService {
 
-	@Autowired
-	private UserService userService;
+	@Autowired private UserService userService;
 
-	@Autowired
-	private AlertsService alertsService;
+	@Autowired private AlertsService alertsService;
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
+		Set<String> relevantUsers = null;
 
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())){
-			Set<String> relevantUsers = alertsService.getDistinctUserNamesByAlertName(userRestFilter.getAlertTypes());
-			return userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
+			relevantUsers = alertsService.getDistinctUserNamesByAlertName(userRestFilter.getAlertTypes());
 		}
 
-		return userService.findUsersByFilter(userRestFilter, pageRequest);
+		return userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
 	}
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter) {
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())){
-			Set<String> relevantUsers = alertsService.getDistinctUserNamesByAlertName(userRestFilter.getAlertTypes());
-			return userService.countUsersByFilter(userRestFilter, relevantUsers);
+		Set<String> relevantUsers = null;
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
+			relevantUsers = alertsService.getDistinctUserNamesByAlertName(userRestFilter.getAlertTypes());
 		}
-		return userService.countUsersByFilter(userRestFilter);
+		return userService.countUsersByFilter(userRestFilter, relevantUsers);
 	}
 
 	@Override public void recalculateNumberOfUserAlerts(String userName) {

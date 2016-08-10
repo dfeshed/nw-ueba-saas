@@ -60,7 +60,7 @@
     <bean class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
     <bean class="fortscale.services.impl.UserSupportingInformationServiceImpl"/>
     <mockito:mock id="userWithAlertService" class="fortscale.services.UserWithAlertService" />
-    <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl" lazy-init="true"/>
+    <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
     <bean class="fortscale.services.impl.TagServiceImpl"/>
 
 

@@ -1161,15 +1161,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return  userRepository.groupCount(User.displayNameField, displayNames);
 	}
 
-	@Override
-	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest){
-
-		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
-
-		// Get users
-		return userRepository.findAllUsers(criteriaList, pageRequest);
-	}
-
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
 			Set<String> relevantUserNames) {
 
@@ -1181,16 +1172,12 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private List<Criteria> getCriteriaListByFilterAndUserNames(UserRestFilter userRestFilter,
 			Set<String> relevantUserNames) {
 		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
-		criteriaList.add(userRepository.getUserCriteriaByUserNames(relevantUserNames));
+
+		if (CollectionUtils.isNotEmpty(relevantUserNames)) {
+			criteriaList.add(userRepository.getUserCriteriaByUserNames(relevantUserNames));
+		}
+
 		return criteriaList;
-	}
-
-	@Override
-	public int countUsersByFilter(UserRestFilter userRestFilter){
-
-		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
-
-		return userRepository.countAllUsers(criteriaList);
 	}
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {

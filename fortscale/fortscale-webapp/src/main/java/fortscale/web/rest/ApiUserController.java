@@ -102,7 +102,8 @@ public class ApiUserController extends BaseController{
 
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
-		Integer count = userService.countUsersByFilter(userRestFilter);
+
+		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
 
 		DataBean<Integer> bean = new DataBean<>();
 		bean.setData(count);
