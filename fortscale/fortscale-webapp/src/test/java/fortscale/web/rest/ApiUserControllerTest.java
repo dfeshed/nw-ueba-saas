@@ -62,6 +62,9 @@ public class ApiUserControllerTest {
 	@Mock
 	private UserDeviceUtils userDeviceUtils;
 
+	@Mock
+	private UserWithAlertService userWithAlertService;
+
 	private MockMvc mockMvc;
 
 	private static String UID = "123";
@@ -206,8 +209,8 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 		user.setScore(90.0);
-		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
-		when(userService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
+		when(userWithAlertService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
 		MvcResult result = mockMvc.perform(get("/api/user")
 				.accept(MediaType.APPLICATION_JSON))
 				.andExpect(content().contentType("application/json;charset=UTF-8"))
@@ -239,8 +242,8 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 		user.setScore(90.0);
-		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
-		when(userService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
+		when(userWithAlertService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
 		Set<Alert> alerts = new HashSet<>();
 		Alert alert = new Alert("Alert", 1, 2, EntityType.User, USER_NAME, null, 0, 100, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "1", AlertTimeframe.Daily, 1, true);
