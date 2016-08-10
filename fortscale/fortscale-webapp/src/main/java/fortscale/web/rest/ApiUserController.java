@@ -20,6 +20,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
+import org.apache.commons.lang.BooleanUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
 import org.json.JSONArray;
@@ -94,7 +95,7 @@ public class ApiUserController extends BaseController{
 		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
 
 		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
-			setAdditionalInformation(usersList.getData());
+			addAlertsAndDevices(usersList.getData());
 		}
 
 		return usersList;
@@ -112,7 +113,7 @@ public class ApiUserController extends BaseController{
 		return bean;
 	}
 
-	private void setAdditionalInformation(List<UserDetailsBean> users) {
+	private void addAlertsAndDevices(List<UserDetailsBean> users) {
 		for (UserDetailsBean userDetailsBean: users) {
 			User user = userDetailsBean.getUser();
 			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
@@ -203,13 +204,21 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{ids}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids){
+	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids,
+			@RequestParam(required = false, value = "add_alerts_and_devices") Boolean addAlertsAndDevices){
 
 		// Get Users
 		List<User> users = userRepository.findByIds(ids);
 		setSeverityOnUsersList(users);
+
+		DataBean<List<UserDetailsBean>> usersDetails = getUsersDetails(users);
+
+		if (BooleanUtils.isTrue(addAlertsAndDevices)){
+			addAlertsAndDevices(usersDetails.getData());
+		}
+
 		// Return detailed users
-		return getUsersDetails(users);
+		return usersDetails;
 	}
 
 	/**
