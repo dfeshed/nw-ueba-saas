@@ -2,6 +2,7 @@ package fortscale.web.rest;
 
 import fortscale.domain.ad.AdConnection;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.web.beans.request.ActiveDirectoryRequest;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -34,14 +35,14 @@ public class ApiActiveDirectoryControllerTest {
 
     @Test
     public void testActiveDirectoryUpdate() {
-        List<AdConnection> activeDirectoryConfigurations = new ArrayList<>();
+        List<ActiveDirectoryRequest> activeDirectoryConfigurations = new ArrayList<>();
         final String DOMAIN_PASSWORD="password";
         final String DC_NAME1="aaa";
         final String DC_NAME2="bbb";
         final String DOMAIN_BASE_SEARCH="search";
         final String DOMAIN_USER_NAME="user@user.com";
         final String ENCRYPTED_PASSWORD = "8bGagpbfO0hLMjKwrIc5SA==";
-        AdConnection settings = new AdConnection();
+		ActiveDirectoryRequest settings = new ActiveDirectoryRequest();
         settings.setDomainPassword(DOMAIN_PASSWORD);
         settings.setDcs(Arrays.asList(DC_NAME1,DC_NAME2));
         settings.setDomainBaseSearch(DOMAIN_BASE_SEARCH);
@@ -77,12 +78,13 @@ public class ApiActiveDirectoryControllerTest {
         Mockito.when(applicationConfigurationService.
                 getApplicationConfigurationAsObjects("system.activeDirectory.settings", AdConnection.class)).
                 thenReturn(Arrays.asList(oldSettings));
-        AdConnection settings = new AdConnection();
+		ActiveDirectoryRequest settings = new ActiveDirectoryRequest();
         settings.setDomainPassword(DOMAIN_PASSWORD);
         settings.setDcs(Arrays.asList(DC_NAME1,DC_NAME2));
         settings.setDomainBaseSearch(DOMAIN_BASE_SEARCH);
         settings.setDomainUser(DOMAIN_USER_NAME);
-        List<AdConnection> activeDirectoryConfigurations = new ArrayList<>();
+		settings.setEncryptedPassword(false);
+        List<ActiveDirectoryRequest> activeDirectoryConfigurations = new ArrayList<>();
         activeDirectoryConfigurations.add(settings);
         controller.updateActiveDirectory(activeDirectoryConfigurations);
         ArgumentCaptor<String> argumentKey = ArgumentCaptor.forClass(String.class);
@@ -108,12 +110,13 @@ public class ApiActiveDirectoryControllerTest {
         Mockito.when(applicationConfigurationService.
 				getApplicationConfigurationAsObjects("system.activeDirectory.settings", AdConnection.class)).
 				thenReturn(Arrays.asList(oldSettings));
-        AdConnection settings = new AdConnection();
+		ActiveDirectoryRequest settings = new ActiveDirectoryRequest();
         settings.setDomainPassword(ENCRYPTED_PASSWORD);
         settings.setDcs(Arrays.asList(DC_NAME1,DC_NAME2));
         settings.setDomainBaseSearch(DOMAIN_BASE_SEARCH);
         settings.setDomainUser(DOMAIN_USER_NAME);
-        List<AdConnection> activeDirectoryConfigurations = new ArrayList<>();
+		settings.setEncryptedPassword(true);
+        List<ActiveDirectoryRequest> activeDirectoryConfigurations = new ArrayList<>();
         activeDirectoryConfigurations.add(settings);
         controller.updateActiveDirectory(activeDirectoryConfigurations);
         ArgumentCaptor<String> argumentKey = ArgumentCaptor.forClass(String.class);
