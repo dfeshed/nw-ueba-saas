@@ -8,6 +8,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
+import fortscale.web.beans.request.ActiveDirectoryRequest;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -46,16 +48,18 @@ public class ApiActiveDirectoryController {
 	@RequestMapping(method = RequestMethod.POST)
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
-	public ResponseEntity updateActiveDirectory(@Valid @RequestBody List<AdConnection> activeDirectoryDomains) {
+	public ResponseEntity updateActiveDirectory(@Valid @RequestBody List<ActiveDirectoryRequest> activeDirectoryDomains) {
+		List<AdConnection> adConnectionList = new ArrayList<>();
 		try {
-			for (AdConnection newAdConfiguration : activeDirectoryDomains) {
+			for (ActiveDirectoryRequest newAdConfiguration : activeDirectoryDomains) {
 				//Password is not already encrypted
-				if (shouldEncryptPassword(newAdConfiguration)) {
+				if (!newAdConfiguration.isEncryptedPassword()) {
 					String encryptedPassword = EncryptionUtils.encrypt(newAdConfiguration.getDomainPassword()).trim();
 					newAdConfiguration.setDomainPassword(encryptedPassword);
 				}
+				adConnectionList.add(newAdConfiguration.getAdConnection());
 			}
-			applicationConfigurationService.updateConfigItemAsObject(ACTIVE_DIRECTORY_KEY,activeDirectoryDomains);
+			applicationConfigurationService.updateConfigItemAsObject(ACTIVE_DIRECTORY_KEY, adConnectionList);
 			return new ResponseEntity(HttpStatus.OK);
 		} catch (Exception ex) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -88,30 +92,6 @@ public class ApiActiveDirectoryController {
 		} else {
 			return new ResponseEntity(result, HttpStatus.BAD_REQUEST);
 		}
-	}
-
-	private boolean shouldEncryptPassword(AdConnection newAdConfiguration) {
-		List<AdConnection> adConnectionsFromDB = applicationConfigurationService.
-				getApplicationConfigurationAsObjects(ACTIVE_DIRECTORY_KEY, AdConnection.class);
-		if (adConnectionsFromDB == null || adConnectionsFromDB.isEmpty()){
-			return true;
-		}
-		for (AdConnection existsConnection:adConnectionsFromDB){
-			String domainFromNewConfiguration = newAdConfiguration.getDomainUser().split("@")[1];
-			String domainFromDBConfiguration = existsConnection.getDomainUser().split("@")[1];
-			String newPasswordFromNewConfiguration = newAdConfiguration.getDomainPassword();
-			String passwordFromOldConfiguration = existsConnection.getDomainPassword();
-			//Iterate all connections until found connection with the same domain.
-			//If password is the same - don't encrypt. If the password different- encrypt
-			if (domainFromDBConfiguration.equals(domainFromNewConfiguration)){
-				if (newPasswordFromNewConfiguration.equals(passwordFromOldConfiguration)) {
-					return false;
-				} else {
-					return  true;
-				}
-			}
-		}
-		return true; //The domain wasn't found. Encrypt the password
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
