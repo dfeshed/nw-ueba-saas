@@ -23,6 +23,7 @@ import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -200,7 +201,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		usernameService.addLogUsernameToCache(logEventId, logUsername, userId);
 	}
 
-	private User saveUser(User user){
+	@Override
+	public User saveUser(User user){
 		user = userRepository.save(user);
 		usernameService.updateUsernameInCache(user);
 		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
@@ -1159,21 +1161,28 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return  userRepository.groupCount(User.displayNameField, displayNames);
 	}
 
-	@Override
-	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest){
+	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
+			Set<String> relevantUserNames) {
 
-		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserNames(userRestFilter, relevantUserNames);
 
-		// Get users
 		return userRepository.findAllUsers(criteriaList, pageRequest);
 	}
 
-	@Override
-	public int countUsersByFilter(UserRestFilter userRestFilter){
-
+	private List<Criteria> getCriteriaListByFilterAndUserNames(UserRestFilter userRestFilter,
+			Set<String> relevantUserNames) {
 		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
 
-		return userRepository.countAllUsers(criteriaList);
+		if (CollectionUtils.isNotEmpty(relevantUserNames)) {
+			criteriaList.add(userRepository.getUserCriteriaByUserNames(relevantUserNames));
+		}
+
+		return criteriaList;
+	}
+
+	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
+
+		return userRepository.countAllUsers(getCriteriaListByFilterAndUserNames(userRestFilter, relevantUsers));
 	}
 
 	@Override public String getUserId(String username) {

@@ -73,8 +73,10 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	private UserActivityService userActivityService;
 
-	private static final String DEFAULT_SORT_FIELD = "username";
+	@Autowired
+	private UserWithAlertService userWithAlertService;
 
+	private static final String DEFAULT_SORT_FIELD = "username";
 
 	/**
 	 * The API to get all users. GET: /api/user
@@ -85,12 +87,12 @@ public class ApiUserController extends BaseController{
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
-		List<User> users = userService.findUsersByFilter(userRestFilter, pageRequest);
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
 
 		setSeverityOnUsersList(users);
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
-		usersList.setTotal(userService.countUsersByFilter(userRestFilter));
+		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
 
 		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
 			setAdditionalInformation(usersList.getData());
@@ -101,7 +103,8 @@ public class ApiUserController extends BaseController{
 
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
-		Integer count = userService.countUsersByFilter(userRestFilter);
+
+		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
 
 		DataBean<Integer> bean = new DataBean<>();
 		bean.setData(count);
