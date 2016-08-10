@@ -59,7 +59,8 @@
     <bean class="fortscale.streaming.alert.subscribers.UnifiedAlertIntegrationTestHelper"/>
     <bean class="fortscale.aggregation.feature.services.historicaldata.SupportingInformationPopulatorFactory"/>
     <bean class="fortscale.services.impl.UserSupportingInformationServiceImpl"/>
-    <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl"/>
+    <mockito:mock id="userWithAlertService" class="fortscale.services.UserWithAlertService" />
+    <bean id="alertService" class="fortscale.services.impl.AlertsServiceImpl" lazy-init="true"/>
     <bean class="fortscale.services.impl.TagServiceImpl"/>
 
 
