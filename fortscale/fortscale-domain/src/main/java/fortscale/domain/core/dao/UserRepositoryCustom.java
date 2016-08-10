@@ -139,5 +139,7 @@ public interface UserRepositoryCustom {
 	public String findByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
 
 	public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
+
+	public Criteria getUserCriteriaByUserNames(Set<String> userNames);
 }
 

@@ -11,6 +11,7 @@ import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 
+import fortscale.services.UserWithAlertService;
 import org.apache.commons.lang.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -46,10 +47,16 @@ public class AlertsServiceImpl implements AlertsService {
 
 	{
 		feedbackNoRejectedSet = new HashSet<>();
-		feedbackNoRejectedSet.add(AlertFeedback.Approved.toString());
-		feedbackNoRejectedSet.add(AlertFeedback.None.toString());
+
+		Arrays.stream(AlertFeedback.values()).forEach(alertFeedback -> {
+			if (!alertFeedback.equals(AlertFeedback.Rejected)) {
+				feedbackNoRejectedSet.add(alertFeedback.toString());
+			}
+		});
 	}
 
+	@Autowired
+	private UserWithAlertService userWithAlertService;
 
 	@Override
 	public void saveAlertInRepository(Alert alert) {
@@ -66,7 +73,7 @@ public class AlertsServiceImpl implements AlertsService {
 		alert = userScoreService.updateAlertContirubtion(alert);
 		alert = alertsRepository.save(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
-		userScoreService.recalculateNumberOfUserAlerts(alert.getEntityName());
+		userWithAlertService.recalculateNumberOfUserAlerts(alert.getEntityName());
 		return alert;
 	}
 
@@ -126,7 +133,7 @@ public class AlertsServiceImpl implements AlertsService {
 	public void add(Alert alert) {
 		alertsRepository.add(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
-		userScoreService.recalculateNumberOfUserAlerts(alert.getEntityName());
+		userWithAlertService.recalculateNumberOfUserAlerts(alert.getEntityName());
 	}
 
 	@Override
@@ -237,4 +244,8 @@ public class AlertsServiceImpl implements AlertsService {
 		return alertNames.stream().sorted().collect(Collectors.toSet());
 	}
 
+
+	@Override public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames) {
+		return alertsRepository.getDistinctUserNamesByAlertName(alertNames);
+	}
 }
