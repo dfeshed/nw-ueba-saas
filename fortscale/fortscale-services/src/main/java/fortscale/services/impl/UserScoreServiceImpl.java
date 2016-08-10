@@ -7,6 +7,7 @@ import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
+import fortscale.services.UserWithAlertService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
 import fortscale.utils.logging.Logger;
@@ -49,10 +50,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     public static final String APP_CONF_PREFIX = "user.socre.conf";
     private static final String SCORE_SEVERITIES_CACHE = "SCORE_SEVERITIES_CACHE";
 
-
-
-
-
     private Logger logger = Logger.getLogger(this.getClass());
 
     /*
@@ -81,6 +78,9 @@ public class UserScoreServiceImpl implements UserScoreService {
     private UserService userService;
 
     private UserScoreConfiguration userScoreConfiguration;
+
+    @Autowired
+    private UserWithAlertService userWithAlertService;
 
     @PostConstruct
     public void init()  {
@@ -326,7 +326,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
-            recalculateNumberOfUserAlerts(userName);
+            userWithAlertService.recalculateNumberOfUserAlerts(userName);
         }
         logger.info("Finish updating user score");
 
@@ -337,14 +337,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         });
         return scoresHistogram;
     }
-
-	@Override public void recalculateNumberOfUserAlerts(String userName) {
-		Set<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
-		User user = userService.findByUsername(userName);
-
-		user.setAlertsCount(alerts.size());
-        userRepository.save(user);
-	}
 
     /**
      * Translate the user score to severity, using the percentiles table and configuration.

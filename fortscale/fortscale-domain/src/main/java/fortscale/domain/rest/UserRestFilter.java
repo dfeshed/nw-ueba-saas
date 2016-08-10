@@ -21,6 +21,7 @@ public class UserRestFilter extends RestFilter {
 	private List<String> userTags;
 	private Boolean isWatched;
 	private Boolean isScored;
+	private List<String> alertTypes;
 
 	public String getSortField() {
 		return sortField;
@@ -78,7 +79,7 @@ public class UserRestFilter extends RestFilter {
 		isDisabledWithActivity = disabledWithActivity;
 	}
 
-		public String getInactiveSince() {
+	public String getInactiveSince() {
 		return inactiveSince;
 	}
 
@@ -149,11 +150,20 @@ public class UserRestFilter extends RestFilter {
 	public void setIsScored(Boolean isScored) {
 		this.isScored = isScored;
 	}
+
 	public Boolean getIsTerminatedWithActivity() {
 		return isTerminatedWithActivity;
 	}
 
 	public void setIsTerminatedWithActivity(Boolean terminatedWithActivity) {
 		isTerminatedWithActivity = terminatedWithActivity;
+	}
+
+	public List<String> getAlertTypes() {
+		return alertTypes;
+	}
+
+	public void setAlertTypes(List<String> alertTypes) {
+		this.alertTypes = alertTypes;
 	}
 }

@@ -12,7 +12,6 @@ public interface UserScoreService {
     double recalculateUserScore(String userName);
     double getUserScoreContributionForAlertSeverity(Severity severity, AlertFeedback feedback, long alertStartDate);
     Alert updateAlertContirubtion(Alert alert);
-	void recalculateNumberOfUserAlerts(String userName);
     void calculateUserSeverities(List<Pair<Double, Integer>> scoresHistogram);
     List<Pair<Double, Integer>> calculateAllUsersScores();
     Severity getUserSeverityForScore(double userScore);

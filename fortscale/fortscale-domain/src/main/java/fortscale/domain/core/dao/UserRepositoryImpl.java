@@ -706,6 +706,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return criteriaList;
 	}
 
+	@Override public Criteria getUserCriteriaByUserNames(Set<String> userNames) {
+		Criteria criteria = new Criteria().where(User.usernameField).in(userNames);
+		return criteria;
+	}
+
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		Criteria criteria = where(User.searchFieldName).regex(prefix);
 		return getUsersByCriteria(criteria, pageable);

@@ -335,7 +335,25 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	}
 
-    private  Query getQueryForAlertsRelevantToUserScore(String userName) {
+	@Override public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames) {
+
+		Query query = getQueryForAlertsByAlertName(alertNames);
+
+		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField,query.getQueryObject());
+		return  new HashSet<>(userNames);
+	}
+
+	private Query getQueryForAlertsByAlertName(List<String> alertNames) {
+		Query query = new Query();
+
+		if (CollectionUtils.isNotEmpty(alertNames)){
+			query.addCriteria(new Criteria().where(Alert.nameField).in(alertNames));
+		}
+
+		return query;
+	}
+
+	private  Query getQueryForAlertsRelevantToUserScore(String userName) {
         Criteria criteria = new Criteria();
         criteria.where(Alert.feedbackField).ne(AlertFeedback.None).
                 and(Alert.userScoreContributionFlagField).is(Boolean.TRUE);
