@@ -244,6 +244,10 @@ public class AlertsServiceImpl implements AlertsService {
 		return alertNames.stream().sorted().collect(Collectors.toSet());
 	}
 
+	@Override
+	public Set<String> getDistinctUserNamesByIndicatorType(Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs) {
+		return alertsRepository.getDistinctUserNamesByIndicators(dataSourceAnomalyTypePairs);
+	}
 
 	@Override public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames) {
 		return alertsRepository.getDistinctUserNamesByAlertName(alertNames);

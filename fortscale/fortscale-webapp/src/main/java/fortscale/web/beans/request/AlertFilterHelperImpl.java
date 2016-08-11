@@ -1,10 +1,8 @@
 package fortscale.web.beans.request;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.DataSourceAnomalyTypePair;
+import fortscale.domain.rest.AlertRestFilter;
 import org.springframework.data.domain.Sort;
-
-import java.util.*;
 
 /**
  * Created by shays on 04/05/2016.

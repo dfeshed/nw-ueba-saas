@@ -14,7 +14,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.request.AlertFilterHelperImpl;
-import fortscale.web.beans.request.AlertRestFilter;
+import fortscale.domain.rest.AlertRestFilter;
 import fortscale.web.beans.request.CommentRequest;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;

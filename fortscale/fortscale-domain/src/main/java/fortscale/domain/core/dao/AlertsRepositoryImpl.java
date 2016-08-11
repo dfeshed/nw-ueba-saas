@@ -343,6 +343,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return  new HashSet<>(userNames);
 	}
 
+	@Override
+	public Set<String> getDistinctUserNamesByIndicators(Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs) {
+		Query query = new Query(fetchAnomalyTypeCriteria(dataSourceAnomalyTypePairs));
+
+		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField, query.getQueryObject());
+
+		return new HashSet<>(userNames);
+	}
+
 	private Query getQueryForAlertsByAlertName(List<String> alertNames) {
 		Query query = new Query();
 
@@ -523,7 +532,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * @param indicatorTypes
      * @return
      */
-    private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
+	private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
         BasicDBList dataSourceAndAnomalyConditions = new BasicDBList();
         List<String> dataSourceOnlyConditions = new ArrayList<>();
         indicatorTypes.forEach(anomalyType ->{

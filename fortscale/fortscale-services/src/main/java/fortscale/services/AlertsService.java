@@ -109,4 +109,6 @@ public interface AlertsService {
 	Set<String> getDistinctUserNamesByAlertName(List<String> alertNames);
 
 	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
+
+	public Set<String> getDistinctUserNamesByIndicatorType(Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs);
 }

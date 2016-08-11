@@ -1,6 +1,9 @@
 package fortscale.domain.rest;
 
+import fortscale.domain.core.DataSourceAnomalyTypePair;
+
 import java.util.List;
+import java.util.Set;
 
 public class UserRestFilter extends RestFilter {
 
@@ -22,6 +25,7 @@ public class UserRestFilter extends RestFilter {
 	private Boolean isWatched;
 	private Boolean isScored;
 	private List<String> alertTypes;
+	private AlertRestFilter.DataSourceAnomalyTypePairListWrapper indicatorTypes;
 
 	public String getSortField() {
 		return sortField;
@@ -165,5 +169,21 @@ public class UserRestFilter extends RestFilter {
 
 	public void setAlertTypes(List<String> alertTypes) {
 		this.alertTypes = alertTypes;
+	}
+
+	public AlertRestFilter.DataSourceAnomalyTypePairListWrapper getIndicatorTypes() {
+		return indicatorTypes;
+	}
+
+	public void setIndicatorTypes(AlertRestFilter.DataSourceAnomalyTypePairListWrapper indicatorTypes) {
+		this.indicatorTypes = indicatorTypes;
+	}
+
+	public Set<DataSourceAnomalyTypePair> getAnomalyTypesAsSet() {
+		if (indicatorTypes == null){
+			return null;
+		} else {
+			return indicatorTypes.getAnomalyList();
+		}
 	}
 }
