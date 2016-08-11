@@ -2,8 +2,8 @@
 /* globals blanket, module */
 
 const options = {
-  modulePrefix: 'style-guide',
-  filter: '//.*style-guide/.*/',
+  modulePrefix: 'recon',
+  filter: '//.*recon/.*/',
   antifilter: '//.*(tests|template).*/',
   loaderExclusions: [],
   enableCoverage: true,
@@ -13,9 +13,9 @@ const options = {
     lcovOptions: {
       outputFile: 'lcov.dat',
       renamer: function(moduleName) {
-        const expression = /^style-guide/;
+        const expression = /^recon/;
 
-        return moduleName.replace(expression, 'app') + '.js';
+        return moduleName.replace(expression, 'addon') + '.js';
       }
     }
   }

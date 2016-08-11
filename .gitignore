@@ -7,6 +7,7 @@
 # Build tools
 build/
 .gradle/
+.sonar/
 target/
 
 # compiled output
@@ -27,3 +28,4 @@ npm-debug.log
 testem.log
 *.DS_Store
 *coverage.json
+lcov.dat

@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* globals blanket, module */
 
 const options = {
@@ -7,8 +8,16 @@ const options = {
   loaderExclusions: [],
   enableCoverage: true,
   cliOptions: {
-    reporters: ['json'],
-    autostart: true
+    reporters: ['lcov'],
+    autostart: true,
+    lcovOptions: {
+      outputFile: 'lcov.dat',
+      renamer: function(moduleName) {
+        const expression = /^sa/;
+
+        return moduleName.replace(expression, 'app') + '.js';
+      }
+    }
   }
 };
 if (typeof exports === 'undefined') {
