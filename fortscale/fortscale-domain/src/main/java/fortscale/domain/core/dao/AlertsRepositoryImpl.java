@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -335,31 +336,34 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	}
 
-	@Override public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames) {
-
-		Query query = getQueryForAlertsByAlertName(alertNames);
-
-		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField,query.getQueryObject());
-		return  new HashSet<>(userNames);
-	}
-
 	@Override
-	public Set<String> getDistinctUserNamesByIndicators(Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePairs) {
-		Query query = new Query(fetchAnomalyTypeCriteria(dataSourceAnomalyTypePairs));
+	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter) {
+		Query query = new Query();
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())){
+			Criteria anomalyTypeCriteria = fetchAnomalyTypeCriteria(userRestFilter.getAnomalyTypesAsSet());
+			query.addCriteria(anomalyTypeCriteria);
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())){
+			Criteria criteriaForAlertsByAlertName = getCriteriaForAlertsByAlertName(userRestFilter.getAlertTypes());
+			query.addCriteria(criteriaForAlertsByAlertName);
+		}
 
 		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField, query.getQueryObject());
 
 		return new HashSet<>(userNames);
 	}
 
-	private Query getQueryForAlertsByAlertName(List<String> alertNames) {
-		Query query = new Query();
+	private Criteria getCriteriaForAlertsByAlertName(List<String> alertNames) {
 
-		if (CollectionUtils.isNotEmpty(alertNames)){
-			query.addCriteria(new Criteria().where(Alert.nameField).in(alertNames));
+		Criteria criteria = null;
+
+		if (CollectionUtils.isNotEmpty(alertNames)) {
+			criteria = new Criteria().where(Alert.nameField).in(alertNames);
 		}
 
-		return query;
+		return criteria;
 	}
 
 	private  Query getQueryForAlertsRelevantToUserScore(String userName) {

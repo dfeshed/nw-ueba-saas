@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,25 +31,12 @@ import java.util.Set;
 	}
 
 	private Set<String> getIntersectedUserNameList(UserRestFilter userRestFilter) {
+		Set<String> relevantUsers = null;
 
-		Set<String> relevantUsersByAlertType = new HashSet<>();
-		Set<String> relevantUsersByIndicators = new HashSet<>();
-
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())) {
-			relevantUsersByIndicators = alertsService.getDistinctUserNamesByIndicatorType(userRestFilter.getAnomalyTypesAsSet());
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) || CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
+			relevantUsers = alertsService.getDistinctUserNamesByUserFilter(userRestFilter);
 		}
 
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
-			relevantUsersByAlertType = alertsService.getDistinctUserNamesByAlertName(userRestFilter.getAlertTypes());
-		}
-
-		Set<String> relevantUsers;
-		if (CollectionUtils.isNotEmpty(relevantUsersByAlertType) && CollectionUtils.isNotEmpty(relevantUsersByIndicators)) {
-			relevantUsers = new HashSet<>(CollectionUtils.intersection(relevantUsersByAlertType, relevantUsersByIndicators));
-		} else {
-			relevantUsers = relevantUsersByAlertType;
-			relevantUsers.addAll(relevantUsersByIndicators);
-		}
 		return relevantUsers;
 	}
 
