@@ -6,14 +6,16 @@ scriptDir="$(dirname "$0")"
 
 . $scriptDir/_util.sh
 
+. $scriptDir/local-env/nuke.sh
+
 info "Get comfy, this might take awhile!\n"
 info "Performing initial setup"
 
-. $scriptDir/initial-setup.sh
+. $scriptDir/local-env/initial-setup.sh
 
 info "Installing apps\n"
 
-. $scriptDir/app-setup.sh
+. $scriptDir/local-env/app-setup.sh
 
 success "Congrats, you are all set up!\n"
 success "IMPORTANT: To use your new environment, please open up a new terminal window.\n"

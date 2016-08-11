@@ -16,6 +16,10 @@ function fail {
   echo -e "${RED}****  $1  ${NC}"
 }
 
+function red {
+  echo -e "${RED}$1  ${NC}"
+}
+
 # if previous command has error, print message and exit
 function checkError {
   local status=$?

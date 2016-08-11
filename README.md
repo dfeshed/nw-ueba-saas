@@ -26,6 +26,16 @@ This script will setup:
 * The **style-guide** app's NPM/Bower dependencies
 * The **sa** app's NPM/Bower dependencies
 
+## Need to start over?
+
+If you've already been dev-ing and something is screwed up in your environment, or maybe you are working with a new node and need a clean install of everything?
+
+The `welcome.sh` script will fix that for you.
+
+```
+./scripts/welcome.sh
+```
+
 ### Fixtured Mode
 
 The client application can be run without any backend infrastructure.  The XHR and WebSocket requests are intercepted

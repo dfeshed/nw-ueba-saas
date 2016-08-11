@@ -61,7 +61,7 @@ else
 fi
 
 # install phantomjs-prebuilt if it hasn't been
-if [[ "$(hasVersion "phantomjs-prebuilt" $PHANTOMJS_VERSION)" == "false" ]]
+if [[ "$(hasVersion "phantomjs" $PHANTOMJS_VERSION)" == "false" ]]
 then
   info "Installing phantomjs-prebuilt"
   npm install -g phantomjs-prebuilt@$PHANTOMJS_VERSION
