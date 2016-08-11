@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -25,9 +25,21 @@ import java.util.Set;
 	@Autowired private AlertsService alertsService;
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
+		List<User> result = new ArrayList<>();
 		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
 
-		return userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
+		if (shouldStop(userRestFilter, relevantUsers)) {
+			return result;
+		}
+
+		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
+		return result;
+	}
+
+	private boolean shouldStop(UserRestFilter userRestFilter, Set<String> relevantUsers) {
+		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
+				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()))
+				&& (CollectionUtils.isEmpty(relevantUsers));
 	}
 
 	private Set<String> getIntersectedUserNameList(UserRestFilter userRestFilter) {
@@ -42,6 +54,10 @@ import java.util.Set;
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter) {
 		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
+
+		if (shouldStop(userRestFilter, relevantUsers)) {
+			return 0;
+		}
 
 		return userService.countUsersByFilter(userRestFilter, relevantUsers);
 	}
