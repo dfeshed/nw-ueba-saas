@@ -20,6 +20,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.type.TypeReference;
@@ -74,8 +75,10 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	private UserActivityService userActivityService;
 
-	private static final String DEFAULT_SORT_FIELD = "username";
+	@Autowired
+	private UserWithAlertService userWithAlertService;
 
+	private static final String DEFAULT_SORT_FIELD = "username";
 
 	/**
 	 * The API to get all users. GET: /api/user
@@ -86,27 +89,40 @@ public class ApiUserController extends BaseController{
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
-		List<User> users = userService.findUsersByFilter(userRestFilter, pageRequest);
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
 
 		setSeverityOnUsersList(users);
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
-		usersList.setTotal(userService.countUsersByFilter(userRestFilter));
+		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
 
 		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
-			setAdditionalInformation(usersList.getData());
+			addAlertsAndDevices(usersList.getData());
 		}
 
 		return usersList;
 	}
 
-	private void setAdditionalInformation(List<UserDetailsBean> users) {
+	@RequestMapping(value="/count", method=RequestMethod.GET)
+	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
+
+		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
+
+		DataBean<Integer> bean = new DataBean<>();
+		bean.setData(count);
+		bean.setTotal(count);
+
+		return bean;
+	}
+
+	private void addAlertsAndDevices(List<UserDetailsBean> users) {
 		for (UserDetailsBean userDetailsBean: users) {
 			User user = userDetailsBean.getUser();
 			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
-			List<UserActivitySourceMachineDocument> userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
-			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, null));
+			List<UserActivitySourceMachineDocument> userSourceMachines
+					= userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
+			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
 		}
 	}
 
@@ -190,13 +206,21 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{ids}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids){
+	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids,
+			@RequestParam(required = false, value = "add_alerts_and_devices") Boolean addAlertsAndDevices){
 
 		// Get Users
 		List<User> users = userRepository.findByIds(ids);
 		setSeverityOnUsersList(users);
+
+		DataBean<List<UserDetailsBean>> usersDetails = getUsersDetails(users);
+
+		if (BooleanUtils.isTrue(addAlertsAndDevices)){
+			addAlertsAndDevices(usersDetails.getData());
+		}
+
 		// Return detailed users
-		return getUsersDetails(users);
+		return usersDetails;
 	}
 
 	/**

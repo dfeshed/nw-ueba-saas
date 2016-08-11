@@ -1,5 +1,7 @@
 package fortscale.domain.rest;
 
+import java.util.List;
+
 public class UserRestFilter extends RestFilter {
 
 	private String sortField;
@@ -16,6 +18,10 @@ public class UserRestFilter extends RestFilter {
 	private Boolean isServiceAccount;
 	private String searchFieldContains;
 	private Boolean addAlertsAndDevices;
+	private List<String> userTags;
+	private Boolean isWatched;
+	private Boolean isScored;
+	private List<String> alertTypes;
 
 	public String getSortField() {
 		return sortField;
@@ -61,7 +67,7 @@ public class UserRestFilter extends RestFilter {
 		return isDisabled;
 	}
 
-	public void setDisabled(Boolean disabled) {
+	public void setIsDisabled(Boolean disabled) {
 		isDisabled = disabled;
 	}
 
@@ -69,16 +75,8 @@ public class UserRestFilter extends RestFilter {
 		return isDisabledWithActivity;
 	}
 
-	public void setDisabledWithActivity(Boolean disabledWithActivity) {
+	public void setIsDisabledWithActivity(Boolean disabledWithActivity) {
 		isDisabledWithActivity = disabledWithActivity;
-	}
-
-	public Boolean getIsTerminatedWithActivity() {
-		return isTerminatedWithActivity;
-	}
-
-	public void setTerminatedWithActivity(Boolean terminatedWithActivity) {
-		isTerminatedWithActivity = terminatedWithActivity;
 	}
 
 	public String getInactiveSince() {
@@ -109,7 +107,7 @@ public class UserRestFilter extends RestFilter {
 		return isServiceAccount;
 	}
 
-	public void setServiceAccount(Boolean serviceAccount) {
+	public void setIsServiceAccount(Boolean serviceAccount) {
 		isServiceAccount = serviceAccount;
 	}
 
@@ -129,4 +127,43 @@ public class UserRestFilter extends RestFilter {
 		this.addAlertsAndDevices = addAlertsAndDevices;
 	}
 
+	public List<String> getUserTags() {
+		return userTags;
+	}
+
+	public void setUserTags(List<String> userTags) {
+		this.userTags = userTags;
+	}
+
+	public Boolean getIsWatched() {
+		return isWatched;
+	}
+
+	public void setIsWatched(Boolean isWatched) {
+		this.isWatched = isWatched;
+	}
+
+	public Boolean getIsScored() {
+		return isScored;
+	}
+
+	public void setIsScored(Boolean isScored) {
+		this.isScored = isScored;
+	}
+
+	public Boolean getIsTerminatedWithActivity() {
+		return isTerminatedWithActivity;
+	}
+
+	public void setIsTerminatedWithActivity(Boolean terminatedWithActivity) {
+		isTerminatedWithActivity = terminatedWithActivity;
+	}
+
+	public List<String> getAlertTypes() {
+		return alertTypes;
+	}
+
+	public void setAlertTypes(List<String> alertTypes) {
+		this.alertTypes = alertTypes;
+	}
 }

@@ -47,6 +47,8 @@ public interface UserService extends CachingService{
 
 	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 
+	User saveUser(User user);
+
 	/**
 	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed
 	 * @param username	The username to update
@@ -118,8 +120,8 @@ public interface UserService extends CachingService{
 	 */
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
 
-	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest);
+	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserNames);
 
-	public int countUsersByFilter(UserRestFilter userRestFilter);
+	public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers);
 
 }

@@ -10,6 +10,8 @@ import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -684,8 +686,29 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			}
 			criteriaList.add(new Criteria().orOperator(wheres.toArray(new Criteria[0])));
 		}
-		return criteriaList;
 
+		if (CollectionUtils.isNotEmpty(userRestFilter.getUserTags())) {
+			if (userRestFilter.getUserTags().contains("any")) {
+				criteriaList.add(new Criteria(User.tagsField).not().size(0));
+			}
+		}
+
+		if (userRestFilter.getIsWatched() != null) {
+			criteriaList.add(new Criteria(User.followedField).is(userRestFilter.getIsWatched()));
+		}
+
+		if (BooleanUtils.isTrue(userRestFilter.getIsScored())) {
+			criteriaList.add(new Criteria(User.scoreField).gt(0));
+		} else if (BooleanUtils.isFalse(userRestFilter.getIsScored())) {
+			criteriaList.add(new Criteria(User.scoreField).is(0));
+		}
+
+		return criteriaList;
+	}
+
+	@Override public Criteria getUserCriteriaByUserNames(Set<String> userNames) {
+		Criteria criteria = new Criteria().where(User.usernameField).in(userNames);
+		return criteria;
 	}
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {

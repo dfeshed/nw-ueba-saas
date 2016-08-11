@@ -3,24 +3,22 @@ package fortscale.services.impl;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
-import fortscale.domain.dto.SeveritiesCountDTO;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
-import fortscale.utils.time.TimestampUtils;
 
-import org.springframework.beans.factory.InitializingBean;
+import fortscale.services.UserWithAlertService;
+import org.apache.commons.lang.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Services for managing the alerts
@@ -42,13 +40,23 @@ public class AlertsServiceImpl implements AlertsService {
 	@Autowired
 	private UserService userService;
 
-
-
     @Autowired
     private UserScoreService userScoreService;
 
+	private Set<String> feedbackNoRejectedSet;
 
+	{
+		feedbackNoRejectedSet = new HashSet<>();
 
+		Arrays.stream(AlertFeedback.values()).forEach(alertFeedback -> {
+			if (!alertFeedback.equals(AlertFeedback.Rejected)) {
+				feedbackNoRejectedSet.add(alertFeedback.toString());
+			}
+		});
+	}
+
+	@Autowired
+	private UserWithAlertService userWithAlertService;
 
 	@Override
 	public void saveAlertInRepository(Alert alert) {
@@ -65,7 +73,7 @@ public class AlertsServiceImpl implements AlertsService {
 		alert = userScoreService.updateAlertContirubtion(alert);
 		alert = alertsRepository.save(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
-		userScoreService.recalculateNumberOfUserAlerts(alert.getEntityName());
+		userWithAlertService.recalculateNumberOfUserAlerts(alert.getEntityName());
 		return alert;
 	}
 
@@ -125,7 +133,7 @@ public class AlertsServiceImpl implements AlertsService {
 	public void add(Alert alert) {
 		alertsRepository.add(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
-		userScoreService.recalculateNumberOfUserAlerts(alert.getEntityName());
+		userWithAlertService.recalculateNumberOfUserAlerts(alert.getEntityName());
 	}
 
 	@Override
@@ -218,10 +226,26 @@ public class AlertsServiceImpl implements AlertsService {
     }
 
 	@Override public Set<Alert> getOpenAlertsByUsername(String userName) {
-		Set<AlertFeedback> feedbackSet = new HashSet<>();
-		feedbackSet.add(AlertFeedback.Approved);
-		feedbackSet.add(AlertFeedback.None);
+		Set<Alert> alerts = alertsRepository.getAlertsForUserByFeedback(userName, feedbackNoRejectedSet);
 
-		return alertsRepository.getAlertsForUserByFeedback(userName, feedbackSet);
+		Comparator<? super Alert> sortBySeverity = (o1, o2) -> Integer.compare(o1.getSeverityCode(), o2.getSeverityCode());
+		Set<Alert> sortedAlerts = alerts.stream().sorted(sortBySeverity).collect(Collectors.toSet());
+		return sortedAlerts;
+	}
+
+	@Override public Set<String> getDistinctAlertNames(Boolean ignoreRejected) {
+		Set<String> alertNames;
+		if (BooleanUtils.isFalse(ignoreRejected)) {
+			alertNames = alertsRepository.getDistinctAlertNames(null);
+		} else {
+			alertNames = alertsRepository.getDistinctAlertNames(feedbackNoRejectedSet);
+		}
+
+		return alertNames.stream().sorted().collect(Collectors.toSet());
+	}
+
+
+	@Override public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames) {
+		return alertsRepository.getDistinctUserNamesByAlertName(alertNames);
 	}
 }

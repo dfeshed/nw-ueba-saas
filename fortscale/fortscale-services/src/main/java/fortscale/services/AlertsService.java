@@ -105,4 +105,8 @@ public interface AlertsService {
     Set<Alert> getAlertsRelevantToUserScore(String userName);
 
 	Set<Alert> getOpenAlertsByUsername(String userName);
+
+	Set<String> getDistinctUserNamesByAlertName(List<String> alertNames);
+
+	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
 }

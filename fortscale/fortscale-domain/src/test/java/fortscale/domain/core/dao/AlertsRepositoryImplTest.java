@@ -109,8 +109,8 @@ public class AlertsRepositoryImplTest {
 		alerts.add(alert);
 
 		when (mongoTemplate.find(any(Query.class), eq(Alert.class))).thenReturn(alerts);
-		Set<AlertFeedback> feedbackSet = new HashSet<>();
-		feedbackSet.add(AlertFeedback.None);
+		Set<String> feedbackSet = new HashSet<>();
+		feedbackSet.add(AlertFeedback.None.toString());
 		Set<Alert> result = subject.getAlertsForUserByFeedback("user1", feedbackSet);
 		verify(mongoTemplate).find(any(Query.class), eq(Alert.class));
 		assertEquals("user1", ((Alert)result.toArray()[0]).getEntityName());
