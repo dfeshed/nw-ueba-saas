@@ -9,6 +9,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
@@ -16,15 +17,11 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
-import fortscale.domain.rest.UserRestFilter;
 import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.collections.CollectionUtils;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-import org.json.JSONArray;
+import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +34,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -438,58 +434,6 @@ public class ApiUserController extends BaseController{
 		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
 		ret.setData(usersMachinesList);
 		ret.setTotal(usersMachinesList.size());
-		return ret;
-	}
-
-/*	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
-		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
-		List<IUserScore> userScores = userServiceFacade.getUserScores(id);
-		ret.setData(userScores);
-		ret.setTotal(userScores.size());
-		return ret;
-	}
-
-	@RequestMapping(value="/{uid}/classifier/{classifierId}/scorehistory", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(required=false) List<Long> dateRange,
-			@RequestParam(defaultValue="0") Integer tzShift,
-			@RequestParam(defaultValue="10") Integer limit,
-			Model model){
-		if(dateRange == null || dateRange.size() == 0){
-			dateRange = new ArrayList<>();
-			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().minusDays(limit-1).getMillis());
-			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().plusDays(1).getMillis());
-		} else{
-			if(dateRange.size()!=2 || (dateRange.get(0)>=dateRange.get(1))){
-				logger.error("dateRange paramter {} is not in the list format [start,end]", dateRange);
-				throw new InvalidValueException(String.format("dateRange paramter %s is not in the list format [start,end]", dateRange));
-			}
-		}
-		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
-		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, dateRange.get(0), dateRange.get(1), tzShift);
-
-		Collections.reverse(userScoreHistory);
-		ret.setData(userScoreHistory);
-		ret.setTotal(userScoreHistory.size());
-		return ret;
-	}
-
-
-	@RequestMapping(value="/{uid}/classifier/total/explanation", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<IUserScore>> userTotalScoreExplanation(@PathVariable String uid,
-			@RequestParam(required=true) String date, Model model){
-		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
-		List<IUserScore> userScores = userServiceFacade.getUserScoresByDay(uid, Long.parseLong(date));
-
-		ret.setData(userScores);
-		ret.setTotal(userScores.size());
 		return ret;
 	}
 
