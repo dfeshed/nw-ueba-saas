@@ -124,8 +124,11 @@ export default EmberObject.extend({
    */
   connect() {
     let headers = this.headers || {};
-    headers['X-CSRF-TOKEN'] = localStorage.getItem('rsa-x-csrf-token');
 
+    let accessToken = localStorage.getItem('rsa-oauth2-jwt-access-token');
+    headers['X-CSRF-TOKEN'] = localStorage.getItem('rsa-x-csrf-token');
+    headers.Upgrade = 'websocket';
+    headers.Authorization = `Bearer ${accessToken}`;
     let me = this;
     return this.set('promise',
       new RSVP.Promise(function(resolve, reject) {
@@ -254,7 +257,6 @@ export default EmberObject.extend({
     }
 
     let stompClient = Stomp.over(
-      // jscs:disable requireCamelCaseOrUpperCaseIdentifiers
       new SockJS(url, {}, { protocols_whitelist: ['websocket'] })
     );
     stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;

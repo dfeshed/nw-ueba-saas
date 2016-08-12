@@ -24,6 +24,7 @@ export default {
     badCredentials: 'ja_Invalid credentials',
     userLocked: 'ja_User account is locked',
     userDisabled: 'ja_User account is disabled',
+    userExpired: 'ja_User account has expired',
     authServerNotFound: 'ja_There was an error while authenticating your credentials.',
     lostPassword: {
       title: 'ja_Lost Password Recovery',

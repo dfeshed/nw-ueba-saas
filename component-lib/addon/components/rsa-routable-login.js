@@ -12,8 +12,7 @@ const {
   Component,
   computed,
   run,
-  typeOf,
-  Logger
+  typeOf
 } = Ember;
 
 /**
@@ -200,23 +199,22 @@ export default Component.extend({
           // Auth failed
           function(message) {
             let errorMessage = 'login.genericError';
-            let exception = message.jqXHR.getResponseHeader('x-authentication-exception');
+            let exception = message.error_description;
 
             if (exception) {
-              if (exception.indexOf('BadCredentials') !== -1) {
+              if (exception.indexOf('Bad credentials') !== -1) {
                 errorMessage = 'login.badCredentials';
-              } else if (exception.indexOf('Locked') !== -1) {
+              } else if (exception.indexOf('locked') !== -1) {
                 errorMessage = 'login.userLocked';
-              } else if (exception.indexOf('Disabled') !== -1) {
+              } else if (exception.indexOf('disabled') !== -1) {
                 errorMessage = 'login.userDisabled';
-              } else if (exception.indexOf('AuthenticationService') !== -1) {
-                errorMessage = 'login.authServerNotFound';
+              } else if (exception.indexOf('expired') !== -1) {
+                errorMessage = 'login.userDisabled';
               }
             }
 
             me.set('errorMessage', errorMessage);
             me.set('status', _STATUS.ERROR);
-            Logger.log('Authentication error:', message);
           }
         );
       }

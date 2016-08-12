@@ -108,10 +108,12 @@ module.exports = function(environment) {
       rootElement: 'body'
     },
     'ember-simple-auth': {
-      authenticate: 'authenticator:authenticator',
-      authorizer: 'authorizer:authorizer',
+      authenticate: 'authenticator:oauth-authenticator',
+      authorizer: 'authorizer:oauth-authorizer',
       /* Local storage key that holds the CSRF token returned by the server */
-      csrfLocalstorageKey: 'rsa-x-csrf-token'
+      csrfLocalstorageKey: 'rsa-x-csrf-token',
+      /* Local storage key that holds the OAuth token returned by the Security Server */
+      accessTokenKey: 'rsa-oauth2-jwt-access-token'
     },
     contentSecurityPolicy: {
 
@@ -123,6 +125,10 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
+    // use regular form auth
+    ENV['ember-simple-auth'].authenticate = 'authenticator:authenticator';
+    ENV['ember-simple-auth'].authorizer = 'authorizer:authorizer';
+
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;

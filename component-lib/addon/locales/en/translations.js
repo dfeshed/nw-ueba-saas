@@ -24,6 +24,7 @@ export default {
     badCredentials: 'Invalid credentials',
     userLocked: 'User account is locked',
     userDisabled: 'User account is disabled',
+    userExpired: 'User account has expired',
     authServerNotFound: 'There was an error while authenticating your credentials.',
     lostPassword: {
       title: 'Lost Password Recovery',
