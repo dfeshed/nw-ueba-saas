@@ -1,0 +1,54 @@
+{{#if isReadOnly}}
+  {{! rsa-form-textarea class="rsa-journal-entry__edit-note" value=(if asNew newNote journal.notes) placeholder=(t 'journal.new.notePlaceholder' )}}
+  {{#if addMode}}
+    {{rsa-form-textarea class="rsa-journal-entry__edit-note" value=newNote placeholder=(t 'journal.new.notePlaceholder' )}}
+    {{#rsa-form-select isInline=true class="rsa-journal-entry__edit-milestone" label=(t 'journal.new.milestone' ) values=newMilestoneSelect}}
+      {{#each milestoneOptions as |milestone i|}}
+        <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
+      {{/each}}
+    {{/rsa-form-select}}
+  {{else}}
+    {{rsa-form-textarea class="rsa-journal-entry__edit-note" value=journal.notes placeholder=(t 'journal.new.notePlaceholder' )}}
+    {{#rsa-form-select isInline=true class="rsa-journal-entry__edit-milestone" label=(t 'journal.new.milestone' ) values=selectedMilestone}}
+      {{#each milestoneOptions as |milestone i|}}
+        <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
+      {{/each}}
+    {{/rsa-form-select}}
+  {{/if}}
+  <div class="rsa-journal-entry__actions">
+    {{#rsa-form-button class="rsa-journal-entry__actions__cancel" click=(action 'cancelEdit')}}{{t 'forms.cancel'}}{{/rsa-form-button}}
+    {{#rsa-form-button class="rsa-journal-entry__actions__save" click=(action 'saveJournal') style='primary'}}{{if asNew (t 'journal.new.addNote') (t 'forms.submit')}}{{/rsa-form-button}}
+  </div>
+{{else}}
+  <div class="rsa-journal-entry__created-by">
+    {{journal.author}}:
+  </div>
+  <div class="rsa-journal-entry__note">
+    {{journal.notes}}
+  </div>
+  <div class="rsa-journal-entry__milestones">
+    {{#if journal.milestone}}
+      {{rsa-content-label class="rsa-journal-entry__milestone" label=(t (concat 'journal.milestones.' journal.milestone) )}}
+    {{/if}}
+  </div>
+  {{rsa-content-datetime class='rsa-journal-entry__created_time-ago' timestamp=journal.created withTimeAgo=true}}
+
+  {{#rsa-form-button class="rsa-journal-entry__edit-journal" isIconOnly=true click=(action 'editJournal')}}
+    {{rsa-icon size='small' style='lined' name='pencil-1'}}
+  {{/rsa-form-button}}
+  {{#rsa-application-modal eventId="deleteJournalEntry"}}
+    <span class="rsa-journal-entry__delete-journal modal-trigger">
+      {{rsa-icon size='small' style='lined' name='bin-1'}}
+    </span>
+    <div class="modal-content rsa-journal-entry__delete-dialog">
+      <div class="rsa-journal-entry__delete-dialog__prompt">{{t 'journal.delete.dialog'}}</div>
+      <div class="rsa-journal-entry__delete-dialog__actions">
+        {{#rsa-form-button class="rsa-journal-entry__delete-dialog__actions__cancel" click=(action 'cancelDelete')}}{{t 'forms.cancel'}}{{/rsa-form-button}}
+        {{#rsa-form-button class="rsa-journal-entry__delete-dialog__actions__confirm" click=(action 'confirmDelete') style='primary'}}{{t 'forms.submit'}}{{/rsa-form-button}}
+      </div>
+    </div>
+  {{/rsa-application-modal}}
+
+
+{{/if}}
+{{yield}}

@@ -71,6 +71,33 @@ export default $.extend({}, BaseTranslations, {
     appName: 'ja_App',
     appVersion: 'ja_Version'
   },
+  journal: {
+    milestones: {
+      RECONNAISSANCE: 'ja_Reconnaissance',
+      DELIVERY: 'ja_Delivery',
+      EXPLOITATION: 'ja_Exploitation',
+      INSTALLATION: 'ja_Installation',
+      COMMAND_AND_CONTROL: 'ja_Command and control',
+      ACTION_ON_OBJECTIVE: 'ja_Action on objective',
+      CONTAINMENT: 'ja_Containment',
+      ERADICATION: 'ja_Eradication',
+      CLOSURE: 'ja_Closure'
+    },
+    new: {
+      notePlaceholder: 'ja_Add Note Here...',
+      attachFile: 'ja_Attach file',
+      milestone: 'ja_Investigation milestones',
+      addNote: 'ja_Add Note'
+    },
+    delete: {
+      dialog: 'ja_Are you sure you want to delete the journal entry?'
+    },
+    sort: {
+      title: 'ja_Sort',
+      myNotes: 'ja_My Notes',
+      allNotes: 'ja_All Notes'
+    }
+  },
   incident: {
     fields: {
       id: 'ja_ID',

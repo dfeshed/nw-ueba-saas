@@ -1,0 +1,132 @@
+.rsa-journal-entry {
+  position: relative;
+  overflow: hidden;
+  padding: rsa-whitespace(less);
+  background-color: rsa-color(black, base, $rsa-nearly-transparent);
+  border-bottom: 1px solid rsa-color(gray);
+  border-top-style: none;
+  color: rsa-color(gray, lighter);
+
+  &__created-by {
+    @include rsa-font(header, small);
+    @include rsa-font(bold, small);
+    padding: rsa-whitespace(least) 0;
+  }
+
+  &__note {
+    @include rsa-font(body);
+    padding: rsa-whitespace(base) 0;
+  }
+  &__attached-files {
+    @include rsa-font(header, small);
+    text-transform: lowercase;
+    padding: rsa-whitespace(less) 0;
+    &__file {
+      padding: rsa-whitespace(least) 0;
+      &__icon {
+
+      }
+      &__name {
+        padding-left: rsa-whitespace(least);
+      }
+    }
+  }
+  &__milestones {
+    @include rsa-font(body, small);
+    padding: rsa-whitespace(less) 0;
+  }
+  &__created_time-ago {
+    float: right;
+    @include rsa-font(header, small);
+    color: rsa-color(gray);
+    letter-spacing: 0.05rem;
+  }
+
+  &__edit-journal, &__delete-journal {
+    display: none;
+  }
+
+  &:hover {
+    background-color: rsa-color(black, base, $rsa-translucent);
+
+    .rsa-journal-entry__edit-journal, .rsa-journal-entry__delete-journal {
+      display: block;
+      position: absolute;
+      top: rsa-whitespace(less);
+
+      .rsa-form-button {
+        padding: 0;
+      }
+    }
+
+    .rsa-journal-entry__edit-journal {
+      right: rsa-whitespace(more);
+    }
+    .rsa-journal-entry__delete-journal {
+      color: rsa-color(red);
+      cursor: pointer;
+      right: rsa-whitespace(less);
+    }
+  }
+
+  &__edit-note, .rsa-form-textarea textarea {
+    @include rsa-font(body, small);
+    margin-bottom: rsa-whitespace(less);
+    min-height: 1rem;
+    height: 40px;
+    resize: none;
+  }
+
+  &__edit-attached-files {
+    display: none;
+    @include rsa-font(header, small);
+    color: rsa-color(gray, lighter);
+    margin: rsa-whitespace(less) 0;
+  }
+
+  &__edit-milestone {
+    display: none;
+    .rsa-form-label {
+      @include rsa-font(header, small);
+      margin: 0 0 rsa-whitespace(less) 0;
+    }
+  }
+
+  &__actions {
+    display: none;
+    float: right;
+    margin: rsa-whitespace(less) 0;
+  }
+
+  &.edit-mode-active {
+    background-color: rsa-color(black, base, $rsa-translucent);
+
+    .rsa-journal-entry__edit-note, .rsa-form-textarea textarea {
+      min-height: 8rem;
+    }
+
+    .rsa-journal-entry__edit-attached-files {
+      display: inline-block;
+    }
+
+    .rsa-journal-entry__edit-milestone {
+      display: block;
+    }
+
+    .rsa-journal-entry__actions {
+      display: inline-block;
+    }
+  }
+
+  &__delete-dialog {
+    padding: rsa-whitespace();
+
+    &__prompt {
+      @include rsa-font(body, large);
+    }
+    &__actions {
+      float: right;
+      padding: rsa-whitespace(base) 0;
+    }
+  }
+}

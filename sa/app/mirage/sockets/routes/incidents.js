@@ -73,11 +73,19 @@ export default function(server) {
 
     server.asyncFixturesPromise.then(() => {
       let response = [];
-      let incident = server.mirageServer.db.incident.where({ 'statusSort': 0 });
+      let { filter } = frames[0].body;
+      let idFilter = (filter || []).findBy('field', 'id') || {};
+      let incidents;
+      // filter by incident id
+      if (idFilter && typeOf(idFilter.value) !== 'undefined') {
+        incidents = server.mirageServer.db.incident.where({ 'id': idFilter.value });
+      } else {
+        // if not filter, status sort is default
+        incidents = server.mirageServer.db.incident.where({ 'statusSort': 0 });
+      }
 
-      incident = incident.toArray();
       // update the first 10 incidents
-      let someIncidents = incident.slice(0, 10);
+      let someIncidents = incidents.slice(0, 10);
       someIncidents.forEach((incident) => {
         incident.riskScore = Math.min(99, (10 + Math.round(100 * Math.random())));
         response.push(incident);
@@ -85,7 +93,7 @@ export default function(server) {
       // to mock async add/update/delete change the notificationCode here
       // notificationCode can be 0/1/2 -> incident(s) in the response were added/updated/deleted respectively
       // TODO: not handling delete incident use case yet. Will add it once back-end is ready
-      response.notificationCode = 0;
+      response.notificationCode = 1;
       if (response.notificationCode === 0) {
         // create a new incident
         response.push(IncidentSamples.newIncident, IncidentSamples.assignedIncident, IncidentSamples.inProgressIncident);
@@ -95,11 +103,28 @@ export default function(server) {
         server.mirageServer.db.incident.insert(IncidentSamples.inProgressIncident);
 
       } else if (response.notificationCode === 1) {
+
         // update the first 10 incidents
         someIncidents.forEach((incident) => {
           incident.statusSort = 1;
+          incident.notes = incident.notes || [];
+
+          // removing an existing note
+          incident.notes.popObject();
+
+          // updating existing notes
+          incident.notes.forEach((note) => {
+            note.notes += ' UPDATED';
+          });
+
+          // adding a few new Journals
+          incident.notes.pushObject({ id: 97, notes: 'This journal entry wasnt here before', created: new Date(), author: 'admin', milestone: 'INSTALLATION' });
+          incident.notes.pushObject({ id: 98, notes: 'This is a NEW journal entry', created: new Date(), author: 'admin', milestone: 'CONTAINMENT' });
+          incident.notes.pushObject({ id: 99, notes: 'This is also a NEW journal entry', created: new Date(), author: 'ian', milestone: 'ERADICATION' });
+
           response.push(incident);
         });
+
         response.push(IncidentSamples.newIncident);
         server.mirageServer.db.incident.insert(IncidentSamples.newIncident);
       }

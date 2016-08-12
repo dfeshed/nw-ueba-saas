@@ -89,6 +89,33 @@ export default RESTAdapter.extend({
   },
 
   /**
+   * Overrides the default deleteRecord method, in order to support using sockets.
+   * @see http://emberjs.com/api/data/classes/DS.RESTAdapter.html#method_deleteRecord
+   * @public
+   * Overrides the adapters deleteRecord method.
+   * @param {DS.Store} store
+   * @param {DS.Model} type
+   * @param {DS.Snapshot} snapshot
+   * @param {Object} query - hash of socket request params
+   */
+  deleteRecord(store, type, snapshot, query = null) {
+    return this._trySocket('deleteRecord', store, type, query, null, snapshot) || this._super(...arguments);
+  },
+
+  /**
+   * Overrides the default createRecord method, in order to support using sockets.
+   * @see http://emberjs.com/api/data/classes/DS.RESTAdapter.html#method_createRecord
+   * @public
+   * Overrides the adapters createRecord method.
+   * @param {DS.Store} store
+   * @param {DS.Model} type
+   * @param {DS.Snapshot} snapshot
+   */
+  createRecord(store, type, snapshot, query = null) {
+    return this._trySocket('createRecord', store, type, query, null, snapshot) || this._super(...arguments);
+  },
+
+  /**
    * Tries to use a socket. If successful, returns the socket promise; otherwise if a run-time error is caught, returns null.
    * Typically a run-time error would only be thrown if there is no config defined in `sa/config/environment.js` for
    * the requested modelName-method pair.

@@ -1,0 +1,13 @@
+<div class='rsa-form-radio-group rsa-journal-wrapper__journal-sort'>
+  <label class='rsa-journal-wrapper__journal-sort__title'>{{t 'journal.sort.title'}}:</label>
+  {{rsa-form-radio class='rsa-journal-wrapper__journal-sort__my-notes' model=viewNotes value='my' label=(t 'journal.sort.myNotes')}}
+  {{rsa-form-radio class='rsa-journal-wrapper__journal-sort__all-notes' model=viewNotes value='all' label=(t 'journal.sort.allNotes')}}
+</div>
+{{rsa-respond/incident-detail/journal-entry addMode=true addJournalAction=addJournalAction}}
+<div class="rsa-journal-wrapper__journal-viewport">
+  {{#each model.notes as | journal | }}
+    {{#if (call-method this 'displayJournal' journal viewNotes)}}
+      {{rsa-respond/incident-detail/journal-entry journal=journal editJournalAction=editJournalAction deleteJournalAction=deleteJournalAction}}
+    {{/if}}
+  {{/each}}
+</div>

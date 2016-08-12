@@ -18,9 +18,10 @@
 
   <hbox>
     <vbox xs="3" class="rsa-response-detail__bottom-overview">
-      Overview WIP
       {{#if showJournal}}
-        <div class="rsa-response-detail__bottom-text">Add Journal Entry</div>
+        {{rsa-respond/incident-detail/journal-wrapper model=model addJournalAction=addJournalAction editJournalAction=editJournalAction deleteJournalAction=deleteJournalAction}}
+      {{else}}
+        Overview WIP
       {{/if}}
     </vbox>
     <vbox xs="9">

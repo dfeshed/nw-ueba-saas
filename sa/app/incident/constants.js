@@ -27,6 +27,18 @@ export const incidentRiskThreshold = {
   HIGH: 70
 };
 
+export const journalMilestones = {
+  RECONNAISSANCE: 0,
+  DELIVERY: 1,
+  EXPLOITATION: 2,
+  INSTALLATION: 3,
+  COMMAND_AND_CONTROL: 4,
+  ACTION_ON_OBJECTIVE: 5,
+  CONTAINMENT: 6,
+  ERADICATION: 7,
+  CLOSURE: 8
+};
+
 // returns : {0: 0, 1: 1, 2: 2, 3: 3}
 export const incidentPriorityIds =
   Object.keys(incPriority).map((k) => incPriority[k]);

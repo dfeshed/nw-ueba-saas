@@ -38,6 +38,8 @@ export default Ember$.extend({}, BaseSelectors, {
     'respond': {
 
       'root': '.js-test-respond-root',
+      'carouselItems': 'div[class=rsa-carousel__visible-items] div[class^=rsa-incident-content-card]',
+      'incidentTile': 'div[class=rsa-carousel__visible-items] span[class=rsa-incident-tile-created-date]',
       'url': '/do/respond',
       'path': 'protected.respond.index',
       'card': {
@@ -101,6 +103,22 @@ export default Ember$.extend({}, BaseSelectors, {
         'incidentUnorderedList': '.js-test-respond-incs-ul',
         'footer': '.js-test-respond-incs-footer'
       }
+    },
+    'incident': {
+      'closeButton': 'div[class^=rsa-incident-detail-header__buttons__close-incident]',
+      'storylineElm': 'vbox[class=rsa-response-storyline]',
+      'storylineTimeTxt': 'vbox[class=rsa-response-storyline__times] span[class=datetime]',
+      'storylineMainRow': 'hbox[class=rsa-response-storyline__main-row]',
+      'journalEntryNote': 'div[class$=rsa-journal-entry] label[class^=rsa-journal-entry__edit-note]',
+      'journalEntryWrapper': 'div[class=rsa-journal-wrapper__journal-viewport]',
+      'myNotesRdoBtn': 'label[class^=rsa-journal-wrapper__journal-sort__my-notes]  span[class=inner-wrapper]',
+      'allNotesRdoBtn': 'label[class^=rsa-journal-wrapper__journal-sort__all-notes] span input',
+      'createdByElm': 'div[class=rsa-journal-entry__created-by]',
+      'journalEntryNoteTxtElm': 'div[class=rsa-journal-entry__note]',
+      'investigationMilestonesTxtElm': 'div[class=rsa-journal-entry__milestones] div[class^=rsa-journal-entry__milestone]',
+      'dateTimeElm': 'span[class^=rsa-journal-entry__created_time-ago] span',
+      'journalEditBtn': 'div[class^=rsa-journal-entry__edit-journal] i[class*=rsa-icon-pencil]',
+      'journalDeleteBtn': 'div[class^=rsa-journal-entry__delete-journal] i[class*=rsa-icon-bin-1]'
     }
   }
 });
