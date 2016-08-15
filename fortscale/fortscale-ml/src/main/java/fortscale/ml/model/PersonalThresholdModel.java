@@ -22,4 +22,17 @@ public class PersonalThresholdModel implements Model {
 	public long getNumOfSamples() {
 		return 0;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (!(o instanceof  PersonalThresholdModel)) {
+			return false;
+		}
+		return Math.abs(((PersonalThresholdModel) o).normalizationFactor - normalizationFactor) < 0.00000001;
+	}
+
+	@Override
+	public int hashCode() {
+		return new Double(normalizationFactor).hashCode();
+	}
 }
