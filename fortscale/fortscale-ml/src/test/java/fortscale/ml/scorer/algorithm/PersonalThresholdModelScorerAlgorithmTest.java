@@ -56,13 +56,6 @@ public class PersonalThresholdModelScorerAlgorithmTest {
 		Assert.assertTrue(PersonalThresholdModelScorerAlgorithm.calculateScore(threshold + 0.01, numOfSamples, model) > 50);
 	}
 
-	private void assertScoresMonotonicity(List<Double> scores, boolean isIncreasing) {
-		int sign = isIncreasing ? 1 : -1;
-		Assert.assertTrue(IntStream.range(0, scores.size() - 1)
-				.allMatch(i -> sign * scores.get(i) <= sign * scores.get(i + 1)));
-		Assert.assertTrue(sign * scores.get(0) < sign * scores.get(scores.size() - 1));
-	}
-
 	@Test
 	public void shouldScoreIncreasinglyAsHighScoreProbabilityIncreases() {
 		PersonalThresholdModel model = new PersonalThresholdModel(100, 1000, 0.9);
@@ -72,7 +65,7 @@ public class PersonalThresholdModelScorerAlgorithmTest {
 				.map(highScoreProbability -> PersonalThresholdModelScorerAlgorithm.calculateScore(highScoreProbability, 10, model))
 				.boxed()
 				.collect(Collectors.toList());
-		assertScoresMonotonicity(scores, true);
+		ScorerAlgorithmTestUtils.assertScoresIncrease(scores);
 	}
 
 	@Test
@@ -83,6 +76,6 @@ public class PersonalThresholdModelScorerAlgorithmTest {
 				.mapToDouble(numOfSamples -> PersonalThresholdModelScorerAlgorithm.calculateScore(0.9, numOfSamples, model))
 				.boxed()
 				.collect(Collectors.toList());
-		assertScoresMonotonicity(scores, false);
+		ScorerAlgorithmTestUtils.assertScoresDecrease(scores);
 	}
 }

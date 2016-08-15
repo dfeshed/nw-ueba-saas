@@ -78,13 +78,6 @@ public class GaussianModelScorerAlgorithmTest {
 		Assert.assertEquals(0.98, defaultAlgorithm.calculateScore(mean + 3 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
 	}
 
-	private void assertScoresMonotonicity(List<Double> scores, boolean isIncreasing) {
-		int sign = isIncreasing ? 1 : -1;
-		Assert.assertTrue(IntStream.range(0, scores.size() - 1)
-				.allMatch(i -> sign * scores.get(i) <= sign * scores.get(i + 1)));
-		Assert.assertTrue(sign * scores.get(0) < sign * scores.get(scores.size() - 1));
-	}
-
 	@Test
 	public void shouldScoreDecreasinglyAsPriorIncreases() {
 		double mean = 10.2;
@@ -101,7 +94,7 @@ public class GaussianModelScorerAlgorithmTest {
 				.boxed()
 				.collect(Collectors.toList());
 
-		assertScoresMonotonicity(scores, false);
+		ScorerAlgorithmTestUtils.assertScoresDecrease(scores);
 	}
 
 	@Test
@@ -120,7 +113,7 @@ public class GaussianModelScorerAlgorithmTest {
 				.boxed()
 				.collect(Collectors.toList());
 
-		assertScoresMonotonicity(scores, false);
+		ScorerAlgorithmTestUtils.assertScoresDecrease(scores);
 	}
 
 	@Test
