@@ -23,13 +23,13 @@ public class LogRepositoryServiceImpl implements LogRepositoryService, Initializ
 
 	private final ApplicationConfigurationService applicationConfigurationService;
 
-	@Value("${source.splunk.host}")
+	@Value("${source.splunk.host:}")
 	private String hostName;
-	@Value("${source.splunk.port}")
+	@Value("${source.splunk.port:0}")
 	private int port;
-	@Value("${source.splunk.user}")
+	@Value("${source.splunk.user:}")
 	private String username;
-	@Value("${source.splunk.password}")
+	@Value("${source.splunk.password:}")
 	private String password;
 
 	@Autowired
