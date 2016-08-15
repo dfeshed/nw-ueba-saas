@@ -109,6 +109,8 @@ public interface UserService extends CachingService{
 
 	public Set<String> findIdsByTags(String[] tags, String entityIds);
 
+	public Set<String> findUsernamesByTags(String[] tags);
+
 	public Map<String, Long> groupByTags();
 
 	/**

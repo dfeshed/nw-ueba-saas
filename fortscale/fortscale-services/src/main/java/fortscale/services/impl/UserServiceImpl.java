@@ -44,6 +44,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -999,6 +1000,20 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			idsByTag.add(user.getId());
 		}
 		return idsByTag;
+	}
+
+	@Override
+	public Set<String> findUsernamesByTags(String[] tags) {
+		Set<String> usernamesByTags = new HashSet();
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+		List<Criteria> criterias = new ArrayList<>();
+		criterias.add(where(User.tagsField).in(tags));
+		Criteria[] criteriasArr = new Criteria[]{criterias.get(0)};
+		query.addCriteria(new Criteria().andOperator(criteriasArr));
+		List<User> users = mongoTemplate.find(query, User.class);
+		usernamesByTags.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		return usernamesByTags;
 	}
 
 	@Override
