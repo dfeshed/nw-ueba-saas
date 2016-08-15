@@ -14,27 +14,27 @@ import java.util.stream.IntStream;
 public class PersonalThresholdModelTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenZeroAsNumOfContexts() {
-		new PersonalThresholdModel(0, 0.9, 100);
+		new PersonalThresholdModel(0, 100, 0.9);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenZeroAsOrganizationThreshold() {
-		new PersonalThresholdModel(10, 0, 100);
+		new PersonalThresholdModel(10, 100, 0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenOneAsOrganizationThreshold() {
-		new PersonalThresholdModel(10, 1, 100);
+		new PersonalThresholdModel(10, 100, 1);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenZeroAsNumOfOrganizationScores() {
-		new PersonalThresholdModel(10, 0.9, 0);
+		new PersonalThresholdModel(10, 0, 0.9);
 	}
 
 	@Test
 	public void shouldHaveInverseLinearDependenceOnNumOfSamples() {
-		PersonalThresholdModel model = new PersonalThresholdModel(10, 0.9, 100);
+		PersonalThresholdModel model = new PersonalThresholdModel(10, 100, 0.9);
 		int numOfSamples = 10;
 		int a = 2;
 		Assert.assertEquals(
@@ -53,7 +53,7 @@ public class PersonalThresholdModelTest {
 				.boxed()
 				.collect(Collectors.toList());
 		double organizationThreshold = 0.9;
-		PersonalThresholdModel model = new PersonalThresholdModel(numOfSamplesPerContext.size(), organizationThreshold, organizationSamples.size());
+		PersonalThresholdModel model = new PersonalThresholdModel(numOfSamplesPerContext.size(), organizationSamples.size(), organizationThreshold);
 
 		double expectedNumOfIndicatorsUsingPersonalThreshold = organizationSamples.stream()
 				// calc its significance level (which is the expected number of indicators)

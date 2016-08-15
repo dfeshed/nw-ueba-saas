@@ -27,6 +27,6 @@ public class PersonalThresholdModelBuilderTest {
 				.setNumOfOrganizationScores(numOfOrganizationScores);
 		PersonalThresholdModel model = new PersonalThresholdModelBuilder().build(modelBuilderData);
 
-		Assert.assertEquals(new PersonalThresholdModel(numOfContexts, organizationKTopProbOfHighScore, numOfOrganizationScores), model);
+		Assert.assertEquals(new PersonalThresholdModel(numOfContexts, numOfOrganizationScores, organizationKTopProbOfHighScore), model);
 	}
 }

@@ -8,7 +8,7 @@ import org.springframework.util.Assert;
 public class PersonalThresholdModel implements Model {
 	private double normalizationFactor;
 
-	public PersonalThresholdModel(int numOfContexts, double organizationThreshold, int numOfOrganizationScores) {
+	public PersonalThresholdModel(int numOfContexts, int numOfOrganizationScores, double organizationThreshold) {
 		Assert.isTrue(numOfContexts > 0);
 		Assert.isTrue(organizationThreshold > 0 && organizationThreshold < 1);
 		Assert.isTrue(numOfOrganizationScores > 0);

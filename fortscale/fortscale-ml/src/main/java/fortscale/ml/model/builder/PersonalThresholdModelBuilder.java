@@ -16,8 +16,8 @@ public class PersonalThresholdModelBuilder implements IModelBuilder {
 		PersonalThresholdModelBuilderData data = castModelBuilderData(modelBuilderData);
 		return new PersonalThresholdModel(
 				data.getNumOfContexts(),
-				data.getOrganizationKTopProbOfHighScore(),
-				data.getNumOfOrganizationScores()
+				data.getNumOfOrganizationScores(),
+				data.getOrganizationKTopProbOfHighScore()
 		);
 	}
 
