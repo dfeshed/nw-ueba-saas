@@ -1,10 +1,9 @@
-package fortscale.ml.model.builder.gaussian.prior;
+package fortscale.ml.model.builder;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fortscale.ml.model.builder.IModelBuilderConf;
 import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilderConf;
 import fortscale.ml.model.builder.gaussian.prior.GaussianPriorModelBuilderConf;
-import fortscale.ml.model.builder.gaussian.prior.PersonalThresholdModelBuilderConf;
 import fortscale.utils.factory.FactoryConfig;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")

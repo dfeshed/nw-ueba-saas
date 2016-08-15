@@ -1,6 +1,5 @@
-package fortscale.ml.model.builder.gaussian;
+package fortscale.ml.model.builder;
 
-import fortscale.ml.model.builder.gaussian.prior.PersonalThresholdModelBuilderConf;
 import org.junit.Assert;
 import org.junit.Test;
 

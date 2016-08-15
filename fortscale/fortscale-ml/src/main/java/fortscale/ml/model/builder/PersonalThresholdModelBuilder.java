@@ -1,7 +1,6 @@
-package fortscale.ml.model.builder.gaussian.prior;
+package fortscale.ml.model.builder;
 
 import fortscale.ml.model.PersonalThresholdModel;
-import fortscale.ml.model.builder.IModelBuilder;
 import org.springframework.util.Assert;
 
 public class PersonalThresholdModelBuilder implements IModelBuilder {
