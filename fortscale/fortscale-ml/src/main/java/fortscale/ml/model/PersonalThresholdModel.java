@@ -8,11 +8,11 @@ import org.springframework.util.Assert;
 public class PersonalThresholdModel implements Model {
 	private double normalizationFactor;
 
-	public PersonalThresholdModel(int numOfContexts, int numOfOrganizationScores, double organizationThreshold) {
+	public PersonalThresholdModel(int numOfContexts, int numOfOrganizationScores, double uniformThreshold) {
 		Assert.isTrue(numOfContexts > 0);
-		Assert.isTrue(organizationThreshold > 0 && organizationThreshold < 1);
+		Assert.isTrue(uniformThreshold > 0 && uniformThreshold < 1);
 		Assert.isTrue(numOfOrganizationScores > 0);
-		double expectedNumOfIndicators = (1 - organizationThreshold) * numOfOrganizationScores;
+		double expectedNumOfIndicators = (1 - uniformThreshold) * numOfOrganizationScores;
 		this.normalizationFactor = expectedNumOfIndicators / numOfContexts;
 	}
 

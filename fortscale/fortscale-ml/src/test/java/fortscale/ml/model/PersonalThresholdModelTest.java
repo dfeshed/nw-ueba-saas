@@ -18,12 +18,12 @@ public class PersonalThresholdModelTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenZeroAsOrganizationThreshold() {
+	public void shouldFailGivenZeroAsUniformThreshold() {
 		new PersonalThresholdModel(10, 100, 0);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenOneAsOrganizationThreshold() {
+	public void shouldFailGivenOneAsUniformThreshold() {
 		new PersonalThresholdModel(10, 100, 1);
 	}
 
@@ -52,8 +52,8 @@ public class PersonalThresholdModelTest {
 				.flatMapToInt(Function.identity())
 				.boxed()
 				.collect(Collectors.toList());
-		double organizationThreshold = 0.9;
-		PersonalThresholdModel model = new PersonalThresholdModel(numOfSamplesPerContext.size(), organizationSamples.size(), organizationThreshold);
+		double uniformThreshold = 0.9;
+		PersonalThresholdModel model = new PersonalThresholdModel(numOfSamplesPerContext.size(), organizationSamples.size(), uniformThreshold);
 
 		double expectedNumOfIndicatorsUsingPersonalThreshold = organizationSamples.stream()
 				// calc its significance level (which is the expected number of indicators)
@@ -61,7 +61,7 @@ public class PersonalThresholdModelTest {
 				// use linearity of expectation
 				.sum();
 
-		double expectedNumOfIndicatorsUsingUniformThreshold = (1 - organizationThreshold) * organizationSamples.size();
+		double expectedNumOfIndicatorsUsingUniformThreshold = (1 - uniformThreshold) * organizationSamples.size();
 		Assert.assertEquals(expectedNumOfIndicatorsUsingUniformThreshold, expectedNumOfIndicatorsUsingPersonalThreshold, 0.00001);
 	}
 }
