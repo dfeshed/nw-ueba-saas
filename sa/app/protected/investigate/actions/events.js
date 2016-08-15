@@ -37,6 +37,23 @@ export default Mixin.create({
         data: []
       });
 
+      // @workaround ASOC-22125: Due to a server issue, a query for records that doesn't match any events will never
+      // return a response back to the client. That will cause our UI to wait endlessly. To workaround, before
+      // submitting the query, check if the (separate) server call for the event count has already returned zero.
+      // If so, skip the query for the records.  (If the event count hasn't come back yet, no worries, submit this
+      // query for now. We'll also add a check for count=0 in the count response callback, and that check will
+      // abort this server call if need be.)
+      let eventCountStatus = this.get('state.eventCount.status');
+      let eventCountData = this.get('state.eventCount.data');
+      let eventCountQuery = this.get('state.eventCount.query');
+      let eventCountIsZero = (eventCountStatus === 'resolved') &&
+        (eventCountData === 0) &&
+        query && query.isEqual(eventCountQuery);
+      if (eventCountIsZero) {
+        events.set('status', 'complete');
+        return;
+      }
+
       // Wire up stream to state.events and start streaming.
       wireEventsStreamToState(
         makeEventsStream(this.store, query, STREAM_LIMIT, STREAM_BATCH),
@@ -73,14 +90,17 @@ export default Mixin.create({
 
     /**
      * Stops the current query to fetch events while it is in progress.
+     * @param {string} [newStatus="idle"] Indicates what the events state object's "status" should be updated to.
+     * Typically it is set to "idle" by default. One exception: In the scenario when a query for events count has
+     * returned zero, we know that there are no events coming, and so a "complete" status will be passed in.
      * @public
      */
-    eventsStop() {
+    eventsStop(newStatus = 'idle') {
       let events = this.get('state.events') || {};
       let { stream, status } = getProperties(events, 'stream', 'status');
       if (stream && (status === 'streaming')) {
         stream.stop();
-        events.set('status', 'idle');
+        events.set('status', newStatus);
       }
     }
   }

@@ -45,6 +45,10 @@ export default $.extend({}, BaseTranslations, {
     filter: 'Filter',
     bytes: 'bytes',
     KB: 'KB',
+    empty: {
+      title: 'No events found.',
+      description: 'Your filter criteria did not match any records.'
+    },
     error: {
       title: 'Unable to load data.',
       description: 'An unexpected error occurred when attempting to fetch the data records.'

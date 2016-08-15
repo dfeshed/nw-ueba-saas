@@ -37,12 +37,20 @@ export default Mixin.create({
         makeServerInputsForQuery(query)
       );
       stream.subscribe({
-        onNext(response) {
+        onNext: (response) => {
           eventCount.setProperties({
             status: 'resolved',
             data: response.data
           });
           stream.completed();
+
+          // @workaround ASOC-22125: Due to a server issue, a query for records that doesn't match any events will never
+          // return a response back to the client. That will cause our UI to wait endlessly. To workaround, when this
+          // server call returns with the event count, check if it returns zero. If so, abort any in-progress call for
+          // the event records, marking it complete (since we know there aren't any records coming back).
+          if (response.data === 0) {
+            this.send('eventsStop', 'complete');
+          }
         },
         onError(response) {
           eventCount.setProperties({
@@ -56,7 +64,8 @@ export default Mixin.create({
       eventCount.setProperties({
         query,
         stream,
-        status: 'wait'
+        status: 'wait',
+        data: undefined
       });
 
       stream.start();

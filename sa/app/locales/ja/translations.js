@@ -45,6 +45,10 @@ export default $.extend({}, BaseTranslations, {
     filter: 'ja_Filter',
     bytes: 'ja_bytes',
     KB: 'ja_KB',
+    empty: {
+      title: 'ja_No events found.',
+      description: 'ja_Your filter criteria did not match any records.'
+    },
     error: {
       title: 'ja_Unable to load data.',
       description: 'ja_An unexpected error occurred when attempting to fetch the data records.'

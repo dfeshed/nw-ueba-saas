@@ -18,12 +18,12 @@
             retryAction=(route-action "eventsGetMore")}}
           {{#if model.eventCount.data}}
             <span class="rsa-investigate-query__sums-of">{{t 'list.of'}}</span>
+            {{rsa-investigate/event-counter
+              class="rsa-investigate-query__sums-total"
+              count=model.eventCount.data
+              status=model.eventCount.status
+              retryAction=(route-action "eventCountGet")}}
           {{/if}}
-          {{rsa-investigate/event-counter
-            class="rsa-investigate-query__sums-total"
-            count=model.eventCount.data
-            status=model.eventCount.status
-            retryAction=(route-action "eventCountGet")}}
         </span>
       </aside>
     </div>
@@ -53,6 +53,12 @@
           status=model.events.status
           clickAction=(route-action "eventsGetMore")}}
       {{/rsa-data-table}}
+      {{#if (is-equal model.eventCount.data 0)}}
+        <div class="rsa-investigate-query__empty">
+          <h2>{{t "investigate.empty.title"}}</h2>
+          <p>{{t "investigate.empty.description"}}</p>
+        </div>
+      {{/if}}
     </section>
     <aside class="rsa-investigate-query__body-aside">
       {{!rsa-investigate/facets coming soon!}}
