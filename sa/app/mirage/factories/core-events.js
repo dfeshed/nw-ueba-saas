@@ -22,7 +22,7 @@ export default Factory.extend({
   metas: (() => {
     return [
       [ 'service', randInt(20, 80) ],
-      [ 'event.type', randInt(0, 3) ],
+      [ 'medium', randInt(0, 3) ],
       [ 'size', randInt(15, 2000) ],
       [ 'ip.src', faker.internet.ip() ],
       [ 'tcp.srcport', randInt(80, 3000) ],

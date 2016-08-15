@@ -5,8 +5,8 @@ export default [{
   field: 'time',
   title: 'Time'
 }, {
-  field: 'event.type',
-  title: 'Type'
+  field: 'medium',
+  title: 'Event Type'
 }, {
   field: 'size',
   title: 'Size'
@@ -16,6 +16,9 @@ export default [{
 }, {
   field: 'ip.src',
   title: 'Source IP'
+}, {
+  field: 'tcp.srcport',
+  title: 'Source Port'
 }, {
   field: 'ip.dst',
   title: 'Destination IP'
