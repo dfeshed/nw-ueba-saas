@@ -38,8 +38,8 @@ public class PersonalThresholdModelTest {
 		int numOfSamples = 10;
 		int a = 2;
 		Assert.assertEquals(
-				(1 - model.calcThreshold(numOfSamples)) / a,
-				1 - model.calcThreshold(numOfSamples * a),
+				(1 - model.calcThreshold(numOfSamples, 99999)) / a,
+				1 - model.calcThreshold(numOfSamples * a, 99999),
 				0.0001
 		);
 	}
@@ -57,11 +57,23 @@ public class PersonalThresholdModelTest {
 
 		double expectedNumOfIndicatorsUsingPersonalThreshold = organizationSamples.stream()
 				// calc its significance level (which is the expected number of indicators)
-				.mapToDouble(numOfSamples -> 1 - model.calcThreshold(numOfSamples))
+				.mapToDouble(numOfSamples -> 1 - model.calcThreshold(numOfSamples, 99999))
 				// use linearity of expectation
 				.sum();
 
 		double expectedNumOfIndicatorsUsingUniformThreshold = (1 - uniformThreshold) * organizationSamples.size();
 		Assert.assertEquals(expectedNumOfIndicatorsUsingUniformThreshold, expectedNumOfIndicatorsUsingPersonalThreshold, 0.00001);
+	}
+
+	@Test
+	public void shouldRestrictThresholdAccordingToMaxRatioFromUniformThreshold() {
+		double uniformThreshold = 0.9;
+		int numOfContexts = 10;
+		int numOfOrganizationScores = 100;
+		PersonalThresholdModel model = new PersonalThresholdModel(numOfContexts, numOfOrganizationScores, uniformThreshold);
+
+		int numOfSamples = 1;
+		Assert.assertEquals(uniformThreshold, model.calcThreshold(numOfSamples, 1), 0.00001);
+		Assert.assertEquals(0.8, model.calcThreshold(numOfSamples, 2), 0.00001);
 	}
 }

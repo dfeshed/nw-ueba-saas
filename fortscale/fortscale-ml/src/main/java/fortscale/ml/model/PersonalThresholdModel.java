@@ -6,18 +6,21 @@ import org.springframework.util.Assert;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class PersonalThresholdModel implements Model {
+	private double uniformThreshold;
 	private double normalizationFactor;
 
 	public PersonalThresholdModel(int numOfContexts, int numOfOrganizationScores, double uniformThreshold) {
 		Assert.isTrue(numOfContexts > 0);
 		Assert.isTrue(uniformThreshold > 0 && uniformThreshold < 1);
 		Assert.isTrue(numOfOrganizationScores > 0);
+		this.uniformThreshold = uniformThreshold;
 		double expectedNumOfIndicators = (1 - uniformThreshold) * numOfOrganizationScores;
 		this.normalizationFactor = expectedNumOfIndicators / numOfContexts;
 	}
 
-	public double calcThreshold(int numOfSamples) {
-		return 1 - normalizationFactor / numOfSamples;
+	public double calcThreshold(int numOfSamples, double maxRatioFromUniformThreshold) {
+		double minAllowedThreshold = 1 - (1 - uniformThreshold) * maxRatioFromUniformThreshold;
+		return Math.max(minAllowedThreshold, 1 - normalizationFactor / numOfSamples);
 	}
 
 	@Override
