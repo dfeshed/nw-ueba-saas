@@ -4,7 +4,6 @@ import fortscale.common.feature.Feature;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.GaussianPriorModel;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -77,12 +76,5 @@ public class GaussianModelScorerTest {
     public void shouldGiveScoreWhenEverythingIsOk() {
         GaussianModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
         scorer.calculateScore(new ContinuousDataModel(), Collections.singletonList(new GaussianPriorModel()), new Feature("name", 1.0));
-    }
-
-    @Test
-    public void shouldReturnNumOfSamplesAsCertainty() {
-        GaussianModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
-        long numOfSamples = 123;
-        Assert.assertEquals(numOfSamples, scorer.calculateCertainty(() -> numOfSamples), 0.00001);
     }
 }

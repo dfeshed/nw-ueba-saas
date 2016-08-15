@@ -114,9 +114,18 @@ public abstract class AbstractModelScorer extends AbstractScorer{
 						additionalContextFieldNames.get(i))
 				).collect(Collectors.toList());
 		return calculateScoreWithCertainty(
-				eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames),
+				getModel(eventMessage, eventEpochTimeInSec, feature),
 				additionalModels,
 				feature);
+	}
+
+	Model getModel(Event eventMessage, long eventEpochTimeInSec) {
+		Feature feature = featureExtractService.extract(featureName, eventMessage);
+		return getModel(eventMessage, eventEpochTimeInSec, feature);
+	}
+
+	private Model getModel(Event eventMessage, long eventEpochTimeInSec, Feature feature) {
+		return eventModelsCacheService.getModel(eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
 	}
 
 	public FeatureScore calculateScoreWithCertainty(Model model, List<Model> additionalModels, Feature feature) {
