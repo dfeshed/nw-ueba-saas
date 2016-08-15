@@ -7,6 +7,7 @@ import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -106,7 +107,7 @@ public interface AlertsService {
 
 	Set<Alert> getOpenAlertsByUsername(String userName);
 
-	Set<String> getDistinctUserNamesByAlertName(List<String> alertNames);
-
 	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
+
+	public Set<String> getDistinctUserNamesByUserFilter(UserRestFilter userRestFilter);
 }

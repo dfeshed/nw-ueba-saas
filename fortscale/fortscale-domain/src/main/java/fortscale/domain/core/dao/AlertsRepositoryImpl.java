@@ -6,6 +6,7 @@ import com.mongodb.BasicDBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -335,22 +336,34 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	}
 
-	@Override public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames) {
-
-		Query query = getQueryForAlertsByAlertName(alertNames);
-
-		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField,query.getQueryObject());
-		return  new HashSet<>(userNames);
-	}
-
-	private Query getQueryForAlertsByAlertName(List<String> alertNames) {
+	@Override
+	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter) {
 		Query query = new Query();
 
-		if (CollectionUtils.isNotEmpty(alertNames)){
-			query.addCriteria(new Criteria().where(Alert.nameField).in(alertNames));
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())){
+			Criteria anomalyTypeCriteria = fetchAnomalyTypeCriteria(userRestFilter.getAnomalyTypesAsSet());
+			query.addCriteria(anomalyTypeCriteria);
 		}
 
-		return query;
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())){
+			Criteria criteriaForAlertsByAlertName = getCriteriaForAlertsByAlertName(userRestFilter.getAlertTypes());
+			query.addCriteria(criteriaForAlertsByAlertName);
+		}
+
+		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField, query.getQueryObject());
+
+		return new HashSet<>(userNames);
+	}
+
+	private Criteria getCriteriaForAlertsByAlertName(List<String> alertNames) {
+
+		Criteria criteria = null;
+
+		if (CollectionUtils.isNotEmpty(alertNames)) {
+			criteria = new Criteria().where(Alert.nameField).in(alertNames);
+		}
+
+		return criteria;
 	}
 
 	private  Query getQueryForAlertsRelevantToUserScore(String userName) {
@@ -523,7 +536,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * @param indicatorTypes
      * @return
      */
-    private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
+	private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
         BasicDBList dataSourceAndAnomalyConditions = new BasicDBList();
         List<String> dataSourceOnlyConditions = new ArrayList<>();
         indicatorTypes.forEach(anomalyType ->{

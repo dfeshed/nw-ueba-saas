@@ -5,7 +5,9 @@ import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
 import java.util.Map;
@@ -122,5 +124,5 @@ public interface AlertsRepositoryCustom {
 
 	void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag );
 
-	public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames);
+	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter);
 }

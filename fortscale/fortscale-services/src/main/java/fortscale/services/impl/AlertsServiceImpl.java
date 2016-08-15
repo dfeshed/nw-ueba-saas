@@ -7,6 +7,7 @@ import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
@@ -244,8 +245,8 @@ public class AlertsServiceImpl implements AlertsService {
 		return alertNames.stream().sorted().collect(Collectors.toSet());
 	}
 
-
-	@Override public Set<String> getDistinctUserNamesByAlertName(List<String> alertNames) {
-		return alertsRepository.getDistinctUserNamesByAlertName(alertNames);
+	@Override
+	public Set<String> getDistinctUserNamesByUserFilter(UserRestFilter userRestFilter) {
+		return alertsRepository.getDistinctUserNamesByUserRestFilter(userRestFilter);
 	}
 }

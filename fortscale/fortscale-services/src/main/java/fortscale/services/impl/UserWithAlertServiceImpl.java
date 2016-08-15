@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -24,21 +25,40 @@ import java.util.Set;
 	@Autowired private AlertsService alertsService;
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
-		Set<String> relevantUsers = null;
+		List<User> result = new ArrayList<>();
+		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
 
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
-			relevantUsers = alertsService.getDistinctUserNamesByAlertName(userRestFilter.getAlertTypes());
+		if (shouldStop(userRestFilter, relevantUsers)) {
+			return result;
 		}
 
-		return userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
+		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
+		return result;
+	}
+
+	private boolean shouldStop(UserRestFilter userRestFilter, Set<String> relevantUsers) {
+		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
+				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()))
+				&& (CollectionUtils.isEmpty(relevantUsers));
+	}
+
+	private Set<String> getIntersectedUserNameList(UserRestFilter userRestFilter) {
+		Set<String> relevantUsers = null;
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) || CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
+			relevantUsers = alertsService.getDistinctUserNamesByUserFilter(userRestFilter);
+		}
+
+		return relevantUsers;
 	}
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter) {
-		Set<String> relevantUsers = null;
+		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
 
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
-			relevantUsers = alertsService.getDistinctUserNamesByAlertName(userRestFilter.getAlertTypes());
+		if (shouldStop(userRestFilter, relevantUsers)) {
+			return 0;
 		}
+
 		return userService.countUsersByFilter(userRestFilter, relevantUsers);
 	}
 
@@ -49,5 +69,4 @@ import java.util.Set;
 		user.setAlertsCount(alerts.size());
 		userService.saveUser(user);
 	}
-
 }
