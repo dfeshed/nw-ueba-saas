@@ -302,15 +302,8 @@ public abstract class FetchJob {
 	 * @param configuredSIEM
 	 * @throws JobExecutionException
 	 */
-	public void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, String configuredSIEM)
+	public void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, LogRepository configuredSIEM)
 			throws JobExecutionException {
-		List<LogRepository> logRepositoryList = logRepositoryService.getLogRepositoriesFromDatabase();
-		if (CollectionUtils.isNotEmpty(logRepositoryList)) {
-			//TODO - currently only supports single log repository
-			logRepository = logRepositoryList.get(0);
-		} else {
-			throw new JobExecutionException("No log repository configuration found");
-		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");
@@ -334,12 +327,12 @@ public abstract class FetchJob {
 		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
 		if (savedQuery.startsWith("{") && savedQuery.endsWith("}")) {
-			savedQuery = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + "." +
+			savedQuery = SpringPropertiesUtil.getProperty(logRepository.getType().toLowerCase() + "." +
 					savedQuery.substring(1, savedQuery.length() - 1) + ".savedQuery");
 		}
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		if (returnKeys.startsWith("{") && returnKeys.endsWith("}")) {
-			returnKeys = SpringPropertiesUtil.getProperty(configuredSIEM.toLowerCase() + "." +
+			returnKeys = SpringPropertiesUtil.getProperty(logRepository.getType().toLowerCase() + "." +
 					returnKeys.substring(1, returnKeys.length() - 1) + ".returnKeys");
 		}
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");

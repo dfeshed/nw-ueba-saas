@@ -44,7 +44,7 @@ public class FetchFactory extends FortscaleJob {
 			//TODO - currently only supports single log repository
 			configuredSIEM = logRepositories.get(0).getType();
 		} else {
-			configuredSIEM = LogRepository.DEFAULT_SIEM;
+			throw new JobExecutionException("No log repository configuration found");
 		}
 		SIEMType type;
 		try {
@@ -56,7 +56,8 @@ public class FetchFactory extends FortscaleJob {
 			case SPLUNK: fetchJob = splunkFetch; break;
 			case QRADAR: fetchJob = qradarFetch; break;
 		}
-		fetchJob.getJobParameters(map, jobDataMapExtension, configuredSIEM);
+		//TODO - currently only supports single log repository
+		fetchJob.getJobParameters(map, jobDataMapExtension, logRepositories.get(0));
 	}
 
 	@Override
