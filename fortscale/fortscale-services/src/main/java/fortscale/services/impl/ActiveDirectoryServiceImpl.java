@@ -21,14 +21,15 @@ import java.util.List;
 @Service("ActiveDirectoryService")
 public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
 
+	private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
+
+	private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
+
     @Value("${ad.connections}")
     private String adConnectionsFile;
 
     private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
-    private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
-    private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
-    private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
     @Autowired
     public ActiveDirectoryServiceImpl(ActiveDirectoryDAO activeDirectoryDAO,
@@ -59,7 +60,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         List<AdConnection> adConnections = new ArrayList<>();
         try {
             adConnections = applicationConfigurationService.
-                    getApplicationConfigurationAsObjects(AD_CONNECTIONS_CONFIGURATION_KEY, AdConnection.class);
+                    getApplicationConfigurationAsObjects(AdConnection.ACTIVE_DIRECTORY_KEY, AdConnection.class);
         } catch (Exception e) {
             logger.error("Failed to get AD connections from database");
         }
@@ -72,6 +73,11 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         String value = String.join(",", domainControllers);
         applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
+
+	@Override
+	public void saveAdConnectionsInDatabase(List<AdConnection> adConnections) {
+		applicationConfigurationService.updateConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY,adConnections);
+	}
 
 	@Override
 	public String canConnect(AdConnection adConnection) {
@@ -134,7 +140,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (!applicationConfigurationService.isApplicationConfigurationExists(AD_CONNECTIONS_CONFIGURATION_KEY)) {
+        if (!applicationConfigurationService.isApplicationConfigurationExists(AdConnection.ACTIVE_DIRECTORY_KEY)) {
             //initialize with default test values if no configuration key exists
             logger.warn("Active Directory configuration not found, trying to load configuration from file");
             List<AdConnection> adConnections;
@@ -150,7 +156,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
                 logger.error("Error - Bad Active Directory Json connection file");
                 throw new Exception(ex);
             }
-            applicationConfigurationService.insertConfigItemAsObject(AD_CONNECTIONS_CONFIGURATION_KEY, adConnections);
+            applicationConfigurationService.insertConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY, adConnections);
         }
     }
 

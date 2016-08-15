@@ -3,9 +3,11 @@ package fortscale.collection.jobs.fetch;
 import fortscale.collection.JobDataMapExtension;
 import fortscale.domain.fetch.FetchConfiguration;
 import fortscale.domain.fetch.FetchConfigurationRepository;
-import fortscale.services.ApplicationConfigurationService;
+import fortscale.domain.fetch.LogRepository;
+import fortscale.services.LogRepositoryService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -21,8 +23,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 /**
  * Created by Amir Keren on 4/4/16.
@@ -36,28 +37,10 @@ public abstract class FetchJob {
 	protected FetchConfigurationRepository fetchConfigurationRepository;
 
 	@Autowired
-	protected ApplicationConfigurationService applicationConfigurationService;
+	protected LogRepositoryService logRepositoryService;
 
 	@Value("${collection.fetch.data.path}")
 	protected String outputPath;
-
-	@Value("${default.siem.type:splunk}")
-	private String defaultType;
-	@Value("${default.siem.host:integ-splunk-07}")
-	private String defaultHost;
-	@Value("${default.siem.port:8089}")
-	private String defaultPort;
-	@Value("${default.siem.username:admin}")
-	private String defaultUsername;
-	@Value("${default.siem.password:iYTLjyA0VryKhpkvBrMMLQ==}")
-	private String defaultPassword;
-
-	private static final String SIEM_CONFIG_PREFIX = "system.siem";
-	private static final String SIEM_TYPE_KEY = SIEM_CONFIG_PREFIX + ".type";
-	private static final String SIEM_HOST_KEY = SIEM_CONFIG_PREFIX + ".host";
-	private static final String SIEM_PORT_KEY = SIEM_CONFIG_PREFIX + ".port";
-	private static final String SIEM_USER_KEY = SIEM_CONFIG_PREFIX + ".user";
-	private static final String SIEM_PASSWORD_KEY = SIEM_CONFIG_PREFIX + ".password";
 
 	protected String sortShellScript;
 
@@ -85,13 +68,9 @@ public abstract class FetchJob {
 	private int ceilingTimePartInt;
 	private String filename;
 	private String tempfilename;
-	// get common data from configuration
-	private String hostName;
-	private String port;
-	private String username;
-	private String password;
+	private LogRepository logRepository;
 
-	protected abstract boolean connect(String hostName, String port, String username, String password) throws Exception;
+	protected abstract boolean connect(String hostName, int port, String username, String password) throws Exception;
 	protected abstract void fetch(String filename, String tempfilename, File outputDir, String returnKeys,
 								  String delimiter, boolean encloseQuotes, String earliest, String latest,
 								  String savedQuery) throws Exception;
@@ -107,7 +86,8 @@ public abstract class FetchJob {
 		// connect to repository
 		boolean connected;
 		try {
-			connected = connect(hostName, port, username, password);
+			connected = connect(logRepository.getHost(), logRepository.getPort(), logRepository.getUser(),
+					logRepository.getPassword());
 		} catch (Exception ex) {
 			logger.error("failed to connect to repository - " + ex);
 			return;
@@ -324,27 +304,12 @@ public abstract class FetchJob {
 	 */
 	public void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, String configuredSIEM)
 			throws JobExecutionException {
-		Map<String, String> configuration = applicationConfigurationService.
-				getApplicationConfigurationByNamespace(SIEM_CONFIG_PREFIX);
-		if (configuration != null && !configuration.isEmpty()) {
-			hostName = configuration.get(SIEM_HOST_KEY);
-			port = configuration.get(SIEM_PORT_KEY);
-			username = configuration.get(SIEM_USER_KEY);
-			password = configuration.get(SIEM_PASSWORD_KEY);
+		List<LogRepository> logRepositoryList = logRepositoryService.getLogRepositoriesFromDatabase();
+		if (CollectionUtils.isNotEmpty(logRepositoryList)) {
+			//TODO - currently only supports single log repository
+			logRepository = logRepositoryList.get(0);
 		} else {
-			//initialize with default test values
-			logger.warn("SIEM configuration not found, reverting to default test values");
-			hostName = defaultHost;
-			port = defaultPort;
-			username = defaultUsername;
-			password = defaultPassword;
-			Map<String, String> defaultValues = new HashMap();
-			defaultValues.put(SIEM_HOST_KEY, hostName);
-			defaultValues.put(SIEM_PORT_KEY, port);
-			defaultValues.put(SIEM_USER_KEY, username);
-			defaultValues.put(SIEM_PASSWORD_KEY, password);
-			defaultValues.put(SIEM_TYPE_KEY, defaultType);
-			applicationConfigurationService.insertConfigItems(defaultValues);
+			throw new JobExecutionException("No log repository configuration found");
 		}
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {

@@ -55,7 +55,7 @@ public class ApiActiveDirectoryControllerTest {
         ArgumentCaptor<List<AdConnection>> argumentValue = ArgumentCaptor.forClass(adConnectionListClass);
         verify(applicationConfigurationService, times(1)).updateConfigItemAsObject(argumentKey.capture(),
 				argumentValue.capture());
-        Assert.assertEquals("system.activeDirectory.settings",argumentKey.getValue());
+        Assert.assertEquals(AdConnection.ACTIVE_DIRECTORY_KEY,argumentKey.getValue());
         Assert.assertEquals(1,argumentValue.getValue().size()); //Check that we have 1 connection in string
         AdConnection argumentConnection1 = argumentValue.getValue().get(0);
         Assert.assertEquals(2,argumentConnection1.getDcs().size());
@@ -76,7 +76,7 @@ public class ApiActiveDirectoryControllerTest {
         oldSettings.setDomainPassword(DOMAIN_PASSWORD+"1111");
         oldSettings.setDomainUser(DOMAIN_USER_NAME);
         Mockito.when(applicationConfigurationService.
-                getApplicationConfigurationAsObjects("system.activeDirectory.settings", AdConnection.class)).
+                getApplicationConfigurationAsObjects(AdConnection.ACTIVE_DIRECTORY_KEY, AdConnection.class)).
                 thenReturn(Arrays.asList(oldSettings));
 		ActiveDirectoryRequest settings = new ActiveDirectoryRequest();
         settings.setDomainPassword(DOMAIN_PASSWORD);
@@ -108,7 +108,7 @@ public class ApiActiveDirectoryControllerTest {
         oldSettings.setDomainPassword(ENCRYPTED_PASSWORD);
         oldSettings.setDomainUser(DOMAIN_USER_NAME);
         Mockito.when(applicationConfigurationService.
-				getApplicationConfigurationAsObjects("system.activeDirectory.settings", AdConnection.class)).
+				getApplicationConfigurationAsObjects(AdConnection.ACTIVE_DIRECTORY_KEY, AdConnection.class)).
 				thenReturn(Arrays.asList(oldSettings));
 		ActiveDirectoryRequest settings = new ActiveDirectoryRequest();
         settings.setDomainPassword(ENCRYPTED_PASSWORD);
