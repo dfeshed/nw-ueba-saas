@@ -9,6 +9,7 @@ import fortscale.utils.qradar.responses.SearchResponse;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.qradar.utility.QRadarAPIUtility;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -70,7 +71,17 @@ public class QRadarAPI {
 	public String canConnect() {
 		GenericRequest request = new CreateSearchRequest("select * from events limit 1");
 		try {
-			QRadarAPIUtility.sendRequest(hostname, token, request, true, 1, 0);
+			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, 1, 0);
+			if (StringUtils.isBlank(response)) {
+				return "Failed to connect, possibly incorrect token";
+			}
+			SearchResponse sr = objectMapper.readValue(response.toString(), SearchResponse.class);
+			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
+				Thread.sleep(100);
+				request = new SearchInformationRequest(sr.getSearch_id());
+				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, 1, 0);
+				sr = objectMapper.readValue(response.toString(), SearchResponse.class);
+			}
 		} catch (Exception ex) {
 			return ex.getLocalizedMessage();
 		}

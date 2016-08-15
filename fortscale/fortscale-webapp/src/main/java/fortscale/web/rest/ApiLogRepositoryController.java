@@ -73,7 +73,7 @@ public class ApiLogRepositoryController {
 			@RequestParam(required = true, value = "encrypted_password") Boolean encryptedPassword) {
 		if (!encryptedPassword) {
 			try {
-				logRepository.setPassword(EncryptionUtils.encrypt(logRepository.getPassword()));
+				logRepository.setPassword(EncryptionUtils.encrypt(logRepository.getPassword()).trim());
 			} catch (Exception ex) {
 				logger.error("failed to encrypt password");
 				return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
