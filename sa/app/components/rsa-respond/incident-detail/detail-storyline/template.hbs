@@ -3,23 +3,23 @@
     <vbox xs='1' class='rsa-response-storyline__timeSection'>
       <div class='rsa-response-storyline__time'>
         <hbox fit>
-          <vbox class='rsa-response-storyline__timedivider'>
+          <vbox xs="12" class='rsa-response-storyline__timedivider'>
             {{rsa-content-datetime displayTime=false timestamp=alerts.lastObject.alert.timestamp}}
           </vbox>
         </hbox>
         <hbox fit>
-          <vbox class='rsa-response-storyline__times'>
+          <vbox xs="12" class='rsa-response-storyline__times'>
             {{rsa-content-datetime displayDate=false timestamp=alerts.lastObject.alert.timestamp}}
           </vbox>
         </hbox>
         <hbox>
-          <vbox class='rsa-response-storyline__time__text'>
+          <vbox xs="12" class='rsa-response-storyline__time__text'>
             {{t 'incident.details.storyline.cAndc'}}
           </vbox>
         </hbox>
         {{#unless (is-equal alerts.lastObject.alert.timestamp alerts.firstObject.alert.timestamp)}}
           <hbox>
-            <vbox class='rsa-response-storyline__times end'>
+            <vbox xs="12" class='rsa-response-storyline__times'>
               {{rsa-content-datetime displayDate=false timestamp=alerts.firstObject.alert.timestamp}}
             </vbox>
           </hbox>
@@ -29,13 +29,13 @@
     <vbox xs='7'>
       <div>
         <hbox class='rsa-response-storyline__main-row'>
-          <vbox class='rsa-response-storyline__main' xs='11'>
+          <vbox class='rsa-response-storyline__main' xs='10'>
             <div>
               <span class='indicator_type'>Threat Analysis</span> detected C&C communication {{alertCount}} times from <span class="contextInfo">{{alerts.firstObject.alert.groupby_source_ip}}</span>
               to <span class="contextInfo">{{alerts.firstObject.alert.groupby_domain}}</span>
             </div>
           </vbox>
-          <vbox class='rsa-response-storyline__main_icon' xs='1'>
+          <vbox class='rsa-response-storyline__main_icon' xs='2'>
             <div>
               {{#rsa-form-button isIconOnly=true}}
                 <span class="journalAction" {{action journalAction}}>{{rsa-icon name="bubble-chat-add-1" size="smaller"}}</span>

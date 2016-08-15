@@ -1,1 +1,4 @@
-{{rsa-respond/incident-detail/detail-index model=model.incident users=model.users addJournalAction=(route-action 'addNewJournal') editJournalAction=(route-action 'editJournal') deleteJournalAction=(route-action 'deleteJournal') }}
+{{rsa-respond/incident-detail/detail-index model=model.incident users=model.users
+  saveAction=(route-action 'saveAction')
+  addJournalAction=(route-action 'addNewJournal') editJournalAction=(route-action 'editJournal')
+  deleteJournalAction=(route-action 'deleteJournal') }}

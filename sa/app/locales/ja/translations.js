@@ -74,6 +74,7 @@ export default $.extend({}, BaseTranslations, {
     appVersion: 'ja_Version'
   },
   journal: {
+    title: 'ja_Notes',
     milestones: {
       RECONNAISSANCE: 'ja_Reconnaissance',
       DELIVERY: 'ja_Delivery',
@@ -132,6 +133,10 @@ export default $.extend({}, BaseTranslations, {
       storyline: {
         header: 'ja-Storyline {{startDateTime}} to {{endDateTime}}',
         cAndc: 'ja-Command & Control'
+      },
+      overview: {
+        title: 'ja_Overview',
+        about: 'ja_About Incident'
       }
     },
     list: {

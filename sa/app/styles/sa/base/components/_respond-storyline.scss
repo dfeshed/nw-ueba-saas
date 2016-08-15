@@ -11,9 +11,6 @@
     color: rsa-color(white);
     padding: rsa-whitespace() 0 0 rsa-whitespace(more);
   }
-  &-overview {
-    border-right: 1px solid rsa-color(gray);
-  }
 }
 .rsa-response-storyline {
     .journalAction{
@@ -62,6 +59,9 @@
     &__main,
     &__subItem{
       padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+    }
+    &__main_icon {
+      white-space: nowrap;
     }
     &__main(){
       margin-left: rsa-whitespace();

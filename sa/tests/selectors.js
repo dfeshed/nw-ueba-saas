@@ -59,6 +59,12 @@ export default Ember$.extend({}, BaseSelectors, {
         'table': 'div[class=rsa-respond-list]',
         'columns': '.rsa-data-table-header-cell'
       },
+      'details': {
+        'overview': {
+          'accordion': '.rsa-respond-detail-overview__accordion',
+          'textarea': '.rsa-respond-detail-overview__accordion textarea'
+        }
+      },
       'toggleViewHeader': 'header[class$=rsa-respond-index-header]',
       'listViewBtn': 'div[class^=rsa-respond-index-header__list-btn]',
       'cardViewBtn': 'div[class^=rsa-respond-index-header__card-btn]',
@@ -118,7 +124,10 @@ export default Ember$.extend({}, BaseSelectors, {
       'investigationMilestonesTxtElm': 'div[class=rsa-journal-entry__milestones] div[class^=rsa-journal-entry__milestone]',
       'dateTimeElm': 'span[class^=rsa-journal-entry__created_time-ago] span',
       'journalEditBtn': 'div[class^=rsa-journal-entry__edit-journal] i[class*=rsa-icon-pencil]',
-      'journalDeleteBtn': 'div[class^=rsa-journal-entry__delete-journal] i[class*=rsa-icon-bin-1]'
+      'journalDeleteBtn': 'div[class^=rsa-journal-entry__delete-journal] i[class*=rsa-icon-bin-1]',
+      'overviewTxtArea': 'label[class^=js-respond-detail-overview-textArea]',
+      'journalShowBtn': 'span[class=journalAction]',
+      'storylineIndicatorTypeElm': 'span[class=indicator_type]'
     }
   }
 });

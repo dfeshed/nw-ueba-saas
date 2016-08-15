@@ -7,11 +7,16 @@
 
   <hbox class='rsa-response-detail__bottom-header'>
     <vbox xs="3">
-      Overview
+      {{#if showJournal}}
+        {{t 'journal.title'}}
+      {{else}}
+        {{t 'incident.details.overview.title'}}
+      {{/if}}
     </vbox>
     <vbox xs="9">
       <div>
-        Storyline {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}} to {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
+        Storyline {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}} to
+        {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
       </div>
     </vbox>
   </hbox>
@@ -21,7 +26,7 @@
       {{#if showJournal}}
         {{rsa-respond/incident-detail/journal-wrapper model=model addJournalAction=addJournalAction editJournalAction=editJournalAction deleteJournalAction=deleteJournalAction}}
       {{else}}
-        Overview WIP
+        {{rsa-respond/incident-detail/detail-overview saveAction=(route-action 'saveAction') model=model}}
       {{/if}}
     </vbox>
     <vbox xs="9">

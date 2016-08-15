@@ -67,6 +67,19 @@ export default Route.extend({
     },
 
     /**
+     * @name saveAction
+     * @description updates the incident with the updated values
+     * @param updatedField - field name to be updated
+     * @param updatedValue - new value to be saved
+     * @public
+     */
+    saveAction(updatedField, updatedValue) {
+      let incident = this.store.peekRecord('incident', this.get('incidentId'));
+      incident.set(updatedField, updatedValue);
+      incident.save();
+    },
+
+    /**
      * @name addNewJournal
      * @description creates a new Journal Entry and saves it
      * @public

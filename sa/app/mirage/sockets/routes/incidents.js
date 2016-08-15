@@ -83,13 +83,20 @@ export default function(server) {
         // if not filter, status sort is default
         incidents = server.mirageServer.db.incident.where({ 'statusSort': 0 });
       }
-
+      let map = _makeAlertsMap(server.mirageServer.db.alerts);
       // update the first 10 incidents
       let someIncidents = incidents.slice(0, 10);
       someIncidents.forEach((incident) => {
-        incident.riskScore = Math.min(99, (10 + Math.round(100 * Math.random())));
+        if (map) {
+          incident.alerts = !map[incident.id] ? [] : map[incident.id].map((alert) => {
+            let json = {};
+            json.alert = alert.alert;
+            return json;
+          });
+        }
         response.push(incident);
       });
+
       // to mock async add/update/delete change the notificationCode here
       // notificationCode can be 0/1/2 -> incident(s) in the response were added/updated/deleted respectively
       // TODO: not handling delete incident use case yet. Will add it once back-end is ready

@@ -6,7 +6,7 @@ const {
 
 export default Component.extend({
   entity: null,
-  showJournal: true,
+  showJournal: false,
   info: null,
 
   actions: {
