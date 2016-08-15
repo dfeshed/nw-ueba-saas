@@ -43,6 +43,8 @@ export default $.extend({}, BaseTranslations, {
     service: 'ja_Service',
     timeRange: 'ja_Time Range',
     filter: 'ja_Filter',
+    bytes: 'ja_bytes',
+    KB: 'ja_KB',
     error: {
       title: 'ja_Unable to load data.',
       description: 'ja_An unexpected error occurred when attempting to fetch the data records.'
