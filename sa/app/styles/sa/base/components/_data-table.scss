@@ -6,7 +6,8 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   overflow: hidden; /* Hides header cells that spill outside viewport */
 
   &-header {
-    @include rsa-vendor-prefix(flex-shrink, 1);
+    @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
+    @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
     padding: rsa-whitespace(less) 0;
     margin: rsa-whitespace(less) 0;
     border-bottom: 1px solid rsa-color(black);
