@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.fetch.siem;
 
 import fortscale.collection.jobs.fetch.FetchJob;
+import fortscale.domain.fetch.SIEMType;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
@@ -19,7 +20,7 @@ import java.io.FileWriter;
 @DisallowConcurrentExecution
 public class QRadar extends FetchJob {
 
-	public static final String SIEM_NAME = "qradar";
+	public static final String SIEM_NAME = SIEMType.QRADAR.name().toLowerCase();
 
 	@Value("${source.qradar.batchSize:1000}")
 	private int batchSize;
@@ -34,7 +35,7 @@ public class QRadar extends FetchJob {
 	protected boolean connect(String hostName, int port, String username, String password) throws Exception {
 		// connect to QRadar
 		logger.debug("trying to connect QRadar at {}", hostName);
-		qRadarAPI = new QRadarAPI(hostName, EncryptionUtils.decrypt(password));
+		qRadarAPI = new QRadarAPI(hostName, EncryptionUtils.decrypt(password), username, port);
 		return true;
 	}
 

@@ -4,6 +4,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.fetch.siem.QRadar;
 import fortscale.collection.jobs.fetch.siem.Splunk;
 import fortscale.domain.fetch.LogRepository;
+import fortscale.domain.fetch.SIEMType;
 import fortscale.services.LogRepositoryService;
 import org.apache.commons.collections.CollectionUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -45,10 +46,15 @@ public class FetchFactory extends FortscaleJob {
 		} else {
 			configuredSIEM = LogRepository.DEFAULT_SIEM;
 		}
-		switch (configuredSIEM.toLowerCase()) {
-			case Splunk.SIEM_NAME: fetchJob = splunkFetch; break;
-			case QRadar.SIEM_NAME: fetchJob = qradarFetch; break;
-			default: throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
+		SIEMType type;
+		try {
+			type = SIEMType.valueOf(configuredSIEM.toUpperCase());
+		} catch (Exception ex) {
+			throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
+		}
+		switch (type) {
+			case SPLUNK: fetchJob = splunkFetch; break;
+			case QRADAR: fetchJob = qradarFetch; break;
 		}
 		fetchJob.getJobParameters(map, jobDataMapExtension, configuredSIEM);
 	}

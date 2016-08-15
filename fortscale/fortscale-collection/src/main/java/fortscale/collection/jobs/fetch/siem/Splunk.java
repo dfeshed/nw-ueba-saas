@@ -2,6 +2,7 @@ package fortscale.collection.jobs.fetch.siem;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.fetch.FetchJob;
+import fortscale.domain.fetch.SIEMType;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
@@ -20,7 +21,7 @@ import java.util.Properties;
 @DisallowConcurrentExecution
 public class Splunk extends FetchJob {
 
-	public static final String SIEM_NAME = "splunk";
+	public static final String SIEM_NAME = SIEMType.SPLUNK.name().toLowerCase();
 	public static final String DEFAULT_USER = "admin";
 	public static final int DEFAULT_PORT = 8089;
 

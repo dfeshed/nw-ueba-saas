@@ -11,7 +11,7 @@ import javax.validation.constraints.Min;
 public class LogRepository {
 
 	public static final String LOG_REPOSITORY_KEY = "system.logRepository.settings";
-	public static final String DEFAULT_SIEM = "splunk";
+	public static final String DEFAULT_SIEM = SIEMType.SPLUNK.name().toLowerCase();
 
 	@NotBlank
 	protected String type;

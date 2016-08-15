@@ -27,11 +27,15 @@ public class QRadarAPI {
 
 	private String hostname;
 	private String token;
+	private int port;
+	private String username;
 	private ObjectMapper objectMapper;
 
-	public QRadarAPI(String hostname, String token) {
+	public QRadarAPI(String hostname, String token, String username, int port) {
 		this.hostname = hostname;
 		this.token = token;
+		this.username = username;
+		this.port = port;
 		this.objectMapper = new ObjectMapper();
 	}
 
@@ -61,6 +65,16 @@ public class QRadarAPI {
 			logger.error("error sending request - ", ex);
 		}
 		return null;
+	}
+
+	public String canConnect() {
+		GenericRequest request = new CreateSearchRequest("select * from events limit 1");
+		try {
+			QRadarAPIUtility.sendRequest(hostname, token, request, true, 1, 0);
+		} catch (Exception ex) {
+			return ex.getLocalizedMessage();
+		}
+		return "";
 	}
 
 }

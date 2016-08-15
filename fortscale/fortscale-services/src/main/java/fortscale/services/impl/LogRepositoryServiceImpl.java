@@ -1,9 +1,13 @@
 package fortscale.services.impl;
 
 import fortscale.domain.fetch.LogRepository;
+import fortscale.domain.fetch.SIEMType;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.LogRepositoryService;
+import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.qradar.QRadarAPI;
+import fortscale.utils.splunk.SplunkApi;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,7 +54,27 @@ public class LogRepositoryServiceImpl implements LogRepositoryService, Initializ
 
 	@Override
 	public String canConnect(LogRepository logRepository) {
-		//TODO - implement
+		SIEMType type;
+		try {
+			type = SIEMType.valueOf(logRepository.getType().toUpperCase());
+		} catch (Exception ex) {
+			return "SIEM " + logRepository.getType() + " is not supported";
+		}
+		try {
+			switch (type) {
+				case SPLUNK: {
+					new SplunkApi(logRepository.getHost(), logRepository.getPort(), logRepository.getUser(),
+							EncryptionUtils.decrypt(logRepository.getPassword()));
+					break;
+				}
+				case QRADAR: {
+					return new QRadarAPI(logRepository.getHost(), EncryptionUtils.decrypt(logRepository.getPassword()),
+							logRepository.getUser(), logRepository.getPort()).canConnect();
+				}
+			}
+		} catch (Exception ex) {
+			return ex.getLocalizedMessage();
+		}
 		return "";
 	}
 
