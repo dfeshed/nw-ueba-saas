@@ -141,7 +141,8 @@ export default Component.extend({
       let nowInSeconds = parseInt(+(new Date()) / 1000, 10);
       fn(
         serviceId,
-        nowInSeconds - seconds,
+        // If user selects "All Data", seconds is zero; submit a start time of zero.
+        seconds ? nowInSeconds - seconds : 0,
         nowInSeconds
       );
     }
