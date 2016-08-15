@@ -18,7 +18,7 @@ public class PersonalThresholdModel implements Model {
 		this.normalizationFactor = expectedNumOfIndicators / numOfContexts;
 	}
 
-	public double calcThreshold(int numOfSamples, double maxRatioFromUniformThreshold) {
+	public double calcThreshold(long numOfSamples, double maxRatioFromUniformThreshold) {
 		double minAllowedThreshold = 1 - (1 - uniformThreshold) * maxRatioFromUniformThreshold;
 		return Math.max(minAllowedThreshold, 1 - normalizationFactor / numOfSamples);
 	}

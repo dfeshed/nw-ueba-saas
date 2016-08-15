@@ -5,7 +5,7 @@ import org.springframework.util.Assert;
 
 public class PersonalThresholdModelScorerAlgorithm {
 	public static double calculateScore(double highScoreProbability,
-										int numOfSamples,
+										long numOfSamples,
 										PersonalThresholdModel model,
 										double maxRatioFromUniformThreshold) {
 		Assert.isTrue(highScoreProbability >= 0 && highScoreProbability <= 1);
