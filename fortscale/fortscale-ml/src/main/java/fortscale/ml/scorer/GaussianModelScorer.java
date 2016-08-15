@@ -10,7 +10,7 @@ import fortscale.ml.scorer.algorithms.GaussianModelScorerAlgorithm;
 import java.util.List;
 
 
-public class GaussianModelScorer extends AbstractModelScorer {
+public class GaussianModelScorer extends RawNumOfSamplesCetaintyModelScorer {
     private GaussianModelScorerAlgorithm algorithm;
 
     public GaussianModelScorer(String scorerName,
