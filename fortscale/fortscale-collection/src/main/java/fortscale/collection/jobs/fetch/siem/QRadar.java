@@ -35,7 +35,7 @@ public class QRadar extends FetchJob {
 	protected boolean connect(String hostName, int port, String username, String password) throws Exception {
 		// connect to QRadar
 		logger.debug("trying to connect QRadar at {}", hostName);
-		qRadarAPI = new QRadarAPI(hostName, EncryptionUtils.decrypt(password), username, port);
+		qRadarAPI = new QRadarAPI(hostName, EncryptionUtils.decrypt(password));
 		return true;
 	}
 

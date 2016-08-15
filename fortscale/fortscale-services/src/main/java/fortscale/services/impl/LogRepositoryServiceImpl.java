@@ -68,8 +68,8 @@ public class LogRepositoryServiceImpl implements LogRepositoryService, Initializ
 					break;
 				}
 				case QRADAR: {
-					return new QRadarAPI(logRepository.getHost(), EncryptionUtils.decrypt(logRepository.getPassword()),
-							logRepository.getUser(), logRepository.getPort()).canConnect();
+					return new QRadarAPI(logRepository.getHost(), EncryptionUtils.decrypt(logRepository.getPassword())).
+							canConnect();
 				}
 			}
 		} catch (Exception ex) {

@@ -19,14 +19,11 @@ public class LogRepository {
 	@NotBlank
 	protected String host;
 
-	@NotBlank
 	protected String user;
 
 	@NotBlank
 	protected String password;
 
-	@Min(1)
-	@Max(65535)
 	protected int port;
 
 	public LogRepository() {}

@@ -28,15 +28,11 @@ public class QRadarAPI {
 
 	private String hostname;
 	private String token;
-	private int port;
-	private String username;
 	private ObjectMapper objectMapper;
 
-	public QRadarAPI(String hostname, String token, String username, int port) {
+	public QRadarAPI(String hostname, String token) {
 		this.hostname = hostname;
 		this.token = token;
-		this.username = username;
-		this.port = port;
 		this.objectMapper = new ObjectMapper();
 	}
 
