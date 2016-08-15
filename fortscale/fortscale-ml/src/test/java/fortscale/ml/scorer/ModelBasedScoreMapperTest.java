@@ -9,7 +9,6 @@ import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.model.cache.ModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
-import fortscale.ml.scorer.factory.ScoreMapperFactory;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -43,11 +42,6 @@ public class ModelBasedScoreMapperTest {
         @Bean
         public FactoryService<Scorer> scorerFactoryService() {
             return new FactoryService<>();
-        }
-
-        @Bean
-        public ScoreMapperFactory scoreMapperFactory() {
-            return new ScoreMapperFactory();
         }
 
         @Bean
