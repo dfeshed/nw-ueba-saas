@@ -25,7 +25,7 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 				put(100D, 0D);
 			}});
 
-	private final Scorer baseScorer;
+	private Scorer baseScorer;
 	private String modelName;
 	private List<String> contextFieldNames;
 	private String featureName;
@@ -37,7 +37,7 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 	private EventModelsCacheService eventModelsCacheService;
 
 	@Autowired
-	protected FactoryService<Scorer> factoryService;
+	private FactoryService<Scorer> factoryService;
 
 	public ModelBasedScoreMapper(String scorerName,
 								 String modelName,
