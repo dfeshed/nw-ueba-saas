@@ -26,6 +26,7 @@ public class UserRestFilter extends RestFilter {
 	private Boolean isScored;
 	private List<String> alertTypes;
 	private AlertRestFilter.DataSourceAnomalyTypePairListWrapper indicatorTypes;
+	private List<String> locations;
 
 	public String getSortField() {
 		return sortField;
@@ -177,6 +178,14 @@ public class UserRestFilter extends RestFilter {
 
 	public void setIndicatorTypes(AlertRestFilter.DataSourceAnomalyTypePairListWrapper indicatorTypes) {
 		this.indicatorTypes = indicatorTypes;
+	}
+
+	public List<String> getLocations() {
+		return locations;
+	}
+
+	public void setLocations(List<String> locations) {
+		this.locations = locations;
 	}
 
 	public Set<DataSourceAnomalyTypePair> getAnomalyTypesAsSet() {

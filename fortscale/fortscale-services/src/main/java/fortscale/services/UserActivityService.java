@@ -4,6 +4,7 @@ import fortscale.domain.core.activities.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface UserActivityService {
 
@@ -21,4 +22,5 @@ public interface UserActivityService {
 
     List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String id, int timeRangeInDays);
 
+    public Set<String> getUserNamesByUserLocation(List<String> userLocations);
 }

@@ -1188,7 +1188,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			Set<String> relevantUserNames) {
 		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
 
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) || CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())) {
 			criteriaList.add(userRepository.getUserCriteriaByUserNames(relevantUserNames));
 		}
 

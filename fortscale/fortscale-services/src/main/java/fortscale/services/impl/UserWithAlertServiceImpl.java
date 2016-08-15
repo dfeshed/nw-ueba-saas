@@ -4,6 +4,7 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.AlertsService;
+import fortscale.services.UserActivityService;
 import fortscale.services.UserService;
 import fortscale.services.UserWithAlertService;
 import org.apache.commons.collections.CollectionUtils;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -23,6 +25,9 @@ import java.util.Set;
 	@Autowired private UserService userService;
 
 	@Autowired private AlertsService alertsService;
+
+	@Autowired
+	private UserActivityService userActivityService;
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
 		List<User> result = new ArrayList<>();
@@ -38,15 +43,26 @@ import java.util.Set;
 
 	private boolean shouldStop(UserRestFilter userRestFilter, Set<String> relevantUsers) {
 		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
-				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()))
+				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()) ||
+				CollectionUtils.isNotEmpty(userRestFilter.getLocations()))
 				&& (CollectionUtils.isEmpty(relevantUsers));
 	}
 
 	private Set<String> getIntersectedUserNameList(UserRestFilter userRestFilter) {
 		Set<String> relevantUsers = null;
 
-		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) || CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
 			relevantUsers = alertsService.getDistinctUserNamesByUserFilter(userRestFilter);
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getLocations())){
+			Set<String> userNamesByUserLocation = userActivityService.getUserNamesByUserLocation(userRestFilter.getLocations());
+			if (relevantUsers == null){
+				relevantUsers = userNamesByUserLocation;
+			}else{
+				relevantUsers = new HashSet<>(CollectionUtils.intersection(relevantUsers, userNamesByUserLocation));
+			}
 		}
 
 		return relevantUsers;
