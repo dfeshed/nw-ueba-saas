@@ -14,17 +14,27 @@ import java.util.stream.IntStream;
 public class PersonalThresholdModelTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenZeroAsNumOfContexts() {
-		new PersonalThresholdModel(0, 1);
+		new PersonalThresholdModel(0, 0.9, 100);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenZeroAsDesiredNumOfIndicators() {
-		new PersonalThresholdModel(1, 0);
+	public void shouldFailGivenZeroAsOrganizationThreshold() {
+		new PersonalThresholdModel(10, 0, 100);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenOneAsOrganizationThreshold() {
+		new PersonalThresholdModel(10, 1, 100);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenZeroAsNumOfOrganizationScores() {
+		new PersonalThresholdModel(10, 0.9, 0);
 	}
 
 	@Test
 	public void shouldHaveInverseLinearDependenceOnNumOfSamples() {
-		PersonalThresholdModel model = new PersonalThresholdModel(100, 100);
+		PersonalThresholdModel model = new PersonalThresholdModel(10, 0.9, 100);
 		int numOfSamples = 10;
 		int a = 2;
 		Assert.assertEquals(
@@ -35,18 +45,23 @@ public class PersonalThresholdModelTest {
 	}
 
 	@Test
-	public void shouldSumToDesiredNumOfIndicators() {
+	public void shouldGetSameNumOfIndicatorsComparedToUniformThreshold() {
 		List<Integer> numOfSamplesPerContext = IntStream.range(10, 20).boxed().collect(Collectors.toList());
-		int desiredNumOfIndicators = 5;
-		PersonalThresholdModel model = new PersonalThresholdModel(numOfSamplesPerContext.size(), desiredNumOfIndicators);
-		double expectedNumOfIndicators = numOfSamplesPerContext.stream()
-				// map each context to its samples
+		List<Integer> organizationSamples = numOfSamplesPerContext.stream()
 				.map(numOfSamples -> IntStream.range(0, numOfSamples).map(i -> numOfSamples))
 				.flatMapToInt(Function.identity())
-				// calc its significance level (which is the expectation of the number of indicators)
+				.boxed()
+				.collect(Collectors.toList());
+		double organizationThreshold = 0.9;
+		PersonalThresholdModel model = new PersonalThresholdModel(numOfSamplesPerContext.size(), organizationThreshold, organizationSamples.size());
+
+		double expectedNumOfIndicatorsUsingPersonalThreshold = organizationSamples.stream()
+				// calc its significance level (which is the expected number of indicators)
 				.mapToDouble(numOfSamples -> 1 - model.calcThreshold(numOfSamples))
 				// use linearity of expectation
 				.sum();
-		Assert.assertEquals(desiredNumOfIndicators, expectedNumOfIndicators, 0.00001);
+
+		double expectedNumOfIndicatorsUsingUniformThreshold = (1 - organizationThreshold) * organizationSamples.size();
+		Assert.assertEquals(expectedNumOfIndicatorsUsingUniformThreshold, expectedNumOfIndicatorsUsingPersonalThreshold, 0.00001);
 	}
 }

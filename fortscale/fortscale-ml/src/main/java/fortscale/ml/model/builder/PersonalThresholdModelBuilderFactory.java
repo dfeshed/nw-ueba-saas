@@ -14,7 +14,6 @@ public class PersonalThresholdModelBuilderFactory extends AbstractServiceAutowir
 
 	@Override
 	public PersonalThresholdModelBuilder getProduct(FactoryConfig factoryConfig) {
-		PersonalThresholdModelBuilderConf config = (PersonalThresholdModelBuilderConf) factoryConfig;
-		return new PersonalThresholdModelBuilder(config.getDesiredNumOfIndicators());
+		return new PersonalThresholdModelBuilder();
 	}
 }

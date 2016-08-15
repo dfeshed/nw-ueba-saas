@@ -1,32 +1,32 @@
 package fortscale.ml.model.builder;
 
 import fortscale.ml.model.PersonalThresholdModel;
+import fortscale.ml.model.PersonalThresholdModelBuilderData;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class PersonalThresholdModelBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailGivenZeroAsDesiredNumOfIndicators() {
-		new PersonalThresholdModelBuilder(0);
-	}
-
-	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNullAsModelBuilderData() {
-		new PersonalThresholdModelBuilder(1).build(null);
+		new PersonalThresholdModelBuilder().build(null);
 	}
-
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenModelBuilderDataOfTheWrongType() {
-		new PersonalThresholdModelBuilder(1).build("shoulds be integer");
+		new PersonalThresholdModelBuilder().build("should be PersonalThresholdModelBuilderData");
 	}
 
 	@Test
 	public void shouldBuildTheModelProperly() {
-		int desiredNumOfIndicators = 10;
 		int numOfContexts = 100;
-		PersonalThresholdModel model = new PersonalThresholdModelBuilder(desiredNumOfIndicators).build(numOfContexts);
+		double organizationKTopProbOfHighScore = 0.9;
+		int numOfOrganizationScores = 1000;
+		PersonalThresholdModelBuilderData modelBuilderData = new PersonalThresholdModelBuilderData()
+				.setNumOfContexts(numOfContexts)
+				.setOrganizationKTopProbOfHighScore(organizationKTopProbOfHighScore)
+				.setNumOfOrganizationScores(numOfOrganizationScores);
+		PersonalThresholdModel model = new PersonalThresholdModelBuilder().build(modelBuilderData);
 
-		Assert.assertEquals(new PersonalThresholdModel(numOfContexts, desiredNumOfIndicators), model);
+		Assert.assertEquals(new PersonalThresholdModel(numOfContexts, organizationKTopProbOfHighScore, numOfOrganizationScores), model);
 	}
 }
