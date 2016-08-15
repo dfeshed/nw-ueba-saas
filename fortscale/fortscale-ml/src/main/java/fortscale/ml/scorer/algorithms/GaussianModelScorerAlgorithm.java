@@ -19,7 +19,7 @@ public class GaussianModelScorerAlgorithm {
 		Assert.notNull(model);
 		return IntStream.of(0, globalInfluence)
 				.mapToDouble(globalInfluence -> calcProbOfLessThan(model, priorModel, globalInfluence, value))
-				.map(probOfLessThanValue -> Math.max(0, 100 * (2 * probOfLessThanValue - 1)))
+				.map(probOfLessThanValue -> Math.max(0, 2 * probOfLessThanValue - 1))
 				.min()
 				.getAsDouble();
 	}
