@@ -21,6 +21,11 @@ test('it includes the proper classes', function(assert) {
   assert.equal(this.$().find('.rsa-form-select').length, 1);
 });
 
+test('it includes the proper classes when isSmall is true', function(assert) {
+  this.render(hbs `{{rsa-form-select label='Foo' isSmall=true}}`);
+  assert.ok(this.$().find('.rsa-form-select').hasClass('is-small'));
+});
+
 test('it includes the proper classes when isInline is true', function(assert) {
   this.render(hbs `{{rsa-form-select label='Foo' isInline=true}}`);
   assert.ok(this.$().find('.rsa-form-select').hasClass('is-inline'));

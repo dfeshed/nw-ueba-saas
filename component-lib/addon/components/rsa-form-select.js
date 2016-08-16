@@ -34,6 +34,7 @@ export default Component.extend({
                       'isDisabled',
                       'isError',
                       'isInline',
+                      'isSmall',
                       'hasMultipleValues:has-multiple-values:has-single-value'],
 
   isReadOnly: false,
@@ -45,6 +46,8 @@ export default Component.extend({
   isSuccess: false,
 
   isInline: false,
+
+  isSmall: false,
 
   resolvedDisabled: or('isDisabled', 'isReadOnly'),
 

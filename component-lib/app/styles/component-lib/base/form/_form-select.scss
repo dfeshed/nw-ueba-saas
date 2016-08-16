@@ -33,7 +33,7 @@
       border-bottom: 1px solid $formSelectOptionBorderColor;
       padding: rsa-whitespace(less) rsa-whitespace(less);
       color: $formSelectOptionTypeColor;
-      
+
       &:hover {
         background: $formSelectOptionHoverBackgroundColor;
       }
@@ -41,7 +41,7 @@
       &:last-child {
         border: none;
       }
-      
+
       &:checked {
         padding: rsa-whitespace(less) 0;
         height: 1.35rem;
@@ -89,7 +89,7 @@
     right: rsa-whitespace(less);
     top: 1.85rem;
     color: $formSelectIconColor;
-    
+
     &:hover {
       cursor: pointer;
     }
@@ -111,10 +111,18 @@
       right: rsa-whitespace(less);
       top: .45rem;
       font-size: .65rem;
-      
+
       &:hover {
         cursor: pointer;
       }
+    }
+  }
+
+  &.is-small {
+    select,
+    .prompt,
+    .rsa-form-label {
+      @include rsa-font(body, small);
     }
   }
 
@@ -130,7 +138,7 @@
 
   &.has-single-value {
     .prompt {
-      color: $formSelectTypeColor;  
+      color: $formSelectTypeColor;
     }
   }
 
@@ -139,41 +147,41 @@
       padding-top: .35rem;
     }
   }
-  
+
   &:hover:not(.is-disabled):not(.is-read-only) {
     cursor: pointer;
 
     .rsa-icon-arrow-down-12 {
       color: $formSelectIconHoverColor;
     }
-  
+
     .prompt {
       border-color: $formSelectHoverBorderColor;
     }
-      
+
     &:not(.options-collapsed) {
       .prompt {
-        border-color: $formSelectActiveHoverBorderColor;  
-      }               
+        border-color: $formSelectActiveHoverBorderColor;
+      }
     }
-    
+
     &.is-error {
       .prompt {
-        border-color: $formSelectHoverErrorBorderColor;  
+        border-color: $formSelectHoverErrorBorderColor;
       }
-      
+
       .rsa-icon-arrow-down-12 {
         color: $formSelectHoverErrorIconColor;
       }
-      
+
       &:not(.options-collapsed) {
         .prompt {
-          border-color: $formSelectErrorBorderColor;  
-        }               
+          border-color: $formSelectErrorBorderColor;
+        }
       }
     }
   }
-  
+
   &.is-disabled, &.is-read-only {
     .prompt {
       color: $formSelectDisabledTypeColor;
@@ -194,13 +202,13 @@
     .prompt {
       color: $formSelectReadOnlyTypeColor;
     }
-    
+
     .option-tag {
       background-color: $formSelectReadOnlyTagBackgroundColor;
       color: $formSelectReadOnlyTagTypeColor;
     }
   }
-  
+
   &.is-error {
     .rsa-form-label {
       color: $formSelectErrorLabelColor;
@@ -222,7 +230,7 @@
     select option:checked:after {
       background: $formSelectErrorOptionSelectedBackgroundColor;
     }
-    
+
     option {
       &:hover {
         background: $formSelectErrorOptionHoverBackgroundColor;
@@ -263,4 +271,3 @@
     }
   }
 }
-

@@ -41,6 +41,24 @@
         </code>
       {{/spec-member}}
 
+      {{#spec-member title="Small"}}
+        {{#rsa-form-select label='Select Label' isSmall=true}}
+          <option value='1'>Val 1</option>
+          <option value='2'>Val 2</option>
+          <option value='3'>Val 3</option>
+        {{/rsa-form-select}}
+
+        <code>
+          <div>
+            &#123;{#rsa-form-select isSmall=true label='Select Label'}}
+            <div>&lt;option value='1'>Val 1&lt;/option></div>
+            <div>&lt;option value='2'>Val 2&lt;/option></div>
+            <div>&lt;option value='3'>Val 3&lt;/option></div>
+            &#123;{/rsa-form-select}}
+          </div>
+        </code>
+      {{/spec-member}}
+
       {{#spec-member title="Danger"}}
         {{#rsa-form-select label='Select Label' isError=true}}
           <option value='1'>Val 1</option>
