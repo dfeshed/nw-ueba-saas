@@ -4,8 +4,32 @@
   </h2>
 </hbox>
 <grid class='action-buttons'>
-  <centered xs="2">{{rsa-icon name='window-1' size='large'}}</centered>
-  <centered xs="2">{{rsa-icon name='window-2' size='large'}}</centered>
-  <centered xs="2">{{rsa-icon name='cog' size='large'}}</centered>
-  <centered xs="2">{{rsa-icon name='arrow-left-9' size='large'}}</centered>
+  <centered xs="2">
+    {{#rsa-form-button active=showHeaderData isIconOnly=true}}
+      {{rsa-icon name='layout-6' click=toggleHeaderData}}
+    {{/rsa-form-button}}
+  </centered>
+  <centered xs="2">
+    {{#rsa-form-button isIconOnly=true}}
+      {{rsa-icon name='layout-12' click=toggleMetaDetails}}
+    {{/rsa-form-button}}
+  </centered>
+  <centered xs="2">
+    {{#rsa-form-button isIconOnly=true}}
+      {{rsa-icon name='infomation-circle' size='large' style='lined'}}
+    {{/rsa-form-button}}
+  </centered>
+  <centered xs="2">
+    <div class="divider"></div>
+  </centered>
+  <centered xs="2">
+    {{#rsa-form-button isIconOnly=true}}
+      {{rsa-icon name='cog'}}
+    {{/rsa-form-button}}
+  </centered>
+  <centered xs="2">
+    {{#rsa-form-button isIconOnly=true}}
+      {{rsa-icon name='arrow-left-9'}}
+    {{/rsa-form-button}}
+  </centered>
 </grid>

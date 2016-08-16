@@ -2,54 +2,14 @@
 
 /* Imports all styles from component-lib addon. */
 @import 'component-lib/manifest';
+/* Import recon styles */
+@import 'recon/manifest';
 
 body {
   color: rsa-color(gray, light);
   margin: 0;
 }
 
-.recon-event-header {
-  background-color: rsa-color(gray, dark);
-  border: 1px solid rsa-color(white);
-  border-bottom: none;
-  padding: 20px;
-
-  .recon-event-titlebar {
-    margin-bottom: 15px;
-
-    .heading {
-      h2 {
-        color: rsa-color(white);
-        font-size: 20px;
-        margin-left: 15px;
-      }
-    }
-
-    .action-buttons {
-      text-align: right;
-
-      i {
-        padding: 0 5px;
-      }
-    }
-  }
-
-  .header-item {
-    padding: 2px 15px;
-
-    .name {
-      color: rsa-color(white);
-      font-size: 12px;
-      text-transform: uppercase;
-    }
-
-    .value {
-      font-size: 16px;
-    }
-  }
-}
-
-.recon-event-content {
-  background-color: rsa-color(gray, dark);
-  border: 1px solid rsa-color(white);
+page {
+  min-height: 100vh;
 }

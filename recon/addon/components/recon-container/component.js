@@ -6,21 +6,15 @@ const { A, Component } = Ember;
 export default Component.extend({
   layout,
   tagName: '',
+  showMetaDetails: false,
   @computed('model.summary')
   headerItems(items) {
     return items.reduce(function(headerItems, item) {
       if (item.name === 'destination' || item.name === 'source') {
-        const splitString = item.value.split(':');
-        const IP = splitString[0].trim();
-        const port = splitString[1].trim();
         headerItems.pushObjects([
           {
-            name: `${item.name} IP`,
-            value: IP
-          },
-          {
-            name: `${item.name} Port`,
-            value: port
+            name: `${item.name} IP:PORT`,
+            value: item.value
           }
         ]);
       } else {
@@ -29,5 +23,10 @@ export default Component.extend({
 
       return headerItems;
     },A([]));
+  },
+  actions: {
+    toggleMetaDetails() {
+      this.toggleProperty('showMetaDetails');
+    }
   }
 });

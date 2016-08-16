@@ -1,0 +1,45 @@
+@import "./event-dropdowns";
+
+.recon-event-header {
+  background-color: rsa-color(gray, dark);
+  border: 1px solid rsa-color(white);
+  border-bottom: none;
+  padding: rsa-whitespace();
+
+  .divider {
+    border-left: 1px solid rsa-color(white);
+    height: 100%;
+  }
+
+  .header-item {
+    padding: rsa-whitespace(least) rsa-whitespace();
+
+    .name {
+      @include rsa-font(body, small);
+      color: rsa-color(white);
+      text-transform: uppercase;
+    }
+
+    .value {
+      @include rsa-font(body);
+    }
+  }
+
+  .recon-event-titlebar {
+    .heading {
+      h2 {
+        color: rsa-color(white);
+        @include rsa-font(header, large);
+      }
+    }
+
+    .action-buttons {
+      text-align: right;
+
+      .rsa-form-button {
+        height: auto;
+        padding: 0 rsa-whitespace(less);
+      }
+    }
+  }
+}

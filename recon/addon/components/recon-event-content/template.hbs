@@ -1,49 +1,14 @@
-<div>
-  <hbox>
-    <centered xs="2">
-      {{#rsa-form-button dropdown='standard' }}
-        Best Reconstruction
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </centered>
-
-    <centered xs="2">
-      {{#rsa-form-button dropdown='standard' }}
-        Request &amp; Response
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </centered>
-
-    <centered xs="2">
-      {{#rsa-form-button dropdown='standard' }}
-        Top to Bottom
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </centered>
-
-    <centered xs="3">
-    </centered>
-
-    <centered xs="3">
-      {{#rsa-form-button dropdown='standard' }}
-        Take Action
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </centered>
+{{#if showMetaDetails}}
+  <hbox xs="8" class="event-content-box">
+    <h2>Event Content</h2>
   </hbox>
-</div>
-<fill>
-  <h2>Event Content</h2>
-</fill>
+
+  <hbox xs="4" class="event-content-box">
+    <h2>Related Meta</h2>
+    {{recon-meta-container}}
+  </hbox>
+{{else}}
+  <hbox xs="12" class="event-content-box">
+    <h2>Event Content</h2>
+  </hbox>
+{{/if}}

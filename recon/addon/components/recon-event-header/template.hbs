@@ -1,6 +1,15 @@
-{{recon-event-titlebar title=title}}
-<grid responsive>
-  {{#each headerItems as |item|}}
-    {{recon-event-header-item name=item.name value=item.value}}
-  {{/each}}
-</grid>
+{{recon-event-titlebar
+  title=title
+  showMetaDetails=showMetaDetails
+  toggleHeaderData=(action 'toggleHeaderData')
+  toggleMetaDetails=toggleMetaDetails}}
+
+{{recon-event-dropdowns}}
+
+{{#if showHeaderData}}
+  <grid responsive>
+    {{#each headerItems as |item|}}
+      {{recon-event-header-item name=item.name value=item.value}}
+    {{/each}}
+  </grid>
+{{/if}}

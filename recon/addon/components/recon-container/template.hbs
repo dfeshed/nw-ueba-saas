@@ -1,2 +1,6 @@
-{{recon-event-header headerItems=headerItems title=title}}
-{{recon-event-content}}
+{{recon-event-header
+  headerItems=headerItems
+  showMetaDetails=showMetaDetails
+  title=title
+  toggleMetaDetails=(action 'toggleMetaDetails')}}
+{{recon-event-content showMetaDetails=showMetaDetails}}

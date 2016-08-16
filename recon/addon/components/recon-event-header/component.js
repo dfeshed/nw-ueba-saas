@@ -5,5 +5,11 @@ const { Component } = Ember;
 export default Component.extend({
   layout,
   classNameBindings: [':recon-event-header'],
-  tagName: 'container'
+  tagName: 'container',
+  showHeaderData: true,
+  actions: {
+    toggleHeaderData() {
+      this.toggleProperty('showHeaderData');
+    }
+  }
 });
