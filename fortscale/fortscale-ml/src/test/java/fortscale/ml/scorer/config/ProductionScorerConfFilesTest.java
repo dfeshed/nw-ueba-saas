@@ -46,20 +46,12 @@ public class ProductionScorerConfFilesTest {
 
 	@Test
 	public void validate_all_scorer_confs() {
-		int expRawScorerConfs = 11;
-		int expAggrScorerConfs = 64;
-		int expEntityScorerConfs = 10;
-		int actualScorerConfs = 0;
-
 		for (DataSourceScorerConfs dataSourceScorerConfs : scorerConfService.getAllDataSourceScorerConfs().values()) {
 			for (IScorerConf scorerConf : dataSourceScorerConfs.getScorerConfs()) {
 				Scorer scorer = scorerFactoryService.getProduct(scorerConf);
 				if (scorer == null) Assert.fail(String.format(NULL_SCORER_ERROR_MSG_FORMAT, scorerConf.getName()));
-				else actualScorerConfs++;
 			}
 		}
-
-		Assert.assertEquals(expRawScorerConfs + expAggrScorerConfs + expEntityScorerConfs, actualScorerConfs);
 	}
 
 	@Test
