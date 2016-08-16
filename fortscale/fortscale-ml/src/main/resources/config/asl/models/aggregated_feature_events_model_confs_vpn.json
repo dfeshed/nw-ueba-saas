@@ -107,7 +107,7 @@
             }
         },
         {
-            "name": "number_of_failedv.prior.global.vpn.hourly",
+            "name": "number_of_failed.prior.global.vpn.hourly",
             "retriever": {
                 "type": "model_retriever",
                 "timeRangeInSeconds": 7776000,

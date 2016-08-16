@@ -13,7 +13,7 @@
               "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly"
             },
             "additional-models": [{
-              "name": ""
+              "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.hourly"
             }],
             "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
@@ -43,7 +43,7 @@
               "name": "distinct_number_of_countries.normalized_username.vpn.hourly"
             },
             "additional-models": [{
-              "name": ""
+              "name": "distinct_number_of_countries.prior.global.vpn.hourly"
             }],
             "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
@@ -73,7 +73,7 @@
               "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily"
             },
             "additional-models": [{
-              "name": ""
+              "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.daily"
             }],
             "global-influence": 20,
             "number-of-samples-to-influence-enough": 10,
@@ -103,7 +103,7 @@
               "name": "distinct_number_of_countries.normalized_username.vpn.daily"
             },
             "additional-models": [{
-              "name": ""
+              "name": "distinct_number_of_countries.prior.global.vpn.daily"
             }],
             "global-influence": 20,
             "number-of-samples-to-influence-enough": 10,
@@ -133,7 +133,7 @@
               "name": "number_of_failed.normalized_username.vpn.daily"
             },
             "additional-models": [{
-              "name": ""
+              "name": "number_of_failed.prior.global.vpn.daily"
             }],
             "global-influence": 20,
             "number-of-samples-to-influence-enough": 10,
@@ -163,7 +163,7 @@
               "name": "number_of_failed.normalized_username.vpn.hourly"
             },
             "additional-models": [{
-              "name": ""
+              "name": "number_of_failed.prior.global.vpn.hourly"
             }],
             "global-influence": 20,
             "number-of-samples-to-influence-enough": 30,
