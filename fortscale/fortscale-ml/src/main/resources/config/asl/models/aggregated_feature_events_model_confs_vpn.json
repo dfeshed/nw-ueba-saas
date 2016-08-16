@@ -15,7 +15,21 @@
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
-        }, 
+        },
+        {
+            "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.daily",
+            "retriever": {
+                "type": "model_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "modelConfName": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily"
+            },
+            "builder": {
+                "type": "gaussian_prior_model_builder",
+                "distanceBetweenSegmentCenters": 1,
+                "minNumOfSamplesToLearnFrom": 10
+            }
+        },
         {
             "name": "distinct_number_of_countries.normalized_username.vpn.hourly", 
             "selector": {
@@ -31,7 +45,21 @@
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
-        }, 
+        },
+        {
+            "name": "distinct_number_of_countries.prior.global.vpn.hourly",
+            "retriever": {
+                "type": "model_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "modelConfName": "distinct_number_of_countries.normalized_username.vpn.hourly"
+            },
+            "builder": {
+                "type": "gaussian_prior_model_builder",
+                "distanceBetweenSegmentCenters": 1,
+                "minNumOfSamplesToLearnFrom": 10
+            }
+        },
         {
             "name": "distinct_number_of_countries.normalized_username.vpn.daily", 
             "selector": {
@@ -47,7 +75,21 @@
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
-        }, 
+        },
+        {
+            "name": "distinct_number_of_countries.prior.global.vpn.daily",
+            "retriever": {
+                "type": "model_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "modelConfName": "distinct_number_of_countries.normalized_username.vpn.daily"
+            },
+            "builder": {
+                "type": "gaussian_prior_model_builder",
+                "distanceBetweenSegmentCenters": 1,
+                "minNumOfSamplesToLearnFrom": 10
+            }
+        },
         {
             "name": "number_of_failed.normalized_username.vpn.hourly", 
             "selector": {
@@ -63,7 +105,21 @@
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
-        }, 
+        },
+        {
+            "name": "number_of_failedv.prior.global.vpn.hourly",
+            "retriever": {
+                "type": "model_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "modelConfName": "number_of_failed.normalized_username.vpn.hourly"
+            },
+            "builder": {
+                "type": "gaussian_prior_model_builder",
+                "distanceBetweenSegmentCenters": 1,
+                "minNumOfSamplesToLearnFrom": 10
+            }
+        },
         {
             "name": "number_of_failed.normalized_username.vpn.daily", 
             "selector": {
@@ -79,7 +135,21 @@
             "builder": {
                 "type": "continuous_histogram_model_builder"
             }
-        }, 
+        },
+        {
+            "name": "number_of_failed.prior.global.vpn.daily",
+            "retriever": {
+                "type": "model_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "modelConfName": "number_of_failed.normalized_username.vpn.daily"
+            },
+            "builder": {
+                "type": "gaussian_prior_model_builder",
+                "distanceBetweenSegmentCenters": 1,
+                "minNumOfSamplesToLearnFrom": 10
+            }
+        },
         {
             "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly",
             "selector": {
@@ -94,6 +164,20 @@
             }, 
             "builder": {
                 "type": "continuous_histogram_model_builder"
+            }
+        },
+        {
+            "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.hourly",
+            "retriever": {
+                "type": "model_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "modelConfName": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly"
+            },
+            "builder": {
+                "type": "gaussian_prior_model_builder",
+                "distanceBetweenSegmentCenters": 1,
+                "minNumOfSamplesToLearnFrom": 10
             }
         }
     ]
