@@ -70,15 +70,11 @@ public class ModelBasedScoreMapperTest {
     private ModelsCacheService modelsCacheService;
 
     private Scorer baseScorer;
-    private Event eventMessage;
-    private long evenEpochTime;
     private IScorerConf baseScorerConf;
 
     @Before
     public void setup() {
         baseScorer = Mockito.mock(Scorer.class);
-        eventMessage = Mockito.mock(Event.class);
-        evenEpochTime = 1234;
         baseScorerConf = new IScorerConf() {
             @Override
             public String getName() {
@@ -147,9 +143,12 @@ public class ModelBasedScoreMapperTest {
         );
     }
 
-    private ModelBasedScoreMapper prepareSetup(String featureScoreName,
-                                               FeatureScore baseScore,
-                                               Model model) throws Exception {
+    private FeatureScore calculateScore(String featureScoreName,
+                                        FeatureScore baseScore,
+                                        Model model) throws Exception {
+        Event eventMessage = Mockito.mock(Event.class);
+        long evenEpochTime = 1234;
+
         scorerFactoryService.register(baseScorerConf.getFactoryName(), factoryConfig -> baseScorer);
         Mockito.when(baseScorer.calculateScore(eventMessage, evenEpochTime)).thenReturn(baseScore);
         String contextFieldName = "context field name";
@@ -169,7 +168,7 @@ public class ModelBasedScoreMapperTest {
                 Collections.singletonList(contextFieldName),
                 "feature name",
                 baseScorerConf
-        );
+        ).calculateScore(eventMessage, evenEpochTime);
     }
 
     @Test
@@ -182,9 +181,9 @@ public class ModelBasedScoreMapperTest {
         mapping.put(score, mappedScore);
         model.init(mapping);
         String featureScoreName = "mapped score";
-        ModelBasedScoreMapper scorer = prepareSetup(featureScoreName, baseScore, model);
 
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, evenEpochTime);
+        FeatureScore featureScore = calculateScore(featureScoreName, baseScore, model);
+
         Assert.assertEquals(featureScoreName, featureScore.getName());
         Assert.assertEquals(mappedScore, featureScore.getScore(), 0.0001);
         Assert.assertEquals(1, featureScore.getFeatureScores().size());
@@ -196,8 +195,8 @@ public class ModelBasedScoreMapperTest {
         String featureScoreName = "mapped score";
         double score = 56;
         FeatureScore baseScore = new FeatureScore("base score", score);
-        ModelBasedScoreMapper scorer = prepareSetup(featureScoreName, baseScore, null);
-        FeatureScore featureScore = scorer.calculateScore(eventMessage, evenEpochTime);
+
+        FeatureScore featureScore = calculateScore(featureScoreName, baseScore, null);
 
         Assert.assertEquals(featureScoreName, featureScore.getName());
         Assert.assertEquals(0, featureScore.getScore(), 0.0001);
