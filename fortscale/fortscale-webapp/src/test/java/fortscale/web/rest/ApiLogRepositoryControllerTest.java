@@ -40,7 +40,7 @@ public class ApiLogRepositoryControllerTest {
 		final String HOST = "aaa";
 		final String USER = "user@user.com";
 		final String ENCRYPTED_PASSWORD = "8bGagpbfO0hLMjKwrIc5SA==";
-		final int PORT = 8089;
+		final Integer PORT = 8089;
 		LogRepositoryRequest settings = new LogRepositoryRequest();
 		settings.setPassword(PASSWORD);
 		settings.setHost(HOST);
@@ -66,7 +66,7 @@ public class ApiLogRepositoryControllerTest {
 		final String HOST = "aaa";
 		final String USER = "user@domain.com";
 		final String ENCRYPTED_PASSWORD = "8bGagpbfO0hLMjKwrIc5SA==";
-		final int PORT = 8089;
+		final Integer PORT = 8089;
 		LogRepository oldSettings = new LogRepository();
 		oldSettings.setPassword(PASSWORD + "1111");
 		oldSettings.setUser(USER);
@@ -93,7 +93,7 @@ public class ApiLogRepositoryControllerTest {
 		final String HOST = "aaa";
 		final String USER = "user@domain.com";
 		final String ENCRYPTED_PASSWORD = "ENCRYPTED_PASSWORD";
-		final int PORT = 8089;
+		final Integer PORT = 8089;
 		LogRepository oldSettings = new LogRepository();
 		oldSettings.setPassword(ENCRYPTED_PASSWORD);
 		oldSettings.setUser(USER);

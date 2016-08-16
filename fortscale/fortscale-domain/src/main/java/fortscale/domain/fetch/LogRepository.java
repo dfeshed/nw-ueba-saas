@@ -23,11 +23,11 @@ public class LogRepository {
 	@NotBlank
 	protected String password;
 
-	protected int port;
+	protected Integer port;
 
 	public LogRepository() {}
 
-	public LogRepository(String type, String host, String user, String password, int port) {
+	public LogRepository(String type, String host, String user, String password, Integer port) {
 		this.type = type;
 		this.host = host;
 		this.user = user;
@@ -35,11 +35,11 @@ public class LogRepository {
 		this.port = port;
 	}
 
-	public int getPort() {
+	public Integer getPort() {
 		return port;
 	}
 
-	public void setPort(int port) {
+	public void setPort(Integer port) {
 		this.port = port;
 	}
 
