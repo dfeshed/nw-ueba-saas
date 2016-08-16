@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
@@ -65,6 +66,10 @@ public class UserActivityServiceImpl implements UserActivityService {
     public List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String id, int timeRangeInDays) {
         final String username = getUsernameById(id);
         return userActivityRepository.getUserActivityDataUsageEntries(username, timeRangeInDays);
+    }
+
+    @Override public Set<String> getUserNamesByUserLocation(List<String> userLocations) {
+        return userActivityRepository.getUserNamesByLocation(userLocations);
     }
 
     public List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String id, int timeRangeInDays) {
