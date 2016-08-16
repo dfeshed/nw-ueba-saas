@@ -34,7 +34,6 @@ public abstract class ModelScorerConf extends AbstractScorerConf {
 
         super(name);
         Assert.notNull(modelInfo);
-        Assert.hasText(modelInfo.getModelName(), "model name must be provided and cannot be blank.");
         if (additionalModelInfos == null) {
             additionalModelInfos = Collections.emptyList();
         }
