@@ -17,7 +17,6 @@ import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -149,19 +148,11 @@ public class ModelConfProductionConfFilesTest {
 
 	@Test
 	public void ShouldBeValidConf() {
-		int counter = 0;
-
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
 			IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
 			if (contextSelectorConf != null) contextSelectorFactoryService.getProduct(contextSelectorConf);
 			dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
 			modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
-			counter++;
 		}
-
-		int expRawEventsModelConfs = 53;
-		int expAggrEventsModelConfs = 72;
-		int expEntityEventsModelConfs = 30;
-		Assert.assertEquals(expRawEventsModelConfs + expAggrEventsModelConfs + expEntityEventsModelConfs, counter);
 	}
 }
