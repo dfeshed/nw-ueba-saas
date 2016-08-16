@@ -1,15 +1,13 @@
 package fortscale.web.rest;
 
-import fortscale.domain.ad.AdConnection;
-import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
+import fortscale.domain.fetch.LogRepository;
+import fortscale.services.LogRepositoryService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
-import fortscale.web.beans.request.ActiveDirectoryRequest;
-import org.json.JSONException;
+import fortscale.web.beans.request.LogRepositoryRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,38 +22,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Amir Keren on 7/31/16.
+ * Created by Amir Keren on 8/15/16.
  */
 @Controller
-@RequestMapping(value = "/api/active_directory")
-public class ApiActiveDirectoryController {
+@RequestMapping(value = "/api/log_repository")
+public class ApiLogRepositoryController {
 
-	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
+	private static Logger logger = Logger.getLogger(ApiLogRepositoryController.class);
 
 	@Autowired
-	private ActiveDirectoryService activeDirectoryService;
+	private LogRepositoryService logRepositoryService;
 
 	/**
 	 * Updates or creates config items.
 	 *
 	 * @return ResponseEntity
-	 * @throws JSONException
+	 * @throws org.json.JSONException
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
-	public ResponseEntity updateActiveDirectory(@Valid @RequestBody List<ActiveDirectoryRequest> activeDirectoryDomains) {
-		List<AdConnection> adConnectionList = new ArrayList<>();
+	public ResponseEntity updateLogRepository(@Valid @RequestBody List<LogRepositoryRequest> logRepositories) {
+		List<LogRepository> logRepositoriesList = new ArrayList<>();
 		try {
-			for (ActiveDirectoryRequest newAdConfiguration : activeDirectoryDomains) {
+			for (LogRepositoryRequest logRepositoryRequest: logRepositories) {
 				//Password is not already encrypted
-				if (!newAdConfiguration.isEncryptedPassword()) {
-					String encryptedPassword = EncryptionUtils.encrypt(newAdConfiguration.getDomainPassword()).trim();
-					newAdConfiguration.setDomainPassword(encryptedPassword);
+				if (!logRepositoryRequest.isEncryptedPassword()) {
+					String encryptedPassword = EncryptionUtils.encrypt(logRepositoryRequest.getPassword()).trim();
+					logRepositoryRequest.setPassword(encryptedPassword);
 				}
-				adConnectionList.add(newAdConfiguration.getAdConnection());
+				logRepositoriesList.add(logRepositoryRequest.getLogRepository());
 			}
-			activeDirectoryService.saveAdConnectionsInDatabase(adConnectionList);
+			logRepositoryService.saveLogRepositoriesInDatabase(logRepositoriesList);
 			return new ResponseEntity(HttpStatus.OK);
 		} catch (Exception ex) {
 			return new ResponseEntity(HttpStatus.BAD_REQUEST);
@@ -63,26 +61,25 @@ public class ApiActiveDirectoryController {
 	}
 
 	/**
-	 * Tests connection to Active Directory
+	 * Tests connection to Log Repository
 	 *
 	 * @return ResponseEntity
-	 * @throws JSONException
+	 * @throws org.json.JSONException
 	 */
 	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
-	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
+	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody LogRepository logRepository,
 			@RequestParam(required = true, value = "encrypted_password") Boolean encryptedPassword) {
 		if (!encryptedPassword) {
 			try {
-				activeDirectoryDomain.setDomainPassword(EncryptionUtils.encrypt(activeDirectoryDomain.
-						getDomainPassword()));
+				logRepository.setPassword(EncryptionUtils.encrypt(logRepository.getPassword()).trim());
 			} catch (Exception ex) {
 				logger.error("failed to encrypt password");
 				return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
 			}
 		}
-		String result = activeDirectoryService.canConnect(activeDirectoryDomain);
+		String result = logRepositoryService.canConnect(logRepository);
 		if (result.isEmpty()) {
 			return new ResponseEntity(HttpStatus.OK);
 		} else {
@@ -92,8 +89,8 @@ public class ApiActiveDirectoryController {
 
 	@RequestMapping(method = RequestMethod.GET)
 	@LogException
-	public List<AdConnection> getActiveDirectory() {
-		return activeDirectoryService.getAdConnectionsFromDatabase();
+	public List<LogRepository> getLogRepository() {
+		return logRepositoryService.getLogRepositoriesFromDatabase();
 	}
 
 }
