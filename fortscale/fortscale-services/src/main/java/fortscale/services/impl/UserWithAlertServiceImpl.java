@@ -41,6 +41,13 @@ import java.util.Set;
 		return result;
 	}
 
+	/**
+	 * If one of the filters (anomaly type, alert type or location) was passed to the rest
+	 * and the user name collection we got from it is empty there is no need to continue with the logic
+	 * @param userRestFilter
+	 * @param relevantUsers
+	 * @return
+	 */
 	private boolean shouldStop(UserRestFilter userRestFilter, Set<String> relevantUsers) {
 		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()) ||
