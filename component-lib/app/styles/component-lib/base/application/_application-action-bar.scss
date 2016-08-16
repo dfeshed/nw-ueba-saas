@@ -1,0 +1,20 @@
+.rsa-application-action-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: $applicationActionBarWidth;
+  bottom: 0;
+  background-color: $applicationActionBarBackgroundColor;
+  @include rsa-layer(controls);
+
+  .rsa-form-button-wrapper {
+    margin: 2px auto 0;
+    height: 38px;
+
+    &.is-active {
+      i {
+        color: $applicationActionBarActiveButtonColor;
+      }
+    }
+  }
+}

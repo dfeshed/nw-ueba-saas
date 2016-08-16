@@ -13,6 +13,10 @@
   {{/rsa-application-header}}
 {{/if}}
 
+{{#if session.isAuthenticated}}
+  {{rsa-application-action-bar}}
+{{/if}}
+
 {{#rsa-application-content}}
   {{outlet}}
 {{/rsa-application-content}}
@@ -20,3 +24,6 @@
 {{#if session.isAuthenticated}}
   {{rsa-application-footer title=(t 'application.title') version=(t 'application.version')}}
 {{/if}}
+
+{{rsa-application-notifications-panel}}
+{{rsa-application-incident-queue-panel}}

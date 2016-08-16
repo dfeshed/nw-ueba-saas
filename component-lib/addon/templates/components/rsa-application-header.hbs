@@ -4,16 +4,21 @@
 
 <div class="global">
   {{#rsa-form-button dropdown="standard" class="user-preferences-trigger"}}
-    {{rsa-icon name="account-circle-1" style='lined'}} 
+    {{rsa-icon
+      name="account-circle-1"
+      style='lined'}}
     <span class="username">{{usernameFormat.username}}</span>
     <ul>
       {{#rsa-application-modal eventId="userPreferences" tagName="li"}}
-        <span class="js-test-user-preferences-modal modal-trigger">{{rsa-icon name='settings-2' style='lined'}} {{t 'userPreferences.preferences'}}</span>
+        <span class="js-test-user-preferences-modal modal-trigger">
+          {{rsa-icon name='settings-2' style='lined'}}
+          {{t 'userPreferences.preferences'}}
+        </span>
         <div class="modal-content">
           {{rsa-application-user-preferences}}
         </div>
       {{/rsa-application-modal}}
-            
+
       {{#if session.isAuthenticated}}
         <li {{action 'logout'}}>
           {{rsa-icon name="logout-1" style="lined"}} {{t 'login.logout'}}
@@ -21,4 +26,15 @@
       {{/if}}
     </ul>
   {{/rsa-form-button}}
+
+  {{#if session.isAuthenticated}}
+    {{#rsa-form-button
+      isIconOnly=true
+      click=(action 'toggleNotifications')
+      class=(if layoutService.notificationsActive 'notifications-panel-trigger is-active' 'notifications-panel-trigger ')}}
+      {{rsa-icon
+        name="alarm"
+        style=(if layoutService.notificationsActive 'filled' 'lined')}}
+    {{/rsa-form-button}}
+  {{/if}}
 </div>

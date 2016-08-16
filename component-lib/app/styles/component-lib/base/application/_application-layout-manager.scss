@@ -1,0 +1,246 @@
+@mixin transitionDef {
+  .rsa-application-layout-panel {
+    transition: width .65s;
+  }
+}
+
+@mixin hide {
+  width: 0;
+}
+
+.scroll-box {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow-y: scroll;
+}
+
+.rsa-application-layout-manager {
+  @include transitionDef;
+
+  &.journal {
+    &-hidden {
+      .journal-panel {
+        width: 0;
+      }
+    }
+
+    &-quarter {
+      .journal-panel {
+        width: 25%;
+      }
+    }
+
+    &-half {
+      .journal-panel {
+        width: 50%;
+      }
+    }
+
+    &-main {
+      .journal-panel {
+        width: 75%;
+      }
+    }
+
+    &-full {
+      .journal-panel {
+      width: 100%;
+      }
+    }
+  }
+
+  &.context {
+    &-hidden {
+      .context-panel {
+        width: 0;
+      }
+    }
+
+    &-quarter {
+      .context-panel {
+        width: 25%;
+      }
+    }
+
+    &-half {
+      .context-panel {
+        width: 50%;
+      }
+    }
+
+    &-main {
+      .context-panel {
+        width: 75%;
+      }
+    }
+
+    &-full {
+      .context-panel {
+        width: 100%;
+      }
+    }
+  }
+
+  &.panel-A {
+    &-hidden {
+      .panel-A {
+        width: 0;
+      }
+    }
+
+    &-quarter {
+      .panel-A {
+        width: 25%;
+      }
+    }
+
+    &-half {
+      .panel-A {
+        width: 50%;
+      }
+    }
+
+    &-main {
+      .panel-A {
+        width: 75%;
+      }
+    }
+
+    &-full {
+      .panel-A {
+        width: 100%;
+      }
+    }
+  }
+
+  &.panel-B {
+    &-hidden {
+      .panel-B {
+        width: 0;
+      }
+    }
+
+    &-quarter {
+      .panel-B {
+        width: 25%;
+      }
+    }
+
+    &-half {
+      .panel-B {
+        width: 50%;
+      }
+    }
+
+    &-main {
+      .panel-B {
+        width: 75%;
+      }
+    }
+
+    &-full {
+      .panel-B {
+        width: 100%;
+      }
+    }
+  }
+
+  &.panel-C {
+    &-hidden {
+      .panel-C {
+        width: 0;
+      }
+    }
+
+    &-quarter {
+      .panel-C {
+        width: 25%;
+      }
+    }
+
+    &-half {
+      .panel-C {
+        width: 50%;
+      }
+    }
+
+    &-main {
+      .panel-C {
+        width: 75%;
+      }
+    }
+
+    &-full {
+      .panel-C {
+        width: 100%;
+      }
+    }
+  }
+
+  &.panel-D {
+    &-hidden {
+      .panel-D {
+        width: 0;
+      }
+    }
+
+    &-quarter {
+      .panel-D {
+        width: 25%;
+      }
+    }
+
+    &-half {
+      .panel-D {
+        width: 50%;
+      }
+    }
+
+    &-main {
+      .panel-D {
+        width: 75%;
+      }
+    }
+
+    &-full {
+      .panel-D {
+        width: 100%;
+      }
+    }
+  }
+
+  &.panel-E {
+    &-hidden {
+      .panel-E {
+        width: 0;
+      }
+    }
+
+    &-quarter {
+      .panel-E {
+        width: 25%;
+      }
+    }
+
+    &-half {
+      .panel-E {
+        width: 50%;
+      }
+    }
+
+    &-main {
+      .panel-E {
+        width: 75%;
+      }
+    }
+
+    &-full {
+      .panel-E {
+        width: 100%;
+      }
+    }
+  }
+}

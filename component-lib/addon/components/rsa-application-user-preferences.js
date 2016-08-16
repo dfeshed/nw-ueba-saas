@@ -21,7 +21,7 @@ export default Component.extend({
 
   tagName: 'section',
 
-  eventBus: service('event-bus'),
+  eventBus: service(),
 
   moment: service(),
 

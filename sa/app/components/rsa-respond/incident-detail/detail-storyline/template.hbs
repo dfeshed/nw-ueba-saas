@@ -26,22 +26,33 @@
         {{/unless}}
       </div>
     </vbox>
-    <vbox xs='7'>
+    <vbox xs='11'>
       <div>
         <hbox class='rsa-response-storyline__main-row'>
           <vbox class='rsa-response-storyline__main' xs='10'>
             <div>
-              <span class='indicator_type'>Threat Analysis</span> detected C&C communication {{alertCount}} times from <span class="contextInfo">{{alerts.firstObject.alert.groupby_source_ip}}</span>
-              to <span class="contextInfo">{{alerts.firstObject.alert.groupby_domain}}</span>
+              <span class='indicator_type'>Threat Analysis</span>
+              detected C&C communication {{alertCount}} times from
+              {{#link-to 'protected.respond.incident.context' alerts.firstObject.alert.groupby_source_ip}}
+                <span class="contextInfo">{{alerts.firstObject.alert.groupby_source_ip}}</span>
+              {{/link-to}}
+              to
+              {{#link-to 'protected.respond.incident.context' alerts.firstObject.alert.groupby_domain}}
+                <span class="contextInfo">{{alerts.firstObject.alert.groupby_domain}}</span>
+              {{/link-to}}
             </div>
           </vbox>
           <vbox class='rsa-response-storyline__main_icon' xs='2'>
             <div>
               {{#rsa-form-button isIconOnly=true}}
-                <span class="journalAction" {{action journalAction}}>{{rsa-icon name="bubble-chat-add-1" size="smaller"}}</span>
+                <span class="journalAction" {{action 'toggleJournal'}}>
+                  {{rsa-icon name="bubble-chat-add-1" size="smaller"}}
+                </span>
               {{/rsa-form-button}}
               {{#rsa-form-button isIconOnly=true}}
-                <span {{action entityAction 'Indicator'}}>{{rsa-icon name="arrow-right-12" size="smaller"}}</span>
+                {{#link-to 'protected.respond.incident.details' 'Indicator'}}
+                  {{rsa-icon name="arrow-right-12" size="smaller"}}
+                {{/link-to}}
               {{/rsa-form-button}}
             </div>
           </vbox>

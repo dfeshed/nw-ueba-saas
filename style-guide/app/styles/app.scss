@@ -7,3 +7,8 @@
 /* Imports styles specific for this style-guide app. */
 
 @import 'style-guide/manifest';
+
+.rsa-application-header,
+.rsa-application-content {
+  left: 0;
+}

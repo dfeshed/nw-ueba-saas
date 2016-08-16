@@ -14,7 +14,7 @@ export default Component.extend({
 
   layout,
 
-  eventBus: service('event-bus'),
+  eventBus: service(),
 
   classNames: ['rsa-application-modal'],
 

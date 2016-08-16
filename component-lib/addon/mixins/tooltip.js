@@ -11,7 +11,7 @@ export default Mixin.create({
 
   classNameBindings: ['tooltip'],
 
-  eventBus: service('event-bus'),
+  eventBus: service(),
 
   tooltip: null,
 

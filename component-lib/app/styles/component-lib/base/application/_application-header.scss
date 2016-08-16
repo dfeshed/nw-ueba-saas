@@ -4,6 +4,7 @@
   background: $applicationHeaderBackground;
   height: $applicationHeaderHeight;
   top: 0;
+  left: $applicationActionBarWidth;
 
   > a {
     display: inline-block;
@@ -44,11 +45,41 @@
     top: 1px;
     line-height: $applicationHeaderHeight;
 
-    .rsa-form-button {
-      border-width: 0;
+    .user-preferences-trigger {
+      &.not-collapsed {
+        .rsa-icon-account-circle-1, .username, .expand i {
+          color: $applicationHeaderActiveButtonColor;
+        }
 
-      .expand {
-        left: 0;
+        .rsa-icon-account-circle-1 {
+          font-family: 'Streamline-2-Filled';
+        }
+
+        ul {
+          margin-right: rsa-whitespace();
+          border-color: $applicationHeaderActiveButtonColor;
+        }
+      }
+    }
+
+    .rsa-form-button-wrapper {
+      &.is-active {
+        i {
+          color: $applicationHeaderActiveButtonColor;
+        }
+      }
+
+      &.is-icon-only {
+        position: relative;
+        top: -3px;
+      }
+
+      .rsa-form-button {
+        border-width: 0;
+
+        .expand {
+          left: 0;
+        }
       }
     }
 

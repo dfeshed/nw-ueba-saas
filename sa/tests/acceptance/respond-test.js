@@ -53,6 +53,20 @@ test('disable respond feature flag, visiting /do/respond and check DOM ', functi
 
 });
 
+test('ensure journal-trigger is added on the respond incident route', function(assert) {
+  assert.expect(1);
+  asyncFixtures(server, ['incident', 'alerts']);
+  visit('/do/respond');
+  andThen(function() {
+    click('.rsa-incident-tile:first-of-type');
+
+    andThen(function() {
+      assert.equal(find('.rsa-application-action-bar .journal-trigger').length, 1);
+    });
+  });
+});
+
+
 test('enable respond feature flag, visiting /do/respond and check DOM ', function(assert) {
   config.featureFlags = {
     'show-respond-route': true

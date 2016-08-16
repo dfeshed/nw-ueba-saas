@@ -1,22 +1,39 @@
 import Ember from 'ember';
 
-const { Route,
+const {
+  Route,
   RSVP: {
     hash
-    },
+  },
   Logger,
   run,
   set,
-  isNone
-  } = Ember;
+  isNone,
+  inject: {
+    service
+  }
+} = Ember;
 
 export default Route.extend({
-
   // Array holding the list of all subscriptions
   currentStreams: [],
 
   // the id of the current incident
   incidentId: null,
+
+  layoutService: service('layout'),
+
+  activate() {
+    this.set('layoutService.displayJournal', true);
+    this.set('layoutService.main', 'panelB');
+    this.set('layoutService.panelA', 'quarter');
+    this.set('layoutService.panelB', 'main');
+  },
+
+  deactivate() {
+    this.set('layoutService.journalPanel', 'hidden');
+    this.set('layoutService.displayJournal', false);
+  },
 
   model(params) {
     this.set('incidentId', params.incident_id);
@@ -130,4 +147,5 @@ export default Route.extend({
       }
     }
   }
+
 });

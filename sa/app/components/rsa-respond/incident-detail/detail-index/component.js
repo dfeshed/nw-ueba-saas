@@ -1,22 +1,25 @@
 import Ember from 'ember';
 
 const {
-  Component
+  Component,
+  inject: {
+    service
+  }
 } = Ember;
 
 export default Component.extend({
-  entity: null,
-  showJournal: false,
-  info: null,
+  layoutService: service('layout'),
+
+  tagName: 'vbox',
 
   actions: {
-    showEntity(entity, info) {
-      this.setProperties({
-        entity, info
-      });
-    },
     journalAction() {
-      this.set('showJournal', true);
+      this.get('layoutService').toggleJournal();
+    },
+
+    toggleFullWidthPanel(panel) {
+      this.get('layoutService').toggleFullWidthPanel(panel);
     }
+
   }
 });

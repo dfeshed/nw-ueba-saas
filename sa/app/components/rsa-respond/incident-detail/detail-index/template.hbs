@@ -1,36 +1,38 @@
-<vbox class='rsa-respond-incident'>
-  <hbox class='rsa-respond-incident__top-panel'>
-    <vbox xs="12">
-      {{rsa-respond/incident-detail/detail-header model=model users=users}}
-    </vbox>
-  </hbox>
+<hbox class='rsa-respond-incident__top-panel' fit>
+  <vbox xs="12">
+    {{rsa-respond/incident-detail/detail-header model=model users=users}}
+  </vbox>
+</hbox>
 
-  <hbox class='rsa-response-detail__bottom-header'>
-    <vbox xs="3">
-      {{#if showJournal}}
-        {{t 'journal.title'}}
-      {{else}}
-        {{t 'incident.details.overview.title'}}
-      {{/if}}
-    </vbox>
-    <vbox xs="9">
-      <div>
-        Storyline {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}} to
-        {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
-      </div>
-    </vbox>
-  </hbox>
+{{#rsa-application-layout-manager}}
+  {{#rsa-application-layout-panel class="journal-panel"}}
+    {{rsa-respond/incident-detail/journal-wrapper model=model addJournalAction=addJournalAction editJournalAction=editJournalAction deleteJournalAction=deleteJournalAction}}
+  {{/rsa-application-layout-panel}}
 
-  <hbox>
-    <vbox xs="3" class="rsa-response-detail__bottom-overview">
-      {{#if showJournal}}
-        {{rsa-respond/incident-detail/journal-wrapper model=model addJournalAction=addJournalAction editJournalAction=editJournalAction deleteJournalAction=deleteJournalAction}}
-      {{else}}
-        {{rsa-respond/incident-detail/detail-overview saveAction=(route-action 'saveAction') model=model}}
-      {{/if}}
-    </vbox>
-    <vbox xs="9">
-      {{rsa-respond/incident-detail/detail-storyline journalAction=(action 'journalAction') entityAction=(action 'showEntity') model=model}}
-    </vbox>
-  </hbox>
-</vbox>
+  {{#rsa-application-layout-panel class="panel-A"}}
+    {{rsa-respond/incident-detail/detail-overview saveAction=(route-action 'saveAction') model=model}}
+  {{/rsa-application-layout-panel}}
+
+  {{#rsa-application-layout-panel class="panel-B"}}
+    {{#rsa-content-section-header}}
+      Storyline
+      {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}}
+      to
+      {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
+    {{/rsa-content-section-header}}
+
+    {{rsa-respond/incident-detail/detail-storyline model=model}}
+  {{/rsa-application-layout-panel}}
+
+  {{#rsa-application-layout-panel class="panel-C"}}
+    {{#rsa-content-section-header}}
+      <h1>Storyline Details</h1>
+    {{/rsa-content-section-header}}
+  {{/rsa-application-layout-panel}}
+
+  {{#rsa-application-layout-panel class="context-panel"}}
+    {{#rsa-content-section-header}}
+      <h1>Context</h1>
+    {{/rsa-content-section-header}}
+  {{/rsa-application-layout-panel}}
+{{/rsa-application-layout-manager}}

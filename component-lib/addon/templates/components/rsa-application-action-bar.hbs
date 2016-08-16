@@ -1,0 +1,19 @@
+{{#rsa-form-button
+  isIconOnly=true
+  click=(action 'toggleIncidentQueue')
+  class=(if layoutService.incidentQueueActive 'incident-queue-trigger is-active' 'incident-queue-trigger')}}
+  {{rsa-icon
+    name="inbox"
+    style=(if layoutService.incidentQueueActive 'filled' 'lined')}}
+{{/rsa-form-button}}
+
+{{#if layoutService.displayJournal}}
+  {{#rsa-form-button
+    isIconOnly=true
+    click=(action 'toggleJournal')
+    class=(if layoutService.journalPanelActive 'journal-trigger is-active' 'journal-trigger')}}
+    {{rsa-icon
+      name="notepad-edit"
+      style=(if layoutService.journalPanelActive 'filled' 'lined')}}
+  {{/rsa-form-button}}
+{{/if}}

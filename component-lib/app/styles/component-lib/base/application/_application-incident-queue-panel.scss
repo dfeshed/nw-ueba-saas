@@ -1,0 +1,15 @@
+.rsa-application-incident-queue-panel {
+  transition: width .65s;
+  position: absolute;
+  top: 40px;
+  left: 0;
+  bottom: 40px;
+  width: 0;
+  border-top: 1px solid rsa-color(gray, darkest);
+  background-color: rsa-color(gray, darker);
+
+  &.is-expanded {
+    transition: width .65s;
+    width: calc(25% + 40px);
+  }
+}

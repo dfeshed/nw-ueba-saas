@@ -1,0 +1,15 @@
+.rsa-application-notifications-panel {
+  transition: width .65s;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  bottom: 40px;
+  width: 0;
+  background-color: rsa-color(gray, darker);
+  border-top: 1px solid rsa-color(gray, darkest);
+
+  &.is-expanded {
+    transition: width .65s;
+    width: calc(100% / 4);
+  }
+}

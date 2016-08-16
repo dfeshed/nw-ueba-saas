@@ -14,6 +14,12 @@ module.exports = function(environment) {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
+      },
+      EXTEND_PROTOTYPES: {
+        Function: true,
+        String: true,
+        Array: true,
+        Date: false,
       }
     },
     featureFlags: {
@@ -120,7 +126,8 @@ module.exports = function(environment) {
       // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
       'img-src': "'self' data:",
       'connect-src': "'self' ws:",
-      'font-src': "'self' data:"
+      'font-src': "'self' data:",
+      'style-src': "'self' 'unsafe-inline'"
     }
   };
 

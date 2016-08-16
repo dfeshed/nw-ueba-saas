@@ -24,7 +24,7 @@ export default Component.extend({
   // the template may want to set tagName to "section").
   classNames: 'rsa-incident-tile',
   classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
-  eventBus: service('event-bus'),
+  eventBus: service(),
 
   /**
    * The incident data record to be rendered.

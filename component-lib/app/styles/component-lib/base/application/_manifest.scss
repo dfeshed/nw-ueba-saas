@@ -1,10 +1,15 @@
+$applicationActionBarWidth: 40px;
+$applicationActionBarBackgroundColor: rsa-color(gray, darkest);
+$applicationActionBarActiveButtonColor: rsa-color(blue);
+
 $applicationHeaderHeight: 40px;
-$applicationHeaderBackground: rsa-color(gray, darkest);
+$applicationHeaderBackground: rsa-color(gray, darker);
 $applicationHeaderLinkColor: rsa-color(gray, light);
 $applicationHeaderLinkHoverColor: rsa-color(gray, lightest);
 $applicationHeaderLinkActiveColor: rsa-color(white);
 $applicationHeaderLinkActiveArrowColor: rsa-color(red, dark);
 $applicationHeaderLinkActiveArrowSize: 5px;
+$applicationHeaderActiveButtonColor: rsa-color(blue);
 
 $userPreferencesPanelWidth: 30rem;
 $userPreferencesPanelHeaderBackgroundColor: rsa-color(blue);
@@ -13,6 +18,9 @@ $applicationContentBlur: rsa-whitespace(least);
 
 $applicationFooterHeight: 40px;
 $applicationFooterBackground: rsa-color(gray, darkest);
+$applicationFooterLogoBackground: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+$applicationFooterLogoTypeColor: rsa-color(white);
+$applicationFooterTypeColor: rsa-color(gray, lighter);
 
 $applicationModalBorderColor: ;
 $applicationModalBackgroundColor: rsa-color(gray, darkest);
@@ -37,7 +45,6 @@ $applicationLoaderColorAlt: rsa-color(blue);
 $applicationLoaderLabelColor: rsa-color(gray, lightest);
 
 @mixin global-nav() {
-  width: 100%;
   position: fixed;
   left: 0;
   right: 0;
@@ -87,18 +94,17 @@ body {
 @import 'application-content';
 @import 'application-footer';
 @import 'application-modal';
+@import 'application-action-bar';
+@import 'application-layout-manager';
 @import 'routable-login';
 @import 'user-preferences-panel';
-
-.scroll-box {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  overflow-y: scroll;
-}
+@import 'application-notifications-panel';
+@import 'application-incident-queue-panel';
 
 page, screen {
-  min-height: calc(100vh - 80px);
+  min-height: calc(100vh - #{$applicationHeaderHeight} - #{$applicationFooterHeight});
+}
+
+page {
+  min-width: calc(100vw - #{$applicationActionBarWidth});
 }

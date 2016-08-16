@@ -4,7 +4,6 @@
   background: $applicationFooterBackground;
   bottom: 0;
   height: $applicationFooterHeight;
-  padding: rsa-whitespace(less) rsa-whitespace();
   box-sizing: border-box;
 
   a {
@@ -16,16 +15,15 @@
     position: relative;
     top: 1px;
 
+
     h2 {
-      float: left;
       @include rsa-font(light);
       display: inline-block;
-      border-left: 1px solid rsa-color(gray);
-      padding: 0 rsa-whitespace(less);
-      vertical-align: middle;
+      padding: 0;
+      vertical-align: bottom;
       margin-left: rsa-whitespace(less);
-      color: rsa-color(gray, lighter);
-      line-height: calc(#{$applicationFooterHeight} - (#{rsa-whitespace(less)} * 2));
+      color: $applicationFooterTypeColor;
+      line-height: $applicationFooterHeight;
 
       .application-version {
         @include rsa-font(light, smaller);
@@ -36,11 +34,16 @@
 
     &__svg {
       position: relative;
-      top: 5px;
-      height: 13px;
-      line-height: calc(#{$applicationFooterHeight} - (#{rsa-whitespace(less)} * 2));
-      width: auto;
-      float: left;
+      width: calc(#{$applicationFooterHeight} - #{rsa-whitespace(least)} - #{rsa-whitespace(least)});
+      height: $applicationFooterHeight;
+      padding: 0 rsa-whitespace(least);
+      margin: 0 auto;
+      background-image: $applicationFooterLogoBackground;
+
+      .rsa-logo__letter {
+        fill: $applicationFooterLogoTypeColor;
+      }
+
     }
   }
 }

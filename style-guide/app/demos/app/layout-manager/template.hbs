@@ -1,0 +1,100 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member
+        title="Generic Transition"
+        subtitle="PANEL SIZE OPTIONS: 'hidden', 'quarter', 'main', 'full' PANEL CLASS OPTIONS: journal-panel, context-panel, panel-A, panel-B, panel-C, panel-D, panel-E"}}
+        {{#rsa-application-layout-manager}}
+          {{#rsa-application-layout-panel class="panel-A"}}
+            <span {{action 'expandA'}}>
+              Expand Panel A
+            </span>
+          {{/rsa-application-layout-panel}}
+          {{#rsa-application-layout-panel class="panel-B"}}
+            <span {{action 'expandB'}}>
+              Expand Panel B
+            </span>
+          {{/rsa-application-layout-panel}}
+        {{/rsa-application-layout-manager}}
+
+        <p>In the Route:</p>
+        <code>
+          <div>expandA() {</div>
+          <div>this.set('layoutService.main', 'panelA');</div>
+          <div>this.set('layoutService.panelA', 'main');</div>
+          <div>this.set('layoutService.panelB', 'quarter');</div>
+          <div>},</div>
+          <div>expandB() {</div>
+          <div>this.set('layoutService.main', 'panelB');</div>
+          <div>this.set('layoutService.panelA', 'quarter');</div>
+          <div>this.set('layoutService.panelB', 'main');</div>
+          <div>},</div>
+        </code>
+
+        <p>In the Template:</p>
+        <code>
+          <div>&#123;{#rsa-application-layout-manager}}</div>
+          <div>&#123;{#rsa-application-layout-panel class="panel-A"}}</div>
+          <div>&lt;span &#123;{action 'expandA'}}></div>
+          <div>Expand Panel A</div>
+          <div>&lt;/span></div>
+          <div>&#123;{/rsa-application-layout-panel}}</div>
+          <div>&#123;{#rsa-application-layout-panel class="panel-B"}}</div>
+          <div>&lt;span &#123;{action 'expandB'}}></div>
+          <div>Expand Panel B</div>
+          <div>&lt;/span></div>
+          <div>&#123;{/rsa-application-layout-panel}}</div>
+          <div>&#123;{/rsa-application-layout-manager}}</div>
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Toggle Panel Full Width"}}
+        {{#rsa-application-layout-manager}}
+          {{#rsa-application-layout-panel class="panel-C"}}
+            <span {{action 'expandC'}}>
+              Expand Panel C
+            </span>
+          {{/rsa-application-layout-panel}}
+          {{#rsa-application-layout-panel class="panel-D"}}
+            <span {{action 'expandDFullWidth'}}>
+              Toggle Panel D Full Width
+            </span>
+          {{/rsa-application-layout-panel}}
+        {{/rsa-application-layout-manager}}
+
+        <p>In the Route:</p>
+        <code>
+          <div>expandC() {</div>
+          <div>this.set('layoutService.main', 'panelC');</div>
+          <div>this.set('layoutService.panelC', 'main');</div>
+          <div>this.set('layoutService.panelD', 'quarter');</div>
+          <div>},</div>
+          <div>expandDFullWidth() {</div>
+          <div>this.get('layoutService').toggleFullWidthPanel('panelD');</div>
+          <div>}</div>
+        </code>
+
+        <p>In the Template:</p>
+        <code>
+          <div>&#123;{#rsa-application-layout-manager}}</div>
+          <div>&#123;{#rsa-application-layout-panel class="panel-C"}}</div>
+          <div>&lt;span &#123;{action 'expandC'}}></div>
+          <div>Expand Panel C</div>
+          <div>&lt;/span></div>
+          <div>&#123;{/rsa-application-layout-panel}}</div>
+          <div>&#123;{#rsa-application-layout-panel class="panel-D"}}</div>
+          <div>&lt;span &#123;{action 'expandDFullWidth'}}></div>
+          <div>Toggle Panel D Full Width</div>
+          <div>&lt;/span></div>
+          <div>&#123;{/rsa-application-layout-panel}}</div>
+          <div>&#123;{/rsa-application-layout-manager}}</div>
+        </code>
+      {{/spec-member}}
+
+    {{/spec-category}}
+  </div>
+</hbox>

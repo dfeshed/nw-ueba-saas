@@ -10,7 +10,9 @@ const {
 
 export default Component.extend({
 
-  eventBus: service('event-bus'),
+  eventBus: service(),
+
+  layoutService: service('layout'),
 
   usernameFormat: service('username-format'),
 
@@ -21,6 +23,10 @@ export default Component.extend({
   actions: {
     logout() {
       this.get('session').invalidate();
+    },
+
+    toggleNotifications() {
+      this.get('layoutService').toggleNotifications();
     }
   }
 

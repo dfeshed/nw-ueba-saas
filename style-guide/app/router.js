@@ -28,6 +28,8 @@ Router.map(function() {
       this.route('content');
       this.route('footer');
       this.route('modal');
+      this.route('action-bar');
+      this.route('layout-manager');
     });
 
     this.route('form', function() {

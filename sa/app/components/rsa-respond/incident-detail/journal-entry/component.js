@@ -15,7 +15,7 @@ export default Component.extend({
   classNames: 'rsa-journal-entry',
   classNameBindings: ['editModeActive'],
 
-  eventBus: service('event-bus'),
+  eventBus: service(),
   session: service(),
 
   addMode: false,

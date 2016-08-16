@@ -13,7 +13,12 @@ Router.map(function() {
     this.route('monitor');
     if (config.featureFlags['show-respond-route']) {
       this.route('respond', function() {
-        this.route('incident', { path: '/incident/:incident_id' });
+        this.route('incident', { path: '/incident/:incident_id' }, function() {
+          this.route('details', { path: '/details/:detail_id' }, function() {
+            this.route('context', { path: '/context/:context_id' });
+          });
+          this.route('context', { path: '/context/:context_id' });
+        });
       });
     }
     if (config.featureFlags['show-investigate-route']) {

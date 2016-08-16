@@ -15,7 +15,9 @@ export default Component.extend({
 
   tagName: 'page',
 
-  eventBus: service('event-bus'),
+  eventBus: service(),
+
+  layoutService: service('layout'),
 
   classNames: ['rsa-application-content'],
 
@@ -23,14 +25,29 @@ export default Component.extend({
 
   hasBlur: false,
 
-  toggleBlur(truth) {
-    run.next(this, function() {
-      this.set('hasBlur', truth);
+  toggleModalBlur() {
+    run.next(() => {
+      this.toggleProperty('hasBlur');
+    });
+  },
+
+  togglePanelBlur() {
+    run.next(() => {
+      let notificationsActive = this.get('layoutService.notificationsActive');
+      let incidentQueueActive = this.get('layoutService.incidentQueueActive');
+
+      if (notificationsActive || incidentQueueActive) {
+        this.set('hasBlur', true);
+      } else if (!notificationsActive && !incidentQueueActive) {
+        this.set('hasBlur', false);
+      }
     });
   },
 
   listen() {
-    this.get('eventBus').on('rsa-application-modal-did-open', this, 'toggleBlur');
+    this.get('eventBus').on('rsa-application-modal-did-open', this, 'toggleModalBlur');
+    this.get('eventBus').on('rsa-application-notifications-panel-will-toggle', this, 'togglePanelBlur');
+    this.get('eventBus').on('rsa-application-incident-queue-panel-will-toggle', this, 'togglePanelBlur');
   },
 
   click(event) {

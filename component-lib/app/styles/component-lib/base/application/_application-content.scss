@@ -2,10 +2,14 @@
   @include global-nav();
   @include rsa-layer(panel);
   top: $applicationHeaderHeight;
+  left: $applicationActionBarWidth;
+  right: 0;
   bottom: $applicationFooterHeight;
   overflow-y: scroll;
+  transition: blur .65s, -webkit-filter .65s;
 
   &.has-blur {
+    transition: blur .65s, -webkit-filter .65s;
     -webkit-filter: blur($applicationContentBlur);
     filter: blur($applicationContentBlur);
   }

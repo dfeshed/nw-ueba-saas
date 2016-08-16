@@ -185,6 +185,7 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-index model=incident users=users}}`);
 
-  assert.equal(this.$('.rsa-respond-incident').length, 1, 'Testing detail header element exists');
-  assert.equal(this.$('.rsa-response-detail__bottom-header').length, 1, 'Testing detail overview element exists');
+  assert.equal(this.$('.rsa-respond-incident__top-panel').length, 1, 'Testing detail header element exists');
+  assert.equal(this.$('.rsa-application-layout-manager').length, 1, 'Layout element exists');
+
 });
