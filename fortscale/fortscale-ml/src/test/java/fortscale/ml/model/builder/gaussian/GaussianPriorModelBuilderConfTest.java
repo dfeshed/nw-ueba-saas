@@ -234,7 +234,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setMinNumOfSamplesToLearnFrom(1)
 				.build();
 
-		Assert.assertEquals(100, conf.getNumberOfNeighbours());
+		Assert.assertEquals(10, conf.getNumberOfNeighbours());
 		Assert.assertEquals(0.1, conf.getMaxRatioBetweenSegmentSizeToCenter(), 0.00001);
 		Assert.assertEquals(10, conf.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(), 0.00001);
 		Assert.assertEquals(1, conf.getPadding(), 0.00001);

@@ -11,7 +11,7 @@ import org.springframework.util.Assert;
 public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	public static final String GAUSSIAN_PRIOR_MODEL_BUILDER = "gaussian_prior_model_builder";
 
-	private static final int NUMBER_OF_NEIGHBOURS_DEFAULT_VALUE = 100;
+	private static final int NUMBER_OF_NEIGHBOURS_DEFAULT_VALUE = 10;
 	private static final double MAX_RATIO_BETWEEN_SEGMENT_SIZE_TO_CENTER_DEFAULT_VALUE = 0.1;
 	private static final double MAX_SEGMENT_WIDTH_TO_NOT_DISCARD_BECAUSE_OF_BAD_RATIO_DEFAULT_VALUE = 10;
 	private static final double PADDING_DEFAULT_VALUE = 1;
