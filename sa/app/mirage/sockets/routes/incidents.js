@@ -129,6 +129,8 @@ export default function(server) {
           incident.notes.pushObject({ id: 98, notes: 'This is a NEW journal entry', created: new Date(), author: 'admin', milestone: 'CONTAINMENT' });
           incident.notes.pushObject({ id: 99, notes: 'This is also a NEW journal entry', created: new Date(), author: 'ian', milestone: 'ERADICATION' });
 
+          server.mirageServer.db.incident.update(incident.id, incident);
+
           response.push(incident);
         });
 

@@ -46,18 +46,24 @@ export default Route.extend({
 
   afterModel(resolvedModel) {
 
+    let currentIncidentId = this.get('incidentId');
+
     // Create the notify socket
     let notify = this.store.notify('incident', {
       subDestinationUrlParams: 'edit',
-      filter: [{ field: 'id', value: resolvedModel.incident.id }]
+      filter: [{ field: 'id', value: currentIncidentId }]
     }, { requireRequestId: false });
     notify.subscribe((response) => {
       Logger.log(`Notify next() callback, notificationCode: ${ response.notificationCode }`);
       let { data } = response;
 
       // Updating the whole incident when we received a notification
-      let innerIncident = data.findBy('id', resolvedModel.incident.id);
+      let innerIncident = data.findBy('id', currentIncidentId);
       set(resolvedModel, 'incident', innerIncident);
+
+      // Update the store with the updated incident
+      this.store.pushPayload({ 'incidents': [ innerIncident ] });
+      innerIncident.id = currentIncidentId;
     }, () => {
       Logger.error('Error processing notify call for incident model');
     });
@@ -124,9 +130,10 @@ export default Route.extend({
       let incident = this.store.peekRecord('incident', this.get('incidentId'));
       let currentNote = incident.get('notes').findBy('id', id);
 
-      currentNote.notes = notes;
-      currentNote.milestone = milestone;
-      currentNote.author = author;
+      set(currentNote, 'notes', notes);
+      set(currentNote, 'milestone', milestone);
+      set(currentNote, 'author', author);
+
       incident.save();
     },
 
