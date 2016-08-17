@@ -92,19 +92,6 @@ public class PersonalThresholdModelScorerTest {
                 null,
                 "model name",
                 Collections.singletonList("context field name"),
-                "feature name",
-                baseScorerConf,
-                99999
-        );
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void shouldFailGivenEmptyStringAsFeatureName() {
-        new PersonalThresholdModelScorer(
-                "scorer name",
-                "model name",
-                Collections.singletonList("context field name"),
-                "",
                 baseScorerConf,
                 99999
         );
@@ -116,7 +103,6 @@ public class PersonalThresholdModelScorerTest {
                 "scorer name",
                 "",
                 Collections.singletonList("context field name"),
-                "feature name",
                 baseScorerConf,
                 99999
         );
@@ -128,7 +114,6 @@ public class PersonalThresholdModelScorerTest {
                 "scorer name",
                 "model name",
                 null,
-                "feature name",
                 baseScorerConf,
                 99999
         );
@@ -140,7 +125,6 @@ public class PersonalThresholdModelScorerTest {
                 "scorer name",
                 "model name",
                 Collections.singletonList("context field name"),
-                "feature name",
                 null,
                 99999
         );
@@ -152,7 +136,6 @@ public class PersonalThresholdModelScorerTest {
                 "scorer name",
                 "model name",
                 Collections.singletonList("context field name"),
-                "feature name",
                 baseScorerConf,
                 0
         );
@@ -182,8 +165,6 @@ public class PersonalThresholdModelScorerTest {
         Mockito.when(baseScorer.getModel(eventMessage, evenEpochTime)).thenReturn(baseScorerModel);
         String contextFieldName = "context field name";
 
-        when(eventMessage.getContextFields(Mockito.anyList())).thenReturn(Collections.singletonMap(contextFieldName,
-                "feature name"));
         when(modelsCacheService.getModel(
                 Mockito.any(Feature.class),
                 Mockito.anyString(),
@@ -195,7 +176,6 @@ public class PersonalThresholdModelScorerTest {
                 featureScoreName,
                 "model name",
                 Collections.singletonList(contextFieldName),
-                "feature name",
                 baseScorerConf,
                 maxRatioFromUniformThreshold
         ).calculateScore(eventMessage, evenEpochTime);

@@ -9,7 +9,7 @@ public class PersonalThresholdModel implements Model {
 	private double uniformThreshold;
 	private double normalizationFactor;
 
-	public PersonalThresholdModel(int numOfContexts, int numOfOrganizationScores, double uniformThreshold) {
+	public PersonalThresholdModel(int numOfContexts, long numOfOrganizationScores, double uniformThreshold) {
 		Assert.isTrue(numOfContexts > 0);
 		Assert.isTrue(uniformThreshold > 0 && uniformThreshold < 1);
 		Assert.isTrue(numOfOrganizationScores > 0);
