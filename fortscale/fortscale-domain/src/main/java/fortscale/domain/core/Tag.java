@@ -1,8 +1,7 @@
 package fortscale.domain.core;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -53,24 +52,19 @@ public class Tag extends AbstractDocument{
 		active = true;
 	}
 
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	private String name;
 
-	@NotNull
-	@NotEmpty
+	@NotBlank
 	private String displayName;
 
 	@NotNull
-	@NotEmpty
 	private Boolean createsIndicator;
 
 	@NotNull
-	@NotEmpty
 	private Boolean active;
 
 	@NotNull
-	@NotEmpty
 	private List<String> rules;
 
 	public String getDisplayName() {
