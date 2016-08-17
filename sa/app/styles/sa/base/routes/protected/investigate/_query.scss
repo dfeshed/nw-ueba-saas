@@ -99,13 +99,21 @@
     }
 
     &-header-cell {
-      padding: rsa-whitespace(less) rsa-whitespace();
       border-right: 1px solid rsa-color(gray, base, $rsa-translucent);
+
+      .title {
+        display: block;
+        padding: rsa-whitespace(less) rsa-whitespace();
+      }
     }
 
     &-body-cell {
-      padding: rsa-whitespace();
       border-right: 1px dashed $investigateBgDarkerColor;
+
+      .content {
+        display: block;
+        padding: rsa-whitespace();
+      }
     }
 
     &-body-row {

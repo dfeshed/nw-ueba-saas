@@ -40,13 +40,15 @@
         {{rsa-data-table/header}}
         {{#rsa-data-table/body buffer=25 as |item index column|}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}
-            {{#if (is-equal column.field "time")}}
-              {{rsa-content-datetime timestamp=item.time}}
-            {{else if (is-equal column.field "size")}}
-              {{rsa-content-memsize size=item.size}}
-            {{else}}
-              {{event-meta-value item column.field}}
-            {{/if}}
+            <span class="content">
+              {{#if (is-equal column.field "time")}}
+                {{rsa-content-datetime timestamp=item.time}}
+              {{else if (is-equal column.field "size")}}
+                {{rsa-content-memsize size=item.size}}
+              {{else}}
+                {{event-meta-value item column.field}}
+              {{/if}}
+            </span>
           {{/rsa-data-table/body-cell}}
         {{/rsa-data-table/body}}
         {{rsa-data-table/load-more

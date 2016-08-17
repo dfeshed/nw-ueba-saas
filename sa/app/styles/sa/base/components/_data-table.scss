@@ -27,6 +27,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-header-row {
     white-space: nowrap;
     position: relative;
+    @include rsa-row(left,fill);
   }
 
   &-header-row {
@@ -46,6 +47,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-header-cell {
     display: inline-block;
     overflow: hidden;
+    @include rsa-vendor-prefix(flex-shrink, 0);
   }
 
   &-header-cell {
