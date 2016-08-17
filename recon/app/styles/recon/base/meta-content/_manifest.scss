@@ -1,0 +1,14 @@
+.recon-meta-content {
+  padding: rsa-whitespace();
+  .meta-heading {
+    @include rsa-font(header, large);
+    color: rsa-color(white);
+  }
+}
+.recon-meta-content-item {
+  padding: rsa-whitespace(least) 0;
+  .meta-name {
+    color: rsa-color(white);
+    text-transform: uppercase;
+  }
+}
