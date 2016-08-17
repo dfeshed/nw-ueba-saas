@@ -84,10 +84,16 @@ body {
   }
 }
 
-::-webkit-scrollbar,
-::-webkit-scrollbar-thumb,
-::-webkit-scrollbar-track {
- width: 0;
+@mixin rsa-webkit-scrollbar-width($width:0) {
+  &::-webkit-scrollbar,
+  &::-webkit-scrollbar-thumb,
+  &::-webkit-scrollbar-track {
+   width: $width;
+  }
+}
+
+.rsa-hide-webkit-scrollbar {
+  @include rsa-webkit-scrollbar-width(0);
 }
 
 @import 'application-header';
