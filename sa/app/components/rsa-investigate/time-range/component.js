@@ -36,21 +36,5 @@ export default Component.extend({
   _startTimeMilli: computedMillisecFromSec('startTime'),
 
   // Computes query's `startTime` in millisec, so it can be formatted by moment js.
-  _endTimeMilli: computedMillisecFromSec('endTime'),
-
-  // Computes whether or not `startTime` and `endTime` point to the same calendar date (time is ignored).
-  _datesMatch: computed('_startTimeMilli', '_endTimeMilli', function() {
-    let st = this.get('_startTimeMilli');
-    let et = this.get('_endTimeMilli');
-    if (!st || !et) {
-      return false;
-    }
-    st = new Date(st);
-    et = new Date(et);
-
-    return (st.getUTCDate() === et.getUTCDate()) &&
-      (st.getUTCMonth() === et.getUTCMonth()) &&
-      (st.getUTCFullYear() === et.getUTCFullYear());
-  })
-
+  _endTimeMilli: computedMillisecFromSec('endTime')
 });
