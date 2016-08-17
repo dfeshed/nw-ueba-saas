@@ -25,6 +25,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
 import java.util.Collections;
+import java.util.List;
 
 import static org.mockito.Mockito.when;
 
@@ -164,18 +165,22 @@ public class PersonalThresholdModelScorerTest {
         Mockito.when(baseScorer.calculateScore(eventMessage, evenEpochTime)).thenReturn(baseScore);
         Mockito.when(baseScorer.getModel(eventMessage, evenEpochTime)).thenReturn(baseScorerModel);
         String contextFieldName = "context field name";
+        List<String> contextFieldNames = Collections.singletonList(contextFieldName);
 
         when(modelsCacheService.getModel(
-                Mockito.any(Feature.class),
+                (Feature) Mockito.isNull(),
                 Mockito.anyString(),
                 Mockito.anyMapOf(String.class, String.class),
                 Mockito.anyLong())
         ).thenReturn(personalThresholdModel);
 
+        when(eventMessage.getContextFields(contextFieldNames))
+                .thenReturn(Collections.singletonMap(contextFieldName, "context field value"));
+
         return new PersonalThresholdModelScorer(
                 featureScoreName,
                 "model name",
-                Collections.singletonList(contextFieldName),
+                contextFieldNames,
                 baseScorerConf,
                 maxRatioFromUniformThreshold
         ).calculateScore(eventMessage, evenEpochTime);

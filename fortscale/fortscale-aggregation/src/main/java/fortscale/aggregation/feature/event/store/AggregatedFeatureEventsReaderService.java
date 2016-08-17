@@ -25,4 +25,21 @@ public class AggregatedFeatureEventsReaderService {
 		return aggregatedFeatureEventsMongoStore.findAggrEventsByContextIdAndTimeRange(
 				aggregatedFeatureEventConf, contextId, startTime, endTime);
 	}
+
+	public long findNumOfAggrEventsByTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+											   Date startTime,
+											   Date endTime) {
+		return aggregatedFeatureEventsMongoStore.findNumOfAggrEventsByTimeRange(
+				aggregatedFeatureEventConf,
+				startTime,
+				endTime
+		);
+	}
+
+	public AggrEvent findAggrEventWithTopKScore(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+												Date startTime,
+												Date endTime,
+												int k) {
+		return aggregatedFeatureEventsMongoStore.findAggrEventWithTopKScore(aggregatedFeatureEventConf, startTime, endTime, k);
+	}
 }

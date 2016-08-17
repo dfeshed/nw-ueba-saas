@@ -58,8 +58,8 @@ public abstract class AbstractDataRetriever {
 	/**
 	 * @return the names of the features that should be scored by the model built by this retriever.
 	 * 		   In the case where the model is used inside the "additional-models" section of the scorer ASL
-	 * 		   (and not as the main "model"), this function won't be called (so it's good to throw an
-	 * 		   UnsupportedOperationException so no one will accidentally use the model as the main model).
+	 * 		   (and not as the main "model"), or if it is the main "model" but the scorer is composed on some other
+	 * 		   scorer, this function won't be called (so it's a good practice to throw an UnsupportedOperationException).
 	 */
 	public abstract Set<String> getEventFeatureNames();
 

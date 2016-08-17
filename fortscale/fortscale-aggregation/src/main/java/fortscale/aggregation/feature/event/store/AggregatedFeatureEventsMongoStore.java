@@ -67,32 +67,45 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		}
 	}
 
+	private Query createTimeRangeQuery(Date startTime, Date endTime) {
+		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
+		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
+		return new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+	}
+
 	@SuppressWarnings("unchecked")
 	public List<String> findDistinctContextsByTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
-
-		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-		String collectionName = getCollectionName(aggregatedFeatureName);
-
-		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
-		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
-		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+		String collectionName = getCollectionName(aggregatedFeatureEventConf);
 		return mongoTemplate.getCollection(collectionName)
-				.distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, query.getQueryObject());
+				.distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, createTimeRangeQuery(startTime, endTime).getQueryObject());
 	}
 
 	public List<AggrEvent> findAggrEventsByContextIdAndTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf,
 			String contextId, Date startTime, Date endTime) {
-
-		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-		String collectionName = getCollectionName(aggregatedFeatureName);
-
+		String collectionName = getCollectionName(aggregatedFeatureEventConf);
 		Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
-		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
-		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
-		Query query = new Query(contextIdCriteria.andOperator(startTimeCriteria, endTimeCriteria));
+		Query query = createTimeRangeQuery(startTime, endTime).addCriteria(contextIdCriteria);
 		return mongoTemplate.find(query, AggrEvent.class, collectionName);
+	}
+
+	public long findNumOfAggrEventsByTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+											   Date startTime,
+											   Date endTime) {
+		String collectionName = getCollectionName(aggregatedFeatureEventConf);
+		return mongoTemplate.count(createTimeRangeQuery(startTime, endTime), AggrEvent.class, collectionName);
+	}
+
+	public AggrEvent findAggrEventWithTopKScore(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+												Date startTime,
+												Date endTime,
+												int k) {
+		String collectionName = getCollectionName(aggregatedFeatureEventConf);
+		Query query = createTimeRangeQuery(startTime, endTime)
+				.with(new Sort(Sort.Direction.DESC, AggrEvent.EVENT_FIELD_SCORE))
+				.skip(k - 1);
+		return mongoTemplate.findOne(query, AggrEvent.class, collectionName);
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {
@@ -100,6 +113,10 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
 				eventType, COLLECTION_NAME_SEPARATOR,
 				aggregatedFeatureName);
+	}
+
+	private String getCollectionName(AggregatedFeatureEventConf aggregatedFeatureEventConf) {
+		return getCollectionName(aggregatedFeatureEventConf.getName());
 	}
 
 	private long getRetentionInSeconds(String aggregatedFeatureName) {

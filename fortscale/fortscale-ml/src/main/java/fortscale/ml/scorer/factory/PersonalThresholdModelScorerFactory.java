@@ -9,7 +9,6 @@ import fortscale.utils.factory.FactoryConfig;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.Collections;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -31,8 +30,7 @@ public class PersonalThresholdModelScorerFactory extends AbstractModelScorerFact
 		ModelConf modelConf = modelConfService.getModelConf(modelName);
 		AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();
 		AbstractDataRetriever abstractDataRetriever = dataRetrieverFactoryService.getProduct(dataRetrieverConf);
-		List<String> contextFieldNames = modelConf.getContextSelectorConf() != null ?
-				abstractDataRetriever.getContextFieldNames() : Collections.emptyList();
+		List<String> contextFieldNames = abstractDataRetriever.getContextFieldNames();
 
 		return new PersonalThresholdModelScorer(
 				scorerConf.getName(),
