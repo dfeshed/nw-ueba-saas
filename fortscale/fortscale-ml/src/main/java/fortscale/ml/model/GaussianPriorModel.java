@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class GaussianPriorModel implements Model {
+	@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 	public static class SegmentPrior {
 		public double mean;
 		public double priorAtMean;
