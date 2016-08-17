@@ -53,21 +53,21 @@ module.exports = function(environment) {
         stream: {
           defaultStreamLimit: 100000,
           subscriptionDestination: '/topic/incidents/%@',
-          requestDestination: '/threat/incidents',
-          cancelDestination: '/ws/threats/cancel'
+          requestDestination: '/ws/response/incidents',
+          cancelDestination: '/ws/response/cancel'
         },
         notify: {
           subscriptionDestination: '/topic/incidents/owner/%@',
           requestDestination: '/dummy/incidents/owner',
-          cancelDestination: '/ws/threats/cancel'
+          cancelDestination: '/ws/response/cancel'
         },
         findRecord: {
-          'subscriptionDestination': '/user/queue/threats/incident',
-          'requestDestination': '/ws/threats/incident/get'
+          subscriptionDestination: '/user/queue/threats/incident',
+          requestDestination: '/ws/response/incident/get'
         },
         updateRecord: {
-          'subscriptionDestination': '/user/queue/threats/incidentsEdit',
-          'requestDestination': '/ws/threats/incident/edit/'
+          subscriptionDestination: '/user/queue/threats/incidentsEdit',
+          requestDestination: '/ws/response/incidents/update'
         }
       },
       'core-service': {
