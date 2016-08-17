@@ -3,7 +3,7 @@ package fortscale.ml.model;
 public class PersonalThresholdModelBuilderData {
 	private int numOfContexts;
 	private double organizationKTopProbOfHighScore;
-	private int numOfOrganizationScores;
+	private long numOfOrganizationScores;
 
 	public PersonalThresholdModelBuilderData setNumOfContexts(int numOfContexts) {
 		this.numOfContexts = numOfContexts;
@@ -23,12 +23,12 @@ public class PersonalThresholdModelBuilderData {
 		return organizationKTopProbOfHighScore;
 	}
 
-	public PersonalThresholdModelBuilderData setNumOfOrganizationScores(int numOfOrganizationScores) {
+	public PersonalThresholdModelBuilderData setNumOfOrganizationScores(long numOfOrganizationScores) {
 		this.numOfOrganizationScores = numOfOrganizationScores;
 		return this;
 	}
 
-	public int getNumOfOrganizationScores() {
+	public long getNumOfOrganizationScores() {
 		return numOfOrganizationScores;
 	}
 }
