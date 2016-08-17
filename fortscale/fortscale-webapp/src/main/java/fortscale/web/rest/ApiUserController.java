@@ -116,8 +116,14 @@ public class ApiUserController extends BaseController{
 			User user = userDetailsBean.getUser();
 			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
-			List<UserActivitySourceMachineDocument> userSourceMachines
-					= userActivityService.getUserActivitySourceMachineEntries(user.getId(), Integer.MAX_VALUE);
+			List<UserActivitySourceMachineDocument> userSourceMachines;
+			try {
+				userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
+						Integer.MAX_VALUE);
+			} catch (Exception ex) {
+				logger.warn("failed to get user source machines");
+				userSourceMachines = new ArrayList<>();
+			}
 			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
 		}
 	}
