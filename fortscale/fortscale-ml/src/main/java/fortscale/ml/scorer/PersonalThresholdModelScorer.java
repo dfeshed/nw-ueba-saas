@@ -1,7 +1,6 @@
 package fortscale.ml.scorer;
 
 import fortscale.common.event.Event;
-import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.PersonalThresholdModel;
@@ -22,7 +21,6 @@ import java.util.List;
 public class PersonalThresholdModelScorer extends AbstractScorer {
 	private String modelName;
 	private List<String> contextFieldNames;
-	private String featureName;
 	private AbstractModelScorer baseScorer;
 	private double maxRatioFromUniformThreshold;
 
@@ -35,19 +33,16 @@ public class PersonalThresholdModelScorer extends AbstractScorer {
 	public PersonalThresholdModelScorer(String scorerName,
 										String modelName,
 										List<String> contextFieldNames,
-										String featureName,
 										IScorerConf baseScorerConf,
 										double maxRatioFromUniformThreshold) {
 
         super(scorerName);
-		Assert.isTrue(StringUtils.isNotBlank(featureName), "feature name cannot be null empty or blank");
 		Assert.isTrue(StringUtils.isNotBlank(modelName), "model name must be provided and cannot be empty or blank");
 		Assert.notNull(contextFieldNames);
 		Assert.notNull(baseScorerConf);
 		Assert.isTrue(maxRatioFromUniformThreshold > 0, "maxRatioFromUniformThreshold must be positive");
 		this.modelName = modelName;
 		this.contextFieldNames = contextFieldNames;
-		this.featureName = featureName;
 		baseScorer = (AbstractModelScorer) factoryService.getProduct(baseScorerConf);
 		this.maxRatioFromUniformThreshold = maxRatioFromUniformThreshold;
 	}
@@ -61,9 +56,8 @@ public class PersonalThresholdModelScorer extends AbstractScorer {
     }
 
 	private double calibrateScore(Event eventMessage, long eventEpochTimeInSec, FeatureScore baseScore, long numOfSamples) {
-		Feature feature = featureExtractService.extract(featureName, eventMessage);
 		PersonalThresholdModel model = (PersonalThresholdModel) eventModelsCacheService.getModel(
-				eventMessage, feature, eventEpochTimeInSec, modelName, contextFieldNames);
+				eventMessage, null, eventEpochTimeInSec, modelName, contextFieldNames);
 		if (model == null) {
 			return 0;
 		}

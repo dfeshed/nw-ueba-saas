@@ -11,7 +11,6 @@ import org.springframework.util.Assert;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @SuppressWarnings("unused")
 @Component
@@ -32,18 +31,13 @@ public class PersonalThresholdModelScorerFactory extends AbstractModelScorerFact
 		ModelConf modelConf = modelConfService.getModelConf(modelName);
 		AbstractDataRetrieverConf dataRetrieverConf = modelConf.getDataRetrieverConf();
 		AbstractDataRetriever abstractDataRetriever = dataRetrieverFactoryService.getProduct(dataRetrieverConf);
-		Set<String> featureNames = abstractDataRetriever.getEventFeatureNames();
 		List<String> contextFieldNames = modelConf.getContextSelectorConf() != null ?
 				abstractDataRetriever.getContextFieldNames() : Collections.emptyList();
-
-		// Currently in this implementation we use only single feature per model.
-		String featureName = featureNames.iterator().next();
 
 		return new PersonalThresholdModelScorer(
 				scorerConf.getName(),
 				modelName,
 				contextFieldNames,
-				featureName,
 				scorerConf.getBaseScorerConf(),
 				scorerConf.getMaxRatioFromUniformThreshold()
 		);
