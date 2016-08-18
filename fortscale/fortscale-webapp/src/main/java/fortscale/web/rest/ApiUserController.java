@@ -2,13 +2,11 @@ package fortscale.web.rest;
 
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.Tag;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
@@ -25,6 +23,7 @@ import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
@@ -109,6 +108,40 @@ public class ApiUserController extends BaseController{
 		bean.setTotal(count);
 
 		return bean;
+	}
+
+	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.PUT)
+	public ResponseEntity addFavoriteFilter(UserFilter userFilter, @RequestParam(value = "filter_name") String filterName) {
+		try {
+			userService.saveFavoriteFilter(userFilter, filterName);
+		} catch (DuplicateKeyException e) {
+			return new ResponseEntity("The filter name already exists", HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.DELETE)
+	public ResponseEntity deleteFavoriteFilter(@RequestParam(value = "filter_name") String filterName) {
+
+		long lineDeleted = userService.deleteFavoriteFilter(filterName);
+
+		if (lineDeleted > 0){
+			return new ResponseEntity(HttpStatus.OK);
+		}
+		return new ResponseEntity("No documents deleted", HttpStatus.BAD_REQUEST);
+	}
+
+	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.GET)
+	public DataBean<List<FavoriteUserFilter>> getFavoriteFilters() {
+
+		List<FavoriteUserFilter> allFavoriteFilters = userService.getAllFavoriteFilters();
+		DataBean<List<FavoriteUserFilter>> result = new DataBean<>();
+		result.setData(allFavoriteFilters);
+		result.setTotal(allFavoriteFilters.size());
+
+		return result;
+
 	}
 
 	private void addAlertsAndDevices(List<UserDetailsBean> users) {
@@ -498,8 +531,6 @@ public class ApiUserController extends BaseController{
 		response.setData(relatedEntitiesList);
 		return response;
 	}
-
-
 
 	private void setSeverityOnUsersList(List<User> users){
 		for (User user: users){

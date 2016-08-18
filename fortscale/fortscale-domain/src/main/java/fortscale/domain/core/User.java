@@ -122,6 +122,7 @@ public class User extends AbstractDocument {
     private Severity scoreSeverity;
 
     @Field(scoreField)
+	@Indexed
     private double score=0;
 
 	@Field(terminationDateField)
