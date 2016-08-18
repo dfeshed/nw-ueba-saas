@@ -310,8 +310,6 @@
 
 	<bean id="tagService" class="fortscale.services.impl.TagServiceImpl" scope="singleton"/>
 
-	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
-
 	<bean id="splunkFetch" class="fortscale.collection.jobs.fetch.siem.Splunk" scope="prototype"/>
 
 	<bean id="qradarFetch" class="fortscale.collection.jobs.fetch.siem.QRadar" scope="prototype"/>
