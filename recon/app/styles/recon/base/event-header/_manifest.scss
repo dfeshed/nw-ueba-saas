@@ -12,11 +12,12 @@
   }
 
   .header-item {
-    padding: rsa-whitespace(least) rsa-whitespace();
+    padding: rsa-whitespace(least) 0;
 
     .name {
       @include rsa-font(body, small);
       color: rsa-color(white);
+      padding-bottom: rsa-whitespace(least);
       text-transform: uppercase;
     }
 
