@@ -104,11 +104,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
 		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("vpn", "etl"), new UsernameNormalizationConfig("output1",
-				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService,true));
-
-		// tagging
-		task.tagService = Mockito.mock(UserTagsService.class);
-		Mockito.when(task.tagService.getUserService()).thenReturn(Mockito.mock(UserService.class));
+				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService));
 
 
 		// User2 with normalized username
@@ -121,7 +117,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.verify(usernameNormalizationService, never()).normalizeUsername(eq(anyString()), anyString(), null);
 		// validate tagging
 		JSONObject message = (JSONObject) JSONValue.parseWithException(MESSAGE_2);
-		Mockito.verify(task.tagService).addTagsToEvent("User 2", message);
 
 
 		// User 1 without normalized name, success in normalization
@@ -153,8 +148,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
 		//Mockito.verify(usernameNormalizationService).normalizeUsername("user3", "domain", message, null, false);
-		// validate tagging
-		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), eq(message));
 
 
 		// User 4 without normalized name, failure in normalization and no drop of record

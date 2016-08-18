@@ -308,15 +308,15 @@ public class User extends AbstractDocument {
 	}
 	
 	public Boolean getUserServiceAccount() {
-		return tags != null ? tags.contains(UserTagEnum.service.getId()) : false;
+		return tags != null ? tags.contains("service") : false;
 	}
 
 	public Boolean getAdministratorAccount() {
-		return tags != null ? tags.contains(UserTagEnum.admin.getId()) : false;
+		return tags != null ? tags.contains("admin") : false;
 	}
 
 	public Boolean getExecutiveAccount() {
-		return tags != null ? tags.contains(UserTagEnum.executive.getId()) : false;
+		return tags != null ? tags.contains("executive") : false;
 	}
 
 	public static String getClassifierScoreField(String classifierId) {

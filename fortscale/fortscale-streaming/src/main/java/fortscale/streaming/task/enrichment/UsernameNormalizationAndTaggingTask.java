@@ -7,7 +7,6 @@ import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
@@ -29,7 +28,6 @@ import org.apache.samza.task.TaskCoordinator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -38,9 +36,8 @@ import static fortscale.streaming.ConfigUtils.getConfigString;
 import static fortscale.utils.ConversionUtils.convertToString;
 
 /**
- * Several enrichment regarding the user:
- * 1. Username normalization
- * 2. User tagging
+ * This task normalizes the username
+ * UPDATE - IT NO LONGER TAGS THE EVENT
  *
  * Since we are using the users in mongo when creating the notifications we must create the users in mongo after the normalization and not as part of regular updates in UserMongoUpdateTask.
  */
@@ -50,7 +47,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	private static String storeConfigKeyFormat = "fortscale.%s.service.cache.store";
 
 	private static String usernameKey = "username";
-	private static String userTagsKey = "user-tag";
 	private static String samAccountKey = "samAccountName";
 
 	/**
@@ -72,12 +68,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 */
 	//
 	protected Map<String, CachingService> topicToServiceMap = new HashMap<>();
-
-
-	/**
-	 * Service for tagging events according to user-tag
-	 */
-	protected UserTagsService tagService;
 
 	/**
 	 * Init task after spring context is up
@@ -102,7 +92,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String configKey = configField.getValue();
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
-			Boolean shouldBeTaged = config.getBoolean(String.format("fortscale.events.entry.%s.shouldBeTag", configKey));
 
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
@@ -125,7 +114,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			samAccountNameService.setCache(samAccountNameStore);
 			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(outputTopic,
                     normalizationBasedField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
-					classifier, service,shouldBeTaged));
+					classifier, service));
 		}
 
 		// add the usernameService to update input topics map
@@ -139,21 +128,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, samAccountKey)), samAccountNameService);
 		}
 
-		// construct tagging service with the tags that are required from configuration
-		Map<String, String> tags = new HashMap<String, String>();
-		for (Entry<String,String> tagConfigField : config.subset("fortscale.username.tags.",false).entrySet()) {
-			String tagField = resolveStringValue(config,tagConfigField.getKey(),res); // the name of the boolean field as saved to table
-			String tagName = tagConfigField.getKey().split("fortscale.username.tags.")[1]; //the name of the tag as shown in tags cache
-			tags.put(tagName, tagField);
-		}
-		tagService = new UserTagsService(tags);
-		CachingService userService = tagService.getUserService();
-		// add the tagService to update input topics map
-		if (userService != null) {
-			userService.setCache(new KeyValueDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class,
-					"userService", statsService));
-			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
-		}
 	}
 
 	
@@ -225,12 +199,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				taskMetrics.normalizedUsernameAlreadyExistsMessages++;
 			}
 
-			// add the tags to the event - checks in memory-cache and mongo if the user exists with tags
-			if (usernameNormalizationConfig.getShouldBeTagged()) {
-				taskMetrics.mayBeTaggedMessages++;
-				tagService.addTagsToEvent(normalizedUsername, message);
-			}
-
 			// send the event to the output topic
 			String outputTopic = usernameNormalizationConfig.getOutputTopic();
 			try {
@@ -245,9 +213,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 
 	@Override
-	protected void wrappedClose() throws Exception {
-		tagService = null;
-	}
+	protected void wrappedClose() throws Exception {}
 
 	@Override
 	protected String getJobLabel() {

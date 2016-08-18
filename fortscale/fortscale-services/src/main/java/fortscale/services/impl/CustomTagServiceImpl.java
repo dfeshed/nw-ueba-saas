@@ -1,12 +1,10 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Tag;
-import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.services.UserTagService;
-import fortscale.services.UserTaggingService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,24 +21,17 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(CustomTagServiceImpl.class);
 
-	private static final String CSV_DELIMITER = ",";
-	private static final String VALUE_DELIMITER = "\\|";
 	private static final String OU_PREFIX = "ou=";
 	private static final String GROUP_PREFIX = "cn=";
-
-	private static final UserTagEnum tag = UserTagEnum.custom;
 
 	@Value("${user.tag.service.abstract.page.size:1000}")
 	private int pageSize;
 	@Value("${user.tag.service.abstract.lazy.upload:false}")
 	private boolean isLazyUpload;
-	@Value("${user.list.user_custom_tags.path:}")
-	private String filePath;
 	@Value("${user.list.custom_tags.deletion_symbol:-}")
 	private String deletionSymbol;
 
 	private UserRepository userRepository;
-	private UserTaggingService userTaggingService;
 	private UserService userService;
 	private TagService tagService;
 	private ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper;
@@ -48,10 +39,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	private Map<String, Set<String>> taggedUsers = new HashMap();
 
 	@Autowired
-	public CustomTagServiceImpl(UserRepository userRepository, UserTaggingService userTaggingService,
-			UserService userService, TagService tagService, ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper) {
+	public CustomTagServiceImpl(UserRepository userRepository, UserService userService, TagService tagService,
+			ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper) {
 		this.userRepository = userRepository;
-		this.userTaggingService = userTaggingService;
 		this.userService = userService;
 		this.tagService = tagService;
 		this.activeDirectoryGroupsHelper = activeDirectoryGroupsHelper;
@@ -165,22 +155,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		//register the custom tag service with the user tagging service
-		userTaggingService.putUserTagService(UserTagEnum.custom.getId(), this);
 		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
 		if (!isLazyUpload) {
 			refresh();
-		}
-	}
-
-	@Override
-	public boolean isUserTagged(String username, String tag) {
-		if (taggedUsers != null) {
-			Set<String> tags = taggedUsers.get(username);
-			return tags != null ? tags.contains(tag) : false;
-		}
-		else {
-			return false;
 		}
 	}
 
@@ -203,11 +180,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		}
 		taggedUsers.put(username, tags);
 		userService.updateUserTagList(null, Arrays.asList(new String[] { tag }), username);
-	}
-
-	@Override
-	public UserTagEnum getTag() {
-		return tag;
 	}
 
 }

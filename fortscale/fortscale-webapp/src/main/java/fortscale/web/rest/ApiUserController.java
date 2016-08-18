@@ -4,7 +4,6 @@ import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
-import fortscale.domain.core.UserTagEnum;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.rest.UserFilter;
@@ -48,7 +47,7 @@ public class ApiUserController extends BaseController{
 	private TagService tagService;
 
 	@Autowired
-	private UserTaggingService userTaggingService;
+	private UserTagService userTagService;
 
 	@Autowired
 	private UserService userService;
@@ -282,7 +281,6 @@ public class ApiUserController extends BaseController{
 		} else {
 			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
 		}
-		UserTagService userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
 		if (addTag) {
 			userTagService.addUserTag(user.getUsername(), tag);
 		} else {
@@ -394,10 +392,6 @@ public class ApiUserController extends BaseController{
 			//if update was successful and tag is no longer active - remove that tag from all users
 			} else if (!tag.getActive()) {
 				String tagName = tag.getName();
-				UserTagService userTagService = userTaggingService.getUserTagService(tagName);
-				if (userTagService == null) {
-					userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
-				}
 				Set<String> usernames = userService.findUsernamesByTags(new String[] { tagName });
 				if (CollectionUtils.isNotEmpty(usernames)) {
 					logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
