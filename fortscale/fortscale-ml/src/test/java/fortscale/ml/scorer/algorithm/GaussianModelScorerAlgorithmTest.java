@@ -89,7 +89,7 @@ public class GaussianModelScorerAlgorithmTest {
 						mean + sd,
 						model,
 						new GaussianPriorModel()
-								.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior(mean, sd + prior, 0)))
+								.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior().init(mean, sd + prior, 0)))
 				))
 				.boxed()
 				.collect(Collectors.toList());
@@ -108,7 +108,7 @@ public class GaussianModelScorerAlgorithmTest {
 						mean + sd,
 						model,
 						new GaussianPriorModel()
-								.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior(mean, sd + 1, 0)))
+								.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior().init(mean, sd + 1, 0)))
 				))
 				.boxed()
 				.collect(Collectors.toList());
@@ -135,7 +135,7 @@ public class GaussianModelScorerAlgorithmTest {
 		double sd = 1.2;
 		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, mean, sd, 0);
 		GaussianPriorModel priorModel = new GaussianPriorModel()
-				.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior(mean, sd - 1, 0)));
+				.init(Collections.singletonList(new GaussianPriorModel.SegmentPrior().init(mean, sd - 1, 0)));
 		double value = mean + 1 * sd;
 
 		double scoreWithNoPrior = defaultAlgorithm.calculateScore(value, model, null);
@@ -156,12 +156,12 @@ public class GaussianModelScorerAlgorithmTest {
 
 		double value = meanOfModel + 1 * sd;
 		double scoreForModelWithSmallPrior = defaultAlgorithm.calculateScore(value, model, new GaussianPriorModel().init(Arrays.asList(
-				new GaussianPriorModel.SegmentPrior(meanOfModel, priorSmall, 0),
-				new GaussianPriorModel.SegmentPrior(otherMean1, priorBig, 0)
+				new GaussianPriorModel.SegmentPrior().init(meanOfModel, priorSmall, 0),
+				new GaussianPriorModel.SegmentPrior().init(otherMean1, priorBig, 0)
 		)));
 		double scoreForModelWithNoPrior = defaultAlgorithm.calculateScore(value, model, new GaussianPriorModel().init(Arrays.asList(
-				new GaussianPriorModel.SegmentPrior(otherMean2, priorSmall, 0),
-				new GaussianPriorModel.SegmentPrior(otherMean1, priorBig, 0)
+				new GaussianPriorModel.SegmentPrior().init(otherMean2, priorSmall, 0),
+				new GaussianPriorModel.SegmentPrior().init(otherMean1, priorBig, 0)
 		)));
 
 		Assert.assertEquals(scoreForModelWithSmallPrior, scoreForModelWithNoPrior, 0.00000001);

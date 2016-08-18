@@ -48,7 +48,7 @@ public class GaussianPriorModelBuilder implements IModelBuilder {
 					segment.getCenter()
 			);
 			if (priorAtMean != null) {
-				segmentPriors.add(new GaussianPriorModel.SegmentPrior(
+				segmentPriors.add(new GaussianPriorModel.SegmentPrior().init(
 						segment.getCenter(),
 						priorAtMean,
 						segment.getCenter() - segment.getLeftMean(),

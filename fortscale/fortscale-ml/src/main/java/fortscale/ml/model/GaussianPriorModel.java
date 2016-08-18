@@ -18,15 +18,16 @@ public class GaussianPriorModel implements Model {
 		public double supportFromLeftOfMean;
 		public double supportFromRightOfMean;
 
-		public SegmentPrior(double mean, double priorAtMean, double supportFromLeftOfMean, double supportFromRightOfMean) {
+		public SegmentPrior init(double mean, double priorAtMean, double supportFromLeftOfMean, double supportFromRightOfMean) {
 			this.mean = mean;
 			this.supportFromLeftOfMean = supportFromLeftOfMean;
 			this.supportFromRightOfMean = supportFromRightOfMean;
 			this.priorAtMean = priorAtMean;
+			return this;
 		}
 
-		public SegmentPrior(double mean, double priorAtMean, double supportRadiusAroundMean) {
-			this(mean, priorAtMean, supportRadiusAroundMean, supportRadiusAroundMean);
+		public SegmentPrior init(double mean, double priorAtMean, double supportRadiusAroundMean) {
+			return init(mean, priorAtMean, supportRadiusAroundMean, supportRadiusAroundMean);
 		}
 
 		@Override
@@ -111,7 +112,7 @@ public class GaussianPriorModel implements Model {
 		int closestSegmentPriorIndexFromRight =
 				Arrays.binarySearch(
 						segmentPriors,
-						new SegmentPrior(mean, 0, 0),
+						new SegmentPrior().init(mean, 0, 0),
 						Comparator.comparingDouble(segmentPrior -> segmentPrior.mean)
 				);
 		if (closestSegmentPriorIndexFromRight < 0) {
