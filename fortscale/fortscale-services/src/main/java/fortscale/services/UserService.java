@@ -4,7 +4,9 @@ import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.FavoriteUserFilter;
 import fortscale.domain.core.User;
+import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
@@ -125,5 +127,11 @@ public interface UserService extends CachingService{
 	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserNames);
 
 	public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers);
+
+	public void saveFavoriteFilter(UserFilter userFilter, String filterName);
+
+	public List<FavoriteUserFilter> getAllFavoriteFilters();
+
+	public long deleteFavoriteFilter(String filterName);
 
 }

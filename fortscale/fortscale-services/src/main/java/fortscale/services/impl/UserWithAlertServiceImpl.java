@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
+import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.AlertsService;
 import fortscale.services.UserActivityService;
