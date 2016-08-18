@@ -7,8 +7,6 @@ import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.services.UserTagService;
 import fortscale.services.UserTaggingService;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -18,9 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service("customTag")
 public class CustomTagServiceImpl implements UserTagService, InitializingBean {
@@ -29,6 +25,8 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	private static final String CSV_DELIMITER = ",";
 	private static final String VALUE_DELIMITER = "\\|";
+	private static final String OU_PREFIX = "ou=";
+	private static final String GROUP_PREFIX = "cn=";
 
 	private static final UserTagEnum tag = UserTagEnum.custom;
 
@@ -51,8 +49,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Autowired
 	public CustomTagServiceImpl(UserRepository userRepository, UserTaggingService userTaggingService,
-								UserService userService, TagService tagService,
-								ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper) {
+			UserService userService, TagService tagService, ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper) {
 		this.userRepository = userRepository;
 		this.userTaggingService = userTaggingService;
 		this.userService = userService;
@@ -62,29 +59,17 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public void update() throws Exception {
-		//read the custom tag list file and update mongodb with all users on that list
-		if (StringUtils.isEmpty(filePath)) {
-			logger.warn("No tag user list file configured, skipping tagging users");
-			return;
-		}
-		File tagsFile = new File(filePath);
-		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
-			List<String> availableTags = tagService.getAllTags().stream().map(Tag::getName).
-					collect(Collectors.toList());
-			Map<Set<String>, Set<String>> tagsToAddToUsers = new HashMap();
-			Map<Set<String>, Set<String>> tagsToRemoveFromUsers = new HashMap();
-			taggedUsers = new HashMap();
-			boolean warmedUpCache = false;
-			//read all users from the file
-			for (String line : FileUtils.readLines(tagsFile)) {
-				boolean removeFlag = line.startsWith(deletionSymbol);
-				Set<String> users = new HashSet();
-				Set<String> tags = new HashSet(Arrays.asList(line.split(VALUE_DELIMITER)[1].split(CSV_DELIMITER)));
-				tags.retainAll(availableTags);
-				String searchTerm = removeFlag ? line.substring(1).split(VALUE_DELIMITER)[0] :
-						line.split(VALUE_DELIMITER)[0];
+		taggedUsers = new HashMap();
+		boolean warmedUpCache = false;
+		for (Tag tag : tagService.getAllTags()) {
+			Map<String, Set<String>> tagsToAddToUsers = new HashMap();
+			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap();
+			Set<String> users = new HashSet();
+			for (String rule : tag.getRules()) {
+				boolean removeFlag = rule.startsWith(deletionSymbol);
+				String searchTerm = removeFlag ? rule.substring(1) : rule;
 				//if group
-				if (searchTerm.toLowerCase().startsWith("cn=")) {
+				if (searchTerm.toLowerCase().startsWith(GROUP_PREFIX)) {
 					if (!warmedUpCache) {
 						// Warm up the cache
 						activeDirectoryGroupsHelper.warmUpCache();
@@ -100,8 +85,8 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						users.addAll(subset);
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
-					//if ou
-				} else if (searchTerm.toLowerCase().startsWith("ou=")) {
+				//if ou
+				} else if (searchTerm.toLowerCase().startsWith(OU_PREFIX)) {
 					Set<String> subset;
 					Pageable pageable = new PageRequest(0, pageSize);
 					do {
@@ -109,42 +94,40 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						users.addAll(subset);
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
-					//if regex
+				//if regex
 				} else {
 					users.addAll(userRepository.findByUsernameRegex(searchTerm));
 				}
 				if (!users.isEmpty()) {
 					if (removeFlag) {
-						tagsToRemoveFromUsers.put(users, tags);
+						tagsToRemoveFromUsers.put(tag.getName(), users);
 					} else {
-						tagsToAddToUsers.put(users, tags);
+						tagsToAddToUsers.put(tag.getName(), users);
 					}
 				}
 			}
 			updateAllUsersTags(tagsToAddToUsers, tagsToRemoveFromUsers);
-		} else {
-			logger.warn("Custom user tag list file not accessible in path {}", filePath);
 		}
 	}
 
-	private void updateAllUsersTags(Map<Set<String>, Set<String>> tagsToAddToUsers,
-									Map<Set<String>, Set<String>> tagsToRemoveFromUsers) {
+	private void updateAllUsersTags(Map<String, Set<String>> tagsToAddToUsers,
+			Map<String, Set<String>> tagsToRemoveFromUsers) {
 		//add tags
-		for (Map.Entry<Set<String>, Set<String>> entry: tagsToAddToUsers.entrySet()) {
-			for (String username: entry.getKey()) {
+		for (Map.Entry<String, Set<String>> entry: tagsToAddToUsers.entrySet()) {
+			for (String username: entry.getValue()) {
 				Set<String> tags = taggedUsers.get(username);
 				if (tags == null) {
 					tags = new HashSet();
 				}
-				tags.addAll(entry.getValue());
+				tags.add(entry.getKey());
 				taggedUsers.put(username, tags);
-				userService.updateUserTagList(new ArrayList(entry.getValue()), null, username);
+				userService.updateUserTagList(Collections.singletonList(entry.getKey()), null, username);
 			}
 		}
 		//remove tags
-		for (Map.Entry<Set<String>, Set<String>> entry: tagsToRemoveFromUsers.entrySet()) {
-			for (String userName: entry.getKey()) {
-				userService.updateUserTagList(null, new ArrayList(entry.getValue()), userName);
+		for (Map.Entry<String, Set<String>> entry: tagsToRemoveFromUsers.entrySet()) {
+			for (String userName: entry.getValue()) {
+				userService.updateUserTagList(null, Collections.singletonList(entry.getKey()), userName);
 			}
 		}
 	}
@@ -176,7 +159,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		return completeGroupList;
 	}
 
-	public void refresh() {
+	private void refresh() {
 		taggedUsers = userService.findAllTaggedUsers();
 	}
 
