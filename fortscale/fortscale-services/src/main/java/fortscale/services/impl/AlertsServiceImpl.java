@@ -160,23 +160,14 @@ public class AlertsServiceImpl implements AlertsService {
 			ids.addAll(Arrays.asList(entityId.split(",")));
 		}
 
-		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
-						dateRangeFilter, entityName, ids, indicatorTypes);
+		return alertsRepository.groupCount(fieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
+				dateRangeFilter, entityName, ids, indicatorTypes);
 	}
 
 	@Override
 	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected){
 
-
-		List<String> feedbackFilter = new ArrayList<>();
-		feedbackFilter.add(AlertFeedback.Approved.name());
-		feedbackFilter.add(AlertFeedback.None.name());
-		if (BooleanUtils.isFalse(ignoreRejected)) {
-			feedbackFilter.add(AlertFeedback.Rejected.name());
-		}
-
-		String feedback = StringUtils.arrayToCommaDelimitedString(feedbackFilter.toArray());
-
+		String feedback = StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
 		return alertsRepository.groupCount(Alert.nameField,null, null,feedback ,
 				null, null, null, null);
 	}
@@ -191,7 +182,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
     public List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities) {
-        return getAlertsByTimeRange(dateRange, severities, false);
+		return getAlertsByTimeRange(dateRange, severities, false);
     }
 
 	private List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences){
@@ -211,7 +202,7 @@ public class AlertsServiceImpl implements AlertsService {
 
     @Override
     public List<Alert> getAlertsByUsername(String userName){
-        return alertsRepository.findByEntityName(userName);
+		return alertsRepository.findByEntityName(userName);
     }
 
     public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange){
@@ -258,13 +249,17 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override public Set<String> getDistinctAlertNames(Boolean ignoreRejected) {
 		Set<String> alertNames;
-		if (BooleanUtils.isFalse(ignoreRejected)) {
-			alertNames = alertsRepository.getDistinctAlertNames(null);
-		} else {
-			alertNames = alertsRepository.getDistinctAlertNames(feedbackNoRejectedSet);
-		}
+		alertNames = alertsRepository.getDistinctAlertNames(getFeedbackListForFilter(ignoreRejected));
 
 		return alertNames.stream().sorted().collect(Collectors.toSet());
+	}
+
+	private Set<String> getFeedbackListForFilter(Boolean ignoreRejected){
+		if (BooleanUtils.isFalse(ignoreRejected)) {
+			return null;
+		} else {
+			return feedbackNoRejectedSet;
+		}
 	}
 
 	@Override

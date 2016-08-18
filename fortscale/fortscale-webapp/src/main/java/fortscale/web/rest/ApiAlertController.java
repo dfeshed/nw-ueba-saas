@@ -96,8 +96,8 @@ public class ApiAlertController extends BaseController {
 	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
 		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
 
-		for (Map.Entry<String, Integer> alertType : alertsService.getAlertsTypesCounted(ignoreRejected).entrySet()){
-			alertTypesNameAndCount.add(new ValueCountBean(alertType.getKey(), alertType.getValue()));
+		for (Map.Entry<String, Integer> alertTypeToCountEntry : alertsService.getAlertsTypesCounted(ignoreRejected).entrySet()){
+			alertTypesNameAndCount.add(new ValueCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue()));
 		}
 
 		DataBean<Set<ValueCountBean>> result = new DataBean<>();
