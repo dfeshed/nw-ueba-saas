@@ -20,9 +20,16 @@
 		<context:include-filter expression="org.springframework.stereotype.Controller"
 			type="annotation" />
 	</context:component-scan>
-	<mvc:annotation-driven />
 
-<!-- 	<bean id="conversionService" -->
+    <mvc:annotation-driven>
+        <mvc:argument-resolvers>
+            <bean class="fortscale.web.extensions.RenamingProcessor">
+                <constructor-arg name="annotationNotRequired" value="true"/>
+            </bean>
+        </mvc:argument-resolvers>
+    </mvc:annotation-driven>
+
+    <!-- 	<bean id="conversionService" -->
 <!-- 		class="org.springframework.format.support.FormattingConversionServiceFactoryBean"> -->
 <!--     	<property name="converters"> -->
 <!-- 	   		<list> -->

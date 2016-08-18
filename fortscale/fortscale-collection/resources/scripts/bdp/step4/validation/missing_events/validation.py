@@ -2,10 +2,10 @@ import os
 import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.mongo import get_collections_size, get_collections_time_boundary
 from bdp_utils.run import validate_by_polling
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils import time_utils
+from automatic_config.common.utils.mongo import get_collections_size, get_collections_time_boundary
 
 import logging
 
@@ -15,7 +15,7 @@ _ENTITY_EVENT_COLLECTIONS_REGEX = '^entity_event_(?!meta_data_).'
 _SCORED_ENTITY_EVENT_COLLECTIONS_REGEX = '^scored___entity_event_'
 
 
-def validate_no_missing_events(host, start, end, timeout, polling):
+def validate_no_missing_events(host, timeout, polling, start=None, end=None):
     start = start or get_collections_time_boundary(host=host,
                                                    collection_names_regex=_ENTITY_EVENT_COLLECTIONS_REGEX,
                                                    is_start=True)

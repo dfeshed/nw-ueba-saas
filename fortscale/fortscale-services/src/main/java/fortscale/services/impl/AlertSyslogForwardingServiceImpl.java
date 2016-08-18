@@ -135,7 +135,7 @@ import java.util.Map;
 
 			syslogSender = new SyslogSender(ip, port, "tcp");
 
-			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/alerts/";
+			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/user/";
 		} catch (Exception e) {
 			throw new ConfigurationException("Error creating syslog forwarder - Configuration error. Error: " + e);
 		}
@@ -180,6 +180,6 @@ import java.util.Map;
 	}
 
 	private String generateAlertPath(Alert alert) {
-		return baseUrl + alert.getId() + "/" + alert.getEvidences().get(0).getId() + "/gen/overview";
+		return baseUrl + alert.getEntityId() + "/alert/" + alert.getId();
 	}
 }

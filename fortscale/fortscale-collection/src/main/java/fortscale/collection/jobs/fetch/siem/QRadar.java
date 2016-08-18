@@ -1,12 +1,15 @@
 package fortscale.collection.jobs.fetch.siem;
 
 import fortscale.collection.jobs.fetch.FetchJob;
+import fortscale.domain.fetch.SIEMType;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.io.FileWriter;
 
 /**
@@ -14,9 +17,10 @@ import java.io.FileWriter;
  * In the case the job doesn't get time frame as job params, will continue the fetch process of the data source from
  * the last saved time
  */
+@DisallowConcurrentExecution
 public class QRadar extends FetchJob {
 
-	public static final String SIEM_NAME = "qradar";
+	public static final String SIEM_NAME = SIEMType.QRADAR.name().toLowerCase();
 
 	@Value("${source.qradar.batchSize:1000}")
 	private int batchSize;
@@ -28,7 +32,7 @@ public class QRadar extends FetchJob {
 	private QRadarAPI qRadarAPI;
 
 	@Override
-	protected boolean connect() throws Exception {
+	protected boolean connect(String hostName, int port, String username, String password) throws Exception {
 		// connect to QRadar
 		logger.debug("trying to connect QRadar at {}", hostName);
 		qRadarAPI = new QRadarAPI(hostName, EncryptionUtils.decrypt(password));
@@ -36,12 +40,14 @@ public class QRadar extends FetchJob {
 	}
 
 	@Override
-	protected void fetch() throws Exception {
+	protected void fetch(String filename, String tempfilename, File outputDir, String returnKeys, String delimiter,
+						 boolean encloseQuotes, String earliest, String latest, String savedQuery) throws Exception {
 		try {
 			logger.debug("running QRadar saved query");
 			SearchResultRequestReader reader = qRadarAPI.runQuery(savedQuery, returnKeys, earliest, latest, batchSize,
 					maxNumberOfRetires, sleepInMilliseconds);
 			String queryResults = reader.getNextBatch();
+			File outputTempFile = new File(outputDir, tempfilename);
 			try (FileWriter fw = new FileWriter(outputTempFile)) {
 				while (queryResults != null) {
 					fw.write(queryResults);
@@ -53,15 +59,6 @@ public class QRadar extends FetchJob {
 		} catch (Exception e) {
 			// log error and delete output
 			logger.error("error running QRadar query", e);
-			monitor.error(getMonitorId(), "Query QRadar", "error during events from qradar to file " +
-					outputFile.getName() + "\n" + e.toString());
-			try {
-				outputFile.delete();
-			} catch (Exception ex) {
-				logger.error("cannot delete temp output file " + outputFile.getName());
-				monitor.error(getMonitorId(), "Query QRadar", "cannot delete temporary events file " +
-						outputFile.getName());
-			}
 			throw new JobExecutionException("error running QRadar query");
 		}
 	}

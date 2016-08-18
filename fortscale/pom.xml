@@ -63,8 +63,11 @@
 
 	<properties>
         <!--RPM VERSION-->
-        <rpm.version>2.6.0</rpm.version>
+        <rpm.version>2.7.0</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
+		<influxdb.version>2.1</influxdb.version>
+		<argparse4j.version>0.7.0</argparse4j.version>
+		<spring-shell.version>1.1.0.RELEASE</spring-shell.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<junit.version>4.11</junit.version>
 		<junitparams.version>1.0.2</junitparams.version>
@@ -107,6 +110,7 @@
 		<java-lang-config.version>1.8</java-lang-config.version>
 		<samza.version>0.9.1</samza.version>
 		<scala.version>2.10.2</scala.version>
+		<springretry.version>1.1.2.RELEASE</springretry.version>
 		<kafka.version>0.8.2.1</kafka.version>
 		<scala-kafka.version>2.10</scala-kafka.version>
 		<hadoop.version>2.6.0-cdh5.4.8</hadoop.version>
@@ -120,6 +124,7 @@
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
         <cxf.version>2.7.6</cxf.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>
@@ -575,5 +580,6 @@
 		<module>fortscale-streaming</module>
 		<module>fortscale-flume</module>
 		<module>fortscale-common</module>
+		<module>fortscale-monitoring-daemons</module>
 	</modules>
 </project>

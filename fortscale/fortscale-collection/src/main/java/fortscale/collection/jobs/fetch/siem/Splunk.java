@@ -2,13 +2,15 @@ package fortscale.collection.jobs.fetch.siem;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.fetch.FetchJob;
+import fortscale.domain.fetch.SIEMType;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
+import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Value;
 
+import java.io.File;
 import java.util.Properties;
 
 /**
@@ -16,9 +18,10 @@ import java.util.Properties;
  * In the case the job doesn't get time frame as job params, will continue the fetch process of the
  * data source from the last saved time
  */
+@DisallowConcurrentExecution
 public class Splunk extends FetchJob {
 
-	public static final String SIEM_NAME = "splunk";
+	public static final String SIEM_NAME = SIEMType.SPLUNK.name().toLowerCase();
 	public static final String DEFAULT_USER = "admin";
 	public static final int DEFAULT_PORT = 8089;
 
@@ -27,9 +30,9 @@ public class Splunk extends FetchJob {
 	private boolean runSavedQuery;
 
 	@Override
-	protected boolean connect() throws Exception {
+	protected boolean connect(String hostName, int port, String username, String password) throws Exception {
 		// connect to Splunk
-		int portNumber = port == null ? DEFAULT_PORT : Integer.parseInt(port);
+		int portNumber = port == 0 ? DEFAULT_PORT : port;
 		String user = username == null ? DEFAULT_USER : username;
 		logger.debug("trying to connect Splunk at {}@{}:{}", username, hostName, port);
 		splunkApi = new SplunkApi(hostName, portNumber, user, EncryptionUtils.decrypt(password));
@@ -37,8 +40,10 @@ public class Splunk extends FetchJob {
 	}
 
 	@Override
-	protected void fetch() throws Exception {
+	protected void fetch(String filename, String tempfilename, File outputDir, String returnKeys, String delimiter,
+						 boolean encloseQuotes, String earliest, String latest, String savedQuery) throws Exception {
 		// configure events handler to save events to csv file
+		File outputTempFile = new File(outputDir, tempfilename);
 		SplunkEventsHandlerLogger handler = new SplunkEventsHandlerLogger(outputTempFile.getAbsolutePath());
 		handler.setSearchReturnKeys(returnKeys);
 		handler.setDelimiter(delimiter);
@@ -49,8 +54,8 @@ public class Splunk extends FetchJob {
 		properties.put("args.earliest", earliest);
 		properties.put("args.latest", latest);
 		// execute the search
+		logger.debug("running splunk saved query");
 		try {
-			logger.debug("running splunk saved query");
 			if (runSavedQuery) {
 				splunkApi.runSavedSearch(savedQuery, properties, null, handler, timeoutInSeconds);
 			} else {
@@ -59,15 +64,6 @@ public class Splunk extends FetchJob {
 		} catch (Exception e) {
 			// log error and delete output
 			logger.error("error running splunk query", e);
-			monitor.error(getMonitorId(), "Query Splunk", "error during events from splunk to file " +
-					outputTempFile.getName() + "\n" + e.toString());
-			try {
-				outputTempFile.delete();
-			} catch (Exception ex) {
-				logger.error("cannot delete temp output file " + outputTempFile.getName());
-				monitor.error(getMonitorId(), "Query Splunk", "cannot delete temporary events file " +
-						outputTempFile.getName());
-			}
 			throw new JobExecutionException("error running splunk query");
 		}
 	}

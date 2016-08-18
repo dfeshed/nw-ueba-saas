@@ -2,8 +2,9 @@ import os
 import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.mongo import get_collection_names, get_collections_size
 from bdp_utils.run import validate_by_polling
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
+from automatic_config.common.utils.mongo import get_db, get_collection_names, get_collections_size
 
 import logging
 
@@ -31,21 +32,28 @@ def validate_no_missing_events(host, timeout, polling_interval):
 
 
 def _get_counts(host, scored_entity_event_collection_name):
-    if scored_entity_event_collection_name not in _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME:
-        raise Exception('This collection is not supported by the script. But fear not! '
-                        'just update _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME')
     alerts_count = _count_alerts(host, scored_entity_event_collection_name)
     scored_entities_count = _count_scored_entities(host, scored_entity_event_collection_name)
     return alerts_count, scored_entities_count
 
 
 def _count_alerts(host, scored_entity_event_collection_name):
+    alert = get_db(host)['alerts'].find_one()
+    if alert is None:
+        return 0
+    if ' ' in alert['name']:
+        if scored_entity_event_collection_name not in _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME:
+            raise Exception('This collection is not supported by the script. But fear not! '
+                            'just update _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME')
+        # fortscale version 2.5
+        alert_name = _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME[scored_entity_event_collection_name]
+    else:
+        # fortscale version 2.6
+        alert_name = scored_entity_event_collection_name[len('scored___entity_event__'):]
     alerts_count = get_collections_size(host=host,
                                         collection_names_regex='^alerts$',
-                                        find_query={
-                                            'name': _SCORED_ENTITY_COLLECTION_NAME_TO_ALERT_NAME[scored_entity_event_collection_name]
-                                        })
-    logger.info('found ' + str(alerts_count) + ' alerts')
+                                        find_query={'name': alert_name})
+    logger.info('found ' + str(alerts_count) + ' alerts with name ' + alert_name)
     return alerts_count
 
 

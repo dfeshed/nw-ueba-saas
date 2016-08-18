@@ -1,32 +1,37 @@
 package fortscale.collection.jobs.activity;
 
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.List;
 
 /**
  * @author gils
  * 31/05/2016
  */
 @Component
-public class UserActivityHandlerFactory implements ApplicationContextAware{
+public class UserActivityHandlerFactory {
 
-    private ApplicationContext applicationContext;
+    private final List<UserActivityHandler> allActivityHandlers;
 
-    private static final String USER_ACTIVITY_LOCATIONS_HANDLER = "userActivityLocationsHandler";
+    @Autowired
+    public UserActivityHandlerFactory(List<UserActivityHandler> allActivityHandlers) {
+        this.allActivityHandlers = allActivityHandlers;
+    }
 
-    public UserActivityLocationsHandler createUserActivityHandler(String activityName) {
-        if (UserActivityType.LOCATIONS.name().equalsIgnoreCase(activityName)) {
-            return (UserActivityLocationsHandler) applicationContext.getBean(USER_ACTIVITY_LOCATIONS_HANDLER);
-        }
-        else {
+    public UserActivityHandler createUserActivityHandler(String activityName) {
+        UserActivityType activityType;
+        try {
+            activityType = UserActivityType.valueOf(activityName.toUpperCase());
+        } catch (Exception e){
             throw new UnsupportedOperationException("Could not find activity of type " + activityName);
         }
+        for (UserActivityHandler userActivityHandler : allActivityHandlers){
+            if (userActivityHandler.getActivity().equals(activityType)){
+                return userActivityHandler;
+            }
+        }
+        throw new UnsupportedOperationException("Could not find activity of type " + activityName);
     }
 
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.applicationContext = applicationContext;
-    }
 }

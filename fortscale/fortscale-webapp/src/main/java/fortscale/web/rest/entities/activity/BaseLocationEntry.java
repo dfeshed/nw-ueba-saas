@@ -7,10 +7,11 @@ import java.util.Objects;
  * 23/05/2016
  */
 class BaseLocationEntry {
-    private String country;
-    private int count;
 
-    BaseLocationEntry(String country, int count) {
+    private String country;
+    private double count;
+
+    BaseLocationEntry(String country, double count) {
         this.country = country;
         this.count = count;
     }
@@ -23,11 +24,11 @@ class BaseLocationEntry {
         this.country = country;
     }
 
-    public int getCount() {
+    public double getCount() {
         return count;
     }
 
-    public void setCount(Integer count) {
+    public void setCount(Double count) {
         this.count = count;
     }
 
@@ -37,13 +38,18 @@ class BaseLocationEntry {
     }
 
     @Override
-    public boolean equals(Object other){
-        if (other == null) return false;
-        if (other == this) return true;
-        if (!(other instanceof BaseLocationEntry))return false;
+    public boolean equals(Object other) {
+        if (other == null) {
+			return false;
+		}
+        if (other == this) {
+			return true;
+		}
+        if (!(other instanceof BaseLocationEntry)) {
+			return false;
+		}
         BaseLocationEntry otherBaseLocationEntry = (BaseLocationEntry)other;
         return otherBaseLocationEntry.count == count && otherBaseLocationEntry.country.equals(country);
     }
+
 }
-
-

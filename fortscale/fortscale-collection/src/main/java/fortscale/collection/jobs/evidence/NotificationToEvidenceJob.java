@@ -261,6 +261,9 @@ public class NotificationToEvidenceJob extends FortscaleJob {
 		for (NotificationAnomalyType anomalyType: Arrays.asList(NotificationAnomalyType.values())) {
 			String notification = anomalyType.name();
 			String valuesString = anomalyType.getParam();
+			if (valuesString == null) {
+				continue;
+			}
 			//get list of values inside []
 			valuesString = valuesString.substring(1, valuesString.length() - 1);
 			List<String> tempList = new ArrayList<String>();

@@ -14,31 +14,41 @@ public class SpringService {
 
 	/// Singleton section
 	private static Logger logger = LoggerFactory.getLogger(SpringService.class);
-	
+
 	private static SpringService instance;
-	
+
 	public static void init(String contextPath) {
+
+		// Create a Spring context and refresh it (refresh activates it)
+		boolean isRefresh = true;
+		initExtended(contextPath, isRefresh);
+
+	}
+
+	public static void initExtended(String contextPath, boolean isRefresh) {
 		if (instance==null) {
-			logger.info("Creating SpringService with context at {}", contextPath);
 			try {
-				instance = new SpringService(contextPath);
-			} catch (Exception e) {
+
+				logger.info("Creating SpringService with context at {} with isRefresh={}", contextPath, isRefresh);
+				instance = new SpringService(contextPath, isRefresh);
+			}
+			catch (Exception e) {
 				logger.error("Failed to initialize SpringService with context path {}", e);
 				throw e;
 			}
 		}
 	}
-	
+
 	public static SpringService getInstance() {
 		if (instance==null) {
 			// report error if instance was not create
-			StackTraceElement[] trace = Thread.currentThread().getStackTrace(); 
-			logger.error("SpringService.getInstance was called from {}.{} without being initialized first", 
+			StackTraceElement[] trace = Thread.currentThread().getStackTrace();
+			logger.error("SpringService.getInstance was called from {}.{} without being initialized first",
 					trace[trace.length-1].getClassName(), trace[trace.length-1].getMethodName());
 		}
 		return instance;
 	}
-	
+
 	public static void shutdown() {
 		if (instance!=null) {
 			if (instance.context!=null)
@@ -46,15 +56,27 @@ public class SpringService {
 			instance = null;
 		}
 	}
-	
+
 	/// instance section
-	
-	private ApplicationContext context;
-	
-	private SpringService(String contextPath) {
-		context = new ClassPathXmlApplicationContext(contextPath);//("classpath*:streaming-user-score-context.xml");
+
+	private ClassPathXmlApplicationContext context;
+
+	/**
+	 *
+	 * Creates a Spring context
+	 *
+	 * @param contextPath - XML context file (e.g. "classpath*:streaming-user-score-context.xml" )
+	 * @param isRefresh   - Should refresh the context. Setting to False enable further context operation before refreshing it
+	 */
+	private SpringService(String contextPath, boolean isRefresh) {
+
+		// Convert the context path to config location list
+		String [] configLocations = new String[] { contextPath };
+
+		// Create the context
+		context = new ClassPathXmlApplicationContext(configLocations, isRefresh);
 	}
-		
+
 	public <T> T resolve(Class<T> requiredType) {
 		return context.getBean(requiredType);
 	}
@@ -77,7 +99,14 @@ public class SpringService {
 		return context.getBean(requiredName, className);
 	}
 
-    public <T> Collection<T> resolveAll(Class<T> requiredType) {
-        return context.getBeansOfType(requiredType).values();
-    }
+	public <T> Collection<T> resolveAll(Class<T> requiredType) {
+		return context.getBeansOfType(requiredType).values();
+	}
+
+	// --- getters/setters ---
+
+	public ClassPathXmlApplicationContext getContext() {
+		return context;
+	}
+
 }

@@ -71,7 +71,7 @@ public class AdUserProcessJob extends AdProcessJob {
 	protected void init(JobExecutionContext jobExecutionContext) throws JobExecutionException{
 		super.init(jobExecutionContext);
 		
-		converter = new RecordToBeanItemConverter<>(getOutputFields());
+		converter = new RecordToBeanItemConverter<>("AdUserProcessJob", statsService, getOutputFields());
 		if(!StringUtils.isEmpty(ouUsersFilter) && supportedUsersService.getSupportedUsersNumber() == 0){
 			jobFirstRun = true;
 		}else{

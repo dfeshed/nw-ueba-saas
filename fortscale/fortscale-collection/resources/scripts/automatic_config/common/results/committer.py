@@ -5,7 +5,7 @@ from .. import config
 from store import Store
 import alphas_and_betas
 import reducers
-from ..utils.io import print_verbose, backup, open_overrides_file
+from ..utils.io import print_verbose, backup, open_overrides_file, FileWriter
 
 
 class _UpdatesManager:
@@ -15,7 +15,8 @@ class _UpdatesManager:
     def update(self, conf_file_path, updater, *args):
         with open_overrides_file(conf_file_path) as f:
             conf_lines = f.read().splitlines()
-            conf_file_path = f.name
+            if type(conf_file_path) == dict:
+                conf_file_path = conf_file_path['overriding_path']
         transformed = updater(conf_lines, *args)
 
         if conf_file_path not in self._backuped:
@@ -23,7 +24,7 @@ class _UpdatesManager:
             if os.path.exists(conf_file_path):
                 backup(path=conf_file_path)
 
-        with open(conf_file_path, 'w') as f:
+        with FileWriter(conf_file_path) as f:
             f.write(transformed)
 
     def updated_something(self):
@@ -52,7 +53,7 @@ def update_configurations():
     if fs_reducers is not None:
         reducers_to_update.update(fs_reducers)
 
-    if len(reducers_to_update) > 0:
+    if len(reducers_to_update) > 0 or fs_reducers is not None:
         if type(config.aggregated_feature_event_prevalance_stats_path) == dict:
             zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' +
                                  config.aggregated_feature_event_prevalance_stats_path['jar_name'], 'r')
@@ -66,6 +67,12 @@ def update_configurations():
                         'path_in_jar': match.group(0)
                     }
                     updates_manager.update(conf_file_path,
+                                           reducers.update26,
+                                           reducers_to_update)
+            if os.path.exists(config.aggregated_feature_event_prevalance_stats_additional_path):
+                for filename in filter(lambda name: 'backup' not in name and name.endswith('.json'),
+                                       os.listdir(config.aggregated_feature_event_prevalance_stats_additional_path)):
+                    updates_manager.update(config.aggregated_feature_event_prevalance_stats_additional_path + '/' + filename,
                                            reducers.update26,
                                            reducers_to_update)
         else:

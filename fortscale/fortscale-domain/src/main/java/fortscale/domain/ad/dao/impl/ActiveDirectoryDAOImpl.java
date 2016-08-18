@@ -29,6 +29,28 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))";
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
 
+    public String connectToAD(AdConnection adConnection) throws Exception {
+		String result = null;
+		boolean connected;
+		Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
+		for (String dcAddress : adConnection.getDcs()) {
+			logger.debug("Trying to connect to domain controller at {}", dcAddress);
+			environment.put(Context.PROVIDER_URL, dcAddress);
+			connected = true;
+			try {
+				new InitialLdapContext(environment, null);
+			} catch (javax.naming.CommunicationException ex) {
+				result = ex.getLocalizedMessage();
+				logger.error("Connection to {} failed - {}", dcAddress, ex.getMessage());
+				connected = false;
+			}
+			if (connected) {
+				return "";
+			}
+		}
+		return result;
+    }
+
     @Override
     public void getAndHandle(String filter, String adFields, int resultLimit, ActiveDirectoryResultHandler handler,
                              List<AdConnection> adConnections) throws Exception {
@@ -95,7 +117,7 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
     public List<String> getDomainControllers(List<AdConnection> AdConnections) throws Exception {
         boolean connected = false;
         LdapContext context = null;
-        List<String> domainControllers = new ArrayList();
+        List<String> domainControllers = new ArrayList<>();
         for (AdConnection adConnection : AdConnections) {
             logger.debug("getting domain controllers from {}", adConnection.getDomainBaseSearch());
             Hashtable<String, String> environment = initializeAdConnectionEnv(adConnection);
@@ -126,7 +148,11 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
             while (answer != null && answer.hasMoreElements() && answer.hasMore()) {
                 SearchResult result = answer.next();
                 final Attribute cnAttribute = result.getAttributes().get(AD_ATTRIBUTE_CN);
-                domainControllers.add(cnAttribute.toString());
+                final String domainControllerName = cnAttribute.toString()
+                        .replaceFirst(String.format("%s:", AD_ATTRIBUTE_CN), "")
+                        .replaceFirst(String.format("%s:", AD_ATTRIBUTE_CN.toLowerCase()), "")
+                        .trim();
+                domainControllers.add(domainControllerName);
             }
             context.close();
             logger.debug("Retrieved domain controllers for domain {}", adConnection.getDomainBaseSearch());

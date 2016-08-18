@@ -4,7 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.domain.core.EntityEvent;
+import fortscale.entity.event.metrics.EntityEventBuilderMetrics;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,10 @@ public class EntityEventBuilder {
 	@Autowired
 	private AggrFeatureEventBuilderService aggrFeatureEventBuilderService;
 
+	@Autowired
+	private StatsService statsService;
+
+	private EntityEventBuilderMetrics metrics;
 	private long secondsToWaitBeforeFiring;
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
@@ -66,12 +72,27 @@ public class EntityEventBuilder {
 		}
 	}
 
+	public EntityEventBuilderMetrics getMetrics()
+	{
+		if (metrics==null)
+		{
+			metrics = new EntityEventBuilderMetrics(statsService,entityEventConf.getName(),getContextFieldsAsString());
+		}
+		return metrics;
+	}
 	public void updateEntityEventData(AggrEvent aggrFeatureEvent) {
 		Assert.notNull(aggrFeatureEvent);
+
+		getMetrics().updateEntityEventData++;
+
 		EntityEventData entityEventData = getEntityEventData(aggrFeatureEvent);
 		if (entityEventData != null) {
 			entityEventData.addAggrFeatureEvent(aggrFeatureEvent);
 			entityEventDataStore.storeEntityEventData(entityEventData);
+		}
+		else
+		{
+			getMetrics().nullEntityEventData++;
 		}
 	}
 
@@ -85,24 +106,29 @@ public class EntityEventBuilder {
 		for (EntityEventMetaData entityEventMetaData : listOfEntityEventMetaData) {
 			EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventMetaData.getEntityEventName(), entityEventMetaData.getContextId(), entityEventMetaData.getStartTime(), entityEventMetaData.getEndTime());
 			if(entityEventData.getModifiedAtEpochtime() > modifiedAtLte){
+				getMetrics().stopSendingEntityEventDueTooFutureModifiedDate++;
 //				listOfEntityEventMetaData = Collections.emptyList();// to keep the time order we don't send any other entity event.
 				break;
 			}
 			sendEntityEvent(entityEventData, currentTimeInSeconds, sender);
 			entityEventDataList.add(entityEventData);
 			if(entityEventDataList.size()>=storePageSize) {
+				getMetrics().storeEntityEventDataListSizeHigherThenPageSize++;
 				entityEventDataStore.storeEntityEventDataList(entityEventDataList);
 				entityEventDataList = new ArrayList<>();
 			}
 		}
 
 		if(entityEventDataList.size() > 0) {
+			getMetrics().entityEventDataListSizeHigherThenZero++;
 			entityEventDataStore.storeEntityEventDataList(entityEventDataList);
 		}
 	}
 
 	public void sendEntityEventsInTimeRange(Date startTime, Date endTime, long currentTimeInSeconds,
 											IEntityEventSender sender, boolean updateStore) throws TimeoutException {
+		getMetrics().sendEntityEventsInTimeRange++;
+
 		List<EntityEventData> listOfEntityEventData = entityEventDataStore
 				.getEntityEventDataWithEndTimeInRange(entityEventConf.getName(), startTime, endTime);
 		for (EntityEventData entityEventData : listOfEntityEventData) {
@@ -113,6 +139,13 @@ public class EntityEventBuilder {
 		}
 	}
 
+	private String getContextFieldsAsString()
+	{
+		List<String> contextFields = entityEventConf.getContextFields();
+
+		return Arrays.toString(contextFields.toArray(new String[contextFields.size()]));
+	}
+
 	private EntityEventData getEntityEventData(AggrEvent aggrFeatureEvent) {
 		List<String> contextFields = entityEventConf.getContextFields();
 		Map<String, String> context = aggrFeatureEvent.getContext(contextFields);
@@ -121,7 +154,20 @@ public class EntityEventBuilder {
 		Long startTime = aggrFeatureEvent.getStartTimeUnix();
 		Long endTime = aggrFeatureEvent.getEndTimeUnix();
 
-		if (StringUtils.isBlank(contextId) || startTime == null || endTime == null) {
+		if(StringUtils.isBlank(contextId))
+		{
+			logger.warn("there is a blank contextId for entityEventConf={}, AggregatedFeatureName={} " ,entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
+			return null;
+		}
+
+		String nullTimeMsg="aggrFeatureEvent {} is empty for entityEventConf={}, AggregatedFeatureName={}";
+		if (startTime == null) {
+			logger.warn(nullTimeMsg,"startTime",entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
+			return null;
+		}
+		if (endTime == null)
+		{
+			logger.warn(nullTimeMsg,"endTime",entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
 			return null;
 		}
 
@@ -141,6 +187,9 @@ public class EntityEventBuilder {
 	}
 
 	private void sendEntityEvent(EntityEventData entityEventData, long currentTimeInSeconds, IEntityEventSender sender) throws TimeoutException{
+		getMetrics().sendEntityEvent++;
+		getMetrics().sendEntityEventTime=currentTimeInSeconds;
+
 		entityEventData.setTransmissionEpochtime(currentTimeInSeconds);
 		entityEventData.setTransmitted(true);
 		sender.send(createEntityEvent(entityEventData));
@@ -182,6 +231,6 @@ public class EntityEventBuilder {
 	}
 
 	private static double roundToEntityEventValuePrecision(double value) {
-		return Math.round(value * 1000) / 1000d;
+		return Math.round(value * 10000000) / 10000000d;
 	}
 }

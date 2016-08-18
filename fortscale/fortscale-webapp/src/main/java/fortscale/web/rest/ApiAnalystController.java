@@ -7,6 +7,7 @@ import fortscale.domain.analyst.AnalystSavedSearch;
 import fortscale.services.analyst.AnalystService;
 import fortscale.services.analyst.ConfigurationService;
 import fortscale.services.security.MongoUserDetailsService;
+import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.AnalystBean;
@@ -70,6 +71,7 @@ public class ApiAnalystController extends BaseController{
 	
 	@RequestMapping(value="/changePassword", method=RequestMethod.POST)
 	@LogException
+	@HideSensitiveArgumentsFromLog//Don't print users passwords to the log
 	public void changePassword(@Valid Username username,
 			@Valid Password password,
 			@Valid NewPassword newPassword,
@@ -83,6 +85,7 @@ public class ApiAnalystController extends BaseController{
 	
 	@RequestMapping(value="/update", method=RequestMethod.POST)
 	@LogException
+	@HideSensitiveArgumentsFromLog//Don't print users passwords to the log
 	public void update(@RequestParam(required=true) String password,
 			@RequestParam(required=false) String username,
 			@RequestParam(required=false) String firstName,

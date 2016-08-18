@@ -3,6 +3,8 @@ package fortscale.collection.morphlines.commands;
 import java.util.Collection;
 import java.util.Collections;
 
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
@@ -32,29 +34,29 @@ public class SendNotificationCmdBuilder implements CommandBuilder {
 
 	@Configurable(preConstruction=true)
 	public class SendNotification extends AbstractCommand  {
-
+		private MorphlineCommandMonitoringHelper commandMonitoringHelper = new MorphlineCommandMonitoringHelper();
 
 		private final String notificationType;
-
-
 
 		public SendNotification(CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
 			super(builder, config, parent, child, context);
 
-
 			this.notificationType = getConfigs().getString(config, "notificationType");
-
 
 			validateArguments();
 		}
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
+			if (morphlineMetrics != null) {
+				morphlineMetrics.sendNotification++;
+			}
 			return super.doProcess(inputRecord);
 
 		}
 	}
-
-
-
 }

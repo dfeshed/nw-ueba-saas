@@ -1,15 +1,14 @@
 package fortscale.domain.core.dao;
 
 
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.CommandResult;
-import com.mongodb.DBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +20,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.*;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-
-
+import org.springframework.data.mongodb.core.query.Update;
 
 
 //imports as static
@@ -96,8 +94,8 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Alerts findAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-			String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds,
-									  List<DataSourceAnomalyTypePair> indicatorTypes) {
+			String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, Set<String> entitiesIds,
+									  Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
@@ -111,7 +109,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	@Override
 	public Long countAlertsByFilters(PageRequest pageRequest, String severityArrayFilter, String statusArrayFilter,
-									 String feedbackArrayFilter, String dateRangeFilter, String entityName, Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes) {
+									 String feedbackArrayFilter, DateRange dateRangeFilter, String entityName, Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		//build the query
 		Query query = buildQuery(pageRequest, Alert.severityField, Alert.statusField, Alert.feedbackField,
@@ -121,8 +119,8 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
-										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes){
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes){
 		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
 		return mongoDbRepositoryUtil.groupCount(fieldName, criteria, "alerts");
 
@@ -185,7 +183,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	private Query buildQuery(PageRequest pageRequest, String severityFieldName, String statusFieldName,
 							 String feedbackFieldName, String startDateFieldName, String entityFieldName,
 							 String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
-							 String dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable, List<DataSourceAnomalyTypePair> indicatorTypes) {
+							 DateRange dateRangeFilter, String entityFilter, Set<String> users, Pageable pageable, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		Query query = new Query().with(pageRequest.getSort());
 
@@ -276,6 +274,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     }
 
 
+
     @Override
     public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
 
@@ -285,17 +284,89 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         return  new HashSet<>(userNames);
     }
 
-    @Override
+	@Override public Set<String> getDistinctAlertNames(Set<String> feedbackSet) {
+
+		Query query = buildQueryByUserNameAndFeedback(null, feedbackSet);
+
+		List<String> alertNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME)
+				.distinct(Alert.nameField, query.getQueryObject());
+		return new HashSet<>(alertNames);
+	}
+
+	@Override
     public Set<Alert> getAlertsRelevantToUserScore(String username){
 
         Query query = getQueryForAlertsRelevantToUserScore(username);
         query.fields().exclude(Alert.evidencesField);
 
-        List<Alert> userNames = mongoTemplate.find(query,Alert.class);
-        return  new HashSet<>(userNames);
+        List<Alert> alerts = mongoTemplate.find(query,Alert.class);
+
+        return  new HashSet<>(alerts);
     }
 
-    private  Query getQueryForAlertsRelevantToUserScore(String userName) {
+	@Override
+	public Set<Alert> getAlertsForUserByFeedback(String userName, Set<String> feedbackSet) {
+
+		Query query = buildQueryByUserNameAndFeedback(userName, feedbackSet);
+		query.fields().exclude(Alert.evidencesField);
+
+		List<Alert> alerts = mongoTemplate.find(query, Alert.class);
+		return new HashSet<>(alerts);
+	}
+
+	private Query buildQueryByUserNameAndFeedback(String userName, Set<String> feedbackSet) {
+		Query query = new Query();
+		if (CollectionUtils.isNotEmpty(feedbackSet)) {
+			query.addCriteria(new Criteria().where(Alert.feedbackField).in(feedbackSet));
+		}
+
+		if (StringUtils.isNotBlank(userName)){
+			query.addCriteria(new Criteria().where(Alert.entityNameField).is(userName));
+		}
+		return query;
+	}
+
+	@Override
+	public void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag ){
+		Query q = new Query(Criteria.where("_id").is(alertId));
+		Update u = new Update().
+				set(Alert.userScoreContributionFlagField, newContributionFlag).
+				set(Alert.userScoreContributionField, newContribution);
+		mongoTemplate.updateFirst(q,u,Alert.class);
+
+	}
+
+	@Override
+	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter) {
+		Query query = new Query();
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())){
+			Criteria anomalyTypeCriteria = fetchAnomalyTypeCriteria(userRestFilter.getAnomalyTypesAsSet());
+			query.addCriteria(anomalyTypeCriteria);
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())){
+			Criteria criteriaForAlertsByAlertName = getCriteriaForAlertsByAlertName(userRestFilter.getAlertTypes());
+			query.addCriteria(criteriaForAlertsByAlertName);
+		}
+
+		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField, query.getQueryObject());
+
+		return new HashSet<>(userNames);
+	}
+
+	private Criteria getCriteriaForAlertsByAlertName(List<String> alertNames) {
+
+		Criteria criteria = null;
+
+		if (CollectionUtils.isNotEmpty(alertNames)) {
+			criteria = new Criteria().where(Alert.nameField).in(alertNames);
+		}
+
+		return criteria;
+	}
+
+	private  Query getQueryForAlertsRelevantToUserScore(String userName) {
         Criteria criteria = new Criteria();
         criteria.where(Alert.feedbackField).ne(AlertFeedback.None).
                 and(Alert.userScoreContributionFlagField).is(Boolean.TRUE);
@@ -323,7 +394,9 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	 * @param users
 	 * @return
 	 */
-	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName, String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter, String dateRangeFilter, String entityFilter, Set<String> users, List<DataSourceAnomalyTypePair> indicatorTypes) {
+	private List<Criteria> getCriteriaList(String severityFieldName, String statusFieldName, String feedbackFieldName, String startDateFieldName, String entityFieldName,
+										   String severityArrayFilter, String statusArrayFilter, String feedbackArrayFilter,
+										   DateRange dateRangeFilter, String entityFilter, Set<String> users, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 
 		List<Criteria> criteriaList = new ArrayList<>();
 		//build severity filter
@@ -376,20 +449,16 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		}
         //build dateRange filter
 		if (dateRangeFilter != null) {
-			String[] dateRangeFilterVals = dateRangeFilter.split(",");
-			if (dateRangeFilterVals.length == 2) {
 				try {
-					Long startDate = Long.parseLong(dateRangeFilterVals[0]);
-					startDate = TimestampUtils.convertToMilliSeconds(startDate);
-					Long endDate = Long.parseLong(dateRangeFilterVals[1]);
-					endDate = TimestampUtils.convertToMilliSeconds(endDate);
+
+					Long startDate = TimestampUtils.convertToMilliSeconds(dateRangeFilter.getFromTime());
+					Long endDate = TimestampUtils.convertToMilliSeconds(dateRangeFilter.getToTime());
 					Criteria criteria= Criteria.where(startDateFieldName).gte(startDate).lte((endDate));
 					criteriaList.add(criteria);
 				} catch (NumberFormatException ex) {
 
-					logger.error("wrong date value: " + dateRangeFilterVals.toString(), ex);
+					logger.error("wrong date value: " + dateRangeFilter.toString(), ex);
 				}
-			}
 		}
 		//build entity filter
 		if (entityFilter != null) {
@@ -467,7 +536,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * @param indicatorTypes
      * @return
      */
-    private Criteria fetchAnomalyTypeCriteria(List<DataSourceAnomalyTypePair> indicatorTypes) {
+	private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
         BasicDBList dataSourceAndAnomalyConditions = new BasicDBList();
         List<String> dataSourceOnlyConditions = new ArrayList<>();
         indicatorTypes.forEach(anomalyType ->{
@@ -503,8 +572,8 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 
     private Criteria getCriteriaForGroupCount(String severityArrayFilter, String statusArrayFilter,
-											  String feedbackArrayFilter, String dateRangeFilter, String entityName,
-											  Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes) {
+											  String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+											  Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes) {
 		List<Criteria> criteriaList = getCriteriaList( Alert.severityField, Alert.statusField, Alert.feedbackField,
 				Alert.startDateField, Alert.entityNameField, severityArrayFilter, statusArrayFilter,
 				feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes );

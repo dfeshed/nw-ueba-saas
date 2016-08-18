@@ -1,5 +1,6 @@
 package fortscale.aggregation.domain.feature.event;
 
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -9,6 +10,9 @@ public class FeatureBucketAggrSendingQueueRepositoryImpl implements FeatureBucke
 	
 	@Autowired
 	private MongoTemplate mongoTemplate;
+
+	@Autowired
+	private StatsService statsService;
 
 	@Override
 	public void deleteByFireTimeLessThan(Long fireTime) {

@@ -83,7 +83,13 @@
           <groupId>org.apache.pig</groupId>
           <artifactId>pigunit</artifactId>
           <version>${pigunit.version}</version>
-      </dependency>
+          <exclusions>
+			  <exclusion>
+			      <groupId>org.slf4j</groupId>
+			      <artifactId>slf4j-log4j12</artifactId>
+			  </exclusion>
+		  </exclusions>
+        </dependency>
 		<dependency>
 			<groupId>dnsjava</groupId>
 			<artifactId>dnsjava</artifactId>

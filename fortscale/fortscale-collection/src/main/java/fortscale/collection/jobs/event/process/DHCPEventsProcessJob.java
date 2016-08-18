@@ -1,11 +1,12 @@
 package fortscale.collection.jobs.event.process;
 
-import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.JobDataMapExtension;
+import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ipresolving.DhcpResolver;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -32,10 +33,13 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	private JobDataMapExtension jobDataMapExtension;
 	
 	private MorphlinesItemsProcessor sharedMorphline;
-	
-	
-	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent());
-	
+
+	@Autowired
+	private StatsService statsService;
+
+	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter;
+
+
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
@@ -46,31 +50,35 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 		
 		// build record to items processor
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "specificMorphlineFile");
-		sharedMorphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "sharedMorphlineFile"); 
+		sharedMorphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "sharedMorphlineFile");
+
+		recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job",statsService);
 	}
 	
 	@Override
 	protected Record processLine(String line, ItemContext itemContext) throws IOException {
 		// process each line
 		Record record = morphline.process(line,itemContext);
-		
+
 		// skip records that failed on parsing
 		if (record==null) {
+			jobMetircs.linesFailuresInMorphline++;
 			return null;
 		}
-		
+
 		// pass parsed records to the shared morphline
-		record = sharedMorphline.process(record,null);
-		if (record==null)
+		record = sharedMorphline.process(record,itemContext);
+		if (record==null) {
+			jobMetircs.linesFailuresInSharedMorphline++;
 			return null;
-		
+		}
 		try {
 			DhcpEvent dhcpEvent = new DhcpEvent();
 			recordToBeanItemConverter.convert(record, dhcpEvent);
 			dhcpResolver.addDhcpEvent(dhcpEvent);
 			return record;
 		} catch (Exception e) {
-			logger.warn(String.format("error writing record %s to mongo", record.toString()));
+			logger.warn(String.format("error writing record %s to mongo. Exception: %s", record.toString(), e));
 			return null;
 		}			
 	}
@@ -82,4 +90,6 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	@Override protected void initializeStreamingAppender() throws JobExecutionException {}
 	@Override protected void streamMessage(String key, String message) throws IOException {}
 	@Override protected void closeStreamingAppender() throws JobExecutionException {}
+
+
 }

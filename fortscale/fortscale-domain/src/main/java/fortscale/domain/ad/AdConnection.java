@@ -1,6 +1,8 @@
 package fortscale.domain.ad;
 
-import java.util.ArrayList;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.constraints.Size;
 import java.util.List;
 
 /**
@@ -8,16 +10,24 @@ import java.util.List;
  */
 public class AdConnection {
 
-    private List<String> dcs;
-    private String domainBaseSearch;
-    private String domainUser;
-    private String domainPassword;
+	public static final String ACTIVE_DIRECTORY_KEY = "system.activeDirectory.settings";
+
+    @Size(min = 1)
+    protected List<String> dcs;
+
+    @NotBlank
+	protected String domainBaseSearch;
+
+    @NotBlank
+	protected String domainUser;
+
+    @NotBlank
+	protected String domainPassword;
 
     public AdConnection() {}
 
-    public AdConnection(String dc, String domainBaseSearch, String domainUser, String domainPassword) {
-        this.dcs = new ArrayList();
-        dcs.add(dc);
+    public AdConnection(List<String> dcs, String domainBaseSearch, String domainUser, String domainPassword) {
+        this.dcs = dcs;
         this.domainBaseSearch = domainBaseSearch;
         this.domainUser = domainUser;
         this.domainPassword = domainPassword;

@@ -59,7 +59,6 @@
     </pluginRepositories>
 
     <properties>
-        <hibernate-validator.version>5.0.1.Final</hibernate-validator.version>
         <dnsjava.version>2.1.1</dnsjava.version>
     </properties>
 

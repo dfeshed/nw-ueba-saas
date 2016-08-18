@@ -47,22 +47,6 @@
 					<key>morphlineFile</key>
 					<value>${ad.read.groups.morphline}</value>
 				</entry>
-				<entry>
-					<key>hadoopDirPath</key>
-					<value>${hdfs.user.data.ldap.groups.path}</value>
-				</entry>
-				<entry>
-					<key>filenameFormat</key>
-					<value>groups%d.csv</value>
-				</entry>
-                <entry>
-                    <key>partitionStrategy</key>
-                    <value>${impala.ldapgroups.table.partition.type}</value>
-                </entry>
-				<entry>
-					<key>impalaTableName</key>
-					<value>${impala.ldapgroups.table.name}</value>
-				</entry>
             </job-data-map>
 		</job>
 	

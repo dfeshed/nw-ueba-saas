@@ -109,7 +109,7 @@ public class UsernameNormalizationConfig implements StreamingTaskConfig {
 		this.usernameNormalizationService = usernameNormalizationService;
 	}
 
-	public Boolean getShouldBeTaged() {
+	public Boolean getShouldBeTagged() {
 		return shouldBeTaged;
 	}
 

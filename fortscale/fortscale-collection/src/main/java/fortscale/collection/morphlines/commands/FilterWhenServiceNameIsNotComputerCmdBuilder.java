@@ -6,6 +6,7 @@ import com.google.common.cache.LoadingCache;
 import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.utils.logging.Logger;
@@ -89,6 +90,9 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 
 		@Override
 		protected boolean doProcess(Record inputRecord) {
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
 			if (computerRepository == null){
 				return super.doProcess(inputRecord);
 			}
@@ -98,6 +102,9 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 			if (m.matches()) {
 				serviceName = m.replaceAll(regexReplacement);
 			} else {
+				if (morphlineMetrics != null) {
+					morphlineMetrics.serviceNameNotMatchRegularExpression++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 						CollectionMessages.SERVICE_NAME_NOT_MATCH_REGULAR_EXPRESSION);
 				return true;
@@ -106,9 +113,15 @@ public class FilterWhenServiceNameIsNotComputerCmdBuilder implements CommandBuil
 			serviceName = serviceName.toUpperCase();
 			boolean isMachine = machinesCache.getUnchecked(serviceName);
 			if (isMachine) {
+				if (morphlineMetrics != null) {
+					morphlineMetrics.serviceNameIsComputer++;
+				}
 				return super.doProcess(inputRecord);
 			} else {
 				logger.debug("Filter event since service name [{}] is not a computer.", serviceName);
+				if (morphlineMetrics != null) {
+					morphlineMetrics.serviceNameIsNotComputer++;
+				}
 				commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
 						CollectionMessages.SERVICE_NAME_IS_NOT_COMPUTER);
 				return true;

@@ -6,8 +6,8 @@ from subprocess import call
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.missing_events.validation import validate_no_missing_events
 from validation.alerts_distribution.validation import validate_alerts_distribution
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.mongo import get_collections_time_boundary, get_collection_names
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+from automatic_config.common.utils.mongo import get_collections_time_boundary, get_collection_names
 
 logger = logging.getLogger('step6')
 

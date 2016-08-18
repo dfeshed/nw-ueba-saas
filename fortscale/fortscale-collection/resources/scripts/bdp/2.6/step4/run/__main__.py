@@ -13,7 +13,9 @@ logger = logging.getLogger('2.6-step4')
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(parents=[parsers.host],
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.validation_timeout,
+                                              parsers.validation_polling_interval],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='2.6/step4/run',
                                      description=
@@ -47,27 +49,20 @@ Inner workings:
        events will be displayed for further manual validation.
 
  Usage example:
-     python 2.6/step4/run''')
-    parser.add_argument('--days_to_ignore',
-                        action='store',
-                        dest='days_to_ignore',
-                        help='number of days from the beginning to ignore when building the models. '
-                             'It should be big enough so the noise is ignored, but not too big - so we have enough '
-                             'data in order to build good models. If there is a big volume of data, 10 should do',
-                        type=int,
-                        required=True)
+     python 2.6/step4/run --timeout 5''')
     return parser
 
 
 def main():
-    init_logging(logger)
     arguments = create_parser().parse_args()
+    init_logging(logger)
     if not are_tasks_running(logger=logger,
-                             task_names=['event-scoring-persistency-task', 'aggregated-feature-event-stats']):
+                             task_names=['event-scoring-persistency-task', 'entity-events-scoring-task']):
         sys.exit(1)
 
     if Manager(host=arguments.host,
-               days_to_ignore=arguments.days_to_ignore).run():
+               validation_timeout=arguments.timeout * 60,
+               validation_polling=arguments.polling_interval * 60).run():
         logger.info('finished successfully')
     else:
         logger.error('failed')

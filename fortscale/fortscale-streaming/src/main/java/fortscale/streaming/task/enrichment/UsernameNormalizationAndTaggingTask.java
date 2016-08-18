@@ -12,6 +12,7 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.enrichment.metrics.UsernameNormalizationAndTaggingTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -62,6 +63,9 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 */
 	protected Map<StreamingTaskDataSourceConfigKey, UsernameNormalizationConfig> dataSourceToConfigurationMap = new HashMap<>();
 
+	// Streaming task metrics. Note some fields are update by this class and some by the derived classes
+	protected UsernameNormalizationAndTaggingTaskMetrics taskMetrics;
+
 	/**
 	 * Map between (update) input topic name and relevant caching service
 	 * Uses for updates arriving from kafka update topic
@@ -86,8 +90,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
-		KeyValueDbBasedCache<String, String> usernameStore = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class);
-		KeyValueDbBasedCache<String, ArrayList> samAccountNameStore = new KeyValueDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class);
+		KeyValueDbBasedCache<String, String> usernameStore = new KeyValueDbBasedCache<String, String>((KeyValueStore<String, String>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, usernameKey))), String.class,
+				"usernameStore", statsService);
+		KeyValueDbBasedCache<String, ArrayList> samAccountNameStore = new KeyValueDbBasedCache<String, ArrayList>((KeyValueStore<String, ArrayList>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, samAccountKey))), ArrayList.class,
+				"samAccountNameStore", statsService);
 		CachingService usernameService = null;
 		CachingService samAccountNameService = null;
 
@@ -144,7 +150,8 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		CachingService userService = tagService.getUserService();
 		// add the tagService to update input topics map
 		if (userService != null) {
-			userService.setCache(new KeyValueDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class));
+			userService.setCache(new KeyValueDbBasedCache<String, List>((KeyValueStore<String, List>) context.getStore(getConfigString(config, String.format(storeConfigKeyFormat, userTagsKey))), List.class,
+					"userService", statsService));
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, userTagsKey)), userService);
 		}
 	}
@@ -160,9 +167,11 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
 		} else {
 			JSONObject message = parseJsonMessage(envelope);
+			taskMetrics.parsedToJSONMessages++;
 
 			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
 			if (configKey == null){
+				taskMetrics.unknownConfigurationKeyMessages++;
 				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 				return;
 			}
@@ -171,17 +180,20 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			if (usernameNormalizationConfig == null){
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_STATE_CONFIGURATION_MESSAGE);
+				taskMetrics.unknownNormalizationConfigurationMessages++;
 			}
 
 			// get the normalized username from input record - if he doesnt exist  its sign that we should normalized the username field
 			String normalizedUsername = convertToString(message.get(usernameNormalizationConfig.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
+				taskMetrics.emptyNormalizedUsernameMessages++;
 				String messageText = (String)envelope.getMessage();
 				// get username
 				String normalizationBasedField = convertToString(message.get(usernameNormalizationConfig.getNormalizationBasedField()));
 				if (StringUtils.isEmpty(normalizationBasedField)) {
 					logger.error("message {} does not contains username in field {}", messageText, usernameNormalizationConfig.getNormalizationBasedField());
 					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
+					taskMetrics.emptyUsernameMessages++;
 					throw new StreamMessageNotContainFieldException(messageText, usernameNormalizationConfig.getNormalizationBasedField());
 				}
 
@@ -204,21 +216,27 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 					}
 					// drop record
 					taskMonitoringHelper.countNewFilteredEvents(configKey,MonitorMessaages.FAIL_TO_NORMALIZED_USERNAME);
+					taskMetrics.failedToNormalizeUsernameMessages++;
 					return;
 				}
 				message.put(usernameNormalizationConfig.getNormalizedUsernameField(), normalizedUsername);
 
+			} else {
+				taskMetrics.normalizedUsernameAlreadyExistsMessages++;
 			}
 
 			// add the tags to the event - checks in memory-cache and mongo if the user exists with tags
-			if (usernameNormalizationConfig.getShouldBeTaged())
+			if (usernameNormalizationConfig.getShouldBeTagged()) {
+				taskMetrics.mayBeTaggedMessages++;
 				tagService.addTagsToEvent(normalizedUsername, message);
+			}
 
 			// send the event to the output topic
 			String outputTopic = usernameNormalizationConfig.getOutputTopic();
 			try {
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(usernameNormalizationConfig.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
+				taskMetrics.failedToForwardMessage++;
 				throw new KafkaPublisherException(String.format("failed to send message %s from input topic %s to output topic %s", message.toJSONString(), inputTopic, outputTopic), exception);
 			}
 			handleUnfilteredEvent(message,configKey);
@@ -248,5 +266,16 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 		return event.get(partitionKeyField);
 	}
 
+	/**
+	 * Create the task's specific metrics.
+	 *
+	 * Typically, the function is called from AbstractStreamTask.createTaskMetrics() at init()
+	 */
+	@Override
+	protected void wrappedCreateTaskMetrics() {
+
+		// Create the task's specific metrics
+		taskMetrics = new UsernameNormalizationAndTaggingTaskMetrics(statsService);
+	}
 
 }

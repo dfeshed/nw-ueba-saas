@@ -11,5 +11,6 @@ public enum SupportingInformationAggrFunc {
     HourlyCountGroupByDayOfWeek, // e.g. heatmap
     DistinctEventsByTime, // e.g. aggregated # of events by time
     TimeIntervals, // e.g. VPN session overlapping
-    VPNSession // TODO is it needed here?
+    VPNSession,
+    VPNLateralMovement
 }

@@ -55,6 +55,20 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+	<!-- id to username cache that uses memory based implementation are injected here -->
+	<bean id="idToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:1000}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+	<bean id="usersToActivitiesCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:100}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:43200}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
+
+
 
     <!-- DN to username cache for avvoiding of going to mongo each time  -->
     <bean id="dNToUserName" class="fortscale.services.cache.MemoryBasedCache">
@@ -110,6 +124,8 @@
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton" />
 
+	<bean id="userDeviceUtils" class="fortscale.web.rest.Utils.UserDeviceUtils" scope="singleton" />
+
 	<!--<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>-->
 
 	<bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
@@ -118,6 +134,7 @@
 
 	<bean id="forwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton"/>
 
+    <bean id="alertFilterHelperImpl" class="fortscale.web.beans.request.AlertFilterHelperImpl"/>
 
 	<!-- Cache for the users severities percentile mapo -->
 	<bean id="userScoreSeveritiesCache" class="fortscale.services.cache.MemoryBasedCache">

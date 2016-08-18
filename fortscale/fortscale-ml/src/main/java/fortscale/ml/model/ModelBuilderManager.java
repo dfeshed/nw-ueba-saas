@@ -3,12 +3,14 @@ package fortscale.ml.model;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
+import fortscale.ml.model.metrics.ModelBuilderManagerMetrics;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,6 +33,8 @@ public class ModelBuilderManager {
     private FactoryService<IModelBuilder> modelBuilderFactoryService;
     @Autowired
     private ModelStore modelStore;
+    @Autowired
+    private StatsService statsService;
 
     @Value("${fortscale.model.build.selector.delta.in.seconds}")
     private long selectorDeltaInSeconds;
@@ -39,6 +43,7 @@ public class ModelBuilderManager {
     private IContextSelector contextSelector;
     private AbstractDataRetriever dataRetriever;
     private IModelBuilder modelBuilder;
+    private ModelBuilderManagerMetrics metrics;
 
     public ModelBuilderManager(ModelConf modelConf) {
         Assert.notNull(modelConf);
@@ -48,31 +53,38 @@ public class ModelBuilderManager {
         contextSelector = contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
         dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
         modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
+        metrics = new ModelBuilderManagerMetrics(statsService, modelConf.getName());
     }
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
         Assert.notNull(currentEndTime);
         List<String> contextIds;
 
-        logger.info(String.format("------- starting building models for %s, sessionId: %s, previousEndTime: %s, currentEndTime: %s --------",
-                modelConf.getName(), sessionId, previousEndTime, currentEndTime));
+        metrics.process++;
+        metrics.currentEndTime = TimeUnit.MILLISECONDS.toSeconds(currentEndTime.getTime());
+        logger.info("<<< Starting building models for {}, sessionId {}, previousEndTime {}, currentEndTime {}",
+                modelConf.getName(), sessionId, previousEndTime, currentEndTime);
 
         if (contextSelector != null) {
             if (previousEndTime == null) {
+                metrics.processWithNoPreviousEndTime++;
                 long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
                 long timeRangeInMillis = TimeUnit.SECONDS.toMillis(timeRangeInSeconds);
                 previousEndTime = new Date(currentEndTime.getTime() - timeRangeInMillis);
             } else {
+                metrics.processWithPreviousEndTime++;
                 previousEndTime = new Date(currentEndTime.getTime() - TimeUnit.SECONDS.toMillis(selectorDeltaInSeconds));
             }
 
             contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
         } else {
+            metrics.processWithNoContextSelector++;
             contextIds = new ArrayList<>();
             contextIds.add(null);
         }
 
-        logger.info(String.format("Finished to getContexts. Number of contextIds: %d", contextIds.size()));
+        metrics.contextIds += contextIds.size();
+        logger.info("Selected {} context IDs", contextIds.size());
 
         long numOfSuccesses = 0;
         long numOfFailures = 0;
@@ -88,8 +100,10 @@ public class ModelBuilderManager {
 
             // Update metrics
             if (status.equals(ModelBuildingStatus.SUCCESS)) {
+                metrics.successes++;
                 numOfSuccesses++;
             } else {
+                metrics.failures++;
                 numOfFailures++;
             }
         }
@@ -98,22 +112,25 @@ public class ModelBuilderManager {
             listener.modelBuildingSummary(modelConf.getName(), sessionId, currentEndTime, numOfSuccesses, numOfFailures);
         }
 
-        logger.info(String.format("------- Finished to build models for for %s, sessionId: %s, numOfSuccesses: %d, numOfFailures: %d --------",
-                modelConf.getName(), sessionId, numOfSuccesses, numOfFailures));
+        logger.info(">>> Finished building models for {}, sessionId {}, numOfSuccesses {}, numOfFailures {}",
+                modelConf.getName(), sessionId, numOfSuccesses, numOfFailures);
     }
 
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
         Object modelBuilderData;
         Model model;
+        String failureReason = "got null";
 
         // Retriever
         try {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
-            logger.error("failed to retrieve data: " + e.toString());
+            metrics.retrieverFailures++;
+            failureReason = e.toString();
             modelBuilderData = null;
         }
         if (modelBuilderData == null) {
+            logger.error("Failed to retrieve data: " + failureReason);
             return ModelBuildingStatus.RETRIEVER_FAILURE;
         }
 
@@ -121,22 +138,24 @@ public class ModelBuilderManager {
         try {
             model = modelBuilder.build(modelBuilderData);
         } catch (Exception e) {
-            logger.error("failed to build model: " + e.toString());
+            metrics.builderFailures++;
+            failureReason = e.toString();
             model = null;
         }
         if (model == null) {
+            logger.error("Failed to build model: " + failureReason);
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
 
-        long timeRangeInMillis = TimeUnit.SECONDS.toMillis(
-                modelConf.getDataRetrieverConf().getTimeRangeInSeconds());
+        long timeRangeInMillis = TimeUnit.SECONDS.toMillis(modelConf.getDataRetrieverConf().getTimeRangeInSeconds());
         Date startTime = new Date(endTime.getTime() - timeRangeInMillis);
 
         // Store
         try {
             modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
-            logger.error("failed to save model: " + e.toString());
+            metrics.storeFailures++;
+            logger.error("Failed to store model: " + e.toString());
             return ModelBuildingStatus.STORE_FAILURE;
         }
 

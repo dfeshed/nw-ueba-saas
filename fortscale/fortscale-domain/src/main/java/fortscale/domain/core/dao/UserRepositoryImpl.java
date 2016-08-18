@@ -1,12 +1,17 @@
 package fortscale.domain.core.dao;
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.fe.dao.Threshold;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -471,12 +476,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public long getNumberOfInactiveAccounts() {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(new Date());
+		calendar.set(Calendar.HOUR_OF_DAY, 0);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		calendar.set(Calendar.MILLISECOND, 0);
 		calendar.add(Calendar.MONTH, -1);
 		//condition is (user not disabled) AND (last activity date older than one month OR no last activity date found)
 		Criteria userActiveCriteria = Criteria.where(User.getAdInfoField(UserAdInfo.isAccountDisabledField)).is(false);
 		Criteria lastActivityDateCriteria = Criteria.where(User.lastActivityField).lt(calendar.getTime());
-		Criteria lastActivityDoesNotExistCriteria = Criteria.where(User.
-				getAdInfoField(User.lastActivityField)).exists(false);
+		Criteria lastActivityDoesNotExistCriteria = Criteria.where(User.lastActivityField).exists(false);
 		Query query = new Query(new Criteria().andOperator(userActiveCriteria,
 				new Criteria().orOperator(lastActivityDateCriteria, lastActivityDoesNotExistCriteria)));
 		return mongoTemplate.count(query, User.class);
@@ -619,13 +627,91 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 
 		return  result;
-
-
-
 	}
 
+	@Override public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter) {
+		// Create criteria list
+		List<Criteria> criteriaList = new ArrayList<>();
 
+		if (userRestFilter.getDisabledSince() != null && !userRestFilter.getDisabledSince().isEmpty()) {
+			criteriaList.add(where("adInfo.disableAccountTime").gte(new Date(Long.parseLong(userRestFilter.getDisabledSince()))));
+		}
 
+		if (userRestFilter.getIsDisabled() != null) {
+			criteriaList.add(where("adInfo.isAccountDisabled").is(userRestFilter.getIsDisabled()));
+		}
+
+		if (userRestFilter.getInactiveSince() != null && !userRestFilter.getInactiveSince().isEmpty()) {
+			criteriaList.add(new Criteria().orOperator(where("lastActivity").lt(new Date(Long.parseLong(userRestFilter.getInactiveSince()))), where("lastActivity").not().ne(null)));
+		}
+
+		if (userRestFilter.getIsDisabledWithActivity() != null && userRestFilter.getIsDisabledWithActivity()) {
+			criteriaList.add(where("adInfo.isAccountDisabled").is(userRestFilter.getIsDisabledWithActivity()));
+			criteriaList.add(new Criteria() {
+				@Override public DBObject getCriteriaObject() {
+					DBObject obj = new BasicDBObject();
+					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
+					return obj;
+				}
+			});
+		}
+
+		if (userRestFilter.getIsTerminatedWithActivity() != null && userRestFilter.getIsTerminatedWithActivity()) {
+			criteriaList.add(where("terminationDate").exists(true));
+			criteriaList.add(new Criteria() {
+				@Override public DBObject getCriteriaObject() {
+					DBObject obj = new BasicDBObject();
+					obj.put("$where", "this.terminationDate < this.lastActivity");
+					return obj;
+				}
+			});
+		}
+
+		if (userRestFilter.getIsServiceAccount() != null && userRestFilter.getIsServiceAccount()) {
+			criteriaList.add(where("userServiceAccount").is(userRestFilter.getIsServiceAccount()));
+		}
+
+		if (userRestFilter.getSearchFieldContains() != null) {
+			criteriaList.add(where("sf").regex(userRestFilter.getSearchFieldContains()));
+		}
+
+		if (userRestFilter.getDataEntities() != null) {
+			List<Criteria> wheres = new ArrayList<Criteria>();
+			for (String dataEntityName : userRestFilter.getDataEntities().split(",")) {
+				if (userRestFilter.getDataEntities() != null) {
+					wheres.add(where("scores." + dataEntityName + ".score").gte(userRestFilter.getDataEntities()));
+				} else {
+					wheres.add(where("scores." + dataEntityName).exists(true));
+				}
+			}
+			criteriaList.add(new Criteria().orOperator(wheres.toArray(new Criteria[0])));
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getUserTags())) {
+			if (userRestFilter.getUserTags().contains("any")) {
+				criteriaList.add(new Criteria(User.tagsField).not().size(0));
+			}else{
+				criteriaList.add(new Criteria(User.tagsField).in(userRestFilter.getUserTags()));
+			}
+		}
+
+		if (userRestFilter.getIsWatched() != null) {
+			criteriaList.add(new Criteria(User.followedField).is(userRestFilter.getIsWatched()));
+		}
+
+		if (BooleanUtils.isTrue(userRestFilter.getIsScored())) {
+			criteriaList.add(new Criteria(User.scoreField).gt(0));
+		} else if (BooleanUtils.isFalse(userRestFilter.getIsScored())) {
+			criteriaList.add(new Criteria(User.scoreField).is(0));
+		}
+
+		return criteriaList;
+	}
+
+	@Override public Criteria getUserCriteriaByUserNames(Set<String> userNames) {
+		Criteria criteria = new Criteria().where(User.usernameField).in(userNames);
+		return criteria;
+	}
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		Criteria criteria = where(User.searchFieldName).regex(prefix);

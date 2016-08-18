@@ -1,10 +1,13 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
 import java.util.Map;
@@ -49,12 +52,12 @@ public interface AlertsRepositoryCustom {
 	 * @param feedbackArrayFilter comma separated list of feedback attributes to include
 	 * @param dateRangeFilter 	  range of dates to filter
 	 * @param entitiesIds 	 	  set of entity ids to filter by
-	 * @param indicatorIds	      A list of indicator ids
+	 * @param indicatorTypes	      A list of indicator ids
 	 * @return Alerts object with list of alerts that apply to the filter
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-							   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
+							   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+							   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	/**
 	 *
@@ -68,8 +71,8 @@ public interface AlertsRepositoryCustom {
 	 * @return count of alert objects that apply to the filter
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-							  String feedbackArrayFilter, String dateRangeFilter, String entityName,
-							  Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
+							  String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+							  Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 
 
@@ -86,8 +89,8 @@ public interface AlertsRepositoryCustom {
 	 * @return - * @return map from value (from the field) and count of the instances of value
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
-										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   Set<String> entitiesIds, List<DataSourceAnomalyTypePair> indicatorTypes);
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
@@ -113,5 +116,13 @@ public interface AlertsRepositoryCustom {
 
     Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
 
+	Set<String> getDistinctAlertNames(Set<String> feedbackSet);
+
     Set<Alert> getAlertsRelevantToUserScore(String username);
+
+	Set<Alert> getAlertsForUserByFeedback(String username, Set<String> feedbackSet);
+
+	void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag );
+
+	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter);
 }

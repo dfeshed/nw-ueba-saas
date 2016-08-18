@@ -1,17 +1,19 @@
 package fortscale.collection.morphlines.commands;
 
-import java.util.Collection;
-import java.util.Collections;
-
+import com.typesafe.config.Config;
 import fortscale.collection.monitoring.CollectionMessages;
 import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.ExactMatcherFileList;
+import fortscale.collection.morphlines.MatcherFileList;
+import fortscale.collection.morphlines.RegexMatcherFileList;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
+import fortscale.utils.logging.Logger;
 import org.kitesdk.morphline.api.Command;
 import org.kitesdk.morphline.api.CommandBuilder;
 import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -19,12 +21,8 @@ import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.core.io.Resource;
 import org.springframework.util.StringValueResolver;
 
-import com.typesafe.config.Config;
-
-import fortscale.collection.morphlines.ExactMatcherFileList;
-import fortscale.collection.morphlines.MatcherFileList;
-import fortscale.collection.morphlines.RegexMatcherFileList;
-import fortscale.utils.logging.Logger;
+import java.util.Collection;
+import java.util.Collections;
 
 public class FieldFilterCmdBuilder implements CommandBuilder{
     private static Logger logger = Logger.getLogger(FieldFilterCmdBuilder.class);
@@ -78,12 +76,18 @@ public class FieldFilterCmdBuilder implements CommandBuilder{
 
         @Override
         protected boolean doProcess(Record inputRecord) {
+
+			//The specific Morphline metric
+			MorphlineMetrics morphlineMetrics = commandMonitoringHelper.getMorphlineMetrics(inputRecord);
+
         	String fieldContent = (String) inputRecord.getFirstValue(fieldName);
         	
         	boolean isMatch = matcherFileList.isMatch(fieldContent);
             if((isBlacklist && isMatch) || (!isBlacklist && !isMatch) ){
             	// drop record
 				logger.debug("FieldFilter command droped record because {} is in the black list of field {}. command: {}, record: {}", fieldContent, fieldName, renderedConfig, inputRecord.toString());
+				if(morphlineMetrics != null )
+					morphlineMetrics.filteredDirectedFromMorphline++;
                 commandMonitoringHelper.addFilteredEventToMonitoring(inputRecord,
                         CollectionMessages.BLACK_LIST_FILTER, fieldContent, fieldName);
 				return true;

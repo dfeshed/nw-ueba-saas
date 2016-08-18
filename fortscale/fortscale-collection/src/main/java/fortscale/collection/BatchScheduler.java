@@ -1,5 +1,9 @@
 package fortscale.collection;
 
+import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.process.processInfo.ProcessInfoService;
+import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
+import fortscale.utils.process.processType.ProcessType;
 import org.quartz.JobDataMap;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -15,27 +19,47 @@ import java.util.Arrays;
  */
 public class BatchScheduler {
 
+	final String COLLECTION_PROCESS_NAME_DAEMON  = "collection-daemon";
+	final String COLLECTION_PROCESS_NAME_UTIL    = "collection-util";
+	final String COLLECTION_PROCESS_GROUP_NAME   = "collection";
+
+
 	private static Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
 	
 	private Scheduler scheduler;
 	private ClassPathXmlApplicationContext context;
-	
+
+	// Process Info service
+	ProcessInfoService processInfoService;
+
+	// Process types are:  running as a daemon (forever), process  as a utility (exits when done)
+	protected ProcessType processType = ProcessType.UTILITY;
+
 	public static void main(String[] args) {
 		try {
 			BatchScheduler batch = new BatchScheduler();
-			batch.loadScheduler();
 
 			if (args.length==0) {
+				// Mark process as daemon
+				batch.processType = ProcessType.DAEMON;
+
+				batch.loadScheduler();
 				batch.startAll();
 			} else if (args[0].equals("pause")) {
+				// Mark process as daemon
+				batch.processType = ProcessType.DAEMON;
+				batch.loadScheduler();
 				// do nothing
 			} else if (args[0].equals("createTables")) {
+				batch.loadScheduler();
 				//tables were created in loadScheduler when creating the spring context.
 				batch.shutdown();
 			} else if (args[0].equals("cycle")) {
+				batch.loadScheduler();
 				batch.runFullCycle(Arrays.copyOfRange(args, 1, args.length));
 				batch.shutdown();
 			} else if (args.length>=2) {
+				batch.loadScheduler();
 				// run the given job only
 				String jobName = args[0];
 				String group = args[1];
@@ -58,15 +82,41 @@ public class BatchScheduler {
 	public void loadScheduler() throws Exception {
 		// Grab schedule instance from the factory
 		// use the quartz.conf instance for jobs and triggers configuration
-		logger.info("initializing batch scheduler");
-			
+		logger.info("initializing batch scheduler. process type is {}", processType.toString());
+
+		// Calculate the process name depending on daemon mode
+		String processName;
+
+		boolean isMultiProcess = false;
+
+		if (processType.equals(ProcessType.DAEMON)) {
+			processName = COLLECTION_PROCESS_NAME_DAEMON;
+		}
+		else {
+			processName = COLLECTION_PROCESS_NAME_UTIL;
+			isMultiProcess = true;
+		}
+
+		// Create process PID service and init it
+		processInfoService = new ProcessInfoServiceImpl(processName, COLLECTION_PROCESS_GROUP_NAME,processType,isMultiProcess);
+		processInfoService.init();
+
 		// point quartz configuration to external file resource
 		System.setProperty("org.quartz.properties", "resources/jobs/quartz.properties");
 			
 		// loading spring application context, we do not close this context as the application continue to 
 		// run in background threads
-		context = new ClassPathXmlApplicationContext("classpath*:META-INF/spring/collection-context.xml");
-			
+		// Create the spring context but do not refresh it for now
+		boolean isRefresh = false;
+		String [] configLocations = new String[] { "classpath*:META-INF/spring/collection-context.xml" };
+		context = new ClassPathXmlApplicationContext(configLocations, isRefresh);
+
+		// Register the process at spring context (e.g. add basic process properties to Spring context)
+		processInfoService.registerToSpringContext(context);
+
+		// Refresh (activate) the spring context
+		context.refresh();
+
 		scheduler = (Scheduler) context.getBean("jobScheduler");
 		scheduler.getListenerManager().addSchedulerListener(new SchedulerShutdownListener(scheduler, context));
 	}
@@ -172,6 +222,7 @@ public class BatchScheduler {
 	public void shutdown() throws SchedulerException {
 		scheduler.shutdown();
 		context.close();
+
 	}
 	
 }

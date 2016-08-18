@@ -10,6 +10,13 @@ from bdp_utils import parsers, colorer
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host])
+    parser.add_argument('--precision',
+                        action='store',
+                        dest='precision',
+                        help='the entity events are grouped by their value - rounded by some number of digits after '
+                             'the decimal point. This argument controls the number of digits. Default is 2',
+                        type=int,
+                        default=2)
 
     return parser
 
@@ -22,4 +29,4 @@ if __name__ == '__main__':
 
     parser = create_parser()
     arguments = parser.parse_args()
-    validate_distribution(host=arguments.host)
+    validate_distribution(host=arguments.host, precision=arguments.precision)

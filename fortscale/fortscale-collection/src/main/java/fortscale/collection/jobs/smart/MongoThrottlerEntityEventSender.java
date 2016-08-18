@@ -59,6 +59,16 @@ public class MongoThrottlerEntityEventSender implements IEntityEventSender {
 		this.entityEventCreationThrottler = new EntityEventCreationThrottler(TimeUnit.SECONDS.toMillis(timeToWaitInSeconds));
 	}
 
+	public void init(){}
+
+	public void close(){
+		try {
+			kafkaEventsWriter.close();
+		} catch (Exception e){
+			logger.error("got an exception while closing the kafka events writer of the entity events", e);
+		}
+	}
+
 	@Override
 	public void send(JSONObject entityEvent) throws TimeoutException {
 		if (entityEvent == null) {

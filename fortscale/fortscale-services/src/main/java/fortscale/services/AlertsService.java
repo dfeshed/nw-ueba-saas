@@ -1,11 +1,13 @@
 package fortscale.services;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -25,8 +27,6 @@ public interface AlertsService {
 	 */
 	void saveAlertInRepository(Alert alert);
 
-
-
 	/**
 	 * returns a list of all alerts
 	 * @return
@@ -44,16 +44,16 @@ public interface AlertsService {
 	 * @return
 	 */
 	Alerts findAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-								String feedbackArrayFilter, String dateRangeFilter, String entityName,
-								String entityTags, String entityId, List<DataSourceAnomalyTypePair> indicatorTypes);
+								String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+								String entityTags, String entityId, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	/**
 	 * returns a the number of all alerts matching filters
 	 * @return
 	 */
 	Long countAlertsByFilters(PageRequest pageRequest, String severityArray, String statusArrayFilter,
-								String feedbackArrayFilter, String dateRangeFilter, String entityName,
-								String entityTags, String entityId, List<DataSourceAnomalyTypePair> indicatorTypes);
+								String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+								String entityTags, String entityId, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	/**
 	 * Add alert to Alerts repository
@@ -86,8 +86,8 @@ public interface AlertsService {
 	 * @return - * @return map from value (from the field) and count of the instances of value
 	 */
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
-										   String feedbackArrayFilter, String dateRangeFilter, String entityName,
-										   String entityTags, String entityId, List<DataSourceAnomalyTypePair> indicatorTypes);
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+										   String entityTags, String entityId, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
@@ -104,4 +104,10 @@ public interface AlertsService {
     Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
 
     Set<Alert> getAlertsRelevantToUserScore(String userName);
+
+	Set<Alert> getOpenAlertsByUsername(String userName);
+
+	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
+
+	public Set<String> getDistinctUserNamesByUserFilter(UserRestFilter userRestFilter);
 }

@@ -33,4 +33,11 @@
 	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper"></bean>
 
 	<context:component-scan base-package="fortscale.global,fortscale.streaming.common"/>
+
+	<!-- Include Stats monitoring service for Samza based tasks -->
+	<bean class="fortscale.utils.monitoring.stats.config.SamzaStatsServiceConfig"       id="SamzaStatsServiceConfig" />
+	<bean class="fortscale.utils.process.metrics.jvm.config.JVMMetricsServiceConfig"    id="JVMMetricsServiceConfig" />
+	<bean class="fortscale.utils.process.hostnameService.config.HostnameServiceConfig"  id="HostnameServiceConfig" />
+
+
 </beans>

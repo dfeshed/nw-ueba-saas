@@ -7,6 +7,7 @@ import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
+import fortscale.streaming.task.metrics.ScoringStreamingTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -24,7 +25,7 @@ import static fortscale.utils.ConversionUtils.convertToLong;
 
 public class ScoringTask extends AbstractStreamTask {
     private static final Logger logger = Logger.getLogger(ScoringTask.class);
-
+    private ScoringStreamingTaskMetrics taskMetrics;
     private ScoringTaskService scoringTaskService;
     private EventService eventService;
     private String timestampField;
@@ -41,6 +42,9 @@ public class ScoringTask extends AbstractStreamTask {
         processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "event-score-message-count");
         lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), "event-score-message-epochime");
 
+        // create task metrics
+        wrappedCreateTaskMetrics();
+
         scoringTaskService = new ScoringTaskService(config, context);
         eventService = SpringService.getInstance().resolve(EventService.class);
     }
@@ -50,19 +54,26 @@ public class ScoringTask extends AbstractStreamTask {
         String messageText = (String)envelope.getMessage();
         JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
         Long timestamp = extractTimeStamp(message, messageText);
+        taskMetrics.eventsTime = timestamp;
         Event event = eventService.createEvent(message);
         StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 
         try {
+            taskMetrics.calculateScores++;
             message = scoringTaskService.calculateScoresAndUpdateMessage(event, timestamp);
             handleUnfilteredEvent(message, configKey);
         } catch (FilteredEventException | KafkaPublisherException e) {
             taskMonitoringHelper.countNewFilteredEvents(configKey, e.getMessage());
+            taskMetrics.filteredEvents++;
             throw e;
         }
 
         scoringTaskService.sendEventToOutputTopic(collector, message);
+        taskMetrics.sentEvents++;
+
+        // todo: this metric should we removed after DPM is part of ther project
         processedMessageCount.inc();
+
         lastTimestampCount.set(timestamp);
     }
 
@@ -73,6 +84,7 @@ public class ScoringTask extends AbstractStreamTask {
         String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
 
         if (dataSource == null) {
+            streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
             throw new IllegalStateException("Message does not contain data source" + message.toJSONString());
         }
 
@@ -82,6 +94,7 @@ public class ScoringTask extends AbstractStreamTask {
     private Long extractTimeStamp(JSONObject message, String messageText) throws FilteredEventException {
         Long timestamp = convertToLong(message.get(timestampField));
         if (timestamp==null) {
+            taskMetrics.eventsWithoutTimestamp++;
             logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
             throw new FilteredEventException(MonitorMessaages.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
         }
@@ -99,5 +112,17 @@ public class ScoringTask extends AbstractStreamTask {
     @Override
     protected void wrappedClose() throws Exception {
         scoringTaskService.close();
+    }
+
+    /**
+     * Create the task's specific metrics.
+     *
+     * Typically, the function is called from AbstractStreamTask.createTaskMetrics() at init()
+     */
+    @Override
+    protected void wrappedCreateTaskMetrics() {
+
+        // Create the task's specific metrics
+        taskMetrics = new ScoringStreamingTaskMetrics(statsService);
     }
 }

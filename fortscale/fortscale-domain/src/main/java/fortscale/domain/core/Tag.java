@@ -1,10 +1,15 @@
 package fortscale.domain.core;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
+
+import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Document(collection=Tag.collectionName)
 @CompoundIndexes({
@@ -18,7 +23,8 @@ public class Tag extends AbstractDocument{
 	public static final String nameField = "name";
 	public static final String displayNameField = "displayName";
 	public static final String createsIndicatorField = "createsIndicator";
-	public static final String isFixedField = "isFixed";
+	public static final String rulesField = "rules";
+	public static final String activeField = "active";
 
 	public Tag() {}
 
@@ -26,30 +32,40 @@ public class Tag extends AbstractDocument{
 		this.name = name;
 		displayName = name;
 		createsIndicator = false;
-		isFixed = false;
+		rules = new ArrayList<>();
+		active = true;
 	}
 
-	public Tag(String name, String displayName, boolean setIsFixed) {
+	public Tag(String name, String displayName) {
 		this.name = name;
 		this.displayName = displayName;
-		isFixed = setIsFixed ? true : false;
 		createsIndicator = false;
+		rules = new ArrayList<>();
+		active = true;
 	}
 
-	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean setIsFixed) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator) {
 		this.name = name;
 		this.displayName = displayName;
-		isFixed = setIsFixed ? true : false;
 		createsIndicator = setCreatesIndicator ? true : false;
+		rules = new ArrayList<>();
+		active = true;
 	}
 
+	@NotBlank
 	private String name;
 
+	@NotBlank
 	private String displayName;
 
+	@NotNull
 	private Boolean createsIndicator;
 
-	private Boolean isFixed;
+	@NotNull
+	private Boolean active;
+
+	@NotNull
+	private List<String> rules;
 
 	public String getDisplayName() {
 		return displayName;
@@ -75,19 +91,25 @@ public class Tag extends AbstractDocument{
 		this.name = name;
 	}
 
-	public Boolean getIsFixed() {
-		return isFixed;
+	public List<String> getRules() {
+		return rules;
 	}
 
-	public void setIsFixed(Boolean isFixed) {
-		this.isFixed = isFixed;
+	public void setRules(List<String> rules) {
+		this.rules = rules;
+	}
+
+	public Boolean getActive() {
+		return active;
+	}
+
+	public void setActive(Boolean active) {
+		this.active = active;
 	}
 
 	@Override
 	public int hashCode() {
-		return new HashCodeBuilder(17, 31).
-				append(name).
-				toHashCode();
+		return Objects.hash(this.name);
 	}
 
 	@Override
@@ -99,9 +121,7 @@ public class Tag extends AbstractDocument{
 			return true;
 		}
 		Tag tag = (Tag)obj;
-		return new EqualsBuilder().
-				append(name, tag.name).
-				isEquals();
+		return new EqualsBuilder().append(name, tag.name).isEquals();
 	}
 
 }

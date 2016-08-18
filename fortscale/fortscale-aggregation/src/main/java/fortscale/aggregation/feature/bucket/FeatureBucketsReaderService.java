@@ -26,9 +26,21 @@ public class FeatureBucketsReaderService {
         return featureBucketsMongoStore.findDistinctContextByTimeRange(featureBucketConf, startTime, endTime);
     }
 
-	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf, String contextId, long startTimeInSeconds,
+	public List<FeatureBucket> getFeatureBucketsByContextIdAndTimeRange(FeatureBucketConf featureBucketConf,
+                                                                        String contextId,
+                                                                        long startTimeInSeconds,
                                                                         long endTimeInSeconds,
-                                                                        String fieldName) {
-		return featureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange(featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds, fieldName);
+                                                                        String fieldName,
+                                                                        boolean fieldMustExist,
+                                                                        List<String> additionalFieldsToInclude) {
+
+        return featureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange(
+                featureBucketConf,
+                contextId,
+                startTimeInSeconds,
+                endTimeInSeconds,
+                fieldName,
+                fieldMustExist,
+                additionalFieldsToInclude);
 	}
 }

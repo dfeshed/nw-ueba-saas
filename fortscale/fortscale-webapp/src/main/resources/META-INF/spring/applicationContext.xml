@@ -1,24 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans 
-	xmlns="http://www.springframework.org/schema/beans" 
-	xmlns:aop="http://www.springframework.org/schema/aop" 
-	xmlns:context="http://www.springframework.org/schema/context" 
-	xmlns:jdbc="http://www.springframework.org/schema/jdbc" 
-	xmlns:jee="http://www.springframework.org/schema/jee" 
-	xmlns:task="http://www.springframework.org/schema/task" 
-	xmlns:tx="http://www.springframework.org/schema/tx" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xmlns:jpa="http://www.springframework.org/schema/data/jpa"
-	xmlns:int="http://www.springframework.org/schema/integration"
-	xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd         
+<beans
+		xmlns="http://www.springframework.org/schema/beans"
+		xmlns:aop="http://www.springframework.org/schema/aop"
+		xmlns:context="http://www.springframework.org/schema/context"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd         
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd         
-						http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee.xsd         
-						http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd 
-						http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd  
-						http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd
-						http://www.springframework.org/schema/data/jpa http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
-						http://www.springframework.org/schema/integration http://www.springframework.org/schema/integration/spring-integration.xsd">
+						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
 	<import resource="classpath*:META-INF/spring/fortscale-common-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-common-entities-context.xml"/>
@@ -34,10 +22,15 @@
 <!--     <context:property-placeholder location="classpath*:META-INF/*.properties" order="2"/> -->
 <!-- 	<context:property-placeholder location="classpath*:META-INF/spring/*.properties" order="3"/> -->
 <!--     <context:spring-configured/> -->
+
     <context:component-scan base-package="fortscale">
+		<context:exclude-filter type="regex" expression="fortscale\.utils\..*"/>  <!--fortscale.utils. is scanned via utilsLegacyComponentScanConfig bean-->
     	<context:exclude-filter expression="org.springframework.stereotype.Controller" type="annotation"/>
 		<context:exclude-filter type="regex" expression="fortscale\.services\.ipresolving\..*" />
     </context:component-scan>
+
+	<bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
+	<bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
 
 	<aop:config proxy-target-class="true">
 		<aop:pointcut id="controllers" expression="within(fortscale.web.rest.*)"/>

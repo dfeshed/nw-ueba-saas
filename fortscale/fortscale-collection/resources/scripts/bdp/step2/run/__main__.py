@@ -3,6 +3,7 @@ import logging
 import os
 import pymongo
 import sys
+
 from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -64,8 +65,8 @@ Inner workings:
     been processed.
 
 Usage examples:
-    python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3 --wait_between_batches 0 --min_free_memory 16
-    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
+    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 16
+    python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
     ''')
     more_args_parent = argparse.ArgumentParser(add_help=False)
     more_args_parent.add_argument('--validation_batches_delay',
@@ -85,30 +86,37 @@ Usage examples:
                                   nargs='+',
                                   action='store',
                                   dest='block_on_data_sources',
-                                  help='The data sources to wait for before starting to run a batch',
-                                  choices=set(data_source_to_score_tables.keys()),
-                                  required=True)
+                                  help='The data sources to wait for before starting to run a batch. If not specified, '
+                                       'the data sources which are active all the time (in every single hour) will be '
+                                       'used',
+                                  choices=set(data_source_to_score_tables.keys()))
+    more_args_parent.add_argument('--calc_block_on_tables_based_on_days',
+                                  action='store',
+                                  dest='calc_block_on_tables_based_on_days',
+                                  help='If --block_on_data_sources is not specified, you should specify how many days '
+                                       'back should be analyzed in order to find what tables to block on',
+                                  type=int)
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
-                      parsers.start,
-                      parsers.validation_timeout]
+                      parsers.start]
     online_parser = subparsers.add_parser('online',
                                           help='Run the step in online mode',
                                           parents=common_parents + [parsers.online_manager])
     online_parser.set_defaults(is_online_mode=True)
     offline_parser = subparsers.add_parser('offline',
                                            help='Run the step in offline mode',
-                                           parents=common_parents + [parsers.validation_polling_interval])
+                                           parents=common_parents + [parsers.validation_polling_interval, parsers.validation_timeout])
     offline_parser.set_defaults(is_online_mode=False)
     return parser
 
 
 def validate_not_running_same_period_twice(arguments):
     start = time_utils.get_epochtime(arguments.start)
+    really_big_epochtime = time_utils.get_epochtime('29990101')
     if not validate_all_buckets_synced(host=arguments.host,
                                        start_time_epoch=start,
-                                       end_time_epoch=sys.maxint,
+                                       end_time_epoch=really_big_epochtime,
                                        use_start_time=True):
         print "there are already some aggregations with startTime greater/equal to the given start time " \
               "(they haven't been synced yet but are about to)"
@@ -128,27 +136,31 @@ def validate_not_running_same_period_twice(arguments):
 
 
 def main():
+    arguments = create_parser().parse_args()
     init_logging(logger)
-    parser = create_parser()
-    arguments = parser.parse_args()
     if not are_tasks_running(logger=logger,
                              task_names=['aggregation-events-streaming']):
         sys.exit(1)
 
     validate_not_running_same_period_twice(arguments)
-    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources]
-    Manager(host=arguments.host,
-            is_online_mode=arguments.is_online_mode,
-            start=arguments.start,
-            block_on_tables=block_on_tables,
-            wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
-            min_free_memory=arguments.min_free_memory * (1024 ** 3) if 'min_free_memory' in arguments else 0,
-            polling_interval=arguments.polling_interval * 60,
-            timeout=arguments.timeout * 60,
-            validation_batches_delay=arguments.validation_batches_delay,
-            max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
-            batch_size_in_hours=arguments.batch_size) \
-        .run()
+    block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources] \
+        if arguments.block_on_data_sources else None
+    if Manager(host=arguments.host,
+               is_online_mode=arguments.is_online_mode,
+               start=arguments.start,
+               block_on_tables=block_on_tables,
+               calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
+               wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
+               min_free_memory_gb=arguments.min_free_memory_gb if 'min_free_memory_gb' in arguments else 0,
+               polling_interval=arguments.polling_interval * 60,
+               timeout=arguments.timeout * 60 if 'timeout' in arguments else None,
+               validation_batches_delay=arguments.validation_batches_delay,
+               max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
+               batch_size_in_hours=arguments.batch_size) \
+            .run():
+        logger.info('finished successfully')
+    else:
+        logger.error('failed')
 
 
 if __name__ == '__main__':

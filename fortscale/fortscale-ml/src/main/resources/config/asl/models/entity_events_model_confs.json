@@ -62,7 +62,6 @@
       "name": "entity_event.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_daily",
         "numOfDays": 21,
@@ -78,7 +77,6 @@
       "name": "entity_event.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly",
         "numOfDays": 21,
@@ -153,7 +151,6 @@
       "name": "entity_event.data_exfiltration.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_daily",
         "numOfDays": 21,
@@ -169,7 +166,6 @@
       "name": "entity_event.data_exfiltration.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_hourly",
         "numOfDays": 21,
@@ -244,7 +240,6 @@
       "name": "entity_event.brute_force.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_daily",
         "numOfDays": 21,
@@ -260,7 +255,6 @@
       "name": "entity_event.brute_force.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_hourly",
         "numOfDays": 21,
@@ -335,7 +329,6 @@
       "name": "entity_event.snooping.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_daily",
         "numOfDays": 21,
@@ -351,7 +344,6 @@
       "name": "entity_event.snooping.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_hourly",
         "numOfDays": 21,
@@ -426,7 +418,6 @@
       "name": "entity_event.anomalous_admin_activity.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily",
         "numOfDays": 21,
@@ -442,7 +433,6 @@
       "name": "entity_event.anomalous_admin_activity.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly",
         "numOfDays": 21,
@@ -453,6 +443,6 @@
         "minThreshold": 1,
         "minMaximalScore": 50
       }
-    },
+    }
   ]
 }

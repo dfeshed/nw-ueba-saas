@@ -84,6 +84,26 @@
 	</properties>
 	<dependencies>
 		<dependency>
+			<groupId>net.sourceforge.argparse4j</groupId>
+			<artifactId>argparse4j</artifactId>
+			<version>${argparse4j.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.shell</groupId>
+			<artifactId>spring-shell</artifactId>
+			<version>${spring-shell.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>fortscale</groupId>
+			<artifactId>fortscale-global-config</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.influxdb</groupId>
+			<artifactId>influxdb-java</artifactId>
+			<version>${influxdb.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.cloudera.api</groupId>
 			<artifactId>cloudera-manager-api</artifactId>
 			<version>${cloudera-manager-api.version}</version>
@@ -193,6 +213,32 @@
 			<artifactId>spring-test</artifactId>
 			<scope>compile</scope>
 		</dependency>
+
+
+		<!-- for mockit:mock - see https://bitbucket.org/kubek2k/springockito/wiki/Home -->
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.kubek2k</groupId>
+			<artifactId>springockito-annotations</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.hive</groupId>
+			<artifactId>hive-jdbc</artifactId>
+			<version>${hive.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-web</artifactId>
@@ -228,7 +274,7 @@
 			<artifactId>commons-httpclient</artifactId>
 			<version>${commons-httpclient.version}</version>
 		</dependency>
-		
+
 		<!-- hadoop dependencies -->
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
@@ -239,6 +285,12 @@
 			<groupId>org.apache.hadoop</groupId>
 			<artifactId>hadoop-core</artifactId>
 			<version>${hadoop-core.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.hadoop</groupId>
@@ -434,6 +486,17 @@
 			<artifactId>syslog-java-client</artifactId>
 			<version>1.0.6</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.retry</groupId>
+			<artifactId>spring-retry</artifactId>
+			<version>${springretry.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-all</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 	<build>
@@ -543,7 +606,7 @@
 		</plugins>
 		<pluginManagement>
 			<plugins>
-				<!--This plugin's configuration is used to store Eclipse m2e settings 
+				<!--This plugin's configuration is used to store Eclipse m2e settings
 					only. It has no influence on the Maven build itself. -->
 				<plugin>
 					<groupId>org.eclipse.m2e</groupId>

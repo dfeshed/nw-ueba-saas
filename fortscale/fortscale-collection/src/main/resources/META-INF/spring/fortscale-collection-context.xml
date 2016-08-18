@@ -21,6 +21,11 @@
 	</bean>
 
 
+	<!-- Include process common service  -->
+	<bean class="fortscale.utils.monitoring.stats.config.StandardStatsServiceConfig"    id="StandardStatsServiceConfig" />
+	<bean class="fortscale.utils.process.metrics.jvm.config.JVMMetricsServiceConfig"    id="JVMMetricsServiceConfig" />
+	<bean class="fortscale.utils.process.hostnameService.config.HostnameServiceConfig"  id="HostnameServiceConfig" />
+
 	<bean id="hadoopConfiguration" class="fortscale.collection.hadoop.HadoopConfigurationFactory">
 		<property name="resourcesString" value="${hdfs.configuration.resources}"/>
 	</bean>
@@ -33,6 +38,13 @@
 	<bean id="stdSchedulerFactory" class="org.quartz.impl.StdSchedulerFactory"/>
 	<bean id="jobScheduler" factory-bean="stdSchedulerFactory" factory-method="getScheduler">
 		<property name="jobFactory" ref="autowiringSpringBeanJobFactory"/>
+	</bean>
+
+	<!-- id to username cache that uses memory based implementation are injected here -->
+	<bean id="idToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${username.service.cache.max.items:1000}" />
+		<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
 	<!-- ip resolving caches that uses memory based implementation are injected here -->
@@ -300,9 +312,9 @@
 
 	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
 
-	<bean id="splunkFetch" class="fortscale.collection.jobs.fetch.siem.Splunk" scope="singleton"/>
+	<bean id="splunkFetch" class="fortscale.collection.jobs.fetch.siem.Splunk" scope="prototype"/>
 
-	<bean id="qradarFetch" class="fortscale.collection.jobs.fetch.siem.QRadar" scope="singleton"/>
+	<bean id="qradarFetch" class="fortscale.collection.jobs.fetch.siem.QRadar" scope="prototype"/>
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
@@ -337,27 +349,19 @@
 	<!-- Notification beans -->
 	<bean id="dropDomainManipulator" class="fortscale.collection.jobs.notifications.DropDomainManipulator" scope="singleton"/>
 
-
 	<bean id="vpnCredShareNotificationService" class="fortscale.collection.jobs.notifications.VpnCredsShareNotificationService">
 		<property name="hostnameField" value="hostname"/>
 		<property name="dataEntity" value="vpn_session"/>
 		<property name="hostnameDomainMarkersString" value="${collection.evidence.notification.credshare.hostnameDomainMarkers}"/>
 		<property name="numberOfConcurrentSessions" value="4"/>
-		<property name="notificationScoreField" value="${collection.evidence.notification.score.field}"/>
-		<property name="notificationTypeField" value="${collection.evidence.notification.type.field}"/>
-		<property name="notificationValueField" value="${collection.evidence.notification.value.field}"/>
-		<property name="notificationStartTimestampField" value="${collection.evidence.notification.starttimestamp.field}"/>
-		<property name="notificationEndTimestampField" value="${collection.evidence.notification.endtimestamp.field}"/>
-		<property name="normalizedUsernameField" value="${collection.evidence.notification.normalizedusername.field}"/>
-		<property name="notificationSupportingInformationField" value="${collection.evidence.notification.supportinginformation.field}"/>
-		<property name="notificationDataSourceField" value="${collection.evidence.notification.datasource.field}"/>
-		<property name="notificationFixedScore" value="50.0"/>
 		<!-- The name of the reference (bean ID of any instance which implement hostnameManipulator)
 			taken from properties file - ${collection.evidence.notification.credshare.hostnameManipulator.beanid} -->
 		<property name="fieldManipulatorBeanName" value="${collection.evidence.notification.credshare.hostnameManipulator.beanid}"/>
-
 	</bean>
 
+    <bean id="vpnLateralMovementNotificationService" class="fortscale.collection.jobs.notifications.VpnLateralMovementNotificationService">
+        <property name="dataEntity" value="vpn_session"/>
+    </bean>
 
 	<!-- Cache for the users severities percentile mapo -->
 	<bean id="userScoreSeveritiesCache" class="fortscale.services.cache.MemoryBasedCache">
@@ -365,4 +369,5 @@
 		<constructor-arg name="timeToExpire" value="${user.score.service.cache.timeToExpireSec:3600}" />
 		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
 	</bean>
+
 </beans>

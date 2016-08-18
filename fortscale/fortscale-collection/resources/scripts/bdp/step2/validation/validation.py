@@ -11,6 +11,7 @@ from automatic_config.common.utils import time_utils
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.run import validate_by_polling
 from bdp_utils.log import log_and_send_mail
+from bdp_utils.data_sources import data_source_to_score_tables
 
 
 import logging
@@ -18,7 +19,7 @@ logger = logging.getLogger('step2.validation')
 
 
 def _get_collection_name(context_type, data_source, is_daily):
-    return 'aggr_%s_%s_%s' % (context_type, data_source, 'daily' if is_daily else 'hourly')
+    return 'aggr_%s_%s_%s' % (context_type, data_source if data_source != 'kerberos' else 'kerberos_logins', 'daily' if is_daily else 'hourly')
 
 
 def _calc_dict_diff(first, second):
@@ -52,8 +53,11 @@ def validate_no_missing_events(host,
                                timeout,
                                polling_interval):
     logger.info('validating that there are no missing events...\n')
-    if start_time_epoch % 60*60 != 0 or end_time_epoch % 60*60 != 0:
+    if start_time_epoch % (60*60) != 0 or end_time_epoch % (60*60) != 0:
         raise Exception('start time and end time must be rounded hour')
+
+    if data_sources is None:
+        data_sources = data_source_to_score_tables.keys()
 
     if context_types is None:
         context_types = mongo_stats.get_all_context_types(host=host)

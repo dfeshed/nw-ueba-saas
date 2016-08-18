@@ -8,7 +8,7 @@
         <job>
             <name>StopServices</name>
             <group>Cloudera</group>
-            <description>Stops the Kafak and Streaming processes</description>
+            <description>Stops the Kafka and Streaming processes</description>
             <job-class>fortscale.collection.jobs.StartStopServices</job-class>
             <durability>true</durability>
             <recover>true</recover>

@@ -36,25 +36,57 @@ start_optional = argparse.ArgumentParser(add_help=False)
 start_optional.add_argument('--start',
                             **start_args)
 
+end_args = {
+    'action': 'store',
+    'dest': 'end',
+    'help': 'The date until to run (excluding), '
+            'e.g. - "24 march 2016 13:00" / "20160324" / "1458824400"',
+    'type': _time_type
+}
 end = argparse.ArgumentParser(add_help=False)
 end.add_argument('--end',
-                 action='store',
-                 dest='end',
-                 help='The date until to run (excluding), '
-                      'e.g. - "24 march 2016 13:00" / "20160324" / "1458824400"',
                  required=True,
-                 type=_time_type)
+                 **end_args)
 
-validation_data_sources = argparse.ArgumentParser(add_help=False)
-validation_data_sources.add_argument('--data_sources',
-                                     nargs='+',
-                                     action='store',
-                                     dest='data_sources',
-                                     help='The data sources to validate. '
-                                          'If not specified - all of the data sources will be validated '
-                                          '(which include ' + ', '.join(data_source_to_enriched_tables.keys()) +
-                                          '. To change that, please update data_sources.py)',
-                                     default=data_source_to_enriched_tables.keys())
+end_optional = argparse.ArgumentParser(add_help=False)
+end_optional.add_argument('--end',
+                          **end_args)
+
+
+data_sources = argparse.ArgumentParser(add_help=False)
+data_sources.add_argument('--data_sources',
+                          nargs='+',
+                          action='store',
+                          dest='data_sources',
+                          help='The data sources to use. '
+                               'If not specified - all of the data sources will be used '
+                               '(which include ' + ', '.join(data_source_to_enriched_tables.keys()) +
+                               '. To change that, please update bdp/bdp_utils/data_sources.py)',
+                          choices=data_source_to_enriched_tables.keys(),
+                          default=data_source_to_enriched_tables.keys())
+
+data_sources_excluding_vpn_session_mandatory = argparse.ArgumentParser(add_help=False)
+data_sources_excluding_vpn_session_mandatory.add_argument('--data_sources',
+                                                          nargs='+',
+                                                          action='store',
+                                                          dest='data_sources',
+                                                          help='The data sources to use. If not specified - all of the '
+                                                               'data sources will be used (which include ' +
+                                                               ', '.join(data_source_to_enriched_tables.keys()) +
+                                                               '. To change that, please update '
+                                                               'bdp/bdp_utils/data_sources.py)',
+                                                          choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
+                                                          required=True)
+
+data_source_mandatory = argparse.ArgumentParser(add_help=False)
+data_source_mandatory.add_argument('--data_source',
+                                   action='store',
+                                   dest='data_source',
+                                   help='The data source to use'
+                                        '(available data sources are declared in bdp/bdp_utils/data_sources.py. '
+                                        'In order to support new data source - please update the file)',
+                                   choices=data_source_to_enriched_tables.keys(),
+                                   required=True)
 
 validation_timeout = argparse.ArgumentParser(add_help=False)
 validation_timeout.add_argument('--timeout',
@@ -97,9 +129,9 @@ online_manager.add_argument('--wait_between_batches',
                             help='The minimum amount of time (in minutes) between successive batch runs',
                             type=int,
                             required=True)
-online_manager.add_argument('--min_free_memory',
+online_manager.add_argument('--min_free_memory_gb',
                             action='store',
-                            dest='min_free_memory',
+                            dest='min_free_memory_gb',
                             help='Whenever the amount of free memory in the system is below the given number (in GB), '
                                  'the script will block',
                             type=int,
@@ -120,6 +152,14 @@ online_manager.add_argument('--max_delay',
                             type=int,
                             default=3)
 
+def _throttling_force_type(i):
+    try:
+        splitted = [definition.strip().split('=') for definition in i.split(',')]
+        return dict((a, int(b)) for a, b in splitted)
+    except Exception:
+        raise argparse.ArgumentTypeError('must be of format <data_source>:<number>,<data_source>:<number>...')
+
+
 throttling = argparse.ArgumentParser(add_help=False)
 throttling.add_argument('--max_batch_size',
                         action='store',
@@ -134,9 +174,9 @@ throttling.add_argument('--force_max_batch_size_in_minutes',
                         help="The maximal batch size (in minutes) to read from impala. "
                              "This parameter overrides --max_batch_size. Use it only if you know what you're doing, "
                              "or if running the script without it results with too small batch size in minutes "
-                             "(in this case a warning will be displayed)",
-                        default=None,
-                        type=int)
+                             "(in this case a warning will be displayed). This should be a valid json with mapping "
+                             "from data source to int",
+                        type=_throttling_force_type)
 throttling.add_argument('--max_gap',
                         action='store',
                         dest='max_gap',
@@ -144,6 +184,15 @@ throttling.add_argument('--max_gap',
                              "This parameter is translated into BDP's maxSourceDestinationTimeGap parameter",
                         required=True,
                         type=int)
+throttling.add_argument('--force_max_gap_in_seconds',
+                        action='store',
+                        dest='force_max_gap_in_seconds',
+                        help="The maximal gap (in seconds) to read from impala. "
+                             "This parameter overrides --max_gap. Use it only if you know what you're doing, "
+                             "or if running the script without it results with too small batch size in minutes "
+                             "(in this case a warning will be displayed). This should be a valid json with mapping "
+                             "from data source to int",
+                        type=_throttling_force_type)
 throttling.add_argument('--convert_to_minutes_timeout',
                         action='store',
                         dest='convert_to_minutes_timeout',

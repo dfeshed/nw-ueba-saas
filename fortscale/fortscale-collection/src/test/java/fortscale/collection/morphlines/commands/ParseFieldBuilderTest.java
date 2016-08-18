@@ -7,6 +7,9 @@ import static org.mockito.Mockito.when;
 import java.util.HashSet;
 import java.util.Set;
 
+import fortscale.collection.monitoring.ItemContext;
+import fortscale.collection.monitoring.MorphlineCommandMonitoringHelper;
+import fortscale.collection.morphlines.metrics.MorphlineMetrics;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -68,6 +71,8 @@ public class ParseFieldBuilderTest  {
     private Record getRecord(String fieldName,String fieldValue) {
         Record record = new Record();
         record.put(fieldName,fieldValue);
+        record.put(MorphlineCommandMonitoringHelper.ITEM_CONTEXT,
+                new ItemContext("", null, new MorphlineMetrics(null, "dataSource")));
         return record;
     }
 

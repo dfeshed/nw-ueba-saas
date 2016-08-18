@@ -8,7 +8,6 @@ from manager import Manager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
 from bdp_utils.samza import are_tasks_running
-from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.log import init_logging
 
 logger = logging.getLogger('step1')
@@ -18,6 +17,7 @@ def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
                                               parsers.start,
                                               parsers.end,
+                                              parsers.data_sources_excluding_vpn_session_mandatory,
                                               parsers.validation_timeout,
                                               parsers.validation_polling_interval,
                                               parsers.throttling],
@@ -44,14 +44,7 @@ Inner workings:
     scores distribution is reasonable.
 
 Usage example:
-    python step1/run --timeout 5 --start 19870508 --end 20160628 --data_sources kerberos_logins ssh --max_batch_size 500000 --max_gap 1500000 --convert_to_minutes_timeout 10''')
-    parser.add_argument('--data_sources',
-                        nargs='+',
-                        action='store',
-                        dest='data_sources',
-                        help='The data sources to run the step on',
-                        choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
-                        required=True)
+    python step1/run --timeout 5 --start 19870508 --end 20160628 --data_sources kerberos ssh --max_batch_size 500000 --max_gap 1500000 --convert_to_minutes_timeout 10''')
     parser.add_argument('--scores_anomalies_path',
                         action='store',
                         dest='scores_anomalies_path',
@@ -79,8 +72,8 @@ Usage example:
 
 
 def main():
-    init_logging(logger)
     arguments = create_parser().parse_args()
+    init_logging(logger)
     if not are_tasks_running(logger=logger,
                              task_names=['raw-events-prevalence-stats-task', 'hdfs-events-writer-task',
                                          'evidence-creation-task', '4769-events-filter', 'vpnsession-events-filter',
@@ -91,6 +84,7 @@ def main():
                         max_batch_size=arguments.max_batch_size,
                         force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                         max_gap=arguments.max_gap,
+                        force_max_gap_in_seconds=arguments.force_max_gap_in_seconds,
                         convert_to_minutes_timeout=arguments.convert_to_minutes_timeout * 60,
                         validation_timeout=arguments.timeout * 60,
                         validation_polling_interval=arguments.polling_interval * 60,

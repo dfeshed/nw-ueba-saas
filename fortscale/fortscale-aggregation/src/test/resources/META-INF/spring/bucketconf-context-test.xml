@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
 	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:mongo="http://www.springframework.org/schema/data/mongo"
 	   xmlns:context="http://www.springframework.org/schema/context"
-	   xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd 
+	   xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
 						http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<import resource="classpath*:META-INF/spring/fortscale-global-config-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-domain-light-context.xml"/>
 	<import resource="classpath*:META-INF/spring/fortscale-aggr-context-test.xml" />
 	<bean id="aggrEventTopologyService" class="fortscale.aggregation.feature.event.AggrEventTopologyServiceForTest"/>
-	
+	<bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
+
 	<context:spring-configured />
 	<context:annotation-config />
 	<context:component-scan base-package="fortscale.global,fortscale.aggregation.feature.event,fortscale.domain.core.dao"/>

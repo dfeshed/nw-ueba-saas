@@ -13,6 +13,7 @@ import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -133,6 +134,11 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					List<EnrichedFortscaleEvent> evidencesEligibleForDecider = evidencesApplicableToAlertService.createIndicatorListApplicableForDecider(
 							eventList, startDate, endDate, timeframe);
 
+					if (CollectionUtils.isEmpty(evidencesEligibleForDecider)) {
+						logger.warn("Failed to find eligible events for alert creation");
+						continue;
+					}
+
 					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
 
@@ -168,8 +174,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
                         double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None,
-                                "", entityId, timeframe,alertUserScoreContribution, alertUserScoreContribution>0);
+                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, entityId, timeframe,alertUserScoreContribution, alertUserScoreContribution>0);
 
                         logger.info("Saving alert in DB: {}", alert);
                         alertsService.saveAlertInRepository(alert);

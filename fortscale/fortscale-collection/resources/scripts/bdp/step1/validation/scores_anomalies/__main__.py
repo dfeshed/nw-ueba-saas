@@ -4,6 +4,7 @@ import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.data_sources import data_source_to_score_tables
+from bdp_utils import parsers
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common import utils
 
@@ -57,19 +58,12 @@ def create_parser():
     parser = argparse.ArgumentParser()
     subparsers = parser.add_subparsers(help='commands')
 
-    general_parent_parser = argparse.ArgumentParser(add_help=False)
+    general_parent_parser = argparse.ArgumentParser(add_help=False, parents=[parsers.data_sources])
     general_parent_parser.add_argument('--path',
                                        action='store',
                                        dest='path',
                                        help='The path to the directory to load/save data to',
                                        required=True)
-    general_parent_parser.add_argument('--data_sources',
-                                       nargs='+',
-                                       action='store',
-                                       dest='data_sources',
-                                       default=data_source_to_score_tables.keys(),
-                                       help='The data sources to analyze. '
-                                            'If not specified, all data sources will be used')
 
     time_interval_parent_parser = argparse.ArgumentParser(add_help=False)
     time_interval_parent_parser.add_argument('--start',
@@ -138,17 +132,13 @@ def create_parser():
     run_parser.set_defaults(cb=lambda arguments: run(arguments, should_query=True, should_find_anomalies=True))
 
     investigate_parser = subparsers.add_parser('investigate',
-                                        help='Investigate anomalies in the data')
+                                               parents=[parsers.data_source_mandatory],
+                                               help='Investigate anomalies in the data')
     investigate_parser.add_argument('--host',
                                     action='store',
                                     dest='host',
                                     help='The impala host to which to connect to. Default is localhost',
                                     default='localhost')
-    investigate_parser.add_argument('--data_source',
-                                    action='store',
-                                    dest='data_source',
-                                    help='The data sources to investigate',
-                                    required=True)
     investigate_parser.add_argument('--score_field',
                                     action='store',
                                     dest='score_field',

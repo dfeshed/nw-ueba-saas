@@ -54,8 +54,10 @@ public class User extends AbstractDocument {
 	public static final String adInfoField = "adInfo";
 	public static final String whenCreatedField = "whenCreated";
 	public static final String tagsField = "tags";
-    public static final String socreField = "score";
+    public static final String scoreField = "score";
     public static final String scoreSeverityField = "scoreSeverity";
+	public static final String terminationDateField = "terminationDate";
+	public static final String alertsCountField = "alertsCount";
 
 	@Indexed
 	@Field(displayNameField)
@@ -108,10 +110,16 @@ public class User extends AbstractDocument {
     @Field(scoreSeverityField)
     private Severity scoreSeverity;
 
-    @Field(socreField)
+    @Field(scoreField)
     private double score=0;
 
-	
+	@Field(terminationDateField)
+	private DateTime terminationDate;
+
+	@Indexed
+	@Field(alertsCountField)
+	private int alertsCount;
+
 	public String getAdDn() {
 		return adDn;
 	}
@@ -121,7 +129,15 @@ public class User extends AbstractDocument {
 	}
 	
 	private String adObjectGUID;
-	
+
+	public int getAlertsCount() {
+		return alertsCount;
+	}
+
+	public void setAlertsCount(int alertsCount) {
+		this.alertsCount = alertsCount;
+	}
+
 	public String getAdObjectGUID() {
 		return adObjectGUID;
 	}
@@ -129,7 +145,6 @@ public class User extends AbstractDocument {
 	public void setAdObjectGUID(String adObjectGUID) {
 		this.adObjectGUID = adObjectGUID;
 	}
-		
 		
 	public UserAdInfo getAdInfo() {
 		if(adInfo == null){
@@ -195,7 +210,6 @@ public class User extends AbstractDocument {
 		return followed;
 	}
 
-
 	public void setFollowed(Boolean followed) {
 		this.followed = followed;
 	}
@@ -243,8 +257,6 @@ public class User extends AbstractDocument {
 		return logLastActivityMap;
 	}
 	
-	
-
 	public HashMap<String, ClassifierScore> getScores() {
 		return scores;
 	}
@@ -264,7 +276,6 @@ public class User extends AbstractDocument {
 	public void removeAllScores(){
 		this.scores.clear();
 	}
-	
 	
 	public void addTag(String tag) {
 		checkNotNull(tag);
@@ -359,7 +370,6 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}
 
-
 	public Severity getScoreSeverity() {
 		return scoreSeverity;
 	}
@@ -375,4 +385,12 @@ public class User extends AbstractDocument {
     public double getScore() {
         return score;
     }
+
+	public DateTime getTerminationDate() {
+		return terminationDate;
+	}
+
+	public void setTerminationDate(DateTime terminationDate) {
+		this.terminationDate = terminationDate;
+	}
 }
