@@ -13,10 +13,12 @@ import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 
 import fortscale.services.UserWithAlertService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -161,6 +163,26 @@ public class AlertsServiceImpl implements AlertsService {
 		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
 						dateRangeFilter, entityName, ids, indicatorTypes);
 	}
+
+	@Override
+	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected){
+
+
+		List<String> feedbackFilter = new ArrayList<>();
+		feedbackFilter.add(AlertFeedback.Approved.name());
+		feedbackFilter.add(AlertFeedback.None.name());
+		if (BooleanUtils.isFalse(ignoreRejected)) {
+			feedbackFilter.add(AlertFeedback.Rejected.name());
+		}
+
+		String feedback = StringUtils.arrayToCommaDelimitedString(feedbackFilter.toArray());
+
+		return alertsRepository.groupCount(Alert.nameField,null, null,feedback ,
+				null, null, null, null);
+	}
+
+
+
 
 	@Override
 	public List<Alert> getAlertSummary(List<String> severities, long endDate) {

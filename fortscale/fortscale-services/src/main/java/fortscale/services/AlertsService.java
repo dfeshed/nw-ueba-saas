@@ -89,6 +89,14 @@ public interface AlertsService {
 										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 										   String entityTags, String entityId, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
+
+	/**
+	 * Get list of alert types, and return the alert type + how many alerts have it
+	 * @param ignoreRejected
+	 * @return
+	 */
+	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected);
+
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
     List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities);
