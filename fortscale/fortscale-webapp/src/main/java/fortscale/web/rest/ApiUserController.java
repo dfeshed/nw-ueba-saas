@@ -116,6 +116,8 @@ public class ApiUserController extends BaseController{
 			userService.saveFavoriteFilter(userFilter, filterName);
 		} catch (DuplicateKeyException e) {
 			return new ResponseEntity("The filter name already exists", HttpStatus.BAD_REQUEST);
+		} catch (Exception e){
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		return new ResponseEntity(HttpStatus.OK);
