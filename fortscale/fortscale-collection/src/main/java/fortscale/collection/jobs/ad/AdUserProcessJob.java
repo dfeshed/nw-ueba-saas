@@ -32,9 +32,6 @@ import java.util.List;
 public class AdUserProcessJob extends AdProcessJob {
 
 	@Autowired
-	private UserTagService userTagService;
-	
-	@Autowired
 	private AdUserRepository adUserRepository;
 	
 	@Autowired
@@ -171,7 +168,6 @@ public class AdUserProcessJob extends AdProcessJob {
 		startNewStep("update username set");
 
 		// Update admin tag
-		userTagService.update();
 		if(!StringUtils.isEmpty(ouUsersFilter)){
 			if(addUsers == true){
 				updateUsersWhoBelongtoOUOrGroup();
