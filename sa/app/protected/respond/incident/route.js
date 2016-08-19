@@ -6,7 +6,6 @@ const {
     hash
   },
   Logger,
-  run,
   set,
   isNone,
   inject: {
@@ -15,8 +14,6 @@ const {
 } = Ember;
 
 export default Route.extend({
-  // Array holding the list of all subscriptions
-  currentStreams: [],
 
   // the id of the current incident
   incidentId: null,
@@ -45,49 +42,34 @@ export default Route.extend({
   },
 
   afterModel(resolvedModel) {
-
     let currentIncidentId = this.get('incidentId');
 
-    // Create the notify socket
-    let notify = this.store.notify('incident', {
-      subDestinationUrlParams: 'edit',
-      filter: [{ field: 'id', value: currentIncidentId }]
-    }, { requireRequestId: false });
-    notify.subscribe((response) => {
-      Logger.log(`Notify next() callback, notificationCode: ${ response.notificationCode }`);
-      let { data } = response;
+    this.request.streamRequest({
+      method: 'notify',
+      modelName: 'incident',
+      query: {
+        subDestinationUrlParams: 'edit',
+        filter: [{ field: 'id', value: currentIncidentId }]
+      },
+      streamOptions: {
+        requireRequestId: false
+      },
+      onResponse: ({ data, notificationCode }) => {
+        Logger.log(`Notify next() callback, notificationCode: ${ notificationCode }`);
 
-      // Updating the whole incident when we received a notification
-      let innerIncident = data.findBy('id', currentIncidentId);
-      set(resolvedModel, 'incident', innerIncident);
-
-      // Update the store with the updated incident
-      this.store.pushPayload({ 'incidents': [ innerIncident ] });
-      innerIncident.id = currentIncidentId;
-    }, () => {
-      Logger.error('Error processing notify call for incident model');
+        // Updating the whole incident when we received a notification
+        let innerIncident = data.findBy('id', currentIncidentId);
+        set(resolvedModel, 'incident', innerIncident);
+        this.store.pushPayload({ 'incidents': [ innerIncident ] });
+        innerIncident.id = currentIncidentId;
+      },
+      onError(response) {
+        Logger.error('Error processing notify call for incident model', response);
+      }
     });
-    notify.start();
-
-    this.get('currentStreams').push(notify);
   },
 
   actions: {
-    /**
-     * @name willTransition
-     * @description when the router will transit to another route, the opened stream are being closed
-     * @public
-     */
-    willTransition() {
-      let streamRequests = this.get('currentStreams');
-      Logger.debug(`Closing ${ streamRequests.length } web-socket connections`);
-      run(() => {
-        streamRequests.forEach((streamRequest) => {
-          streamRequest.stream.stop();
-        });
-      });
-      this.set('currentStreams', []);
-    },
 
     /**
      * @name saveAction

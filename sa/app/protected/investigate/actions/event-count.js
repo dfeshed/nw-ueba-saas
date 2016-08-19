@@ -5,7 +5,7 @@
  * @public
  */
 import Ember from 'ember';
-import makeServerInputsForQuery from './helpers/make-server-inputs-for-query';
+import { makeServerInputsForQuery } from './helpers/query-utils';
 
 const { Mixin } = Ember;
 
@@ -31,55 +31,36 @@ export default Mixin.create({
         return;
       }
 
-      // Wire up the server call to state.eventCount and fire it.
-      let stream = this.store.stream(
-        'core-event-count',
-        makeServerInputsForQuery(query)
-      );
-      stream.subscribe({
-        onNext: (response) => {
-          eventCount.setProperties({
-            status: 'resolved',
-            data: response.data
-          });
-          stream.completed();
-
-          // @workaround ASOC-22125: Due to a server issue, a query for records that doesn't match any events will never
-          // return a response back to the client. That will cause our UI to wait endlessly. To workaround, when this
-          // server call returns with the event count, check if it returns zero. If so, abort any in-progress call for
-          // the event records, marking it complete (since we know there aren't any records coming back).
-          if (response.data === 0) {
-            this.send('eventsStop', 'complete');
-          }
-        },
-        onError(response) {
-          eventCount.setProperties({
-            status: 'rejected',
-            reason: response.code
-          });
-        }
-      });
-
       // Cache references to the query & stream in the route state.
       eventCount.setProperties({
         query,
-        stream,
         status: 'wait',
         data: undefined
       });
 
-      stream.start();
-    },
+      this.request.promiseRequest({
+        method: 'stream',
+        modelName: 'core-event-count',
+        query: makeServerInputsForQuery(query)
+      }).then(function({ data }) {
+        eventCount.setProperties({
+          status: 'resolved',
+          data
+        });
 
-    /**
-     * Stops the stream (if any) that is fetching the event count for the current query.
-     * @public
-     */
-    eventCountStop() {
-      let stream = this.get('state.eventCount.stream');
-      if (stream) {
-        stream.stop();
-      }
+        // @workaround ASOC-22125: Due to a server issue, a query for records that doesn't match any events will never
+        // return a response back to the client. That will cause our UI to wait endlessly. To workaround, when this
+        // server call returns with the event count, check if it returns zero. If so, abort any in-progress call for
+        // the event records, marking it complete (since we know there aren't any records coming back).
+        if (data === 0) {
+          this.send('eventsStop', 'complete');
+        }
+      }).catch(function({ code }) {
+        eventCount.setProperties({
+          status: 'rejected',
+          reason: code
+        });
+      });
     }
   }
 });

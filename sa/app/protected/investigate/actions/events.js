@@ -5,15 +5,15 @@
  * @public
  */
 import Ember from 'ember';
-import makeEventsStream from './helpers/make-events-stream';
-import wireEventsStreamToState from './helpers/wire-events-stream-to-state';
+import { buildEventStreamInputs, executeEventsRequest } from './helpers/query-utils';
 
-const { getProperties, Mixin } = Ember;
+const { Mixin } = Ember;
 
 const STREAM_LIMIT = 1000;
 const STREAM_BATCH = 19;
 
 export default Mixin.create({
+
   actions: {
     /**
      * Fetches a stream of events for the current query.
@@ -28,13 +28,17 @@ export default Mixin.create({
       let skipLoad = !forceReload &&
         query && query.isEqual(oldQuery) &&
         (events.get('status') || '').match(/streaming|complete/);
+
       if (skipLoad) {
         return;
       }
+
       // Prepare state.events object for a new request.
       events.setProperties({
         query,
-        data: []
+        data: [],
+        anchor: 0,
+        goal: STREAM_LIMIT
       });
 
       // @workaround ASOC-22125: Due to a server issue, a query for records that doesn't match any events will never
@@ -53,13 +57,11 @@ export default Mixin.create({
         events.set('status', 'complete');
         return;
       }
+      // end @workaround
 
-      // Wire up stream to state.events and start streaming.
-      wireEventsStreamToState(
-        makeEventsStream(this.store, query, STREAM_LIMIT, STREAM_BATCH),
-        events,
-        STREAM_LIMIT
-      );
+      const inputs = buildEventStreamInputs(query, STREAM_LIMIT, STREAM_BATCH);
+
+      executeEventsRequest(this.request, inputs, events);
     },
 
     /**
@@ -80,27 +82,36 @@ export default Mixin.create({
       let anchor = len;
       let goal = len + limit;
       let lastSessionId = len ? events.get('data.lastObject.sessionId') : null;
-      wireEventsStreamToState(
-        makeEventsStream(this.store, query, limit, STREAM_BATCH, lastSessionId),
-        events,
-        goal,
-        anchor
-      );
+
+      events.setProperties({
+        anchor,
+        goal
+      });
+
+      const inputs = buildEventStreamInputs(query, limit, STREAM_BATCH, lastSessionId);
+
+      executeEventsRequest(this.request, inputs, events);
     },
 
     /**
      * Stops the current query to fetch events while it is in progress.
+     *
+     * Executed, for instance, when a user wants to pause a query
+     *
      * @param {string} [newStatus="idle"] Indicates what the events state object's "status" should be updated to.
      * Typically it is set to "idle" by default. One exception: In the scenario when a query for events count has
      * returned zero, we know that there are no events coming, and so a "complete" status will be passed in.
      * @public
      */
-    eventsStop(newStatus = 'idle') {
+    eventsStop(newStatus) {
       let events = this.get('state.events') || {};
-      let { stream, status } = getProperties(events, 'stream', 'status');
-      if (stream && (status === 'streaming')) {
-        stream.stop();
-        events.set('status', newStatus);
+      if (events.get('status') === 'streaming') {
+        events.get('stopStreaming')();
+        // @workaround until event-count properly sends complete message
+        if (newStatus) {
+          events.set('status', newStatus);
+        }
+        // end @workaround
       }
     }
   }

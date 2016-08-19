@@ -6,10 +6,7 @@
  * @public
  */
 import Ember from 'ember';
-import FromSocket from './from-socket';
-import FromArray from './from-array';
-import ToArray from './to-array';
-
+import { FromSocket, FromArray, ToArray } from './mixins';
 const {
   Object: EmberObject,
   run
@@ -26,18 +23,6 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @public
    */
   subscribe(observer) {
-    if (!observer) {
-      return null;
-    }
-
-    if (typeof observer === 'function') {
-      observer = {
-        onNext: arguments[0],
-        onError: arguments[1],
-        onCompleted: arguments[2]
-      };
-    }
-
     let sub = {
       observer,
       stream: this,
@@ -78,22 +63,26 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
 
   /**
    * Starts the data flow in the stream.
-   * This stub is a no-op; it should be overwritten by subclasses/mixins.
+   * The callbacks will be passed whatever params are passed into this method.
+   * The callbacks are also passed a reference to the `stop` function which
+   * can be used to stop a stream at any time
    * @returns {object} This instance, for chaining.
    * @public
    */
   start() {
+    this._notifyAll('onInit', [this.stop.bind(this),...arguments]);
     this._super();
     return this;
   },
 
   /**
    * Stops the data flow in the stream.
-   * This stub is a no-op; it should be overwritten by subclasses/mixins.
+   * The callbacks will be passed whatever params are passed into this method.
    * @returns {object} This instance, for chaining.
    * @public
    */
   stop() {
+    this._notifyAll('onStopped', arguments);
     this._super();
     return this;
   },

@@ -14,13 +14,6 @@ export default Mixin.create({
       run.next(() => {
         this.send('servicesGet', false);
       });
-    },
-
-    // When leaving this route, close the server streams that may still be open (if any).
-    willTransition() {
-      this.send('servicesStop');
-      this.send('eventsStop');
-      this.send('eventCountStop');
     }
   }
 });

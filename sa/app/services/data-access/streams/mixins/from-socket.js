@@ -6,7 +6,6 @@
  * @public
  */
 import Ember from 'ember';
-import StreamHelper from 'sa/utils/stream/helpers';
 
 const {
   Mixin,
@@ -36,10 +35,6 @@ let _requestCounter = 0;
 
 export default Mixin.create({
 
-  // The websocket service, used for server communication.
-  // @workaround Ember.inject.service() won't work here, so we should pass this attr into the Stream constructor.
-  websocket: null,
-
   /**
    * Hashtable of configuration properties for the stream.  Includes the following properties:
    * .socketUrl: (string) The connection URL for the socket server.
@@ -52,14 +47,11 @@ export default Mixin.create({
   socketConfig: null,
 
   /**
-   * Alternative to `socketConfig`; this attribute specifies a configuration identifier from config/environment's
-   * `socketStreams` hash. The identifier is an object with properties `modelName` (e.g., 'incident') and `method`
-   * (e.g., `query`, `fetchRecord`, `updateRecord`, `deleteRecord`). Only used if `socketConfig` attribute is not specified.
-   * @type {{ modelName: string, method: string }}
-   * @default null
+   * callback provided to Stream to retrieve websocket client
+   * @type {function}
    * @public
-   */
-  socketConfigType: null,
+  */
+  fetchSocketClient: null,
 
   /**
    * Optional hash of request parameters; typically includes properties like "filter" & "sort".
@@ -104,33 +96,16 @@ export default Mixin.create({
   progress: 0,
 
   /**
-   * Reads config hash from `socketConfig`. If missing, tries to look it up in config/environment under the
-   * keys specified by `socketConfigType`.
-   * @type {object}
-   * @private
-   */
-  _resolvedSocketConfig: computed('socketConfig', 'socketConfigType', function() {
-    let cfg = this.get('socketConfig');
-    if (!cfg) {
-
-      // No `socketConfig` given, so lookup one by the socketConfigType's modelName and method.
-      let { modelName, method } = this.get('socketConfigType') || {};
-      cfg = StreamHelper.findSocketConfig(modelName, method);
-    }
-    return cfg || {};
-  }),
-
-  /**
    * Computes the resolved set of request parameters. This is computed by starting with any defaults (`defaultQueryParams`)
    * from the resolved `socketConfig`, then overwriting them with any given `socketRequestParams`, and then lastly
    * applying auto-generated params `id` and `stream.limit` if they are missing.
    * @type {object}
    * @private
    */
-  _resolvedSocketRequestParams: computed('socketRequestParams', '_resolvedSocketConfig', function() {
+  _resolvedSocketRequestParams: computed('socketRequestParams', 'socketConfig', function() {
 
     // Merge `socketRequestParams` with defaults from the resolved socket config.
-    let cfg = this.get('_resolvedSocketConfig');
+    let cfg = this.get('socketConfig');
     let params = merge(
       merge({}, cfg.defaultQueryParams || {}),
       this.get('socketRequestParams') || {}
@@ -148,23 +123,22 @@ export default Mixin.create({
   }),
 
   /**
-   * Instantiates a new Stream object, with methods for submitting & cancelling a request for a websocket data stream.
    * @param {object} opts Options hash, to be passed into Stream constructor.
-   * @param {object|string} opts.config Either (i) a hashtable of configuration properties for the stream, or
-   * (ii) the id of such a configuration from the config file (under `socketStreams`).
-   * For details about Stream configuration, @see Stream.config
-   * @param {object} opts.params Optional hash of request parameters. @see Stream.params
+   * @param {object|string} opts.socketConfig a hashtable of configuration properties
+   * for the stream. For details about Stream configuration, @see Stream.config.
+   * @param {object} opts.socketRequestParams Optional hash of request parameters. @see Stream.params
+   * @param {object} opts.fetchSocketClient function to retrieve the websocket client
    * @returns {object} This instance, for chaining.
    * @public
    */
-  fromSocket(opts) {
+  fromSocket(opts = {}) {
     this.setProperties(opts);
     return this;
   },
 
   // Extend start by calling _startFromSocket if we have a socket config.
   start() {
-    if (!this.get('isStreaming') && (this.get('socketConfig') || this.get('socketConfigType'))) {
+    if (!this.get('isStreaming') && this.get('socketConfig')) {
       this._startedFromSocket = true;
       this._startFromSocket();
     }
@@ -215,14 +189,6 @@ export default Mixin.create({
       return;
     }
 
-    // Validate configuration: cancelDestination is optional, but the other destinations aren't.
-    let cfg = this.get('_resolvedSocketConfig');
-    if (!cfg || !cfg.socketUrl || !cfg.subscriptionDestination || !cfg.requestDestination) {
-      let { modelName, method } = this.get('socketConfigType') || {};
-      Logger.error(`Invalid socket stream configuration: ${modelName} ${method}`);
-      throw (`Invalid socket stream configuration: ${modelName} ${method}`);
-    }
-
     // Resolve request params: Ensure given params always include an id & stream.limit; set them if necessary.
     let params = this.get('_resolvedSocketRequestParams');
 
@@ -235,6 +201,7 @@ export default Mixin.create({
       page: params.page
     });
 
+    const cfg = this.get('socketConfig');
     let { subscriptionDestination } = cfg;
     if (params.subDestinationUrlParams) {
       subscriptionDestination = EmberString.loc(cfg.subscriptionDestination, params.subDestinationUrlParams);
@@ -244,12 +211,12 @@ export default Mixin.create({
     let me = this;
     let callback = run.bind(this, this._onmessage);
 
-    this.get('websocket').connect(cfg.socketUrl)
-      .then(function(conn) {
-        me._connection = conn;
+    this.get('fetchSocketClient')()
+      .then(function(websocketClient) {
+        me._websocketClient = websocketClient;
 
         // Subscribe to destination.
-        let sub = me._socketSubscription = conn.subscribe(subscriptionDestination, callback, null);
+        let sub = me._socketSubscription = websocketClient.subscribe(subscriptionDestination, callback, null);
 
         // Send query message for the stream.
         sub.send({}, params, cfg.requestDestination);
@@ -265,20 +232,20 @@ export default Mixin.create({
    * @private
    */
   _stopFromSocket() {
-    if (this._connection) {
+    if (this._websocketClient) {
       if (this.get('isStreaming')) {
-        let dest = this.get('_resolvedSocketConfig.cancelDestination');
+        let dest = this.get('socketConfig.cancelDestination');
         let id = this.get('_resolvedSocketRequestParams.id');
 
         if (dest && id) {
-          this._connection.send(dest, {}, { id, cancel: true });
+          this._websocketClient.send(dest, {}, { id, cancel: true });
           this.set('isStreaming', false);
         }
       }
 
       // Release this STOMP client connection to socket URL.
-      this._connection.disconnect();
-      this._connection = null;
+      this._websocketClient.disconnect();
+      this._websocketClient = null;
     }
     return this;
   },
@@ -348,7 +315,8 @@ export default Mixin.create({
           isStreaming: (progress === undefined) || (progress < 100)
         }, meta || {}));
 
-      this.next(response);
+      // pass response and mechanism to stop stream if required
+      this.next(response, this.stop.bind(this));
 
       // Fire completed if there is no more data coming. In order to detect that, sometimes we can compute `progress`;
       // other times we can't, but the response will tell us it is complete by include `meta.complete: true`.

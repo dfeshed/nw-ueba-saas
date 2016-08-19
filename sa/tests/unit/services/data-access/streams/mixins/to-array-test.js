@@ -1,7 +1,7 @@
-import Stream from '../../../../utils/stream/base';
+import { Stream } from 'sa/services/data-access';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | stream/to array');
+module('Unit | Utility | stream/mixins/to array');
 
 test('it pushes payloads to the target array', function(assert) {
   let stream = Stream.create().autoStart();

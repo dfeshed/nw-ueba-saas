@@ -1,9 +1,16 @@
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
-import Websocket from 'sa/websocket/service';
+import Request from 'sa/services/request';
 import Adapter from 'sa/application/adapter';
-import Store from 'sa/store/service';
+import Store from 'ember-data/store';
 import config from 'sa/config/environment';
+import { Socket } from 'sa/services/data-access';
+
+import Ember from 'ember';
+
+const {
+  Object: EmberObject
+} = Ember;
 
 moduleForAcceptance('Acceptance | application adapter', {
   // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
@@ -15,12 +22,15 @@ moduleForAcceptance('Acceptance | application adapter', {
   }
 });
 
-test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
+test('it can redirect calls to a socket and get a response from a mock server 1', function(assert) {
 
   visit('/');
 
-  let websocket = Websocket.create();
-  let adapter = Adapter.create({ websocket });
+  const router = EmberObject.create({
+    currentRouteName: null
+  });
+  let request = Request.create({ router });
+  let adapter = Adapter.create({ request });
   let store = Store.create();
   let type = { modelName: 'test' };
   let { socketUrl } = config.socketRoutes.test;
@@ -32,15 +42,18 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   });
 
   andThen(function() {
-    return websocket.disconnect(socketUrl);
+    return Socket.disconnect(socketUrl);
   });
 });
 
-test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
+test('it can redirect calls to a socket and get a response from a mock server 2', function(assert) {
   visit('/');
 
-  let websocket = Websocket.create();
-  let adapter = Adapter.create({ websocket });
+  const router = EmberObject.create({
+    currentRouteName: null
+  });
+  let request = Request.create({ router });
+  let adapter = Adapter.create({ request });
   let store = Store.create();
   let type = { modelName: 'test' };
   let { socketUrl } = config.socketRoutes.test;
@@ -52,16 +65,19 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   });
 
   andThen(function() {
-    return websocket.disconnect(socketUrl);
+    return Socket.disconnect(socketUrl);
   });
 });
 
-test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
+test('it can redirect calls to a socket and get a response from a mock server 3', function(assert) {
 
   visit('/');
 
-  let websocket = Websocket.create();
-  let adapter = Adapter.create({ websocket });
+  const router = EmberObject.create({
+    currentRouteName: null
+  });
+  let request = Request.create({ router });
+  let adapter = Adapter.create({ request });
   let store = Store.create();
   let type = { modelName: 'test' };
   let { socketUrl } = config.socketRoutes.test;
@@ -73,6 +89,6 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   });
 
   andThen(function() {
-    return websocket.disconnect(socketUrl);
+    return Socket.disconnect(socketUrl);
   });
 });

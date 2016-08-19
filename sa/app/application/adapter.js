@@ -8,20 +8,18 @@
 import Ember from 'ember';
 import RESTAdapter from 'ember-data/adapters/rest';
 import config from 'sa/config/environment';
-import Stream from 'sa/utils/stream/base';
-import StreamHelper from 'sa/utils/stream/helpers';
 
 const {
   computed,
   inject: {
     service
   },
-  typeOf,
-  RSVP,
   merge
 } = Ember;
 
 export default RESTAdapter.extend({
+
+  request: service(),
 
   // sets the namespace for our api calls
   namespace: 'api',
@@ -36,15 +34,13 @@ export default RESTAdapter.extend({
     };
   }),
 
-  websocket: service(),
-
   /**
    * Overrides the default findAll method, in order to support using sockets.
    * @see http://emberjs.com/api/data/classes/DS.RESTAdapter.html#method_findAll
    * @public
    */
   findAll(store, type) {
-    return this._trySocket('findAll', store, type) || this._super(...arguments);
+    return this._useSocket('findAll', type) || this._super(...arguments);
   },
 
   /**
@@ -53,7 +49,7 @@ export default RESTAdapter.extend({
    * @public
    */
   query(store, type, query) {
-    return this._trySocket('query', store, type, query) || this._super(...arguments);
+    return this._useSocket('query', type, query) || this._super(...arguments);
   },
 
   /**
@@ -62,7 +58,7 @@ export default RESTAdapter.extend({
    * @public
    */
   queryRecord(store, type, query) {
-    return this._trySocket('queryRecord', store, type, query) || this._super(...arguments);
+    return this._useSocket('queryRecord', type, query) || this._super(...arguments);
   },
 
   /**
@@ -71,22 +67,23 @@ export default RESTAdapter.extend({
    * @public
    */
   findRecord(store, type, id, snapshot) {
-    return this._trySocket('findRecord', store, type, null, id, snapshot) || this._super(...arguments);
+    return this._useSocket('findRecord', type, null, id, snapshot) || this._super(...arguments);
   },
 
   /**
    * Overrides the default updateRecord method, in order to support using sockets.
    * @see http://emberjs.com/api/data/classes/DS.RESTAdapter.html#method_updateRecord
-   * @public
    * Overrides the adapters updateRecord method.
    * @param {DS.Store} store
    * @param {DS.Model} type
    * @param {DS.Snapshot} snapshot
    * @param {Object} query - hash of socket request params
+   * @public
    */
   updateRecord(store, type, snapshot, query = null) {
-    return this._trySocket('updateRecord', store, type, query, null, snapshot) || this._super(...arguments);
+    return this._useSocket('updateRecord', type, query, null, snapshot) || this._super(...arguments);
   },
+
 
   /**
    * Overrides the default deleteRecord method, in order to support using sockets.
@@ -99,7 +96,7 @@ export default RESTAdapter.extend({
    * @param {Object} query - hash of socket request params
    */
   deleteRecord(store, type, snapshot, query = null) {
-    return this._trySocket('deleteRecord', store, type, query, null, snapshot) || this._super(...arguments);
+    return this._useSocket('deleteRecord', type, query, null, snapshot) || this._super(...arguments);
   },
 
   /**
@@ -112,60 +109,44 @@ export default RESTAdapter.extend({
    * @param {DS.Snapshot} snapshot
    */
   createRecord(store, type, snapshot, query = null) {
-    return this._trySocket('createRecord', store, type, query, null, snapshot) || this._super(...arguments);
+    return this._useSocket('createRecord', type, query, null, snapshot) || this._super(...arguments);
   },
 
   /**
-   * Tries to use a socket. If successful, returns the socket promise; otherwise if a run-time error is caught, returns null.
-   * Typically a run-time error would only be thrown if there is no config defined in `sa/config/environment.js` for
-   * the requested modelName-method pair.
-   * @param {string} method One of: 'query', 'queryRecord', 'findRecord', 'findAll', 'createRecord', 'updateRecord', 'deleteRecord'.
-   * @param {DS.Store} store
-   * @param {DS.Model} type
-   * @param {Object} query
-   * @param {String} id
-   * @param {DS.Snapshot} snapshot
-   * @returns {*}
-   * @private
-   */
-  _trySocket(method, store, type, query, id, snapshot) {
-    try {
-      return this._useSocket(method, store, type, query, id, snapshot);
-    } catch (e) {
-      return null;
-    }
-  },
-
-  /**
-   * Simulates an AJAX REST query but submits the query over a socket.
+   * Will attempt to simulate an AJAX REST query but submits the query over a socket.
    * Returns a promise that resolves with the (first and only the first) socket response that comes back.
    * Note that, as in AJAX REST, only one response message is expected. A Promise cannot be resolved multiple times.
-   * If you expect that there may be multiple socket messages, use `store.stream()` instead.
+   * If you expect that there may be multiple socket messages, use `request.streamRequest()` instead.
+   *
    * Also note that Ember Data will auomatically pass the resolved value of this Promise to the application adapter's
    * `normalizeResponse` method, whose job is to convert the JSON into a JSON API document structure.
    * In SA, a successful response is expected to be structured like `{ code: 0, data: .., meta: .. }`, which does look
    * somewhat like a JSON API document, but the object(s) in inside `data` may need to be modified.
+   *
+   * If a run-time error is caught, returns null. Typically a run-time error would only be thrown if there is no config
+   * defined in `sa/config/environment.js` for the requested modelName-method pair.
+   *
    * @returns {Promise} A promise that resolves with the socket response if successful, or rejects if it errors.
    * @private
    */
-  _useSocket(method, store, type, query, id, snapshot) {
-    let cfg = StreamHelper.findSocketConfig(type.modelName, method);
-    if (typeOf(cfg) === 'undefined') {
-      return null;
+  _useSocket(method, type, query, id, snapshot) {
+    query = query || (id && { id }) || (snapshot && { id: snapshot.id });
+    query = merge({}, query);
+
+    const requestInputs = {
+      method,
+      modelName: type.modelName,
+      query
+    };
+
+    let promiseReturn = null;
+    try {
+      promiseReturn = this.get('request').promiseRequest(requestInputs);
+    } catch (err) {
+      // do nothing, let promiseReturn remain null
     }
 
-    query = query || (id && { id }) || (snapshot && { id: snapshot.id });
-
-    // Set up a stream to fetch the data over socket.
-    let stream = Stream.create({}).fromSocket({
-      websocket: this.get('websocket'),
-      socketConfigType: { modelName: type.modelName, method },
-      socketRequestParams: merge({}, query)
-    }).autoStart();
-
-    // To start the stream, subscribe to it. Return a Promise wrapper to it.
-    return new RSVP.Promise(function(resolve, reject) {
-      stream.subscribe(resolve, reject);
-    });
+    return promiseReturn;
   }
+
 });

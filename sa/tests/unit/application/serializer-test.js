@@ -5,11 +5,9 @@ const { getOwner } = Ember;
 
 moduleFor('serializer:application', 'Unit | Serializer | application', {
   // Specify the other units that are required for this test.
-  // Our serializer takes store as an input param, so we need the store service.
-  // Our store, in turn, uses websockets to support streaming, so we need the websocket service too.
   // For an alternative approach using integration tests rather than unit tests,
   // @see http://stackoverflow.com/questions/29982856/how-to-create-unit-tests-for-ember-js-adapter-serializers
-  needs: ['service:store', 'service:websocket']
+  needs: ['service:request']
 });
 
 test('it exists', function(assert) {

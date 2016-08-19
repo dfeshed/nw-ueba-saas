@@ -1,8 +1,6 @@
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('adapter:application', 'Unit | Adapter | application', {
-  // Specify the other units that are required for this test.
-  // needs: ['service:store', 'service:websocket']
 });
 
 test('it exists', function(assert) {

@@ -1,7 +1,7 @@
-import Stream from '../../../../utils/stream/base';
+import { Stream } from 'sa/services/data-access';
 import { module, test } from 'qunit';
 
-module('Unit | Utility | stream/from array');
+module('Unit | Utility | stream/mixins/from array');
 
 const SOURCE = [0, 1, 2];
 
@@ -9,8 +9,10 @@ test('it notifies subscribers of the source array\'s existing contents', functio
   assert.expect(SOURCE.length);
 
   let stream = Stream.create().fromArray(SOURCE);
-  stream.subscribe(function(val) {
-    assert.equal(typeof val, 'number', 'Subscriber was notified with an expected value data type.');
+  stream.subscribe({
+    onNext: (val) => {
+      assert.equal(typeof val, 'number', 'Subscriber was notified with an expected value data type.');
+    }
   });
   stream.start();
 });
@@ -20,8 +22,10 @@ test('it supports autoStart', function(assert) {
 
   Stream.create().fromArray(SOURCE)
     .autoStart()
-    .subscribe(function(val) {
-      assert.equal(typeof val, 'number', 'Subscriber was notified with an expected value data type.');
+    .subscribe({
+      onNext: (val) => {
+        assert.equal(typeof val, 'number', 'Subscriber was notified with an expected value data type.');
+      }
     });
 });
 
@@ -31,8 +35,10 @@ test('it notifies subscribers of additions to the source array', function(assert
 
   Stream.create().fromArray(arr)
     .autoStart()
-    .subscribe(function(val) {
-      assert.equal(typeof val, 'number', 'Subscriber was notified with an expected value data type.');
+    .subscribe({
+      onNext: (val) => {
+        assert.equal(typeof val, 'number', 'Subscriber was notified with an expected value data type.');
+      }
     });
 
   arr.pushObject(3);

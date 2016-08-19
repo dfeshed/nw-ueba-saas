@@ -11,17 +11,13 @@ const {
   observer,
   RSVP,
   merge,
-  run,
-  Object: EmberObject
+  Object: EmberObject,
+  run
 } = Ember;
 
 export default Route.extend({
   session: service(),
   respondMode: service(),
-
-  // Array holding the list of all subscriptions
-  currentStreams: [],
-
   listViewCube: null,
 
   /*
@@ -32,20 +28,23 @@ export default Route.extend({
    */
   _createStream(filter, sort, subDestinationUrlParams, cube) {
 
-    let stream = this.store.stream('incident', {
-      subDestinationUrlParams,
-      sort,
-      filter
-    }, { requireRequestId: false })
-      .autoStart()
-      .subscribe((response) => {
-        let { data } = response;
+    this.request.streamRequest({
+      method: 'stream',
+      modelName: 'incident',
+      query: {
+        subDestinationUrlParams,
+        sort,
+        filter
+      },
+      streamOptions: { requireRequestId: false },
+      onResponse({ data }) {
         cube.get('records').pushObjects(data);
-      }, function() {
-        Logger.error('Error processing stream call for incident model');
-      });
+      },
+      onError(response) {
+        Logger.error('Error processing stream call for incident model', response);
+      }
+    });
 
-    this.get('currentStreams').push(stream);
   },
 
   /*
@@ -53,7 +52,7 @@ export default Route.extend({
    * @private
    */
   _createNotify(cubes, filterFunc) {
-    let username, stream;
+    let username;
     let _currentSession = this.get('session');
 
     if (_currentSession) {
@@ -71,18 +70,24 @@ export default Route.extend({
      */
 
     [username, 'all_incidents'].forEach((subDestinationUrlParams) => {
-      stream = this.store.notify('incident',
-        { subDestinationUrlParams },
-        { requireRequestId: false })
-        .autoStart()
-        .subscribe((response) => {
-          let { data } = response;
-          this._updateCube(data, cubes, filterFunc, response.notificationCode);
-        }, function() {
-          Logger.error('Error processing notify call for incident model');
-        });
-      this.get('currentStreams').push(stream);
+      this.request.streamRequest({
+        method: 'notify',
+        modelName: 'incident',
+        query: {
+          subDestinationUrlParams
+        },
+        streamOptions: {
+          requireRequestId: false
+        },
+        onResponse: ({ data, notificationCode }) => {
+          this._updateCube(data, cubes, filterFunc, notificationCode);
+        },
+        onError(response) {
+          Logger.error('Error processing notify call for incident model', response);
+        }
+      });
     });
+
   },
 
   /*
@@ -255,20 +260,6 @@ export default Route.extend({
       run(() => {
         cube.sort(field, (direction === 'desc'));
       });
-    },
-    /**
-     * @name willTransition
-     * @description when the router will transit to another route, the opened stream are being closed
-     * @public
-     */
-    willTransition() {
-      let streamRequests = this.get('currentStreams');
-      run(() => {
-        streamRequests.forEach((streamRequest) => {
-          streamRequest.stream.stop();
-        });
-      });
-      this.set('currentStreams', []);
     },
 
     /*

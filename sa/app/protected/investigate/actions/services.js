@@ -20,17 +20,10 @@ export default Mixin.create({
      */
     servicesGet(forceReload = false) {
       wirePromiseToState(
-        () => {
-          return this.store.findAll('core-service');
-        },
+        () => this.store.findAll('core-service'),
         this.get('state.services'),
         forceReload
       );
-    },
-
-    servicesStop() {
-      // no-op
-      // @todo enhance this.store so that it can expose the stream, which we can then call stop() on.
     }
   }
 });
