@@ -13,9 +13,6 @@ import org.springframework.util.Assert;
 import java.util.*;
 
 import static com.google.common.base.Preconditions.checkNotNull;
-import static fortscale.domain.core.DeletedUser.administratorAccountField;
-import static fortscale.domain.core.DeletedUser.executiveAccountField;
-import static fortscale.domain.core.DeletedUser.userServiceAccountField;
 
 
 @Document(collection=User.collectionName)
@@ -58,6 +55,10 @@ public class User extends AbstractDocument {
     public static final String scoreSeverityField = "scoreSeverity";
 	public static final String terminationDateField = "terminationDate";
 	public static final String alertsCountField = "alertsCount";
+
+	public static final String SERVICE = "service";
+	public static final String ADMIN = "admin";
+	public static final String EXECUTIVE = "executive";
 
 	@Indexed
 	@Field(displayNameField)
@@ -308,15 +309,15 @@ public class User extends AbstractDocument {
 	}
 	
 	public Boolean getUserServiceAccount() {
-		return tags != null ? tags.contains("service") : false;
+		return tags != null ? tags.contains(SERVICE) : false;
 	}
 
 	public Boolean getAdministratorAccount() {
-		return tags != null ? tags.contains("admin") : false;
+		return tags != null ? tags.contains(ADMIN) : false;
 	}
 
 	public Boolean getExecutiveAccount() {
-		return tags != null ? tags.contains("executive") : false;
+		return tags != null ? tags.contains(EXECUTIVE) : false;
 	}
 
 	public static String getClassifierScoreField(String classifierId) {
