@@ -94,7 +94,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String configKey = configField.getValue();
 			String dataSource = getConfigString(config, String.format("fortscale.events.entry.%s.data.source", configKey));
 			String lastState = getConfigString(config, String.format("fortscale.events.entry.%s.last.state", configKey));
-			Boolean shouldBeTaged = config.getBoolean(String.format("fortscale.events.entry.%s.shouldBeTag", configKey));
 
 			String outputTopic = getConfigString(config, String.format("fortscale.events.entry.%s.output.topic", configKey));
 
@@ -117,7 +116,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			samAccountNameService.setCache(samAccountNameStore);
 			dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey(dataSource, lastState), new UsernameNormalizationConfig(outputTopic,
                     normalizationBasedField, domainField, fakeDomain, normalizedUsernameField, partitionKey, updateOnlyFlag,
-					classifier, service,shouldBeTaged));
+					classifier, service));
 		}
 
 		// add the usernameService to update input topics map
@@ -209,12 +208,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 				taskMetrics.normalizedUsernameAlreadyExistsMessages++;
 			}
 
-			// add the default false tags to the event
-			if (usernameNormalizationConfig.getShouldBeTagged()) {
-				for (Entry<String, String> tag : tags.entrySet()) {
-					String fieldName = tag.getValue();
-					message.put(fieldName, false);
-				}
+			// add the default tags as false to the event
+			for (Entry<String, String> tag : tags.entrySet()) {
+				String fieldName = tag.getValue();
+				message.put(fieldName, false);
 			}
 
 			// send the event to the output topic
