@@ -15,6 +15,7 @@ import fortscale.streaming.task.enrichment.metrics.UsernameNormalizationAndTaggi
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -208,8 +209,10 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			}
 
 			// add the default tags as false to the event
-			for (String tag : tags) {
-				message.put(tag, false);
+			if (CollectionUtils.isNotEmpty(tags)) {
+				for (String tag : tags) {
+					message.put(tag, false);
+				}
 			}
 
 			// send the event to the output topic
