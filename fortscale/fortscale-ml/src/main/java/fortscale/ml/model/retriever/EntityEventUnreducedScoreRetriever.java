@@ -2,7 +2,6 @@ package fortscale.ml.model.retriever;
 
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.EntityEvent;
-import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.ml.model.retriever.metrics.EntityEventUnreducedScoreRetrieverMetrics;
@@ -24,15 +23,13 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 	private StatsService statsService;
 
 	private EntityEventUnreducedScoreRetrieverConf config;
-	private EntityEventConf entityEventConf;
 	private EntityEventUnreducedScoreRetrieverMetrics metrics;
 
 	public EntityEventUnreducedScoreRetriever(EntityEventUnreducedScoreRetrieverConf config) {
 		super(config);
 		this.config = config;
-		entityEventConf = entityEventConfService.getEntityEventConf(config.getEntityEventConfName());
-		Assert.notNull(entityEventConf);
-		metrics = new EntityEventUnreducedScoreRetrieverMetrics(statsService, entityEventConf.getName());
+		Assert.notNull(entityEventConfService.getEntityEventConf(config.getEntityEventConfName()));
+		metrics = new EntityEventUnreducedScoreRetrieverMetrics(statsService, config.getEntityEventConfName());
 	}
 
 	@Override
