@@ -36,6 +36,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 	private static final String VPN_SESSION = "vpn_session";
 	private static final String NORMALIZED_USERNAME = "normalized_username";
 	private static final String SOURCE_IP = "source_ip";
+	private static final String LOCAL_IP = "local_ip";
 	private static final String COUNTRY_NAME = "country_name";
 	private static final String EVENT_SCORE = "event_score";
 
@@ -80,7 +81,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getUsername());
 			additionalInformationMap.put(supportingInformationKey, createAdditionalInformationValues("", VPN_SESSION,
 					displayName, evidence.getEntityName(), vpnSessionOverlap.getEntity_id(),
-					vpnSessionOverlap.getSource_ip(), vpnSessionOverlap.getCountry(),
+					vpnSessionOverlap.getSource_ip(), vpnSessionOverlap.getLocal_ip(), vpnSessionOverlap.getCountry(),
 					vpnSessionOverlap.getEventscore()));
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
@@ -97,7 +98,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 					createAdditionalInformationValues(vpnLateralMovement.getNormalized_dst_machine(),
 							vpnLateralMovement.getData_source(), displayName,
 							vpnLateralMovement.getNormalized_username(), vpnLateralMovement.getEntity_id(),
-							vpnLateralMovement.getSource_ip(), "", vpnLateralMovement.getEventscore()));
+							vpnLateralMovement.getSource_ip(), "", "", vpnLateralMovement.getEventscore()));
 		}
         SupportingInformationGenericData<String> supportingInformationData =
 				new SupportingInformationGenericData<>(vpnLateralMovementMap);
@@ -106,8 +107,8 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
     }
 
 	private Map<String, Object> createAdditionalInformationValues(String targetMachine, String dataSource,
-			String displayName, String normalizedUsername, String entityId, String sourceIp, String countryName,
-			long eventScore) {
+			String displayName, String normalizedUsername, String entityId, String sourceIp, String localIp,
+			String countryName, long eventScore) {
 		Map<String, Object> additionalInformationValues = new HashMap<>();
 		additionalInformationValues.put(TARGET_MACHINE, targetMachine);
 		additionalInformationValues.put(DATA_SOURCE, dataSource);
@@ -115,6 +116,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 		additionalInformationValues.put(NORMALIZED_USERNAME, normalizedUsername);
 		additionalInformationValues.put(ENTITY_ID, entityId);
 		additionalInformationValues.put(SOURCE_IP, sourceIp);
+		additionalInformationValues.put(LOCAL_IP, localIp);
 		additionalInformationValues.put(COUNTRY_NAME, countryName);
 		additionalInformationValues.put(EVENT_SCORE, eventScore);
 		return additionalInformationValues;
