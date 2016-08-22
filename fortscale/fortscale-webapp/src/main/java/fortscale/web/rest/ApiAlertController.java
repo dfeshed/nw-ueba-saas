@@ -145,6 +145,7 @@ public class ApiAlertController extends BaseController {
 				START_TIME_COLUMN_NAME,
 				NUMBER_OF_INDICATORS_COLUMN_NAME,
 				STATUS_COLUMN_NAME,
+				FEEDBACK_COLUMN_NAME,
 				SEVERITY_COLUMN_NAME};
 
 		csvWriter.writeNext(tableTitleRow);
@@ -162,7 +163,8 @@ public class ApiAlertController extends BaseController {
 					alert.getEntityName(),
 					simpleDateFormat.format(new Date(alert.getStartDate())),
 					evidencesSizeAsString,
-					alert.getStatus().name(),
+					alert.getStatus().getPrettyValue(),
+					alert.getFeedback().getPrettyValue(),
 					alert.getSeverity().name()};
 			csvWriter.writeNext(alertRow);
 
@@ -236,7 +238,6 @@ public class ApiAlertController extends BaseController {
 		}
 		return entities;
 	}
-
 
 	private Map<Severity, Integer> countSeverities (AlertRestFilter filter) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
