@@ -6,6 +6,7 @@ export default function safeCallback(fn) {
   if (!$.isFunction(fn)) {
     Logger.warn(`Invalid callback invoked in ${this}. Ignoring request.`);
   } else {
-    fn();
+    let args = [...arguments].slice(1);
+    fn(...args);
   }
 }

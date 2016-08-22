@@ -4,6 +4,7 @@ import Events from './events';
 import EventCount from './event-count';
 import EventColumns from './event-columns';
 import Tree from 'sa/utils/tree/tree';
+import Meta from './meta';
 
 const { Object: EmberObject } = Ember;
 
@@ -25,5 +26,8 @@ export default EmberObject.extend({
   eventCount: EventCount.create(),
 
   // Columns to display for events data table.
-  eventColumns: [].concat(EventColumns)
+  eventColumns: [].concat(EventColumns),
+
+  // Meta data for the `events`.
+  meta: Meta.create()
 }).create();

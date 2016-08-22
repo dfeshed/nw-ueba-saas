@@ -1,0 +1,57 @@
+.rsa-investigate-meta {
+
+  &.meta-size-min {
+    cursor: pointer;
+
+    .mask {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+
+      &:before {
+        @include rsa-font(header, small);
+        content: '\2630';
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        width: 1rem;
+        margin: rsa-whitespace(less) auto;
+      }
+    }
+  }
+
+  &:not(.meta-size-min) {
+    @include rsa-col(justify,fill);
+  }
+
+  .rsa-investigate-meta__header {
+    @include rsa-row(justify, middle);
+    @include rsa-font(header, small);
+    padding: 0 rsa-whitespace();
+  }
+
+  &__body {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    @include rsa-font(body, light);
+  }
+
+  &__nav {
+    @include rsa-vendor-prefix(flex-grow, 1);
+
+    h2 {
+      display: inline-block;
+    }
+  }
+  &__tools {
+    @include rsa-vendor-prefix(flex-grow, 0);
+
+    button {
+      cursor: pointer;
+      padding: rsa-whitespace(less);
+    }
+  }
+}

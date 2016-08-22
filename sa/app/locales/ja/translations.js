@@ -53,6 +53,9 @@ export default $.extend({}, BaseTranslations, {
       title: 'ja_Unable to load data.',
       description: 'ja_An unexpected error occurred when attempting to fetch the data records.'
     },
+    meta: {
+      title: 'ja_Meta'
+    },
     services: {
       loading: 'ja_Loading list of available services',
       empty: {

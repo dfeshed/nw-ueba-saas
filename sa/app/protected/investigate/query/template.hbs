@@ -31,9 +31,14 @@
       percent=model.events.percent
       enabled=(is-equal model.events.status 'streaming')}}
   </header>
-  <section class="rsa-investigate-query__body">
-    <header class="rsa-investigate-query__body-header">
-    </header>
+  <section class="rsa-investigate-query__body meta-panel-size-{{model.meta.panelSize}}">
+    <aside class="rsa-investigate-query__body-aside">
+      {{rsa-investigate/meta
+        size=model.meta.panelSize
+        minSizeAction=(route-action "metaPanelSize" 'min')
+        maxSizeAction=(route-action "metaPanelSize" 'max')
+        defaultSizeAction=(route-action "metaPanelSize" 'default')}}
+    </aside>
     <section class="rsa-investigate-query__body-main">
       {{!rsa-investigate/timeline coming soon!}}
       {{#rsa-data-table lazy=true items=model.events.data columnsConfig=model.eventColumns}}
@@ -62,9 +67,6 @@
         </div>
       {{/if}}
     </section>
-    <aside class="rsa-investigate-query__body-aside">
-      {{!rsa-investigate/facets coming soon!}}
-    </aside>
   </section>
   <aside class="rsa-investigate-query__aside">
     {{!rsa-investigate/event-recon coming soon!}}

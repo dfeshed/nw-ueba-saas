@@ -14,3 +14,17 @@ test('it works', function(assert) {
   safeCallback(null);
   safeCallback(fn);
 });
+
+test('it passes along any additional arguments into the given callback function', function(assert) {
+  const params = [ 'foo', 'bar', 'baz' ];
+  assert.expect(params.length);
+
+  const fn = function() {
+    const args = [...arguments];
+    params.forEach((param, index) => {
+      assert.equal(args[index], param);
+    });
+  };
+
+  safeCallback(fn, ...params);
+});
