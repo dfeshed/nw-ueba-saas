@@ -690,6 +690,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		if (CollectionUtils.isNotEmpty(userRestFilter.getUserTags())) {
 			if (userRestFilter.getUserTags().contains("any")) {
 				criteriaList.add(new Criteria(User.tagsField).not().size(0));
+			}else if (userRestFilter.getUserTags().contains("none")){
+				criteriaList.add(new Criteria(User.tagsField).size(0));
 			}else{
 				criteriaList.add(new Criteria(User.tagsField).in(userRestFilter.getUserTags()));
 			}
