@@ -35,6 +35,8 @@ import static org.springframework.data.mongodb.core.query.Update.update;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
+	public static final String ANY_TAGS = "any";
+	public static final String NO_TAGS = "none";
 	private static Logger logger = Logger.getLogger(UserRepositoryImpl.class);
 
 	@Autowired
@@ -688,9 +690,9 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 
 		if (CollectionUtils.isNotEmpty(userRestFilter.getUserTags())) {
-			if (userRestFilter.getUserTags().contains("any")) {
+			if (userRestFilter.getUserTags().contains(ANY_TAGS)) {
 				criteriaList.add(new Criteria(User.tagsField).not().size(0));
-			}else if (userRestFilter.getUserTags().contains("none")){
+			}else if (userRestFilter.getUserTags().contains(NO_TAGS)){
 				criteriaList.add(new Criteria(User.tagsField).size(0));
 			}else{
 				criteriaList.add(new Criteria(User.tagsField).in(userRestFilter.getUserTags()));
