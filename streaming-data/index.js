@@ -14,7 +14,9 @@ module.exports = {
     return true;
   },
   included: function(app) {
-    this._super.included(app);
+    this._super.included.apply(this, arguments);
+
+    this.eachAddonInvoke('included', arguments);
   },
   init: function() {
     this._super.init && this._super.init.apply(this, arguments);
