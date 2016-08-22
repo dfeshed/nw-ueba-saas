@@ -29,6 +29,7 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 
 	private static Logger logger = Logger.getLogger(SupportingInformationVPNLateralMovementPopulator.class);
 
+	private static final String SOURCE_MACHINE = "source_machine";
 	private static final String TARGET_MACHINE = "target_machine";
 	private static final String DATA_SOURCE = "data_source";
 	private static final String DISPLAY_NAME = "display_name";
@@ -79,8 +80,8 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.
 					toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getUsername());
 			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getUsername());
-			additionalInformationMap.put(supportingInformationKey, createAdditionalInformationValues("", VPN_SESSION,
-					displayName, evidence.getEntityName(), vpnSessionOverlap.getEntity_id(),
+			additionalInformationMap.put(supportingInformationKey, createAdditionalInformationValues("", "",
+					VPN_SESSION, displayName, evidence.getEntityName(), vpnSessionOverlap.getEntity_id(),
 					vpnSessionOverlap.getSource_ip(), vpnSessionOverlap.getLocal_ip(), vpnSessionOverlap.getCountry(),
 					vpnSessionOverlap.getEventscore()));
 		}
@@ -95,9 +96,9 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 					toString(startTimeInMillis), vpnLateralMovement.getUsername());
 			vpnLateralMovementMap.put(supportingInformationKey, vpnLateralMovement.getUsername());
 			additionalInformationMap.put(supportingInformationKey,
-					createAdditionalInformationValues(vpnLateralMovement.getNormalized_dst_machine(),
-							vpnLateralMovement.getData_source(), displayName,
-							vpnLateralMovement.getNormalized_username(), vpnLateralMovement.getEntity_id(),
+					createAdditionalInformationValues(vpnLateralMovement.getNormalized_src_machine(),
+							vpnLateralMovement.getNormalized_dst_machine(), vpnLateralMovement.getData_source(),
+							displayName, vpnLateralMovement.getNormalized_username(), vpnLateralMovement.getEntity_id(),
 							vpnLateralMovement.getSource_ip(), "", "", vpnLateralMovement.getEventscore()));
 		}
         SupportingInformationGenericData<String> supportingInformationData =
@@ -106,10 +107,11 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
         return supportingInformationData;
     }
 
-	private Map<String, Object> createAdditionalInformationValues(String targetMachine, String dataSource,
-			String displayName, String normalizedUsername, String entityId, String sourceIp, String localIp,
-			String countryName, long eventScore) {
+	private Map<String, Object> createAdditionalInformationValues(String sourceMachine, String targetMachine,
+			String dataSource, String displayName, String normalizedUsername, String entityId, String sourceIp,
+			String localIp, String countryName, long eventScore) {
 		Map<String, Object> additionalInformationValues = new HashMap<>();
+		additionalInformationValues.put(SOURCE_MACHINE, sourceMachine);
 		additionalInformationValues.put(TARGET_MACHINE, targetMachine);
 		additionalInformationValues.put(DATA_SOURCE, dataSource);
 		additionalInformationValues.put(DISPLAY_NAME, displayName);
