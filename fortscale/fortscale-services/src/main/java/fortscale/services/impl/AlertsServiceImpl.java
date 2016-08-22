@@ -15,6 +15,7 @@ import fortscale.services.UserService;
 import fortscale.services.UserWithAlertService;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -172,6 +173,28 @@ public class AlertsServiceImpl implements AlertsService {
 				null, null, null, null);
 	}
 
+	@Override
+	public Map<String, Integer> getAlertsTypesCountedByUser(Boolean ignoreRejected){
+
+		Map<String, Integer> results = new HashMap<>();
+		String feedback = org.springframework.util.StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
+
+
+		 // The countOnUserAndAlertType map contains each pair of alert_name + alert_fied once.
+		//  We need to count how many users each alert_name contains
+		Map<Pair<String,String>, Integer> countOnUserAndAlertName = alertsRepository.groupCountBy2Fields(Alert.nameField, Alert.entityNameField, null, null, feedback,
+				null, null, null, null);
+
+		for (Pair<String,String> alertNameAndUserName: countOnUserAndAlertName.keySet()){
+			Integer count = results.get(alertNameAndUserName.getKey());
+			if (count == null){
+				count = 0;
+			}
+			count++;
+			results.put(alertNameAndUserName.getKey(), count);
+		}
+		return results;
+	}
 
 
 

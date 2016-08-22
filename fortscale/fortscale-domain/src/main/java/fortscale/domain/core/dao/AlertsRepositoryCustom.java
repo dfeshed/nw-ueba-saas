@@ -6,6 +6,7 @@ import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
 import fortscale.domain.rest.UserRestFilter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.query.Criteria;
 
@@ -91,6 +92,10 @@ public interface AlertsRepositoryCustom {
 	public Map<String, Integer> groupCount(String fieldName, String severityArrayFilter, String statusArrayFilter,
 										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
+
+	public Map<Pair<String,String>, Integer> groupCountBy2Fields(String fieldName1, String filedName2, String severityArrayFilter, String statusArrayFilter,
+																 String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+																 Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
