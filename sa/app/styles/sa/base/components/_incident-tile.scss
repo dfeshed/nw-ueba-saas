@@ -10,6 +10,7 @@
     }
 
     .rsa-incident-tile-header-info {
+      padding: 0;
       .rsa-incident-tile-id {
         @include rsa-font(header, large);
         @include rsa-font(bold);
