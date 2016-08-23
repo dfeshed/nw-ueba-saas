@@ -19,6 +19,7 @@ import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,6 +39,9 @@ import java.util.*;
 @Controller
 @RequestMapping("/api/user")
 public class ApiUserController extends BaseController{
+	public static final String USER_COUNT = "userCount";
+	public static final String ADMINISTRATOR_TAG = "administrator";
+	public static final String WATCHED_USER = "watched";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -442,8 +446,6 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-
-
 	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -542,17 +544,63 @@ public class ApiUserController extends BaseController{
 
 	private void setSeverityOnUsersList(List<User> users){
 		for (User user: users){
-			double userScore = user.getScore();
-			Severity userSeverity;
-			try {
-				userSeverity = userScoreService.getUserSeverityForScore(userScore);
-
-			} catch (RuntimeException e){
-				logger.error("Cannot find user severtiy for score: "+userScore);
-				userSeverity = Severity.Low; // Handle fallback
-			}
-			user.setScoreSeverity(userSeverity);
-
+			setSeverityOnUser(user);
 		}
+	}
+
+	private void setSeverityOnUser(User user) {
+		double userScore = user.getScore();
+		Severity userSeverity;
+		try {
+			userSeverity = userScoreService.getUserSeverityForScore(userScore);
+
+		} catch (RuntimeException e){
+			logger.error("Cannot find user severity for score: "+userScore);
+			userSeverity = Severity.Low; // Handle fallback
+		}
+		user.setScoreSeverity(userSeverity);
+	}
+
+	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
+	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(){
+		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
+		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
+
+		UserRestFilter filter = new UserRestFilter();
+		filter.setIsScored(true);
+
+		List<User> scoredUsers = userService.findUsersByFilter(filter, null, null);
+
+		if (CollectionUtils.isNotEmpty(scoredUsers)) {
+			scoredUsers.stream().forEach(user -> {
+				setSeverityOnUser(user);
+				Map<String, Integer> severityData = severityBarMap.get(user.getScoreSeverity().name());
+
+				if (MapUtils.isEmpty(severityData)) {
+					severityData = new HashMap<>();
+					severityData.put(USER_COUNT, 0);
+					severityData.put(ADMINISTRATOR_TAG, 0);
+					severityData.put(WATCHED_USER, 0);
+					severityBarMap.put(user.getScoreSeverity().name(), severityData);
+				}
+
+				severityData.put(USER_COUNT, severityData.get(USER_COUNT) + 1);
+
+				if (user.getFollowed()) {
+					severityData.put(WATCHED_USER, severityData.get(WATCHED_USER) + 1);
+				}
+
+				if (user.getTags().contains(UserTagEnum.admin.name())) {
+					severityData.put(ADMINISTRATOR_TAG, severityData.get(ADMINISTRATOR_TAG) + 1);
+				}
+
+			});
+
+			dataBean.setData(severityBarMap);
+			dataBean.setTotal(scoredUsers.size());
+		}
+
+
+		return dataBean;
 	}
 }

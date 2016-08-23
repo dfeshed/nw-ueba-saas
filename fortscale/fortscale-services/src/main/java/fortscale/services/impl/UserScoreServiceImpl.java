@@ -35,7 +35,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     public static final int DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT = 90;
 
     /**
-     * Default values  of mapiing percentiles to user severity.
+     * Default values  of mapping percentiles to user severity.
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_LOW_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT will get low severity
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT will get medium severity
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT will get high severity
