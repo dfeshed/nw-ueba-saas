@@ -8,6 +8,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.entities.activity.UserActivityData;
+import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -280,6 +281,45 @@ public class ApiUserControllerTest {
 		JSONArray alertsArray = (JSONArray) ((JSONObject) ((JSONArray) jsonObject.get("data")).get(0)).get("alerts");
 		assertEquals(1, alertsArray.length());
 		assertEquals(USER_NAME, ((JSONObject)alertsArray.get(0)).get("entityName"));
+	}
+
+	@Test
+	public void testSeverityBar_valid() throws Exception {
+		TestUser user = new TestUser();
+		user.setUsername(USER_NAME);
+		user.setAdDn(USER_DN);
+		user.setId("1");
+
+		List<User> users = new ArrayList<>();
+		users.add(user);
+
+		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anySet())).thenReturn(users);
+		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
+
+		MvcResult result = mockMvc.perform(get("/api/user/severityBar")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+		assertEquals(1, jsonObject.get("total"));
+		TestCase.assertNotSame(JSONObject.NULL, jsonObject.get("data"));
+	}
+
+	@Test
+	public void testSeverityBar_noUsers() throws Exception {
+		List<User> users = new ArrayList<>();
+
+		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anySet())).thenReturn(users);
+		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
+
+		MvcResult result = mockMvc.perform(get("/api/user/severityBar")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+		TestCase.assertEquals(JSONObject.NULL, jsonObject.get("data"));
 	}
 
 	public static class TestUser extends User{
