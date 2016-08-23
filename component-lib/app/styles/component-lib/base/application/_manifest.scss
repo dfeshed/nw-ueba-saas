@@ -57,13 +57,11 @@ body, html {
 }
 
 body {
-  background-color: rgb(54,57,58);
-  background-image: radial-gradient(circle at 0px 0px, rgb(140,51,30) 0, rgba(140,51,30,0) 450px),
-                    radial-gradient(circle at 50% 0px, rgb(153,135,32) 0, rgba(84,108,36,0.7) 350px, rgba(84,108,36,0) 700px),
-                    radial-gradient(circle at 85% 50%, rgb(46,68,78) 0, rgba(46,68,78,0) 250px);
+  background-image: url('/assets/images/NW-Background-Blur.jpg');
   background-repeat: no-repeat;
-  background-position: left top;
+  background-position: center center;
   background-attachment: fixed;
+  background-size: 100% 100%;
 
   &.rsa-application-loading {
     .rsa-loader{

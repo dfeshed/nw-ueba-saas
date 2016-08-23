@@ -27,6 +27,8 @@ module.exports = {
     app.import('vendor/fonts/OpenSans-ExtraBold.ttf', { destDir: 'assets/fonts/' });
     app.import('vendor/fonts/OpenSans-Light.ttf', { destDir: 'assets/fonts/' });
 
+    app.import('vendor/NW-Background-Blur.jpg', { destDir: 'assets/images/' });
+
     // Script & data assets can remain in vendor.
     app.import('vendor/component-lib.json', { destDir: 'vendor/' });
   },
