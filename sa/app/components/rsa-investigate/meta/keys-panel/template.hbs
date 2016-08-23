@@ -1,0 +1,3 @@
+{{#each keys as |key|}}
+  <li class="rsa-list-button" {{action "safeCallback" selectAction key}}>{{key.name}}</li>
+{{/each}}

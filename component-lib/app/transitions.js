@@ -6,22 +6,30 @@
  */
 import Ember from 'ember';
 
-const { get } = Ember;
+const { get, isArray } = Ember;
 
-// Helper to retrieve 'index' property from a given object; otherwise, if not an object, just returns the given arg.
+// Helper to retrive an appropriate "index" for a given value.  If given
+// an object that has a number `index` attr, use that if defined. Otherwise,
+// if it's an array, use the array's length.  Otherwise just return the given
+// argument or zero.
 function _getIndex(value) {
   if (value && typeof value === 'object') {
-    return get(value, 'index');
-  } else {
-    return value;
+    let index = get(value, 'index');
+    if (!isNaN(index)) {
+      return index;
+    }
   }
+  if (isArray(value)) {
+    return value.length;
+  }
+  return value || 0;
 }
 
 export default function() {
   /*
    * For sliding DOM horizontally on-/off-screen:
    * Use a `{{liquid-bind}}` component with a `liquid-slide-horizontal` CSS class, and bind it to
-   * either an index (number) or an object with an `index` property.
+   * either an index (number) or an object with an `index` property or an array's length.
    * For example:
    *
    * ```js

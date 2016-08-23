@@ -35,6 +35,7 @@
     <aside class="rsa-investigate-query__body-aside">
       {{rsa-investigate/meta
         size=model.meta.panelSize
+        groups=model.meta.groups
         minSizeAction=(route-action "metaPanelSize" 'min')
         maxSizeAction=(route-action "metaPanelSize" 'max')
         defaultSizeAction=(route-action "metaPanelSize" 'default')}}

@@ -42,6 +42,11 @@
   &__nav {
     @include rsa-vendor-prefix(flex-grow, 1);
 
+    .back {
+      cursor: pointer;
+      margin-right: rsa-whitespace(less);
+    }
+
     h2 {
       display: inline-block;
     }

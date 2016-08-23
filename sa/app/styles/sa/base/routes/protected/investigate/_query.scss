@@ -138,6 +138,19 @@
     &__header {
       background-color: rsa-color(black,base,$rsa-translucent);
     }
+
+    .rsa-list-button {
+      color: rsa-color(white,base, $rsa-nearly-opaque);
+      &:after {
+        color: rsa-color(white,base, $rsa-nearly-transparent);
+      }
+      &:hover {
+        color: rsa-color(white,base, $rsa-opaque);
+        &:after {
+          color: rsa-color(white,base, $rsa-translucent);
+        }
+      }
+    }
   }
 
   .rsa-progress-bar {

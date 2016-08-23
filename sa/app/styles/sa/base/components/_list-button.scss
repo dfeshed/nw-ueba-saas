@@ -1,0 +1,29 @@
+/* Styles an element (typically an `<li>`) so that it is a single line of text with a right-facing disclosure arrow. */
+@mixin rsa-list-button() {
+  display: block;
+  padding: rsa-whitespace(less) rsa-whitespace()+1.5rem rsa-whitespace(less) rsa-whitespace();
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  list-style: none;
+  cursor: pointer;
+  position: relative; /* enables absolute positioning for :after element */
+
+  /* inserts a right disclosure arrow */
+  &:after {
+    content: '\f45f';
+    font-family: 'Streamline-2-Line';
+    font-size: 1em;
+    height: 1em;
+    line-height: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto rsa-whitespace();
+  }
+}
+
+.rsa-list-button {
+  @include rsa-list-button();
+}
