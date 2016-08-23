@@ -562,6 +562,8 @@ public class ApiUserController extends BaseController{
 	}
 
 	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
 	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
