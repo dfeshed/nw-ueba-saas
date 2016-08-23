@@ -43,7 +43,7 @@ public class GaussianModelScorerAlgorithmTest {
 
     @Test
     public void shouldScore100WhenSdIsZero() {
-        Assert.assertEquals(1, defaultAlgorithm.calculateScore(1, new ContinuousDataModel().setParameters(10, 0, 0, 0), null), 0.0000001);
+        Assert.assertEquals(100, defaultAlgorithm.calculateScore(1, new ContinuousDataModel().setParameters(10, 0, 0, 0), null), 0.0000001);
     }
 
     @Test
@@ -63,9 +63,9 @@ public class GaussianModelScorerAlgorithmTest {
         double sd = 0.00004;
         int N = 100000000;
 		double mean = 4.3;
-		Assert.assertEquals(0.68, defaultAlgorithm.calculateScore(mean + 1 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
-        Assert.assertEquals(0.95, defaultAlgorithm.calculateScore(mean + 2 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
-        Assert.assertEquals(0.99, defaultAlgorithm.calculateScore(mean + 3 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
+		Assert.assertEquals(68.27, defaultAlgorithm.calculateScore(mean + 1 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
+        Assert.assertEquals(95.45, defaultAlgorithm.calculateScore(mean + 2 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
+        Assert.assertEquals(99.73, defaultAlgorithm.calculateScore(mean + 3 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
     }
 
 	@Test
@@ -73,9 +73,9 @@ public class GaussianModelScorerAlgorithmTest {
 		double sd = 0.00004;
 		int N = 10;
 		double mean = 4.3;
-		Assert.assertEquals(0.65, defaultAlgorithm.calculateScore(mean + 1 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
-		Assert.assertEquals(0.92, defaultAlgorithm.calculateScore(mean + 2 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
-		Assert.assertEquals(0.98, defaultAlgorithm.calculateScore(mean + 3 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
+		Assert.assertEquals(65.65, defaultAlgorithm.calculateScore(mean + 1 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
+		Assert.assertEquals(92.34, defaultAlgorithm.calculateScore(mean + 2 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
+		Assert.assertEquals(98.5, defaultAlgorithm.calculateScore(mean + 3 * sd, new ContinuousDataModel().setParameters(N, mean, sd, 0), null), 0.01);
 	}
 
 	@Test
