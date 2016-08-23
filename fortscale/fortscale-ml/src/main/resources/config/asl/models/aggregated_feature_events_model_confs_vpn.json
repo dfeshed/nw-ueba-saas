@@ -31,6 +31,21 @@
             }
         },
         {
+            "name": "distinct_number_of_normalized_src_machine.calibration.global.vpn.daily",
+            "retriever": {
+                "type": "aggregated_feature_event_unreduced_score_retriever",
+                "numOfDays": 21,
+                "functions": [],
+                "aggregatedFeatureEventToCalibrateConfName": "distinct_number_of_normalized_src_machine_vpn_daily",
+                "scoreNameToCalibrate": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily.scorer",
+                "numOfIndicatorsPerDay": 100
+            },
+            "builder": {
+                "type": "smart_score_mapping_model_builder",
+                "minThreshold": 1
+            }
+        },
+        {
             "name": "distinct_number_of_countries.normalized_username.vpn.hourly", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
@@ -58,6 +73,21 @@
                 "type": "gaussian_prior_model_builder",
                 "distanceBetweenSegmentCenters": 1,
                 "minNumOfSamplesToLearnFrom": 10
+            }
+        },
+        {
+            "name": "distinct_number_of_countries.calibration.global.vpn.hourly",
+            "retriever": {
+                "type": "aggregated_feature_event_unreduced_score_retriever",
+                "numOfDays": 21,
+                "functions": [],
+                "aggregatedFeatureEventToCalibrateConfName": "distinct_number_of_countries_vpn_hourly",
+                "scoreNameToCalibrate": "distinct_number_of_countries.normalized_username.vpn.hourly.scorer",
+                "numOfIndicatorsPerDay": 100
+            },
+            "builder": {
+                "type": "smart_score_mapping_model_builder",
+                "minThreshold": 1
             }
         },
         {
@@ -91,6 +121,21 @@
             }
         },
         {
+            "name": "distinct_number_of_countries.calibration.global.vpn.daily",
+            "retriever": {
+                "type": "aggregated_feature_event_unreduced_score_retriever",
+                "numOfDays": 21,
+                "functions": [],
+                "aggregatedFeatureEventToCalibrateConfName": "distinct_number_of_countries_vpn_daily",
+                "scoreNameToCalibrate": "distinct_number_of_countries.normalized_username.vpn.daily.scorer",
+                "numOfIndicatorsPerDay": 100
+            },
+            "builder": {
+                "type": "smart_score_mapping_model_builder",
+                "minThreshold": 1
+            }
+        },
+        {
             "name": "number_of_failed.normalized_username.vpn.hourly", 
             "selector": {
                 "type": "aggregated_event_context_selector", 
@@ -118,6 +163,21 @@
                 "type": "gaussian_prior_model_builder",
                 "distanceBetweenSegmentCenters": 1,
                 "minNumOfSamplesToLearnFrom": 10
+            }
+        },
+        {
+            "name": "number_of_failed.calibration.global.vpn.hourly",
+            "retriever": {
+                "type": "aggregated_feature_event_unreduced_score_retriever",
+                "numOfDays": 21,
+                "functions": [],
+                "aggregatedFeatureEventToCalibrateConfName": "number_of_failed_vpn_events_hourly",
+                "scoreNameToCalibrate": "number_of_failed.normalized_username.vpn.hourly.base_scorer",
+                "numOfIndicatorsPerDay": 100
+            },
+            "builder": {
+                "type": "smart_score_mapping_model_builder",
+                "minThreshold": 1
             }
         },
         {
@@ -151,6 +211,21 @@
             }
         },
         {
+            "name": "number_of_failed.calibration.global.vpn.daily",
+            "retriever": {
+                "type": "aggregated_feature_event_unreduced_score_retriever",
+                "numOfDays": 21,
+                "functions": [],
+                "aggregatedFeatureEventToCalibrateConfName": "number_of_failed_vpn_daily",
+                "scoreNameToCalibrate": "number_of_failed.normalized_username.vpn.daily.base_scorer",
+                "numOfIndicatorsPerDay": 100
+            },
+            "builder": {
+                "type": "smart_score_mapping_model_builder",
+                "minThreshold": 1
+            }
+        },
+        {
             "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector", 
@@ -178,6 +253,21 @@
                 "type": "gaussian_prior_model_builder",
                 "distanceBetweenSegmentCenters": 1,
                 "minNumOfSamplesToLearnFrom": 10
+            }
+        },
+        {
+            "name": "distinct_number_of_normalized_src_machine.calibration.global.vpn.hourly",
+            "retriever": {
+                "type": "aggregated_feature_event_unreduced_score_retriever",
+                "numOfDays": 21,
+                "functions": [],
+                "aggregatedFeatureEventToCalibrateConfName": "distinct_number_of_normalized_src_machine_vpn_hourly",
+                "scoreNameToCalibrate": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly.scorer",
+                "numOfIndicatorsPerDay": 100
+            },
+            "builder": {
+                "type": "smart_score_mapping_model_builder",
+                "minThreshold": 1
             }
         }
     ]
