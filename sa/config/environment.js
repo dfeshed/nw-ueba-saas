@@ -61,9 +61,9 @@ module.exports = function(environment) {
           requestDestination: '/dummy/incidents/owner',
           cancelDestination: '/ws/response/cancel'
         },
-        findRecord: {
-          subscriptionDestination: '/user/queue/threats/incident',
-          requestDestination: '/ws/response/incident/get'
+        queryRecord: {
+          subscriptionDestination: '/user/queue/incident/details',
+          requestDestination: '/ws/response/incident/details'
         },
         updateRecord: {
           subscriptionDestination: '/user/queue/threats/incidentsEdit',

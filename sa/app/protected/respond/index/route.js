@@ -12,7 +12,8 @@ const {
   RSVP,
   merge,
   Object: EmberObject,
-  run
+  run,
+  isEmpty
 } = Ember;
 
 export default Route.extend({
@@ -172,7 +173,7 @@ export default Route.extend({
     if (!json) {
       return null;
     }
-    return this.store.findRecord('incident', json.id);
+    return this.store.queryRecord('incident', { incidentId: json.id });
   },
 
   /**
@@ -290,7 +291,7 @@ export default Route.extend({
           });
 
           // Saving the assignee
-          if (json.assignee.id === '-1') {
+          if (isEmpty(json.assignee.id) || json.assignee.id === '-1') {
             // The incident has been un assigned.
             model.set('assignee', undefined);
           } else {

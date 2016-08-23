@@ -146,9 +146,9 @@ export default function(server) {
     });
   });
 
-  server.route('incident', 'findRecord', function(message, frames, server) {
+  server.route('incident', 'queryRecord', function(message, frames, server) {
     let frame = (frames && frames[0]) || {};
-    let incident = server.mirageServer.db.incident.find(frame.body.id);
+    let incident = server.mirageServer.db.incident.find(frame.body.incidentId);
     let map = _makeAlertsMap(server.mirageServer.db.alerts);
 
     if (map) {

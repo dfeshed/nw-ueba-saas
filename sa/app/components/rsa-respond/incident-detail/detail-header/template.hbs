@@ -1,12 +1,12 @@
 <hbox class='rsa-incident-detail-header__row'>
   <vbox xs="1" class='rsa-incident-detail-header__score'>
-    {{rsa-content-badge-score label=(t 'incident.fields.riskScore') score=model.riskScore style=badgeStyle}}
+    {{rsa-content-badge-score label=(t 'incident.fields.riskScore') score=incident.riskScore style=badgeStyle}}
   </vbox>
 
   <vbox xs="11" class='rsa-incident-detail-header__col-details'>
     <article class='rsa-incident-detail-header__details'>
       <header class='rsa-incident-detail-header__details__title'>
-        <label class='rsa-incident-detail-header__id'>{{model.id}}:&nbsp;</label>
+        <label class='rsa-incident-detail-header__id'>{{unbound incident.id}}:&nbsp;</label>
         {{rsa-form-input class='rsa-incident-detail-header__name' value=incidentName isReadOnly=incidentIsClosed focusOut=(action 'nameLostFocus')}}
       </header>
       <ul class='rsa-incident-detail-header__details__body'>
@@ -19,12 +19,12 @@
         </li>
         <li>
           {{#rsa-content-definition label=(t 'incident.fields.alertCount') class='rsa-incident-detail-header__alerts'}}
-            <label>{{model.alertCount}}</label>
+            <label>{{if incident.alertCount incident.alertCount '-'}}</label>
           {{/rsa-content-definition}}
         </li>
         <li>
           {{#rsa-content-definition label=(t 'incident.fields.events') class='rsa-incident-detail-header__events'}}
-            <label>{{if model.alerts.firstObject.alert.numEvents model.alerts.firstObject.alert.numEvents '0'}}</label>
+            <label>{{if incident.eventCount incident.eventCount '-'}}</label>
           {{/rsa-content-definition}}
         </li>
         <li>
@@ -51,18 +51,18 @@
         </li>
         <li>
           {{#rsa-content-definition label=(t 'incident.details.sourceIp') class='rsa-incident-detail-header__source-ip'}}
-            <label>{{if model.alerts.firstObject.alert.groupby_source_ip model.alerts.firstObject.alert.groupby_source_ip '-'}}</label>
+            <label>{{if incident.alerts.firstObject.alert.groupby_source_ip incident.alerts.firstObject.alert.groupby_source_ip '-'}}</label>
           {{/rsa-content-definition}}
         </li>
         <li>
           {{#rsa-content-definition label=(t 'incident.details.destinationIp') class='rsa-incident-detail-header__destination-ip'}}
-            <label>{{if model.alerts.firstObject.alert.groupby_destination_ip model.alerts.firstObject.alert.groupby_destination_ip '-'}}</label>
+            <label>{{if incident.alerts.firstObject.alert.groupby_destination_ip incident.alerts.firstObject.alert.groupby_destination_ip '-'}}</label>
           {{/rsa-content-definition}}
         </li>
       </ul>
       <footer class='rsa-incident-detail-header__details__footer'>
-        {{t 'incident.details.createdOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__created' timestamp=model.created}}{{rsa-content-datetime class='rsa-incident-detail-header__created_time-ago' timestamp=model.created asTimeAgo=true}} |
-        {{t 'incident.details.updatedOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated' timestamp=model.lastUpdated}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated_time-ago' timestamp=model.lastUpdated asTimeAgo=true}}
+        {{t 'incident.details.createdOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__created' timestamp=incident.created}}{{rsa-content-datetime class='rsa-incident-detail-header__created_time-ago' timestamp=incident.created asTimeAgo=true}} |
+        {{t 'incident.details.updatedOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated' timestamp=incident.lastUpdated}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated_time-ago' timestamp=incident.lastUpdated asTimeAgo=true}}
       </footer>
     </article>
     <aside class="rsa-incident-detail-header__buttons">

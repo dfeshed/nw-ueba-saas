@@ -52,7 +52,17 @@ export default Ember$.extend({}, BaseSelectors, {
           'statusSelect': '.rsa-incident-tile-status-selector select',
           'statusLabel': '.rsa-incident-tile-status-selector .prompt',
           'prioritySelect': '.rsa-incident-tile-priority-selector select',
-          'priorityLabel': '.rsa-incident-tile-priority-selector .prompt'
+          'priorityLabel': '.rsa-incident-tile-priority-selector .prompt',
+          'scoreElm': 'div[class=score]',
+          'incLbl': 'label[class=rsa-incident-tile-id]',
+          'incTitleName': 'li[class=rsa-incident-tile-name]',
+          'priorityValueElm': 'div[class^=rsa-incident-tile-priority-selector] div[class=prompt] div',
+          'assigneeValueElm': 'div[class^=rsa-incident-tile-assignee-selector] div[class=prompt] div',
+          'alertCountLbl': 'label[class=rsa-incident-tile-alert-count]',
+          'eventCountLbl': 'label[class=rsa-incident-tile-event-count]',
+          'incidentTileSourcesElm': 'div[class=rsa-incident-tile-sources] div',
+          'createdDateTimeElm': 'span[class=rsa-incident-tile-created-date] span[class=datetime]',
+          'createdDateTimeAgoElm': 'span[class=rsa-incident-tile-created-date] span[class=time-ago]'
         }
       },
       'list': {
@@ -127,7 +137,17 @@ export default Ember$.extend({}, BaseSelectors, {
       'journalDeleteBtn': 'div[class^=rsa-journal-entry__delete-journal] i[class*=rsa-icon-bin-1]',
       'overviewTxtArea': 'label[class^=js-respond-detail-overview-textArea]',
       'journalShowBtn': 'span[class=journalAction]',
-      'storylineIndicatorTypeElm': 'span[class=indicator_type]'
+      'storylineIndicatorTypeElm': 'span[class=indicator_type]',
+      'scoreElm': 'div[class=score]',
+      'incLbl': 'label[class=rsa-incident-detail-header__id]',
+      'incTitleName': 'label[class^=rsa-incident-detail-header__name] input',
+      'priorityValueElm': 'div[class^=rsa-incident-detail-header__priority] div[class=prompt] div',
+      'assigneeValueElm': 'div[class^=rsa-incident-detail-header__assignee] div[class=prompt] div',
+      'alertCountLbl': 'div[class^=rsa-incident-detail-header__alerts] label',
+      'eventCountLbl': 'div[class^=rsa-incident-detail-header__events] label',
+      'incidentTileSourcesElm': 'div[class^= rsa-incident-tile-source]',
+      'createdDateTimeElm': 'span[class^=rsa-incident-detail-header__created] span[class=datetime]',
+      'createdDateTimeAgoElm': 'span[class^=rsa-incident-detail-header__created_time-ago] span[class=time-ago]'
     }
   }
 });

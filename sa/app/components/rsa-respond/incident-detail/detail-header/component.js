@@ -12,7 +12,7 @@ const {
 
 export default Component.extend({
 
-  model: null,
+  incident: null,
   classNames: 'rsa-incident-detail-header',
 
   /**
@@ -20,14 +20,14 @@ export default Component.extend({
    * @description returns true if the incident's status is closed
    * @public
    */
-  @equal('model.statusSort', IncidentConstants.incStatus.CLOSED) incidentIsClosed: null,
+  @equal('incident.statusSort', IncidentConstants.incStatus.CLOSED) incidentIsClosed: null,
 
   /**
    * @name badgeStyle
    * @description define the badge style based on the incident risk score
    * @public
    */
-  @computed('model.riskScore')
+  @computed('incident.riskScore')
   badgeStyle: (riskScore) => IncidentHelper.riskScoreToBadgeLevel(riskScore),
 
   /**
@@ -52,7 +52,7 @@ export default Component.extend({
    * @returns Array
    * @public
    */
-  @computed('model.sources')
+  @computed('incident.sources')
   incidentSources(sources) {
     if (sources) {
       return sources.map((source) => IncidentHelper.sourceShortName(source));
@@ -64,7 +64,7 @@ export default Component.extend({
    * @description Returns a list of one element with the current status id. This is consumed by rsa-form-select
    * @public
    */
-  @computed('model.statusSort')
+  @computed('incident.statusSort')
   selectedStatus: {
     get: (statusSort) => [statusSort],
 
@@ -74,10 +74,10 @@ export default Component.extend({
       run.once(() => {
         let statusVal = parseInt(statusSort, 10);
         this.setProperties({
-          'model.statusSort': statusVal,
-          'model.status': IncidentConstants.incidentStatusString[ statusVal ]
+          'incident.statusSort': statusVal,
+          'incident.status': IncidentConstants.incidentStatusString[ statusVal ]
         });
-        this._saveIncident();
+        this.sendAction('saveAction', 'status', this.get('incident.status'));
       });
       return statusSorts;
     }
@@ -88,7 +88,7 @@ export default Component.extend({
    * @description Returns a list of one element with the current priority id. This is consumed by rsa-form-select
    * @public
    */
-  @computed('model.prioritySort')
+  @computed('incident.prioritySort')
   selectedPriority: {
     get: (prioritySort) => [prioritySort],
 
@@ -99,10 +99,10 @@ export default Component.extend({
       run.once(() => {
         let priorityVal = parseInt(prioritySort, 10);
         this.setProperties({
-          'model.prioritySort': priorityVal,
-          'model.priority': IncidentConstants.incidentPriorityString[ priorityVal ]
+          'incident.prioritySort': priorityVal,
+          'incident.priority': IncidentConstants.incidentPriorityString[ priorityVal ]
         });
-        this._saveIncident();
+        this.sendAction('saveAction', 'priority', this.get('incident.priority'));
       });
       return prioritySorts;
     }
@@ -113,7 +113,7 @@ export default Component.extend({
    * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
    * @public
    */
-  @computed('model.assignee.id')
+  @computed('incident.assignee.id')
   selectedAssignee: {
     get: (assigneeId) => [assigneeId || -1],
 
@@ -123,14 +123,14 @@ export default Component.extend({
       run.once(() => {
         // Incident has no assignee
         if (assigneeId === '-1') {
-          this.set('model.assignee', undefined);
+          this.set('incident.assignee', null);
         } else {
-          if (isEmpty(this.get('model.assignee'))) {
-            this.set('model.assignee', {});
+          if (isEmpty(this.get('incident.assignee'))) {
+            this.set('incident.assignee', {});
           }
-          this.set('model.assignee.id', parseInt(assigneeId, 10));
+          this.set('incident.assignee.id', parseInt(assigneeId, 10));
         }
-        this._saveIncident();
+        this.sendAction('saveAction', 'assignee', this.get('incident.assignee'));
       });
       return assigneeIds;
     }
@@ -141,25 +141,14 @@ export default Component.extend({
    * @description Detects when the name has changed and saves its value into the model
    * @public
    */
-  @computed('model.name')
+  @computed('incident.name')
   incidentName: {
     get: (name) => name,
 
     set(name) {
-      Logger.log(`Name changed: ${ name }`);
-      this.set('model.name', name);
+      this.set('incident.name', name);
       return name;
     }
-  },
-
-  /**
-   * @name _saveIncident
-   * @description Save the incident model object
-   * @private
-   */
-  _saveIncident() {
-    Logger.log('Saving model...');
-    this.get('model').save();
   },
 
   actions: {
@@ -183,7 +172,7 @@ export default Component.extend({
      */
     nameLostFocus() {
       Logger.log('nameLostFocus');
-      this._saveIncident();
+      this.sendAction('saveAction', 'name', this.get('incident.name'));
     }
   }
 });

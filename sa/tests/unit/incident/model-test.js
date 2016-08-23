@@ -15,6 +15,7 @@ test('check model values', function(assert) {
   let myModel = {
     name: 'Incident 1',
     alertCount: 10,
+    eventCount: 20,
     averageAlertRiskScore: 80,
     riskScore: 79,
     createdBy: 'Event Stream analysis',
@@ -37,6 +38,7 @@ test('check model values', function(assert) {
   assert.equal(model.get('averageAlertRiskScore'), 80, 'Invalid incident averageAlertRiskScore');
   assert.equal(model.get('lastUpdatedByUser'), 'tony@rsa.com', 'Invalid incident lastUpdatedByUser');
   assert.equal(model.get('alertCount'), 10, 'Invalid incident alert count');
+  assert.equal(model.get('eventCount'), 20, 'Invalid incident event count');
   assert.equal(model.get('riskScore'), 79, 'Invalid incident riskScore');
   assert.equal(model.get('createdBy'), 'Event Stream analysis', 'Invalid incident createdBy');
   assert.equal(model.get('prioritySort'), 1, 'Invalid incident prioritySort');

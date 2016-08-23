@@ -36,7 +36,7 @@ export default Route.extend({
     this.set('incidentId', params.incident_id);
 
     return hash({
-      incident: this.store.findRecord('incident', params.incident_id),
+      incident: this.store.queryRecord('incident', { incidentId: params.incident_id }),
       users: this.store.findAll('user')
     });
   },
@@ -60,6 +60,7 @@ export default Route.extend({
         // Updating the whole incident when we received a notification
         let innerIncident = data.findBy('id', currentIncidentId);
         set(resolvedModel, 'incident', innerIncident);
+        // Update the store with the updated incident
         this.store.pushPayload({ 'incidents': [ innerIncident ] });
         innerIncident.id = currentIncidentId;
       },

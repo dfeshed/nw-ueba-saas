@@ -9,6 +9,7 @@ import attr from 'ember-data/attr';
 export default Model.extend({
   name: attr(),
   alertCount: attr(),
+  eventCount: attr(),
   averageAlertRiskScore: attr(),
   riskScore: attr(),
   createdBy: attr(),

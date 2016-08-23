@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import setupRouter from 'sa/tests/helpers/setup-router';
 
-moduleForComponent('rsa-respond-header', 'Integration | Component | rsa respond header', {
+moduleForComponent('rsa-respond-header', 'Integration | Component | rsa respond/landing page/respond header', {
   integration: true,
   setup() {
     setupRouter(this);
