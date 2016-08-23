@@ -7,17 +7,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_normalized_dst_machine_ssh_daily_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.daily.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.daily.mapper",
             "model": {
-              "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.daily"
+              "name": "distinct_number_of_normalized_dst_machine.calibration.global.ssh.daily"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_normalized_dst_machine.prior.global.ssh.daily"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.daily.scorer",
+              "model": {
+                "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.daily"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_normalized_dst_machine.prior.global.ssh.daily"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -37,17 +44,24 @@
           "type": "low-values-score-reducer",
           "name": "number_of_failed.normalized_username.ssh.daily.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "number_of_failed.normalized_username.ssh.daily.base_scorer",
+            "type": "model-based-score-mapper",
+            "name": "number_of_failed.normalized_username.ssh.daily.mapper",
             "model": {
-              "name": "number_of_failed.normalized_username.ssh.daily"
+              "name": "number_of_failed.calibration.global.ssh.daily"
             },
-            "additional-models": [{
-              "name": "number_of_failed.prior.global.ssh.daily"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "number_of_failed.normalized_username.ssh.daily.base_scorer",
+              "model": {
+                "name": "number_of_failed.normalized_username.ssh.daily"
+              },
+              "additional-models": [{
+                "name": "number_of_failed.prior.global.ssh.daily"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -67,17 +81,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_normalized_dst_machine_ssh_hourly_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.hourly.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.hourly.mapper",
             "model": {
-              "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.hourly"
+              "name": "distinct_number_of_normalized_dst_machine.calibration.global.ssh.hourly"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_normalized_dst_machine.prior.global.ssh.hourly"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.hourly.scorer",
+              "model": {
+                "name": "distinct_number_of_normalized_dst_machine.normalized_username.ssh.hourly"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_normalized_dst_machine.prior.global.ssh.hourly"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -97,17 +118,24 @@
           "type": "low-values-score-reducer",
           "name": "number_of_failed.normalized_username.ssh.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "number_of_failed.normalized_username.ssh.hourly.base_scorer",
+            "type": "model-based-score-mapper",
+            "name": "number_of_failed.normalized_username.ssh.hourly.mapper",
             "model": {
-              "name": "number_of_failed.normalized_username.ssh.hourly"
+              "name": "number_of_failed.calibration.global.ssh.hourly"
             },
-            "additional-models": [{
-              "name": "number_of_failed.prior.global.ssh.hourly"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "number_of_failed.normalized_username.ssh.hourly.base_scorer",
+              "model": {
+                "name": "number_of_failed.normalized_username.ssh.hourly"
+              },
+              "additional-models": [{
+                "name": "number_of_failed.prior.global.ssh.hourly"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -127,17 +155,24 @@
           "type": "low-values-score-reducer",
           "name": "number_of_successful.normalized_username.ssh.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "number_of_successful.normalized_username.ssh.hourly.base_scorer",
+            "type": "model-based-score-mapper",
+            "name": "number_of_successful.normalized_username.ssh.hourly.mapper",
             "model": {
-              "name": "number_of_successful.normalized_username.ssh.hourly"
+              "name": "number_of_successful.calibration.global.ssh.hourly"
             },
-            "additional-models": [{
-              "name": "number_of_successful.prior.global.ssh.hourly"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "number_of_successful.normalized_username.ssh.hourly.base_scorer",
+              "model": {
+                "name": "number_of_successful.normalized_username.ssh.hourly"
+              },
+              "additional-models": [{
+                "name": "number_of_successful.prior.global.ssh.hourly"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -157,17 +192,24 @@
           "type": "low-values-score-reducer",
           "name": "number_of_successful.normalized_username.ssh.daily.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "number_of_successful.normalized_username.ssh.daily.base_scorer",
+            "type": "model-based-score-mapper",
+            "name": "number_of_successful.normalized_username.ssh.daily.mapper",
             "model": {
-              "name": "number_of_successful.normalized_username.ssh.daily"
+              "name": "number_of_successful.calibration.global.ssh.daily"
             },
-            "additional-models": [{
-              "name": "number_of_successful.prior.global.ssh.daily"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "number_of_successful.normalized_username.ssh.daily.base_scorer",
+              "model": {
+                "name": "number_of_successful.normalized_username.ssh.daily"
+              },
+              "additional-models": [{
+                "name": "number_of_successful.prior.global.ssh.daily"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -187,17 +229,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_normalized_src_machine_ssh_hourly_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.hourly.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.hourly.mapper",
             "model": {
-              "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.hourly"
+              "name": "distinct_number_of_normalized_src_machine.calibration.global.ssh.hourly"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_normalized_src_machine.prior.global.ssh.hourly"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.hourly.scorer",
+              "model": {
+                "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.hourly"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_normalized_src_machine.prior.global.ssh.hourly"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -217,17 +266,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_normalized_src_machine_ssh_daily_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.daily.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.daily.mapper",
             "model": {
-              "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.daily"
+              "name": "distinct_number_of_normalized_src_machine.calibration.global.ssh.daily"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_normalized_src_machine.prior.global.ssh.daily"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.daily.scorer",
+              "model": {
+                "name": "distinct_number_of_normalized_src_machine.normalized_username.ssh.daily"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_normalized_src_machine.prior.global.ssh.daily"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {

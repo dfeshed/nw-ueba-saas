@@ -7,17 +7,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_normalized_src_machine_vpn_hourly_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly.mapper",
             "model": {
-              "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly"
+              "name": "distinct_number_of_normalized_src_machine.calibration.global.vpn.hourly"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.hourly"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly.scorer",
+              "model": {
+                "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.hourly"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.hourly"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -37,17 +44,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_countries_vpn_hourly_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_countries.normalized_username.vpn.hourly.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_countries.normalized_username.vpn.hourly.mapper",
             "model": {
-              "name": "distinct_number_of_countries.normalized_username.vpn.hourly"
+              "name": "distinct_number_of_countries.calibration.global.vpn.hourly"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_countries.prior.global.vpn.hourly"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_countries.normalized_username.vpn.hourly.scorer",
+              "model": {
+                "name": "distinct_number_of_countries.normalized_username.vpn.hourly"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_countries.prior.global.vpn.hourly"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -67,17 +81,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_normalized_src_machine_vpn_daily_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily.mapper",
             "model": {
-              "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily"
+              "name": "distinct_number_of_normalized_src_machine.calibration.global.vpn.daily"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.daily"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily.scorer",
+              "model": {
+                "name": "distinct_number_of_normalized_src_machine.normalized_username.vpn.daily"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_normalized_src_machine.prior.global.vpn.daily"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -97,17 +118,24 @@
           "type": "low-values-score-reducer",
           "name": "distinct_number_of_countries_vpn_daily_scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "distinct_number_of_countries.normalized_username.vpn.daily.scorer",
+            "type": "model-based-score-mapper",
+            "name": "distinct_number_of_countries.normalized_username.vpn.daily.mapper",
             "model": {
-              "name": "distinct_number_of_countries.normalized_username.vpn.daily"
+              "name": "distinct_number_of_countries.calibration.global.vpn.daily"
             },
-            "additional-models": [{
-              "name": "distinct_number_of_countries.prior.global.vpn.daily"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "distinct_number_of_countries.normalized_username.vpn.daily.scorer",
+              "model": {
+                "name": "distinct_number_of_countries.normalized_username.vpn.daily"
+              },
+              "additional-models": [{
+                "name": "distinct_number_of_countries.prior.global.vpn.daily"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -127,17 +155,24 @@
           "type": "low-values-score-reducer",
           "name": "number_of_failed.normalized_username.vpn.daily.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "number_of_failed.normalized_username.vpn.daily.base_scorer",
+            "type": "model-based-score-mapper",
+            "name": "number_of_failed.normalized_username.vpn.daily.mapper",
             "model": {
-              "name": "number_of_failed.normalized_username.vpn.daily"
+              "name": "number_of_failed.calibration.global.vpn.daily"
             },
-            "additional-models": [{
-              "name": "number_of_failed.prior.global.vpn.daily"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 10,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "number_of_failed.normalized_username.vpn.daily.base_scorer",
+              "model": {
+                "name": "number_of_failed.normalized_username.vpn.daily"
+              },
+              "additional-models": [{
+                "name": "number_of_failed.prior.global.vpn.daily"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 10,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
@@ -157,17 +192,24 @@
           "type": "low-values-score-reducer",
           "name": "number_of_failed.normalized_username.vpn.hourly.scorer",
           "base-scorer": {
-            "type": "gaussian-model-scorer",
-            "name": "number_of_failed.normalized_username.vpn.hourly.base_scorer",
+            "type": "model-based-score-mapper",
+            "name": "number_of_failed.normalized_username.vpn.hourly.mapper",
             "model": {
-              "name": "number_of_failed.normalized_username.vpn.hourly"
+              "name": "number_of_failed.calibration.global.vpn.hourly"
             },
-            "additional-models": [{
-              "name": "number_of_failed.prior.global.vpn.hourly"
-            }],
-            "global-influence": 20,
-            "number-of-samples-to-influence-enough": 30,
-            "use-certainty-to-calculate-score": true
+            "base-scorer": {
+              "type": "gaussian-model-scorer",
+              "name": "number_of_failed.normalized_username.vpn.hourly.base_scorer",
+              "model": {
+                "name": "number_of_failed.normalized_username.vpn.hourly"
+              },
+              "additional-models": [{
+                "name": "number_of_failed.prior.global.vpn.hourly"
+              }],
+              "global-influence": 20,
+              "number-of-samples-to-influence-enough": 30,
+              "use-certainty-to-calculate-score": true
+            }
           },
           "reduction-configs": [
             {
