@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AggregatedFeatureEventsReaderService {
 	@Autowired
@@ -41,5 +42,12 @@ public class AggregatedFeatureEventsReaderService {
 												Date endTime,
 												int k) {
 		return aggregatedFeatureEventsMongoStore.findAggrEventWithTopKScore(aggregatedFeatureEventConf, startTime, endTime, k);
+	}
+
+	public Map<Long, List<AggrEvent>> getDateToTopAggrEvents(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+															 Date endTime,
+															 int numOfDays,
+															 int topK) {
+		return aggregatedFeatureEventsMongoStore.getDateToTopAggrEvents(aggregatedFeatureEventConf, endTime, numOfDays, topK);
 	}
 }

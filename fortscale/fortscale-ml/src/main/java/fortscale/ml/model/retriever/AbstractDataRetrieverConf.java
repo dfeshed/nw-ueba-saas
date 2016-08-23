@@ -15,6 +15,7 @@ import java.util.List;
 		@JsonSubTypes.Type(value = AggregatedFeatureValueRetrieverConf.class, name = AggregatedFeatureValueRetrieverConf.AGGREGATED_FEATURE_VALUE_RETRIEVER),
 		@JsonSubTypes.Type(value = EntityEventValueRetrieverConf.class, name = EntityEventValueRetrieverConf.ENTITY_EVENT_VALUE_RETRIEVER),
 		@JsonSubTypes.Type(value = EntityEventUnreducedScoreRetrieverConf.class, name = EntityEventUnreducedScoreRetrieverConf.ENTITY_EVENT_UNREDUCED_SCORE_RETRIEVER),
+		@JsonSubTypes.Type(value = AggregatedFeatureEventUnreducedScoreRetrieverConf.class, name = AggregatedFeatureEventUnreducedScoreRetrieverConf.AGGREGATED_FEATURE_EVENT_UNREDUCED_SCORE_RETRIEVER),
 		@JsonSubTypes.Type(value = ModelRetrieverConf.class, name = ModelRetrieverConf.MODEL_RETRIEVER),
 		@JsonSubTypes.Type(value = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.class, name = AggregatedFeaturePersonalThresholdModelBuilderDataRetrieverConf.AGGREGATED_FEATURE_PERSONAL_THRESHOLD_MODEL_BUILDER_DATA_RETRIEVER)
 })

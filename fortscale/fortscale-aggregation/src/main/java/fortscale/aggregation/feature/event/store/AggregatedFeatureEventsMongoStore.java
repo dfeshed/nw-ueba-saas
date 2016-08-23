@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.event.store;
 
 import fortscale.aggregation.feature.event.*;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
+	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
@@ -106,6 +108,28 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 				.with(new Sort(Sort.Direction.DESC, AggrEvent.EVENT_FIELD_SCORE))
 				.skip(k - 1);
 		return mongoTemplate.findOne(query, AggrEvent.class, collectionName);
+	}
+
+	public Map<Long, List<AggrEvent>> getDateToTopAggrEvents(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+															 Date endTime,
+															 int numOfDays,
+															 int topK) {
+		String collectionName = getCollectionName(aggregatedFeatureEventConf);
+		long endTimeSeconds = TimestampUtils.convertToSeconds(endTime);
+		Map<Long, List<AggrEvent>> dateToHighestAggrEvents = new HashMap<>(numOfDays);
+		while (numOfDays-- > 0) {
+			long startTime = endTimeSeconds - SECONDS_IN_DAY;
+			Query query = new Query()
+					.addCriteria(Criteria.where(AggrEvent.EVENT_FIELD_END_TIME_UNIX)
+							.gt(startTime)
+							.lte(endTimeSeconds))
+					.with(new Sort(Sort.Direction.DESC, AggrEvent.EVENT_FIELD_SCORE))
+					.limit(topK);
+			dateToHighestAggrEvents.put(startTime,
+					mongoTemplate.find(query, AggrEvent.class, collectionName));
+			endTimeSeconds -= SECONDS_IN_DAY;
+		}
+		return dateToHighestAggrEvents;
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {
