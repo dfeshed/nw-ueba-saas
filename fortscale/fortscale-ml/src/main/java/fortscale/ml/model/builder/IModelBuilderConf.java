@@ -13,6 +13,7 @@ import fortscale.utils.factory.FactoryConfig;
 		@JsonSubTypes.Type(value = TimeModelBuilderConf.class, name = TimeModelBuilderConf.TIME_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = SMARTValuesModelBuilderConf.class, name = SMARTValuesModelBuilderConf.SMART_VALUES_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = SMARTScoreMappingModelBuilderConf.class, name = SMARTScoreMappingModelBuilderConf.SMART_SCORE_MAPPING_MODEL_BUILDER),
+		@JsonSubTypes.Type(value = IndicatorScoreMappingModelBuilderConf.class, name = IndicatorScoreMappingModelBuilderConf.INDICATOR_SCORE_MAPPING_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = GaussianPriorModelBuilderConf.class, name = GaussianPriorModelBuilderConf.GAUSSIAN_PRIOR_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = PersonalThresholdModelBuilderConf.class, name = PersonalThresholdModelBuilderConf.PERSONAL_THRESHOLD_MODEL_BUILDER)
 })

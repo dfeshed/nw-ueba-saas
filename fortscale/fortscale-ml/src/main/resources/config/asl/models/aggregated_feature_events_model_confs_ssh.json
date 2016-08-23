@@ -41,8 +41,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         },
         {
@@ -86,8 +85,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         },
         {
@@ -131,8 +129,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         },
         {
@@ -176,8 +173,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         },
         {
@@ -221,8 +217,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         },
         {
@@ -266,8 +261,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         },
         {
@@ -311,8 +305,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         },
         {
@@ -356,8 +349,7 @@
                 "numOfIndicatorsPerDay": 100
             },
             "builder": {
-                "type": "smart_score_mapping_model_builder",
-                "minThreshold": 1
+                "type": "indicator_score_mapping_model_builder"
             }
         }
     ]
