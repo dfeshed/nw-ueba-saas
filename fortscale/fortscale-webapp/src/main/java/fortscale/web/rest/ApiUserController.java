@@ -21,6 +21,7 @@ import javafx.util.Pair;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -287,6 +288,11 @@ public class ApiUserController extends BaseController{
 		} else {
 			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
 		}
+
+		addTagToUser(user, tag, addTag);
+	}
+
+	private void addTagToUser(User user, String tag, boolean addTag) {
 		UserTagService userTagService = userTaggingService.getUserTagService(tag);
 		if (userTagService == null) {
 			userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
@@ -296,6 +302,25 @@ public class ApiUserController extends BaseController{
 		} else {
 			userTagService.removeUserTag(user.getUsername(), tag);
 		}
+	}
+
+	/**
+	 * API to update users tags by filter
+	 * @return
+	 */
+	@RequestMapping(value="/tagUsers", method = RequestMethod.POST)
+	@LogException
+	public ResponseEntity addRemoveTagByFilter(UserRestFilter userRestFilter, @RequestParam Boolean addTag, @RequestParam String tagName) throws JSONException {
+		if (StringUtils.isEmpty(tagName)){
+			return new ResponseEntity("The tag name cannot be empty", HttpStatus.BAD_REQUEST);
+		}
+
+		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null);
+
+		usersByFilter.stream().forEach(user -> {
+			addTagToUser(user, tagName, addTag);
+		});
+		return new ResponseEntity(HttpStatus.OK);
 	}
 
 	private DataBean<List<UserDetailsBean>> getUsersDetails(List<User> users) {
