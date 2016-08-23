@@ -1,0 +1,6 @@
+<svg width="{{chartWidth}}" height="{{chartHeight}}">
+  <g transform="translate({{margin.left}},{{margin.top}})">
+    <rect class="rsa-chart-background" width="{{graphWidth}}" height="{{graphHeight}}"></rect>
+    {{yield data xScale yScale graphHeight}}
+  </g>
+</svg>

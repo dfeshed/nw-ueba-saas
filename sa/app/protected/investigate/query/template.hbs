@@ -41,7 +41,7 @@
         defaultSizeAction=(route-action "metaPanelSize" 'default')}}
     </aside>
     <section class="rsa-investigate-query__body-main">
-      {{!rsa-investigate/timeline coming soon!}}
+      {{rsa-investigate/timeline}}
       {{#rsa-data-table lazy=true items=model.events.data columnsConfig=model.eventColumns}}
         {{rsa-data-table/header}}
         {{#rsa-data-table/body buffer=25 as |item index column|}}

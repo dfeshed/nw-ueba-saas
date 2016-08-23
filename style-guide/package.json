@@ -40,6 +40,7 @@
     "ember-cli-template-lint": "0.4.11",
     "ember-cli-uglify": "^1.2.0",
     "ember-computed-decorators": "0.2.2",
+    "ember-d3": "0.2.0",
     "ember-data": "^2.6.0",
     "ember-export-application-global": "^1.0.5",
     "ember-inflector": "1.9.4",

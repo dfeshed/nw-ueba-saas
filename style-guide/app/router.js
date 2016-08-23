@@ -58,6 +58,14 @@ Router.map(function() {
       this.route('linkList');
       this.route('tab');
     });
+
+    this.route('chart', function() {
+      this.route('chart');
+      this.route('xAxis');
+      this.route('yAxis');
+      this.route('lineSeries');
+      this.route('areaSeries');
+    });
   });
 
   this.route('demo', function() {

@@ -3,6 +3,9 @@
 *.iml
 *.ipr
 *.iws
+.vscodeignore
+jsconfig.json
+ember.d.ts
 
 # Build tools
 build/
@@ -29,3 +32,4 @@ testem.log
 *.DS_Store
 *coverage.json
 lcov.dat
+typings/

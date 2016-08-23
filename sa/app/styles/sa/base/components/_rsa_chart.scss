@@ -1,0 +1,47 @@
+.rsa-chart-background {
+  fill: rsa-color(gray, darkest);
+}
+
+.rsa-line-series {
+  fill: none;
+  stroke-width: 2;
+  &.series-0 {
+    stroke: rsa-color(blue);
+  }
+  &.series-1 {
+    stroke: rsa-color(blue, darker);
+  }
+  &.series-2 {
+    stroke: rsa-color(blue, darkest);
+  }
+}
+
+.rsa-area-series {
+  &.series-0 {
+    fill: rsa-color(blue);
+  }
+  &.series-1 {
+    fill: rsa-color(blue, darker);
+  }
+  &.series-2 {
+    fill: rsa-color(blue, darkest);
+  }
+}
+
+.rsa-chart {
+  .domain {
+    stroke: rsa-color(white);
+    shape-rendering: crispEdges;
+  }
+
+  .tick {
+    line,
+    text {
+      fill: rsa-color(white);
+      stroke: rsa-color(white);
+      shape-rendering: crispEdges;
+      text-rendering: geometricPrecision;
+      text-anchor: end;
+    }
+  }
+}

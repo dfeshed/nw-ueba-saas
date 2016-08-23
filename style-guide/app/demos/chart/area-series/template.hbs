@@ -1,0 +1,44 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="single series"}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+          {{rsa-area-series data=data xScale=xScale yScale=yScale height=graphHeight}}
+        {{/rsa-chart}}
+
+        <code>
+          <div>
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+            <div>
+              &#123;{rsa-area-series data=data xScale=xScale yScale=yScale height=graphHeight}}
+            </div>
+            &#123;{/rsa-chart}}
+          </div>
+        </code>
+      {{/spec-member}}
+      {{#spec-member title="multi series"}}
+        {{#rsa-chart data=model.multiSeries as |data xScale yScale graphHeight|}}
+          {{rsa-area-series data=data dataIndex=0 xScale=xScale yScale=yScale height=graphHeight}}
+          {{rsa-area-series data=data dataIndex=1 xScale=xScale yScale=yScale height=graphHeight}}
+        {{/rsa-chart}}
+
+        <code>
+          <div>
+            &#123;{#rsa-chart data=model.multiSeries as |data xScale yScale graphHeight|}}
+            <div>
+              &#123;{rsa-area-series data=data dataIndex=0 xScale=xScale yScale=yScale height=graphHeight}}
+            </div>
+            <div>
+              &#123;{rsa-area-series data=data dataIndex=1 xScale=xScale yScale=yScale height=graphHeight}}
+            </div>
+            &#123;{/rsa-chart}}
+          </div>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

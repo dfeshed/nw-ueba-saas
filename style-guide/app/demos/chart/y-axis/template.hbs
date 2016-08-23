@@ -1,0 +1,40 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="default axis"}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+          {{rsa-y-axis scale=yScale}}
+        {{/rsa-chart}}
+
+        <code>
+          <div>
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+            <div>
+              &#123;{rsa-y-axis scale=yScale}}
+            </div>
+            &#123;{/rsa-chart}}
+          </div>
+        </code>
+      {{/spec-member}}
+      {{#spec-member title="rotation"}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+          {{rsa-y-axis scale=yScale rotation=-45}}
+        {{/rsa-chart}}
+
+        <code>
+          <div>
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+            <div>
+              &#123;{rsa-y-axis scale=yScale rotation=-45}}
+            </div>
+            &#123;{/rsa-chart}}
+          </div>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

@@ -1,0 +1,5 @@
+{{#rsa-chart data=chartData height=100 width='100%' xProp='value' yProp='count' as |data xScale yScale graphHeight|}}
+  {{rsa-line-series data=data xScale=xScale yScale=yScale xProp='value' yProp='count'}}
+  {{rsa-x-axis height=graphHeight scale=xScale}}
+  {{rsa-y-axis scale=yScale}}
+{{/rsa-chart}}
