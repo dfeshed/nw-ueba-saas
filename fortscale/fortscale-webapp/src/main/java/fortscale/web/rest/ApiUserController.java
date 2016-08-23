@@ -98,6 +98,8 @@ public class ApiUserController extends BaseController{
 		return usersList;
 	}
 
+
+
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
 
@@ -554,5 +556,23 @@ public class ApiUserController extends BaseController{
 			user.setScoreSeverity(userSeverity);
 
 		}
+	}
+
+	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
+		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
+
+		for (Map.Entry<String, Integer> alertTypeToCountEntry : alertsService.getAlertsTypesCountedByUser(ignoreRejected).entrySet()){
+			alertTypesNameAndCount.add(new ValueCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue()));
+		}
+
+		DataBean<Set<ValueCountBean>> result = new DataBean<>();
+
+		result.setData(alertTypesNameAndCount);
+		result.setTotal(alertTypesNameAndCount.size());
+
+		return result;
 	}
 }

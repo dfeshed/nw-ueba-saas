@@ -10,6 +10,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -123,6 +124,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes){
 		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
 		return mongoDbRepositoryUtil.groupCount(fieldName, criteria, "alerts");
+
+
+	}
+
+	public Map<Pair<String,String>, Integer> groupCountBy2Fields(String fieldName1, String filedName2, String severityArrayFilter, String statusArrayFilter,
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes){
+		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
+		return mongoDbRepositoryUtil.groupCountBy2Fields(fieldName1, filedName2, criteria, "alerts");
 
 
 	}
