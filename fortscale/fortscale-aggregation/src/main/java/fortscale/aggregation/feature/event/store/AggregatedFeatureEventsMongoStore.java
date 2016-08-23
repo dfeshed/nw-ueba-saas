@@ -1,8 +1,8 @@
 package fortscale.aggregation.feature.event.store;
 
 import fortscale.aggregation.feature.event.*;
+import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.mongodb.FIndex;
-import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -114,22 +114,15 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 															 Date endTime,
 															 int numOfDays,
 															 int topK) {
-		String collectionName = getCollectionName(aggregatedFeatureEventConf);
-		long endTimeSeconds = TimestampUtils.convertToSeconds(endTime);
-		Map<Long, List<AggrEvent>> dateToHighestAggrEvents = new HashMap<>(numOfDays);
-		while (numOfDays-- > 0) {
-			long startTime = endTimeSeconds - SECONDS_IN_DAY;
-			Query query = new Query()
-					.addCriteria(Criteria.where(AggrEvent.EVENT_FIELD_END_TIME_UNIX)
-							.gt(startTime)
-							.lte(endTimeSeconds))
-					.with(new Sort(Sort.Direction.DESC, AggrEvent.EVENT_FIELD_SCORE))
-					.limit(topK);
-			dateToHighestAggrEvents.put(startTime,
-					mongoTemplate.find(query, AggrEvent.class, collectionName));
-			endTimeSeconds -= SECONDS_IN_DAY;
-		}
-		return dateToHighestAggrEvents;
+		return MongoStoreUtils.getDateToTopScoredEvents(
+				getCollectionName(aggregatedFeatureEventConf),
+				AggrEvent.EVENT_FIELD_END_TIME_UNIX,
+				AggrEvent.EVENT_FIELD_SCORE,
+				endTime,
+				numOfDays,
+				topK,
+				AggrEvent.class
+		);
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {
