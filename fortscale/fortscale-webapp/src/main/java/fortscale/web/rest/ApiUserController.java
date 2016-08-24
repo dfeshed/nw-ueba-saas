@@ -29,6 +29,7 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -117,8 +118,8 @@ public class ApiUserController extends BaseController{
 		return bean;
 	}
 
-	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.PUT)
-	public ResponseEntity addFavoriteFilter(UserFilter userFilter, @RequestParam(value = "filter_name") String filterName) {
+	@RequestMapping(value = "/{filterName}/favoriteFilter", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity addFavoriteFilter(@RequestBody UserFilter userFilter, @PathVariable String filterName) {
 		try {
 			userService.saveFavoriteFilter(userFilter, filterName);
 		} catch (DuplicateKeyException e) {
@@ -170,8 +171,7 @@ public class ApiUserController extends BaseController{
 		}
 	}
 
-	private PageRequest createPaging(@RequestParam(required = false, value = "size") Integer size,
-			@RequestParam(required = false, value = "page") Integer fromPage, Sort sortUserDesc) {
+	private PageRequest createPaging(Integer size, Integer fromPage, Sort sortUserDesc) {
 		// Create paging
 		Integer pageSize = 10;
 		if (size != null) {
@@ -186,8 +186,7 @@ public class ApiUserController extends BaseController{
 		return new PageRequest(pageNumber, pageSize, sortUserDesc);
 	}
 
-	private Sort createSorting(@RequestParam(required = false, value = "sort_field") String sortField,
-			@RequestParam(required = false, value = "sort_direction") String sortDirection) {
+	private Sort createSorting(String sortField, String sortDirection) {
 		// Create sorting
 		Sort sortUserDesc;
 		Sort.Direction sortDir = Sort.Direction.ASC;
@@ -289,11 +288,12 @@ public class ApiUserController extends BaseController{
 			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
 		}
 
-		addTagToUser(user, tag, addTag);
+		UserTagService userTagService = userTaggingService.getUserTagService(tag);
+
+		addTagToUser(user, tag, addTag, userTagService);
 	}
 
-	private void addTagToUser(User user, String tag, boolean addTag) {
-		UserTagService userTagService = userTaggingService.getUserTagService(tag);
+	private void addTagToUser(User user, String tag, boolean addTag, UserTagService userTagService) {
 		if (userTagService == null) {
 			userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
 		}
@@ -308,17 +308,19 @@ public class ApiUserController extends BaseController{
 	 * API to update users tags by filter
 	 * @return
 	 */
-	@RequestMapping(value="/tagUsers", method = RequestMethod.POST)
+
+	@RequestMapping(value="/{addTag}/{tagName}/tagUsers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
-	public ResponseEntity addRemoveTagByFilter(UserRestFilter userRestFilter, @RequestParam Boolean addTag, @RequestParam String tagName) throws JSONException {
+	public ResponseEntity addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag, @PathVariable String tagName) throws JSONException {
 		if (StringUtils.isEmpty(tagName)){
 			return new ResponseEntity("The tag name cannot be empty", HttpStatus.BAD_REQUEST);
 		}
 
 		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null);
+		UserTagService userTagService = userTaggingService.getUserTagService(tagName);
 
 		usersByFilter.stream().forEach(user -> {
-			addTagToUser(user, tagName, addTag);
+			addTagToUser(user, tagName, addTag, userTagService);
 		});
 		return new ResponseEntity(HttpStatus.OK);
 	}
