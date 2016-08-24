@@ -11,10 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -81,8 +78,9 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 
 	@Override
 	public Set<String> getEventFeatureNames() {
-		throw new UnsupportedOperationException("the model created by this retriever is used for calibrating " +
-				"scores. As such, it is composed upon another scorer, so this function should never be called");
+//		throw new UnsupportedOperationException("the model created by this retriever is used for calibrating " +
+//				"scores. As such, it is composed upon another scorer, so this function should never be called");
+		return Collections.singleton("TODO: once analytics_infra_improvements is merged into master, throw an exception"); //TODO: s
 	}
 
 	@Override
