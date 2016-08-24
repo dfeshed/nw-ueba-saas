@@ -7,7 +7,6 @@ import fortscale.domain.fetch.LogRepository;
 import fortscale.services.LogRepositoryService;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.quartz.DisallowConcurrentExecution;
@@ -23,7 +22,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Amir Keren on 4/4/16.
@@ -304,6 +302,7 @@ public abstract class FetchJob {
 	 */
 	public void getJobParameters(JobDataMap map, JobDataMapExtension jobDataMapExtension, LogRepository configuredSIEM)
 			throws JobExecutionException {
+		logRepository = configuredSIEM;
 		// If exists, get the output path from the job data map
 		if (jobDataMapExtension.isJobDataMapContainKey(map, "path")) {
 			outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "path");

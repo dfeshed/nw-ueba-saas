@@ -13,10 +13,13 @@ import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 
 import fortscale.services.UserWithAlertService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -158,9 +161,42 @@ public class AlertsServiceImpl implements AlertsService {
 			ids.addAll(Arrays.asList(entityId.split(",")));
 		}
 
-		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
-						dateRangeFilter, entityName, ids, indicatorTypes);
+		return alertsRepository.groupCount(fieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
+				dateRangeFilter, entityName, ids, indicatorTypes);
 	}
+
+	@Override
+	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected){
+
+		String feedback = StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
+		return alertsRepository.groupCount(Alert.nameField,null, null,feedback ,
+				null, null, null, null);
+	}
+
+	@Override
+	public Map<String, Integer> getAlertsTypesCountedByUser(Boolean ignoreRejected){
+
+		Map<String, Integer> results = new HashMap<>();
+		String feedback = org.springframework.util.StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
+
+
+		 // The countOnUserAndAlertType map contains each pair of alert_name + alert_fied once.
+		//  We need to count how many users each alert_name contains
+		Map<Pair<String,String>, Integer> countOnUserAndAlertName = alertsRepository.groupCountBy2Fields(Alert.nameField, Alert.entityNameField, null, null, feedback,
+				null, null, null, null);
+
+		for (Pair<String,String> alertNameAndUserName: countOnUserAndAlertName.keySet()){
+			Integer count = results.get(alertNameAndUserName.getKey());
+			if (count == null){
+				count = 0;
+			}
+			count++;
+			results.put(alertNameAndUserName.getKey(), count);
+		}
+		return results;
+	}
+
+
 
 	@Override
 	public List<Alert> getAlertSummary(List<String> severities, long endDate) {
@@ -169,7 +205,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
     public List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities) {
-        return getAlertsByTimeRange(dateRange, severities, false);
+		return getAlertsByTimeRange(dateRange, severities, false);
     }
 
 	private List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences){
@@ -189,7 +225,7 @@ public class AlertsServiceImpl implements AlertsService {
 
     @Override
     public List<Alert> getAlertsByUsername(String userName){
-        return alertsRepository.findByEntityName(userName);
+		return alertsRepository.findByEntityName(userName);
     }
 
     public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange){
@@ -236,13 +272,17 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override public Set<String> getDistinctAlertNames(Boolean ignoreRejected) {
 		Set<String> alertNames;
-		if (BooleanUtils.isFalse(ignoreRejected)) {
-			alertNames = alertsRepository.getDistinctAlertNames(null);
-		} else {
-			alertNames = alertsRepository.getDistinctAlertNames(feedbackNoRejectedSet);
-		}
+		alertNames = alertsRepository.getDistinctAlertNames(getFeedbackListForFilter(ignoreRejected));
 
 		return alertNames.stream().sorted().collect(Collectors.toSet());
+	}
+
+	private Set<String> getFeedbackListForFilter(Boolean ignoreRejected){
+		if (BooleanUtils.isFalse(ignoreRejected)) {
+			return null;
+		} else {
+			return feedbackNoRejectedSet;
+		}
 	}
 
 	@Override
