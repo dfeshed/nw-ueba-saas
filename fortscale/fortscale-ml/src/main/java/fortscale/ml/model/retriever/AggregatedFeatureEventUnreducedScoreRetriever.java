@@ -46,6 +46,7 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 		return dateToTopAggrEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
 				.stream()
 				.map(aggrEvent -> findScoreToCalibrate(aggrEvent.getFeatureScores(), config.getScoreNameToCalibrate()))
+				.filter(unreducedScore -> unreducedScore != null)
 				.collect(Collectors.toList())));
 	}
 
@@ -61,12 +62,12 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 		);
 	}
 
-	private double findScoreToCalibrate(List<FeatureScore> featureScores, String scoreNameToCalibrate) {
+	private Double findScoreToCalibrate(List<FeatureScore> featureScores, String scoreNameToCalibrate) {
 		return flattenFeatureScoresRecursively(featureScores)
 				.filter(featureScore -> featureScore.getName().equals(scoreNameToCalibrate))
 				.findFirst()
 				.map(FeatureScore::getScore)
-				.get();
+				.orElse(null);
 	}
 
 	@Override

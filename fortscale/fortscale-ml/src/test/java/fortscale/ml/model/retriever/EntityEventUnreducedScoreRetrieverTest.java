@@ -44,10 +44,12 @@ public class EntityEventUnreducedScoreRetrieverTest {
 		dateToTopEntityEvents.put(twoDaysAgo, Collections.singletonList(entityEvent2));
 
 		Date endTime = new Date();
-		when(entityEventMongoStore.getDateToTopEntityEvents(config.getEntityEventConfName(),
+		when(entityEventMongoStore.getDateToTopEntityEvents(
+				config.getEntityEventConfName(),
 				endTime,
 				config.getNumOfDays(),
-				config.getNumOfAlertsPerDay())).thenReturn(dateToTopEntityEvents);
+				config.getNumOfAlertsPerDay())
+		).thenReturn(dateToTopEntityEvents);
 		Map<Long, List<Double>> data = retriever.retrieve(null, endTime);
 		Assert.assertEquals(new HashMap<Long, List<Double>>() {{
 			put(yesterday, Collections.singletonList(unreducedScore));
