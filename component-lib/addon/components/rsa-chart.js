@@ -2,6 +2,8 @@ import Ember from 'ember';
 import d3 from 'd3';
 import computed from 'ember-computed-decorators';
 import layout from '../templates/components/rsa-chart';
+/* global addResizeListener */
+/* global removeResizeListener */
 
 const { Component, run } = Ember;
 const min = (data, accessorFn) => d3.min(data.map((d) => d3.min(d, accessorFn)));
@@ -10,17 +12,19 @@ const computeExtent = (data, accessorFn) => [min(data, accessorFn), max(data, ac
 const createScale = (scaleFn, domain, range) => scaleFn().domain(domain).range(range).clamp(true);
 const calcGraphWidth = (width, marginLeft, marginRight) => width - marginLeft - marginRight;
 const calcGraphHeight = (height, marginTop, marginBottom) => height - marginTop - marginBottom;
+
+// The size of the component is actually completely dictated by CSS. However,
+// if we specify default zeroes, the initial DOM rendering will (briefly) look
+// crunched. Specifying non-zero default sizes yields a better initial UX.
 const DEFAULT_WIDTH = 600;
 const DEFAULT_HEIGHT = 150;
 
 export default Component.extend({
   layout,
   classNames: ['rsa-chart'],
-  width: 0,
-  chartWidth: DEFAULT_WIDTH,
-  height: 0,
-  chartHeight: DEFAULT_HEIGHT,
   data: null,
+  chartWidth: DEFAULT_WIDTH,
+  chartHeight: DEFAULT_HEIGHT,
   xProp: 'x',
   yProp: 'y',
   xScaleFn: d3.scaleTime,
@@ -61,35 +65,27 @@ export default Component.extend({
 
   didInsertElement() {
     this._super(...arguments);
-    this.$(window).on(`resize.${this.elementId}`, run.bind(this, this.resize));
-    run.scheduleOnce('afterRender', this, this.resize);
+    this._resizeListener = this.elementDidResize.bind(this);
+    addResizeListener(this.element, this._resizeListener);
+    run.scheduleOnce('afterRender', this._resizeListener);
   },
 
   willDestroyElement() {
     this._super(...arguments);
-    this.$(window).off(`resize.${this.elementId}`);
+    if (this._resizeListener) {
+      removeResizeListener(this.element, this._resizeListener);
+      this._resizeListener = null;
+    }
   },
 
-  resize() {
-    let w = DEFAULT_WIDTH;
-    let h = DEFAULT_HEIGHT;
-    const width = this.get('width');
-    if (typeof(width) === 'string') {
-      // assuming this is a percentage
-      w = parseInt(width, 10) / 100 * this.element.clientWidth;
-    } else if (width > 0) {
-      // there was a fixed width set
-      w = width;
-    }
-    const height = this.get('height');
-    if (typeof(height) === 'string') {
-      // assuming this is a percentage
-      h = parseInt(height, 10) / 100 * this.element.clientHeight;
-    } else if (height > 0) {
-      // there was a fixed height set
-      h = height;
-    }
-    this.set('chartWidth', w);
-    this.set('chartHeight', h);
+  elementDidResize() {
+    run.throttle(() => {
+      const w = this.get('element.clientWidth') || 0;
+      const h = this.get('element.clientHeight') || 0;
+      this.setProperties({
+        chartWidth: w,
+        chartHeight: h
+      });
+    }, 250);
   }
 });

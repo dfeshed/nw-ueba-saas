@@ -1,0 +1,48 @@
+.rsa-investigate-timeline {
+  @include rsa-col(justify,fill);
+
+  &__header {
+    @include rsa-vendor-prefix(flex-shrink,0);
+    @include rsa-vendor-prefix(flex-grow,0);
+
+    h2 {
+      @include rsa-font(header, small);
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+  }
+
+  &__body {
+    @include rsa-vendor-prefix(flex-grow,1);
+    position: relative;
+  }
+
+  .rsa-chart {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: auto;
+    height: auto;
+    margin: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+
+    svg {
+      display: block; /* overwrites default 'inline' in Safari & possibly others */
+    }
+
+    &-background {
+      fill: transparent;
+    }
+
+    .rsa-y-axis {
+      text {
+        text-anchor: start;
+      }
+    }
+    .rsa-x-axis {
+      text {
+        text-anchor: middle;
+      }
+    }
+  }
+}

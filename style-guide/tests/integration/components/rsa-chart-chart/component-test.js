@@ -11,14 +11,6 @@ test('it renders', function(assert) {
   assert.equal(this.$('.rsa-chart-background').length, 1, 'Testing to see if the .rsa-chart-background class exists');
 });
 
-test('The Chart component is properly sized when supplied with a size attribute', function(assert) {
-  this.render(hbs `{{rsa-chart width=800}}`);
-  assert.equal(this.$('.rsa-chart svg').width(), 800, 'Width should be 800');
-
-  this.render(hbs `{{rsa-chart height=100}}`);
-  assert.equal(this.$('.rsa-chart svg').height(), 100, 'Height should be 100');
-});
-
 test('The Chart component is properly sized when supplied with a margin attribute', function(assert) {
   this.set('margin', { top: 0, bottom: 0, left: 0, right: 0 });
   this.render(hbs `{{rsa-chart margin=margin}}`);

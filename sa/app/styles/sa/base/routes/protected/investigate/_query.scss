@@ -162,12 +162,30 @@
   }
 
   .rsa-investigate-timeline {
-    margin-right: 10px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: $investigateTimelineHeight;
+
+    &__header {
+      background-color: $investigateBgDarkerColor;
+    }
+
+    .rsa-chart {
+      .domain,
+      .tick line {
+        stroke: $investigateBgLighterColor;
+      }
+      .tick text {
+        stroke-width: 0;
+      }
+    }
   }
 
   .rsa-data-table {
     position: absolute;
-    top: 100px;
+    top: $investigateTimelineHeight;
     bottom: 0;
     left: 0;
     right: 0;

@@ -1,5 +1,10 @@
-{{#rsa-chart data=chartData height=100 width='100%' xProp='value' yProp='count' as |data xScale yScale graphHeight|}}
-  {{rsa-line-series data=data xScale=xScale yScale=yScale xProp='value' yProp='count'}}
-  {{rsa-x-axis height=graphHeight scale=xScale}}
-  {{rsa-y-axis scale=yScale}}
-{{/rsa-chart}}
+<header class="rsa-investigate-timeline__header">
+  <h2>{{t "investigate.events.title"}}</h2>
+</header>
+<section class="rsa-investigate-timeline__body">
+  {{#rsa-chart data=chartData margin=chartMargin xProp=xProp yProp=yProp as |data xScale yScale graphHeight|}}
+    {{rsa-line-series data=data xScale=xScale yScale=yScale xProp=xProp yProp=yProp}}
+    {{rsa-x-axis height=graphHeight scale=xScale}}
+    {{rsa-y-axis scale=yScale}}
+  {{/rsa-chart}}
+</section>

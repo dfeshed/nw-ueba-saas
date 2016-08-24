@@ -5,30 +5,28 @@ moduleFor('component:rsa-chart', 'Unit | rsa-chart', {
   unit: true
 });
 
+const delta = 20;
+const zeroMargin = { top: 0, bottom: 0, left: 0, right: 0 };
+const deltaMargin = { top: delta, bottom: delta, left: delta, right: delta };
+
 test('should correctly compute graph width', function(assert) {
   const chart = this.subject();
-  const margin = { top: 0, bottom: 0, left: 0, right: 0 };
 
-  assert.equal(chart.get('graphWidth'), 570, 'Using default width and margin');
+  chart.set('margin', zeroMargin);
+  const initial = chart.get('graphWidth');
 
-  chart.set('margin', margin);
-  assert.equal(chart.get('graphWidth'), 600, 'Setting margin');
-
-  chart.set('chartWidth', 800);
-  assert.equal(chart.get('graphWidth'), 800, 'Setting width and margin');
+  chart.set('margin', deltaMargin);
+  assert.equal(chart.get('graphWidth'), initial - delta * 2, 'Setting margin');
 });
 
 test('should correctly compute graph height', function(assert) {
   const chart = this.subject();
-  const margin = { top: 0, bottom: 0, left: 0, right: 0 };
 
-  assert.equal(chart.get('graphHeight'), 115, 'Using default width and margin');
+  chart.set('margin', zeroMargin);
+  const initial = chart.get('graphHeight');
 
-  chart.set('margin', margin);
-  assert.equal(chart.get('graphHeight'), 150, 'Setting margin');
-
-  chart.set('chartHeight', 200);
-  assert.equal(chart.get('graphHeight'), 200, 'Setting height and margin');
+  chart.set('margin', deltaMargin);
+  assert.equal(chart.get('graphHeight'), initial - delta * 2, 'Setting margin');
 });
 
 test('should correctly compute domain', function(assert) {

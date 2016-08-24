@@ -3,6 +3,7 @@ import Services from './services';
 import Events from './events';
 import EventCount from './event-count';
 import EventColumns from './event-columns';
+import EventTimeline from './event-timeline';
 import Tree from 'sa/utils/tree/tree';
 import Meta from './meta';
 
@@ -27,6 +28,9 @@ export default EmberObject.extend({
 
   // Columns to display for events data table.
   eventColumns: [].concat(EventColumns),
+
+  // Event counts (or sizes) aggregated by time.
+  eventTimeline: EventTimeline.create(),
 
   // Meta data for the `events`.
   meta: Meta.create()

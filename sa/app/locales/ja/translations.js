@@ -56,6 +56,9 @@ export default $.extend({}, BaseTranslations, {
     meta: {
       title: 'ja_Meta'
     },
+    events: {
+      title: 'ja_Events'
+    },
     services: {
       loading: 'ja_Loading list of available services',
       empty: {

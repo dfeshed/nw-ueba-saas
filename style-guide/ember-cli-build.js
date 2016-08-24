@@ -34,5 +34,9 @@ module.exports = function(defaults) {
   // ClipboardJS library: for Copy To Clipboard functionality.
   app.import(app.bowerDirectory + '/clipboard/dist/clipboard.js');
 
+  // Library to detect resize events in any DOM element: detect-element-resize
+  // (Used by rsa-chart)
+  app.import(app.bowerDirectory + "/javascript-detect-element-resize/detect-element-resize.js");
+
   return app.toTree();
 };
