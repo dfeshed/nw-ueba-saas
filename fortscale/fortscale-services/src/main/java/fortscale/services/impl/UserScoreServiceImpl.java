@@ -6,18 +6,19 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
+import fortscale.services.UserService;
+import fortscale.services.UserWithAlertService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import fortscale.utils.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,7 +35,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     public static final int DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT = 90;
 
     /**
-     * Default values  of mapiing percentiles to user severity.
+     * Default values  of mapping percentiles to user severity.
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_LOW_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT will get low severity
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT will get medium severity
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT will get high severity
@@ -49,10 +50,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     public static final String APP_CONF_PREFIX = "user.socre.conf";
     private static final String SCORE_SEVERITIES_CACHE = "SCORE_SEVERITIES_CACHE";
 
-
-
-
-
     private Logger logger = Logger.getLogger(this.getClass());
 
     /*
@@ -65,7 +62,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private UserScorePercentilesRepository userScorePercentilesRepository;
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -75,11 +71,16 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private AlertsRepository alertsRepository;
 
-
     @Autowired
     private ApplicationConfigurationHelper applicationConfigurationHelper;
 
+    @Autowired
+    private UserService userService;
+
     private UserScoreConfiguration userScoreConfiguration;
+
+    @Autowired
+    private UserWithAlertService userWithAlertService;
 
     @PostConstruct
     public void init()  {
@@ -133,8 +134,6 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return the new user socre
      */
     public double recalculateUserScore(String userName) {
-
-
         Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userName);
         double userScore = 0;
         for (Alert alert : alerts) {
@@ -151,13 +150,10 @@ public class UserScoreServiceImpl implements UserScoreService {
                 alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
 
-
-
             userScore += alert.getUserScoreContribution();
         }
         User user = userRepository.findByUsername(userName);
         user.setScore(userScore);
-
 
         userRepository.save(user);
         return userScore;
@@ -330,6 +326,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
+            userWithAlertService.recalculateNumberOfUserAlerts(userName);
         }
         logger.info("Finish updating user score");
 
@@ -340,7 +337,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         });
         return scoresHistogram;
     }
-
 
     /**
      * Translate the user score to severity, using the percentiles table and configuration.

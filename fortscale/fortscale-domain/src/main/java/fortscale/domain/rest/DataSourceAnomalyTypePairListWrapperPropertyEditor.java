@@ -1,4 +1,4 @@
-package fortscale.web.beans.request;
+package fortscale.domain.rest;
 
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 

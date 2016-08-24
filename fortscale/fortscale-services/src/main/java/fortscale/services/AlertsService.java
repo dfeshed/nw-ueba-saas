@@ -1,11 +1,13 @@
 package fortscale.services;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -24,8 +26,6 @@ public interface AlertsService {
 	 * @param alert	The alert
 	 */
 	void saveAlertInRepository(Alert alert);
-
-
 
 	/**
 	 * returns a list of all alerts
@@ -89,6 +89,15 @@ public interface AlertsService {
 										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 										   String entityTags, String entityId, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
+
+	/**
+	 * Get list of alert types, and return the alert type + how many alerts have it
+	 * @param ignoreRejected
+	 * @return
+	 */
+	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected);
+	public Map<String, Integer> getAlertsTypesCountedByUser(Boolean ignoreRejected);
+
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
     List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities);
@@ -104,4 +113,10 @@ public interface AlertsService {
     Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
 
     Set<Alert> getAlertsRelevantToUserScore(String userName);
+
+	Set<Alert> getOpenAlertsByUsername(String userName);
+
+	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
+
+	public Set<String> getDistinctUserNamesByUserFilter(UserRestFilter userRestFilter);
 }

@@ -1,14 +1,13 @@
 package fortscale.web.rest;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBObject;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.Tag;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
+import fortscale.domain.rest.UserFilter;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
@@ -16,31 +15,33 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
+import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
-import org.json.JSONArray;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
+import org.apache.commons.lang.BooleanUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import javax.validation.Valid;
 import java.util.*;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 @Controller
 @RequestMapping("/api/user")
 public class ApiUserController extends BaseController{
+	public static final String USER_COUNT = "userCount";
+	public static final String ADMINISTRATOR_TAG = "administrator";
+	public static final String WATCHED_USER = "watched";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -64,31 +65,128 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
-	private static final String DEFAULT_SORT_FIELD = "username";
+	@Autowired
+	private UserDeviceUtils userDeviceUtils;
 
+	@Autowired
+	private AlertsService alertsService;
+
+	@Autowired
+	private UserActivityService userActivityService;
+
+	@Autowired
+	private UserWithAlertService userWithAlertService;
+
+	private static final String DEFAULT_SORT_FIELD = "username";
 
 	/**
 	 * The API to get all users. GET: /api/user
 	 */
-	@RequestMapping(method = RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<UserDetailsBean>> getUsers(
-			@RequestParam(required = false, value = "sort_field") String sortField,
-			@RequestParam(required = false, value = "sort_direction") String sortDirection,
-			@RequestParam(required = false, value = "size") Integer size,
-			@RequestParam(required = false, value = "page") Integer fromPage,
-			@RequestParam(required = false, value = "disabled_since") String disabledSince,
-			@RequestParam(required = false, value = "is_disabled") Boolean isDisabled,
-			@RequestParam(required = false, value = "is_disabled_with_activity") Boolean isDisabledWithActivity,
-			@RequestParam(required = false, value = "is_terminated_with_activity") Boolean isTerminatedWithActivity,
-			@RequestParam(required = false, value = "inactive_since") String inactiveSince,
-			@RequestParam(required = false, value = "data_entities") String dataEntities,
-			@RequestParam(required = false, value = "entity_min_score") Integer entityMinScore,
-			@RequestParam(required = false, value = "is_service_account") Boolean isServiceAccount,
-			@RequestParam(required = false, value = "search_field_contains") String searchFieldContains) {
+	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
+	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
+
+		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
+		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
+
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+
+		setSeverityOnUsersList(users);
+		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
+		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
+		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
+
+		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
+			addAlertsAndDevices(usersList.getData());
+		}
+
+		return usersList;
+	}
 
 
+
+	@RequestMapping(value="/count", method=RequestMethod.GET)
+	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
+
+		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
+
+		DataBean<Integer> bean = new DataBean<>();
+		bean.setData(count);
+		bean.setTotal(count);
+
+		return bean;
+	}
+
+	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.PUT)
+	public ResponseEntity addFavoriteFilter(UserFilter userFilter, @RequestParam(value = "filter_name") String filterName) {
+		try {
+			userService.saveFavoriteFilter(userFilter, filterName);
+		} catch (DuplicateKeyException e) {
+			return new ResponseEntity("The filter name already exists", HttpStatus.BAD_REQUEST);
+		} catch (Exception e){
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		return new ResponseEntity(HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.DELETE)
+	public ResponseEntity deleteFavoriteFilter(@RequestParam(value = "filter_name") String filterName) {
+
+		long lineDeleted = userService.deleteFavoriteFilter(filterName);
+
+		if (lineDeleted > 0){
+			return new ResponseEntity(HttpStatus.OK);
+		}
+		return new ResponseEntity("No documents deleted", HttpStatus.BAD_REQUEST);
+	}
+
+	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.GET)
+	public DataBean<List<FavoriteUserFilter>> getFavoriteFilters() {
+
+		List<FavoriteUserFilter> allFavoriteFilters = userService.getAllFavoriteFilters();
+		DataBean<List<FavoriteUserFilter>> result = new DataBean<>();
+		result.setData(allFavoriteFilters);
+		result.setTotal(allFavoriteFilters.size());
+
+		return result;
+
+	}
+
+	private void addAlertsAndDevices(List<UserDetailsBean> users) {
+		for (UserDetailsBean userDetailsBean: users) {
+			User user = userDetailsBean.getUser();
+			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
+			userDetailsBean.setAlerts(usersAlerts);
+			List<UserActivitySourceMachineDocument> userSourceMachines;
+			try {
+				userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
+						Integer.MAX_VALUE);
+			} catch (Exception ex) {
+				logger.warn("failed to get user source machines");
+				userSourceMachines = new ArrayList<>();
+			}
+			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
+		}
+	}
+
+	private PageRequest createPaging(@RequestParam(required = false, value = "size") Integer size,
+			@RequestParam(required = false, value = "page") Integer fromPage, Sort sortUserDesc) {
+		// Create paging
+		Integer pageSize = 10;
+		if (size != null) {
+			pageSize = size;
+		}
+
+		Integer pageNumber = 0;
+		if (fromPage != null) {
+			pageNumber = fromPage - 1;
+		}
+
+		return new PageRequest(pageNumber, pageSize, sortUserDesc);
+	}
+
+	private Sort createSorting(@RequestParam(required = false, value = "sort_field") String sortField,
+			@RequestParam(required = false, value = "sort_direction") String sortDirection) {
 		// Create sorting
 		Sort sortUserDesc;
 		Sort.Direction sortDir = Sort.Direction.ASC;
@@ -107,99 +205,8 @@ public class ApiUserController extends BaseController{
 		} else {
 			sortUserDesc = new Sort(new Sort.Order(Sort.Direction.ASC, DEFAULT_SORT_FIELD));
 		}
-
-
-		// Create paging
-		Integer pageSize = 10;
-		if (size != null) {
-			pageSize = size;
-		}
-
-		Integer pageNumber = 0;
-		if (fromPage != null) {
-			pageNumber = fromPage - 1;
-		}
-
-		PageRequest pageRequest = new PageRequest(pageNumber, pageSize, sortUserDesc);
-
-		// Create criteria list
-		List<Criteria> criteriaList = new ArrayList<>();
-
-		if (disabledSince != null && !disabledSince.isEmpty()) {
-			criteriaList.add(where("adInfo.disableAccountTime")
-					.gte(new Date(Long.parseLong(disabledSince))));
-		}
-
-		if (isDisabled != null) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabled));
-		}
-
-		if (inactiveSince != null && !inactiveSince.isEmpty()) {
-			criteriaList.add(
-					new Criteria().orOperator(
-							where("lastActivity").lt(new Date(Long.parseLong(inactiveSince))),
-							where("lastActivity").not().ne(null)
-					)
-			);
-		}
-
-		if (isDisabledWithActivity != null && isDisabledWithActivity) {
-			criteriaList.add(where("adInfo.isAccountDisabled").is(isDisabledWithActivity));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isTerminatedWithActivity != null && isTerminatedWithActivity) {
-			criteriaList.add(where("terminationDate").exists(true));
-			criteriaList.add(new Criteria() {
-				@Override
-				public DBObject getCriteriaObject() {
-					DBObject obj = new BasicDBObject();
-					obj.put("$where", "this.terminationDate < this.lastActivity");
-					return obj;
-				}
-			});
-		}
-
-		if (isServiceAccount != null && isServiceAccount) {
-			criteriaList.add(where("userServiceAccount").is(isServiceAccount));
-		}
-
-		if (searchFieldContains != null) {
-			criteriaList.add(where("sf").regex(searchFieldContains));
-		}
-
-		if (dataEntities != null) {
-            List<Criteria> wheres = new ArrayList<Criteria>();
-            for (String dataEntityName : dataEntities.split(",")) {
-                if (entityMinScore != null) {
-                    wheres.add(where("scores." + dataEntityName + ".score").gte(entityMinScore));
-                } else {
-                    wheres.add(where("scores." + dataEntityName).exists(true));
-                }
-			}
-            criteriaList.add(
-					new Criteria().orOperator(wheres.toArray(new Criteria[0]))
-			);
-		}
-
-		// Get users
-		List<User> users = userRepository.findAllUsers(criteriaList, pageRequest);
-		setSeverityOnUsersList(users);
-		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
-
-		usersList.setOffset(pageNumber*pageSize);
-		usersList.setTotal(userRepository.countAllUsers(criteriaList));
-		return usersList;
+		return sortUserDesc;
 	}
-
-
 
 	@RequestMapping(value="/search", method=RequestMethod.GET)
 	@ResponseBody
@@ -242,13 +249,21 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{ids}/details", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids){
+	public DataBean<List<UserDetailsBean>> details(@PathVariable List<String> ids,
+			@RequestParam(required = false, value = "add_alerts_and_devices") Boolean addAlertsAndDevices){
 
 		// Get Users
 		List<User> users = userRepository.findByIds(ids);
 		setSeverityOnUsersList(users);
+
+		DataBean<List<UserDetailsBean>> usersDetails = getUsersDetails(users);
+
+		if (BooleanUtils.isTrue(addAlertsAndDevices)){
+			addAlertsAndDevices(usersDetails.getData());
+		}
+
 		// Return detailed users
-		return getUsersDetails(users);
+		return usersDetails;
 	}
 
 	/**
@@ -380,19 +395,24 @@ public class ApiUserController extends BaseController{
 
 	@RequestMapping(value="/user_tags", method=RequestMethod.POST)
 	@LogException
-	public ResponseEntity<String> updateTags(@RequestBody String body) {
-		JSONArray params = new JSONObject(body).getJSONArray("tags");
-		String errorMessage = "{json body is not in proper format: Array<{name: String, displayName: String, isFixed: "+
-			"boolean, createsIndicator: boolean}>}";
-		List<Tag> tags;
-		try {
-			tags = new ObjectMapper().readValue(params.toString(), new TypeReference<List<Tag>>(){});
-		} catch (IOException e) {
-			return new ResponseEntity(errorMessage, HttpStatus.BAD_REQUEST);
-		}
+	public ResponseEntity<String> updateTags(@RequestBody @Valid List<Tag> tags) {
 		for (Tag tag: tags) {
 			if (!tagService.updateTag(tag)) {
 				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
+			//if update was successful and tag is no longer active - remove that tag from all users
+			} else if (!tag.getActive()) {
+				String tagName = tag.getName();
+				UserTagService userTagService = userTaggingService.getUserTagService(tagName);
+				if (userTagService == null) {
+					userTagService = userTaggingService.getUserTagService(UserTagEnum.custom.getId());
+				}
+				Set<String> usernames = userService.findUsernamesByTags(new String[] { tagName });
+				if (CollectionUtils.isNotEmpty(usernames)) {
+					logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
+					for (String username : usernames) {
+						userTagService.removeUserTag(username, tagName);
+					}
+				}
 			}
 		}
 		return new ResponseEntity("{}", HttpStatus.ACCEPTED);
@@ -428,8 +448,6 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-
-
 	@RequestMapping(value="/{id}/machines", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -461,58 +479,6 @@ public class ApiUserController extends BaseController{
 		DataBean<List<UserMachinesBean>> ret = new DataBean<>();
 		ret.setData(usersMachinesList);
 		ret.setTotal(usersMachinesList.size());
-		return ret;
-	}
-
-/*	@RequestMapping(value="/{id}/scores", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<IUserScore>> userScores(@PathVariable String id, Model model){
-		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
-		List<IUserScore> userScores = userServiceFacade.getUserScores(id);
-		ret.setData(userScores);
-		ret.setTotal(userScores.size());
-		return ret;
-	}
-
-	@RequestMapping(value="/{uid}/classifier/{classifierId}/scorehistory", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<IUserScoreHistoryElement>> userClassifierScoreHistory(@PathVariable String uid, @PathVariable String classifierId,
-			@RequestParam(required=false) List<Long> dateRange,
-			@RequestParam(defaultValue="0") Integer tzShift,
-			@RequestParam(defaultValue="10") Integer limit,
-			Model model){
-		if(dateRange == null || dateRange.size() == 0){
-			dateRange = new ArrayList<>();
-			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().minusDays(limit-1).getMillis());
-			dateRange.add(DateTime.now(DateTimeZone.UTC).withTimeAtStartOfDay().plusDays(1).getMillis());
-		} else{
-			if(dateRange.size()!=2 || (dateRange.get(0)>=dateRange.get(1))){
-				logger.error("dateRange paramter {} is not in the list format [start,end]", dateRange);
-				throw new InvalidValueException(String.format("dateRange paramter %s is not in the list format [start,end]", dateRange));
-			}
-		}
-		DataBean<List<IUserScoreHistoryElement>> ret = new DataBean<List<IUserScoreHistoryElement>>();
-		List<IUserScoreHistoryElement> userScoreHistory = userServiceFacade.getUserScoresHistory(uid, classifierId, dateRange.get(0), dateRange.get(1), tzShift);
-
-		Collections.reverse(userScoreHistory);
-		ret.setData(userScoreHistory);
-		ret.setTotal(userScoreHistory.size());
-		return ret;
-	}
-
-
-	@RequestMapping(value="/{uid}/classifier/total/explanation", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<IUserScore>> userTotalScoreExplanation(@PathVariable String uid,
-			@RequestParam(required=true) String date, Model model){
-		DataBean<List<IUserScore>> ret = new DataBean<List<IUserScore>>();
-		List<IUserScore> userScores = userServiceFacade.getUserScoresByDay(uid, Long.parseLong(date));
-
-		ret.setData(userScores);
-		ret.setTotal(userScores.size());
 		return ret;
 	}
 
@@ -578,21 +544,85 @@ public class ApiUserController extends BaseController{
 		return response;
 	}
 
-
-
 	private void setSeverityOnUsersList(List<User> users){
 		for (User user: users){
-			double userScore = user.getScore();
-			Severity userSeverity;
-			try {
-				userSeverity = userScoreService.getUserSeverityForScore(userScore);
-
-			} catch (RuntimeException e){
-				logger.error("Cannot find user severtiy for score: "+userScore);
-				userSeverity = Severity.Low; // Handle fallback
-			}
-			user.setScoreSeverity(userSeverity);
-
+			setSeverityOnUser(user);
 		}
+	}
+
+	private void setSeverityOnUser(User user) {
+		double userScore = user.getScore();
+		Severity userSeverity;
+		try {
+			userSeverity = userScoreService.getUserSeverityForScore(userScore);
+
+		} catch (RuntimeException e){
+			logger.error("Cannot find user severity for score: "+userScore);
+			userSeverity = Severity.Low; // Handle fallback
+		}
+		user.setScoreSeverity(userSeverity);
+	}
+
+	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(){
+		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
+		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
+
+		UserRestFilter filter = new UserRestFilter();
+		filter.setIsScored(true);
+
+		List<User> scoredUsers = userService.findUsersByFilter(filter, null, null);
+
+		if (CollectionUtils.isNotEmpty(scoredUsers)) {
+			scoredUsers.stream().forEach(user -> {
+				setSeverityOnUser(user);
+				Map<String, Integer> severityData = severityBarMap.get(user.getScoreSeverity().name());
+
+				if (MapUtils.isEmpty(severityData)) {
+					severityData = new HashMap<>();
+					severityData.put(USER_COUNT, 0);
+					severityData.put(ADMINISTRATOR_TAG, 0);
+					severityData.put(WATCHED_USER, 0);
+					severityBarMap.put(user.getScoreSeverity().name(), severityData);
+				}
+
+				severityData.put(USER_COUNT, severityData.get(USER_COUNT) + 1);
+
+				if (user.getFollowed()) {
+					severityData.put(WATCHED_USER, severityData.get(WATCHED_USER) + 1);
+				}
+
+				if (user.getTags().contains(UserTagEnum.admin.name())) {
+					severityData.put(ADMINISTRATOR_TAG, severityData.get(ADMINISTRATOR_TAG) + 1);
+				}
+
+			});
+
+			dataBean.setData(severityBarMap);
+			dataBean.setTotal(scoredUsers.size());
+		}
+
+
+		return dataBean;
+	}
+
+	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
+		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
+
+		for (Map.Entry<String, Integer> alertTypeToCountEntry : alertsService.getAlertsTypesCountedByUser(ignoreRejected).entrySet()){
+			alertTypesNameAndCount.add(new ValueCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue()));
+		}
+
+		DataBean<Set<ValueCountBean>> result = new DataBean<>();
+
+		result.setData(alertTypesNameAndCount);
+		result.setTotal(alertTypesNameAndCount.size());
+
+		return result;
 	}
 }

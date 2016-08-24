@@ -3,6 +3,7 @@ package fortscale.domain.core.dao;
 import fortscale.domain.core.activities.*;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserActivityRepositoryCustom {
 
@@ -14,5 +15,6 @@ public interface UserActivityRepositoryCustom {
 	List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String username, int timeRangeInDays);
 	List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
 	List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays);
+	Set<String> getUserNamesByLocation(List<String> locations);
 
 }

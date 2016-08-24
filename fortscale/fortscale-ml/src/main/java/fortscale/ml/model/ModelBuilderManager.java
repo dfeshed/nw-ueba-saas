@@ -119,16 +119,18 @@ public class ModelBuilderManager {
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
         Object modelBuilderData;
         Model model;
+        String failureReason = "got null";
 
         // Retriever
         try {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
             metrics.retrieverFailures++;
-            logger.error("Failed to retrieve data: " + e.toString());
+            failureReason = e.toString();
             modelBuilderData = null;
         }
         if (modelBuilderData == null) {
+            logger.error("Failed to retrieve data: " + failureReason);
             return ModelBuildingStatus.RETRIEVER_FAILURE;
         }
 
@@ -137,10 +139,11 @@ public class ModelBuilderManager {
             model = modelBuilder.build(modelBuilderData);
         } catch (Exception e) {
             metrics.builderFailures++;
-            logger.error("Failed to build model: " + e.toString());
+            failureReason = e.toString();
             model = null;
         }
         if (model == null) {
+            logger.error("Failed to build model: " + failureReason);
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
 

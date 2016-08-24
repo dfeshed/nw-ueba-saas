@@ -14,13 +14,8 @@ import java.util.*;
 public class UserActivityLocationDocument extends UserActivityDocument {
 
     public static final String COLLECTION_NAME = "user_activity_locations";
-    private static final String LOCATIONS_FIELD_NAME = "locations";
-    private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
-
-
-
-
-
+    public static final String LOCATIONS_FIELD_NAME = "locations";
+    public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
 
     @Field(LOCATIONS_FIELD_NAME)
     private Locations locations = new Locations();

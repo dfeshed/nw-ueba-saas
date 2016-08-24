@@ -62,7 +62,7 @@ public abstract class UserTagServiceAbstract implements UserTagService, Initiali
 		throws Exception {
 
 		userTaggingService.putUserTagService(getTag().getId(), this);
-		Tag tag = new Tag(getTag().getId(), getTag().getDisplayName(), true, true);
+		Tag tag = new Tag(getTag().getId(), getTag().getDisplayName(), true);
 		tagService.addTag(tag);
 
 		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process

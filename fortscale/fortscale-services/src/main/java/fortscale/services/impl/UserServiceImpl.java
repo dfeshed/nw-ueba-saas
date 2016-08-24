@@ -9,9 +9,12 @@ import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.DeletedUserRepository;
+import fortscale.domain.core.dao.FavoriteUserFilterRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
+import fortscale.domain.rest.UserFilter;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
@@ -22,6 +25,7 @@ import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -42,6 +46,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -56,13 +61,13 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Autowired
 	private MongoOperations mongoTemplate;
-	
+
 	@Autowired
 	private AdUserRepository adUserRepository;
-	
+
 	@Autowired
 	private AdUserThumbnailRepository adUserThumbnailRepository;
-	
+
 	@Autowired
 	private AdGroupRepository adGroupRepository;
 
@@ -74,24 +79,27 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Autowired
 	private ComputerRepository computerRepository;
-	
+
 	@Autowired
 	private UserMachineDAO userMachineDAO;
-	
+
 	@Autowired
 	private EventScoreDAO loginDAO;
-	
+
 	@Autowired
 	private EventScoreDAO sshDAO;
-	
+
 	@Autowired
 	private EventScoreDAO vpnDAO;
-	
+
 	@Autowired
 	private UsernameService usernameService;
 
-	@Autowired 
+	@Autowired
 	private ADParser adUserParser;
+
+	@Autowired
+	private FavoriteUserFilterRepository favoriteUserFilterRepository;
 
 	@Autowired
 	@Qualifier("groupByTagsCache")
@@ -142,8 +150,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication, appUsername), false);
 		return user;
 	}
-	
-	
+
+
 	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
 	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
 	@Override
@@ -161,7 +169,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		if(userId == null && onlyUpdate){
 			return;
 		}
-			
+
 		if(userId != null){
 			if(!usernameService.isLogUsernameExist(logEventId, logUsername, userId)){
 				// i.e. user exists but the log username is not updated ==> update the user with the new log username
@@ -170,7 +178,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			}
         } else{
 			createNewUser(classifierId, normalizedUsername, logUsername, logEventId, userApplicationId);
-		}		
+		}
 	}
 
 	private void createNewUser(String classifierId, String normalizedUsername, String logUsername, String logEventId, String userApplicationId) {
@@ -199,7 +207,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		usernameService.addLogUsernameToCache(logEventId, logUsername, userId);
 	}
 
-	private User saveUser(User user){
+	@Override
+	public User saveUser(User user){
 		user = userRepository.save(user);
 		usernameService.updateUsernameInCache(user);
 		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
@@ -373,7 +382,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		} else {
 			serviceMetrics.thumbnailNotFound++;
 		}
-		
+
 		return ret;
 	}
 
@@ -385,7 +394,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		} else {
 			logger.warn("no timestamp. probably the ad_user table is empty");
 		}
-		
+
 	}
 
 	@Override
@@ -415,8 +424,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			serviceMetrics.emptyDN++;
 			return;
 		}
-		
-		
+
+
 		User user =  findUserByObjectGUID(adUser.getObjectGUID());
 		Date whenChanged = null;
 		try {
@@ -445,7 +454,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				return;
 			}
 		}
-		
+
 		final UserAdInfo userAdInfo = new UserAdInfo();
 		userAdInfo.setObjectGUID(adUser.getObjectGUID());
 		userAdInfo.setDn(adUser.getDistinguishedName());
@@ -456,9 +465,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		userAdInfo.setUserPrincipalName(adUser.getUserPrincipalName());
 		userAdInfo.setsAMAccountName(adUser.getsAMAccountName());
-		
-		
-		
+
+
+
 		userAdInfo.setEmployeeID(adUser.getEmployeeID());
 		userAdInfo.setEmployeeNumber(adUser.getEmployeeNumber());
 		userAdInfo.setManagerDN(adUser.getManager());
@@ -475,7 +484,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		userAdInfo.setLogonHours(adUser.getLogonHours());
 
 		userAdInfo.setWhenChanged(whenChanged);
-		
+
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenCreated())){
 				userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
@@ -484,7 +493,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			serviceMetrics.dateParsingError++;
 			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
 		}
-		
+
 		userAdInfo.setDescription(adUser.getDescription());
 		userAdInfo.setStreetAddress(adUser.getStreetAddress());
 		userAdInfo.setCompany(adUser.getCompany());
@@ -503,7 +512,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
 		userAdInfo.setIsAccountDisabled(adUserParser.isAccountIsDisabled(userAdInfo.getUserAccountControl()));
-		
+
 		// update user's groups
 		userAdInfo.setGroups(groups);
 
@@ -519,31 +528,31 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			}
 		}
 		userAdInfo.setDisableAccountTime(disableAccountTime);
-				
+
 		boolean isSaveUser = false;
 		if(user == null){
 			user = new User();
 			isSaveUser = true;
 		}
-		
+
 		user.setAdInfo(userAdInfo);
-		
+
 		String username = adUser.getUserPrincipalName();
 		if(StringUtils.isEmpty(username)) {
 			username = adUser.getsAMAccountName();
 		}
-		
+
 		if(!StringUtils.isEmpty(username)) {
 			username = username.toLowerCase();
 		} else{
 			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
 			serviceMetrics.emptyUsername++;
 		}
-		
-		
-		
+
+
+
 		final String searchField = createSearchField(userAdInfo, username);
-		
+
 		String noDomainUsername = null;
 		if(!StringUtils.isEmpty(username)) {
 			noDomainUsername = StringUtils.split(username, '@')[0];
@@ -683,18 +692,18 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private User findUserByObjectGUID(String objectGUID){
 		return userRepository.findByObjectGUID(objectGUID);
 	}
-	
+
 	@Override
 	public void updateUser(User user, Update update){
 		if(user.getId() != null){
 			mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
 		}
 	}
-	
+
 	private void updateUserInMongo(String userId, Update update){
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(userId)), update, User.class);
 	}
-	
+
 	private String createSearchField(UserAdInfo userAdInfo, String username){
 		StringBuilder sb = new StringBuilder();
 		if(userAdInfo != null){
@@ -711,7 +720,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				}
 			}
 		}
-		
+
 		if(!StringUtils.isEmpty(username)){
 			sb.append(SEARCH_FIELD_PREFIX).append(username);
 		}
@@ -720,7 +729,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
-		
+
 		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX + prefix.toLowerCase(), new PageRequest(page, size));
 	}
 
@@ -733,8 +742,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		return user.getUsername();
 	}
-	
-	
+
+
 
 	@Override
 	public List<UserMachine> getUserMachines(String uid) {
@@ -757,8 +766,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		return userMachines;
 	}
-	
-	
+
+
 	@Override
 	public String findByNormalizedUserName(String normalizedUsername) {
 		return userRepository.getUserIdByNormalizedUsername(normalizedUsername);
@@ -768,30 +777,30 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public boolean findIfUserExists(String username) {
 		return userRepository.findIfUserExists(username);
 	}
-	
+
 	@Override
 	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave){
 		return createNewApplicationUserDetails(user, createNewApplicationUserDetails(userApplication, username), isSave);
 	}
-	
+
 	private ApplicationUserDetails createNewApplicationUserDetails(String userApplication, String username){
 		return new ApplicationUserDetails(userApplication, username);
 	}
-	
+
 	public boolean createNewApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
 		boolean isNewVal = false;
 		if(!user.containsApplicationUserDetails(applicationUserDetails)){
 			user.addApplicationUserDetails(applicationUserDetails);
 			isNewVal = true;
 		}
-		
+
 		if(isSave && isNewVal){
 			saveUser(user);
 		}
-		
+
 		return isNewVal;
 	}
-	
+
 	@Override
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username) {
 		return new ApplicationUserDetails(userApplication.getId(), username);
@@ -802,40 +811,40 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			UserApplication userApplication, List<String> usernames) {
 		return userRepository.findByApplicationUserName(userApplication.getId(), usernames);
 	}
-	
+
 	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore) {
 		// get the destinations from 4769 events and ssh events
 		Map<String, EventsToMachineCount> destinationsCount = new HashMap<String, EventsToMachineCount>();
-		
+
 		String username = getUserNameFromID(uid);
-		
+
 		addEventsToMachineCountToMap(destinationsCount, loginDAO.getEventsToTargetMachineCount(username, latestDate,earliestDate, minScore));
 		addEventsToMachineCountToMap(destinationsCount, sshDAO.getEventsToTargetMachineCount(username, latestDate,earliestDate, minScore));
-	
+
 		// create a properties distribution object
 		PropertiesDistribution distribution = new PropertiesDistribution(propertyName);
-		
+
 		// go over the computers returned by events and get the operating system for each one
 		int numberOfDestinations = 0;
 		for (EventsToMachineCount destMachine : destinationsCount.values()) {
 			Computer computer = computerRepository.getComputerWithPartialFields(destMachine.getHostname().toUpperCase(), propertyName);
 			distribution.incValueCount(computer.getPropertyValue(propertyName).toString(), destMachine.getEventsCount());
 			numberOfDestinations++;
-			
+
 			// in case we return more than a certain amount of values distribution, mark result as not conclusive
 			if (numberOfDestinations > maxValues) {
 				distribution.setConclusive(false);
 				break;
 			}
 		}
-		
+
 		// calculate distribution for every operating systems and return the result
 		if (distribution.isConclusive())
 			distribution.calculateValuesDistribution();
-		
+
 		return distribution;
 	}
-	
+
 	private void addEventsToMachineCountToMap(Map<String, EventsToMachineCount> total, List<EventsToMachineCount> toAdd) {
 		for (EventsToMachineCount machine : toAdd) {
 			String hostname = machine.getHostname();
@@ -849,15 +858,15 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 	}
 
-	
-	
+
+
 	public void updateTags(String username, Map<String, Boolean> tagSettings) {
-		
+
 		// construct lists of tags to remove and tags to add from the map
 		List<String> tagsToAdd = new LinkedList<String>();
 		List<String> tagsToRemove = new LinkedList<String>();
 		for (String tag : tagSettings.keySet()) {
-			if (tagSettings.get(tag)) 
+			if (tagSettings.get(tag))
 				tagsToAdd.add(tag);
 			else
 				tagsToRemove.add(tag);
@@ -983,6 +992,20 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
+	public Set<String> findUsernamesByTags(String[] tags) {
+		Set<String> usernamesByTags = new HashSet();
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+		List<Criteria> criterias = new ArrayList<>();
+		criterias.add(where(User.tagsField).in(tags));
+		Criteria[] criteriasArr = new Criteria[]{criterias.get(0)};
+		query.addCriteria(new Criteria().andOperator(criteriasArr));
+		List<User> users = mongoTemplate.find(query, User.class);
+		usernamesByTags.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		return usernamesByTags;
+	}
+
+	@Override
 	public Map<String, Long> groupByTags() {
 		final String TAGS = "tags";
 		Map<String, Long> items = groupByTagsCache.get(TAGS);
@@ -1037,7 +1060,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public User getUserById(String id) {
 		return userRepository.findOne(id);
 	}
-	
+
 	@Override public Boolean isPasswordExpired(User user) {
 		try{
 			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
@@ -1140,6 +1163,46 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames){
 		return  userRepository.groupCount(User.displayNameField, displayNames);
+	}
+
+	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
+			Set<String> relevantUserNames) {
+
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserNames(userRestFilter, relevantUserNames);
+
+		return userRepository.findAllUsers(criteriaList, pageRequest);
+	}
+
+	private List<Criteria> getCriteriaListByFilterAndUserNames(UserRestFilter userRestFilter,
+			Set<String> relevantUserNames) {
+		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
+
+		// If there was filter for alert type or anomaly type or locations
+		// we want to add criteria for getting data of specific users
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())) {
+			criteriaList.add(userRepository.getUserCriteriaByUserNames(relevantUserNames));
+		}
+
+		return criteriaList;
+	}
+
+	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
+
+		return userRepository.countAllUsers(getCriteriaListByFilterAndUserNames(userRestFilter, relevantUsers));
+	}
+
+	@Override public void saveFavoriteFilter(UserFilter userFilter, String filterName) {
+		favoriteUserFilterRepository.save(userFilter, filterName);
+	}
+
+	@Override public List<FavoriteUserFilter> getAllFavoriteFilters() {
+		return favoriteUserFilterRepository.findAll();
+	}
+
+	@Override public long deleteFavoriteFilter(String filterName) {
+		return favoriteUserFilterRepository.deleteByFilterName(filterName);
 	}
 
 	@Override public String getUserId(String username) {
