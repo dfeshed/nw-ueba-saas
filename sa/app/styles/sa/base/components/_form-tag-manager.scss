@@ -1,0 +1,12 @@
+.rsa-form-tag-manager {
+  .rsa-content-label {
+    margin-top: rsa-whitespace(least);
+    margin-bottom: rsa-whitespace(least);
+  }
+
+  &__tree-toggle {
+    cursor: pointer;
+    margin-top: rsa-whitespace(least);
+    margin-bottom: rsa-whitespace(least);
+  }
+}

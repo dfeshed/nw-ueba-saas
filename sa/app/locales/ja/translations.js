@@ -143,7 +143,8 @@ export default $.extend({}, BaseTranslations, {
       },
       overview: {
         title: 'ja_Overview',
-        about: 'ja_About Incident'
+        about: 'ja_About Incident',
+        categoryTags: 'ja_Category Tags'
       }
     },
     list: {

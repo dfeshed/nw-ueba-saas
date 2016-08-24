@@ -176,6 +176,7 @@ test('it renders', function(assert) {
           'groupby_source_ip': '66.249.67.67',
           'groupby_filename': 'cotlow_awards.cfm' } }]
   });
+
   let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
       EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
       EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
@@ -183,7 +184,7 @@ test('it renders', function(assert) {
   this.set('incident', incident);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-respond/incident-detail/detail-index model=incident users=users}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-index model=incident users=users normalizedTreeData=mockTreeData}}`);
 
   assert.equal(this.$('.rsa-respond-incident__top-panel').length, 1, 'Testing detail header element exists');
   assert.equal(this.$('.rsa-application-layout-manager').length, 1, 'Layout element exists');

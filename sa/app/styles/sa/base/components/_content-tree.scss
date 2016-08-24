@@ -1,0 +1,60 @@
+.rsa-content-tree {
+  &__arrow-container {
+    text-align: right;
+    border-bottom: 1px solid $formSelectActiveBorderColor;
+
+    .rsa-icon{
+      cursor: pointer;
+      margin-bottom: rsa-whitespace(least);
+      margin-right: rsa-whitespace(less);
+    }
+  }
+
+  &__tree-container {
+    @include rsa-font(body);
+    @include rsa-layer(controls);
+    max-height: 300px;
+    overflow: auto;
+    box-sizing: border-box;
+    position: relative;
+    border-right: 1px solid $formSelectActiveBorderColor;
+    border-left: 1px solid $formSelectActiveBorderColor;
+    border-bottom: 1px solid $formSelectActiveBorderColor;
+    background: $formSelectActiveBackgroundColor;
+  }
+
+  .rsa-content-accordion{
+    display: block;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
+    border-radius: 0;
+    position: relative;
+    appearance: none;
+    border: none;
+    color: rsa-color(gray, lighter);
+
+    h3{
+      text-transform: inherit;
+      padding-bottom: rsa-whitespace(least);
+    }
+
+    .content{
+      padding: 0;
+
+      .rsa-content-tree__child {
+        &-label{
+          cursor: pointer;
+          padding: rsa-whitespace(least);
+          margin-top: 0;
+          margin-bottom: 0;
+          margin-left: rsa-whitespace(more);
+
+          &:hover{
+            background: $formSelectOptionHoverBackgroundColor;
+          }
+        }
+      }
+    }
+  }
+}

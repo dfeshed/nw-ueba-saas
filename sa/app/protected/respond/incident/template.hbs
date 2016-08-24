@@ -1,4 +1,8 @@
-{{rsa-respond/incident-detail/detail-index model=model.incident users=model.users
+{{rsa-respond/incident-detail/detail-index
+  model=model.incident
+  users=model.users
+  categoryTags=model.categoryTags
   saveAction=(route-action 'saveAction')
-  addJournalAction=(route-action 'addNewJournal') editJournalAction=(route-action 'editJournal')
+  addJournalAction=(route-action 'addNewJournal')
+  editJournalAction=(route-action 'editJournal')
   deleteJournalAction=(route-action 'deleteJournal') }}

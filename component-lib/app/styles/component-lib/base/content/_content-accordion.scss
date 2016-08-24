@@ -1,28 +1,12 @@
 .rsa-content-accordion {
-  margin-left: calc(#{rsa-whitespace()} * -1);
-  margin-right: calc(#{rsa-whitespace()} * -1);
-  border-left: 1px solid $contentAccordionBorderColor;    
-  border-right: 1px solid $contentAccordionBorderColor;    
-
-  &:first-of-type {
-    margin-top: calc(#{rsa-whitespace()} * -1);
-  }
-
-  &:last-of-type {
-    margin-bottom: calc(#{rsa-whitespace()} * -1);
-  }
 
   h3 {
     @include rsa-font(header)
     padding: rsa-whitespace(less);
-    background: $contentAccordionHeaderBackgroundColor;
-    border-top: 1px solid $contentAccordionBorderColor;
-    border-bottom: 1px solid $contentAccordionBorderColor;
     color: $contentAccordionHeaderTypeColor;
 
     &:hover {
       cursor: pointer;
-      background: $contentAccordionHeaderHoverBackgroundColor;
     }
   }
 
@@ -30,7 +14,6 @@
     padding: rsa-whitespace(less);
     padding-bottom: rsa-whitespace();
     color: $contentAccordionBodyTypeColor;
-    background: $contentAccordionBodyBackgroundColor;
   }
 
   &.is-collapsed {
@@ -39,4 +22,3 @@
     }
   }
 }
-

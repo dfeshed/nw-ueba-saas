@@ -1,0 +1,11 @@
+{{#each selectedTags as |category|}}
+  {{rsa-content-label label=category size='small' click=(action 'removeTag' category)}}
+{{/each}}
+
+{{#if contentTreeIsHidden}}
+  <div class="rsa-form-tag-manager__tree-toggle">
+    {{rsa-icon size='medium' name='add-circle-1' click=(action 'toggleTreeVisibility')}}
+  </div>
+{{else}}
+  {{rsa-content-tree rawCategoryData=availableTags addAction=(action 'addTag') toggleTreeVisibilityAction=(action 'toggleTreeVisibility')}}
+{{/if}}

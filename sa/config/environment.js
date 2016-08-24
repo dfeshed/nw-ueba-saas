@@ -70,6 +70,13 @@ module.exports = function(environment) {
           requestDestination: '/ws/response/incidents/update'
         }
       },
+      'category-tags': {
+        socketUrl: '/response/categories/socket',
+        findAll: {
+          subscriptionDestination: '/user/queue/response/categories/endpoints',
+          requestDestination: '/ws/response/categories/endpoints'
+        }
+      },
       'core-service': {
         socketUrl: '/investigate/socket',
         findAll: {

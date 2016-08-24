@@ -37,7 +37,8 @@ export default Route.extend({
 
     return hash({
       incident: this.store.queryRecord('incident', { incidentId: params.incident_id }),
-      users: this.store.findAll('user')
+      users: this.store.findAll('user'),
+      categoryTags: this.store.findAll('category-tags')
     });
   },
 

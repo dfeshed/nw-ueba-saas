@@ -137,17 +137,16 @@ export default Ember$.extend({}, BaseSelectors, {
       'journalDeleteBtn': 'div[class^=rsa-journal-entry__delete-journal] i[class*=rsa-icon-bin-1]',
       'overviewTxtArea': 'label[class^=js-respond-detail-overview-textArea]',
       'journalShowBtn': 'span[class=journalAction]',
-      'storylineIndicatorTypeElm': 'span[class=indicator_type]',
-      'scoreElm': 'div[class=score]',
-      'incLbl': 'label[class=rsa-incident-detail-header__id]',
-      'incTitleName': 'label[class^=rsa-incident-detail-header__name] input',
-      'priorityValueElm': 'div[class^=rsa-incident-detail-header__priority] div[class=prompt] div',
-      'assigneeValueElm': 'div[class^=rsa-incident-detail-header__assignee] div[class=prompt] div',
-      'alertCountLbl': 'div[class^=rsa-incident-detail-header__alerts] label',
-      'eventCountLbl': 'div[class^=rsa-incident-detail-header__events] label',
-      'incidentTileSourcesElm': 'div[class^= rsa-incident-tile-source]',
-      'createdDateTimeElm': 'span[class^=rsa-incident-detail-header__created] span[class=datetime]',
-      'createdDateTimeAgoElm': 'span[class^=rsa-incident-detail-header__created_time-ago] span[class=time-ago]'
+      'storylineIndicatorTypeElm': '.indicator_type',
+      'categoryTagsDropdownIcon': '.rsa-content-accordion .rsa-icon-arrow-down-12',
+      'addIcon': '.rsa-icon-add-circle-1',
+      'categoryListdropdownElm': '.rsa-content-tree',
+      'categoryTagsElm': '.rsa-content-tree__tree-container h3',
+      'categoryTagsElmDropdownIcon': '.rsa-content-tree__tree-container .rsa-icon',
+      'categoryTagsElmDropdownNestedElmStartElm': '.rsa-content-tree__tree-container .content',
+      'categoryTagsElmDropdownNestedElms': '.rsa-content-tree__child-label',
+      'taggedElm': '.rsa-form-tag-manager .rsa-content-label',
+      'taggedElmDeleteIcon': '.rsa-form-tag-manager .rsa-icon-close'
     }
   }
 });
