@@ -3,7 +3,6 @@ package fortscale.domain.core.dao;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
-import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.rest.UserRestFilter;
 import org.joda.time.DateTime;
 import org.springframework.data.domain.Pageable;
@@ -68,9 +67,6 @@ public interface UserRepositoryCustom {
 	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
 
 	public void updateUserTag(String tagField, String username, boolean value);
-
-	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore,
-			DateTime calculationTime);
 
 	public long getNumberOfAccountsCreatedBefore(DateTime time);
 
