@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
@@ -15,6 +16,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
+import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
@@ -35,8 +37,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.OutputStreamWriter;
+import java.text.SimpleDateFormat;
+import java.time.ZonedDateTime;
 import java.util.*;
+
+import static fortscale.web.rest.ApiAlertController.CSV_CONTENT_TYPE;
+import static jodd.datetime.JDateTimeDefault.locale;
 
 @Controller
 @RequestMapping("/api/user")
@@ -44,6 +53,15 @@ public class ApiUserController extends BaseController{
 	public static final String USER_COUNT = "userCount";
 	public static final String ADMINISTRATOR_TAG = "administrator";
 	public static final String WATCHED_USER = "watched";
+	private static final String USERS_CSV_FILE_NAME = "users";
+	private static final String USER_NAME_COLUMN_NAME = "Full Name";
+	private static final String USER_ROLE_COLUMN_NAME = "Role";
+	private static final String USER_DEPARTMENT_COLUMN_NAME = "Department";
+	private static final String USER_WATCHED_COLUMN_NAME = "Watched";
+	private static final String USER_RISK_SCORE_COLUMN_NAME = "Risk Score";
+	private static final String USER_ALERT_COUNT_COLUMN_NAME = "Total Alerts";
+	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
+	private static final String USER_TAGS_COLUMN_NAME = "Tags";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -651,5 +669,42 @@ public class ApiUserController extends BaseController{
 		result.setTotal(alertTypesNameAndCount.size());
 
 		return result;
+	}
+
+	@RequestMapping(method = RequestMethod.GET , value = "/export")
+	@LogException
+	public void exportUsersToCsv(UserRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
+		/*
+			Set response type as CSV
+		 */
+		String headerKey = "Content-Disposition";
+		String headerValue = String.format("attachment; filename=\"%s_%s\"",
+				USERS_CSV_FILE_NAME, ZonedDateTime.now().toString());
+		httpResponse.setHeader(headerKey, headerValue);
+		httpResponse.setContentType(CSV_CONTENT_TYPE);
+
+		DataBean<List<UserDetailsBean>> users= getUsers(filter);
+
+		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse.getOutputStream()));
+
+		String[] tableTitleRow = {USER_NAME_COLUMN_NAME, USER_ROLE_COLUMN_NAME, USER_DEPARTMENT_COLUMN_NAME,
+				USER_WATCHED_COLUMN_NAME, USER_RISK_SCORE_COLUMN_NAME, USER_ALERT_COUNT_COLUMN_NAME,
+				USER_DEVICE_COUNT_COLUMN_NAME, USER_TAGS_COLUMN_NAME
+				};
+
+		csvWriter.writeNext(tableTitleRow);
+
+		users.getData().stream().forEach(userBean -> {
+			User user = userBean.getUser();
+			String[] userRow = {user.getDisplayName(), user.getAdInfo().getPosition(), userBean.getDepartment(),
+					BooleanUtils.toStringTrueFalse(user.getFollowed()), String.valueOf(user.getScore()),
+					String.valueOf(user.getAlertsCount()), String.valueOf(userBean.getDevices().size()),
+					StringUtils.join(user.getTags(), ',')};
+
+			csvWriter.writeNext(userRow);
+		});
+
+		csvWriter.close();
+
 	}
 }
