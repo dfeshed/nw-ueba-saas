@@ -50,9 +50,11 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public void update() throws Exception {
+		logger.info("starting tagging process");
 		taggedUsers = new HashMap();
 		boolean warmedUpCache = false;
 		for (Tag tag : tagService.getAllTags()) {
+			logger.info("processing tag - {}", tag.getName());
 			Map<String, Set<String>> tagsToAddToUsers = new HashMap();
 			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap();
 			Set<String> users = new HashSet();
@@ -61,6 +63,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				String searchTerm = removeFlag ? rule.substring(1) : rule;
 				//if group
 				if (searchTerm.toLowerCase().startsWith(GROUP_PREFIX)) {
+					logger.info("group rule - {}", rule);
 					if (!warmedUpCache) {
 						// Warm up the cache
 						activeDirectoryGroupsHelper.warmUpCache();
@@ -78,6 +81,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					} while (subset.size() == pageSize);
 				//if ou
 				} else if (searchTerm.toLowerCase().startsWith(OU_PREFIX)) {
+					logger.info("ou rule - {}", rule);
 					Set<String> subset;
 					Pageable pageable = new PageRequest(0, pageSize);
 					do {
@@ -87,6 +91,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					} while (subset.size() == pageSize);
 				//if regex
 				} else {
+					logger.info("regex rule - {}", rule);
 					users.addAll(userRepository.findByUsernameRegex(searchTerm));
 				}
 				if (!users.isEmpty()) {
@@ -97,6 +102,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					}
 				}
 			}
+			logger.info("updating user tags");
 			updateAllUsersTags(tagsToAddToUsers, tagsToRemoveFromUsers);
 		}
 	}
