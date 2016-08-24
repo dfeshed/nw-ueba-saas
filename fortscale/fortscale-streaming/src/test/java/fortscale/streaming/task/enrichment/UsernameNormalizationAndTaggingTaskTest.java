@@ -5,7 +5,6 @@ import fortscale.services.UserService;
 import fortscale.services.impl.UserServiceImpl;
 import fortscale.services.impl.UsernameService;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
-import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;

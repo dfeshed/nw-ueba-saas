@@ -5,6 +5,7 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.services.UserTagService;
+import org.apache.commons.lang.WordUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
@@ -155,6 +156,10 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		//add default tags to system
+		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true));
+		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true));
+		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true));
 		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
 		if (!isLazyUpload) {
 			refresh();

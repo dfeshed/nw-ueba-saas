@@ -26,6 +26,10 @@ public class Tag extends AbstractDocument{
 	public static final String rulesField = "rules";
 	public static final String activeField = "active";
 
+	public static final String ADMIN_TAG = "admin";
+	public static final String EXECUTIVE_TAG = "executive";
+	public static final String SERVICE_ACCOUNT_TAG = "service";
+
 	public Tag() {}
 
 	public Tag(String name) {

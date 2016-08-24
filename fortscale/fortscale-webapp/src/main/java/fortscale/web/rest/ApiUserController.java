@@ -586,7 +586,7 @@ public class ApiUserController extends BaseController{
 					severityData.put(WATCHED_USER, severityData.get(WATCHED_USER) + 1);
 				}
 
-				if (user.getTags().contains(UserTagEnum.admin.name())) {
+				if (user.getTags().contains(Tag.ADMIN_TAG)) {
 					severityData.put(ADMINISTRATOR_TAG, severityData.get(ADMINISTRATOR_TAG) + 1);
 				}
 
