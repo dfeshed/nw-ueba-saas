@@ -179,17 +179,13 @@ public class KafkaService extends CleanupDeletionUtil {
             logger.error("Error while trying to remove kafka folder {} : {}", kafkaDataFolder, e);
         }
         if (validate) {
-            if (!removalProcessEnded && directory.exists()) {
-                logger.error("Removal of {} directory did not finish after {} minutes", kafkaDataFolder,
+            if (!removalProcessEnded) {
+                logger.error("Cleaning of {} directory did not finish after {} minutes", kafkaDataFolder,
                         KAFKA_REMOVE_DIR_POLLING_TIMEOUT);
                 return false;
             }
-            if (directory.exists()) {
-                logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
-                return false;
-            }
         }
-        logger.info("Kafka data folder deleted successfully");
+        logger.info("Kafka data folder cleaned successfully");
         return true;
     }
 
