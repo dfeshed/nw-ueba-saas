@@ -18,6 +18,7 @@ import incidents from 'sa/mirage/sockets/routes/incidents';
 import coreServices from 'sa/mirage/sockets/routes/core-services';
 import coreEvents from 'sa/mirage/sockets/routes/core-events';
 import coreEventCounts from 'sa/mirage/sockets/routes/core-event-counts';
+import coreEventTimelines from 'sa/mirage/sockets/routes/core-event-timelines';
 import categoryTags from 'sa/mirage/sockets/routes/category-tags';
 
 /*
@@ -66,6 +67,7 @@ export default function() {
     coreServices(server);
     coreEvents(server);
     coreEventCounts(server);
+    coreEventTimelines(server);
     categoryTags(server);
     server.mirageServer = this;
     return server;

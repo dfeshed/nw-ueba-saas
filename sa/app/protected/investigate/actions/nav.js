@@ -23,6 +23,7 @@ export default Mixin.create({
       this.set('state.query', queryNode);
       this.send('eventsGetFirst');
       this.send('eventCountGet');
+      this.send('eventTimelineGet');
     },
 
     /**

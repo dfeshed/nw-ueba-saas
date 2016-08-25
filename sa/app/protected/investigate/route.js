@@ -4,6 +4,7 @@ import Nav from './actions/nav';
 import Services from './actions/services';
 import Events from './actions/events';
 import EventCount from './actions/event-count';
+import EventTimeline from './actions/event-timeline';
 import InvestigateState from './state/index';
 import Meta from './actions/meta';
 
@@ -13,7 +14,7 @@ const {
 } = Ember;
 
 export default Route.extend(
-  Transition, Nav, Services, Events, EventCount, Meta,
+  Transition, Nav, Services, Events, EventCount, EventTimeline, Meta,
   {
     model() {
       return this.get('state');

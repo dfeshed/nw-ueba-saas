@@ -97,6 +97,13 @@ module.exports = function(environment) {
           subscriptionDestination: '/user/queue/investigate/events/count',
           requestDestination: '/ws/investigate/events/count'
         }
+      },
+      'core-event-timeline': {
+        socketUrl: '/investigate/socket',
+        query: {
+          subscriptionDestination: '/user/queue/investigate/timeline',
+          requestDestination: '/ws/investigate/timeline'
+        }
       }
     },
     socketDebug: false,
