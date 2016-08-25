@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -40,8 +41,6 @@ public abstract class UserActivityBaseRepository  {
 
 		return userActivityDocuments;
 	}
-
-
 
 	protected long getStartTime(int timeRangeInDays) {
 		Calendar calendar = Calendar.getInstance();

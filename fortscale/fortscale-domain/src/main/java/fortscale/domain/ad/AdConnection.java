@@ -1,37 +1,33 @@
 package fortscale.domain.ad;
 
-import org.hibernate.validator.constraints.NotEmpty;
+import org.hibernate.validator.constraints.NotBlank;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 /**
  * Created by Amir Keren on 17/05/2015.
  */
 public class AdConnection {
 
+	public static final String ACTIVE_DIRECTORY_KEY = "system.activeDirectory.settings";
+
     @Size(min = 1)
-    private List<String> dcs;
+    protected List<String> dcs;
 
-    @NotNull
-    @NotEmpty
-    private String domainBaseSearch;
+    @NotBlank
+	protected String domainBaseSearch;
 
-    @NotNull
-    @NotEmpty
-    private String domainUser;
+    @NotBlank
+	protected String domainUser;
 
-    @NotNull
-    @NotEmpty
-    private String domainPassword;
+    @NotBlank
+	protected String domainPassword;
 
     public AdConnection() {}
 
-    public AdConnection(String dc, String domainBaseSearch, String domainUser, String domainPassword) {
-        this.dcs = new ArrayList();
-        dcs.add(dc);
+    public AdConnection(List<String> dcs, String domainBaseSearch, String domainUser, String domainPassword) {
+        this.dcs = dcs;
         this.domainBaseSearch = domainBaseSearch;
         this.domainUser = domainUser;
         this.domainPassword = domainPassword;

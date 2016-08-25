@@ -1,16 +1,14 @@
 package fortscale.web.rest;
 
-import fortscale.domain.core.AdUserDirectReport;
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.User;
-import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.core.*;
+import fortscale.domain.core.activities.UserActivityDeviceDocument;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.UserRepository;
-import fortscale.services.IUserScoreHistoryElement;
-import fortscale.services.UserScoreService;
-import fortscale.services.UserService;
-import fortscale.services.UserServiceFacade;
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
+import fortscale.domain.rest.UserRestFilter;
+import fortscale.services.*;
+import fortscale.web.rest.Utils.UserDeviceUtils;
+import fortscale.web.rest.entities.activity.UserActivityData;
+import junit.framework.TestCase;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
@@ -19,14 +17,15 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.util.NestedServletException;
 
 import java.util.*;
 
+import static junit.framework.Assert.assertNull;
 import static junit.framework.TestCase.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
@@ -55,7 +54,17 @@ public class ApiUserControllerTest {
 	@InjectMocks
 	private ApiUserController controller;
 
+	@Mock
+	private AlertsService alertsService;
 
+	@Mock
+	private UserActivityService userActivityService;
+
+	@Mock
+	private UserDeviceUtils userDeviceUtils;
+
+	@Mock
+	private UserWithAlertService userWithAlertService;
 
 	private MockMvc mockMvc;
 
@@ -67,8 +76,6 @@ public class ApiUserControllerTest {
 	private static final String DIRECT_REPORT_NAME = "Directreport";
 	private static final String MANAGER_DN = "CM=Manager,OU=employees,DC=somebigcompany,DC=com";
 	private static final String MANAGER_NAME = "Manager";
-
-	private Date date = new Date();
 
 	@Before
 	public void setUp() throws Exception {
@@ -115,8 +122,6 @@ public class ApiUserControllerTest {
 		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));
 		assertEquals(Severity.Critical.name(), ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("scoreSeverity"));
 		assertEquals(90.0, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("score"));
-
-
 	}
 
 	@Test
@@ -189,4 +194,139 @@ public class ApiUserControllerTest {
 		assertEquals(90.0, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("score"));
 	}
 
+	@Test
+	public void testGetUsers_NoAdditionalInfo() throws Exception {
+		User user = new User();
+		user.setUsername(USER_NAME);
+		user.setAdDn(USER_DN);
+		UserAdInfo adInfo = new UserAdInfo();
+		AdUserDirectReport directReport = new AdUserDirectReport(DIRECT_REPORT_DN, "drepoert");
+		adInfo.setAdDirectReports(new HashSet<AdUserDirectReport>(Arrays.asList(directReport)));
+		adInfo.setManagerDN(MANAGER_DN);
+		user.setAdInfo(adInfo);
+		User employee = new User();
+		employee.setUsername(DIRECT_REPORT_NAME);
+		employee.setAdDn(DIRECT_REPORT_DN);
+		List<User> users = new ArrayList<>();
+		users.add(user);
+		user.setScore(90.0);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
+		when(userWithAlertService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
+		MvcResult result = mockMvc.perform(get("/api/user")
+				.accept(MediaType.APPLICATION_JSON))
+				.andExpect(content().contentType("application/json;charset=UTF-8"))
+				.andReturn();
+
+		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+		assertEquals(1, jsonObject.get("total"));
+		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));
+		assertEquals(Severity.Critical.name(), ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("scoreSeverity"));
+		assertEquals(90.0, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("score"));
+		assertEquals("null", ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("devices").toString());
+		assertEquals("null",((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("alerts").toString());
+	}
+
+	@Test
+	public void testGetUsers_WithAdditionalInfo() throws Exception {
+		TestUser user = new TestUser();
+		user.setUsername(USER_NAME);
+		user.setAdDn(USER_DN);
+		user.setId("1");
+		UserAdInfo adInfo = new UserAdInfo();
+		AdUserDirectReport directReport = new AdUserDirectReport(DIRECT_REPORT_DN, "drepoert");
+		adInfo.setAdDirectReports(new HashSet<AdUserDirectReport>(Arrays.asList(directReport)));
+		adInfo.setManagerDN(MANAGER_DN);
+		user.setAdInfo(adInfo);
+		User employee = new User();
+		employee.setUsername(DIRECT_REPORT_NAME);
+		employee.setAdDn(DIRECT_REPORT_DN);
+		List<User> users = new ArrayList<>();
+		users.add(user);
+		user.setScore(90.0);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
+		when(userWithAlertService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
+		Set<Alert> alerts = new HashSet<>();
+		Alert alert = new Alert("Alert", 1, 2, EntityType.User, USER_NAME, null, 0, 100, Severity.Critical,
+				AlertStatus.Open, AlertFeedback.None, "1", AlertTimeframe.Daily, 1, true);
+		alerts.add(alert);
+		when(alertsService.getOpenAlertsByUsername(anyString())).thenReturn(alerts);
+		List<UserActivitySourceMachineDocument> machines = new ArrayList<>();
+		UserActivitySourceMachineDocument machineDocument = new UserActivitySourceMachineDocument();
+		UserActivitySourceMachineDocument.Machines machine = new UserActivitySourceMachineDocument.Machines();
+		Map<String, Double> machineHistogram = new HashMap<>();
+		machineHistogram.put("1", 1d);
+		machine.setMachinesHistogram(machineHistogram);
+		machineDocument.setMachines(machine);
+		machines.add(machineDocument);
+		when(userActivityService.getUserActivitySourceMachineEntries(anyString(), anyInt())).thenReturn(machines);
+		List<UserActivityData.DeviceEntry> deviceList = new ArrayList<>();
+		String deviceName = "comp";
+		int deviceCount = 1;
+		UserActivityData.DeviceEntry device = new UserActivityData.DeviceEntry(deviceName, deviceCount, UserActivityData.DeviceType.Desktop);
+		deviceList.add(device);
+		when(userDeviceUtils.convertDeviceDocumentsResponse(anyListOf(UserActivityDeviceDocument.class), anyInt())).thenReturn(deviceList);
+		MvcResult result = mockMvc.perform(get("/api/user?addAlertsAndDevices=true")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+		assertEquals(1, jsonObject.get("total"));
+		assertEquals(USER_NAME, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("username"));
+		assertEquals(Severity.Critical.name(), ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("scoreSeverity"));
+		assertEquals(90.0, ((JSONObject)((JSONArray)jsonObject.get("data")).get(0)).get("score"));
+		JSONArray devicesArray = (JSONArray) ((JSONObject) ((JSONArray) jsonObject.get("data")).get(0)).get("devices");
+		assertEquals(deviceCount, devicesArray.length());
+		assertEquals(deviceName, ((JSONObject)devicesArray.get(0)).get("deviceName"));
+		JSONArray alertsArray = (JSONArray) ((JSONObject) ((JSONArray) jsonObject.get("data")).get(0)).get("alerts");
+		assertEquals(1, alertsArray.length());
+		assertEquals(USER_NAME, ((JSONObject)alertsArray.get(0)).get("entityName"));
+	}
+
+	@Test
+	public void testSeverityBar_valid() throws Exception {
+		TestUser user = new TestUser();
+		user.setUsername(USER_NAME);
+		user.setAdDn(USER_DN);
+		user.setId("1");
+
+		List<User> users = new ArrayList<>();
+		users.add(user);
+
+		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anySet())).thenReturn(users);
+		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
+
+		MvcResult result = mockMvc.perform(get("/api/user/severityBar")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+		assertEquals(1, jsonObject.get("total"));
+		TestCase.assertNotSame(JSONObject.NULL, jsonObject.get("data"));
+	}
+
+	@Test
+	public void testSeverityBar_noUsers() throws Exception {
+		List<User> users = new ArrayList<>();
+
+		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anySet())).thenReturn(users);
+		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
+
+		MvcResult result = mockMvc.perform(get("/api/user/severityBar")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		JSONObject jsonObject = new JSONObject(result.getResponse().getContentAsString());
+		TestCase.assertEquals(JSONObject.NULL, jsonObject.get("data"));
+	}
+
+	public static class TestUser extends User{
+		private static final long serialVersionUID = 1L;
+
+		public void setId(String id) {
+			super.setId(id);
+		}
+	}
 }

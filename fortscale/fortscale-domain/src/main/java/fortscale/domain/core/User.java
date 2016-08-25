@@ -54,9 +54,10 @@ public class User extends AbstractDocument {
 	public static final String administratorAccountField = "administratorAccount";
 	public static final String executiveAccountField = "executiveAccount";
 	public static final String tagsField = "tags";
-    public static final String socreField = "score";
+    public static final String scoreField = "score";
     public static final String scoreSeverityField = "scoreSeverity";
 	public static final String terminationDateField = "terminationDate";
+	public static final String alertsCountField = "alertsCount";
 
 	@Indexed
 	@Field(administratorAccountField)
@@ -120,11 +121,16 @@ public class User extends AbstractDocument {
     @Field(scoreSeverityField)
     private Severity scoreSeverity;
 
-    @Field(socreField)
+    @Field(scoreField)
+	@Indexed
     private double score=0;
 
 	@Field(terminationDateField)
 	private DateTime terminationDate;
+
+	@Indexed
+	@Field(alertsCountField)
+	private int alertsCount;
 
 	public String getAdDn() {
 		return adDn;
@@ -135,7 +141,15 @@ public class User extends AbstractDocument {
 	}
 	
 	private String adObjectGUID;
-	
+
+	public int getAlertsCount() {
+		return alertsCount;
+	}
+
+	public void setAlertsCount(int alertsCount) {
+		this.alertsCount = alertsCount;
+	}
+
 	public String getAdObjectGUID() {
 		return adObjectGUID;
 	}
