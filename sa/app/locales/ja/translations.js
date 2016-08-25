@@ -5,7 +5,7 @@ const { $ } = Ember;
 
 export default $.extend({}, BaseTranslations, {
   application: {
-    title: 'ja_Security Analytics',
+    title: 'ja_NetWitness',
     version: 'ja_11.0.0',
     copyright: 'ja_&copy;2015 RSA Security LLC. All rights reserved.'
   },

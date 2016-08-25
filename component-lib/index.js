@@ -48,6 +48,8 @@ module.exports = {
 
     app.import('vendor/NW-Background-Blur.jpg', { destDir: 'assets/images/' });
 
+    app.import('vendor/favicon-32x32.png', { destDir: 'assets/images/' });
+
     // Script & data assets can remain in vendor.
     app.import('vendor/component-lib.json', { destDir: 'vendor/' });
   },
