@@ -18,6 +18,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "babel-preset-es2015": "6.13.2",
+    "babel-preset-stage-0": "6.5.0",
+    "babel-register": "6.11.6",
     "broccoli-asset-rev": "^2.4.2",
     "ember-ajax": "^2.0.1",
     "ember-cli": "2.6.3",
@@ -31,19 +34,25 @@
     "ember-cli-sri": "^2.1.0",
     "ember-cli-uglify": "^1.2.0",
     "ember-export-application-global": "^1.0.5",
-    "ember-get-config": "0.1.7",
     "ember-load-initializers": "^0.5.1",
     "ember-resolver": "^2.0.3",
     "ember-sinon": "0.5.0",
     "eslint-plugin-ember-suave": "^0.1.2",
-    "loader.js": "^4.0.1"
+    "loader.js": "^4.0.1",
+    "body-parser": "~1.13.2",
+    "express": "~4.13.1",
+    "cors": "2.7.1",
+    "express-ws": "2.0.0",
+    "stompjs": "2.3.3",
+    "jsesc": "2.2.0"
   },
   "keywords": [
     "ember-addon"
   ],
   "dependencies": {
     "ember-cli-babel": "^5.1.6",
-    "ember-cli-htmlbars": "^1.0.3"
+    "ember-cli-htmlbars": "^1.0.3",
+    "ember-get-config": "0.1.7"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

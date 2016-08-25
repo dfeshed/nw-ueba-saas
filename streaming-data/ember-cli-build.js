@@ -3,8 +3,15 @@ var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 
 module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
-    // Add options here
+    babel: {
+      stage: 0
+    }
   });
+
+
+  // Websocket libraries: SockJS & STOMP
+  app.import(app.bowerDirectory + "/sockjs/sockjs.js");
+  app.import(app.bowerDirectory + "/stomp-websocket/lib/stomp.js");
 
   /*
     This build file specifies the options for the dummy test app of this

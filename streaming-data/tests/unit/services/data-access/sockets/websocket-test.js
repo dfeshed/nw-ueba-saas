@@ -9,7 +9,7 @@ module('Unit | Util | socket');
 
 test('it accepts subscribers of type object', function(assert) {
   assert.expect(1);
-  let stream = Socket._findSocketConfig('test', 'stream');
+  let stream = Socket._findSocketConfig('test', 'promise/_1');
   assert.notEqual(typeOf(stream), 'undefined', 'Socket configuration undefined');
 });
 

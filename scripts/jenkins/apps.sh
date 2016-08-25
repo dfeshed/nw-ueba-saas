@@ -77,6 +77,10 @@ setWebProxy
 # fixes ecmderr with bower install
 git config --global url."https://".insteadOf git://
 
+# install NPM/bower deps for streaming-data
+runAppNPMInstall streaming-data
+runAppBowerInstall streaming-data
+
 buildEmberApp component-lib
 buildEmberApp recon
 buildEmberApp style-guide

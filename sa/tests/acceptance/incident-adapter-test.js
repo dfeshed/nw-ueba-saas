@@ -3,8 +3,6 @@ import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import Request from 'sa/services/request';
 import Adapter from 'sa/incident/adapter';
 import Store from 'ember-data/store';
-import config from 'sa/config/environment';
-import { Socket } from 'sa/services/data-access';
 
 import Ember from 'ember';
 
@@ -33,7 +31,6 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   let adapter = Adapter.create({ request });
   let store = Store.create();
   let type = { modelName: 'test' };
-  let { socketUrl } = config.socketRoutes.test;
 
   andThen(function() {
     return adapter.findRecord(store, type, 'id1', {}).then((response) => {
@@ -42,9 +39,6 @@ test('it can redirect calls to a socket and get a response from a mock server', 
     });
   });
 
-  andThen(function() {
-    return Socket.disconnect(socketUrl);
-  });
 });
 
 test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
@@ -58,7 +52,6 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   let adapter = Adapter.create({ request });
   let store = Store.create();
   let type = { modelName: 'test' };
-  let { socketUrl } = config.socketRoutes.test;
 
   let snapShot = { 'id': 1,
                   changedAttributes() {
@@ -76,7 +69,4 @@ test('it can redirect calls to a socket and get a response from a mock server', 
     });
   });
 
-  andThen(function() {
-    return Socket.disconnect(socketUrl);
-  });
 });

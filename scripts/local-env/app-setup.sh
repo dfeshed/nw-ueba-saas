@@ -25,6 +25,7 @@ cd $scriptDir
 . _util.sh
 
 installAppDeps component-lib
+installAppDeps streaming-data
 installAppDeps recon
 installAppDeps style-guide
 installAppDeps sa

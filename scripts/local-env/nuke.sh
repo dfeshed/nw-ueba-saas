@@ -29,6 +29,7 @@ info "Cleaning Bower cache"
 bower cache clean
 
 nukeApp component-lib
+nukeApp streaming-data
 nukeApp recon
 nukeApp style-guide
 nukeApp sa
