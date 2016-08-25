@@ -71,10 +71,10 @@ module.exports = function(environment) {
         }
       },
       'category-tags': {
-        socketUrl: '/response/categories/socket',
+        socketUrl: '/response/socket',
         findAll: {
-          subscriptionDestination: '/user/queue/response/categories/endpoints',
-          requestDestination: '/ws/response/categories/endpoints'
+          subscriptionDestination: '/user/queue/categories',
+          requestDestination: '/ws/response/categories'
         }
       },
       'core-service': {
