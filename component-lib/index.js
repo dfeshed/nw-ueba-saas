@@ -22,10 +22,29 @@ module.exports = {
     this._super.included(app);
 
     // Assets that are referenced by CSS must go in the consuming app's /assets/ subdir.
-    app.import('vendor/fonts/OpenSans-Regular.ttf', { destDir: 'assets/fonts/' });
-    app.import('vendor/fonts/OpenSans-Bold.ttf', { destDir: 'assets/fonts/' });
-    app.import('vendor/fonts/OpenSans-ExtraBold.ttf', { destDir: 'assets/fonts/' });
-    app.import('vendor/fonts/OpenSans-Light.ttf', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-regular.eot', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-regular.svg', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-regular.ttf', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-regular.woff', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-regular.woff2', { destDir: 'assets/fonts/' });
+
+    app.import('vendor/fonts/open-sans-v13-latin-300.eot', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-300.svg', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-300.ttf', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-300.woff', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-300.woff2', { destDir: 'assets/fonts/' });
+
+    app.import('vendor/fonts/open-sans-v13-latin-700.eot', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-700.svg', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-700.ttf', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-700.woff', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-700.woff2', { destDir: 'assets/fonts/' });
+
+    app.import('vendor/fonts/open-sans-v13-latin-800.eot', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-800.svg', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-800.ttf', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-800.woff', { destDir: 'assets/fonts/' });
+    app.import('vendor/fonts/open-sans-v13-latin-800.woff2', { destDir: 'assets/fonts/' });
 
     app.import('vendor/NW-Background-Blur.jpg', { destDir: 'assets/images/' });
 

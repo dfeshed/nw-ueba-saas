@@ -5,47 +5,67 @@
  * should copy those files into the consuming app's /assets/ subdir at build time.
  */
 
+ /* open-sans-300 - latin */
 @font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 300;
-    src: local('Open Sans'),
-         local('OpenSans'),
-         url('fonts/OpenSans-Light.ttf') format('truetype');
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 300;
+  src: url('fonts/open-sans-v13-latin-300.eot'); /* IE9 Compat Modes */
+  src: local('Open Sans Light'), local('OpenSans-Light'),
+    url('fonts/open-sans-v13-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/open-sans-v13-latin-300.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/open-sans-v13-latin-300.woff') format('woff'), /* Modern Browsers */
+    url('fonts/open-sans-v13-latin-300.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('fonts/open-sans-v13-latin-300.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
 
+/* open-sans-regular - latin */
 @font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 400;
-    src: local('Open Sans'),
-         local('OpenSans'),
-         url('fonts/OpenSans-Regular.ttf') format('truetype');
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/open-sans-v13-latin-regular.eot'); /* IE9 Compat Modes */
+  src: local('Open Sans'), local('OpenSans'),
+    url('fonts/open-sans-v13-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/open-sans-v13-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/open-sans-v13-latin-regular.woff') format('woff'), /* Modern Browsers */
+    url('fonts/open-sans-v13-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('fonts/open-sans-v13-latin-regular.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
 
+/* open-sans-700 - latin */
 @font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 700;
-    src: local('Open Sans'),
-         local('OpenSans'),
-         url('fonts/OpenSans-Bold.ttf') format('truetype');
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: url('fonts/open-sans-v13-latin-700.eot'); /* IE9 Compat Modes */
+    src: local('Open Sans Bold'), local('OpenSans-Bold'),
+    url('fonts/open-sans-v13-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/open-sans-v13-latin-700.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/open-sans-v13-latin-700.woff') format('woff'), /* Modern Browsers */
+    url('fonts/open-sans-v13-latin-700.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('fonts/open-sans-v13-latin-700.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
 
+/* open-sans-800 - latin */
 @font-face {
-    font-family: 'Open Sans';
-    font-style: normal;
-    font-weight: 800;
-    src: local('Open Sans'),
-         local('OpenSans'),
-         url('fonts/OpenSans-ExtraBold.ttf') format('truetype');
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 800;
+  src: url('fonts/open-sans-v13-latin-800.eot'); /* IE9 Compat Modes */
+  src: local('Open Sans Extrabold'), local('OpenSans-Extrabold'),
+    url('fonts/open-sans-v13-latin-800.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/open-sans-v13-latin-800.woff2') format('woff2'), /* Super Modern Browsers */
+    url('fonts/open-sans-v13-latin-800.woff') format('woff'), /* Modern Browsers */
+    url('fonts/open-sans-v13-latin-800.ttf') format('truetype'), /* Safari, Android, iOS */
+    url('fonts/open-sans-v13-latin-800.svg#OpenSans') format('svg'); /* Legacy iOS */
 }
 
 /* Public Mixins */
 
 /* rsa-font */
 
-/* 
+/*
  * Colors: [ light,
  *           regular,
  *           bold,
@@ -56,7 +76,7 @@
  *          large,
  *          larger,
  *          largest ]
- * 
+ *
  * Examples: @include rsa-font()
  *           @include rsa-font(bolder, large, true)
  */
@@ -64,17 +84,17 @@
 @mixin rsa-font($weight:regular, $size:base, $uppercase:false) {
   font-family: 'Open Sans';
   font-style: normal;
-  
+
   @if ($uppercase) {
     text-transform: uppercase;
   }
-  
+
   @if ($weight == body) {
     font-weight: 400;
     @if ($size == small) {
       font-size: .85rem;
     } @else {
-      font-size: 1rem;      
+      font-size: 1rem;
     }
   } @else if ($weight == header) {
     @if ($size == small) {
@@ -118,7 +138,7 @@
     } @else {
       font-size: 1rem;
     }
-    
+
     @if ($weight == light) {
       font-weight: 300;
     } @else if ($weight == bold) {
@@ -128,7 +148,7 @@
     } @else {
       font-weight: 400;
     }
-  }  
+  }
 }
 
 @mixin rsa-font-code() {
@@ -139,15 +159,15 @@
 }
 
 .rsa-font-body {
-  @include rsa-font(body);    
+  @include rsa-font(body);
 
   &-small {
-    @include rsa-font(body, small);    
+    @include rsa-font(body, small);
   }
 }
 
 .rsa-font-paragraph {
-  @include rsa-font(paragraph);    
+  @include rsa-font(paragraph);
 }
 
 .rsa-font-header {
@@ -155,27 +175,27 @@
     @include rsa-font(header, small);
   }
   &-large {
-    @include rsa-font(header, large);    
+    @include rsa-font(header, large);
   }
   &-larger {
     @include rsa-font(header, larger);
   }
   &-default {
-    @include rsa-font(header);    
+    @include rsa-font(header);
   }
 }
 
 .rsa-font-navigation {
   &-small {
-    @include rsa-font(navigation, small);        
+    @include rsa-font(navigation, small);
   }
-  
+
   &-default {
-    @include rsa-font(navigation, default);        
+    @include rsa-font(navigation, default);
   }
 
   &-large {
-    @include rsa-font(navigation, large);        
+    @include rsa-font(navigation, large);
   }
 }
 
@@ -184,42 +204,42 @@
 }
 
 .rsa-font-small {
-  @include rsa-font(default, small);          
+  @include rsa-font(default, small);
 }
 
 .rsa-font-default {
-  @include rsa-font();          
+  @include rsa-font();
 }
 
 .rsa-font-large {
-  @include rsa-font(default, large);          
+  @include rsa-font(default, large);
 }
 
 .rsa-font-larger {
-  @include rsa-font(default, larger);          
+  @include rsa-font(default, larger);
 }
 
 .rsa-font-light {
-  @include rsa-font(light);          
+  @include rsa-font(light);
 }
 
 .rsa-font-regular {
-  @include rsa-font();          
+  @include rsa-font();
 }
 
 .rsa-font-bold {
-  @include rsa-font(bold);          
+  @include rsa-font(bold);
 }
 
 .rsa-font-bolder {
-  @include rsa-font(bolder);          
+  @include rsa-font(bolder);
 }
 
 body.ember-application, html {
   font-size: 14px;
 
   &.ember-application {
-    @include rsa-font();  
+    @include rsa-font();
   }
 }
 
