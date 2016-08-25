@@ -115,6 +115,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 															 int numOfDays,
 															 int topK) {
 		return MongoStoreUtils.getDateToTopScoredEvents(
+				mongoTemplate,
 				getCollectionName(aggregatedFeatureEventConf),
 				AggrEvent.EVENT_FIELD_END_TIME_UNIX,
 				AggrEvent.EVENT_FIELD_SCORE,

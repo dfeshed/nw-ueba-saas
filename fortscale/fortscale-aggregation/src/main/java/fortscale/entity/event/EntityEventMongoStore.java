@@ -76,6 +76,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
 		return MongoStoreUtils.getDateToTopScoredEvents(
+				mongoTemplate,
 				getCollectionName(entityEventType),
 				EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME,
 				EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME,

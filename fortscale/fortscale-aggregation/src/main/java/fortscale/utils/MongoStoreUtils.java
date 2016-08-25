@@ -1,7 +1,6 @@
 package fortscale.utils;
 
 import fortscale.utils.time.TimestampUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -12,10 +11,8 @@ import java.util.*;
 public class MongoStoreUtils {
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 
-	@Autowired
-	private static MongoTemplate mongoTemplate;
-
-	public static <T> Map<Long, List<T>> getDateToTopScoredEvents(String collectionName,
+	public static <T> Map<Long, List<T>> getDateToTopScoredEvents(MongoTemplate mongoTemplate,
+																  String collectionName,
 																  String endTimeFieldName,
 																  String scoreName,
 																  Date endTime,
