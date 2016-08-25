@@ -544,7 +544,7 @@ public class ApiUserController extends BaseController{
 		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
 
 		if (CollectionUtils.isNotEmpty(users.getData())) {
-			users.getData().stream().forEach(userDetailsBean -> {
+			users.getData().forEach(userDetailsBean -> {
 				User user = userDetailsBean.getUser();
 				user.setFollowed(watch);
 				userService.saveUser(user);
