@@ -168,8 +168,8 @@ public class KafkaService extends CleanupDeletionUtil {
             logger.warn("no kafka data folder {} found", kafkaDataFolder);
             return true;
         }
-        String[] cmdArray = {"bash", "-c", "ls /var/local/kafka/data/* | ls -I \"*" + CHANGELOG_SUFFIX +
-				"-*\" | xargs sudo rm -rf"};
+        String[] cmdArray = {"bash", "-c", "find /var/local/kafka/data/* -not -name '*" + CHANGELOG_SUFFIX +
+                "-*' -print0 | sudo xargs -0 rm -rf"};
         boolean removalProcessEnded = false;
         try {
             Process kafkaDirRemovalProcess = Runtime.getRuntime().exec(cmdArray);
