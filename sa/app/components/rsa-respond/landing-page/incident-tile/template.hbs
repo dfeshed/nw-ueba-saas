@@ -46,8 +46,8 @@
   <hbox class="rsa-incident-tile-section">
     <vbox xs="6">
       {{#rsa-form-select optionMaxVisible=3 label=(t "incident.fields.priority") values=selectedPriority class="rsa-incident-tile-priority-selector" isReadOnly=(if editModeActive false true)}}
-        {{#each priorityList as |priority i|}}
-          <option value="{{i}}">{{t (concat 'incident.priority.' i) }}</option>
+        {{#each priorityList as |priority|}}
+          <option value="{{priority}}">{{t (concat 'incident.priority.' priority) }}</option>
         {{/each}}
       {{/rsa-form-select}}
     </vbox>

@@ -5,10 +5,10 @@
  */
 
 export const incPriority = {
-  LOW: 0,
-  MEDIUM: 1,
+  CRITICAL: 3,
   HIGH: 2,
-  CRITICAL: 3
+  MEDIUM: 1,
+  LOW: 0
 };
 
 export const incStatus = {

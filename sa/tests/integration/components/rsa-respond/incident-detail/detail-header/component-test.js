@@ -2,6 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import { incStatus } from 'sa/incident/constants';
+import selectors from 'sa/tests/selectors';
 
 const { Object: EmberObject } = Ember;
 
@@ -650,6 +651,43 @@ test('Manually changing the state of an incident to Closed disables editable fie
   assert.equal(this.$('.rsa-incident-detail-header__assignee').hasClass('is-disabled'), true, 'When Incident is in Closed state, Assignee dropdown is disabled');
   assert.equal(this.$('.rsa-incident-detail-header__buttons__close-incident').hasClass('is-disabled'), true, 'When Incident is in Closed state, Close-incident button is disabled');
 
+});
+
+
+test('Incident priority order check (Critical -> Low)', function(assert) {
+
+  let incident = EmberObject.create({
+    riskScore: 1,
+    id: 'INC-491',
+    name: 'Suspected command and control communication with www.mozilla.com',
+    createdBy: 'User X',
+    created: '2015-10-10',
+    lastUpdated: '2015-10-10',
+    statusSort: 0,
+    prioritySort: 0,
+    alertCount: 10,
+    sources: ['Event Stream Analysis'],
+    assignee: {
+      id: '1'
+    }
+  });
+  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+    EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+    EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+
+  this.set('incident', incident);
+  this.set('users', users);
+
+  this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
+
+  let container = this.$(selectors.pages.respond.details.header.detailHeader);
+
+  let priorityOptionList = container.find(this.$(selectors.pages.respond.details.header.prioritySelectOption));
+
+  assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
+  assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
+  assert.equal(priorityOptionList[2].text, 'Medium', 'Third priority is Medium');
+  assert.equal(priorityOptionList[3].text, 'Low', 'Fourth priority is Low');
 });
 
 test('Alert and event count missing test', function(assert) {

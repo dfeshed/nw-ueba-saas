@@ -1,6 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
+import selectors from 'sa/tests/selectors';
 
 const { Object: EmberObject } = Ember;
 
@@ -631,3 +632,44 @@ test('If the event count is missing, then the default value is "-".', function(a
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'The .rsa-incident-tile-event-count element was not found in the DOM.');
   assert.equal(this.$('.rsa-incident-tile-event-count').text().trim(), '-', 'The default value for missing events "-" was not found.');
 });
+
+test('Incident priority order check (Critical -> Low)', function(assert) {
+
+  let incident = EmberObject.create({
+    riskScore: 1,
+    id: 'INC-491',
+    createdBy: 'User X',
+    created: '2015-10-10',
+    statusSort: 0,
+    prioritySort: 0,
+    alertCount: 10,
+    sources: ['Event Stream Analysis'],
+    assignee: {
+      id: '1'
+    }
+  });
+  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+    EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+    EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+
+  this.set('incident', incident);
+  this.set('users', users);
+
+  this.render(hbs`
+    {{rsa-respond/landing-page/incident-tile model=incident users=users}}
+  `);
+
+  let container = this.$(selectors.pages.respond.card.incTile.incidentTile);
+  container.trigger('mouseenter');
+
+  this.$(selectors.pages.respond.card.incTile.editButton).trigger('click');
+
+  let priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOption));
+
+  assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
+  assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
+  assert.equal(priorityOptionList[2].text, 'Medium', 'Third priority is Medium');
+  assert.equal(priorityOptionList[3].text, 'Low', 'Fourth priority is Low');
+
+});
+

@@ -12,8 +12,8 @@
       <ul class='rsa-incident-detail-header__details__body'>
         <li>
           {{#rsa-form-select label=(t 'incident.fields.priority') class='rsa-incident-detail-header__priority' values=selectedPriority isDisabled=incidentIsClosed}}
-            {{#each priorityList as |priority i|}}
-              <option value="{{i}}">{{t (concat 'incident.priority.' i) }}</option>
+            {{#each priorityList as |priority|}}
+              <option value="{{priority}}">{{t (concat 'incident.priority.' priority) }}</option>
             {{/each}}
           {{/rsa-form-select}}
         </li>

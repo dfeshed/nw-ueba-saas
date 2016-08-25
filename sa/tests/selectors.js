@@ -46,6 +46,7 @@ export default Ember$.extend({}, BaseSelectors, {
         'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
         'incSection': 'section[class$=rsa-d3list]',
         'incTile': {
+          'incidentTile': '.rsa-incident-tile',
           'editButton': 'div[class^=rsa-edit-tool]',
           'assigneeSelect': 'div[class^=rsa-incident-tile-assignee]',
           'assigneeLabel': 'div[class^=rsa-incident-tile-assignee]',
@@ -53,6 +54,7 @@ export default Ember$.extend({}, BaseSelectors, {
           'statusLabel': '.rsa-incident-tile-status-selector .prompt',
           'prioritySelect': '.rsa-incident-tile-priority-selector select',
           'priorityLabel': '.rsa-incident-tile-priority-selector .prompt',
+          'prioritySelectOption': '.rsa-incident-tile-priority-selector select option',
           'scoreElm': 'div[class=score]',
           'incLbl': 'label[class=rsa-incident-tile-id]',
           'incTitleName': 'li[class=rsa-incident-tile-name]',
@@ -70,6 +72,10 @@ export default Ember$.extend({}, BaseSelectors, {
         'columns': '.rsa-data-table-header-cell'
       },
       'details': {
+        'header': {
+          'detailHeader': '.rsa-incident-detail-header',
+          'prioritySelectOption': '.rsa-incident-detail-header__priority select option'
+        },
         'overview': {
           'accordion': '.rsa-respond-detail-overview__accordion',
           'textarea': '.rsa-respond-detail-overview__accordion textarea'
