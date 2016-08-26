@@ -15,7 +15,8 @@ const {
     service
   },
   Logger,
-  isEmpty
+  isNone,
+  merge
 } = Ember;
 
 export default Component.extend({
@@ -31,13 +32,13 @@ export default Component.extend({
    * @type Object
    * @public
    */
-  model: null,
+  incident: null,
 
   /**
    * @description determines whether or not an incident is considered new.
    * @public
    */
-  @equal('model.statusSort', 0) isIncidentNew: null,
+  @equal('incident.statusSort', 0) isIncidentNew: null,
 
   /**
    * @description List of users to be displayed in the Assignee dropdown field
@@ -72,7 +73,7 @@ export default Component.extend({
    * @description define the badge style based on the incident risk score
    * @public
    */
-  @computed('model.riskScore')
+  @computed('incident.riskScore')
   badgeStyle: (riskScore) => IncidentHelper.riskScoreToBadgeLevel(riskScore),
 
   /**
@@ -84,7 +85,7 @@ export default Component.extend({
    */
   click() {
     if (!this.get('editModeActive')) {
-      this.sendAction('clickAction', this.get('model'));
+      this.sendAction('clickAction', this.get('incident'));
     }
   },
 
@@ -114,63 +115,14 @@ export default Component.extend({
    * @public
    */
   revertIncidentTileSelections() {
-    this.set('selectedStatus', [this.get('model.statusSort')]);
-    this.set('pendingStatus', null);
-
-    this.set('selectedPriority', [this.get('model.prioritySort')]);
-    this.set('pendingPriority', null);
-
-    this.set('selectedAssignee', [this.get('model.assignee.id') || '-1']);
-    this.set('pendingAssignee', null);
-
-  },
-
-  actions: {
-    /**
-     * @name editButtonClick
-     * @description Handles edit-button clicked event
-     * First time is clicked the Status, Priority and Assignee become enable to edit;
-     * If clicked again, it sends an action to save the updated values
-     * @returns {boolean}
-     * @public
-     */
-    editButtonClick(event) {
-
-      this.toggleProperty('editModeActive');
-
-      if (!this.get('editModeActive')) {
-        Logger.log('Updating Incident and calling saveAction action to save it');
-
-        let pendingPriority = this.get('pendingPriority');
-        let pendingStatus = this.get('pendingStatus');
-        let pendingAssignee = this.get('pendingAssignee');
-
-        if (typeof pendingPriority === 'undefined') {
-          pendingPriority = this.get('model.prioritySort');
-        }
-        if (typeof pendingStatus === 'undefined') {
-          pendingStatus = this.get('model.statusSort');
-        }
-        if (typeof pendingAssignee === 'undefined') {
-          pendingAssignee = this.get('model.assignee.id');
-        }
-
-        if (isEmpty(this.get('model.assignee'))) {
-          this.set('model.assignee', {});
-        }
-        this.setProperties({
-          'model.status': IncidentConstants.incidentStatusString[ pendingStatus ],
-          'model.priority': IncidentConstants.incidentPriorityString[ pendingPriority ],
-          'model.assignee.id': pendingAssignee
-        });
-        this.sendAction('saveAction', this.get('model'));
-      }
-
-      event.stopPropagation();
-      this.get('eventBus').trigger('rsa-application-click', event.currentTarget);
-
-      return false;
-    }
+    this.setProperties({
+      'selectedStatus': [this.get('incident.statusSort')],
+      'pendingStatus': null,
+      'selectedPriority': [this.get('incident.prioritySort')],
+      'pendingPriority': null,
+      'selectedAssignee': [this.get('incident.assignee.id') || '-1'],
+      'pendingAssignee': null
+    });
   },
 
   /**
@@ -179,7 +131,7 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  @computed('model.statusSort')
+  @computed('incident.statusSort')
   selectedStatus: {
     get: (statusSort) => [statusSort],
 
@@ -195,7 +147,7 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  @computed('model.prioritySort')
+  @computed('incident.prioritySort')
   selectedPriority: {
     get: (prioritySort) => [prioritySort],
 
@@ -211,7 +163,7 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  @computed('model.assignee.id')
+  @computed('incident.assignee.id')
   selectedAssignee: {
     get: (assigneeId) => [assigneeId || -1],
 
@@ -244,7 +196,7 @@ export default Component.extend({
    * @returns Array
    * @public
    */
-  @computed('model.sources')
+  @computed('incident.sources')
   incidentSources(sources) {
     if (sources) {
       return sources.map((source) => IncidentHelper.sourceShortName(source));
@@ -257,6 +209,74 @@ export default Component.extend({
    * @returns Number
    * @public
    */
-  @computed('isIncidentNew', 'model.created', 'model.lastUpdated')
-  contextualTimestamp: (isIncidentNew, created, lastUpdated) => (isIncidentNew) ? created : lastUpdated
+  @computed('isIncidentNew', 'incident.created', 'incident.lastUpdated')
+  contextualTimestamp: (isIncidentNew, created, lastUpdated) => (isIncidentNew) ? created : lastUpdated,
+
+  actions: {
+    /**
+     * @name editButtonClick
+     * @description Handles edit-button clicked event
+     * First time is clicked the Status, Priority and Assignee become enable to edit;
+     * If clicked again, it sends an action to save the updated values
+     * @returns {boolean}
+     * @public
+     */
+    editButtonClick(event) {
+
+      this.toggleProperty('editModeActive');
+
+      if (!this.get('editModeActive')) {
+        Logger.log('Updating Incident and calling saveIncidentAction action to save it');
+
+        let pendingPriority = this.get('pendingPriority');
+        let pendingStatus = this.get('pendingStatus');
+        let pendingAssignee = this.get('pendingAssignee');
+
+        let attributeChanged = {};
+
+        if (!isNone(pendingPriority)) {
+          this.setProperties({
+            'incident.prioritySort': parseInt(pendingPriority, 10),
+            'incident.priority': IncidentConstants.incidentPriorityString[pendingPriority]
+          });
+          merge(attributeChanged, {
+            priority: IncidentConstants.incidentPriorityString[ pendingPriority],
+            prioritySort: parseInt(pendingPriority, 10)
+          });
+        }
+        if (!isNone(pendingStatus)) {
+          this.setProperties({
+            'incident.statusSort': parseInt(pendingStatus, 10),
+            'incident.status': IncidentConstants.incidentStatusString[ pendingStatus ]
+          });
+          merge(attributeChanged, {
+            status: IncidentConstants.incidentStatusString[ pendingStatus ],
+            statusSort: parseInt(pendingStatus, 10)
+          });
+        }
+        if (!isNone(pendingAssignee)) {
+          if (pendingAssignee === '-1') {
+            this.set('incident.assignee', null);
+            merge(attributeChanged, { assignee: null });
+          } else {
+            this.set('incident.assignee', { id: pendingAssignee });
+            merge(attributeChanged, { assignee: { id: pendingAssignee } });
+          }
+        }
+
+        this.sendAction('saveIncidentAction', this.get('incident.id'), attributeChanged);
+
+        this.setProperties({
+          'pendingPriority': null,
+          'pendingStatus': null,
+          'pendingAssignee': null
+        });
+      }
+
+      event.stopPropagation();
+      this.get('eventBus').trigger('rsa-application-click', event.currentTarget);
+
+      return false;
+    }
+  }
 });

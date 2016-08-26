@@ -1,19 +1,19 @@
 
 <hbox class="rsa-incident-tile-header">
-  {{rsa-update-indicator model=model isIconOnly=true onTile=true updateKey='asyncUpdate'}}
+  {{rsa-update-indicator model=incident isIconOnly=true onTile=true updateKey='asyncUpdate'}}
 
   {{#if isLargeSize}}
     <vbox class='rsa-incident-tile-header-info' xs='3'>
-      {{rsa-content-badge-score label=(t 'incident.fields.riskScore') class="rsa-incident-tile-score" score=model.riskScore style=badgeStyle}}
+      {{rsa-content-badge-score label=(t 'incident.fields.riskScore') class="rsa-incident-tile-score" score=incident.riskScore style=badgeStyle}}
     </vbox>
 
     <vbox class='rsa-incident-tile-header-info' xs='9'>
       <ul class="rsa-incident-top">
         <li class="rsa-incident-tile-id-header">
-          <label class="rsa-incident-tile-id">{{unbound model.id}}</label>
+          <label class="rsa-incident-tile-id">{{unbound incident.id}}</label>
         </li>
         <li class="rsa-incident-tile-name">
-          {{model.name}}
+          {{incident.name}}
         </li>
         <li class="rsa-incident-tile-status">
           {{#rsa-form-select isInline=true class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatus isReadOnly=(if editModeActive false true)}}
@@ -26,16 +26,16 @@
     </vbox>
   {{else}}
     <vbox class='rsa-incident-tile-header-info' xs='2'>
-      {{rsa-content-badge-score class="rsa-incident-tile-score" score=model.riskScore size="small" style=badgeStyle}}
+      {{rsa-content-badge-score class="rsa-incident-tile-score" score=incident.riskScore size="small" style=badgeStyle}}
     </vbox>
 
     <vbox class='rsa-incident-tile-header-info' xs='10'>
       <ul class="rsa-incident-top">
         <li class="rsa-incident-tile-id-header">
-          <label class="rsa-incident-tile-id">{{unbound model.id}}</label>
+          <label class="rsa-incident-tile-id">{{unbound incident.id}}</label>
         </li>
         <li class="rsa-incident-tile-name">
-          {{model.name}}
+          {{incident.name}}
         </li>
       </ul>
     </vbox>
@@ -67,11 +67,11 @@
   <vbox xs="6" class="rsa-incident-tile-alert-col">
     <div>
       {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
-        <label class="rsa-incident-tile-alert-count">{{if model.alertCount model.alertCount '-'}}</label>
+        <label class="rsa-incident-tile-alert-count">{{if incident.alertCount incident.alertCount '-'}}</label>
       {{/rsa-content-definition}}
 
       {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
-        <label class="rsa-incident-tile-event-count">{{if model.eventCount model.eventCount '-'}}</label>
+        <label class="rsa-incident-tile-event-count">{{if incident.eventCount incident.eventCount '-'}}</label>
       {{/rsa-content-definition}}
     </div>
   </vbox>

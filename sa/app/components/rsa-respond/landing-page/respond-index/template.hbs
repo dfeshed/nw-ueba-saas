@@ -13,8 +13,8 @@
         <section class='rsa-content-card-group'>
           {{#rsa-carousel class="rsa-incident-carousel" items=model.newIncidents.results as |incident|}}
             {{#rsa-content-card class="rsa-incident-content-card" }}
-              {{rsa-respond/landing-page/incident-tile model=incident users=model.users
-                 clickAction=(route-action "gotoIncidentDetail") saveAction=(route-action "saveIncident")}}
+              {{rsa-respond/landing-page/incident-tile incident=incident users=model.users
+                 clickAction=(route-action "gotoIncidentDetail") saveIncidentAction=(route-action "saveIncident")}}
             {{/rsa-content-card}}
           {{/rsa-carousel}}
         </section>
@@ -31,7 +31,7 @@
         <section class='rsa-content-card-group'>
           {{#rsa-carousel class="rsa-incident-carousel" allowMultipleRows=true items=model.inProgressIncidents.results as |incident|}}
             {{#rsa-content-card class="rsa-incident-content-card small-size" }}
-              {{rsa-respond/landing-page/incident-tile size='small' users=model.users model=incident clickAction=(route-action "gotoIncidentDetail")}}
+              {{rsa-respond/landing-page/incident-tile size='small' users=model.users incident=incident clickAction=(route-action "gotoIncidentDetail")}}
             {{/rsa-content-card}}
           {{/rsa-carousel}}
         </section>

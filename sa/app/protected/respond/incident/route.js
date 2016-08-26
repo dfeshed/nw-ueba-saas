@@ -10,7 +10,8 @@ const {
   isNone,
   inject: {
     service
-  }
+  },
+  typeOf
 } = Ember;
 
 export default Route.extend({
@@ -49,7 +50,7 @@ export default Route.extend({
       method: 'notify',
       modelName: 'incident',
       query: {
-        subDestinationUrlParams: 'edit',
+        subDestinationUrlParams: 'all_incidents',
         filter: [{ field: 'id', value: currentIncidentId }]
       },
       streamOptions: {
@@ -60,10 +61,13 @@ export default Route.extend({
 
         // Updating the whole incident when we received a notification
         let innerIncident = data.findBy('id', currentIncidentId);
-        set(resolvedModel, 'incident', innerIncident);
-        // Update the store with the updated incident
-        this.store.pushPayload({ 'incidents': [ innerIncident ] });
-        innerIncident.id = currentIncidentId;
+        if (innerIncident) {
+          // only update current incident, ignoring others
+          set(resolvedModel, 'incident', innerIncident);
+          // Update the store with the updated incident
+          this.store.pushPayload({ 'incidents': [innerIncident] });
+          innerIncident.id = currentIncidentId;
+        }
       },
       onError(response) {
         Logger.error('Error processing notify call for incident model', response);
@@ -76,14 +80,24 @@ export default Route.extend({
     /**
      * @name saveAction
      * @description updates the incident with the updated values
-     * @param updatedField - field name to be updated
+     * @param updatedField - field name to be updated or the hash of keys and values to set
      * @param updatedValue - new value to be saved
      * @public
      */
     saveAction(updatedField, updatedValue) {
+      Logger.debug(`Updating incident ${ this.get('incidentId') }`);
+
       let incident = this.store.peekRecord('incident', this.get('incidentId'));
-      incident.set(updatedField, updatedValue);
-      incident.save();
+      if (typeOf(updatedField) === 'object') {
+        incident.setProperties(updatedField);
+      } else {
+        incident.set(updatedField, updatedValue);
+      }
+      incident.save().then(() => {
+        Logger.debug('Incident was saved');
+      }).catch((reason) => {
+        Logger.error(`Error saving incident. Reason: ${ reason }`);
+      });
     },
 
     /**

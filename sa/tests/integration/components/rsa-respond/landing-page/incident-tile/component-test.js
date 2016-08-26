@@ -187,7 +187,7 @@ test('The tile component is rendered properly.', function(assert) {
   this.set('testInc', testInc);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-respond/landing-page/incident-tile model=testInc users=users}}`);
+  this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
 
   assert.equal(this.$('.rsa-update-indicator__dot').length, 1, 'The rsa-update-indicator__dot element was not found.');
   assert.equal(this.$('.rsa-incident-tile').length, 1, 'Testing to see if a rsa-incident-tile element exists.');
@@ -213,7 +213,7 @@ test('The tile component is rendered properly.', function(assert) {
   assert.equal(this.$('.rsa-incident-tile-sources').text().trim(), ['ESA'], 'Unexpected alert count value');
   assert.equal(this.$('.rsa-incident-tile-score .label').text().trim(), 'Risk Score', 'Incident tile does include risk score label in DOM');
 
-  this.render(hbs`{{rsa-respond/landing-page/incident-tile model=testInc users=users size='small'}}`);
+  this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users size='small'}}`);
   assert.equal(this.$('.rsa-update-indicator__dot').length, 1, 'The rsa-update-indicator__dot element was not found.');
   assert.equal(this.$('.rsa-incident-tile-status-selector').length, 0, 'Small incident tile does not include status selector in DOM');
   assert.equal(this.$('.rsa-incident-tile-priority-selector').length, 0, 'Small incident tile does not include priority selector in DOM');
@@ -255,7 +255,7 @@ test('The tile component renders the proper contextual timestamp.', function(ass
   });
 
   this.set('mockIncident', mockIncident);
-  this.render(hbs`{{rsa-respond/landing-page/incident-tile model=mockIncident}}`);
+  this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=mockIncident}}`);
   assert.equal(this.$('.rsa-incident-tile-created-date').text().indexOf('created') !== -1, true, 'Testing whether or not a created date is shown.');
 
   this.set('mockIncident.lastUpdated', 1463768595000);
@@ -290,7 +290,7 @@ test('Edit button stays visible after click and the mouse leaves the component',
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile model=incident users=users}}
+    {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
   let container = this.$('.rsa-incident-tile');
@@ -325,7 +325,7 @@ test('Edit mode is disabled if starting to edit another tile', function(assert) 
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile id='tile1' model=incident users=users}}{{rsa-respond/landing-page/incident-tile id='tile2' model=incident users=users}}
+    {{rsa-respond/landing-page/incident-tile id='tile1' incident=incident users=users}}{{rsa-respond/landing-page/incident-tile id='tile2' incident=incident users=users}}
   `);
 
   let tile1 = this.$('#tile1');
@@ -369,7 +369,7 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile model=incident users=users}} <div class='.other-component'/>
+    {{rsa-respond/landing-page/incident-tile incident=incident users=users}} <div class='.other-component'/>
   `);
 
   let container = this.$('.rsa-incident-tile');
@@ -410,7 +410,7 @@ test('Assignee field contains at least one option', function(assert) {
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile model=incident users=users}}
+    {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
   let container = this.$('.rsa-incident-tile');
@@ -448,7 +448,7 @@ test('Incident status changed after press save', function(assert) {
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile model=incident users=users}}
+    {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
   let container = this.$('.rsa-incident-tile');
@@ -492,7 +492,7 @@ test('Incident priority changed after press save', function(assert) {
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile model=incident users=users}}
+    {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
   let container = this.$('.rsa-incident-tile');
@@ -536,7 +536,7 @@ test('Incident Assignee changed after press save', function(assert) {
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile model=incident users=users}}
+    {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
   let container = this.$('.rsa-incident-tile');
@@ -572,7 +572,7 @@ test('The update indicator component is rendered properly when an asynchronous u
   this.set('testInc', testInc);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-respond/landing-page/incident-tile model=testInc users=users}}`);
+  this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
 
   assert.equal(this.$('.rsa-update-indicator.is-icon-only').length, 1, 'Testing to see if the update indicator element exists with the is-icon-only class.');
   assert.equal(this.$('.rsa-update-indicator.is-icon-only.is-hidden').length, 0, 'Testing to see if the update indicator element exists with the is-icon-only and is-hidden classes.');
@@ -593,7 +593,7 @@ test('The update indicator component is rendered properly when an asynchronous u
   this.set('testInc', testInc);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-respond/landing-page/incident-tile model=testInc users=users}}`);
+  this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
 
   assert.equal(this.$('.rsa-update-indicator.is-icon-only').length, 1, 'Testing to see if the update indicator element exists with the is-icon-only class.');
   assert.equal(this.$('.rsa-update-indicator.is-icon-only.is-hidden').length, 1, 'Testing to see if the update indicator element exists with the is-icon-only and is-hidden classes.');
@@ -611,7 +611,7 @@ test('If the alert count is missing, then the default value is "-".', function(a
   this.set('testInc', testInc);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-respond/landing-page/incident-tile model=testInc users=users}}`);
+  this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
   assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'The .rsa-incident-tile-alert-count element was not found in the DOM.');
   assert.equal(this.$('.rsa-incident-tile-alert-count').text().trim(), '-', 'The default value for missing alerts "-" was not found.');
 });
@@ -628,7 +628,7 @@ test('If the event count is missing, then the default value is "-".', function(a
   this.set('testInc', testInc);
   this.set('users', users);
 
-  this.render(hbs`{{rsa-respond/landing-page/incident-tile model=testInc users=users}}`);
+  this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'The .rsa-incident-tile-event-count element was not found in the DOM.');
   assert.equal(this.$('.rsa-incident-tile-event-count').text().trim(), '-', 'The default value for missing events "-" was not found.');
 });
@@ -656,7 +656,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
   this.set('users', users);
 
   this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile model=incident users=users}}
+    {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
   let container = this.$(selectors.pages.respond.card.incTile.incidentTile);

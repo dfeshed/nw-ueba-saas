@@ -6,7 +6,6 @@ import IncidentHelper from 'sa/incident/helpers';
 const {
   Component,
   Logger,
-  isEmpty,
   run
 } = Ember;
 
@@ -77,7 +76,11 @@ export default Component.extend({
           'incident.statusSort': statusVal,
           'incident.status': IncidentConstants.incidentStatusString[ statusVal ]
         });
-        this.sendAction('saveAction', 'status', this.get('incident.status'));
+        let attributeChanged = {
+          status: this.get('incident.status'),
+          statusSort: this.get('incident.statusSort')
+        };
+        this.sendAction('saveIncidentAction', attributeChanged);
       });
       return statusSorts;
     }
@@ -102,7 +105,11 @@ export default Component.extend({
           'incident.prioritySort': priorityVal,
           'incident.priority': IncidentConstants.incidentPriorityString[ priorityVal ]
         });
-        this.sendAction('saveAction', 'priority', this.get('incident.priority'));
+        let attributeChanged = {
+          priority: this.get('incident.priority'),
+          prioritySort: this.get('incident.prioritySort')
+        };
+        this.sendAction('saveIncidentAction', attributeChanged);
       });
       return prioritySorts;
     }
@@ -125,12 +132,9 @@ export default Component.extend({
         if (assigneeId === '-1') {
           this.set('incident.assignee', null);
         } else {
-          if (isEmpty(this.get('incident.assignee'))) {
-            this.set('incident.assignee', {});
-          }
-          this.set('incident.assignee.id', parseInt(assigneeId, 10));
+          this.set('incident.assignee', { id: assigneeId });
         }
-        this.sendAction('saveAction', 'assignee', this.get('incident.assignee'));
+        this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'));
       });
       return assigneeIds;
     }
@@ -171,8 +175,7 @@ export default Component.extend({
      * @public
      */
     nameLostFocus() {
-      Logger.log('nameLostFocus');
-      this.sendAction('saveAction', 'name', this.get('incident.name'));
+      this.sendAction('saveIncidentAction', 'name', this.get('incident.name'));
     }
   }
 });

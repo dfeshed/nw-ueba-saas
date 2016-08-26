@@ -47,14 +47,18 @@ export default Ember$.extend({}, BaseSelectors, {
         'incSection': 'section[class$=rsa-d3list]',
         'incTile': {
           'incidentTile': '.rsa-incident-tile',
+          'saveIncidentButton': '.rsa-edit-tool .rsa-icon-check-1',
           'editButton': 'div[class^=rsa-edit-tool]',
+          'assigneeDropDown': '.rsa-incident-tile-assignee-selector .rsa-icon-arrow-down-12',
+          'statusDropDown': '.rsa-incident-tile-status-selector .rsa-icon-arrow-down-12',
+          'priorityDropDown': '.rsa-incident-tile-priority-selector .rsa-icon-arrow-down-12',
           'assigneeSelect': 'div[class^=rsa-incident-tile-assignee]',
           'assigneeLabel': 'div[class^=rsa-incident-tile-assignee]',
           'statusSelect': '.rsa-incident-tile-status-selector select',
           'statusLabel': '.rsa-incident-tile-status-selector .prompt',
+          'statusValue': '.rsa-incident-tile-status-selector .prompt div',
           'prioritySelect': '.rsa-incident-tile-priority-selector select',
           'priorityLabel': '.rsa-incident-tile-priority-selector .prompt',
-          'prioritySelectOption': '.rsa-incident-tile-priority-selector select option',
           'scoreElm': 'div[class=score]',
           'incLbl': 'label[class=rsa-incident-tile-id]',
           'incTitleName': 'li[class=rsa-incident-tile-name]',
@@ -64,7 +68,10 @@ export default Ember$.extend({}, BaseSelectors, {
           'eventCountLbl': 'label[class=rsa-incident-tile-event-count]',
           'incidentTileSourcesElm': 'div[class=rsa-incident-tile-sources] div',
           'createdDateTimeElm': 'span[class=rsa-incident-tile-created-date] span[class=datetime]',
-          'createdDateTimeAgoElm': 'span[class=rsa-incident-tile-created-date] span[class=time-ago]'
+          'createdDateTimeAgoElm': 'span[class=rsa-incident-tile-created-date] span[class=time-ago]',
+          'assigneeSelectOption': '.rsa-incident-tile-assignee-selector select option',
+          'prioritySelectOption': '.rsa-incident-tile-priority-selector select option',
+          'statusSelectOption': '.rsa-incident-tile-status-selector select option'
         }
       },
       'list': {

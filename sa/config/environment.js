@@ -66,7 +66,7 @@ module.exports = function(environment) {
           requestDestination: '/ws/response/incident/details'
         },
         updateRecord: {
-          subscriptionDestination: '/user/queue/threats/incidentsEdit',
+          subscriptionDestination: '/queue/incidents/update',
           requestDestination: '/ws/response/incidents/update'
         }
       },

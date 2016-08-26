@@ -160,7 +160,6 @@ export default function(server) {
     }
     incident.riskScore = Math.min(99, (10 + Math.round(100 * Math.random())));
     incident.prioritySort = Math.round(3 * Math.random());
-    incident.id = frame.body.id;
     incident.type = 'incident';
 
     server.sendFrame('MESSAGE', {
@@ -175,14 +174,24 @@ export default function(server) {
 
   server.route('incident', 'updateRecord', function(message, frames, server) {
     let frame = (frames && frames[0]) || {};
-    let incident = server.mirageServer.db.incident.update(frame.body.incidentId, frame.body.updates);
+    let updatedCount = 0;
+
+    if (frame.body.incidentId) {
+      server.mirageServer.db.incident.update(frame.body.incidentId, frame.body.updates);
+      updatedCount = 1;
+    } else {
+      frame.body.incidentIds.forEach((incidentId) => {
+        server.mirageServer.db.incident.update(incidentId, frame.body.updates);
+      });
+      updatedCount = frame.body.incidentIds.length;
+    }
 
     server.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',
       'content-type': 'application/json'
     }, {
       code: 0,
-      data: incident,
+      data: updatedCount,
       request: frame.body
     });
   });

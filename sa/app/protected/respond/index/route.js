@@ -11,9 +11,7 @@ const {
   observer,
   RSVP,
   merge,
-  Object: EmberObject,
-  run,
-  isEmpty
+  run
 } = Ember;
 
 export default Route.extend({
@@ -274,40 +272,32 @@ export default Route.extend({
       }
     },
 
-    /*
-     * Action handler that gets invoked when the user updates an incident.
+    /**
+     * @description Action handler that gets invoked when the user updates an incident.
+     * @param incId IncidentID
+     * @param attributeChanged The hash of keys and values to set
+     * @public
      */
-    saveIncident(json) {
-      Logger.log(`updating incident ${ json.id }`);
+    saveIncident(incId, attributeChanged) {
+      Logger.debug(`Updating incident ${ incId }`);
 
-      let promise = this._findIncidentModel(json);
-      promise.then(function(model) {
-        if (model) {
-          Logger.log(`incident ${ model.id } found`);
+      this.store.queryRecord('incident', { incidentId: incId })
+        .then(function(model) {
+          if (model) {
+            Logger.log(`incident ${ model.id } found`);
 
-          model.setProperties({
-            'status': json.status,
-            'priority': json.priority
-          });
+            model.setProperties(attributeChanged);
 
-          // Saving the assignee
-          if (isEmpty(json.assignee.id) || json.assignee.id === '-1') {
-            // The incident has been un assigned.
-            model.set('assignee', undefined);
+            Logger.log(`Saving incident model ${ model.get('id') }`);
+            model.save().then(() => {
+              Logger.debug('Incident was saved');
+            }).catch((reason) => {
+              Logger.error(`Error saving incident. Reason: ${ reason }`);
+            });
           } else {
-            // Before setting the new assignee-id, check the incident has an assignee object.
-            if (model.get('assignee') === undefined) {
-              model.set('assignee', EmberObject.create());
-            }
-            model.set('assignee.id', json.assignee.id);
+            Logger.warn('Incident model not found');
           }
-
-          Logger.log(`Saving incident model with id ${ model.id }`);
-          model.save();
-        } else {
-          Logger.warn('Incident model not found');
-        }
-      });
+        });
     }
   }
 });
