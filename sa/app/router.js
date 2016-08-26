@@ -27,7 +27,6 @@ Router.map(function() {
         this.route('not-found', { path: '*invalidinvestigatepath' });
       });
     }
-    this.route('admin');
     this.route('not-found', { path: '*invalidprotectedpath' });
   });
   this.route('not-found', { path: '*invalidrootpath' });

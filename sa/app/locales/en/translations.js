@@ -74,6 +74,10 @@ export default $.extend({}, BaseTranslations, {
       title: 'Enter a query.'
     }
   },
+  config: {
+    title: 'Config',
+    details: 'Config contents go here.'
+  },
   admin: {
     title: 'Admin',
     details: 'Admin contents go here.'

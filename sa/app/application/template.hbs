@@ -2,14 +2,15 @@
 
 {{#if session.isAuthenticated}}
   {{#rsa-application-header}}
-    {{#link-to "protected.monitor" class="rsa-header-nav-monitor js-test-nav-monitor-link"}}{{t "monitor.title"}}{{/link-to}}
     {{#if features.showRespondRoute}}
       {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}{{t "respond.title"}}{{/link-to}}
     {{/if}}
     {{#if features.showInvestigateRoute}}
       {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}{{t "investigate.title"}}{{/link-to}}
     {{/if}}
-    {{#link-to "protected.admin" class="rsa-header-nav-admin js-test-nav-admin-link"}}{{t "admin.title"}}{{/link-to}}
+    <a href="/unified/dashboard" class="rsa-header-nav-monitor js-test-nav-monitor-link">{{t "monitor.title"}}</a>
+    <a href="/live/search" class="rsa-header-nav-configure">{{t "config.title"}}</a>
+    <a href="/admin/appliances" class="rsa-header-nav-admin">{{t "admin.title"}}</a>
   {{/rsa-application-header}}
 {{/if}}
 
