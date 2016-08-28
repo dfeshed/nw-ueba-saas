@@ -43,7 +43,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     @Autowired
     protected MongoTemplate mongoTemplate;
 
-	@Value("${collection.user.activity.batch.size:1000}")
+	@Value("${user.activity.mongo.batch.size:1000}")
 	private int mongoBatchSize;
 
     public void calculate(int numOfLastDaysToCalculate) {
