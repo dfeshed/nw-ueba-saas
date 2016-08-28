@@ -23,6 +23,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC;
+import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC;
+
 public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreamingJob {
 	private static final Logger logger = Logger.getLogger(ScoreAggregateModelRawEvents.class);
 	private static final String SECONDS_BETWEEN_SYNCS_JOB_PARAM = "secondsBetweenSyncs";
@@ -102,8 +105,10 @@ public class ScoreAggregateModelRawEvents extends EventsFromDataTableToStreaming
 		// Following service will build all the models relevant to this job's data source
 		bucketConfNameToModelConfsMap.values().forEach(modelConfs::addAll);
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
+		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
+		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
 		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
-				secondsBetweenSyncs, timeoutInSeconds);
+				secondsBetweenSyncs, timeoutInSeconds,controlInputTopic,controlOutputTopic);
 	}
 
 	@Override

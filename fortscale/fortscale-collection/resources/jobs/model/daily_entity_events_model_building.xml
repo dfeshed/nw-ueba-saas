@@ -25,7 +25,7 @@
 				</entry>
 				<entry>
 					<key>targetTopic</key>
-					<value>fortscale-model-building-control-input</value>
+					<value>fortscale-entity-events-model-building-control-input</value>
 				</entry>
 			</job-data-map>
 		</job>
@@ -34,7 +34,7 @@
 			<cron>
 				<name>daily_model_building_trigger</name>
 				<group>Model</group>
-				<job-name>DailyModelBuilding</job-name>
+				<job-name>DailyEntityEventsModelBuilding</job-name>
 				<job-group>Model</job-group>
 				<cron-expression>0 0 1 * * ?</cron-expression>
 			</cron>
