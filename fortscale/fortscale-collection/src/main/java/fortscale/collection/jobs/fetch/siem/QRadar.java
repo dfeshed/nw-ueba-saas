@@ -20,8 +20,6 @@ import java.io.FileWriter;
 @DisallowConcurrentExecution
 public class QRadar extends FetchJob {
 
-	public static final String SIEM_NAME = SIEMType.QRADAR.name().toLowerCase();
-
 	@Value("${source.qradar.batchSize:1000}")
 	private int batchSize;
 	@Value("${source.qradar.maxNumberOfRetires:10}")
@@ -32,7 +30,7 @@ public class QRadar extends FetchJob {
 	private QRadarAPI qRadarAPI;
 
 	@Override
-	protected boolean connect(String hostName, int port, String username, String password) throws Exception {
+	protected boolean connect(String hostName, Integer port, String username, String password) throws Exception {
 		// connect to QRadar
 		logger.debug("trying to connect QRadar at {}", hostName);
 		qRadarAPI = new QRadarAPI(hostName, EncryptionUtils.decrypt(password));

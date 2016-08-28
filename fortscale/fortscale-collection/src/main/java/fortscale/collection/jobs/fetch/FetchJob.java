@@ -68,7 +68,8 @@ public abstract class FetchJob {
 	private String tempfilename;
 	private LogRepository logRepository;
 
-	protected abstract boolean connect(String hostName, int port, String username, String password) throws Exception;
+	protected abstract boolean connect(String hostName, Integer port, String username, String password)
+			throws Exception;
 	protected abstract void fetch(String filename, String tempfilename, File outputDir, String returnKeys,
 								  String delimiter, boolean encloseQuotes, String earliest, String latest,
 								  String savedQuery) throws Exception;
