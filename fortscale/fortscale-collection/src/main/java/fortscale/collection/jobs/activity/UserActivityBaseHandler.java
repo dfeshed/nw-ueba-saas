@@ -15,6 +15,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -36,12 +37,14 @@ import java.util.function.Function;
 public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected static final String CONTEXT_ID_FIELD_NAME = "contextId";
     protected final static String CONTEXT_ID_USERNAME_PREFIX = "normalized_username###";
-    protected final static int MONGO_READ_WRITE_BULK_SIZE = 10000;
 
     protected final Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     protected MongoTemplate mongoTemplate;
+
+	@Value("${collection.user.activity.batch.size:1000}")
+	private int mongoBatchSize;
 
     public void calculate(int numOfLastDaysToCalculate) {
         long endTime = System.currentTimeMillis();
@@ -80,7 +83,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         int numberOfUsers = userIds.size();
         logger.info("Found {} active users for {} activity", getActivityName(), numberOfUsers);
 
-        int actualUserChunkSize = Math.min(MONGO_READ_WRITE_BULK_SIZE, numberOfUsers);
+        int actualUserChunkSize = Math.min(mongoBatchSize, numberOfUsers);
         int numOfHandledUsers;
 
         Map<String, Double> additionalActivityHistogram = new HashMap<>();
@@ -100,7 +103,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             while (numOfHandledUsers < numberOfUsers) {
 
                 int currentUsersChunkStartIndex = numOfHandledUsers;
-                int currentUsersChunkEndIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers;
+                int currentUsersChunkEndIndex = (numOfHandledUsers + mongoBatchSize <= numberOfUsers) ? numOfHandledUsers + mongoBatchSize : numberOfUsers;
 
                 List<String> currentUsersChunk = userIds.subList(currentUsersChunkStartIndex, currentUsersChunkEndIndex);
 
@@ -126,7 +129,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
                 insertUsersActivityToDB(userActivityToInsertDocument);
 
-                numOfHandledUsers += MONGO_READ_WRITE_BULK_SIZE;
+                numOfHandledUsers += mongoBatchSize;
             }
 
             logger.info("Updating job's state..");
