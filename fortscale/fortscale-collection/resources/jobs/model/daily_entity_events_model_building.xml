@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>DailyModelBuilding</name>
+			<name>DailyEntityEventsModelBuilding</name>
 			<group>Model</group>
 			<description>Triggers at the end of every day the building of all configured models</description>
 			<job-class>fortscale.collection.jobs.model.ModelBuildingJob</job-class>
@@ -32,7 +32,7 @@
 
 		<trigger>
 			<cron>
-				<name>daily_model_building_trigger</name>
+				<name>daily_entity_events_model_building_trigger</name>
 				<group>Model</group>
 				<job-name>DailyEntityEventsModelBuilding</job-name>
 				<job-group>Model</job-group>
