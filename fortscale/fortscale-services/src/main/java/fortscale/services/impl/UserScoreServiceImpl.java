@@ -16,6 +16,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -350,11 +351,7 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return
      */
     public Severity getUserSeverityForScore(double userScore) {
-        NavigableMap<Double, Severity> severityNavigableMap = userScoreSeveritiesCache.get(SCORE_SEVERITIES_CACHE);
-        if (severityNavigableMap == null) {
-            severityNavigableMap = loadSeveritiesToCache();
-            userScoreSeveritiesCache.put(SCORE_SEVERITIES_CACHE, severityNavigableMap);
-        }
+        NavigableMap<Double, Severity> severityNavigableMap = getSeverityNavigableMap();
 
         Map.Entry<Double,Severity> value = severityNavigableMap.ceilingEntry(userScore);
         Severity userSeverity;
@@ -364,6 +361,34 @@ public class UserScoreServiceImpl implements UserScoreService {
             userSeverity=value.getValue();
         }
         return userSeverity;
+    }
+
+    private NavigableMap<Double, Severity> getSeverityNavigableMap() {
+        NavigableMap<Double, Severity> severityNavigableMap = userScoreSeveritiesCache.get(SCORE_SEVERITIES_CACHE);
+        if (severityNavigableMap == null) {
+            severityNavigableMap = loadSeveritiesToCache();
+            userScoreSeveritiesCache.put(SCORE_SEVERITIES_CACHE, severityNavigableMap);
+        }
+        return severityNavigableMap;
+    }
+
+    public Map<Severity, Double[]> getSeverityRange(){
+        NavigableMap<Double, Severity> severityNavigableMap = new TreeMap<>(getSeverityNavigableMap());
+
+        Map<Severity, Double[]> rangeMap = new ManagedMap<>();
+
+        Map.Entry<Double, Severity> doubleSeverityEntry = severityNavigableMap.pollFirstEntry();
+        Double minLimit = 0d;
+
+        while (doubleSeverityEntry != null) {
+            rangeMap.put(doubleSeverityEntry.getValue(), new Double[]{minLimit, doubleSeverityEntry.getKey()});
+            minLimit = doubleSeverityEntry.getKey();
+            doubleSeverityEntry = severityNavigableMap.pollFirstEntry();
+        }
+
+        rangeMap.put(Severity.Critical, new Double[]{minLimit, Double.MAX_VALUE});
+
+        return rangeMap;
     }
 
     /**

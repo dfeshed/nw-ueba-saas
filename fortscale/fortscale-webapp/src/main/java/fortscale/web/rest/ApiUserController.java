@@ -136,7 +136,7 @@ public class ApiUserController extends BaseController{
 		try {
 			userService.saveFavoriteFilter(userFilter, filterName);
 		} catch (DuplicateKeyException e) {
-			return new ResponseEntity("The filter name already exists", HttpStatus.BAD_REQUEST);
+			return new ResponseEntity("The filter name already exists", HttpStatus.CONFLICT);
 		} catch (Exception e){
 			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -144,8 +144,8 @@ public class ApiUserController extends BaseController{
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.DELETE)
-	public ResponseEntity deleteFavoriteFilter(@RequestParam(value = "filter_name") String filterName) {
+	@RequestMapping(value = "/favoriteFilter/{filterName}", method = RequestMethod.DELETE)
+	public ResponseEntity deleteFavoriteFilter(@PathVariable String filterName) {
 
 		long lineDeleted = userService.deleteFavoriteFilter(filterName);
 
@@ -446,7 +446,7 @@ public class ApiUserController extends BaseController{
 		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
 
 		UserRestFilter filter = new UserRestFilter();
-		filter.setIsScored(true);
+		filter.setMinScore(0d);
 
 		List<User> scoredUsers = userService.findUsersByFilter(filter, null, null);
 
