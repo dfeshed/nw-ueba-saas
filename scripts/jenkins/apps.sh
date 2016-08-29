@@ -1,14 +1,3 @@
-#### Build Ember Apps ####
-#
-# 1) Will wget and install the bower archive
-#   from artifactory.
-# 2) component-lib: NPM install + Bower install + ember test + ember build
-# 3) style-guide: NPM install + Bower install + ember test + ember build
-# 4) sa: NPM install + Bower install + ember test + ember build
-# 5) copies style-guide out to hosted directory
-#    (https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/)
-#
-
 PORTS=(7351 7352 7353 7354 7355 7356 7357 7358 7359 7360 7361 7362 7363 7364 7365 7366 7367 7368 7369 7370 7371 7372 7373 7374 7375 7376 7377 7378 7379 7380)
 MOCK_PORTS=(9980 9981 9982 9983 9984 9985 9986 9987 9988 9989 9990 9991 9992 9993 9994 9995 9996 9997)
 
@@ -33,7 +22,7 @@ function runEmberTestWithMockServer {
   info "Starting Express mock test server for $1"
   cd $1
   cd tests/server
-  MOCK_PORT=$mockPort node start.js &
+  MOCK_PORT=$mockPort node server.js &
   checkError "Mock server for $1 refused to start"
   local PID=$!
   success "$1 mock server started, process id: $PID"
@@ -112,6 +101,13 @@ node scripts/jenkins/check-bower-versions.js
 
 setWebProxy
 
+# NPM install and run eslint on mock-server code
+runAppNPMInstall mock-server
+cd mock-server
+npm run eslint
+checkError "ESLint failed for mock-server"
+cd $CWD
+
 # http://stackoverflow.com/questions/21789683/how-to-fix-bower-ecmderr
 # fixes ecmderr with bower install
 git config --global url."https://".insteadOf git://
@@ -126,6 +122,7 @@ buildEmberApp style-guide
 if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
 then
   rm -rf /mnt/libhq-SA/SAStyle/production/*
+  # hosted here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/
   cp -r style-guide/dist/* /mnt/libhq-SA/SAStyle/production/
   success "Hosted style guide has been updated"
 fi

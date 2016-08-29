@@ -2,10 +2,24 @@ import jsesc from 'jsesc';
 import Stomp from 'stompjs';
 
 /*
+ * Utility function to prepare the headers for a SEND stomp message
+ */
+const _createSendHeader = function(config, frame) {
+  return {
+    'destination': config.requestDestination,
+    'content-type': 'application/json;charset=UTF-8',
+    'subscription': frame.headers.id
+    // 'message-id': '6edw3evl-0', // not sure what this is for
+  };
+};
+
+/*
  * Prepares message containing a body. This message is the crux of the response.
  */
-const prepareMessage = function(headers, body) {
-  // String it
+const prepareMessage = function(context, frame, body) {
+  // create headers
+  const headers = _createSendHeader(context, frame);
+  // Stringify body
   const bodyStringified = JSON.stringify(body);
   // Stomp it
   const sendMessage = Stomp.Frame.marshall('MESSAGE', headers, bodyStringified);
@@ -49,22 +63,7 @@ const prepareConnectMessage = function() {
   return msg;
 };
 
-/*
- * Utility function to prepare the headers for a SEND stomp message
- */
-const createSendHeader = function(frame, config) {
-  const sendHeaders = {
-    'destination': config.requestDestination,
-    'content-type': 'application/json;charset=UTF-8',
-    'subscription': frame.headers.id
-    // 'message-id': '6edw3evl-0', // not sure what this is for
-  };
-
-  return sendHeaders;
-};
-
 export {
-  createSendHeader,
   prepareConnectMessage,
   parseMessage,
   prepareMessage

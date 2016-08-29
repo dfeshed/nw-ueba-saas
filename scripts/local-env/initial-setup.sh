@@ -72,4 +72,3 @@ fi
 
 # Yay!
 success "Initial setup complete!"
-success "To use your new environment, please either 'source' in your bash/zsh profile (i.e. 'source ~/.bash_profile'') or open up a new terminal window."

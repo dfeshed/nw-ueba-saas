@@ -12,11 +12,15 @@ red "...it's the only way to be sure.\n"
 
 info "If this is your first time setting up environment, this part will be fast."
 
-function nukeApp {
+function nukeNode {
   info "Removing $1 node_modules"
   rm -rf ../$1/node_modules
   mkdir ../$1/node_modules
   touch ../$1/node_modules/.metadata_never_index
+}
+
+function nukeApp {
+  nukeNode $1
   info "Removing $1 bower_components"
   rm -rf ../$1/bower_components
   mkdir ../$1/bower_components
@@ -28,6 +32,7 @@ npm cache clean
 info "Cleaning Bower cache"
 bower cache clean
 
+nukeNode mock-server
 nukeApp component-lib
 nukeApp streaming-data
 nukeApp recon
