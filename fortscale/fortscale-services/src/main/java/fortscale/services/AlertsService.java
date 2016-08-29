@@ -1,9 +1,7 @@
 package fortscale.services;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
@@ -12,7 +10,6 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 import java.util.Map;
-import java.util.NavigableMap;
 import java.util.Set;
 
 /**
@@ -114,7 +111,7 @@ public interface AlertsService {
 
     Set<Alert> getAlertsRelevantToUserScore(String userName);
 
-	Set<Alert> getOpenAlertsByUsername(String userName);
+	List<Alert> getOpenAlertsByUsername(String userName);
 
 	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
 

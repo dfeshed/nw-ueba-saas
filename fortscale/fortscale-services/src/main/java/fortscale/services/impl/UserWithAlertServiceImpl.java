@@ -94,7 +94,7 @@ import java.util.Set;
 	}
 
 	@Override public void recalculateNumberOfUserAlerts(String userName) {
-		Set<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
+		List<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
 		User user = userService.findByUsername(userName);
 
 		user.setAlertsCount(alerts.size());
