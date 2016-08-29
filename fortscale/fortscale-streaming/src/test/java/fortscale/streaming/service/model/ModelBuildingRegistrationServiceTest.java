@@ -47,6 +47,38 @@ public class ModelBuildingRegistrationServiceTest {
 		regService = new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore,null);
 		reset(modelConfService, modelService, modelBuildingListener, modelBuildingStore);
 	}
+
+	@Test
+	public void registration_service_should_filter_all_models_by_not_regex()
+	{
+		regService =  new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore,"^(?!entity).*");
+		// For one session, register all models
+		String sessionId = "mySession";
+		String modelConfName = "all_models";
+		long endTimeInSeconds = 3000;
+
+		// Two models exist
+		String modelConfName1 = "modelConf1";
+		ModelConf modelConf1 = mock(ModelConf.class);
+		String modelConfName2 = "entity_modelConf2";
+		ModelConf modelConf2 = mock(ModelConf.class);
+		List<ModelConf> modelConfs = Arrays.asList(modelConf1, modelConf2);
+		when(modelConfService.getModelConfs()).thenReturn(modelConfs);
+		when(modelConf1.getName()).thenReturn(modelConfName1);
+		when(modelConf2.getName()).thenReturn(modelConfName2);
+
+		// Second model is already registered
+		Date previousEndTime = new Date();
+		Date currentEndTime = new Date();
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2))).thenReturn(existingRegistration);
+
+		// Act
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds));
+		verify(modelBuildingStore,times(1)).storeRegistration(any(ModelBuildingRegistration.class));
+
+	}
+
 	@Test
 	public void registration_service_should_filter_all_models_by_regex()
 	{
