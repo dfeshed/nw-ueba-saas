@@ -1,5 +1,5 @@
 {
-  "id": 14,
+  "id": 3,
   "title": "Streaming - HDFS writer task",
   "originalTitle": "Streaming - HDFS writer task",
   "tags": [
@@ -2017,67 +2017,67 @@
         "name": "dataSource",
         "options": [
           {
-            "selected": true,
             "text": "All",
-            "value": "$__all"
+            "value": "$__all",
+            "selected": true
           },
           {
-            "selected": false,
             "text": "crmsf",
-            "value": "crmsf"
+            "value": "crmsf",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "gwame",
-            "value": "gwame"
+            "value": "gwame",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "kerberos_logins",
-            "value": "kerberos_logins"
+            "value": "kerberos_logins",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "kerberos_tgt",
-            "value": "kerberos_tgt"
+            "value": "kerberos_tgt",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "ntlm",
-            "value": "ntlm"
+            "value": "ntlm",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "oracle",
-            "value": "oracle"
+            "value": "oracle",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "prnlog",
-            "value": "prnlog"
+            "value": "prnlog",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "ssh",
-            "value": "ssh"
+            "value": "ssh",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "vpn",
-            "value": "vpn"
+            "value": "vpn",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "vpn_session",
-            "value": "vpn_session"
+            "value": "vpn_session",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "wame",
-            "value": "wame"
+            "value": "wame",
+            "selected": false
           }
         ],
-        "query": "SHOW TAG VALUES WITH KEY = \"dataSource\"",
+        "query": "SHOW TAG VALUES  FROM \"streaming.HDFS-writer.writer\" WITH KEY = \"dataSource\"",
         "refresh": 1,
         "type": "query",
         "useTags": false
@@ -2099,42 +2099,32 @@
         "name": "lastStep",
         "options": [
           {
-            "selected": true,
             "text": "All",
-            "value": "$__all"
+            "value": "$__all",
+            "selected": true
           },
           {
-            "selected": false,
             "text": "ComputerTaggingNormalizationTask",
-            "value": "ComputerTaggingNormalizationTask"
+            "value": "ComputerTaggingNormalizationTask",
+            "selected": false
           },
           {
-            "selected": false,
-            "text": "IpResolvingStreamTask",
-            "value": "IpResolvingStreamTask"
-          },
-          {
-            "selected": false,
             "text": "ScoringTask",
-            "value": "ScoringTask"
+            "value": "ScoringTask",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "UsernameNormalizationAndTaggingTask",
-            "value": "UsernameNormalizationAndTaggingTask"
+            "value": "UsernameNormalizationAndTaggingTask",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "VpnEnrichTask",
-            "value": "VpnEnrichTask"
-          },
-          {
-            "selected": false,
-            "text": "etl",
-            "value": "etl"
+            "value": "VpnEnrichTask",
+            "selected": false
           }
         ],
-        "query": "SHOW TAG VALUES WITH KEY = \"lastStep\"",
+        "query": "SHOW TAG VALUES  FROM \"streaming.HDFS-writer.writer\"  WITH KEY = \"lastStep\"",
         "refresh": 1,
         "type": "query",
         "useTags": false
@@ -2146,6 +2136,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 3,
+  "version": 1,
   "links": []
 }
