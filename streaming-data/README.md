@@ -165,5 +165,3 @@ Each API request takes a `streamOptions` object.
 Run tests like any other Ember project (`ember test`), but first...
 
 * `node tests/server/start.js` to run mock server
-* Count to 10, then run tests.
-  * WHY? If tests are run immediately, they may give false negative. Still trying to figure out why this happens. Every subsequent test will run as expected. And if you delay slightly to run the first test, those should be ok too.

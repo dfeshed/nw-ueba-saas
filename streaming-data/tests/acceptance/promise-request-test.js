@@ -10,6 +10,7 @@ moduleForAcceptance('Acceptance | Request | promiseRequest', {});
  * This is a simple "will it return data" test
  */
 test('socket make request and receive data', function(assert) {
+  const done = assert.async();
   assert.expect(2);
   visit('/');
 
@@ -23,8 +24,10 @@ test('socket make request and receive data', function(assert) {
     }).then(function(response) {
       assert.ok(true, 'Socket response received');
       assert.ok(response.data.length === 5, 'Socket response ');
+      done();
     }).catch(function(/* response */) {
       assert.ok(false, 'Socket response errored out');
+      done();
     });
   });
 });

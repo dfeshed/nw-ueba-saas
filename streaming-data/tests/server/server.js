@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+/* global process */
 
 import express from 'express';
 import cors from 'cors';
@@ -58,7 +59,10 @@ app.ws('/socket/*', function(ws /* , req */) {
         break;
       case 'DISCONNECT':
         ws.clientDisconnected = true;
-        ws.terminate();
+
+        // DISCONNECT means the client has disconnected
+        // so terminating should not be necessary
+        // ws.terminate();
         break;
       default:
         console.warn('UNUSED COMMAND/FRAME', command, frame);
@@ -67,6 +71,6 @@ app.ws('/socket/*', function(ws /* , req */) {
 });
 
 // error handlers
-app.listen(9999, function() {
+app.listen(process.env.MOCK_PORT || 9999, function() {
   console.info('We ready to go...');
 });

@@ -10,6 +10,7 @@
 #
 
 PORTS=(7351 7352 7353 7354 7355 7356 7357 7358 7359 7360 7361 7362 7363 7364 7365 7366 7367 7368 7369 7370 7371 7372 7373 7374 7375 7376 7377 7378 7379 7380)
+MOCK_PORTS=(9980 9981 9982 9983 9984 9985 9986 9987 9988 9989 9990 9991 9992 9993 9994 9995 9996 9997)
 
 function runAppNPMInstall {
   info "Running 'npm install' for $1"
@@ -25,11 +26,42 @@ function runAppBowerInstall {
   success "Installed $1 bower dependencies"
 }
 
-function runEmberTest {
-  port=${PORTS[$RANDOM % ${#PORTS[@]} ]}
-  info "Running 'ember test' for $1 on port $port"
+function runEmberTestWithMockServer {
+  local mockPort=${MOCK_PORTS[$RANDOM % ${#MOCK_PORTS[@]} ]}
+  local testemPort=${PORTS[$RANDOM % ${#PORTS[@]} ]}
+
+  info "Starting Express mock test server for $1"
   cd $1
-  ember test --test-port $port
+  cd tests/server
+  MOCK_PORT=$mockPort node start.js &
+  checkError "Mock server for $1 refused to start"
+  local PID=$!
+  success "$1 mock server started, process id: $PID"
+
+  cd ../..
+  info "Running 'ember test' for $1 on port $testemPort"
+  MOCK_PORT=$mockPort ember test --test-port $testemPort
+  local status=$?
+
+  # kill mock server
+  kill -9 $PID
+
+  if [[ $status != "0" ]]
+  then
+    fail "$1"
+    fail "Exiting..."
+    exit $status
+  fi
+
+  success "'ember test' for $1 was successful"
+  cd $CWD
+}
+
+function runEmberTestNoMockServer {
+  testemPort=${PORTS[$RANDOM % ${#PORTS[@]} ]}
+  info "Running 'ember test' for $1 on port $testemPort"
+  cd $1
+  ember test --test-port $testemPort
   checkError "Ember test failed for $1"
   success "'ember test' for $1 was successful"
   cd $CWD
@@ -44,6 +76,8 @@ function runEmberBuild {
   cd $CWD
 }
 
+# $1 = name of app
+# $2 = true if app needs mock server started
 function buildEmberApp {
   info "Beginning build for app: $1"
 
@@ -54,7 +88,12 @@ function buildEmberApp {
   runAppBowerInstall $1
 
   # 'ember test'
-  runEmberTest $1
+  if [ "$2" = true ]
+  then
+    runEmberTestWithMockServer $1
+  else
+    runEmberTestNoMockServer $1
+  fi
 
   # 'ember build' when running full build
   if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
@@ -77,9 +116,7 @@ setWebProxy
 # fixes ecmderr with bower install
 git config --global url."https://".insteadOf git://
 
-# install NPM/bower deps for streaming-data
-runAppNPMInstall streaming-data
-runAppBowerInstall streaming-data
+buildEmberApp streaming-data true
 
 buildEmberApp component-lib
 buildEmberApp recon
