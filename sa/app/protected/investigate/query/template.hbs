@@ -44,19 +44,7 @@
       {{rsa-investigate/timeline data=model.eventTimeline.data}}
       {{#rsa-data-table lazy=true items=model.events.data columnsConfig=model.eventColumns}}
         {{rsa-data-table/header}}
-        {{#rsa-data-table/body buffer=25 as |item index column|}}
-          {{#rsa-data-table/body-cell item=item index=index column=column}}
-            <span class="content">
-              {{#if (is-equal column.field "time")}}
-                {{rsa-content-datetime timestamp=item.time}}
-              {{else if (is-equal column.field "size")}}
-                {{rsa-content-memsize size=item.size}}
-              {{else}}
-                {{event-meta-value item column.field}}
-              {{/if}}
-            </span>
-          {{/rsa-data-table/body-cell}}
-        {{/rsa-data-table/body}}
+        {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
         {{rsa-data-table/load-more
           status=model.events.status
           clickAction=(route-action "eventsGetMore")}}

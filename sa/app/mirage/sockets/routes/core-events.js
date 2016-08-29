@@ -1,6 +1,6 @@
 import Ember from 'ember';
 
-const MIN_EVENT_COUNT = 100;
+const MIN_EVENT_COUNT = 500;
 
 const { get } = Ember;
 
@@ -15,7 +15,7 @@ export default function(server) {
     // Generate more mock data if we only have a little.  We do this here, on-demand, rather than at app startup,
     // because it would slow down the app startup for all devs, even ones who never fetch this data.
     if (all.length < MIN_EVENT_COUNT) {
-      server.mirageServer.createList('core-events', MIN_EVENT_COUNT);
+      server.mirageServer.createList('core-events', MIN_EVENT_COUNT - all.length);
       all = server.mirageServer.db['core-events'];
     }
 
