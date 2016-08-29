@@ -6,8 +6,10 @@ import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityJobState;
+import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -25,6 +27,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class to provide basic functionality of user activity handlers
@@ -42,6 +45,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     @Autowired
     protected MongoTemplate mongoTemplate;
+	@Autowired
+	protected UserService userService;
 
 	@Value("${user.activity.mongo.batch.size:10000}")
 	private int mongoBatchSize;
@@ -72,9 +77,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
         long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
 
-        final Map<String, String> dataSourceToCollection = userActivityConfiguration.getDataSourceToCollection();
-        Map<String, List<String>> dataSourceToUserIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime,
-				lastBucketEndTime, dataSourceToCollection);
+        Map<String, List<String>> dataSourceToUserIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime);
 
 		int totalNumberOfUsers = 0;
 		for (List<String> userIds: dataSourceToUserIds.values()) {
@@ -195,20 +198,18 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return userActivityJobState;
     }
 
-    protected Map<String, List<String>> fetchAllActiveUserIds(List<String> dataSources, long startTime, long endTime, Map<String, String> dataSourceToCollection) {
+	//This fetches all the active users from a certain point in time.
+	//There is an underlying assumption that we will always search for usernames with the CONTEXT_ID_USERNAME_PREFIX
+    protected Map<String, List<String>> fetchAllActiveUserIds(List<String> dataSources, long startTime) {
         Map<String, List<String>> dataSourceToUserIds = new HashMap<>();
-
+		DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
+		List<User> users = userService.getUsernamesActiveSince(startDate);
         for (String dataSource : dataSources) {
-            Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-            Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
-            Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
-
-            String collectionName = dataSourceToCollection.get(dataSource);
-
-			dataSourceToUserIds.put(dataSource, mongoTemplate.getCollection(collectionName).distinct(FeatureBucket.
-					CONTEXT_ID_FIELD, query.getQueryObject()));
+			List<String> userIds = users.stream().filter(user -> user.getLogLastActivity(dataSource) != null &&
+					user.getLogLastActivity(dataSource).isAfter(startDate)).map(user -> CONTEXT_ID_USERNAME_PREFIX +
+					user.getUsername()).collect(Collectors.toList());
+			dataSourceToUserIds.put(dataSource, userIds);
         }
-
         return dataSourceToUserIds;
     }
 
