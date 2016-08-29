@@ -13,7 +13,6 @@ import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
 
 import fortscale.services.UserWithAlertService;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -262,12 +261,10 @@ public class AlertsServiceImpl implements AlertsService {
         return  alertsRepository.getAlertsRelevantToUserScore(userName);
     }
 
-	@Override public Set<Alert> getOpenAlertsByUsername(String userName) {
-		Set<Alert> alerts = alertsRepository.getAlertsForUserByFeedback(userName, feedbackNoRejectedSet);
+	@Override public List<Alert> getOpenAlertsByUsername(String userName) {
+		List<Alert> alerts = alertsRepository.getAlertsForUserByFeedback(userName, feedbackNoRejectedSet);
 
-		Comparator<? super Alert> sortBySeverity = (o1, o2) -> Integer.compare(o1.getSeverityCode(), o2.getSeverityCode());
-		Set<Alert> sortedAlerts = alerts.stream().sorted(sortBySeverity).collect(Collectors.toSet());
-		return sortedAlerts;
+		return alerts;
 	}
 
 	@Override public Set<String> getDistinctAlertNames(Boolean ignoreRejected) {
