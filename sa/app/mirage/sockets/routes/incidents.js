@@ -10,6 +10,8 @@ const { typeOf } = Ember;
  * @public
  */
 let _alertsMap = null;
+let newIncID = 800;
+let newJournalID = 1;
 
 function _makeAlertsMap(dbAlerts) {
   if (dbAlerts && !_alertsMap) {
@@ -103,6 +105,11 @@ export default function(server) {
       response.notificationCode = 1;
       if (response.notificationCode === 0) {
         // create a new incident
+
+        IncidentSamples.newIncident.id = `INC-${ newIncID++ }`;
+        IncidentSamples.assignedIncident.id = `INC-${ newIncID++ }`;
+        IncidentSamples.inProgressIncident.id = `INC-${ newIncID++ }`;
+
         response.push(IncidentSamples.newIncident, IncidentSamples.assignedIncident, IncidentSamples.inProgressIncident);
 
         server.mirageServer.db.incident.insert(IncidentSamples.newIncident);
@@ -113,7 +120,6 @@ export default function(server) {
 
         // update the first 10 incidents
         someIncidents.forEach((incident) => {
-          incident.statusSort = 1;
           incident.notes = incident.notes || [];
 
           // removing an existing note
@@ -125,16 +131,18 @@ export default function(server) {
           });
 
           // adding a few new Journals
-          incident.notes.pushObject({ id: 97, notes: 'This journal entry wasnt here before', created: new Date(), author: 'admin', milestone: 'INSTALLATION' });
-          incident.notes.pushObject({ id: 98, notes: 'This is a NEW journal entry', created: new Date(), author: 'admin', milestone: 'CONTAINMENT' });
-          incident.notes.pushObject({ id: 99, notes: 'This is also a NEW journal entry', created: new Date(), author: 'ian', milestone: 'ERADICATION' });
+          incident.notes.pushObject({ id: newJournalID++, notes: 'This journal entry wasnt here before', created: new Date(), author: 'admin', milestone: 'INSTALLATION' });
+          incident.notes.pushObject({ id: newJournalID++, notes: 'This is a NEW journal entry', created: new Date(), author: 'admin', milestone: 'CONTAINMENT' });
+          incident.notes.pushObject({ id: newJournalID++, notes: 'This is also a NEW journal entry', created: new Date(), author: 'ian', milestone: 'ERADICATION' });
 
           server.mirageServer.db.incident.update(incident.id, incident);
 
           response.push(incident);
         });
 
+        IncidentSamples.newIncident.id = `INC-${ newIncID++ }`;
         response.push(IncidentSamples.newIncident);
+
         server.mirageServer.db.incident.insert(IncidentSamples.newIncident);
       }
 
