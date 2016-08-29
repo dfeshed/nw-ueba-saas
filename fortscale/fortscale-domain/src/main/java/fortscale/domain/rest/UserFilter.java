@@ -1,5 +1,6 @@
 package fortscale.domain.rest;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 
@@ -172,6 +173,7 @@ public class UserFilter extends RestFilter {
 		this.maxScore = maxScore;
 	}
 
+	@JsonIgnore
 	public Set<DataSourceAnomalyTypePair> getAnomalyTypesAsSet() {
 		if (indicatorTypes == null){
 			return null;
