@@ -187,7 +187,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     }
 
     protected List<String> fetchAllActiveUserIds(List<String> dataSources, long startTime, long endTime, Map<String, String> dataSourceToCollection) {
-        List<String> userIds = new ArrayList<>();
+        Set<String> userIds = new HashSet<>();
 
         for (String dataSource : dataSources) {
             Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
@@ -196,12 +196,13 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
             String collectionName = dataSourceToCollection.get(dataSource);
 
-            List<String> contextIdList = mongoTemplate.getCollection(collectionName).distinct("contextId", query.getQueryObject());
+            List<String> contextIdList = mongoTemplate.getCollection(collectionName).distinct(FeatureBucket.
+							CONTEXT_ID_FIELD, query.getQueryObject());
 
             userIds.addAll(contextIdList);
         }
 
-        return userIds;
+        return new ArrayList<>(userIds);
     }
 
     protected List<FeatureBucket> retrieveBuckets(long startTime, long endTime, List<String> usersChunk, String dataSource, String collectionName) {

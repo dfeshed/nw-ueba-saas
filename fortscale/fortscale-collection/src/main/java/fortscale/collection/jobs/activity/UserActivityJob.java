@@ -113,7 +113,11 @@ public class UserActivityJob extends FortscaleJob {
         final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().
 				toString();
         Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
-        calculateActivity(userActivityConfigurationService);
+		try {
+			calculateActivity(userActivityConfigurationService);
+		} catch (Exception ex) {
+			logger.error("Activity {} failed with exception - {}", activityName, ex.toString());
+		}
     }
 
     private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {
