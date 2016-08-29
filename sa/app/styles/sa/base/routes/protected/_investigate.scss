@@ -1,8 +1,3 @@
-$investigateTextBaseColor: #fff;
-$investigateTextDarkerColor: rgba(255, 255, 255, 0.7);
-$investigateBgBaseColor: #4a4b54;
-$investigateBgLighterColor: #64656d;
-$investigateBgDarkerColor: #3e3f47; /* was: #42434b; */
 $investigateTimelineHeight: 200px;
 
 .rsa-investigate {
@@ -11,6 +6,5 @@ $investigateTimelineHeight: 200px;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: $investigateBgBaseColor;
-  color: $investigateTextBaseColor;
+  color: rsa-color(white);
 }

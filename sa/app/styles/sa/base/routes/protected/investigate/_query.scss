@@ -8,8 +8,9 @@
   @include rsa-col(justify,fill);
 
   &__header {
-    background-color: $investigateBgLighterColor;
+    background-color: rsa-color(black,base,$rsa-translucent);
     @include rsa-vendor-prefix(flex-shrink, 1);
+    margin: 1px 0;
   }
 
   &__summary {
@@ -27,7 +28,7 @@
   }
 
   &__sums-of {
-    color: $investigateTextDarkerColor;
+    color: rsa-color(white,base,$rsa-nearly-opaque);
   }
 
   &__body {
@@ -39,8 +40,9 @@
       position: absolute;
       top: 0;
       bottom: 0;
-      transition-property: left, right, max-width;
+      transition-property: left, right, max-width, margin, opacity;
       transition-duration: 0.3s;
+      transition-delay: 0s 0s 0s 0s 0.3s;
     }
 
     /* meta vs events: default arrangement */
@@ -48,11 +50,13 @@
       left: 0;
       max-width: 2000px;
       right: 75%;
-      background-color: $investigateBgDarkerColor;
     }
     &-main {
-      left: 25%;
+      margin-left: 25%;
+      left: 0;
       right: 0;
+      opacity: 1;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
     }
     &.meta-panel-size-default {
       .rsa-investigate-query__body {
@@ -70,8 +74,10 @@
           left: 0;
           max-width: 40px;
           z-index: 1;
+          background-color: rsa-color(black,base,$rsa-nearly-transparent);
         }
         &-main {
+          margin-left: 0;
           left: 40px;
           right: 0;
           z-index: 2;
@@ -88,6 +94,10 @@
           z-index: 2;
           box-shadow: rsa-color(black,base,$rsa-translucent) 3px 3px 3px;
         }
+        &-main {
+          transition-delay: 0s;
+          opacity: 0;
+        }
       }
     }
   }
@@ -100,7 +110,6 @@
     left: 0;
     right: 0;
     @include rsa-col(center,middle);
-    background-color: rgba($investigateBgBaseColor, $rsa-nearly-opaque);
 
     h2 {
       @include rsa-font(header, large);
@@ -133,10 +142,12 @@
     top: 0;
     bottom: 0;
     left: 0;
-    right: 0;
+    right: 1px;
+    background-color: rsa-color(black,base,$rsa-nearly-transparent);
 
-    &__header {
-      background-color: rsa-color(black,base,$rsa-translucent);
+    &__header,
+    .mask {
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
     }
 
     .rsa-list-button {
@@ -169,13 +180,13 @@
     height: $investigateTimelineHeight;
 
     &__header {
-      background-color: $investigateBgDarkerColor;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
     }
 
     .rsa-chart {
       .domain,
       .tick line {
-        stroke: $investigateBgLighterColor;
+        stroke: rsa-color(black,base,$rsa-translucent);
       }
       .tick text {
         stroke-width: 0;
@@ -207,7 +218,7 @@
     }
 
     &-body-cell {
-      border-right: 1px dashed $investigateBgDarkerColor;
+      border-right: 1px dashed rsa-color(black,base,$rsa-nearly-transparent);
 
       .content {
         display: block;
@@ -216,11 +227,11 @@
     }
 
     &-body-row {
-      border-bottom: 1px solid $investigateBgDarkerColor;
+      border-bottom: 1px solid rsa-color(black,base,$rsa-nearly-transparent);
     }
 
     &-header {
-      background-color: $investigateBgDarkerColor;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
     }
   }
 
@@ -231,7 +242,7 @@
 
     &__sep,
     .date {
-      color: $investigateTextDarkerColor;
+      color: rsa-color(white,base,$rsa-nearly-opaque);
       font-weight: normal;
     }
   }

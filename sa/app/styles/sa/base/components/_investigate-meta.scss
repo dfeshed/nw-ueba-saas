@@ -9,10 +9,9 @@
       bottom: 0;
       left: 0;
       right: 0;
+      @include rsa-font(header,small);
 
-      &:before {
-        @include rsa-font(header, small);
-        content: '\2630';
+      .rsa-icon {
         display: block;
         position: absolute;
         top: 0;
