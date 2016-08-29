@@ -419,7 +419,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> getUsernamesActiveSince(DateTime date) {
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
 		Criteria criteria = Criteria.where(User.lastActivityField).gte(date);
 		Query query = new Query(criteria);
 		query.fields().include(User.usernameField);

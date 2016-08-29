@@ -28,7 +28,7 @@ public interface UserService extends CachingService{
 	
 	public List<UserMachine> getUserMachines(String uid);
 
-	public List<User> getUsernamesActiveSince(DateTime date);
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
 		
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	

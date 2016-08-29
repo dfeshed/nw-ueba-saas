@@ -63,7 +63,7 @@ public interface UserRepositoryCustom {
 
 	public User getLastActivityAndLogUserNameByUserName(String userName);
 
-	public List<User> getUsernamesActiveSince(DateTime date);
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
 
 	@Deprecated public User getLastActivityByUserName(String eventId, String username);
 
