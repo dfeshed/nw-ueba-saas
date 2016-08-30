@@ -12,12 +12,10 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
             "Model builder data must be of type %s.", Map.class.getSimpleName());
     static final double EPSILON = Double.MIN_VALUE;
 
-    private double minThreshold;
-    private double minMaximalScore;
+	private SMARTScoreMappingModelBuilderConf config;
 
     public SMARTScoreMappingModelBuilder(SMARTScoreMappingModelBuilderConf config) {
-        minThreshold = config.getMinThreshold();
-        minMaximalScore = config.getMinMaximalScore();
+		this.config = config;
     }
 
     @Override
@@ -27,12 +25,11 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 		double threshold;
 		double maximalScore;
 		if (filterEmptyDays(dateToHighestScores).findAny().isPresent()) {
-			threshold = Math.max(minThreshold, calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
-			maximalScore = Math.max(minMaximalScore, calcMaximalScore(filterEmptyDays(dateToHighestScores)));
+			threshold = Math.max(config.getMinThreshold(), calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
+			maximalScore = Math.max(config.getMinMaximalScore(), calcMaximalScore(filterEmptyDays(dateToHighestScores)));
 		} else {
-			//TODO: get these values from the user (through the ASL)
-			threshold = 100;
-			maximalScore = 100;
+			threshold = config.getDefaultThreshold();
+			maximalScore = config.getDefaultMaximalScore();
 		}
 		if (threshold > maximalScore) {
 			maximalScore = threshold;
