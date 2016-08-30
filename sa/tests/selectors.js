@@ -177,7 +177,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'storylineIndicatorTypeElm': '.indicator_type',
       'categoryTagsDropdownIcon': '.rsa-content-accordion .rsa-icon-arrow-down-12',
       'addIcon': '.rsa-icon-add-circle-1',
-      'categoryTagsDropDownIcon': '.rsa-category-tags-panel .rsa-icon-arrow-right-12',
+      'categoryTagDropDownIcon': '.rsa-category-tags-panel .rsa-icon-arrow-right-12',
       'categoryListdropdownElm': '.rsa-content-tree',
       'categoryTagsElm': '.rsa-content-tree__tree-container h3',
       'categoryTagsElmDropdownIcon': '.rsa-content-tree__tree-container .rsa-icon',
