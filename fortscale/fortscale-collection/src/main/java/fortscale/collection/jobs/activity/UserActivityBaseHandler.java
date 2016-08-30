@@ -92,8 +92,6 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 			return;
 		}
 
-        Map<String, Double> additionalActivityHistogram = new HashMap<>();
-
         long currBucketStartTime = firstBucketStartTime;
         long currBucketEndTime = firstBucketEndTime;
 
@@ -103,7 +101,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                 logger.info("Skipping job process for bucket start time {} (already calculated)", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)));
             } else {
 				logger.info("Going to fetch from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
-
+				Map<String, Double> additionalActivityHistogram = new HashMap<>();
 				for (String dataSource : dataSources) {
 
 					List<String> userIds = dataSourceToUserIds.get(dataSource);
