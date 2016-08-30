@@ -35,7 +35,7 @@ public class SMARTScoreMappingModelBuilderConfTest {
 	public void shouldUseDefaults() {
 		SMARTScoreMappingModelBuilderConf model = new SMARTScoreMappingModelBuilderConf(null, null, 0D, 0D);
 
-		Assert.assertEquals(100, model.getDefaultThreshold(), 0.00001);
+		Assert.assertEquals(50, model.getDefaultThreshold(), 0.00001);
 		Assert.assertEquals(100, model.getDefaultMaximalScore(), 0.00001);
 		Assert.assertEquals("smart_score_mapping_model_builder", model.getFactoryName());
 	}

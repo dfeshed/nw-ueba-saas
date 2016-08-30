@@ -7,7 +7,7 @@ import org.springframework.util.Assert;
 
 public class SMARTScoreMappingModelBuilderConf implements IModelBuilderConf {
 	public static final String SMART_SCORE_MAPPING_MODEL_BUILDER = "smart_score_mapping_model_builder";
-	private static final double DEFAULT_THRESHOLD_DEFAULT_VALUE = 100;
+	private static final double DEFAULT_THRESHOLD_DEFAULT_VALUE = 50;
 	private static final double DEFAULT_MAXIMAL_SCORE_DEFAULT_VALUE = 100;
 
 	private double defaultThreshold;
