@@ -449,7 +449,6 @@ public class ProcessInfoServiceImpl implements ProcessInfoService {
         {
             maxProcessInstances=Long.parseLong(maxProcessInstancesStr);
         }
-        logger.warn("maxProcessInstances={}",maxProcessInstances);
     }
 
     /**

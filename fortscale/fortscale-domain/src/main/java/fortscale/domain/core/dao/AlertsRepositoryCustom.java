@@ -1,14 +1,12 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
 import fortscale.domain.rest.UserRestFilter;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.mongodb.core.query.Criteria;
 
 import java.util.List;
 import java.util.Map;
@@ -125,7 +123,7 @@ public interface AlertsRepositoryCustom {
 
     Set<Alert> getAlertsRelevantToUserScore(String username);
 
-	Set<Alert> getAlertsForUserByFeedback(String username, Set<String> feedbackSet);
+	List<Alert> getAlertsForUserByFeedback(String username, Set<String> feedbackSet);
 
 	void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag );
 

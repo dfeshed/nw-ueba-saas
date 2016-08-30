@@ -12,7 +12,6 @@ import fortscale.web.rest.entities.activity.UserActivityData;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class UserDetailsBean implements Serializable{
 	private static Logger logger = Logger.getLogger(UserDetailsBean.class);
@@ -29,7 +28,7 @@ public class UserDetailsBean implements Serializable{
 	private ADParser adUserParser;
 	private UserServiceFacade userServiceFacade;
 
-	private Set<Alert> alerts;
+	private List<Alert> alerts;
 	private List<UserActivityData.DeviceEntry> devices;
 
 	public UserDetailsBean(User user, User manager, List<User> directReports, UserServiceFacade userServiceFacade){
@@ -40,11 +39,11 @@ public class UserDetailsBean implements Serializable{
 		this.userServiceFacade = userServiceFacade;
 	}
 
-	public Set<Alert> getAlerts() {
+	public List<Alert> getAlerts() {
 		return alerts;
 	}
 
-	public void setAlerts(Set<Alert> alerts) {
+	public void setAlerts(List<Alert> alerts) {
 		this.alerts = alerts;
 	}
 

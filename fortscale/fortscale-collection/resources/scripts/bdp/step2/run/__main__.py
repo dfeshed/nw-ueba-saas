@@ -112,10 +112,8 @@ Usage examples:
 
 
 def validate_not_running_same_period_twice(arguments):
-    start = time_utils.get_epochtime(arguments.start)
     really_big_epochtime = time_utils.get_epochtime('29990101')
     if not validate_all_buckets_synced(host=arguments.host,
-                                       start_time_epoch=start,
                                        end_time_epoch=really_big_epochtime,
                                        use_start_time=True):
         print "there are already some aggregations with startTime greater/equal to the given start time " \
@@ -123,6 +121,7 @@ def validate_not_running_same_period_twice(arguments):
         sys.exit(1)
 
     mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
+    start = time_utils.get_epochtime(arguments.start)
     for collection_name in filter(lambda name: name.startswith('aggr_'), mongo.get_all_collection_names(mongo_db)):
         data = list(mongo_db[collection_name].find({
             'startTime': {
