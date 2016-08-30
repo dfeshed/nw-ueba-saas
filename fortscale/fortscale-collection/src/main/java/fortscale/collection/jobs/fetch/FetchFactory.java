@@ -21,6 +21,8 @@ import java.util.List;
 @DisallowConcurrentExecution
 public class FetchFactory extends FortscaleJob {
 
+	private static final String SIEM_ID_PARAM = "siem_id";
+
 	@Autowired
 	private LogRepositoryService logRepositoryService;
 	@Autowired
@@ -39,13 +41,22 @@ public class FetchFactory extends FortscaleJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
-		List<LogRepository> logRepositories = logRepositoryService.getLogRepositoriesFromDatabase();
-		if (CollectionUtils.isNotEmpty(logRepositories)) {
-			//TODO - currently only supports single log repository
-			configuredSIEM = logRepositories.get(0).getType();
+		LogRepository logRepository;
+		if (map.containsKey(SIEM_ID_PARAM)) {
+			logRepository = logRepositoryService.getLogRepositoryFromDatabase(jobDataMapExtension.
+					getJobDataMapStringValue(map, SIEM_ID_PARAM));
+			if (logRepository == null) {
+				throw new JobExecutionException("No log repository configuration found");
+			}
 		} else {
-			throw new JobExecutionException("No log repository configuration found");
+			List<LogRepository> logRepositories = logRepositoryService.getLogRepositoriesFromDatabase();
+			if (CollectionUtils.isNotEmpty(logRepositories)) {
+				logRepository = logRepositories.get(0);
+			} else {
+				throw new JobExecutionException("No log repository configuration found");
+			}
 		}
+		configuredSIEM = logRepository.getType();
 		SIEMType type;
 		try {
 			type = SIEMType.valueOf(configuredSIEM.toUpperCase());
@@ -56,8 +67,7 @@ public class FetchFactory extends FortscaleJob {
 			case SPLUNK: fetchJob = splunkFetch; break;
 			case QRADAR: fetchJob = qradarFetch; break;
 		}
-		//TODO - currently only supports single log repository
-		fetchJob.getJobParameters(map, jobDataMapExtension, logRepositories.get(0));
+		fetchJob.getJobParameters(map, jobDataMapExtension, logRepository);
 	}
 
 	@Override
