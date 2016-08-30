@@ -17,14 +17,14 @@ import java.util.stream.Collectors;
 public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 	private double quantile;
 	private int minQuantileComplementSize;
-	private Double minMaxValue;
+	private Double minAllowedDistFromMean;
 
-	public PriorBuilderMaxAllowedValue(double quantile, int minQuantileComplementSize, Double minMaxValue) {
+	public PriorBuilderMaxAllowedValue(double quantile, int minQuantileComplementSize, Double minAllowedDistFromMean) {
 		Assert.isTrue(quantile >= 0 && quantile <= 1);
 		Assert.isTrue(minQuantileComplementSize >= 0);
 		this.quantile = quantile;
 		this.minQuantileComplementSize = minQuantileComplementSize;
-		this.minMaxValue = minMaxValue;
+		this.minAllowedDistFromMean = minAllowedDistFromMean;
 	}
 
 	@Override
@@ -41,8 +41,8 @@ public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 				.get(quantileIndex)
 				.getMaxValue();
 
-		if (minMaxValue != null) {
-			maxValueOverModels = Math.max(maxValueOverModels, minMaxValue);
+		if (minAllowedDistFromMean != null) {
+			maxValueOverModels = Math.max(maxValueOverModels, mean + minAllowedDistFromMean);
 		}
 		// for normal distribution, getting a value that is at most two standard
  		// deviations from the mean has ~0.95 probability, so return std such that

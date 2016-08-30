@@ -14,7 +14,7 @@ public class GaussianPriorModelBuilderConfTest {
 		private Integer minNumOfSamplesToLearnFrom;
 		private Double quantile;
 		private Integer minQuantileComplementSize;
-		private Double minMaxValue;
+		private Double minAllowedDistFromMean;
 
 		public GaussianPriorModelBuilderConfBuilder setDistanceBetweenSegmentCenters(double distanceBetweenSegmentCenters) {
 			this.distanceBetweenSegmentCenters = distanceBetweenSegmentCenters;
@@ -56,8 +56,8 @@ public class GaussianPriorModelBuilderConfTest {
 			return this;
 		}
 
-		public GaussianPriorModelBuilderConfBuilder setMinMaxValue(Double minMaxValue) {
-			this.minMaxValue = minMaxValue;
+		public GaussianPriorModelBuilderConfBuilder setMinAllowedDistFromMean(Double minAllowedDistFromMean) {
+			this.minAllowedDistFromMean = minAllowedDistFromMean;
 			return this;
 		}
 
@@ -71,7 +71,7 @@ public class GaussianPriorModelBuilderConfTest {
 					minNumOfSamplesToLearnFrom,
 					quantile,
 					minQuantileComplementSize,
-					minMaxValue
+					minAllowedDistFromMean
 			);
 		}
 	}
@@ -156,11 +156,11 @@ public class GaussianPriorModelBuilderConfTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void shouldFailIfMinMaxValueIsNegative() {
+	public void shouldFailIfMinAllowedDistFromMeanIsNegative() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
-				.setMinMaxValue(-1.0)
+				.setMinAllowedDistFromMean(-1.0)
 				.build();
 	}
 
@@ -174,7 +174,7 @@ public class GaussianPriorModelBuilderConfTest {
 		int minNumOfSamplesToLearnFrom = 6;
 		double quantile = 0.9;
 		int minQuantileComplementSize = 7;
-		Double minMaxValue = 7.0;
+		Double minAllowedDistFromMean = 7.0;
 		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters)
 				.setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom)
@@ -184,7 +184,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setPadding(padding)
 				.setQuantile(quantile)
 				.setMinQuantileComplementSize(minQuantileComplementSize)
-				.setMinMaxValue(minMaxValue)
+				.setMinAllowedDistFromMean(minAllowedDistFromMean)
 				.build();
 
 		Assert.assertEquals(distanceBetweenSegmentCenters, conf.getDistanceBetweenSegmentCenters(), 0.00001);
@@ -195,7 +195,7 @@ public class GaussianPriorModelBuilderConfTest {
 		Assert.assertEquals(minNumOfSamplesToLearnFrom, conf.getMinNumOfSamplesToLearnFrom());
 		Assert.assertEquals(quantile, conf.getQuantile(), 0.00001);
 		Assert.assertEquals(minQuantileComplementSize, conf.getMinQuantileComplementSize());
-		Assert.assertEquals(minMaxValue, conf.getMinMaxValue(), 0.00001);
+		Assert.assertEquals(minAllowedDistFromMean, conf.getMinAllowedDistFromMean(), 0.00001);
 		Assert.assertEquals("gaussian_prior_model_builder", conf.getFactoryName());
 	}
 
@@ -212,6 +212,6 @@ public class GaussianPriorModelBuilderConfTest {
 		Assert.assertEquals(1, conf.getPadding(), 0.00001);
 		Assert.assertEquals(0.99, conf.getQuantile(), 0.00001);
 		Assert.assertEquals(30, conf.getMinQuantileComplementSize());
-		Assert.assertEquals(1, conf.getMinMaxValue(), 0.00001);
+		Assert.assertEquals(1, conf.getMinAllowedDistFromMean(), 0.00001);
 	}
 }

@@ -17,7 +17,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private static final double PADDING_DEFAULT_VALUE = 1;
 	private static final double QUANTILE_DEFAULT_VALUE = 0.99;
 	private static final int MIN_QUANTILE_COMPLEMENT_DEFAULT_VALUE = 30;
-	private static final double MIN_MAX_VALUE_DEFAULT_VALUE = 1;
+	private static final double MIN_ALLOWED_DIST_FROM_MEAN_DEFAULT_VALUE = 1;
 
 	private double distanceBetweenSegmentCenters;
 	private int numberOfNeighbours;
@@ -27,7 +27,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private int minNumOfSamplesToLearnFrom;
 	private double quantile;
 	private int minQuantileComplementSize;
-	private double minMaxValue;
+	private double minAllowedDistFromMean;
 
 	@JsonCreator
 	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentCenters") double distanceBetweenSegmentCenters,
@@ -38,7 +38,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
 										 @JsonProperty("quantile") Double quantile,
 										 @JsonProperty("minQuantileComplementSize") Integer minQuantileComplementSize,
-										 @JsonProperty("minMaxValue") Double minMaxValue) {
+										 @JsonProperty("minAllowedDistFromMean") Double minAllowedDistFromMean) {
 		setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters);
 		setNumberOfNeighbours(numberOfNeighbours);
 		setMaxRatioBetweenSegmentSizeToCenter(maxRatioBetweenSegmentSizeToCenter);
@@ -47,7 +47,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom);
 		setQuantile(quantile);
 		setMinQuantileComplementSize(minQuantileComplementSize);
-		setMinMaxValue(minMaxValue);
+		setMinAllowedDistFromMean(minAllowedDistFromMean);
 	}
 
 	@Override
@@ -113,12 +113,12 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.minQuantileComplementSize = minQuantileComplementSize;
 	}
 
-	private void setMinMaxValue(Double minMaxValue) {
-		if (minMaxValue == null) {
-			minMaxValue = MIN_MAX_VALUE_DEFAULT_VALUE;
+	private void setMinAllowedDistFromMean(Double minAllowedDistFromMean) {
+		if (minAllowedDistFromMean == null) {
+			minAllowedDistFromMean = MIN_ALLOWED_DIST_FROM_MEAN_DEFAULT_VALUE;
 		}
-		Assert.isTrue(minMaxValue >= 0, "minMaxValue can't be negative");
-		this.minMaxValue = minMaxValue;
+		Assert.isTrue(minAllowedDistFromMean >= 0, "minAllowedDistFromMean can't be negative");
+		this.minAllowedDistFromMean = minAllowedDistFromMean;
 	}
 
 	public double getDistanceBetweenSegmentCenters() {
@@ -153,7 +153,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		return minQuantileComplementSize;
 	}
 
-	public Double getMinMaxValue() {
-		return minMaxValue;
+	public Double getMinAllowedDistFromMean() {
+		return minAllowedDistFromMean;
 	}
 }

@@ -88,14 +88,14 @@ public class PriorBuilderMaxAllowedValueTest {
 	}
 
 	@Test
-	public void shouldUseMinimalMaxValue() {
+	public void shouldUseMinAllowedDistFromMean() {
 		double quantile = 0.9;
-		double meanOfReference = 0;
-		double minMaxValue = 3;
-		ContinuousDataModel model = new ContinuousDataModel().setParameters(0, 0, 0, 0);
-		Double prior = new PriorBuilderMaxAllowedValue(quantile, 0, minMaxValue)
-				.calcPrior(Collections.singletonList(model), meanOfReference);
+		double mean = 10;
+		double minAllowedDistFromMean = 1;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(1, mean, 0, mean);
+		Double prior = new PriorBuilderMaxAllowedValue(quantile, 0, minAllowedDistFromMean)
+				.calcPrior(Collections.singletonList(model), mean);
 
-		assertPrior(minMaxValue, meanOfReference, prior);
+		assertPrior(mean + minAllowedDistFromMean, mean, prior);
 	}
 }

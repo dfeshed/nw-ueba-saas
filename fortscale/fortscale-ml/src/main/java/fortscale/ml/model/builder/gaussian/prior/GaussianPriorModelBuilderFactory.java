@@ -26,7 +26,7 @@ public class GaussianPriorModelBuilderFactory extends AbstractServiceAutowiringF
 		PriorBuilderMaxAllowedValue priorBuilder = new PriorBuilderMaxAllowedValue(
 				config.getQuantile(),
 				config.getMinQuantileComplementSize(),
-				config.getMinMaxValue()
+				config.getMinAllowedDistFromMean()
 		);
 		return new GaussianPriorModelBuilder(
 				segmentCenters,
