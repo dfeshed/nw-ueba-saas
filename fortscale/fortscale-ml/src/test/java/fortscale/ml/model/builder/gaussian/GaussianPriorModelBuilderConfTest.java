@@ -80,13 +80,7 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfDistanceBetweenSegmentCentersIsZero() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(0)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(1)
-				.setQuantile(1)
-				.setMinMaxValue(null)
 				.build();
 	}
 
@@ -94,13 +88,8 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfNumberOfNeighboursIsZero() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(0)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(1)
-				.setQuantile(1)
-				.setMinMaxValue(null)
+				.setNumberOfNeighbours(0)
 				.build();
 	}
 
@@ -108,13 +97,8 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfMaxRatioBetweenSegmentSizeToCenterIsZero() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(0)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(1)
-				.setQuantile(1)
-				.setMinMaxValue(null)
+				.setMaxRatioBetweenSegmentSizeToCenter(0)
 				.build();
 	}
 
@@ -122,13 +106,8 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfMaxSegmentWidthToNotDiscardBecauseOfBadRatioIsNegative() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(-1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(1)
-				.setQuantile(1)
-				.setMinMaxValue(null)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(-1)
 				.build();
 	}
 
@@ -136,13 +115,8 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfPaddingIsNegative() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(-1)
 				.setMinNumOfSamplesToLearnFrom(1)
-				.setQuantile(1)
-				.setMinMaxValue(null)
+				.setPadding(-1)
 				.build();
 	}
 
@@ -150,13 +124,7 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfMinNumOfSamplesToLearnFromIsNegative() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(-1)
-				.setQuantile(1)
-				.setMinMaxValue(null)
 				.build();
 	}
 
@@ -164,13 +132,8 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfQuantileIsNegative() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setQuantile(-1)
-				.setMinMaxValue(null)
 				.build();
 	}
 
@@ -178,13 +141,8 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfQuantileIsGreaterThanOne() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setQuantile(1.1)
-				.setMinMaxValue(null)
 				.build();
 	}
 
@@ -201,12 +159,7 @@ public class GaussianPriorModelBuilderConfTest {
 	public void shouldFailIfMinMaxValueIsNegative() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
-				.setNumberOfNeighbours(1)
-				.setMaxRatioBetweenSegmentSizeToCenter(1)
-				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(1)
-				.setPadding(1)
 				.setMinNumOfSamplesToLearnFrom(1)
-				.setQuantile(1)
 				.setMinMaxValue(-1.0)
 				.build();
 	}
@@ -224,11 +177,11 @@ public class GaussianPriorModelBuilderConfTest {
 		Double minMaxValue = 7.0;
 		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters)
+				.setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom)
 				.setNumberOfNeighbours(numberOfNeighbours)
 				.setMaxRatioBetweenSegmentSizeToCenter(maxRatioBetweenSegmentSizeToCenter)
 				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(maxSegmentWidthToNotDiscardBecauseOfBadRatio)
 				.setPadding(padding)
-				.setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom)
 				.setQuantile(quantile)
 				.setMinQuantileComplementSize(minQuantileComplementSize)
 				.setMinMaxValue(minMaxValue)
