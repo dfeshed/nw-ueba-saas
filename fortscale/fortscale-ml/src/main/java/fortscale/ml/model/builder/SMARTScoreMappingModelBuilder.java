@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 public class SMARTScoreMappingModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", Map.class.getSimpleName());
-    static final double EPSILON = 0.00000001;
+    static final double EPSILON = Double.MIN_VALUE;
 
     private double minThreshold;
     private double minMaximalScore;
