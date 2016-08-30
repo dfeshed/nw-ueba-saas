@@ -205,8 +205,8 @@ public class AlertsServiceImpl implements AlertsService {
     }
 
     @Override
-    public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
-        return  alertsRepository.getDistinctUserNamesFromAlertsRelevantToUserScore();
+    public Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore(){
+        return  alertsRepository.getDistinctUserIdsFromAlertsRelevantToUserScore();
     }
 
     @Override
