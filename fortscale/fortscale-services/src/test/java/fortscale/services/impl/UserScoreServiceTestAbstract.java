@@ -4,8 +4,8 @@ import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.AlertsService;
+import fortscale.services.UserService;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
-import junitparams.JUnitParamsRunner;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -39,13 +39,16 @@ public abstract  class UserScoreServiceTestAbstract {
     public static final double MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT = (double) 95;
 
     public static final int DAYS_RELEVANT_FOR_UNRESOLVED = 90;
-    public static final String USER_NAME = "user123";
+    public static final String USER_ID = "user123";
 
     @Mock
     public AlertsService alertsService;
 
     @Mock
     public UserRepository userRepository;
+
+	@Mock
+	public UserService userService;
 
     @Mock
     public AlertsRepository alertsRepository;
