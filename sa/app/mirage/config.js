@@ -47,10 +47,8 @@ export default function() {
 
   // initialize the list of all apis that doesn't need mirage
   passthrough(this);
-
-  this.namespace = '/api';
-
   login(this);
+  this.namespace = '/api';
   users(this);
   info(this);
 
