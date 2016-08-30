@@ -65,13 +65,5 @@
         {{t 'incident.details.updatedOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated' timestamp=incident.lastUpdated}}{{rsa-content-datetime class='rsa-incident-detail-header__last-updated_time-ago' timestamp=incident.lastUpdated asTimeAgo=true}}
       </footer>
     </article>
-    <aside class="rsa-incident-detail-header__buttons">
-      {{#rsa-form-button style="danger" isFullWidth=true isDisabled=incidentIsClosed class='rsa-incident-detail-header__buttons__close-incident' click=(action 'closeIncidentBtn')}}
-        {{t 'incident.details.closeIncident'}}
-      {{/rsa-form-button}}
-      {{#rsa-form-button dropdown='standard' isFullWidth=true class='rsa-incident-detail-header__buttons__others'}}
-        {{t 'incident.details.escalateIncident'}}
-      {{/rsa-form-button}}
-    </aside>
   </vbox>
 </hbox>

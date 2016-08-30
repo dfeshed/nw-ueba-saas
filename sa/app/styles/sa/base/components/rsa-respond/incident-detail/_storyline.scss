@@ -13,6 +13,9 @@
   }
 }
 .rsa-response-storyline {
+    .main {
+      padding-right: 0;
+    }
     .journalAction{
       visibility: hidden;
       margin-right: rsa-whitespace(least);

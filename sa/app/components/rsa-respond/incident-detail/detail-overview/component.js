@@ -6,7 +6,7 @@ const {
 } = Ember;
 
 export default Component.extend({
-  classNames: 'rsa-respond-detail-overview',
+  classNames: ['rsa-respond-detail-overview', 'spacer'],
 
   model: null,
 

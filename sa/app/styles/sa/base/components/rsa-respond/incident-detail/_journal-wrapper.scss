@@ -1,12 +1,8 @@
 .rsa-journal-wrapper {
-  border-left: 1px solid rsa-color(gray);
-  border-right: 1px solid rsa-color(gray);
-
   &__journal-sort {
     padding: rsa-whitespace(less);
     border-bottom: 1px solid rsa-color(gray);
     color: rsa-color(gray, lighter);
-    background-color: rsa-color(gray, darker);
     display: inline-block;
     box-sizing: border-box;
     width: 100%;

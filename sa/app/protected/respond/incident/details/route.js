@@ -2,6 +2,7 @@ import Ember from 'ember';
 
 const {
   Route,
+  Logger,
   inject: {
     service
   }
@@ -13,8 +14,8 @@ export default Route.extend({
   activate() {
     this.set('layoutService.journalPanel', 'hidden');
     this.set('layoutService.main', 'panelC');
-    this.set('layoutService.panelA', 'quarter');
-    this.set('layoutService.panelB', 'quarter');
+    this.set('layoutService.panelA', 'hidden');
+    this.set('layoutService.panelB', 'half');
     this.set('layoutService.panelC', 'half');
   },
 
@@ -26,8 +27,39 @@ export default Route.extend({
     this.set('layoutService.panelC', 'hidden');
   },
 
-  model() {
-    return {};
-  }
+  renderTemplate() {
+    this.render({ outlet: 'indicator' });
+  },
 
+  // default sort
+  sort: [{ field: 'risk_score', descending: true }],
+
+  model(params, transition) {
+    let alerts = [];
+    let sort = this.get('sort');
+
+    this.request.streamRequest({
+      method: 'stream',
+      modelName: 'alerts',
+      query: {
+        filter: [{ field: 'incidentId', value: transition.params['protected.respond.incident'].incident_id }],
+        sort
+      },
+      onResponse: ({ data }) => {
+        alerts.pushObjects(data);
+      },
+      onError(response) {
+        Logger.error('Error processing notify call for alerts model', response);
+      }
+    });
+    return alerts;
+  },
+
+  actions: {
+    sortAction(field, desc) {
+      // set the new sort field and refresh the model
+      this.set('sort', [{ field, desc: (desc === true) }]);
+      this.refresh();
+    }
+  }
 });

@@ -64,7 +64,7 @@ export default Ember$.extend({}, BaseSelectors, {
           'incTitleName': 'li[class=rsa-incident-tile-name]',
           'priorityValueElm': 'div[class^=rsa-incident-tile-priority-selector] div[class=prompt] div',
           'assigneeValueElm': 'div[class^=rsa-incident-tile-assignee-selector] div[class=prompt] div',
-          'alertCountLbl': 'label[class=rsa-incident-tile-alert-count]',
+          'alertsCountLbl': '.rsa-incident-tile-alert-count',
           'eventCountLbl': 'label[class=rsa-incident-tile-event-count]',
           'incidentTileSourcesElm': 'div[class=rsa-incident-tile-sources] div',
           'createdDateTimeElm': 'span[class=rsa-incident-tile-created-date] span[class=datetime]',
@@ -73,6 +73,20 @@ export default Ember$.extend({}, BaseSelectors, {
           'prioritySelectOption': '.rsa-incident-tile-priority-selector select option',
           'statusSelectOption': '.rsa-incident-tile-status-selector select option'
         }
+      },
+      'listView': {
+        'listViewIcon': '.rsa-respond-index-header__list-btn .rsa-icon-view-headline',
+        'gridViewIcon': '.rsa-respond-index-header__tile-btn .rsa-icon-view-module-1',
+        'incidentCountLbl': '.rsa-respond-index-header__label',
+        'riskScoreLbl': '.js-header-cell-rsa-respond-list-riskscore',
+        'incidentIdLbl': '.js-header-cell-incident-id',
+        'incidentNameLbl': '.js-header-cell-rsa-respond-list-name',
+        'dateCreatedLbl': '.js-header-cell-rsa-respond-list-created',
+        'assigneeLbl': '.js-header-cell-rsa-respond-list-assignee',
+        'statusLbl': '.js-header-cell-rsa-respond-list-status',
+        'alertCountLbl': '.js-header-cell-rsa-respond-list-alertCount',
+        'sourcesLbl': '.js-header-cell-rsa-respond-list-sources',
+        'eventsLbl': '.js-header-cell-rsa-respond-list-events'
       },
       'list': {
         'table': 'div[class=rsa-respond-list]',
@@ -177,7 +191,14 @@ export default Ember$.extend({}, BaseSelectors, {
       'statusDropDown': '.rsa-incident-detail-header__status .rsa-icon',
       'statusSelectOption': '.rsa-incident-detail-header__status select option',
       'priorityDropDown': '.rsa-incident-detail-header__priority .rsa-icon',
-      'prioritySelectOption': '.rsa-incident-detail-header__priority select option'
+      'prioritySelectOption': '.rsa-incident-detail-header__priority select option',
+      'alertsGridIcon': '.rsa-response-storyline__main_icon .rsa-icon-arrow-right-12',
+      'riskScoreElm': '.rsa-riskscore .score',
+      'dateTime': '.rsa-respond-detail-grid .rsa-createddate .datetime',
+      'eventsElm': '.rsa-alerts-events',
+      'domainElm': '.rsa-domain',
+      'alrtsHostElm': '.rsa-alerts-host',
+      'alrtSourceElm': '.rsa-alert-source .rsa-content-label'
     }
   }
 });

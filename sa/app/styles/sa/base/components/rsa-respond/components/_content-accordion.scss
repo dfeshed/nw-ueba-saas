@@ -1,0 +1,11 @@
+.rsa-respond-detail-layout-manager{
+  .rsa-content-accordion {
+    h3 {
+      background: $contentAccordionHeaderBackgroundColor;
+
+      &:hover {
+        background: $contentAccordionHeaderHoverBackgroundColor;
+      }
+    }
+  }
+}

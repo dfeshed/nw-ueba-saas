@@ -2,7 +2,7 @@
   color: rsa-color(white);
   position: relative;
   border-bottom: solid thin rsa-color(white, null, $rsa-transparent);
-  background-color: rsa-color(black, null, $rsa-translucent);
+  background-color: rsa-color(black, null, $rsa-nearly-opaque);
 
   &__score {
     padding: 0;
@@ -103,21 +103,6 @@
     }
   }
 
-  &__buttons {
-    flex-grow: 0;
-    min-width: 11rem;
-
-    &__close-incident {
-      @include rsa-font(body, small);
-      display: block;
-    }
-
-    &__others {
-      @include rsa-font(body, small);
-      display: block;
-      margin-top: rsa-whitespace(less);
-    }
-  }
 }
 
 .rsa-incident-detail-header__details__body {

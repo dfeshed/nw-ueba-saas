@@ -140,6 +140,16 @@ export default $.extend({}, BaseTranslations, {
       actions: 'ja_Incident Actions',
       closeIncident: 'ja_Close Incident',
       escalateIncident: 'ja_Escalate Incident',
+      alertsGrid: {
+        title: 'ja_Alerts List ({{count}})',
+        severity: 'ja_Severity',
+        dateCreated: 'ja_Date Created',
+        name: 'ja_Name',
+        events: 'ja_Events',
+        host: 'ja_Host',
+        domain: 'ja_Domain',
+        source: 'ja_Source'
+      },
       storyline: {
         header: 'ja-Storyline {{startDateTime}} to {{endDateTime}}',
         cAndc: 'ja-Command & Control'

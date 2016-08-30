@@ -1,5 +1,11 @@
-<vbox class="rsa-response-storyline">
-  <hbox>
+{{#rsa-content-section-header}}
+  Storyline
+  {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}}
+  to
+  {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
+{{/rsa-content-section-header}}
+<vbox class='rsa-response-storyline'>
+  <hbox fit>
     <vbox xs='1' class='rsa-response-storyline__timeSection'>
       <div class='rsa-response-storyline__time'>
         <hbox fit>
@@ -26,7 +32,7 @@
         {{/unless}}
       </div>
     </vbox>
-    <vbox xs='11'>
+    <vbox xs='11' class='main'>
       <div>
         <hbox class='rsa-response-storyline__main-row'>
           <vbox class='rsa-response-storyline__main' xs='10'>

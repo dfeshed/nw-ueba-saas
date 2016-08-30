@@ -1,3 +1,7 @@
+{{#rsa-content-section-header}}
+  <h1>{{t 'incident.details.overview.title'}}</h1>
+{{/rsa-content-section-header}}
+
 {{#rsa-content-accordion class='rsa-respond-detail-overview__accordion' label=(t 'incident.details.overview.about')}}
   {{rsa-form-textarea class='js-respond-detail-overview-textArea' focusOut=(action 'saveSummary') value=incidentSummary}}
 {{/rsa-content-accordion}}

@@ -14,6 +14,7 @@ const {
 export default Component.extend({
   layoutService: service('layout'),
 
+  classNames: 'spacer',
   model: null,
 
   IsCandC: computed.notEmpty('alerts.firstObject.alert.events.firstObject.enrichment.command_control'),

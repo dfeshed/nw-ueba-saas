@@ -15,6 +15,7 @@ import connect from 'sa/mirage/sockets/routes/connect';
 import disconnect from 'sa/mirage/sockets/routes/disconnect';
 import test from 'sa/mirage/sockets/routes/test';
 import incidents from 'sa/mirage/sockets/routes/incidents';
+import alerts from 'sa/mirage/sockets/routes/alerts';
 import coreServices from 'sa/mirage/sockets/routes/core-services';
 import coreEvents from 'sa/mirage/sockets/routes/core-events';
 import coreEventCounts from 'sa/mirage/sockets/routes/core-event-counts';
@@ -62,6 +63,7 @@ export default function() {
     disconnect(server);
     test(server);
     incidents(server);
+    alerts(server);
     coreServices(server);
     coreEvents(server);
     coreEventCounts(server);

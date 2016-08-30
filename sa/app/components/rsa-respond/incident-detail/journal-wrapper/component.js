@@ -10,8 +10,7 @@ const {
   } = Ember;
 
 export default Component.extend({
-  tagName: 'div',
-  classNames: 'rsa-journal-wrapper',
+  classNames: ['rsa-journal-wrapper', 'spacer'],
 
   session: service(),
 

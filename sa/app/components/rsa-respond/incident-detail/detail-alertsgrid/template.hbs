@@ -1,0 +1,43 @@
+{{#rsa-content-section-header}}
+  <h1>{{t 'incident.details.alertsGrid.title' count=model.length}}</h1>
+{{/rsa-content-section-header}}
+{{#rsa-data-table lazy=true onRowClick=(route-action "gotoIncidentDetail") items=model columnsConfig=alertsListConfig}}
+  {{#rsa-data-table/header as |column|}}
+    <span class="title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">
+      <span class="js-move-handle js-header-cell-{{column.class}}">{{if column.title (t column.title) column.field}}</span>
+    </span>
+    {{#unless column.disableSort}}
+      <span class="js-header-cell-sort-{{column.class}}">
+        <button class={{unless (is-equal currentSort column.field) "hideSort expand" "expand"}} {{action 'sort' column (if column.isDescending 'asc' 'desc')  on='click'}}>
+          {{rsa-icon size="small" name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
+        </button>
+      </span>
+    {{/unless}}
+  {{/rsa-data-table/header}}
+  {{#rsa-data-table/body as |item index column|}}
+    {{#rsa-data-table/body-cell item=item column=column index=index}}
+      <div class="{{column.class}}">
+        {{#if column.componentClass}}
+          {{#if (is-equal column.field 'alert.risk_score')}}
+            {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column
+             score=(get item column.field) isInline=true style=(call-method this 'badgeStyle' (get item column.field))}}
+          {{else}}
+            {{#if (is-equal column.dataType 'date-time')}}
+              {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column  timestamp=(get item column.field)}}
+            {{else}}
+              {{#if (is-equal column.dataType 'arrow-image')}}
+                {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column  size="smaller" name="arrow-right-7" class="direction"}}
+              {{/if}}
+            {{/if}}
+          {{/if}}
+        {{else}}
+          {{#if (is-equal column.field 'alert.source')}}
+            {{rsa-content-label label=(call-method this 'sourceShortName' (get item column.field))}}
+          {{else}}
+            {{get item column.field}}
+          {{/if}}
+        {{/if}}
+      </div>
+    {{/rsa-data-table/body-cell}}
+  {{/rsa-data-table/body}}
+{{/rsa-data-table}}

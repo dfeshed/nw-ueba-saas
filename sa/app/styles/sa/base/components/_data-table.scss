@@ -32,6 +32,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-header-row {
     @include rsa-font(header, small);
+    color: rsa-color(white);
   }
 
   &-body-row {
@@ -40,6 +41,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     min-width: 100%;
     @include rsa-font(light, small);
     border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+    color: rsa-color(white);
     padding: rsa-whitespace(least) 0;
   }
 
@@ -102,6 +104,15 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     .rsa-data-table-header-cell-resizer.left {
       display: none;
     }
+  }
+  &-header-cell .hideSort{
+    visibility: hidden;
+  }
+  &-header-cell:hover .hideSort{
+    visibility: visible;
+  }
+  button.expand {
+    padding-left: rsa-whitespace(less);
   }
 
   /* Color choices. */

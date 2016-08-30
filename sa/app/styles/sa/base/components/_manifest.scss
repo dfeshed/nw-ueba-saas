@@ -15,13 +15,5 @@
 @import 'investigate-meta-keys-panel';
 @import 'investigate-meta-values-panel';
 @import 'investigate-query-bar';
-@import "journal-entry";
-@import "journal-wrapper";
 @import 'progress-bar';
-
-@import 'respond-header';
-@import 'respond-storyline';
-@import 'incident-list.scss';
-@import 'respond-detail-overview';
-@import 'incident-detail-header';
-@import 'incident-tile';
+@import 'rsa-respond/manifest';

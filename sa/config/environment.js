@@ -77,6 +77,14 @@ module.exports = function(environment) {
           requestDestination: '/ws/response/categories'
         }
       },
+      alerts: {
+        socketUrl: '/response/socket',
+        stream: {
+          defaultStreamLimit: 1000,
+          subscriptionDestination: '/user/queue/alerts',
+          requestDestination: '/ws/response/alerts'
+        }
+      },
       'core-service': {
         socketUrl: '/investigate/socket',
         findAll: {
