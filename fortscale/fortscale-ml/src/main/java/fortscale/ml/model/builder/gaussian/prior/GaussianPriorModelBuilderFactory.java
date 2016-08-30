@@ -23,11 +23,15 @@ public class GaussianPriorModelBuilderFactory extends AbstractServiceAutowiringF
 				config.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(),
 				config.getPadding()
 		);
-		PriorBuilderMaxAllowedValue gaussianPrior = new PriorBuilderMaxAllowedValue(config.getQuantile(), config.getMinMaxValue());
+		PriorBuilderMaxAllowedValue priorBuilder = new PriorBuilderMaxAllowedValue(
+				config.getQuantile(),
+				config.getMinQuantileComplementSize(),
+				config.getMinMaxValue()
+		);
 		return new GaussianPriorModelBuilder(
 				segmentCenters,
 				segmentor,
-				gaussianPrior,
+				priorBuilder,
 				config.getMinNumOfSamplesToLearnFrom()
 		);
 	}

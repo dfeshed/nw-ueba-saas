@@ -16,11 +16,14 @@ import java.util.stream.Collectors;
  */
 public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 	private double quantile;
+	private int minQuantileComplementSize;
 	private Double minMaxValue;
 
-	public PriorBuilderMaxAllowedValue(double quantile, Double minMaxValue) {
+	public PriorBuilderMaxAllowedValue(double quantile, int minQuantileComplementSize, Double minMaxValue) {
 		Assert.isTrue(quantile >= 0 && quantile <= 1);
+		Assert.isTrue(minQuantileComplementSize >= 0);
 		this.quantile = quantile;
+		this.minQuantileComplementSize = minQuantileComplementSize;
 		this.minMaxValue = minMaxValue;
 	}
 
@@ -30,10 +33,12 @@ public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 			return null;
 		}
 
+		int quantileIndex = Math.min(Math.max(0, models.size() - 1 - minQuantileComplementSize),
+				(int) Math.floor((models.size() - 1) * this.quantile));
 		double maxValueOverModels = models.stream()
 				.sorted(Comparator.comparing(ContinuousDataModel::getMaxValue))
 				.collect(Collectors.toList())
-				.get((int) Math.floor((models.size() - 1) * quantile))
+				.get(quantileIndex)
 				.getMaxValue();
 
 		if (minMaxValue != null) {

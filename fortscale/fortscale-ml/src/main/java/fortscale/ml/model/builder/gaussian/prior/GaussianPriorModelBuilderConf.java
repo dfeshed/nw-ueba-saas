@@ -16,6 +16,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private static final double MAX_SEGMENT_WIDTH_TO_NOT_DISCARD_BECAUSE_OF_BAD_RATIO_DEFAULT_VALUE = 10;
 	private static final double PADDING_DEFAULT_VALUE = 1;
 	private static final double QUANTILE_DEFAULT_VALUE = 0.99;
+	private static final int MIN_QUANTILE_COMPLEMENT_DEFAULT_VALUE = 30;
 	private static final double MIN_MAX_VALUE_DEFAULT_VALUE = 1;
 
 	private double distanceBetweenSegmentCenters;
@@ -25,6 +26,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	private double padding;
 	private int minNumOfSamplesToLearnFrom;
 	private double quantile;
+	private int minQuantileComplementSize;
 	private double minMaxValue;
 
 	@JsonCreator
@@ -35,6 +37,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 										 @JsonProperty("padding") Double padding,
 										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
 										 @JsonProperty("quantile") Double quantile,
+										 @JsonProperty("minQuantileComplementSize") Integer minQuantileComplementSize,
 										 @JsonProperty("minMaxValue") Double minMaxValue) {
 		setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters);
 		setNumberOfNeighbours(numberOfNeighbours);
@@ -43,6 +46,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		setPadding(padding);
 		setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom);
 		setQuantile(quantile);
+		setMinQuantileComplementSize(minQuantileComplementSize);
 		setMinMaxValue(minMaxValue);
 	}
 
@@ -101,6 +105,14 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.quantile = quantile;
 	}
 
+	private void setMinQuantileComplementSize(Integer minQuantileComplementSize) {
+		if (minQuantileComplementSize == null) {
+			minQuantileComplementSize = MIN_QUANTILE_COMPLEMENT_DEFAULT_VALUE;
+		}
+		Assert.isTrue(minQuantileComplementSize >= 0, "minQuantileComplementSize must be non-negative.");
+		this.minQuantileComplementSize = minQuantileComplementSize;
+	}
+
 	private void setMinMaxValue(Double minMaxValue) {
 		if (minMaxValue == null) {
 			minMaxValue = MIN_MAX_VALUE_DEFAULT_VALUE;
@@ -135,6 +147,10 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 
 	public double getQuantile() {
 		return quantile;
+	}
+
+	public int getMinQuantileComplementSize() {
+		return minQuantileComplementSize;
 	}
 
 	public Double getMinMaxValue() {

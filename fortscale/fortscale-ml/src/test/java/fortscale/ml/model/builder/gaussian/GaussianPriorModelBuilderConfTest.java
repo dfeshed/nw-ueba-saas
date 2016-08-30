@@ -13,6 +13,7 @@ public class GaussianPriorModelBuilderConfTest {
 		private Double padding;
 		private Integer minNumOfSamplesToLearnFrom;
 		private Double quantile;
+		private Integer minQuantileComplementSize;
 		private Double minMaxValue;
 
 		public GaussianPriorModelBuilderConfBuilder setDistanceBetweenSegmentCenters(double distanceBetweenSegmentCenters) {
@@ -50,6 +51,11 @@ public class GaussianPriorModelBuilderConfTest {
 			return this;
 		}
 
+		public GaussianPriorModelBuilderConfBuilder setMinQuantileComplementSize(int minQuantileComplementSize) {
+			this.minQuantileComplementSize = minQuantileComplementSize;
+			return this;
+		}
+
 		public GaussianPriorModelBuilderConfBuilder setMinMaxValue(Double minMaxValue) {
 			this.minMaxValue = minMaxValue;
 			return this;
@@ -64,6 +70,7 @@ public class GaussianPriorModelBuilderConfTest {
 					padding,
 					minNumOfSamplesToLearnFrom,
 					quantile,
+					minQuantileComplementSize,
 					minMaxValue
 			);
 		}
@@ -182,6 +189,15 @@ public class GaussianPriorModelBuilderConfTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailIfMinQuantileComplementSizeIsNegative() {
+		new GaussianPriorModelBuilderConfBuilder()
+				.setDistanceBetweenSegmentCenters(1)
+				.setMinNumOfSamplesToLearnFrom(1)
+				.setMinQuantileComplementSize(-1)
+				.build();
+	}
+
+	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailIfMinMaxValueIsNegative() {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
@@ -204,6 +220,7 @@ public class GaussianPriorModelBuilderConfTest {
 		int padding = 5;
 		int minNumOfSamplesToLearnFrom = 6;
 		double quantile = 0.9;
+		int minQuantileComplementSize = 7;
 		Double minMaxValue = 7.0;
 		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(distanceBetweenSegmentCenters)
@@ -213,6 +230,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setPadding(padding)
 				.setMinNumOfSamplesToLearnFrom(minNumOfSamplesToLearnFrom)
 				.setQuantile(quantile)
+				.setMinQuantileComplementSize(minQuantileComplementSize)
 				.setMinMaxValue(minMaxValue)
 				.build();
 
@@ -223,6 +241,7 @@ public class GaussianPriorModelBuilderConfTest {
 		Assert.assertEquals(padding, conf.getPadding(), 0.00001);
 		Assert.assertEquals(minNumOfSamplesToLearnFrom, conf.getMinNumOfSamplesToLearnFrom());
 		Assert.assertEquals(quantile, conf.getQuantile(), 0.00001);
+		Assert.assertEquals(minQuantileComplementSize, conf.getMinQuantileComplementSize());
 		Assert.assertEquals(minMaxValue, conf.getMinMaxValue(), 0.00001);
 		Assert.assertEquals("gaussian_prior_model_builder", conf.getFactoryName());
 	}
@@ -239,6 +258,7 @@ public class GaussianPriorModelBuilderConfTest {
 		Assert.assertEquals(10, conf.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(), 0.00001);
 		Assert.assertEquals(1, conf.getPadding(), 0.00001);
 		Assert.assertEquals(0.99, conf.getQuantile(), 0.00001);
+		Assert.assertEquals(30, conf.getMinQuantileComplementSize());
 		Assert.assertEquals(1, conf.getMinMaxValue(), 0.00001);
 	}
 }

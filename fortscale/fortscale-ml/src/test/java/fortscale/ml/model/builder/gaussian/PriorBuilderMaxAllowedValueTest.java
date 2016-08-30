@@ -17,17 +17,22 @@ public class PriorBuilderMaxAllowedValueTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenNegativeQuantile() {
-		new PriorBuilderMaxAllowedValue(-1, null);
+		new PriorBuilderMaxAllowedValue(-1, 0, null);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void shouldFailGivenQuantileBiggerThanOne() {
-		new PriorBuilderMaxAllowedValue(1.1, null);
+		new PriorBuilderMaxAllowedValue(1.1, 0, null);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void shouldFailGivenNegativeMinQuantileComplementSize() {
+		new PriorBuilderMaxAllowedValue(0, -1, null);
 	}
 
 	@Test
 	public void shouldReturnNullGivenNoModels() {
-		Double prior = new PriorBuilderMaxAllowedValue(0.9, null).calcPrior(Collections.emptyList(), 0);
+		Double prior = new PriorBuilderMaxAllowedValue(0.9, 0, null).calcPrior(Collections.emptyList(), 0);
 
 		Assert.assertNull(prior);
 	}
@@ -37,7 +42,7 @@ public class PriorBuilderMaxAllowedValueTest {
 		double maxValue = 12;
 		double meanOfReference = 8;
 		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, 10, 0.1, maxValue);
-		Double prior = new PriorBuilderMaxAllowedValue(0.9, null).calcPrior(Collections.singletonList(model), meanOfReference);
+		Double prior = new PriorBuilderMaxAllowedValue(0.9, 0, null).calcPrior(Collections.singletonList(model), meanOfReference);
 
 		assertPrior(maxValue, meanOfReference, prior);
 	}
@@ -49,10 +54,37 @@ public class PriorBuilderMaxAllowedValueTest {
 		List<ContinuousDataModel> models = IntStream.range(0, 100)
 				.mapToObj(maxValue -> new ContinuousDataModel().setParameters(10, 10, 0.1, maxValue))
 				.collect(Collectors.toList());
-		Double prior = new PriorBuilderMaxAllowedValue(quantile, null).calcPrior(models, meanOfReference);
+		Double prior = new PriorBuilderMaxAllowedValue(quantile, 0, null).calcPrior(models, meanOfReference);
 
 		double maxValueOfQuantile = models.get((int) ((models.size() - 1) * quantile)).getMaxValue();
 		assertPrior(maxValueOfQuantile, meanOfReference, prior);
+	}
+
+	@Test
+	public void shouldUseMinQuantileComplementSize() {
+		double quantile = 1;
+		int minQuantileComplementSize = 50;
+		double meanOfReference = 8;
+		List<ContinuousDataModel> models = IntStream.range(0, 100)
+				.mapToObj(maxValue -> new ContinuousDataModel().setParameters(10, 10, 0.1, maxValue))
+				.collect(Collectors.toList());
+		Double prior = new PriorBuilderMaxAllowedValue(quantile, minQuantileComplementSize, null)
+				.calcPrior(models, meanOfReference);
+
+		double maxValueOfQuantileToUse = models.get(models.size() - 1 - minQuantileComplementSize).getMaxValue();
+		assertPrior(maxValueOfQuantileToUse, meanOfReference, prior);
+	}
+
+	@Test
+	public void shouldUseMinQuantileComplementSizeUnlessNotEnoughModels() {
+		double quantile = 1;
+		int minQuantileComplementSize = 50;
+		double meanOfReference = 8;
+		ContinuousDataModel model = new ContinuousDataModel().setParameters(10, 10, 0.1, 11);
+		Double prior = new PriorBuilderMaxAllowedValue(quantile, minQuantileComplementSize, null)
+				.calcPrior(Collections.singletonList(model), meanOfReference);
+
+		assertPrior(model.getMaxValue(), meanOfReference, prior);
 	}
 
 	@Test
@@ -61,7 +93,8 @@ public class PriorBuilderMaxAllowedValueTest {
 		double meanOfReference = 0;
 		double minMaxValue = 3;
 		ContinuousDataModel model = new ContinuousDataModel().setParameters(0, 0, 0, 0);
-		Double prior = new PriorBuilderMaxAllowedValue(quantile, minMaxValue).calcPrior(Collections.singletonList(model), meanOfReference);
+		Double prior = new PriorBuilderMaxAllowedValue(quantile, 0, minMaxValue)
+				.calcPrior(Collections.singletonList(model), meanOfReference);
 
 		assertPrior(minMaxValue, meanOfReference, prior);
 	}
