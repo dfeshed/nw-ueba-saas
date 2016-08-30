@@ -24,12 +24,20 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
     public SMARTScoreMappingModel build(Object modelBuilderData) {
         Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
         SMARTScoreMappingModel model = new SMARTScoreMappingModel();
-        double threshold = Math.max(minThreshold, calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
-        double maximalScore = Math.max(minMaximalScore, calcMaximalScore(filterEmptyDays(dateToHighestScores)));
-        if (threshold > maximalScore) {
-            maximalScore = threshold;
-        }
-        model.init(threshold, maximalScore);
+		double threshold;
+		double maximalScore;
+		if (filterEmptyDays(dateToHighestScores).findAny().isPresent()) {
+			threshold = Math.max(minThreshold, calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
+			maximalScore = Math.max(minMaximalScore, calcMaximalScore(filterEmptyDays(dateToHighestScores)));
+		} else {
+			//TODO: get these values from the user (through the ASL)
+			threshold = 100;
+			maximalScore = 100;
+		}
+		if (threshold > maximalScore) {
+			maximalScore = threshold;
+		}
+		model.init(threshold, maximalScore);
         return model;
     }
 

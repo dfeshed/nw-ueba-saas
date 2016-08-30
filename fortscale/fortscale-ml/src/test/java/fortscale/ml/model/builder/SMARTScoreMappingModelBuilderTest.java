@@ -66,10 +66,9 @@ public class SMARTScoreMappingModelBuilderTest {
 				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
 
 		Map<Double, Double> mapping = newModel.getScoreMappingConf().getMapping();
-		Assert.assertEquals(3, mapping.size());
+		Assert.assertEquals(2, mapping.size());
 		Assert.assertEquals(0, mapping.get(0D), 0.0001);
-		Assert.assertEquals(50, mapping.get(50D), 0.0001);
-		Assert.assertEquals(100, mapping.get(100D), 0.0001);
+		Assert.assertEquals(50, mapping.get(100D), 0.0001);
 	}
 
 	@Test
