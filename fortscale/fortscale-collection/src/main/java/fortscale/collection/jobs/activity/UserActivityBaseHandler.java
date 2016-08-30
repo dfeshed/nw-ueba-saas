@@ -133,7 +133,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 							logger.info("Update users histogram in memory for {} users took {} seconds", currentUsersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
 						}
 
-						additionalActivityHistogram = updateAdditionalActivitySpecificHistograms(userActivityMap);
+						Map<String, Double> histograms = updateAdditionalActivitySpecificHistograms(userActivityMap);
+						histograms.forEach((k, v) -> additionalActivityHistogram.merge(k, v, (v1, v2) -> v1 + v2));
 
 						Collection<UserActivityDocument> userActivityToInsertDocument = userActivityMap.values();
 
