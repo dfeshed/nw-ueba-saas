@@ -36,12 +36,14 @@ public class ApiLogRepositoryControllerTest {
 	@Test
 	public void testLogRepositoryUpdate() {
 		List<LogRepositoryRequest> logRepositoryRequests = new ArrayList<>();
+		final String ID = "id";
 		final String PASSWORD = "password";
 		final String HOST = "aaa";
 		final String USER = "user@user.com";
 		final String ENCRYPTED_PASSWORD = "8bGagpbfO0hLMjKwrIc5SA==";
 		final Integer PORT = 8089;
 		LogRepositoryRequest settings = new LogRepositoryRequest();
+		settings.setId(ID);
 		settings.setPassword(PASSWORD);
 		settings.setHost(HOST);
 		settings.setPort(PORT);
@@ -62,6 +64,7 @@ public class ApiLogRepositoryControllerTest {
 
 	@Test
 	public void testLogRepositoryUpdate_encrypt_password() {
+		final String ID = "id";
 		final String PASSWORD = "password";
 		final String HOST = "aaa";
 		final String USER = "user@domain.com";
@@ -72,6 +75,7 @@ public class ApiLogRepositoryControllerTest {
 		oldSettings.setUser(USER);
 		Mockito.when(logRepositoryService.getLogRepositoriesFromDatabase()).thenReturn(Arrays.asList(oldSettings));
 		LogRepositoryRequest settings = new LogRepositoryRequest();
+		settings.setId(ID);
 		settings.setPassword(PASSWORD);
 		settings.setHost(HOST);
 		settings.setPort(PORT);
@@ -90,6 +94,7 @@ public class ApiLogRepositoryControllerTest {
 
 	@Test
 	public void testLogRepositoryUpdate_do_not_encrypt_password() {
+		final String ID = "id";
 		final String HOST = "aaa";
 		final String USER = "user@domain.com";
 		final String ENCRYPTED_PASSWORD = "ENCRYPTED_PASSWORD";
@@ -99,6 +104,7 @@ public class ApiLogRepositoryControllerTest {
 		oldSettings.setUser(USER);
 		Mockito.when(logRepositoryService.getLogRepositoriesFromDatabase()).thenReturn(Arrays.asList(oldSettings));
 		LogRepositoryRequest settings = new LogRepositoryRequest();
+		settings.setId(ID);
 		settings.setPassword(ENCRYPTED_PASSWORD);
 		settings.setHost(HOST);
 		settings.setPort(PORT);

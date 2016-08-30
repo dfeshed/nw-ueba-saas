@@ -26,6 +26,17 @@ public class LogRepositoryServiceImpl implements LogRepositoryService {
 	}
 
 	@Override
+	public LogRepository getLogRepositoryFromDatabase(String id) {
+		List<LogRepository> logRepositories = getLogRepositoriesFromDatabase();
+		for (LogRepository logRepository: logRepositories) {
+			if (logRepository.getId().equals(id)) {
+				return logRepository;
+			}
+		}
+		return null;
+	}
+
+	@Override
 	public List<LogRepository> getLogRepositoriesFromDatabase() {
 		return applicationConfigurationService.getApplicationConfigurationAsObjects(LogRepository.LOG_REPOSITORY_KEY,
 				LogRepository.class);
