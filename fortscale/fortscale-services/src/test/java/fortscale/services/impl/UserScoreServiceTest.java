@@ -69,7 +69,7 @@ public class UserScoreServiceTest extends UserScoreServiceTestAbstract {
 
         User u = new User();
         u.setUsername(USER_ID);
-        Mockito.when(userRepository.findByUsername(USER_ID)).thenReturn(u);
+        Mockito.when(userService.getUserById(USER_ID)).thenReturn(u);
 
         double score = userScoreService.recalculateUserScore(USER_ID);
         Assert.assertEquals(expectedScore, score, 0);
