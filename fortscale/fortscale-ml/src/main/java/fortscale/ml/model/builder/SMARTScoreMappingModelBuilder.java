@@ -31,7 +31,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 			maximalScore = Math.max(minMaximalScore, calcMaximalScore(filterEmptyDays(dateToHighestScores)));
 		} else {
 			//TODO: get these values from the user (through the ASL)
-			threshold = 100;
+			threshold = 50;
 			maximalScore = 100;
 		}
 		if (threshold > maximalScore) {
