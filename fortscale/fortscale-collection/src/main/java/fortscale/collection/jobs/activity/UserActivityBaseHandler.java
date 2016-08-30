@@ -143,13 +143,13 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 						numOfHandledUsers += mongoBatchSize;
 					}
 				}
+				updateAdditionalActivitySpecificDocumentInDatabase(dataSources, currBucketStartTime, currBucketEndTime,
+						additionalActivityHistogram);
 			}
 
             logger.info("Updating job's state..");
             updateJobState(userActivityJobState, currBucketStartTime);
             logger.info("Job state was updated successfully");
-
-            updateAdditionalActivitySpecificDocumentInDatabase(dataSources, currBucketStartTime, currBucketEndTime, additionalActivityHistogram);
 
             DateTime currDateTime = new DateTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime), DateTimeZone.UTC);
             currBucketStartTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(1).getMillis());
