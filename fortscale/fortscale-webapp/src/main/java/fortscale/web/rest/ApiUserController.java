@@ -144,10 +144,10 @@ public class ApiUserController extends BaseController{
 		return new ResponseEntity(HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/favoriteFilter/{filterName}", method = RequestMethod.DELETE)
-	public ResponseEntity deleteFavoriteFilter(@PathVariable String filterName) {
+	@RequestMapping(value = "/favoriteFilter/{filterId}", method = RequestMethod.DELETE)
+	public ResponseEntity deleteFavoriteFilter(@PathVariable String filterId) {
 
-		long lineDeleted = userService.deleteFavoriteFilter(filterName);
+		long lineDeleted = userService.deleteFavoriteFilter(filterId);
 
 		if (lineDeleted > 0){
 			return new ResponseEntity(HttpStatus.OK);
