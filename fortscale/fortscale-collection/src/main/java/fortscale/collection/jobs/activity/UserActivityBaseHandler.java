@@ -203,7 +203,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected Map<String, List<String>> fetchAllActiveUserIds(List<String> dataSources, long startTime) {
         Map<String, List<String>> dataSourceToUserIds = new HashMap<>();
 		DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
-		List<User> users = userService.getUsernamesActiveSince(startDate);
+		List<User> users = userService.getUsersActiveSinceIncludingUsernameAndLogLastActivity(startDate);
         for (String dataSource : dataSources) {
 			List<String> userIds = users.stream().filter(user -> user.getLogLastActivity(dataSource) != null &&
 					user.getLogLastActivity(dataSource).isAfter(startDate)).map(user -> CONTEXT_ID_USERNAME_PREFIX +

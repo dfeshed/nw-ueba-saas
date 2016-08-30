@@ -784,8 +784,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public List<User> getUsernamesActiveSince(DateTime date) {
-		return userRepository.getUsernamesActiveSince(date);
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
+		return userRepository.getUsersActiveSinceIncludingUsernameAndLogLastActivity(date);
 	}
 
 	@Override
