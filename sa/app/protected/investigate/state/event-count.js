@@ -1,3 +1,3 @@
-import StreamState from './stream-state';
+import PromiseState from './promise-state';
 
-export default StreamState;
+export default PromiseState;

@@ -1,48 +1,33 @@
-/**
- * @file Query class
- * Represents an query for events from a Netwitness Core Service.
- * @public
- */
 import Ember from 'ember';
+import Definition from './query-definition';
+import Results from './query-results';
 
-const { get, Object: EmberObject } = Ember;
+const {
+  computed,
+  Object: EmberObject
+} = Ember;
 
 export default EmberObject.extend({
   /**
-   * ID of the Core service targeted by this query.
-   * @type {string}
+   * Query information such as the filter criteria.
+   * @type {object}
    * @public
    */
-  serviceId: '',
+  definition: computed(() => Definition.create()),
 
   /**
-   * Lower bound of the event times to be included in this query, in seconds since 1970.
-   * @type {number}
+   * The results of the query from the targeted Core service.
+   * @type {object}
    * @public
    */
-  startTime: 0,
+  results: computed(() => Results.create()),
 
   /**
-   * Upper bound of the event times to be included in this query, in seconds since 1970.
-   * @type {number}
+   * Compares two Query instances. Delegates to the query definition.
+   * @returns {boolean}
    * @public
    */
-  endTime: 0,
-
-  /**
-   * Where clause for filtering Core results (e.g., ip.src=X).
-   * @type {string}
-   * @public
-   */
-  metaFilter: '',
-
-  isEqual(params) {
-    if (params) {
-      return (get(params, 'serviceId') === this.get('serviceId')) &&
-        (get(params, 'startTime') === this.get('startTime')) &&
-        (get(params, 'endTime') === this.get('endTime')) &&
-        (get(params, 'metaFilter') === this.get('metaFilter'));
-    }
-    return false;
+  isEqual(...args) {
+    return this.get('definition').isEqual(...args);
   }
 });

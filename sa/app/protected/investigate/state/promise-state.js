@@ -9,13 +9,6 @@ const { Object: EmberObject } = Ember;
 
 export default EmberObject.extend({
   /**
-   * The Promise object that this object is bound to.
-   * @type {object}
-   * @public
-   */
-  promise: undefined,
-
-  /**
    * Either undefined (promise hasn't been executed yet), 'wait' (promise is in progress), 'resolved' or 'rejected'.
    * @type {string}
    * @public
@@ -34,5 +27,17 @@ export default EmberObject.extend({
    * @type {*}
    * @public
    */
-  reason: undefined
+  reason: undefined,
+
+  /**
+   * Resets state data. Used for deallocating memory.
+   * @public
+   */
+  reset() {
+    this.setProperties({
+      status: undefined,
+      data: undefined,
+      reason: undefined
+    });
+  }
 });

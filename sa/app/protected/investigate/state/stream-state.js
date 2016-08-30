@@ -9,13 +9,6 @@ const { $, computed, Object: EmberObject } = Ember;
 
 export default EmberObject.extend({
   /**
-   * The Stream object that this object is bound to.
-   * @type {object}
-   * @public
-   */
-  stream: undefined,
-
-  /**
    * Either 'idle', 'streaming', 'complete' or 'error'.
    * @type {string}
    * @public
@@ -71,5 +64,19 @@ export default EmberObject.extend({
     } else {
       return 0;
     }
-  })
+  }),
+
+  /**
+   * Resets state data. Used for deallocating memory.
+   * @public
+   */
+  reset() {
+    this.setProperties({
+      status: 'idle',
+      data: [],
+      reason: undefined,
+      anchor: 0,
+      goal: 0
+    });
+  }
 });

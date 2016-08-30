@@ -12,27 +12,24 @@ const { Mixin } = Ember;
 export default Mixin.create({
   actions: {
     /**
-     * Fetches the timeline data of Core events from web server; stores it in `state.eventTimeline`.
+     * Fetches the timeline data for the given query node. Stores the request's state in node's `value.results.eventTimeline`.
+     * @param {object} queryNode
      * @param {boolean} [forceReload] If truthy, indicates that the records should be fetched from server. Otherwise,
      * re-uses previous server call for same query (if any) as long as it didn't error out.
      * @public
      */
-    eventTimelineGet(forceReload = false) {
-      let query = this.get('state.query.value');
-      let oldQuery = this.get('state.eventTimeline.query');
-      let eventTimeline = this.get('state.eventTimeline');
-      let skipLoad = !forceReload && query && query.isEqual(oldQuery) && (eventTimeline.get('status') !== 'rejected');
+    eventTimelineGet(queryNode, forceReload = false) {
+      if (!queryNode) {
+        return;
+      }
+      let eventTimeline = queryNode.get('value.results.eventTimeline');
+      let skipLoad = !forceReload && (eventTimeline.get('status') || '').match(/wait|resolved/);
       if (skipLoad) {
         return;
       }
 
-      if (!query) {
-        return;
-      }
-
-      // Cache references to the query & stream in the route state.
+      // Cache references to the request in the state object.
       eventTimeline.setProperties({
-        query,
         status: 'wait',
         data: undefined
       });
@@ -40,7 +37,7 @@ export default Mixin.create({
       this.request.promiseRequest({
         method: 'query',
         modelName: 'core-event-timeline',
-        query: makeServerInputsForQuery(query)
+        query: makeServerInputsForQuery(queryNode.get('value.definition'))
       }).then(function({ data }) {
         eventTimeline.setProperties({
           status: 'resolved',
@@ -52,6 +49,19 @@ export default Mixin.create({
           reason: code
         });
       });
+    },
+
+    /**
+     * Resets the timeline data for a given query node back to empty.
+     * Used to reduce memory consumption from a node that is no longer currently active.
+     * @param {object} queryNode The query to be cleared.
+     * @public
+     */
+    eventTimelineClear(queryNode) {
+      if (!queryNode) {
+        return;
+      }
+      queryNode.get('value.results.eventTimeline').reset();
     }
   }
 });

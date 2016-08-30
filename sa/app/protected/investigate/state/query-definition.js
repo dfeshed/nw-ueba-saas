@@ -5,7 +5,7 @@
  */
 import Ember from 'ember';
 
-const { Object: EmberObject } = Ember;
+const { get, Object: EmberObject } = Ember;
 
 export default EmberObject.extend({
   /**
@@ -34,5 +34,15 @@ export default EmberObject.extend({
    * @type {string}
    * @public
    */
-  metaFilter: ''
+  metaFilter: '',
+
+  isEqual(params) {
+    if (params) {
+      return (get(params, 'serviceId') === this.get('serviceId')) &&
+        (get(params, 'startTime') === this.get('startTime')) &&
+        (get(params, 'endTime') === this.get('endTime')) &&
+        (get(params, 'metaFilter') === this.get('metaFilter'));
+    }
+    return false;
+  }
 });

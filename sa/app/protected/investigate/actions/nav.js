@@ -1,6 +1,6 @@
 import Ember from 'ember';
-import Query from '../state/query';
-import TreeNode from 'sa/utils/tree/node';
+import QueryTreeNode from '../state/query-node';
+import QueryDefinition from '../state/query-definition';
 
 const { Mixin } = Ember;
 
@@ -20,10 +20,23 @@ export default Mixin.create({
      * @public
      */
     navGoto(queryNode) {
-      this.set('state.query', queryNode);
-      this.send('eventsGetFirst');
-      this.send('eventCountGet');
-      this.send('eventTimelineGet');
+      const wasQueryNode = this.get('state.queryNode');
+      const wasLastQueryNode = this.get('state.lastQueryNode');
+      if (queryNode === wasQueryNode) {
+        return;
+      }
+      this.setProperties({
+        'state.queryNode': queryNode,
+        'state.lastQueryNode': wasQueryNode
+      });
+      this.send('eventsGetFirst', queryNode);
+      this.send('eventCountGet', queryNode);
+      this.send('eventTimelineGet', queryNode);
+
+      // Optimization: In order to reduce memory footprint, clear events list & timeline from next-to-last active node.
+      // Don't clear event count; we'll show it in a flowchart viz, and it's just a single number anyway.
+      this.send('eventsClear', wasLastQueryNode);
+      this.send('eventTimelineClear', wasLastQueryNode);
     },
 
     /**
@@ -43,10 +56,9 @@ export default Mixin.create({
       if (!queryNode) {
 
         // No matching query found, so add a new node to the query tree for this query.
-        queryNode = TreeNode.create({
-          value: Query.create(filterParams)
-        });
-        queryTree.add(queryNode, state.get('query'));
+        queryNode = QueryTreeNode.create();
+        queryNode.set('value.definition', QueryDefinition.create(filterParams));
+        queryTree.add(queryNode, state.get('queryNode'));
       }
 
       // Move the playhead to this query.

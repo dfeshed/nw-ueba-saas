@@ -16,26 +16,24 @@ export default Mixin.create({
 
   actions: {
     /**
-     * Fetches a stream of events for the current query.
+     * Fetches a stream of events for the given query node. Stores the stream's state in node's `value.results.events`.
      * Re-uses any previous results for the same query, UNLESS `forceReload` is truthy.
+     * @param {object} queryNode
      * @param {boolean} [forceReload=false] If truthy, any previous results for the same query are discarded.
      * @public
      */
-    eventsGetFirst(forceReload = false) {
-      let query = this.get('state.query.value');
-      let oldQuery = this.get('state.events.query');
-      let events = this.get('state.events');
-      let skipLoad = !forceReload &&
-        query && query.isEqual(oldQuery) &&
-        (events.get('status') || '').match(/streaming|complete/);
-
+    eventsGetFirst(queryNode, forceReload = false) {
+      if (!queryNode) {
+        return;
+      }
+      let events = queryNode.get('value.results.events');
+      let skipLoad = !forceReload && (events.get('status') || '').match(/streaming|complete/);
       if (skipLoad) {
         return;
       }
 
-      // Prepare state.events object for a new request.
+      // Prepare events state object for a new request.
       events.setProperties({
-        query,
         data: [],
         anchor: 0,
         goal: STREAM_LIMIT
@@ -47,19 +45,16 @@ export default Mixin.create({
       // If so, skip the query for the records.  (If the event count hasn't come back yet, no worries, submit this
       // query for now. We'll also add a check for count=0 in the count response callback, and that check will
       // abort this server call if need be.)
-      let eventCountStatus = this.get('state.eventCount.status');
-      let eventCountData = this.get('state.eventCount.data');
-      let eventCountQuery = this.get('state.eventCount.query');
-      let eventCountIsZero = (eventCountStatus === 'resolved') &&
-        (eventCountData === 0) &&
-        query && query.isEqual(eventCountQuery);
+      let eventCountStatus = queryNode.get('value.results.eventCount.status');
+      let eventCountData = queryNode.get('value.results.eventCount.data');
+      let eventCountIsZero = (eventCountStatus === 'resolved') && (eventCountData === 0);
       if (eventCountIsZero) {
         events.set('status', 'complete');
         return;
       }
       // end @workaround
 
-      const inputs = buildEventStreamInputs(query, STREAM_LIMIT, STREAM_BATCH);
+      const inputs = buildEventStreamInputs(queryNode.get('value.definition'), STREAM_LIMIT, STREAM_BATCH);
 
       executeEventsRequest(this.request, inputs, events);
     },
@@ -69,14 +64,13 @@ export default Mixin.create({
      * Any previous results found are appended to, not discarded.
      * @public
      */
-    eventsGetMore() {
-      let query = this.get('state.query.value');
-      let events = this.get('state.events');
-      if (!query || !events) {
+    eventsGetMore(queryNode) {
+      if (!queryNode) {
         return;
       }
 
       // Wire up stream to state.events and start streaming.
+      let events = queryNode.get('value.results.events');
       let len = events.get('data.length') || 0;
       let limit = STREAM_LIMIT; // for now, always fetch STREAM_LIMIT; future: consider computing limit from len?
       let anchor = len;
@@ -88,23 +82,26 @@ export default Mixin.create({
         goal
       });
 
-      const inputs = buildEventStreamInputs(query, limit, STREAM_BATCH, lastSessionId);
+      const inputs = buildEventStreamInputs(queryNode.get('value.definition'), limit, STREAM_BATCH, lastSessionId);
 
       executeEventsRequest(this.request, inputs, events);
     },
 
     /**
-     * Stops the current query to fetch events while it is in progress.
+     * Stops the given query to fetch events while it is in progress.
      *
      * Executed, for instance, when a user wants to pause a query
-     *
-     * @param {string} [newStatus="idle"] Indicates what the events state object's "status" should be updated to.
+     * @param {object} queryNode The query to be stopped.
+     * @param {string} [newStatus] Indicates what the events state object's "status" should be updated to.
      * Typically it is set to "idle" by default. One exception: In the scenario when a query for events count has
      * returned zero, we know that there are no events coming, and so a "complete" status will be passed in.
      * @public
      */
-    eventsStop(newStatus) {
-      let events = this.get('state.events') || {};
+    eventsStop(queryNode, newStatus) {
+      if (!queryNode) {
+        return;
+      }
+      let events = queryNode.get('value.results.events');
       if (events.get('status') === 'streaming') {
         events.get('stopStreaming')();
         // @workaround until event-count properly sends complete message
@@ -113,6 +110,20 @@ export default Mixin.create({
         }
         // end @workaround
       }
+    },
+
+    /**
+     * Resets the events list state for a given query node back to empty. Also stops the query if still in progress.
+     * Used to reduce memory consumption from a node that is no longer currently active.
+     * @param {object} queryNode The query to be cleared.
+     * @public
+     */
+    eventsClear(queryNode) {
+      if (!queryNode) {
+        return;
+      }
+      this.send('eventsStop', queryNode);
+      queryNode.get('value.results.events').reset();
     }
   }
 });

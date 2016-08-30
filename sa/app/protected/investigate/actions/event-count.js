@@ -12,28 +12,24 @@ const { Mixin } = Ember;
 export default Mixin.create({
   actions: {
     /**
-     * Fetches the list of available Core services from web server; stores it in `state.services`.
-     * The server stream and the resulting records are stored in `state.currentEvents`'s `stream` & `records` respectively.
-     * @param {boolean} [forceReload] If truthy, indicates that the records should be fetched from server. Otherwise,
-     * re-uses previous server call (if any) as long as it didn't error out.
+     * Fetches the count of event results for the given query node. Stores the request's state in node's `value.results.eventCount`.
+     * @param {object} queryNode The query whose results count are to be fetched from server.
+     * @param {boolean} [forceReload] If truthy, indicates that the count should be fetched from server. Otherwise,
+     * re-uses previous server call results (if any) as long as it didn't error out.
      * @public
      */
-    eventCountGet(forceReload = false) {
-      let query = this.get('state.query.value');
-      let oldQuery = this.get('state.eventCount.query');
-      let eventCount = this.get('state.eventCount');
-      let skipLoad = !forceReload && query && query.isEqual(oldQuery) && (eventCount.get('status') !== 'rejected');
+    eventCountGet(queryNode, forceReload = false) {
+      if (!queryNode) {
+        return;
+      }
+      let eventCount = queryNode.get('value.results.eventCount');
+      let skipLoad = !forceReload && (eventCount.get('status') || '').match(/wait|resolved/);
       if (skipLoad) {
         return;
       }
 
-      if (!query) {
-        return;
-      }
-
-      // Cache references to the query & stream in the route state.
+      // Cache references to the request in the state object.
       eventCount.setProperties({
-        query,
         status: 'wait',
         data: undefined
       });
@@ -41,7 +37,7 @@ export default Mixin.create({
       this.request.promiseRequest({
         method: 'stream',
         modelName: 'core-event-count',
-        query: makeServerInputsForQuery(query)
+        query: makeServerInputsForQuery(queryNode.get('value.definition'))
       }).then(function({ data }) {
         eventCount.setProperties({
           status: 'resolved',
@@ -53,7 +49,7 @@ export default Mixin.create({
         // server call returns with the event count, check if it returns zero. If so, abort any in-progress call for
         // the event records, marking it complete (since we know there aren't any records coming back).
         if (data === 0) {
-          this.send('eventsStop', 'complete');
+          this.send('eventsStop', queryNode, 'complete');
         }
       }).catch(function({ code }) {
         eventCount.setProperties({
