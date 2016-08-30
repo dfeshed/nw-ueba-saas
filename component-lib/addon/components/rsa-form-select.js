@@ -57,6 +57,8 @@ export default Component.extend({
 
   optionCount: 0,
 
+  multiple: true,
+
   optionMaxVisible: computed('optionCount', function() {
     if (this.get('optionCount') <= 5) {
       return this.get('optionCount');
@@ -142,7 +144,7 @@ export default Component.extend({
   },
 
   change() {
-    this.set('values', this.$('select').val());
+    this.set('values', (this.get('multiple') ? this.$('select').val() : [ this.$('select').val() ]));
     this.decorateSelectOptions();
     this.updateSelectOptions();
 

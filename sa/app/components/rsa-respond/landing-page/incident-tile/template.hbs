@@ -16,7 +16,7 @@
           {{incident.name}}
         </li>
         <li class="rsa-incident-tile-status">
-          {{#rsa-form-select isInline=true class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatus isReadOnly=(if editModeActive false true)}}
+          {{#rsa-form-select multiple=false isInline=true class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatus isReadOnly=(if editModeActive false true)}}
             {{#each statusList as |status i|}}
               <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
             {{/each}}
@@ -45,7 +45,7 @@
 {{#if isLargeSize}}
   <hbox class="rsa-incident-tile-section">
     <vbox xs="6">
-      {{#rsa-form-select optionMaxVisible=3 label=(t "incident.fields.priority") values=selectedPriority class="rsa-incident-tile-priority-selector" isReadOnly=(if editModeActive false true)}}
+      {{#rsa-form-select multiple=false optionMaxVisible=3 label=(t "incident.fields.priority") values=selectedPriority class="rsa-incident-tile-priority-selector" isReadOnly=(if editModeActive false true)}}
         {{#each priorityList as |priority|}}
           <option value="{{priority}}">{{t (concat 'incident.priority.' priority) }}</option>
         {{/each}}
@@ -53,7 +53,7 @@
     </vbox>
 
     <vbox xs="6">
-      {{#rsa-form-select optionMaxVisible=3 label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
+      {{#rsa-form-select multiple=false optionMaxVisible=3 label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
         <option value=-1>{{t 'incident.assignee.none'}}</option>
         {{#each users as |user|}}
           <option value= {{user.id}}>{{user.firstName}}</option>

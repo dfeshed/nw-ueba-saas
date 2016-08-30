@@ -127,3 +127,12 @@ test('it removes values when clicking the icon on the option tag', function(asse
   assert.equal(this.get('testValues.length'), '2');
   assert.equal(this.get('testValues.firstObject'), '2');
 });
+
+test('it allows to select only one value when multiple is disabled', function(assert) {
+  this.set('testValues', ['2']);
+  this.render(hbs `{{#rsa-form-select multiple=false label='Foo' prompt='Foo Prompt' values=testValues}}<option value="1">1</option><option value="2">2</option><option value="3">3</option>{{/rsa-form-select}}`);
+  this.$().find('.prompt').click();
+  this.$().find('select').val(['1', '3']).trigger('change');
+  assert.equal(this.get('testValues.length'), '1');
+  assert.equal(this.get('testValues.firstObject'), '1');
+});

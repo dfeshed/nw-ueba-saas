@@ -170,7 +170,14 @@ export default Ember$.extend({}, BaseSelectors, {
       'categoryTagsElmDropdownNestedElmStartElm': '.rsa-content-tree__tree-container .content',
       'categoryTagsElmDropdownNestedElms': '.rsa-content-tree__child-label',
       'taggedElm': '.rsa-form-tag-manager .rsa-content-label',
-      'taggedElmDeleteIcon': '.rsa-form-tag-manager .rsa-icon-close'
+      'taggedElmDeleteIcon': '.rsa-form-tag-manager .rsa-icon-close',
+      'statusValue': '.rsa-incident-detail-header__status .prompt div',
+      'assigneeDropDown': '.rsa-incident-detail-header__assignee .rsa-icon',
+      'assigneeSelectOption': '.rsa-incident-detail-header__assignee select option',
+      'statusDropDown': '.rsa-incident-detail-header__status .rsa-icon',
+      'statusSelectOption': '.rsa-incident-detail-header__status select option',
+      'priorityDropDown': '.rsa-incident-detail-header__priority .rsa-icon',
+      'prioritySelectOption': '.rsa-incident-detail-header__priority select option'
     }
   }
 });

@@ -11,7 +11,7 @@
       </header>
       <ul class='rsa-incident-detail-header__details__body'>
         <li>
-          {{#rsa-form-select label=(t 'incident.fields.priority') class='rsa-incident-detail-header__priority' values=selectedPriority isDisabled=incidentIsClosed}}
+          {{#rsa-form-select multiple=false label=(t 'incident.fields.priority') class='rsa-incident-detail-header__priority' values=selectedPriority isDisabled=incidentIsClosed}}
             {{#each priorityList as |priority|}}
               <option value="{{priority}}">{{t (concat 'incident.priority.' priority) }}</option>
             {{/each}}
@@ -35,7 +35,7 @@
           {{/rsa-content-definition}}
         </li>
         <li>
-          {{#rsa-form-select label=(t 'incident.fields.assignee') class='rsa-incident-detail-header__assignee' values=selectedAssignee isDisabled=incidentIsClosed}}
+          {{#rsa-form-select multiple=false label=(t 'incident.fields.assignee') class='rsa-incident-detail-header__assignee' values=selectedAssignee isDisabled=incidentIsClosed}}
             <option value=-1>{{t 'incident.assignee.none'}}</option>
             {{#each users as |user|}}
               <option value={{user.id}}>{{user.firstName}}</option>
@@ -43,7 +43,7 @@
           {{/rsa-form-select}}
         </li>
         <li>
-          {{#rsa-form-select class='rsa-incident-detail-header__status' label=(t "incident.fields.status") values=selectedStatus}}
+          {{#rsa-form-select multiple=false class='rsa-incident-detail-header__status' label=(t "incident.fields.status") values=selectedStatus}}
             {{#each statusList as |status i|}}
               <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
             {{/each}}
