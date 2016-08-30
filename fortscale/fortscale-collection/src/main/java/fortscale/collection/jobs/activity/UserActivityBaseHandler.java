@@ -205,8 +205,11 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 		DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
 		List<User> users = userService.getUsernamesActiveSince(startDate);
         for (String dataSource : dataSources) {
-			List<String> userIds = users.stream().filter(user -> user.getLogLastActivity(dataSource) != null &&
-					user.getLogLastActivity(dataSource).isAfter(startDate)).map(user -> CONTEXT_ID_USERNAME_PREFIX +
+			//we don't have vpn_session in the log last activity
+			final String logDataSource = dataSource.toLowerCase().equals("vpn_session") ? "vpn" : dataSource;
+
+			List<String> userIds = users.stream().filter(user -> user.getLogLastActivity(logDataSource) != null &&
+					user.getLogLastActivity(logDataSource).isAfter(startDate)).map(user -> CONTEXT_ID_USERNAME_PREFIX +
 					user.getUsername()).collect(Collectors.toList());
 			dataSourceToUserIds.put(dataSource, userIds);
         }
