@@ -31,9 +31,6 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 			threshold = config.getDefaultThreshold();
 			maximalScore = config.getDefaultMaximalScore();
 		}
-		if (threshold > maximalScore) {
-			maximalScore = threshold;
-		}
 		model.init(threshold, maximalScore);
         return model;
     }
@@ -47,14 +44,14 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
         return dateToHighestScores
                 .mapToDouble(scores -> scores.get(0))
                 .average()
-                .orElse(50 - EPSILON);
+                .getAsDouble();
     }
 
     private double calcMaximalScore(Stream<List<Double>> dateToHighestScores) {
         return dateToHighestScores
                 .mapToDouble(scores -> scores.get(scores.size() - 1))
                 .max()
-                .orElse(100);
+                .getAsDouble();
     }
 
     protected Map<Long, List<Double>> castModelBuilderData(Object modelBuilderData) {
