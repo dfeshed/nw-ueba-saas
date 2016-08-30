@@ -31,7 +31,6 @@ public class FetchFactory extends FortscaleJob {
 	private Splunk splunkFetch;
 
 	private FetchJob fetchJob;
-	private String configuredSIEM;
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -56,7 +55,7 @@ public class FetchFactory extends FortscaleJob {
 				throw new JobExecutionException("No log repository configuration found");
 			}
 		}
-		configuredSIEM = logRepository.getType();
+		String configuredSIEM = logRepository.getType();
 		SIEMType type;
 		try {
 			type = SIEMType.valueOf(configuredSIEM.toUpperCase());
