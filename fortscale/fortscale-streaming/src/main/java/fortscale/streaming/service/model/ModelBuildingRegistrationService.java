@@ -18,6 +18,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static fortscale.utils.time.TimestampUtils.convertToMilliSeconds;
 import static fortscale.utils.time.TimestampUtils.convertToSeconds;
@@ -25,6 +27,7 @@ import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 @Configurable(preConstruction = true)
 public class ModelBuildingRegistrationService {
 	private static final Logger logger = Logger.getLogger(ModelBuildingRegistrationService.class);
+	private final Pattern allModelsFilterRegexPattern;
 
 	@Autowired
 	private ModelConfService modelConfService;
@@ -49,7 +52,7 @@ public class ModelBuildingRegistrationService {
 
 	public ModelBuildingRegistrationService(
 			IModelBuildingListener modelBuildingListener,
-			ModelBuildingSamzaStore modelBuildingStore) {
+			ModelBuildingSamzaStore modelBuildingStore, String allModelsFilterRegex) {
 
 		// modelBuildingListener can be null, if there is no listener
 		Assert.notNull(modelBuildingStore);
@@ -58,6 +61,13 @@ public class ModelBuildingRegistrationService {
 		this.metrics = new ModelBuildingRegistrationServiceMetrics(statsService);
 		this.setNameToMetrics = new HashMap<>();
 
+		if(allModelsFilterRegex!=null) {
+			this.allModelsFilterRegexPattern = Pattern.compile(allModelsFilterRegex);
+		}
+		else
+		{
+			this.allModelsFilterRegexPattern = null;
+		}
 		modelService.init();
 	}
 
@@ -73,7 +83,19 @@ public class ModelBuildingRegistrationService {
 
 			if (modelConfName.equalsIgnoreCase(allModelsConstantValue)) {
 				for (ModelConf modelConf : modelConfService.getModelConfs()) {
-					process(sessionId, modelConf.getName(), endTime);
+					String currentModelConfName = modelConf.getName();
+					// modelConfName can be "ALL_MODELS", you may filter it by regex
+					if(allModelsFilterRegexPattern != null)
+					{
+						Matcher matcher = allModelsFilterRegexPattern.matcher(currentModelConfName);
+						if(matcher.matches())
+						{
+							process(sessionId, currentModelConfName, endTime);
+						}
+					}
+					else {
+						process(sessionId, currentModelConfName, endTime);
+					}
 				}
 			} else {
 				process(sessionId, modelConfName, endTime);
