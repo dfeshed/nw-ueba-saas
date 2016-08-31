@@ -31,35 +31,46 @@
       percent=model.queryNode.value.results.events.percent
       enabled=(is-equal model.queryNode.value.results.events.status 'streaming')}}
   </header>
-  <section class="rsa-investigate-query__body meta-panel-size-{{model.meta.panelSize}}">
-    <aside class="rsa-investigate-query__body-aside">
-      {{rsa-investigate/meta
+  <section class="rsa-investigate-query__body {{if model.recon.isOpen 'recon-is-open' 'recon-is-closed'}} meta-panel-size-{{model.meta.panelSize}}">
+    <section class="rsa-investigate-query__body-master">
+      <aside class="rsa-investigate-query__body-master-aside">
+        {{rsa-investigate/meta
         size=model.meta.panelSize
         groups=model.meta.groups
         minSizeAction=(route-action "metaPanelSize" 'min')
         maxSizeAction=(route-action "metaPanelSize" 'max')
         defaultSizeAction=(route-action "metaPanelSize" 'default')}}
-    </aside>
-    <section class="rsa-investigate-query__body-main">
-      {{rsa-investigate/timeline chartData=model.resolvedEventTimelineData}}
-      {{#rsa-data-table lazy=true items=model.queryNode.value.results.events.data columnsConfig=model.eventColumns aliases=model.queryNode.value.aliases}}
-        {{rsa-data-table/header}}
-        {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
-        {{rsa-data-table/load-more
+      </aside>
+      <section class="rsa-investigate-query__body-master-main">
+        {{rsa-investigate/timeline chartData=model.resolvedEventTimelineData}}
+        {{#rsa-data-table
+        lazy=true
+        items=model.queryNode.value.results.events.data
+        columnsConfig=model.eventColumns
+        aliases=model.queryNode.value.aliases
+        onRowClick=(route-action "reconOpen")}}
+          {{rsa-data-table/header}}
+          {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
+          {{rsa-data-table/load-more
           status=model.queryNode.value.results.events.status
           clickAction=(route-action "eventsGetMore" model.queryNode)}}
-      {{/rsa-data-table}}
-      {{#if (is-equal model.queryNode.value.results.eventCount.data 0)}}
-        <div class="rsa-investigate-query__empty">
-          <h2>{{t "investigate.empty.title"}}</h2>
-          <p>{{t "investigate.empty.description"}}</p>
-        </div>
-      {{/if}}
+        {{/rsa-data-table}}
+        {{#if (is-equal model.queryNode.value.results.eventCount.data 0)}}
+          <div class="rsa-investigate-query__empty">
+            <h2>{{t "investigate.empty.title"}}</h2>
+            <p>{{t "investigate.empty.description"}}</p>
+          </div>
+        {{/if}}
+      </section>
     </section>
+    <aside class="rsa-investigate-query__body-slave">
+      {{recon-container
+        eventId=model.recon.item.sessionId
+        meta=model.recon.item.metas
+        language=model.queryNode.value.language
+        aliases=model.queryNode.value.aliases}}
+    </aside>
   </section>
-  <aside class="rsa-investigate-query__aside">
-    {{!rsa-investigate/event-recon coming soon!}}
-  </aside>
   <footer class="rsa-investigate-query__footer">
     {{!rsa-investigate/flowchart coming soon!}}
   </footer>

@@ -3,6 +3,7 @@ import Services from './services';
 import EventColumns from './event-columns';
 import Tree from 'sa/utils/tree/tree';
 import Meta from './meta';
+import Recon from './recon';
 
 const {
   computed,
@@ -71,5 +72,8 @@ export default EmberObject.extend({
   ),
 
   // Meta data for the `events`.
-  meta: Meta.create()
+  meta: Meta.create(),
+
+  // State of the recon section of the investigate UI.
+  recon: Recon.create()
 }).create();

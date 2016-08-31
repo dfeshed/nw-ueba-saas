@@ -35,8 +35,39 @@
     position: relative;   /* enables positioning of children */
     @include rsa-vendor-prefix(flex-grow, 1);
 
-    &-aside,
-    &-main {
+    &-master {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      transition-property: background-color right;
+      transition-duration: 0.3s;
+    }
+    &-slave {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: 0;
+      width: 0;
+      transition: width .3s;
+      overflow: hidden;
+    }
+
+    &.recon-is-open {
+      .rsa-investigate-query__body {
+        &-master {
+          right: $investigateReconWidth;
+          background-color: rsa-color(black,base,$rsa-nearly-transparent);
+        }
+        &-slave {
+          width: $investigateReconWidth;
+        }
+      }
+    }
+
+    &-master-aside,
+    &-master-main {
       position: absolute;
       top: 0;
       bottom: 0;
@@ -46,12 +77,12 @@
     }
 
     /* meta vs events: default arrangement */
-    &-aside {
+    &-master-aside {
       left: 0;
       max-width: 2000px;
       right: 75%;
     }
-    &-main {
+    &-master-main {
       margin-left: 25%;
       left: 0;
       right: 0;
@@ -60,8 +91,8 @@
     }
     &.meta-panel-size-default {
       .rsa-investigate-query__body {
-        &-aside:hover,
-        &-main:hover {
+        &-master-aside:hover,
+        &-master-main:hover {
           z-index: 2;
         }
       }
@@ -70,13 +101,13 @@
     /* meta vs events: meta minimized */
     &.meta-panel-size-min {
       .rsa-investigate-query__body {
-        &-aside {
+        &-master-aside {
           left: 0;
           max-width: 40px;
           z-index: 1;
           background-color: rsa-color(black,base,$rsa-nearly-transparent);
         }
-        &-main {
+        &-master-main {
           margin-left: 0;
           left: 40px;
           right: 0;
@@ -88,13 +119,13 @@
     /* meta vs events: meta minimized */
     &.meta-panel-size-max {
       .rsa-investigate-query__body {
-        &-aside {
+        &-master-aside {
           left: 0;
           right: 40px;
           z-index: 2;
           box-shadow: rsa-color(black,base,$rsa-translucent) 3px 3px 3px;
         }
-        &-main {
+        &-master-main {
           transition-delay: 0s;
           opacity: 0;
         }

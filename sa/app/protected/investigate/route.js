@@ -8,6 +8,7 @@ import EventCount from './actions/event-count';
 import EventTimeline from './actions/event-timeline';
 import InvestigateState from './state/index';
 import Meta from './actions/meta';
+import Recon from './actions/recon';
 
 const {
   computed,
@@ -15,7 +16,7 @@ const {
 } = Ember;
 
 export default Route.extend(
-  Transition, Nav, Services, Results, Events, EventCount, EventTimeline, Meta,
+  Transition, Nav, Services, Results, Events, EventCount, EventTimeline, Meta, Recon,
   {
     model() {
       return this.get('state');

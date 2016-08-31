@@ -12,10 +12,14 @@ export default Mixin.create({
   actions: {
     /**
      * Updates the meta panel size state to a given value.
-     * @param size
+     * @param {string} size Either 'min', 'max' or 'default'.
      * @public
      */
     metaPanelSize(size) {
+      // When expanding meta panel from its minimized state, ensure recon panel is closed.
+      if ((this.get('state.meta.panelSize') === 'min') && (size !== 'min')) {
+        this.send('reconClose', false);
+      }
       this.set('state.meta.panelSize', size);
     }
   }
