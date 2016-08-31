@@ -134,28 +134,30 @@ public class ApiUserController extends BaseController{
 
 	@RequestMapping(value = "/{filterName}/favoriteFilter", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-	public Response addFavoriteFilter(@RequestBody UserFilter userFilter, @PathVariable String filterName) {
+	public ResponseEntity<Response> addFavoriteFilter(@RequestBody UserFilter userFilter, @PathVariable String filterName) {
 		try {
 			userService.saveFavoriteFilter(userFilter, filterName);
 		} catch (DuplicateKeyException e) {
-			return Response.status(javax.ws.rs.core.Response.Status.CONFLICT).entity("The filter name already exists").build();
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(Response.status(javax.ws.rs.core.Response.Status.CONFLICT).entity("The filter name already exists").build());
 
 		} catch (Exception e){
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
 		}
 
-		return Response.status(Response.Status.OK).build();
+		return ResponseEntity.status(HttpStatus.OK).body(Response.status(Response.Status.OK).build());
 	}
 
 	@RequestMapping(value = "/favoriteFilter/{filterId}", method = RequestMethod.DELETE)
-	public Response deleteFavoriteFilter(@PathVariable String filterId) {
+	public ResponseEntity<Response> deleteFavoriteFilter(@PathVariable String filterId) {
 
 		long lineDeleted = userService.deleteFavoriteFilter(filterId);
 
 		if (lineDeleted > 0){
-			return Response.status(Response.Status.OK).build();
+			return ResponseEntity.status(HttpStatus.OK).body(Response.status(Response.Status.OK).build());
 		}
-		return Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST).entity("No documents deleted").build();
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST).entity("No documents deleted").build());
 	}
 
 	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.GET)
@@ -511,11 +513,12 @@ public class ApiUserController extends BaseController{
 			Set response type as CSV
 		 */
 		String headerKey = "Content-Disposition";
-		String headerValue = String.format("attachment; filename=\"%s_%s\"",
+		String headerValue = String.format("attachment; filename=\"%s_%s.csv\"",
 				USERS_CSV_FILE_NAME, ZonedDateTime.now().toString());
 		httpResponse.setHeader(headerKey, headerValue);
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 
+		filter.setAddAlertsAndDevices(true);
 		DataBean<List<UserDetailsBean>> users= getUsers(filter);
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse.getOutputStream()));
