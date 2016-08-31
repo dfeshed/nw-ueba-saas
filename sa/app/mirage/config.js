@@ -49,8 +49,9 @@ export default function() {
   // initialize the list of all apis that doesn't need mirage
   passthrough(this);
   login(this);
-  this.namespace = '/api';
   users(this);
+
+  this.namespace = '/api';
   info(this);
 
   // According to mock-socket docs, we must first create a mock server before creating any mock sockets.
