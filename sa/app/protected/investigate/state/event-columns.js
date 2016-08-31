@@ -14,6 +14,9 @@ export default [{
   field: 'service',
   title: 'Service'
 }, {
+  field: 'ip.proto',
+  title: 'IP Protocol'
+}, {
   field: 'ip.src',
   title: 'Source IP'
 }, {

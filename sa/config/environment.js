@@ -112,6 +112,20 @@ module.exports = function(environment) {
           subscriptionDestination: '/user/queue/investigate/timeline',
           requestDestination: '/ws/investigate/timeline'
         }
+      },
+      'core-meta-key': {
+        socketUrl: '/investigate/socket',
+        query: {
+          subscriptionDestination: '/user/queue/investigate/languages',
+          requestDestination: '/ws/investigate/languages'
+        }
+      },
+      'core-meta-alias': {
+        socketUrl: '/investigate/socket',
+        query: {
+          subscriptionDestination: '/user/queue/investigate/alias',
+          requestDestination: '/ws/investigate/alias'
+        }
       }
     },
     socketDebug: false,

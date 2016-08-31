@@ -20,6 +20,8 @@ import coreServices from 'sa/mirage/sockets/routes/core-services';
 import coreEvents from 'sa/mirage/sockets/routes/core-events';
 import coreEventCounts from 'sa/mirage/sockets/routes/core-event-counts';
 import coreEventTimelines from 'sa/mirage/sockets/routes/core-event-timelines';
+import coreMetaKeys from 'sa/mirage/sockets/routes/core-meta-keys';
+import coreMetaAliases from 'sa/mirage/sockets/routes/core-meta-aliases';
 import categoryTags from 'sa/mirage/sockets/routes/category-tags';
 
 /*
@@ -69,6 +71,8 @@ export default function() {
     coreEvents(server);
     coreEventCounts(server);
     coreEventTimelines(server);
+    coreMetaKeys(server);
+    coreMetaAliases(server);
     categoryTags(server);
     server.mirageServer = this;
     return server;

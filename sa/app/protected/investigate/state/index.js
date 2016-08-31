@@ -14,6 +14,9 @@ export default EmberObject.extend({
   // List of available Core services. User can choose one to query.
   services: Services.create(),
 
+  // Hash of Core languages, keyed by Core service Id. Each hash value is an array of meta keys.
+  languages: EmberObject.create(),
+
   // Tree of queries executed (if any) during this user's session. Used for tracking an investigation's path.
   queryTree: Tree.create(),
 

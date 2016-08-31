@@ -1,8 +1,12 @@
 import Ember from 'ember';
 import QueryTreeNode from '../state/query-node';
 import QueryDefinition from '../state/query-definition';
+import { makeServerInputsForEndpointInfo } from './helpers/query-utils';
 
-const { Mixin } = Ember;
+const {
+  Mixin,
+  RSVP
+} = Ember;
 
 /**
  * @file Investigate Route Navigational Actions
@@ -29,14 +33,16 @@ export default Mixin.create({
         'state.queryNode': queryNode,
         'state.lastQueryNode': wasQueryNode
       });
-      this.send('eventsGetFirst', queryNode);
-      this.send('eventCountGet', queryNode);
-      this.send('eventTimelineGet', queryNode);
 
-      // Optimization: In order to reduce memory footprint, clear events list & timeline from next-to-last active node.
-      // Don't clear event count; we'll show it in a flowchart viz, and it's just a single number anyway.
-      this.send('eventsClear', wasLastQueryNode);
-      this.send('eventTimelineClear', wasLastQueryNode);
+      // Before fetching query results, first fetch language & aliases info, for presenting the results data correctly.
+      // If the fetches fail, still proceed; the presentation may be sub-optimal but still better than nothing!
+      RSVP.allSettled([
+        this._getQueryLanguage(queryNode),
+        this._getQueryAliases(queryNode)
+      ]).finally(() => {
+        this.send('resultsGet', queryNode, false);
+        this.send('resultsClear', wasLastQueryNode);  // optimization: release data from 2nd-next-to-last-query
+      });
     },
 
     /**
@@ -64,5 +70,131 @@ export default Mixin.create({
       // Move the playhead to this query.
       this.send('navGoto', queryNode);
     }
+  },
+
+  /**
+   * Ensures that the given query has its language info populated. If not, kicks off call to retrieve it.
+   * This information can be fetched via microservice call.
+   * Optimization: Cache results in `state.languages` object to avoid repeated calls to server.
+   * @param {object} queryNode
+   * @returns {Promise}
+   * @private
+   */
+  _getQueryLanguage(queryNode) {
+    return new RSVP.Promise((resolve, reject) => {
+
+      // Skip if the query already has the language.
+      if (!queryNode || (queryNode.get('value.language.status') === 'resolved')) {
+        resolve();
+        return;
+      }
+
+      const serviceId = queryNode.get('value.definition.serviceId');
+      const queryNodeLanguage = queryNode.get('value.language');
+
+      // Define callbacks for server call.
+      const success = function({ data }) {
+        // store results in query node
+        queryNodeLanguage.setProperties({
+          status: 'resolved',
+          data
+        });
+        // cache server data for future reference
+        this.set(`state.languages.${serviceId}`, data);
+        resolve();
+      };
+      const fail = function(reason) {
+        // store result in query node
+        queryNodeLanguage.setProperties({
+          status: 'rejected',
+          reason
+        });
+        reject();
+      };
+
+      // Check the languages cache before calling server. If data found there, skip server call.
+      const language = this.get(`state.languages.${serviceId}`);
+      if (language) {
+        success({ data: language });
+        return;
+      }
+
+      // Before calling server, init status to "wait".
+      queryNodeLanguage.setProperties({
+        status: 'wait',
+        data: []
+      });
+
+      this.request.promiseRequest({
+        method: 'query',
+        modelName: 'core-meta-key',
+        query: makeServerInputsForEndpointInfo(serviceId)
+      })
+        .then(success)
+        .catch(fail);
+    });
+  },
+
+  /**
+   * Ensures that the given query has its aliases info populated. If not, kicks off call to retrieve it.
+   * This information can be fetched via microservice call.
+   * Optimization: Cache results in `state.aliases` object to avoid repeated calls to server.
+   * @param {object} queryNode
+   * @returns {Promise}
+   * @private
+   */
+  _getQueryAliases(queryNode) {
+    return new RSVP.Promise((resolve, reject) => {
+
+      // Skip if the query already has the aliases.
+      if (!queryNode || (queryNode.get('value.aliases.status') === 'resolved')) {
+        resolve();
+        return;
+      }
+
+      const serviceId = queryNode.get('value.definition.serviceId');
+      const queryNodeAliases = queryNode.get('value.aliases');
+
+      // Define callbacks for server call.
+      const success = function({ data }) {
+        // store results in query node
+        queryNodeAliases.setProperties({
+          status: 'resolved',
+          data
+        });
+        // cache server data for future reference
+        this.set(`state.aliases.${serviceId}`, data);
+        resolve();
+      };
+      const fail = function(reason) {
+        // store result in query node
+        queryNodeAliases.setProperties({
+          status: 'rejected',
+          reason
+        });
+        reject();
+      };
+
+      // Check the aliases cache before calling server. If data found there, skip server call.
+      const aliases = this.get(`state.aliases.${serviceId}`);
+      if (aliases) {
+        success({ data: aliases });
+        return;
+      }
+
+      // Before calling server, init status to "wait".
+      queryNodeAliases.setProperties({
+        status: 'wait',
+        data: []
+      });
+
+      this.request.promiseRequest({
+        method: 'query',
+        modelName: 'core-meta-alias',
+        query: makeServerInputsForEndpointInfo(serviceId)
+      })
+        .then(success)
+        .catch(fail);
+    });
   }
 });

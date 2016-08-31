@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Transition from './actions/transition';
 import Nav from './actions/nav';
 import Services from './actions/services';
+import Results from './actions/results';
 import Events from './actions/events';
 import EventCount from './actions/event-count';
 import EventTimeline from './actions/event-timeline';
@@ -14,7 +15,7 @@ const {
 } = Ember;
 
 export default Route.extend(
-  Transition, Nav, Services, Events, EventCount, EventTimeline, Meta,
+  Transition, Nav, Services, Results, Events, EventCount, EventTimeline, Meta,
   {
     model() {
       return this.get('state');

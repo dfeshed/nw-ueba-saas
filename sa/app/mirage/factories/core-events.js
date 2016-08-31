@@ -5,6 +5,13 @@
  */
 
 import { faker, Factory }  from 'ember-cli-mirage';
+import aliases from '../helpers/meta-aliases';
+
+const MEDIUMS = Object.keys(aliases.medium);
+const SERVICES = Object.keys(aliases.service);
+const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']);
+const TCP_DST_PORTS = Object.keys(aliases['tcp.dstport']);
+const IP_PROTOS = Object.keys(aliases['ip.proto']);
 
 const now = +(new Date());
 const oneDayAgo = now - 24 * 60 * 60 * 1000;
@@ -21,13 +28,14 @@ export default Factory.extend({
   }),
   metas: (() => {
     return [
-      [ 'service', randInt(20, 80) ],
-      [ 'medium', randInt(0, 3) ],
+      [ 'service', faker.random.arrayElement(SERVICES) ],
+      [ 'medium', faker.random.arrayElement(MEDIUMS) ],
       [ 'size', randInt(15, 2000) ],
+      [ 'ip.proto', faker.random.arrayElement(IP_PROTOS) ],
       [ 'ip.src', faker.internet.ip() ],
-      [ 'tcp.srcport', randInt(80, 3000) ],
+      [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
       [ 'ip.dst', faker.internet.ip() ],
-      [ 'tcp.dstport', randInt(80, 3000) ]
+      [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ]
     ];
   })
 });

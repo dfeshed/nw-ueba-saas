@@ -14,17 +14,26 @@ moduleForComponent('rsa-investigate/events-table-row', 'Integration | Component 
   integration: true
 });
 
-const item = { time: +(new Date()), foo: 'foo', bar: 'bar' };
+const item = { time: +(new Date()), foo: 'foo', bar: 'bar', 'has.alias': 'raw-value' };
 const height = 100;
 const relativeIndex = 0;
 const relativeIndexOffset = 0;
 const columns = [
   EmberObject.create({ field: 'time', width: 100 }),
   EmberObject.create({ field: 'foo', width: 200 }),
-  EmberObject.create({ field: 'bar', width: 300 })
+  EmberObject.create({ field: 'bar', width: 300 }),
+  EmberObject.create({ field: 'has.alias', width: 150 })
 ];
+const aliases = {
+  data: {
+    'has.alias': {
+      'raw-value': 'raw-value-alias'
+    }
+  }
+};
 const table = EmberObject.create({
-  columns
+  columns,
+  aliases
 });
 const i18n = EmberObject.create({
   t(str) {
@@ -39,7 +48,7 @@ function makeClickAction(assert) {
 }
 
 test('it renders a row of cells correctly', function(assert) {
-  assert.expect(5 + 4 * columns.length);
+  assert.expect(7 + 4 * columns.length);
 
   this.setProperties({
     i18n,
@@ -116,6 +125,20 @@ test('it renders a row of cells correctly', function(assert) {
       'Expected cell DOM data-field to match column model field name after model rearrange'
     );
   });
+
+  // Check that alias value is being rendered when provided.
+  assert.equal(
+    $root.find('.rsa-data-table-body-cell[data-field="has.alias"]').text().trim(),
+    String(aliases.data['has.alias'][item['has.alias']]).trim(),
+    'Expected value\'s alias in cell DOM'
+  );
+
+  // Check that raw value is rendered when alias is missing.
+  assert.equal(
+    $root.find('.rsa-data-table-body-cell[data-field="foo"]').text().trim(),
+    String(item.foo).trim(),
+    'Expected raw unaliased value in cell DOM'
+  );
 
   // Check that clickAction is invoked.
   $root.trigger('click');

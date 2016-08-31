@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import moment from 'moment';
 
-const { $, isEmpty } = Ember;
+const { $, isEmpty, merge } = Ember;
 
 /**
  * Formats a given value for a given field into a user friendly string for display.
@@ -18,7 +18,30 @@ function text(field, value, opts) {
     case 'time':
       return _time(value, opts);
     default:
-      return String(value);
+      return _alias(field, value, opts);
+  }
+}
+
+/**
+ * Maps a given field value pair to the corresponding alias value in a given lookup hash.
+ * @param {string} field The identifier of the field (e.g., 'ip.src').
+ * @param {*} value The data value corresponding to the field.
+ * @param {object} [opts] Optional hash of configuration settings.
+ * @param {object} [opts.aliases] Optional hash of lookup tables, keyed by field name.
+ * @param {boolean} [opts.appendRawValue=false] If true, raw value is appended after aliased value e.g., "foo (1)"
+ * @returns {string}
+ * @private
+ */
+function _alias(field, value, opts = {}) {
+  const lookups = opts.aliases;
+  const fieldLookup = lookups && lookups[field];
+  const valueLookup = fieldLookup && fieldLookup[value];
+  if (valueLookup === undefined) {
+    return String(value);
+  } else if (opts.appendRawValue) {
+    return `${valueLookup} (${value})`;
+  } else {
+    return valueLookup;
   }
 }
 
@@ -36,7 +59,7 @@ function tooltip(field, value, opts = {}) {
   if (field === 'size') {
     return _size(value, opts, true);
   } else {
-    return text(field, value, opts);
+    return text(field, value, merge({ appendRawValue: true }, opts));
   }
 }
 

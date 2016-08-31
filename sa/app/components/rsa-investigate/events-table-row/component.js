@@ -37,7 +37,8 @@ export default Component.extend(RowMixin, {
     const opts = {
       bytesLabel: i18n.t('investigate.bytes'),
       kbLabel: i18n.t('investigate.KB'),
-      defaultWidth: DEFAULT_WIDTH
+      defaultWidth: DEFAULT_WIDTH,
+      aliases: this.get('table.aliases.data')
     };
 
     // Clear any prior rendered cells. It's important to specify the class name here because we don't
@@ -90,6 +91,5 @@ export default Component.extend(RowMixin, {
   // Triggers an update of the cell DOM widths whenever the column model's width changes.
   _columnWidthDidChange: observer('table.columns.@each.width', function() {
     run(this, this._repaintCellWidths);
-    // this._repaintCellWidths();
   })
 });

@@ -107,8 +107,28 @@ function executeEventsRequest(request, inputs, events) {
   });
 }
 
+/**
+ * Given a Core service ID, computes the input parameters required to submit that request info about that service.
+ * For example, a list of meta keys, a hashtable of meta value aliases, etc.
+ * @param {string|number} endpointId The ID of the Core service whose info is to be queried.
+ * @public
+ */
+function makeServerInputsForEndpointInfo(endpointId) {
+  assert(
+    endpointId,
+    'Cannot make a core query without a service id.'
+  );
+
+  return {
+    filter: [
+      { field: 'endpointId', value: endpointId }
+    ]
+  };
+}
+
 export {
   buildEventStreamInputs,
   makeServerInputsForQuery,
-  executeEventsRequest
+  executeEventsRequest,
+  makeServerInputsForEndpointInfo
 };

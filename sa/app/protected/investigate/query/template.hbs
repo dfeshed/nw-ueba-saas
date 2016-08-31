@@ -42,7 +42,7 @@
     </aside>
     <section class="rsa-investigate-query__body-main">
       {{rsa-investigate/timeline chartData=model.resolvedEventTimelineData}}
-      {{#rsa-data-table lazy=true items=model.queryNode.value.results.events.data columnsConfig=model.eventColumns}}
+      {{#rsa-data-table lazy=true items=model.queryNode.value.results.events.data columnsConfig=model.eventColumns aliases=model.queryNode.value.aliases}}
         {{rsa-data-table/header}}
         {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
         {{rsa-data-table/load-more
