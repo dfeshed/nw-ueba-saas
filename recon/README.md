@@ -1,26 +1,22 @@
 # Recon
 
-This README outlines the details of collaborating on this Ember addon.
+The recon addon can be used by defining just one component in your template:
 
-## Installation
+```hbs
+{{recon-container
+  endpointId=endpointId
+  eventId=eventId
+  meta=model.meta
+  title=title}}
+```
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+### endpointId
 
-## Running
+### eventId
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+### meta
+`meta` is the array of meta to display for meta details
 
-## Running Tests
-
-* `npm test` (Runs `ember try:testall` to test your addon against multiple Ember versions)
-* `ember test`
-* `ember test --server`
-
-## Building
-
-* `ember build`
-
-For more information on using ember-cli, visit [http://ember-cli.com/](http://ember-cli.com/).
+### title
+`title` is the title to display, i.e. `Event Reconstruction (3 of 2567)`
+This is optional and will display just `Event Reconstruction`, if you pass nothing.
