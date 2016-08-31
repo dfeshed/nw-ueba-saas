@@ -10,6 +10,7 @@ import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
+import org.joda.time.DateTime;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
@@ -26,6 +27,8 @@ public interface UserService extends CachingService{
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	
 	public List<UserMachine> getUserMachines(String uid);
+
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
 		
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	
