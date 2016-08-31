@@ -130,11 +130,11 @@ public class UserScoreServiceImpl implements UserScoreService {
      * Get all the alerts of user with the contribution of each alert to the total score,
      * and sum all the points. Save the score to the alert and return the new score.
      *
-     * @param userName
+     * @param userId
      * @return the new user socre
      */
-    public double recalculateUserScore(String userName) {
-        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userName);
+    public double recalculateUserScore(String userId) {
+        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userId);
         double userScore = 0;
         for (Alert alert : alerts) {
             double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
@@ -152,7 +152,11 @@ public class UserScoreServiceImpl implements UserScoreService {
 
             userScore += alert.getUserScoreContribution();
         }
-        User user = userRepository.findByUsername(userName);
+        User user = userService.getUserById(userId);
+		if (user == null) {
+			logger.error("Failed to find user with id {}", userId);
+			return -1;
+		}
         user.setScore(userScore);
 
         userRepository.save(user);
@@ -312,12 +316,12 @@ public class UserScoreServiceImpl implements UserScoreService {
     public List<Pair<Double, Integer>> calculateAllUsersScores() {
         //Step 1 - get all relevant users
         logger.info("Get all relevant users");
-        Set<String> userNames = alertsService.getDistinctUserNamesFromAlertsRelevantToUserScore();
-        logger.info("Going to update score for {} users" + userNames.size());
+        Set<String> userIds = alertsService.getDistinctUserIdsFromAlertsRelevantToUserScore();
+        logger.info("Going to update score for {} users" + userIds.size());
         //Step 2 - Update all users
         Map<Double, AtomicInteger> scoresAtomicHistogram = new HashMap<>();
-        for (String userName : userNames) {
-            double score = this.recalculateUserScore(userName);
+        for (String userId : userIds) {
+            double score = this.recalculateUserScore(userId);
             //Add to
             AtomicInteger count = scoresAtomicHistogram.get(score);
             if (count == null) {
@@ -326,7 +330,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
-            userWithAlertService.recalculateNumberOfUserAlerts(userName);
+            userWithAlertService.recalculateNumberOfUserAlerts(userId);
         }
         logger.info("Finish updating user score");
 
@@ -383,16 +387,14 @@ public class UserScoreServiceImpl implements UserScoreService {
             throw new RuntimeException("UserScorePercentiles collection can have only one active document");
         }
         UserScorePercentiles userScorePercentiles = percentiles.get(0);
-        for (UserSingleScorePercentile percentile : userScorePercentiles.getUserScorePercentileCollection()) {
-            if (percentile!=null) {
-                severityNavigableMap.put((double) percentile.getMaxScoreInPercentile(), userScoreConfiguration.fetchSeverity(percentile.getPercentile()));
-            }
-        }
+		userScorePercentiles.getUserScorePercentileCollection().stream().filter(percentile -> percentile != null).
+				forEach(percentile -> severityNavigableMap.put((double) percentile.getMaxScoreInPercentile(),
+						userScoreConfiguration.fetchSeverity(percentile.getPercentile())));
         return severityNavigableMap;
     }
-
 
     public void setUserScoreConfiguration(UserScoreConfiguration userScoreConfiguration) {
         this.userScoreConfiguration = userScoreConfiguration;
     }
+
 }

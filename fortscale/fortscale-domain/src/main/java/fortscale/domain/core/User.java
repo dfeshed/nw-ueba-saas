@@ -101,6 +101,7 @@ public class User extends AbstractDocument {
 	Map<String, DateTime> logLastActivityMap = new HashMap<>();
 	
 	@Field(lastActivityField)
+	@Indexed
 	DateTime lastActivity;
 	
 	@Field(tagsField)

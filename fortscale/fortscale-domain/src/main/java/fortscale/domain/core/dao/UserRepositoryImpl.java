@@ -120,7 +120,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public List<User> findByGUIDs(Collection<String> guids) {
-		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField),guids);
+		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField), guids);
 	}
 
 	private List<User> findByUniqueField(String fieldName, Collection<?> vals) {
@@ -346,6 +346,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
+		Criteria criteria = Criteria.where(User.lastActivityField).gte(date);
+		Query query = new Query(criteria);
+		query.fields().include(User.usernameField);
+		query.fields().include(User.logLastActivityField);
+		return mongoTemplate.find(query, User.class);
 	}
 
 	@Deprecated

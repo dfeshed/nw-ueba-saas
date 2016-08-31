@@ -767,6 +767,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userMachines;
 	}
 
+	@Override
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
+		return userRepository.getUsersActiveSinceIncludingUsernameAndLogLastActivity(date);
+	}
 
 	@Override
 	public String findByNormalizedUserName(String normalizedUsername) {

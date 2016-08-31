@@ -68,7 +68,8 @@ public abstract class FetchJob {
 	private String tempfilename;
 	private LogRepository logRepository;
 
-	protected abstract boolean connect(String hostName, int port, String username, String password) throws Exception;
+	protected abstract boolean connect(String hostName, Integer port, String username, String password)
+			throws Exception;
 	protected abstract void fetch(String filename, String tempfilename, File outputDir, String returnKeys,
 								  String delimiter, boolean encloseQuotes, String earliest, String latest,
 								  String savedQuery) throws Exception;
@@ -328,11 +329,17 @@ public abstract class FetchJob {
 		if (savedQuery.startsWith("{") && savedQuery.endsWith("}")) {
 			savedQuery = SpringPropertiesUtil.getProperty(logRepository.getType().toLowerCase() + "." +
 					savedQuery.substring(1, savedQuery.length() - 1) + ".savedQuery");
+			if (savedQuery == null) {
+				throw new JobExecutionException("Could not find savedQuery configuration");
+			}
 		}
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		if (returnKeys.startsWith("{") && returnKeys.endsWith("}")) {
 			returnKeys = SpringPropertiesUtil.getProperty(logRepository.getType().toLowerCase() + "." +
 					returnKeys.substring(1, returnKeys.length() - 1) + ".returnKeys");
+			if (returnKeys == null) {
+				throw new JobExecutionException("Could not find returnKeys configuration");
+			}
 		}
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		// try and retrieve the delimiter value, if present in the job data map

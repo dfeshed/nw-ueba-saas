@@ -112,7 +112,7 @@ public class ApiUserController extends BaseController{
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
 		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
 
-		if (userRestFilter.getAddAlertsAndDevices() != null && userRestFilter.getAddAlertsAndDevices()) {
+		if (BooleanUtils.isTrue(userRestFilter.getAddAlertsAndDevices())) {
 			addAlertsAndDevices(usersList.getData());
 		}
 
@@ -557,7 +557,7 @@ public class ApiUserController extends BaseController{
 	private void addAlertsAndDevices(List<UserDetailsBean> users) {
 		for (UserDetailsBean userDetailsBean: users) {
 			User user = userDetailsBean.getUser();
-			Set<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
+			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
 			List<UserActivitySourceMachineDocument> userSourceMachines;
 			try {

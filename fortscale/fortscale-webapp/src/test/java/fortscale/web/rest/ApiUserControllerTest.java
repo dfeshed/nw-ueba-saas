@@ -245,7 +245,7 @@ public class ApiUserControllerTest {
 		user.setScore(90.0);
 		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
 		when(userWithAlertService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
-		Set<Alert> alerts = new HashSet<>();
+		List<Alert> alerts = new ArrayList<>();
 		Alert alert = new Alert("Alert", 1, 2, EntityType.User, USER_NAME, null, 0, 100, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "1", AlertTimeframe.Daily, 1, true);
 		alerts.add(alert);
