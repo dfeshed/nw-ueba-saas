@@ -21,12 +21,19 @@ function runEmberTestWithMockServer {
 
   info "Starting Express mock test server for $1"
   cd $1
+
+  # force reload of mock server
+  rm -rf node_modules/mock-server
+  npm i
+
+  # run mock server
   cd tests/server
   MOCK_PORT=$mockPort node server.js &
   checkError "Mock server for $1 refused to start"
   local PID=$!
   success "$1 mock server started, process id: $PID"
 
+  # now run the tests
   cd ../..
   info "Running 'ember test' for $1 on port $testemPort"
   MOCK_PORT=$mockPort ember test --test-port $testemPort

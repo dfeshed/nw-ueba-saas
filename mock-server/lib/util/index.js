@@ -1,9 +1,10 @@
-import { prepareConnectMessage, parseMessage, prepareMessage } from './message';
-import { discoverSubscriptions } from './subscriptions';
+import { createConnectMessage, parseMessage, createMessage } from './message';
+import { discoverSubscriptions, subscriptionList } from './subscriptions';
 
 export {
-  prepareConnectMessage,
+  createConnectMessage,
   parseMessage,
-  prepareMessage,
-  discoverSubscriptions
+  createMessage,
+  discoverSubscriptions,
+  subscriptionList
 };

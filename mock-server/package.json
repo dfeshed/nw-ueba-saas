@@ -21,11 +21,15 @@
     "babel-preset-stage-0": "6.5.0",
     "babel-register": "6.11.6",
     "body-parser": "~1.13.2",
+    "chalk": "1.1.3",
+    "chokidar": "1.6.0",
     "cors": "2.7.1",
     "express": "~4.13.1",
     "express-ws": "2.0.0",
     "jsesc": "2.2.0",
     "fs-readdir-recursive": "1.0.0",
-    "stompjs": "2.3.3"
+    "merge": "1.2.0",
+    "stompjs": "2.3.3",
+    "ws": "1.1.1"
   }
 }

@@ -1,12 +1,13 @@
 import jsesc from 'jsesc';
 import Stomp from 'stompjs';
+import merge from 'merge';
 
 /*
  * Utility function to prepare the headers for a SEND stomp message
  */
-const _createSendHeader = function(config, frame) {
+const _createSendHeader = function(subscription, frame) {
   return {
-    'destination': config.requestDestination,
+    'destination': subscription.requestDestination,
     'content-type': 'application/json;charset=UTF-8',
     'subscription': frame.headers.id
     // 'message-id': '6edw3evl-0', // not sure what this is for
@@ -16,9 +17,9 @@ const _createSendHeader = function(config, frame) {
 /*
  * Prepares message containing a body. This message is the crux of the response.
  */
-const prepareMessage = function(context, frame, body) {
+const _createMessageWithBody = function(subscription, frame, body) {
   // create headers
-  const headers = _createSendHeader(context, frame);
+  const headers = _createSendHeader(subscription, frame);
   // Stringify body
   const bodyStringified = JSON.stringify(body);
   // Stomp it
@@ -49,7 +50,7 @@ const parseMessage = function(msg) {
  * Prepares proper connect headers and turns
  * it into a proper Stomp/Sock message
  */
-const prepareConnectMessage = function() {
+const createConnectMessage = function() {
   const connectHeaders = {
     version: '1.1',
     'heart-beat': '0,0',
@@ -63,8 +64,30 @@ const prepareConnectMessage = function() {
   return msg;
 };
 
+/*
+ * Builds body of message and then calls _createMessageWithBody.
+ *
+ * If this is called with a body, that body is used.
+ *
+ * If no body is provided, then subscription.message is called in order
+ * to retrieve the body
+ */
+const createMessage = function(subscription, frame, body = null) {
+  const defaultBody = {
+    code: 0,
+    request: JSON.parse(frame.body)
+  };
+  const subscriptionBody = body || subscription.message(frame);
+
+  // merging subscriptionBody over default body,
+  // gives ability to override defaults in subscription
+  const finalBody = merge(defaultBody, subscriptionBody);
+
+  return _createMessageWithBody(subscription, frame, finalBody);
+};
+
 export {
-  prepareConnectMessage,
+  createConnectMessage,
   parseMessage,
-  prepareMessage
+  createMessage
 };

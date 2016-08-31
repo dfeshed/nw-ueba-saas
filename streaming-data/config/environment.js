@@ -27,6 +27,26 @@ module.exports = function(environment, appConfig) {
         'promise/_4': {
           subscriptionDestination: '/test/subscription/promise/_4',
           requestDestination: '/test/request/promise/_4'
+        },
+        'stream/_1': {
+          subscriptionDestination: '/test/subscription/stream/_1',
+          requestDestination: '/test/request/stream/_1'
+        },
+        'stream/_2': {
+          subscriptionDestination: '/test/subscription/stream/_2',
+          requestDestination: '/test/request/stream/_2'
+        },
+        'stream/_3': {
+          subscriptionDestination: '/test/subscription/stream/_3',
+          requestDestination: '/test/request/stream/_3'
+        },
+        'stream/_4': {
+          subscriptionDestination: '/test/subscription/stream/_4',
+          requestDestination: '/test/request/stream/_4'
+        },
+        'stream/_5': {
+          subscriptionDestination: '/test/subscription/stream/_5',
+          requestDestination: '/test/request/stream/_5'
         }
       }
     }

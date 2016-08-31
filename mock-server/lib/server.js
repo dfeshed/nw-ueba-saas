@@ -5,14 +5,22 @@ import express from 'express';
 import cors from 'cors';
 import logger from 'morgan';
 import bodyParser from 'body-parser';
+import WebSocket from 'ws';
 import eWs from 'express-ws';
+import chalk from 'chalk';
 
-import { parseMessage, prepareConnectMessage, discoverSubscriptions } from './util';
+import {
+  parseMessage,
+  createConnectMessage,
+  createMessage,
+  discoverSubscriptions,
+  subscriptionList
+} from './util';
 
 const start = function(subscriptionLocations) {
 
   // dynamically build subscription configuration based on user location input
-  const subscriptions = discoverSubscriptions(subscriptionLocations);
+  discoverSubscriptions(subscriptionLocations);
 
   const app = express();
   eWs(app);
@@ -40,44 +48,76 @@ const start = function(subscriptionLocations) {
       const { frame, command } = parseMessage(msg);
       switch (command) {
         case 'CONNECT':
-          ws.send(prepareConnectMessage());
+          ws.send(createConnectMessage());
           break;
-        case 'SUBSCRIBE':
+        case 'SUBSCRIBE': {
+          // get list of subscriptions and see if subscription being used is present
+          const subscriptions = subscriptionList();
           if (subscriptions[frame.headers.destination]) {
-            ws.sendHandler = subscriptions[frame.headers.destination];
+            ws.subscriptionHandler = subscriptions[frame.headers.destination];
           } else {
-            console.error(`No handler exists for [[ ${frame.headers.destination} ]]`);
+            console.error(chalk.red(`No handler exists for [[ ${frame.headers.destination} ]]`));
           }
           break;
+        }
         case 'SEND':
-          if (ws.sendHandler) {
-            const outMsg = ws.sendHandler.createSendMessage(frame);
-            setTimeout(function() {
-              if (!ws.clientDisconnected) {
-                ws.send(outMsg);
-              } else {
-                console.info('Client disconnected, not sending message');
-              }
-            }, ws.sendHandler.delay || 1);
-          }
+          _handleMessage(ws, frame);
           break;
         case 'DISCONNECT':
-          ws.clientDisconnected = true;
-
           // DISCONNECT means the client has disconnected
           // so terminating should not be necessary
           // ws.terminate();
           break;
         default:
-          console.warn('UNUSED COMMAND/FRAME', command, frame);
+          console.warn(chalk.yellow('UNUSED COMMAND/FRAME', command, frame));
       }
     });
   });
 
   // error handlers
   app.listen(process.env.MOCK_PORT || 9999, function() {
-    console.info('We ready to go...');
+    console.info(chalk.green('Mock server ready ready to go!'));
   });
+};
+
+const _handleMessage = function(ws, frame) {
+  if (ws.subscriptionHandler) {
+
+    // Create closure over ws state for possible
+    // sending of sendMessage to `page` funtion
+    const sendMessage = function(body = null) {
+      if (!body && ws.page) {
+        console.error(
+          chalk.red(
+            `If calling \`send\` function from \`page\`, must pass body object to callback, not processing this request any further: ${ws.subscriptionHandler.subscriptionDestination}`));
+        return;
+      }
+
+      const outMsg = createMessage(ws.subscriptionHandler, frame, body);
+      setTimeout(function() {
+        if (isClosed(ws)) {
+          console.info('Client disconnected, not sending message');
+        } else {
+          ws.send(outMsg);
+        }
+      }, ws.subscriptionHandler.delay || 1);
+    };
+
+    // single message back
+    if (ws.subscriptionHandler.message) {
+      sendMessage();
+      return;
+    }
+
+    // allow subscription to paginate on its own
+    if (ws.subscriptionHandler.page) {
+      ws.subscriptionHandler.page(frame, sendMessage);
+    }
+  }
+};
+
+const isClosed = function(ws) {
+  return ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING;
 };
 
 export {

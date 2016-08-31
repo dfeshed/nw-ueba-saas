@@ -15,10 +15,8 @@ require('babel-register')({
 });
 
 var server = require('./lib/server');
-var util = require('./lib/util');
 
 // The public interface of mock-server
 module.exports = {
   startServer: server.start,
-  prepareMessage: util.prepareMessage
 }
