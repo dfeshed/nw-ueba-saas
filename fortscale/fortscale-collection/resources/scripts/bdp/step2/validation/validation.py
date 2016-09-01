@@ -1,10 +1,10 @@
 import itertools
+import time
 import os
 import sys
 
 import impala_stats
 import mongo_stats
-import time
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -35,9 +35,10 @@ def _calc_dict_diff(first, second):
     return diff
 
 
-def validate_all_buckets_synced(host, end_time_epoch, use_start_time=False):
+def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time=False):
     logger.info('validating that all buckets inside FeatureBucketMetadata have been synced...')
     is_synced = mongo_stats.all_buckets_synced(host=host,
+                                               start_time_epoch=start_time_epoch,
                                                end_time_epoch=end_time_epoch,
                                                use_start_time=use_start_time)
     logger.info('validation ' + ('succeeded' if is_synced else 'failed'))
@@ -171,6 +172,7 @@ def block_until_everything_is_validated(host,
 def _validate_everything(host, start_time_epoch, end_time_epoch, timeout, polling_interval, data_sources, logger):
     logger.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
     is_valid = validate_all_buckets_synced(host=host,
+                                           start_time_epoch=start_time_epoch,
                                            end_time_epoch=end_time_epoch)
     if is_valid:
         validate_no_missing_events(host=host,
