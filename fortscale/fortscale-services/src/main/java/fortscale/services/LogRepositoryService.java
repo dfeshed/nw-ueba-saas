@@ -9,6 +9,7 @@ import java.util.List;
  */
 public interface LogRepositoryService {
 
+	LogRepository getLogRepositoryFromDatabase(String id);
     List<LogRepository> getLogRepositoriesFromDatabase();
     void saveLogRepositoriesInDatabase(List<LogRepository> logRepositories);
     String canConnect(LogRepository logRepository);

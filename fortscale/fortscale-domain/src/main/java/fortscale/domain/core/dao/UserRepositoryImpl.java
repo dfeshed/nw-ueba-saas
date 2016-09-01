@@ -12,6 +12,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -177,7 +178,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public List<User> findByGUIDs(Collection<String> guids) {
-		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField),guids);
+		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField), guids);
 	}
 
 	private List<User> findByUniqueField(String fieldName, Collection<?> vals) {
@@ -416,6 +417,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
+		Criteria criteria = Criteria.where(User.lastActivityField).gte(date);
+		Query query = new Query(criteria);
+		query.fields().include(User.usernameField);
+		query.fields().include(User.logLastActivityField);
+		return mongoTemplate.find(query, User.class);
 	}
 
 	@Deprecated
@@ -703,10 +713,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			criteriaList.add(new Criteria(User.followedField).is(userRestFilter.getIsWatched()));
 		}
 
-		if (BooleanUtils.isTrue(userRestFilter.getIsScored())) {
-			criteriaList.add(new Criteria(User.scoreField).gt(0));
-		} else if (BooleanUtils.isFalse(userRestFilter.getIsScored())) {
-			criteriaList.add(new Criteria(User.scoreField).is(0));
+		if (userRestFilter.getSeverity() != null){
+			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()).lte(userRestFilter.getMaxScore()));
+		}else if (userRestFilter.getMinScore() != null){
+			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}
 
 		return criteriaList;

@@ -43,6 +43,22 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 		}
 	}
 
+	private Double convertAggregatedFeatureValueToDouble(Object featureValue) {
+		if (featureValue instanceof Double) {
+			return (Double)featureValue;
+		} else if (featureValue instanceof Float) {
+			logger.debug("Expected featureValue Double got Float");
+			return ((Float)featureValue).doubleValue();
+		} else if (featureValue instanceof Long) {
+			logger.debug("Expected featureValue Double got Long");
+			return ((Long)featureValue).doubleValue();
+		} else if (featureValue instanceof Integer) {
+			logger.debug("Expected featureValue Double got Integer");
+			return ((Integer)featureValue).doubleValue();
+		}
+		throw new RuntimeException("Cannot convert featureValue to Double");
+	}
+
 	@Override
 	protected GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName) {
 		GenericHistogram histogram = new GenericHistogram();
@@ -53,10 +69,12 @@ public class UserActivityNetworkAuthenticationHandler extends UserActivityBaseHa
 			final FeatureValue featureValue = ((Feature) objectToConvert).getValue();
 			switch (histogramFeatureName) {
 				case AUTHENTICATION_HISTOGRAM_FEATURE_NAME_SUCCESS:
-					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES, (Double) ((AggrFeatureValue) featureValue).getValue());
+					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_SUCCESSES,
+							convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
 					break;
 				case AUTHENTICATION_HISTOGRAM_FEATURE_NAME_FAILURE:
-					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES, (Double) ((AggrFeatureValue) featureValue).getValue());
+					histogram.add(UserActivityNetworkAuthenticationDocument.FIELD_NAME_HISTOGRAM_FAILURES,
+							convertAggregatedFeatureValueToDouble(((AggrFeatureValue) featureValue).getValue()));
 					break;
 				default:
 					String errorMessage = String.format("Can't convert object %s to histogram. value is invalid: %s", objectToConvert, ((AggrFeatureValue) featureValue).getValue());

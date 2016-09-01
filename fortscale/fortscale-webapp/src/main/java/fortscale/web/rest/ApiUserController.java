@@ -38,6 +38,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.ws.rs.core.Response;
 import java.io.OutputStreamWriter;
 import java.time.ZonedDateTime;
 import java.util.*;
@@ -131,28 +132,32 @@ public class ApiUserController extends BaseController{
 		return bean;
 	}
 
-	@RequestMapping(value = "/{filterName}/favoriteFilter", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity addFavoriteFilter(@RequestBody UserFilter userFilter, @PathVariable String filterName) {
+	@RequestMapping(value = "/{filterName}/favoriteFilter", method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Response> addFavoriteFilter(@RequestBody UserFilter userFilter, @PathVariable String filterName) {
 		try {
 			userService.saveFavoriteFilter(userFilter, filterName);
 		} catch (DuplicateKeyException e) {
-			return new ResponseEntity("The filter name already exists", HttpStatus.BAD_REQUEST);
+			return ResponseEntity.status(HttpStatus.CONFLICT)
+					.body(Response.status(javax.ws.rs.core.Response.Status.CONFLICT).entity("The filter name already exists").build());
+
 		} catch (Exception e){
-			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.status(Response.Status.INTERNAL_SERVER_ERROR).build());
 		}
 
-		return new ResponseEntity(HttpStatus.OK);
+		return ResponseEntity.status(HttpStatus.OK).body(Response.status(Response.Status.OK).build());
 	}
 
-	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.DELETE)
-	public ResponseEntity deleteFavoriteFilter(@RequestParam(value = "filter_name") String filterName) {
+	@RequestMapping(value = "/favoriteFilter/{filterId}", method = RequestMethod.DELETE)
+	public ResponseEntity<Response> deleteFavoriteFilter(@PathVariable String filterId) {
 
-		long lineDeleted = userService.deleteFavoriteFilter(filterName);
+		long lineDeleted = userService.deleteFavoriteFilter(filterId);
 
 		if (lineDeleted > 0){
-			return new ResponseEntity(HttpStatus.OK);
+			return ResponseEntity.status(HttpStatus.OK).body(Response.status(Response.Status.OK).build());
 		}
-		return new ResponseEntity("No documents deleted", HttpStatus.BAD_REQUEST);
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+				.body(Response.status(javax.ws.rs.core.Response.Status.BAD_REQUEST).entity("No documents deleted").build());
 	}
 
 	@RequestMapping(value = "/favoriteFilter", method = RequestMethod.GET)
@@ -258,9 +263,9 @@ public class ApiUserController extends BaseController{
 	 */
 	@RequestMapping(value="/{addTag}/{tagName}/tagUsers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
-	public ResponseEntity addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag, @PathVariable String tagName) throws JSONException {
+	public Response addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag, @PathVariable String tagName) throws JSONException {
 		if (StringUtils.isEmpty(tagName)){
-			return new ResponseEntity("The tag name cannot be empty", HttpStatus.BAD_REQUEST);
+			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
 		}
 
 		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null);
@@ -269,7 +274,7 @@ public class ApiUserController extends BaseController{
 		usersByFilter.stream().forEach(user -> {
 			addTagToUser(user, tagName, addTag, userTagService);
 		});
-		return new ResponseEntity(HttpStatus.OK);
+		return Response.status(Response.Status.OK).build();
 	}
 
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
@@ -446,7 +451,7 @@ public class ApiUserController extends BaseController{
 		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
 
 		UserRestFilter filter = new UserRestFilter();
-		filter.setIsScored(true);
+		filter.setMinScore(0d);
 
 		List<User> scoredUsers = userService.findUsersByFilter(filter, null, null);
 
@@ -508,11 +513,12 @@ public class ApiUserController extends BaseController{
 			Set response type as CSV
 		 */
 		String headerKey = "Content-Disposition";
-		String headerValue = String.format("attachment; filename=\"%s_%s\"",
+		String headerValue = String.format("attachment; filename=\"%s_%s.csv\"",
 				USERS_CSV_FILE_NAME, ZonedDateTime.now().toString());
 		httpResponse.setHeader(headerKey, headerValue);
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 
+		filter.setAddAlertsAndDevices(true);
 		DataBean<List<UserDetailsBean>> users= getUsers(filter);
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse.getOutputStream()));
@@ -540,7 +546,7 @@ public class ApiUserController extends BaseController{
 
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
-	public ResponseEntity followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch){
+	public Response followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch){
 		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
 
 		if (CollectionUtils.isNotEmpty(users.getData())) {
@@ -551,7 +557,7 @@ public class ApiUserController extends BaseController{
 			});
 		}
 
-		return new ResponseEntity(HttpStatus.OK);
+		return Response.status(Response.Status.OK).build();
 	}
 
 	private void addAlertsAndDevices(List<UserDetailsBean> users) {
