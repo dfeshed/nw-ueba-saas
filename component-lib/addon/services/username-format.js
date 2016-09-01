@@ -14,8 +14,8 @@ export default Service.extend({
 
   session: service(),
 
-  systemUsername: computed('session.session.content.authenticated.username', function() {
-    return this.get('session.session.content.authenticated.username');
+  systemUsername: computed('session.session.content.authenticated.user.name', function() {
+    return this.get('session.session.content.authenticated.user.name');
   }),
 
   friendlyUsername: null,

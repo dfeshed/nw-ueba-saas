@@ -40,7 +40,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
     // We don't want to lose the persisted session data in localStorage, so we merge it on top of whatever other
     // info we need to fetch here.
     return new RSVP.Promise(function(resolve, reject) {
-      if (!isEmpty(data.username)) {
+      if (!isEmpty(data.user)) {
         resolve(data);
       } else {
         reject();
