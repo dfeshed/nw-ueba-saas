@@ -11,7 +11,7 @@ export default function(config) {
   config.post('/oauth/token', function(db, request) {
     let params = parsePostData(request.requestBody);
     if (db.logins.where({ username: params.username, password: params.password })[0]) {
-      return { 'access_token': 'success', username: params.username, password: null };
+      return { 'access_token': 'success','token_type': 'bearer','refresh_token': 'success','expires_in': 43199,'user': { 'id': 'local','name': 'Local Service','description': 'The local service administrator' } };
     } else {
       return new Response(401,  { message: 'invalid credentials' });
     }
