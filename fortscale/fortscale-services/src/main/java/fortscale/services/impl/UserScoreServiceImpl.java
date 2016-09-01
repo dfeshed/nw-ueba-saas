@@ -6,18 +6,18 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
+import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import fortscale.utils.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -78,6 +78,9 @@ public class UserScoreServiceImpl implements UserScoreService {
 
     @Autowired
     private ApplicationConfigurationHelper applicationConfigurationHelper;
+
+    @Autowired
+    private UserService userService;
 
     private UserScoreConfiguration userScoreConfiguration;
 
@@ -329,7 +332,6 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
-            userWithAlertService.recalculateNumberOfUserAlerts(userId);
         }
         logger.info("Finish updating user score");
 
