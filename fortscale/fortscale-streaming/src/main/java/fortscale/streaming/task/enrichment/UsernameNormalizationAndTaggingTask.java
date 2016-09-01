@@ -65,8 +65,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	// Streaming task metrics. Note some fields are update by this class and some by the derived classes
 	protected UsernameNormalizationAndTaggingTaskMetrics taskMetrics;
 
-	private List<String> tags;
-
 	/**
 	 * Map between (update) input topic name and relevant caching service
 	 * Uses for updates arriving from kafka update topic
@@ -133,10 +131,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			topicToServiceMap.put(getConfigString(config,  String.format(topicConfigKeyFormat, samAccountKey)), samAccountNameService);
 		}
 
-		tags = new ArrayList<>();
-		// the name of the boolean field as saved to table
-		tags.addAll(config.subset("fortscale.username.tags.", false).entrySet().stream().map(tagConfigField ->
-				resolveStringValue(config, tagConfigField.getKey(), res)).collect(Collectors.toList()));
 	}
 
 
@@ -206,13 +200,6 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 			} else {
 				taskMetrics.normalizedUsernameAlreadyExistsMessages++;
-			}
-
-			// add the default tags as false to the event
-			if (CollectionUtils.isNotEmpty(tags)) {
-				for (String tag : tags) {
-					message.put(tag, false);
-				}
 			}
 
 			// send the event to the output topic

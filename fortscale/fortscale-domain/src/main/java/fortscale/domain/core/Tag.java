@@ -25,6 +25,7 @@ public class Tag extends AbstractDocument{
 	public static final String createsIndicatorField = "createsIndicator";
 	public static final String rulesField = "rules";
 	public static final String activeField = "active";
+	public static final String isFixedField = "isFixed";
 
 	public static final String ADMIN_TAG = "admin";
 	public static final String EXECUTIVE_TAG = "executive";
@@ -38,19 +39,13 @@ public class Tag extends AbstractDocument{
 		createsIndicator = false;
 		rules = new ArrayList<>();
 		active = true;
+		isFixed = false;
 	}
 
-	public Tag(String name, String displayName) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean isFixed) {
 		this.name = name;
 		this.displayName = displayName;
-		createsIndicator = false;
-		rules = new ArrayList<>();
-		active = true;
-	}
-
-	public Tag(String name, String displayName, boolean setCreatesIndicator) {
-		this.name = name;
-		this.displayName = displayName;
+		this.isFixed = isFixed;
 		createsIndicator = setCreatesIndicator ? true : false;
 		rules = new ArrayList<>();
 		active = true;
@@ -67,6 +62,9 @@ public class Tag extends AbstractDocument{
 
 	@NotNull
 	private Boolean active;
+
+	@NotNull
+	private Boolean isFixed;
 
 	@NotNull
 	private List<String> rules;
@@ -109,6 +107,14 @@ public class Tag extends AbstractDocument{
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	public Boolean getIsFixed() {
+		return isFixed;
+	}
+
+	public void setIsFixed(Boolean isFixed) {
+		this.isFixed = isFixed;
 	}
 
 	@Override

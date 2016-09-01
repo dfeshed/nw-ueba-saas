@@ -163,9 +163,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//add default tags to system
-		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true));
-		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true));
-		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true));
+		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true, false));
+		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true, false));
+		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true, false));
 		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
 		if (!isLazyUpload) {
 			refresh();
