@@ -93,11 +93,14 @@ import java.util.Set;
 		return userService.countUsersByFilter(userRestFilter, relevantUsers);
 	}
 
-	@Override public void recalculateNumberOfUserAlerts(String userName) {
+	@Override
+	public void recalculateNumberOfUserAlerts(String userName) {
 		List<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
 		User user = userService.findByUsername(userName);
 
-		user.setAlertsCount(alerts.size());
-		userService.saveUser(user);
+		if (alerts != null) {
+			user.setAlertsCount(alerts.size());
+			userService.saveUser(user);
+		}
 	}
 }
