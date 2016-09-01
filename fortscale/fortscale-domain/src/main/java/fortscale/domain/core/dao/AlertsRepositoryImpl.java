@@ -320,9 +320,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		Query query = buildQueryByUserNameAndFeedback(userName, feedbackSet);
 		query.fields().exclude(Alert.evidencesField);
 
-
-		List<Alert> alerts = mongoTemplate.find(query, Alert.class);
-		return alerts;
+		return mongoTemplate.find(query, Alert.class);
 	}
 
 	private Query buildQueryByUserNameAndFeedback(String userName, Set<String> feedbackSet) {
