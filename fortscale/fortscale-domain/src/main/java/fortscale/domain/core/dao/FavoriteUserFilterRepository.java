@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface FavoriteUserFilterRepository
 		extends MongoRepository<FavoriteUserFilter, String>, FavoriteUserFilterRepositoryCustom {
-	long deleteByFilterName(String filterName);
+	long deleteById(String filterId);
 }

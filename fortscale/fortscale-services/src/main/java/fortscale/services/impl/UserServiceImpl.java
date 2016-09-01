@@ -783,6 +783,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userMachines;
 	}
 
+	@Override
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
+		return userRepository.getUsersActiveSinceIncludingUsernameAndLogLastActivity(date);
+	}
 
 	@Override
 	public String findByNormalizedUserName(String normalizedUsername) {
@@ -1223,7 +1227,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override public long deleteFavoriteFilter(String filterName) {
-		return favoriteUserFilterRepository.deleteByFilterName(filterName);
+		return favoriteUserFilterRepository.deleteById(filterName);
 	}
 
 	@Override public String getUserId(String username) {

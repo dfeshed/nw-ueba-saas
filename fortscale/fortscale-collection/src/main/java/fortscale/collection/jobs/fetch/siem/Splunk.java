@@ -28,9 +28,9 @@ public class Splunk extends FetchJob {
 	private boolean runSavedQuery;
 
 	@Override
-	protected boolean connect(String hostName, int port, String username, String password) throws Exception {
+	protected boolean connect(String hostName, Integer port, String username, String password) throws Exception {
 		// connect to Splunk
-		int portNumber = port == 0 ? DEFAULT_PORT : port;
+		int portNumber = port == null ? DEFAULT_PORT : port;
 		String user = username == null ? DEFAULT_USER : username;
 		logger.debug("trying to connect Splunk at {}@{}:{}", username, hostName, port);
 		splunkApi = new SplunkApi(hostName, portNumber, user, EncryptionUtils.decrypt(password));
