@@ -773,8 +773,12 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		return userMachines;
 	}
-	
-	
+
+	@Override
+	public List<User> getUsernamesActiveSince(DateTime date) {
+		return userRepository.getUsernamesActiveSince(date);
+	}
+
 	@Override
 	public String findByNormalizedUserName(String normalizedUsername) {
 		return userRepository.getUserIdByNormalizedUsername(normalizedUsername);

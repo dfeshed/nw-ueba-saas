@@ -38,9 +38,12 @@ public interface UserRepositoryCustom {
 	public User findByAdEmailAddress(EmailAddress emailAddress);
 	
 	public User getLastActivityAndLogUserNameByUserName(String userName);
+
+	public List<User> getUsernamesActiveSince(DateTime date);
+
 	@Deprecated
 	public User getLastActivityByUserName(String eventId, String username);
-	
+
 	public List<User> findByAdLastnameContaining(String lastNamePrefix);
 	
 	public User findByAdUserPrincipalName(String adUserPrincipalName);
