@@ -10,26 +10,28 @@ import java.util.stream.Stream;
 public class SMARTScoreMappingModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", Map.class.getSimpleName());
-    static final double EPSILON = 0.00000001;
+    static final double EPSILON = Double.MIN_VALUE;
 
-    private double minThreshold;
-    private double minMaximalScore;
+	private SMARTScoreMappingModelBuilderConf config;
 
     public SMARTScoreMappingModelBuilder(SMARTScoreMappingModelBuilderConf config) {
-        minThreshold = config.getMinThreshold();
-        minMaximalScore = config.getMinMaximalScore();
+		this.config = config;
     }
 
     @Override
     public SMARTScoreMappingModel build(Object modelBuilderData) {
         Map<Long, List<Double>> dateToHighestScores = castModelBuilderData(modelBuilderData);
         SMARTScoreMappingModel model = new SMARTScoreMappingModel();
-        double threshold = Math.max(minThreshold, calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
-        double maximalScore = Math.max(minMaximalScore, calcMaximalScore(filterEmptyDays(dateToHighestScores)));
-        if (threshold > maximalScore) {
-            maximalScore = threshold;
-        }
-        model.init(threshold, maximalScore);
+		double threshold;
+		double maximalScore;
+		if (filterEmptyDays(dateToHighestScores).findAny().isPresent()) {
+			threshold = Math.max(config.getMinThreshold(), calcThreshold(filterEmptyDays(dateToHighestScores)) + EPSILON);
+			maximalScore = Math.max(config.getMinMaximalScore(), calcMaximalScore(filterEmptyDays(dateToHighestScores)));
+		} else {
+			threshold = config.getDefaultThreshold();
+			maximalScore = config.getDefaultMaximalScore();
+		}
+		model.init(threshold, maximalScore);
         return model;
     }
 
@@ -42,14 +44,14 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
         return dateToHighestScores
                 .mapToDouble(scores -> scores.get(0))
                 .average()
-                .orElse(50 - EPSILON);
+                .getAsDouble();
     }
 
     private double calcMaximalScore(Stream<List<Double>> dateToHighestScores) {
         return dateToHighestScores
                 .mapToDouble(scores -> scores.get(scores.size() - 1))
                 .max()
-                .orElse(100);
+                .getAsDouble();
     }
 
     protected Map<Long, List<Double>> castModelBuilderData(Object modelBuilderData) {
