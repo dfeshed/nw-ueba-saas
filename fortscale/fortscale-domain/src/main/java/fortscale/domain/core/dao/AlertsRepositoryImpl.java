@@ -276,11 +276,11 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 
     @Override
-    public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
+    public Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore(){
 
         Query query = getQueryForAlertsRelevantToUserScore(null);
 
-        List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField,query.getQueryObject());
+        List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityIdField,query.getQueryObject());
         return  new HashSet<>(userNames);
     }
 

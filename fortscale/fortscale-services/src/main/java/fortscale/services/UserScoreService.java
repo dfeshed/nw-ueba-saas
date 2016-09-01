@@ -13,7 +13,7 @@ public interface UserScoreService {
 	
 
 
-    double recalculateUserScore(String userName);
+    double recalculateUserScore(String userId);
     double getUserScoreContributionForAlertSeverity(Severity severity, AlertFeedback feedback, long alertStartDate);
     Alert updateAlertContirubtion(Alert alert);
 
