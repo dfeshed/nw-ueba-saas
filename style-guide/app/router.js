@@ -65,6 +65,7 @@ Router.map(function() {
       this.route('yAxis');
       this.route('lineSeries');
       this.route('areaSeries');
+      this.route('grids');
     });
   });
 

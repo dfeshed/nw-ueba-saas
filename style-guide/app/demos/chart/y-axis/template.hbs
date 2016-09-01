@@ -6,13 +6,13 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member title="default axis"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
           {{rsa-y-axis scale=yScale}}
         {{/rsa-chart}}
 
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
             <div>
               &#123;{rsa-y-axis scale=yScale}}
             </div>
@@ -21,13 +21,13 @@
         </code>
       {{/spec-member}}
       {{#spec-member title="rotation"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
           {{rsa-y-axis scale=yScale rotation=-45}}
         {{/rsa-chart}}
 
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
             <div>
               &#123;{rsa-y-axis scale=yScale rotation=-45}}
             </div>

@@ -33,6 +33,11 @@
     &-background {
       fill: transparent;
     }
+    .grids {
+      .x line {
+        stroke-dasharray: 3;
+      }
+    }
     .rsa-y-axis {
       text {
         text-anchor: start;

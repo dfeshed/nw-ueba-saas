@@ -2,4 +2,15 @@
   /* Default sizes. These are copied from component.js but can be overwritten as needed. */
   width: 600px;
   height: 150px;
+
+  .grids {
+    line {
+      stroke: rsa-color(grey, lightest);
+      stroke-opacity: 0.5;
+      shape-rendering: crispEdges;
+    }
+    path {
+      stroke-width: 0;
+    }
+  }
 }

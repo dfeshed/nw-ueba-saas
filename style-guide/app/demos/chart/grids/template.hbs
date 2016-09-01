@@ -1,0 +1,54 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="example"}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+          {{rsa-chart-grids xScale=xScale yScale=yScale width=graphWidth height=graphHeight}}
+        {{/rsa-chart}}
+        <code>
+          <div>
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            <div>
+              &#123;{rsa-chart-grids xScale=xScale yScale=yScale width=graphWidth height=graphHeight}}
+            </div>
+            &#123;{/rsa-chart}}
+          </div>
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="hide X grid lines"}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+          {{rsa-chart-grids showXGrid=false yScale=yScale width=graphWidth}}
+        {{/rsa-chart}}
+        <code>
+          <div>
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            <div>
+              &#123;{rsa-chart-grids showXGrid=false yScale=yScale width=graphWidth}}
+            </div>
+            &#123;{/rsa-chart}}
+          </div>
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="hide Y grid lines"}}
+        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+          {{rsa-chart-grids showYGrid=false xScale=xScale height=graphHeight}}
+        {{/rsa-chart}}
+        <code>
+          <div>
+            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            <div>
+              &#123;{rsa-chart-grids showYGrid=false xScale=xScale height=graphHeight}}
+            </div>
+            &#123;{/rsa-chart}}
+          </div>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>
