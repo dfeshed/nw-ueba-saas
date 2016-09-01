@@ -16,6 +16,10 @@ module.exports = {
   included: function(app) {
     this._super.included.apply(this, arguments);
 
+    // Websocket libraries: SockJS & STOMP
+    app.import(app.bowerDirectory + "/sockjs/sockjs.js");
+    app.import(app.bowerDirectory + "/stomp-websocket/lib/stomp.js");
+
     this.eachAddonInvoke('included', arguments);
   },
   init: function() {

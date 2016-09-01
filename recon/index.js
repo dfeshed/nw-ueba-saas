@@ -21,5 +21,6 @@ module.exports = {
     this.options = this.options || {};
     this.options.babel = this.options.babel || {};
     this.options.babel.stage = 0;
-  }
+  },
+  socketRouteGenerator: require('./config/socketRoutes')
 };

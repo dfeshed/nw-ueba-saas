@@ -15,8 +15,12 @@ require('babel-register')({
 });
 
 var server = require('./lib/server');
+var destinations = require('./shared/destinations');
 
 // The public interface of mock-server
 module.exports = {
   startServer: server.start,
-}
+  shared: {
+    destinations
+  }
+};
