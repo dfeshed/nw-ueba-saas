@@ -17,5 +17,12 @@ export default EmberObject.extend({
    * @type {object}
    * @public
    */
-  item: undefined
+  item: undefined,
+
+  /**
+   * ID of the Core service (broker, concentrator, etc) from which the `item` record came from.
+   * @type {object}
+   * @public
+   */
+  endpointId: undefined
 });

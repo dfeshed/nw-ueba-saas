@@ -12,13 +12,15 @@ export default Mixin.create({
   actions: {
     /**
      * Updates state in order to reveal the Recon UI and feed it a server event record.
+     * @param {string} endpointId The Core service ID from which the event came from.
      * @param {object} item The Core event object to be reconstructed in the Recon UI.
      * @public
      */
-    reconOpen(item) {
+    reconOpen(endpointId, item) {
       this.get('state.recon').setProperties({
         isOpen: true,
         item,
+        endpointId,
         metaPanelSizeWas: this.get('state.meta.panelSize')
       });
       this.send('metaPanelSize', 'min');
@@ -31,7 +33,8 @@ export default Mixin.create({
     reconClose(restoreMetaPanelSize = false) {
       this.get('state.recon').setProperties({
         isOpen: false,
-        item: undefined
+        item: undefined,
+        endpointId: undefined
       });
       if (restoreMetaPanelSize) {
         this.send('metaPanelSize', this.get('state.recon.metaPanelSizeWas'));

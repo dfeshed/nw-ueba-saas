@@ -55,7 +55,7 @@
         items=model.queryNode.value.results.events.data
         columnsConfig=model.eventColumns
         aliases=model.queryNode.value.aliases
-        onRowClick=(route-action "reconOpen")}}
+        onRowClick=(route-action "reconOpen" model.queryNode.value.definition.serviceId)}}
           {{rsa-data-table/header}}
           {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
           {{rsa-data-table/load-more
@@ -71,11 +71,14 @@
       </section>
     </section>
     <aside class="rsa-investigate-query__body-slave">
-      {{recon-container
-        eventId=model.recon.item.sessionId
-        meta=model.recon.item.metas
-        language=model.queryNode.value.language
-        aliases=model.queryNode.value.aliases}}
+      {{#if model.recon.item}}
+        {{recon-container
+          endpointId=model.recon.endpointId
+          eventId=model.recon.item.sessionId
+          meta=model.recon.item.metas
+          language=model.queryNode.value.language
+          aliases=model.queryNode.value.aliases}}
+      {{/if}}
     </aside>
   </section>
   <footer class="rsa-investigate-query__footer">
