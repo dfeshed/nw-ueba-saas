@@ -181,6 +181,8 @@
 
 .rsa- {
   &logo {
+    text-align: center;
+
     /* fudge factor, to compensate because logo is not horizontally symmetrical */
     /* margin-left: 7px; */
 
@@ -189,10 +191,6 @@
       display: inline-block;
       width: 100%;
       height: 100%;
-/*
-      width: 107px;
-      height: 52px;
-      */
     }
 
     /* The red brick polygon. */
@@ -208,11 +206,6 @@
     &__letter {
       fill: rsa-color(red, base, $rsa-opaque);
       stroke-dasharray: 150,150;
-    }
-
-    /* The "Registered Trademark" symbol beside the red brick. */
-    &__registered {
-      fill: rsa-color(red, base, $rsa-opaque);
     }
 
     /* Optional title text outside the SVG area. */
@@ -231,17 +224,12 @@
       }
 
       .rsa-logo__letter {
-        @include rsa-vendor-prefix (animation, rsa-logo-fillredletter 1000ms linear 0s 1 both);
-      }
-
-      /* The "Registered Trademark" symbol beside the red brick. */
-      .rsa-logo__registered {
-        @include rsa-vendor-prefix(animation, rsa-fade-in 300ms linear 2000ms 1 both);
+        @include rsa-vendor-prefix(animation, rsa-logo-fillredletter 1000ms linear 0s 1 both);
       }
 
       /* Optional title text outside the SVG area. */
       .rsa-logo__title {
-        @include rsa-vendor-prefix (animation, rsa-logo-spreadletters 3000ms ease-out 1000ms 1 both);
+        @include rsa-vendor-prefix(animation, rsa-logo-spreadletters 3000ms ease-out 1000ms 1 both);
       }
     }
   }
@@ -257,9 +245,6 @@
       }
       &__letter {
         -ms-animation: rsa-fade-in 1000ms linear 1000ms 1 both;
-      }
-      &__registered {
-        -ms-animation: rsa-fade-in 300ms linear 2000ms 1 both;
       }
     }
   }

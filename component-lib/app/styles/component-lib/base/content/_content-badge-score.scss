@@ -2,9 +2,15 @@
   position: relative;
   overflow: hidden;
   padding: rsa-whitespace(less);
+  box-sizing: border-box;
+  height: 100%;
 
   svg {
     margin: 0;
+    box-sizing: border-box;
+    position: relative;
+    height: 100%;
+    width: 100%;
 
     circle {
       stroke: $contentBadgeScoreCircleColor;
@@ -51,14 +57,14 @@
 
   &.is-larger {
     .score {
-      font-size: 6rem;
+      font-size: 5rem;
 
     }
   }
 
   &.is-largest {
     .score {
-      font-size: 8rem;
+      font-size: 6rem;
     }
   }
 

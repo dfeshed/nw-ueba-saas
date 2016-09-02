@@ -1,16 +1,21 @@
 .score-box {
+  position: relative;
   width: 100px;
+  height: 100px;
 
   &-small {
     width: 70px;
+    height: 70px;
   }
 
   &-large {
     width: 175px;
+    height: 175px;
   }
 
   &-larger {
     width: 250px;
+    height: 250px;
   }
 
 }

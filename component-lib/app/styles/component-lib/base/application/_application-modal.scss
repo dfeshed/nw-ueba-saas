@@ -12,10 +12,10 @@
 
 #modalDestination {
   display: none;
-  
+
   &.active {
     display: flex;
-    
+
     .rsa-application-modal-content {
       display: block;
     }
@@ -29,13 +29,20 @@
     background-color: $applicationModalBackgroundColor;
     color: $applicationModalTypeColor;
     margin: 0 auto;
-    
+
+    h3 {
+      @include rsa-font(header, larger);
+      background-color: $userPreferencesPanelHeaderBackgroundColor;
+      padding: rsa-whitespace();
+      padding-right: rsa-whitespace(most);
+    }
+
     .close-modal {
       position: absolute;
-      top: -1.25rem;
-      right: -1.25rem;
-      color: $applicationModalCloseLinkColor; 
-      
+      top: 1.35rem;
+      right: rsa-whitespace();
+      color: $applicationModalCloseLinkColor;
+
       i {
         vertical-align: middle;
         font-weight: bold;
@@ -45,7 +52,7 @@
         cursor: pointer;
       }
     }
-        
+
     .modal-trigger {
       display: none;
     }
@@ -59,7 +66,7 @@
 
 .rsa-application-modal {
   display: inline-block;
-    
+
   .modal-content {
     display: none;
   }

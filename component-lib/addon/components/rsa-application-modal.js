@@ -24,6 +24,8 @@ export default Component.extend({
 
   isOpen: false,
 
+  label: null,
+
   init() {
     this.listen();
     this._super(arguments);
@@ -48,14 +50,19 @@ export default Component.extend({
   },
 
   updateModal(truth) {
-    this.get('eventBus').trigger('rsa-application-modal-did-open', truth);
-    this.set('isOpen', truth);
+    run.next(() => {
+      if (truth) {
+        this.get('eventBus').trigger('rsa-application-modal-did-open');
+        $('#modalDestination').addClass('active');
+      } else {
+        this.get('eventBus').trigger('rsa-application-modal-did-close');
+        $('#modalDestination').removeClass('active');
+      }
 
-    if (truth) {
-      $('#modalDestination').addClass('active');
-    } else {
-      $('#modalDestination').removeClass('active');
-    }
+      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+        this.set('isOpen', truth);
+      }
+    });
   },
 
   openModal() {

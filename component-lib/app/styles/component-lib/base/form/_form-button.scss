@@ -63,9 +63,11 @@
       text-align: left;
       margin-top: -2px;
       background-color: $formButtonDropdownBackgroundColor;
+      list-style: none;
 
       li {
         @include rsa-font(navigation, small);
+        list-style: none;
         white-space: nowrap;
         display: block;
         padding: 0 rsa-whitespace();
@@ -325,8 +327,8 @@
 
   &.is-split {
     .rsa-form-button {
-      display: inline-block;
-      margin-right: -4px;
+      float: left;
+      margin-right: -1px;
     }
 
     .expand {
@@ -338,7 +340,6 @@
       text-align: center;
       display: inline-block;
       box-sizing: border-box;
-      top: -2px;
       position: relative;
       left:0;
       vertical-align: middle;
@@ -353,7 +354,7 @@
     &.is-full-width {
       .rsa-form-button {
         display: inline-block;
-        width: calc(100% - (1.5em + #{rsa-whitespace(less)} + #{rsa-whitespace(less)} + 2px) - #{rsa-whitespace(least)});
+        width: calc(100% - (1.5em + #{rsa-whitespace(less)} + #{rsa-whitespace(less)} + 4px) - #{rsa-whitespace(least)});
       }
     }
 
@@ -375,7 +376,7 @@
 
     &.is-primary:not(.is-disabled):not(.is-icon-only) {
       .expand {
-        margin-left: 1px;
+        margin-left: 2px;
         border-color: $formButtonPrimaryBorderColor;
         background-color: $formButtonPrimaryBackgroundColor;
       }

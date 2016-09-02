@@ -38,7 +38,7 @@ test('it updates hasBlur when rsa-application-modal-did-open is triggered', func
   this.set('initialBlur', false);
   this.render(hbs `{{#rsa-application-content hasBlur=initialBlur}}foo{{/rsa-application-content}}`);
   assert.equal(this.get('initialBlur'), false);
-  this.get('eventBus').trigger('rsa-application-modal-did-open', true);
+  this.get('eventBus').trigger('rsa-application-modal-did-open');
 
   let that = this;
   return wait().then(function() {

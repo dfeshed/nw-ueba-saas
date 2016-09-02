@@ -1,9 +1,3 @@
-{{#if session.isAuthenticated}}
-  <h3>{{t 'userPreferences.preferencesFor' user=usernameFormat.username}}</h3>
-{{else}}
-  <h3>{{t 'userPreferences.preferences'}}</h3>
-{{/if}}
-
 <form {{action 'saveUserPreferences' on="submit"}}>
   {{#if session.isAuthenticated}}
     <hbox>

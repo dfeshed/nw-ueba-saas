@@ -9,7 +9,7 @@
     display: inline-block;
     margin-right: rsa-whitespace(least);
   }
-    
+
   .direction {
     margin: 0;
     height: .65rem;
@@ -20,23 +20,36 @@
     border: 1px solid transparent;
     color: $contentIpConnectionsDirectionIconColor;
   }
-    
+
   .rsa-form-button.is-standard {
     font-weight: normal;
     padding: 0;
     vertical-align: baseline;
-    
+
     i {
       position: relative;
       top: 1px;
     }
-    
+
     ul {
       top: 1.15rem;
       left: 0;
       right: auto;
       max-height: 8.5rem;
       overflow: scroll;
+    }
+  }
+
+  .rsa-form-button-wrapper {
+    &.with-dropdown {
+      .rsa-form-button {
+        padding: 0;
+        height: 1rem;
+
+        .expand i {
+          top: 0;
+        }
+      }
     }
   }
 }

@@ -25,9 +25,15 @@ export default Component.extend({
 
   hasBlur: false,
 
-  toggleModalBlur() {
+  addModalBlur() {
     run.next(() => {
-      this.toggleProperty('hasBlur');
+      this.set('hasBlur', true);
+    });
+  },
+
+  removeModalBlur() {
+    run.next(() => {
+      this.set('hasBlur', false);
     });
   },
 
@@ -45,7 +51,8 @@ export default Component.extend({
   },
 
   listen() {
-    this.get('eventBus').on('rsa-application-modal-did-open', this, 'toggleModalBlur');
+    this.get('eventBus').on('rsa-application-modal-did-open', this, 'addModalBlur');
+    this.get('eventBus').on('rsa-application-modal-did-close', this, 'removeModalBlur');
     this.get('eventBus').on('rsa-application-notifications-panel-will-toggle', this, 'togglePanelBlur');
     this.get('eventBus').on('rsa-application-incident-queue-panel-will-toggle', this, 'togglePanelBlur');
   },

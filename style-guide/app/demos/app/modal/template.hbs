@@ -6,7 +6,9 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member}}
-        {{#rsa-application-modal eventId='example'}}
+        {{#rsa-application-modal
+          label="Modal Header"
+          eventId='example'}}
           <div class='modal-trigger'>
             Modal Trigger
           </div>
@@ -18,7 +20,7 @@
 
         <code>
           <div>
-            &#123;{#rsa-application-modal eventId='example'}}
+            &#123;{#rsa-application-modal eventId='example' label="Modal Header"}}
             <div>
               &lt;div class='modal-trigger'>
                 Modal Trigger

@@ -1,59 +1,60 @@
 .rsa-login {
   color: $applicationLoginTypeColor;
-  
+
   .login-wrapper {
     box-sizing: border-box;
     width: $applicationLoginWidth;
     padding: rsa-whitespace(more);
     background: $applicationLoginBackgroundColor;
     border: 1px solid $applicationLoginBorderColor;
-    
+
     &.has-error {
-      border: 1px solid $applicationLoginErrorBorderColor;   
+      border: 1px solid $applicationLoginErrorBorderColor;
       animation: shake 0.65s cubic-bezier(.36,.07,.19,.97) both;
-         
+
       @keyframes shake {
         10%, 90% {
           transform: translate3d(-1px, 0, 0);
         }
-        
+
         20%, 80% {
           transform: translate3d(2px, 0, 0);
         }
-        
+
         30%, 50%, 70% {
           transform: translate3d(-4px, 0, 0);
         }
-        
+
         40%, 60% {
           transform: translate3d(4px, 0, 0);
         }
-      }   
+      }
     }
   }
-  
+
   header {
+    height: 2rem;
     margin: calc(#{rsa-whitespace(more)} * -1);
     margin-bottom: rsa-whitespace(more);
-    padding: rsa-whitespace(more) rsa-whitespace(more);
     background-color: $applicationLoginHeaderBackgroundColor;
-    
+    padding: rsa-whitespace(more) rsa-whitespace(more);
+
     .rsa-logo {
+      height: 2rem;      
       overflow: hidden;
-      width: 100%;
       white-space: nowrap;
       vertical-align: middle;
-      
+      text-align: left;
+      flex: none;
+
       svg {
         width: $applicationLoginHeaderLogoWidth;
-        float:left;
         position: relative;
         vertical-align: middle;
         padding: rsa-whitespace(least) 0;
       }
-          
+
       h2 {
-        float:left;
         padding: rsa-whitespace(least);
         padding-left: rsa-whitespace(less);
         margin-left: rsa-whitespace(less);
@@ -61,65 +62,66 @@
         vertical-align: middle;
         @include rsa-font(header, large);
         white-space: nowrap;
+        display: inline-block;
       }
     }
   }
-  
+
   form {
     .rsa-form-input {
       margin-bottom: rsa-whitespace();
-    }    
+    }
   }
-  
+
   .login {
     overflow: hidden;
-    
+
     .rsa-form-button {
       margin-bottom: rsa-whitespace();
     }
-    
+
     a {
       text-decoration: underline;
       color: $applicationLoginLinkColor;
-      
+
       &:hover {
         cursor: pointer;
-        color: $applicationLoginLinkHoverColor;        
+        color: $applicationLoginLinkHoverColor;
       }
     }
-   
+
     .version {
       float: right;
       color: $applicationLoginVersionColor;
     }
   }
-    
+
   .lost-password,
   .thank-you {
     h3 {
       @include rsa-font(header, larger);
       margin-bottom: rsa-whitespace(less);
     }
-    
+
     p {
       @include rsa-font(paragraph);
       margin-bottom: rsa-whitespace(more);
     }
   }
-  
+
   .lost-password {
     .rsa-form-button-wrapper {
       margin-right: rsa-whitespace();
-      width: calc(50% - 2px - (#{rsa-whitespace() / 2)}); 
-      display: inline-block; 
-      
+      width: calc(50% - 2px - (#{rsa-whitespace() / 2)});
+      display: inline-block;
+
       .rsa-form-button {
         width: 100%;
       }
-      
+
       &:last-of-type {
         margin-right: 0;
       }
-    }    
+    }
   }
 }

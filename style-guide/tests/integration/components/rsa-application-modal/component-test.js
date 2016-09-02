@@ -86,7 +86,7 @@ test('it emits the rsa-application-modal-did-open event when triggering the moda
   this.$().find('.modal-trigger').click();
 
   return wait().then(function() {
-    assert.ok(spy.withArgs('rsa-application-modal-did-open', true).calledOnce);
+    assert.ok(spy.withArgs('rsa-application-modal-did-open').calledOnce);
   });
 });
 

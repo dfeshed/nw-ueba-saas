@@ -54,6 +54,7 @@ body, html {
   height: 100%;
   width: 100%;
   overflow: hidden;
+  -ms-overflow-style: none;
 }
 
 body {
@@ -82,16 +83,10 @@ body {
   }
 }
 
-@mixin rsa-webkit-scrollbar-width($width:0) {
-  &::-webkit-scrollbar,
-  &::-webkit-scrollbar-thumb,
-  &::-webkit-scrollbar-track {
-   width: $width;
-  }
-}
-
-.rsa-hide-webkit-scrollbar {
-  @include rsa-webkit-scrollbar-width(0);
+&::scrollbar,
+&::scrollbar-thumb,
+&::scrollbar-track {
+ width: 0;
 }
 
 @import 'application-header';
@@ -111,4 +106,27 @@ page, screen {
 
 page {
   min-width: calc(100vw - #{$applicationActionBarWidth});
+}
+
+.col {
+  &-xs,
+  &-sm,
+  &-md,
+  &-lg {
+    &-1,
+    &-2, 
+    &-3,
+    &-4,
+    &-5,
+    &-6,
+    &-7,
+    &-8,
+    &-9,
+    &-10,
+    &-11,
+    &-12 {
+      padding: 0;
+    }
+  }
+
 }

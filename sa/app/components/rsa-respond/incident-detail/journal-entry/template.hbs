@@ -36,7 +36,9 @@
   {{#rsa-form-button class="rsa-journal-entry__edit-journal" isIconOnly=true click=(action 'editJournal')}}
     {{rsa-icon size='small' style='lined' name='pencil-1'}}
   {{/rsa-form-button}}
-  {{#rsa-application-modal eventId="deleteJournalEntry"}}
+  {{#rsa-application-modal
+    label="Delete Journal Entry"
+    eventId="deleteJournalEntry"}}
     <span class="rsa-journal-entry__delete-journal modal-trigger">
       {{rsa-icon size='small' style='lined' name='bin-1'}}
     </span>

@@ -1,19 +1,13 @@
 .rsa-nav-tab-group {
   display: flex;
   flex-flow: row nowrap;
-  border-bottom: 1px solid $navTabBorderRightColor;
+  border-bottom: 1px solid $navTabBorderBottomColor;
 }
 
 .rsa-nav-tab {
   padding: rsa-whitespace();
-  border-right: 1px solid $navTabBorderRightColor;
   flex-grow: 1;
   box-sizing: border-box;
-
-
-  &:last-of-type {
-    border-right: none;
-  }
 
   &:hover {
     background-color: $navTabHoverBackgroundColor;

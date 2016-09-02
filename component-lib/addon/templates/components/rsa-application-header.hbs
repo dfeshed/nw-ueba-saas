@@ -9,7 +9,10 @@
       style='lined'}}
     <span class="username">{{usernameFormat.username}}</span>
     <ul>
-      {{#rsa-application-modal eventId="userPreferences" tagName="li"}}
+      {{#rsa-application-modal
+        eventId="userPreferences"
+        tagName="li"
+        label=(if session.isAuthenticated (t 'userPreferences.preferencesFor' user=usernameFormat.username) (t 'userPreferences.preferences'))}}
         <span class="js-test-user-preferences-modal modal-trigger">
           {{rsa-icon name='settings-2' style='lined'}}
           {{t 'userPreferences.preferences'}}
