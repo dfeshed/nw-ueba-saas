@@ -1,11 +1,10 @@
 .rsa-respond-index-header {
-  border-bottom: 1px solid rsa-color(gray, light);
   overflow: hidden;
   background-color: rsa-color(gray, darker, $rsa-translucent);
   padding: 0 rsa-whitespace(most) 0 rsa-whitespace();
 
   &__label {
-    @include rsa-font(header, large);
+    @include rsa-font(light, large);
     float: left;
     padding: rsa-whitespace() 0;
     color: rsa-color(white);

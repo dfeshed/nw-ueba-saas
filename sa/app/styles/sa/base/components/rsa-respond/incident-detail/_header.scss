@@ -2,7 +2,7 @@
   color: rsa-color(white);
   position: relative;
   border-bottom: solid thin rsa-color(white, null, $rsa-transparent);
-  background-color: rsa-color(black, null, $rsa-nearly-opaque);
+  background-color: rsa-color(black, null, $rsa-translucent);
 
   &__score {
     padding: 0;

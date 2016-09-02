@@ -2,7 +2,6 @@
   &-header{
     @include rsa-font(header, large);
     color: rsa-color(gray);
-    background-color: rsa-color(black, null, $rsa-translucent);
     border-top: 1px solid rsa-color(gray);
     padding: rsa-whitespace(less);
     margin-bottom: rsa-whitespace(least);
@@ -13,6 +12,7 @@
   }
 }
 .rsa-response-storyline {
+    margin-top: 2px;
     .main {
       padding-right: 0;
     }
@@ -56,7 +56,9 @@
     &__main_icon{
       background-color: rsa-color(black, null, $rsa-translucent);
       color: rsa-color(white);
-      border-bottom: 1px solid rsa-color(gray);
+    }
+    &__subItem {
+      margin-top: 2px;
     }
     &__main,
     &__subItem{
