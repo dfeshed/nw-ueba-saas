@@ -97,6 +97,14 @@ export default Component.extend({
         this.set('aliases', data);
       });
     }
+
+    this.get('request').promiseRequest({
+      method: 'stream', // not streaming yet, but will eventually
+      modelName: 'reconstruction-packet-data',
+      query
+    }).then(({ data }) => {
+      this.set('packets', data);
+    });
   },
 
   actions: {
