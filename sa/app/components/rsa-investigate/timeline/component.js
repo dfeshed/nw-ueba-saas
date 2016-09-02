@@ -5,10 +5,10 @@ const { Component } = Ember;
 export default Component.extend({
   classNames: 'rsa-investigate-timeline',
   chartMargin: {
-    top: 9,     /* avoid zeroes to prevent shaving edges off peaks */
+    top: 10,     /* avoid zeroes to prevent shaving edges off peaks */
     bottom: 30, /* big enough for some text */
-    left: 9,
-    right: 9
+    left: 35,
+    right: 10
   },
 
   /**
