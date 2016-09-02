@@ -42,6 +42,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'incidentTile': 'div[class=rsa-carousel__visible-items] span[class=rsa-incident-tile-created-date]',
       'url': '/do/respond',
       'path': 'protected.respond.index',
+      'updateIndLbl': '.rsa-update-indicator__label',
       'card': {
         'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
         'incSection': 'section[class$=rsa-d3list]',
