@@ -9,7 +9,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:each"
+    "test": "ember try:each",
+    "postinstall": "rm -rf node_modules/mock-server && npm install ../mock-server"
   },
   "repository": "",
   "engines": {

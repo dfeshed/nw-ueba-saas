@@ -10,7 +10,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "node ./scripts/test"
+    "test": "node ./scripts/test",
+    "postinstall": "rm -rf node_modules/mock-server && npm install ../mock-server"
   },
   "repository": "",
   "engines": {
