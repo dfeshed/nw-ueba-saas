@@ -35,6 +35,16 @@ The `mock-server` node package provides the following function.
 * `startServer(Array | String)`
   * This will start the server after loading all your subscription files.
   * This function takes either a `String`, for the root directory of your subscription files, or an `Array` for a group of subscription file locations.
+* `shared.subscriptions`
+  * This is a hash of shared/reusable subscription files, check `/shared/subscriptions`
+* `mock-server/util: determineSocketUrl(environment, productionPath)`
+  * Not used via `require('mock-server')`, instead it is used via `require('mock-server/util')`
+    * See that file for why
+  * This function is a utility for Ember apps for calculating socketUrls on startup.
+  * This function takes the environment (`development`, `test`, `production`), the desired production socketUrl, inspects node.js process variables, and calculates the appropriate `socketUrl` to use.
+  * If in `development` or `test` this function will calculate a URL that points to the `mock-server`.
+  * To NOT point at the `mock-server` in `development` or `test`, start `ember` with the `NOMOCK` environment variable set to anything.
+    * For example: `NOMOCK=1 ember s`
 
 ## Creating Subscription.
 

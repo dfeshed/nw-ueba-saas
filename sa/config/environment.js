@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+var generateSocketConfiguration = require('./socketConfig');
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'sa',
@@ -28,106 +30,7 @@ module.exports = function(environment) {
     },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},
-    socketRoutes: {
-      test: {       // Used for automated Ember tests. Remove this and tests will fail.
-        socketUrl: '/test/socket',
-        stream: {
-          subscriptionDestination: '/user/queue/test/data',
-          requestDestination: '/ws/test/data/stream'
-        },
-        query: {
-          subscriptionDestination: '/user/queue/test/data',
-          requestDestination: '/ws/test/data/query'
-        },
-        findRecord: {
-          subscriptionDestination: '/user/queue/test/data',
-          requestDestination: '/ws/test/data/find'
-        },
-        updateRecord: {
-          subscriptionDestination: '/user/queue/test/data',
-          requestDestination: '/ws/test/data/update'
-        }
-      },
-      incident: {
-        socketUrl: '/response/socket',
-        stream: {
-          defaultStreamLimit: 100000,
-          subscriptionDestination: '/topic/incidents/%@',
-          requestDestination: '/ws/response/incidents',
-          cancelDestination: '/ws/response/cancel'
-        },
-        notify: {
-          subscriptionDestination: '/topic/incidents/owner/%@',
-          requestDestination: '/dummy/incidents/owner',
-          cancelDestination: '/ws/response/cancel'
-        },
-        queryRecord: {
-          subscriptionDestination: '/user/queue/incident/details',
-          requestDestination: '/ws/response/incident/details'
-        },
-        updateRecord: {
-          subscriptionDestination: '/queue/incidents/update',
-          requestDestination: '/ws/response/incidents/update'
-        }
-      },
-      'category-tags': {
-        socketUrl: '/response/socket',
-        findAll: {
-          subscriptionDestination: '/user/queue/categories',
-          requestDestination: '/ws/response/categories'
-        }
-      },
-      alerts: {
-        socketUrl: '/response/socket',
-        stream: {
-          defaultStreamLimit: 1000,
-          subscriptionDestination: '/user/queue/alerts',
-          requestDestination: '/ws/response/alerts'
-        }
-      },
-      'core-service': {
-        socketUrl: '/investigate/socket',
-        findAll: {
-          subscriptionDestination: '/user/queue/investigate/endpoints',
-          requestDestination: '/ws/investigate/endpoints'
-        }
-      },
-      'core-event': {
-        socketUrl: '/investigate/socket',
-        stream: {
-          subscriptionDestination: '/user/queue/investigate/events',
-          requestDestination: '/ws/investigate/events/stream'
-        }
-      },
-      'core-event-count': {
-        socketUrl: '/investigate/socket',
-        stream: {
-          subscriptionDestination: '/user/queue/investigate/events/count',
-          requestDestination: '/ws/investigate/events/count'
-        }
-      },
-      'core-event-timeline': {
-        socketUrl: '/investigate/socket',
-        query: {
-          subscriptionDestination: '/user/queue/investigate/timeline',
-          requestDestination: '/ws/investigate/timeline'
-        }
-      },
-      'core-meta-key': {
-        socketUrl: '/investigate/socket',
-        query: {
-          subscriptionDestination: '/user/queue/investigate/languages',
-          requestDestination: '/ws/investigate/languages'
-        }
-      },
-      'core-meta-alias': {
-        socketUrl: '/investigate/socket',
-        query: {
-          subscriptionDestination: '/user/queue/investigate/alias',
-          requestDestination: '/ws/investigate/alias'
-        }
-      }
-    },
+    socketRoutes: generateSocketConfiguration(environment),
     socketDebug: false,
     'i18n': {
       defaultLocale: 'en',

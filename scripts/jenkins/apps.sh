@@ -57,6 +57,11 @@ function runEmberTestNoMockServer {
   testemPort=${PORTS[$RANDOM % ${#PORTS[@]} ]}
   info "Running 'ember test' for $1 on port $testemPort"
   cd $1
+
+  # force reload of mock server
+  rm -rf node_modules/mock-server
+  npm i
+
   ember test --test-port $testemPort
   checkError "Ember test failed for $1"
   success "'ember test' for $1 was successful"

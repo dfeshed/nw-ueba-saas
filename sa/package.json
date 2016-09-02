@@ -58,7 +58,8 @@
     "eslint-plugin-ember-suave": "^0.1.2",
     "flexi": "1.1.9",
     "liquid-fire": "0.22.0",
-    "loader.js": "^4.0.1"
+    "loader.js": "^4.0.1",
+    "mock-server": "../mock-server"
   },
   "ember-addon": {
     "paths": [

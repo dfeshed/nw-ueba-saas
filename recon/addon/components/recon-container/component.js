@@ -27,7 +27,7 @@ export default Component.extend({
     this._super(...arguments);
 
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
-    assert(endpointId && eventId, 'Cannot instantiate recon without endpointId and eventId.');
+    assert('Cannot instantiate recon without endpointId and eventId.', endpointId && eventId);
 
     this.bootstrapRecon(endpointId, eventId);
   },
