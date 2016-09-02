@@ -1,1 +1,13 @@
-<h2>Under Construction</h2>
+{{#each group.keys as |groupKey groupKeyIndex|}}
+  {{#with (array-lookup metaKeyStatesForGroup groupKeyIndex) as |keyState|}}
+    {{rsa-investigate/meta/key-values
+      group=group
+      groupKey=groupKey
+      values=keyState.values
+      options=keyState.options
+      query=query
+      language=language
+      aliases=aliases
+      toggleAction=(action "safeCallback" toggleAction groupKey)}}
+  {{/with}}
+{{/each}}

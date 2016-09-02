@@ -19,40 +19,43 @@ export default EmberObject.extend({
    */
   groups: [{
     id: 1,
-    name: 'Network Meta',
+    name: 'TCP/IP Meta',
     type: 'group',
     keys: [{
-      name: 'ip.src',
+      name: 'ip.proto',
       isOpen: true,
       type: 'key'
     }, {
       name: 'tcp.srcport',
       isOpen: true,
+      type: 'key'
+    }, {
+      name: 'tcp.dstport',
+      isOpen: true,
+      type: 'key'
+    }, {
+      name: 'ip.src',
+      isOpen: false,
       type: 'key'
     }, {
       name: 'ip.dst',
-      isOpen: true,
-      type: 'key'
-    }, {
-      name: 'tcp.srcport',
-      isOpen: true,
+      isOpen: false,
       type: 'key'
     }]
   }, {
     id: 2,
-    name: 'Log Meta',
-    type: 'group',
-    keys: [{
-      name: 'size',
-      isOpen: true,
-      type: 'key'
-    }]
-  }, {
-    id: 3,
     name: 'Endpoint Meta',
     type: 'group',
     keys: [{
-      name: 'host',
+      name: 'tld',
+      isOpen: true,
+      type: 'key'
+    }, {
+      name: 'alias.host',
+      isOpen: true,
+      type: 'key'
+    }, {
+      name: 'filename',
       isOpen: true,
       type: 'key'
     }, {
@@ -60,34 +63,16 @@ export default EmberObject.extend({
       isOpen: true,
       type: 'key'
     }, {
-      name: 'module',
-      isOpen: true,
-      type: 'key'
-    }, {
-      name: 'machinename',
-      isOpen: true,
-      type: 'key'
-    }, {
-      name: 'os',
-      isOpen: true,
+      name: 'email',
+      isOpen: false,
       type: 'key'
     }]
-  }, {
-    id: 4,
-    name: 'Risk Meta',
-    type: 'group',
-    keys: [{
-      name: 'risk.warning',
-      isOpen: true,
-      type: 'key'
-    }, {
-      name: 'risk.suspicious',
-      isOpen: true,
-      type: 'key'
-    }, {
-      name: 'risk.info',
-      isOpen: true,
-      type: 'key'
-    }]
-  }]
+  }],
+
+  /**
+   * Array of meta-key-state objects, each of which represents an in-progress request for meta key values.
+   * @type {object[]}
+   * @public
+   */
+  jobs: []
 });

@@ -37,9 +37,16 @@
         {{rsa-investigate/meta
         size=model.meta.panelSize
         groups=model.meta.groups
+        language=model.queryNode.value.language.data
+        aliases=model.queryNode.value.aliases.data
+        metaKeyStates=model.queryNode.value.results.metaKeyStates
+        query=model.queryNode.value.definition
         minSizeAction=(route-action "metaPanelSize" 'min')
         maxSizeAction=(route-action "metaPanelSize" 'max')
-        defaultSizeAction=(route-action "metaPanelSize" 'default')}}
+        defaultSizeAction=(route-action "metaPanelSize" 'default')
+        onBack=(route-action "metaGroupSet" model.queryNode)
+        onFwd=(route-action "metaGroupSet" model.queryNode)
+        toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
       </aside>
       <section class="rsa-investigate-query__body-master-main">
         {{rsa-investigate/timeline chartData=model.resolvedEventTimelineData}}

@@ -16,5 +16,8 @@ export default EmberObject.extend({
   eventCount: computed(() => EventCount.create()),
 
   // Event counts (or sizes) aggregated by time.
-  eventTimeline: computed(() => EventTimeline.create())
+  eventTimeline: computed(() => EventTimeline.create()),
+
+  // Requests for values of each of the query definition's meta keys.
+  metaKeyStates: computed(() => [])
 });

@@ -43,6 +43,14 @@ export default Component.extend({
   defaultSizeAction: undefined,
 
   /**
+   * The current query's definition. Used to fetch meta values and to create links for drill-downs on the meta values.
+   * @see protected/investigate/state/query
+   * @type {object}
+   * @public
+   */
+  query: undefined,
+
+  /**
    * A sequence of user's selections. Initially empty.
    * This array grows as the user clicks inside the component's contents, making selections and "navigating"
    * from one display to another.  And it shrinks as the user navigates back using a "Back" button.
@@ -55,12 +63,59 @@ export default Component.extend({
   path: undefined,
 
   /**
+   * Configurable callback to be invoked whenever `fwd` action is triggered.
+   * @type {function}
+   * @public
+   */
+  onFwd: undefined,
+
+  /**
+   * Configurable callback to be invoked whenever `back` action is triggered.
+   * @type {function}
+   * @public
+   */
+  onBack: undefined,
+
+  /**
+   * Configurable callback to be invoked whenever a meta key is opened/closed.
+   * @type {function}
+   * @public
+   */
+  toggleAction: undefined,
+
+  /**
    * List of available meta groups for user to browse.
    * Gets passed down to the `groups-panel` child component for display.
    * @type {object[]}
    * @public
    */
   groups: undefined,
+
+  /**
+   * A Language state object, containing all the meta keys for the NetWitness Core service from which this data
+   * was fetched. Used for looking up information about the keys (such as flags indicating which keys are indexed,
+   * which keys are singletons, etc).
+   * @type {object}
+   * @public
+   */
+  language: undefined,
+
+  /**
+   * An aliases state object, containing a hash of lookup tables for meta key values.
+   * Used for rendering meta values as user-friendly text rather than raw values.
+   * @type {object}
+   * @public
+   */
+  aliases: undefined,
+
+  /**
+   * An array of state objects, one for each meta key in `language`. These objects represent the data streams
+   * that fetch the meta values for the meta keys in `language`.
+   * @see protected/investigate/state/meta-key
+   * @type {object[]}
+   * @public
+   */
+  metaKeyStates: undefined,
 
   actions: {
     // Used for invoking actions from template that may be undefined (without throwing an error).
@@ -83,7 +138,9 @@ export default Component.extend({
         path = undefined;
       }
       // end @workaround
+
       this.set('path', path);
+      safeCallback(this.get('onBack'));
     },
 
     /**
@@ -99,7 +156,9 @@ export default Component.extend({
       let path = this.get('path') || [];
       path = [].concat(path);
       path.pushObject(obj);
+
       this.set('path', path);
+      safeCallback(this.get('onFwd'), obj);
     }
   }
 });

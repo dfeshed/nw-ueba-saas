@@ -41,7 +41,10 @@ export default Mixin.create({
         this._getQueryAliases(queryNode)
       ]).finally(() => {
         this.send('resultsGet', queryNode, false);
-        this.send('resultsClear', wasLastQueryNode);  // optimization: release data from 2nd-next-to-last-query
+        // optimization: release data from 2nd-next-to-last-query
+        if (wasLastQueryNode !== queryNode && wasLastQueryNode !== wasQueryNode) {
+          this.send('resultsClear', wasLastQueryNode);
+        }
       });
     },
 

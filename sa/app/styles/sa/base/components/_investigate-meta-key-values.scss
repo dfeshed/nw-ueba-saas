@@ -1,0 +1,74 @@
+$investigateMetaKeyMaxZIndex: 1000 !default;  /* should be larger than max # of meta keys possible */
+$investigateMetaKeyToggleWidth: 1rem;
+
+.rsa-investigate-meta-key-values {
+  /* enables re-ordering columns via drag, with animation. @see ember-sortable */
+  position: relative;
+  z-index: 1;
+  transition: transform 0.125s;
+
+  &.is-dragging {
+    transition-duration: 0s;
+    z-index: $investigateMetaKeyMaxZIndex;
+  }
+  &.is-dropping {
+    z-index: $investigateMetaKeyMaxZIndex;
+  }
+
+  &__header {
+    @include rsa-font(header, small);
+    position: relative; /* enables absolute positioning for child .toggle-open */
+    padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) rsa-whitespace(more);
+
+    .meta-size {
+      margin-left: rsa-whitespace(less);
+    }
+  }
+
+  &__description {
+    @include rsa-font(light, small);
+  }
+
+  &__body {
+    padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
+    transition: padding 0.2s;
+  }
+
+  &:not(.is-open) {
+    .rsa-investigate-meta-key-values__body {
+      padding: 0 0 0 rsa-whitespace();
+    }
+  }
+  &__value {
+    display: inline-block;
+    list-style: none;
+    white-space: normal;
+    @include rsa-font(light, small);
+    padding: rsa-whitespace(least) 0;
+    margin: 0 rsa-whitespace(less) rsa-whitespace(least) 0;
+    line-height: 1.35rem;
+
+    &-metric {
+      margin-left: rsa-whitespace(least);
+    }
+  }
+
+  .toggle-icon {
+    position: absolute;
+    left: 0;
+    top: 0;
+    padding: rsa-whitespace(less) rsa-whitespace();
+    transition: transform 0.2s;
+    transform-origin: center center;
+  }
+
+  &.is-open {
+    .toggle-icon {
+      transform: rotate(90deg);
+    }
+  }
+
+  .js-toggle-open {
+    cursor: pointer;
+  }
+}

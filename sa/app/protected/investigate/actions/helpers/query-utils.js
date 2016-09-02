@@ -3,7 +3,8 @@ import hasherizeEventMeta from './hasherize-event-meta';
 
 const {
   assert,
-  getProperties
+  getProperties,
+  RSVP
 } = Ember;
 
 // Adds a session id filter to a given Core query filter.
@@ -36,6 +37,12 @@ function buildEventStreamInputs(query, limit, batch = 1, startSessionId = null) 
   inputs.stream = { limit, batch };
   let metaFilterInput = inputs.filter.findBy('field', 'query');
   metaFilterInput.value = addSessionIdFilter(metaFilterInput.value, startSessionId);
+  return inputs;
+}
+
+function buildMetaValueStreamInputs(metaName, query, limit, batch) {
+  let inputs = buildEventStreamInputs(query, limit, batch);
+  inputs.filter.push({ field: 'metaName', value: metaName });
   return inputs;
 }
 
@@ -102,8 +109,54 @@ function executeEventsRequest(request, inputs, events) {
       events.set('status', 'complete');
     },
     onStopped() {
-      events.set('status', 'idle');
+      events.set('status', 'stopped');
     }
+  });
+}
+
+function executeMetaValuesRequest(request, inputs, values) {
+  return new RSVP.Promise((resolve, reject) => {
+    values.setProperties({
+      status: 'streaming',
+      reason: undefined
+    });
+
+    request.streamRequest({
+      method: 'stream',
+      modelName: 'core-meta-value',
+      query: inputs,
+      onInit(stopStream) {
+        values.set('stopStreaming', stopStream);
+      },
+      onResponse(response) {
+        if (!response) {
+          return;
+        }
+        if (response.data) {
+          values.get('data').pushObjects(response.data);
+        }
+        values.set('description', response.meta && response.meta.description);
+        const percent = response.meta && response.meta.percent;
+        if (percent !== undefined) {
+          values.set('percent', percent);
+        }
+      },
+      onError(response) {
+        values.setProperties({
+          status: 'error',
+          reason: response && response.code
+        });
+        reject();
+      },
+      onCompleted() {
+        values.set('status', 'complete');
+        resolve();
+      },
+      onStopped() {
+        values.set('status', 'idle');
+        resolve();
+      }
+    });
   });
 }
 
@@ -130,5 +183,7 @@ export {
   buildEventStreamInputs,
   makeServerInputsForQuery,
   executeEventsRequest,
+  buildMetaValueStreamInputs,
+  executeMetaValuesRequest,
   makeServerInputsForEndpointInfo
 };

@@ -58,22 +58,12 @@ test('it renders the meta groups panel by default', function(assert) {
   assert.equal(this.$('.rsa-investigate-meta-groups-panel').length, 1, 'Expected to find meta groups panel embedded in DOM');
 });
 
-test('it renders the meta keys panel if its path points to a meta group', function(assert) {
+test('it renders the meta values panel if its path points to a meta key', function(assert) {
   this.set('path', [{
     id: 1,
     type: 'group',
     name: 'Group 1',
     keys: [{ id: 2, type: 'key', name: 'Key 1' }]
-  }]);
-  this.render(hbs`{{rsa-investigate/meta size="default" path=path}}`);
-  assert.equal(this.$('.rsa-investigate-meta-keys-panel').length, 1, 'Expected to find meta keys panel embedded in DOM');
-});
-
-test('it renders the meta values panel if its path points to a meta key', function(assert) {
-  this.set('path', [{
-    id: 1,
-    type: 'key',
-    name: 'Key 1'
   }]);
   this.render(hbs`{{rsa-investigate/meta size="default" path=path}}`);
   assert.equal(this.$('.rsa-investigate-meta-values-panel').length, 1, 'Expected to find meta values panel embedded in DOM');

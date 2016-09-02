@@ -193,6 +193,34 @@
         }
       }
     }
+
+    &-key-values__value {
+
+      &:hover {
+        .rsa-investigate-meta-key-values__value-label,
+        .rsa-investigate-meta-key-values__value-metric {
+          color: rsa-color(white);
+        }
+      }
+
+      &-label {
+        color: rsa-color(blue, lighter);
+      }
+
+      &-metric {
+        color: rsa-color(green, lighter);
+
+        &:before {
+          content: '(';
+          color: rsa-color(gray);
+        }
+
+        &:after {
+          content: ')';
+          color: rsa-color(gray);
+        }
+      }
+    }
   }
 
   .rsa-progress-bar {

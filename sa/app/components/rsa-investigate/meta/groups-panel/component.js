@@ -4,6 +4,7 @@ import safeCallback from 'sa/utils/safe-callback';
 const { Component } = Ember;
 
 export default Component.extend({
+  tagName: 'section',
   classNames: 'rsa-investigate-meta-groups-panel',
 
   /**

@@ -1,5 +1,25 @@
 .rsa-investigate-meta {
 
+  > .liquid-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    > .liquid-child {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+
+  &:not(.meta-size-min) {
+    > .liquid-container > .liquid-child {
+      @include rsa-col(justify,fill);
+    }
+  }
+
   &.meta-size-min {
     cursor: pointer;
 
@@ -23,19 +43,18 @@
     }
   }
 
-  &:not(.meta-size-min) {
-    @include rsa-col(justify,fill);
-  }
-
-  .rsa-investigate-meta__header {
+  &__header {
     @include rsa-row(justify, middle);
     @include rsa-font(header, small);
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 0);
     padding: 0 rsa-whitespace();
   }
 
   &__body {
     @include rsa-vendor-prefix(flex-grow, 1);
     @include rsa-font(body, light);
+    overflow: auto;
   }
 
   &__nav {

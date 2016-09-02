@@ -39,7 +39,7 @@ function _alias(field, value, opts = {}) {
   if (valueLookup === undefined) {
     return String(value);
   } else if (opts.appendRawValue) {
-    return `${valueLookup} (${value})`;
+    return `${valueLookup} [${value}]`;
   } else {
     return valueLookup;
   }

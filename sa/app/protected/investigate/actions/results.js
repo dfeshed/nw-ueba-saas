@@ -25,8 +25,7 @@ export default Mixin.create({
 
       // If the meta panel is minimized, its data is not needed.
       if (metaPanelSize !== 'min') {
-        // coming soon!
-        // this.send('metaGet', queryNode, forceReload);
+        this.send('metaGet', queryNode, forceReload);
       }
 
       // If the meta panel is maximized, the events & timeline are hidden, so data not needed.

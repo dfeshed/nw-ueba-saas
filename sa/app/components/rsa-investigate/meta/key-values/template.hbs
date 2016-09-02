@@ -1,0 +1,25 @@
+{{rsa-progress-bar percent=values.percent enabled=(is-equal values.status 'streaming')}}
+<header class="rsa-investigate-meta-key-values__header">
+  <h2 class="rsa-investigate-meta-key-values__title">
+    <span class="toggle-icon js-toggle-open" {{action "safeCallback" toggleAction}}>&#9654;</span>
+    <span class="meta-name js-toggle-open" {{action "safeCallback" toggleAction}}>{{groupKey.name}}</span>
+    <span class="meta-size">(Top {{options.size}})</span>
+  </h2>
+</header>
+<section class="rsa-investigate-meta-key-values__body">
+  {{#liquid-bind groupKey.isOpen use="crossFade" as |currentIsOpen|}}
+    {{#if currentIsOpen}}
+      {{#if values.description}}
+        <p class="rsa-investigate-meta-key-values__description">Description: {{values.description}}</p>
+      {{/if}}
+      <ul class="rsa-investigate-meta-key-values__values">
+        {{#each values.data as |datum|~}}
+          <div class="rsa-investigate-meta-key-values__value" title="{{meta-value-alias groupKey.name datum.value tooltipOptions}}">
+            <span class="rsa-investigate-meta-key-values__value-label">{{meta-value-alias groupKey.name datum.value textOptions}}</span>
+            <span class="rsa-investigate-meta-key-values__value-metric">{{datum.count}}</span>
+          </div>
+        {{~/each}}
+      </ul>
+    {{/if}}
+  {{/liquid-bind}}
+</section>

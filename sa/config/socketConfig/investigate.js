@@ -49,6 +49,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/investigate/alias',
         requestDestination: '/ws/investigate/alias'
       }
+    },
+    'core-meta-value': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/meta/values',
+        requestDestination: '/ws/investigate/meta/values/stream',
+        cancelDestination: '/ws/investigate/cancel'
+      }
     }
   };
 }

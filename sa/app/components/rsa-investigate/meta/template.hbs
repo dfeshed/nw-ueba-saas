@@ -24,12 +24,14 @@
     <section class="rsa-investigate-meta__body">
       {{#if currentPath.lastObject}}
         {{!show appropriate UI for known object types:}}
-        {{#if (is-equal currentPath.lastObject.type 'key')}}
-          {{!after user selected a meta key, show the meta values panel}}
-          {{rsa-investigate/meta/values-panel}}
-        {{else if (is-equal currentPath.lastObject.type 'group')}}
+        {{#if (is-equal currentPath.lastObject.type 'group')}}
           {{!after user selected a meta group, show the meta keys panel}}
-          {{rsa-investigate/meta/keys-panel keys=currentPath.lastObject.keys selectAction=(action "fwd")}}
+          {{rsa-investigate/meta/values-panel
+            query=query group=currentPath.lastObject
+            language=language
+            aliases=aliases
+            metaKeyStates=metaKeyStates
+            toggleAction=(action "safeCallback" toggleAction)}}
         {{/if}}
       {{else}}
         {{!by default, show the meta groups panel so the user can choose one to browse}}
