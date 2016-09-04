@@ -101,7 +101,7 @@ public interface AlertsService {
 
     List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange);
 
-    Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
+    Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore();
 
     Set<Alert> getAlertsRelevantToUserScore(String userName);
 }

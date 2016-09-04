@@ -111,7 +111,7 @@ public interface AlertsRepositoryCustom {
 
     Set<DataSourceAnomalyTypePair> getDataSourceAnomalyTypePairs();
 
-    Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
+    Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore();
 
     Set<Alert> getAlertsRelevantToUserScore(String username);
 
