@@ -8,10 +8,12 @@ import java.util.List;
 
 public interface UserWithAlertService {
 
-	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest);
+	List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest);
 
-	public int countUsersByFilter(UserRestFilter userRestFilter);
+	int countUsersByFilter(UserRestFilter userRestFilter);
 
-	public void recalculateNumberOfUserAlerts(String userName);
+	void recalculateNumberOfUserAlertsByUserName(String userName);
+
+	void recalculateNumberOfUserAlertsByUserId(String userId);
 
 }
