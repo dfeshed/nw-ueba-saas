@@ -17,16 +17,10 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
             "Model builder data must be of type %s.", Map.class.getSimpleName());
     static final double EPSILON = 0.00000001;
 
-    private double minThreshold;
-    private double minMaximalScore;
-    private double lowOutliersFraction;
-    private double highOutliersFraction;
+	private SMARTScoreMappingModelBuilderConf config;
 
     public SMARTScoreMappingModelBuilder(SMARTScoreMappingModelBuilderConf config) {
-        minThreshold = config.getMinThreshold();
-        minMaximalScore = config.getMinMaximalScore();
-        lowOutliersFraction = config.getLowOutliersFraction();
-        highOutliersFraction = config.getHighOutliersFraction();
+        this.config = config;
     }
 
     @Override
@@ -43,8 +37,8 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
             int numOfDays = dateToHighestScores.size();
             // EntityEventUnreducedScoreRetriever retrieves numOfDays * numOfAlertsPerDay entities per day
             int numOfAlertsPerDay = scoresPerDay.get(0).size() / numOfDays;
-            threshold = Math.max(minThreshold, calcThreshold(scoresPerDay, numOfDays, numOfAlertsPerDay) + EPSILON);
-            maximalScore = Math.max(minMaximalScore, calcMaximalScore(scoresPerDay));
+            threshold = Math.max(config.getMinThreshold(), calcThreshold(scoresPerDay, numOfDays, numOfAlertsPerDay) + EPSILON);
+            maximalScore = Math.max(config.getMinMaximalScore(), calcMaximalScore(scoresPerDay));
         }
         if (threshold > maximalScore) {
             maximalScore = threshold;
@@ -73,8 +67,8 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
      * @return the value which will be mapped to 50 (50 and above will trigger an alert).
      */
     private double calcThreshold(List<List<Double>> scoresPerDay, int numOfDays, int numOfAlertsPerDay) {
-        long numOfLowOutliers = (long) Math.floor(scoresPerDay.size() * lowOutliersFraction);
-        long numOHighOutliers = (long) Math.floor(scoresPerDay.size() * highOutliersFraction);
+        long numOfLowOutliers = (long) Math.floor(scoresPerDay.size() * config.getLowOutliersFraction());
+        long numOHighOutliers = (long) Math.floor(scoresPerDay.size() * config.getHighOutliersFraction());
         long numOfDaysToUse = scoresPerDay.size() - numOfLowOutliers - numOHighOutliers;
         return scoresPerDay.stream()
                 // sort by the lowest (highest) score per day (so we can filter outliers)
