@@ -9,6 +9,9 @@ import java.util.Map;
 import java.util.OptionalInt;
 import java.util.stream.Collectors;
 
+/**
+ * Documentation of the alert control can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Alert+Control
+ */
 public class SMARTScoreMappingModelBuilder implements IModelBuilder {
     private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(
             "Model builder data must be of type %s.", Map.class.getSimpleName());
@@ -50,6 +53,10 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
         return model;
     }
 
+    /**
+     * Filter out days with partial or no scores at all.
+     * @param dateToHighestScores a mapping from a day to its highest scores.
+     */
     private List<List<Double>> filterPartialDays(Map<Long, List<Double>> dateToHighestScores) {
         OptionalInt numOfScoresPerDay = dateToHighestScores.values().stream()
                 .mapToInt(List::size)
@@ -59,6 +66,12 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * @param scoresPerDay a list of days. For each day it has a list of the highest scores in that day.
+     * @param numOfDays the number of days (before filtering by filterPartialDays).
+     * @param numOfAlertsPerDay the number of alerts that should be triggered per day.
+     * @return the value which will be mapped to 50 (50 and above will trigger an alert).
+     */
     private double calcThreshold(List<List<Double>> scoresPerDay, int numOfDays, int numOfAlertsPerDay) {
         long numOfLowOutliers = (long) Math.floor(scoresPerDay.size() * lowOutliersFraction);
         long numOHighOutliers = (long) Math.floor(scoresPerDay.size() * highOutliersFraction);
@@ -79,6 +92,10 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
                 .get();
     }
 
+    /**
+     * @param scoresPerDay a list of days. For each day it has a list of the highest scores in that day.
+     * @return the value that will be mapped to 100.
+     */
     private double calcMaximalScore(List<List<Double>> scoresPerDay) {
         return scoresPerDay.stream()
                 .mapToDouble(scores -> scores.get(scores.size() - 1))
