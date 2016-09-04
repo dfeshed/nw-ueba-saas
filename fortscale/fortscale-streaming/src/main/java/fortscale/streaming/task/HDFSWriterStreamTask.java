@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
 import fortscale.streaming.UserTimeBarrier;
+import fortscale.streaming.exceptions.EnhancedExceptionHandler;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
@@ -61,6 +62,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	// Streaming task metrics. Note some fields are update by this class and some by the derived classes
 	protected HDFSWriterStreamingTaskMetrics taskMetrics;
+
+	// Used to handle exceptions caught while trying to execute write operations
+	private EnhancedExceptionHandler enhancedExceptionHandler;
 
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
@@ -141,6 +145,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		}
 		bdpService = new BDPService();
 
+		boolean enabled = resolveBooleanValue(config, "fortscale.enhanced.exception.handler.enabled", res);
+		int numOfExceptionsToIgnore = config.getInt("fortscale.enhanced.exception.handler.num.of.exceptions.to.ignore");
+		long sleepMillisBeforeRetry = config.getLong("fortscale.enhanced.exception.handler.sleep.millis.before.retry");
+		int numOfAllowedExceptions = config.getInt("fortscale.enhanced.exception.handler.num.of.allowed.exceptions");
+		enhancedExceptionHandler = new EnhancedExceptionHandler(enabled, numOfExceptionsToIgnore, sleepMillisBeforeRetry, numOfAllowedExceptions);
 	}
 
 
@@ -212,7 +221,20 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				} else {
 					// write the event to hdfs
 					String eventLine = buildEventLine(message, writerConfiguration);
-					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
+
+					try {
+						writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
+						enhancedExceptionHandler.reset();
+					} catch (Exception eFirstTry) {
+						if (enhancedExceptionHandler.handleException(eFirstTry)) {
+							try {
+								writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
+							} catch (Exception eRetry) {
+								logger.error("{} failed to write event {} with timestamp {} on retry.",
+										getClass().getSimpleName(), eventLine, timestamp);
+							}
+						}
+					}
 
                     writerConfiguration.tableWriterMetrics.writeToHdfsMessages++;
 					writerConfiguration.processedMessageCount.inc();
