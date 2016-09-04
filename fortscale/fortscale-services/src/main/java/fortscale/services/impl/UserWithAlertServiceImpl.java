@@ -6,6 +6,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -20,6 +21,8 @@ import java.util.Set;
  * Created by alexp on 09/08/2016.
  */
 @Service("userWithAlertService") public class UserWithAlertServiceImpl implements UserWithAlertService {
+
+    private static Logger logger = Logger.getLogger(UserWithAlertService.class);
 
 	@Autowired private UserService userService;
 
@@ -100,10 +103,14 @@ import java.util.Set;
     }
 
     private void updateAlertsCount(User user) {
-        List<Alert> alerts = alertsService.getOpenAlertsByUsername(user.getUsername());
+        if (user != null) {
+            List<Alert> alerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 
-        user.setAlertsCount(alerts.size());
-        userService.saveUser(user);
+            user.setAlertsCount(alerts.size());
+            userService.saveUser(user);
+        }else{
+            logger.error("Got update alert count request for non existing user");
+        }
     }
 
     @Override
