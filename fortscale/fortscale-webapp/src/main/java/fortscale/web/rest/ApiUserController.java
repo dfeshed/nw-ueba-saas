@@ -447,14 +447,15 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(){
+	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(UserRestFilter userRestFilter){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
 
-		UserRestFilter filter = new UserRestFilter();
-		filter.setMinScore(0d);
+		if (userRestFilter.getMinScore() == null) {
+			userRestFilter.setMinScore(0d);
+		}
 
-		List<User> scoredUsers = userService.findUsersByFilter(filter, null, null);
+		List<User> scoredUsers = userWithAlertService.findUsersByFilter(userRestFilter, null);
 
 		if (CollectionUtils.isNotEmpty(scoredUsers)) {
 			scoredUsers.stream().forEach(user -> {
