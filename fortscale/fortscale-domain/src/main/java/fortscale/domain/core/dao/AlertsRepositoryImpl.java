@@ -333,7 +333,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			query.addCriteria(new Criteria().where(Alert.entityNameField).is(userName));
 		}
 
-		query.with(new Sort(Sort.Direction.DESC, Alert.severityCodeField));
+		query.with(new Sort(Sort.Direction.ASC, Alert.severityCodeField));
 
 		return query;
 	}
