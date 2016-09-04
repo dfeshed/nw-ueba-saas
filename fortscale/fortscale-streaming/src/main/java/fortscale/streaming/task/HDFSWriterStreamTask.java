@@ -149,7 +149,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		int numOfExceptionsToIgnore = config.getInt("fortscale.enhanced.exception.handler.num.of.exceptions.to.ignore");
 		long sleepMillisBeforeRetry = config.getLong("fortscale.enhanced.exception.handler.sleep.millis.before.retry");
 		int numOfAllowedExceptions = config.getInt("fortscale.enhanced.exception.handler.num.of.allowed.exceptions");
-		enhancedExceptionHandler = new EnhancedExceptionHandler(enabled, numOfExceptionsToIgnore, sleepMillisBeforeRetry, numOfAllowedExceptions);
+		enhancedExceptionHandler = new EnhancedExceptionHandler(
+				enabled, numOfExceptionsToIgnore, sleepMillisBeforeRetry, numOfAllowedExceptions, taskMetrics);
 	}
 
 
@@ -223,16 +224,28 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 					String eventLine = buildEventLine(message, writerConfiguration);
 
 					try {
+						// Try to write the line to HDFS
 						writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
+						// If the write operation was successful, reset the number of consecutive failures
 						enhancedExceptionHandler.reset();
 					} catch (Exception eFirstTry) {
+						// If the write operation was not successful, handle the exception and check if there should be a retry
 						if (enhancedExceptionHandler.handleException(eFirstTry)) {
 							try {
+								// Retry to write the line to HDFS
+								String msg = String.format("Retrying to write event %s with timestamp %d.", eventLine, timestamp);
+								logger.info(msg, eFirstTry);
 								writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
 							} catch (Exception eRetry) {
-								logger.error("{} failed to write event {} with timestamp {} on retry.",
-										getClass().getSimpleName(), eventLine, timestamp);
+								// Log the second failure and continue
+								taskMetrics.failedWriteRetries++;
+								String msg = String.format("Failed to write event %s with timestamp %d on retry.", eventLine, timestamp);
+								logger.error(msg, eRetry);
 							}
+						} else {
+							// No retry required - do not write event to HDFS and discard it
+							String msg = String.format("Did not retry to write event %s with timestamp %d and discarded it.", eventLine, timestamp);
+							logger.info(msg, eFirstTry);
 						}
 					}
 
