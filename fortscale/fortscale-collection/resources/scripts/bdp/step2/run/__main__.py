@@ -160,7 +160,7 @@ def main():
             .run():
         logger.info('finished successfully')
     else:
-        logger.error('failed')
+        logger.error('FAILED')
 
 
 if __name__ == '__main__':
