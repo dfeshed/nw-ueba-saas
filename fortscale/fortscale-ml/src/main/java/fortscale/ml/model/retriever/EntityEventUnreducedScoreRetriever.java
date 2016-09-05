@@ -44,7 +44,7 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 				config.getEntityEventConfName(),
 				endTime,
 				config.getNumOfDays(),
-				config.getNumOfAlertsPerDay());
+				(int) (config.getNumOfDays() * config.getNumOfAlertsPerDay()));
 
 		metrics.dates += dateToTopEntityEvents.size();
 		dateToTopEntityEvents.values().forEach(list -> metrics.topEntityEvents += list.size());

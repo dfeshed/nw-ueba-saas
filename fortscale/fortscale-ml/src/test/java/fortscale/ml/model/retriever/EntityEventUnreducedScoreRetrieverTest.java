@@ -47,7 +47,7 @@ public class EntityEventUnreducedScoreRetrieverTest {
 		when(entityEventMongoStore.getDateToTopEntityEvents(config.getEntityEventConfName(),
 				endTime,
 				config.getNumOfDays(),
-				config.getNumOfAlertsPerDay())).thenReturn(dateToTopEntityEvents);
+				(int) config.getNumOfAlertsPerDay())).thenReturn(dateToTopEntityEvents);
 		Map<Long, List<Double>> data = retriever.retrieve(null, endTime);
 		Assert.assertEquals(new HashMap<Long, List<Double>>() {{
 			put(yesterday, Collections.singletonList(unreducedScore));
