@@ -128,8 +128,7 @@ public class AlertsServiceImpl implements AlertsService {
 			ids.addAll(Arrays.asList(entityId.split(",")));
 		}
 
-		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
-				entityName, ids, indicatorTypes);
+		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, ids, indicatorTypes);
 	}
 
 	@Override
@@ -160,8 +159,7 @@ public class AlertsServiceImpl implements AlertsService {
 			ids.addAll(Arrays.asList(entityId.split(",")));
 		}
 
-		return alertsRepository.groupCount(fieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
-				dateRangeFilter, entityName, ids, indicatorTypes);
+		return alertsRepository.groupCount(fieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, ids, indicatorTypes);
 	}
 
 	@Override
@@ -173,29 +171,39 @@ public class AlertsServiceImpl implements AlertsService {
 	}
 
 	@Override
-	public Map<String, Integer> getAlertsTypesCountedByUser(Boolean ignoreRejected){
-
-		Map<String, Integer> results = new HashMap<>();
-		String feedback = org.springframework.util.StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
-
-
-		 // The countOnUserAndAlertType map contains each pair of alert_name + alert_fied once.
-		//  We need to count how many users each alert_name contains
-		Map<Pair<String,String>, Integer> countOnUserAndAlertName = alertsRepository.groupCountBy2Fields(Alert.nameField, Alert.entityNameField, null, null, feedback,
-				null, null, null, null);
-
-		for (Pair<String,String> alertNameAndUserName: countOnUserAndAlertName.keySet()){
-			Integer count = results.get(alertNameAndUserName.getKey());
-			if (count == null){
-				count = 0;
+	public Map<Set<String>, Set<String>> getAlertsTypesByUser(Boolean ignoreRejected) {
+		final String HOURLY_SUFFIX = "_hourly";
+		final String DAILY_SUFFIX = "_daily";
+		Map<Set<String>, Set<String>> results = new HashMap<>();
+		String feedback = StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
+		 //the userAndAlertType map contains each pair of alert_name + alert_field once.
+		Set<Pair<String,String>> userAndAlertName = alertsRepository.groupCountBy2Fields(Alert.nameField,
+				Alert.entityNameField, null, null, feedback, null, null, null, null).keySet();
+		//build the results
+		for (Pair<String,String> alertNameAndUserName: userAndAlertName) {
+			String agnosticAlertName = alertNameAndUserName.getLeft().replace(HOURLY_SUFFIX, "").replace(DAILY_SUFFIX,
+					"");
+			Set<String> alertTypesToAdd = null;
+			for (Set<String> alertTypes: results.keySet()) {
+				for (String alertType: alertTypes) {
+					if (alertType.startsWith(agnosticAlertName)) {
+						alertTypesToAdd = alertTypes;
+						break;
+					}
+				}
 			}
-			count++;
-			results.put(alertNameAndUserName.getKey(), count);
+			if (alertTypesToAdd == null) {
+				alertTypesToAdd = new HashSet<>();
+			}
+			alertTypesToAdd.add(alertNameAndUserName.getLeft());
+			if (results.containsKey(alertTypesToAdd)) {
+				results.get(alertTypesToAdd).add(alertNameAndUserName.getRight());
+			} else {
+				results.put(alertTypesToAdd, new HashSet<>(Arrays.asList(alertNameAndUserName.getRight())));
+			}
 		}
 		return results;
 	}
-
-
 
 	@Override
 	public List<Alert> getAlertSummary(List<String> severities, long endDate) {

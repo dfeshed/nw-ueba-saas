@@ -42,6 +42,7 @@ import javax.ws.rs.core.Response;
 import java.io.OutputStreamWriter;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fortscale.web.rest.ApiAlertController.CSV_CONTENT_TYPE;
 
@@ -492,18 +493,15 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
-		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
-
-		for (Map.Entry<String, Integer> alertTypeToCountEntry : alertsService.getAlertsTypesCountedByUser(ignoreRejected).entrySet()){
-			alertTypesNameAndCount.add(new ValueCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue()));
-		}
-
-		DataBean<Set<ValueCountBean>> result = new DataBean<>();
-
+	public DataBean<Set<AlertTypesCountBean>> getDistinctAlertNames(@RequestParam(required=true,
+			value = "ignore_rejected") Boolean ignoreRejected) {
+		Set<AlertTypesCountBean> alertTypesNameAndCount = alertsService.
+				getAlertsTypesByUser(ignoreRejected).entrySet().stream().map(alertTypeToCountEntry ->
+				new AlertTypesCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue().size())).
+				collect(Collectors.toSet());
+		DataBean<Set<AlertTypesCountBean>> result = new DataBean<>();
 		result.setData(alertTypesNameAndCount);
 		result.setTotal(alertTypesNameAndCount.size());
-
 		return result;
 	}
 
