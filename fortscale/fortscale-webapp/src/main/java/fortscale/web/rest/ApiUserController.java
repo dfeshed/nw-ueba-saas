@@ -291,6 +291,19 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
+	@RequestMapping(value="/tagUsers", method=RequestMethod.GET)
+	@LogException
+	public ResponseEntity<Response> tagUsers() {
+		try {
+			//TODO - make this asynchronous
+			userTagService.update();
+		} catch (Exception ex) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.status(Response.Status.
+					INTERNAL_SERVER_ERROR).build());
+		}
+		return new ResponseEntity("{}", HttpStatus.OK);
+	}
+
 	@RequestMapping(value="/user_tags", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -320,8 +333,7 @@ public class ApiUserController extends BaseController{
 				}
 			}
 		}
-		return new ResponseEntity("{}", HttpStatus.ACCEPTED);
-	}
+		return new ResponseEntity("{}", HttpStatus.ACCEPTED);	}
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
 	@ResponseBody
