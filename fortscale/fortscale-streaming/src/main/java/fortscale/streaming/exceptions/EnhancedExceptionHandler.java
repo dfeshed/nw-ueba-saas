@@ -1,14 +1,11 @@
 package fortscale.streaming.exceptions;
 
-import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.utils.logging.Logger;
 
 /**
  * The {@link EnhancedExceptionHandler} keeps track of exceptions thrown during the execution of a certain operation,
  * and helps the user to decide whether to ignore the exception and continue, sleep for a while and then re-execute the
  * action, or simply re-throw the exception back to the user.
- * TODO: Currently works only with the HDFS writer because of the metrics.
- * TODO: Need to handle metrics outside this class for general use.
  *
  * @author Lior Govrin
  */
@@ -19,7 +16,6 @@ public class EnhancedExceptionHandler {
 	private int numOfExceptionsToIgnore;
 	private long sleepMillisBeforeRetry;
 	private int numOfAllowedExceptions;
-	private HDFSWriterStreamingTaskMetrics hdfsWriterMetrics;
 	private int numOfExceptionsCaught;
 
 	/**
@@ -30,17 +26,14 @@ public class EnhancedExceptionHandler {
 	 * @param sleepMillisBeforeRetry  number of milliseconds to sleep before trying to re-execute the action
 	 * @param numOfAllowedExceptions  any exception after the first {@code numOfAllowedExceptions} exceptions is thrown
 	 *                                back to the user (the exception is not ignored and the action is not re-executed)
-	 * @param hdfsWriterMetrics       the metrics of the HDFS writer streaming task
 	 */
 	public EnhancedExceptionHandler(
-			boolean enabled, int numOfExceptionsToIgnore, long sleepMillisBeforeRetry, int numOfAllowedExceptions,
-			HDFSWriterStreamingTaskMetrics hdfsWriterMetrics) {
+			boolean enabled, int numOfExceptionsToIgnore, long sleepMillisBeforeRetry, int numOfAllowedExceptions) {
 
 		this.enabled = enabled;
 		this.numOfExceptionsToIgnore = numOfExceptionsToIgnore;
 		this.sleepMillisBeforeRetry = sleepMillisBeforeRetry;
 		this.numOfAllowedExceptions = numOfAllowedExceptions;
-		this.hdfsWriterMetrics = hdfsWriterMetrics;
 		reset();
 	}
 
@@ -60,14 +53,12 @@ public class EnhancedExceptionHandler {
 
 		// If the handler is disabled, throw back the exception
 		if (!enabled) {
-			hdfsWriterMetrics.writeExceptionsThrown++;
 			logger.info("Disabled - throwing back the exception.");
 			throw eCaught;
 		}
 
 		// If the number of exceptions caught exceeds the number of allowed exceptions, throw back the exception
 		if (numOfExceptionsCaught > numOfAllowedExceptions) {
-			hdfsWriterMetrics.writeExceptionsThrown++;
 			logger.error("No. of exceptions caught exceeds no. of allowed exceptions - throwing back the exception.");
 			throw eCaught;
 		}
@@ -83,11 +74,9 @@ public class EnhancedExceptionHandler {
 			}
 
 			// Retry to execute the action that led to the exception
-			hdfsWriterMetrics.writeRetries++;
 			return true;
 		} else {
 			// Ignore the first {@code numOfExceptionsToIgnore} exceptions and do not retry to execute the action
-			hdfsWriterMetrics.eventsDiscarded++;
 			logger.warn("Ignoring the exception.");
 			return false;
 		}
