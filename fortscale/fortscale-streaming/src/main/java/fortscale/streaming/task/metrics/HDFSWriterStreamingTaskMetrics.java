@@ -9,7 +9,6 @@ import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
-import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 /**
@@ -48,6 +47,19 @@ public class HDFSWriterStreamingTaskMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long coordinateExceptions;
 
+    // Number of retries to write an event
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long writeRetries;
+
+    // Number of failed retries to write an event
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long failedWriteRetries;
+
+    // Number of discarded events that were not written
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long eventsDiscarded;
+
+    // Number of write exceptions thrown
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long writeExceptionsThrown;
 }
-
-
