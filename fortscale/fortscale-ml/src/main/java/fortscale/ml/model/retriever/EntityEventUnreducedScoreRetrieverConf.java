@@ -12,7 +12,7 @@ public class EntityEventUnreducedScoreRetrieverConf extends AbstractDataRetrieve
 
 	private String entityEventConfName;
 	private int numOfDays;
-	private int numOfAlertsPerDay;
+	private double numOfAlertsPerDay;
 
 	@JsonCreator
 	public EntityEventUnreducedScoreRetrieverConf(
@@ -20,7 +20,7 @@ public class EntityEventUnreducedScoreRetrieverConf extends AbstractDataRetrieve
 			@JsonProperty("functions") List<JSONObject> functions,
 			@JsonProperty("entityEventConfName") String entityEventConfName,
 			@JsonProperty("numOfDays") Integer numOfDays,
-			@JsonProperty("numOfAlertsPerDay") Integer numOfAlertsPerDay) {
+			@JsonProperty("numOfAlertsPerDay") Double numOfAlertsPerDay) {
 		super(timeRangeInSeconds, functions);
 		Assert.hasText(entityEventConfName);
 		Assert.isTrue(numOfDays != null && numOfDays > 0);
@@ -43,7 +43,7 @@ public class EntityEventUnreducedScoreRetrieverConf extends AbstractDataRetrieve
 		return numOfDays;
 	}
 
-	public int getNumOfAlertsPerDay() {
+	public double getNumOfAlertsPerDay() {
 		return numOfAlertsPerDay;
 	}
 }
