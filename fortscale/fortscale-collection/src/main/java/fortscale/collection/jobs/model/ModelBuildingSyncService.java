@@ -14,13 +14,14 @@ import java.util.concurrent.TimeoutException;
 
 @Configurable(preConstruction = true)
 public class ModelBuildingSyncService {
+	public static final String FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC = "fortscale.model.build.control.input.topic";
+	public static final String FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC = "fortscale.model.build.control.output.topic";
 	private static final Logger logger = Logger.getLogger(ModelBuildingSyncService.class);
 	private static final long MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS = 1000;
 
-	@Value("${fortscale.model.build.control.input.topic}")
 	private String controlInputTopic;
-	@Value("${fortscale.model.build.control.output.topic}")
 	private String controlOutputTopic;
+
 	@Value("${fortscale.model.build.message.field.session.id}")
 	private String sessionIdJsonField;
 	@Value("${fortscale.model.build.message.field.model.conf.name}")
@@ -39,7 +40,9 @@ public class ModelBuildingSyncService {
 
 	public ModelBuildingSyncService(
 			String sessionId, Collection<String> modelConfNames,
-			long secondsBetweenEndTimes, long timeoutInSeconds) {
+			long secondsBetweenEndTimes, long timeoutInSeconds,
+			String controlInputTopic,String controlOutputTopic
+	) {
 
 		Assert.hasText(sessionId);
 		Assert.notEmpty(modelConfNames);
@@ -51,6 +54,8 @@ public class ModelBuildingSyncService {
 		this.modelConfNames = modelConfNames;
 		this.secondsBetweenEndTimes = secondsBetweenEndTimes;
 		this.timeoutInMillis = TimeUnit.SECONDS.toMillis(timeoutInSeconds);
+		this.controlInputTopic = controlInputTopic;
+		this.controlOutputTopic = controlOutputTopic;
 	}
 
 	public void init() {
