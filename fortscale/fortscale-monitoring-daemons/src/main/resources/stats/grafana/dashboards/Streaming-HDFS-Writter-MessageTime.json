@@ -12,10 +12,9 @@
   "sharedCrosshair": true,
   "rows": [
     {
-      "title": "New row",
-      "height": "250px",
-      "editable": true,
       "collapse": false,
+      "editable": true,
+      "height": "250px",
       "panels": [
         {
           "aliasColors": {},
@@ -160,7 +159,8 @@
             }
           ]
         }
-      ]
+      ],
+      "title": "New row"
     },
     {
       "collapse": false,
@@ -252,20 +252,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -388,20 +388,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -438,7 +438,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 2
         },
         {
@@ -526,20 +526,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -576,7 +576,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 2
         },
         {
@@ -664,20 +664,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -714,7 +714,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 2
         }
       ],
@@ -819,20 +819,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -955,20 +955,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -1005,7 +1005,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 20
         },
         {
@@ -1093,20 +1093,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -1143,7 +1143,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 20
         },
         {
@@ -1231,20 +1231,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -1281,11 +1281,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 20
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -1294,9 +1296,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -1388,20 +1388,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -1524,20 +1524,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -1574,7 +1574,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 24
         },
         {
@@ -1662,20 +1662,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -1712,7 +1712,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 24
         },
         {
@@ -1800,20 +1800,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -1850,11 +1850,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 24
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -1863,9 +1865,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -1957,20 +1957,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2093,20 +2093,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2143,7 +2143,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 28
         },
         {
@@ -2231,20 +2231,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2281,7 +2281,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 28
         },
         {
@@ -2369,20 +2369,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2419,11 +2419,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 28
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -2432,9 +2434,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -2526,20 +2526,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2662,20 +2662,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2712,7 +2712,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 32
         },
         {
@@ -2800,20 +2800,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2850,7 +2850,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 32
         },
         {
@@ -2938,20 +2938,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -2988,11 +2988,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 32
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -3001,9 +3003,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -3095,20 +3095,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -3231,20 +3231,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -3281,7 +3281,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 36
         },
         {
@@ -3369,20 +3369,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -3419,7 +3419,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 36
         },
         {
@@ -3507,20 +3507,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -3557,11 +3557,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 36
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -3570,9 +3572,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -3664,20 +3664,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -3800,20 +3800,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -3850,7 +3850,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 40
         },
         {
@@ -3938,20 +3938,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -3988,7 +3988,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 40
         },
         {
@@ -4076,20 +4076,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -4126,11 +4126,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 40
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -4139,9 +4141,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -4233,20 +4233,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -4369,20 +4369,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -4419,7 +4419,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 44
         },
         {
@@ -4507,20 +4507,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -4557,7 +4557,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 44
         },
         {
@@ -4645,20 +4645,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -4695,11 +4695,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 44
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -4708,9 +4710,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -4802,20 +4802,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -4938,20 +4938,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -4988,7 +4988,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 48
         },
         {
@@ -5076,20 +5076,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -5126,7 +5126,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 48
         },
         {
@@ -5214,20 +5214,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -5264,11 +5264,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 48
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -5277,9 +5279,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -5371,20 +5371,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -5507,20 +5507,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -5557,7 +5557,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 52
         },
         {
@@ -5645,20 +5645,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -5695,7 +5695,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 52
         },
         {
@@ -5783,20 +5783,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -5833,11 +5833,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 52
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -5846,9 +5848,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     },
     {
       "collapse": false,
@@ -5940,20 +5940,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -6076,20 +6076,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -6126,7 +6126,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 56
         },
         {
@@ -6214,20 +6214,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -6264,7 +6264,7 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 56
         },
         {
@@ -6352,20 +6352,20 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "messageEpoch"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "last",
-                    "params": []
+                    "params": [],
+                    "type": "last"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "messageTime"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
@@ -6402,11 +6402,13 @@
             }
           ],
           "valueName": "current",
-          "repeatIteration": 1472476618164,
+          "repeatIteration": 1472623533240,
           "repeatPanelId": 56
         }
       ],
       "repeat": null,
+      "repeatIteration": 1472623533240,
+      "repeatRowId": 2,
       "scopedVars": {
         "dataSource": {
           "selected": false,
@@ -6415,9 +6417,7 @@
         }
       },
       "showTitle": true,
-      "title": "$dataSource",
-      "repeatRowId": 2,
-      "repeatIteration": 1472476618164
+      "title": "$dataSource"
     }
   ],
   "time": {
@@ -6466,68 +6466,68 @@
         "name": "dataSource",
         "options": [
           {
-            "selected": true,
             "text": "All",
-            "value": "$__all"
+            "value": "$__all",
+            "selected": true
           },
           {
-            "selected": false,
             "text": "crmsf",
-            "value": "crmsf"
+            "value": "crmsf",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "gwame",
-            "value": "gwame"
+            "value": "gwame",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "kerberos_logins",
-            "value": "kerberos_logins"
+            "value": "kerberos_logins",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "kerberos_tgt",
-            "value": "kerberos_tgt"
+            "value": "kerberos_tgt",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "ntlm",
-            "value": "ntlm"
+            "value": "ntlm",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "oracle",
-            "value": "oracle"
+            "value": "oracle",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "prnlog",
-            "value": "prnlog"
+            "value": "prnlog",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "ssh",
-            "value": "ssh"
+            "value": "ssh",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "vpn",
-            "value": "vpn"
+            "value": "vpn",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "vpn_session",
-            "value": "vpn_session"
+            "value": "vpn_session",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "wame",
-            "value": "wame"
+            "value": "wame",
+            "selected": false
           }
         ],
         "query": "SHOW TAG VALUES FROM \"streaming.HDFS-writer.writer\" WITH KEY = \"dataSource\" ",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query"
       },
       {
@@ -6545,33 +6545,33 @@
         "name": "lastStep",
         "options": [
           {
-            "selected": true,
             "text": "All",
-            "value": "$__all"
+            "value": "$__all",
+            "selected": true
           },
           {
-            "selected": false,
             "text": "ComputerTaggingNormalizationTask",
-            "value": "ComputerTaggingNormalizationTask"
+            "value": "ComputerTaggingNormalizationTask",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "ScoringTask",
-            "value": "ScoringTask"
+            "value": "ScoringTask",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "UsernameNormalizationAndTaggingTask",
-            "value": "UsernameNormalizationAndTaggingTask"
+            "value": "UsernameNormalizationAndTaggingTask",
+            "selected": false
           },
           {
-            "selected": false,
             "text": "VpnEnrichTask",
-            "value": "VpnEnrichTask"
+            "value": "VpnEnrichTask",
+            "selected": false
           }
         ],
         "query": "SHOW TAG VALUES FROM \"streaming.HDFS-writer.writer\" WITH KEY = \"lastStep\"\t",
-        "refresh": 0,
+        "refresh": 1,
         "type": "query"
       }
     ]
@@ -6579,7 +6579,8 @@
   "annotations": {
     "list": []
   },
+  "refresh": "1m",
   "schemaVersion": 12,
-  "version": 10,
+  "version": 11,
   "links": []
 }
