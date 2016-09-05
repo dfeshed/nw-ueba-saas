@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import sys
+
 from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
@@ -55,7 +56,7 @@ Inner workings:
     1 and 2 for all the data sources which already have models (to save you time).
 
 Usage example:
-    python 2.6/stepSAM/run --data_sources ssh ntlm --convert_to_minutes_timeout -1 --max_batch_size 100000 --max_gap 500000''')
+    python 2.6/stepSAM/run --data_sources ssh ntlm --convert_to_minutes_timeout_in_minutes -1 --max_batch_size 100000 --max_gap 500000''')
     parser.add_argument('--wait_between_loads_seconds',
                         action='store',
                         dest='wait_between_loads_seconds',
@@ -93,7 +94,7 @@ def main():
             force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
             max_gap=arguments.max_gap,
             force_max_gap_in_seconds=arguments.force_max_gap_in_seconds,
-            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout,
+            convert_to_minutes_timeout=arguments.convert_to_minutes_timeout_in_minutes * 60,
             timeoutInSeconds=arguments.timeoutInSeconds,
             cleanup_first=arguments.cleanup_first,
             start=arguments.start,
