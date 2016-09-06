@@ -98,17 +98,17 @@ Usage examples:
                                   type=int)
 
     models_scheduler_parent = argparse.ArgumentParser(add_help=False)
-    models_scheduler_parent.add_argument('--build_models_interval_in_minutes',
+    models_scheduler_parent.add_argument('--build_models_interval_in_hours',
                                          action='store',
-                                         dest='build_models_interval_in_minutes',
-                                         help='The logic time interval (in minutes) for building models. '
+                                         dest='build_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building models. '
                                               'If not specified, no models will be built '
                                               '(they can, however be built by an external entity).',
                                          type=int)
-    models_scheduler_parent.add_argument('--build_entity_models_interval_in_minutes',
+    models_scheduler_parent.add_argument('--build_entity_models_interval_in_hours',
                                          action='store',
-                                         dest='build_entity_models_interval_in_minutes',
-                                         help='The logic time interval (in minutes) for building entity models. '
+                                         dest='build_entity_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building entity models. '
                                               'If not specified, no entity models will be built '
                                               '(they can, however be built by an external entity).',
                                          type=int)
@@ -174,8 +174,8 @@ def main():
                validation_batches_delay=arguments.validation_batches_delay,
                max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
                batch_size_in_hours=arguments.batch_size,
-               entity_models_interval_in_minutes=arguments.build_models_interval_in_minutes,
-               build_entity_models_interval_in_minutes=arguments.build_entity_models_interval_in_minutes) \
+               entity_models_interval=arguments.build_models_interval_in_hours * 60 * 60,
+               build_entity_models_interval=arguments.build_entity_models_interval_in_hours * 60 * 60) \
             .run():
         logger.info('finished successfully')
     else:

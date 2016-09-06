@@ -29,8 +29,8 @@ class Manager(OnlineManager):
                  validation_batches_delay,
                  max_delay,
                  batch_size_in_hours,
-                 build_models_interval_in_minutes,
-                 build_entity_models_interval_in_minutes):
+                 build_models_interval,
+                 build_entity_models_interval):
         super(Manager, self).__init__(logger=logger,
                                       host=host,
                                       is_online_mode=is_online_mode,
@@ -44,14 +44,14 @@ class Manager(OnlineManager):
                                       batch_size_in_hours=batch_size_in_hours)
         if is_online_mode and timeout is not None:
             raise Exception('in online mode there should be no timeout')
-        if (build_models_interval_in_minutes is None) != (build_entity_models_interval_in_minutes is None):
-            raise Exception("you can't specify only one of --build_models_interval_in_minutes "
-                            "and --build_entity_models_interval_in_minutes")
+        if (build_models_interval is None) != (build_entity_models_interval is None):
+            raise Exception("you can't specify only one of --build_models_interval_in_hours "
+                            "and --build_entity_models_interval_in_hours")
         self._timeout = timeout
         self._validation_batches_delay = validation_batches_delay
         self._is_online_mode = is_online_mode
-        self._build_models_interval_in_minutes = build_models_interval_in_minutes,
-        self._build_entity_models_interval_in_minutes = build_entity_models_interval_in_minutes
+        self._build_models_interval = build_models_interval,
+        self._build_entity_models_interval = build_entity_models_interval
         self._last_models_build_time = 0
         self._last_entity_models_build_time = 0
 
@@ -72,12 +72,12 @@ class Manager(OnlineManager):
         return True
 
     def _build_models_if_needed(self, end_time_in_seconds):
-        if self._build_models_interval_in_minutes is None:
+        if self._build_models_interval is None:
             return
-        if 0 <= self._build_models_interval_in_minutes <= end_time_in_seconds - self._last_models_build_time:
+        if 0 <= self._build_models_interval <= end_time_in_seconds - self._last_models_build_time:
             self._build_models(end_time_in_seconds=end_time_in_seconds, topic='fortscale-model-building-control-input')
             self._last_models_build_time = end_time_in_seconds
-        if 0 <= self._build_entity_models_interval_in_minutes <= end_time_in_seconds - self._last_entity_models_build_time:
+        if 0 <= self._build_entity_models_interval <= end_time_in_seconds - self._last_entity_models_build_time:
             self._build_models(end_time_in_seconds=end_time_in_seconds, topic='fortscale-entity-events-model-building-control-input')
             self._last_entity_models_build_time = end_time_in_seconds
 
