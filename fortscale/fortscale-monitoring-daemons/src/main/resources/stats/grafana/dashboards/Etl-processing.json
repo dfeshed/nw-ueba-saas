@@ -3,7 +3,7 @@
   "title": "Etl processing",
   "originalTitle": "Etl processing",
   "tags": [
-    "Linux"
+    "ETL JOB"
   ],
   "style": "dark",
   "timezone": "browser",
@@ -76,7 +76,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "etl.event-process.job",
+              "measurement": "ETL.event-process.job",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -272,7 +272,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "etl.event-process.job",
+              "measurement": "ETL.event-process.job",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -450,7 +450,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "etl.event-process.job",
+              "measurement": "ETL.event-process.job",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
