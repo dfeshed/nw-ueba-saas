@@ -1,14 +1,21 @@
 import Ember from 'ember';
+import d3 from 'd3';
+import computed from 'ember-computed-decorators';
 
-const { Component } = Ember;
+const {
+  Component,
+  inject: {
+    service
+  }
+} = Ember;
 
 export default Component.extend({
   classNames: 'rsa-investigate-timeline',
   chartMargin: {
-    top: 10,     /* avoid zeroes to prevent shaving edges off peaks */
+    top: 10,    /* avoid zeroes to prevent shaving edges off peaks */
     bottom: 30, /* big enough for some text */
     left: 35,
-    right: 10
+    right: 20
   },
 
   /**
@@ -20,5 +27,12 @@ export default Component.extend({
   chartData: undefined,
 
   xProp: 'value',
-  yProp: 'count'
+  yProp: 'count',
+
+  timezone: service('timezone'),
+
+  @computed('timezone.selected')
+  xScaleFn: (zone) => {
+    return (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime;
+  }
 });

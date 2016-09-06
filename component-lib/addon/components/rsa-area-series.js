@@ -23,10 +23,10 @@ export default Component.extend({
   clazzName: (index) => `series-${index}`,
 
   @computed('xScale', 'xProp')
-  xAccessor: (scaleFn, prop) => (d) => scaleFn(d[prop]),
+  xAccessor: (scale, prop) => (d) => scale(d[prop]),
 
   @computed('yScale', 'yProp')
-  yAccessor: (scaleFn, prop) => (d) => scaleFn(d[prop]),
+  yAccessor: (scale, prop) => (d) => scale(d[prop]),
 
   @computed('xAccessor', 'yAccessor', 'height', 'interpolator')
   pathFn: (...args) => createArea(...args),
