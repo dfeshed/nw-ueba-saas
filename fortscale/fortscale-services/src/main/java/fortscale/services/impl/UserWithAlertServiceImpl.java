@@ -1,11 +1,11 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
-import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
+import fortscale.services.cache.CacheHandler;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 /**
  * Created by alexp on 09/08/2016.
@@ -30,6 +32,9 @@ import java.util.Set;
 
 	@Autowired
 	private UserScoreService userScoreService;
+
+	@Autowired
+	private CacheHandler<UserRestFilter, List<User>> filterToUserListCache;
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
 		List<User> result = new ArrayList<>();
@@ -93,11 +98,89 @@ import java.util.Set;
 		return userService.countUsersByFilter(userRestFilter, relevantUsers);
 	}
 
-	@Override public void recalculateNumberOfUserAlerts(String userName) {
-		List<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
-		User user = userService.findByUsername(userName);
+    @Override
+    public void recalculateNumberOfUserAlertsByUserName(String userName) {
+        User user = userService.findByUsername(userName);
+        updateAlertsCount(user);
+    }
 
-		user.setAlertsCount(alerts.size());
-		userService.saveUser(user);
+    private void updateAlertsCount(User user) {
+        if (user != null) {
+            List<Alert> alerts = alertsService.getOpenAlertsByUsername(user.getUsername());
+
+            user.setAlertsCount(alerts.size());
+            userService.saveUser(user);
+        }else{
+            logger.error("Got update alert count request for non existing user");
+        }
+    }
+
+    @Override
+    public void recalculateNumberOfUserAlertsByUserId(String userId) {
+        User user = userService.getUserById(userId);
+        updateAlertsCount(user);
+    }
+
+	@Override
+	public List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter, String searchValue) {
+
+		List<User> users = filterToUserListCache.get(userRestFilter);
+		List<User> result = new ArrayList<>();
+
+		if (users == null){
+			users = findUsersByFilter(userRestFilter, null);
+			filterToUserListCache.put(userRestFilter, users);
+		}
+
+		if (CollectionUtils.isNotEmpty(users)){
+			List<User> firstNameResults = new ArrayList<>();
+			List<User> lastNameResults = new ArrayList<>();
+			List<User> usernameResults = new ArrayList<>();
+			List<User> positionResults = new ArrayList<>();
+			List<User> groupResults = new ArrayList<>();
+
+			users.forEach(user -> {
+				if (user.getAdInfo().getFirstname().startsWith(searchValue)){
+					firstNameResults.add(user);
+				} else if (user.getAdInfo().getLastname().startsWith(searchValue)){
+					lastNameResults.add(user);
+				} else if (user.getDisplayName().startsWith(searchValue)){
+					usernameResults.add(user);
+				} else if (user.getAdInfo().getPosition().startsWith(searchValue)){
+					positionResults.add(user);
+				} else if(user.getAdInfo().getDepartment().startsWith(searchValue)){
+						groupResults.add(user);
+				}
+
+			});
+
+			result.addAll(firstNameResults);
+			result.addAll(lastNameResults);
+			result.addAll(usernameResults);
+
+		}
+
+		// TODO: search
+		return result.stream().distinct().collect(Collectors.toList());
+	}
+
+	@Override
+	public CacheHandler getCache() {
+		return filterToUserListCache;
+	}
+
+	@Override
+	public void setCache(CacheHandler cache) {
+		this.filterToUserListCache = cache;
+	}
+
+	@Override
+	public void handleNewValue(String key, String value) throws Exception {
+		if(value == null){
+			getCache().remove(key);
+		}
+		else {
+			getCache().putFromString(key, value);
+		}
 	}
 }

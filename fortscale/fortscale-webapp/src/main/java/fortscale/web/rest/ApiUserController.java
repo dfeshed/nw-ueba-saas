@@ -191,6 +191,19 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
+    @RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
+    @ResponseBody
+    @LogException
+    public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter,
+												@RequestParam(required=true) String searchValue){
+        List<User> users = userWithAlertService.findAndSaveUsersByFilter(userRestFilter, searchValue);
+
+		DataBean<List<User>> result = new DataBean<>();
+		result.setData(users);
+
+        return result;
+    }
+
 	/**
 	 * Search user data by user name. This function is the same as details() but the parameter is username and not userid
 	 * @param username the name of the user
@@ -565,6 +578,7 @@ public class ApiUserController extends BaseController{
 			User user = userDetailsBean.getUser();
 			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
+
 			List<UserActivitySourceMachineDocument> userSourceMachines;
 			try {
 				userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),

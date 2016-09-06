@@ -181,4 +181,65 @@ public class UserFilter extends RestFilter {
 			return indicatorTypes.getAnomalyList();
 		}
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		UserFilter that = (UserFilter) o;
+
+		if (disabledSince != null ? !disabledSince.equals(that.disabledSince) : that.disabledSince != null)
+			return false;
+		if (isDisabled != null ? !isDisabled.equals(that.isDisabled) : that.isDisabled != null) return false;
+		if (isDisabledWithActivity != null ? !isDisabledWithActivity.equals(that.isDisabledWithActivity) : that.isDisabledWithActivity != null)
+			return false;
+		if (isTerminatedWithActivity != null ? !isTerminatedWithActivity.equals(that.isTerminatedWithActivity) : that.isTerminatedWithActivity != null)
+			return false;
+		if (inactiveSince != null ? !inactiveSince.equals(that.inactiveSince) : that.inactiveSince != null)
+			return false;
+		if (dataEntities != null ? !dataEntities.equals(that.dataEntities) : that.dataEntities != null) return false;
+		if (entityMinScore != null ? !entityMinScore.equals(that.entityMinScore) : that.entityMinScore != null)
+			return false;
+		if (isServiceAccount != null ? !isServiceAccount.equals(that.isServiceAccount) : that.isServiceAccount != null)
+			return false;
+		if (searchFieldContains != null ? !searchFieldContains.equals(that.searchFieldContains) : that.searchFieldContains != null)
+			return false;
+		if (addAlertsAndDevices != null ? !addAlertsAndDevices.equals(that.addAlertsAndDevices) : that.addAlertsAndDevices != null)
+			return false;
+		if (userTags != null ? !userTags.equals(that.userTags) : that.userTags != null) return false;
+		if (isWatched != null ? !isWatched.equals(that.isWatched) : that.isWatched != null) return false;
+		if (alertTypes != null ? !alertTypes.equals(that.alertTypes) : that.alertTypes != null) return false;
+		if (indicatorTypes != null ? !indicatorTypes.equals(that.indicatorTypes) : that.indicatorTypes != null)
+			return false;
+		if (locations != null ? !locations.equals(that.locations) : that.locations != null) return false;
+		if (severity != that.severity) return false;
+		if (minScore != null ? !minScore.equals(that.minScore) : that.minScore != null) return false;
+
+		return maxScore != null ? maxScore.equals(that.maxScore) : that.maxScore == null;
+
+	}
+
+	@Override
+	public int hashCode() {
+		int result = disabledSince != null ? disabledSince.hashCode() : 0;
+		result = 31 * result + (isDisabled != null ? isDisabled.hashCode() : 0);
+		result = 31 * result + (isDisabledWithActivity != null ? isDisabledWithActivity.hashCode() : 0);
+		result = 31 * result + (isTerminatedWithActivity != null ? isTerminatedWithActivity.hashCode() : 0);
+		result = 31 * result + (inactiveSince != null ? inactiveSince.hashCode() : 0);
+		result = 31 * result + (dataEntities != null ? dataEntities.hashCode() : 0);
+		result = 31 * result + (entityMinScore != null ? entityMinScore.hashCode() : 0);
+		result = 31 * result + (isServiceAccount != null ? isServiceAccount.hashCode() : 0);
+		result = 31 * result + (searchFieldContains != null ? searchFieldContains.hashCode() : 0);
+		result = 31 * result + (addAlertsAndDevices != null ? addAlertsAndDevices.hashCode() : 0);
+		result = 31 * result + (userTags != null ? userTags.hashCode() : 0);
+		result = 31 * result + (isWatched != null ? isWatched.hashCode() : 0);
+		result = 31 * result + (alertTypes != null ? alertTypes.hashCode() : 0);
+		result = 31 * result + (indicatorTypes != null ? indicatorTypes.hashCode() : 0);
+		result = 31 * result + (locations != null ? locations.hashCode() : 0);
+		result = 31 * result + (severity != null ? severity.hashCode() : 0);
+		result = 31 * result + (minScore != null ? minScore.hashCode() : 0);
+		result = 31 * result + (maxScore != null ? maxScore.hashCode() : 0);
+		return result;
+	}
 }

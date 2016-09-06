@@ -23,4 +23,6 @@ public class UserRestFilter extends UserFilter {
 	public void setSortDirection(String sortDirection) {
 		this.sortDirection = sortDirection;
 	}
+
+
 }
