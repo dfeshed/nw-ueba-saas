@@ -75,9 +75,11 @@ class Manager(OnlineManager):
         if self._build_models_interval is None:
             return
         if 0 <= self._build_models_interval <= end_time_in_seconds - self._last_models_build_time:
+            logger.info('building models...')
             self._build_models(end_time_in_seconds=end_time_in_seconds, topic='fortscale-model-building-control-input')
             self._last_models_build_time = end_time_in_seconds
         if 0 <= self._build_entity_models_interval <= end_time_in_seconds - self._last_entity_models_build_time:
+            logger.info('building entity models...')
             self._build_models(end_time_in_seconds=end_time_in_seconds, topic='fortscale-entity-events-model-building-control-input')
             self._last_entity_models_build_time = end_time_in_seconds
 
