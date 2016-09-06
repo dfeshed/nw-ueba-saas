@@ -210,7 +210,7 @@ public class AlertsServiceImpl implements AlertsService {
     }
 
     @Override
-    public Set<Alert> getAlertsRelevantToUserScore(String userName){
-        return  alertsRepository.getAlertsRelevantToUserScore(userName);
+    public Set<Alert> getAlertsRelevantToUserScore(String userId){
+        return  alertsRepository.getAlertsRelevantToUserScore(userId);
     }
 }
