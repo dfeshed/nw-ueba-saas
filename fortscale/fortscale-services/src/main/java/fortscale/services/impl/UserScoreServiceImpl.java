@@ -141,7 +141,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             return -1;
         }
 
-        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(user.getUsername());
+        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userId);
 
         double userScore = 0;
         for (Alert alert : alerts) {
