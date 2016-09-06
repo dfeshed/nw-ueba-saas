@@ -136,7 +136,14 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return the new user socre
      */
     public double recalculateUserScore(String userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            logger.error("Failed to find user with id {}", userId);
+            return -1;
+        }
+
         Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userId);
+
         double userScore = 0;
         for (Alert alert : alerts) {
             double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
@@ -154,11 +161,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 
             userScore += alert.getUserScoreContribution();
         }
-        User user = userService.getUserById(userId);
-		if (user == null) {
-			logger.error("Failed to find user with id {}", userId);
-			return -1;
-		}
+
         user.setScore(userScore);
 
         userRepository.save(user);
