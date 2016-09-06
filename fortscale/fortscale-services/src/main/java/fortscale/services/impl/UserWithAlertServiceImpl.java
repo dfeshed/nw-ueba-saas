@@ -4,8 +4,10 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
+import fortscale.services.cache.CacheHandler;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -14,7 +16,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -124,7 +125,6 @@ import java.util.stream.Collectors;
 
 	@Override
 	public List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter, String searchValue) {
-
 		List<User> users = filterToUserListCache.get(userRestFilter);
 		List<User> result = new ArrayList<>();
 
@@ -138,31 +138,35 @@ import java.util.stream.Collectors;
 			List<User> lastNameResults = new ArrayList<>();
 			List<User> usernameResults = new ArrayList<>();
 			List<User> positionResults = new ArrayList<>();
-			List<User> groupResults = new ArrayList<>();
+			List<User> departmentResults = new ArrayList<>();
 
 			users.forEach(user -> {
-				if (user.getAdInfo().getFirstname().startsWith(searchValue)){
+				if (StringUtils.isNotEmpty(user.getAdInfo().getFirstname())
+						&& (user.getAdInfo().getFirstname().startsWith(searchValue))){
 					firstNameResults.add(user);
-				} else if (user.getAdInfo().getLastname().startsWith(searchValue)){
+				} else if (StringUtils.isNotEmpty(user.getAdInfo().getLastname())
+						&& (user.getAdInfo().getLastname().startsWith(searchValue))){
 					lastNameResults.add(user);
-				} else if (user.getDisplayName().startsWith(searchValue)){
+				} else if (StringUtils.isNotEmpty(user.getUsername())
+						&& (user.getUsername().startsWith(searchValue))){
 					usernameResults.add(user);
-				} else if (user.getAdInfo().getPosition().startsWith(searchValue)){
+				} else if (StringUtils.isNotEmpty(user.getAdInfo().getPosition())
+						&& (user.getAdInfo().getPosition().startsWith(searchValue))){
 					positionResults.add(user);
-				} else if(user.getAdInfo().getDepartment().startsWith(searchValue)){
-						groupResults.add(user);
+				} else if(StringUtils.isNotEmpty(user.getAdInfo().getDepartment())
+						&& (user.getAdInfo().getDepartment().startsWith(searchValue))){
+					departmentResults.add(user);
 				}
-
 			});
 
 			result.addAll(firstNameResults);
 			result.addAll(lastNameResults);
 			result.addAll(usernameResults);
-
+			result.addAll(positionResults);
+			result.addAll(departmentResults);
 		}
 
-		// TODO: search
-		return result.stream().distinct().collect(Collectors.toList());
+		return result;
 	}
 
 	@Override
