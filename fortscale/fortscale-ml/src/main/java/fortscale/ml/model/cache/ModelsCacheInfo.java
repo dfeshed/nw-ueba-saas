@@ -36,8 +36,21 @@ public class ModelsCacheInfo {
 		return null;
 	}
 
-	public boolean notEmptyValidation()
-	{
+	/**
+	 * Get the {@link ModelDAO} with the latest end time.
+	 *
+	 * @return the {@link ModelDAO} with the latest end time, or null if there are none.
+	 */
+	public ModelDAO getModelDaoWithLatestEndTime() {
+		if (!modelDaos.isEmpty()) {
+			Collections.sort(modelDaos, new DescModelDaoEndTimeComp());
+			return modelDaos.get(0);
+		}
+
+		return null;
+	}
+
+	public boolean notEmptyValidation() {
 		return !modelDaos.isEmpty();
 	}
 
