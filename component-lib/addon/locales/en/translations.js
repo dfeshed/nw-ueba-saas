@@ -82,6 +82,14 @@ export default {
     ipCount: '({{count}} IPs)',
     clickToCopy: 'Click to copy IP address'
   },
+  list: {
+    all: '(All)',
+    items: 'items',
+    packets: 'packets',
+    packet: 'packet',
+    of: 'of',
+    sessions: 'sessions'
+  },
   updateLabel: {
     'one': 'update',
     'other': 'updates'

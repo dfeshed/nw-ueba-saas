@@ -1,0 +1,119 @@
+$packet-byte-margin-x: 1px;
+$packet-byte-padding-x: 1px;
+$packet-byte-border-width: 1px;
+
+.rsa-byte-table {
+  cursor: default;
+
+  table {
+    width: 100%;
+    position: relative;
+
+    td {
+      font-family: Consolas, Monaco, Courier, monospace;
+      border: 0;
+      text-align: center;
+
+      /*
+      Remove the native highlighting of the browser, so we can supply our own.
+      @workaround For IE, don't combine the ::selection selectors below with the ::-moz-selection selectors
+      below them into a single rule. If you do, IE may ignore the entire rule.
+      */
+      &::selection,
+      & span::selection {
+        background-color: transparent;
+        color: inherit;
+      }
+      &::-moz-selection,
+      & span::-moz-selection {
+        background-color: transparent;
+        color: inherit;
+      }
+
+      &:nth-of-type(4n) {
+        position: relative;
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          right: 0;
+          width: 1px;
+        }
+      }
+      &:nth-of-type(4),
+      &:nth-of-type(12) {
+        &:before {
+          background-color: rgba(255,255,255,.1);
+        }
+      }
+      &:nth-of-type(8) {
+        &:before {
+          background-color: rgba(255,255,255,.2);
+        }
+      }
+
+      span {
+        display: block;
+        border: $packet-byte-border-width solid transparent;
+        padding: $packet-byte-padding-x;
+        margin: $packet-byte-margin-x;
+      }
+
+
+      &.header {
+
+        &.packet-field-value {
+          &:not(.start):not(.end) {
+            span {
+              margin-left: 0;
+              margin-right: 0;
+              padding-left: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
+              padding-right: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
+              border-width: $packet-byte-border-width 0;
+            }
+          }
+          &.end:not(.start) {
+            span {
+              margin-left: 0;
+              padding-left: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
+              border-radius: 0 3px 3px 0;
+              border-left: 0;
+            }
+          }
+          &.start:not(.end) {
+            span {
+              margin-right: 0;
+              padding-right: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
+              border-radius: 3px 0 0 3px;
+              border-width: $packet-byte-border-width 0 $packet-byte-border-width $packet-byte-border-width;
+            }
+          }
+          &.start.end {
+            span {
+              border-radius: 3px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.hex {
+    tr:hover {
+      td:first-of-type {
+        position: relative;
+        &:before {
+          content: '';
+          position: absolute;
+          top: 0;
+          bottom: 0;
+          width: $packet-offsets-width;
+          right: 100%;
+          margin-right: 1px;
+        }
+      }
+    }
+
+  }
+}

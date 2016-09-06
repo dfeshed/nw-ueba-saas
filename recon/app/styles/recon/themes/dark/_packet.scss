@@ -1,0 +1,59 @@
+.rsa-dark {
+  .rsa-packet {
+
+    &__header {
+      background-color: rgba(255,255,255,.1);
+      color: $dark-fg-color;
+      border-color: $dark-border-color-medium;
+      h3 {
+        color: #fff;
+      }
+
+      &:before {
+        border: 1pt solid $dark-border-color-medium;
+        background-color: $dark-bg-color;
+      }
+    }
+
+    &__body {
+      color: $dark-fg-hover-color;
+    }
+
+
+    &__hex {
+      border-right: 2px solid rgba(255,255,255,.2);
+      border-left: 1px solid rgba(255,255,255,.2);
+    }
+
+    &__ascii {
+      border-left: 2px solid rgba(255,255,255,.2);
+      border-right: 1px solid rgba(255,255,255,.2);
+    }
+
+    &.request {
+      .rsa-packet {
+        &__header {
+          &:before {
+            background-color: darken($dark-request-color,20%);
+          }
+        }
+        &__offsets {
+          color: $dark-request-color;
+        }
+      }
+    }
+
+    &.response {
+      .rsa-packet {
+        &__header {
+          &:before {
+            background-color: darken($dark-response-color,20%);
+          }
+        }
+        &__offsets {
+          color: $dark-response-color;
+        }
+      }
+    }
+  }
+}

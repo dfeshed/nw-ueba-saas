@@ -1,0 +1,1 @@
+export { default } from 'recon/components/byte-table/component';

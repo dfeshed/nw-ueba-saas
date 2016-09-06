@@ -5,11 +5,18 @@ moduleForComponent('recon-event-titlebar', 'Integration | Component | recon even
   integration: true
 });
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+test('no title shows default', function(assert) {
+  this.set('title', null);
 
-  this.render(hbs`{{recon-event-titlebar}}`);
+  this.render(hbs`{{recon-event-titlebar title=title}}`);
 
-  assert.equal(this.$().text().trim(), 'Event Reconstruction');
+  assert.equal(this.$('.heading h2').text().trim(), 'Event Reconstruction');
+});
+
+test('title renders', function(assert) {
+  this.set('title', 'Event Reconstruction (3 of 2000)');
+
+  this.render(hbs`{{recon-event-titlebar title=title}}`);
+
+  assert.equal(this.$('.heading h2').text().trim(), 'Event Reconstruction (3 of 2000)');
 });

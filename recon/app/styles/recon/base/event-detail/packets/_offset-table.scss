@@ -1,0 +1,18 @@
+.rsa-offset-table {
+  cursor: default;
+
+  table {
+    width: 100%;
+  }
+  td {
+    font-family: Consolas, Monaco, Courier, monospace;
+    border: 0;
+
+    span {
+      display: block;
+      border: $packet-byte-border-width solid transparent;
+      padding: $packet-byte-padding-x;
+      margin: $packet-byte-margin-x;
+    }
+  }
+}

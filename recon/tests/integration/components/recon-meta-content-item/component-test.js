@@ -1,25 +1,16 @@
 import { moduleForComponent, test } from 'ember-qunit';
-// import hbs from 'htmlbars-inline-precompile';
+import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('recon-meta-content-item', 'Integration | Component | recon meta content item', {
   integration: true
 });
 
-test('it renders', function(assert) {
-  assert.expect(0);
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+test('meta item name and value rendered', function(assert) {
+  this.set('item', ['test-name', 'test-value']);
 
-  // this.render(hbs`{{recon-meta-content-item}}`);
-  //
-  // assert.equal(this.$().text().trim(), '');
-  //
-  // // Template block usage:
-  // this.render(hbs`
-  //   {{#recon-meta-content-item}}
-  //     template block text
-  //   {{/recon-meta-content-item}}
-  // `);
-  //
-  // assert.equal(this.$().text().trim(), 'template block text');
+
+  this.render(hbs`{{recon-meta-content-item item=item}}`);
+
+  assert.equal(this.$('.meta-name').text().trim(), 'test-name');
+  assert.equal(this.$('.meta-value').text().trim(), 'test-value');
 });

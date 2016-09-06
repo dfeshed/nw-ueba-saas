@@ -1,6 +1,7 @@
 {
   "name": "recon",
   "dependencies": {
+    "d3": "^4.2.2",
     "ember": "~2.6.0",
     "ember-cli-shims": "0.1.3",
     "ember-cli-test-loader": "0.2.2",

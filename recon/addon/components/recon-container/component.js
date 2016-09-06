@@ -23,9 +23,7 @@ export default Component.extend({
   language: null,
   aliases: null,
 
-  init() {
-    this._super(...arguments);
-
+  didReceiveAttrs() {
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
     assert('Cannot instantiate recon without endpointId and eventId.', endpointId && eventId);
 
@@ -66,6 +64,7 @@ export default Component.extend({
       query
     }).then(({ data }) => {
       this.setHeaderItems(data.summaryAttributes);
+      this.set('packetFields', data.packetFields);
     });
 
     if (!this.get('meta')) {

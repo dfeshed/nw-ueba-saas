@@ -1,25 +1,42 @@
 import { moduleForComponent, test } from 'ember-qunit';
-// import hbs from 'htmlbars-inline-precompile';
+import hbs from 'htmlbars-inline-precompile';
 
 moduleForComponent('recon-meta-content', 'Integration | Component | recon meta content', {
   integration: true
 });
 
-test('it renders', function(assert) {
-  assert.expect(0);
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+test('several meta items render correctly', function(assert) {
+  this.set('meta', [
+    [
+      'size',
+      62750
+    ],
+    [
+      'payload',
+      56460
+    ],
+    [
+      'medium',
+      1
+    ],
+    [
+      'eth.src',
+      '70:56:81:9A:94:DD'
+    ],
+    [
+      'eth.dst',
+      '10:0D:7F:75:C4:C8'
+    ]
+  ]);
+  this.render(hbs`{{recon-meta-content meta=meta}}`);
 
-  // this.render(hbs`{{recon-meta-content}}`);
-  //
-  // assert.equal(this.$().text().trim(), '');
-  //
-  // // Template block usage:
-  // this.render(hbs`
-  //   {{#recon-meta-content}}
-  //     template block text
-  //   {{/recon-meta-content}}
-  // `);
-  //
-  // assert.equal(this.$().text().trim(), 'template block text');
+  assert.equal(this.$('.recon-meta-content-item').length, 5);
+});
+
+test('zero meta items render correctly', function(assert) {
+  this.set('meta', []);
+
+  this.render(hbs`{{recon-meta-content meta=meta}}`);
+
+  assert.equal(this.$('.recon-meta-content-item').length, 0);
 });

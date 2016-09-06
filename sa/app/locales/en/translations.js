@@ -198,11 +198,6 @@ export default $.extend({}, BaseTranslations, {
     emptyNewMessage: 'No new incidents',
     emptyInProgressMessage: 'No incidents being worked on'
   },
-  list: {
-    items: 'items',
-    all: '(All)',
-    of: 'of'
-  },
   sort: {
     ascending: 'Ascending',
     descending: 'Descending'

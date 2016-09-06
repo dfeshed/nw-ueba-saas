@@ -1,1 +1,7 @@
-{{yield}}
+{{#each parsedPackets as |packet index|}}
+  {{recon-event-detail-packet
+    index=index
+    packet=packet
+    packetFields=packetFields
+  }}
+{{/each}}

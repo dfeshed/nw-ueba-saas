@@ -1,0 +1,21 @@
+$dark-bg-color: rgba(0,0,0,.5); /* was: #38404b; */
+$dark-fg-dim-color: rsa-color(white, base, $rsa-nearly-transparent);  /* was: rgba(255,255,255,.5); */ /* was: #768699; */
+$dark-fg-color: rsa-color(white, base, $rsa-nearly-opaque);  /* was: rgba(255,255,255,.7); */  /* was: #768699; */
+$dark-fg-hover-color: rsa-color(white, base, $rsa-opaque); /* was: rgba(255,255,255,1); */
+$dark-gold: #ffcc66;
+
+$dark-aside-bg-color: transparent; /* #2e343d; */
+$dark-accent-color: #66ccff;
+$dark-border-color-medium: rgba(0,0,0,.3);
+
+$dark-request-color: #a4b6a1; /* was: #6699cc; */
+$dark-response-color: #73889a; /* was: #339966; */
+
+$dark-packet-header-bg-color: rgba(#ffffcc,.25);
+$dark-packet-field-border-color: rgba(#fff, .7); /* #999966; */
+$dark-packet-field-bg-color: rgba(#cccc99,.33);
+$dark-packet-field-hover-bg-color: #ffcc33;
+
+@import "./byte-table-tooltip";
+@import "./byte-table";
+@import "./packet";

@@ -1,0 +1,49 @@
+<header class="rsa-packet__header">
+  <h2>
+    <label>{{t 'list.packet'}}</label><span>{{add index 1}}</span>
+  </h2>
+  <h3>
+    {{moment-format packet.timestamp 'YYYY-MM-DD hh:mm:ss.ssss'}} [{{packet.sequence}}]
+  </h3>
+</header>
+<section class="rsa-packet__body">
+  <section class="rsa-packet__offsets hex">
+    {{offset-table
+      byteRows=byteRows
+      bytesPerRow=bytesPerRow
+      digits=4
+    }}
+  </section>
+  <section class="rsa-packet__hex">
+    {{#if viewportEntered}}
+      {{byte-table
+        index=index
+        byteFormat="hex"
+        byteRows=byteRows
+        bytes=bytes
+        packet=packet
+        packetFields=packetFields
+        byteGrouping=byteGrouping
+        bytesPerRow=bytesPerRow
+        selection=selection
+        onselect=onselect
+      }}
+    {{/if}}
+  </section>
+  <section class="rsa-packet__ascii">
+    {{#if viewportEntered}}
+      {{byte-table
+        index=index
+        byteFormat="ascii"
+        byteRows=byteRows
+        bytes=bytes
+        packet=packet
+        packetFields=packetFields
+        byteGrouping=byteGrouping
+        bytesPerRow=bytesPerRow
+        selection=selection
+        onselect=onselect
+      }}
+    {{/if}}
+  </section>
+</section>

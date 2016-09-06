@@ -5,11 +5,12 @@ moduleForComponent('recon-event-header-item', 'Integration | Component | recon e
   integration: true
 });
 
-test('it renders', function(assert) {
-  // Set any properties with this.set('myProperty', 'value');
-  // Handle any actions with this.on('myAction', function(val) { ... });
+test('header item name and value render', function(assert) {
+  this.set('name', 'foo');
+  this.set('value', 'bar');
 
-  this.render(hbs`{{recon-event-header-item}}`);
+  this.render(hbs`{{recon-event-header-item name=name value=value}}`);
 
-  assert.equal(this.$().text().trim(), '');
+  assert.equal(this.$('.name').first().text().trim(), 'foo');
+  assert.equal(this.$('.value').first().text().trim(), 'bar');
 });

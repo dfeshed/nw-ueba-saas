@@ -5,5 +5,8 @@ const { Component } = Ember;
 export default Component.extend({
   layout,
   classNameBindings: [':recon-event-content'],
-  tagName: 'fill'
+  tagName: 'fill',
+  meta: null,
+  packets: null,
+  packetFields: null
 });

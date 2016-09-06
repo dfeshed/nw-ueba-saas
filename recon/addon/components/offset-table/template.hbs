@@ -1,0 +1,7 @@
+<table>
+  {{#each byteRows as |byteRow index|}}
+    <tr>
+      <td><span>{{unbound (int-to-hex (mult index bytesPerRow) size=digits)}}</span></td>
+    </tr>
+  {{/each}}
+</table>
