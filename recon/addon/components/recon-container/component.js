@@ -98,12 +98,18 @@ export default Component.extend({
       });
     }
 
-    this.get('request').promiseRequest({
+    this.get('request').streamRequest({
       method: 'stream', // not streaming yet, but will eventually
       modelName: 'reconstruction-packet-data',
-      query
-    }).then(({ data }) => {
-      this.set('packets', data);
+      query,
+      onResponse: ({ body }, stopStreaming) => {
+        this.set('packets', body);
+
+        // TODO: This stops after one batch from one page
+        // to implement paging, need to keep processing
+        // on response will get called many times
+        stopStreaming();
+      }
     });
   },
 

@@ -16,11 +16,13 @@ require('babel-register')({
 
 var server = require('./lib/server');
 var subscriptions = require('./shared/subscriptions');
+var util = require('./shared/util/');
 
 // The public interface of mock-server
 module.exports = {
   startServer: server.start,
   shared: {
     subscriptions
-  }
+  },
+  util
 };

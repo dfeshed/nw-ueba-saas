@@ -32,11 +32,24 @@ var socketUrl = 'http://localhost:' + mockPort + '/socket/';
 
 The `mock-server` node package provides the following function.
 
-* `startServer(Array | String)`
+* `startServer([directories] | directory)`
   * This will start the server after loading all your subscription files.
   * This function takes either a `String`, for the root directory of your subscription files, or an `Array` for a group of subscription file locations.
 * `shared.subscriptions`
   * This is a hash of shared/reusable subscription files, check `/shared/subscriptions`
+* `util.sendBatches({})`
+  * This function can manage a typical streaming request, with paging and batches, and send the results to the UI over time to mimic a true streaming response
+  * `sendBatches` takes an object has input, that object has the following parameters
+    * `requestBody`, `Object`, __required__
+      * The incoming request `body` object. Contains `page` and `stream` parameters as per streaming API.
+    * `dataArray`, `Array`, __required__
+      * An array of results that comprises the entire possible search results. `sendBatches` will pick and choose which elements from the array to use/send.
+    * `sendMessage`, `Function`, __required__
+      * The `sendMessage` function as provided by the `mock-server` for the subscription. Passed into implmentation of `page` function.
+    * `delayBetweenBatches`, `Number`
+      * The number of milliseconds to delay between sending batches to the client
+      * Defaults to `100` milliseconds
+
 * `mock-server/util: determineSocketUrl(environment, productionPath)`
   * Not used via `require('mock-server')`, instead it is used via `require('mock-server/util')`
     * See that file for why
