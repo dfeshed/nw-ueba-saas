@@ -331,7 +331,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
-            userWithAlertService.recalculateNumberOfUserAlerts(userId);
+            userWithAlertService.recalculateNumberOfUserAlertsByUserId(userId);
         }
         logger.info("Finish updating user score");
 

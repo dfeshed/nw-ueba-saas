@@ -4,7 +4,6 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
-import fortscale.services.cache.CacheHandler;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +21,8 @@ import java.util.stream.Collectors;
  * Created by alexp on 09/08/2016.
  */
 @Service("userWithAlertService") public class UserWithAlertServiceImpl implements UserWithAlertService {
+
+    private static Logger logger = Logger.getLogger(UserWithAlertService.class);
 
 	@Autowired private UserService userService;
 

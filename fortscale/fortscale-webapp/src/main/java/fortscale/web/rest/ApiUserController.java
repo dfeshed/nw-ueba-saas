@@ -52,7 +52,7 @@ public class ApiUserController extends BaseController{
 	public static final String ADMINISTRATOR_TAG = "administrator";
 	public static final String WATCHED_USER = "watched";
 	private static final String USERS_CSV_FILE_NAME = "users";
-	private static final String USER_NAME_COLUMN_NAME = "Full Name";
+	private static final String DISPLAY_NAME_COLUMN_NAME = "Full Name";
 	private static final String USER_ROLE_COLUMN_NAME = "Role";
 	private static final String USER_DEPARTMENT_COLUMN_NAME = "Department";
 	private static final String USER_WATCHED_COLUMN_NAME = "Watched";
@@ -60,6 +60,7 @@ public class ApiUserController extends BaseController{
 	private static final String USER_ALERT_COUNT_COLUMN_NAME = "Total Alerts";
 	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
 	private static final String USER_TAGS_COLUMN_NAME = "Tags";
+	private static final String USER_NAME_COLUMN_NAME = "Username";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -459,14 +460,15 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(){
+	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(UserRestFilter userRestFilter){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
 
-		UserRestFilter filter = new UserRestFilter();
-		filter.setMinScore(0d);
+		if (userRestFilter.getMinScore() == null) {
+			userRestFilter.setMinScore(0d);
+		}
 
-		List<User> scoredUsers = userService.findUsersByFilter(filter, null, null);
+		List<User> scoredUsers = userWithAlertService.findUsersByFilter(userRestFilter, null);
 
 		if (CollectionUtils.isNotEmpty(scoredUsers)) {
 			scoredUsers.stream().forEach(user -> {
@@ -536,7 +538,7 @@ public class ApiUserController extends BaseController{
 
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse.getOutputStream()));
 
-		String[] tableTitleRow = {USER_NAME_COLUMN_NAME, USER_ROLE_COLUMN_NAME, USER_DEPARTMENT_COLUMN_NAME,
+		String[] tableTitleRow = {USER_NAME_COLUMN_NAME, DISPLAY_NAME_COLUMN_NAME, USER_ROLE_COLUMN_NAME, USER_DEPARTMENT_COLUMN_NAME,
 				USER_WATCHED_COLUMN_NAME, USER_RISK_SCORE_COLUMN_NAME, USER_ALERT_COUNT_COLUMN_NAME,
 				USER_DEVICE_COUNT_COLUMN_NAME, USER_TAGS_COLUMN_NAME
 				};
@@ -545,7 +547,7 @@ public class ApiUserController extends BaseController{
 
 		users.getData().stream().forEach(userBean -> {
 			User user = userBean.getUser();
-			String[] userRow = {user.getDisplayName(), user.getAdInfo().getPosition(), userBean.getDepartment(),
+			String[] userRow = {user.getUsername(), user.getDisplayName(), user.getAdInfo().getPosition(), userBean.getDepartment(),
 					BooleanUtils.toStringTrueFalse(user.getFollowed()), String.valueOf(user.getScore()),
 					String.valueOf(user.getAlertsCount()), String.valueOf(userBean.getDevices().size()),
 					StringUtils.join(user.getTags(), ',')};
