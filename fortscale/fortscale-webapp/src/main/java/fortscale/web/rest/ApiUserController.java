@@ -581,17 +581,11 @@ public class ApiUserController extends BaseController{
 			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
 
-			List<UserActivitySourceMachineDocument> userSourceMachines;
-			try {
-				userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
-						Integer.MAX_VALUE);
-			} catch (Exception ex) {
-				logger.warn("failed to get user source machines");
-				userSourceMachines = new ArrayList<>();
-			}
+			List<UserActivitySourceMachineDocument> userSourceMachines = userWithAlertService.getUserActivitySourceMachineDocuments(user);
 			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
 		}
 	}
+
 
 	private PageRequest createPaging(Integer size, Integer fromPage, Sort sortUserDesc) {
 		// Create paging

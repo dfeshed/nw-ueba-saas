@@ -1,6 +1,7 @@
 package fortscale.services;
 
 import fortscale.domain.core.User;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.rest.UserRestFilter;
 import org.springframework.data.domain.PageRequest;
 
@@ -18,4 +19,5 @@ public interface UserWithAlertService extends CachingService{
 
     List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter, String searchValue);
 
+	List<UserActivitySourceMachineDocument> getUserActivitySourceMachineDocuments(User user);
 }

@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.cache.CacheHandler;
@@ -188,4 +189,18 @@ import java.util.stream.Collectors;
 			getCache().putFromString(key, value);
 		}
 	}
+
+	@Override
+	public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineDocuments(User user) {
+		List<UserActivitySourceMachineDocument> userSourceMachines;
+		try {
+			userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
+					Integer.MAX_VALUE);
+		} catch (Exception ex) {
+			logger.warn("failed to get user source machines");
+			userSourceMachines = new ArrayList<>();
+		}
+		return userSourceMachines;
+	}
+
 }
