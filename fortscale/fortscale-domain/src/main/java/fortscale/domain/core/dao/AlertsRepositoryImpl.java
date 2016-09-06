@@ -304,9 +304,9 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	@Override
-    public Set<Alert> getAlertsRelevantToUserScore(String username){
+    public Set<Alert> getAlertsRelevantToUserScore(String userId){
 
-        Query query = getQueryForAlertsRelevantToUserScore(username);
+        Query query = getQueryForAlertsRelevantToUserScore(userId);
         query.fields().exclude(Alert.evidencesField);
 
         List<Alert> alerts = mongoTemplate.find(query,Alert.class);
@@ -378,14 +378,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 		return criteria;
 	}
 
-	private  Query getQueryForAlertsRelevantToUserScore(String userName) {
+	private  Query getQueryForAlertsRelevantToUserScore(String userId) {
         Criteria criteria = new Criteria();
         criteria.where(Alert.feedbackField).ne(AlertFeedback.None).
                 and(Alert.userScoreContributionFlagField).is(Boolean.TRUE);
 
-        if (StringUtils.isNotBlank(userName)){
-            criteria.and(Alert.entityNameField).is(userName);
+        if (StringUtils.isNotBlank(userId)){
+            criteria.and(Alert.entityIdField).is(userId);
         }
+
         Query query = new Query();
         query.addCriteria(criteria);
         return query;
