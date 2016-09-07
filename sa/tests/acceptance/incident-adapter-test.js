@@ -3,6 +3,8 @@ import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import Request from 'sa/services/request';
 import Adapter from 'sa/incident/adapter';
 import Store from 'ember-data/store';
+import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
+/* global server */
 
 import Ember from 'ember';
 
@@ -22,6 +24,7 @@ moduleForAcceptance('Acceptance | Incident adapter', {
 
 
 test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
+  asyncFixtures(server, ['incident', 'alerts']);
   visit('/');
 
   const router = EmberObject.create({
@@ -42,7 +45,7 @@ test('it can redirect calls to a socket and get a response from a mock server', 
 });
 
 test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
-
+  asyncFixtures(server, ['incident', 'alerts']);
   visit('/');
 
   const router = EmberObject.create({

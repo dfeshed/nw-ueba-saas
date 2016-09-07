@@ -19,11 +19,11 @@ export default Service.extend({
     key: 'protected.admin',
     label: 'userPreferences.defaultLandingPage.admin'
   }, {
-    key: 'protected.explore',
-    label: 'userPreferences.defaultLandingPage.explore'
+    key: 'protected.investigate',
+    label: 'userPreferences.defaultLandingPage.investigate'
   }],
 
-  defaultSelection: 'protected.monitor',
+  defaultSelection: 'protected.respond',
 
   init() {
     let localStorageSpacing = localStorage[this.get('localStorageKey')];

@@ -61,7 +61,7 @@ export default {
     defaultLandingPage: {
       label: 'Default Landing Page',
       monitor: 'Monitor',
-      explore: 'Investigate',
+      investigate: 'Investigate',
       respond: 'Respond',
       admin: 'Admin'
     },

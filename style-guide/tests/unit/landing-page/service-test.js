@@ -25,10 +25,10 @@ test('it provides the correct options', function(assert) {
   assert.ok(options.contains('protected.respond'));
   assert.ok(options.contains('protected.monitor'));
   assert.ok(options.contains('protected.admin'));
-  assert.ok(options.contains('protected.explore'));
+  assert.ok(options.contains('protected.investigate'));
 });
 
 test('it has the correct default', function(assert) {
   let service = this.subject();
-  assert.equal(service.get('defaultSelection'), 'protected.monitor');
+  assert.equal(service.get('defaultSelection'), 'protected.respond');
 });
