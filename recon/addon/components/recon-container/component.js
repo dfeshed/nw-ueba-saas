@@ -101,6 +101,17 @@ export default Component.extend({
       });
     }
 
+    // necessary for packets, part of paging/batching
+    query.page = {
+      index: 0,
+      size: 100
+    };
+
+    query.stream = {
+      batch: 10,
+      limit: 100000
+    };
+
     this.get('request').streamRequest({
       method: 'stream', // not streaming yet, but will eventually
       modelName: 'reconstruction-packet-data',
