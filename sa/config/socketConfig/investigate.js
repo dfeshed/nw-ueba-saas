@@ -46,8 +46,8 @@ module.exports = function(environment) {
     'core-meta-alias': {
       socketUrl,
       query: {
-        subscriptionDestination: '/user/queue/investigate/alias',
-        requestDestination: '/ws/investigate/alias'
+        subscriptionDestination: '/user/queue/investigate/aliases',
+        requestDestination: '/ws/investigate/aliases'
       }
     },
     'core-meta-value': {
