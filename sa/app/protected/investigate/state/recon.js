@@ -24,5 +24,12 @@ export default EmberObject.extend({
    * @type {object}
    * @public
    */
-  endpointId: undefined
+  endpointId: undefined,
+
+  /**
+   * Title for the reconstruction panel to display
+   * @type {string}
+   * @public
+   */
+  title: undefined
 });
