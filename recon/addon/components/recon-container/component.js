@@ -16,12 +16,16 @@ export default Component.extend({
   layout,
   tagName: '',
   showMetaDetails: false,
+
+  // Component inputs
   endpointId: null,
   eventId: null,
   meta: null,
   title: null,
   language: null,
   aliases: null,
+  closeAction: null,
+  // END Component inputs
 
   didReceiveAttrs() {
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
