@@ -185,6 +185,9 @@ public class AlertsServiceImpl implements AlertsService {
 					"");
 			Set<String> alertTypesToAdd = null;
 			for (Set<String> alertTypes: results.keySet()) {
+				if (alertTypesToAdd != null) {
+					break;
+				}
 				for (String alertType: alertTypes) {
 					if (alertType.startsWith(agnosticAlertName)) {
 						alertTypesToAdd = alertTypes;
@@ -196,9 +199,15 @@ public class AlertsServiceImpl implements AlertsService {
 				alertTypesToAdd = new HashSet<>();
 			}
 			alertTypesToAdd.add(alertNameAndUserName.getLeft());
-			if (results.containsKey(alertTypesToAdd)) {
-				results.get(alertTypesToAdd).add(alertNameAndUserName.getRight());
-			} else {
+			boolean added = false;
+			for (Map.Entry<Set<String>, Set<String>> entry: results.entrySet()) {
+				if (entry.getKey() == alertTypesToAdd) {
+					entry.getValue().add(alertNameAndUserName.getRight());
+					added = true;
+					break;
+				}
+			}
+			if (!added) {
 				results.put(alertTypesToAdd, new HashSet<>(Arrays.asList(alertNameAndUserName.getRight())));
 			}
 		}
