@@ -93,7 +93,7 @@ public interface AlertsService {
 	 * @return
 	 */
 	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected);
-	public Map<String, Integer> getAlertsTypesCountedByUser(Boolean ignoreRejected);
+	Map<Set<String>, Set<String>> getAlertsTypesByUser(Boolean ignoreRejected);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
