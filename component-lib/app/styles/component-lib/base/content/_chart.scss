@@ -13,4 +13,13 @@
       stroke-width: 0;
     }
   }
+
+  /* Disable SVG pointer events by default */
+  circle,
+  line,
+  text,
+  rect,
+  path {
+    pointer-events: none;
+  }
 }

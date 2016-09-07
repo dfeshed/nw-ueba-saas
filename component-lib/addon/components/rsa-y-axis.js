@@ -13,14 +13,15 @@ export default Component.extend({
   classNames: ['rsa-y-axis'],
   scale: null,
   rotation: 0,
+  tickCount: 10,
 
   didInsertElement() {
     this._super(...arguments);
     const scale = this.get('scale');
     if (scale) {
+      const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
       const axis = d3.select(this.element);
-      const rotation = this.get('rotation');
-      axis.call(d3.axisLeft(scale).ticks(6, 's'));
+      axis.call(d3.axisLeft(scale).ticks(tickCount, 's'));
       if (rotation) {
         this.rotateAxis(axis, rotation);
       }
@@ -29,15 +30,14 @@ export default Component.extend({
 
   didUpdateAttrs() {
     this._super(...arguments);
+    const { scale, rotation, tickCount } = this.getProperties('scale', 'rotation', 'tickCount');
     const axis = d3.select(this.element);
-    const scale = this.get('scale');
-    const rotation = this.get('rotation');
-    this.update(axis, scale, rotation);
+    this.update(axis, scale, rotation, tickCount);
   },
 
-  update(axis, scale, rotation) {
+  update(axis, scale, rotation, tickCount) {
     axis.transition().duration(750)
-      .call(d3.axisLeft(scale).ticks(6, 's'));
+      .call(d3.axisLeft(scale).ticks(tickCount, 's'));
     if (rotation) {
       this.rotateAxis(axis, rotation);
     }

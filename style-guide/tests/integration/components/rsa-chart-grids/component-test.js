@@ -58,14 +58,15 @@ test('does not generate y grid when "showYGrid" attribute is set to false', func
   }, 50);
 });
 
-test('generates specified number of Y ticks when "tickCount" attribute is set', function(assert) {
+test('generates specified number of X/Y ticks when tick count attributes are set', function(assert) {
   const done = assert.async();
   this.set('xScale', this.xScale);
   this.set('yScale', this.yScale);
   this.set('width', this.width);
   this.set('height', this.height);
-  this.render(hbs `{{rsa-chart-grids xScale=xScale yScale=yScale width=width height=height tickCount=5}}`);
+  this.render(hbs `{{rsa-chart-grids xScale=xScale yScale=yScale width=width height=height xTickCount=5 yTickCount=5}}`);
   setTimeout(function() {
+    assert.equal(this.$('.x .tick').length, 5, 'Testing to see if the correct number of x ticks were generated');
     assert.equal(this.$('.y .tick').length, 5, 'Testing to see if the correct number of y ticks were generated');
     done();
   }, 50);

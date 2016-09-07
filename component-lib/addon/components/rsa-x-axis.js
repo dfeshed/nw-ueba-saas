@@ -16,6 +16,7 @@ export default Component.extend({
   scale: null,
   height: 115,
   rotation: 0,
+  tickCount: 10,
 
   @computed('height')
   transform: (height) => `translate(0,${height})`,
@@ -24,13 +25,13 @@ export default Component.extend({
     this._super(...arguments);
     const scale = this.get('scale');
     if (scale) {
+      const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
       const axis = d3.select(this.element);
       if (scale.range) {
         const range = scale.range();
         scale.range([range[0], range[1] - 1]);
       }
-      const rotation = this.get('rotation');
-      axis.call(d3.axisBottom(scale));
+      axis.call(d3.axisBottom(scale).ticks(tickCount));
       if (rotation) {
         this.rotateAxis(axis, rotation);
       }
@@ -39,6 +40,7 @@ export default Component.extend({
 
   didUpdateAttrs() {
     this._super(...arguments);
+    const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
     const axis = d3.select(this.element);
     const scale = this.get('scale');
     // So I noticed that the right side of the domain
@@ -50,13 +52,12 @@ export default Component.extend({
       const range = scale.range();
       scale.range([range[0], range[1] - 1]);
     }
-    const rotation = this.get('rotation');
-    this.update(axis, scale, rotation);
+    this.update(axis, scale, rotation, tickCount);
   },
 
-  update(axis, scale, rotation) {
+  update(axis, scale, rotation, tickCount) {
     axis.transition().duration(750)
-      .call(d3.axisBottom(scale));
+      .call(d3.axisBottom(scale).ticks(tickCount));
     if (rotation) {
       this.rotateAxis(axis, rotation);
     }

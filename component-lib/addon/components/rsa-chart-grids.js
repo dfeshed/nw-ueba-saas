@@ -13,44 +13,35 @@ export default Component.extend({
   classNames: ['grids'],
   showXGrid: true,
   showYGrid: true,
-  // tickCount is more of a suggestion,
-  // so it's possible that we could get more
-  tickCount: 6,
+  xTickCount: 10,
+  yTickCount: 10,
 
   didInsertElement() {
     this._super(...arguments);
-    const width = this.get('width');
-    const height = this.get('height');
-    const xScale = this.get('xScale');
-    const yScale = this.get('yScale');
-    const count = this.get('tickCount');
+    const { width, height, xScale, yScale, xTickCount, yTickCount } = this.getProperties('width', 'height', 'xScale', 'yScale', 'xTickCount', 'yTickCount');
     if (xScale || yScale) {
-      run.scheduleOnce('afterRender', this, this.draw, width, height, xScale, yScale, count);
+      run.scheduleOnce('afterRender', this, this.draw, width, height, xScale, yScale, xTickCount, yTickCount);
     }
   },
 
   didUpdateAttrs() {
     this._super(...arguments);
-    const width = this.get('width');
-    const height = this.get('height');
-    const xScale = this.get('xScale');
-    const yScale = this.get('yScale');
-    const count = this.get('tickCount');
+    const { width, height, xScale, yScale, xTickCount, yTickCount } = this.getProperties('width', 'height', 'xScale', 'yScale', 'xTickCount', 'yTickCount');
     if (xScale || yScale) {
-      this.draw(width, height, xScale, yScale, count);
+      this.draw(width, height, xScale, yScale, xTickCount, yTickCount);
     }
   },
 
-  draw(width, height, xScale, yScale, count) {
+  draw(width, height, xScale, yScale, xTickCount, yTickCount) {
     const el = d3.select(this.element);
     if (this.get('showXGrid')) {
       el.select('.x').call(
-        d3.axisBottom(xScale).tickSize(height).tickFormat('')
+        d3.axisBottom(xScale).ticks(xTickCount).tickSize(height).tickFormat('')
       );
     }
     if (this.get('showYGrid')) {
       el.select('.y').call(
-        d3.axisRight(yScale).ticks(count).tickSize(width).tickFormat('')
+        d3.axisRight(yScale).ticks(yTickCount).tickSize(width).tickFormat('')
       );
     }
   }

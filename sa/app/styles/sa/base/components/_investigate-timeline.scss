@@ -32,6 +32,7 @@
 
     &-background {
       fill: transparent;
+      pointer-events: fill;
     }
     .grids {
       .x line {
@@ -46,6 +47,19 @@
     .rsa-x-axis {
       text {
         text-anchor: middle;
+      }
+    }
+
+    .points {
+      circle {
+        fill: rsa-color(gray, darkest);
+        stroke-width: 2px;
+      }
+      &.series-0 circle {
+        stroke: rsa-color(blue);
+      }
+      &.series-1 circle {
+        stroke: rsa-color(blue, darker);
       }
     }
   }

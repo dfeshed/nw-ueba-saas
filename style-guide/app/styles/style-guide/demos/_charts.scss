@@ -45,3 +45,16 @@
     }
   }
 }
+
+.points {
+  circle {
+    fill: rsa-color(gray, darkest);
+    stroke-width: 2px;
+  }
+  &.series-0 circle {
+    stroke: rsa-color(blue);
+  }
+  &.series-1 circle {
+    stroke: rsa-color(blue, darker);
+  }
+}
