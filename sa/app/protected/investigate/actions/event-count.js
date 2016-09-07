@@ -38,7 +38,7 @@ export default Mixin.create({
         method: 'stream',
         modelName: 'core-event-count',
         query: makeServerInputsForQuery(queryNode.get('value.definition'))
-      }).then(function({ data }) {
+      }).then(({ data }) => {
         eventCount.setProperties({
           status: 'resolved',
           data
