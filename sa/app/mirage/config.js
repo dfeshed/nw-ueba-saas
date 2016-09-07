@@ -34,7 +34,8 @@ function uniqueSocketUrls() {
   let urls = [];
   Object.keys(config.socketRoutes || {}).forEach((modelName) => {
     let modelConfig = config.socketRoutes[modelName];
-    if (modelConfig.socketUrl) {
+    let { socketUrl } = modelConfig;
+    if (socketUrl && socketUrl.indexOf('localhost') === -1) {
       urls.push(modelConfig.socketUrl);
     }
     Object.keys(modelConfig).forEach((method) => {
@@ -81,9 +82,11 @@ export default function() {
   });
 
   // Substitute the mock socket class for the real socket class.
+  // NOTE: for mock-server to work, this will need to go
   window.WebSocket = window.MockWebSocket;
 
   // @workaround Explicitly substitute mock socket for SockJS too, if SockJS is defined. Without this,
   // SockJS will not use our MockSocket even though we've substituted it for WebSocket, not sure why.
+  // NOTE: for mock-server to work, this will need to go
   window.SockJS = window.SockJS && window.MockWebSocket;
 }

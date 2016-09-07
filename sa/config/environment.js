@@ -2,8 +2,13 @@
 
 var generateSocketConfiguration = require('./socketConfig');
 
+var mockPort = process.env.MOCK_PORT || 9999;
+var mockServerUrl = "http://localhost:" + mockPort;
+
 module.exports = function(environment) {
   var ENV = {
+    mockServerUrl: mockServerUrl,
+    mockPort: mockPort,
     modulePrefix: 'sa',
     environment: environment,
     baseURL: '/',
@@ -71,6 +76,7 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
+    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws:", mockServerUrl];
 
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
@@ -82,6 +88,10 @@ module.exports = function(environment) {
   }
 
   if (environment === 'test') {
+    // this allows connections to be made to mock-sever running on
+    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws:", mockServerUrl];
+
+
     // Testem prefers this...
     ENV.baseURL = '/';
     ENV.locationType = 'none';

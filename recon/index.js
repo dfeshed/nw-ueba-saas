@@ -1,5 +1,7 @@
 /* eslint-disable */
 
+var path = require('path');
+
 'use strict';
 
 module.exports = {
@@ -22,5 +24,6 @@ module.exports = {
     this.options.babel = this.options.babel || {};
     this.options.babel.stage = 0;
   },
-  socketRouteGenerator: require('./config/socketRoutes')
+  socketRouteGenerator: require('./config/socketRoutes'),
+  mockDestinations: path.join(__dirname, 'tests', 'server', 'subscriptions')
 };
