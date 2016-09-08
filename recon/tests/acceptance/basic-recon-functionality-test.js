@@ -10,16 +10,16 @@ test('show/hide header items', function(assert) {
 
   andThen(function() {
     run.later(this, function() {
-      assert.ok(find('.recon-event-header .header-item').length > 0);
-    }, 100);
+      assert.ok(find('.recon-event-header .header-item').length > 0, 'Header items shown');
+    }, 1000);
   });
 
   click('.recon-event-titlebar .action-buttons .toggle-header');
 
   andThen(function() {
     run.later(this, function() {
-      assert.ok(find('.recon-event-header .header-item').length === 0);
-    }, 100);
+      assert.ok(find('.recon-event-header .header-item').length === 0, 'Header items hidden');
+    }, 1000);
   });
 });
 
@@ -29,7 +29,7 @@ test('show/hide meta', function(assert) {
   andThen(function() {
     run.later(this, function() {
       assert.ok(find('.recon-meta-content').length === 0, 'Meta is hidden');
-    }, 100);
+    }, 1000);
   });
 
   click('.recon-event-titlebar .action-buttons .toggle-meta');
@@ -37,6 +37,6 @@ test('show/hide meta', function(assert) {
   andThen(function() {
     run.later(this, function() {
       assert.ok(find('.recon-meta-content').length === 1, 'Meta is shown');
-    }, 100);
+    }, 1000);
   });
 });
