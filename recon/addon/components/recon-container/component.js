@@ -117,8 +117,8 @@ export default Component.extend({
       method: 'stream', // not streaming yet, but will eventually
       modelName: 'reconstruction-packet-data',
       query,
-      onResponse: ({ body }, stopStreaming) => {
-        this.set('packets', body);
+      onResponse: ({ data }, stopStreaming) => {
+        this.set('packets', data);
 
         // TODO: This stops after one batch from one page
         // to implement paging, need to keep processing
