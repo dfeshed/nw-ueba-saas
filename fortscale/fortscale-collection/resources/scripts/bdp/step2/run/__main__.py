@@ -119,7 +119,7 @@ Usage examples:
                       parsers.start]
     online_parser = subparsers.add_parser('online',
                                           help='Run the step in online mode',
-                                          parents=common_parents + [parsers.online_manager + models_scheduler_parent])
+                                          parents=common_parents + [parsers.online_manager, models_scheduler_parent])
     online_parser.set_defaults(is_online_mode=True)
     offline_parser = subparsers.add_parser('offline',
                                            help='Run the step in offline mode',
@@ -174,8 +174,10 @@ def main():
                validation_batches_delay=arguments.validation_batches_delay,
                max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
                batch_size_in_hours=arguments.batch_size,
-               entity_models_interval=arguments.build_models_interval_in_hours * 60 * 60,
-               build_entity_models_interval=arguments.build_entity_models_interval_in_hours * 60 * 60) \
+               build_models_interval=(arguments.build_models_interval_in_hours * 60 * 60)
+               if 'build_models_interval_in_hours' in arguments and arguments.build_models_interval_in_hours is not None else None,
+               build_entity_models_interval=(arguments.build_entity_models_interval_in_hours * 60 * 60)
+               if 'build_entity_models_interval_in_hours' in arguments and arguments.build_entity_models_interval_in_hours is not None else None) \
             .run():
         logger.info('finished successfully')
     else:
