@@ -56,7 +56,13 @@
         columnsConfig=model.eventColumns
         aliases=model.queryNode.value.aliases
         onRowClick=(route-action "reconOpen" model.queryNode.value.definition.serviceId)}}
-          {{rsa-data-table/header}}
+          {{#rsa-data-table/header as |column index|}}
+            {{#with (meta-key-alias column.field model.queryNode.value.language.data) as |names|}}
+              <h2 class="title" title="{{if column.title column.title names.bothNames}}">
+                <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
+              </h2>
+            {{/with}}
+          {{/rsa-data-table/header}}
           {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
           {{rsa-data-table/load-more
           status=model.queryNode.value.results.events.status

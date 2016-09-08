@@ -2,30 +2,21 @@ export default [{
   field: 'sessionId',
   title: 'Session ID'
 }, {
-  field: 'time',
-  title: 'Time'
+  field: 'time'
 }, {
-  field: 'medium',
-  title: 'Event Type'
+  field: 'medium'
 }, {
-  field: 'size',
-  title: 'Size'
+  field: 'size'
 }, {
-  field: 'service',
-  title: 'Service'
+  field: 'service'
 }, {
-  field: 'ip.proto',
-  title: 'IP Protocol'
+  field: 'ip.proto'
 }, {
-  field: 'ip.src',
-  title: 'Source IP'
+  field: 'ip.src'
 }, {
-  field: 'tcp.srcport',
-  title: 'Source Port'
+  field: 'tcp.srcport'
 }, {
-  field: 'ip.dst',
-  title: 'Destination IP'
+  field: 'ip.dst'
 }, {
-  field: 'tcp.dstport',
-  title: 'Destination Port'
+  field: 'tcp.dstport'
 }];

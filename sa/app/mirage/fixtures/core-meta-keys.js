@@ -1,5 +1,6 @@
 export default [
   {  count: 0, format: 'TimeT', metaName: 'time', flags: -2147482605, displayName: 'Time' },
+  {  count: 0, format: 'UInt32', metaName: 'size', flags: -2147483631, displayName: 'Size' },
   {  count: 0, format: 'Text', metaName: 'risk.info', flags: -2147483133, displayName: 'Risk: Informational' },
   {  count: 0, format: 'Text', metaName: 'risk.suspicious', flags: -2147483133, displayName: 'Risk: Suspicious' },
   {  count: 0, format: 'Text', metaName: 'risk.warning', flags: -2147483133, displayName: 'Risk: Warning' },
