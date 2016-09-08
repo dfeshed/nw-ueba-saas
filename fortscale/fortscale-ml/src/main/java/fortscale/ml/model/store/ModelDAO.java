@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 
 import java.util.Date;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.ANY)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 public class ModelDAO {
 	public static final String SESSION_ID_FIELD = "sessionId";
 	public static final String CONTEXT_ID_FIELD = "contextId";
@@ -17,9 +17,10 @@ public class ModelDAO {
 	public static final String MODEL_FIELD = "model";
 	public static final String START_TIME_FILED = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
-	private static final String SESSION_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "sessionId field can be set only once in the obejct lifetime..";
-	private static final String CONTEXT_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "contextId field can be set only once in the obejct lifetime..";
-	private static final String CREATION_TIME_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "creationTime field can be set only once in the obejct lifetime.";
+
+	private static final String SESSION_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "sessionId field can be set only once in the object's lifetime.";
+	private static final String CONTEXT_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "contextId field can be set only once in the object's lifetime.";
+	private static final String CREATION_TIME_CAN_BE_SET_ONLY_ONCE_ERROR_MSG = "creationTime field can be set only once in the object's lifetime.";
 
 	@SuppressWarnings("unused")
 	@Id
@@ -38,9 +39,9 @@ public class ModelDAO {
 	@Field(END_TIME_FIELD)
 	private Date endTime;
 
-	// This constructor is required for deserialization from RockDB
-	public ModelDAO() {
-	}
+	// This constructor is required for deserialization from RocksDB
+	@SuppressWarnings("unused")
+	public ModelDAO() {}
 
 	public ModelDAO(String sessionId, String contextId, Model model, Date startTime, Date endTime) {
 		setSessionId(sessionId);
@@ -93,15 +94,14 @@ public class ModelDAO {
 	public ModelDAO setSessionId(String sessionId) {
 		Assert.isNull(this.sessionId, SESSION_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG);
 		Assert.hasText(sessionId);
-
 		this.sessionId = sessionId;
 		return this;
 	}
 
 	public ModelDAO setContextId(String contextId) {
 		Assert.isNull(this.contextId, CONTEXT_ID_CAN_BE_SET_ONLY_ONCE_ERROR_MSG);
-		//TODO: contextId is null for global models. We should use something other than null (and then uncomment the assertion)
-//		Assert.hasText(contextId);
+		// TODO: contextId is null for global models. We should use something other than null (and then uncomment the assertion)
+		// Assert.hasText(contextId);
 		this.contextId = contextId;
 		return this;
 	}

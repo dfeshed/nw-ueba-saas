@@ -1,13 +1,12 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
 import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
-import fortscale.services.AlertsService;
-import fortscale.services.UserActivityService;
-import fortscale.services.UserService;
-import fortscale.services.UserWithAlertService;
+import fortscale.services.*;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +22,8 @@ import java.util.Set;
  */
 @Service("userWithAlertService") public class UserWithAlertServiceImpl implements UserWithAlertService {
 
+    private static Logger logger = Logger.getLogger(UserWithAlertService.class);
+
 	@Autowired private UserService userService;
 
 	@Autowired private AlertsService alertsService;
@@ -30,9 +31,18 @@ import java.util.Set;
 	@Autowired
 	private UserActivityService userActivityService;
 
+	@Autowired
+	private UserScoreService userScoreService;
+
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
 		List<User> result = new ArrayList<>();
 		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
+
+		if (userRestFilter.getSeverity()!= null){
+			Double[] range = userScoreService.getSeverityRange().get(userRestFilter.getSeverity());
+			userRestFilter.setMinScore(range[0]);
+			userRestFilter.setMaxScore(range[1]);
+		}
 
 		if (shouldStop(userRestFilter, relevantUsers)) {
 			return result;
@@ -86,11 +96,26 @@ import java.util.Set;
 		return userService.countUsersByFilter(userRestFilter, relevantUsers);
 	}
 
-	@Override public void recalculateNumberOfUserAlerts(String userName) {
-		List<Alert> alerts = alertsService.getOpenAlertsByUsername(userName);
-		User user = userService.findByUsername(userName);
+    @Override
+    public void recalculateNumberOfUserAlertsByUserName(String userName) {
+        User user = userService.findByUsername(userName);
+        updateAlertsCount(user);
+    }
 
-		user.setAlertsCount(alerts.size());
-		userService.saveUser(user);
-	}
+    private void updateAlertsCount(User user) {
+        if (user != null) {
+            List<Alert> alerts = alertsService.getOpenAlertsByUsername(user.getUsername());
+
+            user.setAlertsCount(alerts.size());
+            userService.saveUser(user);
+        }else{
+            logger.error("Got update alert count request for non existing user");
+        }
+    }
+
+    @Override
+    public void recalculateNumberOfUserAlertsByUserId(String userId) {
+        User user = userService.getUserById(userId);
+        updateAlertsCount(user);
+    }
 }

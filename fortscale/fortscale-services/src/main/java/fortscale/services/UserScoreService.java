@@ -6,6 +6,7 @@ import fortscale.domain.core.Severity;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.Map;
 
 public interface UserScoreService {
 
@@ -15,5 +16,5 @@ public interface UserScoreService {
     void calculateUserSeverities(List<Pair<Double, Integer>> scoresHistogram);
     List<Pair<Double, Integer>> calculateAllUsersScores();
     Severity getUserSeverityForScore(double userScore);
-
+    Map<Severity, Double[]> getSeverityRange();
 }

@@ -1,6 +1,8 @@
 package fortscale.domain.rest;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
+import fortscale.domain.core.Severity;
 
 import java.util.List;
 import java.util.Set;
@@ -20,10 +22,12 @@ public class UserFilter extends RestFilter {
 	private Boolean addAlertsAndDevices;
 	private List<String> userTags;
 	private Boolean isWatched;
-	private Boolean isScored;
 	private List<String> alertTypes;
 	private AlertRestFilter.DataSourceAnomalyTypePairListWrapper indicatorTypes;
 	private List<String> locations;
+	private Severity severity;
+	private Double minScore;
+	private Double maxScore;
 
 	public String getDisabledSince() {
 		return disabledSince;
@@ -113,14 +117,6 @@ public class UserFilter extends RestFilter {
 		this.isWatched = isWatched;
 	}
 
-	public Boolean getIsScored() {
-		return isScored;
-	}
-
-	public void setIsScored(Boolean isScored) {
-		this.isScored = isScored;
-	}
-
 	public Boolean getIsTerminatedWithActivity() {
 		return isTerminatedWithActivity;
 	}
@@ -153,6 +149,31 @@ public class UserFilter extends RestFilter {
 		this.locations = locations;
 	}
 
+	public Severity getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(Severity severity) {
+		this.severity = severity;
+	}
+
+	public Double getMinScore() {
+		return minScore;
+	}
+
+	public void setMinScore(Double minScore) {
+		this.minScore = minScore;
+	}
+
+	public Double getMaxScore() {
+		return maxScore;
+	}
+
+	public void setMaxScore(Double maxScore) {
+		this.maxScore = maxScore;
+	}
+
+	@JsonIgnore
 	public Set<DataSourceAnomalyTypePair> getAnomalyTypesAsSet() {
 		if (indicatorTypes == null){
 			return null;

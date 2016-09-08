@@ -12,6 +12,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -642,10 +643,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			criteriaList.add(new Criteria(User.followedField).is(userRestFilter.getIsWatched()));
 		}
 
-		if (BooleanUtils.isTrue(userRestFilter.getIsScored())) {
-			criteriaList.add(new Criteria(User.scoreField).gt(0));
-		} else if (BooleanUtils.isFalse(userRestFilter.getIsScored())) {
-			criteriaList.add(new Criteria(User.scoreField).is(0));
+		if (userRestFilter.getSeverity() != null){
+			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()).lte(userRestFilter.getMaxScore()));
+		}else if (userRestFilter.getMinScore() != null){
+			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}
 
 		return criteriaList;

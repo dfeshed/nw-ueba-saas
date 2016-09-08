@@ -293,7 +293,7 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 
-		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anySet())).thenReturn(users);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class))).thenReturn(users);
 		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
 
 		MvcResult result = mockMvc.perform(get("/api/user/severityBar")

@@ -96,13 +96,30 @@ Usage examples:
                                   help='If --block_on_data_sources is not specified, you should specify how many days '
                                        'back should be analyzed in order to find what tables to block on',
                                   type=int)
+
+    models_scheduler_parent = argparse.ArgumentParser(add_help=False)
+    models_scheduler_parent.add_argument('--build_models_interval_in_hours',
+                                         action='store',
+                                         dest='build_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building models. '
+                                              'If not specified, no models will be built '
+                                              '(they can, however be built by an external entity).',
+                                         type=int)
+    models_scheduler_parent.add_argument('--build_entity_models_interval_in_hours',
+                                         action='store',
+                                         dest='build_entity_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building entity models. '
+                                              'If not specified, no entity models will be built '
+                                              '(they can, however be built by an external entity).',
+                                         type=int)
+
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
                       parsers.start]
     online_parser = subparsers.add_parser('online',
                                           help='Run the step in online mode',
-                                          parents=common_parents + [parsers.online_manager])
+                                          parents=common_parents + [parsers.online_manager + models_scheduler_parent])
     online_parser.set_defaults(is_online_mode=True)
     offline_parser = subparsers.add_parser('offline',
                                            help='Run the step in offline mode',
@@ -112,8 +129,10 @@ Usage examples:
 
 
 def validate_not_running_same_period_twice(arguments):
+    start = time_utils.get_epochtime(arguments.start)
     really_big_epochtime = time_utils.get_epochtime('29990101')
     if not validate_all_buckets_synced(host=arguments.host,
+                                       start_time_epoch=start,
                                        end_time_epoch=really_big_epochtime,
                                        use_start_time=True):
         print "there are already some aggregations with startTime greater/equal to the given start time " \
@@ -121,7 +140,6 @@ def validate_not_running_same_period_twice(arguments):
         sys.exit(1)
 
     mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
-    start = time_utils.get_epochtime(arguments.start)
     for collection_name in filter(lambda name: name.startswith('aggr_'), mongo.get_all_collection_names(mongo_db)):
         data = list(mongo_db[collection_name].find({
             'startTime': {
@@ -155,11 +173,13 @@ def main():
                timeout=arguments.timeout * 60 if 'timeout' in arguments else None,
                validation_batches_delay=arguments.validation_batches_delay,
                max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
-               batch_size_in_hours=arguments.batch_size) \
+               batch_size_in_hours=arguments.batch_size,
+               entity_models_interval=arguments.build_models_interval_in_hours * 60 * 60,
+               build_entity_models_interval=arguments.build_entity_models_interval_in_hours * 60 * 60) \
             .run():
         logger.info('finished successfully')
     else:
-        logger.error('failed')
+        logger.error('FAILED')
 
 
 if __name__ == '__main__':

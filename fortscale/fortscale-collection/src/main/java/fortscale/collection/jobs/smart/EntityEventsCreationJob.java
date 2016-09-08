@@ -22,7 +22,11 @@ import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
+import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC;
+import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC;
+
 public class EntityEventsCreationJob extends FortscaleJob {
+
 	private static Logger logger = Logger.getLogger(EntityEventsCreationJob.class);
 	private static final String STEP_NAME = "Create and send entity events to Kafka topic";
 	private static final String START_TIME_IN_SECONDS_ARG = "startTimeInSeconds";
@@ -100,8 +104,10 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		modelConfs = new ArrayList<>();
 		entityEventConfNameToModelConfNamesMap.values().forEach(modelConfs::addAll);
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
+		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(jobDataMap, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
+		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(jobDataMap, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
 		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
-				secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds);
+				secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic);
 
 
 		logger.info(String.format("Finish initializing EntityEventsCreationJob: startTimeInSeconds = %d, endTimeInSeconds = %d, batchSize = %d, checkRetries = %d, secondsBetweenModelSyncs = %d, modelBuildingTimeoutInSeconds = %d, eventProcessingSyncTimeoutInSeconds = %d",
