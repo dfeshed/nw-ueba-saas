@@ -2,3 +2,7 @@
 @import "./event-content/manifest";
 @import "./event-detail/_manifest";
 @import "./meta-content/manifest";
+
+.recon-container {
+  overflow: scroll;
+}

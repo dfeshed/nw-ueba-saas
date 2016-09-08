@@ -127,7 +127,7 @@ git config --global url."https://".insteadOf git://
 buildEmberApp streaming-data true
 
 buildEmberApp component-lib
-buildEmberApp recon
+buildEmberApp recon true
 buildEmberApp style-guide
 
 #### Deploy style guide to host if running full build

@@ -14,7 +14,8 @@ export default Component.extend({
   request: service(),
 
   layout,
-  tagName: '',
+  tagName: 'fill',
+  classNameBindings: [':recon-container'],
   showMetaDetails: false,
 
   // Component inputs

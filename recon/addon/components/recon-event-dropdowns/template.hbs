@@ -1,56 +1,46 @@
 <grid>
-  <hbox xs="11" md="10" lg="8">
-    <hbox>
-      {{#rsa-form-button dropdown='standard' style='primary' }}
-        Export
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </hbox>
-    <hbox>
-      {{#rsa-form-button dropdown='standard' }}
-        Decode
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </hbox>
-    <hbox>
-      <div class="divider"></div>
-    </hbox>
+  <hbox class="dropdowns">
 
-    <hbox>
-      {{#rsa-form-button dropdown='standard' }}
-        Packet View
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </hbox>
-    <hbox>
-      {{#rsa-form-button dropdown='standard' }}
-        Request &amp; Response
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </hbox>
-    <hbox>
-      {{#rsa-form-button dropdown='standard' }}
-        Top to Bottom
-        <ul>
-          <li>foo</li>
-          <li>bar</li>
-        </ul>
-      {{/rsa-form-button}}
-    </hbox>
+    {{#rsa-form-button dropdown='split' style='primary' }}
+      Export
+      <ul>
+        <li>foo</li>
+        <li>bar</li>
+      </ul>
+    {{/rsa-form-button}}
+
+
+    {{#rsa-form-button dropdown='split' }}
+      Decode
+      <ul>
+        <li>foo</li>
+        <li>bar</li>
+      </ul>
+    {{/rsa-form-button}}
+
+
+    <div class="divider"></div>
+
+
+    {{#rsa-form-button dropdown='standard' }}
+      Request &amp; Response
+      <ul>
+        <li>foo</li>
+        <li>bar</li>
+      </ul>
+    {{/rsa-form-button}}
+
+
+    {{#rsa-form-button dropdown='standard' }}
+      Top to Bottom
+      <ul>
+        <li>foo</li>
+        <li>bar</li>
+      </ul>
+    {{/rsa-form-button}}
+
+    <centered class="right">
+      {{rsa-icon name='filter-22' size='large'}}
+    </centered>
   </hbox>
-  <centered class="right" xs="1" md="2" lg="4">
-    {{rsa-icon name='filter-22' size='large'}}
-  </centered>
 </grid>
