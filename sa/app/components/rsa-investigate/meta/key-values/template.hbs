@@ -3,14 +3,18 @@
   <h2 class="rsa-investigate-meta-key-values__title">
     <span class="toggle-icon js-toggle-open" {{action "safeCallback" toggleAction}}>&#9654;</span>
     <span class="meta-name js-toggle-open" {{action "safeCallback" toggleAction}}>{{groupKey.name}}</span>
-    <span class="meta-size">(Top {{options.size}})</span>
+    {{#if (is-equal values.status 'complete')}}
+      <span class="meta-size">
+        ({{values.data.length}}{{#if (is-equal values.data.length options.size)}}+{{/if}})
+      </span>
+    {{/if}}
   </h2>
 </header>
 <section class="rsa-investigate-meta-key-values__body">
   {{#liquid-bind groupKey.isOpen use="crossFade" as |currentIsOpen|}}
     {{#if currentIsOpen}}
       {{#if values.description}}
-        <p class="rsa-investigate-meta-key-values__description">Description: {{values.description}}</p>
+        <p class="rsa-investigate-meta-key-values__description">{{values.description}}</p>
       {{/if}}
       <ul class="rsa-investigate-meta-key-values__values">
         {{#each values.data as |datum|~}}
