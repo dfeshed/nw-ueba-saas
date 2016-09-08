@@ -57,13 +57,13 @@
   &.with-dropdown {
     ul {
       @include rsa-layer(above);
-      box-sizing: border-box;
-      position: absolute;
-      right: 0;
-      text-align: left;
-      margin-top: -2px;
       background-color: $formButtonDropdownBackgroundColor;
+      box-sizing: border-box;
       list-style: none;
+      margin-top: -2px;
+      position: absolute;
+      min-width: 100%;
+      text-align: left;
 
       li {
         @include rsa-font(navigation, small);
@@ -82,6 +82,18 @@
         &:hover {
           background-color: $formButtonDropdownOptionHoverBackgroundColor;
         }
+      }
+    }
+
+    &.left {
+      ul {
+        left: 0;
+      }
+    }
+
+    &.right {
+      ul {
+        right: 0;
       }
     }
   }

@@ -22,15 +22,18 @@ export default Component.extend({
 
   classNames: ['rsa-form-button-wrapper'],
 
-  classNameBindings: ['isStandard',
-                      'isPrimary',
-                      'isDanger',
-                      'isFullWidth',
-                      'isCollapsed:is-collapsed:not-collapsed',
-                      'withDropdown',
-                      'isSplit',
-                      'isIconOnly',
-                      'isDisabled'],
+  classNameBindings: [
+    'isCollapsed:is-collapsed:not-collapsed',
+    'isDanger',
+    'isDisabled',
+    'isFullWidth',
+    'isPrimary',
+    'isStandard',
+    'positionOptions',
+    'isSplit',
+    'isIconOnly',
+    'withDropdown'
+  ],
 
   isFullWidth: false,
 
@@ -39,6 +42,8 @@ export default Component.extend({
   isIconOnly: false,
 
   isDisabled: false,
+
+  positionOptions: 'left',
 
   style: 'standard', // ['standard', 'primary', 'danger']
 
