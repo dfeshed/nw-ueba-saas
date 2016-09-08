@@ -270,6 +270,8 @@
 		<constructor-arg name="clazz" value="java.util.Set" />
 	</bean>
 
+    <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl"/>
+
 	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 
 	<bean id="featureBucketsReaderService" class="fortscale.aggregation.feature.bucket.FeatureBucketsReaderService" />
