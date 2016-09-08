@@ -37,7 +37,7 @@ function _alias(field, value, opts = {}) {
   const fieldLookup = lookups && lookups[field];
   const valueLookup = fieldLookup && fieldLookup[value];
   if (valueLookup === undefined) {
-    return String(value);
+    return (value === undefined) ? '' : String(value);
   } else if (opts.appendRawValue) {
     return `${valueLookup} [${value}]`;
   } else {
