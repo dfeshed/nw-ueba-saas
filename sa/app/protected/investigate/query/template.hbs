@@ -32,7 +32,7 @@
       percent=model.queryNode.value.results.events.percent
       enabled=(is-equal model.queryNode.value.results.events.status 'streaming')}}
   </header>
-  <section class="rsa-investigate-query__body {{if model.recon.isOpen 'recon-is-open' 'recon-is-closed'}} meta-panel-size-{{model.meta.panelSize}}">
+  <section class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
     <section class="rsa-investigate-query__body-master">
       <aside class="rsa-investigate-query__body-master-aside">
         {{rsa-investigate/meta
@@ -85,6 +85,8 @@
           meta=model.recon.item.metas
           title=model.recon.title
           closeAction=(route-action 'reconClose')
+          expandAction=(route-action 'reconExpand')
+          shrinkAction=(route-action 'reconShrink')
           language=model.queryNode.value.language
           aliases=model.queryNode.value.aliases}}
       {{/if}}

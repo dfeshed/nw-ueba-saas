@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 
 const {
   Object: EmberObject
@@ -11,6 +12,31 @@ export default EmberObject.extend({
    * @public
    */
   isOpen: false,
+
+  /**
+   * If true, indicates that the recon UI is visible.
+   * @type {boolean}
+   * @public
+   */
+  isExpanded: false,
+
+  /**
+   * Determines the display state of the recon panel
+   * @type {boolean}
+   * @public
+   */
+  @computed('isExpanded', 'isOpen')
+  display(expanded, open) {
+    if (!open) {
+      return 'closed';
+    }
+
+    if (expanded) {
+      return 'expanded';
+    }
+
+    return 'open';
+  },
 
   /**
    * The event (session) object from Netwitness Core to be inspected in the recon UI.

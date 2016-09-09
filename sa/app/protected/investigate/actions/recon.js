@@ -36,12 +36,30 @@ export default Mixin.create({
     reconClose(restoreMetaPanelSize = false) {
       this.get('state.recon').setProperties({
         isOpen: false,
+        isExpanded: false,
         item: undefined,
         endpointId: undefined
       });
       if (restoreMetaPanelSize) {
         this.send('metaPanelSize', this.get('state.recon.metaPanelSizeWas'));
       }
+    },
+
+    /**
+     * Updates the UI state in order to expand the Recon UI.
+     * @public
+     */
+    reconExpand() {
+      this.set('state.recon.isExpanded', true);
+    },
+
+    /**
+     * Updates the UI state in order to shrink (not close) the Recon UI.
+     * @public
+     */
+    reconShrink() {
+      this.set('state.recon.isExpanded', false);
     }
+
   }
 });

@@ -1,3 +1,15 @@
+@mixin recon-sizing($reconWidth) {
+  .rsa-investigate-query__body {
+    &-master {
+      right: $reconWidth;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    }
+    &-slave {
+      width: $reconWidth;
+    }
+  }
+}
+
 .rsa-investigate-query {
   position: absolute;
   top: 0;
@@ -55,15 +67,11 @@
     }
 
     &.recon-is-open {
-      .rsa-investigate-query__body {
-        &-master {
-          right: $investigateReconWidth;
-          background-color: rsa-color(black,base,$rsa-nearly-transparent);
-        }
-        &-slave {
-          width: $investigateReconWidth;
-        }
-      }
+      @include recon-sizing($investigateReconWidth)
+    }
+
+    &.recon-is-expanded {
+      @include recon-sizing($investigateReconExpandedWidth)
     }
 
     &-master-aside,

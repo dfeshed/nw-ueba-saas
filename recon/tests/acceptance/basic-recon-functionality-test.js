@@ -14,7 +14,7 @@ test('show/hide header items', function(assert) {
     }, 1000);
   });
 
-  click('.recon-event-titlebar .action-buttons .toggle-header');
+  click('.recon-event-titlebar .toggle-header');
 
   andThen(function() {
     run.later(this, function() {
@@ -32,7 +32,7 @@ test('show/hide meta', function(assert) {
     }, 1000);
   });
 
-  click('.recon-event-titlebar .action-buttons .toggle-meta');
+  click('.recon-event-titlebar .toggle-meta');
 
   andThen(function() {
     run.later(this, function() {

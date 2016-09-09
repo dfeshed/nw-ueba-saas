@@ -4,11 +4,12 @@
   background-color: rsa-color(gray, dark);
   border: 1px solid rsa-color(white);
   border-bottom: none;
-  padding: rsa-whitespace();
+  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
 
   .divider {
     border-left: 1px solid rsa-color(white);
-    height: 3rem;
+    height: 2rem;
+    margin: 5px;
   }
 
   .header-item {
@@ -30,6 +31,7 @@
     .heading {
       h2 {
         color: rsa-color(white);
+        margin-top: rsa-whitespace(less);
         @include rsa-font(header, large);
       }
     }

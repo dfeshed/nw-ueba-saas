@@ -17,20 +17,28 @@ export default Component.extend({
   tagName: 'fill',
   classNameBindings: [':recon-container'],
 
+  // Component state
   headerError: null,
   headerItems: null,
   packetError: null,
   packets: null,
   showMetaDetails: false,
+  // END Component state
 
   // Component inputs
   endpointId: null,
   eventId: null,
   meta: null,
   title: null,
-  language: null,
+
+  // Lookups
   aliases: null,
+  language: null,
+
+  // Actions
   closeAction: null,
+  expandAction: null,
+  shrinkAction: null,
   // END Component inputs
 
   didReceiveAttrs() {
@@ -156,8 +164,12 @@ export default Component.extend({
   },
 
   actions: {
-    toggleMetaDetails() {
-      this.toggleProperty('showMetaDetails');
+    toggleMetaDetails(forceShrink = false) {
+      if (forceShrink) {
+        this.set('showMetaDetails', false);
+      } else {
+        this.toggleProperty('showMetaDetails');
+      }
     }
   }
 });
