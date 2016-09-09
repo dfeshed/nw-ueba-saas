@@ -1,12 +1,20 @@
 .rsa-respond-detail-overview {
+  &-wrapper {
+    min-width: 20rem;
+  }
+
+
+  .scroll-box {
+    background-color: rsa-color(black, null, $rsa-translucent);
+    margin-right: 2px;
+  }
+
   .rsa-content-accordion,
   .rsa-content-accordion:first-of-type,
   .rsa-content-accordion:last-of-type {
     margin: 0;
   }
-  .rsa-content-accordion .content {
-    background-color: rsa-color(black, null, $rsa-translucent);
-  }
+
   textarea {
     height: 20rem;
   }

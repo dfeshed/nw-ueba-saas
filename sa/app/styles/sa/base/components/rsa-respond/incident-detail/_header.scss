@@ -1,11 +1,14 @@
 .rsa-incident-detail-header {
   color: rsa-color(white);
   position: relative;
-  border-bottom: solid thin rsa-color(white, null, $rsa-transparent);
   background-color: rsa-color(black, null, $rsa-translucent);
 
   &__score {
     padding: 0;
+
+    .rsa-content-badge-score {
+      padding: rsa-whitespace();
+    }
   }
 
   &__col-details {
@@ -14,7 +17,7 @@
     flex-wrap: nowrap;
     align-items: center;
     margin: 0;
-    padding: 0 rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace(less);
+    padding: 0 rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
   }
 
   &__details {

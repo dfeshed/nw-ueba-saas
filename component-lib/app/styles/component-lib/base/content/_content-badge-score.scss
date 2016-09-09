@@ -32,12 +32,14 @@
     }
 
     .score {
-      @include rsa-font(default, light);
-      font-size: 3em;
+      @include rsa-font(light);
+      font-size: 2.75em;
     }
 
     .label {
-      @include rsa-font(header, small);
+      @include rsa-font(light);
+      text-transform: uppercase;
+      font-size: .65rem;
       width: 80%;
       margin: 0 auto;
     }
@@ -45,26 +47,26 @@
 
   &.is-small {
     .score {
-      font-size: 2rem;
+      font-size: 1.75rem;
     }
   }
 
   &.is-large {
     .score {
-      font-size: 4rem;
+      font-size: 3rem;
     }
   }
 
   &.is-larger {
     .score {
-      font-size: 5rem;
+      font-size: 4rem;
 
     }
   }
 
   &.is-largest {
     .score {
-      font-size: 6rem;
+      font-size: 5rem;
     }
   }
 

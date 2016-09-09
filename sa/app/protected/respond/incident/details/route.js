@@ -13,7 +13,7 @@ export default Route.extend({
 
   activate() {
     this.set('layoutService.journalPanel', 'hidden');
-    this.set('layoutService.main', 'panelC');
+    this.set('layoutService.main', 'panelB');
     this.set('layoutService.panelA', 'hidden');
     this.set('layoutService.panelB', 'half');
     this.set('layoutService.panelC', 'half');

@@ -1,3 +1,7 @@
+.rsa-respond-storyline-wrapper {
+  background-color: rsa-color(black, null, $rsa-translucent);
+}
+
 .rsa-response-detail__bottom{
   &-header{
     @include rsa-font(header, large);
@@ -12,6 +16,12 @@
   }
 }
 .rsa-response-storyline {
+  .rsa-response-storyline__main_icon {
+    .rsa-form-button-wrapper.is-icon-only {
+      float: right;
+    }
+  }
+
     margin-top: 2px;
     .main {
       padding-right: 0;

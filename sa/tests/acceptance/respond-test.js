@@ -61,11 +61,10 @@ test('ensure journal-trigger is added on the respond incident route', function(a
     click('.rsa-incident-tile:first-of-type');
 
     andThen(function() {
-      assert.equal(find('.rsa-application-action-bar .journal-trigger').length, 1);
+      assert.equal(find('.rsa-application-action-bar .incident-journal-trigger').length, 1);
     });
   });
 });
-
 
 test('enable respond feature flag, visiting /do/respond and check DOM ', function(assert) {
   config.featureFlags = {

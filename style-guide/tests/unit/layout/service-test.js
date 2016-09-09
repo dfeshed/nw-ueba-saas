@@ -27,7 +27,6 @@ test('it exists', function(assert) {
 test('sets defaults', function(assert) {
   let service = this.subject();
   assert.equal(service.get('main'), 'panelA');
-  assert.equal(service.get('displayJournal'), false);
   assert.equal(service.get('incidentQueueActive'), false);
   assert.equal(service.get('notificationsActive'), false);
 
@@ -51,12 +50,6 @@ test('sets panel classes', function(assert) {
   assert.equal(service.get('panelEClass'), 'panel-E-hidden');
 });
 
-test('sets journal panel active', function(assert) {
-  let service = this.subject();
-  service.set('journalPanel', 'full');
-  assert.equal(service.get('journalPanelActive'), true);
-});
-
 test('toggle incident queue', function(assert) {
   let service = this.subject();
   let spy = sinon.spy(service.get('eventBus'), 'trigger');
@@ -71,25 +64,6 @@ test('toggle notifications', function(assert) {
   service.toggleIncidentQueue();
   assert.ok(spy.withArgs('rsa-application-incident-queue-panel-will-toggle').calledOnce);
   assert.equal(service.get('incidentQueueActive'), true);
-});
-
-test('toggle journal', function(assert) {
-  let service = this.subject();
-  service.set('panelA', 'quarter');
-  service.set('panelB', 'main');
-  service.set('main', 'panelB');
-
-  service.toggleJournal();
-
-  assert.equal(service.get('journalPanel'), 'quarter');
-  assert.equal(service.get('panelA'), 'quarter');
-  assert.equal(service.get('panelB'), 'half');
-
-  service.toggleJournal();
-
-  assert.equal(service.get('journalPanel'), 'hidden');
-  assert.equal(service.get('panelA'), 'quarter');
-  assert.equal(service.get('panelB'), 'main');
 });
 
 test('toggle panel full width', function(assert) {

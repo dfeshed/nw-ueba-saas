@@ -34,10 +34,6 @@ export default Component.extend({
 ),
 
   actions: {
-    journalAction() {
-      this.get('layoutService').toggleJournal();
-    },
-
     toggleFullWidthPanel(panel) {
       this.get('layoutService').toggleFullWidthPanel(panel);
     }

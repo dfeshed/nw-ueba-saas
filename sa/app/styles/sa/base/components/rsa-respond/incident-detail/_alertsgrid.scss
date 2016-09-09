@@ -1,3 +1,10 @@
+.rsa-respond-detail-wrapper {
+  .scroll-box {
+    background-color: rsa-color(black, null, $rsa-translucent);
+    margin-left: 2px;
+  }
+}
+
 .rsa-respond-detail-grid {
   .rsa-data-table{
     margin-left: rsa-whitespace(less);

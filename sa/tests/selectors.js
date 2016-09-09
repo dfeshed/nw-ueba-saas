@@ -100,7 +100,7 @@ export default Ember$.extend({}, BaseSelectors, {
         },
         'overview': {
           'accordion': '.rsa-respond-detail-overview__accordion',
-          'textarea': '.rsa-respond-detail-overview__accordion textarea'
+          'textarea': '.rsa-respond-detail-overview textarea'
         }
       },
       'toggleViewHeader': 'header[class$=rsa-respond-index-header]',

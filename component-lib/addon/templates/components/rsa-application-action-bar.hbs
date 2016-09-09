@@ -7,13 +7,22 @@
     style=(if layoutService.incidentQueueActive 'filled' 'lined')}}
 {{/rsa-form-button}}
 
-{{#if layoutService.displayJournal}}
+{{#if (eq layoutService.actionConfig 'incident')}}
   {{#rsa-form-button
     isIconOnly=true
-    click=(action 'toggleJournal')
-    class=(if layoutService.journalPanelActive 'journal-trigger is-active' 'journal-trigger')}}
+    click=(action 'toggleIncidentJournal')
+    class=(if incidentJournalActive 'incident-journal-trigger is-active' 'incident-journal-trigger')}}
     {{rsa-icon
       name="notepad-edit"
-      style=(if layoutService.journalPanelActive 'filled' 'lined')}}
+      style=(if incidentJournalActive 'filled' 'lined')}}
+  {{/rsa-form-button}}
+
+  {{#rsa-form-button
+    isIconOnly=true
+    click=(action 'toggleIncidentOverview')
+    class=(if incidentOverviewActive 'incident-overview-trigger is-active' 'incident-overview-trigger')}}
+    {{rsa-icon
+      name="information-circle"
+      style=(if incidentOverviewActive 'filled' 'lined')}}
   {{/rsa-form-button}}
 {{/if}}

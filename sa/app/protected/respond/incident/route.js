@@ -22,6 +22,7 @@ export default Route.extend({
   layoutService: service('layout'),
 
   activate() {
+    this.set('layoutService.actionConfig', 'incident');
     this.set('layoutService.displayJournal', true);
     this.set('layoutService.main', 'panelB');
     this.set('layoutService.panelA', 'quarter');
@@ -29,6 +30,7 @@ export default Route.extend({
   },
 
   deactivate() {
+    this.set('layoutService.actionConfig', null);
     this.set('layoutService.journalPanel', 'hidden');
     this.set('layoutService.displayJournal', false);
   },

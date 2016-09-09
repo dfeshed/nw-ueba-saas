@@ -25,7 +25,13 @@ export default Component.extend({
 
   actions: {
     toggleJournal() {
-      this.get('layoutService').toggleJournal();
+      if (this.get('layoutService.journalPanel') === 'hidden') {
+        this.set('layoutService.journalPanel', 'quarter');
+        this.set('layoutService.panelA', 'hidden');
+      } else {
+        this.set('layoutService.journalPanel', 'hidden');
+        this.set('layoutService.panelA', 'quarter');
+      }
     }
   }
 });

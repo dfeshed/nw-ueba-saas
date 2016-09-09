@@ -1,4 +1,6 @@
 .rsa-journal-wrapper {
+  min-width: 20rem;
+
   &__journal-sort {
     padding: rsa-whitespace(less);
     border-bottom: 1px solid rsa-color(gray);

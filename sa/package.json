@@ -62,6 +62,7 @@
     "flexi": "1.1.9",
     "liquid-fire": "0.22.0",
     "loader.js": "^4.0.1",
+    "ember-truth-helpers": "1.2.0",
     "mock-server": "../mock-server"
   },
   "ember-addon": {

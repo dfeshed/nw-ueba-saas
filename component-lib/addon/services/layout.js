@@ -14,7 +14,7 @@ export default Service.extend({
 
   main: 'panelA',
 
-  displayJournal: false,
+  actionConfig: null,
 
   incidentQueueActive: false,
 
@@ -66,33 +66,6 @@ export default Service.extend({
   toggleNotifications() {
     this.toggleProperty('notificationsActive');
     this.get('eventBus').trigger('rsa-application-notifications-panel-will-toggle');
-  },
-
-  toggleJournal() {
-    let mainPanel = this.get('main');
-    let mainPanelSize = this.get(mainPanel);
-
-    if (this.get('journalPanel') === 'hidden') {
-      this.set('journalPanel', 'quarter');
-
-      if (mainPanelSize === 'full') {
-        this.set(mainPanel, 'main');
-      } else if (mainPanelSize === 'main') {
-        this.set(mainPanel, 'half');
-      } else if (mainPanelSize === 'half') {
-        this.set(mainPanel, 'quarter');
-      }
-    } else {
-      this.set('journalPanel', 'hidden');
-
-      if (mainPanelSize === 'main') {
-        this.set(mainPanel, 'full');
-      } else if (mainPanelSize === 'half') {
-        this.set(mainPanel, 'main');
-      } else if (mainPanelSize === 'quarter') {
-        this.set(mainPanel, 'half');
-      }
-    }
   },
 
   toggleFullWidthPanel(panel) {

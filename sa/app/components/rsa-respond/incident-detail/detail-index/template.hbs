@@ -8,20 +8,28 @@
   {{#rsa-application-layout-panel class="journal-panel"}}
     {{rsa-respond/incident-detail/journal-wrapper model=model addJournalAction=addJournalAction editJournalAction=editJournalAction deleteJournalAction=deleteJournalAction}}
   {{/rsa-application-layout-panel}}
-  {{#rsa-application-layout-panel class="panel-A"}}
-    {{rsa-respond/incident-detail/detail-overview saveAction=(route-action 'saveAction') model=model}}
 
-    {{#rsa-content-accordion isCollapsed=true label=(t 'incident.details.overview.categoryTags') class="rsa-category-tags-panel spacer"}}
-      {{rsa-form-tag-manager selectedTags=model.categories availableTags=normalizedTreeData}}
-    {{/rsa-content-accordion}}
+  {{#rsa-application-layout-panel class="panel-A rsa-respond-detail-overview"}}
+    {{#rsa-content-section-header}}
+      <h1>{{t 'incident.details.overview.title'}}</h1>
+    {{/rsa-content-section-header}}
 
+    <div class="rsa-respond-detail-overview-wrapper">
+      {{#rsa-content-accordion class='rsa-respond-detail-overview__accordion' label=(t 'incident.details.overview.about')}}
+        {{rsa-respond/incident-detail/detail-overview saveAction=(route-action 'saveAction') model=model}}
+      {{/rsa-content-accordion}}
+
+      {{#rsa-content-accordion isCollapsed=true label=(t 'incident.details.overview.categoryTags') class="rsa-category-tags-panel spacer"}}
+        {{rsa-form-tag-manager selectedTags=model.categories availableTags=normalizedTreeData}}
+      {{/rsa-content-accordion}}
+    </div>
   {{/rsa-application-layout-panel}}
 
-  {{#rsa-application-layout-panel class="panel-B"}}
+  {{#rsa-application-layout-panel class="panel-B rsa-respond-storyline-wrapper"}}
     {{rsa-respond/incident-detail/detail-storyline model=model}}
   {{/rsa-application-layout-panel}}
 
-  {{#rsa-application-layout-panel class="panel-C"}}
+  {{#rsa-application-layout-panel class="panel-C rsa-respond-detail-wrapper"}}
     {{outlet 'indicator'}}
   {{/rsa-application-layout-panel}}
 
