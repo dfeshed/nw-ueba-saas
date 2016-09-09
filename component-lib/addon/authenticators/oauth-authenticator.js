@@ -13,90 +13,53 @@ import oauthToken from '../mixins/oauth-token';
 const {
   inject: {
     service
-  },
-  RSVP,
-  isEmpty,
-  run,
-  merge,
-  makeArray
+  }
 } = Ember;
 
 export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
 
   serverTokenEndpoint: '/oauth/token',
 
+  clientId: 'nw_ui',
+
   ajax: service(),
 
-  /**
-   * Responsible for restoring the session after a page reload, given the persisted data from the session.
-   * Should return a Promise that will resolve when the session is restored. The return value of that Promise
-   * will be automatically put in localStorage, overwriting previously persisted session data.
-   * See Simple Auth API docs: http://ember-simple-auth.com/ember-simple-auth-api-docs.html#SimpleAuth-Authenticators-Base-restore
-   * @param data The persisted session data from the last valid login.
-   * @returns {Ember.RSVP.Promise} A Promise that resolves with the session data to be persisted in local storage.
-   * @public
-   */
-  restore(data) {
-    // We don't want to lose the persisted session data in localStorage, so we merge it on top of whatever other
-    // info we need to fetch here.
-    return new RSVP.Promise(function(resolve, reject) {
-      if (!isEmpty(data.user)) {
-        resolve(data);
-      } else {
-        reject();
-      }
-    });
-  },
+  session: service(),
 
-  /**
-   * @function authenticate
-   * @param credentials {Object} that holds username and password
-   * @param credentials.identification {string} username of the user
-   * @param credentials.password {string} password of the user
-   * @public
-   */
-  authenticate(identification, password, scope = []) {
-    let accessTokenKey = this.get('accessTokenKey');
-    return new RSVP.Promise((resolve, reject) => {
-      const data                = { client_id: 'nw_ui', 'grant_type': 'password', username: identification.username, password: identification.password };
-      const serverTokenEndpoint = this.get('serverTokenEndpoint');
-      const scopesString = makeArray(scope).join(' ');
-      if (!isEmpty(scopesString)) {
-        data.scope = scopesString;
-      }
-      this.makeRequest(serverTokenEndpoint, data).then((response) => {
-        run(() => {
-          localStorage.setItem(accessTokenKey, response.access_token);
-          let secure = document.location.protocol == 'https:' ? 'secure' : '';
-          document.cookie = `access_token=${response.access_token};path=/;${secure}`;
-          const expiresAt = this._absolutizeExpirationTime(response.expires_in);
-          this._scheduleAccessTokenRefresh(response.expires_in, expiresAt, response.refresh_token);
-          if (!isEmpty(expiresAt)) {
-            response = merge(response, { 'expires_at': expiresAt });
-          }
-          resolve(response);
-        });
-      }, (xhr) => {
-        run(null, reject, xhr.responseJSON || xhr.responseText);
-      });
-    });
-  },
+  _addListeners: function() {
+    let session = this.get('session');
 
+    // when the session invalidates aka 'logout', clean up
+    session.on('invalidationSucceeded', () => {
+      // no longer need to observe changes
+      session.get('session').removeObserver('content.authenticated', this, this._updateTokens);
 
-  /**
-   * @function invalidate
-   * @public
-   */
-  invalidate() {
-    return new RSVP.Promise((resolve)=>{
-      let accessTokenKey = this.get('accessTokenKey');
-      let csrfKey = this.get('csrfLocalstorageKey');
-      // delete the cookie
+      // delete the cookies
       document.cookie = 'access_token=;expires=Thu, 01 Jan 1970 00:00:01 GMT';
-      localStorage.removeItem(accessTokenKey);
-      localStorage.removeItem(csrfKey);
-      resolve();
-    });
-  }
+      document.cookie = 'refresh_token=;expires=Thu, 01 Jan 1970 00:00:01 GMT';
 
+      const accessTokenKey = this.get('accessTokenKey');
+      const refreshTokenKey = this.get('refreshTokenKey');
+
+      localStorage.removeItem(accessTokenKey);
+      localStorage.removeItem(refreshTokenKey);
+    });
+
+    // make sure the tokens are up to date when refresh occurs
+    session.get('session').addObserver('content.authenticated', this, this._updateTokens);
+
+  }.on('init'),
+
+  _updateTokens() {
+    const { accessTokenKey, refreshTokenKey, session } =
+      this.getProperties('accessTokenKey', 'refreshTokenKey', 'session');
+
+    let authentication = session.get('session.content').authenticated;
+    localStorage.setItem(accessTokenKey, authentication.access_token);
+    localStorage.setItem(refreshTokenKey, authentication.refresh_token);
+
+    let secure = document.location.protocol == 'https:' ? 'secure' : '';
+    document.cookie = `access_token=${authentication.access_token};path=/;${secure}`;
+    document.cookie = `refresh_token=${authentication.refresh_token};path=/;${secure}`;
+  }
 });

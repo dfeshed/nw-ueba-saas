@@ -181,7 +181,6 @@ export default Component.extend({
       this.set('status', _STATUS.WAIT);
 
       let me = this;
-      let credentials = this.getProperties('username', 'password');
       let session = this.get('session');
 
       if (session) {
@@ -189,7 +188,7 @@ export default Component.extend({
         let config = getOwner(this).resolveRegistration('config:environment');
         let auth = config['ember-simple-auth'].authenticate;
 
-        session.authenticate(auth, credentials).then(
+        session.authenticate(auth, this.get('username'), this.get('password')).then(
           // Auth succeeded
           function() {
             me.set('errorMessage', null);

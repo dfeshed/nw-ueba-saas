@@ -62,8 +62,10 @@ module.exports = function(environment) {
       authorizer: 'authorizer:oauth-authorizer',
       /* Local storage key that holds the CSRF token returned by the server */
       csrfLocalstorageKey: 'rsa-x-csrf-token',
-      /* Local storage key that holds the OAuth token returned by the Security Server */
-      accessTokenKey: 'rsa-oauth2-jwt-access-token'
+      /* Local storage key that holds the OAuth access token returned by the Security Server */
+      accessTokenKey: 'rsa-oauth2-jwt-access-token',
+      /* Local storage key that holds the OAuth refresh token returned by the Security Server */
+      refreshTokenKey: 'rsa-oauth2-jwt-refresh-token'
     },
     contentSecurityPolicy: {
 

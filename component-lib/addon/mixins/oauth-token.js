@@ -16,5 +16,10 @@ export default Mixin.create({
   accessTokenKey: computed(function() {
     let config = getOwner(this).resolveRegistration('config:environment');
     return config['ember-simple-auth'].accessTokenKey;
+  }),
+
+  refreshTokenKey: computed(function() {
+    let config = getOwner(this).resolveRegistration('config:environment');
+    return config['ember-simple-auth'].refreshTokenKey;
   })
 });
