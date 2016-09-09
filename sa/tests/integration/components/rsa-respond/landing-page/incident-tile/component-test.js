@@ -664,7 +664,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
 
   this.$(selectors.pages.respond.card.incTile.editButton).trigger('click');
 
-  let priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOption));
+  let priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOpt));
 
   assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
   assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');

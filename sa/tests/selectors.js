@@ -71,7 +71,7 @@ export default Ember$.extend({}, BaseSelectors, {
           'createdDateTimeElm': 'span[class=rsa-incident-tile-created-date] span[class=datetime]',
           'createdDateTimeAgoElm': 'span[class=rsa-incident-tile-created-date] span[class=time-ago]',
           'assigneeSelectOption': '.rsa-incident-tile-assignee-selector select option',
-          'prioritySelectOption': '.rsa-incident-tile-priority-selector select option',
+          'prioritySelectOpt': '.rsa-incident-tile-priority-selector select option',
           'statusSelectOption': '.rsa-incident-tile-status-selector select option'
         }
       },
@@ -192,7 +192,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'statusDropDown': '.rsa-incident-detail-header__status .rsa-icon',
       'statusSelectOption': '.rsa-incident-detail-header__status select option',
       'priorityDropDown': '.rsa-incident-detail-header__priority .rsa-icon',
-      'prioritySelectOption': '.rsa-incident-detail-header__priority select option',
+      'prtySelOpt': '.rsa-incident-detail-header__priority select option',
       'alertsGridIcon': '.rsa-response-storyline__main_icon .rsa-icon-arrow-right-12',
       'riskScoreElm': '.rsa-riskscore .score',
       'dateTime': '.rsa-respond-detail-grid .rsa-createddate .datetime',
