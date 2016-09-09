@@ -94,7 +94,6 @@ function executeEventsRequest(request, inputs, events) {
         const goal = events.get('goal');
         data.pushObjects(arr);
         if (goal && data.length >= goal) {
-          events.set('status', 'idle');
           events.get('stopStreaming')();
         }
       }
