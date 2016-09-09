@@ -24,6 +24,14 @@ export default Component.extend({
   status: undefined,
 
   /**
+   * Optional precision limit for `count`.  If `count` matches this limit, then this component will display a
+   * "+" beside the count to indicate to the user that `count` is an estimate and its exact value may be higher.
+   * @type {number}
+   * @public
+   */
+  threshold: undefined,
+
+  /**
    * Configurable action to be invoked when user clicks Go button.  Responsible for fetching this count value.
    * If this action is not specified, then the Go button will not be shown.
    * @type {function}

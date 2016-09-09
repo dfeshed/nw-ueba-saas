@@ -1,5 +1,5 @@
 <span class="rsa-investigate-event-counter__count">
-  {{count}}
+  {{count}}{{#if (is-equal threshold count)}}<span class="rsa-investigate-event-counter__plus">+</span>{{/if}}
 </span>
 {{#if _isStatusBusy}}
   {{#if stopAction}}

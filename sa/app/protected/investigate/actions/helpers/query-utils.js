@@ -73,6 +73,21 @@ function makeServerInputsForQuery(query) {
   };
 }
 
+/**
+ * Given an object representing a query, and a count threshold, computes the input parameters required to submit that
+ * query's event count request to the server.
+ * @param {object} query The query object. @see investigate/state/query
+ * @param {number} [threshold] Optional precision limit. Counts will not go higher than this number.
+ * @public
+ */
+function makeServerInputsForEventCount(query, threshold) {
+  let out = makeServerInputsForQuery(query);
+  if (threshold) {
+    out.filter.push({ field: 'threshold', value: threshold });
+  }
+  return out;
+}
+
 function executeEventsRequest(request, inputs, events) {
   events.setProperties({
     status: 'streaming',
@@ -181,6 +196,7 @@ function makeServerInputsForEndpointInfo(endpointId) {
 export {
   buildEventStreamInputs,
   makeServerInputsForQuery,
+  makeServerInputsForEventCount,
   executeEventsRequest,
   buildMetaValueStreamInputs,
   executeMetaValuesRequest,

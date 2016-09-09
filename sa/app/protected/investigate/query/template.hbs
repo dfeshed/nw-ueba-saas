@@ -21,6 +21,7 @@
             {{rsa-investigate/event-counter
               class="rsa-investigate-query__sums-total"
               count=model.queryNode.value.results.eventCount.data
+              threshold=model.queryNode.value.results.eventCount.threshold
               status=model.queryNode.value.results.eventCount.status
               retryAction=(route-action "eventCountGet" model.queryNode)}}
           {{/if}}

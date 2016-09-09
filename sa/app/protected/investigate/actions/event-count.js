@@ -5,9 +5,12 @@
  * @public
  */
 import Ember from 'ember';
-import { makeServerInputsForQuery } from './helpers/query-utils';
+import { makeServerInputsForEventCount } from './helpers/query-utils';
 
 const { Mixin } = Ember;
+
+// Netwitness Core backend will stop counting events once count reaches this limit.
+const COUNT_THRESHOLD = 100000;
 
 export default Mixin.create({
   actions: {
@@ -31,13 +34,14 @@ export default Mixin.create({
       // Cache references to the request in the state object.
       eventCount.setProperties({
         status: 'wait',
+        threshold: COUNT_THRESHOLD,
         data: undefined
       });
 
       this.request.promiseRequest({
         method: 'stream',
         modelName: 'core-event-count',
-        query: makeServerInputsForQuery(queryNode.get('value.definition'))
+        query: makeServerInputsForEventCount(queryNode.get('value.definition'), COUNT_THRESHOLD)
       }).then(({ data }) => {
         eventCount.setProperties({
           status: 'resolved',
