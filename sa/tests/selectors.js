@@ -199,7 +199,16 @@ export default Ember$.extend({}, BaseSelectors, {
       'eventsElm': '.rsa-alerts-events',
       'domainElm': '.rsa-domain',
       'alrtsHostElm': '.rsa-alerts-host',
-      'alrtSourceElm': '.rsa-alert-source .rsa-content-label'
+      'alrtSourceElm': '.rsa-alert-source .rsa-content-label',
+      'journalTxtArea': '.rsa-journal-entry .ember-text-area',
+      'journalEditDropDownBtn': '.rsa-journal-entry__edit-milestone .rsa-icon-arrow-down-12',
+      'journalMilestoneOptions': '.rsa-journal-entry__edit-milestone select option',
+      'journalSaveBtn': '.rsa-journal-entry__actions__save .rsa-form-button',
+      'journalEntryTag': '.rsa-journal-entry__milestones .rsa-journal-entry__milestone',
+      'journalEditButton': '.rsa-icon-pencil-1',
+      'journalDelBtn': '.rsa-icon-bin-1',
+      'journalDeleteConfirmBtn': '.rsa-journal-entry__delete-dialog__actions__confirm',
+      'journalNte': '.rsa-journal-entry__note'
     }
   }
 });

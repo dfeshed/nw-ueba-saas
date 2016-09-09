@@ -44,6 +44,21 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/alerts',
         requestDestination: '/ws/response/alerts'
       }
+    },
+    'journal-entry': {
+      socketUrl,
+      createRecord: {
+        subscriptionDestination: '/user/queue/journal/create',
+        requestDestination: '/ws/response/journal/create'
+      },
+      updateRecord: {
+        subscriptionDestination: '/user/queue/journal/update',
+        requestDestination: '/ws/response/journal/update'
+      },
+      deleteRecord: {
+        subscriptionDestination: '/user/queue/journal/delete',
+        requestDestination: '/ws/response/journal/delete'
+      }
     }
   };
 }

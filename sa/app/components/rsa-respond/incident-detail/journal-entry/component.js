@@ -18,7 +18,9 @@ export default Component.extend({
   eventBus: service(),
   session: service(),
 
+  // Indicate if the component is used to create new Journal Entries or to view/edit existing ones
   addMode: false,
+  // When true the JournalEntry is editable
   editModeActive: false,
 
   // Used to store new journal values
@@ -56,7 +58,7 @@ export default Component.extend({
     let username;
 
     if (session) {
-      username = session.session.content.authenticated.username;
+      username = session.get('session.content.authenticated.user.id');
     } else {
       username = '-';
       Logger.error('unable to read current username');
@@ -76,9 +78,9 @@ export default Component.extend({
    */
   @computed('journal.milestone')
   selectedMilestone: {
-    get: (milestone) => [ milestone ],
+    get: (milestone) => (milestone ? [ milestone ] : []),
     set(value) {
-      this.set('milestone', value.get('firstObject'));
+      this.set('journal.milestone', value.get('firstObject'));
       return value;
     }
   },
@@ -140,9 +142,15 @@ export default Component.extend({
       event.stopPropagation();
     },
 
+    /**
+     * @description Saves the Journal Entry. If the component is in `add-mode` it invokes `addJournalAction`,
+     * otherwise `editJournalAction`
+     * @public
+     */
     saveJournal(event) {
-      // save operation...
+
       if (this.get('addMode') === true) {
+        // Creates a new JournalEntry
         let newMilestone = this.get('newMilestone');
         let newAuthor = this.get('currentUser');
         let newNote = this.get('newNote');
@@ -150,8 +158,7 @@ export default Component.extend({
         let newJournal = {
           notes: newNote,
           milestone: newMilestone,
-          author: newAuthor,
-          created: new Date()
+          author: newAuthor
         };
 
         this.sendAction('addJournalAction', newJournal);
@@ -163,6 +170,7 @@ export default Component.extend({
           newMilestoneSelect: []
         });
       } else {
+        // Edit existing JournalEntry
         this.sendAction('editJournalAction', this.get('journal'));
       }
 
@@ -170,16 +178,23 @@ export default Component.extend({
       event.stopPropagation();
     },
 
+    /**
+     * @description Cancel the delete operation by dismising the delete-modal-dialog
+     * @public
+     */
     cancelDelete() {
       this.get('eventBus').trigger('rsa-application-modal-close-deleteJournalEntry');
     },
 
+    /**
+     * @description Invokes delete action and dismiss delete-modal-dialog
+     * @public
+     */
     confirmDelete() {
       this.sendAction('deleteJournalAction', this.get('journal.id'));
 
       this.get('eventBus').trigger('rsa-application-modal-close-deleteJournalEntry');
       this.set('editModeActive', false);
-
     }
   }
 });

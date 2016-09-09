@@ -2,14 +2,24 @@
   {{! rsa-form-textarea class="rsa-journal-entry__edit-note" value=(if asNew newNote journal.notes) placeholder=(t 'journal.new.notePlaceholder' )}}
   {{#if addMode}}
     {{rsa-form-textarea class="rsa-journal-entry__edit-note" value=newNote placeholder=(t 'journal.new.notePlaceholder' )}}
-    {{#rsa-form-select isInline=true class="rsa-journal-entry__edit-milestone" label=(t 'journal.new.milestone' ) values=newMilestoneSelect}}
+    {{#rsa-form-select
+      multiple=false
+      isInline=true
+      class="rsa-journal-entry__edit-milestone"
+      label=(t 'journal.new.milestone' )
+      values=newMilestoneSelect}}
       {{#each milestoneOptions as |milestone i|}}
         <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
       {{/each}}
     {{/rsa-form-select}}
   {{else}}
     {{rsa-form-textarea class="rsa-journal-entry__edit-note" value=journal.notes placeholder=(t 'journal.new.notePlaceholder' )}}
-    {{#rsa-form-select isInline=true class="rsa-journal-entry__edit-milestone" label=(t 'journal.new.milestone' ) values=selectedMilestone}}
+    {{#rsa-form-select
+      multiple=false
+      isInline=true
+      class="rsa-journal-entry__edit-milestone"
+      label=(t 'journal.new.milestone' )
+      values=selectedMilestone}}
       {{#each milestoneOptions as |milestone i|}}
         <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
       {{/each}}

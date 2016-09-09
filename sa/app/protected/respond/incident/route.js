@@ -7,7 +7,6 @@ const {
   },
   Logger,
   set,
-  isNone,
   inject: {
     service
   },
@@ -103,38 +102,51 @@ export default Route.extend({
     },
 
     /**
-     * @name addNewJournal
+     * @name createJournal
      * @description creates a new Journal Entry and saves it
      * @public
      */
-    addNewJournal(jsonNote) {
-      Logger.debug('addNewJournal. Adding new journal entry to Incident notes collection...');
+    createJournal(jsonNote) {
+      let journal = this.store.createRecord('journal-entry', {
+        incidentId: this.get('incidentId'),
+        journalMap: {
+          notes: jsonNote.notes,
+          author: jsonNote.author,
+          milestone: jsonNote.milestone
+        }
+      });
 
-      let incident = this.store.peekRecord('incident', this.get('incidentId'));
-      if (isNone(incident.get('notes'))) {
-        incident.set('notes', []);
-      }
-      incident.get('notes').pushObject(jsonNote);
-      incident.save();
+      journal.save().then((response) => {
+        Logger.debug(`Journal created. Response: ${ response }`);
+      }).catch((reason) => {
+        Logger.error(`Journal was not created. Reason ${ reason }`);
+      });
     },
 
     /**
-     * @name editJournal
+     * @name updateJournal
      * @description updates an existing journal
      * @public
      */
-    editJournal({ id, author, milestone, notes }) {
+    updateJournal(jsonNote) {
 
-      Logger.debug(`editJournal. Editing existing journal entry ${ id }, notes: ${ notes } ...`);
-
-      let incident = this.store.peekRecord('incident', this.get('incidentId'));
-      let currentNote = incident.get('notes').findBy('id', id);
-
-      set(currentNote, 'notes', notes);
-      set(currentNote, 'milestone', milestone);
-      set(currentNote, 'author', author);
-
-      incident.save();
+      this.request.promiseRequest({
+        method: 'updateRecord',
+        modelName: 'journal-entry',
+        query: {
+          incidentId: this.get('incidentId'),
+          journalId: jsonNote.id,
+          journalMap: {
+            notes: jsonNote.notes,
+            author: jsonNote.author,
+            milestone: jsonNote.milestone
+          }
+        }
+      }).then((response) => {
+        Logger.debug(`Journal updated, response: ${ response }`);
+      }).catch((reason) => {
+        Logger.error(`Journal was not updated. Reason ${ reason }`);
+      });
     },
 
     /**
@@ -143,15 +155,19 @@ export default Route.extend({
      * @public
      */
     deleteJournal(journalId) {
-      Logger.debug(`deleteJournal. Deleting record ${ journalId }`);
 
-      let incident = this.store.peekRecord('incident', this.get('incidentId'));
-      let currentNote = incident.get('notes').findBy('id', journalId);
-
-      if (currentNote) {
-        incident.get('notes').removeObject(currentNote);
-        incident.save();
-      }
+      this.request.promiseRequest({
+        method: 'deleteRecord',
+        modelName: 'journal-entry',
+        query: {
+          incidentId: this.get('incidentId'),
+          journalId
+        }
+      }).then((response) => {
+        Logger.debug(`Journal deleted, response: ${ response }`);
+      }).catch((reason) => {
+        Logger.error(`Journal was not deleted. Reason ${ reason }`);
+      });
     }
   }
 

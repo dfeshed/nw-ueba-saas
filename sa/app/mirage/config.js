@@ -24,6 +24,7 @@ import coreMetaKeys from 'sa/mirage/sockets/routes/core-meta-keys';
 import coreMetaValues from 'sa/mirage/sockets/routes/core-meta-values';
 import coreMetaAliases from 'sa/mirage/sockets/routes/core-meta-aliases';
 import categoryTags from 'sa/mirage/sockets/routes/category-tags';
+import journalEntry from 'sa/mirage/sockets/routes/journal-entry';
 
 /*
   Helper for collecting an array of all the unique `socketUrl`s found in the app's `config/environment.js` file.
@@ -77,6 +78,7 @@ export default function() {
     coreMetaValues(server);
     coreMetaAliases(server);
     categoryTags(server);
+    journalEntry(server);
     server.mirageServer = this;
     return server;
   });
