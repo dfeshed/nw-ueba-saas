@@ -3,8 +3,9 @@
 {{/each}}
 
 {{#if contentTreeIsHidden}}
-  <div class="rsa-form-tag-manager__tree-toggle">
-    {{rsa-icon size='medium' name='add-circle-1' click=(action 'toggleTreeVisibility')}}
+  <div class="rsa-form-tag-manager__tree-toggle" {{action 'toggleTreeVisibility'}}>
+    {{rsa-icon class="rsa-form-tag-manager__tree-toggle__icon" size='medium' name='add-circle-1'}}
+    <i class="rsa-form-tag-manager__tree-toggle__label">{{addTagsLabel}}</i>
   </div>
 {{else}}
   {{rsa-content-tree rawCategoryData=availableTags addAction=(action 'addTag') toggleTreeVisibilityAction=(action 'toggleTreeVisibility')}}

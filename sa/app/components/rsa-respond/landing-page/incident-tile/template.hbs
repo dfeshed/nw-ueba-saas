@@ -12,8 +12,8 @@
         <li class="rsa-incident-tile-id-header">
           <label class="rsa-incident-tile-id">{{unbound incident.id}}</label>
         </li>
-        <li class="rsa-incident-tile-name">
-          {{incident.name}}
+        <li class="rsa-incident-tile-name" title={{if isNameCropped incident.name}}>
+          {{incidentName}}
         </li>
         <li class="rsa-incident-tile-status">
           {{#rsa-form-select multiple=false isInline=true class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatus isReadOnly=(if editModeActive false true)}}
@@ -34,8 +34,8 @@
         <li class="rsa-incident-tile-id-header">
           <label class="rsa-incident-tile-id">{{unbound incident.id}}</label>
         </li>
-        <li class="rsa-incident-tile-name">
-          {{incident.name}}
+        <li class="rsa-incident-tile-name" title={{if isNameCropped incident.name}}>
+          {{incidentName}}
         </li>
       </ul>
     </vbox>

@@ -1,8 +1,12 @@
 {{#rsa-content-section-header}}
-  <h1>{{t 'journal.title'}}</h1>
+  <h1 class="rsa-journal-wrapper__title">{{t 'journal.title'}}</h1>
+  {{#rsa-form-button class="rsa-journal-wrapper__filter rsa-journal-wrapper__filter-button" click=(action 'toogleFilterVisibily') isIconOnly=true}}
+    {{rsa-icon name='filter-22' size='small' style=(if filterVisible 'filled' 'lined')}}
+  {{/rsa-form-button}}
 {{/rsa-content-section-header}}
 
-<div class='rsa-form-radio-group rsa-journal-wrapper__journal-sort'>
+
+<div class="rsa-form-radio-group rsa-journal-wrapper__journal-sort {{unless filterVisible 'hidden'}}">
   <label class='rsa-journal-wrapper__journal-sort__title'>{{t 'journal.sort.title'}}:</label>
   {{rsa-form-radio class='rsa-journal-wrapper__journal-sort__my-notes' model=viewNotes value='my' label=(t 'journal.sort.myNotes')}}
   {{rsa-form-radio class='rsa-journal-wrapper__journal-sort__all-notes' model=viewNotes value='all' label=(t 'journal.sort.allNotes')}}

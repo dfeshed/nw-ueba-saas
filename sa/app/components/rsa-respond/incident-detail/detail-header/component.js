@@ -132,7 +132,8 @@ export default Component.extend({
         if (assigneeId === '-1') {
           this.set('incident.assignee', null);
         } else {
-          this.set('incident.assignee', { id: assigneeId });
+          let updatedAssigneeUser = this.get('users').findBy('id', assigneeId);
+          this.set('incident.assignee', updatedAssigneeUser.getProperties('id', 'firstName', 'lastName', 'email'));
         }
         this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'));
       });

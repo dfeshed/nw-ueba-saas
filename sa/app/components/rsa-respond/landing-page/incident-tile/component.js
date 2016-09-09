@@ -16,7 +16,8 @@ const {
   },
   Logger,
   isNone,
-  merge
+  merge,
+  run
 } = Ember;
 
 export default Component.extend({
@@ -68,6 +69,12 @@ export default Component.extend({
    * @public
    */
   editModeActive: false,
+
+  /**
+   * @description Indicates if the name of the incident was cropped or not.
+   * @public
+   */
+  isNameCropped: false,
   /**
    * @name badgeStyle
    * @description define the badge style based on the incident risk score
@@ -123,6 +130,25 @@ export default Component.extend({
       'selectedAssignee': [this.get('incident.assignee.id') || '-1'],
       'pendingAssignee': null
     });
+  },
+
+  /**
+   * @description When the text is too large, it crops the name of the incident and adds '...' at the end.
+   * @param name
+   * @param isLargeSize
+   * @public
+   */
+  @computed('incident.name', 'isLargeSize')
+  incidentName(name, isLargeSize) {
+    let maxLength = isLargeSize ? 63 : 90;
+
+    if (name && name.length > maxLength) {
+      run.once(() => {
+        this.set('isNameCropped', true);
+      });
+      return `${ name.substr(0, maxLength - 3) }...`;
+    }
+    return name;
   },
 
   /**
@@ -259,8 +285,10 @@ export default Component.extend({
             this.set('incident.assignee', null);
             merge(attributeChanged, { assignee: null });
           } else {
-            this.set('incident.assignee', { id: pendingAssignee });
-            merge(attributeChanged, { assignee: { id: pendingAssignee } });
+            let updatedAssigneeUser = this.get('users').findBy('id', pendingAssignee);
+            let assigneeAttributes = updatedAssigneeUser.getProperties('id', 'firstName', 'lastName', 'email');
+            this.set('incident.assignee', assigneeAttributes);
+            merge(attributeChanged, { assignee: assigneeAttributes });
           }
         }
 

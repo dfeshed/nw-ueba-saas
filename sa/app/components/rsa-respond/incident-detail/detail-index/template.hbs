@@ -20,7 +20,7 @@
       {{/rsa-content-accordion}}
 
       {{#rsa-content-accordion isCollapsed=true label=(t 'incident.details.overview.categoryTags') class="rsa-category-tags-panel spacer"}}
-        {{rsa-form-tag-manager selectedTags=model.categories availableTags=normalizedTreeData}}
+        {{rsa-form-tag-manager selectedTags=model.categories availableTags=normalizedTreeData addTagsLabel=(t 'incident.details.overview.addCategoryTags')}}
       {{/rsa-content-accordion}}
     </div>
   {{/rsa-application-layout-panel}}

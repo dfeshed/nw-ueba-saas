@@ -5,8 +5,21 @@
   }
 
   &__tree-toggle {
+    @include rsa-font(body, small);
     cursor: pointer;
     margin-top: rsa-whitespace(less);
     margin-bottom: rsa-whitespace(less);
+    border-bottom: 1px solid rsa-color(gray, light);
+    padding-bottom: rsa-whitespace(less);
+
+    &__icon {
+      color: rsa-color(gray, light);
+      padding-right: rsa-whitespace(less);
+    }
+
+    &__label {
+      color: rsa-color(gray);
+      font-style: italic;
+    }
   }
 }

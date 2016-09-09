@@ -387,9 +387,9 @@ test('The incident status, priority and assignee are saved', function(assert) {
           'groupby_source_ip': '66.249.67.67',
           'groupby_filename': 'cotlow_awards.cfm' } }]
   });
-  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   incident.save = function() { };
 
@@ -443,9 +443,9 @@ test('Manually changing the state of an incident to Closed disables editable fie
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   incident.save = function() { };
 
@@ -480,9 +480,9 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -515,9 +515,9 @@ test('Alert and event count missing test', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
+    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   incident.save = function() { };
 

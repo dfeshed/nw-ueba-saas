@@ -16,13 +16,14 @@ export default Component.extend({
 
   viewNotes: 'all',
   model: null,
+  filterVisible: false,
 
   @computed('session')
   currentUser(session) {
     let username;
 
     if (session) {
-      username = session.session.content.authenticated.username;
+      username = session.get('session.content.authenticated.user.id');
     } else {
       username = '-';
       Logger.error('unable to read current username');
@@ -37,5 +38,11 @@ export default Component.extend({
    */
   displayJournal(journal, viewNotes) {
     return (viewNotes === 'all' || journal.author === this.get('currentUser'));
+  },
+
+  actions: {
+    toogleFilterVisibily() {
+      this.toggleProperty('filterVisible');
+    }
   }
 });

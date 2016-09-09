@@ -13,7 +13,7 @@ const {
 export default Component.extend({
   tagName: 'div',
   classNames: 'rsa-journal-entry',
-  classNameBindings: ['editModeActive'],
+  classNameBindings: ['editModeActive', 'addMode'],
 
   eventBus: service(),
   session: service(),

@@ -1,24 +1,52 @@
 .rsa-journal-wrapper {
   min-width: 20rem;
 
+  .rsa-content-section-header {
+    padding-right: rsa-whitespace(least);
+    padding-left: rsa-whitespace(less);
+    margin-bottom: 2px;
+  }
+  &__title {
+    display: inline;
+  }
+  &__filter.rsa-journal-wrapper__filter-button {
+    float: right;
+
+    .rsa-form-button {
+      padding: 0 rsa-whitespace(less);
+      height: 100%;
+    }
+  }
+
   &__journal-sort {
+    background-color: rsa-color(black, null, $rsa-translucent);
     padding: rsa-whitespace(less);
-    border-bottom: 1px solid rsa-color(gray);
+    margin-bottom: 2px;
     color: rsa-color(gray, lighter);
-    display: inline-block;
     box-sizing: border-box;
     width: 100%;
+    opacity: 1;
+    @include rsa-vendor-prefix(transition, height 0.4s, opacity 0.5s, margin 0.5s, padding 0.5s);
 
     &__title {
       @include rsa-font(header, small);
+      margin-right: rsa-whitespace(less);
     }
+
     .rsa-form-radio {
-      display: inline;
-      margin-left: rsa-whitespace();
+      margin-right: rsa-whitespace();
 
       .rsa-form-label {
         @include rsa-font(body, small);
       }
+    }
+
+    &.hidden {
+      height: 0;
+      padding: 0 rsa-whitespace(less);
+      margin: 0;
+      opacity: 0;
+      @include rsa-vendor-prefix(transition, height 0.4s, opacity 0.2s, margin 0.5s, padding 0.5s);
     }
   }
 }

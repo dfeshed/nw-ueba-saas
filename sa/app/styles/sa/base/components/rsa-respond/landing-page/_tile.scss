@@ -2,6 +2,12 @@
   position:relative;
   color: rsa-color(white);
 
+  .rsa-form-select {
+    .rsa-form-label {
+      @include rsa-font(header, small);
+    }
+  }
+
   .rsa-incident-tile-header {
     background-color: rsa-color(black, null, $rsa-nearly-opaque);
 
@@ -14,7 +20,6 @@
       .rsa-incident-tile-id {
         @include rsa-font(header, large);
         @include rsa-font(bold);
-
       }
 
       .rsa-incident-tile-name {
@@ -22,14 +27,7 @@
         @include rsa-font(light);
         padding: rsa-whitespace(least) rsa-whitespace(least) 0 0;
         line-height: 120%;
-        display: block;
-        display: -webkit-box;
-        max-width: 100%;
         height: 33px;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-        text-overflow: ellipsis;
       }
     }
 

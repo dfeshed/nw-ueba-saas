@@ -32,11 +32,10 @@
     position: relative;
     appearance: none;
     border: none;
-    color: rsa-color(gray, lighter);
 
-    h3{
+    h3 {
       text-transform: inherit;
-      padding-bottom: rsa-whitespace(least);
+      padding-bottom: rsa-whitespace(less);
     }
 
     .content{
@@ -44,11 +43,14 @@
 
       .rsa-content-tree__child {
         &-label{
+          @include rsa-font(body);
           cursor: pointer;
-          padding: rsa-whitespace(least);
-          margin-top: 0;
-          margin-bottom: 0;
-          margin-left: rsa-whitespace(more);
+          color: $formSelectOptionTypeColor;
+          padding: rsa-whitespace(less) rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace(more);
+          margin: 0;
+          border-bottom: 1px solid $formSelectOptionBorderColor;
+          box-shadow: none;
+          border-radius: 0;
 
           &:hover{
             background: $formSelectOptionHoverBackgroundColor;

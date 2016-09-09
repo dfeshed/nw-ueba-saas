@@ -110,7 +110,7 @@ export default $.extend({}, BaseTranslations, {
       dialog: 'Are you sure you want to delete the journal entry?'
     },
     sort: {
-      title: 'Sort',
+      title: 'Show',
       myNotes: 'My Notes',
       allNotes: 'All Notes'
     }
@@ -171,7 +171,8 @@ export default $.extend({}, BaseTranslations, {
       overview: {
         title: 'Overview',
         about: 'About Incident',
-        categoryTags: 'Category Tags'
+        categoryTags: 'Category Tags',
+        addCategoryTags: 'Click to add category tags'
       }
     },
     status: {

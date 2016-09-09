@@ -1,10 +1,10 @@
 .rsa-journal-entry {
   position: relative;
-  overflow: hidden;
   padding: rsa-whitespace(less);
-  border-bottom: 1px solid rsa-color(gray);
+  margin-bottom: 2px;
   border-top-style: none;
   color: rsa-color(gray, lighter);
+  background-color: rsa-color(black, base, $rsa-translucent);
 
   &__created-by {
     @include rsa-font(header, small);
@@ -46,7 +46,7 @@
   }
 
   &:hover {
-    background-color: rsa-color(black, base, $rsa-translucent);
+    background-color: rsa-color(black, base, $rsa-nearly-opaque);
 
     .rsa-journal-entry__edit-journal, .rsa-journal-entry__delete-journal {
       display: block;
@@ -73,7 +73,7 @@
     margin-bottom: rsa-whitespace(less);
     min-height: 1rem;
     height: 40px;
-    resize: none;
+    resize: vertical;
   }
 
   &__edit-attached-files {
@@ -89,33 +89,44 @@
       @include rsa-font(header, small);
       margin: 0 0 rsa-whitespace(less) 0;
     }
+    select {
+      z-index: 1;
+    }
   }
 
   &__actions {
     display: none;
-    float: right;
+    height: 40px;
     margin: rsa-whitespace(less) 0;
+
+    .rsa-form-button-wrapper {
+      float: right;
+    }
+
+    &__save {
+      margin-right: rsa-whitespace(less);
+    }
   }
 
   &.edit-mode-active {
     background-color: rsa-color(black, base, $rsa-translucent);
 
     .rsa-journal-entry__edit-note, .rsa-form-textarea textarea {
-      min-height: 8rem;
-    }
+          min-height: 8rem;
+        }
 
     .rsa-journal-entry__edit-attached-files {
-      display: inline-block;
-    }
+        display: inline-block;
+      }
 
     .rsa-journal-entry__edit-milestone {
-      display: block;
-    }
+        display: block;
+      }
 
     .rsa-journal-entry__actions {
-      display: inline-block;
+      display: block;
+      }
     }
-  }
 
   &__delete-dialog {
     padding: rsa-whitespace();
