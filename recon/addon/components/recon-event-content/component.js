@@ -6,7 +6,10 @@ export default Component.extend({
   layout,
   classNameBindings: [':recon-event-content'],
   tagName: 'fill',
+
+  contentError: null,
   meta: null,
+  packetFields: null,
   packets: null,
-  packetFields: null
+  showMetaDetails: null
 });

@@ -1,6 +1,10 @@
-<hbox class="event-content-box">
-  {{recon-event-detail-packets packets=packets packetFields=packetFields}}
-</hbox>
+{{#if contentError}}
+  {{contentError}}
+{{else}}
+  <hbox class="event-content-box">
+    {{recon-event-detail-packets packets=packets packetFields=packetFields}}
+  </hbox>
+{{/if}}
 
 {{#if showMetaDetails}}
   <hbox xs="4" class="event-content-box">

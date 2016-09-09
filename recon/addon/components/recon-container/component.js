@@ -16,6 +16,11 @@ export default Component.extend({
   layout,
   tagName: 'fill',
   classNameBindings: [':recon-container'],
+
+  headerError: null,
+  headerItems: null,
+  packetError: null,
+  packets: null,
   showMetaDetails: false,
 
   // Component inputs
@@ -70,6 +75,8 @@ export default Component.extend({
     }).then(({ data }) => {
       this.setHeaderItems(data.summaryAttributes);
       this.set('packetFields', data.packetFields);
+    }).catch((response) => {
+      this.set('headerError', response);
     });
 
     if (!this.get('meta')) {
@@ -102,15 +109,26 @@ export default Component.extend({
       });
     }
 
-    // necessary for packets, part of paging/batching
-    query.page = {
-      index: 0,
-      size: 100
-    };
+    this.retrievePackets(endpointId, eventId);
+  },
 
-    query.stream = {
-      batch: 10,
-      limit: 100000
+  retrievePackets(endpointId, eventId) {
+    const query = {
+      filter: [{
+        field: 'endpointId',
+        value: endpointId
+      }, {
+        field: 'sessionId',
+        value: eventId
+      }],
+      page: {
+        index: 0,
+        size: 100
+      },
+      stream: {
+        batch: 10,
+        limit: 100000
+      }
     };
 
     this.get('request').streamRequest({
@@ -118,12 +136,21 @@ export default Component.extend({
       modelName: 'reconstruction-packet-data',
       query,
       onResponse: ({ data }, stopStreaming) => {
-        this.set('packets', data);
+        this.setProperties({
+          packets: data,
+          contentError: null
+        });
 
         // TODO: This stops after one batch from one page
         // to implement paging, need to keep processing
-        // on response will get called many times
+        // onResponse will get called many times
         stopStreaming();
+      },
+      onError: (response) => {
+        this.setProperties({
+          packets: null,
+          contentError: response.code
+        });
       }
     });
   },
