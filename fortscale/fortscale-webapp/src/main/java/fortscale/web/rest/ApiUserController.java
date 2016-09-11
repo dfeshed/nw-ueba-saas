@@ -62,6 +62,7 @@ public class ApiUserController extends BaseController{
 	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
 	private static final String USER_TAGS_COLUMN_NAME = "Tags";
 	private static final String USER_NAME_COLUMN_NAME = "Username";
+	private static final String ALL_WATCHED = "all_watched";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -119,7 +120,23 @@ public class ApiUserController extends BaseController{
 			addAlertsAndDevices(usersList.getData());
 		}
 
+		if (BooleanUtils.isTrue(userRestFilter.getAddAllWatched())) {
+			addAllWatched(usersList, userRestFilter);
+		}
+
 		return usersList;
+	}
+
+	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, UserRestFilter userRestFilter) {
+		Map<String, Object> info = usersList.getInfo();
+		if (info == null) {
+			info = new HashMap<>();
+		}
+		Boolean oldIsWatched = userRestFilter.getIsWatched();
+		userRestFilter.setIsWatched(true);
+		info.put(ALL_WATCHED, usersList.getTotal() == userWithAlertService.countUsersByFilter(userRestFilter));
+		userRestFilter.setIsWatched(oldIsWatched);
+		usersList.setInfo(info);
 	}
 
 	@RequestMapping(value="/count", method=RequestMethod.GET)
