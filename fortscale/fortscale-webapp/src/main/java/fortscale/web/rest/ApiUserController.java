@@ -62,7 +62,7 @@ public class ApiUserController extends BaseController{
 	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
 	private static final String USER_TAGS_COLUMN_NAME = "Tags";
 	private static final String USER_NAME_COLUMN_NAME = "Username";
-	private static final String ALL_WATCHED = "all_watched";
+	private static final String ALL_WATCHED = "allWatched";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
