@@ -1,8 +1,9 @@
 import argparse
-import sys
 import os
+import sys
 
 from data_sources import data_source_to_enriched_tables
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -193,9 +194,9 @@ throttling.add_argument('--force_max_gap_in_seconds',
                              "(in this case a warning will be displayed). This should be a valid json with mapping "
                              "from data source to int",
                         type=_throttling_force_type)
-throttling.add_argument('--convert_to_minutes_timeout',
+throttling.add_argument('--convert_to_minutes_timeout_in_minutes',
                         action='store',
-                        dest='convert_to_minutes_timeout',
+                        dest='convert_to_minutes_timeout_in_minutes',
                         help="When calculating duration in minutes out of max batch size and max gap daily queries "
                              "are performed against impala. The more days we query - the better the duration estimate "
                              "is. If you want this process to take only a limited amount of time, impala queries will "

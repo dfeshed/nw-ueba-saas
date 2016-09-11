@@ -3,6 +3,7 @@ import logging
 import os
 import pymongo
 import sys
+
 from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -64,7 +65,7 @@ Inner workings:
     been processed.
 
 Usage examples:
-    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 16
+    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 16
     python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
     ''')
     more_args_parent = argparse.ArgumentParser(add_help=False)
@@ -95,18 +96,34 @@ Usage examples:
                                   help='If --block_on_data_sources is not specified, you should specify how many days '
                                        'back should be analyzed in order to find what tables to block on',
                                   type=int)
+
+    models_scheduler_parent = argparse.ArgumentParser(add_help=False)
+    models_scheduler_parent.add_argument('--build_models_interval_in_hours',
+                                         action='store',
+                                         dest='build_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building models. '
+                                              'If not specified, no models will be built '
+                                              '(they can, however be built by an external entity).',
+                                         type=int)
+    models_scheduler_parent.add_argument('--build_entity_models_interval_in_hours',
+                                         action='store',
+                                         dest='build_entity_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building entity models. '
+                                              'If not specified, no entity models will be built '
+                                              '(they can, however be built by an external entity).',
+                                         type=int)
+
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
-                      parsers.start,
-                      parsers.validation_timeout]
+                      parsers.start]
     online_parser = subparsers.add_parser('online',
                                           help='Run the step in online mode',
-                                          parents=common_parents + [parsers.online_manager])
+                                          parents=common_parents + [parsers.online_manager, models_scheduler_parent])
     online_parser.set_defaults(is_online_mode=True)
     offline_parser = subparsers.add_parser('offline',
                                            help='Run the step in offline mode',
-                                           parents=common_parents + [parsers.validation_polling_interval])
+                                           parents=common_parents + [parsers.validation_polling_interval, parsers.validation_timeout])
     offline_parser.set_defaults(is_online_mode=False)
     return parser
 
@@ -145,19 +162,26 @@ def main():
     validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources] \
         if arguments.block_on_data_sources else None
-    Manager(host=arguments.host,
-            is_online_mode=arguments.is_online_mode,
-            start=arguments.start,
-            block_on_tables=block_on_tables,
-            calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
-            wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
-            min_free_memory_gb=arguments.min_free_memory_gb if 'min_free_memory_gb' in arguments else 0,
-            polling_interval=arguments.polling_interval * 60,
-            timeout=arguments.timeout * 60,
-            validation_batches_delay=arguments.validation_batches_delay,
-            max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
-            batch_size_in_hours=arguments.batch_size) \
-        .run()
+    if Manager(host=arguments.host,
+               is_online_mode=arguments.is_online_mode,
+               start=arguments.start,
+               block_on_tables=block_on_tables,
+               calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
+               wait_between_batches=arguments.wait_between_batches * 60 if 'wait_between_batches' in arguments else 0,
+               min_free_memory_gb=arguments.min_free_memory_gb if 'min_free_memory_gb' in arguments else 0,
+               polling_interval=arguments.polling_interval * 60,
+               timeout=arguments.timeout * 60 if 'timeout' in arguments else None,
+               validation_batches_delay=arguments.validation_batches_delay,
+               max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
+               batch_size_in_hours=arguments.batch_size,
+               build_models_interval=(arguments.build_models_interval_in_hours * 60 * 60)
+               if 'build_models_interval_in_hours' in arguments and arguments.build_models_interval_in_hours is not None else None,
+               build_entity_models_interval=(arguments.build_entity_models_interval_in_hours * 60 * 60)
+               if 'build_entity_models_interval_in_hours' in arguments and arguments.build_entity_models_interval_in_hours is not None else None) \
+            .run():
+        logger.info('finished successfully')
+    else:
+        logger.error('FAILED')
 
 
 if __name__ == '__main__':

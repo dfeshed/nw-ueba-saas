@@ -1,10 +1,10 @@
 import itertools
-import time
 import os
 import sys
 
 import impala_stats
 import mongo_stats
+import time
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
@@ -172,7 +172,7 @@ def block_until_everything_is_validated(host,
 def _validate_everything(host, start_time_epoch, end_time_epoch, timeout, polling_interval, data_sources, logger):
     logger.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
     is_valid = validate_all_buckets_synced(host=host,
-                                           start_time_epoch=start_time_epoch,
+                                           start_time_epoch=None,
                                            end_time_epoch=end_time_epoch)
     if is_valid:
         validate_no_missing_events(host=host,
