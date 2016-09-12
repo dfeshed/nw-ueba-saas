@@ -83,6 +83,8 @@ export default Component.extend({
     }).then(({ data }) => {
       this.setHeaderItems(data.summaryAttributes);
       this.set('packetFields', data.packetFields);
+      // When concurrency issue in investigate microservice is fixed, remove this next line
+      this.retrievePackets(endpointId, eventId);
     }).catch((response) => {
       this.set('headerError', response);
     });
@@ -117,7 +119,8 @@ export default Component.extend({
       });
     }
 
-    this.retrievePackets(endpointId, eventId);
+    // When concurrency issue in investigate microservice is fixed, uncomment this
+    // this.retrievePackets(endpointId, eventId);
   },
 
   retrievePackets(endpointId, eventId) {
