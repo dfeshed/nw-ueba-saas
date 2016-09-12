@@ -6,43 +6,47 @@ const { Component, run } = Ember;
 const createLine = (xAccessorFn, yAccessorFn, curve) => {
   return d3.line().x(xAccessorFn).y(yAccessorFn).curve(curve);
 };
+const createSymbol = d3.symbol().type(d3.symbolDiamond);
 
 export default Component.extend({
-  tagName: 'path',
   classNameBindings: [':rsa-line-series', 'clazzName'],
+  tagName: 'path',
+
   data: [[]],
   dataIndex: 0,
-  xScale: d3.scaleTime,
-  yScale: d3.scaleLinear,
-  xProp: 'x',
-  yProp: 'y',
-  interpolator: d3.curveLinear,
   hoverData: null,
+  interpolator: d3.curveLinear,
+  xProp: 'x',
+  xScale: d3.scaleTime,
+  yProp: 'y',
+  yScale: d3.scaleLinear,
 
   @computed('dataIndex')
   clazzName: (index) => `series-${index}`,
 
   @computed('xScale', 'xProp')
-  xAccessor: (scaleFn, prop) => (d) => d ? scaleFn(d[prop]) : 0,
+  xAccessor: (scale, prop) => (d) => d ? scale(d[prop]) : 0,
 
   @computed('yScale', 'yProp')
-  yAccessor: (scaleFn, prop) => (d) => d ? scaleFn(d[prop]) : 0,
+  yAccessor: (scale, prop) => (d) => d ? scale(d[prop]) : 0,
 
   @computed('xAccessor', 'yAccessor', 'interpolator')
   lineFn: (...args) => createLine(...args),
 
+  symbolFn: () => createSymbol(),
+
   didInsertElement() {
     this._super(...arguments);
-    const { dataIndex, lineFn, hoverData } = this.getProperties('dataIndex', 'lineFn', 'hoverData');
+    const { dataIndex, hoverData } = this.getProperties('dataIndex', 'hoverData');
     const datum = this.get('data').objectAt(dataIndex);
-    run.scheduleOnce('afterRender', this, this.onAfterRender, datum, lineFn, hoverData);
+    run.scheduleOnce('afterRender', this, this.onAfterRender, datum, hoverData);
   },
 
   didUpdateAttrs() {
     this._super(...arguments);
-    const { dataIndex, lineFn, hoverData } = this.getProperties('dataIndex', 'lineFn', 'hoverData');
+    const { dataIndex, hoverData } = this.getProperties('dataIndex', 'hoverData');
     const datum = this.get('data').objectAt(dataIndex);
-    this.draw(datum, lineFn, hoverData);
+    this.draw(datum, hoverData);
   },
 
   showNode(hoverData, d) {
@@ -50,7 +54,7 @@ export default Component.extend({
     return (hoverData && hoverData[xProp] === d[xProp]) ? 1 : 0;
   },
 
-  onAfterRender(datum, lineFn, hoverData) {
+  onAfterRender(datum, hoverData) {
     const clazzName = this.get('clazzName');
     let svgGroup = this.get('parentView.svgGroup');
     if (!svgGroup) {
@@ -59,18 +63,19 @@ export default Component.extend({
     }
     // Append a group to the parent SVG so we can store our hover points for this series together
     svgGroup.append('g').attr('class', `points ${clazzName}`);
-    this.draw(datum, lineFn, hoverData);
+    this.draw(datum, hoverData);
   },
 
-  draw(datum, lineFn, hoverData) {
+  draw(datum, hoverData) {
     const { xAccessor, yAccessor, clazzName } = this.getProperties('xAccessor', 'yAccessor', 'clazzName');
+    const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('lineFn');
     const points = d3.select(`.points.${clazzName}`).selectAll('circle')
       .data(datum);
 
     d3.select(this.element)
       .datum(datum)
       .transition().duration(750)
-      .attr('d', lineFn);
+      .attr('d', pathFn);
 
     points.attr('opacity', (d) => this.showNode(hoverData, d))
       .transition().duration(750)
@@ -85,5 +90,11 @@ export default Component.extend({
       .attr('opacity', (d) => this.showNode(hoverData, d));
 
     points.exit().remove();
+
+    if (datum.length === 1) {
+      // move single point into position
+      d3.select(this.element)
+        .attr('transform', `translate(${xAccessor(datum[0])}, 0)`);
+    }
   }
 });

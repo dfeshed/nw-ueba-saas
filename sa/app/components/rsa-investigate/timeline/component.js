@@ -32,7 +32,8 @@ export default Component.extend({
   timezone: service('timezone'),
 
   @computed('timezone.selected')
-  xScaleFn: (zone) => {
-    return (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime;
-  }
+  xScaleFn: (zone) => (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime,
+
+  @computed('startTime', 'endTime')
+  xDomain: (start, end) => (start && end) ? [start * 1000, end * 1000] : []
 });

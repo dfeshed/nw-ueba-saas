@@ -67,22 +67,32 @@ test('should correctly compute domain', function(assert) {
   ];
 
   chart.set('data', dataWithDefaultProperties);
+  chart.set('xAxisStartsAtZero', true);
+  assert.deepEqual(chart.get('xDomain'), [0, 3], 'xDomain starts at 0');
+  chart.set('xAxisStartsAtZero', false);
+  assert.deepEqual(chart.get('xDomain'), [1, 3], 'xDomain starts at minimum data extent');
+
+  chart.set('yAxisStartsAtZero', false);
+  assert.deepEqual(chart.get('yDomain'), [4, 6], 'yDomain starts at minimum data extent');
+  chart.set('yAxisStartsAtZero', true);
+  assert.deepEqual(chart.get('yDomain'), [0, 6], 'yDomain starts at 0');
+
   assert.deepEqual(chart.get('xDomain'), [1, 3], 'xDomain, single series, using default xProp');
-  assert.deepEqual(chart.get('yDomain'), [4, 6], 'yDomain, single series, using default xProp');
+  assert.deepEqual(chart.get('yDomain'), [0, 6], 'yDomain, single series, using default xProp');
 
   chart.set('data', multiDataWithDefaultProperties);
   assert.deepEqual(chart.get('xDomain'), [1, 6], 'xDomain, multi series, using default xProp');
-  assert.deepEqual(chart.get('yDomain'), [4, 9], 'yDomain, multi series, using default xProp');
+  assert.deepEqual(chart.get('yDomain'), [0, 9], 'yDomain, multi series, using default xProp');
 
   chart.set('xProp', 'foo');
   chart.set('yProp', 'bar');
   chart.set('data', dataWithCustomProperties);
   assert.deepEqual(chart.get('xDomain'), [1, 3], 'xDomain, single series, using custom xProp');
-  assert.deepEqual(chart.get('yDomain'), [4, 6], 'yDomain, single series, using custom xProp');
+  assert.deepEqual(chart.get('yDomain'), [0, 6], 'yDomain, single series, using custom xProp');
 
   chart.set('data', multiDataWithCustomProperties);
   assert.deepEqual(chart.get('xDomain'), [1, 6], 'xDomain, multi series, using custom xProp');
-  assert.deepEqual(chart.get('yDomain'), [4, 9], 'yDomain, multi series, using custom xProp');
+  assert.deepEqual(chart.get('yDomain'), [0, 9], 'yDomain, multi series, using custom xProp');
 
 });
 

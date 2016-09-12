@@ -8,7 +8,7 @@ import layout from '../templates/components/rsa-chart';
 const { Component, run } = Ember;
 const min = (data, accessorFn) => d3.min(data.map((d) => d3.min(d, accessorFn)));
 const max = (data, accessorFn) => d3.max(data.map((d) => d3.max(d, accessorFn)));
-const computeExtent = (data, accessorFn) => [min(data, accessorFn), max(data, accessorFn)];
+const computeExtent = (data, accessorFn, zeroed) => [zeroed ? 0 : min(data, accessorFn), max(data, accessorFn)];
 const createScale = (scaleFn, domain, range) => scaleFn().domain(domain).range(range).clamp(true);
 const calcGraphWidth = (width, marginLeft, marginRight) => width - marginLeft - marginRight;
 const calcGraphHeight = (height, marginTop, marginBottom) => height - marginTop - marginBottom;
@@ -20,20 +20,22 @@ const DEFAULT_WIDTH = 600;
 const DEFAULT_HEIGHT = 150;
 
 export default Component.extend({
-  layout,
   classNames: ['rsa-chart'],
-  data: null,
+  layout,
+
   chartWidth: DEFAULT_WIDTH,
   chartHeight: DEFAULT_HEIGHT,
-  xProp: 'x',
-  yProp: 'y',
+  data: null,
   hoverData: null,
   interactive: true,
-  xScaleFn: d3.scaleTime,
-  yScaleFn: d3.scaleLinear,
-
   // Adjust margins so that the axes fit
   margin: { top: 5, bottom: 30, left: 30, right: 0 },
+  xAxisStartsAtZero: false,
+  xProp: 'x',
+  xScaleFn: d3.scaleTime,
+  yProp: 'y',
+  yAxisStartsAtZero: true,
+  yScaleFn: d3.scaleLinear,
 
   @computed('chartWidth', 'margin')
   graphWidth(width, { left, right }) {
@@ -47,11 +49,11 @@ export default Component.extend({
     return Math.max(calculatedHeight, 0);
   },
 
-  @computed('data', 'xProp')
-  xDomain: (data, xProp) => computeExtent(data, (d) => d[xProp]),
+  @computed('data', 'xProp', 'xAxisStartsAtZero')
+  xDomain: (data, xProp, zeroed) => computeExtent(data, (d) => d[xProp], zeroed),
 
-  @computed('data', 'yProp')
-  yDomain: (data, yProp) => computeExtent(data, (d) => d[yProp]),
+  @computed('data', 'yProp', 'yAxisStartsAtZero')
+  yDomain: (data, yProp, zeroed) => computeExtent(data, (d) => d[yProp], zeroed),
 
   @computed('graphWidth')
   xRange: (graphWidth) => [0, graphWidth],
@@ -106,8 +108,10 @@ export default Component.extend({
           const i = bisectLeft(data, x0, 1);
           const d0 = data[i - 1];
           const d1 = data[i];
-          const d = x0 - d0[xProp] > d1[xProp] - x0 ? d1 : d0;
-          self.set('hoverData', d);
+          if (d0 && d1) {
+            const d = x0 - d0[xProp] > d1[xProp] - x0 ? d1 : d0;
+            self.set('hoverData', d);
+          }
         }
       });
   },

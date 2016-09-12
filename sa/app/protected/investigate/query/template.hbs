@@ -36,27 +36,30 @@
     <section class="rsa-investigate-query__body-master">
       <aside class="rsa-investigate-query__body-master-aside">
         {{rsa-investigate/meta
-        size=model.meta.panelSize
-        groups=model.meta.groups
-        language=model.queryNode.value.language.data
-        aliases=model.queryNode.value.aliases.data
-        metaKeyStates=model.queryNode.value.results.metaKeyStates
-        query=model.queryNode.value.definition
-        minSizeAction=(route-action "metaPanelSize" 'min')
-        maxSizeAction=(route-action "metaPanelSize" 'max')
-        defaultSizeAction=(route-action "metaPanelSize" 'default')
-        onBack=(route-action "metaGroupSet" model.queryNode)
-        onFwd=(route-action "metaGroupSet" model.queryNode)
-        toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
+          size=model.meta.panelSize
+          groups=model.meta.groups
+          language=model.queryNode.value.language.data
+          aliases=model.queryNode.value.aliases.data
+          metaKeyStates=model.queryNode.value.results.metaKeyStates
+          query=model.queryNode.value.definition
+          minSizeAction=(route-action "metaPanelSize" 'min')
+          maxSizeAction=(route-action "metaPanelSize" 'max')
+          defaultSizeAction=(route-action "metaPanelSize" 'default')
+          onBack=(route-action "metaGroupSet" model.queryNode)
+          onFwd=(route-action "metaGroupSet" model.queryNode)
+          toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
       </aside>
       <section class="rsa-investigate-query__body-master-main">
-        {{rsa-investigate/timeline chartData=model.resolvedEventTimelineData}}
+        {{rsa-investigate/timeline
+          chartData=model.resolvedEventTimelineData
+          startTime=model.queryNode.value.definition.startTime
+          endTime=model.queryNode.value.definition.endTime}}
         {{#rsa-data-table
-        lazy=true
-        items=model.queryNode.value.results.events.data
-        columnsConfig=model.eventColumns
-        aliases=model.queryNode.value.aliases
-        onRowClick=(route-action "reconOpen" model.queryNode.value.definition.serviceId)}}
+          lazy=true
+          items=model.queryNode.value.results.events.data
+          columnsConfig=model.eventColumns
+          aliases=model.queryNode.value.aliases
+          onRowClick=(route-action "reconOpen" model.queryNode.value.definition.serviceId)}}
           {{#rsa-data-table/header as |column index|}}
             {{#with (meta-key-alias column.field model.queryNode.value.language.data) as |names|}}
               <h2 class="title" title="{{if column.title column.title names.bothNames}}">
@@ -66,8 +69,8 @@
           {{/rsa-data-table/header}}
           {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
           {{rsa-data-table/load-more
-          status=model.queryNode.value.results.events.status
-          clickAction=(route-action "eventsGetMore" model.queryNode)}}
+            status=model.queryNode.value.results.events.status
+            clickAction=(route-action "eventsGetMore" model.queryNode)}}
         {{/rsa-data-table}}
         {{#if (is-equal model.queryNode.value.results.eventCount.data 0)}}
           <div class="rsa-investigate-query__empty">

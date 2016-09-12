@@ -8,9 +8,10 @@ const {
 } = Ember;
 
 export default Component.extend({
+  classNames: ['grids'],
   layout,
   tagName: 'g',
-  classNames: ['grids'],
+
   showXGrid: true,
   showYGrid: true,
   xTickCount: 10,
