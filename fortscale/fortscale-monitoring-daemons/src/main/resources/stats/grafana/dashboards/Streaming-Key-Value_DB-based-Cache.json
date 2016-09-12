@@ -818,11 +818,6 @@
             "selected": false
           },
           {
-            "text": "user-score-task",
-            "value": "user-score-task",
-            "selected": false
-          },
-          {
             "text": "username-normalization-tagging-task",
             "value": "username-normalization-tagging-task",
             "selected": false

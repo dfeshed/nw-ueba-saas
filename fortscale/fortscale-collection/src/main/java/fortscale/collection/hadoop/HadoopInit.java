@@ -40,18 +40,6 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.data.users.path}")
 	private String impalaUsersDirectory;
 
-	//Total Score table
-	@Value("${impala.total.scores.table.fields}")
-	private String impalaTotalScoringTableFields;
-	@Value("${impala.total.scores.table.delimiter}")
-	private String impalaTotalScoringTableDelimiter;
-	@Value("${impala.total.scores.table.name}")
-	private String impalaTotalScoringTableName;
-	@Value("${hdfs.user.processeddata.totalscore.path}")
-	private String impalaTotalScoringDirectory;
-	@Value("${impala.total.scores.table.partition.type}")
-	private String impalaTotalScoringTablePartitionType;
-
 	public void createImpalaTables() throws IOException{
 
 		PartitionStrategy partitionStrategy;
@@ -61,13 +49,6 @@ public class HadoopInit implements InitializingBean{
 
 		//Users table
 		createTable(impalaUserTableName, impalaUserFields, null, impalaUserTableDelimiter, impalaUsersDirectory);
-		
-
-		//Total Scoring table
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
-		createTable(impalaTotalScoringTableName, impalaTotalScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTotalScoringTableDelimiter, impalaTotalScoringDirectory);
-		
-
 
 		//Data Source Schemas
 

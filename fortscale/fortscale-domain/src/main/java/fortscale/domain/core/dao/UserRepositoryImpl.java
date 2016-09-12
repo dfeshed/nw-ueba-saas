@@ -1,4 +1,5 @@
 package fortscale.domain.core.dao;
+
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
@@ -7,7 +8,6 @@ import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
-import fortscale.domain.fe.dao.Threshold;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
@@ -15,7 +15,6 @@ import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -99,62 +98,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public Page<User> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
-		query.fields().exclude(User.adInfoField);
-
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-
-	@Override
-	public Page<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
-		query.fields().exclude(User.adInfoField);
-		
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-	
-
-	@Override
-	public Page<User> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(time));
-
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-
-	@Override
-	public Page<User> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(User.followedField).is(true).and(classifierScoreCurrentTimestampField).gte(time));
-
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-
-	@Override
-	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.minusDays(1);
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(threshold.getValue()).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
-		return (int) mongoTemplate.count(query, User.class);
-	}
-
-	@Override
-	public int countNumOfUsers(String classifierId) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.minusDays(1);
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
-		return (int) mongoTemplate.count(query, User.class);
-	}
-
-	@Override
 	public int countAllUsers(List<Criteria> criteriaList) {
 		Query query = new Query();
 
@@ -233,7 +176,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix) {
-		Query query = new Query(where(User.getAdInfoField(UserAdInfo.userPrincipalNameField)).regex(String.format("^%s$", adUserPrincipalNamePrefix),"i"));
+		Query query = new Query(where(User.getAdInfoField(UserAdInfo.userPrincipalNameField)).regex(String.format("^%s$", adUserPrincipalNamePrefix), "i"));
 		return mongoTemplate.find(query, User.class);
 	}
 
@@ -389,19 +332,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public void updateUserTag(String tagField, String username, boolean value) {
 		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update(tagField, value), User.class);
 	}
-	
-	@Override
-	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime){
-		Update update = new Update();
-		update.set(User.getClassifierScoreCurrentScoreField(classifierId), score);
-		update.set(User.getClassifierScoreCurrentTrendScoreField(classifierId), trendScore);
-		update.set(User.getClassifierScoreCurrentTimestampField(classifierId), calculationTime.toDate());
-		update.set(User.getClassifierScoreCurrentTimestampEpochField(classifierId), calculationTime.getMillis());
-		
-		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
-	}
-
-
 
 	@Override
 	public User getLastActivityAndLogUserNameByUserName(String userName) {
