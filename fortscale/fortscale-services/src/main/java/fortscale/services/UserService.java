@@ -33,9 +33,7 @@ public interface UserService extends CachingService{
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
-			
-	public void removeClassifierFromAllUsers(String classifierId);
-	
+
 	public String getUserThumbnail(User user);
 
 	public void updateUserWithADInfo(AdUser adUser);

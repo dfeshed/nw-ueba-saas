@@ -123,8 +123,6 @@
 
     <bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
 
-    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl" />
-
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl"/>
 
     <!--Event wrapper -->

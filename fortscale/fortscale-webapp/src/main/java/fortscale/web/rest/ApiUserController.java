@@ -66,6 +66,7 @@ public class ApiUserController extends BaseController{
 	private static final String USER_ALERT_COUNT_COLUMN_NAME = "Total Alerts";
 	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
 	private static final String USER_TAGS_COLUMN_NAME = "Tags";
+	private static final String ALL_WATCHED = "allWatched";
 
 	@Autowired
 	private UserServiceFacade userServiceFacade;
@@ -117,7 +118,22 @@ public class ApiUserController extends BaseController{
 		if (BooleanUtils.isTrue(userRestFilter.getAddAlertsAndDevices())) {
 			addAlertsAndDevices(usersList.getData());
 		}
+		if (BooleanUtils.isTrue(userRestFilter.getAddAllWatched())) {
+			addAllWatched(usersList, userRestFilter);
+		}
 		return usersList;
+	}
+
+	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, UserRestFilter userRestFilter) {
+		Map<String, Object> info = usersList.getInfo();
+		if (info == null) {
+			info = new HashMap<>();
+		}
+		Boolean oldIsWatched = userRestFilter.getIsWatched();
+		userRestFilter.setIsWatched(true);
+		info.put(ALL_WATCHED, usersList.getTotal() == userWithAlertService.countUsersByFilter(userRestFilter));
+		userRestFilter.setIsWatched(oldIsWatched);
+		usersList.setInfo(info);
 	}
 
 	@RequestMapping(value="/count", method=RequestMethod.GET)
@@ -143,6 +159,7 @@ public class ApiUserController extends BaseController{
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.status(Response.Status.
 					INTERNAL_SERVER_ERROR).build());
 		}
+
 		return ResponseEntity.status(HttpStatus.OK).body(Response.status(Response.Status.OK).build());
 	}
 
@@ -415,12 +432,13 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value = "/severityBar", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo() {
+	public DataBean<Map<String, Map<String, Integer>>> getSeverityBarInfo(UserRestFilter userRestFilter){
 		DataBean<Map<String, Map<String, Integer>>> dataBean = new DataBean<>();
 		Map<String, Map<String, Integer>> severityBarMap = new HashMap<>();
-		UserRestFilter filter = new UserRestFilter();
-		filter.setMinScore(0d);
-		List<User> scoredUsers = userService.findUsersByFilter(filter, null, null);
+		if (userRestFilter.getMinScore() == null) {
+			userRestFilter.setMinScore(0d);
+		}
+		List<User> scoredUsers = userWithAlertService.findUsersByFilter(userRestFilter, null);
 		if (CollectionUtils.isNotEmpty(scoredUsers)) {
 			scoredUsers.stream().forEach(user -> {
 				setSeverityOnUser(user);
@@ -449,12 +467,13 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true,
+	public DataBean<Set<AlertTypesCountBean>> getDistinctAlertNames(@RequestParam(required=true,
 			value = "ignore_rejected") Boolean ignoreRejected) {
-		Set<ValueCountBean> alertTypesNameAndCount = alertsService.getAlertsTypesCountedByUser(ignoreRejected).
-				entrySet().stream().map(alertTypeToCountEntry -> new ValueCountBean(alertTypeToCountEntry.getKey(),
-				alertTypeToCountEntry.getValue())).collect(Collectors.toSet());
-		DataBean<Set<ValueCountBean>> result = new DataBean<>();
+		Set<AlertTypesCountBean> alertTypesNameAndCount = alertsService.
+				getAlertsTypesByUser(ignoreRejected).entrySet().stream().map(alertTypeToCountEntry ->
+				new AlertTypesCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue().size())).
+				collect(Collectors.toSet());
+		DataBean<Set<AlertTypesCountBean>> result = new DataBean<>();
 		result.setData(alertTypesNameAndCount);
 		result.setTotal(alertTypesNameAndCount.size());
 		return result;

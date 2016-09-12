@@ -20,6 +20,7 @@ public class UserFilter extends RestFilter {
 	private Boolean isServiceAccount;
 	private String searchFieldContains;
 	private Boolean addAlertsAndDevices;
+	private Boolean addAllWatched;
 	private List<String> userTags;
 	private Boolean isWatched;
 	private List<String> alertTypes;
@@ -181,4 +182,13 @@ public class UserFilter extends RestFilter {
 			return indicatorTypes.getAnomalyList();
 		}
 	}
+
+	public Boolean getAddAllWatched() {
+		return addAllWatched;
+	}
+
+	public void setAddAllWatched(Boolean addAllWatched) {
+		this.addAllWatched = addAllWatched;
+	}
+
 }

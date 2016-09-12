@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import sys
+
 import time
 from manager import Manager
 
@@ -44,7 +45,7 @@ Inner workings:
     scores distribution is reasonable.
 
 Usage example:
-    python step1/run --timeout 5 --start 19870508 --end 20160628 --data_sources kerberos ssh --max_batch_size 500000 --max_gap 1500000 --convert_to_minutes_timeout 10''')
+    python step1/run --timeout 5 --start 19870508 --end 20160628 --data_sources kerberos ssh --max_batch_size 500000 --max_gap 1500000 --convert_to_minutes_timeout_in_minutes 10''')
     parser.add_argument('--scores_anomalies_path',
                         action='store',
                         dest='scores_anomalies_path',
@@ -85,7 +86,7 @@ def main():
                         force_max_batch_size_in_minutes=arguments.force_max_batch_size_in_minutes,
                         max_gap=arguments.max_gap,
                         force_max_gap_in_seconds=arguments.force_max_gap_in_seconds,
-                        convert_to_minutes_timeout=arguments.convert_to_minutes_timeout * 60,
+                        convert_to_minutes_timeout=arguments.convert_to_minutes_timeout_in_minutes * 60,
                         validation_timeout=arguments.timeout * 60,
                         validation_polling_interval=arguments.polling_interval * 60,
                         start=arguments.start,

@@ -135,7 +135,14 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return the new user socre
      */
     public double recalculateUserScore(String userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            logger.error("Failed to find user with id {}", userId);
+            return -1;
+        }
+
         Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userId);
+
         double userScore = 0;
         for (Alert alert : alerts) {
             double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
@@ -153,11 +160,7 @@ public class UserScoreServiceImpl implements UserScoreService {
 
             userScore += alert.getUserScoreContribution();
         }
-        User user = userService.getUserById(userId);
-		if (user == null) {
-			logger.error("Failed to find user with id {}", userId);
-			return -1;
-		}
+
         user.setScore(userScore);
 
         userRepository.save(user);
@@ -379,19 +382,35 @@ public class UserScoreServiceImpl implements UserScoreService {
     public Map<Severity, Double[]> getSeverityRange(){
         NavigableMap<Double, Severity> severityNavigableMap = new TreeMap<>(getSeverityNavigableMap());
 
+        return convertToRangeMap(severityNavigableMap);
+    }
+
+    private Map<Severity, Double[]> convertToRangeMap(NavigableMap<Double, Severity> severityNavigableMap) {
         Map<Severity, Double[]> rangeMap = new ManagedMap<>();
-
         Map.Entry<Double, Severity> doubleSeverityEntry = severityNavigableMap.pollFirstEntry();
-        Double minLimit = 0d;
 
+        Double minLimit = 0d;
+        Double maxLimit = 0d;
+        Severity currSeverity = doubleSeverityEntry.getValue();
+
+        // Calculating the score range for each severity
         while (doubleSeverityEntry != null) {
-            rangeMap.put(doubleSeverityEntry.getValue(), new Double[]{minLimit, doubleSeverityEntry.getKey()});
-            minLimit = doubleSeverityEntry.getKey();
+            if (!currSeverity.equals(doubleSeverityEntry.getValue())){
+                rangeMap.put(currSeverity, new Double[]{minLimit, doubleSeverityEntry.getKey()});
+                minLimit = doubleSeverityEntry.getKey();
+                currSeverity = doubleSeverityEntry.getValue();
+            }
+
+            if (currSeverity.equals(doubleSeverityEntry.getValue())) {
+                if (maxLimit < doubleSeverityEntry.getKey()) {
+                    maxLimit = doubleSeverityEntry.getKey();
+                }
+            }
+
             doubleSeverityEntry = severityNavigableMap.pollFirstEntry();
         }
 
         rangeMap.put(Severity.Critical, new Double[]{minLimit, Double.MAX_VALUE});
-
         return rangeMap;
     }
 

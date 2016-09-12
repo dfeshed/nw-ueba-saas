@@ -21,7 +21,6 @@
 
 
 
-    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
 
     <context:spring-configured/>
     <context:annotation-config/>
