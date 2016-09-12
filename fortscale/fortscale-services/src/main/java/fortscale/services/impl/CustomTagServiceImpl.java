@@ -173,24 +173,24 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	}
 
 	@Override
-	public void addUserTag(String username, String tag) {
-		Set<String> tags = taggedUsers.get(username);
-		if (tags == null) {
-			tags = new HashSet();
+	public void addUserTags(String username, List<String> tags) {
+		Set<String> userTags = taggedUsers.get(username);
+		if (userTags == null) {
+			userTags = new HashSet();
 		}
-		tags.add(tag);
-		taggedUsers.put(username, tags);
-		userService.updateUserTagList(Arrays.asList(new String[] { tag }), null, username);
+		userTags.addAll(tags);
+		taggedUsers.put(username, userTags);
+		userService.updateUserTagList(tags, null, username);
 	}
 
 	@Override
-	public void removeUserTag(String username, String tag) {
-		Set<String> tags = taggedUsers.get(username);
-		if (tags != null) {
-			tags.remove(tag);
+	public void removeUserTags(String username, List<String> tags) {
+		Set<String> userTags = taggedUsers.get(username);
+		if (userTags != null) {
+			userTags.removeAll(tags);
 		}
-		taggedUsers.put(username, tags);
-		userService.updateUserTagList(null, Arrays.asList(new String[] { tag }), username);
+		taggedUsers.put(username, userTags);
+		userService.updateUserTagList(null, tags, username);
 	}
 
 }

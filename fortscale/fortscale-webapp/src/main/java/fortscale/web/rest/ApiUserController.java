@@ -236,7 +236,7 @@ public class ApiUserController extends BaseController{
 		} else {
 			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
 		}
-		addTagToUser(user, tag, addTag);
+		addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
 	}
 
 	/**
@@ -247,12 +247,12 @@ public class ApiUserController extends BaseController{
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
 	public Response addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag,
-			@PathVariable String tagName) throws JSONException {
-		if (StringUtils.isEmpty(tagName)) {
+			@PathVariable List<String> tagNames) throws JSONException {
+		if (CollectionUtils.isEmpty(tagNames)) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
 		}
 		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null);
-		usersByFilter.stream().forEach(user -> addTagToUser(user, tagName, addTag));
+		usersByFilter.stream().forEach(user -> addTagToUser(user, tagNames, addTag));
 		return Response.status(Response.Status.OK).build();
 	}
 
@@ -328,7 +328,7 @@ public class ApiUserController extends BaseController{
 				if (CollectionUtils.isNotEmpty(usernames)) {
 					logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
 					for (String username : usernames) {
-						userTagService.removeUserTag(username, tagName);
+						userTagService.removeUserTags(username, Arrays.asList(new String[] { tagName }));
 					}
 				}
 			}
@@ -556,11 +556,11 @@ public class ApiUserController extends BaseController{
 		return sortUserDesc;
 	}
 
-	private void addTagToUser(User user, String tag, boolean addTag) {
+	private void addTagToUser(User user, List<String> tags, boolean addTag) {
 		if (addTag) {
-			userTagService.addUserTag(user.getUsername(), tag);
+			userTagService.addUserTags(user.getUsername(), tags);
 		} else {
-			userTagService.removeUserTag(user.getUsername(), tag);
+			userTagService.removeUserTags(user.getUsername(), tags);
 		}
 	}
 
