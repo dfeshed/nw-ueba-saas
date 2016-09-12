@@ -548,7 +548,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			isSaveUser = true;
 		}
 
-		String oldDisplayName = user.getDisplayName();
+		String oldDisplayName = user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
 
 		user.setAdInfo(userAdInfo);
 
@@ -564,10 +564,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			serviceMetrics.emptyUsername++;
 		}
 
-		String displayName = adUser.getDisplayName();
-		if(StringUtils.isEmpty(displayName)) {
-			displayName = userAdInfo.getFirstname() + " " + userAdInfo.getLastname();
-		}
+		String displayName = userAdInfo.getFirstname() + " " + userAdInfo.getLastname();
 
 		final String searchField = createSearchField(userAdInfo, username);
 

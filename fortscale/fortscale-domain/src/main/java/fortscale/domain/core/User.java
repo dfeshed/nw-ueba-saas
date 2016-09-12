@@ -183,10 +183,10 @@ public class User extends AbstractDocument {
 	}
 	
 	private void populateDisplayName() {
-		if(getAdInfo().getDisplayName() != null) {
-			this.displayName = getAdInfo().getDisplayName();
-		} else if(getAdInfo().getFirstname() != null && getAdInfo().getLastname() != null){
+		if(getAdInfo().getFirstname() != null && getAdInfo().getLastname() != null){
 			this.displayName = getAdInfo().getFirstname() + " " + getAdInfo().getLastname();
+		} else if(getAdInfo().getDisplayName() != null){
+			this.displayName = getAdInfo().getDisplayName();
 		} else{
 			this.displayName = getUsername();
 		}
