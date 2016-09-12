@@ -43,8 +43,18 @@ export default $.extend({}, BaseTranslations, {
     service: 'ja_Service',
     timeRange: 'ja_Time Range',
     filter: 'ja_Filter',
-    bytes: 'ja_bytes',
-    KB: 'ja_KB',
+    size: {
+      bytes: 'ja_bytes',
+      KB: 'ja_KB',
+      MB: 'ja_MB',
+      GB: 'ja_GB',
+      TB: 'ja_TB'
+    },
+    medium: {
+      network: 'ja_Network',
+      log: 'ja_Log',
+      correlation: 'ja_Correlation'
+    },
     empty: {
       title: 'ja_No events found.',
       description: 'ja_Your filter criteria did not match any records.'

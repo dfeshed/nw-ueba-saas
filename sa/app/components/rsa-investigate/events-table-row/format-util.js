@@ -1,7 +1,12 @@
 import Ember from 'ember';
 import moment from 'moment';
 
-const { $, isEmpty, merge } = Ember;
+const { isEmpty, merge } = Ember;
+
+const aKB = 1024;
+const aMB = aKB * 1024;
+const aGB = aMB * 1024;
+const aTB = aGB * 1024;
 
 /**
  * Formats a given value for a given field into a user friendly string for display.
@@ -33,9 +38,18 @@ function text(field, value, opts) {
  * @private
  */
 function _alias(field, value, opts = {}) {
-  const lookups = opts.aliases;
-  const fieldLookup = lookups && lookups[field];
-  const valueLookup = fieldLookup && fieldLookup[value];
+  let hash, valueLookup;
+
+  if (field === 'medium') {
+    hash = opts.i18n && opts.i18n[field];
+    valueLookup = _hashLookup(hash, value);
+  }
+
+  if (valueLookup === undefined) {
+    hash = opts.aliases && opts.aliases[field];
+    valueLookup = _hashLookup(hash, value);
+  }
+
   if (valueLookup === undefined) {
     return (value === undefined) ? '' : String(value);
   } else if (opts.appendRawValue) {
@@ -43,6 +57,11 @@ function _alias(field, value, opts = {}) {
   } else {
     return valueLookup;
   }
+}
+
+// Lookup a given key in a given hash. Returns `undefined` if hash not given or key not found in hash.
+function _hashLookup(hash, key) {
+  return hash && hash[key];
 }
 
 /**
@@ -77,21 +96,32 @@ function width(value, opts = {}) {
   return w.auto ? 'auto' : `${w.num}${w.units || 'px'}`;
 }
 
-// Formats a given number of bytes into a string with units (either 'bytes' or 'KB').
-// If bytes < 1 KB, uses 'bytes'; otherwise, uses KB and rounds to the first decimal.
+// Formats a given number of bytes into a string with units (e.g., 'bytes', 'KB', 'MB', 'GB', 'TB').
+// The unit labels and the decimal precision can be configured via the `opts` hash argument.
 function _size(value, opts = {}, dontAggregate = false) {
-  let showAsKb = !dontAggregate && $.isNumeric(value) && (value >= 1024);
-  if (showAsKb) {
-    let valuesAsKb = (value / 1024).toFixed(1);
-    return `${valuesAsKb} ${opts.kbLabel || 'KB'}`;
+  let precision = opts.precision || 0;
+  let i18nSize = (opts.i18n && opts.i18n.size) || {};
+
+  if (dontAggregate || (value < aKB)) {
+    return `${value} ${i18nSize.bytes || 'bytes'}`;
+  } else if (value < aMB) {
+    return `${Number(value / aKB).toFixed(precision)} ${i18nSize.KB || 'KB'}`;
+  } else if (value < aGB) {
+    return `${Number(value / aMB).toFixed(precision)} ${i18nSize.MB || 'MB'}`;
+  } else if (value < aTB) {
+    return `${Number(value / aGB).toFixed(precision)} ${i18nSize.GB || 'GB'}`;
   } else {
-    return `${value} ${opts.bytesLabel || 'bytes'}`;
+    return `${Number(value / aTB).toFixed(precision)} ${i18nSize.TB || 'TB'}`;
   }
 }
 
 // Formats a given timestamp value into a string using given (optional) format.
 function _time(value, opts = {}) {
-  return moment(value).format(opts.dateTimeFormat || 'YYYY-MM-DD HH:mm:ss');
+  let mom = moment(value);
+  if (opts.timeZone) {
+    mom.tz(opts.timeZone);
+  }
+  return mom.format(opts.dateTimeFormat || 'YYYY-MM-DD[T]HH:mm:ss');
 }
 
 // Parses a given width value into a number and units (if any).

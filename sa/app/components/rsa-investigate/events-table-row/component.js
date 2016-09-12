@@ -5,6 +5,9 @@ import d3 from 'd3';
 
 const {
   get,
+  inject: {
+    service
+  },
   run,
   observer,
   Component
@@ -15,6 +18,13 @@ const DEFAULT_WIDTH = 100;
 
 export default Component.extend(RowMixin, {
   classNames: 'rsa-investigate-events-table-row',
+
+  timezone: service(),
+
+  // Triggers a repaint when timezone changes to update time value formatting.
+  timezoneDidChange: observer('timezone.selected', function() {
+    this._renderCells();
+  }),
 
   didInsertElement() {
     this._super(...arguments);
@@ -35,10 +45,23 @@ export default Component.extend(RowMixin, {
     const item = this.get('item');
     const i18n = this.get('i18n');
     const opts = {
-      bytesLabel: i18n.t('investigate.bytes'),
-      kbLabel: i18n.t('investigate.KB'),
       defaultWidth: DEFAULT_WIDTH,
-      aliases: this.get('table.aliases.data')
+      timeZone: this.get('timezone.selected'),
+      aliases: this.get('table.aliases.data'),
+      i18n: {
+        size: {
+          bytes: i18n.t('investigate.size.bytes'),
+          KB: i18n.t('investigate.size.KB'),
+          MB: i18n.t('investigate.size.MB'),
+          GB: i18n.t('investigate.size.GB'),
+          TB: i18n.t('investigate.size.TB')
+        },
+        medium: {
+          '1': i18n.t('investigate.medium.network'),
+          '32': i18n.t('investigate.medium.log'),
+          '33': i18n.t('investigate.medium.correlation')
+        }
+      }
     };
 
     // Clear any prior rendered cells. It's important to specify the class name here because we don't
