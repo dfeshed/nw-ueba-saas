@@ -15,7 +15,7 @@ export default Component.extend({
   session: service(),
 
   viewNotes: 'all',
-  model: null,
+  incident: null,
   filterVisible: false,
 
   @computed('session')

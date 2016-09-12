@@ -2,7 +2,18 @@ export default function(server) {
 
   server.route('journal-entry', 'createRecord', function(message, frames, server) {
     let frame = (frames && frames[0]) || {};
-    server.mirageServer.db['journal-entry'].insert(frame.body);
+    let incident = server.mirageServer.db.incident.find(frame.body.incidentId);
+    if (incident) {
+      incident.notes = incident.notes || [];
+      incident.notes.pushObject({
+        id: frame.body.journalId,
+        author: frame.body.journalMap.author,
+        notes: frame.body.journalMap.notes,
+        milestone: frame.body.journalMap.milestone,
+        dateCreated: new Date()
+      });
+      server.mirageServer.db.incident.update(frame.body.incidentId, incident);
+    }
 
     server.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',
@@ -16,9 +27,17 @@ export default function(server) {
 
   server.route('journal-entry', 'updateRecord', function(message, frames, server) {
     let frame = (frames && frames[0]) || {};
-    let journal = server.mirageServer.db['journal-entry'].where({ journalId: frame.body.journalId, incidentId: frame.body.incidentId });
-    if (journal.length > 0) {
-      server.mirageServer.db['journal-entry'].update(journal[0].id, frame.body.journalMap);
+    let incident = server.mirageServer.db.incident.find(frame.body.incidentId);
+    if (incident) {
+      incident.notes = incident.notes || [];
+      let incidentNote = incident.notes.findBy('id', frame.body.journalId);
+      if (incidentNote) {
+        incidentNote.author = frame.body.journalMap.author;
+        incidentNote.notes = frame.body.journalMap.notes;
+        incidentNote.milestone = frame.body.journalMap.milestone;
+
+        server.mirageServer.db.incident.update(frame.body.incidentId, incident);
+      }
     }
 
     server.sendFrame('MESSAGE', {
@@ -33,7 +52,15 @@ export default function(server) {
 
   server.route('journal-entry', 'deleteRecord', function(message, frames, server) {
     let frame = (frames && frames[0]) || {};
-    server.mirageServer.db['journal-entry'].remove({ journalId: frame.body.journalId, incidentId: frame.body.incidentId });
+    let incident = server.mirageServer.db.incident.find(frame.body.incidentId);
+    if (incident) {
+      incident.notes = incident.notes || [];
+      let incidentNote = incident.notes.findBy('id', frame.body.journalId);
+      if (incidentNote) {
+        incident.notes.removeObject(incidentNote);
+        server.mirageServer.db.incident.update(frame.body.incidentId, incident);
+      }
+    }
 
     server.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',

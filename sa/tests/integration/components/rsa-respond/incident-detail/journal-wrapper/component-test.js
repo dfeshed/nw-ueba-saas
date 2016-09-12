@@ -10,7 +10,7 @@ moduleForComponent('rsa-journal-entry', 'Integration | Component | rsa journal w
 
 test('it renders default elements', function(assert) {
 
-  let journalEntry = EmberObject.create({
+  let incident = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -28,10 +28,10 @@ test('it renders default elements', function(assert) {
     }]
   });
 
-  this.set('journalEntry', journalEntry);
+  this.set('incident', incident);
 
 
-  this.render(hbs`{{rsa-respond/incident-detail/journal-wrapper model=journalEntry}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/journal-wrapper incident=incident}}`);
 
   assert.equal(this.$('.rsa-journal-wrapper').length, 1, 'Journal-wrapper component exists.');
   assert.equal(this.$('.rsa-journal-wrapper__title').length, 1, 'Title element exists.');
@@ -45,7 +45,7 @@ test('it renders default elements', function(assert) {
 
 test('Filter bar can be visible', function(assert) {
 
-  let journalEntry = EmberObject.create({
+  let incident = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -55,9 +55,9 @@ test('Filter bar can be visible', function(assert) {
     notes: []
   });
 
-  this.set('journalEntry', journalEntry);
+  this.set('incident', incident);
 
-  this.render(hbs`{{rsa-respond/incident-detail/journal-wrapper model=journalEntry}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/journal-wrapper incident=incident}}`);
 
   let sortPanel = this.$('.rsa-journal-wrapper__journal-sort');
   assert.ok(sortPanel.hasClass('hidden'), 'Sort panel is hidden by default');

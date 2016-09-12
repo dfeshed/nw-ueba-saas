@@ -59,15 +59,16 @@ export default Route.extend({
       },
       onResponse: ({ data, notificationCode }) => {
         Logger.log(`Notify next() callback, notificationCode: ${ notificationCode }`);
+        let incidentId = this.get('incidentId');
 
         // Updating the whole incident when we received a notification
-        let innerIncident = data.findBy('id', currentIncidentId);
+        let innerIncident = data.findBy('id', incidentId);
         if (innerIncident) {
           // only update current incident, ignoring others
           set(resolvedModel, 'incident', innerIncident);
           // Update the store with the updated incident
           this.store.pushPayload({ 'incidents': [innerIncident] });
-          innerIncident.id = currentIncidentId;
+          innerIncident.id = incidentId;
         }
       },
       onError(response) {
@@ -102,36 +103,15 @@ export default Route.extend({
     },
 
     /**
-     * @name createJournal
-     * @description creates a new Journal Entry and saves it
+     * @name saveJournal
+     * @description saves the journal entry. If the journal has already an ID an update is invoked,
+     * otherwise it creates it
      * @public
      */
-    createJournal(jsonNote) {
-      let journal = this.store.createRecord('journal-entry', {
-        incidentId: this.get('incidentId'),
-        journalMap: {
-          notes: jsonNote.notes,
-          author: jsonNote.author,
-          milestone: jsonNote.milestone
-        }
-      });
-
-      journal.save().then((response) => {
-        Logger.debug(`Journal created. Response: ${ response }`);
-      }).catch((reason) => {
-        Logger.error(`Journal was not created. Reason ${ reason }`);
-      });
-    },
-
-    /**
-     * @name updateJournal
-     * @description updates an existing journal
-     * @public
-     */
-    updateJournal(jsonNote) {
+    saveJournal(jsonNote) {
 
       this.request.promiseRequest({
-        method: 'updateRecord',
+        method: (jsonNote.id ? 'updateRecord' : 'createRecord'),
         modelName: 'journal-entry',
         query: {
           incidentId: this.get('incidentId'),
@@ -143,9 +123,9 @@ export default Route.extend({
           }
         }
       }).then((response) => {
-        Logger.debug(`Journal updated, response: ${ response }`);
+        Logger.debug(`Journal saved, response: ${ response }`);
       }).catch((reason) => {
-        Logger.error(`Journal was not updated. Reason ${ reason }`);
+        Logger.error(`Journal was not saved. Reason ${ reason }`);
       });
     },
 

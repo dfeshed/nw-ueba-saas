@@ -161,7 +161,7 @@ export default Component.extend({
           author: newAuthor
         };
 
-        this.sendAction('addJournalAction', newJournal);
+        this.sendAction('saveJournalAction', newJournal);
 
         // clear editable fields
         this.setProperties({
@@ -171,7 +171,7 @@ export default Component.extend({
         });
       } else {
         // Edit existing JournalEntry
-        this.sendAction('editJournalAction', this.get('journal'));
+        this.sendAction('saveJournalAction', this.get('journal'));
       }
 
       this.set('editModeActive', false);

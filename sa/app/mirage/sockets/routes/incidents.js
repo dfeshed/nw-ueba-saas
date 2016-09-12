@@ -132,7 +132,7 @@ export default function(server) {
 
           // adding a few new Journals
           incident.notes.pushObject({ id: newJournalID++, notes: 'This journal entry wasnt here before', created: new Date(), author: 'admin', milestone: 'INSTALLATION' });
-          incident.notes.pushObject({ id: newJournalID++, notes: 'This is a NEW journal entry', created: new Date(), author: 'admin', milestone: 'CONTAINMENT' });
+          incident.notes.pushObject({ id: newJournalID++, notes: 'This is a NEW journal entry', created: new Date(), author: 'local', milestone: 'CONTAINMENT' });
           incident.notes.pushObject({ id: newJournalID++, notes: 'This is also a NEW journal entry', created: new Date(), author: 'ian', milestone: 'ERADICATION' });
 
           server.mirageServer.db.incident.update(incident.id, incident);
