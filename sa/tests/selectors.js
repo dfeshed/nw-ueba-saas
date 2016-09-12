@@ -164,7 +164,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'journalEditBtn': 'div[class^=rsa-journal-entry__edit-journal] i[class*=rsa-icon-pencil]',
       'journalDeleteBtn': 'div[class^=rsa-journal-entry__delete-journal] i[class*=rsa-icon-bin-1]',
       'overviewTxtArea': 'label[class^=js-respond-detail-overview-textArea]',
-      'journalShowBtn': 'span[class=journalAction]',
+      'journalShowBtn': '.rsa-icon-notepad-edit',
       'scoreElm': '.score',
       'incLbl': '.rsa-incident-detail-header__id',
       'incTitleName': '.rsa-incident-detail-header__name input',
