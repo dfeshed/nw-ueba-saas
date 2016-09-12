@@ -313,4 +313,27 @@
       font-weight: normal;
     }
   }
+
+  .recon-container {
+    margin-left: 1px; /* let a sliver of background shows thru as a border */
+  }
+
+  .recon-event-header {
+    background-color: rsa-color(black,base,$rsa-translucent);
+    border: 0;    /* overwrite default */
+  }
+  .recon-event-content {
+    margin-top: 1px; /* let a sliver of background shows thru as a border */
+    background-color: transparent;  /* ovewrite default */
+  }
+  .event-content-box {
+    border: 0;    /* ovewrite default */
+  }
+  .recon-event-detail-packets,
+  .recon-meta-content {
+    background-color: rsa-color(black,base,$rsa-translucent);
+  }
+  .recon-meta-content {
+    margin-left: 1px; /* let a sliver of background shows thru as a border */
+  }
 }
