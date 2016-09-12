@@ -30,9 +30,10 @@ export default Base.extend({
         return d.prioritySort || 0;
       }
     },
-    'assignee': {
+    'assigneeFirstLastName': {
       getter(d) {
-        return (d.assignee && d.assignee.login) || '';
+        // Concatenate first and last name to improve sort accuracy
+        return (d.assignee && (d.assignee.firstName + d.assignee.lastName) || '');
       }
     },
     'status': {
@@ -51,6 +52,11 @@ export default Base.extend({
     'dateCreated': {
       getter(d) {
         return d.created || 0;
+      }
+    },
+    'lastUpdated': {
+      getter(d) {
+        return d.lastUpdated || 0;
       }
     },
     'alertCount': {

@@ -8,13 +8,20 @@
           {{t "incident.status.0"}} ({{model.newIncidents.results.length}})
           {{ rsa-update-indicator model=model.newIncidents.array updateKey='asyncUpdate' }}
         </span>
+        {{rsa-respond/landing-page/respond-index/sort-options
+          label=(t "incident.sortFields.sortByLabel")
+          defaultSortOption=newIncSortOrder
+          sortOptions=newIncSortOrderList
+          viewType=newIncCardView
+          sortAction=(route-action "sortAction")
+        }}
       </header>
       {{#if model.newIncidents.results.length}}
         <section class='rsa-content-card-group'>
           {{#rsa-carousel class="rsa-incident-carousel" items=model.newIncidents.results as |incident|}}
             {{#rsa-content-card class="rsa-incident-content-card" }}
               {{rsa-respond/landing-page/incident-tile incident=incident users=model.users
-                 clickAction=(route-action "gotoIncidentDetail") saveIncidentAction=(route-action "saveIncident")}}
+                clickAction=(route-action "gotoIncidentDetail") saveIncidentAction=(route-action "saveIncident")}}
             {{/rsa-content-card}}
           {{/rsa-carousel}}
         </section>
@@ -22,6 +29,13 @@
         <div class="rsa-respond-index-empty-incident">{{t "incident.emptyNewMessage"}}</div>
       {{/if}}
       <header class="rsa-respond-card__status-header">
+        {{rsa-respond/landing-page/respond-index/sort-options
+          label=(t "incident.sortFields.sortByLabel")
+          defaultSortOption=inProgSortOrder
+          sortOptions=inProgSortOrderList
+          sortAction=(route-action "sortAction")
+          viewType=inProgCardView
+        }}
         <span class="rsa-respond-card__status-header__item">
           {{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}})
           {{ rsa-update-indicator model=model.inProgressIncidents.array updateKey='asyncUpdate' }}
@@ -54,7 +68,7 @@
         </span>
         {{#unless column.disableSort}}
           <span class="js-header-cell-sort-{{column.class}}">
-            <button class={{unless (is-equal currentSort column.field) "hideSort expand" "expand"}} {{action 'sort' column (if column.isDescending 'asc' 'desc')  on='click'}}>
+            <button class={{unless (is-equal currentSort column.field) "hideSort expand" "expand"}} {{action 'sortListView' column (if column.isDescending 'asc' 'desc')  on='click'}}>
               {{rsa-icon size="small" name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
             </button>
           </span>
@@ -79,8 +93,8 @@
               {{#if (is-equal column.field 'statusSort')}}
                 {{t (concat 'incident.status.' (get item column.field))}}
               {{else}}
-                {{#if (is-equal column.field 'assignee')}}
-                  {{get item 'assignee.name'}}
+                {{#if (is-equal column.field 'assigneeFirstLastName')}}
+                  {{get item 'assignee.firstName'}}
                 {{else}}
                   {{#if (is-equal column.field 'sources')}}
                     {{#each (get item column.field) as |source|}}

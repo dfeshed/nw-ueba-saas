@@ -14,10 +14,17 @@ const {
   run
 } = Ember;
 
+export const viewType = {
+  LIST_VIEW: 'listView',
+  NEW_INC_CARD_VIEW: 'newIncCardView',
+  IN_PROG_INC_CARD_VIEW: 'inProgIncCardView'
+};
+
 export default Route.extend({
   session: service(),
   respondMode: service(),
   listViewCube: null,
+  cardViewCube: null,
 
   /*
    * Creates a new stream object.
@@ -197,7 +204,8 @@ export default Route.extend({
         array: []
       });
       let inProgressCube =  IncidentsCube.create({
-        array: []
+        array: [],
+        sortField: 'lastUpdated'
       });
 
       // Kick off the initial page load data request.
@@ -224,6 +232,7 @@ export default Route.extend({
         newIncidents: newCube,
         inProgressIncidents: inProgressCube
       };
+      this.set('cardViewCube', incidentModels);
     } else {
       let incidentsCube = IncidentsCube.create({
         array: []
@@ -253,9 +262,31 @@ export default Route.extend({
   },
 
   actions: {
-    sortAction(field, direction) {
-      // gets the list view cube and calls the cube sort method
-      let cube = this.get('listViewCube');
+
+    /**
+     * @description Action handler that gets invoked when the user sorts incidents.
+     * @param field Describes how to sort the incidents. Example: A 'Risk Score' field will sort incidents by Risk Score.
+     * @param direction Describes how to order sorted incidents. Options: Ascending and Descending
+     * @param view Descibes which incidents should be sorted. Options: ListView, New Incidents in Card View, or In Progress Incidents in Card View.
+     * @public
+     */
+    sortAction(field, direction, view) {
+      let cube;
+
+      switch (view) {
+        case viewType.NEW_INC_CARD_VIEW:
+          cube = this.get('cardViewCube.newIncidents');
+          break;
+        case viewType.IN_PROG_INC_CARD_VIEW:
+          cube = this.get('cardViewCube.inProgressIncidents');
+          break;
+        case viewType.LIST_VIEW:
+          cube = this.get('listViewCube');
+          break;
+        default:
+          return; // error - view type must be specified to perform sort
+      }
+
       run(() => {
         cube.sort(field, (direction === 'desc'));
       });

@@ -122,6 +122,16 @@ export default $.extend({}, BaseTranslations, {
     }
   },
   incident: {
+    sortFields: {
+      sortByLabel: 'ja_Sort By:',
+      alertCount: 'ja_Alerts',
+      assigneeFirstLastName: 'ja_Assignee',
+      dateCreated: 'ja_Date Created',
+      lastUpdated: 'ja_Date Updated',
+      id: 'ja_Incident ID',
+      priority: 'ja_Priority',
+      riskScore: 'ja_Risk Score'
+    },
     fields: {
       id: 'ja_ID',
       name: 'ja_Title',

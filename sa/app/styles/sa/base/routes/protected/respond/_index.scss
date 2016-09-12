@@ -1,17 +1,25 @@
 .rsa-respond-card {
   &__status-header {
-    height: 1.5rem;
-    padding-top: rsa-whitespace();
     margin: rsa-whitespace(least) rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
+    padding-top: 0;
+    height: inherit;
 
     @include rsa-font(header, large);
     border-bottom: 1px solid rsa-color(gray, light);
 
     &__item {
       @include rsa-font(light, large);
-      padding: rsa-whitespace() 0 0 0;
+      padding: rsa-whitespace(more) 0 0 0;
       color: rsa-color(white);
+      display: inline-block;
+      margin-bottom: rsa-whitespace(least);
     }
+
+  }
+
+  .sort-options {
+    float: right;
+    margin-top: 18px;
   }
 
   .rsa-incident-carousel {

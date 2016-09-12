@@ -1,0 +1,8 @@
+{{#rsa-form-select class='sort-options__selection' optionMaxVisible=6 values=selectedSortOption isInline=true label=label multiple=false isSmall=true}}
+  {{#each sortOptions as |value|}}
+    <option value="{{value}}">{{t (concat 'incident.sortFields.' value) }}</option>
+  {{/each}}
+{{/rsa-form-select}}
+{{#rsa-form-button class='sort-options__direction' isIconOnly=true click=(action 'toggleSortDir')}}
+  {{rsa-icon name=(if isDesc 'arrow-down-7' 'arrow-up-7') size='small'}}
+{{/rsa-form-button}}

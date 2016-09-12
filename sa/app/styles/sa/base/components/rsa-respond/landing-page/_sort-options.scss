@@ -1,0 +1,33 @@
+.sort-options {
+
+  &__selection {
+    float: left;
+
+    &.rsa-form-select {
+
+      .rsa-form-label {
+        @include rsa-font(header, small);
+        color: rsa-color(gray, lighter);
+        white-space: nowrap;
+        margin-right: rsa-whitespace(less);
+        margin-top: 5px;
+      }
+
+      .prompt {
+        width: auto;
+        min-width: 106px;
+        margin-top: 3px;
+        border: none;
+      }
+
+      .rsa-icon {
+        font-size: .6rem;
+      }
+    }
+  }
+
+  &__direction {
+    float: right;
+  }
+
+}
