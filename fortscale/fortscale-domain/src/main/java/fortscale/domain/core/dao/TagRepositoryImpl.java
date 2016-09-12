@@ -36,6 +36,7 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 		update.set(Tag.createsIndicatorField, tag.getCreatesIndicator());
 		update.set(Tag.rulesField, tag.getRules());
 		update.set(Tag.activeField, tag.getActive());
+		update.set(Tag.isAssignableField, tag.getIsAssignable());
 		mongoTemplate.upsert(query, update, Tag.class);
 	}
 
