@@ -1,4 +1,5 @@
 .rsa-incident-tile {
+  transition: background-color 1s;
   position:relative;
   color: rsa-color(white);
 
@@ -6,6 +7,12 @@
     .rsa-form-label {
       @include rsa-font(header, small);
     }
+  }
+  
+  &:hover {
+    transition: background-color 1s;
+    cursor: pointer;
+    background-color: rsa-color(black, null, $rsa-translucent);
   }
 
   .rsa-incident-tile-header {
@@ -81,12 +88,11 @@
   }
 
   .rsa-edit-tool {
+    transition: visibility 0s, opacity 0.2s linear;
     background-color: rsa-color(black, null, $rsa-nearly-transparent);
     position: absolute;
     bottom: 1px;
     right: 0;
-    transition: visibility 0s, opacity 0.2s linear;
-
     visibility: hidden;
     opacity: 0;
   }
@@ -105,10 +111,10 @@
       visibility: visible;
       opacity: 1;
     }
+
   }
 
   &.small-size {
-
     .rsa-incident-tile-header {
       .rsa-incident-tile-header-info {
         .rsa-incident-tile-name {
@@ -119,3 +125,5 @@
     }
   }
 }
+
+

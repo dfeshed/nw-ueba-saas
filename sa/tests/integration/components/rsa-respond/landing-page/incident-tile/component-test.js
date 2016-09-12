@@ -672,4 +672,3 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
   assert.equal(priorityOptionList[3].text, 'Low', 'Fourth priority is Low');
 
 });
-
