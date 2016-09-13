@@ -12,7 +12,7 @@ module.exports = function(environment) {
       socketUrl,
       stream: {
         defaultStreamLimit: 100000,
-        subscriptionDestination: '/topic/incidents/%@',
+        subscriptionDestination: '/user/queue/incidents/%@',
         requestDestination: '/ws/response/incidents',
         cancelDestination: '/ws/response/cancel'
       },
