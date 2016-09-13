@@ -1,23 +1,13 @@
 .rsa-investigate-meta {
+  @include rsa-col(justify,fill);
 
-  > .liquid-container {
+  &-values-panel {
     position: absolute;
     top: 0;
     left: 0;
-    bottom: 0;
     right: 0;
-
-    > .liquid-child {
-      width: 100%;
-      height: 100%;
-    }
-  }
-
-
-  &:not(.meta-size-min) {
-    > .liquid-container > .liquid-child {
-      @include rsa-col(justify,fill);
-    }
+    bottom: 0;
+    overflow: auto;
   }
 
   &.meta-size-min {
@@ -54,7 +44,7 @@
   &__body {
     @include rsa-vendor-prefix(flex-grow, 1);
     @include rsa-font(body, light);
-    overflow: auto;
+    position: relative;
   }
 
   &__nav {

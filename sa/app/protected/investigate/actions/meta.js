@@ -31,7 +31,7 @@ export default Mixin.create({
       // Kick off the fetching of meta values for the currently selected meta group.
       this.send(
         'metaGroupValuesGet',
-        this.get('state.meta.group'),
+        queryNode.get('value.defaultMetaGroup'),
         queryNode,
         metaKeyStates,
         forceReload

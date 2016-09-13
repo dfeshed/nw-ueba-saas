@@ -37,7 +37,7 @@
       <aside class="rsa-investigate-query__body-master-aside">
         {{rsa-investigate/meta
           size=model.meta.panelSize
-          groups=model.meta.groups
+          group=model.queryNode.value.defaultMetaGroup
           language=model.queryNode.value.language.data
           aliases=model.queryNode.value.aliases.data
           metaKeyStates=model.queryNode.value.results.metaKeyStates
