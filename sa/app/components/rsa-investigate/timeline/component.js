@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import d3 from 'd3';
 import computed from 'ember-computed-decorators';
+import { computeExtent } from 'component-lib/utils/chart-utils';
 
 const {
   Component,
@@ -34,6 +35,14 @@ export default Component.extend({
   @computed('timezone.selected')
   xScaleFn: (zone) => (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime,
 
-  @computed('startTime', 'endTime')
-  xDomain: (start, end) => (start && end) ? [start * 1000, end * 1000] : []
+  @computed('startTime', 'endTime', 'chartData', 'xProp')
+  xDomain: (start, end, chartData, xProp) => {
+    let domain = [];
+    if (!!start && !!end) {
+      domain = [start * 1000, end * 1000];
+    } else if (!!start || !!end) {
+      domain = computeExtent(chartData, (d) => d[xProp]);
+    }
+    return domain;
+  }
 });

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import d3 from 'd3';
+import { siFormat } from '../utils/chart-utils';
 
 const { Component } = Ember;
 
@@ -9,11 +10,13 @@ const { Component } = Ember;
  * @private
  */
 export default Component.extend({
-  tagName: 'g',
   classNames: ['rsa-y-axis'],
-  scale: null,
+  tagName: 'g',
+
   rotation: 0,
+  scale: null,
   tickCount: 10,
+  tickFormat: siFormat,
 
   didInsertElement() {
     this._super(...arguments);
@@ -21,7 +24,9 @@ export default Component.extend({
     if (scale) {
       const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
       const axis = d3.select(this.element);
-      axis.call(d3.axisLeft(scale).ticks(tickCount, 's'));
+      const count = this.get('tickCount');
+      const format = this.get('tickFormat')(scale.domain(), count);
+      axis.call(d3.axisLeft(scale).ticks(tickCount).tickFormat(format));
       if (rotation) {
         this.rotateAxis(axis, rotation);
       }
@@ -32,12 +37,14 @@ export default Component.extend({
     this._super(...arguments);
     const { scale, rotation, tickCount } = this.getProperties('scale', 'rotation', 'tickCount');
     const axis = d3.select(this.element);
-    this.update(axis, scale, rotation, tickCount);
+    const count = this.get('tickCount');
+    const format = this.get('tickFormat')(scale.domain(), count);
+    this.update(axis, scale, rotation, tickCount, format);
   },
 
-  update(axis, scale, rotation, tickCount) {
+  update(axis, scale, rotation, tickCount, format) {
     axis.transition().duration(750)
-      .call(d3.axisLeft(scale).ticks(tickCount, 's'));
+      .call(d3.axisLeft(scale).ticks(tickCount).tickFormat(format));
     if (rotation) {
       this.rotateAxis(axis, rotation);
     }

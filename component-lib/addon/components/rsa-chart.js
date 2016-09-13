@@ -2,16 +2,11 @@ import Ember from 'ember';
 import d3 from 'd3';
 import computed from 'ember-computed-decorators';
 import layout from '../templates/components/rsa-chart';
+import { calcGraphWidth, calcGraphHeight, computeExtent, createScale } from '../utils/chart-utils';
 /* global addResizeListener */
 /* global removeResizeListener */
 
 const { Component, run } = Ember;
-const min = (data, accessorFn) => d3.min(data.map((d) => d3.min(d, accessorFn)));
-const max = (data, accessorFn) => d3.max(data.map((d) => d3.max(d, accessorFn)));
-const computeExtent = (data, accessorFn, zeroed) => [zeroed ? 0 : min(data, accessorFn), max(data, accessorFn)];
-const createScale = (scaleFn, domain, range) => scaleFn().domain(domain).range(range).clamp(true);
-const calcGraphWidth = (width, marginLeft, marginRight) => width - marginLeft - marginRight;
-const calcGraphHeight = (height, marginTop, marginBottom) => height - marginTop - marginBottom;
 
 // The size of the component is actually completely dictated by CSS. However,
 // if we specify default zeroes, the initial DOM rendering will (briefly) look

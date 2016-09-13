@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import d3 from 'd3';
 import computed from 'ember-computed-decorators';
+import { multiDateFormat } from '../utils/chart-utils';
 
 const { Component } = Ember;
 
@@ -10,13 +11,15 @@ const { Component } = Ember;
  * @public
  */
 export default Component.extend({
-  tagName: 'g',
   attributeBindings: ['transform'],
   classNames: ['rsa-x-axis'],
-  scale: null,
+  tagName: 'g',
+
   height: 115,
   rotation: 0,
+  scale: null,
   tickCount: 10,
+  tickFormat: multiDateFormat,
 
   @computed('height')
   transform: (height) => `translate(0,${height})`,
@@ -27,11 +30,12 @@ export default Component.extend({
     if (scale) {
       const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
       const axis = d3.select(this.element);
+      const format = this.get('tickFormat');
       if (scale.range) {
         const range = scale.range();
         scale.range([range[0], range[1] - 1]);
       }
-      axis.call(d3.axisBottom(scale).ticks(tickCount));
+      axis.call(d3.axisBottom(scale).ticks(tickCount).tickFormat(format));
       if (rotation) {
         this.rotateAxis(axis, rotation);
       }
@@ -42,6 +46,7 @@ export default Component.extend({
     this._super(...arguments);
     const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
     const axis = d3.select(this.element);
+    const format = this.get('tickFormat');
     const scale = this.get('scale');
     // So I noticed that the right side of the domain
     // path is clipped from view. This is because the
@@ -52,12 +57,12 @@ export default Component.extend({
       const range = scale.range();
       scale.range([range[0], range[1] - 1]);
     }
-    this.update(axis, scale, rotation, tickCount);
+    this.update(axis, scale, rotation, tickCount, format);
   },
 
-  update(axis, scale, rotation, tickCount) {
+  update(axis, scale, rotation, tickCount, format) {
     axis.transition().duration(750)
-      .call(d3.axisBottom(scale).ticks(tickCount));
+      .call(d3.axisBottom(scale).ticks(tickCount).tickFormat(format));
     if (rotation) {
       this.rotateAxis(axis, rotation);
     }
