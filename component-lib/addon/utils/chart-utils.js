@@ -1,9 +1,12 @@
 import d3 from 'd3';
 
 const formatMillisecond = d3.timeFormat('.%L'); // .123
-const formatSecond = d3.timeFormat('%I:%M:%S'); // 03:15:05
-const formatMinute = d3.timeFormat('%I:%M:%S'); // 03:15:00
-const formatHour = d3.timeFormat('%I %p'); // 03 PM
+const formatSecond = d3.timeFormat('%I:%M:%S'); // 01:15:05
+const formatSecond24 = d3.timeFormat('%H:%M:%S'); // 13:15:05
+const formatMinute = d3.timeFormat('%I:%M'); // 01:15
+const formatMinute24 = d3.timeFormat('%H:%M'); // 13:15
+const formatHour = d3.timeFormat('%I:%M %p'); // 01:00 PM
+const formatHour24 = d3.timeFormat('%H:%M'); // 13:00
 const formatDay = d3.timeFormat('%a %d'); // Tue 02
 const formatWeek = d3.timeFormat('%b %d'); // Jan 02
 const formatMonth = d3.timeFormat('%B'); // January
@@ -79,8 +82,28 @@ export function calcGraphHeight(height, marginTop, marginBottom) {
  * @return A format that most closely matches a date boundry
  */
 export function multiDateFormat(date) {
-  return (d3.timeHour(date) < date ? formatMinute :
+  return (d3.timeMinute(date) < date ? formatSecond :
+    d3.timeHour(date) < date ? formatMinute :
     d3.timeDay(date) < date ? formatHour :
+    d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
+    d3.timeYear(date) < date ? formatMonth :
+    formatYear)(date);
+}
+
+/**
+ * Generates a 24 hour date format function that is a multi-scale tick format,
+ * meaning that it formats times differently depending on the time.
+ * For example, the start of February is formatted as "February",
+ * while February second is formatted as "Feb 2". Has a minimum
+ * precision of a minute.
+ * @public
+ * @param date The date to format
+ * @return A format that most closely matches a date boundry
+ */
+export function multiDate24Format(date) {
+  return (d3.timeMinute(date) < date ? formatSecond24 :
+    d3.timeHour(date) < date ? formatMinute24 :
+    d3.timeDay(date) < date ? formatHour24 :
     d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
     d3.timeYear(date) < date ? formatMonth :
     formatYear)(date);
@@ -92,11 +115,27 @@ export function multiDateFormat(date) {
  * @param date The date to format
  * @return A format that most closely matches a date boundry
  */
-export function multiDateMillisecondFormat(date) {
+export function multiDateMsFormat(date) {
   return (d3.timeSecond(date) < date ? formatMillisecond :
     d3.timeMinute(date) < date ? formatSecond :
     d3.timeHour(date) < date ? formatMinute :
     d3.timeDay(date) < date ? formatHour :
+    d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
+    d3.timeYear(date) < date ? formatMonth :
+    formatYear)(date);
+}
+
+/**
+ * Same as `multiDate24Format`, but to millisecond precision.
+ * @public
+ * @param date The date to format
+ * @return A format that most closely matches a date boundry
+ */
+export function multiDateMs24Format(date) {
+  return (d3.timeSecond(date) < date ? formatMillisecond :
+    d3.timeMinute(date) < date ? formatSecond24 :
+    d3.timeHour(date) < date ? formatMinute24 :
+    d3.timeDay(date) < date ? formatHour24 :
     d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
     d3.timeYear(date) < date ? formatMonth :
     formatYear)(date);

@@ -3,6 +3,7 @@
 *.iml
 *.ipr
 *.iws
+.vscode
 .vscodeignore
 jsconfig.json
 ember.d.ts
