@@ -564,8 +564,11 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
 	public Response followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch){
-		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
+		if (userRestFilter.getSize() == null) {
+			userRestFilter.setSize(Integer.MAX_VALUE);
+		}
 
+		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
 		if (CollectionUtils.isNotEmpty(users.getData())) {
 			users.getData().forEach(userDetailsBean -> {
 				User user = userDetailsBean.getUser();
