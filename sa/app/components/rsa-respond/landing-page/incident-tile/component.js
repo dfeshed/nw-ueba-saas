@@ -25,8 +25,11 @@ export default Component.extend({
   // Templates that use this component can overwrite tagName whenever needed (e.g., if only showing one incident,
   // the template may want to set tagName to "section").
   classNames: 'rsa-incident-tile',
-  classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive'],
+  classNameBindings: ['isLargeSize:large-size:small-size', 'editModeActive', 'clicked'],
   eventBus: service(),
+
+  // Property used to control border style state (grey when hovered, blue when clicked).
+  clicked: false,
 
   /**
    * The incident data record to be rendered.
@@ -92,6 +95,7 @@ export default Component.extend({
    */
   click() {
     if (!this.get('editModeActive')) {
+      this.toggleProperty('clicked');
       this.sendAction('clickAction', this.get('incident'));
     }
   },

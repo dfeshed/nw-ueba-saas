@@ -1,6 +1,7 @@
 .rsa-incident-tile {
-  transition: background-color 1s;
+  @include rsa-vendor-prefix(transition, background-color 1s);
   position:relative;
+  margin-top: 1px;
   color: rsa-color(white);
 
   .rsa-form-select {
@@ -8,11 +9,19 @@
       @include rsa-font(header, small);
     }
   }
-  
+
+  &.clicked {
+    outline: 1px solid rsa-color(blue, dark);
+  }
+
   &:hover {
-    transition: background-color 1s;
-    cursor: pointer;
-    background-color: rsa-color(black, null, $rsa-translucent);
+
+    &:not(.clicked):not(.edit-mode-active) {
+      @include rsa-vendor-prefix(transition, background-color 1s);
+      cursor: pointer;
+      background-color: rsa-color(black, null, $rsa-translucent);
+      outline: 1px solid rsa-color(gray, base);
+    }
   }
 
   .rsa-incident-tile-header {
@@ -49,6 +58,7 @@
   }
 
   .rsa-incident-tile-section {
+    background-color: rsa-color(black, null, $rsa-translucent);
 
     vbox {
       padding: rsa-whitespace();
@@ -88,7 +98,7 @@
   }
 
   .rsa-edit-tool {
-    transition: visibility 0s, opacity 0.2s linear;
+    @include rsa-vendor-prefix(transition, visibility 0s, opacity 0.2s linear);
     background-color: rsa-color(black, null, $rsa-nearly-transparent);
     position: absolute;
     bottom: 1px;
@@ -107,6 +117,8 @@
   }
 
   &.edit-mode-active {
+    outline: 1px solid rsa-color(blue, dark);
+
     .rsa-edit-tool {
       visibility: visible;
       opacity: 1;
@@ -125,5 +137,3 @@
     }
   }
 }
-
-
