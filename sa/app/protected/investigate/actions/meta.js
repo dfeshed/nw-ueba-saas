@@ -192,6 +192,7 @@ export default Mixin.create({
     const inputs = buildMetaValueStreamInputs(
       metaKeyState.get('info.metaName'),
       queryDefinition,
+      metaKeyState.get('options'),
       STREAM_LIMIT,
       STREAM_BATCH
     );

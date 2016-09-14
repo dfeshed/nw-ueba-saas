@@ -30,6 +30,13 @@ const LANGUAGE_KEY_ACTION_OPEN = 0x0200;
 // Default behavior is to show auto open the key, based on its index level.
 const LANGUAGE_KEY_ACTION_AUTO = 0x0400;
 
+// Some keys are always hidden from view by UI.
+const LANGUAGE_KEYS_ALWAYS_HIDDEN = ['time', 'size'];
+const LANGUAGE_KEYS_ALWAYS_HIDDEN_HASH = {};
+LANGUAGE_KEYS_ALWAYS_HIDDEN.forEach((name) => {
+  LANGUAGE_KEYS_ALWAYS_HIDDEN_HASH[name] = true;
+});
+
 export default EmberObject.extend({
   /**
    * Query information such as the filter criteria.
@@ -74,14 +81,15 @@ export default EmberObject.extend({
 
     // Filter out language keys which are hidden, or insufficiently indexed.
       .filter((obj) => {
+        // Certain keys (e.g., time & size) are special and always hidden from view.
+        if (LANGUAGE_KEYS_ALWAYS_HIDDEN_HASH[get(obj, 'metaName')]) {
+          return false;
+        }
         const flag = Number(get(obj, 'flags'));
         const action = flag & LANGUAGE_KEY_ACTION_MASK;
         const index = flag & LANGUAGE_KEY_INDEX_MASK;
         return (action !== LANGUAGE_KEY_ACTION_HIDDEN) && (index !== LANGUAGE_KEY_INDEX_FILTER);
       })
-
-      // Sort language keys by display name.
-      .sortBy('displayName')
 
       // Create an entry in the group.keys for each of these language keys.
       .map((obj) => {

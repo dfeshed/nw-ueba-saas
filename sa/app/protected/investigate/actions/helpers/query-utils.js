@@ -40,9 +40,16 @@ function buildEventStreamInputs(query, limit, batch = 1, startSessionId = null) 
   return inputs;
 }
 
-function buildMetaValueStreamInputs(metaName, query, limit, batch) {
+function buildMetaValueStreamInputs(metaName, query, queryOptions, limit, batch) {
   let inputs = buildEventStreamInputs(query, limit, batch);
-  inputs.filter.push({ field: 'metaName', value: metaName });
+  inputs.filter.pushObject({ field: 'metaName', value: metaName });
+  if (queryOptions) {
+    let { size, metric, sortField, sortOrder } = getProperties(queryOptions, 'size', 'metric', 'sortField', 'sortOrder');
+    inputs.filter.pushObjects([
+      { field: 'valuesCount', value: size },
+      { field: 'flags', value: `${metric},sort-${sortField},order-${sortOrder}` }
+    ]);
+  }
   return inputs;
 }
 
@@ -131,6 +138,7 @@ function executeEventsRequest(request, inputs, events) {
 function executeMetaValuesRequest(request, inputs, values) {
   return new RSVP.Promise((resolve, reject) => {
     values.setProperties({
+      data: [],
       status: 'streaming',
       reason: undefined
     });
@@ -146,8 +154,10 @@ function executeMetaValuesRequest(request, inputs, values) {
         if (!response) {
           return;
         }
-        if (response.data) {
-          values.get('data').pushObjects(response.data);
+        if (response.data && response.data.length) {
+          // Meta Values call *sometimes* returns "partial" results while still computing results.
+          // So when we get values back, replace whatever the previous set of values were; don't append to them.
+          values.set('data', response.data);
         }
         values.set('description', response.meta && response.meta.description);
         const percent = response.meta && response.meta.percent;
