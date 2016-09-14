@@ -1,16 +1,20 @@
 {{recon-event-header
   headerItems=headerItems
-  showMetaDetails=showMetaDetails
   title=title
-  toggleMetaDetails=(action 'toggleMetaDetails')
   closeRecon=closeAction
   expandRecon=expandAction
+  showMetaDetails=showMetaDetails
   shrinkRecon=shrinkAction
+  toggleMetaDetails=(action 'toggleMetaDetails')
+  updateReconstructionView=(action 'updateReconstructionView')
 }}
+
 {{recon-event-content
-  meta=meta
-  packets=packets
-  packetFields=packetFields
   contentError=contentError
+  eventId=eventId
+  endpointId=endpointId
+  packetFields=packetFields
+  meta=meta
+  reconstructionType=reconstructionType
   showMetaDetails=showMetaDetails
 }}

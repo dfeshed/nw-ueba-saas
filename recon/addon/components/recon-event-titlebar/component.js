@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import layout from './template';
 import computed from 'ember-computed-decorators';
+import { TYPES } from '../../utils/reconstruction-types';
+
 const { Component } = Ember;
 
 export default Component.extend({
@@ -8,9 +10,21 @@ export default Component.extend({
   tagName: 'hbox',
   classNameBindings: [':recon-event-titlebar'],
 
-  isExpanded: false,
+  // INPUTS
+  title: null,
+
+  // Actions
+  showHeaderData: null,
+  showMetaDetails: null,
+  closeRecon: null,
+  expandRecon: null,
+  shrinkRecon: null,
   toggleHeaderData: null,
   toggleMetaDetails: null,
+  updateReconstructionView: null,
+  // END INPUTS
+
+  isExpanded: false,
 
   /**
    * The title is the string to display as the title of the header
@@ -43,6 +57,10 @@ export default Component.extend({
         this.send('toggleExpanded');
       }
       this.sendAction('toggleMetaDetails');
+    },
+
+    updateReconstructionView(newView = TYPES.FILE) {
+      this.sendAction('updateReconstructionView', newView);
     }
   }
 

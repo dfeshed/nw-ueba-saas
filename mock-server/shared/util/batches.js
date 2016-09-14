@@ -36,7 +36,7 @@ function sendBatches({
     setTimeout(function(index) {
       return function() {
         sendMessage({
-          body: batches[index]
+          data: batches[index]
         });
       };
     }(i), i * delayBetweenBatches);

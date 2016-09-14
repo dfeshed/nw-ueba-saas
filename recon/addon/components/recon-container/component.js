@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
+import { TYPES } from '../../utils/reconstruction-types';
 
 const {
   A,
@@ -20,8 +21,7 @@ export default Component.extend({
   // Component state
   headerError: null,
   headerItems: null,
-  packetError: null,
-  packets: null,
+  reconstructionType: TYPES.PACKET,
   showMetaDetails: false,
   // END Component state
 
@@ -62,7 +62,7 @@ export default Component.extend({
       }
 
       return headerItems;
-    },A([])));
+    }, A([])));
   },
 
   bootstrapRecon(endpointId, eventId) {
@@ -83,8 +83,6 @@ export default Component.extend({
     }).then(({ data }) => {
       this.setHeaderItems(data.summaryAttributes);
       this.set('packetFields', data.packetFields);
-      // When concurrency issue in investigate microservice is fixed, remove this next line
-      this.retrievePackets(endpointId, eventId);
     }).catch((response) => {
       this.set('headerError', response);
     });
@@ -118,52 +116,6 @@ export default Component.extend({
         this.set('aliases', data);
       });
     }
-
-    // When concurrency issue in investigate microservice is fixed, uncomment this
-    // this.retrievePackets(endpointId, eventId);
-  },
-
-  retrievePackets(endpointId, eventId) {
-    const query = {
-      filter: [{
-        field: 'endpointId',
-        value: endpointId
-      }, {
-        field: 'sessionId',
-        value: eventId
-      }],
-      page: {
-        index: 0,
-        size: 100
-      },
-      stream: {
-        batch: 10,
-        limit: 100000
-      }
-    };
-
-    this.get('request').streamRequest({
-      method: 'stream', // not streaming yet, but will eventually
-      modelName: 'reconstruction-packet-data',
-      query,
-      onResponse: ({ data }, stopStreaming) => {
-        this.setProperties({
-          packets: data,
-          contentError: null
-        });
-
-        // TODO: This stops after one batch from one page
-        // to implement paging, need to keep processing
-        // onResponse will get called many times
-        stopStreaming();
-      },
-      onError: (response) => {
-        this.setProperties({
-          packets: null,
-          contentError: response.code
-        });
-      }
-    });
   },
 
   actions: {
@@ -173,6 +125,10 @@ export default Component.extend({
       } else {
         this.toggleProperty('showMetaDetails');
       }
+    },
+
+    updateReconstructionView(viewType) {
+      this.set('reconstructionType', viewType);
     }
   }
 });

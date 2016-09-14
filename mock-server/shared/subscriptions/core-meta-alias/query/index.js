@@ -1,6 +1,6 @@
 export default {
-  subscriptionDestination: '/user/queue/investigate/alias',
-  requestDestination: '/ws/investigate/alias',
+  subscriptionDestination: '/user/queue/investigate/aliases',
+  requestDestination: '/ws/investigate/aliases',
   message(/* frame */) {
     return {
       meta: {
