@@ -268,7 +268,6 @@ public class ApiUserController extends BaseController{
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
 		}
-
 		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null);
 		usersByFilter.stream().forEach(user -> addTagToUser(user, tagNames, addTag));
 		return Response.status(Response.Status.OK).build();
@@ -514,6 +513,9 @@ public class ApiUserController extends BaseController{
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
 	public Response followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch) {
+		if (userRestFilter.getSize() == null) {
+			userRestFilter.setSize(Integer.MAX_VALUE);
+		}
 		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
 		if (CollectionUtils.isNotEmpty(users.getData())) {
 			users.getData().forEach(userDetailsBean -> {
