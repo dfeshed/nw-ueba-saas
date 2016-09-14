@@ -108,6 +108,26 @@
           </div>
         </code>
       {{/spec-member}}
+
     {{/spec-category}}
+
+    {{#spec-category title="Customizations"}}
+      {{#spec-member title="Update the Prompt"}}
+        {{#rsa-form-select label='Select Label' prompt='Look this is updated!'}}
+          <option value='1'>Val 1</option>
+          <option value='2'>Val 2</option>
+        {{/rsa-form-select}}
+
+        <code>
+          <div>
+            &#123;{#rsa-form-select label='Select Label' prompt='Look this is updated!'}}
+            <div>&lt;option value='1'>Val 1&lt;/option></div>
+            <div>&lt;option value='2'>Val 2&lt;/option></div>
+            &#123;{/rsa-form-select}}
+          </div>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+
   </div>
 </hbox>
