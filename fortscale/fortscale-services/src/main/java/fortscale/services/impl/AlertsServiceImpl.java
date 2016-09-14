@@ -75,8 +75,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 		alert = userScoreService.updateAlertContirubtion(alert);
 		alert = alertsRepository.save(alert);
-		userScoreService.recalculateUserScore(alert.getEntityName());
-		userWithAlertService.recalculateNumberOfUserAlertsByUserName(alert.getEntityName());
+		userScoreService.recalculateUserScore(alert.getEntityId());
+		userWithAlertService.recalculateNumberOfUserAlertsByUserId(alert.getEntityId());
 		return alert;
 	}
 
