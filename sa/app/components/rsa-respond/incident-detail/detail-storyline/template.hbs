@@ -1,74 +1,56 @@
 {{#rsa-content-section-header}}
-  Storyline
-  {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}}
-  to
-  {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
+  {{t 'incident.details.storyline.header'}} |
+  <span class="date">
+    {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}}
+    {{t 'incident.details.storyline.to'}}
+    {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
+  </span>
 {{/rsa-content-section-header}}
-<vbox class='rsa-response-storyline'>
-  <hbox fit>
-    <vbox xs='1' class='rsa-response-storyline__timeSection'>
-      <div class='rsa-response-storyline__time'>
-        <hbox fit>
-          <vbox xs="12" class='rsa-response-storyline__timedivider'>
-            {{rsa-content-datetime displayTime=false timestamp=alerts.lastObject.alert.timestamp}}
-          </vbox>
-        </hbox>
-        <hbox fit>
-          <vbox xs="12" class='rsa-response-storyline__times'>
-            {{rsa-content-datetime displayDate=false timestamp=alerts.lastObject.alert.timestamp}}
-          </vbox>
-        </hbox>
-        <hbox>
-          <vbox xs="12" class='rsa-response-storyline__time__text'>
-            {{t 'incident.details.storyline.cAndc'}}
-          </vbox>
-        </hbox>
-        {{#unless (is-equal alerts.lastObject.alert.timestamp alerts.firstObject.alert.timestamp)}}
-          <hbox>
-            <vbox xs="12" class='rsa-response-storyline__times'>
-              {{rsa-content-datetime displayDate=false timestamp=alerts.firstObject.alert.timestamp}}
-            </vbox>
-          </hbox>
-        {{/unless}}
+
+<ul class='storyline'>
+  {{#each indicators as |indicator|}}
+    <li>
+      {{#unless indicator.alert.hideDate}}
+        <div class="date-section timeline">
+          {{rsa-content-datetime displayTime=false timestamp=indicator.alert.timestamp}}
+        </div>
+        <div class="content"></div>
+      {{/unless}}
+    </li>
+    <li>
+      <div class="time-section timeline">
+        {{rsa-content-datetime displayDate=false timestamp=indicator.alert.timestamp}}
       </div>
-    </vbox>
-    <vbox xs='11' class='main'>
-      <div>
-        <hbox class='rsa-response-storyline__main-row'>
-          <vbox class='rsa-response-storyline__main' xs='10'>
-            <div>
-              <span class='indicator_type'>Threat Analysis</span>
-              detected C&C communication {{alertCount}} times from
-              {{#link-to 'protected.respond.incident.context' alerts.firstObject.alert.groupby_source_ip}}
-                <span class="contextInfo">{{alerts.firstObject.alert.groupby_source_ip}}</span>
-              {{/link-to}}
-              to
-              {{#link-to 'protected.respond.incident.context' alerts.firstObject.alert.groupby_domain}}
-                <span class="contextInfo">{{alerts.firstObject.alert.groupby_domain}}</span>
-              {{/link-to}}
-            </div>
-          </vbox>
-          <vbox class='rsa-response-storyline__main_icon' xs='2'>
-            <div>
-              {{#rsa-form-button isIconOnly=true}}
-                {{#link-to 'protected.respond.incident.details' 'Indicator'}}
-                  {{rsa-icon name="arrow-right-12" size="smaller"}}
-                {{/link-to}}
-              {{/rsa-form-button}}
-            </div>
-          </vbox>
-        </hbox>
-        <hbox>
-          <vbox class='rsa-response-storyline__subItem'>
-            [Placeholder] Domain is new to the network
-          </vbox>
-        </hbox>
-        <hbox>
-          <vbox class='rsa-response-storyline__subItem'>
-            [Placeholder] whoIs information not available
-          </vbox>
-        </hbox>
+      <div class='icon'>
+        {{#if (is-equal indicator.alert.clientSource 'C2')}}
+          {{rsa-icon name="link-2" size="small"}}
+        {{else if (is-equal indicator.alert.clientSource 'ECAT')}}
+          {{rsa-icon name="computer-imac-1" size="small"}}
+        {{else if (is-equal indicator.alert.clientSource 'UBA')}}
+          {{rsa-icon name="person-2" size="small"}}
+        {{else}}
+          {{rsa-icon name="flag-triangle-2" size="small"}}
+        {{/if}}
       </div>
-    </vbox>
-  </hbox>
-</vbox>
+      <div class="content main">
+        <div class="main_row">
+          <span class="source">{{indicator.originalHeaders.device_product}}</span> | <span class="context">128.164.160.2</span> | {{indicator.originalHeaders.name}} | {{indicator.alert.risk_score}}
+        </div>
+        <div class="main__icon">
+          {{#rsa-form-button isIconOnly=true}}
+            {{#if (is-equal indicator.alert.clientSource 'C2')}}
+              {{#link-to 'protected.respond.incident.details' 'C2'}}
+                {{rsa-icon name="arrow-right-12" size="smaller"}}
+              {{/link-to}}
+            {{else}}
+              {{#link-to 'protected.respond.incident.details' 'Indicator'}}
+                {{rsa-icon name="arrow-right-12" size="smaller"}}
+              {{/link-to}}
+            {{/if}}
+          {{/rsa-form-button}}
+        </div>
+      </div>
+    </li>
+  {{/each}}
+</ul>
+<div class="overlay"></div>

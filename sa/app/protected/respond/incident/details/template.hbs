@@ -1,1 +1,7 @@
-{{rsa-respond/incident-detail/detail-alertsgrid model=model class="spacer" sortAction=(route-action 'sortAction')}}
+{{#if (is-equal model null)}}
+  <div class="construction">
+    Under construction
+  </div>
+{{else}}
+  {{rsa-respond/incident-detail/detail-alertsgrid model=model class="spacer" sortAction=(route-action 'sortAction')}}
+{{/if}}

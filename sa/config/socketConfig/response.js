@@ -16,6 +16,10 @@ module.exports = function(environment) {
         requestDestination: '/ws/response/incidents',
         cancelDestination: '/ws/response/cancel'
       },
+      storyline:{
+        subscriptionDestination: '/user/queue/incident/storyline',
+        requestDestination: '/ws/response/incident/storyline'
+      },
       notify: {
         subscriptionDestination: '/topic/incidents/owner/%@',
         requestDestination: '/dummy/incidents/owner',
@@ -28,6 +32,13 @@ module.exports = function(environment) {
       updateRecord: {
         subscriptionDestination: '/queue/incidents/update',
         requestDestination: '/ws/response/incidents/update'
+      }
+    },
+    storyline: {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/incident/storyline',
+        requestDestination: '/ws/response/incident/storyline'
       }
     },
     'category-tags': {

@@ -36,8 +36,26 @@ export default Route.extend({
 
   model(params) {
     this.set('incidentId', params.incident_id);
+    let relatedIndicators = [];
 
+    this.request.streamRequest({
+      method: 'stream',
+      modelName: 'storyline',
+      query: {
+        filter: [{ field: '_id', value: params.incident_id }],
+        sort: [{ field: 'alert.timeStamp', descending: true }]
+      },
+      onResponse: ({ data }) => {
+        if (typeOf(data.relatedIndicators) !== 'undefined') {
+          relatedIndicators.pushObjects(data.relatedIndicators);
+        }
+      },
+      onError(response) {
+        Logger.error('Error loading storyline', response);
+      }
+    });
     return hash({
+      relatedIndicators,
       incident: this.store.queryRecord('incident', { incidentId: params.incident_id }),
       users: this.store.findAll('user'),
       categoryTags: this.store.findAll('category-tags')

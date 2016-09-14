@@ -1,92 +1,108 @@
 .rsa-respond-storyline-wrapper {
   background-color: rsa-color(black, null, $rsa-translucent);
+  .date {
+    @include rsa-font(header);
+    white-space: nowrap;
+    margin-top: rsa-whitespace(least);
+    display: inline-block;
+  }
 }
 
-.rsa-response-detail__bottom{
-  &-header{
-    @include rsa-font(header, large);
-    color: rsa-color(gray);
-    border-top: 1px solid rsa-color(gray);
-    padding: rsa-whitespace(less);
-    margin-bottom: rsa-whitespace(least);
+ul.storyline{
+  li {
+    display: flex;
   }
-  &-text{
+
+  li div.timeline {
+    text-align: center;
+    padding: rsa-whitespace();
+    @include rsa-font(header, small);
+    @include rsa-font(bold);
+    color: rsa-color(gray, lightest);
+    width: 9rem;
+  }
+
+  li div.date-section {
+    padding: rsa-whitespace();
+    color: rsa-color(blue, dark);
+    @include rsa-font(small, header);
+    @include rsa-font(bold);
+    width: 7rem;
+    background-color: rsa-color(black, null, $rsa-nearly-transparent);
+  }
+
+  li div.time-section {
+    margin-top: rsa-whitespace(least);
+  }
+
+  li div.content {
+    flex: 1;
+  }
+  .main__icon {
+    flex: 0 0 auto;
+    padding-top: rsa-whitespace(less);
+    padding-right: rsa-whitespace();
+  }
+
+  li div.main {
+    margin-top: rsa-whitespace(less);
     color: rsa-color(white);
-    padding: rsa-whitespace() 0 0 rsa-whitespace(more);
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    background-color: rsa-color(black, null, $rsa-nearly-transparent);
+  }
+
+  .main_row {
+    padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(less) rsa-whitespace();
+    flex: 1;
+  }
+
+  .icon {
+    position: absolute;
+    color: rsa-color(blue, dark);
+    background: rsa-color(black);
+    margin-top: rsa-whitespace();
+    border-radius: 25px;
+    height: 10px;
+    padding: 7px;
+    width: 10px;
+    left: 8rem;
+    z-index: 2;
+    border: 2px solid rsa-color(blue, dark);
+  }
+
+  .source {
+    color: rsa-color(blue, dark);
+  }
+  .context {
+    text-decoration: underline;
   }
 }
-.rsa-response-storyline {
-  .rsa-response-storyline__main_icon {
-    .rsa-form-button-wrapper.is-icon-only {
-      float: right;
-    }
+.rsa-application-layout-manager.panel-B-quarter {
+  .overlay{
+    top: 3.8rem;
   }
+  .date {
+    margin-top: rsa-whitespace();
+  }
+  .main {
+    line-height: 1.4rem;
+  }
+}
+.rsa-application-layout-manager.panel-B-half {
+  .main {
+    line-height: 1.4rem;
+  }
+}
 
-    margin-top: 2px;
-    .main {
-      padding-right: 0;
-    }
-    .journalAction{
-      visibility: hidden;
-      margin-right: rsa-whitespace(least);
-    }
-    &__main-row:hover{
-      .journalAction{
-        visibility: visible;
-      }
-    }
-    &__time__text{
-      color: #EFBC98;
-      padding: 0 rsa-whitespace(least);
-    }
-    &__times{
-      padding: rsa-whitespace(less);
-    }
-    .end{
-      position: absolute;
-      bottom: 0;
-    }
-    .indicator_type{
-      color: rsa-color(blue);
-    }
-    &__timeSection{
-      text-align: center;
-      @include rsa-font(header, small);
-      color:#AE6900;
-      border-right: 2px dotted rsa-color(gray);
-      background-color: rsa-color(black, null, $rsa-translucent);
-    }
-    &__timedivider {
-      color: #007FB6;
-      padding: rsa-whitespace(least);
-    }
-
-    &__main,
-    &__subItem,
-    &__main_icon{
-      background-color: rsa-color(black, null, $rsa-translucent);
-      color: rsa-color(white);
-    }
-    &__subItem {
-      margin-top: 2px;
-    }
-    &__main,
-    &__subItem{
-      padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
-    }
-    &__main_icon {
-      white-space: nowrap;
-    }
-    &__main(){
-      margin-left: rsa-whitespace();
-    }
-    &__subItem{
-      margin-left: rsa-whitespace(more);
-    }
-    .contextInfo{
-      text-decoration: underline;
-    }
-    .rsa-form-button-wrapper.is-icon-only .rsa-form-button{
-      line-height: 2em;
-    }
+.overlay {
+  width: 9rem;
+  border-right: 2px solid rsa-color(blue, dark);
+  height: 95%;
+  overflow: hidden;
+  background-color:  rsa-color(black, null, $rsa-nearly-transparent);
+  top: 2.5rem;
+  z-index: 1;
+  position: absolute;
 }

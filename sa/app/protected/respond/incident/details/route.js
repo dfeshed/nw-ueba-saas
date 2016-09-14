@@ -35,6 +35,9 @@ export default Route.extend({
   sort: [{ field: 'risk_score', descending: true }],
 
   model(params, transition) {
+    if (params.detail_id !== 'C2') {
+      return null;
+    }
     let alerts = [];
     let sort = this.get('sort');
 

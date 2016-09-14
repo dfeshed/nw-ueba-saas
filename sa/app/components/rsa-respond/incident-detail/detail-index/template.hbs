@@ -13,7 +13,6 @@
     {{#rsa-content-section-header}}
       <h1>{{t 'incident.details.overview.title'}}</h1>
     {{/rsa-content-section-header}}
-
     <div class="rsa-respond-detail-overview-wrapper">
       {{#rsa-content-accordion class='rsa-respond-detail-overview__accordion' label=(t 'incident.details.overview.about')}}
         {{rsa-respond/incident-detail/detail-overview saveAction=(route-action 'saveAction') model=model}}
@@ -26,7 +25,7 @@
   {{/rsa-application-layout-panel}}
 
   {{#rsa-application-layout-panel class="panel-B rsa-respond-storyline-wrapper"}}
-    {{rsa-respond/incident-detail/detail-storyline model=model}}
+    {{rsa-respond/incident-detail/detail-storyline model=storyline}}
   {{/rsa-application-layout-panel}}
 
   {{#rsa-application-layout-panel class="panel-C rsa-respond-detail-wrapper"}}

@@ -2,7 +2,7 @@ export default [
   {
     field: 'alert.risk_score',
     title: 'incident.details.alertsGrid.severity',
-    width: '15%',
+    width: '10%',
     class: 'rsa-riskscore',
     dataType: 'custom',
     componentClass: 'rsa-content-badge-score',
@@ -12,7 +12,7 @@ export default [
     field: 'receivedTime',
     title: 'incident.details.alertsGrid.dateCreated',
     class: 'rsa-createddate',
-    width: '20%',
+    width: '15%',
     dataType: 'date-time',
     componentClass: 'rsa-content-datetime'
   },

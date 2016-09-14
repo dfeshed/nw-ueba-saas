@@ -1,3 +1,8 @@
 .rsa-respond-detail-layout-manager {
   margin-top: 2px;
 }
+.construction {
+  @include rsa-font(header, large);
+  color: rsa-color(gray, lightest);
+  margin: rsa-whitespace(most);
+}

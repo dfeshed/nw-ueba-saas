@@ -185,8 +185,8 @@ export default $.extend({}, BaseTranslations, {
         source: 'Source'
       },
       storyline: {
-        header: 'Storyline {{startDateTime}} to {{endDateTime}}',
-        cAndc: 'Command & Control'
+        header: 'Storyline',
+        to: 'to'
       },
       overview: {
         title: 'Overview',
