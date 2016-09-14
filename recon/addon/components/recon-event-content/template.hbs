@@ -9,19 +9,19 @@
     --}}
     {{#if packetFields}}
       <hbox class="event-content-box">
-        {{recon-event-detail-packets eventId=eventId endpointId=endpointId packetFields=packetFields}}
+        {{recon-event-detail/packets eventId=eventId endpointId=endpointId packetFields=packetFields}}
       </hbox>
     {{/if}}
   {{/if}}
 
   {{#if isFile}}
-    {{recon-event-detail-files eventId=eventId endpointId=endpointId}}
+    {{recon-event-detail/files eventId=eventId endpointId=endpointId}}
   {{/if}}
 
 {{/if}}
 
 {{#if showMetaDetails}}
   <hbox xs="4" class="event-content-box">
-    {{recon-meta-container meta=meta}}
+    {{recon-meta-content meta=meta}}
   </hbox>
 {{/if}}

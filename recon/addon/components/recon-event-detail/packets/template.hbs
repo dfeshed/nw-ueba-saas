@@ -1,0 +1,7 @@
+{{#each packets as |packet index|}}
+  {{recon-event-detail/single-packet
+    index=index
+    packet=packet
+    packetFields=packetFields
+  }}
+{{/each}}
