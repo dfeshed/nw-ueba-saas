@@ -150,8 +150,8 @@ export default Ember$.extend({}, BaseSelectors, {
     },
     'incident': {
       'closeButton': 'div[class^=rsa-incident-detail-header__buttons__close-incident]',
-      'storylineElm': 'vbox[class=rsa-response-storyline]',
-      'storylineTimeTxt': 'vbox[class^=rsa-response-storyline__times] span[class=datetime]',
+      'storylineElm': '.rsa-respond-storyline-wrapper',
+      'storylineTimeTxt': '.rsa-respond-storyline-wrapper .rsa-content-datetime',
       'storylineMainRow': 'hbox[class=rsa-response-storyline__main-row]',
       'journalEntryNote': 'div[class$=rsa-journal-entry] label[class^=rsa-journal-entry__edit-note]',
       'journalEntryWrapper': 'div[class=rsa-journal-wrapper__journal-viewport]',
