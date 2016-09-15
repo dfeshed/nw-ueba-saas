@@ -173,7 +173,17 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	}
 
 	@Override
-	public void addUserTags(String username, List<String> tags) {
+	public void addUserTags(String username, List<String> tags) throws Exception {
+		for (String tag: tags) {
+			//if there's no such tag in the system
+			if (tagService.getTag(tag) == null) {
+				//try to add the new tag
+				if (!tagService.addTag(new Tag(tag))) {
+					//if failed
+					throw new Exception("failed to add new tag - " + tag);
+				}
+			}
+		}
 		Set<String> userTags = taggedUsers.get(username);
 		if (userTags == null) {
 			userTags = new HashSet();

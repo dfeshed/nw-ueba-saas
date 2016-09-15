@@ -239,7 +239,7 @@ public class ApiUserController extends BaseController{
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.POST)
 	@LogException
-	public void addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
+	public Response addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
 		User user = userRepository.findOne(id);
 		JSONObject params = new JSONObject(body);
 		String tag;
@@ -253,7 +253,12 @@ public class ApiUserController extends BaseController{
 		} else {
 			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
 		}
-		addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
+		try {
+			addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
+		} catch (Exception ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+		}
+		return Response.status(Response.Status.OK).build();
 	}
 
 	/**
@@ -269,7 +274,13 @@ public class ApiUserController extends BaseController{
 			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
 		}
 		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null);
-		usersByFilter.stream().forEach(user -> addTagToUser(user, tagNames, addTag));
+		for (User user: usersByFilter) {
+			try {
+				addTagToUser(user, tagNames, addTag);
+			} catch (Exception ex) {
+				return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+			}
+		}
 		return Response.status(Response.Status.OK).build();
 	}
 
@@ -578,7 +589,7 @@ public class ApiUserController extends BaseController{
 		return sortUserDesc;
 	}
 
-	private void addTagToUser(User user, List<String> tags, boolean addTag) {
+	private void addTagToUser(User user, List<String> tags, boolean addTag) throws Exception {
 		if (addTag) {
 			userTagService.addUserTags(user.getUsername(), tags);
 		} else {
