@@ -12,6 +12,7 @@ export default Component.extend({
   classNameBindings: [':rsa-line-series', 'clazzName'],
   tagName: 'path',
 
+  duration: 300,
   data: [[]],
   dataIndex: 0,
   hoverData: null,
@@ -67,18 +68,18 @@ export default Component.extend({
   },
 
   draw(datum, hoverData) {
-    const { xAccessor, yAccessor, clazzName } = this.getProperties('xAccessor', 'yAccessor', 'clazzName');
+    const { xAccessor, yAccessor, clazzName, duration } = this.getProperties('xAccessor', 'yAccessor', 'clazzName', 'duration');
     const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('lineFn');
     const points = d3.select(`.points.${clazzName}`).selectAll('circle')
       .data(datum);
 
     d3.select(this.element)
       .datum(datum)
-      .transition().duration(750)
+      .transition().duration(duration)
       .attr('d', pathFn);
 
     points.attr('opacity', (d) => this.showNode(hoverData, d))
-      .transition().duration(750)
+      .transition().duration(duration)
       .attr('cx', xAccessor)
       .attr('cy', yAccessor);
 

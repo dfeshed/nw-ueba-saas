@@ -18,6 +18,7 @@ export default Component.extend({
   classNames: ['rsa-chart'],
   layout,
 
+  duration: 300,
   chartWidth: DEFAULT_WIDTH,
   chartHeight: DEFAULT_HEIGHT,
   data: null,

@@ -9,33 +9,45 @@
     xDomain=xDomain
     xProp=xProp
     yProp=yProp
-    as |data xScale yScale graphWidth graphHeight hoverData|
+    duration=50 as |params|
   }}
     {{rsa-chart-grids
-      xScale=xScale
-      yScale=yScale
+      xScale=params.xScale
+      yScale=params.yScale
       yTickCount=6
-      width=graphWidth
-      height=graphHeight
+      width=params.graphWidth
+      height=params.graphHeight
     }}
     {{rsa-line-series
-      data=data
+      data=params.data
       dataIndex=1
-      xScale=xScale
-      yScale=yScale
+      xScale=params.xScale
+      yScale=params.yScale
       xProp=xProp
       yProp=yProp
-      hoverData=hoverData}}
-    {{rsa-line-series
-      data=data
-      dataIndex=0
-      xScale=xScale
-      yScale=yScale
-      xProp=xProp
-      yProp=yProp
-      hoverData=hoverData
+      hoverData=params.hoverData
+      duration=params.duration
     }}
-    {{rsa-x-axis height=graphHeight scale=xScale tickFormat=tickformat}}
-    {{rsa-y-axis scale=yScale tickCount=6}}
+    {{rsa-line-series
+      data=params.data
+      dataIndex=0
+      xScale=params.xScale
+      yScale=params.yScale
+      xProp=xProp
+      yProp=yProp
+      hoverData=params.hoverData
+      duration=params.duration
+    }}
+    {{rsa-x-axis
+      height=params.graphHeight
+      scale=params.xScale
+      tickFormat=tickformat
+      duration=params.duration
+    }}
+    {{rsa-y-axis
+      scale=params.yScale
+      tickCount=6
+      duration=params.duration
+    }}
   {{/rsa-chart}}
 </section>

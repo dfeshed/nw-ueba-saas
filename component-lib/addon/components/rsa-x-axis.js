@@ -15,6 +15,7 @@ export default Component.extend({
   classNames: ['rsa-x-axis'],
   tagName: 'g',
 
+  duration: 300,
   height: 115,
   rotation: 0,
   scale: null,
@@ -31,10 +32,6 @@ export default Component.extend({
       const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
       const axis = d3.select(this.element);
       const format = this.get('tickFormat');
-      if (scale.range) {
-        const range = scale.range();
-        scale.range([range[0], range[1] - 1]);
-      }
       axis.call(d3.axisBottom(scale).ticks(tickCount).tickFormat(format));
       if (rotation) {
         this.rotateAxis(axis, rotation);
@@ -44,24 +41,15 @@ export default Component.extend({
 
   didUpdateAttrs() {
     this._super(...arguments);
-    const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
+    const { rotation, tickCount, duration } = this.getProperties('rotation', 'tickCount', 'duration');
     const axis = d3.select(this.element);
     const format = this.get('tickFormat');
     const scale = this.get('scale');
-    // So I noticed that the right side of the domain
-    // path is clipped from view. This is because the
-    // path that's generated is moved right 0.5 pixels
-    // on the left and right sided. So, we need to
-    // subtract 1px to account for this.
-    if (scale.range) {
-      const range = scale.range();
-      scale.range([range[0], range[1] - 1]);
-    }
-    this.update(axis, scale, rotation, tickCount, format);
+    this.update(axis, scale, rotation, tickCount, format, duration);
   },
 
-  update(axis, scale, rotation, tickCount, format) {
-    axis.transition().duration(750)
+  update(axis, scale, rotation, tickCount, format, duration) {
+    axis.transition().duration(duration)
       .call(d3.axisBottom(scale).ticks(tickCount).tickFormat(format));
     if (rotation) {
       this.rotateAxis(axis, rotation);

@@ -20,7 +20,7 @@ test('generates axis when supplied with required attributes', function(assert) {
   this.set('scale', this.scale);
   this.render(hbs `{{rsa-x-axis scale=scale}}`);
   setTimeout(function() {
-    assert.equal(this.$('.domain').attr('d'), 'M0.5,6V0.5H399.5V6', 'Testing to see if the correct domain path was generated');
+    assert.equal(this.$('.domain').attr('d'), 'M0.5,6V0.5H400.5V6', 'Testing to see if the correct domain path was generated');
     assert.equal(this.$('.tick').length, '11', 'Testing to see if the correct number of tick marks were generated');
     done();
   }, 50);
