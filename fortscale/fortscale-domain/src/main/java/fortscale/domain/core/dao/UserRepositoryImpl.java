@@ -644,7 +644,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 
 		if (userRestFilter.getSeverity() != null){
-			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()).lte(userRestFilter.getMaxScore()));
+			criteriaList.add(new Criteria(User.scoreField).gte(userRestFilter.getMinScore()).lt(userRestFilter.getMaxScore()));
 		}else if (userRestFilter.getMinScore() != null){
 			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}

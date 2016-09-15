@@ -36,13 +36,8 @@ import java.util.Set;
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
 		List<User> result = new ArrayList<>();
-		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
 
-		if (userRestFilter.getSeverity()!= null){
-			Double[] range = userScoreService.getSeverityRange().get(userRestFilter.getSeverity());
-			userRestFilter.setMinScore(range[0]);
-			userRestFilter.setMaxScore(range[1]);
-		}
+		Set<String> relevantUsers = filterPreparations(userRestFilter);
 
 		if (shouldStop(userRestFilter, relevantUsers)) {
 			return result;
@@ -50,6 +45,17 @@ import java.util.Set;
 
 		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
 		return result;
+	}
+
+	private Set<String> filterPreparations(UserRestFilter userRestFilter) {
+		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
+
+		if (userRestFilter.getSeverity()!= null){
+			Double[] range = userScoreService.getSeverityRange().get(userRestFilter.getSeverity());
+			userRestFilter.setMinScore(range[0]);
+			userRestFilter.setMaxScore(range[1]);
+		}
+		return relevantUsers;
 	}
 
 	/**
@@ -87,7 +93,7 @@ import java.util.Set;
 	}
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter) {
-		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
+		Set<String> relevantUsers = filterPreparations(userRestFilter);
 
 		if (shouldStop(userRestFilter, relevantUsers)) {
 			return 0;
