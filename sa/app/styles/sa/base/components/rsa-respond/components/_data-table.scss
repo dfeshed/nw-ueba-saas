@@ -4,4 +4,10 @@
   .rsa-data-table-header-row{
     align-items: center;
   }
+  .rsa-data-table-body-row:hover {
+    background-color: rgba(0,0,0,$rsa-nearly-transparent);
+  }
+  .rsa-data-table-body-row:active {
+    background-color: rgba(0,0,0,$rsa-translucent);
+  }
 }
