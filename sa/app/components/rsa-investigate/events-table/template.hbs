@@ -1,0 +1,49 @@
+<header class="rsa-investigate-events-table__header">
+  <h2>
+    {{t "investigate.events.title"}}
+    <span class="rsa-investigate-events-table__sums">
+      ({{rsa-investigate/event-counter
+        class="rsa-investigate-events-table__sums-count"
+        count=items.length
+        status=status
+        goAction=goAction
+        stopAction=stopAction
+        retryAction=retryAction
+      }}
+      {{#if totalCount}}
+        <span class="rsa-investigate-events-table__sums-of">{{t 'list.of'}}</span>
+        {{rsa-investigate/event-counter
+          class="rsa-investigate-events-table__sums-total"
+          count=totalCount
+          status=totalStatus
+          threshold=totalThreshold
+          retryAction=totalRetryAction
+        }}
+      {{/if}})
+    </span>
+  </h2>
+</header>
+<section class="rsa-investigate-events-table__body">
+  {{rsa-progress-bar
+    percent=percent
+    enabled=(is-equal status 'streaming')
+  }}
+  {{#rsa-data-table
+    lazy=true
+    fitToWidth=true
+    items=items
+    columnsConfig=columnsConfig
+    aliases=aliases
+    onRowClick=rowClickAction
+  }}
+    {{#rsa-data-table/header as |column index|}}
+      {{#with (meta-key-alias column.field language) as |names|}}
+        <h2 class="title" title="{{if column.title column.title names.bothNames}}">
+          <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
+        </h2>
+      {{/with}}
+    {{/rsa-data-table/header}}
+    {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
+    {{rsa-data-table/load-more status=status clickAction=loadMoreAction}}
+  {{/rsa-data-table}}
+</section>

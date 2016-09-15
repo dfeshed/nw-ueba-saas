@@ -38,6 +38,7 @@ function _parseNumberAndUnits(value) {
 }
 
 export default Mixin.create(CspStyleMixin, HasTableParent, {
+  classNameBindings: ['_resolvedWidthIsAuto:auto-width'],
   styleBindings: ['_resolvedWidth:width'],
 
   /**
@@ -83,5 +84,8 @@ export default Mixin.create(CspStyleMixin, HasTableParent, {
       _parseNumberAndUnits(this.get('column.width')) ||
       _parseNumberAndUnits(DEFAULT_WIDTH);
     return w.auto ? 'auto' : `${w.num}${w.units || 'px'}`;
-  })
+  }),
+
+  // Resolves to `true` when `resolvedWidth` is 'auto'.
+  _resolvedWidthIsAuto: computed.equal('_resolvedWidth', 'auto')
 });

@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import Services from './services';
-import EventColumns from './event-columns';
+import EventColumnGroups from './event-column-groups';
 import Tree from 'sa/utils/tree/tree';
 import Meta from './meta';
 import Recon from './recon';
@@ -27,8 +27,8 @@ export default EmberObject.extend({
   // Pointer to the previously shown query node in the `queryTree`. Used for transitioning from node to node.
   lastQueryNode: undefined,
 
-  // Columns to display for events data table.
-  eventColumns: [].concat(EventColumns),
+  // Represents groups of columns to display for events data table.
+  eventColumnGroups: EventColumnGroups.create(),
 
   /**
    * State object for the event timeline of the current query.

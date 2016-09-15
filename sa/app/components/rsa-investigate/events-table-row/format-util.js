@@ -1,12 +1,39 @@
 import Ember from 'ember';
 import moment from 'moment';
 
-const { isEmpty, merge } = Ember;
+const { isArray, isEmpty, merge } = Ember;
 
 const aKB = 1024;
 const aMB = aKB * 1024;
 const aGB = aMB * 1024;
 const aTB = aGB * 1024;
+
+/**
+ * Computes a formatted value for the given field of a given Core event record.
+ * If a single field name is given, only that field's value is inspected in the record. Otherwise, if an array of field
+ * names is given, will loop thru the fields until a value that is not `undefined` is found.
+ * @param {string|string[]} field Either a single field or array of fields whose values are to be inspected.
+ * @param {object} item The Core event record to be inspected.
+ * @param {object} [opts] Optional hash of configuration settings.
+ * @returns {{ raw: *, alias: string, rawAndAlias: string }}
+ * @public
+ */
+function value(field, item, opts) {
+  // If given an array of fields, field the first one with a non-`undefined` value.
+  let definedField;
+  if (!isArray(field)) {
+    definedField = field;
+  } else {
+    definedField = field.find((fieldName) => item[fieldName] !== undefined) || field[0];
+  }
+
+  let raw = item[definedField];
+  return {
+    raw,
+    alias: text(definedField, raw, opts),
+    textAndAlias: tooltip(definedField, raw, opts)
+  };
+}
 
 /**
  * Formats a given value for a given field into a user friendly string for display.
@@ -145,6 +172,7 @@ function _parseNumberAndUnits(value) {
 }
 
 export default {
+  value,
   text,
   tooltip,
   width

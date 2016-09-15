@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import RowMixin from 'sa/components/rsa-data-table/mixins/is-row';
-import format from './format-util';
+import columnUtil from './column-util';
 import d3 from 'd3';
 
 const {
+  computed,
   get,
   inject: {
     service
@@ -31,23 +32,13 @@ export default Component.extend(RowMixin, {
     run.schedule('afterRender', this, this._renderCells);
   },
 
-  // Builds the DOM for the table cells.
-  // Typically in Ember this is handled declaratively by defining DOM in a template.hbs file. But that approach
-  // yields to sluggish performance when lazy rendering is turned on, and the user scrolls rapidly through hundreds
-  // of records.  As Ember creates & destroys components on scroll, performance degrades proportionally as the
-  // number & complexity of the components increases. As a @workaround, we implement this component's DOM content
-  // imperatively using D3 rather than template bindings. The performance improvement is quite significant.
-  _renderCells() {
-    if (!this.element) {
-      return;
-    }
-    const $el = d3.select(this.element);
-    const item = this.get('item');
+  // Formatting configuration options. Passed to utils that generate cell DOM.
+  _opts: computed('i18n', 'table.aliases.data', 'timezone.selected', function() {
     const i18n = this.get('i18n');
-    const opts = {
+    return {
       defaultWidth: DEFAULT_WIDTH,
-      timeZone: this.get('timezone.selected'),
       aliases: this.get('table.aliases.data'),
+      timeZone: this.get('timezone.selected'),
       i18n: {
         size: {
           bytes: i18n.t('investigate.size.bytes'),
@@ -63,6 +54,20 @@ export default Component.extend(RowMixin, {
         }
       }
     };
+  }),
+
+  // Builds the DOM for the table cells.
+  // Typically in Ember this is handled declaratively by defining DOM in a template.hbs file. But that approach
+  // yields to sluggish performance when lazy rendering is turned on, and the user scrolls rapidly through hundreds
+  // of records.  As Ember creates & destroys components on scroll, performance degrades proportionally as the
+  // number & complexity of the components increases. As a @workaround, we implement this component's DOM content
+  // imperatively using D3 rather than template bindings. The performance improvement is quite significant.
+  _renderCells() {
+    if (!this.element) {
+      return;
+    }
+    const $el = d3.select(this.element);
+    const item = this.get('item');
 
     // Clear any prior rendered cells. It's important to specify the class name here because we don't
     // want to accidentally remove non-cell DOM (for example, the hidden resizer element!).
@@ -70,24 +75,24 @@ export default Component.extend(RowMixin, {
 
     // For each column, build a cell DOM element.
     (this.get('table.columns') || []).forEach((column) => {
-      const field = get(column, 'field');
-      // Important: Don't use Ember get to read the field value from the data item, because the field could have a dot
-      // ('.') in its name (e.g., 'ip.src'). Ember get would mistake such a field name for a property path (`item.ip.src`).
-      const value = item[field];
-      const tooltip = format.tooltip(field, value, opts);
-      const text = format.text(field, value, opts);
-      const width = format.width(get(column, 'width'));
-      $el.append('div')
-        .classed('rsa-data-table-body-cell', true)
-        .attr('data-field', field)
-        .style('width', width)
-        .append('span')
-        .classed('content', true)
-        .attr('title', tooltip)
-        .text(text);
+      this._renderCell($el, column, item);
     });
   },
 
+  // Builds the DOM for an individual table cell.
+  // Responsible for building the root cell element, then invoking utils for setting the element's width & inner DOM.
+  _renderCell($row, column, item) {
+    const field = get(column, 'field');
+    const opts = this.get('_opts');
+
+    let $cell = $row.append('div')
+      .classed('rsa-data-table-body-cell', true)
+      .attr('data-field', field);
+
+    columnUtil.applyCellWidth($cell, column, opts);
+
+    columnUtil.buildCellContent($cell, field, item, opts);
+  },
 
   // Updates the widths of the existing cell DOMs (if any) to match those in the column models.
   // Normally this could be done declaratively via Ember's template bindings, but due to performance issues this
@@ -96,13 +101,11 @@ export default Component.extend(RowMixin, {
     if (!this.element) {
       return;
     }
-    let cells = this.$('.rsa-data-table-body-cell');
+    const cells = this.$('.rsa-data-table-body-cell');
+    const opts = this.get('_opts');
     (this.get('table.columns') || []).forEach((column, index) => {
-      d3.select(cells[index])
-        .style(
-          'width',
-          format.width(get(column, 'width'), { defaultWidth: DEFAULT_WIDTH })
-        );
+      let $cell = d3.select(cells[index]);
+      columnUtil.applyCellWidth($cell, column, opts);
     });
   },
 

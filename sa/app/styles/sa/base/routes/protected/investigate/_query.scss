@@ -261,46 +261,30 @@
     }
   }
 
-  .rsa-data-table {
+  .rsa-investigate-events-table {
     position: absolute;
     top: $investigateTimelineHeight;
     bottom: 0;
     left: 0;
     right: 0;
 
-    &-header {
-      /* @workaround Clear defaults that were introduced for Response UI. */
-      padding: 0;
-      margin: 0;
-      border: 0;
-    }
-
-    &-header-cell {
-      border-right: 1px solid rsa-color(gray, base, $rsa-translucent);
-
-      .title {
-        display: block;
-        padding: rsa-whitespace(less) rsa-whitespace();
-      }
-    }
-
-    &-body-cell {
-      border-right: 1px dashed rsa-color(black,base,$rsa-nearly-transparent);
-
-      .content {
-        display: block;
-        padding: rsa-whitespace();
-      }
-    }
-
-    &-body-row {
-      border-bottom: 1px solid rsa-color(black,base,$rsa-nearly-transparent);
-    }
-
-    &-header {
+    &__header {
       background-color: rsa-color(black,base,$rsa-nearly-transparent);
     }
+
+    .rsa-data-table {
+      &-header-cell,
+      &-body-cell {
+        border-right: 1px dashed rsa-color(black,base,$rsa-nearly-transparent);
+      }
+
+      &-header,
+      &-body-row {
+        border-bottom: 1px solid rsa-color(black,base,$rsa-nearly-transparent);
+      }
+    }
   }
+
 
   .rsa-investigate-time-range {
     white-space: nowrap;

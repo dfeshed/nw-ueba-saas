@@ -27,7 +27,24 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-header-row {
     white-space: nowrap;
     position: relative;
-    @include rsa-row(left,fill);
+  }
+
+  &.fit-to-width {
+    .rsa-data-table {
+      &-body-row,
+      &-header-row {
+        @include rsa-row(justify,fill);
+      }
+    }
+  }
+
+  &:not(.fit-to-width) {
+    .rsa-data-table {
+      &-body-row,
+      &-header-row {
+        @include rsa-row(left,fill);
+      }
+    }
   }
 
   &-header-row {
@@ -50,6 +67,14 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     display: inline-block;
     overflow: hidden;
     @include rsa-vendor-prefix(flex-shrink, 0);
+
+    /* By default cell widths are fixed and don't expand. */
+    @include rsa-vendor-prefix(flex-grow,0);
+
+    /* Except for cells which are marked as auto-width; those can expand. */
+    &.auto-width {
+      @include rsa-vendor-prefix(flex-grow,1);
+    }
   }
 
   &-header-cell {

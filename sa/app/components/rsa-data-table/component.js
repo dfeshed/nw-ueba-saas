@@ -16,6 +16,7 @@ const DEFAULT_COLUMN_WIDTH = 100;
 export default Component.extend(DomWatcher, {
   tagName: 'section',
   classNames: 'rsa-data-table',
+  classNameBindings: ['fitToWidth'],
 
   /**
    * Used by descendant components to find their data table ancestor.
@@ -23,6 +24,16 @@ export default Component.extend(DomWatcher, {
    * @private
    */
   isDataTable: true,
+
+  /**
+   * If truthy, indicates that rows should match the width of the table, growing if need be.
+   * Otherwise, rows will only grow as wide as needed to accommodate their columns' widths.
+   * Typically `fitToWidth` is used when 1 or more column widths are `auto`.
+   * @type {boolean}
+   * @default false
+   * @private
+   */
+  fitToWidth: false,
 
   /**
    * If true, indicates that table will lazily render its data rows; that is, it will only render the DOM for

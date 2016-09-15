@@ -1,0 +1,113 @@
+.rsa-investigate-events-table {
+  @include rsa-col(justify,fill);
+
+  &__header {
+    @include rsa-vendor-prefix(flex-shrink,0);
+    @include rsa-vendor-prefix(flex-grow,0);
+
+    h2 {
+      @include rsa-font(header, small);
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+  }
+
+  &__body {
+    @include rsa-vendor-prefix(flex-grow,1);
+    position: relative;
+  }
+
+  .rsa-progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .rsa-data-table {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+
+    &-header {
+      /* @workaround Clear defaults that were introduced for Response UI. */
+      padding: 0;
+      margin: 0;
+      border: 0;
+    }
+
+    &-header-cell {
+      .title {
+        display: block;
+        padding: rsa-whitespace(less) rsa-whitespace();
+      }
+    }
+
+    &-body-cell {
+      .content {
+        display: block;
+        padding: rsa-whitespace();
+      }
+
+      .meta-key-and-value {
+        display: block;
+        padding-bottom: rsa-whitespace(least);
+        .key {
+          color: rsa-color(white, base, $rsa-translucent);
+          padding-right: rsa-whitespace();
+
+          &:after {
+            content: ':';
+            color: rsa-color(white,base,$rsa-translucent);
+          }
+        }
+      }
+
+      .meta-src-dst-pair {
+        display: block;
+        white-space: nowrap;
+        padding-bottom: rsa-whitespace(least);
+
+        .arrow {
+          display: inline-block;
+          padding: 0 rsa-whitespace(less);
+          color: rsa-color(white, base, $rsa-translucent);
+        }
+      }
+
+
+      /* For meta summary column, encourage the "src -> dst" IPs & ports to line up if possible. */
+      &[data-field="custom.meta-summary"] {
+        .meta-src-dst-pair {
+          display: inline-block;
+
+          &[data-field="ip.src"] {
+            /* For nicer horiz alignment, leave enough room for 2 IPv6 addresses, plus an arrow between them. */
+            min-width: 17rem;
+
+            .src {
+              /* For nicer horiz alignment, leave enough room for 1 IPv6 address. */
+              display: inline-block;
+              min-width: 7rem;
+            }
+          }
+        }
+      }
+
+      /* For meta details column, arrange values in columns, top -> bottom, left -> right. */
+      &[data-field="custom.meta-details"] {
+        .content {
+          /* Stacks columns of meta details, left to right. */
+          @include rsa-row(left,fill);
+        }
+        .meta-details-column {
+          margin-right: rsa-whitespace();
+        }
+      }
+
+    }
+  }
+}

@@ -8,29 +8,8 @@
         {{rsa-investigate/time-range
           startTime=model.queryNode.value.definition.startTime
           endTime=model.queryNode.value.definition.endTime}}
-        <span class="rsa-investigate-query__sums">
-          {{rsa-investigate/event-counter
-            class="rsa-investigate-query__sums-count"
-            count=model.queryNode.value.results.events.data.length
-            status=model.queryNode.value.results.events.status
-            goAction=(route-action "eventsGetMore" model.queryNode)
-            stopAction=(route-action "eventsStop" model.queryNode)
-            retryAction=(route-action "eventsGetMore" model.queryNode)}}
-          {{#if model.queryNode.value.results.eventCount.data}}
-            <span class="rsa-investigate-query__sums-of">{{t 'list.of'}}</span>
-            {{rsa-investigate/event-counter
-              class="rsa-investigate-query__sums-total"
-              count=model.queryNode.value.results.eventCount.data
-              threshold=model.queryNode.value.results.eventCount.threshold
-              status=model.queryNode.value.results.eventCount.status
-              retryAction=(route-action "eventCountGet" model.queryNode)}}
-          {{/if}}
-        </span>
       </aside>
     </div>
-    {{rsa-progress-bar
-      percent=model.queryNode.value.results.events.percent
-      enabled=(is-equal model.queryNode.value.results.events.status 'streaming')}}
   </header>
   <section class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
     <section class="rsa-investigate-query__body-master">
@@ -54,24 +33,22 @@
           chartData=model.resolvedEventTimelineData
           startTime=model.queryNode.value.definition.startTime
           endTime=model.queryNode.value.definition.endTime}}
-        {{#rsa-data-table
-          lazy=true
+        {{rsa-investigate/events-table
           items=model.queryNode.value.results.events.data
-          columnsConfig=model.eventColumns
+          columnsConfig=model.eventColumnGroups.selected.columns
+          language=model.queryNode.value.language.data
           aliases=model.queryNode.value.aliases
-          onRowClick=(route-action "reconOpen" model.queryNode.value.definition.serviceId)}}
-          {{#rsa-data-table/header as |column index|}}
-            {{#with (meta-key-alias column.field model.queryNode.value.language.data) as |names|}}
-              <h2 class="title" title="{{if column.title column.title names.bothNames}}">
-                <span class="js-move-handle">{{if column.title column.title names.displayName}}</span>
-              </h2>
-            {{/with}}
-          {{/rsa-data-table/header}}
-          {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
-          {{rsa-data-table/load-more
-            status=model.queryNode.value.results.events.status
-            clickAction=(route-action "eventsGetMore" model.queryNode)}}
-        {{/rsa-data-table}}
+          status=model.queryNode.value.results.events.status
+          percent=model.queryNode.value.results.events.percent
+          rowClickAction=(route-action "reconOpen" model.queryNode.value.definition.serviceId)
+          loadMoreAction=(route-action "eventsGetMore" model.queryNode)
+          stopAction=(route-action "eventsStop" model.queryNode)
+          retryAction=(route-action "eventsGetMore" model.queryNode)
+          totalCount=model.queryNode.value.results.eventCount.data
+          totalThreshold=model.queryNode.value.results.eventCount.threshold
+          totalStatus=model.queryNode.value.results.eventCount.status
+          totalRetryAction=(route-action "eventCountGet" model.queryNode)
+        }}
         {{#if (is-equal model.queryNode.value.results.eventCount.data 0)}}
           <div class="rsa-investigate-query__empty">
             <h2>{{t "investigate.empty.title"}}</h2>
