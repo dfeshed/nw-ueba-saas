@@ -17,6 +17,8 @@ module.exports = {
   },
   included: function(app) {
     this._super.included(app);
+
+    app.import('vendor/intersection-observer.js');
   },
   init: function() {
     this._super.init && this._super.init.apply(this, arguments);
