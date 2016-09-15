@@ -198,8 +198,10 @@ test('The incident detail header component is rendered properly.', function(asse
   assert.equal(this.$('.rsa-incident-detail-header__sources').length, 1, 'Testing rsa-incident-detail-header__sources element exists');
   assert.equal(this.$('.rsa-incident-detail-header__assignee').length, 1, 'Testing rsa-incident-detail-header__assignee element exists');
   assert.equal(this.$('.rsa-incident-detail-header__status').length, 1, 'Testing rsa-incident-detail-header__status element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__source-ip').length, 1, 'Testing rsa-incident-detail-header__source-ip element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__destination-ip').length, 1, 'Testing rsa-incident-detail-header__destination-ip element exists');
+
+  // TODO: Re-enable assertions once IP and Destination information is provided by the backend.
+  // assert.equal(this.$('.rsa-incident-detail-header__source-ip').length, 1, 'Testing rsa-incident-detail-header__source-ip element exists');
+  // assert.equal(this.$('.rsa-incident-detail-header__destination-ip').length, 1, 'Testing rsa-incident-detail-header__destination-ip element exists');
   assert.equal(this.$('.rsa-incident-detail-header__created').length, 1, 'Testing rsa-incident-detail-header__created element exists');
   assert.equal(this.$('.rsa-incident-detail-header__last-updated').length, 1, 'Testing rsa-incident-detail-header__last-updated element exists');
 
@@ -212,8 +214,10 @@ test('The incident detail header component is rendered properly.', function(asse
   assert.equal(this.$('.rsa-incident-detail-header__sources .rsa-content-label').text().trim(), 'ESA', 'Testing correct incident Sources is rendered');
   assert.equal(this.$('.rsa-incident-detail-header__assignee .prompt').text().trim(), 'User 1', 'Testing correct incident Assignee is rendered');
   assert.equal(this.$('.rsa-incident-detail-header__status .prompt').text().trim(), 'New', 'Testing correct incident Status is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__source-ip label').text(), '66.249.67.67', 'Testing correct incident Source-IP is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__destination-ip label').text(), '161.253.149.52', 'Testing correct incident Destination-IP is rendered');
+
+  // TODO: Re-enable assertions once IP and Destination information is provided by the backend.
+  // assert.equal(this.$('.rsa-incident-detail-header__source-ip label').text(), '66.249.67.67', 'Testing correct incident Source-IP is rendered');
+  // assert.equal(this.$('.rsa-incident-detail-header__destination-ip label').text(), '161.253.149.52', 'Testing correct incident Destination-IP is rendered');
 
 });
 

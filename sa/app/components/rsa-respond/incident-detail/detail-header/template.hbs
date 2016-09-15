@@ -49,16 +49,6 @@
             {{/each}}
           {{/rsa-form-select}}
         </li>
-        <li>
-          {{#rsa-content-definition label=(t 'incident.details.sourceIp') class='rsa-incident-detail-header__source-ip'}}
-            <label>{{if incident.alerts.firstObject.alert.groupby_source_ip incident.alerts.firstObject.alert.groupby_source_ip '-'}}</label>
-          {{/rsa-content-definition}}
-        </li>
-        <li>
-          {{#rsa-content-definition label=(t 'incident.details.destinationIp') class='rsa-incident-detail-header__destination-ip'}}
-            <label>{{if incident.alerts.firstObject.alert.groupby_destination_ip incident.alerts.firstObject.alert.groupby_destination_ip '-'}}</label>
-          {{/rsa-content-definition}}
-        </li>
       </ul>
       <footer class='rsa-incident-detail-header__details__footer'>
         {{t 'incident.details.createdOn'}}{{rsa-content-datetime class='rsa-incident-detail-header__created' timestamp=incident.created}}{{rsa-content-datetime class='rsa-incident-detail-header__created_time-ago' timestamp=incident.created asTimeAgo=true}} |
