@@ -1,0 +1,28 @@
+.rsa-context-panel-header {
+
+  background-color: rsa-color(gray, darkest);
+
+  &__header-text {
+    @include rsa-font(header);
+    text-transform: capitalize;
+    color: rsa-color(gray, lighter);
+    padding: rsa-whitespace(less);
+  }
+
+  &__ip-value {
+    @include rsa-font(bold);
+  }
+
+  &__panel-close {
+    float: right;
+    transform: translate(-100%, 0);
+    color: rsa-color(gray, light);
+  }
+
+  &__unsafe {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: rsa-whitespace(less);
+    color: rsa-color(red, darker);
+  }
+}

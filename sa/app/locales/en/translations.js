@@ -92,6 +92,47 @@ export default $.extend({}, BaseTranslations, {
     title: 'Admin',
     details: 'Admin contents go here.'
   },
+  context: {
+    title: 'Context',
+    header: {
+      hosts: 'Hosts',
+      incidents: 'Incidents',
+      alerts: 'Alerts',
+      files: 'Files',
+      lists: 'Lists',
+      feeds: 'Feeds',
+      liveConnect: 'Live Connect',
+      unsafe: 'Unsafe'
+    },
+    hostSummary: {
+      title: 'Host Summary',
+      riskScore: 'Risk Score',
+      modulesCount: '# of Modules',
+      iioc0: 'Iioc 0',
+      iioc1: 'Iioc 1',
+      lastUpdated: 'Last Updated',
+      adminStatus: 'Admin Status',
+      lastLogin: 'Last Login',
+      macAddress: 'Mac Address',
+      operatingSystem: 'Operating System',
+      machineStatus: 'Machine Status'
+    },
+    modules: {
+      title: 'Top Suspicious Modules',
+      iiocScore: 'Iioc Score',
+      moduleName: 'Module Name',
+      analyticsScore: 'Analytics Score',
+      machineCount: 'Machine Count',
+      signature: 'Signature'
+    },
+    iiocs: {
+      title: 'Machine IIOC Levels',
+      iiocLevel0: 'Iioc Level 0',
+      iiocLevel1: 'Iioc Level 1',
+      iiocLevel2: 'Iioc Level 2',
+      iiocLevel3: 'Iioc Level 3'
+    }
+  },
   about: {
     title: 'About',
     appName: 'App',

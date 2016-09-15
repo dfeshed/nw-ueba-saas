@@ -1,1 +1,3 @@
-{{outlet}}
+{{#if model.displayContextPanel}}
+  {{rsa-context-panel model=model contextData=model.contextData closePanel=(route-action 'closeContextPanel')}}
+{{/if}}

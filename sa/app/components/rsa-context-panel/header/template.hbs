@@ -1,0 +1,44 @@
+<hbox>
+  <vbox xs='7'>
+    <div class="rsa-context-panel-header__header-text">
+      &#9734; Context Summary for
+      <span class="rsa-context-panel-header__ip-value">{{model.lookupKey}}</span>
+    </div>
+  </vbox>
+  <vbox>
+    <div xs='1'>
+      <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}}>&#9587;</button>
+    </div>
+  </vbox>
+</hbox>
+
+<div class="rsa-nav-tab-group">
+  {{#rsa-nav-tab isActive=(is-equal active "hosts") click=(action 'activate' 'hosts')}}
+    <div class="imagery">{{hostCount}}</div>
+    <div class="label">{{t 'context.header.hosts'}}</div>
+  {{/rsa-nav-tab}}
+  {{#rsa-nav-tab isActive=(is-equal active "incidents") click=(action 'activate' 'incidents')}}
+    <div class="imagery">{{incidentsCount}}</div>
+    <div class="label">{{t 'context.header.incidents'}}</div>
+  {{/rsa-nav-tab}}
+  {{#rsa-nav-tab isActive=(is-equal active "alerts") click=(action 'activate' 'alerts')}}
+    <div class="imagery">{{alertsCount}}</div>
+    <div class="label">{{t 'context.header.alerts'}}</div>
+  {{/rsa-nav-tab}}
+  {{#rsa-nav-tab isActive=(is-equal active "files") click=(action 'activate' 'files')}}
+    <div class="imagery">{{filesCount}}</div>
+    <div class="label">{{t 'context.header.files'}}</div>
+  {{/rsa-nav-tab}}
+  {{#rsa-nav-tab isActive=(is-equal active "lists") click=(action 'activate' 'lists')}}
+    <div class="imagery">{{listsCount}}</div>
+    <div class="label">{{t 'context.header.lists'}}</div>
+  {{/rsa-nav-tab}}
+  {{#rsa-nav-tab isActive=(is-equal active "feeds") click=(action 'activate' 'feeds')}}
+    <div class="imagery">{{feedsCount}}</div>
+    <div class="label">{{t 'context.header.feeds'}}</div>
+  {{/rsa-nav-tab}}
+  {{#rsa-nav-tab isActive=(is-equal active "liveConnect") click=(action 'activate' 'liveConnect')}}
+    <div class="rsa-context-panel-header__unsafe">{{t 'context.header.unsafe'}}</div>
+    <div class="label">{{t 'context.header.liveConnect'}}</div>
+  {{/rsa-nav-tab}}
+</div>

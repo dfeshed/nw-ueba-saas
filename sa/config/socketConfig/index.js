@@ -1,5 +1,6 @@
 var investigateConfigGen = require('./investigate');
 var responseConfigGen = require('./response');
+var contextConfigGen = require('./context');
 var testConfigGen = require('./test');
 var reconConfigGen = require('../../../recon').socketRouteGenerator;
 
@@ -8,6 +9,7 @@ var configGenerators = [
   testConfigGen,
   investigateConfigGen,
   responseConfigGen,
+  contextConfigGen,
   reconConfigGen
 ];
 

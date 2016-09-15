@@ -88,6 +88,47 @@ export default $.extend({}, BaseTranslations, {
     title: 'ja_Admin',
     details: 'ja_Admin contents go here.'
   },
+  context: {
+    title: 'ja_Context',
+    header: {
+      hosts: 'ja_Hosts',
+      incidents: 'ja_Incidents',
+      alerts: 'ja_Alerts',
+      files: 'ja_Files',
+      lists: 'ja_Lists',
+      feeds: 'ja_Feeds',
+      liveConnect: 'ja_Live Connect',
+      unsafe: 'ja_Unsafe'
+    },
+    hostSummary: {
+      title: 'ja_Host Summary',
+      riskScore: 'ja_Risk Score',
+      modulesCount: 'ja_# of Modules',
+      iioc0: 'ja_Iioc 0',
+      iioc1: 'ja_Iioc 1',
+      lastUpdated: 'ja_Last Updated',
+      adminStatus: 'ja_Admin Status',
+      lastLogin: 'ja_Last Login',
+      macAddress: 'ja_Mac Address',
+      operatingSystem: 'ja_Operating System',
+      machineStatus: 'ja_Machine Status'
+    },
+    modules: {
+      title: 'ja_Top Suspicious Modules',
+      iiocScore: 'ja_Iioc Score',
+      moduleName: 'ja_Module Name',
+      analyticsScore: 'ja_Analytics Score',
+      machineCount: 'ja_Machine Count',
+      signature: 'ja_Signature'
+    },
+    iiocs: {
+      title: 'ja_Machine IIOC Levels',
+      iiocLevel0: 'ja_Iioc Level 0',
+      iiocLevel1: 'ja_Iioc Level 1',
+      iiocLevel2: 'ja_Iioc Level 2',
+      iiocLevel3: 'ja_Iioc Level 3'
+    }
+  },
   about: {
     title: 'ja_About',
     appName: 'ja_App',

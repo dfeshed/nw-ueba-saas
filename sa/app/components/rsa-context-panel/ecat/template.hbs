@@ -1,0 +1,99 @@
+{{#if ecatData.host}}
+  <div class="heading-text">{{t 'context.hostSummary.title'}}</div>
+  <hbox class="rsa-context-panel__ecat__host-details">
+    <vbox class='rsa-context-panel__ecat__host-details__badge-score' xs='1'>
+      {{rsa-content-badge-score label=(t 'context.hostSummary.riskScore') class="rsa-context-risk-score" score=ecatData.minIoc
+                style=(context/risk-score-to-badge-level ecatData.minIoc)}}
+    </vbox>
+
+    <vbox xs='2'>
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.modulesCount'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.modulesCount}}</div>
+
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.iioc0'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.IIOCLevel0}}</div>
+
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.iioc1'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.IIOCLevel1}}</div>
+    </vbox>
+    <vbox xs='3'>
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.lastUpdated'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.LastScan}}</div>
+
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.adminStatus'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.AdminStatus}}</div>
+
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.lastLogin'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.LastSeen}}</div>
+    </vbox>
+    <vbox xs='3'>
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.macAddress'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.MAC}}</div>
+
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.operatingSystem'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.OperatingSystem}}</div>
+    </vbox>
+    <vbox xs='2'>
+      <div class="rsa-context-panel__ecat__host-details__field-name">{{t 'context.hostSummary.machineStatus'}}</div>
+      <div class="rsa-context-panel__ecat__host-details__field-value">{{ecatData.host.MachineStatus}}</div>
+    </vbox>
+
+  </hbox>
+  <div class="rsa-context-panel__sectionEnd"></div>
+{{/if}}
+
+{{#if ecatData.modules}}
+  <div class="heading-text">{{t 'context.modules.title'}}</div><p class="rsa-context-panel__hosts__min-ioc">(IIOC Score > 500)</p>
+  <div class="rsa-context-panel__ecat__module-details">
+    {{#rsa-data-table lazy=true items=ecatData.modules columnsConfig=modulesColumnListConfig}}
+      {{#rsa-data-table/header as |column|}}
+        <span class="title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}"></span>
+        <span class="js-move-handle js-header-cell-{{column.class}}">{{if column.title (t column.title) column.field}}</span>
+      {{/rsa-data-table/header}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column}}
+          <div class="{{column.class}}">
+            {{#if (is-equal column.field 'Score')}}
+              {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column
+                   score=(get item.Properties.IOCScore column.field) isInline=true
+                   style=(context/risk-score-to-badge-level (get item.Properties.IOCScore column.field))}}
+            {{else if (is-equal column.field 'Name')}}
+              {{get item column.field}}
+            {{else if (is-equal column.field 'AnalyticsScore')}}
+              {{get item.Properties column.field}}
+            {{else if (is-equal column.field 'GlobalMachineCount')}}
+              {{get item.Properties column.field}}
+            {{else if (is-equal column.field 'Signature')}}
+              {{get item.Properties column.field}}
+            {{/if}}
+          </div>
+        {{/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  </div>
+  <div class="rsa-context-panel__sectionEnd"></div>
+{{/if}}
+
+
+{{#if iiocs}}
+  <div class="heading-text">{{t 'context.iiocs.title'}}</div>
+  <div class="rsa-context-panel__ecat__iioc-details">
+    {{#rsa-data-table lazy=true items=iiocs columnsConfig=iiocsColumnListConfig}}
+      {{#rsa-data-table/header as |column|}}
+        <span class="title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}"></span>
+        <span class="js-move-handle js-header-cell-{{column.class}}">{{if column.title (t column.title) column.field}}</span>
+      {{/rsa-data-table/header}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column}}
+          <div class="{{column.class}}">
+            {{#each (get item column.field) as |description|}}
+              <div class="iioc-description">{{description}}</div>
+            {{/each}}
+          </div>
+        {{/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  </div>
+
+  <div class="rsa-context-panel__sectionEnd"></div>
+{{/if}}

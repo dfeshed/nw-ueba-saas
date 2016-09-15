@@ -1,0 +1,111 @@
+$font-highlight-color: rsa-color(gray, lightest);
+$font-fade-color: rsa-color(gray, light);
+
+.rsa-context-panel{
+  position: relative;
+  height: 100%;
+
+  &__sectionEnd {
+    border-bottom: 1px solid #2d2c2c;;
+  }
+
+  &__loader {
+    display: flex;
+    justify-content: center;
+    //height: 100%;
+    align-items: center;
+  }
+
+  &__body{
+    position: relative;
+    height: -webkit-calc(100% - (105px));
+    background-color: rsa-color(gray, darker);
+    overflow: auto;
+  }
+
+  &__ecat {
+    color: $font-fade-color;
+    height: 100%;
+    width: -webkit-calc(100% - (4px));
+
+    .heading-text {
+      @include rsa-font(header, large);
+      color: rsa-color(gray, lighter);
+      padding: rsa-whitespace();
+    }
+
+    &__host-details {
+      padding: rsa-whitespace();
+      vbox {
+        padding-right: 0rem;
+      }
+
+      &__field-name {
+        @include rsa-font(header, small);
+        padding-left: rsa-whitespace(more);
+      }
+      &__field-value {
+        color: $font-highlight-color;
+        text-align: left;
+        padding-left: rsa-whitespace(more);
+        padding-bottom: rsa-whitespace();
+      }
+      .rsa-content-badge-score{
+        padding: 0rem;
+      }
+      &__badge-score {
+        max-width: 11%;
+        @include rsa-font(default, small);
+      }
+    }
+
+    &__module-details, &__iioc-details {
+      width: 100%;
+      margin: 0 rsa-whitespace(least) 0 rsa-whitespace(least);
+
+      .rsa-data-table {
+        &-header-cell{
+          overflow:visible;
+          @include rsa-font(header, small);
+          white-space: nowrap;
+          text-overflow: ellipsis;
+        }
+        &-body-row{
+          width: 100%;
+          padding: 0 0;
+          align-items: baseline;
+        }
+        &-body-cell{
+          overflow:visible;
+          color: $font-highlight-color;
+          @include rsa-font(paragraph);
+          white-space: nowrap;
+          text-overflow: ellipsis;
+
+          .iioc-description {
+            white-space: pre-wrap;
+          }
+        }
+      }
+
+      .progress-bar{
+        width: 100%;
+      }
+    }
+
+    &__iioc-details {
+      .rsa-data-table {
+        &-body-cell {
+          float: left;
+        }
+      }
+    }
+
+    &__min-ioc {
+      @include rsa-font(header, small);
+      padding-left: rsa-whitespace();
+    }
+
+  }
+
+}

@@ -55,6 +55,7 @@ module.exports = function(defaults) {
             // Load the JSON file with incidents
             app.import("vendor/incident.json");
             app.import("vendor/alerts.json");
+            app.import("vendor/context.json");
         }
     })();
     return app.toTree();
