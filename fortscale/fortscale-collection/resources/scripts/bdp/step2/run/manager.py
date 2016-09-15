@@ -50,7 +50,7 @@ class Manager(OnlineManager):
         self._timeout = timeout
         self._validation_batches_delay = validation_batches_delay
         self._is_online_mode = is_online_mode
-        self._build_models_interval = build_models_interval,
+        self._build_models_interval = build_models_interval
         self._build_entity_models_interval = build_entity_models_interval
         self._last_models_build_time = 0
         self._last_entity_models_build_time = 0

@@ -260,13 +260,15 @@ public class ApiUserController extends BaseController{
 	 * API to update users tags by filter
 	 * @return
 	 */
-	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST,
+			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
-	public Response addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
-		if (CollectionUtils.isEmpty(tagNames)){
+	public Response addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag,
+			@PathVariable List<String> tagNames) throws JSONException {
+		if (CollectionUtils.isEmpty(tagNames)) {
 			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
 		}
-		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null);
+		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null);
 		usersByFilter.stream().forEach(user -> addTagToUser(user, tagNames, addTag));
 		return Response.status(Response.Status.OK).build();
 	}
@@ -511,6 +513,9 @@ public class ApiUserController extends BaseController{
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
 	public Response followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch) {
+		if (userRestFilter.getSize() == null) {
+			userRestFilter.setSize(Integer.MAX_VALUE);
+		}
 		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
 		if (CollectionUtils.isNotEmpty(users.getData())) {
 			users.getData().forEach(userDetailsBean -> {
