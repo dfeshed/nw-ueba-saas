@@ -260,12 +260,10 @@ public class ApiUserController extends BaseController{
 	 * API to update users tags by filter
 	 * @return
 	 */
-	@RequestMapping(value="/{addTag}/{tagName}/tagUsers", method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
-	public Response addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag,
-			@PathVariable List<String> tagNames) throws JSONException {
-		if (CollectionUtils.isEmpty(tagNames)) {
+	public Response addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
+		if (CollectionUtils.isEmpty(tagNames)){
 			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
 		}
 		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null);
