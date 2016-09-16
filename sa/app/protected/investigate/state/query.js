@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Definition from './query-definition';
 import Results from './query-results';
 import PromiseState from './promise-state';
+import language from './helpers/language-utils';
 
 const {
   computed,
@@ -9,33 +10,6 @@ const {
   Object: EmberObject
 } = Ember;
 
-// Mask for the index level of a language's meta key.
-const LANGUAGE_KEY_INDEX_MASK = 0x000F;
-
-// Indicates that key is filtered, so data related to the key should be ignored.
-const LANGUAGE_KEY_INDEX_FILTER = 0;
-
-// Indicates that key is indexed at the key and value level.
-const LANGUAGE_KEY_INDEX_VALUES = 3;
-
-// Mask for default behavior of language's meta key in Investigate UI.
-const LANGUAGE_KEY_ACTION_MASK = 0x0F00;
-
-// Default behavior is to hide the key.
-const LANGUAGE_KEY_ACTION_HIDDEN = 0x0100;
-
-// Default behavior is to show the key & its values.
-const LANGUAGE_KEY_ACTION_OPEN = 0x0200;
-
-// Default behavior is to show auto open the key, based on its index level.
-const LANGUAGE_KEY_ACTION_AUTO = 0x0400;
-
-// Some keys are always hidden from view by UI.
-const LANGUAGE_KEYS_ALWAYS_HIDDEN = ['time', 'size'];
-const LANGUAGE_KEYS_ALWAYS_HIDDEN_HASH = {};
-LANGUAGE_KEYS_ALWAYS_HIDDEN.forEach((name) => {
-  LANGUAGE_KEYS_ALWAYS_HIDDEN_HASH[name] = true;
-});
 
 export default EmberObject.extend({
   /**
@@ -80,33 +54,13 @@ export default EmberObject.extend({
     let keys = (this.get('language.data') || [])
 
     // Filter out language keys which are hidden, or insufficiently indexed.
-      .filter((obj) => {
-        // Certain keys (e.g., time & size) are special and always hidden from view.
-        if (LANGUAGE_KEYS_ALWAYS_HIDDEN_HASH[get(obj, 'metaName')]) {
-          return false;
-        }
-        const flag = Number(get(obj, 'flags'));
-        const action = flag & LANGUAGE_KEY_ACTION_MASK;
-        const index = flag & LANGUAGE_KEY_INDEX_MASK;
-        return (action !== LANGUAGE_KEY_ACTION_HIDDEN) && (index !== LANGUAGE_KEY_INDEX_FILTER);
-      })
+      .reject(language.isHidden)
 
       // Create an entry in the group.keys for each of these language keys.
       .map((obj) => {
-        const flag = Number(get(obj, 'flags'));
-        const action = flag & LANGUAGE_KEY_ACTION_MASK;
-        let isOpen = false;
-        switch (action) {
-          case LANGUAGE_KEY_ACTION_OPEN:
-            isOpen = true;
-            break;
-          case LANGUAGE_KEY_ACTION_AUTO:
-            isOpen = (flag & LANGUAGE_KEY_INDEX_MASK) === LANGUAGE_KEY_INDEX_VALUES;
-            break;
-        }
         return {
           name: get(obj, 'metaName'),
-          isOpen
+          isOpen: language.isOpen(obj)
         };
       });
 
