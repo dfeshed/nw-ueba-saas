@@ -1,9 +1,9 @@
 {{#rsa-content-section-header}}
   {{t 'incident.details.storyline.header'}} |
   <span class="date">
-    {{rsa-content-datetime timestamp=model.alerts.firstObject.alert.timestamp}}
+    {{rsa-content-datetime timestamp=indicators.firstObject.alert.timestamp}}
     {{t 'incident.details.storyline.to'}}
-    {{rsa-content-datetime timestamp=model.alerts.lastObject.alert.timestamp}}
+    {{rsa-content-datetime timestamp=indicators.lastObject.alert.timestamp}}
   </span>
 {{/rsa-content-section-header}}
 

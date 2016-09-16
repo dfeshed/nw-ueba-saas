@@ -15,10 +15,10 @@ const _SOURCES_MAP = [
   },
   {
     test(source) {
-      return String(source).match(/e cat/i);
+      return String(source).match(/ecat/i);
     },
     short() {
-      return 'E-CAT';
+      return 'ECAT';
     }
   }];
 
