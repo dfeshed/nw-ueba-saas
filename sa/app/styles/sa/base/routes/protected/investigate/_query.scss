@@ -82,6 +82,7 @@
       transition-property: left, right, max-width, margin, opacity;
       transition-duration: 0.3s;
       transition-delay: 0s 0s 0s 0s 0.3s;
+      overflow-x: hidden;
     }
 
     /* meta vs events: default arrangement */
@@ -284,7 +285,6 @@
     }
   }
 
-
   .rsa-investigate-time-range {
     white-space: nowrap;
     margin-bottom: rsa-whitespace(less);
@@ -305,17 +305,21 @@
     background-color: rsa-color(black,base,$rsa-translucent);
     border: 0;    /* overwrite default */
   }
+  
   .recon-event-content {
     margin-top: 1px; /* let a sliver of background shows thru as a border */
     background-color: transparent;  /* ovewrite default */
   }
+  
   .event-content-box {
     border: 0;    /* ovewrite default */
   }
+  
   .recon-event-detail-packets,
   .recon-meta-content {
     background-color: rsa-color(black,base,$rsa-translucent);
   }
+  
   .recon-meta-content {
     margin-left: 1px; /* let a sliver of background shows thru as a border */
   }
