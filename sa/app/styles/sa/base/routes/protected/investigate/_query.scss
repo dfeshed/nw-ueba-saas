@@ -129,9 +129,8 @@
       .rsa-investigate-query__body {
         &-master-aside {
           left: 0;
-          right: 40px;
+          right: 0;
           z-index: 2;
-          box-shadow: rsa-color(black,base,$rsa-translucent) 3px 3px 3px;
         }
         &-master-main {
           transition-delay: 0s;
