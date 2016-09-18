@@ -63,7 +63,7 @@
 
 	<properties>
         <!--RPM VERSION-->
-        <rpm.version>2.7.0</rpm.version>
+        <rpm.version>3.0.0</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
 		<influxdb.version>2.1</influxdb.version>
 		<argparse4j.version>0.7.0</argparse4j.version>
