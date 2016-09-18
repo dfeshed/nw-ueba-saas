@@ -380,7 +380,7 @@
 							<overwrite>true</overwrite>
 							<resources>
 								<resource>
-									<directory>../../../fortscale-ui-new/dist</directory>
+									<directory>../../../fortscale-ui/dist</directory>
 									<includes>
 										<include>**</include>
 									</includes>
