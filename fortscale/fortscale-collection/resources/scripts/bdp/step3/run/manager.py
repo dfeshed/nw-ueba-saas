@@ -1,7 +1,8 @@
 import logging
-import shutil
 import os
+import shutil
 import sys
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation import validate_no_missing_events, validate_entities_synced
 
@@ -31,7 +32,7 @@ class Manager(DontReloadModelsOverridingManager):
     _SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT = 'run_scores_after_models_have_been_built'
     _SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS = 'calc_reducers_and_alphas_and_betas'
     _SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP = 'cleanup_after_everything_is_set_up'
-    _SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED = 'run_scores_after_reducers_and_alphas_abd_betas_have_been_calculated'
+    _SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED = 'run_scores_after_reducers_and_alphas_and_betas_have_been_calculated'
 
     SUB_STEPS = [
         _SUB_STEP_RUN_SCORES,
