@@ -1,4 +1,4 @@
-package fortscale.web.rest.entities.activity;
+package fortscale.common.datastructures.activity;
 
 import java.util.Objects;
 
@@ -14,7 +14,7 @@ public class UserActivityData {
 
     }
 
-    public static class LocationEntry extends BaseLocationEntry implements  BaseUserActivityEntry {
+    public static class LocationEntry extends fortscale.common.datastructures.activity.BaseLocationEntry implements  BaseUserActivityEntry {
         public LocationEntry(String country, double count) {
             super(country, count);
         }

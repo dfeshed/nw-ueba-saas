@@ -387,19 +387,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public void removeClassifierFromAllUsers(String classifierId) {
-		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
-
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageRequest);
-			for (User user : listOfUsers)
-				user.removeClassifierScore(classifierId);
-			saveUsers(listOfUsers);
-		}
-	}
-
-	@Override
 	public void updateUserWithCurrentADInfo() {
 		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
 		if(timestampepoc != null) {
@@ -548,6 +535,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			isSaveUser = true;
 		}
 
+		String oldDisplayName = user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
+
 		user.setAdInfo(userAdInfo);
 
 		String username = adUser.getUserPrincipalName();
@@ -562,7 +551,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			serviceMetrics.emptyUsername++;
 		}
 
-
+		String displayName = userAdInfo.getFirstname() + " " + userAdInfo.getLastname();
 
 		final String searchField = createSearchField(userAdInfo, username);
 
@@ -609,6 +598,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			update.set(User.whenCreatedField, userAdInfo.getWhenCreated());
 			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
 				update.set(User.usernameField, username);
+			}
+			if(!StringUtils.isEmpty(displayName) && !displayName.equals(oldDisplayName)){
+				update.set(User.displayNameField, displayName);
 			}
 			if(!StringUtils.isEmpty(noDomainUsername) && !noDomainUsername.equals(user.getNoDomainUsername())){
 				update.set(User.noDomainUsernameField, noDomainUsername);
@@ -664,9 +656,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		for (Map.Entry<String,String> entry : deletedUser.getLogUsernameMap().entrySet())
 			user.addLogUsername(entry.getKey(), entry.getValue());
-
-		for (Map.Entry<String,ClassifierScore> entry : deletedUser.getScores().entrySet())
-			user.putClassifierScore(entry.getValue());
 
 		for (Map.Entry<String,DateTime> entry : deletedUser.getLogLastActivityMap().entrySet())
 			user.getLogLastActivityMap().put(entry.getKey(),entry.getValue());

@@ -33,6 +33,7 @@
     <mockito:mock id="hadoopFs" class="org.apache.hadoop.fs.FileSystem"/>
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
+    <mockito:mock id="usernameService" class="fortscale.services.impl.UsernameService"/>
 
     <bean id="globalConfiguration" class="fortscale.global.configuration.GlobalConfiguration"/>
 

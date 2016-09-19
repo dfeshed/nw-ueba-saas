@@ -6,8 +6,7 @@ import fortscale.services.UserApplication;
 public enum Classifier {
 	vpn("vpn", "VPN", LogEventsEnum.vpn, UserApplication.vpn),
 	auth("auth", "Logins", LogEventsEnum.login, UserApplication.active_directory),
-	ssh("ssh", "SSH", LogEventsEnum.ssh, UserApplication.ssh),
-	total("total", "Total Score", null, null);
+	ssh("ssh", "SSH", LogEventsEnum.ssh, UserApplication.ssh);
 
 	private String id;
 	private String displayName;

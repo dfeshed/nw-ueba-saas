@@ -16,7 +16,6 @@
     <import resource="classpath*:META-INF/spring/fortscale-streaming-context.xml" />
 
 
-    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
     <bean id="computerLoginEventRepository" class="fortscale.domain.events.dao.ComputerLoginEventRepositoryImpl"/>
 
     <context:spring-configured />

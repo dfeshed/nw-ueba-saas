@@ -42,6 +42,7 @@ import javax.ws.rs.core.Response;
 import java.io.OutputStreamWriter;
 import java.time.ZonedDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static fortscale.web.rest.ApiAlertController.CSV_CONTENT_TYPE;
 
@@ -61,6 +62,7 @@ public class ApiUserController extends BaseController{
 	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
 	private static final String USER_TAGS_COLUMN_NAME = "Tags";
 	private static final String USER_NAME_COLUMN_NAME = "Username";
+	private static final String ALL_WATCHED = "allWatched";
 	private static Logger logger = Logger.getLogger(ApiUserController.class);
 
 	@Autowired
@@ -118,7 +120,23 @@ public class ApiUserController extends BaseController{
 			addAlertsAndDevices(usersList.getData());
 		}
 
+		if (BooleanUtils.isTrue(userRestFilter.getAddAllWatched())) {
+			addAllWatched(usersList, userRestFilter);
+		}
+
 		return usersList;
+	}
+
+	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, UserRestFilter userRestFilter) {
+		Map<String, Object> info = usersList.getInfo();
+		if (info == null) {
+			info = new HashMap<>();
+		}
+		Boolean oldIsWatched = userRestFilter.getIsWatched();
+		userRestFilter.setIsWatched(true);
+		info.put(ALL_WATCHED, usersList.getTotal() == userWithAlertService.countUsersByFilter(userRestFilter));
+		userRestFilter.setIsWatched(oldIsWatched);
+		usersList.setInfo(info);
 	}
 
 	@RequestMapping(value="/count", method=RequestMethod.GET)
@@ -506,18 +524,15 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
-		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
-
-		for (Map.Entry<String, Integer> alertTypeToCountEntry : alertsService.getAlertsTypesCountedByUser(ignoreRejected).entrySet()){
-			alertTypesNameAndCount.add(new ValueCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue()));
-		}
-
-		DataBean<Set<ValueCountBean>> result = new DataBean<>();
-
+	public DataBean<Set<AlertTypesCountBean>> getDistinctAlertNames(@RequestParam(required=true,
+			value = "ignore_rejected") Boolean ignoreRejected) {
+		Set<AlertTypesCountBean> alertTypesNameAndCount = alertsService.
+				getAlertsTypesByUser(ignoreRejected).entrySet().stream().map(alertTypeToCountEntry ->
+				new AlertTypesCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue().size())).
+				collect(Collectors.toSet());
+		DataBean<Set<AlertTypesCountBean>> result = new DataBean<>();
 		result.setData(alertTypesNameAndCount);
 		result.setTotal(alertTypesNameAndCount.size());
-
 		return result;
 	}
 
@@ -562,8 +577,11 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
 	public Response followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch){
-		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
+		if (userRestFilter.getSize() == null) {
+			userRestFilter.setSize(Integer.MAX_VALUE);
+		}
 
+		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
 		if (CollectionUtils.isNotEmpty(users.getData())) {
 			users.getData().forEach(userDetailsBean -> {
 				User user = userDetailsBean.getUser();
