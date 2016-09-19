@@ -268,20 +268,30 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
-	public Response addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean addTag,
-			@PathVariable List<String> tagNames) throws JSONException {
+	public ResponseEntity<TaggedUsersCount> addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter,
+			@PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
+		TaggedUsersCount result = new TaggedUsersCount();
 		if (CollectionUtils.isEmpty(tagNames)) {
-			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
+			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null);
+		int count = 0;
 		for (User user: usersByFilter) {
 			try {
 				addTagToUser(user, tagNames, addTag);
+				count++;
 			} catch (Exception ex) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+				result.count = count;
+				return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
-		return Response.status(Response.Status.OK).build();
+		return new ResponseEntity(result, HttpStatus.OK);
+	}
+
+	private class TaggedUsersCount {
+
+		public int count;
+
 	}
 
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
