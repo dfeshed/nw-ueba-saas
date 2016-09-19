@@ -53,7 +53,7 @@ public class UserActivityLocationDocument extends UserActivityDocument {
 
         UserActivityLocationDocument that = (UserActivityLocationDocument) o;
 
-        if (!normalizedUsername.equals(that.normalizedUsername)) return false;
+        if (!entityId.equals(that.entityId)) return false;
         if (!startTime.equals(that.startTime)) return false;
         return endTime.equals(that.endTime);
 
@@ -61,7 +61,7 @@ public class UserActivityLocationDocument extends UserActivityDocument {
 
     @Override
     public int hashCode() {
-        return Objects.hash(normalizedUsername, startTime, endTime);
+        return Objects.hash(entityId, startTime, endTime);
     }
 
 
