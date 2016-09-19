@@ -389,7 +389,7 @@ public class UserScoreServiceImpl implements UserScoreService {
         Map<Severity, Double[]> rangeMap = new ManagedMap<>();
         Map.Entry<Double, Severity> doubleSeverityEntry = severityNavigableMap.pollFirstEntry();
 
-        Double minLimit = 0d;
+        Double minLimit = 1d;
         Double maxLimit = 0d;
         Severity currSeverity = doubleSeverityEntry.getValue();
 
