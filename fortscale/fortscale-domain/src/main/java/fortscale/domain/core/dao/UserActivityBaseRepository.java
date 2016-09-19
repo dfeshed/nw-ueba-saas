@@ -10,7 +10,6 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -24,7 +23,7 @@ public abstract class UserActivityBaseRepository  {
 		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria jointCriteria = Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
 			if (username != null) {
-				Criteria idCriteria = Criteria.where(UserActivityLocationDocument.USER_NAME_FIELD_NAME).is(username);
+				Criteria idCriteria = Criteria.where(UserActivityLocationDocument.ENTITY_ID_FIELD_NAME).is(username);
 				jointCriteria.andOperator(idCriteria);
 			}
 			else {

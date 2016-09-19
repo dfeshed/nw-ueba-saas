@@ -1,10 +1,8 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.Alert;
 import fortscale.domain.core.activities.*;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.ArrayUtils;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
@@ -71,7 +69,7 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
 		}
 
 		List<String> distinctUserNames = mongoTemplate.getCollection(UserActivityLocationDocument.COLLECTION_NAME)
-				.distinct(UserActivityLocationDocument.USER_NAME_FIELD_NAME, query.getQueryObject());
+				.distinct(UserActivityLocationDocument.ENTITY_ID_FIELD_NAME, query.getQueryObject());
 		return new HashSet<>(distinctUserNames);
 	}
 

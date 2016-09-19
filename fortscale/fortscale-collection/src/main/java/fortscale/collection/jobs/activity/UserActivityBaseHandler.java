@@ -10,6 +10,7 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityJobState;
 import fortscale.services.UserService;
+import fortscale.services.impl.UsernameService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -47,6 +48,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected MongoTemplate mongoTemplate;
 	@Autowired
 	protected UserService userService;
+	@Autowired
+	protected UsernameService usernameService;
 
 	@Value("${user.activity.mongo.batch.size:10000}")
 	private int mongoBatchSize;
@@ -280,14 +283,18 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                                         Long startTime, Long endTime, List<String> dataSources) {
         for (FeatureBucket featureBucket : featureBucketsForDataSource) {
             String contextId = featureBucket.getContextId().substring(CONTEXT_ID_USERNAME_PREFIX.length());
-
+			contextId = usernameService.getUserId(contextId, null);
+			if (contextId == null) {
+				logger.error("Cannot create instance of {} - userid not found",getActivityName());
+				continue;
+			}
             if (!userActivityMap.containsKey(contextId)) {
                 try {
                     Class<? extends UserActivityDocument> activityDocumentClass = UserActivityType.valueOf(getActivityName()).getDocumentClass();
 
                     UserActivityDocument userActivityDocument =  activityDocumentClass.newInstance();
 
-                    userActivityDocument.setNormalizedUsername(contextId);
+                    userActivityDocument.setEntityId(contextId);
                     userActivityDocument.setStartTime(startTime);
                     userActivityDocument.setEndTime(endTime);
                     userActivityDocument.setDataSources(dataSources);
