@@ -6,11 +6,11 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member title="base chart"}}
-        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |data xScale yScale graphWidth graphHeight|}}
+        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}
         {{/rsa-chart}}
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}
           </div>
           <div>
             &#123;{/rsa-chart}}
@@ -19,22 +19,22 @@
       {{/spec-member}}
 
       {{#spec-member title="chart with series and axis"}}
-        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-line-series data=data xScale=xScale yScale=yScale xProp='value' yProp='count'}}
-          {{rsa-x-axis height=graphHeight scale=xScale rotation=-25}}
-          {{rsa-y-axis scale=yScale}}
+        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
+          {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
+          {{rsa-y-axis scale=params.yScale}}
         {{/rsa-chart}}
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
             <div>
-              &#123;{rsa-line-series data=data xScale=xScale yScale=yScale xProp='value' yProp='count'}}
+              &#123;{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
             </div>
             <div>
-              &#123;{rsa-x-axis height=graphHeight scale=xScale rotation=-25}}
+              &#123;{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
             </div>
             <div>
-              &#123;{rsa-y-axis scale=yScale}}
+              &#123;{rsa-y-axis scale=params.yScale}}
             </div>
             &#123;{/rsa-chart}}
           </div>

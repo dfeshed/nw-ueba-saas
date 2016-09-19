@@ -6,30 +6,30 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member title="default axis"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-y-axis scale=yScale}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-y-axis scale=params.yScale}}
         {{/rsa-chart}}
 
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |params|}}
             <div>
-              &#123;{rsa-y-axis scale=yScale}}
+              &#123;{rsa-y-axis scale=params.yScale}}
             </div>
             &#123;{/rsa-chart}}
           </div>
         </code>
       {{/spec-member}}
-      {{#spec-member title="rotation"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-y-axis scale=yScale rotation=-45}}
+      {{#spec-member title="rotation and tickcount"}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-y-axis scale=params.yScale rotation=-45 tickCount=8}}
         {{/rsa-chart}}
 
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |params|}}
             <div>
-              &#123;{rsa-y-axis scale=yScale rotation=-45}}
+              &#123;{rsa-y-axis scale=params.yScale rotation=-45 tickCount=8}}
             </div>
             &#123;{/rsa-chart}}
           </div>

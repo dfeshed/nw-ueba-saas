@@ -5,7 +5,7 @@ export default Route.extend({
   model() {
     return {
       title: 'Chart',
-      description: 'Creates a base SVG object that is used for creating single or multi series charts. The main responsibility of this component is to construct the base SVG and calculate the x and y extents across multiple data series (which are used by the x/y scales). It is designed such that you can add whatever charting sub-components needed to properly represent your data.',
+      description: 'Creates a base SVG object that is used for creating single or multi series charts. The main responsibility of this component is to construct the base SVG and calculate the x and y extents across multiple data series (which are used by the x/y scales). It is designed such that you can add whatever charting sub-components needed to properly represent your data. We use a Hash Helper to yield params to chart subcomponents. The available params are: data, xScale, yScale, graphWidth, graphHeight, hoverData, and duration.',
       properties: [
         {
           name: 'data',

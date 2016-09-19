@@ -6,30 +6,30 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member title="default axis"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-x-axis height=graphHeight scale=xScale}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale}}
         {{/rsa-chart}}
 
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |params|}}
             <div>
-              &#123;{rsa-x-axis height=graphHeight scale=xScale}}
+              &#123;{rsa-x-axis height=params.graphHeight scale=params.xScale}}
             </div>
             &#123;{/rsa-chart}}
           </div>
         </code>
       {{/spec-member}}
       {{#spec-member title="rotation"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-x-axis height=graphHeight scale=xScale rotation=-25}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
         {{/rsa-chart}}
 
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |params|}}
             <div>
-              &#123;{rsa-x-axis height=graphHeight scale=xScale rotation=-25}}
+              &#123;{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
             </div>
             &#123;{/rsa-chart}}
           </div>

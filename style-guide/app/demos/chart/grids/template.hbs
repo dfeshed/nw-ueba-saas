@@ -6,14 +6,14 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member title="example"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-chart-grids xScale=xScale yScale=yScale width=graphWidth height=graphHeight}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
         {{/rsa-chart}}
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |params|}}
             <div>
-              &#123;{rsa-chart-grids xScale=xScale yScale=yScale width=graphWidth height=graphHeight}}
+              &#123;{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
             </div>
             &#123;{/rsa-chart}}
           </div>
@@ -21,14 +21,14 @@
       {{/spec-member}}
 
       {{#spec-member title="hide X grid lines"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-chart-grids showXGrid=false yScale=yScale width=graphWidth}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
         {{/rsa-chart}}
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |params|}}
             <div>
-              &#123;{rsa-chart-grids showXGrid=false yScale=yScale width=graphWidth}}
+              &#123;{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
             </div>
             &#123;{/rsa-chart}}
           </div>
@@ -36,14 +36,14 @@
       {{/spec-member}}
 
       {{#spec-member title="hide Y grid lines"}}
-        {{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
-          {{rsa-chart-grids showYGrid=false xScale=xScale height=graphHeight}}
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
         {{/rsa-chart}}
         <code>
           <div>
-            &#123;{#rsa-chart data=model.singleSeries as |data xScale yScale graphWidth graphHeight|}}
+            &#123;{#rsa-chart data=model.singleSeries as |params|}}
             <div>
-              &#123;{rsa-chart-grids showYGrid=false xScale=xScale height=graphHeight}}
+              &#123;{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
             </div>
             &#123;{/rsa-chart}}
           </div>

@@ -37,11 +37,15 @@
   .tick {
     line,
     text {
-      fill: rsa-color(white);
-      stroke: rsa-color(white);
       shape-rendering: crispEdges;
       text-rendering: geometricPrecision;
       text-anchor: end;
+    }
+    line {
+      stroke: rsa-color(white);
+    }
+    text {
+      fill: rsa-color(white);
     }
   }
 }
