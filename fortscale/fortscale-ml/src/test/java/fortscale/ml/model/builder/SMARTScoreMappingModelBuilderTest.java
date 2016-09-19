@@ -46,7 +46,7 @@ public class SMARTScoreMappingModelBuilderTest {
 		Map<Double, Double> mapping = model.getScoreMappingConf().getMapping();
 		Set<Double> actualThresholds = findKeysByValue(mapping, 50D);
 		Set<Double> actualMaximalValues = findKeysByValue(mapping, 100D);
-		Assert.assertTrue(findKeysByValue(mapping, 100D).contains(100D));
+		Assert.assertTrue(actualMaximalValues.contains(100D));
 		Assert.assertTrue(findKeysByValue(mapping, 0D).contains(0D));
 		Assert.assertTrue(String.format("expected: %f, actual: %s", expectedThreshold, actualThresholds),
 				actualThresholds.contains(expectedThreshold));
