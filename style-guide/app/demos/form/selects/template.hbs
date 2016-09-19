@@ -127,6 +127,23 @@
           </div>
         </code>
       {{/spec-member}}
+
+      {{#spec-member title="Do not update the prompt" subtitle="This allows the implementation to control the prompt"}}
+        {{#rsa-form-select label='Select Label' alwaysUsePrompt=true prompt='This will not update when you change the value!'}}
+          <option value='1'>Val 1</option>
+          <option value='2'>Val 2</option>
+        {{/rsa-form-select}}
+
+        <code>
+          <div>
+            &#123;{#rsa-form-select label='Select Label' alwaysUsePrompt=true prompt='This will not update when you change the value!'}}
+            <div>&lt;option value='1'>Val 1&lt;/option></div>
+            <div>&lt;option value='2'>Val 2&lt;/option></div>
+            &#123;{/rsa-form-select}}
+          </div>
+        </code>
+      {{/spec-member}}
+
     {{/spec-category}}
 
   </div>

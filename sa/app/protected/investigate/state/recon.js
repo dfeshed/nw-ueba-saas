@@ -53,9 +53,16 @@ export default EmberObject.extend({
   endpointId: undefined,
 
   /**
-   * Title for the reconstruction panel to display
+   * Index of result set being passed to recon
    * @type {string}
    * @public
    */
-  title: undefined
+  index: undefined,
+
+  /**
+   * Total count of results set
+   * @type {string}
+   * @public
+   */
+  total: undefined
 });

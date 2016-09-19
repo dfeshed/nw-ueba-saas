@@ -24,7 +24,8 @@ export default Mixin.create({
         item,
         endpointId,
         metaPanelSizeWas: this.get('state.meta.panelSize'),
-        title: `Event Reconstruction (${index + 1} of ${total})`
+        index,
+        total
       });
       this.send('metaPanelSize', 'min');
     },

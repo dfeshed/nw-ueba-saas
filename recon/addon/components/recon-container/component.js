@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
-import { TYPES } from '../../utils/reconstruction-types';
+import { TYPES_BY_NAME } from '../../utils/reconstruction-types';
 
 const {
   A,
@@ -21,15 +21,16 @@ export default Component.extend({
   // Component state
   headerError: null,
   headerItems: null,
-  reconstructionType: TYPES.PACKET,
+  reconstructionType: TYPES_BY_NAME.PACKET, // defaults to packet view
   showMetaDetails: false,
   // END Component state
 
-  // Component inputs
+  // BEGIN Component inputs
   endpointId: null,
   eventId: null,
+  index: null,
   meta: null,
-  title: null,
+  total: null,
 
   // Lookups
   aliases: null,

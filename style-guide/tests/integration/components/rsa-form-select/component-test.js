@@ -109,6 +109,26 @@ test('it update the bound value when the selected value changes to a single valu
   assert.equal(this.get('testValues.firstObject'), '1');
 });
 
+test('calls onchange callback with selected value', function(assert) {
+  const done = assert.async();
+  this.set('onchange', (val) => {
+    assert.equal(val[0], '1');
+    done();
+  });
+  this.render(hbs `{{#rsa-form-select onchange=onchange }}<option value="1">1</option><option value="2">2</option>{{/rsa-form-select}}`);
+  this.$().find('.prompt').click();
+  this.$().find('select').val('1').trigger('change');
+});
+
+test('it does not update the prompt when the selected value changes when set to not update prompt', function(assert) {
+  this.render(hbs `{{#rsa-form-select label='Foo' alwaysUsePrompt=true prompt='Foo Prompt'}}<option value="1">1</option><option value="2">2</option><option value="3">3</option>{{/rsa-form-select}}`);
+  assert.equal(this.$().find('.prompt').text().trim(), 'Foo Prompt');
+  this.$().find('.prompt').click();
+  this.$().find('select').val('1').trigger('change');
+  assert.equal(this.$().find('.prompt').text().trim(), 'Foo Prompt');
+});
+
+
 test('it update the bound value when the selected value changes to multiple values', function(assert) {
   this.set('testValues', ['2']);
   this.render(hbs `{{#rsa-form-select label='Foo' prompt='Foo Prompt' values=testValues}}<option value="1">1</option><option value="2">2</option><option value="3">3</option>{{/rsa-form-select}}`);

@@ -1,5 +1,18 @@
 @import "./event-dropdowns";
 
+// Adjusting form select to not have a bottom border
+// as per mocks.
+// Also moving the arrow up as the recon usage of form-select
+// has no label and this requires icon repositioning
+@mixin adjust-rsa-form-select() {
+  .rsa-form-select.options-collapsed .prompt {
+    border-bottom: 0;
+  }
+  .rsa-form-select .rsa-icon-arrow-down-12 {
+    top: 1rem;
+  }
+}
+
 .recon-event-header {
   background-color: rsa-color(gray, dark);
   border: 1px solid rsa-color(white);
@@ -29,6 +42,8 @@
 
   .recon-event-titlebar {
     max-height: 40px;
+
+    @include adjust-rsa-form-select();
 
     .heading {
       h2 {

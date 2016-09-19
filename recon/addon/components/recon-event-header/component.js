@@ -9,8 +9,10 @@ export default Component.extend({
 
   // INPUTS
   headerItems: null,
+  index: null,
+  reconstructionType: null,
   showMetaDetails: null,
-  title: null,
+  total: null,
 
   // Actions
   closeRecon: null,

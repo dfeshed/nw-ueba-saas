@@ -1,7 +1,13 @@
 <hbox class='heading'>
-  <h2 {{action "updateReconstructionView"}}>
-    {{displayTitle}}
-  </h2>
+  {{#rsa-form-select
+      multiple=false
+      prompt=displayTitle
+      alwaysUsePrompt=true
+      onchange=(action 'findNewReconstructionView')}}
+    {{#each reconViewsConfig as |item|}}
+      <option value={{item.code}} selected={{item.selected}}>{{item.label}}</option>
+    {{/each}}
+  {{/rsa-form-select}}
 </hbox>
 
 {{#rsa-form-button active=showHeaderData isIconOnly=true}}

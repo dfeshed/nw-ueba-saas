@@ -11,7 +11,9 @@ export default Component.extend({
   classNameBindings: [':recon-event-titlebar'],
 
   // INPUTS
-  title: null,
+  index: undefined,
+  reconstructionType: undefined,
+  total: undefined,
 
   // Actions
   showHeaderData: null,
@@ -26,14 +28,27 @@ export default Component.extend({
 
   isExpanded: false,
 
+  @computed('reconstructionType')
+  reconViewsConfig({ code }) {
+    return TYPES.map((c) => {
+      return { ...c, selected: c.code === code };
+    });
+  },
+
   /**
-   * The title is the string to display as the title of the header
-   * It will default to 'Event Reconstruction' if nothing is passed in
+   * Dynamically builds the recon type selection prompt.
+   * Adds 1 to index as it is 0 based.
+   *
    * @type {string} The title to display
    * @public
    */
-  @computed('title')
-  displayTitle: (title) => title || 'Event Reconstruction',
+  @computed('reconstructionType', 'index', 'total')
+  displayTitle: ({ label }, index, total) => {
+    if (index !== undefined) {
+      label = `${label} (${index + 1} of ${total})`;
+    }
+    return label;
+  },
 
   @computed('isExpanded')
   arrowDirection: (isExpanded) => (isExpanded) ? 'right' : 'left',
@@ -59,8 +74,12 @@ export default Component.extend({
       this.sendAction('toggleMetaDetails');
     },
 
-    updateReconstructionView(newView = TYPES.FILE) {
-      this.sendAction('updateReconstructionView', newView);
+    findNewReconstructionView([code]) {
+      // codes are int, comes in as string from form-select
+      const newView = TYPES.findBy('code', parseInt(code, 10));
+      if (newView) {
+        this.sendAction('updateReconstructionView', newView);
+      }
     }
   }
 

@@ -59,6 +59,23 @@ export default Component.extend({
 
   multiple: true,
 
+  onchange: null,
+
+  alwaysUsePrompt: false,
+
+  /*
+   * Use the prompt if nothing has been selected, or if instructed to always use the
+   * prompt. Always using the prompt allows the implementor to control
+   * the prompt text.
+   */
+  usePrompt: computed('values', 'alwaysUsePrompt', function() {
+    const values = this.get('values');
+    if (!values || values.length === 0 || this.get('alwaysUsePrompt')) {
+      return true;
+    }
+    return false;
+  }),
+
   optionMaxVisible: computed('optionCount', function() {
     if (this.get('optionCount') <= 5) {
       return this.get('optionCount');
@@ -89,21 +106,17 @@ export default Component.extend({
   }),
 
   decorateSelectOptions() {
-    let that = this;
-
-    run.schedule('afterRender', function() {
-      let options = that.$('option');
+    run.schedule('afterRender', () => {
+      let options = this.$('option');
       if (options) {
-        that.set('optionCount', options.length);
+        this.set('optionCount', options.length);
 
         options.each(function(i, optionEl) {
           let option = $(optionEl);
           let text = option.text();
-
           option.attr('data-text', text);
         });
       }
-
     });
   },
 
@@ -144,7 +157,11 @@ export default Component.extend({
   },
 
   change() {
-    this.set('values', (this.get('multiple') ? this.$('select').val() : [ this.$('select').val() ]));
+    const newValue = this.get('multiple') ? this.$('select').val() : [ this.$('select').val() ];
+    this.set('values', newValue);
+    if (this.get('onchange')) {
+      this.sendAction('onchange', newValue);
+    }
     this.decorateSelectOptions();
     this.updateSelectOptions();
 

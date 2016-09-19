@@ -1,7 +1,5 @@
 import Ember from 'ember';
 import layout from './template';
-import { TYPES } from '../../utils/reconstruction-types';
-import { equal } from 'ember-computed-decorators';
 const { Component } = Ember;
 
 export default Component.extend({
@@ -16,9 +14,6 @@ export default Component.extend({
   meta: null,
   packetFields: null,
   showMetaDetails: null,
-  reconstructionType: null,
+  reconstructionType: null
   // END INPUTS
-
-  @equal('reconstructionType', TYPES.PACKET) isPackets: null,
-  @equal('reconstructionType', TYPES.FILE) isFile: null
 });

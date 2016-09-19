@@ -1,23 +1,11 @@
 {{#if contentError}}
   {{contentError}}
 {{else}}
-
-  {{#if isPackets}}
-    {{!--
-      By waiting for packetFields to be populated we ensure we do not
-      retrieve packets until summary is complete, also prevents double render
-    --}}
+  <hbox class="event-content-box">
     {{#if packetFields}}
-      <hbox class="event-content-box">
-        {{recon-event-detail/packets eventId=eventId endpointId=endpointId packetFields=packetFields}}
-      </hbox>
+      {{component reconstructionType.component eventId=eventId endpointId=endpointId packetFields=packetFields}}
     {{/if}}
-  {{/if}}
-
-  {{#if isFile}}
-    {{recon-event-detail/files eventId=eventId endpointId=endpointId}}
-  {{/if}}
-
+  </hbox>
 {{/if}}
 
 {{#if showMetaDetails}}

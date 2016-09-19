@@ -1,12 +1,20 @@
 <span class="rsa-form-label">{{label}}</span>
 <div class="prompt">
-  {{#if values.length}}
+  {{#if usePrompt}}
+    <div {{action (if optionsCollapsed 'displayOptions' 'collapseOptions')}}>
+      {{#if prompt}}
+        {{prompt}}
+      {{else}}
+        Make a Selection
+      {{/if}}
+    </div>
+  {{else}}
     {{#if hasMultipleValues}}
       {{#each humanReadableValues as |value|}}
         <span class="option-tag">
           {{value.label}}
           <span class="remove-tag" {{action 'removeSelection' value.value}}>
-            {{rsa-icon name='close'}}  
+            {{rsa-icon name='close'}}
           </span>
         </span>
       {{/each}}
@@ -15,14 +23,6 @@
         {{humanReadableValues.firstObject.label}}
       </div>
     {{/if}}
-  {{else}}
-    <div {{action (if optionsCollapsed 'displayOptions' 'collapseOptions')}}>
-      {{#if prompt}}
-        {{prompt}}
-      {{else}}
-        Make a Selection
-      {{/if}}
-    </div>
   {{/if}}
 </div>
 
