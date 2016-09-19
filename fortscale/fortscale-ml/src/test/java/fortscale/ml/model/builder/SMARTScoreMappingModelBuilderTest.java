@@ -42,16 +42,19 @@ public class SMARTScoreMappingModelBuilderTest {
 		return new SMARTScoreMappingModelBuilder(conf).build(dateToHighestScores);
 	}
 
+	private void assertContains(double expected, Set<Double> actual) {
+		Assert.assertTrue(String.format("expected: %s, actual: %s", expected, actual),
+				actual.stream().anyMatch(a -> Math.abs(expected - a) <= 0.000000000001));
+	}
+
 	private void assertModel(double expectedThreshold, double expectedMaximalValue, SMARTScoreMappingModel model) {
 		Map<Double, Double> mapping = model.getScoreMappingConf().getMapping();
 		Set<Double> actualThresholds = findKeysByValue(mapping, 50D);
 		Set<Double> actualMaximalValues = findKeysByValue(mapping, 100D);
 		Assert.assertTrue(actualMaximalValues.contains(100D));
 		Assert.assertTrue(findKeysByValue(mapping, 0D).contains(0D));
-		Assert.assertTrue(String.format("expected: %f, actual: %s", expectedThreshold, actualThresholds),
-				actualThresholds.contains(expectedThreshold));
-		Assert.assertTrue(String.format("expected: %f, actual: %s", expectedMaximalValue, actualMaximalValues),
-				actualMaximalValues.contains(expectedMaximalValue));
+		assertContains(expectedThreshold, actualThresholds);
+		assertContains(expectedMaximalValue, actualMaximalValues);
 	}
 
 	private void assertModel(double expectedThreshold, SMARTScoreMappingModel model) {
@@ -80,6 +83,14 @@ public class SMARTScoreMappingModelBuilderTest {
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
 
 		assertModel(85D, 90D, model);
+	}
+
+	@Test
+	public void shouldCreateThresholdBiggerThanGivenScoresIfAllScoresAreTheSame() {
+		Double[] scores = {80D, 80D, 80D, 80D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
+
+		assertModel(80D + SMARTScoreMappingModelBuilder.EPSILON, 80D + SMARTScoreMappingModelBuilder.EPSILON * 2, model);
 	}
 
 	@Test
@@ -115,7 +126,7 @@ public class SMARTScoreMappingModelBuilderTest {
 				0,
 				dailyScores
 		);
-		assertModel(99D, modelWithOutliers);
+		assertModel(99D + SMARTScoreMappingModelBuilder.EPSILON, modelWithOutliers);
 
 		SMARTScoreMappingModel modelWithoutOutliers = buildModel(
 				0,
@@ -126,7 +137,7 @@ public class SMARTScoreMappingModelBuilderTest {
 				1.0 / 7,
 				dailyScores
 		);
-		assertModel(90D, modelWithoutOutliers);
+		assertModel(90D + SMARTScoreMappingModelBuilder.EPSILON, modelWithoutOutliers);
 	}
 
 	@Test
