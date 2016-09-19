@@ -42,16 +42,19 @@ public class SMARTScoreMappingModelBuilderTest {
 		return new SMARTScoreMappingModelBuilder(conf).build(dateToHighestScores);
 	}
 
+	private void assertContains(double expected, Set<Double> actual) {
+		Assert.assertTrue(String.format("expected: %s, actual: %s", expected, actual),
+				actual.stream().anyMatch(a -> Math.abs(expected - a) <= 0.000000000001));
+	}
+
 	private void assertModel(double expectedThreshold, double expectedMaximalValue, SMARTScoreMappingModel model) {
 		Map<Double, Double> mapping = model.getScoreMappingConf().getMapping();
 		Set<Double> actualThresholds = findKeysByValue(mapping, 50D);
 		Set<Double> actualMaximalValues = findKeysByValue(mapping, 100D);
-		Assert.assertTrue(findKeysByValue(mapping, 100D).contains(100D));
+		Assert.assertTrue(actualMaximalValues.contains(100D));
 		Assert.assertTrue(findKeysByValue(mapping, 0D).contains(0D));
-		Assert.assertTrue(String.format("expected: %f, actual: %s", expectedThreshold, actualThresholds),
-				actualThresholds.contains(expectedThreshold));
-		Assert.assertTrue(String.format("expected: %f, actual: %s", expectedMaximalValue, actualMaximalValues),
-				actualMaximalValues.contains(expectedMaximalValue));
+		assertContains(expectedThreshold, actualThresholds);
+		assertContains(expectedMaximalValue, actualMaximalValues);
 	}
 
 	private void assertModel(double expectedThreshold, SMARTScoreMappingModel model) {
@@ -68,26 +71,42 @@ public class SMARTScoreMappingModelBuilderTest {
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfOneDay() {
-		Double[] scores = {90D, 95D, 99D};
+		Double[] scores = {80D, 90D, 95D, 99D};
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
 
-		assertModel(90D + SMARTScoreMappingModelBuilder.EPSILON, 99D, model);
+		assertModel(85D, 99D, model);
+	}
+
+	@Test
+	public void shouldBuildModelCorrectlyWhenHaveToChooseBetweenTooManyAlertsAndTooFew() {
+		Double[] scores = {80D, 80D, 80D, 90D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
+
+		assertModel(85D, 90D, model);
+	}
+
+	@Test
+	public void shouldCreateThresholdBiggerThanGivenScoresIfAllScoresAreTheSame() {
+		Double[] scores = {80D, 80D, 80D, 80D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
+
+		assertModel(80D + SMARTScoreMappingModelBuilder.EPSILON, 80D + SMARTScoreMappingModelBuilder.EPSILON * 2, model);
 	}
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfTwoDays() {
-		Double[] scores1 = {20D, 30D, 40D, 90D, 95D, 99D};
-		Double[] scores2 = {20D, 30D, 40D, 80D, 95D, 97D};
+		Double[] scores1 = {0D, 20D, 30D, 40D, 90D, 95D, 99D};
+		Double[] scores2 = {0D, 20D, 30D, 40D, 80D, 95D, 97D};
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores1, scores2);
 
-		assertModel(80D + SMARTScoreMappingModelBuilder.EPSILON, 99D, model);
+		assertModel(60D, 99D, model);
 	}
 
 	@Test
 	public void shouldIgnoreWeekendAndNoisiestDaysOfWeakWhenCalculatingThreshold() {
-		Double[] typicalDayScores = ArrayUtils.toObject(IntStream.range(0, 7).mapToDouble(i -> 90D).toArray());
-		Double[] noisiestDayScores = ArrayUtils.toObject(IntStream.range(0, 7).mapToDouble(i -> 99D).toArray());
-		Double[] weekendScores = ArrayUtils.toObject(IntStream.range(0, 7).mapToDouble(i -> 50D).toArray());
+		Double[] typicalDayScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 90D).toArray());
+		Double[] noisiestDayScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 99D).toArray());
+		Double[] weekendScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 50D).toArray());
 		Double[][] dailyScores = {
 				typicalDayScores,
 				typicalDayScores,
@@ -132,26 +151,26 @@ public class SMARTScoreMappingModelBuilderTest {
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfOneDayAndEmptyDataOfAnotherDay() {
-		Double[] scores1 = {20D, 30D, 40D, 90D, 95D, 99D};
+		Double[] scores1 = {0D, 20D, 30D, 80D, 90D, 95D, 99D};
 		Double[] scores2 = {};
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores1, scores2);
 
-		assertModel(90D + SMARTScoreMappingModelBuilder.EPSILON, 99D, model);
+		assertModel(85D, 99D, model);
 	}
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfOneDayAndPartialDataOfAnotherDay() {
-		Double[] scores1 = {20D, 30D, 40D, 90D, 95D, 99D};
+		Double[] scores1 = {0D, 20D, 30D, 80D, 90D, 95D, 99D};
 		Double[] scores2 = {97D};
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores1, scores2);
 
-		assertModel(90D + SMARTScoreMappingModelBuilder.EPSILON, 99D, model);
+		assertModel(85D, 99D, model);
 	}
 
 	@Test
 	public void shouldNotCreateThresholdLowerThanMinThreshold() {
 		double minThreshold = 95;
-		Double[] scores = {90D, 95D, 99D};
+		Double[] scores = {0D, 90D, 95D, 99D};
 		SMARTScoreMappingModel model = buildModel(0, 0, minThreshold, minThreshold, 0, 0, scores);
 
 		assertModel(minThreshold, 99D, model);
@@ -160,9 +179,9 @@ public class SMARTScoreMappingModelBuilderTest {
 	@Test
 	public void shouldNotCreateMaximalScoreLowerThanMinMaximalScore() {
 		double minMaximalScore = 50;
-		Double[] scores = {10D, 25D, 30D};
+		Double[] scores = {0D, 10D, 25D, 30D};
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, minMaximalScore, 0, 0, scores);
 
-		assertModel(10D + SMARTScoreMappingModelBuilder.EPSILON, minMaximalScore, model);
+		assertModel(5D, minMaximalScore, model);
 	}
 }
