@@ -1,2 +1,4 @@
 /* eslint-disable */
-require('mock-server').startServer(__dirname);
+require('mock-server').startServer({
+  subscriptionLocations: __dirname
+});

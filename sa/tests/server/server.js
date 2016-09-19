@@ -2,4 +2,6 @@
 
 var reconMockDirectory = require('../../../recon').mockDestinations;
 
-require('mock-server').startServer([__dirname, reconMockDirectory]);
+require('mock-server').startServer({
+  subscriptionLocations: [__dirname, reconMockDirectory]
+});

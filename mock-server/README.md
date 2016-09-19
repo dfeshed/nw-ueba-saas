@@ -8,7 +8,7 @@ If you prefer to learn by reading code, check out [streaming-data's](https://git
 
 1. In your project's `package.json`, add `"mock-server": "../mock-server"` to `devDependencies`
 2. Create a `tests/server/server.js` file that will be used to start the mock server. The file name and location is important so that the jenkins build can easily find it later.
-3. `require` in the `mock-server` and pass the `startServer` function the path to the directory where your [subscriptions](#creating-subscriptions) are contained.  Ex: `require('mock-server').startServer(__dirname);`.  `__dirname` is a node.js reserved variable representing the directory the current file is in. You can also pass an array of paths to directories.
+3. `require` in the `mock-server` and pass the `startServer` function the path to the directory where your [subscriptions](#creating-subscriptions) are contained.  Ex: `require('mock-server').startServer({ subscriptionLocations: __dirname });`.  `__dirname` is a node.js reserved variable representing the directory the current file is in. You can also pass an array of paths to directories.
 4. Run your server: `node server.js`. The `mock-server` configured with your [project's subscriptions](#creating-subscriptions) will be started on port `9999`.
 5. In your project's `environment.js`, ensure the `socketUrl` contains the url of your server, to include the port (`9999`) it is started on.
 
@@ -32,9 +32,10 @@ var socketUrl = 'http://localhost:' + mockPort + '/socket/';
 
 The `mock-server` node package provides the following function.
 
-* `startServer([directories] | directory)`
+* `startServer({})`
   * This will start the server after loading all your subscription files.
-  * This function takes either a `String`, for the root directory of your subscription files, or an `Array` for a group of subscription file locations.
+  * This function takes an `Object` with the following properties:
+    * `subscriptionLocations`, `Array` or `String`, __required__, the directory(`String`) or directories(`Array` of `String`s) of your subscription files
 * `shared.subscriptions`
   * This is a hash of shared/reusable subscription files, check `/shared/subscriptions`
 * `util.sendBatches({})`

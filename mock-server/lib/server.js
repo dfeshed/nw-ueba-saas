@@ -17,7 +17,7 @@ import {
   subscriptionList
 } from './util';
 
-const start = function(subscriptionLocations) {
+const start = function({ subscriptionLocations }) {
 
   // dynamically build subscription configuration based on user location input
   discoverSubscriptions(subscriptionLocations);
