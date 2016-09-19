@@ -20,10 +20,13 @@
       {{/if}}
       <ul class="rsa-investigate-meta-key-values__values">
         {{#each values.data as |datum|~}}
-          <div class="rsa-investigate-meta-key-values__value" title="{{meta-value-alias groupKey.name datum.value tooltipOptions}}">
+          {{#link-to 'protected.investigate.query' (event-query-uri query groupKey.name datum.value)
+            class="rsa-investigate-meta-key-values__value"
+            title=(meta-value-alias groupKey.name datum.value tooltipOptions)
+          }}
             <span class="rsa-investigate-meta-key-values__value-label">{{meta-value-alias groupKey.name datum.value textOptions}}</span>
             <span class="rsa-investigate-meta-key-values__value-metric">{{datum.count}}</span>
-          </div>
+          {{/link-to}}
         {{~/each}}
       </ul>
     {{/if}}

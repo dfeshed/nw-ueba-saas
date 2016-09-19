@@ -41,7 +41,11 @@ export default Mixin.create({
       this.request.promiseRequest({
         method: 'stream',
         modelName: 'core-event-count',
-        query: makeServerInputsForEventCount(queryNode.get('value.definition'), COUNT_THRESHOLD)
+        query: makeServerInputsForEventCount(
+          queryNode.get('value.definition'),
+          queryNode.get('value.language.data'),
+          COUNT_THRESHOLD
+        )
       }).then(({ data }) => {
         eventCount.setProperties({
           status: 'resolved',

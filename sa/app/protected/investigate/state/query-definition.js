@@ -5,7 +5,7 @@
  */
 import Ember from 'ember';
 
-const { get, Object: EmberObject } = Ember;
+const { get, computed, Object: EmberObject } = Ember;
 
 export default EmberObject.extend({
   /**
@@ -30,18 +30,23 @@ export default EmberObject.extend({
   endTime: 0,
 
   /**
-   * Where clause for filtering Core results (e.g., ip.src=X).
-   * @type {string}
+   * An object representing a where clause for filtering Core results by meta values (e.g., ip.src=X).
+   * @type {object}
    * @public
    */
-  metaFilter: '',
+  metaFilter: computed(() => {
+    return {
+      uri: '',
+      conditions: []
+    };
+  }),
 
   isEqual(params) {
     if (params) {
       return (get(params, 'serviceId') === this.get('serviceId')) &&
         (get(params, 'startTime') === this.get('startTime')) &&
         (get(params, 'endTime') === this.get('endTime')) &&
-        (get(params, 'metaFilter') === this.get('metaFilter'));
+        (get(params, 'metaFilter.uri') === this.get('metaFilter.uri'));
     }
     return false;
   }

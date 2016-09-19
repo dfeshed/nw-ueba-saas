@@ -192,6 +192,7 @@ export default Mixin.create({
     const inputs = buildMetaValueStreamInputs(
       metaKeyState.get('info.metaName'),
       queryDefinition,
+      queryNode.get('value.language.data'),
       metaKeyState.get('options'),
       STREAM_LIMIT,
       STREAM_BATCH
@@ -199,7 +200,15 @@ export default Mixin.create({
 
     executeMetaValuesRequest(this.request, inputs, values)
       .finally(() => {
-        this.send('metaGet', queryNode, false);
+        // If the meta panel is still open AND the given node is still the current node, continue fetching next meta key.
+        // But panel might not be open, and/or node might not be the current node anymore; user may have drilled or
+        // navigated away or closed the meta panel during last fetch.
+        if (
+          (this.get('state.meta.panelSize') !== 'min') &&
+          (this.get('state.queryNode') === queryNode)
+        ) {
+          this.send('metaGet', queryNode, false);
+        }
       });
   }
 });

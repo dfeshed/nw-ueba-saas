@@ -54,7 +54,12 @@ export default Mixin.create({
       }
       // end @workaround
 
-      const inputs = buildEventStreamInputs(queryNode.get('value.definition'), STREAM_LIMIT, STREAM_BATCH);
+      const inputs = buildEventStreamInputs(
+        queryNode.get('value.definition'),
+        queryNode.get('value.language.data'),
+        STREAM_LIMIT,
+        STREAM_BATCH
+      );
 
       executeEventsRequest(this.request, inputs, events);
     },
@@ -82,7 +87,13 @@ export default Mixin.create({
         goal
       });
 
-      const inputs = buildEventStreamInputs(queryNode.get('value.definition'), limit, STREAM_BATCH, lastSessionId);
+      const inputs = buildEventStreamInputs(
+        queryNode.get('value.definition'),
+        queryNode.get('value.language.data'),
+        limit,
+        STREAM_BATCH,
+        lastSessionId
+      );
 
       executeEventsRequest(this.request, inputs, events);
     },

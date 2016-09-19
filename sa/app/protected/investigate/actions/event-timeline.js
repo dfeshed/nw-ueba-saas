@@ -37,7 +37,10 @@ export default Mixin.create({
       this.request.promiseRequest({
         method: 'query',
         modelName: 'core-event-timeline',
-        query: makeServerInputsForQuery(queryNode.get('value.definition'))
+        query: makeServerInputsForQuery(
+          queryNode.get('value.definition'),
+          queryNode.get('value.language.data')
+        )
       }).then(function({ data }) {
         eventTimeline.setProperties({
           status: 'resolved',

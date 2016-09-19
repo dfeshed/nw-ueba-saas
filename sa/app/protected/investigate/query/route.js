@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import { parseEventQueryUri } from '../actions/helpers/query-utils';
 
 const { run, Route } = Ember;
 
@@ -15,18 +16,14 @@ export default Route.extend({
    */
   model(params) {
     const state = this.modelFor('protected.investigate');
-
-    let { filter } = params;
-    let [ serviceId, startTime, endTime, metaFilter ] = (filter || '').split('/');
-    startTime = Number(startTime);
-    endTime = Number(endTime);
+    const filterAttrs = parseEventQueryUri(params.filter);
 
     // @workaround Using `this.send()` throws an error if you are navigating to this route directly from a bookmark.
     // Ember tells us to use `transition.send()` in that case instead. We could, but then any sub-actions called by
     // our initial action would not know to use `transition` instead. So instead we use `run.next()` to wait until the
     // route has transitioned before calling any actions.
     run.next(() => {
-      this.send('navFindOrAdd', { serviceId, startTime, endTime, metaFilter });
+      this.send('navFindOrAdd', filterAttrs);
     });
     return state;
   }
