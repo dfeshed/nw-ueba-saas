@@ -1,15 +1,19 @@
 package fortscale.services.impl;
 
+import fortscale.common.datastructures.activity.UserActivityData;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
+import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.cache.CacheHandler;
+import fortscale.services.util.UserDeviceUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +21,6 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Created by alexp on 09/08/2016.
@@ -37,9 +40,25 @@ import java.util.stream.Collectors;
 	private UserScoreService userScoreService;
 
 	@Autowired
-	private CacheHandler<UserRestFilter, List<User>> filterToUserListCache;
+	private UserDeviceUtils userDeviceUtils;
 
-	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
+	@Autowired()
+	@Qualifier("filterToUsersCache")
+	private CacheHandler<UserRestFilter, List<User>> filterToUsersCache;
+
+	List<String> fieldsRequired;
+
+	public UserWithAlertServiceImpl() {
+			fieldsRequired = new ArrayList<>();
+			fieldsRequired.add(User.ID_FIELD);
+			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.firstnameField));
+			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.lastnameField));
+			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.positionField));
+			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField));
+			fieldsRequired.add(User.usernameField);
+	}
+
+	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 		List<User> result = new ArrayList<>();
 
 		Set<String> relevantUsers = filterPreparations(userRestFilter);
@@ -48,7 +67,7 @@ import java.util.stream.Collectors;
 			return result;
 		}
 
-		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
+		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired);
 		return result;
 	}
 
@@ -131,13 +150,28 @@ import java.util.stream.Collectors;
     }
 
 	@Override
+	public List<UserActivityData.DeviceEntry> getUserActivitySourceMachineDocuments(User user) {
+        List<UserActivitySourceMachineDocument> userSourceMachines;
+        List<UserActivityData.DeviceEntry> deviceEntries = null;
+        try {
+            userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
+                    Integer.MAX_VALUE);
+            deviceEntries = userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3);
+        } catch (Exception ex) {
+            logger.warn("failed to get user source machines");
+            userSourceMachines = new ArrayList<>();
+        }
+        return deviceEntries;
+    }
+
+	@Override
 	public List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter, String searchValue) {
-		List<User> users = filterToUserListCache.get(userRestFilter);
+		List<User> users = filterToUsersCache.get(userRestFilter);
 		List<User> result = new ArrayList<>();
 
 		if (users == null){
-			users = findUsersByFilter(userRestFilter, null);
-			filterToUserListCache.put(userRestFilter, users);
+			users = findUsersByFilter(userRestFilter, null, fieldsRequired);
+			filterToUsersCache.put(userRestFilter, users);
 		}
 
 		if (CollectionUtils.isNotEmpty(users)){
@@ -173,17 +207,27 @@ import java.util.stream.Collectors;
 			result.addAll(departmentResults);
 		}
 
+		if (userRestFilter.getSize()!= null){
+			int startFrom = 0;
+
+			if (userRestFilter.getFromPage() != null && userRestFilter.getFromPage() > 1){
+				startFrom = userRestFilter.getSize() * (userRestFilter.getFromPage() - 1);
+			}
+			return result.subList(startFrom, startFrom + userRestFilter.getSize());
+		}
+
 		return result;
+
 	}
 
 	@Override
 	public CacheHandler getCache() {
-		return filterToUserListCache;
+		return filterToUsersCache;
 	}
 
 	@Override
 	public void setCache(CacheHandler cache) {
-		this.filterToUserListCache = cache;
+		this.filterToUsersCache = cache;
 	}
 
 	@Override
@@ -194,19 +238,6 @@ import java.util.stream.Collectors;
 		else {
 			getCache().putFromString(key, value);
 		}
-	}
-
-	@Override
-	public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineDocuments(User user) {
-		List<UserActivitySourceMachineDocument> userSourceMachines;
-		try {
-			userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
-					Integer.MAX_VALUE);
-		} catch (Exception ex) {
-			logger.warn("failed to get user source machines");
-			userSourceMachines = new ArrayList<>();
-		}
-		return userSourceMachines;
 	}
 
 }

@@ -1,7 +1,7 @@
 package fortscale.services;
 
+import fortscale.common.datastructures.activity.UserActivityData;
 import fortscale.domain.core.User;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.rest.UserRestFilter;
 import org.springframework.data.domain.PageRequest;
 
@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface UserWithAlertService extends CachingService{
 
-	List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest);
+	List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired);
 
 	int countUsersByFilter(UserRestFilter userRestFilter);
 
@@ -19,5 +19,5 @@ public interface UserWithAlertService extends CachingService{
 
     List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter, String searchValue);
 
-	List<UserActivitySourceMachineDocument> getUserActivitySourceMachineDocuments(User user);
+	List<UserActivityData.DeviceEntry> getUserActivitySourceMachineDocuments(User user);
 }

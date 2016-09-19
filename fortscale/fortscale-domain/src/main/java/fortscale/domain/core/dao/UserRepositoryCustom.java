@@ -38,7 +38,7 @@ public interface UserRepositoryCustom {
 
 	public List<User> findAllUsers(Pageable pageable);
 
-	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable);
+	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable, List<String> fieldsRequired);
 
 	public Map<String, Long> groupByTags();
 

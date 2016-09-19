@@ -16,7 +16,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
-import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.apache.commons.collections.CollectionUtils;
@@ -86,8 +85,8 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
-	@Autowired
-	private UserDeviceUtils userDeviceUtils;
+//	@Autowired
+//	private UserDeviceUtils userDeviceUtils;
 
 	@Autowired
 	private AlertsService alertsService;
@@ -109,7 +108,7 @@ public class ApiUserController extends BaseController{
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
-		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
 
 		setSeverityOnUsersList(users);
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
@@ -210,18 +209,18 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-    @RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
-    @ResponseBody
-    @LogException
-    public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter,
+	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter,
 												@RequestParam(required=true) String searchValue){
-        List<User> users = userWithAlertService.findAndSaveUsersByFilter(userRestFilter, searchValue);
+		List<User> users = userWithAlertService.findAndSaveUsersByFilter(userRestFilter, searchValue);
 
 		DataBean<List<User>> result = new DataBean<>();
 		result.setData(users);
 
-        return result;
-    }
+		return result;
+	}
 
 	/**
 	 * Search user data by user name. This function is the same as details() but the parameter is username and not userid
@@ -300,7 +299,7 @@ public class ApiUserController extends BaseController{
 			return Response.status(Response.Status.BAD_REQUEST).entity("The tag name cannot be empty").build();
 		}
 
-		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null);
+		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null, null);
 		UserTagService userTagService = userTaggingService.getUserTagService(tagName);
 
 		usersByFilter.stream().forEach(user -> {
@@ -486,7 +485,7 @@ public class ApiUserController extends BaseController{
 			userRestFilter.setMinScore(0d);
 		}
 
-		List<User> scoredUsers = userWithAlertService.findUsersByFilter(userRestFilter, null);
+		List<User> scoredUsers = userWithAlertService.findUsersByFilter(userRestFilter, null, null);
 
 		if (CollectionUtils.isNotEmpty(scoredUsers)) {
 			scoredUsers.stream().forEach(user -> {
@@ -599,11 +598,9 @@ public class ApiUserController extends BaseController{
 			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
 
-			List<UserActivitySourceMachineDocument> userSourceMachines = userWithAlertService.getUserActivitySourceMachineDocuments(user);
-			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
+			userDetailsBean.setDevices(userWithAlertService.getUserActivitySourceMachineDocuments(user));
 		}
 	}
-
 
 	private PageRequest createPaging(Integer size, Integer fromPage, Sort sortUserDesc) {
 		// Create paging

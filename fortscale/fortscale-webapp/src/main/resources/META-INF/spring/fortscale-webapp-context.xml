@@ -73,6 +73,12 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
+	<!-- sensitiveMachine service cache that uses memory based implementation are injected here -->
+	<bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${sensitive.machine.service.cache.max.items:10000}" />
+		<constructor-arg name="timeToExpire" value="${sensitive.machine.service.cache.timeToExpireSec:0}" />
+		<constructor-arg name="clazz" value="java.lang.String" />
+	</bean>
 
 
     <!-- DN to username cache for avvoiding of going to mongo each time  -->
@@ -129,7 +135,7 @@
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton" />
 
-	<bean id="userDeviceUtils" class="fortscale.web.rest.Utils.UserDeviceUtils" scope="singleton" />
+	<bean id="userDeviceUtils" class="fortscale.services.util.UserDeviceUtils" scope="singleton" />
 
 	<!--<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>-->
 

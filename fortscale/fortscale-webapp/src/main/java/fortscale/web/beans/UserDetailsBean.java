@@ -7,7 +7,7 @@ import fortscale.domain.core.User;
 import fortscale.services.UserServiceFacade;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
-import fortscale.web.rest.entities.activity.UserActivityData;
+import fortscale.common.datastructures.activity.UserActivityData;
 
 import java.io.Serializable;
 import java.util.ArrayList;

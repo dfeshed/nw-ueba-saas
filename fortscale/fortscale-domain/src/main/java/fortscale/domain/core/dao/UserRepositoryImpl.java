@@ -252,12 +252,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable) {
+	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable, List<String> fieldsRequired) {
 
 		Query query = new Query().with(pageable);
 
 		for (Criteria criteria : criteriaList) {
 			query.addCriteria(criteria);
+		}
+
+		if (CollectionUtils.isNotEmpty(fieldsRequired)){
+			fieldsRequired.forEach(field -> {
+				query.fields().include(field);
+			});
 		}
 
 		return mongoTemplate.find(query, User.class);
