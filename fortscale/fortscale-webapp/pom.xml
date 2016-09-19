@@ -357,14 +357,24 @@
 					</archive>
 				</configuration>
 			</plugin>
-			<!-- <plugin> -->
-			<!-- <groupId>org.codehaus.mojo</groupId> -->
-			<!-- <artifactId>exec-maven-plugin</artifactId> -->
-			<!-- <version>1.2.1</version> -->
-			<!-- <configuration> -->
-			<!-- <mainClass>org.test.int1.Main</mainClass> -->
-			<!-- </configuration> -->
-			<!-- </plugin> -->
+			<!-- Clean resource folder before copying to remove old versions and redundent files-->
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>${maven-resources-plugin.version}</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>${basedir}/src/main/webapp/resources</directory>
+							<includes>
+								<include>**/*.*</include>
+							</includes>
+
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<!-- Copy resource folder -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
 				<version>${maven-resources-plugin.version}</version>
