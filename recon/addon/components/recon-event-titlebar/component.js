@@ -14,10 +14,10 @@ export default Component.extend({
   index: undefined,
   reconstructionType: undefined,
   total: undefined,
-
-  // Actions
   showHeaderData: null,
   showMetaDetails: null,
+
+  // Actions
   closeRecon: null,
   expandRecon: null,
   shrinkRecon: null,
