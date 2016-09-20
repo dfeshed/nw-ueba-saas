@@ -103,7 +103,7 @@ public class IsFixSourceTagImpl implements ServiceAccountTagging {
 
     @Override
     public void addTagToMongo(TagService tagService) {
-        tagService.addTag(new Tag(FixTag, FixTag, false));
+        tagService.addTag(new Tag(FixTag, FixTag, false, false));
     }
 
 }

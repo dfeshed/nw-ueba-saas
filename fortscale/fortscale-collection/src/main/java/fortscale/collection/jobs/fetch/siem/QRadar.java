@@ -1,7 +1,6 @@
 package fortscale.collection.jobs.fetch.siem;
 
 import fortscale.collection.jobs.fetch.FetchJob;
-import fortscale.domain.fetch.SIEMType;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.qradar.result.SearchResultRequestReader;

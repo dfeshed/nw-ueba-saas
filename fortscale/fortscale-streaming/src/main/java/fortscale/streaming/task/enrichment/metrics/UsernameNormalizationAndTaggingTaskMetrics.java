@@ -51,10 +51,6 @@ public class UsernameNormalizationAndTaggingTaskMetrics extends StatsMetricsGrou
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long failedToNormalizeUsernameMessages;
 
-	// Number of messages that may be tagged
-	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long mayBeTaggedMessages;
-
 	// Number of messages that failed to be forwarded to output topic
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long failedToForwardMessage;

@@ -941,6 +941,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userRepository.findByUserInOU(ousToTag, pageable);
 	}
 
+	@Override
+	public Set<String> findByUsernameRegex(String usernameRegex) {
+		return userRepository.findByUsernameRegex(usernameRegex);
+	}
+
 	public String findAdMembers(String adName) {
 		return adGroupRepository.findByName(adName);
 	}
@@ -950,25 +955,28 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public Set<String> findNamesByTag(String tagFieldName, Boolean value) {
+	public Set<String> findNamesByTag(String tag) {
 		Set<String> namesByTag = new HashSet<String>();
 		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {
 			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			namesByTag.addAll(userRepository.findNameByTag(tagFieldName, value, pageRequest));
+			namesByTag.addAll(userRepository.findNameByTag(tag, pageRequest));
 		}
 		return namesByTag;
 	}
 
 	@Override
-	public Set<String> findNamesByTag(String tagFieldName, String value) {
-		Set<String> namesByTag = new HashSet<String>();
-		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			namesByTag.addAll(userRepository.findNameByTag(tagFieldName, value, pageRequest));
+	public Map<String, Set<String>> findAllTaggedUsers() {
+		Map<String, Set<String>> result = new HashMap();
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+		query.fields().include(User.tagsField);
+		query.addCriteria(new Criteria().where(User.tagsField + ".0").exists(true));
+		List<User> users = mongoTemplate.find(query, User.class);
+		for (User user: users) {
+			result.put(user.getUsername(), user.getTags());
 		}
-		return namesByTag;
+		return result;
 	}
 
 	@Override
@@ -1026,19 +1034,16 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value){
-		userRepository.updateUserTag(tagField, username, value);
+	public void updateUserTag(String userTagEnumId, String username, boolean value) {
 		List<String> tagsToAdd = new ArrayList<>();
 		List<String> tagsToRemove = new ArrayList<>();
 		if (value) {
 			tagsToAdd.add(userTagEnumId);
 		}
-		else{
+		else {
 			tagsToRemove.add(userTagEnumId);
 		}
-
-		updateUserTagList(tagsToAdd,tagsToRemove,username);
-
+		updateUserTagList(tagsToAdd, tagsToRemove, username);
 	}
 
 	@Override

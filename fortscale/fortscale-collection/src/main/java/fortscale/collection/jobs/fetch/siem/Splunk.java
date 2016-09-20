@@ -2,7 +2,6 @@ package fortscale.collection.jobs.fetch.siem;
 
 import fortscale.collection.JobDataMapExtension;
 import fortscale.collection.jobs.fetch.FetchJob;
-import fortscale.domain.fetch.SIEMType;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.splunk.SplunkApi;
 import fortscale.utils.splunk.SplunkEventsHandlerLogger;
