@@ -25,7 +25,6 @@ $font-fade-color: rsa-color(gray, light);
 
   &__ecat {
     color: $font-fade-color;
-    height: 100%;
     width: -webkit-calc(100% - (4px));
 
     .heading-text {
@@ -106,6 +105,73 @@ $font-fade-color: rsa-color(gray, light);
       padding-left: rsa-whitespace();
     }
 
+  }
+
+  &__liveconnect {
+    color: $font-fade-color;
+    width: -webkit-calc(100% - (4px));
+    &__field {
+      padding: rsa-whitespace();
+    }
+    &__field-name {
+      @include rsa-font(header, small);
+      padding: rsa-whitespace();
+    }
+    &__label {
+      margin: rsa-whitespace(least);
+    }
+    &__reviewstatus {
+      width: 100%;
+      &__col-1 {
+        min-width: 160px;
+      }
+      &__col-2 {
+        min-width: 250px;
+      }
+      &__col-3 {
+        min-width: 200px;
+      }
+      &__col-4 {
+        min-width: 200px;
+      }
+      &__col-5 {
+        max-width: 100px;
+      }
+    }
+    &__comm-activity {
+      vbox {
+        min-width: 28%;
+        max-width: 33%;
+        padding: rsa-whitespace(less);
+      }
+      &__desc {
+        padding-left: rsa-whitespace();
+        @include rsa-font(paragraph);
+        &__seen {
+          @include rsa-font(bold);
+          color: rsa-color(blue);
+        }
+        &__submitted {
+          @include rsa-font(bold);
+          color: rsa-color(orange);
+        }
+        &__unsafe {
+          @include rsa-font(bold);
+          color: rsa-color(red, darker);
+        }
+        &__safe {
+          @include rsa-font(bold);
+          color: rsa-color(green);
+        }
+        &__unknown {
+          @include rsa-font(bold);
+          color: rsa-color(amber, dark);
+        }
+      }
+    }
+    &__risk-indicators {
+      width: 100%;
+    }
   }
 
 }

@@ -1,14 +1,16 @@
 import Ember from 'ember';
 import Ecat from 'sa/context/ecat';
+import LiveConnect from 'sa/context/live-connect';
 
 const {
-  Route,
-  Logger,
-  set,
-  isArray,
-  inject: {
-    service
-  }
+    Route,
+    Logger,
+    set,
+    setProperties,
+    isArray,
+    inject: {
+        service
+    }
 } = Ember;
 
 export default Route.extend({
@@ -39,7 +41,8 @@ export default Route.extend({
       ips: [],
       prefetch: [],
       contextData: {
-        ecatData: null
+        ecatData: null,
+        liveConnectData: null
       }
     };
 
@@ -76,7 +79,7 @@ export default Route.extend({
 
         if (isArray(data)) {
           data.forEach((entry) => {
-            this._populateContextsData(JSON.parse(entry.data));
+            this._populateContextsData(entry.data);
           });
         }
       },
@@ -87,7 +90,7 @@ export default Route.extend({
   },
 
   _populateContextsData(contextData) {
-    let dataSources = JSON.parse(contextData.result);
+    let dataSources = contextData.result;
 
     dataSources.forEach((dataSource) => {
 
@@ -140,6 +143,17 @@ export default Route.extend({
             set(this.currentModel.contextData, 'ecatData', ecatData);
             break;
           }
+        case 'LiveConnect':
+          dataSource.resultList.forEach((obj) => {
+            let lcData = null;
+            if (obj && obj.details && obj.details.IpReputation) {
+              let ipRep = obj.details.IpReputation;
+              lcData = LiveConnect.create();
+              setProperties(lcData, { ...ipRep });
+            }
+            set(this.currentModel.contextData, 'liveConnectData', lcData);
+          });
+          break;
         default:
           {
             Logger.error('Data Source is not supported by Context Hub ', dataSource.dataSourceType);
