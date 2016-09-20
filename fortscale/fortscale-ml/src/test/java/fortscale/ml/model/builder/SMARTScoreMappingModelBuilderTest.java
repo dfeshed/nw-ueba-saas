@@ -44,7 +44,7 @@ public class SMARTScoreMappingModelBuilderTest {
 
 	private void assertContains(double expected, Set<Double> actual) {
 		Assert.assertTrue(String.format("expected: %s, actual: %s", expected, actual),
-				actual.stream().anyMatch(a -> Math.abs(expected - a) <= 0.000000000001));
+				actual.stream().anyMatch(a -> Math.abs(expected - a) <= SMARTScoreMappingModelBuilder.EPSILON / 10));
 	}
 
 	private void assertModel(double expectedThreshold, double expectedMaximalValue, SMARTScoreMappingModel model) {
@@ -90,6 +90,7 @@ public class SMARTScoreMappingModelBuilderTest {
 		Double[] scores = {80D, 80D, 80D, 80D};
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
 
+		findKeysByValue(model.getScoreMappingConf().getMapping(), 50D).forEach(threshold -> Assert.assertTrue(threshold > 80D));
 		assertModel(80D + SMARTScoreMappingModelBuilder.EPSILON, 80D + SMARTScoreMappingModelBuilder.EPSILON * 2, model);
 	}
 
