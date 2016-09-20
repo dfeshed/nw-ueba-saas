@@ -101,6 +101,7 @@ export default Component.extend({
   // TODO: remove observer
   valuesDidChange: observer('values.[]', function() {
     run.once(this, function() {
+      this.decorateSelectOptions();
       this.updateSelectOptions();
     });
   }),

@@ -28,7 +28,6 @@
 
   &-name{
     overflow: hidden;
-    line-height: calc(#{rsa-whitespace()} + #{rsa-whitespace(less)});
     text-overflow: ellipsis;
   }
 }

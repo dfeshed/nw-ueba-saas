@@ -1,6 +1,6 @@
 {{rsa-respond/incident-detail/detail-index
-  model=model.incident
-  users=model.users
-  storyline=model.relatedIndicators
+  model=model.incident.firstObject
+  storyline=model.indicators
   categoryTags=model.categoryTags
+  users=model.users
   saveAction=(route-action 'saveAction')}}

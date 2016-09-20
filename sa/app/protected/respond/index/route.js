@@ -7,10 +7,9 @@ const {
   inject: {
     service
   },
+  set,
   Logger,
   observer,
-  RSVP,
-  merge,
   run
 } = Ember;
 
@@ -33,6 +32,8 @@ export default Route.extend({
    * @private
    */
   _createStream(filter, sort, subDestinationUrlParams, cube) {
+    cube.set('status', 'wait');
+    cube.set('users', {});
 
     this.request.streamRequest({
       method: 'stream',
@@ -42,15 +43,16 @@ export default Route.extend({
         sort,
         filter
       },
-      streamOptions: { requireRequestId: false },
       onResponse({ data }) {
-        cube.get('records').pushObjects(data);
+        if (data) {
+          cube.get('records').pushObjects(data);
+        }
+        cube.set('status', 'streaming');
       },
       onError(response) {
         Logger.error('Error processing stream call for incident model', response);
       }
     });
-
   },
 
   /*
@@ -252,13 +254,20 @@ export default Route.extend({
       };
     }
 
-    return RSVP.hash(
-      merge(
-        {
-          users: this.store.findAll('user')
-        },
-        incidentModels
-      ));
+    return incidentModels;
+  },
+
+  afterModel(resolvedModel) {
+    this.get('store').findAll('user').then((user) => {
+      if (this.get('respondMode.selected') === 'card') {
+        set(resolvedModel.newIncidents, 'users', user);
+        set(resolvedModel.inProgressIncidents, 'users', user);
+      } else {
+        set(resolvedModel.allIncidents, 'users', user);
+      }
+    }).catch(() => {
+      Logger.error('Error getting users');
+    });
   },
 
   actions: {

@@ -161,7 +161,7 @@ export default Component.extend({
           author: newAuthor
         };
 
-        this.sendAction('saveJournalAction', newJournal);
+        this.sendAction('saveJournalAction', newJournal, 'createRecord');
 
         // clear editable fields
         this.setProperties({
@@ -171,7 +171,7 @@ export default Component.extend({
         });
       } else {
         // Edit existing JournalEntry
-        this.sendAction('saveJournalAction', this.get('journal'));
+        this.sendAction('saveJournalAction', this.get('journal'), 'updateRecord');
       }
 
       this.set('editModeActive', false);
@@ -191,7 +191,7 @@ export default Component.extend({
      * @public
      */
     confirmDelete() {
-      this.sendAction('deleteJournalAction', this.get('journal.id'));
+      this.sendAction('saveJournalAction', this.get('journal'), 'deleteRecord');
 
       this.get('eventBus').trigger('rsa-application-modal-close-deleteJournalEntry');
       this.set('editModeActive', false);

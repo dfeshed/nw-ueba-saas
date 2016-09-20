@@ -18,7 +18,7 @@ export default Component.extend({
 
   model: null,
 
-  @computed('model')
+  @computed('model.[]')
   indicators(model) {
     if (isNone(model) || model.length <= 0) {
       return [];

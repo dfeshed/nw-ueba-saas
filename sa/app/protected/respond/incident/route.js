@@ -2,9 +2,6 @@ import Ember from 'ember';
 
 const {
   Route,
-  RSVP: {
-    hash
-  },
   Logger,
   set,
   inject: {
@@ -36,8 +33,7 @@ export default Route.extend({
 
   model(params) {
     this.set('incidentId', params.incident_id);
-    let relatedIndicators = [];
-
+    let details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [] };
     this.request.streamRequest({
       method: 'stream',
       modelName: 'storyline',
@@ -47,19 +43,38 @@ export default Route.extend({
       },
       onResponse: ({ data }) => {
         if (typeOf(data.relatedIndicators) !== 'undefined') {
-          relatedIndicators.pushObjects(data.relatedIndicators);
+          details.indicators.pushObjects(data.relatedIndicators);
         }
       },
-      onError(response) {
-        Logger.error('Error loading storyline', response);
+      onError() {
+        Logger.error('Error loading storyline');
       }
     });
-    return hash({
-      relatedIndicators,
-      incident: this.store.queryRecord('incident', { incidentId: params.incident_id }),
-      users: this.store.findAll('user'),
-      categoryTags: this.store.findAll('category-tags')
+    this.request.streamRequest({
+      method: 'queryRecord',
+      modelName: 'incident',
+      query: { 'incidentId': params.incident_id },
+      onResponse: ({ data }) => {
+        details.incident.pushObjects([data]);
+      },
+      onError() {
+        Logger.error('Error loading incident');
+      }
     });
+
+    this.request.streamRequest({
+      method: 'stream',
+      modelName: 'category-tags',
+      query: {},
+      onResponse: ({ data }) => {
+        details.categoryTags.pushObjects(data);
+      },
+      onError() {
+        Logger.error('Error loading tags');
+      }
+    });
+
+    return details;
   },
 
   afterModel(resolvedModel) {
@@ -75,23 +90,37 @@ export default Route.extend({
       streamOptions: {
         requireRequestId: false
       },
-      onResponse: ({ data, notificationCode }) => {
-        Logger.log(`Notify next() callback, notificationCode: ${ notificationCode }`);
-        let incidentId = this.get('incidentId');
-
-        // Updating the whole incident when we received a notification
-        let innerIncident = data.findBy('id', incidentId);
-        if (innerIncident) {
-          // only update current incident, ignoring others
-          set(resolvedModel, 'incident', innerIncident);
-          // Update the store with the updated incident
-          this.store.pushPayload({ 'incidents': [innerIncident] });
-          innerIncident.id = incidentId;
+      onResponse: ({ data }) => {
+        if (typeOf(data) === 'array') {
+          let innerIncident = data.findBy('id', currentIncidentId);
+          // Updating the whole incident when we received a notification
+          if (innerIncident) {
+            set(resolvedModel, 'incident', [innerIncident]);
+          }
         }
       },
-      onError(response) {
-        Logger.error('Error processing notify call for incident model', response);
+      onError() {
+        Logger.error('Error processing notify call for incident model');
       }
+    });
+
+    this.get('store').findAll('user').then((user) => {
+      set(resolvedModel, 'users', user);
+    }).catch(() => {
+      Logger.error('Error getting users');
+    });
+  },
+
+  _updateRecord(incident, updatedField, updatedValue) {
+    if (typeOf(updatedField) === 'object') {
+      incident.setProperties(updatedField);
+    } else {
+      incident.set(updatedField, updatedValue);
+    }
+    incident.save().then(() => {
+      Logger.debug('Incident was saved');
+    }).catch(() => {
+      Logger.error('Error saving incident.');
     });
   },
 
@@ -106,18 +135,14 @@ export default Route.extend({
      */
     saveAction(updatedField, updatedValue) {
       Logger.debug(`Updating incident ${ this.get('incidentId') }`);
-
       let incident = this.store.peekRecord('incident', this.get('incidentId'));
-      if (typeOf(updatedField) === 'object') {
-        incident.setProperties(updatedField);
+      if (incident) {
+        this._updateRecord(incident, updatedField, updatedValue);
       } else {
-        incident.set(updatedField, updatedValue);
+        this.store.queryRecord('incident', { incidentId: this.get('incidentId') }).then((incident) => {
+          this._updateRecord(incident, updatedField, updatedValue);
+        });
       }
-      incident.save().then(() => {
-        Logger.debug('Incident was saved');
-      }).catch((reason) => {
-        Logger.error(`Error saving incident. Reason: ${ reason }`);
-      });
     },
 
     /**
@@ -126,47 +151,28 @@ export default Route.extend({
      * otherwise it creates it
      * @public
      */
-    saveJournal(jsonNote) {
+    saveJournal(jsonNote, mode) {
+      let query = {
+        incidentId: this.get('incidentId'),
+        journalId: jsonNote.id
+      };
 
+      if (mode !== 'deleteRecord') {
+        query.journalMap = {
+          notes: jsonNote.notes,
+          author: jsonNote.author,
+          milestone: jsonNote.milestone
+        };
+      }
       this.request.promiseRequest({
-        method: (jsonNote.id ? 'updateRecord' : 'createRecord'),
+        method: mode,
         modelName: 'journal-entry',
-        query: {
-          incidentId: this.get('incidentId'),
-          journalId: jsonNote.id,
-          journalMap: {
-            notes: jsonNote.notes,
-            author: jsonNote.author,
-            milestone: jsonNote.milestone
-          }
-        }
-      }).then((response) => {
-        Logger.debug(`Journal saved, response: ${ response }`);
-      }).catch((reason) => {
-        Logger.error(`Journal was not saved. Reason ${ reason }`);
-      });
-    },
-
-    /**
-     * @name deleteJournal
-     * @description deletes an existing journal
-     * @public
-     */
-    deleteJournal(journalId) {
-
-      this.request.promiseRequest({
-        method: 'deleteRecord',
-        modelName: 'journal-entry',
-        query: {
-          incidentId: this.get('incidentId'),
-          journalId
-        }
-      }).then((response) => {
-        Logger.debug(`Journal deleted, response: ${ response }`);
-      }).catch((reason) => {
-        Logger.error(`Journal was not deleted. Reason ${ reason }`);
+        query
+      }).then(() => {
+        Logger.debug('Journal saved');
+      }).catch(() => {
+        Logger.error('Journal was not saved.');
       });
     }
   }
-
 });

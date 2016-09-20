@@ -9,17 +9,15 @@
       <div class="rsa-carousel__hidden-item js-carousel__measure-item">
         {{~yield items.firstObject~}}
       </div>
-      {{#liquid-bind currentPageItems class="liquid-slide-horizontal" as |pageItems|}}
-        <div class="rsa-carousel__visible-items">
-          {{#each pageItems as |item|}}
-            {{#if item.isPlaceholder}}
-              {{~rsa-spacer width=item.width height=item.height~}}
-            {{else}}
-              {{~yield item~}}
-            {{/if}}
-          {{/each}}
-        </div>
-      {{/liquid-bind}}
+      <div class="rsa-carousel__visible-items">
+        {{#each currentPageItems as |item|}}
+          {{#if item.isPlaceholder}}
+            {{~rsa-spacer width=item.width height=item.height~}}
+          {{else}}
+            {{~yield item~}}
+          {{/if}}
+        {{/each}}
+      </div>
     {{/if}}
   </section>
   <nav class="rsa-carousel__arrow js-carousel__arrow">

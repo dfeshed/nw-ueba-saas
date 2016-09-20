@@ -1,3 +1,9 @@
+.respond-loader {
+  display: flex;
+  flex-direction: column;
+  height: 300px;
+  justify-content: center;
+}
 .rsa-respond-index-header {
   overflow: hidden;
   background-color: rsa-color(gray, darker, $rsa-translucent);

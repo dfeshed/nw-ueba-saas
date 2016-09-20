@@ -3,7 +3,6 @@
 
 import { test, skip } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
-import asyncFixtures from 'sa/mirage/scenarios/async-fixtures';
 import config from 'sa/config/environment';
 import selectors from 'sa/tests/selectors';
 import Ember from 'ember';
@@ -28,6 +27,7 @@ function navigateToMonitor() {
 
 moduleForAcceptance('Acceptance | respond', {
   beforeEach() {
+    server.createList('incidents', 3);
     oldFeatureFlags = config.featureFlags;
   },
   // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
@@ -55,7 +55,6 @@ test('disable respond feature flag, visiting /do/respond and check DOM ', functi
 
 test('ensure journal-trigger is added on the respond incident route', function(assert) {
   assert.expect(1);
-  asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
     click('.rsa-incident-tile:first-of-type');
@@ -73,10 +72,6 @@ test('enable respond feature flag, visiting /do/respond and check DOM ', functio
 
   withFeature('show-respond-route');
 
-  andThen(function() {
-    return asyncFixtures(server, ['incident', 'alerts']);
-  });
-
   visit('/do/respond');
 
   andThen(function() {
@@ -87,7 +82,6 @@ test('enable respond feature flag, visiting /do/respond and check DOM ', functio
 });
 
 test('Landing Page card components should be displayed on load by default', function(assert) {
-  asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
     assert.equal(currentPath(), selectors.pages.respond.path);
@@ -115,7 +109,6 @@ test('Landing Page card components should be displayed on load by default', func
 
 test('Selectors should be visible on click', function(assert) {
   assert.expect(3);
-  asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(function() {
     let el = find(selectors.pages.respond.card.incTile.editButton);
@@ -137,7 +130,6 @@ test('Selectors should be visible on click', function(assert) {
 });
 
 test('User should be able to setStatus, Assignee and Priority', function(assert) {
-  asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(() => {
     let editBtn = find(selectors.pages.respond.card.incTile.editButton).first();
@@ -184,7 +176,6 @@ test('User should be able to setStatus, Assignee and Priority', function(assert)
   and uncomment this test.*/
 skip('Toggle list button renders incidents list view with right number of columns', function(assert) {
 
-  asyncFixtures(server, ['incident', 'alerts']);
   visit('/do/respond');
   andThen(() => {
     let listViewBtn = find(selectors.pages.respond.listViewBtn);

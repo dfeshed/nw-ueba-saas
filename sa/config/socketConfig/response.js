@@ -43,7 +43,7 @@ module.exports = function(environment) {
     },
     'category-tags': {
       socketUrl,
-      findAll: {
+      stream: {
         subscriptionDestination: '/user/queue/categories',
         requestDestination: '/ws/response/categories'
       }

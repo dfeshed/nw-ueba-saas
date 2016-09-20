@@ -15,7 +15,7 @@
 <div class="rsa-journal-wrapper__journal-viewport">
   {{#each incident.notes as | journal | }}
     {{#if (call-method this 'displayJournal' journal viewNotes)}}
-      {{rsa-respond/incident-detail/journal-entry journal=journal saveJournalAction=(route-action 'saveJournal') deleteJournalAction=(route-action 'deleteJournal')}}
+      {{rsa-respond/incident-detail/journal-entry journal=journal saveJournalAction=(route-action 'saveJournal')}}
     {{/if}}
   {{/each}}
 </div>

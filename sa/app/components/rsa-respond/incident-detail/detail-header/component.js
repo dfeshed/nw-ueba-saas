@@ -157,19 +157,6 @@ export default Component.extend({
   },
 
   actions: {
-
-    /**
-     * @name closeIncidentBtn
-     * @description Event handler for the Close Incident button
-     * @public
-     */
-    closeIncidentBtn() {
-      run.once(() => {
-        Logger.log('Closing incident');
-        this.set('selectedStatus', [IncidentConstants.incStatus.CLOSED]);
-      });
-    },
-
     /**
      * @name nameLostFocus
      * @description Event handle when name input losses focus and save the new name.

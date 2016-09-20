@@ -1,45 +1,51 @@
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 
 const {
   Component,
   inject: {
     service
-  },
-  computed
+  }
 } = Ember;
 
 export default Component.extend({
   layoutService: service('layout'),
+
   tagName: 'vbox',
 
-  normalizedTreeData: computed('categoryTags', function() {
-    let categoryTags = this.get('categoryTags');
+  @computed('categoryTags.[]')
+  normalizedTreeData(categoryTags) {
+    if (categoryTags === null) {
+      return [];
+    }
     let data = [];
 
     categoryTags.forEach((obj) => {
-      let objParent = data.findBy('name', obj.get('parent'));
+      let objParent = data.findBy('name', obj.parent);
 
       if (!objParent) {
         objParent = {
-          'name': obj.get('parent'),
+          'name': obj.parent,
           'children': []
         };
         data.pushObject(objParent);
       }
 
       objParent.children.pushObject({
-        id: obj.get('id'),
-        name: obj.get('name')
+        id: obj.id,
+        name: obj.name
       });
     });
     return data;
-  }),
+  },
 
-  chosenIncidentTags: computed('model.categories', {
-    get() {
-      return this.get('model.categories');
-    },
-    set(key, value) {
+  users: null,
+
+  @computed('model.categories.[]')
+  chosenIncidentTags: {
+    get: (categories) => (categories),
+
+    set(value) {
       let flatArray = value.map(function(tagObject) {
         return {
           'parent': tagObject.parent,
@@ -50,7 +56,7 @@ export default Component.extend({
       this.sendAction('saveAction', 'categories', flatArray);
       return value;
     }
-  }),
+  },
 
   actions: {
     toggleFullWidthPanel(panel) {

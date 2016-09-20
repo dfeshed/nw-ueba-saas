@@ -177,14 +177,14 @@ test('it renders', function(assert) {
           'groupby_filename': 'cotlow_awards.cfm' } }]
   });
 
-  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-      EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-      EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
+  let categoryTags = [EmberObject.create({ 'parent': 'Environmental', 'name': 'Deterioration', 'id': '562aae59e4b03ae1affcc4ff' }),
+      EmberObject.create({ 'parent': 'Error', 'name': 'Capacity shortage', 'id': '562aae59e4b03ae1affcc522' }),
+      EmberObject.create({ 'parent': 'Hacking', 'name': 'Session replay', 'id': '562aae59e4b03ae1affcc545' })];
 
   this.set('incident', incident);
-  this.set('users', users);
+  this.set('categoryTags', categoryTags);
 
-  this.render(hbs`{{rsa-respond/incident-detail/detail-index model=incident users=users normalizedTreeData=mockTreeData}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-index model=incident categoryTags=categoryTags}}`);
 
   assert.equal(this.$('.rsa-respond-incident__top-panel').length, 1, 'Testing detail header element exists');
   assert.equal(this.$('.rsa-application-layout-manager').length, 1, 'Layout element exists');
