@@ -10,4 +10,9 @@ delete rootConfig.rules['ember-suave/prefer-destructuring'];
 delete rootConfig.rules['ember-suave/require-access-in-comments'];
 delete rootConfig.rules['ember-suave/require-const-for-ember-properties'];
 
+rootConfig.env = {
+  mocha: true,
+  node: true
+};
+
 module.exports = rootConfig;

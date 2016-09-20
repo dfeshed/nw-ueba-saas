@@ -1,5 +1,4 @@
 /* eslint-disable no-console */
-/* global process */
 
 import express from 'express';
 import cors from 'cors';
@@ -17,7 +16,7 @@ import {
   subscriptionList
 } from './util';
 
-const start = function({ subscriptionLocations }) {
+const start = function({ subscriptionLocations }, cb) {
 
   // dynamically build subscription configuration based on user location input
   discoverSubscriptions(subscriptionLocations);
@@ -75,8 +74,11 @@ const start = function({ subscriptionLocations }) {
   });
 
   // error handlers
-  app.listen(process.env.MOCK_PORT || 9999, function() {
+  const server = app.listen(process.env.MOCK_PORT || 9999, function() {
     console.info(chalk.green('Mock server ready ready to go!'));
+    if (cb) {
+      cb(server);
+    }
   });
 };
 

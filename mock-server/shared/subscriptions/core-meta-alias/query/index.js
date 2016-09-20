@@ -685,4 +685,4 @@ const data = {
     '0': 'Begin',
     '1': 'End'
   }
-}
+};
