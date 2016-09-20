@@ -1,9 +1,10 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import layout from './template';
+import IntersectionObserverMixin from 'ember-intersection-observer';
 const { Component, K, on, set } = Ember;
 
-export default Component.extend({
+export default Component.extend(IntersectionObserverMixin, {
   layout,
   tagName: 'section',
   classNames: 'rsa-packet',
@@ -184,16 +185,9 @@ export default Component.extend({
  * This is for loading and unloading on entering viewport
  */
   setupIntersectionObserver: on('didInsertElement', function() {
-    let options = {
+    this.setProperties({
       rootMargin: '500px 0px 0px 500px',
       threshold: 0
-    };
-
-    let observer = new IntersectionObserver(([entry]) => {
-      // If intersectionRatio <= 0 it is hidden
-      this.set('viewportEntered', entry.intersectionRatio > 0);
-    }, options);
-
-    observer.observe(this.element);
+    });
   })
 });

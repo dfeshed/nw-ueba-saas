@@ -4,6 +4,5 @@ const { Component } = Ember;
 
 export default Component.extend({
   layout,
-  tagName: 'vbox',
   classNameBindings: [':recon-meta-content']
 });

@@ -15,9 +15,11 @@
 {{recon-event-dropdowns}}
 
 {{#if showHeaderData}}
-  <grid responsive>
-    {{#each headerItems as |item|}}
-      {{recon-event-header-item name=item.name value=item.value}}
-    {{/each}}
-  </grid>
+  <div class="header-data">
+    <grid responsive>
+      {{#each headerItems as |item|}}
+        {{recon-event-header-item name=item.name value=item.value}}
+      {{/each}}
+    </grid>
+  </div>
 {{/if}}

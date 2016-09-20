@@ -2,7 +2,7 @@
   .rsa-packet {
 
     &__header {
-      background-color: rgba(255,255,255,.1);
+      background-color: rsa-color(gray, dark, 0.5);
       color: $dark-fg-color;
       border-color: $dark-border-color-medium;
       h3 {
@@ -17,6 +17,7 @@
 
     &__body {
       color: $dark-fg-hover-color;
+      background-color: rsa-color(gray, dark, 0.5);
     }
 
 

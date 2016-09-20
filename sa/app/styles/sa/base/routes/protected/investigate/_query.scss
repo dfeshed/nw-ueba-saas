@@ -259,7 +259,6 @@
   }
 
   .recon-event-header {
-    background-color: rsa-color(black,base,$rsa-translucent);
     border: 0;    /* overwrite default */
   }
 
@@ -274,7 +273,7 @@
 
   .recon-event-detail-packets,
   .recon-meta-content {
-    background-color: rsa-color(black,base,$rsa-translucent);
+    background-color: rsa-color(gray, darker, $rsa-nearly-opaque);
   }
 
   .recon-meta-content {

@@ -11,10 +11,10 @@ $dark-border-color-medium: rgba(0,0,0,.3);
 $dark-request-color: #a4b6a1; /* was: #6699cc; */
 $dark-response-color: #73889a; /* was: #339966; */
 
-$dark-packet-header-bg-color: rgba(#ffffcc,.25);
-$dark-packet-field-border-color: rgba(#fff, .7); /* #999966; */
-$dark-packet-field-bg-color: rgba(#cccc99,.33);
-$dark-packet-field-hover-bg-color: #ffcc33;
+$dark-packet-header-bg-color: rsa-color(black, base, $rsa-nearly-transparent);
+$dark-packet-field-border-color: rsa-color(blue, base, $rsa-nearly-opaque);
+$dark-packet-field-bg-color: rsa-color(blue, base, $rsa-translucent);
+$dark-packet-field-hover-bg-color: rsa-color(blue, base, $rsa-opaque);
 
 @import "./byte-table-tooltip";
 @import "./byte-table";

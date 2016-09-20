@@ -14,10 +14,7 @@
 }
 
 .recon-event-header {
-  background-color: rsa-color(gray, dark);
-  border: 1px solid rsa-color(white);
-  border-bottom: none;
-  padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+  background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
 
   .divider {
     border-left: 1px solid rsa-color(white);
@@ -25,23 +22,28 @@
     margin: 5px;
   }
 
-  .header-item {
-    padding: rsa-whitespace(least) 0;
+  .header-data {
+    background-color: rsa-color(gray, darkest, $rsa-translucent);
+    padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+    .header-item {
+      padding: rsa-whitespace(less);
 
-    .name {
-      @include rsa-font(body, small);
-      color: rsa-color(white);
-      padding-bottom: rsa-whitespace(least);
-      text-transform: uppercase;
-    }
+      .name {
+        @include rsa-font(header, small);
+        color: rsa-color(gray, light);
+        padding-bottom: rsa-whitespace(least);
+      }
 
-    .value {
-      @include rsa-font(body);
+      .value {
+        @include rsa-font(body);
+        color: rsa-color(gray, lightest);
+      }
     }
   }
 
   .recon-event-titlebar {
     max-height: 40px;
+    padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
 
     @include adjust-rsa-form-select();
 

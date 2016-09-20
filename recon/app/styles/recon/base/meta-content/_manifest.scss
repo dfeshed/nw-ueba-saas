@@ -1,4 +1,5 @@
 .recon-meta-content {
+  background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
   padding: rsa-whitespace();
   .meta-heading {
     @include rsa-font(header, large);
@@ -8,7 +9,6 @@
 .recon-meta-content-item {
   padding: rsa-whitespace(least) 0;
   .meta-name {
-    color: rsa-color(white);
-    text-transform: uppercase;
+    color: rsa-color(gray, light);
   }
 }

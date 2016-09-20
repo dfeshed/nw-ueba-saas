@@ -12,7 +12,7 @@ export default Component.extend({
   request: service(),
 
   layout,
-  tagName: 'box',
+  tagName: 'container',
   classNameBindings: [':recon-event-detail-packets'],
 
   endpointId: null,
@@ -54,7 +54,7 @@ export default Component.extend({
       query,
       onResponse: ({ data }) => {
         const packetData = data.map((p) => {
-          p.side = (p.side === 'client') ? 'request' : 'response';
+          p.side = (p.side === 1) ? 'request' : 'response';
           return p;
         });
         this.get('packets').pushObjects(packetData);
