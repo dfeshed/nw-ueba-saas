@@ -285,6 +285,7 @@ public class ApiUserController extends BaseController{
 				return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 			}
 		}
+		result.count = count;
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
 
