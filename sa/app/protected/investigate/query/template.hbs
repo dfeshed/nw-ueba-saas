@@ -1,15 +1,10 @@
 <article class="rsa-investigate-query">
   <header class="rsa-investigate-query__header">
-    <div class="rsa-investigate-query__summary">
-      {{rsa-investigate/breadcrumb
-        query=model.queryNode.value.definition
-        services=model.services.data}}
-      <aside class="rsa-investigate-query__stats">
-        {{rsa-investigate/time-range
-          startTime=model.queryNode.value.definition.startTime
-          endTime=model.queryNode.value.definition.endTime}}
-      </aside>
-    </div>
+    {{rsa-investigate/breadcrumb
+      query=model.queryNode.value.definition
+      language=model.queryNode.value.language.data
+      aliases=model.queryNode.value.aliases.data
+      services=model.services.data}}
   </header>
   <section class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
     <section class="rsa-investigate-query__body-master">

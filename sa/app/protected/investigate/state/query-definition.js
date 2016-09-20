@@ -7,7 +7,7 @@ import Ember from 'ember';
 
 const { get, computed, Object: EmberObject } = Ember;
 
-export default EmberObject.extend({
+const Query = EmberObject.extend({
   /**
    * ID of the Core service targeted by this query.
    * @type {string}
@@ -41,6 +41,21 @@ export default EmberObject.extend({
     };
   }),
 
+  /**
+   * Creates a clone of this instance. The clone's property values will be copied from this instance's property values,
+   * but they will be de-coupled (i.e., changing one instance's properties will not affect the other).
+   * @returns {object} Newly cloned instance of this class.
+   * @public
+   */
+  clone() {
+    let attrs = this.getProperties('serviceId', 'startTime', 'endTime');
+    attrs.metaFilter = {
+      uri: this.get('metaFilter.uri'),
+      conditions: [].concat(this.get('metaFilter.conditions'))
+    };
+    return Query.create(attrs);
+  },
+
   isEqual(params) {
     if (params) {
       return (get(params, 'serviceId') === this.get('serviceId')) &&
@@ -51,3 +66,5 @@ export default EmberObject.extend({
     return false;
   }
 });
+
+export default Query;

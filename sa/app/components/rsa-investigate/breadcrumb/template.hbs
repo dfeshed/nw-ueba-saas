@@ -1,7 +1,42 @@
-<ul class="rsa-investigate-breadcrumb__crumbs">
-  {{#if _service}}
-    <li class="rsa-investigate-breadcrumb__crumb service">
-      {{_service.name}}
-    </li>
+<section class="rsa-investigate-breadcrumb__crumbs">
+  {{#if serviceObject}}
+    {{#rsa-form-button dropdown="none" class="rsa-investigate-breadcrumb__crumb" title=serviceObject.name}}
+      <span class="js-test-service">{{serviceObject.name}}</span>
+    {{/rsa-form-button}}
   {{/if}}
-</ul>
+  {{#rsa-form-button dropdown=(if hasDrill "standard" "none") class="rsa-investigate-breadcrumb__crumb"}}
+    <span>{{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}</span>
+    {{#if hasDrill}}
+      <ul>
+        <li>
+          {{#link-to "protected.investigate.query" baseUri class="goto"}}
+            Navigate Here
+          {{/link-to}}
+        </li>
+      </ul>
+    {{/if}}
+  {{/rsa-form-button}}
+  {{#each crumbs as |crumb|}}
+    {{#rsa-form-button dropdown="standard" class="rsa-investigate-breadcrumb__crumb"}}
+      <span
+        class="js-test-value"
+        title={{concat crumb.keyFormat.bothNames ": " crumb.valueFormat.tooltip}}>
+        {{crumb.valueFormat.text}}
+      </span>
+      <ul>
+        {{#unless (is-equal crumb crumbs.lastObject)}}
+          <li>
+            {{#link-to "protected.investigate.query" crumb.gotoUri class="goto"}}
+              Navigate Here
+            {{/link-to}}
+          </li>
+        {{/unless}}
+        <li>
+          {{#link-to "protected.investigate.query" crumb.deleteUri class="delete"}}
+            Remove
+          {{/link-to}}
+        </li>
+      </ul>
+    {{/rsa-form-button}}
+  {{/each}}
+</section>

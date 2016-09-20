@@ -23,24 +23,7 @@
     background-color: rsa-color(black,base,$rsa-translucent);
     @include rsa-vendor-prefix(flex-shrink, 1);
     margin: 1px 0;
-  }
-
-  &__summary {
-    @include rsa-row(justify,fill);
     padding: rsa-whitespace(less) rsa-whitespace();
-
-    .rsa-investigate-breadcrumb {
-      @include rsa-vendor-prefix(flex-grow, 1);
-    }
-  }
-
-  &__stats {
-    @include rsa-vendor-prefix(flex-shrink, 1);
-    @include rsa-col(right,fill);
-  }
-
-  &__sums-of {
-    color: rsa-color(white,base,$rsa-nearly-opaque);
   }
 
   &__body {
@@ -162,20 +145,6 @@
     display: none;
   }
 
-  .rsa-investigate-breadcrumb {
-    @include rsa-font(header, small);
-
-    &__crumb {
-      color: rsa-color(gray, lighter);
-
-      &:last-of-type {
-        @include rsa-font(body);
-        color: rsa-color(white);
-        margin-top: rsa-whitespace(less);
-      }
-    }
-  }
-
   .rsa-investigate-meta {
     position: absolute;
     top: 0;
@@ -285,18 +254,6 @@
     }
   }
 
-  .rsa-investigate-time-range {
-    white-space: nowrap;
-    margin-bottom: rsa-whitespace(less);
-    @include rsa-font(header, small);
-
-    &__sep,
-    .date {
-      color: rsa-color(white,base,$rsa-nearly-opaque);
-      font-weight: normal;
-    }
-  }
-
   .recon-container {
     margin-left: 1px; /* let a sliver of background shows thru as a border */
   }
@@ -305,21 +262,21 @@
     background-color: rsa-color(black,base,$rsa-translucent);
     border: 0;    /* overwrite default */
   }
-  
+
   .recon-event-content {
     margin-top: 1px; /* let a sliver of background shows thru as a border */
     background-color: transparent;  /* ovewrite default */
   }
-  
+
   .event-content-box {
     border: 0;    /* ovewrite default */
   }
-  
+
   .recon-event-detail-packets,
   .recon-meta-content {
     background-color: rsa-color(black,base,$rsa-translucent);
   }
-  
+
   .recon-meta-content {
     margin-left: 1px; /* let a sliver of background shows thru as a border */
   }

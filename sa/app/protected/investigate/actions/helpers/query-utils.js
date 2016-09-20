@@ -5,6 +5,7 @@ const {
   assert,
   get,
   getProperties,
+  isBlank,
   RSVP
 } = Ember;
 
@@ -248,8 +249,8 @@ function parseEventQueryUri(uri) {
  * (ii) value` is a meta key value (raw, not alias).
  * @private
  */
-function parseMetaFilterUri(uri = '') {
-  if (uri === '') {
+function parseMetaFilterUri(uri) {
+  if (isBlank(uri)) {
     // When uri is empty, return empty array. Alas, ''.split() returns a non-empty array; it's a 1-item array with
     // an empty string in it, which is not what we want.  So we check for '' and return [] explicitly here.
     return [];
