@@ -17,7 +17,7 @@ public interface UserWithAlertService extends CachingService{
 
 	void recalculateNumberOfUserAlertsByUserId(String userId);
 
-    List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter, String searchValue);
+    List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter);
 
 	List<UserActivityData.DeviceEntry> getUserActivitySourceMachineDocuments(User user);
 }

@@ -11,8 +11,6 @@ import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -654,6 +652,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}else if (userRestFilter.getMinScore() != null){
 			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}
+
+		if (userRestFilter.getUserIds() != null){
+			String[] set = new String[1];
+			set[0] = "57dff882e4b09db1f1ddbf51";
+		    criteriaList.add(new Criteria(User.ID_FIELD).in(set));
+        }
 
 		return criteriaList;
 	}

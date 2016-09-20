@@ -4,7 +4,6 @@ import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.rest.UserFilter;
@@ -85,9 +84,6 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
-//	@Autowired
-//	private UserDeviceUtils userDeviceUtils;
-
 	@Autowired
 	private AlertsService alertsService;
 
@@ -105,8 +101,27 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
 	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
 
+
+
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
+
+        if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+            List<User> usersFromCache = userWithAlertService.findAndSaveUsersByFilter(userRestFilter);
+            List<String> userIds = new ArrayList<>();
+
+            usersFromCache.forEach(user -> {
+                userIds.add(user.getId());
+            });
+
+//			userRepository.getUsersByIds(userIds.get(0), pageRequest);
+
+            UserRestFilter newFilter = new UserRestFilter();
+            newFilter.setSize(userRestFilter.getSize());
+            newFilter.setFromPage(userRestFilter.getFromPage());
+            newFilter.setUserIds(userIds);
+            userRestFilter = newFilter;
+        }
 
 		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
 
@@ -212,9 +227,8 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter,
-												@RequestParam(required=true) String searchValue){
-		List<User> users = userWithAlertService.findAndSaveUsersByFilter(userRestFilter, searchValue);
+	public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter){
+		List<User> users = userWithAlertService.findAndSaveUsersByFilter(userRestFilter);
 
 		DataBean<List<User>> result = new DataBean<>();
 		result.setData(users);

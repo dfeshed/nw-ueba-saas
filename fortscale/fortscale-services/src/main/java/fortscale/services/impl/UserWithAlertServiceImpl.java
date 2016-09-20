@@ -165,7 +165,7 @@ import java.util.Set;
     }
 
 	@Override
-	public List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter, String searchValue) {
+	public List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter) {
 		List<User> users = filterToUsersCache.get(userRestFilter);
 		List<User> result = new ArrayList<>();
 
@@ -173,6 +173,8 @@ import java.util.Set;
 			users = findUsersByFilter(userRestFilter, null, fieldsRequired);
 			filterToUsersCache.put(userRestFilter, users);
 		}
+
+		String searchValue = userRestFilter.getSearchValue();
 
 		if (CollectionUtils.isNotEmpty(users)){
 			List<User> firstNameResults = new ArrayList<>();
