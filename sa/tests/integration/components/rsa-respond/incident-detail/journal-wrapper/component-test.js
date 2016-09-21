@@ -4,7 +4,7 @@ import Ember from 'ember';
 
 const { Object: EmberObject } = Ember;
 
-moduleForComponent('rsa-journal-entry', 'Integration | Component | rsa journal wrapper', {
+moduleForComponent('rsa-journal-entry', 'Integration | Component | rsa respond/incident detail/journal wrapper', {
   integration: true
 });
 

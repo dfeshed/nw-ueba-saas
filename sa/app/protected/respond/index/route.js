@@ -168,22 +168,6 @@ export default Route.extend({
   },
 
   /**
-   * Finds an Ember model object based on POJO json with id attribute
-   *
-   * Assumes the given incident is a POJO (JSON), not an ember data model instance with an id.
-   * It query the backend and returns a promise with the model object
-   * @param {object} json The Incident JSON.
-   * @returns {promise}
-   * @private
-   */
-  _findIncidentModel(json) {
-    if (!json) {
-      return null;
-    }
-    return this.store.queryRecord('incident', { incidentId: json.id });
-  },
-
-  /**
    * @description Observes any change in the selected respond view mode to trigger a model reload. WillTransitions
    * is also been triggered to close any open connection before loading the model.
    * @private

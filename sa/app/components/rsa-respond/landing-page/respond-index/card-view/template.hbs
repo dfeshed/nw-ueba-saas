@@ -1,0 +1,62 @@
+<section class="rsa-respond-index__main-body">
+  <header class="rsa-respond-card__status-header">
+    <span class="rsa-respond-card__status-header__item">
+      {{t "incident.status.0"}} ({{model.newIncidents.results.length}})
+      {{rsa-update-indicator model=model.newIncidents.array updateKey='asyncUpdate'}}
+    </span>
+    {{rsa-respond/landing-page/respond-index/sort-options
+    label=(t "incident.sortFields.sortByLabel")
+    defaultSortOption=newIncSortOrder
+    sortOptions=newIncSortOrderList
+    viewType=newIncCardView
+    sortAction=(route-action "sortAction")
+    }}
+  </header>
+  {{#if (is-equal model.newIncidents.status 'wait')}}
+    <div class='respond-loader'>{{rsa-loader size="large"}}</div>
+  {{else if model.newIncidents.results.length}}
+    <section class='rsa-content-card-group'>
+      {{#rsa-carousel class="rsa-incident-carousel" items=model.newIncidents.results as |incident|}}
+        {{#rsa-content-card class="rsa-incident-content-card" }}
+          {{rsa-respond/landing-page/incident-tile
+            incident=incident
+            users=model.newIncidents.users
+            clickAction=(route-action "gotoIncidentDetail")
+            saveIncidentAction=(route-action "saveIncident")}}
+        {{/rsa-content-card}}
+      {{/rsa-carousel}}
+    </section>
+  {{else}}
+    <div class="rsa-respond-index-empty-incident">{{t "incident.emptyNewMessage"}}</div>
+  {{/if}}
+  <header class="rsa-respond-card__status-header">
+    {{rsa-respond/landing-page/respond-index/sort-options
+    label=(t "incident.sortFields.sortByLabel")
+    defaultSortOption=inProgSortOrder
+    sortOptions=inProgSortOrderList
+    sortAction=(route-action "sortAction")
+    viewType=inProgCardView
+    }}
+    <span class="rsa-respond-card__status-header__item">
+      {{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}})
+      {{rsa-update-indicator model=model.inProgressIncidents.array updateKey='asyncUpdate'}}
+    </span>
+  </header>
+  {{#if (is-equal model.inProgressIncidents.status 'wait')}}
+    <div class='respond-loader'>{{rsa-loader size="large"}}</div>
+  {{else if model.inProgressIncidents.results.length}}
+    <section class='rsa-content-card-group'>
+      {{#rsa-carousel class="rsa-incident-carousel" allowMultipleRows=true items=model.inProgressIncidents.results as |incident|}}
+        {{#rsa-content-card class="rsa-incident-content-card small-size" }}
+          {{rsa-respond/landing-page/incident-tile
+            size='small'
+            users=model.inProgressIncidents.users
+            incident=incident
+            clickAction=(route-action "gotoIncidentDetail")}}
+        {{/rsa-content-card}}
+      {{/rsa-carousel}}
+    </section>
+  {{else}}
+    <div class="rsa-respond-index-empty-incident">{{t "incident.emptyInProgressMessage"}}</div>
+  {{/if}}
+</section>

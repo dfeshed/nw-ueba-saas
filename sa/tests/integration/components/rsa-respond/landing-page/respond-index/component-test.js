@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('rsa-respond-index', 'Integration | Component | rsa respond index', {
+moduleForComponent('rsa-respond-index', 'Integration | Component | rsa respond/landing page/respond index', {
   integration: true
 });
 

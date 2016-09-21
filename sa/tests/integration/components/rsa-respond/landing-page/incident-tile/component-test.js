@@ -5,7 +5,7 @@ import selectors from 'sa/tests/selectors';
 
 const { Object: EmberObject } = Ember;
 
-moduleForComponent('rsa-incident-tile', 'Integration | Component | rsa incident tile', {
+moduleForComponent('rsa-incident-tile', 'Integration | Component | rsa respond/landing page/incident tile', {
   integration: true
 });
 

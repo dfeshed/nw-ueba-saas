@@ -4,7 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 
 const { Object: EmberObject } = Ember;
 
-moduleForComponent('rsa-respond/incident-detail/detail-index', 'Integration | Component | rsa respond/rsa respond detail/detail index', {
+moduleForComponent('rsa-respond/incident-detail/detail-index', 'Integration | Component | rsa respond/incident detail/detail index', {
   integration: true
 });
 

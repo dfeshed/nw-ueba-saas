@@ -1,0 +1,59 @@
+<div class="rsa-respond-list">
+  {{#rsa-data-table lazy=true onRowClick=(route-action "gotoIncidentDetail") items=model.allIncidents.results columnsConfig=incidentListConfig}}
+    {{#rsa-data-table/header as |column|}}
+      <span class="title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">
+        {{#if column.headerComponentClass}}
+          {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column
+          click=(route-action "multiSelectIncident" 'all') class="js-respond-listview-checkbox-header"}}
+        {{else}}
+          <span class="js-move-handle js-header-cell-{{column.class}}">{{if column.title (t column.title) column.field}}</span>
+        {{/if}}
+      </span>
+      {{#unless column.disableSort}}
+        <span class="js-header-cell-sort-{{column.class}}">
+          <button class={{unless (is-equal currentSort column.field) "hideSort expand" "expand"}} {{action 'sortListView' column (if column.isDescending 'asc' 'desc')  on='click'}}>
+            {{rsa-icon size="small" name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
+          </button>
+        </span>
+      {{/unless}}
+    {{/rsa-data-table/header}}
+    {{#if (is-equal model.allIncidents.status 'wait')}}
+      <div class='respond-loader'>{{rsa-loader size="large"}}</div>
+    {{/if}}
+    {{#rsa-data-table/body as |item index column|}}
+      {{#rsa-data-table/body-cell item=item column=column index=index}}
+        <div class="{{column.class}}">
+          {{#if column.componentClass}}
+            {{#if (is-equal column.field 'riskScore')}}
+              {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column
+              score=(get item column.field) isInline=true style=(call-method this 'badgeStyle' (get item column.field))}}
+            {{else}}
+              {{#if (is-equal column.dataType 'date-time')}}
+                {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column  timestamp=(get item column.field)}}
+              {{else}}
+                {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column click=(route-action "multiSelectIncident" item.id)
+                class=(concat 'js-respond-listview-checkbox js-respond-listview-' item.id)}}
+              {{/if}}
+            {{/if}}
+          {{else}}
+            {{#if (is-equal column.field 'statusSort')}}
+              {{t (concat 'incident.status.' (get item column.field))}}
+            {{else}}
+              {{#if (is-equal column.field 'assigneeFirstLastName')}}
+                {{get item 'assignee.firstName'}}
+              {{else}}
+                {{#if (is-equal column.field 'sources')}}
+                  {{#each (get item column.field) as |source|}}
+                    {{rsa-content-label label=(call-method this 'sourceShortName' source)}}
+                  {{/each}}
+                {{else}}
+                  {{get item column.field}}
+                {{/if}}
+              {{/if}}
+            {{/if}}
+          {{/if}}
+        </div>
+      {{/rsa-data-table/body-cell}}
+    {{/rsa-data-table/body}}
+  {{/rsa-data-table}}
+</div>

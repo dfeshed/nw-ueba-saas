@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-moduleForComponent('rsa-incident-detail-storyline', 'Integration | Component | rsa incident detail storyline', {
+moduleForComponent('rsa-incident-detail-storyline', 'Integration | Component | rsa respond/incident detail/storyline', {
   integration: true
 });
 

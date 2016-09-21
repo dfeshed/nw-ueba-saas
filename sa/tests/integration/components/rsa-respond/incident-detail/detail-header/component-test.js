@@ -6,7 +6,7 @@ import selectors from 'sa/tests/selectors';
 
 const { Object: EmberObject } = Ember;
 
-moduleForComponent('rsa-incident-detail-header', 'Integration | Component | rsa respond/rsa respond detail/detail header', {
+moduleForComponent('rsa-incident-detail-header', 'Integration | Component | rsa respond/incident detail/detail header', {
   integration: true
 });
 
