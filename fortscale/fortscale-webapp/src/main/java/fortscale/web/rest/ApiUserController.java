@@ -4,6 +4,7 @@ import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
+import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.rest.UserFilter;
@@ -11,6 +12,7 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
+import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -88,6 +90,9 @@ public class ApiUserController extends BaseController{
 	UserRelatedEntitiesUtils userRelatedEntitiesUtils;
 
 	@Autowired
+	private UserDeviceUtils userDeviceUtils;
+
+	@Autowired
 	private AlertsService alertsService;
 
 	@Autowired
@@ -107,7 +112,7 @@ public class ApiUserController extends BaseController{
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
         if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
-            List<User> usersFromCache = userWithAlertService.findAndSaveUsersByFilter(userRestFilter);
+            List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
             List<String> userIds = new ArrayList<>();
 
             usersFromCache.forEach(user -> {
@@ -209,7 +214,7 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter){
-		List<User> users = userWithAlertService.findAndSaveUsersByFilter(userRestFilter);
+		List<User> users = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
 
 		DataBean<List<User>> result = new DataBean<>();
 		result.setData(users);
@@ -294,7 +299,7 @@ public class ApiUserController extends BaseController{
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null);
+		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null, null);
 		int count = 0;
 		for (User user: usersByFilter) {
 			try {
@@ -309,12 +314,12 @@ public class ApiUserController extends BaseController{
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
 
-		List<User> usersByFilter = userService.findUsersByFilter(userRestFilter, null, null, null);
-		UserTagService userTagService = userTaggingService.getUserTagService(tagName);
+	private class TaggedUsersCount {
 
 		public int count;
 
 	}
+
 
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
 	@ResponseBody
@@ -577,8 +582,15 @@ public class ApiUserController extends BaseController{
 			User user = userDetailsBean.getUser();
 			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
-
-			userDetailsBean.setDevices(userWithAlertService.getUserActivitySourceMachineDocuments(user));
+			List<UserActivitySourceMachineDocument> userSourceMachines;
+			try {
+				userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
+						Integer.MAX_VALUE);
+			} catch (Exception ex) {
+				logger.warn("failed to get user source machines");
+				userSourceMachines = new ArrayList<>();
+			}
+			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
 		}
 	}
 

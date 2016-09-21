@@ -5,6 +5,7 @@ import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class UserFilter extends RestFilter {
@@ -231,24 +232,9 @@ public class UserFilter extends RestFilter {
 
 	@Override
 	public int hashCode() {
-		int result = disabledSince != null ? disabledSince.hashCode() : 0;
-		result = 31 * result + (isDisabled != null ? isDisabled.hashCode() : 0);
-		result = 31 * result + (isDisabledWithActivity != null ? isDisabledWithActivity.hashCode() : 0);
-		result = 31 * result + (isTerminatedWithActivity != null ? isTerminatedWithActivity.hashCode() : 0);
-		result = 31 * result + (inactiveSince != null ? inactiveSince.hashCode() : 0);
-		result = 31 * result + (dataEntities != null ? dataEntities.hashCode() : 0);
-		result = 31 * result + (entityMinScore != null ? entityMinScore.hashCode() : 0);
-		result = 31 * result + (isServiceAccount != null ? isServiceAccount.hashCode() : 0);
-		result = 31 * result + (searchFieldContains != null ? searchFieldContains.hashCode() : 0);
-		result = 31 * result + (addAlertsAndDevices != null ? addAlertsAndDevices.hashCode() : 0);
-		result = 31 * result + (userTags != null ? userTags.hashCode() : 0);
-		result = 31 * result + (isWatched != null ? isWatched.hashCode() : 0);
-		result = 31 * result + (alertTypes != null ? alertTypes.hashCode() : 0);
-		result = 31 * result + (indicatorTypes != null ? indicatorTypes.hashCode() : 0);
-		result = 31 * result + (locations != null ? locations.hashCode() : 0);
-		result = 31 * result + (severity != null ? severity.hashCode() : 0);
-		result = 31 * result + (minScore != null ? minScore.hashCode() : 0);
-		result = 31 * result + (maxScore != null ? maxScore.hashCode() : 0);
-		return result;
+
+		return Objects.hash(disabledSince, isDisabled, isDisabledWithActivity, isTerminatedWithActivity, inactiveSince,
+				dataEntities, entityMinScore, isServiceAccount, searchFieldContains,  userTags, isWatched, alertTypes,
+				indicatorTypes, locations, severity, minScore, maxScore);
 	}
 }

@@ -1,4 +1,4 @@
-package fortscale.common.datastructures.activity;
+package fortscale.web.rest.entities.activity;
 
 import java.util.Objects;
 

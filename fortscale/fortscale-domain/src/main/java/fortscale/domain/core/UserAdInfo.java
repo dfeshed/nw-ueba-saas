@@ -35,7 +35,9 @@ public class UserAdInfo {
 
 	private String employeeNumber;
 
+	@Field(firstnameField)
 	private String firstname;
+
 	@Field(lastnameField)
 	private String lastname;
 
@@ -63,8 +65,10 @@ public class UserAdInfo {
 
 	private String otherTelephone;
 
+	@Field(positionField)
 	private String position;
 
+	@Field(departmentField)
 	private String department;
 
 	private String displayName;

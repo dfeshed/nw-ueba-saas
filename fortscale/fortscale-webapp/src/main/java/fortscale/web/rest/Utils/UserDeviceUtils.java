@@ -1,11 +1,11 @@
-package fortscale.services.util;
+package fortscale.web.rest.Utils;
 
 import fortscale.common.datastructures.UserActivityEntryHashMap;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.activities.UserActivityDeviceDocument;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.services.ComputerService;
-import fortscale.common.datastructures.activity.UserActivityData;
+import fortscale.web.rest.entities.activity.UserActivityData;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 

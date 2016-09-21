@@ -1,14 +1,11 @@
 package fortscale.services.impl;
 
-import fortscale.common.datastructures.activity.UserActivityData;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
-import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.cache.CacheHandler;
-import fortscale.services.util.UserDeviceUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -38,9 +35,6 @@ import java.util.Set;
 
 	@Autowired
 	private UserScoreService userScoreService;
-
-	@Autowired
-	private UserDeviceUtils userDeviceUtils;
 
 	@Autowired()
 	@Qualifier("filterToUsersCache")
@@ -80,6 +74,10 @@ import java.util.Set;
 		return relevantUsers;
 	}
 
+	/**
+	 * Getting the min and max score for user according to the severity required
+	 * @param userRestFilter
+	 */
 	private void calculateScoreRange(UserRestFilter userRestFilter) {
 		if (userRestFilter.getSeverity()!= null){
 			Double[] range = userScoreService.getSeverityRange().get(userRestFilter.getSeverity());
@@ -156,23 +154,12 @@ import java.util.Set;
     }
 
 	@Override
-	public List<UserActivityData.DeviceEntry> getUserActivitySourceMachineDocuments(User user) {
-        List<UserActivitySourceMachineDocument> userSourceMachines;
-        List<UserActivityData.DeviceEntry> deviceEntries = null;
-        try {
-            userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
-                    Integer.MAX_VALUE);
-            deviceEntries = userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3);
-        } catch (Exception ex) {
-            logger.warn("failed to get user source machines");
-            userSourceMachines = new ArrayList<>();
-        }
-        return deviceEntries;
-    }
+	public List<User> findFromCacheUsersByFilter(UserRestFilter userRestFilter) {
+		// Update the min and max score on the filter according to the severity required
+		if (userRestFilter.getSeverity() != null) {
+			calculateScoreRange(userRestFilter);
+		}
 
-	@Override
-	public List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter) {
-		calculateScoreRange(userRestFilter);
 		List<User> users = filterToUsersCache.get(userRestFilter);
 		List<User> result = new ArrayList<>();
 
@@ -216,6 +203,7 @@ import java.util.Set;
 			result.addAll(departmentResults);
 		}
 
+		// Extracting only the required users according to page size and number
 		if (userRestFilter.getSize()!= null && CollectionUtils.isNotEmpty(result)){
 			int startFrom = 0;
 
@@ -235,25 +223,4 @@ import java.util.Set;
 		return result;
 
 	}
-
-	@Override
-	public CacheHandler getCache() {
-		return filterToUsersCache;
-	}
-
-	@Override
-	public void setCache(CacheHandler cache) {
-		this.filterToUsersCache = cache;
-	}
-
-	@Override
-	public void handleNewValue(String key, String value) throws Exception {
-		if(value == null){
-			getCache().remove(key);
-		}
-		else {
-			getCache().putFromString(key, value);
-		}
-	}
-
 }

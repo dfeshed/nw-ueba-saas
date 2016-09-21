@@ -33,12 +33,6 @@
 		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
 	</bean>
 
-	<bean id="filterToUserListCache" class="fortscale.services.cache.MemoryBasedCache">
-		<constructor-arg name="maxSize" value="${computer.service.cache.max.items:0}" />
-		<constructor-arg name="timeToExpire" value="${computer.service.cache.timeToExpireSec:3600}" />
-		<constructor-arg name="clazz" value="fortscale.domain.core.User" />
-	</bean>
-
 	<!-- computer service cache that uses memory based implementation are injected here -->
 	<bean id="computerServiceCache" class="fortscale.services.cache.MemoryBasedCache">
 		<constructor-arg name="maxSize" value="${computer.service.cache.max.items:10000}" />
@@ -73,11 +67,10 @@
 		<constructor-arg name="clazz" value="java.lang.String" />
 	</bean>
 
-	<!-- sensitiveMachine service cache that uses memory based implementation are injected here -->
 	<bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
-		<constructor-arg name="maxSize" value="${sensitive.machine.service.cache.max.items:10}" />
-		<constructor-arg name="timeToExpire" value="${sensitive.machine.service.cache.timeToExpireSec:600}" />
-		<constructor-arg name="clazz" value="java.lang.String" />
+		<constructor-arg name="maxSize" value="${users.with.alerts.service.cache.max.items:10}" />
+		<constructor-arg name="timeToExpire" value="${users.with.alerts.service.cache.timeToExpireSec:600}" />
+		<constructor-arg name="clazz" value="java.util.ArrayList" />
 	</bean>
 
 
@@ -135,7 +128,7 @@
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton" />
 
-	<bean id="userDeviceUtils" class="fortscale.services.util.UserDeviceUtils" scope="singleton" />
+	<bean id="userDeviceUtils" class="fortscale.web.rest.Utils.UserDeviceUtils" scope="singleton" />
 
 	<!--<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>-->
 
