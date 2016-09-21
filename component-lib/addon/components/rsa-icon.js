@@ -1,12 +1,7 @@
 import Ember from 'ember';
+import computed, { equal } from 'ember-computed-decorators';
 
-const {
-  Component,
-  computed,
-  computed: {
-    equal
-  }
-} = Ember;
+const { Component } = Ember;
 
 export default Component.extend({
 
@@ -16,34 +11,31 @@ export default Component.extend({
 
   attributeBindings: ['title'],
 
-  classNameBindings: ['isLined:is-lined:is-filled',
-                      'iconClass',
-                      'isSmaller',
-                      'isSmall',
-                      'isLarge',
-                      'isLarger',
-                      'isLargest'],
+  classNameBindings: [
+    'active',
+    'isLined:is-lined:is-filled',
+    'iconClass',
+    'isSmaller',
+    'isSmall',
+    'isLarge',
+    'isLarger',
+    'isLargest'
+  ],
 
+  active: false,
   name: null,
-
+  size: null, // ['smaller', 'small', 'large', 'larger', 'largest']
   style: 'filled', // ['filled', 'lined']
 
-  size: null, // ['smaller', 'small', 'large', 'larger', 'largest']
+  @equal('style', 'lined') isLined: null,
+  @equal('size', 'small') isSmall: null,
+  @equal('size', 'smaller') isSmaller: null,
+  @equal('size', 'large') isLarge: null,
+  @equal('size', 'larger') isLarger: null,
+  @equal('size', 'largest') isLargest: null,
 
-  isLined: equal('style', 'lined'),
-
-  isSmaller: equal('size', 'smaller'),
-
-  isSmall: equal('size', 'small'),
-
-  isLarge: equal('size', 'large'),
-
-  isLarger: equal('size', 'larger'),
-
-  isLargest: equal('size', 'largest'),
-
-  iconClass: computed('name', function() {
-    return `rsa-icon-${this.get('name')}`;
-  })
-
+  @computed('name')
+  iconClass(name) {
+    return `rsa-icon-${name}`;
+  }
 });

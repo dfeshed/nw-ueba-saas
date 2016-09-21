@@ -10,14 +10,11 @@
     display: block;
   }
 
-  label,
-  span {
-    display: block;
+  div {
+    color: rsa-color(gray, light);
     padding: 3px 12px 4px;
-  }
-  label {
-    text-transform: uppercase;
-    font-size: 10px;
-    font-weight: bold;
+    .label{
+      @include rsa-font(header, small);
+    }
   }
 }

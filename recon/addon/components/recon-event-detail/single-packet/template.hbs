@@ -1,10 +1,26 @@
 <header class="rsa-packet__header">
-  <h2>
-    <label>{{t 'list.packet'}}</label><span>{{add index 1}}</span>
-  </h2>
-  <h3>
-    {{moment-format packet.timestamp 'YYYY-MM-DD hh:mm:ss.ssss'}} [{{packet.sequence}}]
-  </h3>
+  <div class="request-response">
+    <centered>
+      <span>
+        {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
+      </span>
+      <span class="text">
+        {{#if (eq packet.side 'request')}}
+          request
+        {{else}}
+          response
+        {{/if}}
+      </span>
+    </centered>
+  </div>
+  <div class="packet-number">
+    <h2>
+      <label>{{t 'list.packet'}}</label><span>{{add index 1}}</span>
+    </h2>
+    <h3>
+      {{moment-format packet.timestamp 'YYYY-MM-DD hh:mm:ss.ssss'}} [{{packet.sequence}}]
+    </h3>
+  </div>
 </header>
 <section class="rsa-packet__body">
   <section class="rsa-packet__offsets hex">

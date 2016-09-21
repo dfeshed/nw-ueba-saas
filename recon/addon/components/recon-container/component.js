@@ -23,6 +23,8 @@ export default Component.extend({
   headerItems: null,
   reconstructionType: TYPES_BY_NAME.PACKET, // defaults to packet view
   showMetaDetails: false,
+  showRequestData: true,
+  showResponseData: true,
   // END Component state
 
   // BEGIN Component inputs

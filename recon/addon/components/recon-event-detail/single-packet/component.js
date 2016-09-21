@@ -56,6 +56,11 @@ export default Component.extend(IntersectionObserverMixin, {
     return decodedData.get('length') || 0;
   },
 
+  @computed('packet.side')
+  arrowDirection(side) {
+    return side === 'request' ? 'right' : 'left';
+  },
+
   /**
    * The index of the first decoded values that correspond to the packet's payload (i.e., not the packet header).
    * If the packet has no payload, then this value will be the index after the  index of the last decoded value in the packet.
@@ -186,7 +191,7 @@ export default Component.extend(IntersectionObserverMixin, {
  */
   setupIntersectionObserver: on('didInsertElement', function() {
     this.setProperties({
-      rootMargin: '500px 0px 0px 500px',
+      rootMargin: '1000px 0px 1000px 0px',
       threshold: 0
     });
   })

@@ -3,7 +3,12 @@
 {{else}}
   <hbox class="event-content-box">
     {{#if packetFields}}
-      {{component reconstructionType.component eventId=eventId endpointId=endpointId packetFields=packetFields}}
+      {{component reconstructionType.component
+        eventId=eventId
+        endpointId=endpointId
+        packetFields=packetFields
+        showRequestData=showRequestData
+        showResponseData=showResponseData}}
     {{/if}}
   </hbox>
 {{/if}}

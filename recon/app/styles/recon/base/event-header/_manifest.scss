@@ -42,7 +42,6 @@
   }
 
   .recon-event-titlebar {
-    max-height: 40px;
     padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
 
     @include adjust-rsa-form-select();
@@ -55,12 +54,14 @@
       }
     }
 
-    .action-buttons {
-      text-align: right;
-
-      .rsa-form-button {
-        height: auto;
-        padding: 0 rsa-whitespace(less);
+    .rsa-icon {
+      color: rsa-color(gray);
+      cursor: pointer;
+      margin: 0 rsa-whitespace(least);
+      padding: rsa-whitespace(less) rsa-whitespace(least);
+      &.active {
+        color: rsa-color(gray, lightest);
+        border-bottom: rsa-color(blue) 3px solid;
       }
     }
   }

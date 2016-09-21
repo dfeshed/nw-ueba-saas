@@ -10,28 +10,51 @@
   {{/rsa-form-select}}
 </hbox>
 
-{{#rsa-form-button active=showHeaderData isIconOnly=true}}
-  {{rsa-icon class='toggle-header' name='layout-6' click=toggleHeaderData}}
-{{/rsa-form-button}}
+{{rsa-icon
+  active=showHeaderData
+  class='toggle-header'
+  click=toggleHeaderData
+  name='layout-6'
+  size='large'}}
 
-{{#rsa-form-button active=showMetaDetails isIconOnly=true}}
-  {{rsa-icon class='toggle-meta' name='layout-12' click=(action 'toggleMetaDetails')}}
-{{/rsa-form-button}}
+{{rsa-icon
+  active=showResponseData
+  name='arrow-circle-right-2'
+  size='large'}}
 
-{{#rsa-form-button isIconOnly=true}}
-  {{rsa-icon name='information-circle' style='lined'}}
-{{/rsa-form-button}}
+{{rsa-icon
+  active=showRequestData
+  name='arrow-circle-left-2'
+  size='large'}}
+
+{{rsa-icon
+  active=true
+  name='view-agenda'
+  size='large'}}
+
+{{rsa-icon
+  name='layout-4'
+  size='large'}}
+
+{{rsa-icon
+  active=showMetaDetails
+  class='toggle-meta'
+  click=(action 'toggleMetaDetails')
+  name='layout-2'
+  size='large'}}
 
 <div class="divider"></div>
 
-{{#rsa-form-button isIconOnly=true}}
-  {{rsa-icon name='cog'}}
-{{/rsa-form-button}}
+{{rsa-icon
+  name='cog'
+  size='large'}}
 
-{{#rsa-form-button isIconOnly=true}}
-  {{rsa-icon name=(concat 'arrow-' arrowDirection '-9') click=(action 'toggleExpanded')}}
-{{/rsa-form-button}}
+{{rsa-icon
+  click=(action 'toggleExpanded')
+  name=(concat 'arrow-' arrowDirection '-9')
+  size='large'}}
 
-{{#rsa-form-button isIconOnly=true}}
-  {{rsa-icon name='close' click=closeRecon}}
-{{/rsa-form-button}}
+{{rsa-icon
+  click=closeRecon
+  name='close'
+  size='large'}}
