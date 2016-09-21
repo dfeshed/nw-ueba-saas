@@ -33,7 +33,7 @@ export default Component.extend({
   yAccessor: (scale, prop) => (d) => d ? scale(d[prop]) : 0,
 
   @computed('xAccessor', 'yAccessor', 'height', 'interpolator')
-  pathFn: (...args) => createArea(...args),
+  areaFn: (...args) => createArea(...args),
 
   symbolFn: () => createSymbol(),
 
@@ -70,7 +70,7 @@ export default Component.extend({
 
   draw(datum, hoverData) {
     const { xAccessor, yAccessor, clazzName, duration } = this.getProperties('xAccessor', 'yAccessor', 'clazzName', 'duration');
-    const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('lineFn');
+    const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('areaFn');
     const points = d3.select(`.points.${clazzName}`).selectAll('circle')
       .data(datum);
 
