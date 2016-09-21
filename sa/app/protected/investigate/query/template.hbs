@@ -25,7 +25,7 @@
       </aside>
       <section class="rsa-investigate-query__body-master-main">
         {{rsa-investigate/timeline
-          chartData=model.resolvedEventTimelineData
+          data=model.queryNode.value.results.eventTimeline.data
           startTime=model.queryNode.value.definition.startTime
           endTime=model.queryNode.value.definition.endTime}}
         {{rsa-investigate/events-table

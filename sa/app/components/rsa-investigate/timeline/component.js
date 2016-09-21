@@ -7,7 +7,8 @@ const {
   Component,
   inject: {
     service
-  }
+  },
+  isArray
 } = Ember;
 
 export default Component.extend({
@@ -20,12 +21,27 @@ export default Component.extend({
   },
 
   /**
+   * An array of data to be plotted. The array can either be 1-D or 2-D. If 1-D, then it is assumed to be a single
+   * series of data. If 2-D, it is assumed to be a multi-series set of data.
+   * @type {[]}
+   * @public
+   */
+  data: undefined,
+
+  /**
    * The chart data structure, to be passed down to child `rsa-chart` component.
+   * This property computes the 2-D structure from a given 1-D data array.
    * @see component-lib/components/rsa-chart
    * @type { [[]] }
    * @private
    */
-  chartData: undefined,
+  @computed('data')
+  chartData(data = []) {
+    if (isArray(data)) {
+      return isArray(data[0]) ? data : [ data ];
+    }
+    return [[]];
+  },
 
   xProp: 'value',
   yProp: 'count',
