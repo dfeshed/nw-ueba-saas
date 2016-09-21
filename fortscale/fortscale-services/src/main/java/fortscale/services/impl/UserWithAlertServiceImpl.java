@@ -43,14 +43,15 @@ import java.util.Set;
 	List<String> fieldsRequired;
 
 	public UserWithAlertServiceImpl() {
-			fieldsRequired = new ArrayList<>();
-			fieldsRequired.add(User.ID_FIELD);
-			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.firstnameField));
-			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.lastnameField));
-			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.positionField));
-			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField));
-			fieldsRequired.add(User.usernameField);
-			fieldsRequired.add(User.followedField);
+		fieldsRequired = new ArrayList<>();
+		fieldsRequired.add(User.ID_FIELD);
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.firstnameField));
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.lastnameField));
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.positionField));
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField));
+		fieldsRequired.add(User.usernameField);
+		fieldsRequired.add(User.followedField);
+		fieldsRequired.add(User.displayNameField);
 	}
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
@@ -168,11 +169,12 @@ import java.util.Set;
 			filterToUsersCache.put(userRestFilter, users);
 		}
 
-		String searchValue = userRestFilter.getSearchValue();
+		String searchValue = userRestFilter.getSearchValue().toLowerCase();
 
 		if (CollectionUtils.isNotEmpty(users)){
 			List<User> firstNameResults = new ArrayList<>();
 			List<User> lastNameResults = new ArrayList<>();
+			List<User> displayNameResults = new ArrayList<>();
 			List<User> usernameResults = new ArrayList<>();
 			List<User> positionResults = new ArrayList<>();
 			List<User> departmentResults = new ArrayList<>();
@@ -184,6 +186,8 @@ import java.util.Set;
 				} else if (StringUtils.isNotEmpty(user.getAdInfo().getLastname())
 						&& (user.getAdInfo().getLastname().startsWith(searchValue))){
 					lastNameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getDisplayName()) && (user.getDisplayName().startsWith(searchValue))){
+					displayNameResults.add(user);
 				} else if (StringUtils.isNotEmpty(user.getUsername())
 						&& (user.getUsername().startsWith(searchValue))){
 					usernameResults.add(user);
@@ -198,6 +202,7 @@ import java.util.Set;
 
 			result.addAll(firstNameResults);
 			result.addAll(lastNameResults);
+			result.addAll(displayNameResults);
 			result.addAll(usernameResults);
 			result.addAll(positionResults);
 			result.addAll(departmentResults);
