@@ -56,6 +56,7 @@ import java.util.Set;
 			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.positionField));
 			fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField));
 			fieldsRequired.add(User.usernameField);
+			fieldsRequired.add(User.followedField);
 	}
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
@@ -74,12 +75,17 @@ import java.util.Set;
 	private Set<String> filterPreparations(UserRestFilter userRestFilter) {
 		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
 
+		calculateScoreRange(userRestFilter);
+
+		return relevantUsers;
+	}
+
+	private void calculateScoreRange(UserRestFilter userRestFilter) {
 		if (userRestFilter.getSeverity()!= null){
 			Double[] range = userScoreService.getSeverityRange().get(userRestFilter.getSeverity());
 			userRestFilter.setMinScore(range[0]);
 			userRestFilter.setMaxScore(range[1]);
 		}
-		return relevantUsers;
 	}
 
 	/**
@@ -166,6 +172,7 @@ import java.util.Set;
 
 	@Override
 	public List<User> findAndSaveUsersByFilter(UserRestFilter userRestFilter) {
+		calculateScoreRange(userRestFilter);
 		List<User> users = filterToUsersCache.get(userRestFilter);
 		List<User> result = new ArrayList<>();
 
@@ -209,13 +216,20 @@ import java.util.Set;
 			result.addAll(departmentResults);
 		}
 
-		if (userRestFilter.getSize()!= null){
+		if (userRestFilter.getSize()!= null && CollectionUtils.isNotEmpty(result)){
 			int startFrom = 0;
 
 			if (userRestFilter.getFromPage() != null && userRestFilter.getFromPage() > 1){
 				startFrom = userRestFilter.getSize() * (userRestFilter.getFromPage() - 1);
 			}
-			return result.subList(startFrom, startFrom + userRestFilter.getSize());
+
+			int endIndex = startFrom + userRestFilter.getSize();
+
+			if (endIndex > result.size()){
+				endIndex = result.size();
+			}
+
+			return result.subList(startFrom, endIndex);
 		}
 
 		return result;

@@ -101,8 +101,6 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
 	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
 
-
-
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
 
@@ -114,13 +112,7 @@ public class ApiUserController extends BaseController{
                 userIds.add(user.getId());
             });
 
-//			userRepository.getUsersByIds(userIds.get(0), pageRequest);
-
-            UserRestFilter newFilter = new UserRestFilter();
-            newFilter.setSize(userRestFilter.getSize());
-            newFilter.setFromPage(userRestFilter.getFromPage());
-            newFilter.setUserIds(userIds);
-            userRestFilter = newFilter;
+            userRestFilter.setUserIds(userIds);
         }
 
 		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
