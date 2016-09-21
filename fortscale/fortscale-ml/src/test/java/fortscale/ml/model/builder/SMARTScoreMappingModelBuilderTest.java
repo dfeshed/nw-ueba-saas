@@ -1,13 +1,11 @@
 package fortscale.ml.model.builder;
 
 import fortscale.ml.model.SMARTScoreMappingModel;
-import org.apache.commons.lang3.ArrayUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class SMARTScoreMappingModelBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
@@ -44,7 +42,7 @@ public class SMARTScoreMappingModelBuilderTest {
 
 	private void assertContains(double expected, Set<Double> actual) {
 		Assert.assertTrue(String.format("expected: %s, actual: %s", expected, actual),
-				actual.stream().anyMatch(a -> Math.abs(expected - a) <= 0.000000000001));
+				actual.stream().anyMatch(a -> Math.abs(expected - a) <= SMARTScoreMappingModelBuilder.EPSILON / 10));
 	}
 
 	private void assertModel(double expectedThreshold, double expectedMaximalValue, SMARTScoreMappingModel model) {
@@ -90,6 +88,7 @@ public class SMARTScoreMappingModelBuilderTest {
 		Double[] scores = {80D, 80D, 80D, 80D};
 		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
 
+		findKeysByValue(model.getScoreMappingConf().getMapping(), 50D).forEach(threshold -> Assert.assertTrue(threshold > 80D));
 		assertModel(80D + SMARTScoreMappingModelBuilder.EPSILON, 80D + SMARTScoreMappingModelBuilder.EPSILON * 2, model);
 	}
 
@@ -103,19 +102,9 @@ public class SMARTScoreMappingModelBuilderTest {
 	}
 
 	@Test
-	public void shouldIgnoreWeekendAndNoisiestDaysOfWeakWhenCalculatingThreshold() {
-		Double[] typicalDayScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 90D).toArray());
-		Double[] noisiestDayScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 99D).toArray());
-		Double[] weekendScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 50D).toArray());
-		Double[][] dailyScores = {
-				typicalDayScores,
-				typicalDayScores,
-				noisiestDayScores,
-				typicalDayScores,
-				typicalDayScores,
-				weekendScores,
-				weekendScores
-		};
+	public void shouldDiscardHighOutlierWhenCalculatingThreshold() {
+		Double[] scores1 = {60D, 70D, 100D};
+		Double[] scores2 = {50D, 80D, 100D};
 
 		SMARTScoreMappingModel modelWithOutliers = buildModel(
 				0,
@@ -124,20 +113,52 @@ public class SMARTScoreMappingModelBuilderTest {
 				0,
 				0,
 				0,
-				dailyScores
+				scores1,
+				scores2
 		);
-		assertModel(99D + SMARTScoreMappingModelBuilder.EPSILON, modelWithOutliers);
+		assertModel(90D, modelWithOutliers);
 
 		SMARTScoreMappingModel modelWithoutOutliers = buildModel(
 				0,
 				0,
 				0,
 				0,
-				2.0 / 7,
-				1.0 / 7,
-				dailyScores
+				0,
+				0.5,
+				scores1,
+				scores2
 		);
-		assertModel(90D + SMARTScoreMappingModelBuilder.EPSILON, modelWithoutOutliers);
+		assertModel(85D, modelWithoutOutliers);
+	}
+
+	@Test
+	public void shouldDiscardLowOutlierWhenCalculatingThreshold() {
+		Double[] scores1 = {60D, 70D, 100D};
+		Double[] scores2 = {50D, 80D, 100D};
+
+		SMARTScoreMappingModel modelWithOutliers = buildModel(
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				scores1,
+				scores2
+		);
+		assertModel(90D, modelWithOutliers);
+
+		SMARTScoreMappingModel modelWithoutOutliers = buildModel(
+				0,
+				0,
+				0,
+				0,
+				0.5,
+				0,
+				scores1,
+				scores2
+		);
+		assertModel(90D, modelWithoutOutliers);
 	}
 
 	@Test
