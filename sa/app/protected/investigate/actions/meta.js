@@ -120,16 +120,27 @@ export default Mixin.create({
     },
 
     /**
-     * Updates the meta panel size state to a given value.
+     * Updates the meta panel size state to a given value, then triggers the retrieval of data if needed.
      * @param {string} size Either 'min', 'max' or 'default'.
      * @public
      */
     metaPanelSize(size) {
+      const wasSize = this.get('state.meta.panelSize');
+      const sizeChanged = wasSize !== size;
+      if (!sizeChanged) {
+        return;
+      }
       // When expanding meta panel from its minimized state, ensure recon panel is closed.
-      if ((this.get('state.meta.panelSize') === 'min') && (size !== 'min')) {
+      if (wasSize === 'min') {
         this.send('reconClose', false);
       }
+
       this.set('state.meta.panelSize', size);
+
+      // When opening meta panel or shrinking it from maximized, ensure results are fetched for all visible views.
+      if (wasSize === 'min' || wasSize === 'max') {
+        this.send('resultsGet', this.get('state.queryNode'));
+      }
     }
   },
 

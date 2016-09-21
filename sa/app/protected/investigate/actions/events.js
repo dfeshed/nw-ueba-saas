@@ -27,7 +27,7 @@ export default Mixin.create({
         return;
       }
       let events = queryNode.get('value.results.events');
-      let skipLoad = !forceReload && (events.get('status') || '').match(/streaming|complete/);
+      let skipLoad = !forceReload && (events.get('status') || '').match(/streaming|complete|stopped/);
       if (skipLoad) {
         return;
       }
