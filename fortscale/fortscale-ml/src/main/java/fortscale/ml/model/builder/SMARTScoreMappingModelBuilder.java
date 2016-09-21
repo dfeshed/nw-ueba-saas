@@ -3,10 +3,7 @@ package fortscale.ml.model.builder;
 import fortscale.ml.model.SMARTScoreMappingModel;
 import org.springframework.util.Assert;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.OptionalInt;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -34,6 +31,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 			int numOfDays = dateToHighestScores.size();
 			// EntityEventUnreducedScoreRetriever retrieves numOfDays * numOfAlertsPerDay + 1 entities per day
 			int numOfAlertsPerDay = (scoresPerDay.get(0).size() - 1) / numOfDays;
+			scoresPerDay.forEach(dailyScores -> dailyScores.sort(Comparator.reverseOrder()));
 			threshold = Math.max(config.getMinThreshold(), calcThreshold(scoresPerDay, numOfDays, numOfAlertsPerDay));
 			maximalScore = Math.max(config.getMinMaximalScore(), calcMaximalScore(scoresPerDay));
 			// calcThreshold might return the maximal score plus EPSILON in some situations,
@@ -71,8 +69,8 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 		long numOHighOutliers = (long) Math.floor(scoresPerDay.size() * config.getHighOutliersFraction());
 		long numOfDaysToUse = scoresPerDay.size() - numOfLowOutliers - numOHighOutliers;
 		List<Double> scores = scoresPerDay.stream()
-				// sort by the lowest (highest) score per day (so we can filter outliers)
-				.sorted((scores1, scores2) -> Double.compare(scores1.get(scores1.size() - 1), scores2.get(scores2.size() - 1)))
+				// sort by the lowest (highest) score per day (so we can filter outliers based on the median)
+				.sorted((scores1, scores2) -> Double.compare(scores1.get(scores1.size() / 2), scores2.get(scores2.size() / 2)))
 				// filter the low & high outliers
 				.skip(numOfLowOutliers)
 				.limit(numOfDaysToUse)
@@ -97,7 +95,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 	 */
 	private double calcMaximalScore(List<List<Double>> scoresPerDay) {
 		return scoresPerDay.stream()
-				.mapToDouble(scores -> scores.get(scores.size() - 1))
+				.mapToDouble(scores -> scores.get(0))
 				.max()
 				.getAsDouble();
 	}

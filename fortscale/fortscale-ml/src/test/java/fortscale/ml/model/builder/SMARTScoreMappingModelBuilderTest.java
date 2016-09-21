@@ -104,6 +104,21 @@ public class SMARTScoreMappingModelBuilderTest {
 	}
 
 	@Test
+	public void shouldIgnoreHighOutlierWhenCalculatingThreshold() {
+		SMARTScoreMappingModel modelWithoutOutliers = buildModel(
+				0,
+				0,
+				0,
+				0,
+				0,
+				0.5,
+				new Double[]{60D, 70D, 100D},
+				new Double[]{50D, 80D, 100D}
+		);
+		assertModel(85D, modelWithoutOutliers);
+	}
+
+	@Test
 	public void shouldIgnoreWeekendAndNoisiestDaysOfWeakWhenCalculatingThreshold() {
 		Double[] typicalDayScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 90D).toArray());
 		Double[] noisiestDayScores = ArrayUtils.toObject(IntStream.range(0, 8).mapToDouble(i -> 99D).toArray());
