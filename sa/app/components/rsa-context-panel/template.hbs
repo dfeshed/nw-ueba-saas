@@ -1,16 +1,13 @@
 {{rsa-context-panel/header
+contextData=contextData
 hostCount=(if contextData.ecatData.host 1 0)
-incidentsCount=0
-alertsCount=0
-filesCount=0
-listsCount=0
-feedsCount=0
 model=model
 closePanel=(route-action 'closeContextPanel')
 }}
 
-
 <section class="rsa-context-panel__body">
   {{rsa-context-panel/ecat ecatData=contextData.ecatData}}
+  {{rsa-context-panel/incident-panel incidentData=contextData.incidentsData }}
+  {{rsa-context-panel/alerts-panel alertData=contextData.alertsData }}
   {{rsa-context-panel/lc-community-activity liveConnectData=contextData.liveConnectData}}
 </section>

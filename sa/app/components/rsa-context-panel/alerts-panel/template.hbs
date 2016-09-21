@@ -1,0 +1,27 @@
+<div class="heading-text">{{t 'context.alerts.title'}}</div>
+<div class="rsa-context-panel__im__alerts">
+  {{#rsa-data-table lazy=true items=alertData columnsConfig=modulesColumnListConfig}}
+    {{#rsa-data-table/header as |column|}}
+      <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">{{if column.title (t column.title) column.field}}</span>
+    {{/rsa-data-table/header}}
+    {{#rsa-data-table/body as |item index column|}}
+      {{#if (is-equal column.field 'risk_score')}}
+        {{#rsa-data-table/body-cell item=item index=index column=column}}
+          {{component column.componentClass item=item index=index column=column
+            score=(get item.alert column.field) isInline=true
+          style=(context/risk-score-to-badge-level (get item.alert column.field))}}
+        {{/rsa-data-table/body-cell}}
+
+      {{else if (is-equal column.field 'created')}}
+        {{#rsa-data-table/body-cell item=item index=index column=column}}
+          {{rsa-content-datetime timestamp=item.alert.timestamp.$date }}
+        {{/rsa-data-table/body-cell}}
+      {{else if (is-equal column.field 'incidentId')}}
+        {{rsa-data-table/body-cell item=item index=index column=column isInline=true }}
+      {{else}}
+        {{rsa-data-table/body-cell item=item.alert index=index column=column isInline=true }}
+      {{/if}}
+    {{/rsa-data-table/body}}
+  {{/rsa-data-table}}
+</div>
+

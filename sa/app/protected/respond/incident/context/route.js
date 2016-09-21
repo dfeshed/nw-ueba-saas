@@ -3,14 +3,14 @@ import Ecat from 'sa/context/ecat';
 import LiveConnect from 'sa/context/live-connect';
 
 const {
-    Route,
-    Logger,
-    set,
-    setProperties,
-    isArray,
-    inject: {
-        service
-    }
+  Route,
+  Logger,
+  set,
+  setProperties,
+  isArray,
+  inject: {
+    service
+  }
 } = Ember;
 
 export default Route.extend({
@@ -41,6 +41,9 @@ export default Route.extend({
       ips: [],
       prefetch: [],
       contextData: {
+
+        incidentsData: null,
+        alertsData: null,
         ecatData: null,
         liveConnectData: null
       }
@@ -97,39 +100,30 @@ export default Route.extend({
       switch (dataSource.dataSourceType) {
         case 'Incidents':
           {
+            set(this.currentModel.contextData, 'incidentsData', dataSource.resultList);
             break;
           }
         case 'Alerts':
           {
+            set(this.currentModel.contextData, 'alertsData', dataSource.resultList);
             break;
           }
         case 'ECAT':
           {
-            let machine, iocs, processes, network;
+
             let ecatData = Ecat.create();
 
             dataSource.resultList.forEach((obj) => {
-              if (obj && obj !== '' && obj.minimum_ioc && obj.minimum_ioc !== '') {
-              // object is already assigned, reset variables.
-                machine = null;
-                iocs = null;
-                processes = null;
-                network = null;
-              } else {
-                machine = obj.details.Machine;
-                iocs = obj.details.Iocs;
-                processes = obj.details.Processes;
-                network = obj.details.Network;
-              }
+              let { Machine, Iocs, Processes, Network } = obj.details;
               // get details and push into the respective objects
-              if (machine) {
-                set(ecatData, 'host', machine);
-              } else if (iocs) {
-                iocs.forEach((entry) => ecatData.get('iioc').push(entry));
-              } else if (processes) {
-                processes.forEach((entry) => ecatData.get('processes').push(entry));
-              } else if (network) {
-                network.forEach((entry) => ecatData.get('network').push(entry));
+              if (Machine) {
+                set(ecatData, 'host', Machine);
+              } else if (Iocs) {
+                ecatData.get('iioc').pushObjects(Iocs);
+              } else if (Processes) {
+                ecatData.get('processes').pushObjects(Processes);
+              } else if (Network) {
+                ecatData.get('network').pushObjects(Network);
               } else {
                // module object details
                 ecatData.set('modulesCount', obj.total_modules_count);

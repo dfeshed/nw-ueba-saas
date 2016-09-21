@@ -127,6 +127,29 @@ export default $.extend({}, BaseTranslations, {
       iiocLevel1: 'ja_Iioc Level 1',
       iiocLevel2: 'ja_Iioc Level 2',
       iiocLevel3: 'ja_Iioc Level 3'
+    },
+
+    incident: {
+      title: 'ja_Incidents',
+      averageAlertRiskScore: 'ja_Risk Score',
+      _id: 'ja_Id',
+      name: 'ja_Name',
+      created: 'ja_Created',
+      status: 'ja_Status',
+      assignee: 'ja_ASSIGNEE',
+      alertCount: 'ja_Alerts',
+      priority: 'ja_Priority'
+    },
+    alerts: {
+      title: 'ja_Alerts',
+      risk_score: 'ja_Risk Score',
+      source: 'ja_Source',
+      name: 'ja_Name',
+      numEvents: 'ja_Events',
+      severity: 'ja_Severity',
+      created: 'ja_Created',
+      id: 'ja_Incident ID',
+      timestamp: 'ja_timestamp'
     }
   },
   about: {

@@ -132,6 +132,28 @@ export default $.extend({}, BaseTranslations, {
       iiocLevel2: 'Iioc Level 2',
       iiocLevel3: 'Iioc Level 3'
     },
+    incident: {
+      title: 'Incidents',
+      averageAlertRiskScore: 'Risk Score',
+      _id: 'Id',
+      name: 'Name',
+      created: 'Created',
+      status: 'Status',
+      assignee: 'ASSIGNEE',
+      alertCount: 'Alerts',
+      priority: 'Priority'
+    },
+    alerts: {
+      title: 'Alerts',
+      risk_score: 'Risk Score',
+      source: 'Source',
+      name: 'Name',
+      numEvents: 'Events',
+      severity: 'Severity',
+      created: 'Created',
+      id: 'Incident ID',
+      timestamp: 'timestamp'
+    },
     lc: {
       reviewStatus: 'Review Status',
       status: 'Status',
