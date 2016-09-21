@@ -30,7 +30,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 		if (!scoresPerDay.isEmpty()) {
 			// EntityEventUnreducedScoreRetriever retrieves numOfDays * numOfAlertsPerDay + 1 entities per day.
 			// Solving for numOfAlertsPerDay:
-			int numOfAlertsPerDay = (scoresPerDay.get(0).size() - 1) / dateToHighestScores.size();
+			double numOfAlertsPerDay = (scoresPerDay.get(0).size() - 1) / dateToHighestScores.size();
 			scoresPerDay.forEach(dailyScores -> dailyScores.sort(Comparator.reverseOrder()));
 			threshold = Math.max(config.getMinThreshold(), calcThreshold(scoresPerDay, numOfAlertsPerDay));
 			maximalScore = Math.max(config.getMinMaximalScore(), calcMaximalScore(scoresPerDay));
@@ -63,7 +63,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 	 * @param numOfAlertsPerDay the number of alerts that should be triggered per day.
 	 * @return the value which will be mapped to 50 (50 and above will trigger an alert).
 	 */
-	private double calcThreshold(List<List<Double>> scoresPerDay, int numOfAlertsPerDay) {
+	private double calcThreshold(List<List<Double>> scoresPerDay, double numOfAlertsPerDay) {
 		long numOfLowOutliers = (long) Math.floor(scoresPerDay.size() * config.getLowOutliersFraction());
 		long numOHighOutliers = (long) Math.floor(scoresPerDay.size() * config.getHighOutliersFraction());
 		long numOfDaysToUse = scoresPerDay.size() - numOfLowOutliers - numOHighOutliers;
@@ -76,7 +76,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 				// take the highest distinct scores
 				.flatMap(Collection::stream)
 				.sorted((s1, s2) -> Double.compare(s2, s1))
-				.limit(numOfDaysToUse * numOfAlertsPerDay + 1)
+				.limit((long) (numOfDaysToUse * numOfAlertsPerDay + 1))
 				.distinct()
 				// and take the average of the two smallest ones
 				.sorted()
