@@ -28,11 +28,11 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 		double threshold;
 		double maximalScore;
 		if (!scoresPerDay.isEmpty()) {
-			int numOfDays = dateToHighestScores.size();
-			// EntityEventUnreducedScoreRetriever retrieves numOfDays * numOfAlertsPerDay + 1 entities per day
-			int numOfAlertsPerDay = (scoresPerDay.get(0).size() - 1) / numOfDays;
+			// EntityEventUnreducedScoreRetriever retrieves numOfDays * numOfAlertsPerDay + 1 entities per day.
+			// Solving for numOfAlertsPerDay:
+			int numOfAlertsPerDay = (scoresPerDay.get(0).size() - 1) / dateToHighestScores.size();
 			scoresPerDay.forEach(dailyScores -> dailyScores.sort(Comparator.reverseOrder()));
-			threshold = Math.max(config.getMinThreshold(), calcThreshold(scoresPerDay, numOfDays, numOfAlertsPerDay));
+			threshold = Math.max(config.getMinThreshold(), calcThreshold(scoresPerDay, numOfAlertsPerDay));
 			maximalScore = Math.max(config.getMinMaximalScore(), calcMaximalScore(scoresPerDay));
 			// calcThreshold might return the maximal score plus EPSILON in some situations,
 			// which is bigger than what aclMaximalScore can return, so make sure the maximalScore is still bigger
@@ -60,11 +60,10 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 
 	/**
 	 * @param scoresPerDay a list of days. For each day it has a list of the highest scores in that day.
-	 * @param numOfDays the number of days (before filtering by filterPartialDays).
 	 * @param numOfAlertsPerDay the number of alerts that should be triggered per day.
 	 * @return the value which will be mapped to 50 (50 and above will trigger an alert).
 	 */
-	private double calcThreshold(List<List<Double>> scoresPerDay, int numOfDays, int numOfAlertsPerDay) {
+	private double calcThreshold(List<List<Double>> scoresPerDay, int numOfAlertsPerDay) {
 		long numOfLowOutliers = (long) Math.floor(scoresPerDay.size() * config.getLowOutliersFraction());
 		long numOHighOutliers = (long) Math.floor(scoresPerDay.size() * config.getHighOutliersFraction());
 		long numOfDaysToUse = scoresPerDay.size() - numOfLowOutliers - numOHighOutliers;
