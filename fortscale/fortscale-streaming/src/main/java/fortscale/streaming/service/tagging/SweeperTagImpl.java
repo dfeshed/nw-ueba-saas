@@ -37,7 +37,7 @@ public class SweeperTagImpl implements ServiceAccountTagging {
 
     @Override
     public void addTagToMongo(TagService tagService) {
-        tagService.addTag(new Tag(SweeperTag, SweeperTag, false));
+        tagService.addTag(new Tag(SweeperTag, SweeperTag, false, false));
     }
 
 

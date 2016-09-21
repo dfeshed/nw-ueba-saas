@@ -29,6 +29,7 @@ public interface UserRepositoryCustom {
 	public List<User> findByIds(Collection<String> ids);
 
 	public List<User> findByUsernames(Collection<String> usernames);
+	Set<String> findByUsernameRegex(String usernameRegex);
 
 	public List<User> findUsersBysAMAccountName(String usernames);
 
@@ -80,10 +81,7 @@ public interface UserRepositoryCustom {
 
 	public long getNumberOfTrackedAccounts();
 
-	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable);
-
-	public Set<String> findNameByTag(String tagFieldName, String value, Pageable pageable);
-
+	public Set<String> findNameByTag(String tag, Pageable pageable);
 	public boolean findIfUserExists(String username);
 
 	public String getUserIdByNormalizedUsername(String username);
@@ -93,8 +91,7 @@ public interface UserRepositoryCustom {
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */
-	Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
-
+	public Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
 	public Set<String> getUserTags(String normalizedUsername);
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);

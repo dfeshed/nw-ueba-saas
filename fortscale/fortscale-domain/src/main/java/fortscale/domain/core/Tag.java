@@ -25,6 +25,11 @@ public class Tag extends AbstractDocument{
 	public static final String createsIndicatorField = "createsIndicator";
 	public static final String rulesField = "rules";
 	public static final String activeField = "active";
+	public static final String isAssignableField = "isAssignable";
+
+	public static final String ADMIN_TAG = "admin";
+	public static final String EXECUTIVE_TAG = "executive";
+	public static final String SERVICE_ACCOUNT_TAG = "service";
 
 	public Tag() {}
 
@@ -34,19 +39,13 @@ public class Tag extends AbstractDocument{
 		createsIndicator = false;
 		rules = new ArrayList<>();
 		active = true;
+		isAssignable = true;
 	}
 
-	public Tag(String name, String displayName) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean isAssignable) {
 		this.name = name;
 		this.displayName = displayName;
-		createsIndicator = false;
-		rules = new ArrayList<>();
-		active = true;
-	}
-
-	public Tag(String name, String displayName, boolean setCreatesIndicator) {
-		this.name = name;
-		this.displayName = displayName;
+		this.isAssignable = isAssignable;
 		createsIndicator = setCreatesIndicator ? true : false;
 		rules = new ArrayList<>();
 		active = true;
@@ -63,6 +62,9 @@ public class Tag extends AbstractDocument{
 
 	@NotNull
 	private Boolean active;
+
+	@NotNull
+	private Boolean isAssignable;
 
 	@NotNull
 	private List<String> rules;
@@ -105,6 +107,14 @@ public class Tag extends AbstractDocument{
 
 	public void setActive(Boolean active) {
 		this.active = active;
+	}
+
+	public Boolean getIsAssignable() {
+		return isAssignable;
+	}
+
+	public void setIsAssignable(Boolean isAssignable) {
+		this.isAssignable = isAssignable;
 	}
 
 	@Override

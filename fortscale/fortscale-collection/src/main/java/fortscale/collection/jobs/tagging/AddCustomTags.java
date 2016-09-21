@@ -13,12 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
+import java.util.Arrays;
 
 public class AddCustomTags extends FortscaleJob{
 
 	private static Logger logger = LoggerFactory.getLogger(AddCustomTags.class);
 
-	private static final String CSV_DELIMITER = ",";
+	private static final String CSV_DELIMITER = "|";
+	private static final String RULES_DELIMITER = ";";
 
 	@Autowired
 	private TagService tagService;
@@ -52,7 +54,10 @@ public class AddCustomTags extends FortscaleJob{
 				String name = line.split(CSV_DELIMITER)[0];
 				String displayName = line.split(CSV_DELIMITER)[1];
 				boolean createsIndicator = Boolean.parseBoolean(line.split(CSV_DELIMITER)[2]);
-				if (tagService.addTag(new Tag(name, displayName, createsIndicator))) {
+				String rules = line.split(CSV_DELIMITER)[3];
+				Tag tag = new Tag(name, displayName, createsIndicator, true);
+				tag.setRules(Arrays.asList(rules.split(RULES_DELIMITER)));
+				if (tagService.addTag(tag)) {
 					logger.info("adding tag {}", line);
 				} else {
 					logger.warn("fail to add tag tag {}", line);

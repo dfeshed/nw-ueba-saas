@@ -1,11 +1,11 @@
 package fortscale.services;
 
+import java.util.List;
 
 public interface UserTagService {
+
 	void update() throws Exception;
-	boolean isUserTagged(String username);
-	String getTagMongoField();
-	void addUserTag(String userName, String tag);
-	void removeUserTag(String userName, String tag);
-	UserTagEnum getTag();
+	void addUserTags(String userName, List<String> tags) throws Exception;
+	void removeUserTags(String userName, List<String> tags);
+
 }

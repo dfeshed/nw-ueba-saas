@@ -72,17 +72,19 @@ public interface UserService extends CachingService{
 
 	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
 
-	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
+	public Set<String> findByUsernameRegex(String usernameRegex);
+
+	Set<String> findNamesByTag(String tag);
+
+	public Map<String, Set<String>> findAllTaggedUsers();
 
 	public String findAdMembers(String adName);
 
 	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
 
-	public Set<String> findNamesByTag(String tagFieldName, String value);
+	public void updateUserTag(String userTagEnumId, String username, boolean value);
 
-	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
-
-	User getUserById(String id);
+	public User getUserById(String id);
 
 	public Boolean isPasswordExpired(User user);
 

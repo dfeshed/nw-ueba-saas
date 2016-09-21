@@ -26,6 +26,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -142,6 +143,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<User> findByUsernames(Collection<String> usernames) {
 		return findByUniqueField(User.usernameField, usernames);
+	}
+
+	@Override
+	public Set<String> findByUsernameRegex(String usernameRegex) {
+		Query query = new Query(where(User.usernameField).regex(usernameRegex));
+		query.fields().include(User.usernameField);
+		Set<String> result = new HashSet();
+		List<User> users = mongoTemplate.find(query, User.class);
+		if (users != null) {
+			result.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		}
+		return result;
 	}
 
 	@Override
@@ -458,26 +471,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable) {
+	public Set<String> findNameByTag(String tag, Pageable pageable) {
 		Query query = new Query().with(pageable);
-		Criteria criteria = where(tagFieldName).is(value);
+		Criteria criteria = where(User.tagsField).in(tag);
 		query.fields().include(User.usernameField);
 		query.addCriteria(criteria);
-		Set<String> res = new HashSet<String>();
-		for (UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName))
-			res.add(usernameWrapper.getUsername());
-		return res;
-	}
-
-	@Override
-	public Set<String> findNameByTag(String tagFieldName, String value, Pageable pageable) {
-		Query query = new Query().with(pageable);
-		Criteria criteria = where(tagFieldName).is(value);
-		query.fields().include(User.usernameField);
-		query.addCriteria(criteria);
-		Set<String> res = new HashSet<String>();
-		for (UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName))
-			res.add(usernameWrapper.getUsername());
+		Set<String> res = mongoTemplate.find(query, UsernameWrapper.class, User.collectionName).stream().
+				map(UsernameWrapper::getUsername).collect(Collectors.toSet());
 		return res;
 	}
 

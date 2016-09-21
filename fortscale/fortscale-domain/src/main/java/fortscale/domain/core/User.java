@@ -50,6 +50,10 @@ public class User extends AbstractDocument {
 	public static final String terminationDateField = "terminationDate";
 	public static final String alertsCountField = "alertsCount";
 
+	public static final String SERVICE = "service";
+	public static final String ADMIN = "admin";
+	public static final String EXECUTIVE = "executive";
+
 	@Indexed
 	@Field(administratorAccountField)
 	private Boolean administratorAccount;
@@ -288,23 +292,15 @@ public class User extends AbstractDocument {
 	}
 	
 	public Boolean getUserServiceAccount() {
-		return userServiceAccount != null ? userServiceAccount : false;
-	}
-
-	public void setUserServiceAccount(Boolean userServiceAccount) {
-		this.userServiceAccount = userServiceAccount;
+		return tags != null ? tags.contains(SERVICE) : false;
 	}
 
 	public Boolean getAdministratorAccount() {
-		return administratorAccount != null ? administratorAccount : false;
+		return tags != null ? tags.contains(ADMIN) : false;
 	}
 
-	public void setAdministratorAccount(Boolean administratorAccount) {
-		this.administratorAccount = administratorAccount;
-	}
-	
 	public Boolean getExecutiveAccount() {
-		return executiveAccount != null ? executiveAccount : false;
+		return tags != null ? tags.contains(EXECUTIVE) : false;
 	}
 	
 	public void setExecutiveAccount(Boolean executiveAccount) {
