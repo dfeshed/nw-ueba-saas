@@ -12,7 +12,10 @@ const { get, set, Mixin } = Ember;
 
 const STREAM_LIMIT = 1000;
 const STREAM_BATCH = 19;
-const MAX_JOBS_QUEUE_SIZE = 3;
+
+// Maximum number of parallel threads that fetch meta values.
+// Eventually this will be a configurable Admin setting in the UI. For now, use default from Classic UI.
+const MAX_JOBS_QUEUE_SIZE = 2;
 
 export default Mixin.create({
   actions: {
