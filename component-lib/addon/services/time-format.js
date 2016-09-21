@@ -22,17 +22,17 @@ export default Service.extend({
   defaultSelection: '24hr',
 
   init() {
-    let localStorageSpacing = localStorage[this.get('localStorageKey')];
+    let localStorageKey = localStorage[this.get('localStorageKey')];
     let defaultSelection = this.get('defaultSelection');
     let currentSelection = null;
 
-    if (localStorageSpacing) {
-      currentSelection = localStorageSpacing;
+    if (localStorageKey) {
+      currentSelection = localStorageKey;
     } else {
       currentSelection = defaultSelection;
     }
 
-    this.set('selected', this.get('options').findBy('key', currentSelection));
+    this.set('selected', currentSelection);
     this.storeLocally(currentSelection);
     this._super(arguments);
   },
@@ -47,9 +47,10 @@ export default Service.extend({
     },
 
     set(key, value) {
-      this.set('_selected', value);
+      const option = this.get('options').findBy('key', value);
+      this.set('_selected', option);
       this.storeLocally(value);
-      return value;
+      return option;
     }
   })
 
