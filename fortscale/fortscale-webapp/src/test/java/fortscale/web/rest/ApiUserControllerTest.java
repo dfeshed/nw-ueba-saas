@@ -210,7 +210,7 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 		user.setScore(90.0);
-		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), null)).thenReturn(users);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anyList())).thenReturn(users);
 		when(userWithAlertService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
 		MvcResult result = mockMvc.perform(get("/api/user")
 				.accept(MediaType.APPLICATION_JSON))
@@ -243,7 +243,7 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 		user.setScore(90.0);
-		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), null)).thenReturn(users);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anyList())).thenReturn(users);
 		when(userWithAlertService.countUsersByFilter(any(UserRestFilter.class))).thenReturn(1);
 		List<Alert> alerts = new ArrayList<>();
 		Alert alert = new Alert("Alert", 1, 2, EntityType.User, USER_NAME, null, 0, 100, Severity.Critical,
@@ -293,7 +293,7 @@ public class ApiUserControllerTest {
 		List<User> users = new ArrayList<>();
 		users.add(user);
 
-		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), null)).thenReturn(users);
+		when(userWithAlertService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anyList())).thenReturn(users);
 		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
 
 		MvcResult result = mockMvc.perform(get("/api/user/severityBar")
@@ -310,7 +310,7 @@ public class ApiUserControllerTest {
 	public void testSeverityBar_noUsers() throws Exception {
 		List<User> users = new ArrayList<>();
 
-		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anySet(), null)).thenReturn(users);
+		when(userService.findUsersByFilter(any(UserRestFilter.class), any(PageRequest.class), anySet(), anyList())).thenReturn(users);
 		Mockito.when(userScoreService.getUserSeverityForScore(Mockito.anyDouble())).thenReturn(Severity.Critical);
 
 		MvcResult result = mockMvc.perform(get("/api/user/severityBar")
