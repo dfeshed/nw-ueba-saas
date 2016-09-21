@@ -2,13 +2,17 @@
   {{contentError}}
 {{else}}
   <hbox class="event-content-box">
+    {{!-- a hack to avoid re-render, will go with better API for packetFields --}}
     {{#if packetFields}}
-      {{component reconstructionType.component
+      {{component
+        reconstructionType.component
         eventId=eventId
         endpointId=endpointId
         packetFields=packetFields
+        contentErrorAction=contentErrorAction
         showRequestData=showRequestData
-        showResponseData=showResponseData}}
+        showResponseData=showResponseData
+      }}
     {{/if}}
   </hbox>
 {{/if}}

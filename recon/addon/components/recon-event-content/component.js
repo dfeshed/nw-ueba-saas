@@ -7,13 +7,20 @@ export default Component.extend({
   classNameBindings: [':recon-event-content'],
   tagName: 'hbox',
 
-  // INPUTS
   contentError: null,
+
+  // INPUTS
   endpointId: null,
   eventId: null,
   meta: null,
   packetFields: null,
   showMetaDetails: null,
-  reconstructionType: null
+  reconstructionType: null,
   // END INPUTS
+
+  actions: {
+    contentErrorAction(text) {
+      this.set('contentError', text);
+    }
+  }
 });

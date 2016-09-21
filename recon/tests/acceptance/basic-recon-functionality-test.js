@@ -45,12 +45,16 @@ test('change recon views', function(assert) {
   visit('/');
 
   andThen(function() {
-    find('.prompt').click();
-    find('select').val('2').trigger('change');
-
     // run.later is a hack, but nothing else seems to work
     run.later(function() {
-      assert.ok(find('.event-content-box').text().trim() === 'FILE RECON GOES HERE', 'REcon can change views');
+      find('.prompt').click();
+      find('select').val('2').trigger('change');
+    }, 1000);
+  });
+
+  andThen(function() {
+    run.later(function() {
+      assert.ok(find('.event-content-box').text().trim() === 'FILES: 2', 'REcon can change views');
     }, 100);
   });
 

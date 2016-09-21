@@ -1,43 +1,15 @@
-import Ember from 'ember';
+import DetailBase from '../base/component';
 import layout from './template';
 
-const {
-  Component,
-  inject: {
-    service
-  }
-} = Ember;
-
-export default Component.extend({
-  request: service(),
-
+export default DetailBase.extend({
   layout,
-  tagName: 'container',
-  classNameBindings: [':recon-event-detail-packets'],
 
-  endpointId: null,
-  eventId: null,
-  packets: [],
+  packetFields: null,
 
-  didReceiveAttrs() {
-    const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
-    this.setProperties({
-      contentError: null,
-      packets: []
-    });
-
-    this.retrievePackets(endpointId, eventId);
-  },
-
-  retrievePackets(endpointId, eventId) {
+  retrieveData(basicQuery) {
+    // add streaming stuffs
     const query = {
-      filter: [{
-        field: 'endpointId',
-        value: endpointId
-      }, {
-        field: 'sessionId',
-        value: eventId
-      }],
+      ...basicQuery,
       page: {
         index: 0,
         size: 100
@@ -49,7 +21,7 @@ export default Component.extend({
     };
 
     this.get('request').streamRequest({
-      method: 'stream', // not streaming yet, but will eventually
+      method: 'stream',
       modelName: 'reconstruction-packet-data',
       query,
       onResponse: ({ data }) => {
@@ -57,9 +29,9 @@ export default Component.extend({
           p.side = (p.side === 1) ? 'request' : 'response';
           return p;
         });
-        this.get('packets').pushObjects(packetData);
+        this.get('reconData').pushObjects(packetData);
       },
-      onError: (response) => this.set('contentError', response.code)
+      onError: this.handleError
     });
   }
 });

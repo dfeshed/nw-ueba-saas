@@ -39,6 +39,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/investigate/reconstruct/session-packets',
         requestDestination: '/ws/investigate/reconstruct/session-packets/stream'
       }
+    },
+    'reconstruction-file-data': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/reconstruct/session-files',
+        requestDestination: '/ws/investigate/reconstruct/session-files'
+      }
     }
+
   };
 }

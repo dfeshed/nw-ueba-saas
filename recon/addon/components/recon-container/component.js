@@ -19,6 +19,7 @@ export default Component.extend({
   classNameBindings: [':recon-container'],
 
   // Component state
+  packetFields: null,
   headerError: null,
   headerItems: null,
   reconstructionType: TYPES_BY_NAME.PACKET, // defaults to packet view
@@ -47,7 +48,7 @@ export default Component.extend({
   didReceiveAttrs() {
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
     assert('Cannot instantiate recon without endpointId and eventId.', endpointId && eventId);
-
+    this.set('packetFields', null);
     this.bootstrapRecon(endpointId, eventId);
   },
 
