@@ -5,7 +5,7 @@
   {{#each rawCategoryData as |treeNode|}}
     {{#rsa-content-accordion isCollapsed=true label=treeNode.name}}
       {{#each treeNode.children as |child|}}
-        <div class="rsa-content-tree__child-label" {{action 'addAction' treeNode.name child.name}}>{{child.name}}</div>
+        <div class="rsa-content-tree__child-label {{if child.selected 'selected'}}" {{action 'addAction' child}}>{{child.name}}</div>
       {{/each}}
     {{/rsa-content-accordion}}
   {{/each}}

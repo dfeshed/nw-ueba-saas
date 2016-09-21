@@ -96,8 +96,10 @@
   }
 
   .option-tag {
-    background-color: $formSelectTagBackgroundColor;
-    border-radius: .25rem;
+    @include rsa-font(body, small, true);
+    font-size: 0.8em;
+    border: thin solid;
+    border-radius: rsa-whitespace(least);
     position: relative;
     color: $formSelectTagTypeColor;
     padding: 0 rsa-whitespace(more) 0 rsa-whitespace(less);

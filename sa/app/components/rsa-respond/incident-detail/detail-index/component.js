@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
+import IncidentHelper from 'sa/incident/helpers';
 
 const {
   Component,
@@ -15,28 +16,7 @@ export default Component.extend({
 
   @computed('categoryTags.[]')
   normalizedTreeData(categoryTags) {
-    if (categoryTags === null) {
-      return [];
-    }
-    let data = [];
-
-    categoryTags.forEach((obj) => {
-      let objParent = data.findBy('name', obj.parent);
-
-      if (!objParent) {
-        objParent = {
-          'name': obj.parent,
-          'children': []
-        };
-        data.pushObject(objParent);
-      }
-
-      objParent.children.pushObject({
-        id: obj.id,
-        name: obj.name
-      });
-    });
-    return data;
+    return IncidentHelper.normalizeCategoryTags(categoryTags);
   },
 
   users: null,
@@ -46,14 +26,7 @@ export default Component.extend({
     get: (categories) => (categories),
 
     set(value) {
-      let flatArray = value.map(function(tagObject) {
-        return {
-          'parent': tagObject.parent,
-          'name': tagObject.name
-        };
-      });
-
-      this.sendAction('saveAction', 'categories', flatArray);
+      this.sendAction('saveAction', 'categories', value);
       return value;
     }
   },

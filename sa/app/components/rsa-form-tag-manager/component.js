@@ -1,25 +1,51 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
-const { Component, isNone } = Ember;
+
+const {
+  Component,
+  inject: {
+    service
+  },
+  set,
+  $
+} = Ember;
 
 export default Component.extend({
   classNames: ['rsa-form-tag-manager'],
+  classNameBindings: ['contentTreeIsHidden'],
   contentTreeIsHidden: true,
+  eventBus: service(),
+
+  // sub set of availableTags selected by the user
+  selectedTags: [],
+
+  didInsertElement() {
+    this.get('eventBus').on('rsa-application-click', (targetEl) => {
+      if (this.$()) {
+        // hide the panel when clicking outside the component
+        if (!this.get('contentTreeIsHidden') && $.contains(document, targetEl) && !$.contains(this.$()[0], targetEl)) {
+          this.toggleProperty('contentTreeIsHidden');
+        }
+      }
+    });
+  },
 
   /**
-   * @name displayedTags
-   * @description An array containing the string representations of the tags selected.
+   * @name tags
+   * @description The entire list of available tags. Those that are already selected have `selected` property
+   * set to true.
    * @public
    */
-  @computed('selectedTags')
-  displayedTags: (selectedTags) => {
-    let displayedTagsArray = [];
-    let foundSelectedTags = selectedTags || [];
-
-    foundSelectedTags.forEach(function(tagObject) {
-      displayedTagsArray.push(`${tagObject.parent}: ${tagObject.name}`);
+  @computed('availableTags', 'selectedTags')
+  tags: (availableTags, selectedTags) => {
+    availableTags.forEach((tag) => {
+      tag.children.forEach((childNode) => {
+        set(childNode, 'selected', selectedTags.any((selectedTag) => {
+          return selectedTag.name === childNode.name && selectedTag.parent === tag.name;
+        }));
+      });
     });
-    return displayedTagsArray;
+    return availableTags;
   },
 
   actions: {
@@ -33,41 +59,24 @@ export default Component.extend({
     },
 
     /**
-     * @name addTag
-     * @description Adds a selected tag to both the array containing the visually displayed tags as well as the model containing the chosen tags.
+     * @name tagSelected
+     * @description Adds or Removes a selected tag from the array containing the chosen tags.
      * @public
      */
-    addTag(parentNode, childNode) {
-      let nodeObject = {
-        'parent': parentNode,
-        'name': childNode
-      };
+    tagSelected(tag) {
 
-      if (!this.get('selectedTags').find((item) => {
-        return item.parent === parentNode && item.name === childNode;
-      })) {
-        let newArray = this.get('selectedTags').slice(0);
-        newArray.pushObject(nodeObject);
-        this.set('selectedTags', newArray);
-      }
-    },
+      let newArray = this.get('selectedTags').slice(0);
 
-    /**
-     * @name removeTag
-     * @description Removes a tag from the displayedTags array which is displayed visually on the page and updates the model.categories parameter with the currently selected tags.
-     * @public
-     */
-    removeTag(displayedTagsString) {
-      let deletedTagArray = displayedTagsString.split(': ');
-      let updatedArray = this.get('selectedTags').slice(0);
-
-      updatedArray.find(function(item) {
-        if (!isNone(item) && item.parent === deletedTagArray[0] && item.name === deletedTagArray[1]) {
-          updatedArray.removeObject(item);
-        }
+      let existingTag = this.get('selectedTags').find((item) => {
+        return item.parent === tag.parent && item.name === tag.name;
       });
 
-      this.set('selectedTags', updatedArray);
+      if (!existingTag) {
+        newArray.pushObject(tag);
+      } else {
+        newArray.removeObject(existingTag);
+      }
+      this.set('selectedTags', newArray);
     }
   }
 });

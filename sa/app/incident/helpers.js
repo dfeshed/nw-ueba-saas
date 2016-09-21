@@ -49,5 +49,30 @@ export default {
     } else {
       return 'danger';
     }
+  },
+
+  /**
+   * @description transforms a one dimension categories array into a 2 dimension array
+   * @public
+   */
+  normalizeCategoryTags(categoryTags = []) {
+    let normalizedCategories = [];
+
+    categoryTags.forEach((category) => {
+      let objParent = normalizedCategories.findBy('name', category.parent);
+
+      if (!objParent) {
+        objParent = {
+          name: category.parent,
+          children: []
+        };
+        normalizedCategories.pushObject(objParent);
+      }
+
+      objParent.children.pushObject(category);
+
+    });
+
+    return normalizedCategories;
   }
 };

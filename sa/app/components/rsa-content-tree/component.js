@@ -6,8 +6,8 @@ export default Component.extend({
   classNames: ['rsa-content-tree'],
 
   actions: {
-    addAction(parentNode, childNode) {
-      this.sendAction('addAction', parentNode, childNode);
+    addAction(child) {
+      this.sendAction('tagSelected', child);
     },
 
     toggleTreeVisibilityAction() {
