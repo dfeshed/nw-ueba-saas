@@ -1,13 +1,14 @@
+import datetime
 import json
 import os
-import signal
 import re
+import shutil
+import signal
 import sys
-import time
-import datetime
 import zipfile
 from contextlib import contextmanager
-import shutil
+
+import time
 from .. import config
 
 
@@ -107,7 +108,7 @@ def open_overrides_file(overriding_path, jar_name=None, path_in_jar=None, create
         zf.close()
 
 
-def iter_overrides_files(overriding_path, jar_name, path_in_jar):
+def iter_overrides_files(overriding_path, jar_name, path_in_jar, create_if_not_exist=False):
     if overriding_path[-1] == '/':
         overriding_path = overriding_path[:-1]
     if path_in_jar[-1] == '/':
@@ -118,5 +119,6 @@ def iter_overrides_files(overriding_path, jar_name, path_in_jar):
         if match is not None:
             with open_overrides_file(overriding_path=overriding_path + '/' + match.group(1),
                                      jar_name=jar_name,
-                                     path_in_jar=match.group(0)) as f:
+                                     path_in_jar=match.group(0),
+                                     create_if_not_exist=create_if_not_exist) as f:
                 yield f
