@@ -23,6 +23,8 @@ logger = logging.getLogger('stepSAM')
 class Manager(DontReloadModelsOverridingManager):
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
+    _JAR_NAME = 'fortscale-ml-1.1.0-SNAPSHOT.jar'
+    _MODELS_PATH_IN_JAR = 'config/asl/models/'
 
     def __init__(self,
                  host,
@@ -92,15 +94,12 @@ class Manager(DontReloadModelsOverridingManager):
     def _prepare_overriding_model_builders_config(self):
         logger.info('updating overriding models...')
         original_to_backup = {}
-        for data_source in self._data_sources:
-            data_source_raw_events_model_file_name = \
-                'raw_events_model_confs_' + (data_source if data_source != 'kerberos' else 'kerberos_logins') + '.json'
-            data_source_model_confs_path = Manager._MODEL_CONFS_OVERRIDING_PATH + '/' + \
-                                           data_source_raw_events_model_file_name
-            with io.open_overrides_file(overriding_path=data_source_model_confs_path,
-                                        jar_name='fortscale-ml-1.1.0-SNAPSHOT.jar',
-                                        path_in_jar='config/asl/models/' + data_source_raw_events_model_file_name) as f:
-                self._update_model_confs(path=data_source_model_confs_path,
+        for f in io.iter_overrides_files(overriding_path=Manager._MODEL_CONFS_OVERRIDING_PATH,
+                                         jar_name=Manager._JAR_NAME,
+                                         path_in_jar=Manager._MODELS_PATH_IN_JAR,
+                                         create_if_not_exist=True):
+            if os.path.splitext(f.name)[1] == '.json':
+                self._update_model_confs(path=f.name,
                                          model_confs=json.load(f),
                                          original_to_backup=original_to_backup)
         return original_to_backup
