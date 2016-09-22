@@ -15,6 +15,6 @@ public interface UserActivityRepositoryCustom {
 	List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String username, int timeRangeInDays);
 	List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays);
 	List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays);
-	Set<String> getUserNamesByLocation(List<String> locations);
+	Set<String> getUserIdByLocation(List<String> locations);
 
 }

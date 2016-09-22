@@ -300,7 +300,7 @@ public class AlertsServiceImpl implements AlertsService {
 	}
 
 	@Override
-	public Set<String> getDistinctUserNamesByUserFilter(UserRestFilter userRestFilter) {
-		return alertsRepository.getDistinctUserNamesByUserRestFilter(userRestFilter);
+	public Set<String> getDistinctUserIdByUserFilter(UserRestFilter userRestFilter) {
+		return alertsRepository.getDistinctUserIdByUserRestFilter(userRestFilter);
 	}
 }

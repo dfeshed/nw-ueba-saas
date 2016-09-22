@@ -68,7 +68,7 @@ import java.util.Set;
 	}
 
 	private Set<String> filterPreparations(UserRestFilter userRestFilter) {
-		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
+		Set<String> relevantUsers = getIntersectedUserIdList(userRestFilter);
 
 		calculateScoreRange(userRestFilter);
 
@@ -88,8 +88,8 @@ import java.util.Set;
 	}
 
 	/**
-	 * If one of the filters (anomaly type, alert type or location) was passed to the rest
-	 * and the user name collection we got from it is empty there is no need to continue with the logic
+	 * If one of the filters (anomaly type, alert type, location or user ids ) was passed to the rest
+	 * and the user ids collection we got from it is empty there is no need to continue with the logic
 	 * @param userRestFilter
 	 * @param relevantUsers
 	 * @return
@@ -97,24 +97,33 @@ import java.util.Set;
 	private boolean shouldStop(UserRestFilter userRestFilter, Set<String> relevantUsers) {
 		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()) ||
-				CollectionUtils.isNotEmpty(userRestFilter.getLocations()))
+				CollectionUtils.isNotEmpty(userRestFilter.getLocations()) ||
+				CollectionUtils.isNotEmpty(userRestFilter.getUserIds()))
 				&& (CollectionUtils.isEmpty(relevantUsers));
 	}
 
-	private Set<String> getIntersectedUserNameList(UserRestFilter userRestFilter) {
+	private Set<String> getIntersectedUserIdList(UserRestFilter userRestFilter) {
 		Set<String> relevantUsers = null;
 
 		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
 				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())) {
-			relevantUsers = alertsService.getDistinctUserNamesByUserFilter(userRestFilter);
+			relevantUsers = alertsService.getDistinctUserIdByUserFilter(userRestFilter);
 		}
 
 		if (CollectionUtils.isNotEmpty(userRestFilter.getLocations())){
-			Set<String> userNamesByUserLocation = userActivityService.getUserNamesByUserLocation(userRestFilter.getLocations());
+			Set<String> userIdByUserLocation = userActivityService.getUserIdByUserLocation(userRestFilter.getLocations());
 			if (relevantUsers == null){
-				relevantUsers = userNamesByUserLocation;
+				relevantUsers = userIdByUserLocation;
 			}else{
-				relevantUsers = new HashSet<>(CollectionUtils.intersection(relevantUsers, userNamesByUserLocation));
+				relevantUsers = new HashSet<>(CollectionUtils.intersection(relevantUsers, userIdByUserLocation));
+			}
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getUserIds())){
+			if (relevantUsers == null){
+				relevantUsers = new HashSet<>(userRestFilter.getUserIds());
+			}else{
+				relevantUsers = new HashSet<>(CollectionUtils.intersection(relevantUsers, userRestFilter.getUserIds()));
 			}
 		}
 

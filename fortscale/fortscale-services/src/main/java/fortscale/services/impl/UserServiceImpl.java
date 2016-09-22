@@ -1180,23 +1180,24 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
-												  Set<String> relevantUserNames, List<String> fieldsRequired) {
+												  Set<String> relevantUserIds, List<String> fieldsRequired) {
 
-		List<Criteria> criteriaList = getCriteriaListByFilterAndUserNames(userRestFilter, relevantUserNames);
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUserIds);
 
 		return userRepository.findAllUsers(criteriaList, pageRequest, fieldsRequired);
 	}
 
-	private List<Criteria> getCriteriaListByFilterAndUserNames(UserRestFilter userRestFilter,
-			Set<String> relevantUserNames) {
+	private List<Criteria> getCriteriaListByFilterAndUserIds(UserRestFilter userRestFilter,
+															 Set<String> relevantUserNames) {
 		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
 
 		// If there was filter for alert type or anomaly type or locations
 		// we want to add criteria for getting data of specific users
 		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
 				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())
-				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())) {
-			criteriaList.add(userRepository.getUserCriteriaByUserNames(relevantUserNames));
+				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getUserIds())) {
+			criteriaList.add(userRepository.getUserCriteriaByUserIds(relevantUserNames));
 		}
 
 		return criteriaList;
@@ -1204,7 +1205,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
 
-		return userRepository.countAllUsers(getCriteriaListByFilterAndUserNames(userRestFilter, relevantUsers));
+		return userRepository.countAllUsers(getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers));
 	}
 
 	@Override public void saveFavoriteFilter(UserFilter userFilter, String filterName) {

@@ -349,7 +349,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	@Override
-	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter) {
+	public Set<String> getDistinctUserIdByUserRestFilter(UserRestFilter userRestFilter) {
 		Query query = new Query();
 
 		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())){
@@ -362,7 +362,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 			query.addCriteria(criteriaForAlertsByAlertName);
 		}
 
-		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityNameField, query.getQueryObject());
+		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityIdField, query.getQueryObject());
 
 		return new HashSet<>(userNames);
 	}
