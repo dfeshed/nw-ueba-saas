@@ -654,18 +654,16 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}
 
-		if (userRestFilter.getUserIds() != null){
-			List<ObjectId> idList = new ArrayList<>();
-            userRestFilter.getUserIds().forEach(s -> idList.add(new ObjectId(s)));
-
-		    criteriaList.add(new Criteria(User.ID_FIELD).in(idList));
-        }
-
 		return criteriaList;
 	}
 
-	@Override public Criteria getUserCriteriaByUserNames(Set<String> userNames) {
-		Criteria criteria = new Criteria().where(User.usernameField).in(userNames);
+	@Override
+	public Criteria getUserCriteriaByUserIds(Set<String> userIds) {
+
+		List<ObjectId> idList = new ArrayList<>();
+		userIds.forEach(s -> idList.add(new ObjectId(s)));
+
+		Criteria criteria = new Criteria().where(User.ID_FIELD).in(idList);
 		return criteria;
 	}
 

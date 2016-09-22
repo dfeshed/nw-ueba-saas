@@ -11,92 +11,93 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import java.util.*;
 
 public interface UserRepositoryCustom {
-	public User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
+	User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
 
-	public List<User> findByApplicationUserName(String applicationName, List<String> usernames);
+	List<User> findByApplicationUserName(String applicationName, List<String> usernames);
 
-	public User findByApplicationUserName(String applicationName, String username);
-	public int countAllUsers(List<Criteria> criteriaList);
+	User findByApplicationUserName(String applicationName, String username);
+	int countAllUsers(List<Criteria> criteriaList);
 
-	public User findByLogUsername(String logname, String username);
+	User findByLogUsername(String logname, String username);
 
-	public void updateFollowed(User user, boolean followed);
+	void updateFollowed(User user, boolean followed);
 
-	public List<User> findByDNs(Collection<String> dns);
+	List<User> findByDNs(Collection<String> dns);
 
-	public List<User> findByGUIDs(Collection<String> guids);
+	List<User> findByGUIDs(Collection<String> guids);
 
-	public List<User> findByIds(Collection<String> ids);
+	List<User> findByIds(Collection<String> ids);
 
-	public List<User> findByUsernames(Collection<String> usernames);
+	List<User> findByUsernames(Collection<String> usernames);
 	Set<String> findByUsernameRegex(String usernameRegex);
 
-	public List<User> findUsersBysAMAccountName(String usernames);
+	List<User> findUsersBysAMAccountName(String usernames);
 
-	public List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
+	List<User> findByUsernamesExcludeAdInfo(Collection<String> usernames);
 
-	public List<User> findAllExcludeAdInfo(Pageable pageable);
+	List<User> findAllExcludeAdInfo(Pageable pageable);
 
-	public List<User> findAllUsers(Pageable pageable);
+	List<User> findAllUsers(Pageable pageable);
 
-	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable, List<String> fieldsRequired);
+	List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable, List<String> fieldsRequired);
 
-	public Map<String, Long> groupByTags();
+	Map<String, Long> groupByTags();
 
-	public User findByAdEmailAddress(EmailAddress emailAddress);
+	User findByAdEmailAddress(EmailAddress emailAddress);
 
-	public User getLastActivityAndLogUserNameByUserName(String userName);
+	User getLastActivityAndLogUserNameByUserName(String userName);
 
-	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
+	List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
 
-	@Deprecated public User getLastActivityByUserName(String eventId, String username);
+	@Deprecated
+	User getLastActivityByUserName(String eventId, String username);
 
-	public List<User> findByAdLastnameContaining(String lastNamePrefix);
+	List<User> findByAdLastnameContaining(String lastNamePrefix);
 
-	public User findByAdUserPrincipalName(String adUserPrincipalName);
+	User findByAdUserPrincipalName(String adUserPrincipalName);
 
-	public List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix);
+	List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix);
 
-	public User findByAdInfoDn(String adDn);
+	User findByAdInfoDn(String adDn);
 
-	public User findByAdInfoObjectGUID(String objectGUID);
+	User findByAdInfoObjectGUID(String objectGUID);
 
-	public User findByObjectGUID(String objectGUID);
+	User findByObjectGUID(String objectGUID);
 
-	public User findLastActiveUser(String logEventName);
+	User findLastActiveUser(String logEventName);
 
-	public Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable);
+	Set<String> findByUserInGroup(Collection<String> groups, Pageable pageable);
 
-	public Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
+	Set<String> findByUserInOU(Collection<String> ouList, Pageable pageable);
 
-	public void updateUserTag(String tagField, String username, boolean value);
+	void updateUserTag(String tagField, String username, boolean value);
 
-	public long getNumberOfAccountsCreatedBefore(DateTime time);
+	long getNumberOfAccountsCreatedBefore(DateTime time);
 
-	public long getNumberOfDisabledAccounts();
+	long getNumberOfDisabledAccounts();
 
-	public long getNumberOfDisabledAccountsBeforeTime(DateTime time);
+	long getNumberOfDisabledAccountsBeforeTime(DateTime time);
 
-	public long getNumberOfInactiveAccounts();
+	long getNumberOfInactiveAccounts();
 
-	public long getNumberOfTrackedAccounts();
+	long getNumberOfTrackedAccounts();
 
-	public Set<String> findNameByTag(String tag, Pageable pageable);
-	public boolean findIfUserExists(String username);
+	Set<String> findNameByTag(String tag, Pageable pageable);
+	boolean findIfUserExists(String username);
 
-	public String getUserIdByNormalizedUsername(String username);
+	String getUserIdByNormalizedUsername(String username);
 
-	public HashSet<String> getUsersGUID();
+	HashSet<String> getUsersGUID();
 
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */
-	public Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
-	public Set<String> getUserTags(String normalizedUsername);
+	Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
+	Set<String> getUserTags(String normalizedUsername);
 
-	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
+	List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 
-	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
+	List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
 
 	/**
 	 * count how many
@@ -105,7 +106,7 @@ public interface UserRepositoryCustom {
 	 * @param fieldValues - the values to filter according.
 	 * @return for each value in fieldValues, how many time it apears in the column fieldName
 	 */
-	public Map<String, Integer> groupCount(String fieldName, Set<String> fieldValues);
+	Map<String, Integer> groupCount(String fieldName, Set<String> fieldValues);
 
 	/**
 	 * This method return username based on other AD field information (i.e - username--->DN_value)
@@ -115,10 +116,10 @@ public interface UserRepositoryCustom {
 	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
 	 * @return
 	 */
-	public String findByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
+	String findByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
 
-	public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
+	List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
 
-	public Criteria getUserCriteriaByUserNames(Set<String> userNames);
+	Criteria getUserCriteriaByUserIds(Set<String> userIds);
 }
 

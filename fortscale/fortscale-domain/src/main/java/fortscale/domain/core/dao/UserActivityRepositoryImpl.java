@@ -58,7 +58,7 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_TARGET_DEVICE, UserActivityTargetDeviceDocument.class);
     }
 
-	@Override public Set<String> getUserNamesByLocation(List<String> locations) {
+	@Override public Set<String> getUserIdByLocation(List<String> locations) {
 		Query query = new Query();
 		String fieldName = String.format("%s.%s.", UserActivityLocationDocument.LOCATIONS_FIELD_NAME, UserActivityLocationDocument.COUNTRY_HISTOGRAM_FIELD_NAME);
 

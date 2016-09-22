@@ -92,7 +92,8 @@ public interface AlertsService {
 	 * @param ignoreRejected
 	 * @return
 	 */
-	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected);
+	Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected);
+
 	Map<Set<String>, Set<String>> getAlertsTypesByUser(Boolean ignoreRejected);
 
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
@@ -115,5 +116,5 @@ public interface AlertsService {
 
 	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
 
-	public Set<String> getDistinctUserNamesByUserFilter(UserRestFilter userRestFilter);
+	Set<String> getDistinctUserIdByUserFilter(UserRestFilter userRestFilter);
 }
