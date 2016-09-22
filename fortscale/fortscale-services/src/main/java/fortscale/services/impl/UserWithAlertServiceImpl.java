@@ -190,21 +190,21 @@ import java.util.Set;
 
 			users.forEach(user -> {
 				if (StringUtils.isNotEmpty(user.getAdInfo().getFirstname())
-						&& (user.getAdInfo().getFirstname().startsWith(searchValue))){
+						&& (user.getAdInfo().getFirstname().toLowerCase().startsWith(searchValue))){
 					firstNameResults.add(user);
 				} else if (StringUtils.isNotEmpty(user.getAdInfo().getLastname())
-						&& (user.getAdInfo().getLastname().startsWith(searchValue))){
+						&& (user.getAdInfo().getLastname().toLowerCase().startsWith(searchValue))){
 					lastNameResults.add(user);
-				} else if (StringUtils.isNotEmpty(user.getDisplayName()) && (user.getDisplayName().startsWith(searchValue))){
+				} else if (StringUtils.isNotEmpty(user.getDisplayName()) && (user.getDisplayName().toLowerCase().startsWith(searchValue))){
 					displayNameResults.add(user);
 				} else if (StringUtils.isNotEmpty(user.getUsername())
-						&& (user.getUsername().startsWith(searchValue))){
+						&& (user.getUsername().toLowerCase().startsWith(searchValue))){
 					usernameResults.add(user);
 				} else if (StringUtils.isNotEmpty(user.getAdInfo().getPosition())
-						&& (user.getAdInfo().getPosition().startsWith(searchValue))){
+						&& (user.getAdInfo().getPosition().toLowerCase().startsWith(searchValue))){
 					positionResults.add(user);
 				} else if(StringUtils.isNotEmpty(user.getAdInfo().getDepartment())
-						&& (user.getAdInfo().getDepartment().startsWith(searchValue))){
+						&& (user.getAdInfo().getDepartment().toLowerCase().startsWith(searchValue))){
 					departmentResults.add(user);
 				}
 			});
