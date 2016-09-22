@@ -6,7 +6,9 @@
  */
 import Ember from 'ember';
 import HasTableParent from '../mixins/has-table-parent';
-import safeCallback from 'sa/utils/safe-callback';
+import safeCallback from 'component-lib/utils/safe-callback';
+
+import layout from './template';
 
 const {
   run,
@@ -15,6 +17,7 @@ const {
 } = Ember;
 
 export default Component.extend(HasTableParent, {
+  layout,
   classNames: 'rsa-data-table-load-more',
   classNameBindings: ['status'],
 

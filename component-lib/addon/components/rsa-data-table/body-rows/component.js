@@ -1,10 +1,12 @@
 import Ember from 'ember';
 import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 import HasTableParent from '../mixins/has-table-parent';
+import layout from './template';
 
 const { set, Component } = Ember;
 
 export default Component.extend(HasTableParent, CspStyleMixin, {
+  layout,
   tagName: 'section',
   classNames: 'rsa-data-table-body-rows',
 

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import HasTableParent from '../mixins/has-table-parent';
+import layout from './template';
 
 const {
   $,
@@ -8,6 +9,7 @@ const {
 } = Ember;
 
 export default Component.extend(HasTableParent, {
+  layout,
   classNames: 'rsa-data-table-header-cell-resizer',
   classNameBindings: ['side', 'isDragging'],
 

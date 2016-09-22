@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import safeCallback from 'sa/utils/safe-callback';
+import safeCallback from 'component-lib/utils/safe-callback';
 import computed from 'ember-computed-decorators';
 
 const {

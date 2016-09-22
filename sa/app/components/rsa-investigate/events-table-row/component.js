@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import RowMixin from 'sa/components/rsa-data-table/mixins/is-row';
+import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
 import columnUtil from './column-util';
 import d3 from 'd3';
 

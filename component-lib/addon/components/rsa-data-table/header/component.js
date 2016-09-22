@@ -1,5 +1,6 @@
 import Ember from 'ember';
-import HasTableParent from 'sa/components/rsa-data-table/mixins/has-table-parent';
+import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
+import layout from './template';
 
 const {
   observer,
@@ -8,6 +9,7 @@ const {
 } = Ember;
 
 export default Component.extend(HasTableParent, {
+  layout,
   tagName: 'header',
   classNames: 'rsa-data-table-header',
   /**

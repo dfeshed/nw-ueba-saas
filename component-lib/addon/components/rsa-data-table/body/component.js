@@ -1,8 +1,9 @@
 import Ember from 'ember';
-import HasTableParent from 'sa/components/rsa-data-table/mixins/has-table-parent';
-import DomIsReady from 'sa/components/rsa-data-table/mixins/dom-is-ready';
-import SizeBindings from 'sa/components/rsa-data-table/mixins/size-bindings';
-import ScrollBindings from 'sa/components/rsa-data-table/mixins/scroll-bindings';
+import HasTableParent from 'component-lib/components/rsa-data-table/mixins/has-table-parent';
+import DomIsReady from 'component-lib/components/rsa-data-table/mixins/dom-is-ready';
+import SizeBindings from 'component-lib/components/rsa-data-table/mixins/size-bindings';
+import ScrollBindings from 'component-lib/components/rsa-data-table/mixins/scroll-bindings';
+import layout from './template';
 
 const {
   computed,
@@ -11,6 +12,7 @@ const {
 } = Ember;
 
 export default Component.extend(HasTableParent, DomIsReady, SizeBindings, ScrollBindings, {
+  layout,
   tagName: 'section',
   classNames: 'rsa-data-table-body',
 
