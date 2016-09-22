@@ -25,8 +25,9 @@ function recursiveFind(value, node) {
     let i;
 
     for (i = 0; i < len; i++) {
-      if (recursiveFind(value, children[i])) {
-        return children[i];
+      const found = recursiveFind(value, children[i]);
+      if (found) {
+        return found;
       }
     }
   }
