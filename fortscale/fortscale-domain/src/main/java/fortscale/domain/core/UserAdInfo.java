@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
@@ -66,9 +67,11 @@ public class UserAdInfo {
 	private String otherTelephone;
 
 	@Field(positionField)
+	@Indexed
 	private String position;
 
 	@Field(departmentField)
+	@Indexed
 	private String department;
 
 	private String displayName;

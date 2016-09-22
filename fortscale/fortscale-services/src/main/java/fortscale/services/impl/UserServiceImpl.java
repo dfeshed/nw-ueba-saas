@@ -1220,6 +1220,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return favoriteUserFilterRepository.deleteById(filterName);
 	}
 
+	@Override
+	public List<String> getDistinctValuesByFieldName(String fieldName) {
+		return userRepository.getDistinctFieldValues(fieldName);
+	}
+
 	@Override public String getUserId(String username) {
 		return usernameService.getUserId(username, null);
 	}
