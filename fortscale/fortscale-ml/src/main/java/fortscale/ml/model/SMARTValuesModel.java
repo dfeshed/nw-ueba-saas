@@ -3,9 +3,9 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
-import java.util.Map;
-
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class SMARTValuesModel implements Model {
 	private long numOfZeroValues;
 	private long numOfPositiveValues;

@@ -10,7 +10,9 @@ import java.util.Map;
  * For documentation and explanation of how this model works refer to:
  * https://fortscale.atlassian.net/wiki/display/FSC/category+rarity+model
  */
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class CategoryRarityModel implements Model {
 	private double[] buckets;
 	private long numOfSamples;
@@ -20,8 +22,8 @@ public class CategoryRarityModel implements Model {
 	// The entriesToSaveInModel value from the model conf from which this model was built.
 	// We store this information in the model to help us reduce the number of calls to
 	// mongo in order to get feature count. I.e. there is a point to retrieve feature count from mongo
-	// only if the isModelLoadedWithNumberOfEntries() is true (which means that probablly there are other
-	// features count that are not stored in the model becasue we reached the entriesToSaveInModel number when
+	// only if the isModelLoadedWithNumberOfEntries() is true (which means that probably there are other
+	// features count that are not stored in the model because we reached the entriesToSaveInModel number when
 	// building this model.
 	private int numberOfEntriesToSaveInModel;
 
