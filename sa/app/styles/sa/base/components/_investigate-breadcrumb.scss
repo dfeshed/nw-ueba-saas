@@ -8,6 +8,22 @@
     display: inline;
   }
 
+  /*
+    @workaround Overwrite rsa-form-button dropdown CSS so that child hyperlinks fill their entire parent <li>s.
+    Otherwise, we will have pixels of the <li> which surround the child hyperlink but do not belong to it.  These pixels
+    will be "dead space", where the default CSS of the <li> will create a hover effect but clicking does nothing
+    (because the pixel is outside the child hyperlink)! Gives the apperance of a broken dropdown item.
+  */
+  li {
+    padding: 0 !important;
+    border: 0 !important;
+  }
+  a {
+    padding: 0 rsa-whitespace();
+    display: block;
+  }
+  /* END @workaround */
+
   a {
     text-decoration: none;
   }
