@@ -96,7 +96,7 @@ export default Mixin.create({
       const queryNodeLanguage = queryNode.get('value.language');
 
       // Define callbacks for server call.
-      const success = function({ data }) {
+      const success = ({ data }) => {
         // store results in query node
         queryNodeLanguage.setProperties({
           status: 'resolved',
@@ -159,7 +159,7 @@ export default Mixin.create({
       const queryNodeAliases = queryNode.get('value.aliases');
 
       // Define callbacks for server call.
-      const success = function({ data }) {
+      const success = ({ data }) => {
         // store results in query node
         queryNodeAliases.setProperties({
           status: 'resolved',
