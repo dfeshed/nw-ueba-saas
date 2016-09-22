@@ -1,7 +1,7 @@
-import logging
 import json
-import sys
+import logging
 import os
+import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
@@ -99,12 +99,10 @@ class Manager(DontReloadModelsOverridingManager):
                                            data_source_raw_events_model_file_name
             with io.open_overrides_file(overriding_path=data_source_model_confs_path,
                                         jar_name='fortscale-ml-1.1.0-SNAPSHOT.jar',
-                                        path_in_jar='config/asl/models/' +
-                                                data_source_raw_events_model_file_name) as f:
-                model_confs = json.load(f)
-            self._update_model_confs(path=data_source_model_confs_path,
-                                     model_confs=model_confs,
-                                     original_to_backup=original_to_backup)
+                                        path_in_jar='config/asl/models/' + data_source_raw_events_model_file_name) as f:
+                self._update_model_confs(path=data_source_model_confs_path,
+                                         model_confs=json.load(f),
+                                         original_to_backup=original_to_backup)
         return original_to_backup
 
     def _prepare_additional_model_builders_config(self):
@@ -114,10 +112,9 @@ class Manager(DontReloadModelsOverridingManager):
             for filename in os.listdir(Manager._MODEL_CONFS_ADDITIONAL_PATH):
                 file_path = os.path.sep.join([Manager._MODEL_CONFS_ADDITIONAL_PATH, filename])
                 with open(file_path, 'r') as f:
-                    model_confs = json.load(f)
-                self._update_model_confs(path=file_path,
-                                         model_confs=model_confs,
-                                         original_to_backup=original_to_backup)
+                    self._update_model_confs(path=file_path,
+                                             model_confs=json.load(f),
+                                             original_to_backup=original_to_backup)
         return original_to_backup
 
     def _backup_and_override(self):
