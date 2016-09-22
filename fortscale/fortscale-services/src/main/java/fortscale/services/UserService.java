@@ -125,7 +125,7 @@ public interface UserService extends CachingService{
 	 */
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
 
-	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserNames);
+	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserNames, List<String> fieldsRequired);
 
 	public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers);
 

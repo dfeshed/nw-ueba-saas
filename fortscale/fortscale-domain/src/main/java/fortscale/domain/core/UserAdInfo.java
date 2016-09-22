@@ -15,12 +15,15 @@ public class UserAdInfo {
 	public static final String adDnField = "dn";
 	public static final String sAMAccountNameField = "sAMAccountName";
 	public static final String emailAddressField = "email";
+	public static final String firstnameField = "firstname";
 	public static final String lastnameField = "lastname";
+	public static final String positionField = "position";
 	public static final String userPrincipalNameField = "userPrincipalName";
 	public static final String groupsField = "groups";
 	public static final String whenCreatedField = "whenCreated";
 	public static final String disableAccountTimeField = "disableAccountTime";
 	public static final String isAccountDisabledField = "isAccountDisabled";
+	public static final String departmentField = "department";
 
 	@Field(objectGUIDField)
 	private String objectGUID;
@@ -32,7 +35,9 @@ public class UserAdInfo {
 
 	private String employeeNumber;
 
+	@Field(firstnameField)
 	private String firstname;
+
 	@Field(lastnameField)
 	private String lastname;
 
@@ -60,8 +65,10 @@ public class UserAdInfo {
 
 	private String otherTelephone;
 
+	@Field(positionField)
 	private String position;
 
+	@Field(departmentField)
 	private String department;
 
 	private String displayName;

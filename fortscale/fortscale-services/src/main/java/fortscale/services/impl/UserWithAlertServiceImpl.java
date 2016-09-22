@@ -1,14 +1,16 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
-import fortscale.domain.rest.UserFilter;
+import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
+import fortscale.services.cache.CacheHandler;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +36,25 @@ import java.util.Set;
 	@Autowired
 	private UserScoreService userScoreService;
 
-	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest) {
+	@Autowired()
+	@Qualifier("filterToUsersCache")
+	private CacheHandler<UserRestFilter, List<User>> filterToUsersCache;
+
+	List<String> fieldsRequired;
+
+	public UserWithAlertServiceImpl() {
+		fieldsRequired = new ArrayList<>();
+		fieldsRequired.add(User.ID_FIELD);
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.firstnameField));
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.lastnameField));
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.positionField));
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField));
+		fieldsRequired.add(User.usernameField);
+		fieldsRequired.add(User.followedField);
+		fieldsRequired.add(User.displayNameField);
+	}
+
+	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 		List<User> result = new ArrayList<>();
 
 		Set<String> relevantUsers = filterPreparations(userRestFilter);
@@ -43,19 +63,28 @@ import java.util.Set;
 			return result;
 		}
 
-		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers);
+		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired);
 		return result;
 	}
 
 	private Set<String> filterPreparations(UserRestFilter userRestFilter) {
 		Set<String> relevantUsers = getIntersectedUserNameList(userRestFilter);
 
+		calculateScoreRange(userRestFilter);
+
+		return relevantUsers;
+	}
+
+	/**
+	 * Getting the min and max score for user according to the severity required
+	 * @param userRestFilter
+	 */
+	private void calculateScoreRange(UserRestFilter userRestFilter) {
 		if (userRestFilter.getSeverity()!= null){
 			Double[] range = userScoreService.getSeverityRange().get(userRestFilter.getSeverity());
 			userRestFilter.setMinScore(range[0]);
 			userRestFilter.setMaxScore(range[1]);
 		}
-		return relevantUsers;
 	}
 
 	/**
@@ -124,4 +153,79 @@ import java.util.Set;
         User user = userService.getUserById(userId);
         updateAlertsCount(user);
     }
+
+	@Override
+	public List<User> findFromCacheUsersByFilter(UserRestFilter userRestFilter) {
+		// Update the min and max score on the filter according to the severity required
+		if (userRestFilter.getSeverity() != null) {
+			calculateScoreRange(userRestFilter);
+		}
+
+		List<User> users = filterToUsersCache.get(userRestFilter);
+		List<User> result = new ArrayList<>();
+
+		if (users == null){
+			users = findUsersByFilter(userRestFilter, null, fieldsRequired);
+			filterToUsersCache.put(userRestFilter, users);
+		}
+
+		String searchValue = userRestFilter.getSearchValue().toLowerCase();
+
+		if (CollectionUtils.isNotEmpty(users)){
+			List<User> firstNameResults = new ArrayList<>();
+			List<User> lastNameResults = new ArrayList<>();
+			List<User> displayNameResults = new ArrayList<>();
+			List<User> usernameResults = new ArrayList<>();
+			List<User> positionResults = new ArrayList<>();
+			List<User> departmentResults = new ArrayList<>();
+
+			users.forEach(user -> {
+				if (StringUtils.isNotEmpty(user.getAdInfo().getFirstname())
+						&& (user.getAdInfo().getFirstname().startsWith(searchValue))){
+					firstNameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getAdInfo().getLastname())
+						&& (user.getAdInfo().getLastname().startsWith(searchValue))){
+					lastNameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getDisplayName()) && (user.getDisplayName().startsWith(searchValue))){
+					displayNameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getUsername())
+						&& (user.getUsername().startsWith(searchValue))){
+					usernameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getAdInfo().getPosition())
+						&& (user.getAdInfo().getPosition().startsWith(searchValue))){
+					positionResults.add(user);
+				} else if(StringUtils.isNotEmpty(user.getAdInfo().getDepartment())
+						&& (user.getAdInfo().getDepartment().startsWith(searchValue))){
+					departmentResults.add(user);
+				}
+			});
+
+			result.addAll(firstNameResults);
+			result.addAll(lastNameResults);
+			result.addAll(displayNameResults);
+			result.addAll(usernameResults);
+			result.addAll(positionResults);
+			result.addAll(departmentResults);
+		}
+
+		// Extracting only the required users according to page size and number
+		if (userRestFilter.getSize()!= null && CollectionUtils.isNotEmpty(result)){
+			int startFrom = 0;
+
+			if (userRestFilter.getFromPage() != null && userRestFilter.getFromPage() > 1){
+				startFrom = userRestFilter.getSize() * (userRestFilter.getFromPage() - 1);
+			}
+
+			int endIndex = startFrom + userRestFilter.getSize();
+
+			if (endIndex > result.size()){
+				endIndex = result.size();
+			}
+
+			return result.subList(startFrom, endIndex);
+		}
+
+		return result;
+
+	}
 }

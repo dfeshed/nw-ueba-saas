@@ -278,4 +278,10 @@
         <constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
     </bean>
 
+    <bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${users.with.alerts.service.cache.max.items:10}" />
+        <constructor-arg name="timeToExpire" value="${users.with.alerts.service.cache.timeToExpireSec:600}" />
+        <constructor-arg name="clazz" value="java.util.ArrayList" />
+    </bean>
+
 </beans>

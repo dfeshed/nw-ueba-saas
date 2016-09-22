@@ -11,8 +11,7 @@ import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.BooleanUtils;
-import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -265,12 +264,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable) {
+	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable, List<String> fieldsRequired) {
 
 		Query query = new Query().with(pageable);
 
 		for (Criteria criteria : criteriaList) {
 			query.addCriteria(criteria);
+		}
+
+		if (CollectionUtils.isNotEmpty(fieldsRequired)){
+			fieldsRequired.forEach(field -> {
+				query.fields().include(field);
+			});
 		}
 
 		return mongoTemplate.find(query, User.class);
@@ -648,6 +653,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}else if (userRestFilter.getMinScore() != null){
 			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}
+
+		if (userRestFilter.getUserIds() != null){
+			List<ObjectId> idList = new ArrayList<>();
+            userRestFilter.getUserIds().forEach(s -> idList.add(new ObjectId(s)));
+
+		    criteriaList.add(new Criteria(User.ID_FIELD).in(idList));
+        }
 
 		return criteriaList;
 	}

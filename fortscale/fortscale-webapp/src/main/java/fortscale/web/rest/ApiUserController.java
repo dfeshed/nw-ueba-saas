@@ -12,11 +12,11 @@ import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
+import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
-import fortscale.web.rest.Utils.UserDeviceUtils;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
 import javafx.util.Pair;
 import org.apache.commons.collections.CollectionUtils;
@@ -110,7 +110,20 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
-		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+
+        if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+            List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
+            List<String> userIds = new ArrayList<>();
+
+            usersFromCache.forEach(user -> {
+                userIds.add(user.getId());
+            });
+
+            userRestFilter.setUserIds(userIds);
+        }
+
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
+
 		setSeverityOnUsersList(users);
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
@@ -197,6 +210,18 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
+	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter){
+		List<User> users = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
+
+		DataBean<List<User>> result = new DataBean<>();
+		result.setData(users);
+
+		return result;
+	}
+
 	/**
 	 * Search user data by user name. This function is the same as details() but the parameter is username and notuserid
 	 * @param username the name of the user
@@ -274,7 +299,7 @@ public class ApiUserController extends BaseController{
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null);
+		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null, null);
 		int count = 0;
 		for (User user: usersByFilter) {
 			try {
@@ -294,6 +319,7 @@ public class ApiUserController extends BaseController{
 		public int count;
 
 	}
+
 
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
 	@ResponseBody
@@ -460,7 +486,9 @@ public class ApiUserController extends BaseController{
 		if (userRestFilter.getMinScore() == null) {
 			userRestFilter.setMinScore(0d);
 		}
-		List<User> scoredUsers = userWithAlertService.findUsersByFilter(userRestFilter, null);
+
+		List<User> scoredUsers = userWithAlertService.findUsersByFilter(userRestFilter, null, null);
+
 		if (CollectionUtils.isNotEmpty(scoredUsers)) {
 			scoredUsers.stream().forEach(user -> {
 				setSeverityOnUser(user);

@@ -1180,11 +1180,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
-			Set<String> relevantUserNames) {
+												  Set<String> relevantUserNames, List<String> fieldsRequired) {
 
 		List<Criteria> criteriaList = getCriteriaListByFilterAndUserNames(userRestFilter, relevantUserNames);
 
-		return userRepository.findAllUsers(criteriaList, pageRequest);
+		return userRepository.findAllUsers(criteriaList, pageRequest, fieldsRequired);
 	}
 
 	private List<Criteria> getCriteriaListByFilterAndUserNames(UserRestFilter userRestFilter,
