@@ -70,6 +70,15 @@
 					<key>timeoutInSeconds</key>
 					<value>300</value>
 				</entry>
+				<entry>
+					<key>fortscale.model.build.control.input.topic</key>
+					<value>${fortscale.model.build.control.input.topic}</value>
+				</entry>
+				<entry>
+					<key>fortscale.model.build.control.output.topic</key>
+					<value>${fortscale.model.build.control.output.topic}</value>
+				</entry>
+
 			</job-data-map>
 		</job>
 	</schedule>
