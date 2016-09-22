@@ -4,10 +4,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 import fortscale.domain.ad.AdUser;
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.EmailAddress;
-import fortscale.domain.core.User;
-import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.core.*;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
@@ -20,10 +17,12 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -665,6 +664,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		Criteria criteria = new Criteria().where(User.ID_FIELD).in(idList);
 		return criteria;
+	}
+
+	@Override
+	public List<String> getDistinctFieldValues(String fieldName) {
+		Query query = new Query(new Criteria(fieldName).exists(true));
+
+		return mongoTemplate.getCollection(User.collectionName).distinct(fieldName, query.getQueryObject());
 	}
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {

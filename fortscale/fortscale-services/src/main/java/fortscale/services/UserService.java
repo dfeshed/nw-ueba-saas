@@ -135,4 +135,5 @@ public interface UserService extends CachingService{
 
 	long deleteFavoriteFilter(String filterName);
 
+    List<String> getDistinctValuesByFieldName(String fieldName);
 }

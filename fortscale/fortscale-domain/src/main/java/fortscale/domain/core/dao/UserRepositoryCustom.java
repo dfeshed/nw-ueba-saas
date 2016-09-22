@@ -121,5 +121,7 @@ public interface UserRepositoryCustom {
 	List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
 
 	Criteria getUserCriteriaByUserIds(Set<String> userIds);
+
+    List<String> getDistinctFieldValues(String fieldName);
 }
 

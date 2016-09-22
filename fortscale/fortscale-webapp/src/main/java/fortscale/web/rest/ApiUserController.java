@@ -137,18 +137,6 @@ public class ApiUserController extends BaseController{
 		return usersList;
 	}
 
-	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, UserRestFilter userRestFilter) {
-		Map<String, Object> info = usersList.getInfo();
-		if (info == null) {
-			info = new HashMap<>();
-		}
-		Boolean oldIsWatched = userRestFilter.getIsWatched();
-		userRestFilter.setIsWatched(true);
-		info.put(ALL_WATCHED, usersList.getTotal() == userWithAlertService.countUsersByFilter(userRestFilter));
-		userRestFilter.setIsWatched(oldIsWatched);
-		usersList.setInfo(info);
-	}
-
 	@RequestMapping(value="/count", method=RequestMethod.GET)
 	public DataBean<Integer> countUsers(UserRestFilter userRestFilter) {
 		Integer count = userWithAlertService.countUsersByFilter(userRestFilter);
@@ -313,13 +301,6 @@ public class ApiUserController extends BaseController{
 		result.count = count;
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
-
-	private class TaggedUsersCount {
-
-		public int count;
-
-	}
-
 
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
 	@ResponseBody
@@ -575,6 +556,38 @@ public class ApiUserController extends BaseController{
 			});
 		}
 		return Response.status(Response.Status.OK).build();
+	}
+
+	@RequestMapping(value="/{fieldName}/distinctValues", method=RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<List<String>> getDistinctValues(@PathVariable String fieldName) {
+
+		List<String> distinctValues = userService.getDistinctValuesByFieldName(fieldName);
+
+		DataBean<List<String>> result = new DataBean<>();
+		result.setData(distinctValues);
+		result.setTotal(distinctValues.size());
+
+		return result;
+	}
+
+	private class TaggedUsersCount {
+
+		public int count;
+
+	}
+
+	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, UserRestFilter userRestFilter) {
+		Map<String, Object> info = usersList.getInfo();
+		if (info == null) {
+			info = new HashMap<>();
+		}
+		Boolean oldIsWatched = userRestFilter.getIsWatched();
+		userRestFilter.setIsWatched(true);
+		info.put(ALL_WATCHED, usersList.getTotal() == userWithAlertService.countUsersByFilter(userRestFilter));
+		userRestFilter.setIsWatched(oldIsWatched);
+		usersList.setInfo(info);
 	}
 
 	private void addAlertsAndDevices(List<UserDetailsBean> users) {
