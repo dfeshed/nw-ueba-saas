@@ -1,15 +1,20 @@
 package fortscale.domain.core.dao;
+
+import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
+import com.mongodb.DBObject;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.ApplicationUserDetails;
 import fortscale.domain.core.EmailAddress;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
-import fortscale.domain.fe.dao.Threshold;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
@@ -22,6 +27,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -30,6 +36,8 @@ import static org.springframework.data.mongodb.core.query.Update.update;
 
 public class UserRepositoryImpl implements UserRepositoryCustom {
 
+	public static final String ANY_TAGS = "any";
+	public static final String NO_TAGS = "none";
 	private static Logger logger = Logger.getLogger(UserRepositoryImpl.class);
 
 	@Autowired
@@ -91,62 +99,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public Page<User> findByClassifierIdAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
-		query.fields().exclude(User.adInfoField);
-
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-
-	@Override
-	public Page<User> findByClassifierIdAndFollowedAndScoreBetweenAndTimeGteAsData(String classifierId, int lowestVal, int upperVal, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(User.followedField).is(true).and(classifierCurScoreField).gte(lowestVal).lte(upperVal).and(classifierScoreCurrentTimestampField).gte(time));
-		query.fields().exclude(User.adInfoField);
-		
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-	
-
-	@Override
-	public Page<User> findByClassifierIdAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(time));
-
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-
-	@Override
-	public Page<User> findByClassifierIdAndFollowedAndTimeGteAsData(String classifierId, Date time, Pageable pageable) {
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(User.followedField).is(true).and(classifierScoreCurrentTimestampField).gte(time));
-
-		return mongoDbRepositoryUtil.getPage(query, pageable, User.class, true);
-	}
-
-	@Override
-	public int countNumOfUsersAboveThreshold(String classifierId, Threshold threshold) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.minusDays(1);
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		String classifierCurScoreField = User.getClassifierScoreCurrentScoreField(classifierId);
-		Query query = new Query(where(classifierCurScoreField).gte(threshold.getValue()).and(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
-		return (int) mongoTemplate.count(query, User.class);
-	}
-
-	@Override
-	public int countNumOfUsers(String classifierId) {
-		DateTime dateTime = new DateTime();
-		dateTime = dateTime.minusDays(1);
-		String classifierScoreCurrentTimestampField = User.getClassifierScoreCurrentTimestampField(classifierId);
-		Query query = new Query(where(classifierScoreCurrentTimestampField).gte(dateTime.toDate()));
-		return (int) mongoTemplate.count(query, User.class);
-	}
-
-	@Override
 	public int countAllUsers(List<Criteria> criteriaList) {
 		Query query = new Query();
 
@@ -170,7 +122,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public List<User> findByGUIDs(Collection<String> guids) {
-		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField),guids);
+		return findByUniqueField(User.getAdInfoField(UserAdInfo.objectGUIDField), guids);
 	}
 
 	private List<User> findByUniqueField(String fieldName, Collection<?> vals) {
@@ -192,6 +144,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public List<User> findByUsernames(Collection<String> usernames) {
 		return findByUniqueField(User.usernameField, usernames);
+	}
+
+	@Override
+	public Set<String> findByUsernameRegex(String usernameRegex) {
+		Query query = new Query(where(User.usernameField).regex(usernameRegex));
+		query.fields().include(User.usernameField);
+		Set<String> result = new HashSet();
+		List<User> users = mongoTemplate.find(query, User.class);
+		if (users != null) {
+			result.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		}
+		return result;
 	}
 
 	@Override
@@ -225,7 +189,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Override
 	public List<User> findByAdUserPrincipalNameContaining(String adUserPrincipalNamePrefix) {
-		Query query = new Query(where(User.getAdInfoField(UserAdInfo.userPrincipalNameField)).regex(String.format("^%s$", adUserPrincipalNamePrefix),"i"));
+		Query query = new Query(where(User.getAdInfoField(UserAdInfo.userPrincipalNameField)).regex(String.format("^%s$", adUserPrincipalNamePrefix), "i"));
 		return mongoTemplate.find(query, User.class);
 	}
 
@@ -381,19 +345,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public void updateUserTag(String tagField, String username, boolean value) {
 		mongoTemplate.updateFirst(query(where(User.usernameField).is(username)), update(tagField, value), User.class);
 	}
-	
-	@Override
-	public void updateCurrentUserScore(User user, String classifierId, double score, double trendScore, DateTime calculationTime){
-		Update update = new Update();
-		update.set(User.getClassifierScoreCurrentScoreField(classifierId), score);
-		update.set(User.getClassifierScoreCurrentTrendScoreField(classifierId), trendScore);
-		update.set(User.getClassifierScoreCurrentTimestampField(classifierId), calculationTime.toDate());
-		update.set(User.getClassifierScoreCurrentTimestampEpochField(classifierId), calculationTime.getMillis());
-		
-		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
-	}
-
-
 
 	@Override
 	public User getLastActivityAndLogUserNameByUserName(String userName) {
@@ -409,6 +360,15 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		} else {
 			return null;
 		}
+	}
+
+	@Override
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
+		Criteria criteria = Criteria.where(User.lastActivityField).gte(date);
+		Query query = new Query(criteria);
+		query.fields().include(User.usernameField);
+		query.fields().include(User.logLastActivityField);
+		return mongoTemplate.find(query, User.class);
 	}
 
 	@Deprecated
@@ -506,26 +466,13 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public Set<String> findNameByTag(String tagFieldName, Boolean value, Pageable pageable) {
+	public Set<String> findNameByTag(String tag, Pageable pageable) {
 		Query query = new Query().with(pageable);
-		Criteria criteria = where(tagFieldName).is(value);
+		Criteria criteria = where(User.tagsField).in(tag);
 		query.fields().include(User.usernameField);
 		query.addCriteria(criteria);
-		Set<String> res = new HashSet<String>();
-		for (UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName))
-			res.add(usernameWrapper.getUsername());
-		return res;
-	}
-
-	@Override
-	public Set<String> findNameByTag(String tagFieldName, String value, Pageable pageable) {
-		Query query = new Query().with(pageable);
-		Criteria criteria = where(tagFieldName).is(value);
-		query.fields().include(User.usernameField);
-		query.addCriteria(criteria);
-		Set<String> res = new HashSet<String>();
-		for (UsernameWrapper usernameWrapper : mongoTemplate.find(query, UsernameWrapper.class, User.collectionName))
-			res.add(usernameWrapper.getUsername());
+		Set<String> res = mongoTemplate.find(query, UsernameWrapper.class, User.collectionName).stream().
+				map(UsernameWrapper::getUsername).collect(Collectors.toSet());
 		return res;
 	}
 
@@ -622,13 +569,93 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 
 		return  result;
-
-
-
 	}
 
+	@Override public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter) {
+		// Create criteria list
+		List<Criteria> criteriaList = new ArrayList<>();
 
+		if (userRestFilter.getDisabledSince() != null && !userRestFilter.getDisabledSince().isEmpty()) {
+			criteriaList.add(where("adInfo.disableAccountTime").gte(new Date(Long.parseLong(userRestFilter.getDisabledSince()))));
+		}
 
+		if (userRestFilter.getIsDisabled() != null) {
+			criteriaList.add(where("adInfo.isAccountDisabled").is(userRestFilter.getIsDisabled()));
+		}
+
+		if (userRestFilter.getInactiveSince() != null && !userRestFilter.getInactiveSince().isEmpty()) {
+			criteriaList.add(new Criteria().orOperator(where("lastActivity").lt(new Date(Long.parseLong(userRestFilter.getInactiveSince()))), where("lastActivity").not().ne(null)));
+		}
+
+		if (userRestFilter.getIsDisabledWithActivity() != null && userRestFilter.getIsDisabledWithActivity()) {
+			criteriaList.add(where("adInfo.isAccountDisabled").is(userRestFilter.getIsDisabledWithActivity()));
+			criteriaList.add(new Criteria() {
+				@Override public DBObject getCriteriaObject() {
+					DBObject obj = new BasicDBObject();
+					obj.put("$where", "this.adInfo.disableAccountTime < this.lastActivity");
+					return obj;
+				}
+			});
+		}
+
+		if (userRestFilter.getIsTerminatedWithActivity() != null && userRestFilter.getIsTerminatedWithActivity()) {
+			criteriaList.add(where("terminationDate").exists(true));
+			criteriaList.add(new Criteria() {
+				@Override public DBObject getCriteriaObject() {
+					DBObject obj = new BasicDBObject();
+					obj.put("$where", "this.terminationDate < this.lastActivity");
+					return obj;
+				}
+			});
+		}
+
+		if (userRestFilter.getIsServiceAccount() != null && userRestFilter.getIsServiceAccount()) {
+			criteriaList.add(where("userServiceAccount").is(userRestFilter.getIsServiceAccount()));
+		}
+
+		if (userRestFilter.getSearchFieldContains() != null) {
+			criteriaList.add(where("sf").regex(userRestFilter.getSearchFieldContains()));
+		}
+
+		if (userRestFilter.getDataEntities() != null) {
+			List<Criteria> wheres = new ArrayList<Criteria>();
+			for (String dataEntityName : userRestFilter.getDataEntities().split(",")) {
+				if (userRestFilter.getDataEntities() != null) {
+					wheres.add(where("scores." + dataEntityName + ".score").gte(userRestFilter.getDataEntities()));
+				} else {
+					wheres.add(where("scores." + dataEntityName).exists(true));
+				}
+			}
+			criteriaList.add(new Criteria().orOperator(wheres.toArray(new Criteria[0])));
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getUserTags())) {
+			if (userRestFilter.getUserTags().contains(ANY_TAGS)) {
+				criteriaList.add(new Criteria(User.tagsField).not().size(0));
+			}else if (userRestFilter.getUserTags().contains(NO_TAGS)){
+				criteriaList.add(new Criteria(User.tagsField).size(0));
+			}else{
+				criteriaList.add(new Criteria(User.tagsField).in(userRestFilter.getUserTags()));
+			}
+		}
+
+		if (userRestFilter.getIsWatched() != null) {
+			criteriaList.add(new Criteria(User.followedField).is(userRestFilter.getIsWatched()));
+		}
+
+		if (userRestFilter.getSeverity() != null){
+			criteriaList.add(new Criteria(User.scoreField).gte(userRestFilter.getMinScore()).lt(userRestFilter.getMaxScore()));
+		}else if (userRestFilter.getMinScore() != null){
+			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
+		}
+
+		return criteriaList;
+	}
+
+	@Override public Criteria getUserCriteriaByUserNames(Set<String> userNames) {
+		Criteria criteria = new Criteria().where(User.usernameField).in(userNames);
+		return criteria;
+	}
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		Criteria criteria = where(User.searchFieldName).regex(prefix);

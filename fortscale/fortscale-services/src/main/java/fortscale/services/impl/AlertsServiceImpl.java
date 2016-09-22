@@ -1,25 +1,27 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
-import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
-import fortscale.domain.dto.SeveritiesCountDTO;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
 import fortscale.services.UserService;
-import fortscale.utils.time.TimestampUtils;
 
-import org.springframework.beans.factory.InitializingBean;
+import fortscale.services.UserWithAlertService;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Services for managing the alerts
@@ -41,13 +43,23 @@ public class AlertsServiceImpl implements AlertsService {
 	@Autowired
 	private UserService userService;
 
-
-
     @Autowired
     private UserScoreService userScoreService;
 
+	private Set<String> feedbackNoRejectedSet;
 
+	{
+		feedbackNoRejectedSet = new HashSet<>();
 
+		Arrays.stream(AlertFeedback.values()).forEach(alertFeedback -> {
+			if (!alertFeedback.equals(AlertFeedback.Rejected)) {
+				feedbackNoRejectedSet.add(alertFeedback.toString());
+			}
+		});
+	}
+
+	@Autowired
+	private UserWithAlertService userWithAlertService;
 
 	@Override
 	public void saveAlertInRepository(Alert alert) {
@@ -63,7 +75,8 @@ public class AlertsServiceImpl implements AlertsService {
 
 		alert = userScoreService.updateAlertContirubtion(alert);
 		alert = alertsRepository.save(alert);
-		userScoreService.recalculateUserScore(alert.getEntityName());
+		userScoreService.recalculateUserScore(alert.getEntityId());
+		userWithAlertService.recalculateNumberOfUserAlertsByUserId(alert.getEntityId());
 		return alert;
 	}
 
@@ -115,14 +128,14 @@ public class AlertsServiceImpl implements AlertsService {
 			ids.addAll(Arrays.asList(entityId.split(",")));
 		}
 
-		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter,
-				entityName, ids, indicatorTypes);
+		return alertsRepository.countAlertsByFilters(pageRequest, severityArray, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, ids, indicatorTypes);
 	}
 
 	@Override
 	public void add(Alert alert) {
 		alertsRepository.add(alert);
 		userScoreService.recalculateUserScore(alert.getEntityName());
+		userWithAlertService.recalculateNumberOfUserAlertsByUserName(alert.getEntityName());
 	}
 
 	@Override
@@ -146,8 +159,59 @@ public class AlertsServiceImpl implements AlertsService {
 			ids.addAll(Arrays.asList(entityId.split(",")));
 		}
 
-		return alertsRepository.groupCount(fieldName,severityArrayFilter, statusArrayFilter, feedbackArrayFilter,
-						dateRangeFilter, entityName, ids, indicatorTypes);
+		return alertsRepository.groupCount(fieldName, severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, ids, indicatorTypes);
+	}
+
+	@Override
+	public Map<String, Integer> getAlertsTypesCounted(Boolean ignoreRejected){
+
+		String feedback = StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
+		return alertsRepository.groupCount(Alert.nameField,null, null,feedback ,
+				null, null, null, null);
+	}
+
+	@Override
+	public Map<Set<String>, Set<String>> getAlertsTypesByUser(Boolean ignoreRejected) {
+		final String HOURLY_SUFFIX = "_hourly";
+		final String DAILY_SUFFIX = "_daily";
+		Map<Set<String>, Set<String>> results = new HashMap<>();
+		String feedback = StringUtils.arrayToCommaDelimitedString(getFeedbackListForFilter(ignoreRejected).toArray());
+		 //the userAndAlertType map contains each pair of alert_name + alert_field once.
+		Set<Pair<String,String>> userAndAlertName = alertsRepository.groupCountBy2Fields(Alert.nameField,
+				Alert.entityNameField, null, null, feedback, null, null, null, null).keySet();
+		//build the results
+		for (Pair<String,String> alertNameAndUserName: userAndAlertName) {
+			String agnosticAlertName = alertNameAndUserName.getLeft().replace(HOURLY_SUFFIX, "").replace(DAILY_SUFFIX,
+					"");
+			Set<String> alertTypesToAdd = null;
+			for (Set<String> alertTypes: results.keySet()) {
+				if (alertTypesToAdd != null) {
+					break;
+				}
+				for (String alertType: alertTypes) {
+					if (alertType.startsWith(agnosticAlertName)) {
+						alertTypesToAdd = alertTypes;
+						break;
+					}
+				}
+			}
+			if (alertTypesToAdd == null) {
+				alertTypesToAdd = new HashSet<>();
+			}
+			alertTypesToAdd.add(alertNameAndUserName.getLeft());
+			boolean added = false;
+			for (Map.Entry<Set<String>, Set<String>> entry: results.entrySet()) {
+				if (entry.getKey() == alertTypesToAdd) {
+					entry.getValue().add(alertNameAndUserName.getRight());
+					added = true;
+					break;
+				}
+			}
+			if (!added) {
+				results.put(alertTypesToAdd, new HashSet<>(Arrays.asList(alertNameAndUserName.getRight())));
+			}
+		}
+		return results;
 	}
 
 	@Override
@@ -157,7 +221,7 @@ public class AlertsServiceImpl implements AlertsService {
 
 	@Override
     public List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities) {
-        return getAlertsByTimeRange(dateRange, severities, false);
+		return getAlertsByTimeRange(dateRange, severities, false);
     }
 
 	private List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences){
@@ -177,7 +241,7 @@ public class AlertsServiceImpl implements AlertsService {
 
     @Override
     public List<Alert> getAlertsByUsername(String userName){
-        return alertsRepository.findByEntityName(userName);
+		return alertsRepository.findByEntityName(userName);
     }
 
     public List<DailySeveiryConuntDTO> getAlertsCountByDayAndSeverity(DateRange alertStartRange){
@@ -205,12 +269,38 @@ public class AlertsServiceImpl implements AlertsService {
     }
 
     @Override
-    public Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore(){
-        return  alertsRepository.getDistinctUserNamesFromAlertsRelevantToUserScore();
+    public Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore(){
+        return  alertsRepository.getDistinctUserIdsFromAlertsRelevantToUserScore();
     }
 
     @Override
-    public Set<Alert> getAlertsRelevantToUserScore(String userName){
-        return  alertsRepository.getAlertsRelevantToUserScore(userName);
+    public Set<Alert> getAlertsRelevantToUserScore(String userId){
+        return  alertsRepository.getAlertsRelevantToUserScore(userId);
     }
+
+	@Override public List<Alert> getOpenAlertsByUsername(String userName) {
+		List<Alert> alerts = alertsRepository.getAlertsForUserByFeedback(userName, feedbackNoRejectedSet);
+
+		return alerts;
+	}
+
+	@Override public Set<String> getDistinctAlertNames(Boolean ignoreRejected) {
+		Set<String> alertNames;
+		alertNames = alertsRepository.getDistinctAlertNames(getFeedbackListForFilter(ignoreRejected));
+
+		return alertNames.stream().sorted().collect(Collectors.toSet());
+	}
+
+	private Set<String> getFeedbackListForFilter(Boolean ignoreRejected){
+		if (BooleanUtils.isFalse(ignoreRejected)) {
+			return null;
+		} else {
+			return feedbackNoRejectedSet;
+		}
+	}
+
+	@Override
+	public Set<String> getDistinctUserNamesByUserFilter(UserRestFilter userRestFilter) {
+		return alertsRepository.getDistinctUserNamesByUserRestFilter(userRestFilter);
+	}
 }

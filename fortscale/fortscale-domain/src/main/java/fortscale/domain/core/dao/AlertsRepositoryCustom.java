@@ -4,6 +4,8 @@ import fortscale.domain.core.Alert;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
@@ -89,6 +91,10 @@ public interface AlertsRepositoryCustom {
 										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
 										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
 
+	public Map<Pair<String,String>, Integer> groupCountBy2Fields(String fieldName1, String filedName2, String severityArrayFilter, String statusArrayFilter,
+																 String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+																 Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes);
+
 	List<Alert> getAlertSummary(List<String> severities, long endDate);
 
 	List<Alert> getAlertsByTimeRange(DateRange dateRange, List<String> severities, boolean excludeEvidences);
@@ -111,9 +117,15 @@ public interface AlertsRepositoryCustom {
 
     Set<DataSourceAnomalyTypePair> getDataSourceAnomalyTypePairs();
 
-    Set<String> getDistinctUserNamesFromAlertsRelevantToUserScore();
+    Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore();
 
-    Set<Alert> getAlertsRelevantToUserScore(String username);
+	Set<String> getDistinctAlertNames(Set<String> feedbackSet);
+
+    Set<Alert> getAlertsRelevantToUserScore(String userId);
+
+	List<Alert> getAlertsForUserByFeedback(String username, Set<String> feedbackSet);
 
 	void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag );
+
+	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter);
 }

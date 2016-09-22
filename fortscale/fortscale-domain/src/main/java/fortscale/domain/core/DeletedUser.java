@@ -32,14 +32,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 		@CompoundIndex(name="logUsername_authenticationscores_1", def = "{'logUsername.authenticationscores': 1}"),
 		@CompoundIndex(name="logUsername_vpndatares_1", def = "{'logUsername.vpndatares': 1}"),
 		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
-		@CompoundIndex(name="totalScoreCurScore", def = "{'scores.total.score': -1}"),
-		@CompoundIndex(name="totalScoreCurTrend", def = "{'scores.total.trendScore': -1}"),
-		@CompoundIndex(name="authScoreCurScore", def = "{'scores.auth.score': -1}"),
-		@CompoundIndex(name="authScoreCurTrend", def = "{'scores.auth.trendScore': -1}"),
-		@CompoundIndex(name="sshScoreCurScore", def = "{'scores.ssh.score': -1}"),
-		@CompoundIndex(name="sshScoreCurTrend", def = "{'scores.ssh.trendScore': -1}"),
-		@CompoundIndex(name="vpnScoreCurScore", def = "{'scores.vpn.score': -1}"),
-		@CompoundIndex(name="vpnScoreCurTrend", def = "{'scores.vpn.trendScore': -1}"),
 })
 public class DeletedUser extends AbstractDocument {
 	private static final long serialVersionUID = -2544779887545246880L;
@@ -96,9 +88,6 @@ public class DeletedUser extends AbstractDocument {
 	@Field(logUsernameField)
 	@JsonProperty
 	Map<String, String> logUsernameMap = new HashMap<>();
-
-	@Field(classifierScoreField)
-	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
 
 	@Field(searchFieldName)
 	@Indexed
@@ -248,29 +237,6 @@ public class DeletedUser extends AbstractDocument {
 		return logLastActivityMap;
 	}
 
-
-
-	public HashMap<String, ClassifierScore> getScores() {
-		return scores;
-	}
-
-	public ClassifierScore getScore(String classifierId) {
-		return scores.get(classifierId);
-	}
-
-	public void putClassifierScore(ClassifierScore score) {
-		this.scores.put(score.getClassifierId(), score);
-	}
-
-	public void removeClassifierScore(String classifierId) {
-		this.scores.remove(classifierId);
-	}
-
-	public void removeAllScores(){
-		this.scores.clear();
-	}
-
-
 	public void addTag(String tag) {
 		checkNotNull(tag);
 		tags.add(tag);
@@ -326,30 +292,6 @@ public class DeletedUser extends AbstractDocument {
 		return String.format("%s.%s", DeletedUser.classifierScoreField, classifierId);
 	}
 
-	public static String getClassifierScoreCurrentTimestampField(String classifierId) {
-		return String.format("%s.%s.%s", DeletedUser.classifierScoreField, classifierId, ScoreInfo.timestampField);
-	}
-
-	public static String getClassifierScoreCurrentTimestampEpochField(String classifierId) {
-		return String.format("%s.%s.%s", DeletedUser.classifierScoreField, classifierId, ScoreInfo.timestampEpocField);
-	}
-
-	public static String getClassifierScoreCurrentScoreField(String classifierId) {
-		return String.format("%s.%s.%s", DeletedUser.classifierScoreField, classifierId, ScoreInfo.scoreField);
-	}
-
-	public static String getClassifierScoreCurrentAvgScoreField(String classifierId) {
-		return String.format("%s.%s.%s", DeletedUser.classifierScoreField, classifierId, ScoreInfo.avgScoreField);
-	}
-
-	public static String getClassifierScoreCurrentTrendField(String classifierId) {
-		return String.format("%s.%s.%s", DeletedUser.classifierScoreField, classifierId, ScoreInfo.trendField);
-	}
-
-	public static String getClassifierScoreCurrentTrendScoreField(String classifierId) {
-		return String.format("%s.%s.%s", DeletedUser.classifierScoreField, classifierId, ScoreInfo.trendScoreField);
-	}
-
 	public static String getAppUserNameField(String applicationName) {
 		return String.format("%s.%s.%s", DeletedUser.appField,applicationName,ApplicationUserDetails.userNameField);
 	}
@@ -383,7 +325,6 @@ public class DeletedUser extends AbstractDocument {
 		this.followed = user.getFollowed();
 		this.appUserDetailsMap = user.getApplicationUserDetails();
 		this.logUsernameMap = user.getLogUsernameMap();
-		this.scores = user.getScores();
 		this.searchField = user.getSearchField();
 		this.adInfo = user.getAdInfo();
 		this.whenCreated = user.getWhenCreated();

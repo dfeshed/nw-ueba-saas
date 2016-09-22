@@ -7,8 +7,8 @@ import java.util.Set;
  * @author gils
  * 03/07/2016
  */
-class AggGenericNAFeatureValues {
-    static final String NOT_AVAILABLE = "N/A";
+public class AggGenericNAFeatureValues {
+    public static final String NOT_AVAILABLE = "N/A";
 
     private static Set<String> naValues = new HashSet<>();
 

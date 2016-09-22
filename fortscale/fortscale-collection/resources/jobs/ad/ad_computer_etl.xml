@@ -47,22 +47,6 @@
 					<key>morphlineFile</key>
 					<value>${ad.read.computers.morphline}</value>
 				</entry>
-				<entry>
-					<key>hadoopDirPath</key>
-					<value>${hdfs.user.data.ldap.computers.path}</value>
-				</entry>
-				<entry>
-					<key>filenameFormat</key>
-					<value>computers%d.csv</value>
-				</entry>
-                <entry>
-                    <key>partitionStrategy</key>
-                    <value>${impala.ldapcomputers.table.partition.type}</value>
-                </entry>
-				<entry>
-					<key>impalaTableName</key>
-					<value>${impala.ldapcomputers.table.name}</value>
-				</entry>
             </job-data-map>
 		</job>
 	

@@ -1,5 +1,7 @@
 package fortscale.services.impl;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.dao.ActiveDirectoryDAO;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -18,14 +21,15 @@ import java.util.List;
 @Service("ActiveDirectoryService")
 public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
 
-    @Value("${default.domain.password:iYTLjyA0VryKhpkvBrMMLQ==}")
-    private String defaultPassword;
+	private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
+
+	private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
+
+    @Value("${ad.connections}")
+    private String adConnectionsFile;
 
     private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
-    private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
-    private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
-    private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
     @Autowired
     public ActiveDirectoryServiceImpl(ActiveDirectoryDAO activeDirectoryDAO,
@@ -56,7 +60,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         List<AdConnection> adConnections = new ArrayList<>();
         try {
             adConnections = applicationConfigurationService.
-                    getApplicationConfigurationAsObjects(AD_CONNECTIONS_CONFIGURATION_KEY, AdConnection.class);
+                    getApplicationConfigurationAsObjects(AdConnection.ACTIVE_DIRECTORY_KEY, AdConnection.class);
         } catch (Exception e) {
             logger.error("Failed to get AD connections from database");
         }
@@ -70,7 +74,24 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
 
-    @Override
+	@Override
+	public void saveAdConnectionsInDatabase(List<AdConnection> adConnections) {
+		applicationConfigurationService.updateConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY,adConnections);
+	}
+
+	@Override
+	public String canConnect(AdConnection adConnection) {
+		String result;
+		try {
+			result = activeDirectoryDAO.connectToAD(adConnection);
+		} catch (Exception ex) {
+			logger.error("failed to connect to ad - {}", ex);
+			result = ex.getLocalizedMessage();
+		}
+		return result;
+	}
+
+	@Override
     public List<String> getDomainControllers() {
         List<String> domainControllers = new ArrayList<>();
         try {
@@ -119,17 +140,23 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (!applicationConfigurationService.isApplicationConfigurationExists(AD_CONNECTIONS_CONFIGURATION_KEY)) {
+        if (!applicationConfigurationService.isApplicationConfigurationExists(AdConnection.ACTIVE_DIRECTORY_KEY)) {
             //initialize with default test values if no configuration key exists
-            logger.warn("Active Directory configuration not found, reverting to default test values");
-            List<AdConnection> adConnections = new ArrayList();
-            AdConnection adConnection = new AdConnection("ldap://192.168.0.75:389", "DC=somebigcompany,DC=com",
-                    "administrator@somebigcompany.com", defaultPassword);
-            adConnections.add(adConnection);
-            adConnection = new AdConnection("ldap://192.168.0.106:389", "DC=forest1,DC=fs", "administrator@forest1.fs",
-                    defaultPassword);
-            adConnections.add(adConnection);
-            applicationConfigurationService.insertConfigItemAsObject(AD_CONNECTIONS_CONFIGURATION_KEY, adConnections);
+            logger.warn("Active Directory configuration not found, trying to load configuration from file");
+            List<AdConnection> adConnections;
+            ObjectMapper mapper = new ObjectMapper();
+            File jsonFile = new File(adConnectionsFile);
+            if (!jsonFile.exists()) {
+                logger.error("AdConnections json file does not exist");
+                return;
+            }
+            try {
+                adConnections = mapper.readValue(jsonFile, new TypeReference<List<AdConnection>>(){});
+            } catch (Exception ex) {
+                logger.error("Error - Bad Active Directory Json connection file");
+                throw new Exception(ex);
+            }
+            applicationConfigurationService.insertConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY, adConnections);
         }
     }
 

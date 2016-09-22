@@ -1,6 +1,8 @@
 package fortscale.domain.core;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +30,8 @@ public enum Severity {
 		}
 		return upperCaseValues;
 	}
+
+	@JsonCreator
 	public static Severity getByStringCaseInsensitive(String value){
 		for (Severity severity : Severity.values()){
 			if (severity.upperCaseValue.equals(value.toUpperCase())){

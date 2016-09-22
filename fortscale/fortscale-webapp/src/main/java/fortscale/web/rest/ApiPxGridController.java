@@ -43,7 +43,7 @@ import java.util.Map;
 	private final static String TRUSTSTORE_PASSPHARSE_KEY = "system.pxgrid.truststorepasspharse";
 	private final static String CONNECTION_RETRY_MILLISECOND_KEY = "system.pxgrid.connectionretrymillisecond";
 
-	@Value("${pxgrid.numberOfRetries:10}")
+	@Value("${pxgrid.numberOfRetries:6000}")
 	private int numberOfRetries;
 
 	@Autowired ApplicationConfigurationService applicationConfigurationService;

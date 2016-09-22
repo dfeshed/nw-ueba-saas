@@ -14,9 +14,15 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
+
+import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC;
+import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC;
 
 /**
  * Created by tomerd on 31/12/2015.
@@ -103,8 +109,10 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		modelConfs = new ArrayList<>();
 		aggrEventConfNameToModelConfNamesMap.values().forEach(modelConfs::addAll);
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
+		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
+		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
 		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
-                secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds);
+                secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic);
 
 
 		logger.info(String.format("Finish initializing BuildAggregatedEvents job: batchStartTime = %d, batchEndTime = %d, batchSize = %d, checkRetries = %d, secondsBetweenModelSyncs = %d, modelBuildingTimeoutInSeconds = %d, eventProcessingSyncTimeoutInSeconds = %d",

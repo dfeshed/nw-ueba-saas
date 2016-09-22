@@ -14,6 +14,7 @@ public class VpnLateralMovement {
 	private String entity_id;
 	private String data_source;
 	private long event_time_utc;
+	private long eventscore;
 
 	public String getUsername() {
 		return username;
@@ -85,6 +86,14 @@ public class VpnLateralMovement {
 
 	public void setData_source(String data_source) {
 		this.data_source = data_source;
+	}
+
+	public long getEventscore() {
+		return eventscore;
+	}
+
+	public void setEventscore(long eventscore) {
+		this.eventscore = eventscore;
 	}
 
 }

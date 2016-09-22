@@ -37,7 +37,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "user-score-task-store-changelog###feature_buckets_store-changelog###model_building_store-changelog###fortscale-aggregation-events-control###fortscale-model-building-control-input###fortscale-model-building-control-output"
+        "dataSources": "feature_buckets_store-changelog###model_building_store-changelog###entity_events_model_building_store-changelog###fortscale-aggregation-events-control###fortscale-model-building-control-input###fortscale-model-building-control-output###fortscale-entity-events-model-building-control-input###fortscale-entity-events-model-building-control-output"
       },
       {
         "technology": "STORE",
@@ -64,7 +64,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "entity_events_store###aggregated-feature-events-model-cache-store###model_building_store"
+        "dataSources": "entity_events_store###aggregated-feature-events-model-cache-store###model_building_store###entity_events_model_building_store"
       },
       {
         "technology": "KAFKA",
@@ -167,7 +167,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggregated-feature-events-model-cache-store###user-score-task-store###entity-events-model-cache-store###model_building_store###raw-events-model-cache-store"
+        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
       }
     ]
   },
@@ -192,7 +192,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###aggregated-feature-events-model-cache-store###user-score-task-store###entity-events-model-cache-store###model_building_store###raw-events-model-cache-store"
+        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
       }
     ]
   },

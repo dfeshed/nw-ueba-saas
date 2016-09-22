@@ -25,14 +25,6 @@ import static com.google.common.base.Preconditions.checkNotNull;
 		@CompoundIndex(name="logUsername_authenticationscores_1", def = "{'logUsername.authenticationscores': 1}"),
 		@CompoundIndex(name="logUsername_vpndatares_1", def = "{'logUsername.vpndatares': 1}"),
 		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
-		@CompoundIndex(name="totalScoreCurScore", def = "{'scores.total.score': -1}"),
-		@CompoundIndex(name="totalScoreCurTrend", def = "{'scores.total.trendScore': -1}"),
-		@CompoundIndex(name="authScoreCurScore", def = "{'scores.auth.score': -1}"),
-		@CompoundIndex(name="authScoreCurTrend", def = "{'scores.auth.trendScore': -1}"),
-		@CompoundIndex(name="sshScoreCurScore", def = "{'scores.ssh.score': -1}"),
-		@CompoundIndex(name="sshScoreCurTrend", def = "{'scores.ssh.trendScore': -1}"),
-		@CompoundIndex(name="vpnScoreCurScore", def = "{'scores.vpn.score': -1}"),
-		@CompoundIndex(name="vpnScoreCurTrend", def = "{'scores.vpn.trendScore': -1}"),
 })
 public class User extends AbstractDocument {
 	private static final long serialVersionUID = -2544779887545246880L;
@@ -46,7 +38,6 @@ public class User extends AbstractDocument {
 	public static final String noDomainUsernameField = "noDomainUsername";
 	public static final String displayNameField = "displayName";
 	public static final String searchFieldName = "sf";
-	public static final String classifierScoreField = "scores";
 	public static final String followedField = "followed";
 	public static final String adInfoField = "adInfo";
 	public static final String whenCreatedField = "whenCreated";
@@ -54,8 +45,14 @@ public class User extends AbstractDocument {
 	public static final String administratorAccountField = "administratorAccount";
 	public static final String executiveAccountField = "executiveAccount";
 	public static final String tagsField = "tags";
-    public static final String socreField = "score";
+    public static final String scoreField = "score";
     public static final String scoreSeverityField = "scoreSeverity";
+	public static final String terminationDateField = "terminationDate";
+	public static final String alertsCountField = "alertsCount";
+
+	public static final String SERVICE = "service";
+	public static final String ADMIN = "admin";
+	public static final String EXECUTIVE = "executive";
 
 	@Indexed
 	@Field(administratorAccountField)
@@ -91,10 +88,7 @@ public class User extends AbstractDocument {
 	@Field(logUsernameField)
 	@JsonProperty
 	Map<String, String> logUsernameMap = new HashMap<>();
-	
-	@Field(classifierScoreField)
-	private HashMap<String, ClassifierScore> scores = new HashMap<String, ClassifierScore>();
-	
+
 	@Field(searchFieldName)
 	@Indexed
 	private String searchField;
@@ -111,6 +105,7 @@ public class User extends AbstractDocument {
 	Map<String, DateTime> logLastActivityMap = new HashMap<>();
 	
 	@Field(lastActivityField)
+	@Indexed
 	DateTime lastActivity;
 	
 	@Field(tagsField)
@@ -119,10 +114,17 @@ public class User extends AbstractDocument {
     @Field(scoreSeverityField)
     private Severity scoreSeverity;
 
-    @Field(socreField)
+    @Field(scoreField)
+	@Indexed
     private double score=0;
 
-	
+	@Field(terminationDateField)
+	private DateTime terminationDate;
+
+	@Indexed
+	@Field(alertsCountField)
+	private int alertsCount;
+
 	public String getAdDn() {
 		return adDn;
 	}
@@ -132,7 +134,15 @@ public class User extends AbstractDocument {
 	}
 	
 	private String adObjectGUID;
-	
+
+	public int getAlertsCount() {
+		return alertsCount;
+	}
+
+	public void setAlertsCount(int alertsCount) {
+		this.alertsCount = alertsCount;
+	}
+
 	public String getAdObjectGUID() {
 		return adObjectGUID;
 	}
@@ -140,7 +150,6 @@ public class User extends AbstractDocument {
 	public void setAdObjectGUID(String adObjectGUID) {
 		this.adObjectGUID = adObjectGUID;
 	}
-		
 		
 	public UserAdInfo getAdInfo() {
 		if(adInfo == null){
@@ -206,7 +215,6 @@ public class User extends AbstractDocument {
 		return followed;
 	}
 
-
 	public void setFollowed(Boolean followed) {
 		this.followed = followed;
 	}
@@ -253,30 +261,7 @@ public class User extends AbstractDocument {
 	public Map<String, DateTime> getLogLastActivityMap(){
 		return logLastActivityMap;
 	}
-	
-	
 
-	public HashMap<String, ClassifierScore> getScores() {
-		return scores;
-	}
-	
-	public ClassifierScore getScore(String classifierId) {
-		return scores.get(classifierId);
-	}
-
-	public void putClassifierScore(ClassifierScore score) {
-		this.scores.put(score.getClassifierId(), score);
-	}	
-	
-	public void removeClassifierScore(String classifierId) {
-		this.scores.remove(classifierId);
-	}	
-	
-	public void removeAllScores(){
-		this.scores.clear();
-	}
-	
-	
 	public void addTag(String tag) {
 		checkNotNull(tag);
 		tags.add(tag);
@@ -307,57 +292,21 @@ public class User extends AbstractDocument {
 	}
 	
 	public Boolean getUserServiceAccount() {
-		return userServiceAccount != null ? userServiceAccount : false;
-	}
-
-	public void setUserServiceAccount(Boolean userServiceAccount) {
-		this.userServiceAccount = userServiceAccount;
+		return tags != null ? tags.contains(SERVICE) : false;
 	}
 
 	public Boolean getAdministratorAccount() {
-		return administratorAccount != null ? administratorAccount : false;
+		return tags != null ? tags.contains(ADMIN) : false;
 	}
 
-	public void setAdministratorAccount(Boolean administratorAccount) {
-		this.administratorAccount = administratorAccount;
-	}
-	
 	public Boolean getExecutiveAccount() {
-		return executiveAccount != null ? executiveAccount : false;
+		return tags != null ? tags.contains(EXECUTIVE) : false;
 	}
 	
 	public void setExecutiveAccount(Boolean executiveAccount) {
 		this.executiveAccount = executiveAccount;
 	}
-	
-	public static String getClassifierScoreField(String classifierId) {
-		return String.format("%s.%s", User.classifierScoreField, classifierId);
-	}
-	
-	public static String getClassifierScoreCurrentTimestampField(String classifierId) {
-		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.timestampField);
-	}
-	
-	public static String getClassifierScoreCurrentTimestampEpochField(String classifierId) {
-		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.timestampEpocField);
-	}
-	
-	public static String getClassifierScoreCurrentScoreField(String classifierId) {
-		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.scoreField);
-	}
-	
-	public static String getClassifierScoreCurrentAvgScoreField(String classifierId) {
-		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.avgScoreField);
-	}
-	
-	public static String getClassifierScoreCurrentTrendField(String classifierId) {
-		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.trendField);
-	}
-	
-	public static String getClassifierScoreCurrentTrendScoreField(String classifierId) {
-		return String.format("%s.%s.%s", User.classifierScoreField, classifierId, ScoreInfo.trendScoreField);
-	}
-	
+
 	public static String getAppUserNameField(String applicationName) {
 		return String.format("%s.%s.%s", User.appField,applicationName,ApplicationUserDetails.userNameField);
 	}
@@ -382,7 +331,6 @@ public class User extends AbstractDocument {
 		return String.format("%s.%s", User.adInfoField,adInfoFieldName);
 	}
 
-
 	public Severity getScoreSeverity() {
 		return scoreSeverity;
 	}
@@ -398,4 +346,12 @@ public class User extends AbstractDocument {
     public double getScore() {
         return score;
     }
+
+	public DateTime getTerminationDate() {
+		return terminationDate;
+	}
+
+	public void setTerminationDate(DateTime terminationDate) {
+		this.terminationDate = terminationDate;
+	}
 }

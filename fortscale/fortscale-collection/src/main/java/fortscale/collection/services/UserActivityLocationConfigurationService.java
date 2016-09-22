@@ -38,7 +38,7 @@ public class UserActivityLocationConfigurationService extends BaseUserActivityCo
 
     @Override
     public String getActivityName() {
-        return UserActivityType.NETWORK_AUTHENTICATION.name();
+        return UserActivityType.LOCATIONS.name();
     }
 
     @Override

@@ -1,12 +1,16 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
+import fortscale.aggregation.feature.functions.AggGenericNAFeatureValues;
 import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityJobState;
+import fortscale.services.UserService;
+import fortscale.services.impl.UsernameService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -14,6 +18,7 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -23,6 +28,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Abstract class to provide basic functionality of user activity handlers
@@ -35,12 +41,18 @@ import java.util.function.Function;
 public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected static final String CONTEXT_ID_FIELD_NAME = "contextId";
     protected final static String CONTEXT_ID_USERNAME_PREFIX = "normalized_username###";
-    protected final static int MONGO_READ_WRITE_BULK_SIZE = 10000;
 
     protected final Logger logger = Logger.getLogger(this.getClass());
 
     @Autowired
     protected MongoTemplate mongoTemplate;
+	@Autowired
+	protected UserService userService;
+	@Autowired
+	protected UsernameService usernameService;
+
+	@Value("${user.activity.mongo.batch.size:10000}")
+	private int mongoBatchSize;
 
     public void calculate(int numOfLastDaysToCalculate) {
         long endTime = System.currentTimeMillis();
@@ -68,71 +80,77 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         DateTime dateEndTime = new DateTime(TimestampUtils.convertToMilliSeconds(endTime), DateTimeZone.UTC);
         long lastBucketEndTime = TimestampUtils.convertToSeconds(dateEndTime.withTimeAtStartOfDay().minusSeconds(1).getMillis());
 
-        final Map<String, String> dataSourceToCollection = userActivityConfiguration.getDataSourceToCollection();
-        List<String> userIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime, lastBucketEndTime, dataSourceToCollection);
+        Map<String, List<String>> dataSourceToUserIds = fetchAllActiveUserIds(dataSources, firstBucketStartTime);
 
-        if (userIds.isEmpty()) {
-            logger.warn("Could not found any user. Abort job");
-            return;
+		int totalNumberOfUsers = 0;
+		for (List<String> userIds: dataSourceToUserIds.values()) {
+        	if (!userIds.isEmpty()) {
+				totalNumberOfUsers += userIds.size();
+			}
         }
-
-        int numberOfUsers = userIds.size();
-        logger.info("Found {} active users for {} activity", getActivityName(), numberOfUsers);
-
-        int actualUserChunkSize = Math.min(MONGO_READ_WRITE_BULK_SIZE, numberOfUsers);
-        int numOfHandledUsers;
-
-        Map<String, Double> additionalActivityHistogram = new HashMap<>();
+		if (totalNumberOfUsers > 0) {
+			logger.info("Found {} active users for {} activity", getActivityName(), totalNumberOfUsers);
+		} else {
+			logger.warn("Could not find any users. Abort job");
+			return;
+		}
 
         long currBucketStartTime = firstBucketStartTime;
         long currBucketEndTime = firstBucketEndTime;
 
         while (currBucketEndTime <= lastBucketEndTime) {
 
-            if (userActivityJobState.getCompletedExecutionDays().contains(currBucketStartTime)) {
+            if (userActivityJobState.getCompletedExecutionDays().contains(new Long(currBucketStartTime))) {
                 logger.info("Skipping job process for bucket start time {} (already calculated)", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)));
-            }
-            numOfHandledUsers = 0;
+            } else {
+				logger.info("Going to fetch from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
+				Map<String, Double> additionalActivityHistogram = new HashMap<>();
+				for (String dataSource : dataSources) {
 
-            logger.info("Going to fetch from Bucket Start Time = {}  till Bucket End time = {}", TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime)), TimeUtils.getUTCFormattedTime(TimestampUtils.convertToMilliSeconds(currBucketEndTime)));
+					List<String> userIds = dataSourceToUserIds.get(dataSource);
+					int numberOfUsers = userIds.size();
 
-            while (numOfHandledUsers < numberOfUsers) {
+					int actualUserChunkSize = Math.min(mongoBatchSize, numberOfUsers);
+					int numOfHandledUsers = 0;
 
-                int currentUsersChunkStartIndex = numOfHandledUsers;
-                int currentUsersChunkEndIndex = (numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE <= numberOfUsers) ? numOfHandledUsers + MONGO_READ_WRITE_BULK_SIZE : numberOfUsers;
+					while (numOfHandledUsers < numberOfUsers) {
 
-                List<String> currentUsersChunk = userIds.subList(currentUsersChunkStartIndex, currentUsersChunkEndIndex);
+						int currentUsersChunkStartIndex = numOfHandledUsers;
+						int currentUsersChunkEndIndex = (numOfHandledUsers + mongoBatchSize <= numberOfUsers) ? numOfHandledUsers + mongoBatchSize : numberOfUsers;
 
-                Map<String, UserActivityDocument> userActivityMap = new HashMap<>(currentUsersChunk.size());
+						List<String> currentUsersChunk = userIds.subList(currentUsersChunkStartIndex, currentUsersChunkEndIndex);
 
-                logger.info("Handling chunk of {} users ({} to {})", actualUserChunkSize, currentUsersChunkStartIndex, currentUsersChunkEndIndex);
+						Map<String, UserActivityDocument> userActivityMap = new HashMap<>(currentUsersChunk.size());
 
-                for (String dataSource : dataSources) {
-                    String collectionName = userActivityConfiguration.getCollection(dataSource);
-                    List<FeatureBucket> bucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, currentUsersChunk, dataSource, collectionName);
+						logger.info("Handling chunk of {} users ({} to {})", actualUserChunkSize, currentUsersChunkStartIndex, currentUsersChunkEndIndex);
 
-                    if (!bucketsForDataSource.isEmpty()) {
-                        long updateUsersHistogramInMemoryStartTime = System.nanoTime();
-                        updateUsersHistogram(userActivityMap, bucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
-                        long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
-                        logger.info("Update users histogram in memory for {} users took {} seconds", currentUsersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
-                    }
-                }
+						String collectionName = userActivityConfiguration.getCollection(dataSource);
+						List<FeatureBucket> bucketsForDataSource = retrieveBuckets(currBucketStartTime, currBucketEndTime, currentUsersChunk, dataSource, collectionName);
 
-                additionalActivityHistogram = updateAdditionalActivitySpecificHistograms(userActivityMap);
+						if (!bucketsForDataSource.isEmpty()) {
+							long updateUsersHistogramInMemoryStartTime = System.nanoTime();
+							updateUsersHistogram(userActivityMap, bucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
+							long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
+							logger.info("Update users histogram in memory for {} users took {} seconds", currentUsersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
+						}
 
-                Collection<UserActivityDocument> userActivityToInsertDocument = userActivityMap.values();
+						Map<String, Double> histograms = updateAdditionalActivitySpecificHistograms(userActivityMap);
+						histograms.forEach((k, v) -> additionalActivityHistogram.merge(k, v, (v1, v2) -> v1 + v2));
 
-                insertUsersActivityToDB(userActivityToInsertDocument);
+						Collection<UserActivityDocument> userActivityToInsertDocument = userActivityMap.values();
 
-                numOfHandledUsers += MONGO_READ_WRITE_BULK_SIZE;
-            }
+						insertUsersActivityToDB(userActivityToInsertDocument);
+
+						numOfHandledUsers += mongoBatchSize;
+					}
+				}
+				updateAdditionalActivitySpecificDocumentInDatabase(dataSources, currBucketStartTime, currBucketEndTime,
+						additionalActivityHistogram);
+			}
 
             logger.info("Updating job's state..");
-            updateJobState(currBucketStartTime);
+            updateJobState(userActivityJobState, currBucketStartTime);
             logger.info("Job state was updated successfully");
-
-            updateAdditionalActivitySpecificDocumentInDatabase(dataSources, currBucketStartTime, currBucketEndTime, additionalActivityHistogram);
 
             DateTime currDateTime = new DateTime(TimestampUtils.convertToMilliSeconds(currBucketStartTime), DateTimeZone.UTC);
             currBucketStartTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(1).getMillis());
@@ -140,7 +158,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         }
 
         long fullExecutionElapsedTime = System.nanoTime() - fullExecutionStartTime;
-        logger.info("Full execution of Location Activity ({} active users) took {} seconds", userIds.size(), durationInSecondsWithPrecision(fullExecutionElapsedTime));
+        logger.info("Full execution of Location Activity ({} active users) took {} seconds", totalNumberOfUsers,
+				durationInSecondsWithPrecision(fullExecutionElapsedTime));
 
     }
 
@@ -170,7 +189,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             TreeSet<Long> completedExecutionDays = userActivityJobState.getCompletedExecutionDays();
 
             long endTime = System.currentTimeMillis();
-            long startingTime = TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate);
+            long startingTime = TimestampUtils.convertToSeconds(TimestampUtils.toStartOfDay(TimeUtils.
+					calculateStartingTime(endTime, numOfLastDaysToCalculate)));
 
             completedExecutionDays.removeIf(a -> (a < startingTime));
 
@@ -180,22 +200,22 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return userActivityJobState;
     }
 
-    protected List<String> fetchAllActiveUserIds(List<String> dataSources, long startTime, long endTime, Map<String, String> dataSourceToCollection) {
-        List<String> userIds = new ArrayList<>();
-
+	//This fetches all the active users from a certain point in time.
+	//There is an underlying assumption that we will always search for usernames with the CONTEXT_ID_USERNAME_PREFIX
+    protected Map<String, List<String>> fetchAllActiveUserIds(List<String> dataSources, long startTime) {
+        Map<String, List<String>> dataSourceToUserIds = new HashMap<>();
+		DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
+		List<User> users = userService.getUsersActiveSinceIncludingUsernameAndLogLastActivity(startDate);
         for (String dataSource : dataSources) {
-            Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-            Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
-            Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+			//we don't have vpn_session in the log last activity
+			final String logDataSource = dataSource.toLowerCase().equals("vpn_session") ? "vpn" : dataSource;
 
-            String collectionName = dataSourceToCollection.get(dataSource);
-
-            List<String> contextIdList = mongoTemplate.getCollection(collectionName).distinct("contextId", query.getQueryObject());
-
-            userIds.addAll(contextIdList);
+			List<String> userIds = users.stream().filter(user -> user.getLogLastActivity(logDataSource) != null &&
+					user.getLogLastActivity(logDataSource).isAfter(startDate)).map(user -> CONTEXT_ID_USERNAME_PREFIX +
+					user.getUsername()).collect(Collectors.toList());
+			dataSourceToUserIds.put(dataSource, userIds);
         }
-
-        return userIds;
+        return dataSourceToUserIds;
     }
 
     protected List<FeatureBucket> retrieveBuckets(long startTime, long endTime, List<String> usersChunk, String dataSource, String collectionName) {
@@ -235,7 +255,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         final List<Class> relatedDocuments = getRelevantDocumentClasses();
         for (Class relatedDocumentClass : relatedDocuments) {
             Query query = new Query();
-            query.addCriteria(Criteria.where(UserActivityDocument.START_TIME_FIELD_NAME).lt(startingTime));
+			query.addCriteria(Criteria.where(UserActivityDocument.START_TIME_FIELD_NAME).lt(startingTime));
             mongoTemplate.remove(query, relatedDocumentClass);
         }
     }
@@ -247,11 +267,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         logger.info("Insertion of {} users to Mongo took {} seconds", userActivityToInsert.size(), durationInSecondsWithPrecision(elapsedInsertTime));
     }
 
-    protected void updateJobState(Long startOfDay) {
+    protected void updateJobState(UserActivityJobState userActivityJobState, Long startOfDay) {
         Query query = new Query();
-        UserActivityJobState userActivityJobState = mongoTemplate.findOne(query, UserActivityJobState.class);
-
-        query = new Query();
         query.addCriteria(Criteria.where(UserActivityJobState.ID_FIELD).is(userActivityJobState.getId()));
 
         userActivityJobState.getCompletedExecutionDays().add(startOfDay);
@@ -266,14 +283,18 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                                         Long startTime, Long endTime, List<String> dataSources) {
         for (FeatureBucket featureBucket : featureBucketsForDataSource) {
             String contextId = featureBucket.getContextId().substring(CONTEXT_ID_USERNAME_PREFIX.length());
-
+			contextId = usernameService.getUserId(contextId, null);
+			if (contextId == null) {
+				logger.error("Cannot create instance of {} - userid not found",getActivityName());
+				continue;
+			}
             if (!userActivityMap.containsKey(contextId)) {
                 try {
                     Class<? extends UserActivityDocument> activityDocumentClass = UserActivityType.valueOf(getActivityName()).getDocumentClass();
 
                     UserActivityDocument userActivityDocument =  activityDocumentClass.newInstance();
 
-                    userActivityDocument.setNormalizedUsername(contextId);
+                    userActivityDocument.setEntityId(contextId);
                     userActivityDocument.setStartTime(startTime);
                     userActivityDocument.setEndTime(endTime);
                     userActivityDocument.setDataSources(dataSources);
@@ -302,6 +323,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             final GenericHistogram featureAsHistogram = convertFeatureToHistogram(featureValue, histogramFeatureName);
             Map<String, Double> bucketHistogram = featureAsHistogram.getHistogramMap();
             for (Map.Entry<String, Double> entry : bucketHistogram.entrySet()) {
+				if (entry.getKey().equals(AggGenericNAFeatureValues.NOT_AVAILABLE) && !countNAValues()) {
+					continue;
+				}
                 double oldValue = histogramOfUser.get(entry.getKey()) != null ? histogramOfUser.get(entry.getKey()) : 0;
                 double newValue = entry.getValue();
                 histogramOfUser.put(entry.getKey(), oldValue + valueReducer().apply(newValue));
@@ -323,6 +347,10 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
 
     protected abstract String getCollectionName();
+
+	protected boolean countNAValues() {
+		return true;
+	}
 
     /**
      * returns the relevant fields from the aggregated features map

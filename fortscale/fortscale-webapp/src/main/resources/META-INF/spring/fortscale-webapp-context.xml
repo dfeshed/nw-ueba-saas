@@ -25,7 +25,6 @@
 	</bean>
 
 
-	<bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl" />
 
 	<!-- group by tags service cache that uses memory based implementation -->
 	<bean id="groupByTagsCache" class="fortscale.services.cache.MemoryBasedCache">
@@ -123,6 +122,8 @@
 	<bean id="sensitiveMachineService" class="fortscale.services.computer.SensitiveMachineServiceImpl" scope="singleton" />
 
 	<bean id="usernameService" class="fortscale.services.impl.UsernameService" scope="singleton" />
+
+	<bean id="userDeviceUtils" class="fortscale.web.rest.Utils.UserDeviceUtils" scope="singleton" />
 
 	<!--<bean id="userService" class="fortscale.services.impl.UserServiceImpl" scope="singleton"/>-->
 

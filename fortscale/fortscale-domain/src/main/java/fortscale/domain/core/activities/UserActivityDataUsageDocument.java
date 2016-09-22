@@ -10,7 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Document(collection = UserActivityDataUsageDocument.COLLECTION_NAME)
-@CompoundIndexes({ @CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}") })
+@CompoundIndexes({ @CompoundIndex(name = "user_start_time", def = "{'entityId': -1, 'startTime': 1}") })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserActivityDataUsageDocument extends UserActivityDocument {
 

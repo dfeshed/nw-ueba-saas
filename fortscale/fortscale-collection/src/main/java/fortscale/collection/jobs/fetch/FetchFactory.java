@@ -3,13 +3,17 @@ package fortscale.collection.jobs.fetch;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.fetch.siem.QRadar;
 import fortscale.collection.jobs.fetch.siem.Splunk;
-import fortscale.domain.core.ApplicationConfiguration;
-import fortscale.services.ApplicationConfigurationService;
+import fortscale.domain.fetch.LogRepository;
+import fortscale.domain.fetch.SIEMType;
+import fortscale.services.LogRepositoryService;
+import org.apache.commons.collections.CollectionUtils;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.List;
 
 /**
  * Created by Amir Keren on 4/4/16.
@@ -17,18 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 @DisallowConcurrentExecution
 public class FetchFactory extends FortscaleJob {
 
-	private static final String SIEM_TYPE_KEY = "system.siem.type";
-	private static final String DEFAULT_SIEM = "splunk";
+	private static final String SIEM_ID_PARAM = "siem_id";
 
 	@Autowired
-	private ApplicationConfigurationService applicationConfigurationService;
+	private LogRepositoryService logRepositoryService;
 	@Autowired
-	private QRadar qradar;
+	private QRadar qradarFetch;
 	@Autowired
-	private Splunk splunk;
+	private Splunk splunkFetch;
 
 	private FetchJob fetchJob;
-	private String configuredSIEM;
 
 	@Override
 	protected void runSteps() throws Exception {
@@ -38,19 +40,33 @@ public class FetchFactory extends FortscaleJob {
 	@Override
 	protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {
 		JobDataMap map = context.getMergedJobDataMap();
-		ApplicationConfiguration applicationConfiguration = applicationConfigurationService.
-				getApplicationConfiguration(SIEM_TYPE_KEY);
-		if (applicationConfiguration != null) {
-			configuredSIEM = applicationConfiguration.getValue();
+		LogRepository logRepository;
+		if (map.containsKey(SIEM_ID_PARAM)) {
+			logRepository = logRepositoryService.getLogRepositoryFromDatabase(jobDataMapExtension.
+					getJobDataMapStringValue(map, SIEM_ID_PARAM));
+			if (logRepository == null) {
+				throw new JobExecutionException("No log repository configuration found");
+			}
 		} else {
-			configuredSIEM = DEFAULT_SIEM;
+			List<LogRepository> logRepositories = logRepositoryService.getLogRepositoriesFromDatabase();
+			if (CollectionUtils.isNotEmpty(logRepositories)) {
+				logRepository = logRepositories.get(0);
+			} else {
+				throw new JobExecutionException("No log repository configuration found");
+			}
 		}
-		switch (configuredSIEM.toLowerCase()) {
-			case Splunk.SIEM_NAME: fetchJob = splunk; break;
-			case QRadar.SIEM_NAME: fetchJob = qradar; break;
-			default: throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
+		String configuredSIEM = logRepository.getType();
+		SIEMType type;
+		try {
+			type = SIEMType.valueOf(configuredSIEM.toUpperCase());
+		} catch (Exception ex) {
+			throw new JobExecutionException("SIEM " + configuredSIEM + " is not supported");
 		}
-		fetchJob.getJobParameters(map, configuredSIEM);
+		switch (type) {
+			case SPLUNK: fetchJob = splunkFetch; break;
+			case QRADAR: fetchJob = qradarFetch; break;
+		}
+		fetchJob.getJobParameters(map, jobDataMapExtension, logRepository);
 	}
 
 	@Override

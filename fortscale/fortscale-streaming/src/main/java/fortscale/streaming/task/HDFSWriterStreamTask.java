@@ -3,6 +3,7 @@ package fortscale.streaming.task;
 import fortscale.services.impl.HdfsService;
 import fortscale.services.impl.SpringService;
 import fortscale.streaming.UserTimeBarrier;
+import fortscale.streaming.exceptions.EnhancedExceptionHandler;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.exceptions.TaskCoordinatorException;
@@ -61,6 +62,9 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	// Streaming task metrics. Note some fields are update by this class and some by the derived classes
 	protected HDFSWriterStreamingTaskMetrics taskMetrics;
+
+	// Used to handle exceptions caught while trying to execute write operations
+	private EnhancedExceptionHandler enhancedExceptionHandler;
 
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
@@ -141,6 +145,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		}
 		bdpService = new BDPService();
 
+		boolean enabled = resolveBooleanValue(config, "fortscale.enhanced.exception.handler.enabled", res);
+		int numOfExceptionsToIgnore = config.getInt("fortscale.enhanced.exception.handler.num.of.exceptions.to.ignore");
+		long sleepMillisBeforeRetry = config.getLong("fortscale.enhanced.exception.handler.sleep.millis.before.retry");
+		int numOfAllowedExceptions = config.getInt("fortscale.enhanced.exception.handler.num.of.allowed.exceptions");
+		enhancedExceptionHandler = new EnhancedExceptionHandler(enabled, numOfExceptionsToIgnore, sleepMillisBeforeRetry, numOfAllowedExceptions);
 	}
 
 
@@ -212,9 +221,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				} else {
 					// write the event to hdfs
 					String eventLine = buildEventLine(message, writerConfiguration);
-					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
-
-                    writerConfiguration.tableWriterMetrics.writeToHdfsMessages++;
+					writeLineToHdfs(writerConfiguration, eventLine, timestamp);
+					writerConfiguration.tableWriterMetrics.writeToHdfsMessages++;
 					writerConfiguration.processedMessageCount.inc();
 					//We are lopping through each event one time or not.
 					//If the event processed successfully at least once, we don't like to continue and count it more than once
@@ -384,5 +392,49 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		taskMetrics = new HDFSWriterStreamingTaskMetrics(statsService);
 	}
 
+	/**
+	 * Try writing an event to HDFS using the {@link EnhancedExceptionHandler}.
+	 */
+	private void writeLineToHdfs(WriterConfiguration writerConfiguration, String eventLine, Long timestamp)
+			throws Exception {
 
+		try {
+			// Try to write the event to HDFS
+			writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
+			// The write operation was successful - reset the number of consecutive failures
+			enhancedExceptionHandler.reset();
+		} catch (Exception eFirstTry) {
+			// The write operation was not successful
+			logger.error(String.format("Failed to write event %s with timestamp %d on first try.",
+					eventLine, timestamp), eFirstTry);
+			boolean retry;
+
+			try {
+				// Handle the exception and check if there should be a retry
+				retry = enhancedExceptionHandler.handleException(eFirstTry);
+			} catch (Exception eRethrown) {
+				// The handler threw back the exception - throw it as well
+				taskMetrics.writeExceptionsThrown++;
+				logger.error("Not retrying to write the event to HDFS and throwing the exception.");
+				throw eRethrown;
+			}
+
+			if (retry) {
+				try {
+					// Retry to write the event to HDFS
+					taskMetrics.writeRetries++;
+					logger.info("Retrying to write the event to HDFS.");
+					writerConfiguration.service.writeLineToHdfs(eventLine, timestamp);
+				} catch (Exception eRetry) {
+					// The second attempt to write the event to HDFS also failed
+					taskMetrics.failedWriteRetries++;
+					logger.error("Failed to write the event to HDFS on retry.", eRetry);
+				}
+			} else {
+				// No retry required - do not write the event to HDFS and discard it
+				taskMetrics.eventsDiscarded++;
+				logger.info("Not retrying to write the event to HDFS and discarding it.");
+			}
+		}
+	}
 }

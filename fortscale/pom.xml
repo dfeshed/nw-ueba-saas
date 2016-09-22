@@ -63,7 +63,7 @@
 
 	<properties>
         <!--RPM VERSION-->
-        <rpm.version>2.7.0</rpm.version>
+        <rpm.version>3.0.0</rpm.version>
 		<!-- NOTE: ALL dependencies' versions should be here -->
 		<influxdb.version>2.1</influxdb.version>
 		<argparse4j.version>0.7.0</argparse4j.version>
@@ -124,6 +124,7 @@
 		<esper-version>5.2.0</esper-version>
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
         <cxf.version>2.7.6</cxf.version>
+		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<!-- eclipse plugins versions -->
 		
 	</properties>

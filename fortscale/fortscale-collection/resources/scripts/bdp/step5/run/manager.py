@@ -19,3 +19,4 @@ class Manager:
         self._runner \
             .infer_start_and_end(collection_names_regex='^scored___entity_event_') \
             .run(overrides_key='step5')
+        return True

@@ -40,67 +40,6 @@ public class HadoopInit implements InitializingBean{
 	@Value("${hdfs.user.data.users.path}")
 	private String impalaUsersDirectory;
 
-	//Total Score table
-	@Value("${impala.total.scores.table.fields}")
-	private String impalaTotalScoringTableFields;
-	@Value("${impala.total.scores.table.delimiter}")
-	private String impalaTotalScoringTableDelimiter;
-	@Value("${impala.total.scores.table.name}")
-	private String impalaTotalScoringTableName;
-	@Value("${hdfs.user.processeddata.totalscore.path}")
-	private String impalaTotalScoringDirectory;
-	@Value("${impala.total.scores.table.partition.type}")
-	private String impalaTotalScoringTablePartitionType;
-	
-	//AD Computers table
-	@Value("${impala.ldapcomputers.table.fields}")
-	private String impalaAdComputerTableFields;
-	@Value("${impala.ldapcomputers.table.delimiter}")
-	private String impalaAdComputerTableDelimiter;
-	@Value("${impala.ldapcomputers.table.name}")
-	private String impalaAdComputerTableName;
-	@Value("${hdfs.user.data.ldap.computers.path}")
-	private String impalaAdComputerDirectory;
-    @Value("${impala.ldapcomputers.table.partition.type}")
-    private String impalaADComputerDataTablePartitionType;
-	
-	//AD OUs table
-	@Value("${impala.ldapous.table.fields}")
-	private String impalaAdOUTableFields;
-	@Value("${impala.ldapous.table.delimiter}")
-	private String impalaAdOUTableDelimiter;
-	@Value("${impala.ldapous.table.name}")
-	private String impalaAdOUTableName;
-	@Value("${hdfs.user.data.ldap.ous.path}")
-	private String impalaAdOUDirectory;
-    @Value("${impala.ldapous.table.partition.type}")
-    private String impalaADOUsDataTablePartitionType;
-	
-	//AD Group table
-	@Value("${impala.ldapgroups.table.fields}")
-	private String impalaAdGroupTableFields;
-	@Value("${impala.ldapgroups.table.delimiter}")
-	private String impalaAdGroupTableDelimiter;
-	@Value("${impala.ldapgroups.table.name}")
-	private String impalaAdGroupTableName;
-	@Value("${hdfs.user.data.ldap.groups.path}")
-	private String impalaAdGroupDirectory;
-    @Value("${impala.ldapgroups.table.partition.type}")
-    private String impalaADGroupsDataTablePartitionType;
-	
-	//AD User table
-	@Value("${impala.ldapusers.table.fields}")
-	private String impalaAdUserTableFields;
-	@Value("${impala.ldapusers.table.delimiter}")
-	private String impalaAdUserTableDelimiter;
-	@Value("${impala.ldapusers.table.name}")
-	private String impalaAdUserTableName;
-	@Value("${hdfs.user.data.ldap.users.path}")
-	private String impalaAdUserDirectory;
-    @Value("${impala.ldapusers.table.partition.type}")
-    private String impalaADUsersDataTablePartitionType;
-
-
 	public void createImpalaTables() throws IOException{
 
 		PartitionStrategy partitionStrategy;
@@ -110,29 +49,6 @@ public class HadoopInit implements InitializingBean{
 
 		//Users table
 		createTable(impalaUserTableName, impalaUserFields, null, impalaUserTableDelimiter, impalaUsersDirectory);
-		
-
-		//Total Scoring table
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaTotalScoringTablePartitionType);
-		createTable(impalaTotalScoringTableName, impalaTotalScoringTableFields, partitionStrategy.getTablePartitionDefinition(), impalaTotalScoringTableDelimiter, impalaTotalScoringDirectory);
-		
-		//AD Computer table
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADComputerDataTablePartitionType);
-        createTable(impalaAdComputerTableName, impalaAdComputerTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdComputerTableDelimiter, impalaAdComputerDirectory);
-
-		//AD OU table
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADOUsDataTablePartitionType);
-		createTable(impalaAdOUTableName, impalaAdOUTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdOUTableDelimiter, impalaAdOUDirectory);
-				
-		//AD Group table
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADGroupsDataTablePartitionType);
-		createTable(impalaAdGroupTableName, impalaAdGroupTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdGroupTableDelimiter, impalaAdGroupDirectory);
-		
-		//AD User table
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(impalaADUsersDataTablePartitionType);
-		createTable(impalaAdUserTableName, impalaAdUserTableFields, partitionStrategy.getTablePartitionDefinition(), impalaAdUserTableDelimiter, impalaAdUserDirectory);
-
-
 
 		//Data Source Schemas
 

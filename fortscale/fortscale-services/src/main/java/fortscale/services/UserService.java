@@ -4,9 +4,14 @@ import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.FavoriteUserFilter;
 import fortscale.domain.core.User;
+import fortscale.domain.rest.UserFilter;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
+import org.joda.time.DateTime;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
@@ -22,13 +27,13 @@ public interface UserService extends CachingService{
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	
 	public List<UserMachine> getUserMachines(String uid);
+
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
 		
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	
 	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
-			
-	public void removeClassifierFromAllUsers(String classifierId);
-	
+
 	public String getUserThumbnail(User user);
 
 	public void updateUserWithADInfo(AdUser adUser);
@@ -44,6 +49,8 @@ public interface UserService extends CachingService{
 	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave);
 
 	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+
+	User saveUser(User user);
 
 	/**
 	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed
@@ -65,17 +72,19 @@ public interface UserService extends CachingService{
 
 	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
 
-	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
+	public Set<String> findByUsernameRegex(String usernameRegex);
+
+	Set<String> findNamesByTag(String tag);
+
+	public Map<String, Set<String>> findAllTaggedUsers();
 
 	public String findAdMembers(String adName);
 
 	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
 
-	public Set<String> findNamesByTag(String tagFieldName, String value);
+	public void updateUserTag(String userTagEnumId, String username, boolean value);
 
-	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
-
-	User getUserById(String id);
+	public User getUserById(String id);
 
 	public Boolean isPasswordExpired(User user);
 
@@ -96,6 +105,7 @@ public interface UserService extends CachingService{
 	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
 
 	public User findByUsername(String username);
+
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username);
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
@@ -103,6 +113,8 @@ public interface UserService extends CachingService{
 	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
 
 	public Set<String> findIdsByTags(String[] tags, String entityIds);
+
+	public Set<String> findUsernamesByTags(String[] tags);
 
 	public Map<String, Long> groupByTags();
 
@@ -112,5 +124,15 @@ public interface UserService extends CachingService{
 	 * @return map of display names to users
 	 */
 	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
+
+	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserNames);
+
+	public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers);
+
+	public void saveFavoriteFilter(UserFilter userFilter, String filterName);
+
+	public List<FavoriteUserFilter> getAllFavoriteFilters();
+
+	public long deleteFavoriteFilter(String filterName);
 
 }
