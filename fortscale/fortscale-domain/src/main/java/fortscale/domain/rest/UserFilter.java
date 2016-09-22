@@ -194,40 +194,31 @@ public class UserFilter extends RestFilter {
 
 	@Override
 	public boolean equals(Object o) {
+
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 
 		UserFilter that = (UserFilter) o;
 
-		if (disabledSince != null ? !disabledSince.equals(that.disabledSince) : that.disabledSince != null)
-			return false;
-		if (isDisabled != null ? !isDisabled.equals(that.isDisabled) : that.isDisabled != null) return false;
-		if (isDisabledWithActivity != null ? !isDisabledWithActivity.equals(that.isDisabledWithActivity) : that.isDisabledWithActivity != null)
-			return false;
-		if (isTerminatedWithActivity != null ? !isTerminatedWithActivity.equals(that.isTerminatedWithActivity) : that.isTerminatedWithActivity != null)
-			return false;
-		if (inactiveSince != null ? !inactiveSince.equals(that.inactiveSince) : that.inactiveSince != null)
-			return false;
-		if (dataEntities != null ? !dataEntities.equals(that.dataEntities) : that.dataEntities != null) return false;
-		if (entityMinScore != null ? !entityMinScore.equals(that.entityMinScore) : that.entityMinScore != null)
-			return false;
-		if (isServiceAccount != null ? !isServiceAccount.equals(that.isServiceAccount) : that.isServiceAccount != null)
-			return false;
-		if (searchFieldContains != null ? !searchFieldContains.equals(that.searchFieldContains) : that.searchFieldContains != null)
-			return false;
-		if (addAlertsAndDevices != null ? !addAlertsAndDevices.equals(that.addAlertsAndDevices) : that.addAlertsAndDevices != null)
-			return false;
-		if (userTags != null ? !userTags.equals(that.userTags) : that.userTags != null) return false;
-		if (isWatched != null ? !isWatched.equals(that.isWatched) : that.isWatched != null) return false;
-		if (alertTypes != null ? !alertTypes.equals(that.alertTypes) : that.alertTypes != null) return false;
-		if (indicatorTypes != null ? !indicatorTypes.equals(that.indicatorTypes) : that.indicatorTypes != null)
-			return false;
-		if (locations != null ? !locations.equals(that.locations) : that.locations != null) return false;
-		if (severity != that.severity) return false;
-		if (minScore != null ? !minScore.equals(that.minScore) : that.minScore != null) return false;
-
-		return maxScore != null ? maxScore.equals(that.maxScore) : that.maxScore == null;
-
+		return (   Objects.equals(disabledSince, that.disabledSince)
+				|| Objects.equals(isDisabled, that.isDisabled)
+				|| Objects.equals(isDisabledWithActivity, that.isDisabledWithActivity)
+				|| Objects.equals(isTerminatedWithActivity, that.isTerminatedWithActivity)
+				|| Objects.equals(inactiveSince, that.inactiveSince)
+				|| Objects.equals(dataEntities, that.dataEntities)
+				|| Objects.equals(entityMinScore, that.entityMinScore)
+				|| Objects.equals(isServiceAccount, that.isServiceAccount)
+				|| Objects.equals(searchFieldContains, that.searchFieldContains)
+				|| Objects.equals(addAlertsAndDevices, that.addAlertsAndDevices)
+				|| Objects.equals(userTags, that.userTags)
+				|| Objects.equals(isWatched, that.isWatched)
+				|| Objects.equals(alertTypes, that.alertTypes)
+				|| Objects.equals(indicatorTypes, that.indicatorTypes)
+				|| Objects.equals(locations, that.locations)
+				|| Objects.equals(severity, that.severity)
+				|| Objects.equals(minScore, that.minScore)
+				|| Objects.equals(maxScore, that.maxScore)
+				);
 	}
 
 	@Override
