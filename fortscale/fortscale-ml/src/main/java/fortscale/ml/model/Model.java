@@ -8,7 +8,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 @JsonSubTypes({
 		@Type(value = CategoryRarityModel.class, name = "category-rarity-model"),
 		@Type(value = ContinuousDataModel.class, name = "continuous-data-model"),
-		@Type(value = TimeModel.class, name = "time-model")
+		@Type(value = TimeModel.class, name = "time-model"),
+		@Type(value = SMARTValuesModel.class, name = "smart-values-model"),
+		@Type(value = ScoreMappingModel.class, name = "score-mapping-model"),
+		@Type(value = SMARTScoreMappingModel.class, name = "smart-score-mapping-model")
 })
 public interface Model {
 	/**
