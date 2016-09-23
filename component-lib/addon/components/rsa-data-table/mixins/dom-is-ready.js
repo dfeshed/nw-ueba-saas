@@ -33,11 +33,17 @@ export default Mixin.create({
 
   didInsertElement() {
     this._super(...arguments);
-    run.schedule('afterRender', this, function() {
-      this.set('domIsReady', true);
-      if ($.isFunction(this.onDomIsReady)) {
-        this.onDomIsReady();
-      }
-    });
+    run.schedule('afterRender', this, this.afterRender);
+  },
+
+  // Responsible for setting `domIsReady` to `true` and invoking `onDomIsReady` callback.
+  // Does this after executing any inherited logic from `_super`. Why? Just in case the inherited logic does any DOM
+  // manipulation. We'd like `domIsReady` to indicate that DOM is settled.
+  afterRender() {
+    this._super(...arguments);
+    this.set('domIsReady', true);
+    if ($.isFunction(this.onDomIsReady)) {
+      this.onDomIsReady();
+    }
   }
 });

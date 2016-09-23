@@ -29,7 +29,15 @@ export default Component.extend(RowMixin, {
 
   didInsertElement() {
     this._super(...arguments);
-    run.schedule('afterRender', this, this._renderCells);
+    run.schedule('afterRender', this, this.afterRender);
+  },
+
+  // Triggers the initial rendering of cell contents.  Ensures that this is done first, before
+  // any inherited `afterRender` logic from `_super`. Why? Because the `_super` in this case is a data table row,
+  // which measures its own height once the DOM is ready. We want to render the cell contents before that happens.
+  afterRender() {
+    this._renderCells();
+    this._super(...arguments);
   },
 
   // Formatting configuration options. Passed to utils that generate cell DOM.
