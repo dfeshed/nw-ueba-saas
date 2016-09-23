@@ -18,7 +18,9 @@ export default Component.extend({
 
   reconData: [],
 
-  handleError: (response) => this.sendAction('contentErrorAction', response.code),
+  handleError(response) {
+    this.sendAction('contentErrorAction', response.code);
+  },
 
   didReceiveAttrs() {
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');

@@ -3,6 +3,7 @@ import layout from './template';
 
 export default DetailBase.extend({
   layout,
+  classNameBindings: [':recon-event-detail-packets'],
 
   packetFields: null,
 

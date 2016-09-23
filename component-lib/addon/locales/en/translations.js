@@ -93,5 +93,14 @@ export default {
   updateLabel: {
     'one': 'update',
     'other': 'updates'
+  },
+  recon: {
+    files: {
+      fileName: 'File Name',
+      extension: 'Extension',
+      mimeType: 'MIME Type',
+      fileSize: 'File Size',
+      hashes: 'Hashes'
+    }
   }
 };

@@ -85,5 +85,14 @@ export default {
   updateLabel: {
     'one': 'ja_update',
     'other': 'ja_updates'
+  },
+  recon: {
+    files: {
+      fileName: 'ja_File Name',
+      extension: 'ja_Extension',
+      mimeType: 'ja_MIME Type',
+      fileSize: 'ja_File Size',
+      hashes: 'ja_Hashes'
+    }
   }
 };

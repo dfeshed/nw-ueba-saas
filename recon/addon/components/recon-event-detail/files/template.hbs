@@ -1,2 +1,22 @@
-<h1>FILES: {{reconData.length}}</h1>
+{{#rsa-data-table
+  items=reconData
+  fitToWidth=true
+  columnsConfig=columnsConfig}}
 
+  {{rsa-data-table/header translateTitles=true}}
+
+  {{#rsa-data-table/body as |item index column|}}
+
+    {{#rsa-data-table/body-cell columnWidth=column.width}}
+      {{#if (eq column.field "hashes")}}
+        {{#each item.hashes as |hash|}}
+          <span class="recon-file-hash">{{hash.type}}</span>: {{hash.value}} <br>
+        {{/each}}
+      {{else}}
+        {{get item column.field}}
+      {{/if}}
+    {{/rsa-data-table/body-cell}}
+
+  {{/rsa-data-table/body}}
+
+{{/rsa-data-table}}

@@ -17,7 +17,8 @@ module.exports = function(defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
 
- app.import('vendor/haxors/promise.js');
+  app.import('vendor/haxors/promise.js');
+  app.import(app.bowerDirectory + "/javascript-detect-element-resize/detect-element-resize.js");
 
   return app.toTree();
 };

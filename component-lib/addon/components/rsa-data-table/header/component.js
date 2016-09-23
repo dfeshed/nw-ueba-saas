@@ -21,6 +21,12 @@ export default Component.extend(HasTableParent, {
   moveHandleSelector: '.js-move-handle', // Selector for the drag-move handle.
 
   /**
+   * Whether or not to translate header titles from locale
+   * @public
+   */
+  translateTitles: false,
+
+  /**
    * Moves this component horizontally so that the children header cells will horizontally align with the
    * rsa-data-table/body's cells as the user scrolls horizontally.
    * @private

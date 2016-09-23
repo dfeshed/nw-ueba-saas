@@ -16,14 +16,26 @@
       {{#if hasBlock}}
 
         {{#rsa-data-table/header-cell
-          column=column index=index model=column group=group spacing=3 handle=moveHandleSelector}}
+          column=column
+          index=index
+          model=column
+          group=group
+          spacing=3
+          handle=moveHandleSelector
+          translateTitle=translateTitles}}
           {{yield column index}}
         {{/rsa-data-table/header-cell}}
 
       {{else}}
 
         {{rsa-data-table/header-cell
-          column=column index=index model=column group=group spacing=3 handle=moveHandleSelector}}
+          column=column
+          index=index
+          model=column
+          group=group
+          spacing=3
+          handle=moveHandleSelector
+          translateTitle=translateTitles}}
 
       {{/if}}
 

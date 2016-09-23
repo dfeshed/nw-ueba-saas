@@ -54,8 +54,9 @@ test('change recon views', function(assert) {
 
   andThen(function() {
     run.later(function() {
-      assert.ok(find('.event-content-box').text().trim() === 'FILES: 2', 'REcon can change views');
-    }, 100);
+      const str = find('.event-content-box').text().trim().replace(/\s/g, '').substring(0, 100);
+      assert.ok(str === 'FileNameExtensionMIMETypeFileSizeHashesa_file_name.docxdocxapplication/vnd.openxmlformats-officedocu', 'REcon can change views');
+    }, 1000);
   });
 
 });

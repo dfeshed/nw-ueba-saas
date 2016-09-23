@@ -13,7 +13,8 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{recon-event-detail/files}}`);
   run.later(() => {
-    assert.equal(this.$().text().trim(), 'FILES: 2');
+    const str = this.$().text().trim().replace(/\s/g, '').substring(0, 100);
+    assert.equal(str, 'FileNameExtensionMIMETypeFileSizeHashesa_file_name.docxdocxapplication/vnd.openxmlformats-officedocu', 'Recon can change views');
     done();
   }, 200);
 });
