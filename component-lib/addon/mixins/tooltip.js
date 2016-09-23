@@ -4,6 +4,9 @@ const {
   Mixin,
   inject: {
     service
+  },
+  run: {
+    later
   }
 } = Ember;
 
@@ -15,23 +18,20 @@ export default Mixin.create({
 
   tooltip: null,
 
-  triggerEvent: 'hover', // ['hover', 'click']
+  displayDelay: 1000,
+
+  hideDelay: 1000,
 
   mouseEnter() {
-    if (this.get('triggerEvent') === 'hover') {
-      this.get('eventBus').trigger(`rsa-content-tooltip-display-${this.get('tooltip')}`, this.get('triggerEvent'));
-    }
+    later(()=> {
+      this.get('eventBus').trigger(`rsa-content-tooltip-display-${this.get('tooltip')}`);
+    }, this.get('displayDelay'));
   },
 
   mouseLeave() {
-    if (this.get('triggerEvent') === 'hover') {
-      this.get('eventBus').trigger(`rsa-content-tooltip-hide-${this.get('tooltip')}`, this.get('triggerEvent'));
-    }
-  },
-
-  click() {
-    if (this.get('triggerEvent') === 'click') {
-      this.get('eventBus').trigger(`rsa-content-tooltip-toggle-${this.get('tooltip')}`, this.get('triggerEvent'));
-    }
+    later(()=> {
+      this.get('eventBus').trigger(`rsa-content-tooltip-hide-${this.get('tooltip')}`);
+    }, this.get('hideDelay'));
   }
+
 });

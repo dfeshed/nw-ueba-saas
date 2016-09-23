@@ -1,11 +1,9 @@
 {{#if isDisplayed}}
   {{#ember-tether target=targetClass attachment=attachment}}
-    <div class="tooltip-content {{position}} {{style}}">
-      {{#if displayClose}}
-        <span class="close-icon" {{action 'toggleTooltip'}}>
-          {{rsa-icon name="close" size="small"}}
-        </span>
-      {{/if}}
+    <div class="tooltip-content {{position}} {{style}} {{elementId}}">
+      <span class="close-icon" {{action 'hideTooltip'}}>
+        {{rsa-icon name="close" size="small"}}
+      </span>
 
       {{yield}}
 

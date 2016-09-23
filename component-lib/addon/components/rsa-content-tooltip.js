@@ -7,6 +7,9 @@ const {
   inject: {
     service
   },
+  run: {
+    later
+  },
   computed,
   run
 } = Ember;
@@ -25,11 +28,11 @@ export default Component.extend({
 
   isDisplayed: false,
 
-  triggerEvent: null,
-
   tooltipId: null,
 
-  displayClose: computed.equal('triggerEvent', 'click'),
+  isHovering: false,
+
+  hideDelay: 500,
 
   targetClass: computed('tooltipId', function() {
     return `.${this.get('tooltipId')}`;
@@ -72,37 +75,43 @@ export default Component.extend({
 
   didInsertElement() {
     run.schedule('afterRender', () => {
-      this.get('eventBus').on(`rsa-content-tooltip-display-${this.get('tooltipId')}`, (triggerEvent) => {
+      this.get('eventBus').on(`rsa-content-tooltip-display-${this.get('tooltipId')}`, () => {
         run.next(() => {
-          if (triggerEvent) {
-            this.set('triggerEvent', triggerEvent);
-          }
           this.set('isDisplayed', true);
+
+          run.schedule('afterRender', () => {
+            $(`.${this.get('elementId')}`).on('mouseenter', () => {
+              this.set('isHovering', true);
+            });
+            $(`.${this.get('elementId')}`).on('mouseleave', () => {
+              this.set('isHovering', false);
+              later(() => {
+                if (!this.get('isHovering')) {
+                  this.set('isDisplayed', false);
+                }
+              }, this.get('hideDelay'));
+            });
+          });
         });
       });
 
-      this.get('eventBus').on(`rsa-content-tooltip-hide-${this.get('tooltipId')}`, (triggerEvent) => {
+      this.get('eventBus').on(`rsa-content-tooltip-hide-${this.get('tooltipId')}`, () => {
         run.next(() => {
-          if (triggerEvent) {
-            this.set('triggerEvent', triggerEvent);
+          if (!this.get('isHovering')) {
+            $(`.${this.get('elementId')}`).off('mouseenter');
+            $(`.${this.get('elementId')}`).off('mouseleave');
+            this.set('isDisplayed', false);
           }
-          this.set('isDisplayed', false);
         });
       });
 
-      this.get('eventBus').on(`rsa-content-tooltip-toggle-${this.get('tooltipId')}`, (triggerEvent) => {
-        run.next(() => {
-          if (triggerEvent) {
-            this.set('triggerEvent', triggerEvent);
-          }
-          this.toggleProperty('isDisplayed');
-        });
-      });
     });
   },
 
   actions: {
-    toggleTooltip() {
+    hideTooltip() {
+      $(`.${this.get('elementId')}`).off('mouseenter');
+      $(`.${this.get('elementId')}`).off('mouseleave');
       this.set('isDisplayed', false);
     }
   }

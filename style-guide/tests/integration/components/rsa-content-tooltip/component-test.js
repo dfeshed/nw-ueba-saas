@@ -81,14 +81,14 @@ test('it includes the proper classes when is position is right', function(assert
   assert.equal(this.$('.rsa-content-tooltip .tooltip-content.right').length, 1);
 });
 
-test('it displays the close button for click triggerEvent', function(assert) {
-  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true triggerEvent="click" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+test('it displays the close button', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
   assert.equal(this.$('.rsa-content-tooltip .close-icon').length, 1);
 });
 
 test('it toggles isDisplayed when the close button is clicked', function(assert) {
   this.set('isDisplayed', true);
-  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=isDisplayed tooltipId="foo" triggerEvent="click"}}Label{{/rsa-content-tooltip}}`);
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=isDisplayed tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
   this.$('.rsa-content-tooltip .close-icon').click();
 
   return wait().then(() => {
@@ -100,29 +100,7 @@ test('it updates isDisplayed when relevant events are fired', function(assert) {
   this.set('isDisplayed', false);
   this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=isDisplayed tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
 
-  this.get('eventBus').trigger('rsa-content-tooltip-display-foo', 'click');
-
-  return wait().then(() => {
-    assert.equal(this.get('isDisplayed'), true);
-  });
-});
-
-test('it updates isDisplayed when relevant events are fired', function(assert) {
-  this.set('isDisplayed', true);
-  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=isDisplayed tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
-
-  this.get('eventBus').trigger('rsa-content-tooltip-hide-foo', 'click');
-
-  return wait().then(() => {
-    assert.equal(this.get('isDisplayed'), false);
-  });
-});
-
-test('it updates isDisplayed when relevant events are fired', function(assert) {
-  this.set('isDisplayed', false);
-  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=isDisplayed tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
-
-  this.get('eventBus').trigger('rsa-content-tooltip-toggle-foo', 'hover');
+  this.get('eventBus').trigger('rsa-content-tooltip-display-foo');
 
   return wait().then(() => {
     assert.equal(this.get('isDisplayed'), true);
