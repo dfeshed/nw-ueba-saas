@@ -47,7 +47,7 @@ test('the login transitions after clicking Lost Password? then canceling', funct
 });
 
 test('the login transitions after clicking Lost Password? then submitting', function(assert) {
-  this.render(hbs `{{rsa-routable-login username='foo' password='bar'}}`);
+  this.render(hbs `{{rsa-routable-login username='foo' willRequestPasswordReset=true}}`);
   this.$('.lost-password').click();
   this.$('.rsa-form-button[type=submit]').click();
   return wait().then(function() {
@@ -69,4 +69,3 @@ test('the has-error class is added to .login-wrapper when hasError is true', fun
   this.render(hbs `{{rsa-routable-login hasError=true}}`);
   assert.ok(this.$('.login-wrapper').hasClass('has-error'));
 });
-

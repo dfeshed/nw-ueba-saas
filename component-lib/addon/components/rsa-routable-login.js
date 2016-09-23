@@ -65,6 +65,12 @@ export default Component.extend({
     }
   }),
 
+  didInsertElement() {
+    run.schedule('afterRender', () => {
+      this.$('.js-test-login-username-input').focus();
+    });
+  },
+
   /**
    * Used disabling browser autofill.
    * Password field binding does not support browser autofill
@@ -147,7 +153,17 @@ export default Component.extend({
     * @public
     */
     initiatePasswordReset() {
-      this.set('willRequestPasswordReset', true);
+      this.setProperties({
+        status: null,
+        username: null,
+        password: null,
+        errorMessage: null,
+        willRequestPasswordReset: true
+      });
+
+      run.schedule('afterRender', () => {
+        this.$('.js-test-lost-password-username-input').focus();
+      });
     },
 
     /**
@@ -163,10 +179,18 @@ export default Component.extend({
     * @public
     */
     resetComplete() {
-      this.set('username', null);
-      this.set('password', null);
-      this.set('willRequestPasswordReset', false);
-      this.set('didRequestPasswordReset', false);
+      this.setProperties({
+        status: null,
+        username: null,
+        password: null,
+        errorMessage: null,
+        willRequestPasswordReset: false,
+        didRequestPasswordReset: false
+      });
+
+      run.schedule('afterRender', () => {
+        this.$('.js-test-login-username-input').focus();
+      });
     },
 
     /**
@@ -178,9 +202,11 @@ export default Component.extend({
      */
     authenticate() {
       // Update status to that UI can indicate that a login is in progress.
-      this.set('status', _STATUS.WAIT);
+      this.setProperties({
+        status: _STATUS.WAIT,
+        errorMessage: null
+      });
 
-      let me = this;
       let session = this.get('session');
 
       if (session) {
@@ -190,13 +216,15 @@ export default Component.extend({
 
         session.authenticate(auth, this.get('username'), this.get('password')).then(
           // Auth succeeded
-          function() {
-            me.set('errorMessage', null);
-            me.set('status', _STATUS.SUCCESS);
+          () => {
+            this.setProperties({
+              status: _STATUS.SUCCESS,
+              errorMessage: null
+            });
           },
 
           // Auth failed
-          function(message) {
+          (message) => {
             let errorMessage = 'login.genericError';
             let exception = message.error_description;
 
@@ -212,8 +240,14 @@ export default Component.extend({
               }
             }
 
-            me.set('errorMessage', errorMessage);
-            me.set('status', _STATUS.ERROR);
+            this.setProperties({
+              status: _STATUS.ERROR,
+              username: null,
+              password: null,
+              errorMessage
+            });
+
+            this.$('.js-test-login-username-input').focus();
           }
         );
       }
