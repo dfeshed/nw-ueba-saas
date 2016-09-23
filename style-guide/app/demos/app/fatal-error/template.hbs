@@ -1,0 +1,15 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Example"}}
+        <code>
+          this.get('fatalErrors').logError('This is an example error message');
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

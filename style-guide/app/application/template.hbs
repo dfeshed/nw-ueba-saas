@@ -1,4 +1,15 @@
 <div id="modalDestination"></div>
+{{#rsa-application-modal
+  label="Error"
+  style='error'
+  eventId='fatalError'
+  modalDidClose='clearFatalErrorQueue'}}
+  <div class='modal-content'>
+    {{#each fatalErrors.queue as |error|}}
+      <p>{{error}}</p>
+    {{/each}}
+  </div>
+{{/rsa-application-modal}}
 
 {{rsa-application-header}}
 

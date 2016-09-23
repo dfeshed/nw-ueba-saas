@@ -30,6 +30,7 @@ Router.map(function() {
       this.route('modal');
       this.route('action-bar');
       this.route('layout-manager');
+      this.route('fatal-error');
     });
 
     this.route('form', function() {

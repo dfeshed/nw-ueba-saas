@@ -56,6 +56,18 @@
     .modal-trigger {
       display: none;
     }
+
+    &.error {
+      border: 1px solid rsa-color(red, dark);
+
+      h3 {
+        background-color: rsa-color(red);
+      }
+
+      .modal-content {
+        padding: rsa-whitespace();
+      }
+    }
   }
 }
 

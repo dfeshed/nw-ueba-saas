@@ -9,9 +9,4 @@ import Ember from 'ember';
 const { Route } = Ember;
 
 export default Route.extend({
-  beforeModel() {
-
-    // By default, try to redirect to the default route.
-    this.transitionTo('index');
-  }
 });

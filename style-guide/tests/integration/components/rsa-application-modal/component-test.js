@@ -23,8 +23,17 @@ moduleForComponent('/rsa-application-modal', 'Integration | Component | rsa-appl
 test('it includes the proper classes', function(assert) {
   this.render(hbs `<div id="modalDestination"></div>{{rsa-application-modal}}`);
   let content = this.$().find('.rsa-application-modal').length;
+  assert.equal(this.$().find('.standard').length, 1);
   assert.equal(content, 1);
 });
+
+test('it includes the proper classes when style is error', function(assert) {
+  this.render(hbs `<div id="modalDestination"></div>{{rsa-application-modal style="error"}}`);
+  let content = this.$().find('.rsa-application-modal').length;
+  assert.equal(this.$().find('.error').length, 1);
+  assert.equal(content, 1);
+});
+
 
 test('it includes the proper classes when isOpen is true', function(assert) {
   this.render(hbs `<div id="modalDestination"></div>{{#rsa-application-modal isOpen=true}}foo{{/rsa-application-modal}}`);

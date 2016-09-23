@@ -29,7 +29,7 @@ Router.map(function() {
     }
     this.route('not-found', { path: '*invalidprotectedpath' });
   });
-  this.route('not-found', { path: '*invalidrootpath' });
+  this.route('not-found');
 });
 
 export default Router;

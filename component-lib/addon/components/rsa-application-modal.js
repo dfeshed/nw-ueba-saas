@@ -18,11 +18,14 @@ export default Component.extend({
 
   classNames: ['rsa-application-modal'],
 
-  classNameBindings: ['isOpen'],
+  classNameBindings: ['isOpen',
+                      'style'],
 
   eventId: null,
 
   isOpen: false,
+
+  style: 'standard', // ['standard', 'error']
 
   label: null,
 
@@ -54,9 +57,11 @@ export default Component.extend({
       if (truth) {
         this.get('eventBus').trigger('rsa-application-modal-did-open');
         $('#modalDestination').addClass('active');
+        this.sendAction('modalDidOpen');
       } else {
         this.get('eventBus').trigger('rsa-application-modal-did-close');
         $('#modalDestination').removeClass('active');
+        this.sendAction('modalDidClose');
       }
 
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {
