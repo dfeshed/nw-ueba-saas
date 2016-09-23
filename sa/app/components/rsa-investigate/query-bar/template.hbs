@@ -14,7 +14,7 @@
   {{/each}}
 {{/rsa-form-select}}
 {{rsa-form-input class="rsa-investigate-query-bar__text" type="text" isReadOnly=true label=(t 'investigate.filter') placeholder="(optional)"}}
-{{#rsa-form-button class="rsa-investigate-query-bar__submit"
+{{#rsa-form-button class="rsa-investigate-query-bar__submit" click=(action "submit")
   style="primary" isDisabled=(unless _submitIsEnabled true false)}}
-  <span class="js-test-investigate-query-bar__submit" {{action "submit"}}>Run Query</span>
+  <span class="js-test-investigate-query-bar__submit">Run Query</span>
 {{/rsa-form-button}}
