@@ -1,24 +1,27 @@
 export default function(server) {
-
-  // Mock the response for a promise request of 'core-event-timeline' with the entire mirage DB collection
-  // "core-event-timelines" (after randomizing the counts for some variety in testing):
+  // Mock the response for a promise request of 'core-event-timeline'. This returns
+  // a per-minute dataset for the previous 24 hours. Most data will be near zero
+  // with several spikes to make it look realistic.
   server.route('core-event-timeline', 'query', function(message, frames, server) {
-    // let clone = [].concat(server.mirageServer.db['core-event-timelines']);
-    // clone.forEach((datum) => {
-    //   datum.count = parseInt(datum.count * Math.random(), 10);
-    // });
-    const hour = 3600000;
-    // Add an hour to the current time so that the correct
-    // time is calculated when we do "now -= hour" below.
-    let now = new Date().getTime() + hour;
-    let i = 24;
+    const minute = 60000;
+    const [frame] = frames;
+    const timeRange = frame.body.filter.filterBy('field', 'timeRange');
+    let end;
+    if (timeRange) {
+      end = timeRange[0].range.to * 1000 + minute;// add milliseconds
+    } else {
+      // Add a minute to the current time so that the correct time is calculated
+      // when we do "now -= minute" below.
+      end = new Date().getTime() + minute;// default to now
+    }
+    let i = 1440;
     let data = [];
     while (i-- >= 0) {
       data.unshift({
-        name: 'hour',
+        name: 'minute',
         type: 'TimeT',
-        value: now -= hour,
-        count: Math.round(50000000 * Math.random())
+        value: end -= minute,
+        count: Math.round(Math.tan(Math.random() * Math.PI / 2.01) * 1500)
       });
     }
     server.sendList(

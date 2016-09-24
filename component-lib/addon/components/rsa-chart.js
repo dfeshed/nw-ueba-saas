@@ -18,12 +18,13 @@ export default Component.extend({
   classNames: ['rsa-chart'],
   layout,
 
-  duration: 300,
+  duration: 0,
   chartWidth: DEFAULT_WIDTH,
   chartHeight: DEFAULT_HEIGHT,
   data: null,
   hoverData: null,
   interactive: true,
+  isChartParent: true,
   // Adjust margins so that the axes fit
   margin: { top: 5, bottom: 30, left: 30, right: 0 },
   xAxisStartsAtZero: false,
@@ -93,7 +94,7 @@ export default Component.extend({
     // each time the `mousemove` handler is invoked.
     d3.select('.rsa-chart-background')
       .on('mouseout', function() {
-        self.set('hoverData', null);
+        self.set('hoverIndex', null);
       })
       .on('mousemove', function() {
         const { xProp, xScale } = self.getProperties('xProp', 'xScale');
@@ -101,13 +102,7 @@ export default Component.extend({
         if (data && data.length > 0) {
           const x0 = xScale.invert(d3.mouse(this)[0]);
           const bisectLeft = d3.bisector((d) => d[xProp]).left;
-          const i = bisectLeft(data, x0, 1);
-          const d0 = data[i - 1];
-          const d1 = data[i];
-          if (d0 && d1) {
-            const d = x0 - d0[xProp] > d1[xProp] - x0 ? d1 : d0;
-            self.set('hoverData', d);
-          }
+          self.set('hoverIndex', bisectLeft(data, x0, 1));
         }
       });
   },

@@ -15,8 +15,8 @@ export default Component.extend({
   classNames: ['rsa-x-axis'],
   tagName: 'g',
 
-  duration: 300,
-  height: 115,
+  duration: 0,
+  height: 100,
   rotation: 0,
   scale: null,
   tickCount: 10,

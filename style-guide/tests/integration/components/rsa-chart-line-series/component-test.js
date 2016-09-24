@@ -73,24 +73,6 @@ test('generates path when supplied with custom data accessor properties', functi
   }, 50);
 });
 
-test('Correct opacity is set when hoverData is set', function(assert) {
-  const done = assert.async();
-  this.set('data', this.data);
-  this.set('xScale', this.xScale1);
-  this.set('yScale', this.yScale1);
-  this.set('hoverData', { x: 2, y: 5 });
-  this.$().append('<g class="points series-0"></g>');
-  this.render(hbs `{{rsa-line-series data=data xScale=xScale yScale=yScale hoverData=hoverData}}`);
-  setTimeout(function() {
-    const pts = this.$('circle');
-    assert.equal(pts.length, 3);
-    assert.equal(pts.get(0).getAttribute('opacity'), 0, 'Testing to see if the correct opacity was set on element 0');
-    assert.equal(pts.get(1).getAttribute('opacity'), 1, 'Testing to see if the correct opacity was set on element 1');
-    assert.equal(pts.get(2).getAttribute('opacity'), 0, 'Testing to see if the correct opacity was set on element 2');
-    done();
-  }, 50);
-});
-
 test('Symbol is drawn when there is only one data point', function(assert) {
   const done = assert.async();
   this.set('data', [[{ x: 1, y: 4 }]]);

@@ -1,27 +1,41 @@
 import Ember from 'ember';
+import HasChartParent from '../mixins/has-chart-parent';
 import d3 from 'd3';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 
-const { Component, run } = Ember;
+const {
+  Component,
+  observer,
+  run,
+  warn
+} = Ember;
 const createArea = (xAccessorFn, yAccessorFn, height, curve) => {
   return d3.area().x(xAccessorFn).y0(height).y1(yAccessorFn).curve(curve);
 };
 const createSymbol = d3.symbol().type(d3.symbolDiamond);
 
-export default Component.extend({
+export default Component.extend(HasChartParent, {
   classNameBindings: [':rsa-area-series', 'clazzName'],
   tagName: 'path',
 
-  duration: 300,
+  duration: 0,
   data: [[]],
   dataIndex: 0,
   height: 0,
-  hoverData: null,
   interpolator: d3.curveLinear,
   xProp: 'x',
   xScale: d3.scaleTime,
   yProp: 'y',
   yScale: d3.scaleLinear,
+
+  @alias('chart.hoverIndex')
+  hoverIndex: null,
+
+  @computed('datum', 'hoverIndex')
+  hoverData: (datum, index) => datum.objectAt(index),
+
+  @computed('data', 'dataIndex')
+  datum: (data, index) => data.objectAt(index),
 
   @computed('dataIndex')
   clazzName: (index) => `series-${index}`,
@@ -33,65 +47,66 @@ export default Component.extend({
   yAccessor: (scale, prop) => (d) => d ? scale(d[prop]) : 0,
 
   @computed('xAccessor', 'yAccessor', 'height', 'interpolator')
-  areaFn: (...args) => createArea(...args),
+  pathFn: (...args) => createArea(...args),
 
   symbolFn: () => createSymbol(),
 
+  hoverIndexWatcher: observer('hoverIndex', function() {
+    const { hoverData, xAccessor, yAccessor } = this.getProperties('hoverData', 'xAccessor', 'yAccessor');
+    const point = this.get('_point');
+    this.updateHover(point, hoverData, xAccessor, yAccessor);
+  }),
+
   didInsertElement() {
     this._super(...arguments);
-    const { dataIndex, hoverData } = this.getProperties('dataIndex', 'hoverData');
-    const datum = this.get('data').objectAt(dataIndex);
-    run.scheduleOnce('afterRender', this, this.onAfterRender, datum, hoverData);
+    const { datum, xAccessor, duration } = this.getProperties('datum', 'xAccessor', 'duration');
+    run.scheduleOnce('afterRender', this, this.onAfterRender, datum, xAccessor, duration);
   },
 
   didUpdateAttrs() {
     this._super(...arguments);
-    const { dataIndex, hoverData } = this.getProperties('dataIndex', 'hoverData');
-    const datum = this.get('data').objectAt(dataIndex);
-    this.draw(datum, hoverData);
+    const { datum, xAccessor, duration } = this.getProperties('datum', 'xAccessor', 'duration');
+    this.draw(datum, xAccessor, duration);
   },
 
-  showNode(hoverData, d) {
-    const xProp = this.get('xProp');
-    return (hoverData && hoverData[xProp] === d[xProp]) ? 1 : 0;
-  },
-
-  onAfterRender(datum, hoverData) {
-    const clazzName = this.get('clazzName');
-    let svgGroup = this.get('parentView.svgGroup');
-    if (!svgGroup) {
-      // Provide a fallback that works for automated testing
-      svgGroup = d3.select(this.parent).select('g');
+  updateHover(point, hoverData, xAccessor, yAccessor) {
+    if (hoverData) {
+      const x = xAccessor(hoverData);
+      const y = yAccessor(hoverData);
+      point
+        .attr('transform', `translate(${x},${y})`)
+        .attr('opacity', 1);
+    } else {
+      point.attr('opacity', 0);
     }
-    // Append a group to the parent SVG so we can store our hover points for this series together
-    svgGroup.append('g').attr('class', `points ${clazzName}`);
-    this.draw(datum, hoverData);
   },
 
-  draw(datum, hoverData) {
-    const { xAccessor, yAccessor, clazzName, duration } = this.getProperties('xAccessor', 'yAccessor', 'clazzName', 'duration');
-    const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('areaFn');
-    const points = d3.select(`.points.${clazzName}`).selectAll('circle')
-      .data(datum);
+  onAfterRender(datum, xAccessor, duration) {
+    const clazzName = this.get('clazzName');
+    let svgGroup = this.get('chart.svgGroup');
+
+    if (svgGroup) {
+      // Append a group to the parent SVG so we can store our hover point
+      svgGroup.append('g').attr('class', `points ${clazzName}`);
+      const point = d3.select(`.points.${clazzName}`).append('circle')
+        .attr('class', 'pt')
+        .attr('r', 3)
+        .attr('opacity', 0);
+      this.set('_point', point);
+    } else {
+      warn('rsa-area-series missing chart.svgGroup', false, { id: 'rsa-area-series.missing-svgGroup' });
+    }
+
+    this.draw(datum, xAccessor, duration);
+  },
+
+  draw(datum, xAccessor, duration) {
+    const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('pathFn');
 
     d3.select(this.element)
       .datum(datum)
       .transition().duration(duration)
       .attr('d', pathFn);
-
-    points.attr('opacity', (d) => this.showNode(hoverData, d))
-      .transition().duration(duration)
-      .attr('cx', xAccessor)
-      .attr('cy', yAccessor);
-
-    points.enter().append('circle')
-      .attr('class', 'pt')
-      .attr('cx', xAccessor)
-      .attr('cy', yAccessor)
-      .attr('r', 3)
-      .attr('opacity', (d) => this.showNode(hoverData, d));
-
-    points.exit().remove();
 
     if (datum.length === 1) {
       // move single point into position

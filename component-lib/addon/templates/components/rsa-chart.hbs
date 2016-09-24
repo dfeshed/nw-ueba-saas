@@ -3,12 +3,11 @@
     <rect class="rsa-chart-background" width="{{graphWidth}}" height="{{graphHeight}}"></rect>
     {{yield (hash
       data=data
-      xScale=xScale
-      yScale=yScale
-      graphWidth=graphWidth
+      duration=duration
       graphHeight=graphHeight
-      hoverData=hoverData
-      duration=duration)
+      graphWidth=graphWidth
+      xScale=xScale
+      yScale=yScale)
     }}
   </g>
 </svg>

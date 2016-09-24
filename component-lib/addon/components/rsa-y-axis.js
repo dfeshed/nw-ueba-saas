@@ -13,7 +13,7 @@ export default Component.extend({
   classNames: ['rsa-y-axis'],
   tagName: 'g',
 
-  duration: 300,
+  duration: 0,
   rotation: 0,
   scale: null,
   tickCount: 10,
