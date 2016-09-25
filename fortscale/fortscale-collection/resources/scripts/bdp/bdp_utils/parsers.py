@@ -158,7 +158,7 @@ def _throttling_force_type(i):
         splitted = [definition.strip().split('=') for definition in i.split(',')]
         return dict((a, int(b)) for a, b in splitted)
     except Exception:
-        raise argparse.ArgumentTypeError('must be of format <data_source>:<number>,<data_source>:<number>...')
+        raise argparse.ArgumentTypeError('must be of format <data_source>=<number>,<data_source>=<number>...')
 
 
 throttling = argparse.ArgumentParser(add_help=False)
