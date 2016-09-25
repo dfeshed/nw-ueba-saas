@@ -18,11 +18,13 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
+import fortscale.web.rest.entities.activity.UserActivityData;
 import javafx.util.Pair;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.mutable.MutableDouble;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -67,6 +69,7 @@ public class ApiUserController extends BaseController{
 	private static final String USER_DEVICE_COUNT_COLUMN_NAME = "Total Devices";
 	private static final String USER_TAGS_COLUMN_NAME = "Tags";
 	private static final String ALL_WATCHED = "allWatched";
+	private List<String> fieldsRequired;
 
 	@Autowired
 	private UserServiceFacade userServiceFacade;
@@ -103,28 +106,28 @@ public class ApiUserController extends BaseController{
 
 	private static final String DEFAULT_SORT_FIELD = "username";
 
+	public ApiUserController() {
+		fieldsRequired.add(User.ID_FIELD);
+		fieldsRequired.add(User.usernameField);
+		fieldsRequired.add(User.followedField);
+		fieldsRequired.add(User.displayNameField);
+		fieldsRequired.add(User.alertsCountField);
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.positionField));
+		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField));
+		fieldsRequired.add(User.tagsField);
+	}
+
+
 	/**
 	 * The API to get all users. GET: /api/user
 	 */
 	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
 	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
-		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
-		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(), sortUserDesc);
+		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(),
+				userRestFilter.getSortField(), userRestFilter.getSortDirection());
 
-        if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
-            List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
-            List<String> userIds = new ArrayList<>();
+		List<User> users = getUsers(userRestFilter, pageRequest, null);
 
-            usersFromCache.forEach(user -> {
-                userIds.add(user.getId());
-            });
-
-            userRestFilter.setUserIds(userIds);
-        }
-
-		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
-
-		setSeverityOnUsersList(users);
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
 		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
@@ -513,6 +516,9 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(method = RequestMethod.GET , value = "/export")
 	@LogException
 	public void exportUsersToCsv(UserRestFilter filter, HttpServletResponse httpResponse)  throws  Exception{
+
+		List<User> users = getUsers(filter, null, fieldsRequired);
+
 		/*
 			Set response type as CSV
 		 */
@@ -522,18 +528,17 @@ public class ApiUserController extends BaseController{
 		httpResponse.setHeader(headerKey, headerValue);
 		httpResponse.setContentType(CSV_CONTENT_TYPE);
 		filter.setAddAlertsAndDevices(true);
-		DataBean<List<UserDetailsBean>> users= getUsers(filter);
 		CSVWriter csvWriter = new CSVWriter(new OutputStreamWriter(httpResponse.getOutputStream()));
 		String[] tableTitleRow = { USER_NAME_COLUMN_NAME, DISPLAY_NAME_COLUMN_NAME, USER_ROLE_COLUMN_NAME,
 				USER_DEPARTMENT_COLUMN_NAME, USER_WATCHED_COLUMN_NAME, USER_RISK_SCORE_COLUMN_NAME,
 				USER_ALERT_COUNT_COLUMN_NAME, USER_DEVICE_COUNT_COLUMN_NAME, USER_TAGS_COLUMN_NAME };
+
 		csvWriter.writeNext(tableTitleRow);
-		users.getData().stream().forEach(userBean -> {
-			User user = userBean.getUser();
+		users.stream().forEach(user -> {
 			String[] userRow = {user.getUsername(), user.getDisplayName(), user.getAdInfo().getPosition(),
-					userBean.getDepartment(), BooleanUtils.toStringTrueFalse(user.getFollowed()),
+					user.getAdInfo().getDepartment(), BooleanUtils.toStringTrueFalse(user.getFollowed()),
 					String.valueOf(user.getScore()), String.valueOf(user.getAlertsCount()),
-					String.valueOf(userBean.getDevices().size()), StringUtils.join(user.getTags(), ',')};
+					String.valueOf(getDevices(user).size()), StringUtils.join(user.getTags(), ',')};
 			csvWriter.writeNext(userRow);
 		});
 		csvWriter.close();
@@ -572,6 +577,25 @@ public class ApiUserController extends BaseController{
 		return result;
 	}
 
+	private List<User> getUsers(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
+
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+			List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
+			List<String> userIds = new ArrayList<>();
+
+			usersFromCache.forEach(user -> {
+				userIds.add(user.getId());
+			});
+
+			userRestFilter.setUserIds(userIds);
+		}
+
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
+
+		setSeverityOnUsersList(users);
+		return users;
+	}
+
 	private class TaggedUsersCount {
 
 		public int count;
@@ -595,19 +619,29 @@ public class ApiUserController extends BaseController{
 			User user = userDetailsBean.getUser();
 			List<Alert> usersAlerts = alertsService.getOpenAlertsByUsername(user.getUsername());
 			userDetailsBean.setAlerts(usersAlerts);
-			List<UserActivitySourceMachineDocument> userSourceMachines;
-			try {
-				userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
-						Integer.MAX_VALUE);
-			} catch (Exception ex) {
-				logger.warn("failed to get user source machines");
-				userSourceMachines = new ArrayList<>();
-			}
-			userDetailsBean.setDevices(userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3));
+
+			List<UserActivitySourceMachineDocument> userSourceMachines = getDevices(user);
+			List<UserActivityData.DeviceEntry> deviceEntries = userDeviceUtils.convertDeviceDocumentsResponse(userSourceMachines, 3);
+			userDetailsBean.setDevices(deviceEntries);
 		}
 	}
 
-	private PageRequest createPaging(Integer size, Integer fromPage, Sort sortUserDesc) {
+	private List<UserActivitySourceMachineDocument> getDevices(User user) {
+		List<UserActivitySourceMachineDocument> userSourceMachines;
+		try {
+            userSourceMachines = userActivityService.getUserActivitySourceMachineEntries(user.getId(),
+                    Integer.MAX_VALUE);
+        } catch (Exception ex) {
+            logger.warn("failed to get user source machines");
+            userSourceMachines = new ArrayList<>();
+        }
+		return userSourceMachines;
+	}
+
+	private PageRequest createPaging(Integer size, Integer fromPage, String sortField, String sortDirection) {
+
+		Sort sortUserDesc = createSorting(sortField, sortDirection);
+
 		// Create paging
 		Integer pageSize = 10;
 		if (size != null) {
