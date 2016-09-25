@@ -103,6 +103,8 @@ def open_overrides_file(overriding_path, jar_name=None, path_in_jar=None, create
         if create_if_not_exist:
             with FileWriter(overriding_path) as overriding_f:
                 shutil.copyfileobj(f, overriding_f)
+            f.close()
+            f = zf.open(path_in_jar, 'r')
         yield f
         f.close()
         zf.close()
