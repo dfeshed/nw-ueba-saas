@@ -6,7 +6,9 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+@Configurable(preConstruction = true)
 public class AggrInternalAndKafkaEventTopologyService extends AggrKafkaEventTopologyService {
 	private static final Logger logger = Logger.getLogger(AggrInternalAndKafkaEventTopologyService.class);
 

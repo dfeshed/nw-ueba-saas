@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.bucket.repository;
 import com.mongodb.WriteResult;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -13,6 +14,7 @@ import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
+@Configurable(preConstruction = true)
 public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadataRepositoryCustom {
 	@Autowired
 	private MongoTemplate mongoTemplate;
