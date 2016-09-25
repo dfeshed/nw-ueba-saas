@@ -28,9 +28,13 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
 	@Autowired
-	private	StatsService statsService;
+	StatsService statsService;
 
 	private FeatureBucketStrategyStoreMetrics metrics;
+
+	public FeatureBucketStrategyMongoStore() {
+		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "mongo");
+	}
 
 	@Override
 	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime) {
@@ -48,7 +52,6 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "mongo");
 		if (!mongoDbUtilService.collectionExists(COLLECTION_NAME)) {
 			mongoDbUtilService.createCollection(COLLECTION_NAME);
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD,Direction.DESC));

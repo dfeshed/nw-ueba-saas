@@ -16,10 +16,12 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 public class FeatureBucketMetadataRepositoryImpl implements FeatureBucketMetadataRepositoryCustom {
 	@Autowired
 	private MongoTemplate mongoTemplate;
+	@Autowired
+	private  StatsService statsService;
 
 	private FeatureBucketMetadataRepositoryMetrics metrics;
 
-	public FeatureBucketMetadataRepositoryImpl(StatsService statsService) {
+	public FeatureBucketMetadataRepositoryImpl() {
 		metrics = new FeatureBucketMetadataRepositoryMetrics(statsService);
 	}
 
