@@ -72,8 +72,16 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Override
 	public void window() {
 		long currentEpochtime = convertToSeconds(System.currentTimeMillis());
+
 		// Check if it's time to clean the cache from unused models - return if not
-		if (currentEpochtime - lastCleaningCacheEpochtime < secDiffBetweenCleaningCacheChecks) return;
+		if (currentEpochtime - lastCleaningCacheEpochtime < secDiffBetweenCleaningCacheChecks) {
+			logger.info("Not going to clean unused models from cache in this window. Set to clean every {} seconds.",
+					secDiffBetweenCleaningCacheChecks);
+			return;
+		}
+
+		logger.info("Going to clean unused models from cache. Set to clean every {} seconds.",
+				secDiffBetweenCleaningCacheChecks);
 		KeyValueStore<String, ModelsCacheInfo> store = getStore();
 		KeyValueIterator<String, ModelsCacheInfo> iterator = null;
 
