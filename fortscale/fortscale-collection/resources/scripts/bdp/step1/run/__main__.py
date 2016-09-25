@@ -76,6 +76,7 @@ def main():
     arguments = create_parser().parse_args()
     init_logging(logger)
     if not are_tasks_running(logger=logger,
+                             host=arguments.host,
                              task_names=['raw-events-prevalence-stats-task', 'hdfs-events-writer-task',
                                          'evidence-creation-task', '4769-events-filter', 'vpnsession-events-filter',
                                          'vpn-events-filter', 'service-account-tagging']):

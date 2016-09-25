@@ -58,6 +58,7 @@ def main():
     arguments = create_parser().parse_args()
     init_logging(logger)
     if not are_tasks_running(logger=logger,
+                             host=arguments.host,
                              task_names=['event-scoring-persistency-task', 'entity-events-scoring-task']):
         sys.exit(1)
 
