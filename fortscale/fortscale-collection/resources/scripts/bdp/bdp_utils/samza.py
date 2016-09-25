@@ -3,7 +3,11 @@ import subprocess
 from cm_api.api_client import ApiResource
 
 
-def are_tasks_running(logger, task_names):
+def are_tasks_running(logger, host, task_names):
+    logger.info('making sure Kafka is up and running...')
+    if _get_service(host=host, service_name='kafka').serviceState != 'STARTED':
+        logger.error('please start Kafka and then try again')
+        return False
     logger.info('making sure all relevant Samza tasks are up and running (' +
                 ', '.join(task_names) + ')...')
     ps_output = subprocess.Popen('ps -ef', shell=True, env={'LANG': 'C'}, stdout=subprocess.PIPE).communicate()[0]
@@ -16,14 +20,14 @@ def are_tasks_running(logger, task_names):
     return True
 
 
-def _get_fsstreaming(host):
+def _get_service(host, service_name):
     api = ApiResource(host, username='admin', password='admin')
     cluster = filter(lambda c: c.name == 'cluster', api.get_all_clusters())[0]
-    return filter(lambda service: service.name == 'fsstreaming', cluster.get_all_services())[0]
+    return filter(lambda service: service.name == service_name, cluster.get_all_services())[0]
 
 
 def _restart_tasks(logger, host, task_names=None):
-    fsstreaming = _get_fsstreaming(host=host)
+    fsstreaming = _get_service(host=host, service_name='fsstreaming')
     restarts = {}
     for task in fsstreaming.get_all_roles():
         if task_names is None or task.type in task_names:

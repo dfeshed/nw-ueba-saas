@@ -84,6 +84,7 @@ def main():
     arguments = create_parser().parse_args()
     init_logging(logger)
     if not are_tasks_running(logger=logger,
+                             host=arguments.host,
                              task_names=[]):
         sys.exit(1)
 
