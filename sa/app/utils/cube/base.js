@@ -368,7 +368,7 @@ export default EmberObject.extend({
 
     // Generate the field objects from the given configs.
     let cfg = this.get('fieldsConfig');
-    let me  = this;
+    let me = this;
     if (cfg) {
       Object.keys(cfg).forEach(function(key) {
         me.addField(key, cfg[key]);

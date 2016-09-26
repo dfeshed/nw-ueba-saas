@@ -10,7 +10,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
   integration: true,
 
   beforeEach() {
-    let allCube =  IncidentsCube.create({
+    let allCube = IncidentsCube.create({
       array: []
     });
 
@@ -60,7 +60,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
     this.set('model', {
       allIncidents: allCube,
       users: [
-        EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }),
+        EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
         EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
         EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' })
       ],

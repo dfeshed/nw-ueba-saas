@@ -34,7 +34,7 @@ export default function(server) {
       all.length, // total = hard-coded: size of entire mirage 'core-events' collection
       frames,
       0,
-      get(all, 'lastObject') ===  get(results, 'lastObject')  // send `complete: true` if you reach the end of the collection
+      get(all, 'lastObject') === get(results, 'lastObject')  // send `complete: true` if you reach the end of the collection
     );
   });
 }

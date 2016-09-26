@@ -6,7 +6,7 @@ moduleForComponent('rsa-respond/incident-detail/detail-alertsgrid', 'Integration
 });
 
 test('it renders', function(assert) {
-  let model =  [{
+  let model = [{
     'id': '56932c61e4b0e179f1af6556',
     'incidentCreated': 1452485774539,
     'incidentId': 'INC-490',

@@ -115,7 +115,7 @@ export default Component.extend(HasTableParent, {
       if ($.isNumeric(w) || ((typeof w === 'string') && w.match(/px$/))) {
         w = parseInt(w, 10);
       } else {
-        w =  parseInt(this.$().innerWidth(), 10);
+        w = parseInt(this.$().innerWidth(), 10);
       }
       this._initialWidth = w;
     }

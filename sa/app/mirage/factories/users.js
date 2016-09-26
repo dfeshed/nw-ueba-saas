@@ -4,7 +4,7 @@
  * @public
  */
 
-import { faker, Factory }  from 'ember-cli-mirage';
+import { faker, Factory } from 'ember-cli-mirage';
 
 const users = ['admin', 'Ian', 'Justin', 'Tony', 'Bo'];
 

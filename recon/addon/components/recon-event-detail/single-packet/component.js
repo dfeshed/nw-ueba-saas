@@ -91,7 +91,7 @@ export default Component.extend({
    */
   @computed('decodedData', 'payloadOffset', 'packetFields')
   bytes(decodedData, payloadOffset, packetFields) {
-    let  bytes;
+    let bytes;
 
     // Has the `decodedData` remained the same since last time we were here?
     // This might happen, for example, if the `packetFields` was fetched async in parallel and arrived after the `decodedData`.
@@ -178,7 +178,7 @@ export default Component.extend({
    * @public
    */
   findPacketFieldForByte(byteIndex) {
-    let field  = (this.get('packetFields') || []).find((field) => {
+    let field = (this.get('packetFields') || []).find((field) => {
       return (byteIndex >= field.position) && (byteIndex < (field.position + field.length));
     });
 

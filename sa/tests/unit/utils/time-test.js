@@ -42,7 +42,7 @@ test('it works', function(assert) {
   assert.ok(typeof util.toMillisec === 'function', 'toMillisec() method not defined.');
   assert.equal(util.toMillisec(null), 60 * 60 * 1000 * 24, 'Unexpected result from toMillisec.');
   assert.equal(util.toMillisec(util.UNITS.HOUR), 60 * 60 * 1000, 'Unexpected result from toMillisec.');
-  assert.equal(util.toMillisec(util.UNITS.DAY),  60 * 60 * 1000 * 24, 'Unexpected result from toMillisec.');
+  assert.equal(util.toMillisec(util.UNITS.DAY), 60 * 60 * 1000 * 24, 'Unexpected result from toMillisec.');
   assert.equal(util.toMillisec(util.UNITS.WEEK), 60 * 60 * 1000 * 24 * 7, 'Unexpected result from toMillisec.');
   assert.equal(util.toMillisec(util.UNITS.MONTH), 60 * 60 * 1000 * 24 * 30, 'Unexpected result from toMillisec.');
 });

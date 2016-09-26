@@ -4,7 +4,7 @@
  * @public
  */
 
-import { faker, Factory }  from 'ember-cli-mirage';
+import { faker, Factory } from 'ember-cli-mirage';
 import aliases from '../helpers/meta-aliases';
 
 const MEDIUMS = Object.keys(aliases.medium);

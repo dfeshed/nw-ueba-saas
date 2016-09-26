@@ -6,7 +6,7 @@
  * @public
  */
 import Ember from 'ember';
-import computed,  { readOnly } from 'ember-computed-decorators';
+import computed, { readOnly } from 'ember-computed-decorators';
 
 const {
   Component

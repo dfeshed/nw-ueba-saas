@@ -186,10 +186,10 @@ export default Route.extend({
     let incidentModels;
 
     if (this.get('respondMode.selected') === 'card') {
-      let newCube =  IncidentsCube.create({
+      let newCube = IncidentsCube.create({
         array: []
       });
-      let inProgressCube =  IncidentsCube.create({
+      let inProgressCube = IncidentsCube.create({
         array: [],
         sortField: 'lastUpdated'
       });
@@ -210,7 +210,7 @@ export default Route.extend({
         (incidents)=> [
           incidents.filterBy('statusSort', incStatus.NEW),
           incidents.filter((incident) => {
-            return (incident.statusSort === incStatus.ASSIGNED) ||  (incident.statusSort === incStatus.IN_PROGRESS);
+            return (incident.statusSort === incStatus.ASSIGNED) || (incident.statusSort === incStatus.IN_PROGRESS);
           })
         ]);
 

@@ -3,7 +3,7 @@
  * @public
  */
 
-import { Factory }  from 'ember-cli-mirage';
+import { Factory } from 'ember-cli-mirage';
 
 export default Factory.extend({
   versionNumber: '10.6'

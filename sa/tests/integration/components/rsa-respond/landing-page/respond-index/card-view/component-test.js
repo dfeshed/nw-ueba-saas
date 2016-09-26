@@ -10,10 +10,10 @@ moduleForComponent('rsa-respond/landing-page/respond-index/card-view', 'Integrat
   integration: true,
 
   beforeEach() {
-    let newCube =  IncidentsCube.create({
+    let newCube = IncidentsCube.create({
       array: []
     });
-    let inProgressCube =  IncidentsCube.create({
+    let inProgressCube = IncidentsCube.create({
       array: []
     });
 
@@ -87,7 +87,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/card-view', 'Integrat
       newIncidents: newCube,
       inProgressIncidents: inProgressCube,
       users: [
-        EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }),
+        EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
         EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
         EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' })
       ],

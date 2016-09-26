@@ -119,7 +119,7 @@ function tooltip(field, value, opts = {}) {
  * @public
  */
 function width(value, opts = {}) {
-  let w = _parseNumberAndUnits(value) ||  _parseNumberAndUnits(opts.defaultWidth);
+  let w = _parseNumberAndUnits(value) || _parseNumberAndUnits(opts.defaultWidth);
   return w.auto ? 'auto' : `${w.num}${w.units || 'px'}`;
 }
 

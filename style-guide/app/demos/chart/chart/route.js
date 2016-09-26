@@ -76,7 +76,7 @@ export default Route.extend({
           { 'name': 'day', 'type': 'TimeT', 'value': 1412553600000, 'count': 53948266 },
           { 'name': 'day', 'type': 'TimeT', 'value': 1412640000000, 'count': 63232914 },
           { 'name': 'day', 'type': 'TimeT', 'value': 1412726400000, 'count': 52186213 },
-          { 'name': 'day', 'type': 'TimeT', 'value': 1412812800000, 'count': 3251360  }
+          { 'name': 'day', 'type': 'TimeT', 'value': 1412812800000, 'count': 3251360 }
         ]
       ],
       multiSeries: [
@@ -90,7 +90,7 @@ export default Route.extend({
           { 'name': 'day', 'type': 'TimeT', 'value': 1412553600000, 'count': 53948266 },
           { 'name': 'day', 'type': 'TimeT', 'value': 1412640000000, 'count': 63232914 },
           { 'name': 'day', 'type': 'TimeT', 'value': 1412726400000, 'count': 52186213 },
-          { 'name': 'day', 'type': 'TimeT', 'value': 1412812800000, 'count': 3251360  }
+          { 'name': 'day', 'type': 'TimeT', 'value': 1412812800000, 'count': 3251360 }
         ],
         [
           { 'name': 'day', 'type': 'TimeT', 'value': 1412011600000, 'count': 47840797 },
@@ -102,7 +102,7 @@ export default Route.extend({
           { 'name': 'day', 'type': 'TimeT', 'value': 1412553600000, 'count': 43548266 },
           { 'name': 'day', 'type': 'TimeT', 'value': 1412640000000, 'count': 53832914 },
           { 'name': 'day', 'type': 'TimeT', 'value': 1412726400000, 'count': 48186213 },
-          { 'name': 'day', 'type': 'TimeT', 'value': 1412812800000, 'count': 2051360  }
+          { 'name': 'day', 'type': 'TimeT', 'value': 1412812800000, 'count': 2051360 }
         ]
       ]
     };

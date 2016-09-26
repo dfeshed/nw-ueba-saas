@@ -3,7 +3,7 @@ const { Route } = Ember;
 
 export default Route.extend({
   model() {
-    return   {
+    return {
       meta: [
         [
           'size',

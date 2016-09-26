@@ -180,7 +180,7 @@ test('The tile component is rendered properly.', function(assert) {
           'groupby_filename': 'cotlow_awards.cfm' } }]
   });
 
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }),
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' }) ];
 
@@ -567,7 +567,7 @@ test('The update indicator component is rendered properly when an asynchronous u
     'assignee': { 'id': '1' },
     'asyncUpdate': true
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }) ];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -588,7 +588,7 @@ test('The update indicator component is rendered properly when an asynchronous u
     'created': 1452485774539,
     'assignee': { 'id': '1' }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' }) ];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -606,7 +606,7 @@ test('If the alert count is missing, then the default value is "-".', function(a
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'eventCount': 5
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' })];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -623,7 +623,7 @@ test('If the event count is missing, then the default value is "-".', function(a
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'alertCount': 5
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1',  email: 'user1@rsa.com' })];
+  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
 
   this.set('testInc', testInc);
   this.set('users', users);

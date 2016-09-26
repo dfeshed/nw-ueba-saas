@@ -66,7 +66,7 @@ export default Component.extend({
 
   renderTable() {
     let { cellClass, headerCellClass, byteFormat } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat');
-    let  el = d3.select(this.element);
+    let el = d3.select(this.element);
 
     el.select('table').remove();
 
@@ -230,7 +230,7 @@ export default Component.extend({
    */
   selectionDidChange: observer('selection', function() {
     let tds = this.$(`.${this.get('cellClass')}`);
-    let  toggleSelected = function(isSelected, start, end) {
+    let toggleSelected = function(isSelected, start, end) {
       [].slice.apply(tds, [start, end + 1]).forEach((td) => {
         td.setAttribute('data-is-selected', isSelected);
       });

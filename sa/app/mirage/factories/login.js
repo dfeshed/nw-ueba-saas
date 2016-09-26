@@ -3,7 +3,7 @@
  * @public
  */
 
-import { Factory }  from 'ember-cli-mirage';
+import { Factory } from 'ember-cli-mirage';
 
 const logins = ['admin', 'Ian', 'Justin', 'Tony'];
 

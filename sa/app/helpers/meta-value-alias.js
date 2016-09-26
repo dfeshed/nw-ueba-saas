@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import formatUtil  from 'sa/components/rsa-investigate/events-table-row/format-util';
+import formatUtil from 'sa/components/rsa-investigate/events-table-row/format-util';
 
 const { Helper } = Ember;
 

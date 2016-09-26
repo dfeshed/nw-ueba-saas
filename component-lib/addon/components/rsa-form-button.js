@@ -59,7 +59,7 @@ export default Component.extend({
 
   isSplit: equal('dropdown', 'split'),
 
-  withDropdown: match('dropdown',  /standard|split/),
+  withDropdown: match('dropdown', /standard|split/),
 
   /**
   * Responsible for toggling visibility of dropdown list

@@ -4,7 +4,7 @@
  * @public
  */
 
-import { Response }  from 'ember-cli-mirage';
+import { Response } from 'ember-cli-mirage';
 import { parsePostData } from 'sa/mirage/helpers/utils';
 
 export default function(config) {
@@ -13,7 +13,7 @@ export default function(config) {
     if (db.logins.where({ username: params.username, password: params.password })[0]) {
       return { 'access_token': 'success','token_type': 'bearer','refresh_token': 'success','expires_in': 43199,'user': { 'id': 'local','name': 'Local Service','description': 'The local service administrator' } };
     } else {
-      return new Response(401,  { message: 'invalid credentials' });
+      return new Response(401, { message: 'invalid credentials' });
     }
   });
 

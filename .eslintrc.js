@@ -45,6 +45,7 @@ module.exports = {
     }],
     'no-empty': 'error',
     'no-multiple-empty-lines': 'error',
+    'no-multi-spaces': 'error',
     'no-spaced-func': 'error',
     'no-trailing-spaces': 'error',
     'no-useless-concat': 'error',

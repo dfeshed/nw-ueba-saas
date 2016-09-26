@@ -96,9 +96,9 @@ export function actionFlag(languageKey) {
 
   // If the result doesn't match an enumerated value, apply a default.
   if (
-    (action !== LANGUAGE_KEY_ACTION_HIDDEN)  &&
-    (action !== LANGUAGE_KEY_ACTION_OPEN)  &&
-    (action !== LANGUAGE_KEY_ACTION_CLOSE)  &&
+    (action !== LANGUAGE_KEY_ACTION_HIDDEN) &&
+    (action !== LANGUAGE_KEY_ACTION_OPEN) &&
+    (action !== LANGUAGE_KEY_ACTION_CLOSE) &&
     (action !== LANGUAGE_KEY_ACTION_AUTO)
   ) {
     action = LANGUAGE_KEY_ACTION_HIDDEN;

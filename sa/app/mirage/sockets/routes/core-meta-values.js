@@ -1,4 +1,4 @@
-import { faker }  from 'ember-cli-mirage';
+import { faker } from 'ember-cli-mirage';
 import aliases from '../../helpers/meta-aliases';
 
 const ENUMS_BY_META_NAME = {};

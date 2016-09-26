@@ -186,7 +186,7 @@ export default Component.extend(DomWatcher, {
    */
   currentPageItems: computed('currentPage', 'items.[]', '_columnsPerPage', function() {
     let { currentPage, items, _columnsPerPage } = this.getProperties('currentPage', 'items', '_columnsPerPage');
-    let pageItems =  (items && currentPage) ? items.slice(currentPage.firstItemIndex, currentPage.lastItemIndex + 1) : [];
+    let pageItems = (items && currentPage) ? items.slice(currentPage.firstItemIndex, currentPage.lastItemIndex + 1) : [];
     let len = pageItems.length;
 
     // Add placeholder items to fill in empty spots in last row (if any).
