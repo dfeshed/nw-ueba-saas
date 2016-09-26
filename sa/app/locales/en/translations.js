@@ -85,7 +85,7 @@ export default $.extend({}, BaseTranslations, {
     }
   },
   config: {
-    title: 'Config',
+    title: 'Configure',
     details: 'Config contents go here.'
   },
   admin: {
