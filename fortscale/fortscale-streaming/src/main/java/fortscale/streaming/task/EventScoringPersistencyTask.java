@@ -20,6 +20,8 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
 
     private Counter processedMessageCount;
 
+    private static final String EVENT_SCORING_PERSISTENCY_TASK_CONTROL_TOPIC = "fortscale-event-scoring-persistency-stream-control";
+
     @Override
     protected void wrappedInit(Config config, TaskContext context) throws Exception {
         eventScoringPersistencyTaskService = new EventScoringPersistencyTaskService();
@@ -29,6 +31,14 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
     @Override
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         processedMessageCount.inc();
+
+        // enables persist due to message in control topic
+        String topic = getIncomingMessageTopicName(envelope);
+        if (topic.equals(EVENT_SCORING_PERSISTENCY_TASK_CONTROL_TOPIC))
+        {
+            eventScoringPersistencyTaskService.flush();
+            return;
+        }
 
         String messageText = (String)envelope.getMessage();
         JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);

@@ -384,6 +384,14 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	}
 
+	/**
+	 * Get topic name out of incoming message envelope
+	 * @param envelope - message received in {@link #wrappedProcess(IncomingMessageEnvelope, MessageCollector, TaskCoordinator)}
+	 * @return topic name of incoming message
+     */
+	protected String getIncomingMessageTopicName(IncomingMessageEnvelope envelope) {
+		return envelope.getSystemStreamPartition().getSystemStream().getStream();
+	}
 
 	// --- getters/setters ---
 
