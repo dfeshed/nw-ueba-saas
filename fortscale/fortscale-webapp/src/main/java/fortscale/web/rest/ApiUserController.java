@@ -107,6 +107,7 @@ public class ApiUserController extends BaseController{
 	private static final String DEFAULT_SORT_FIELD = "username";
 
 	public ApiUserController() {
+		fieldsRequired = new ArrayList<>();
 		fieldsRequired.add(User.ID_FIELD);
 		fieldsRequired.add(User.usernameField);
 		fieldsRequired.add(User.followedField);
