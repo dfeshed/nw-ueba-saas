@@ -15,8 +15,7 @@ export default Component.extend({
   request: service(),
 
   layout,
-  tagName: 'fill',
-  classNameBindings: [':recon-container'],
+  tagName: '',
 
   // Component state
   packetFields: null,

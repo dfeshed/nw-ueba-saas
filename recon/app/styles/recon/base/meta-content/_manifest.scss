@@ -9,6 +9,7 @@
 }
 .recon-meta-content-item {
   padding: rsa-whitespace(least) 0;
+  word-break: break-all;
   .meta-name {
     color: rsa-color(gray, light);
   }

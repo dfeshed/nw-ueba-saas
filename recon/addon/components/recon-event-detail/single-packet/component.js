@@ -1,10 +1,10 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import layout from './template';
-import IntersectionObserverMixin from 'ember-intersection-observer';
-const { Component, K, on, set } = Ember;
+import { not, readOnly } from 'ember-computed-decorators';
+const { Component, K, on, run, set } = Ember;
 
-export default Component.extend(IntersectionObserverMixin, {
+export default Component.extend({
   layout,
   tagName: 'section',
   classNames: 'rsa-packet',
@@ -13,6 +13,8 @@ export default Component.extend(IntersectionObserverMixin, {
   packetFields: null,
   index: null,
   selection: null,
+  viewportEntered: false,
+  @readOnly @not('viewportEntered') viewportExited: null,
 
   /**
    * The number of bytes to display in a single row.
@@ -185,14 +187,28 @@ export default Component.extend(IntersectionObserverMixin, {
       index: this.get('packetFields').indexOf(field)
     };
   },
-
-/*
- * This is for loading and unloading on entering viewport
- */
+ /**
+   * Observe the component's this.element intersecting with the root element
+   * @private
+   */
   setupIntersectionObserver: on('didInsertElement', function() {
-    this.setProperties({
-      rootMargin: '1000px 0px 1000px 0px',
+    const options = {
+      rootMargin: '2000px 0px 2000px 0px',
       threshold: 0
-    });
-  })
+    };
+
+    const observer = new IntersectionObserver(([entry]) => {
+      run(() => {
+        // If intersectionRatio <= 0 it is hidden
+        this.set('viewportEntered', entry.intersectionRatio > 0);
+      });
+    }, options);
+
+    observer.observe(this.element);
+
+    this.set('observer', observer);
+  }),
+  willDestroyElement() {
+    this.get('observer').disconnect();
+  }
 });

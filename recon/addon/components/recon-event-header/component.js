@@ -4,8 +4,7 @@ const { Component } = Ember;
 
 export default Component.extend({
   layout,
-  classNameBindings: [':recon-event-header'],
-  tagName: 'container',
+  tagName: '',
 
   // INPUTS
   headerItems: null,

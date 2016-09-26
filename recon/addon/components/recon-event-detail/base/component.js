@@ -8,7 +8,6 @@ const {
 
 export default Component.extend({
   request: service(),
-  tagName: 'box',
 
   // INPUTS
   contentErrorAction: null,

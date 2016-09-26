@@ -13,13 +13,21 @@
   updateReconstructionView=(action 'updateReconstructionView')
 }}
 
-{{recon-event-content
-  eventId=eventId
-  endpointId=endpointId
-  packetFields=packetFields
-  meta=meta
-  reconstructionType=reconstructionType
-  showMetaDetails=showMetaDetails
-  showRequestData=showRequestData
-  showResponseData=showResponseData
-}}
+<hbox>
+  {{recon-event-content
+    eventId=eventId
+    endpointId=endpointId
+    packetFields=packetFields
+    meta=meta
+    reconstructionType=reconstructionType
+    showMetaDetails=showMetaDetails
+    showRequestData=showRequestData
+    showResponseData=showResponseData
+  }}
+
+  {{#if showMetaDetails}}
+    <vbox xs="4" class="event-content-box">
+      {{recon-meta-content meta=meta}}
+    </vbox>
+  {{/if}}
+</hbox>

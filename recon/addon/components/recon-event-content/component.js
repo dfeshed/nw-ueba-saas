@@ -5,7 +5,7 @@ const { Component } = Ember;
 export default Component.extend({
   layout,
   classNameBindings: [':recon-event-content'],
-  tagName: 'hbox',
+  tagName: 'vbox',
 
   contentError: null,
 
@@ -14,7 +14,6 @@ export default Component.extend({
   eventId: null,
   meta: null,
   packetFields: null,
-  showMetaDetails: null,
   reconstructionType: null,
   // END INPUTS
 

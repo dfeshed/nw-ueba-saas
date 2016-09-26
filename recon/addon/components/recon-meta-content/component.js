@@ -4,5 +4,5 @@ const { Component } = Ember;
 
 export default Component.extend({
   layout,
-  classNameBindings: [':recon-meta-content']
+  classNameBindings: [':recon-meta-content', ':scroll-box']
 });

@@ -12,33 +12,37 @@
 
 {{rsa-icon
   active=showHeaderData
-  class='toggle-header'
+  class='toggle-header header-toggle'
   click=toggleHeaderData
   name='layout-6'
   size='large'}}
 
 {{rsa-icon
   active=showResponseData
+  class='header-toggle'
   name='arrow-circle-right-2'
   size='large'}}
 
 {{rsa-icon
   active=showRequestData
+  class='header-toggle'
   name='arrow-circle-left-2'
   size='large'}}
 
 {{rsa-icon
   active=true
+  class='header-toggle'
   name='view-agenda'
   size='large'}}
 
 {{rsa-icon
+  class='header-toggle'
   name='layout-4'
   size='large'}}
 
 {{rsa-icon
   active=showMetaDetails
-  class='toggle-meta'
+  class='toggle-meta header-toggle'
   click=(action 'toggleMetaDetails')
   name='layout-2'
   size='large'}}
@@ -46,15 +50,18 @@
 <div class="divider"></div>
 
 {{rsa-icon
+  class='header-toggle'
   name='cog'
   size='large'}}
 
 {{rsa-icon
+  class='header-toggle'
   click=(action 'toggleExpanded')
   name=(concat 'arrow-' arrowDirection '-9')
   size='large'}}
 
 {{rsa-icon
+  class='header-toggle'
   click=closeRecon
   name='close'
   size='large'}}

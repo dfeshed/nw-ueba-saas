@@ -5,9 +5,18 @@
 /* Import recon styles */
 @import 'recon/manifest';
 
+html, body {
+  height: 100%;
+}
+
 body {
   color: rsa-color(gray, light);
   margin: 0;
+  > div {
+    display: flex;
+    height: 100%;
+    flex-direction: column-reverse;
+  }
 }
 
 page {
