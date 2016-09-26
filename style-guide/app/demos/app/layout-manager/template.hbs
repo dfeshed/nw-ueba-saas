@@ -4,6 +4,192 @@
 
 <hbox>
   <div class="scroll-box">
+    {{#spec-category title="Generic Layouts with Flexi"}}
+      {{#spec-member title="Header with scrollable content"}}
+        <vbox class="layout-demo">
+          <vbox fit>
+            <h1>Header Text</h1>
+          </vbox>
+          <vbox>
+            <div class="scroll-box">
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+            </div>
+          </vbox>
+        </vbox>
+
+        <code>
+          &lt;vbox>
+          <div>
+            <div>
+              &lt;vbox fit>
+              <div>&lt;h1>Header Text&lt;/h1></div>
+              &lt;/vbox>
+            </div>
+            <div>
+              &lt;vbox>
+              <div>
+                &lt;div class="scroll-box">
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                <div>&lt;p>Text&lt;/p></div>
+                &lt;/div>
+              </div>
+              &lt;/vbox>
+            </div>
+          </div>
+          &lt;/vbox>
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Header spanning panels with scrollable content"}}
+        <vbox class="layout-demo">
+          <vbox fit>
+            <h1>Header Text</h1>
+          </vbox>
+          <hbox>
+            <vbox sm="4">
+              <div class="scroll-box">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+              </div>
+            </vbox>
+
+            <vbox sm="4">
+              <div class="scroll-box">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+              </div>
+            </vbox>
+
+            <vbox sm="4">
+              <div class="scroll-box">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+              </div>
+            </vbox>
+          </hbox>
+        </vbox>
+
+        <code>
+          &lt;vbox>
+          <div>
+            <div>
+              &lt;vbox fit>
+              <div>&lt;h1>Header Text&lt;/h1></div>
+              &lt;/vbox>
+            </div>
+            <div>
+              &lt;hbox>
+              <div>
+                &lt;vbox sm="4">
+                <div>
+                  &lt;div class="scroll-box">
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  &lt;/div>
+                </div>
+                &lt;/vbox>
+              </div>
+              <div>
+                &lt;vbox sm="4">
+                <div>
+                  &lt;div class="scroll-box">
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  &lt;/div>
+                </div>
+                &lt;/vbox>
+              </div>
+              <div>
+                &lt;vbox sm="4">
+                <div>
+                  &lt;div class="scroll-box">
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  <div>&lt;p>Text&lt;/p></div>
+                  &lt;/div>
+                </div>
+                &lt;/vbox>
+              </div>
+              &lt;/hbox>
+            </div>
+          </div>
+          &lt;/vbox>
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+
     {{#spec-category}}
       {{#spec-member
         title="Generic Transition"
