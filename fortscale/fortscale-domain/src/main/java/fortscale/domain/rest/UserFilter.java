@@ -30,6 +30,8 @@ public class UserFilter extends RestFilter {
 	private Severity severity;
 	private Double minScore;
 	private Double maxScore;
+	private List<String> positions;
+	private List<String> departments;
 
 	public String getDisabledSince() {
 		return disabledSince;
@@ -175,6 +177,22 @@ public class UserFilter extends RestFilter {
 		this.maxScore = maxScore;
 	}
 
+	public List<String> getPositions() {
+		return positions;
+	}
+
+	public void setPositions(List<String> positions) {
+		this.positions = positions;
+	}
+
+	public List<String> getDepartments() {
+		return departments;
+	}
+
+	public void setDepartments(List<String> departments) {
+		this.departments = departments;
+	}
+
 	@JsonIgnore
 	public Set<DataSourceAnomalyTypePair> getAnomalyTypesAsSet() {
 		if (indicatorTypes == null){
@@ -218,6 +236,8 @@ public class UserFilter extends RestFilter {
 				|| Objects.equals(severity, that.severity)
 				|| Objects.equals(minScore, that.minScore)
 				|| Objects.equals(maxScore, that.maxScore)
+				|| Objects.equals(positions, that.positions)
+				|| Objects.equals(departments, that.departments)
 				);
 	}
 
@@ -226,6 +246,6 @@ public class UserFilter extends RestFilter {
 
 		return Objects.hash(disabledSince, isDisabled, isDisabledWithActivity, isTerminatedWithActivity, inactiveSince,
 				dataEntities, entityMinScore, isServiceAccount, searchFieldContains,  userTags, isWatched, alertTypes,
-				indicatorTypes, locations, severity, minScore, maxScore);
+				indicatorTypes, locations, severity, minScore, maxScore, positions, departments);
 	}
 }

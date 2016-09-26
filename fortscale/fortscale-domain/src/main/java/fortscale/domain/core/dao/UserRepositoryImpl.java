@@ -653,6 +653,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}
 
+		if (CollectionUtils.isNotEmpty(userRestFilter.getPositions())){
+			criteriaList.add(new Criteria(User.adPositionFieldName).in(userRestFilter.getPositions()));
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getDepartments())){
+			criteriaList.add(new Criteria(User.adDepartmentFieldName).in(userRestFilter.getDepartments()));
+		}
+
 		return criteriaList;
 	}
 
