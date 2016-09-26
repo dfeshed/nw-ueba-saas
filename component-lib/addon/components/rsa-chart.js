@@ -22,7 +22,7 @@ export default Component.extend({
   chartWidth: DEFAULT_WIDTH,
   chartHeight: DEFAULT_HEIGHT,
   data: null,
-  hoverData: null,
+  hoverIndex: null,
   interactive: true,
   isChartParent: true,
   // Adjust margins so that the axes fit
@@ -102,7 +102,13 @@ export default Component.extend({
         if (data && data.length > 0) {
           const x0 = xScale.invert(d3.mouse(this)[0]);
           const bisectLeft = d3.bisector((d) => d[xProp]).left;
-          self.set('hoverIndex', bisectLeft(data, x0, 1));
+          const i = bisectLeft(data, x0, 1);
+          const d0 = data[i - 1];
+          const d1 = data[i];
+          if (d0 && d1) {
+            const index = x0 - d0[xProp] > d1[xProp] - x0 ? i : i - 1;
+            self.set('hoverIndex', index);
+          }
         }
       });
   },
