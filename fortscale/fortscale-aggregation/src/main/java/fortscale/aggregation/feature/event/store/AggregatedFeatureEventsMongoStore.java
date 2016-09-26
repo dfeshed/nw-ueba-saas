@@ -2,8 +2,6 @@ package fortscale.aggregation.feature.event.store;
 
 import fortscale.aggregation.feature.event.*;
 import fortscale.utils.mongodb.FIndex;
-import org.apache.avro.generic.GenericData;
-import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
