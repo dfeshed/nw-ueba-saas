@@ -6,6 +6,7 @@
  * @public
  */
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 const {
   Mixin,
@@ -265,7 +266,9 @@ export default Mixin.create({
     // If we require response ids, validate that the response & request ids match.
     if (this.get('requireRequestId')) {
       if (this.get('_resolvedSocketRequestParams.id') !== (request && request.id)) {
-        Logger.warn('Received stream response with unexpected request id. Discarding it.\n', response);
+        if (config.socketDebug) {
+          Logger.warn('Received stream response with unexpected request id. Discarding it.\n', response);
+        }
         return;
       }
     }
