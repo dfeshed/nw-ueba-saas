@@ -317,7 +317,7 @@ public class UsernameService implements InitializingBean, CachingService {
 			Cache<String,String> cache = builder.build();
 
 
-			username = userRepository.findByfield(aDFieldName,aDFieldValue,partOrFullFlag);
+			username = userRepository.findUserNameByfield(aDFieldName, aDFieldValue, partOrFullFlag);
 
 			if (!StringUtils.isEmpty(username))
 				cache.put(aDFieldValue,username);
@@ -336,7 +336,7 @@ public class UsernameService implements InitializingBean, CachingService {
 		username = (String) cache.getIfPresent(aDFieldValue);
 		if(username == null)
 		{
-			username = userRepository.findByfield(aDFieldName,aDFieldValue,partOrFullFlag);
+			username = userRepository.findUserNameByfield(aDFieldName, aDFieldValue, partOrFullFlag);
 
 			if(!StringUtils.isEmpty(username) ) {
 				cache.put(aDFieldValue, username);

@@ -604,10 +604,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	 * Get field name and field value and return username that match to those inputs
 	 * @param fieldName -  the AD field to be based on the search
 	 * @param fieldValue - the AD given field value
-	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false - part (contain) )
 	 * @return
 	 */
-	public String findByfield(String fieldName,String fieldValue,boolean partOrFullFlag){
+	public String findUserNameByfield(String fieldName, String fieldValue, boolean partOrFullFlag){
 
 		Query query = new Query();
 		query.fields().include(User.usernameField);

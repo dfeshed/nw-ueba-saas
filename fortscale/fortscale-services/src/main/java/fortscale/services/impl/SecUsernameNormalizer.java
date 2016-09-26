@@ -23,12 +23,17 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 	public String normalize(String username, String domain, String classifier, boolean updateOnly) {
 		String ret = null;
 		serviceMetrics.normalizeUsernameSEC++;
+
+		//To lower the username and domain
 		username = username.toLowerCase();
 		domain = domain.toLowerCase();
+
 		logger.debug("Normalizing user - {}", username);
+
 		if (regexMatcher != null) {
 			logger.debug("Attempting to match regular expressions");
-			//get all matching regular expressions
+
+			//get all matching regular expressions for username only
 			for (String normalizedUsername: regexMatcher.match(username)) {
 				//if username found, return it
 				if (usernameService.isUsernameExist(normalizedUsername)) {
@@ -37,14 +42,31 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 					return ret;
 				}
 			}
+
+			//get all matching regular expressions for username@userdomain only
+			for (String normalizedUsername: regexMatcher.match(username + "@" + domain)) {
+				//if username found, return it
+				if (usernameService.isUsernameExist(normalizedUsername)) {
+					ret = normalizedUsername;
+					logger.debug("One user found - {}", ret);
+					return ret;
+				}
+			}
 		}
+
+
 		//no user was found or no matching regular expressions were found (most likely user is without @domain.com) -
 		//return the user with the account_domain value
 		logger.debug("No users found, trying to match user with domain - {}", domain);
+		serviceMetrics.MissNormalizationUsingheRegExpSec++;
+
 		if (usernameService.isUsernameExist(username + "@" + domain)) {
 			ret = username + "@" + domain;
 			logger.debug("One user found - {}", ret);
 		}
+
+		logger.debug("User missed normalization for username: {} and domain: {}",username,domain);
+		serviceMetrics.MissNormalizationSec++;
 		return ret;
 	}
 

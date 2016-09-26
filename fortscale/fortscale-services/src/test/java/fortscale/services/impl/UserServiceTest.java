@@ -6,10 +6,7 @@ import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.ClassifierScore;
-import fortscale.domain.core.Computer;
-import fortscale.domain.core.User;
+import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
@@ -27,10 +24,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -248,6 +242,41 @@ public class UserServiceTest {
 		verify(userRepository, times(numOfUsers)).save(any(User.class));
 		verify(usernameService, times(numOfUsers)).updateUsernameInCache(any(User.class));
 		verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), any(Class.class));
+	}
+
+	@Test
+	public void userNameSyncWithPrincipalNameForFirstTimeCreationTest()
+	{
+		User newUser = new User();
+		AdUser adUser = new AdUser();
+		adUser.setUserPrincipalName("principalTest@test.dom");
+		adUser.setsAMAccountName("principalTest");
+		adUser.setDistinguishedName("principalTestDN");
+		adUser.setObjectGUID("12345");
+
+		UserAdInfo userAdInfo = userService.createUserAdInfo(newUser,adUser,new Date(),new HashSet<>(),new HashSet<>(),true);
+
+		assertTrue(newUser.getUsername().equals("principaltest@test.dom") && userAdInfo.getUserPrincipalName().equals("principalTest@test.dom"));
+
+
+	}
+
+	@Test
+	public void userNameKeepPrincipalNameStaticForAnyADChangesTest()
+	{
+		User existUser = new User();
+		existUser.setUsername("principaltest@test.dom");
+		AdUser adUser = new AdUser();
+		adUser.setUserPrincipalName("principalTest@test.dom2");
+		adUser.setsAMAccountName("principalTest");
+		adUser.setDistinguishedName("principalTestDN");
+		adUser.setObjectGUID("12345");
+
+		UserAdInfo userAdInfo = userService.createUserAdInfo(existUser,adUser,new Date(),new HashSet<>(),new HashSet<>(),false);
+
+		assertTrue(existUser.getUsername().equals("principaltest@test.dom") && userAdInfo.getUserPrincipalName().equals("principalTest@test.dom2"));
+
+
 	}
 
 	@Test

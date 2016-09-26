@@ -96,6 +96,6 @@ public interface UserRepositoryCustom {
 	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
 	 * @return
 	 */
-	public String findByfield(String aDFieldName,String aDFieldValue,boolean partOrFullFlag);
+	public String findUserNameByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
 }
 
