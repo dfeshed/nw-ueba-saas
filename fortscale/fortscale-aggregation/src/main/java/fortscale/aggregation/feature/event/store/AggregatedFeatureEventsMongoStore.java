@@ -25,7 +25,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
-    @Value("#{'${fortscale.scored.aggregation.store.collection.backup.prefix}'.split(',')}")
+    @Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
     private List<String> backupCollectionNamesPrefixes;
 
 	@Value("${streaming.event.field.type.aggr_event}")
