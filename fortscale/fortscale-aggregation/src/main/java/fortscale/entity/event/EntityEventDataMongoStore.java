@@ -15,15 +15,17 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class EntityEventDataMongoStore implements EntityEventDataStore {
 	private static final int EXPIRE_AFTER_DAYS_DEFAULT = 90;
-	private static final String BACKUP_PREFIX = "backup_";
 
 	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
+	@Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
+	private List<String> backupCollectionNamesPrefixes;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -93,7 +95,9 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 
 	private List<String> getCollectionNames(String entityEventName) {
 		String collectionName = getCollectionName(entityEventName);
-		return Arrays.asList(collectionName, BACKUP_PREFIX + collectionName);
+		return Stream.concat(Stream.of(""), backupCollectionNamesPrefixes.stream())
+				.map(prefix -> prefix + collectionName)
+				.collect(Collectors.toList());
 	}
 
 	public List<EntityEventData> findEntityEventsJokerDataByContextIdAndTimeRange(EntityEventConf entityEventConf,

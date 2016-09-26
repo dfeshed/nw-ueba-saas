@@ -18,13 +18,15 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
-	private static final String BACKUP_PREFIX = "backup_";
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 
+	@Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
+	private List<String> backupCollectionNamesPrefixes;
 	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
 	@Value("${fortscale.scored.entity.event.store.page.size}")
@@ -80,7 +82,9 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
 	private List<String> getCollectionNames(String entityEventType) {
 		String collectionName = getCollectionName(entityEventType);
-		return Arrays.asList(collectionName, BACKUP_PREFIX + collectionName);
+		return Stream.concat(Stream.of(""), backupCollectionNamesPrefixes.stream())
+				.map(prefix -> prefix + collectionName)
+				.collect(Collectors.toList());
 	}
 
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
