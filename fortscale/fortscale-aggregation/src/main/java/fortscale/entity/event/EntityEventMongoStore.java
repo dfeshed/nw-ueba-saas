@@ -5,6 +5,7 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.domain.core.EntityEvent;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.ListUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,10 +17,12 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
+	private static final String BACKUP_PREFIX = "backup_";
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 
 	@Value("${streaming.event.field.type.entity_event}")
@@ -75,8 +78,18 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		return getCollectionName(entityEvent.getEntity_event_type());
 	}
 
-	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
+	private List<String> getCollectionNames(String entityEventType) {
 		String collectionName = getCollectionName(entityEventType);
+		return Arrays.asList(collectionName, BACKUP_PREFIX + collectionName);
+	}
+
+	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
+		return getCollectionNames(entityEventType).stream()
+				.flatMap(collectionName -> getDateToTopEntityEventsFromCollection(collectionName, endTime, numOfDays, topK).entrySet().stream())
+				.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, ListUtils::union));
+	}
+
+	private Map<Long, List<EntityEvent>> getDateToTopEntityEventsFromCollection(String collectionName, Date endTime, int numOfDays, int topK) {
 		if (mongoTemplate.collectionExists(collectionName)) {
 			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime);
 			Map<Long, List<EntityEvent>> dateToHighestEntityEvents = new HashMap<>(numOfDays);
