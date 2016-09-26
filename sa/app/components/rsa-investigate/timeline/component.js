@@ -52,12 +52,8 @@ export default Component.extend({
   @computed('timezone.selected')
   xScaleFn: (zone) => (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime,
 
-  // The computed property should just be 'timeformat.selected.key'.
-  // There appears to be a bug where if you set the time format preference,
-  // `selected` is no longer an object, but the value '24hr' or '12hr'.
-  // So, I'm taking this into account until that's fixed.
-  @computed('timeFormat.selected')
-  tickformat: (format) => (format === '24hr' || format.key === '24hr') ? multiDate24Format : multiDateFormat,
+  @computed('timeFormat.selected.key')
+  tickformat: (format) => (format === '24hr') ? multiDate24Format : multiDateFormat,
 
   @computed('startTime', 'endTime', 'chartData', 'xProp')
   xDomain: (start, end, chartData, xProp) => {
