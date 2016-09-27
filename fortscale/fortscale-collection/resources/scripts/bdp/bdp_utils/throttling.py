@@ -85,7 +85,7 @@ class Throttler:
                     break
             else:
                 return time_buckets_in_batch * self._time_granularity_minutes
-        return 0
+        return self._time_granularity_minutes
 
     def get_max_batch_size_in_minutes(self):
         self._max_batch_size_minutes = self._max_batch_size_minutes or \
