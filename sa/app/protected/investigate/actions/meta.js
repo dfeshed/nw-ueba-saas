@@ -38,7 +38,7 @@ export default Mixin.create({
       // Kick off the fetching of meta values for the currently selected meta group.
       this.send(
         'metaGroupValuesGet',
-        queryNode.get('value.defaultMetaGroup'),
+        queryNode.get('value.language.defaultMetaGroup'),
         queryNode,
         metaKeyStates,
         forceReload

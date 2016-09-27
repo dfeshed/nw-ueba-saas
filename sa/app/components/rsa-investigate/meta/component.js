@@ -58,6 +58,13 @@ export default Component.extend({
   toggleAction: undefined,
 
   /**
+   * Configurable callback to be invoked whenever a meta value is clicked.
+   * @type {function}
+   * @public
+   */
+  clickValueAction: undefined,
+
+  /**
    * The meta group for user to browse.
    * @type {{ keys: object[]}}
    * @public

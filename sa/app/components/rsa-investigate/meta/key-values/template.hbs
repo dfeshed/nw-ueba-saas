@@ -5,30 +5,13 @@
     {{#with (meta-key-alias groupKey.name language) as |names|}}
       <span class="meta-name js-toggle-open" {{action "safeCallback" toggleAction}} title="{{names.bothNames}}">{{names.displayName}}</span>
     {{/with}}
-    {{#if (is-equal values.status 'complete')}}
-      <span class="meta-size">
-        ({{values.data.length}}{{#if (is-equal values.data.length options.size)}}+{{/if}})
-      </span>
-    {{/if}}
+    <span class="meta-size">
+      ({{values.data.length}}{{#if (is-equal values.data.length options.size)}}+{{/if}})
+    </span>
   </h2>
 </header>
 <section class="rsa-investigate-meta-key-values__body">
-  {{#liquid-bind groupKey.isOpen use="crossFade" as |currentIsOpen|}}
-    {{#if currentIsOpen}}
-      {{#if values.description}}
-        <p class="rsa-investigate-meta-key-values__description">{{values.description}}</p>
-      {{/if}}
-      <ul class="rsa-investigate-meta-key-values__values">
-        {{#each values.data as |datum|~}}
-          {{#link-to 'protected.investigate.query' (event-query-uri query groupKey.name datum.value)
-            class="rsa-investigate-meta-key-values__value"
-            title=(meta-value-alias groupKey.name datum.value tooltipOptions)
-          }}
-            <span class="rsa-investigate-meta-key-values__value-label">{{meta-value-alias groupKey.name datum.value textOptions}}</span>
-            <span class="rsa-investigate-meta-key-values__value-metric">{{datum.count}}</span>
-          {{/link-to}}
-        {{~/each}}
-      </ul>
-    {{/if}}
-  {{/liquid-bind}}
+  <p class="rsa-investigate-meta-key-values__description">{{resolvedDescription}}</p>
+  <ul class="rsa-investigate-meta-key-values__values js-content">
+  </ul>
 </section>

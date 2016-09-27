@@ -11,7 +11,7 @@
       <aside class="rsa-investigate-query__body-master-aside">
         {{rsa-investigate/meta
           size=model.meta.panelSize
-          group=model.queryNode.value.defaultMetaGroup
+          group=model.queryNode.value.language.defaultMetaGroup
           language=model.queryNode.value.language.data
           aliases=model.queryNode.value.aliases.data
           metaKeyStates=model.queryNode.value.results.metaKeyStates
@@ -21,6 +21,7 @@
           defaultSizeAction=(route-action "metaPanelSize" 'default')
           onBack=(route-action "metaGroupSet" model.queryNode)
           onFwd=(route-action "metaGroupSet" model.queryNode)
+          clickValueAction=(route-action "navDrill" model.queryNode)
           toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
       </aside>
       <section class="rsa-investigate-query__body-master-main">

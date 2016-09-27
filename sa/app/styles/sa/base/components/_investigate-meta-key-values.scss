@@ -22,6 +22,7 @@ $investigateMetaKeyToggleWidth: 1rem;
 
     .meta-size {
       margin-left: rsa-whitespace(less);
+      display: none;
     }
   }
 
@@ -29,16 +30,27 @@ $investigateMetaKeyToggleWidth: 1rem;
     @include rsa-font(light, small);
   }
 
+  &.complete {
+    .rsa-investigate-meta-key-values {
+      &__description {
+        display: none;
+      }
+      &__header .meta-size {
+        display: inline;
+      }
+    }
+  }
+
   &__body {
     padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
-    transition: padding 0.2s;
   }
 
   &:not(.is-open) {
     .rsa-investigate-meta-key-values__body {
-      padding: 0 0 0 rsa-whitespace();
+      display: none;
     }
   }
+
   &__value {
     display: inline-block;
     list-style: none;
