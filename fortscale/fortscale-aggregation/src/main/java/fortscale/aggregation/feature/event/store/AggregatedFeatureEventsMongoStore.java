@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.event.store;
 
+import com.beust.jcommander.internal.Lists;
 import fortscale.aggregation.feature.event.*;
 import fortscale.utils.mongodb.FIndex;
 import org.apache.commons.lang3.StringUtils;
@@ -82,9 +83,9 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
 		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
 
-        return getCollectionsNames(aggregatedFeatureName).stream()
+        return Lists.newArrayList(getCollectionsNames(aggregatedFeatureName).stream()
                 .flatMap(collectionName -> runDistinctContextQuery(collectionName,query).stream())
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet()));
 	}
 
 	private List<String> runDistinctContextQuery(String collectionName, Query query) {
@@ -113,7 +114,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		String collectionName = getCollectionName(aggregatedFeatureName);
 		List<String> collectionsNames = new ArrayList<>();
 		backupCollectionNamesPrefixes.forEach(backupPrefix ->
-				collectionsNames.add(String.format("%s%s",collectionName,backupPrefix)));
+				collectionsNames.add(String.format("%s%s",backupPrefix,collectionName)));
 		collectionsNames.add(collectionName);
 		return collectionsNames;
 	}
