@@ -24,6 +24,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 		String ret;
 		serviceMetrics.normalizeUsernameSSH++;
 		logger.debug("Normalizing user - {}", username);
+
 		//get the list of users matching the samaccountname
 		List<String> users = samAccountNameService.getUsersBysAMAccountName(username);
 		//if no users were found - return the username with the fake suffix (target machine)
@@ -50,8 +51,7 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 	}
 
 	@Override
-	public String postNormalize(String username, String targetMachine, String classifierId, boolean
-			updateOnly) {
+	public String postNormalize(String username, String targetMachine, String classifierId, boolean updateOnly) {
 		String ret;
 		logger.debug("Normalizing according to target machine - {}", targetMachine);
 		String targetMachineDomain = computerService.getDomainNameForHostname(targetMachine);
