@@ -9,4 +9,41 @@ $investigateReconExpandedWidth: 75%;
   left: 0;
   right: 0;
   color: rsa-color(white);
+  @include rsa-col(justify,fill);
+
+  &__nav {
+    @include rsa-vendor-prefix(flex-shrink, 0);
+    @include rsa-vendor-prefix(flex-grow, 0);
+    background-color: rsa-color(black,base,$rsa-translucent);
+    margin-top: 1px;
+    @include rsa-row(justify, middle);
+
+    ul {
+      &:first-of-type {
+        @include rsa-vendor-prefix(flex-shrink, 0);
+        @include rsa-vendor-prefix(flex-grow, 0);
+      }
+      &:last-of-type {
+        text-align: right;
+      }
+
+      li {
+        list-style: none;
+        display: inline;
+      }
+      a {
+        @include rsa-font(navigation,small);
+        display: inline-block;
+        padding: rsa-whitespace(less) rsa-whitespace();
+        text-decoration: none;
+        white-space: nowrap;
+        color: rsa-color(white,base,$rsa-nearly-opaque);
+
+        &.active,
+        &:hover {
+          color: rsa-color(white,base,$rsa-opaque);
+        }
+      }
+    }
+  }
 }

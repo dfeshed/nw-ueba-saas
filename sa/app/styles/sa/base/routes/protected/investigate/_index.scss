@@ -1,9 +1,6 @@
 .rsa-investigate-index {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  position: relative;
+  @include rsa-vendor-prefix(flex-grow, 1);
   @include rsa-row(center, middle);
 
   &__body {
