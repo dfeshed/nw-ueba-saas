@@ -2,19 +2,16 @@ package fortscale.web.beans;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fortscale.domain.ad.AdUserGroup;
-import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
 import fortscale.services.UserServiceFacade;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
-import org.joda.time.DateTime;
-import org.springframework.beans.factory.annotation.Autowire;
-import org.springframework.beans.factory.annotation.Configurable;
+import fortscale.web.rest.entities.activity.UserActivityData;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class UserDetailsBean implements Serializable{
 	private static Logger logger = Logger.getLogger(UserDetailsBean.class);
@@ -31,6 +28,9 @@ public class UserDetailsBean implements Serializable{
 	private ADParser adUserParser;
 	private UserServiceFacade userServiceFacade;
 
+	private List<Alert> alerts;
+	private List<UserActivityData.DeviceEntry> devices;
+
 	public UserDetailsBean(User user, User manager, List<User> directReports, UserServiceFacade userServiceFacade){
 		this.user = user;
 		this.manager = manager;
@@ -39,7 +39,15 @@ public class UserDetailsBean implements Serializable{
 		this.userServiceFacade = userServiceFacade;
 	}
 
-    public User getUser() {
+	public List<Alert> getAlerts() {
+		return alerts;
+	}
+
+	public void setAlerts(List<Alert> alerts) {
+		this.alerts = alerts;
+	}
+
+	public User getUser() {
         return user;
     }
 
@@ -303,6 +311,14 @@ public class UserDetailsBean implements Serializable{
 		}
 
 		return ret;
+	}
+
+	public List<UserActivityData.DeviceEntry> getDevices() {
+		return devices;
+	}
+
+	public void setDevices(List<UserActivityData.DeviceEntry> devices) {
+		this.devices = devices;
 	}
 
 	public class UserManagerBean{

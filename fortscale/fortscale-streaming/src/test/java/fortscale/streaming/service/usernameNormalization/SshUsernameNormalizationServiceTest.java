@@ -31,12 +31,12 @@ public class SshUsernameNormalizationServiceTest {
 	@Test public void shouldDropRecord_should_return_false_for_not_null_normalizedUsername() throws Exception {
 
 		sshUsernameNormalizationService.setDropOnFail(true);
-		assertFalse(sshUsernameNormalizationService.shouldDropRecord("username","normalizedUsername"));
+		assertFalse(sshUsernameNormalizationService.shouldDropRecord("username","entityId"));
 	}
 
 	@Test public void shouldDropRecord_should_return_false_for_not_null_normalizedUsername_even_for_null_usernmae() throws Exception {
 		sshUsernameNormalizationService.setDropOnFail(true);
-		assertFalse(sshUsernameNormalizationService.shouldDropRecord(null,"normalizedUsername"));
+		assertFalse(sshUsernameNormalizationService.shouldDropRecord(null,"entityId"));
 	}
 
 	@Test public void shouldDropRecord_should_return_true_for_null_normalizedUsername() throws Exception {

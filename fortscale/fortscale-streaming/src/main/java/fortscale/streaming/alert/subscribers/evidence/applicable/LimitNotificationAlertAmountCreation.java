@@ -59,7 +59,7 @@ public class LimitNotificationAlertAmountCreation implements AlertPreAlertDecide
         long previousAmountOfTimes = alertTypesHisotryCache.getOccurances(title, alertWindowStartDate, alertWindowEndTime);
 
         int maxAmountOfSameAlert = getMaxAmountOfNotifications(alertWindowStartDate, alertWindowEndTime);
-        return maxAmountOfSameAlert>=previousAmountOfTimes;
+        return maxAmountOfSameAlert > previousAmountOfTimes;
     }
 
 

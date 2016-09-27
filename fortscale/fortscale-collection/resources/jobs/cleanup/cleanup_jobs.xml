@@ -61,6 +61,22 @@
  				<cron-expression>0 50 * * * ?</cron-expression>
 			</cron>
 		</trigger>
+
+        <trigger>
+            <cron>
+                <name>cleanup_ad_computer_finish_folder_every_hour_trigger</name>
+                <group>Cleanup</group>
+                <job-name>Cleanup Folder</job-name>
+                <job-group>Cleanup</job-group>
+                <job-data-map>
+                    <entry>
+                        <key>folder</key>
+                        <value>./finish/ad/computer</value>
+                    </entry>
+                </job-data-map>
+                <cron-expression>0 55 * * * ?</cron-expression>
+            </cron>
+        </trigger>
 		
 		<trigger>
 			<cron>

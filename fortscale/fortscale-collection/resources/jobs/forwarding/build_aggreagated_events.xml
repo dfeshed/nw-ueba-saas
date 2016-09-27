@@ -28,11 +28,11 @@
                 </entry>
                 <entry>
                     <key>fortscale.model.build.control.input.topic</key>
-                    <value>${fortscale.model.build.control.input.topic}</value>
+                     <value>fortscale-model-building-control-input</value>
                 </entry>
                 <entry>
                     <key>fortscale.model.build.control.output.topic</key>
-                    <value>${fortscale.model.build.control.output.topic}</value>
+                    <value>fortscale-model-building-control-output</value>
                 </entry>
 
             </job-data-map>

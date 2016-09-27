@@ -14,13 +14,8 @@ import java.util.*;
 public class UserActivityLocationDocument extends UserActivityDocument {
 
     public static final String COLLECTION_NAME = "user_activity_locations";
-    private static final String LOCATIONS_FIELD_NAME = "locations";
-    private static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
-
-
-
-
-
+    public static final String LOCATIONS_FIELD_NAME = "locations";
+    public static final String COUNTRY_HISTOGRAM_FIELD_NAME = "countryHistogram";
 
     @Field(LOCATIONS_FIELD_NAME)
     private Locations locations = new Locations();
@@ -58,7 +53,7 @@ public class UserActivityLocationDocument extends UserActivityDocument {
 
         UserActivityLocationDocument that = (UserActivityLocationDocument) o;
 
-        if (!normalizedUsername.equals(that.normalizedUsername)) return false;
+        if (!entityId.equals(that.entityId)) return false;
         if (!startTime.equals(that.startTime)) return false;
         return endTime.equals(that.endTime);
 
@@ -66,7 +61,7 @@ public class UserActivityLocationDocument extends UserActivityDocument {
 
     @Override
     public int hashCode() {
-        return Objects.hash(normalizedUsername, startTime, endTime);
+        return Objects.hash(entityId, startTime, endTime);
     }
 
 

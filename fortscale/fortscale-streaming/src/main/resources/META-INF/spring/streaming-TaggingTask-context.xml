@@ -21,7 +21,6 @@
 
 
 
-    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl"/>
 
     <context:spring-configured/>
     <context:annotation-config/>
@@ -277,6 +276,12 @@
         <constructor-arg name="maxSize" value="${user.score.service.cache.max.items:0}" />
         <constructor-arg name="timeToExpire" value="${user.score.service.cache.timeToExpireSec:3600}" />
         <constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
+    </bean>
+
+    <bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${users.with.alerts.service.cache.max.items:10}" />
+        <constructor-arg name="timeToExpire" value="${users.with.alerts.service.cache.timeToExpireSec:600}" />
+        <constructor-arg name="clazz" value="java.util.ArrayList" />
     </bean>
 
 </beans>

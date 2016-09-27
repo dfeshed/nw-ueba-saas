@@ -32,8 +32,8 @@
 
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
+    <mockito:mock id="usernameService" class="fortscale.services.impl.UsernameService"/>
     <mockito:mock id="tagService" class="fortscale.services.impl.TagServiceImpl"/>
-    <mockito:mock id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl"/>
 
     <bean id="globalConfiguration" class="fortscale.global.configuration.GlobalConfiguration"/>
 

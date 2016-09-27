@@ -1,6 +1,11 @@
 package fortscale.streaming.task;
 
 import fortscale.domain.core.ComputerUsageType;
+import fortscale.domain.core.Tag;
+import fortscale.services.EvidencesService;
+import fortscale.services.UserService;
+import fortscale.services.impl.SpringService;
+import fortscale.services.impl.UserServiceImpl;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.tagging.TagService;
@@ -29,6 +34,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
     private static final Logger logger = LoggerFactory.getLogger(AccountTaggingTask.class);
 
     private TagService taggingService;
+	private UserService userService;
 
     private String usernameField;
     private String timestampField;
@@ -36,7 +42,6 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
     private String sourceComputerTypeField;
     private String destHostNameField;
     private String destComputerTypeField;
-    private String isServiceAccountField;
     private String failureCodeField;
     private List<String> failureCodes;
     private String isSensetiveMachineField;
@@ -54,7 +59,6 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
         sourceComputerTypeField = config.get("fortscale.sourceComputerType.field");
         destHostNameField = config.get("fortscale.destHostName.field");
         destComputerTypeField = config.get("fortscale.destComputerType.field");
-        isServiceAccountField = config.get("fortscale.isServiceAccount.field");
         failureCodeField = config.get("fortscale.failureCode.field");
         failureCodes = config.getList("fortscale.failureCodes");
         isSensetiveMachineField= config.get("fortscale.isSensetiveMachine.field");
@@ -74,6 +78,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
         }
 
         this.taggingService = new TagService(store,daysBack);
+		this.userService = SpringService.getInstance().resolve(UserService.class);
 
         // register metrics
         lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(), "account-tagging-epochime");
@@ -93,10 +98,6 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
         String messageText = (String)envelope.getMessage();
         JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
 
-        // get the is service account flag
-        // in case that there is other value then true or there is no value at all the isServiceAccount will get false
-        boolean  isServiceAccount = message.get(isServiceAccountField)==null? false : convertToBoolean(message.get(isServiceAccountField));
-
         // get the failure code  and manipulate it for define the isEventSuccess flag
         String failureCode = convertToString(message.get(failureCodeField));
 
@@ -107,7 +108,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
 
         //Filter the non service accounts
-        if(isServiceAccount && isEventSuccess) {
+        if(isEventSuccess) {
 
             // get the username
             String userName = convertToString(message.get(usernameField));
@@ -116,47 +117,51 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
                 throw new StreamMessageNotContainFieldException(messageText, usernameField);
             }
 
-            // get the timeStamp
-            Long timeStamp = convertToLong(message.get(timestampField));
-            if (timeStamp == null) {
-                //logger.error("message {} does not contains timeStamp in field {}", messageText, timestampField);
-            	throw new StreamMessageNotContainFieldException(messageText, timestampField);
-            }
+			// get the is service account flag
+			// in case that there is other value then true or there is no value at all the isServiceAccount will get false
+			boolean isServiceAccount = userService.isUserTagged(userName, Tag.SERVICE_ACCOUNT_TAG);
 
+			if(isServiceAccount) {
 
-            // get the source host name
-            String sourceHostName = convertToString(message.get(sourceHostNameField));
+				// get the timeStamp
+				Long timeStamp = convertToLong(message.get(timestampField));
+				if (timeStamp == null) {
+					//logger.error("message {} does not contains timeStamp in field {}", messageText, timestampField);
+					throw new StreamMessageNotContainFieldException(messageText, timestampField);
+				}
 
-            // get the source ComputerType
-            try {
-            	String srcClassValue = convertToString(message.get(sourceComputerTypeField));
-            	sourceComputerType = StringUtils.isEmpty(srcClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(srcClassValue);
-            } catch (IllegalArgumentException ex) {
-                throw new StreamMessageNotContainFieldException(messageText, sourceComputerTypeField);
-            }
+				// get the source host name
+				String sourceHostName = convertToString(message.get(sourceHostNameField));
 
+				// get the source ComputerType
+				try {
+					String srcClassValue = convertToString(message.get(sourceComputerTypeField));
+					sourceComputerType = StringUtils.isEmpty(srcClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(srcClassValue);
+				} catch (IllegalArgumentException ex) {
+					throw new StreamMessageNotContainFieldException(messageText, sourceComputerTypeField);
+				}
 
-            // get the destination host name
-            String destHostName = convertToString(message.get(destHostNameField));
+				// get the destination host name
+				String destHostName = convertToString(message.get(destHostNameField));
 
-            // get the destination ComputerType
-            try {
-            	String destClassValue = convertToString(message.get(destComputerTypeField));
-                destComputerType = StringUtils.isEmpty(destClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(destClassValue);
-            } catch (IllegalArgumentException ex) {
-                throw new StreamMessageNotContainFieldException(messageText, destComputerTypeField);
-            }
+				// get the destination ComputerType
+				try {
+					String destClassValue = convertToString(message.get(destComputerTypeField));
+					destComputerType = StringUtils.isEmpty(destClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(destClassValue);
+				} catch (IllegalArgumentException ex) {
+					throw new StreamMessageNotContainFieldException(messageText, destComputerTypeField);
+				}
 
+				// get the isSensetiveMachine  flag
+				// in case that there is other value then true or there is no value at all the isSensetiveMachine will get false
+				boolean isSensetiveMachine = message.get(isSensetiveMachineField) == null ? false : convertToBoolean(message.get(isSensetiveMachineField));
 
-            // get the isSensetiveMachine  flag
-            // in case that there is other value then true or there is no value at all the isSensetiveMachine will get false
-            boolean isSensetiveMachine = message.get(isSensetiveMachineField)==null? false : convertToBoolean(message.get(isSensetiveMachineField));
+				//handle the account
+				this.taggingService.handleAccount(userName, timeStamp, sourceHostName, destHostName, sourceComputerType, destComputerType, isSensetiveMachine);
 
-            //handle the account
-            this.taggingService.handleAccount(userName,timeStamp,sourceHostName,destHostName,sourceComputerType,destComputerType,isSensetiveMachine);
-            
-            // update metric
-            lastTimestampCount.set(timeStamp);
+				// update metric
+				lastTimestampCount.set(timeStamp);
+			}
         }
 
     }

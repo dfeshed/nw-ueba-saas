@@ -25,7 +25,7 @@ public class UsernameNormalizer implements InitializingBean {
 
 	private static Logger logger = LoggerFactory.getLogger(UsernameNormalizer.class);
 
-	protected UsernameNormalizerMetrics serviceMetrics = new UsernameNormalizerMetrics(statsService);
+	protected UsernameNormalizerMetrics serviceMetrics;
 
 	public SamAccountNameService getSamAccountNameService() {
 		return samAccountNameService;
@@ -105,7 +105,9 @@ public class UsernameNormalizer implements InitializingBean {
 	}
 
 	@Override
-	public void afterPropertiesSet() throws Exception {}
+	public void afterPropertiesSet() throws Exception {
+		serviceMetrics = new UsernameNormalizerMetrics(statsService);
+	}
 
     public boolean isReturnNullIfUserNotExists() {
         return returnNullIfUserNotExists;

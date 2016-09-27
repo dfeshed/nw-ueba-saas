@@ -9,10 +9,6 @@ public interface IUserTable {
 	public String getSecUsernames();
 	public String getSshUsernames();
 	public String getVpnUsernames();
-	public Double getSecScore();
-	public Double getSshScore();
-	public Double getVpnScore();
-	public Double getTotalScore();
 	public String getDisplayName();
 	public String getJobTitle();
 	public String getEmployeeId();

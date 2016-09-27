@@ -73,7 +73,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<org.aspectj-version>1.7.3</org.aspectj-version>
 		<commons-cli.version>1.2</commons-cli.version>
-		<kite-version>0.10.0</kite-version>
+		<kite-version>1.0.0</kite-version>
 		<joda-time.version>2.2</joda-time.version>
 		<jmxterm.version>1.0-alpha-4</jmxterm.version>
 		<opencsv.version>2.0</opencsv.version>

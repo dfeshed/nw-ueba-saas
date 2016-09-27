@@ -4,10 +4,14 @@ import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.FavoriteUserFilter;
 import fortscale.domain.core.User;
+import fortscale.domain.rest.UserFilter;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.utils.JksonSerilaizablePair;
 import org.joda.time.DateTime;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.query.Update;
 
@@ -16,37 +20,39 @@ import java.util.Map;
 import java.util.Set;
 
 public interface UserService extends CachingService{
-	public void updateUserWithCurrentADInfo();
+	void updateUserWithCurrentADInfo();
 	
-	public void updateUserWithADInfo(Long timestampepoch);
+	void updateUserWithADInfo(Long timestampepoch);
 	
-	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
+	List<User> findBySearchFieldContaining(String prefix, int page, int size);
 	
-	public List<UserMachine> getUserMachines(String uid);
 
-	public List<User> getUsernamesActiveSince(DateTime date);
+	List<UserMachine> getUserMachines(String uid);
+
+	List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
+
 		
-	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
+	ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 	
-	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
-			
-	public void removeClassifierFromAllUsers(String classifierId);
-	
-	public String getUserThumbnail(User user);
+	List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 
-	public void updateUserWithADInfo(AdUser adUser);
+	String getUserThumbnail(User user);
 
-	public void updateUser(User user, Update update);
+	void updateUserWithADInfo(AdUser adUser);
 
-	public boolean findIfUserExists(String username);
+	void updateUser(User user, Update update);
 
-	public String getUserId(String username);
+	boolean findIfUserExists(String username);
 
-	public User createUser(String userApplication, String username, String appUsername);
+	String getUserId(String username);
 
-	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave);
+	User createUser(String userApplication, String username, String appUsername);
 
-	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+	boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave);
+
+	void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+
+	User saveUser(User user);
 
 	/**
 	 * Update user's info - the last activities of specific user: both the general last-activity and per-type , the logusernmae or create the user if needed
@@ -54,66 +60,82 @@ public interface UserService extends CachingService{
 	 * @param dataSourceUpdateOnlyFlagMap	Map: dupdateOnlyFlag - data source
 	 * @param userInfo Map: datasource - <lastActivity,logusername>
 	 */
-	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap);
+	void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long, String>> userInfo, Map<String, Boolean> dataSourceUpdateOnlyFlagMap);
 	
-	public void updateTags(String username, Map<String, Boolean> tagSettings);
+	void updateTags(String username, Map<String, Boolean> tagSettings);
 	
-	public boolean isUserTagged(String username, String tag);
+	boolean isUserTagged(String username, String tag);
 	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
+	PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
 	
-	public String findByNormalizedUserName(String normalizedUsername);
+	String findByNormalizedUserName(String normalizedUsername);
 
-	public Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable);
+	Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable);
 
-	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
+	Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
 
-	public Set<String> findNamesByTag(String tagFieldName, Boolean value);
+	Set<String> findByUsernameRegex(String usernameRegex);
 
-	public String findAdMembers(String adName);
+	Set<String> findNamesByTag(String tag);
 
-	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
+	Map<String, Set<String>> findAllTaggedUsers();
 
-	public Set<String> findNamesByTag(String tagFieldName, String value);
+	String findAdMembers(String adName);
 
-	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value);
+	List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
+
+	void updateUserTag(String userTagEnumId, String username, boolean value);
 
 	User getUserById(String id);
 
-	public Boolean isPasswordExpired(User user);
+	Boolean isPasswordExpired(User user);
 
-	public Boolean isNoPasswordRequiresValue(User user);
+	Boolean isNoPasswordRequiresValue(User user);
 
-	public Boolean isNormalUserAccountValue(User user);
+	Boolean isNormalUserAccountValue(User user);
 
-	public Boolean isPasswordNeverExpiresValue(User user);
+	Boolean isPasswordNeverExpiresValue(User user);
 
-	public String getOu(User user);
+	String getOu(User user);
 
-	public void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet);
+	void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet);
 
-	public void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap);
+	void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap);
 
-	public User getUserManager(User user, Map<String, User> dnToUserMap);
+	User getUserManager(User user, Map<String, User> dnToUserMap);
 
-	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
+	List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
 
-	public User findByUsername(String username);
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username);
+	User findByUsername(String username);
 
-	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
+	void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove, String username);
 
-	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
+	List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 
-	public Set<String> findIdsByTags(String[] tags, String entityIds);
+	List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
 
-	public Map<String, Long> groupByTags();
+	Set<String> findIdsByTags(String[] tags, String entityIds);
+
+	Set<String> findUsernamesByTags(String[] tags);
+
+	Map<String, Long> groupByTags();
 
 	/**
 	 * Count how many users exists in the USERS table with the same display name.
 	 * @param displayNames - Set of the display names to query
 	 * @return map of display names to users
 	 */
-	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
+	Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
 
+	List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserIds, List<String> fieldsRequired);
+
+	int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers);
+
+	void saveFavoriteFilter(UserFilter userFilter, String filterName);
+
+	List<FavoriteUserFilter> getAllFavoriteFilters();
+
+	long deleteFavoriteFilter(String filterName);
+
+    List<String> getDistinctValuesByFieldName(String fieldName);
 }

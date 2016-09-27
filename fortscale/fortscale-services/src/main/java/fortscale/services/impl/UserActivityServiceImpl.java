@@ -1,47 +1,33 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.User;
 import fortscale.domain.core.activities.*;
 import fortscale.domain.core.dao.UserActivityRepository;
 import fortscale.services.UserActivityService;
-import fortscale.services.UserService;
-import fortscale.services.cache.CacheHandler;
-import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 @Service("UserActivityService")
 public class UserActivityServiceImpl implements UserActivityService {
 
-    private static final Logger logger = Logger.getLogger(UserActivityServiceImpl.class);
-
-    @Autowired
-    private CacheHandler<String, String> idToUsernameCache;
-
     private final UserActivityRepository userActivityRepository;
-    private final UserService userService;
-
 
     @Autowired
-    public UserActivityServiceImpl(UserActivityRepository userActivityRepository, UserService userService) {
+    public UserActivityServiceImpl(UserActivityRepository userActivityRepository) {
         this.userActivityRepository = userActivityRepository;
-        this.userService = userService;
     }
 
     @Override
     public List<UserActivityLocationDocument> getUserActivityLocationEntries(String id, int timeRangeInDays) {
-        final String username = getUsernameById(id);
-        return userActivityRepository.getUserActivityLocationEntries(username, timeRangeInDays);
+        return userActivityRepository.getUserActivityLocationEntries(id, timeRangeInDays);
     }
 
     @Override
     public List<UserActivityNetworkAuthenticationDocument> getUserActivityNetworkAuthenticationEntries(String id,
-                                                                                                       int timeRangeInDays) {
-        final String username = getUsernameById(id);
-        return userActivityRepository.getUserActivityNetworkAuthenticationEntries(username, timeRangeInDays);
+			int timeRangeInDays) {
+        return userActivityRepository.getUserActivityNetworkAuthenticationEntries(id, timeRangeInDays);
     }
 
     @Override
@@ -51,41 +37,25 @@ public class UserActivityServiceImpl implements UserActivityService {
 
     @Override
     public List<UserActivityWorkingHoursDocument> getUserActivityWorkingHoursEntries(String id, int timeRangeInDays) {
-        final String username = getUsernameById(id);
-        return userActivityRepository.getUserActivityWorkingHoursEntries(username, timeRangeInDays);
+        return userActivityRepository.getUserActivityWorkingHoursEntries(id, timeRangeInDays);
     }
 
     @Override
     public List<UserActivitySourceMachineDocument> getUserActivitySourceMachineEntries(String id, int timeRangeInDays) {
-        final String username = getUsernameById(id);
-        return userActivityRepository.getUserActivitySourceMachineEntries(username, timeRangeInDays);
+        return userActivityRepository.getUserActivitySourceMachineEntries(id, timeRangeInDays);
     }
 
     @Override
     public List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String id, int timeRangeInDays) {
-        final String username = getUsernameById(id);
-        return userActivityRepository.getUserActivityDataUsageEntries(username, timeRangeInDays);
+        return userActivityRepository.getUserActivityDataUsageEntries(id, timeRangeInDays);
+    }
+
+    @Override public Set<String> getUserIdByUserLocation(List<String> userLocations) {
+        return userActivityRepository.getUserIdByLocation(userLocations);
     }
 
     public List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String id, int timeRangeInDays) {
-        final String username = getUsernameById(id);
-        return userActivityRepository.getUserActivityTargetDeviceEntries(username, timeRangeInDays);
+        return userActivityRepository.getUserActivityTargetDeviceEntries(id, timeRangeInDays);
     }
 
-    private String getUsernameById(String id) {
-        String username = idToUsernameCache.get(id);
-        if (username == null) {
-            User user = userService.getUserById(id);
-            if (user != null) {
-                username = user.getUsername();
-                idToUsernameCache.put(id, username);
-            }
-        }
-        if (username == null) {
-            String error = String.format("Failed to get user activity. User with id '%s' doesn't exist", id);
-            logger.error(error);
-            throw new RuntimeException(error);
-        }
-        return username;
-    }
 }

@@ -1,28 +1,18 @@
 package fortscale.collection.jobs.tagging;
 
-import org.quartz.JobDataMap;
+import fortscale.collection.jobs.FortscaleJob;
+import fortscale.services.UserTagService;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.jobs.FortscaleJob;
-import fortscale.services.UserTaggingService;
-
 public class UserTaggingJob extends FortscaleJob{
 	
 	@Autowired
-	private UserTaggingService userTaggingService;
-	
-	//Job parameters:
-	private String tag;
+	private UserTagService userTagService;
 
 	@Override
-	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-
-		// get parameters values from the job data map		
-        tag = jobDataMapExtension.getJobDataMapStringValue(map, "tag", null);
-	}
+	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {}
 
 	@Override
 	protected int getTotalNumOfSteps() {
@@ -36,11 +26,7 @@ public class UserTaggingJob extends FortscaleJob{
 
 	@Override
 	protected void runSteps() throws Exception {
-		if(tag != null){
-			userTaggingService.update(tag);
-		} else{
-			userTaggingService.updateAll();
-		}
+		userTagService.update();
 	}
 
 }

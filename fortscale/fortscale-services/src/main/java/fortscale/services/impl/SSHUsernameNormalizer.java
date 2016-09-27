@@ -72,9 +72,5 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 		return ret;
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-
-	}
-
 }
+

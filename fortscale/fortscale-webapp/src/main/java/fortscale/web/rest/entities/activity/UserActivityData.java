@@ -14,7 +14,7 @@ public class UserActivityData {
 
     }
 
-    public static class LocationEntry extends BaseLocationEntry implements  BaseUserActivityEntry {
+    public static class LocationEntry extends fortscale.web.rest.entities.activity.BaseLocationEntry implements  BaseUserActivityEntry {
         public LocationEntry(String country, double count) {
             super(country, count);
         }

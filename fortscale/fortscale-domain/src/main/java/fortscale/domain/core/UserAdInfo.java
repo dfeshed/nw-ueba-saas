@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.joda.time.DateTime;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
 
@@ -15,13 +16,15 @@ public class UserAdInfo {
 	public static final String adDnField = "dn";
 	public static final String sAMAccountNameField = "sAMAccountName";
 	public static final String emailAddressField = "email";
+	public static final String firstnameField = "firstname";
 	public static final String lastnameField = "lastname";
+	public static final String positionField = "position";
 	public static final String userPrincipalNameField = "userPrincipalName";
 	public static final String groupsField = "groups";
 	public static final String whenCreatedField = "whenCreated";
 	public static final String disableAccountTimeField = "disableAccountTime";
 	public static final String isAccountDisabledField = "isAccountDisabled";
-	public static final String terminationDateField = "terminationDate";
+	public static final String departmentField = "department";
 
 	@Field(objectGUIDField)
 	private String objectGUID;
@@ -33,8 +36,9 @@ public class UserAdInfo {
 
 	private String employeeNumber;
 
-
+	@Field(firstnameField)
 	private String firstname;
+
 	@Field(lastnameField)
 	private String lastname;
 
@@ -62,8 +66,12 @@ public class UserAdInfo {
 
 	private String otherTelephone;
 
+	@Field(positionField)
+	@Indexed
 	private String position;
 
+	@Field(departmentField)
+	@Indexed
 	private String department;
 
 	private String displayName;
@@ -95,19 +103,11 @@ public class UserAdInfo {
 
 	private String roomNumber;
 
-	@Field(terminationDateField)
-	private DateTime terminationDate;
-
 	@Field(disableAccountTimeField)
 	private DateTime disableAccountTime;
 
 	@Field(isAccountDisabledField)
 	private boolean isAccountDisabled;
-
-
-
-
-
 
 	public String getObjectGUID() {
 		return objectGUID;
@@ -394,9 +394,6 @@ public class UserAdInfo {
 		this.groups = groups;
 	}
 
-
-
-
 	public void addGroup(AdUserGroup adUserGroup) {
 
 		Assert.notNull(adUserGroup);
@@ -432,14 +429,5 @@ public class UserAdInfo {
 
 	public void setIsAccountDisabled(boolean isAccountIsDisabled) {
 		this.isAccountDisabled = isAccountIsDisabled;
-	}
-
-
-	public DateTime getTerminationDate() {
-		return terminationDate;
-	}
-
-	public void setTerminationDate(DateTime terminationDate) {
-		this.terminationDate = terminationDate;
 	}
 }
