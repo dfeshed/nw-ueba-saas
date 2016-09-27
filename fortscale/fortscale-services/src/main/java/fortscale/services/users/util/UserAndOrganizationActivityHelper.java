@@ -1,4 +1,4 @@
-package fortscale.web.rest.Utils;
+package fortscale.services.users.util;
 
 import org.springframework.stereotype.Component;
 

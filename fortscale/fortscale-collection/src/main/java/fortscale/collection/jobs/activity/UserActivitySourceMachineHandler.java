@@ -8,6 +8,8 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.services.UserActivityService;
+import fortscale.services.users.util.UserDeviceUtils;
+import fortscale.services.users.util.activity.UserActivityData;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -27,6 +29,9 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 
 	@Autowired
 	private UserActivityService userActivityService;
+
+    @Autowired
+    private UserDeviceUtils userDeviceUtils;
 
 	@Override
 	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
@@ -97,7 +102,9 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 			List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries
 					= userActivityService.getUserActivitySourceMachineEntries(userId.toString(), Integer.MAX_VALUE);
 
-			userService.updateSourceMachineCount(userId.toString(), userActivitySourceMachineEntries.size());
+            List<UserActivityData.DeviceEntry> deviceEntries
+                    = userDeviceUtils.convertDeviceDocumentsResponse(userActivitySourceMachineEntries, Integer.MAX_VALUE);
+            userService.updateSourceMachineCount(userId.toString(), deviceEntries.size());
 		});
 	}
 }
