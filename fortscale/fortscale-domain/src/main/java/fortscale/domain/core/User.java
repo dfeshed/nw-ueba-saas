@@ -49,6 +49,7 @@ public class User extends AbstractDocument {
     public static final String scoreSeverityField = "scoreSeverity";
 	public static final String terminationDateField = "terminationDate";
 	public static final String alertsCountField = "alertsCount";
+	public static final String sourceMachineCountField = "sourceMachineCount";
 
 	public static final String SERVICE = "service";
 	public static final String ADMIN = "admin";
@@ -57,7 +58,7 @@ public class User extends AbstractDocument {
 	public static final String adPositionFieldName = String.format("%s.%s", User.adInfoField, UserAdInfo.positionField);
 	public static final String adDepartmentFieldName  = String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField);
 
-	@Indexed
+    @Indexed
 	@Field(administratorAccountField)
 	private Boolean administratorAccount;
 	
@@ -127,6 +128,9 @@ public class User extends AbstractDocument {
 	@Indexed
 	@Field(alertsCountField)
 	private int alertsCount;
+
+	@Field(sourceMachineCountField)
+	private int sourceMachineCount;
 
 	public String getAdDn() {
 		return adDn;
@@ -356,5 +360,13 @@ public class User extends AbstractDocument {
 
 	public void setTerminationDate(DateTime terminationDate) {
 		this.terminationDate = terminationDate;
+	}
+
+	public int getSourceMachineCount() {
+		return sourceMachineCount;
+	}
+
+	public void setSourceMachineCount(int sourceMachineCount) {
+		this.sourceMachineCount = sourceMachineCount;
 	}
 }

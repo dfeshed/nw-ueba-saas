@@ -5,9 +5,9 @@ import fortscale.collection.services.UserActivityDataSourceConfiguration;
 import fortscale.collection.services.UserActivitySourceMachineConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
-import fortscale.utils.logging.Logger;
+import fortscale.services.UserActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +23,9 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 
 	@Autowired
 	private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
+
+	@Autowired
+	private UserActivityService userActivityService;
 
 	@Override
 	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
@@ -86,4 +89,14 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 		return userActivitySourceMachineConfigurationService;
 	}
 
+	public void postCalculation(){
+		List<String> userIds = userService.getDistinctValuesByFieldName(User.ID_FIELD);
+
+		userIds.forEach(userId -> {
+			List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries
+					= userActivityService.getUserActivitySourceMachineEntries(userId, Integer.MAX_VALUE);
+
+			userService.updateSourceMachineCount(userId, userActivitySourceMachineEntries.size());
+		});
+	}
 }

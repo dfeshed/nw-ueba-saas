@@ -1238,4 +1238,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		serviceMetrics = new UserServiceMetrics(statsService);
 	}
 
+	@Override
+	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
+		userRepository.updateSourceMachineCount(userId, sourceMachineCount);
+	}
 }

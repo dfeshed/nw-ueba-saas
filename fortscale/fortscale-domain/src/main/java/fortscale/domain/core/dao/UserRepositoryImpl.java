@@ -17,12 +17,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
-import org.springframework.data.mongodb.core.query.BasicQuery;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import javax.jws.soap.SOAPBinding;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -111,6 +109,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public void updateFollowed(User user, boolean followed) {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.followedField, followed), User.class);
+	}
+
+	@Override
+	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(new ObjectId(userId))),
+				update(User.sourceMachineCountField, sourceMachineCount), User.class);
 	}
 
 	@Override
