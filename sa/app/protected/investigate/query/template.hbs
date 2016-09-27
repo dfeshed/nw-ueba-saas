@@ -27,6 +27,8 @@
       <section class="rsa-investigate-query__body-master-main">
         {{rsa-investigate/timeline
           data=model.queryNode.value.results.eventTimeline.data
+          status=model.queryNode.value.results.eventTimeline.status
+          retryAction=(route-action "eventTimelineGet" model.queryNode true)
           startTime=model.queryNode.value.definition.startTime
           endTime=model.queryNode.value.definition.endTime}}
         {{rsa-investigate/events-table

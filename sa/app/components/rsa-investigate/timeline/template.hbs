@@ -38,4 +38,20 @@
       duration=params.duration
     }}
   {{/rsa-chart}}
+  {{#if isStatusWaitOrRejected}}
+    <div class="status">
+      {{#if (is-equal status 'wait')}}
+        <div class="wait js-test-wait">
+          {{rsa-loader size="small" label=(t 'investigate.loading')}}
+        </div>
+      {{else if (is-equal status 'rejected')}}
+        <div class="rejected js-test-rejected">
+          <h2>{{t 'investigate.error.title'}}</h2>
+          {{#rsa-form-button isDanger=true class="js-test-retry" click=(action "safeCallback" retryAction)}}
+            {{t 'investigate.tryAgain'}}
+          {{/rsa-form-button}}
+        </div>
+      {{/if}}
+    </div>
+  {{/if}}
 </section>

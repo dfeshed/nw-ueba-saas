@@ -25,6 +25,9 @@
     width: auto;
     height: auto;
     margin: rsa-whitespace() rsa-whitespace() 0 rsa-whitespace();
+    z-index: 1;
+    opacity: 1;
+    transition: opacity 250ms;
 
     svg {
       display: block; /* overwrites default 'inline' in Safari & possibly others */
@@ -62,5 +65,25 @@
         stroke: rsa-color(blue, darker);
       }
     }
+  }
+
+  .status {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+    @include rsa-col(center,middle);
+    text-align: center;
+
+    .rsa-form-button {
+      margin: rsa-whitespace() 0;
+    }
+  }
+
+  &.wait .rsa-chart,
+  &.rejected .rsa-chart {
+    opacity: $rsa-translucent;
   }
 }
