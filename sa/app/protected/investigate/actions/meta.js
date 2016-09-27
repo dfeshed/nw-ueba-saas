@@ -20,6 +20,10 @@ const MAX_JOBS_QUEUE_SIZE = 2;
 export default Mixin.create({
   actions: {
     metaGet(queryNode, forceReload = false) {
+      if (!queryNode) {
+        return;
+      }
+
       // Ensure we have one state object per each possible meta key's request for values.
       let metaKeyStates = queryNode.get('value.results.metaKeyStates');
       if (!metaKeyStates.length) {

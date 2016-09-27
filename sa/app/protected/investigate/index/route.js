@@ -19,6 +19,14 @@ export default Route.extend({
      * @public
      */
     submitQuery(serviceId, startTime, endTime, metaFilter) {
+      // Reset the current query pointer before navigating to the results UI for a new query.  For 2 reasons:
+      // (1) It ensures the new query is added to the query tree at the root level, not as a child of last query.
+      // (We only want to add a child to a query if the child is a drill from that query's results.)
+      // (2) Performance optimization: It ensures that the results UI does not render the last query's results before
+      // fetching the new query's results.
+      this.send('navGoto', null);
+
+      // Navigate to results UI.
       this.transitionTo('protected.investigate.query', [
         serviceId,
         startTime || 0,
