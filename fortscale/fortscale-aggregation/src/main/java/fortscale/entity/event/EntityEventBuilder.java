@@ -87,8 +87,13 @@ public class EntityEventBuilder {
 
 		EntityEventData entityEventData = getEntityEventData(aggrFeatureEvent);
 		if (entityEventData != null) {
-			entityEventData.addAggrFeatureEvent(aggrFeatureEvent);
-			entityEventDataStore.storeEntityEventData(entityEventData);
+			if ((aggrFeatureEvent.isOfTypeP() && aggrFeatureEvent.getAggregatedFeatureValue() > 0) ||
+					(aggrFeatureEvent.isOfTypeF() && aggrFeatureEvent.getScore() > 0)) {
+				entityEventData.addAggrFeatureEvent(aggrFeatureEvent);
+				entityEventDataStore.storeEntityEventData(entityEventData);
+			} else {
+				getMetrics().zeroFeature++;
+			}
 		}
 		else
 		{
