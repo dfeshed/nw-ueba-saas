@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import java.util.HashMap;
 import java.util.Map;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class SMARTScoreMappingModel extends ScoreMappingModel {
 	static final double EPSILON = 0.000000000001;
 
