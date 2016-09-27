@@ -12,7 +12,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class TimeModel implements Model {
 	private static final int SMOOTHING_DISTANCE = 10;
 
@@ -77,7 +79,8 @@ public class TimeModel implements Model {
 		smoothingDistance = Math.min(smoothingDistance, (smoothedBucketHits.size() - 1) / 2);
 		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, hits);
 		for (int distance = 1; distance <= smoothingDistance; distance++) {
-			double addVal = hits * Sigmoid.calcLogisticFunc(smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
+			double addVal = hits * Sigmoid.calcLogisticFunc(
+					smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd + distance, addVal);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd - distance, addVal);
 		}
