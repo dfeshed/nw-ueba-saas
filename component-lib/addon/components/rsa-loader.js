@@ -33,7 +33,7 @@ export default Component.extend({
     let loaderSizeLabels = this.get('loaderSizeLabels');
     let size = this.get('size');
 
-    return (!loaderSizeLabels.contains(size) || size === 'small');
+    return (!loaderSizeLabels.includes(size) || size === 'small');
   }),
   isMedium: equal('size', 'medium'),
   isLarge: equal('size', 'large'),

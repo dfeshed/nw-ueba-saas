@@ -139,15 +139,6 @@ test('it update the bound value when the selected value changes to multiple valu
   assert.equal(this.get('testValues.lastObject'), '3');
 });
 
-test('it removes values when clicking the icon on the option tag', function(assert) {
-  this.set('testValues', ['1','2','3']);
-  this.render(hbs `{{#rsa-form-select label='Foo' prompt='Foo Prompt' values=testValues}}<option value="1">1</option><option value="2">2</option><option value="3">3</option>{{/rsa-form-select}}`);
-  this.$().find('.prompt').click();
-  this.$().find('.option-tag:first-of-type .remove-tag').click();
-  assert.equal(this.get('testValues.length'), '2');
-  assert.equal(this.get('testValues.firstObject'), '2');
-});
-
 test('it allows to select only one value when multiple is disabled', function(assert) {
   this.set('testValues', ['2']);
   this.render(hbs `{{#rsa-form-select multiple=false label='Foo' prompt='Foo Prompt' values=testValues}}<option value="1">1</option><option value="2">2</option><option value="3">3</option>{{/rsa-form-select}}`);

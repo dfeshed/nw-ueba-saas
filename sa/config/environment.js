@@ -11,7 +11,7 @@ module.exports = function(environment) {
     mockPort: mockPort,
     modulePrefix: 'sa',
     environment: environment,
-    baseURL: '/',
+    rootURL: '/',
     locationType: 'auto',
     moment: {
       includeLocales: ['en', 'ja'],
@@ -95,7 +95,6 @@ module.exports = function(environment) {
 
 
     // Testem prefers this...
-    ENV.baseURL = '/';
     ENV.locationType = 'none';
 
     // keep test console output quieter
@@ -105,8 +104,9 @@ module.exports = function(environment) {
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
 
-    ENV['ember-cli-mirage'].enabled = true;
+    ENV['ember-cli-mirage'] = { enabled: true };
     ENV['ember-cli-mock-socket'].enabled = true;
+    ENV.APP.rootElement = '#ember-testing';
   }
 
   if (environment === 'production') {

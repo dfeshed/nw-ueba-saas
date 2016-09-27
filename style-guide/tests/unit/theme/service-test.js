@@ -19,7 +19,7 @@ test('it provides the correct options', function(assert) {
   let options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.contains('dark'));
+  assert.ok(options.includes('dark'));
 });
 
 test('it has the correct default', function(assert) {

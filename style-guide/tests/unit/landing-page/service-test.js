@@ -22,10 +22,10 @@ test('it provides the correct options', function(assert) {
   let options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.contains('protected.respond'));
-  assert.ok(options.contains('protected.monitor'));
-  assert.ok(options.contains('protected.admin'));
-  assert.ok(options.contains('protected.investigate'));
+  assert.ok(options.includes('protected.respond'));
+  assert.ok(options.includes('protected.monitor'));
+  assert.ok(options.includes('protected.admin'));
+  assert.ok(options.includes('protected.investigate'));
 });
 
 test('it has the correct default', function(assert) {

@@ -1,4 +1,4 @@
-/* global require, module */
+/* eslint-disable */
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var shim = require('flexi/lib/pod-templates-shim');

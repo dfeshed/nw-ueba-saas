@@ -22,13 +22,12 @@ test('it provides the correct options', function(assert) {
   let options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.contains('MM/DD/YYYY'));
-  assert.ok(options.contains('DD/MM/YYYY'));
-  assert.ok(options.contains('YYYY/MM/DD'));
+  assert.ok(options.includes('MM/DD/YYYY'));
+  assert.ok(options.includes('DD/MM/YYYY'));
+  assert.ok(options.includes('YYYY/MM/DD'));
 });
 
 test('it has the correct default', function(assert) {
   let service = this.subject();
   assert.equal(service.get('defaultSelection'), 'MM/DD/YYYY');
 });
-

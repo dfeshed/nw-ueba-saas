@@ -32,7 +32,7 @@ test('the password reset is disabled without a user name', function(assert) {
 test('the login transitions after clicking Lost Password?', function(assert) {
   this.render(hbs `{{rsa-routable-login username='foo' password='bar'}}`);
   this.$('.lost-password').click();
-  return wait().then(function() {
+  return wait().then(() => {
     assert.ok(this.$('form').hasClass('lost-password'));
   });
 });
@@ -41,7 +41,7 @@ test('the login transitions after clicking Lost Password? then canceling', funct
   this.render(hbs `{{rsa-routable-login username='foo' password='bar'}}`);
   this.$('.lost-password').click();
   this.$('.rsa-form-button:first').click();
-  return wait().then(function() {
+  return wait().then(() => {
     assert.ok(this.$('form').hasClass('login'));
   });
 });
@@ -50,7 +50,7 @@ test('the login transitions after clicking Lost Password? then submitting', func
   this.render(hbs `{{rsa-routable-login username='foo' willRequestPasswordReset=true}}`);
   this.$('.lost-password').click();
   this.$('.rsa-form-button[type=submit]').click();
-  return wait().then(function() {
+  return wait().then(() => {
     assert.equal(this.$('.thank-you').length, 1);
   });
 });
@@ -60,7 +60,7 @@ test('the login transitions after clicking Lost Password? then submitting then c
   this.$('.lost-password').click();
   this.$('.rsa-form-button[type=submit]').click();
   this.$('.rsa-form-button').click();
-  return wait().then(function() {
+  return wait().then(() => {
     assert.ok(this.$('form').hasClass('login'));
   });
 });

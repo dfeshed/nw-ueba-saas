@@ -1,8 +1,9 @@
+/* eslint-disable */
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'style-guide',
     environment: environment,
-    baseURL: '/',
+    rootURL: '/',
     locationType: 'hash',
     moment: {
       includeLocales: ['en', 'ja'],
@@ -61,7 +62,6 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // Testem prefers this...
-    ENV.baseURL = '/';
     ENV.locationType = 'none';
 
     // keep test console output quieter
@@ -70,10 +70,11 @@ module.exports = function(environment) {
 
     // @workaround Disable readyDelay to avoid a synchronization issue with automated tests
     ENV.APP.readyDelay = 0;
+    ENV.APP.rootElement = '#ember-testing';
   }
 
   if (environment === 'production') {
-    ENV.baseURL = '/SA/SAStyle/production';
+    ENV.rootURL = '/SA/SAStyle/production';
   }
 
   return ENV;

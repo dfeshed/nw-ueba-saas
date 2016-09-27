@@ -22,8 +22,8 @@ test('it provides the correct options', function(assert) {
   let options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.contains('tight'));
-  assert.ok(options.contains('loose'));
+  assert.ok(options.includes('tight'));
+  assert.ok(options.includes('loose'));
 });
 
 test('it has the correct default', function(assert) {
