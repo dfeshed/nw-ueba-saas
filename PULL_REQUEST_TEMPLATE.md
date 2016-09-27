@@ -1,26 +1,37 @@
 ## Issue before the fix
 <!--
-Bulleted list of issue(s) causing this PR to be necessary.
+Mandatory
+Bulleted list: issue(s) causing this PR to be necessary.
 -->
 
 ## What changed
 <!--
-Bulleted list of changes to repo.
+Mandatory
+Bulleted list: changes to repo.
 -->
 
-## How things work now
+## Notes
 <!--
-Bullet list of impacts this PR has on the team
+Optional, can remove
+Bulleted list: info that will help reviewers review your code.
+-->
+
+## Screenshots
+<!--
+Optional, can remove
+If your PR has visual impacts, paste screenshots here
 -->
 
 ## Issues
 <!--
+Mandatory (at least say 'None' if no ticket)
 fill in the numbers, if multiple issues, add another
 -->
 [ASOC-#](https://bedfordjira.na.rsa.net/browse/ASOC-#)
 
 ## Pull Request Checklist
 <!--
+Mandatory
 A list of reviews necessary prior to merging.
 Presents as a task list in the list of PRs.
 Put in user's github name after the @
