@@ -10,8 +10,8 @@ const {
   isArray,
   inject: {
     service
-  }
-} = Ember;
+      }
+    } = Ember;
 
 export default Route.extend({
   layoutService: service('layout'),
@@ -82,7 +82,7 @@ export default Route.extend({
 
         if (isArray(data)) {
           data.forEach((entry) => {
-            this._populateContextsData(entry.data);
+            this._populateContextsData(entry);
           });
         }
       },
@@ -93,68 +93,59 @@ export default Route.extend({
   },
 
   _populateContextsData(contextData) {
-    let dataSources = contextData.result;
 
-    dataSources.forEach((dataSource) => {
+    switch (contextData.dataSourceType) {
+      case 'Incidents':
+        set(this.currentModel.contextData, 'incidentsData', contextData.resultList);
+        break;
+      case 'Alerts':
+        set(this.currentModel.contextData, 'alertsData', contextData.resultList);
+        break;
+      case 'ECAT':
+        {
 
-      switch (dataSource.dataSourceType) {
-        case 'Incidents':
-          {
-            set(this.currentModel.contextData, 'incidentsData', dataSource.resultList);
-            break;
-          }
-        case 'Alerts':
-          {
-            set(this.currentModel.contextData, 'alertsData', dataSource.resultList);
-            break;
-          }
-        case 'ECAT':
-          {
+          let ecatData = Ecat.create();
 
-            let ecatData = Ecat.create();
-
-            dataSource.resultList.forEach((obj) => {
-              let { Machine, Iocs, Processes, Network } = obj.details;
-              // get details and push into the respective objects
-              if (Machine) {
-                set(ecatData, 'host', Machine);
-              } else if (Iocs) {
-                ecatData.get('iioc').pushObjects(Iocs);
-              } else if (Processes) {
-                ecatData.get('processes').pushObjects(Processes);
-              } else if (Network) {
-                ecatData.get('network').pushObjects(Network);
-              } else {
-               // module object details
-                ecatData.set('modulesCount', obj.total_modules_count);
-                ecatData.set('minIoc', obj.minimum_ioc);
-                if (obj.details.Items !== undefined) {
-                  obj.details.Items.forEach((entry) => ecatData.get('modules').push(entry));
-                }
+          contextData.resultList.forEach((obj) => {
+            let { Machine, Iocs, Processes, Network } = obj.details;
+            // get details and push into the respective objects
+            if (Machine) {
+              set(ecatData, 'host', Machine);
+            } else if (Iocs) {
+              ecatData.get('iioc').pushObjects(Iocs);
+            } else if (Processes) {
+              ecatData.get('processes').pushObjects(Processes);
+            } else if (Network) {
+              ecatData.get('network').pushObjects(Network);
+            } else {
+              // module object details
+              ecatData.set('modulesCount', obj.total_modules_count);
+              ecatData.set('minIoc', obj.minimum_ioc);
+              if (obj.details.Items !== undefined) {
+                obj.details.Items.forEach((entry) => ecatData.get('modules').push(entry));
               }
-            });
-
-            set(this.currentModel.contextData, 'ecatData', ecatData);
-            break;
-          }
-        case 'LiveConnect':
-          dataSource.resultList.forEach((obj) => {
-            let lcData = null;
-            if (obj && obj.details && obj.details.IpReputation) {
-              let ipRep = obj.details.IpReputation;
-              lcData = LiveConnect.create();
-              setProperties(lcData, { ...ipRep });
             }
-            set(this.currentModel.contextData, 'liveConnectData', lcData);
           });
-          break;
-        default:
-          {
-            Logger.error('Data Source is not supported by Context Hub ', dataSource.dataSourceType);
-          }
-      }
 
-    });
+          set(this.currentModel.contextData, 'ecatData', ecatData);
+          break;
+        }
+      case 'LiveConnect':
+        contextData.resultList.forEach((obj) => {
+          let lcData = null;
+          if (obj && obj.details && obj.details.IpReputation) {
+            let ipRep = obj.details.IpReputation;
+            lcData = LiveConnect.create();
+            setProperties(lcData, { ...ipRep });
+          }
+          set(this.currentModel.contextData, 'liveConnectData', lcData);
+        });
+        break;
+      default:
+        {
+          Logger.error('Data Source is not supported by Context Hub ', contextData.dataSourceType);
+        }
+    }
 
   }
 

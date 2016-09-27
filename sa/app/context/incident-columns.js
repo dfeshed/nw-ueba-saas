@@ -7,7 +7,7 @@ export default[
     componentClass: 'rsa-content-badge-score'
   },
   {
-    field: '_id',
+    field: 'id',
     title: 'context.incident._id',
     width: '7%'
   },

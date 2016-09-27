@@ -1,831 +1,807 @@
-{
-  "code": 0,
-  "data": {
-    "result": [
+[
+  {
+    "resultId": "5b633727-ca0c-4c6e-b869-db65b1256fa8\/1",
+    "queryId": "d736d47c-8f2a-45b3-b4ad-1b88d6044af8",
+    "datasourceId": "57c7e594b3b318b147f79fc5",
+    "dataSourceName": "IMConn_Incidents_datasource",
+    "dataSourceType": "Incidents",
+    "resultList": [
       {
-        "resultId": "5b633727-ca0c-4c6e-b869-db65b1256fa8\/1",
-        "queryId": "d736d47c-8f2a-45b3-b4ad-1b88d6044af8",
-        "datasourceId": "57c7e594b3b318b147f79fc5",
-        "dataSourceName": "IMConn_Incidents_datasource",
-        "dataSourceType": "Incidents",
-        "resultList": [
-          {
-            "_id": "INC-230",
-            "alertCount": 5,
-            "averageAlertRiskScore": 90,
-            "created": {
-              "$date": "2016-02-09T04:17:06.156Z"
-            },
-            "name": "High Risk Alerts: Reporting Engine for 90.0",
-            "priority": "CRITICAL",
-            "status": "NEW"
-          },
-          {
-            "_id": "INC-134",
-            "alertCount": 240,
-            "averageAlertRiskScore": 90,
-            "created": {
-              "$date": "2016-02-05T04:45:06.206Z"
-            },
-            "name": "High Risk Alerts: Reporting Engine for 90.0",
-            "priority": "CRITICAL",
-            "status": "NEW"
-          },
-          {
-            "_id": "INC-132",
-            "alertCount": 600,
-            "averageAlertRiskScore": 90,
-            "created": {
-              "$date": "2016-02-04T06:01:39.644Z"
-            },
-            "name": "High Risk Alerts: Reporting Engine for 90.0",
-            "priority": "CRITICAL",
-            "status": "NEW"
-          }
-        ],
-        "pagingEnabled": false,
-        "currentPageId": 0,
-        "failed": false,
-        "errorMessage": null,
-        "maxPages": 0
+        "_id": "INC-230",
+        "alertCount": 5,
+        "averageAlertRiskScore": 90,
+        "created": {
+          "$date": "2016-02-09T04:17:06.156Z"
+        },
+        "name": "High Risk Alerts: Reporting Engine for 90.0",
+        "priority": "CRITICAL",
+        "status": "NEW"
       },
       {
-        "resultId": "5b633727-ca0c-4c6e-b869-db65b1256fa8\/2",
-        "queryId": "d736d47c-8f2a-45b3-b4ad-1b88d6044af8",
-        "datasourceId": "57c7e594b3b318b147f79fc6",
-        "dataSourceName": "IMConn_Alerts_datasource",
-        "dataSourceType": "Alerts",
-        "resultList": [
-          {
-            "_id": {
-              "$oid": "56b2f16de4b07ebea57c4a3c"
-            },
-            "alert": {
-              "risk_score": 90.0,
-              "source": "Reporting Engine",
-              "name": "RERULE",
-              "numEvents": 41,
-              "timestamp": {
-                "$date": "2016-02-04T06:36:28.000Z"
-              }
-            },
-            "incidentId": "INC-132"
-          },
-          {
-            "_id": {
-              "$oid": "56b429f5e4b0a1500b38521f"
-            },
-            "alert": {
-              "source": "Reporting Engine",
-              "timestamp": {
-                "$date": "2016-02-05T04:49:57.000Z"
-              },
-              "risk_score": 90.0,
-              "name": "RERULE",
-              "numEvents": 100
-            },
-            "incidentId": "INC-134"
-          },
-          {
-            "_id": {
-              "$oid": "56b43263e4b0a1500b385321"
-            },
-            "alert": {
-              "source": "Reporting Engine",
-              "timestamp": {
-                "$date": "2016-02-05T05:25:55.000Z"
-              },
-              "risk_score": 90.0,
-              "name": "RERULE",
-              "numEvents": 93
-            },
-            "incidentId": "INC-134"
-          },
-          {
-            "_id": {
-              "$oid": "56b96a8fe4b0a1500b385452"
-            },
-            "alert": {
-              "source": "Reporting Engine",
-              "timestamp": {
-                "$date": "2016-02-09T04:26:55.000Z"
-              },
-              "risk_score": 90.0,
-              "name": "RERULE",
-              "numEvents": 65
-            },
-            "incidentId": "INC-230"
-          },
-          {
-            "_id": {
-              "$oid": "56b96e8be4b0a1500b38545c"
-            },
-            "alert": {
-              "source": "Reporting Engine",
-              "timestamp": {
-                "$date": "2016-02-09T04:43:55.000Z"
-              },
-              "risk_score": 90.0,
-              "name": "RERULE",
-              "numEvents": 65
-            },
-            "incidentId": "INC-230"
-          }
-        ],
-        "pagingEnabled": false,
-        "currentPageId": 0,
-        "failed": false,
-        "errorMessage": null,
-        "maxPages": 0
+        "_id": "INC-134",
+        "alertCount": 240,
+        "averageAlertRiskScore": 90,
+        "created": {
+          "$date": "2016-02-05T04:45:06.206Z"
+        },
+        "name": "High Risk Alerts: Reporting Engine for 90.0",
+        "priority": "CRITICAL",
+        "status": "NEW"
       },
       {
-        "resultId": "5b633727-ca0c-4c6e-b869-db65b1256fa8\/3",
-        "queryId": "d736d47c-8f2a-45b3-b4ad-1b88d6044af8",
-        "datasourceId": "57c7e593b3b318b147f79fc3",
-        "dataSourceName": "ECATDS1_ECAT_datasource",
-        "dataSourceType": "ECAT",
-        "resultList": [
-          {
-            "details": {
-              "Machine": {
-                "ServicePackOS": "0",
-                "MachineStatus": "Online",
-                "VersionInfo": "4.1.0.0",
-                "UserName": "",
-                "OrganizationUnit": "",
-                "LocalIP": "10.101.47.53",
-                "NetworkSegment": "10.101.47.0",
-                "Gateway": "10.101.46.1",
-                "RemoteIP": "10.101.47.53",
-                "AdminStatus": "",
-                "Online": "True",
-                "IIOCScore": "1024",
-                "Comment": "",
-                "DNS": "10.100.174.10",
-                "IIOCLevel0": "1",
-                "IIOCLevel1": "5",
-                "IIOCLevel2": "7",
-                "IIOCLevel3": "21",
-                "Country": "USA",
-                "BootTime": "5\/12\/2015 3:57:36 AM",
-                "LastScan": "5\/14\/2015 9:00:51 AM",
-                "LastSeen": "5\/15\/2015 4:06:28 AM",
-                "MAC": "84:8F:69:E7:D1:3A",
-                "MachineID": "00000000-0000-0000-0000-000000000000",
-                "MachineName": "BED-ECAT-APP-02",
-                "FirewallDisabled": "False",
-                "OperatingSystem": "Microsoft Windows Server 2012 R2 Standard",
-                "Platform": "64-bit (x64)",
-                "Serial": "5BQZPW1",
-                "TimeZone": "Eastern Standard Time"
-              }
-            }
-          },
-          {
-            "details": {
-              "Iocs": [
-                {
-                  "Description": "Autorun unsigned ServiceDLL",
-                  "Type": "Module",
-                  "IOCLevel": "2",
-                  "Name": "Autorun_Unsigned_ServiceDLL.sql",
-                  "MachineCount": "2"
-                },
-                {
-                  "Description": "Compiled in last month",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Compiled_In_Last_Month.sql",
-                  "MachineCount": "74"
-                },
-                {
-                  "Description": "Created in last month",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Created_In_Last_Month.sql",
-                  "MachineCount": "74"
-                },
-                {
-                  "Description": "No file description",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "No_File_Description.sql",
-                  "MachineCount": "4"
-                },
-                {
-                  "Description": "Directory hidden",
-                  "Type": "Module",
-                  "IOCLevel": "2",
-                  "Name": "Directory_Hidden.sql",
-                  "MachineCount": "25"
-                },
-                {
-                  "Description": "Directory encrypted",
-                  "Type": "Module",
-                  "IOCLevel": "2",
-                  "Name": "Directory_Encrypted.sql",
-                  "MachineCount": "23"
-                },
-                {
-                  "Description": "Autorun",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Autorun.sql",
-                  "MachineCount": "74"
-                },
-                {
-                  "Description": "File access denied",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "File_Access_Denied.sql",
-                  "MachineCount": "6"
-                },
-                {
-                  "Description": "Beacon",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Beacon.sql",
-                  "MachineCount": "16"
-                },
-                {
-                  "Description": "Network access",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Network_Access.sql",
-                  "MachineCount": "38"
-                },
-                {
-                  "Description": "Bytes sent ratio",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Bytes_Sent_Ratio.sql",
-                  "MachineCount": "9"
-                },
-                {
-                  "Description": "High connection count",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "High_Connection_Count.sql",
-                  "MachineCount": "18"
-                },
-                {
-                  "Description": "Image mismatch",
-                  "Type": "Module",
-                  "IOCLevel": "2",
-                  "Name": "Image_Mismatch.sql",
-                  "MachineCount": "2"
-                },
-                {
-                  "Description": "Temporary directory",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Temporary_Directory.sql",
-                  "MachineCount": "13"
-                },
-                {
-                  "Description": "File not found",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "File_Not_Found.sql",
-                  "MachineCount": "33"
-                },
-                {
-                  "Description": "Network listen",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Network_Listen.sql",
-                  "MachineCount": "74"
-                },
-                {
-                  "Description": "Notification registered",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Notification_Registered.sql",
-                  "MachineCount": "50"
-                },
-                {
-                  "Description": "Floating module",
-                  "Type": "Module",
-                  "IOCLevel": "2",
-                  "Name": "Floating_Module.sql",
-                  "MachineCount": "1"
-                },
-                {
-                  "Description": "In uncommon directory",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "In_Uncommon_Directory.sql",
-                  "MachineCount": "28"
-                },
-                {
-                  "Description": "Blacklisted",
-                  "Type": "Module",
-                  "IOCLevel": "0",
-                  "Name": "Blacklisted.sql",
-                  "MachineCount": "6"
-                },
-                {
-                  "Description": "Unsigned driver",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Unsigned_Driver.sql",
-                  "MachineCount": "2"
-                },
-                {
-                  "Description": "Invalid signature",
-                  "Type": "Module",
-                  "IOCLevel": "2",
-                  "Name": "Invalid_Signature.sql",
-                  "MachineCount": "1"
-                },
-                {
-                  "Description": "Same PE compile date as blacklisted module",
-                  "Type": "Module",
-                  "IOCLevel": "1",
-                  "Name": "Same_PE_Compile_Date_As_Blacklisted_Module.sql",
-                  "MachineCount": "1"
-                },
-                {
-                  "Description": "Created in last 24 hours",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Created_In_Last_24_Hours.sql",
-                  "MachineCount": "64"
-                },
-                {
-                  "Description": "Creation time near blacklisted creation time",
-                  "Type": "Module",
-                  "IOCLevel": "1",
-                  "Name": "Creation_Time_Near_Blacklisted_Creation_Time.sql",
-                  "MachineCount": "3"
-                },
-                {
-                  "Description": "In same directory as blacklisted",
-                  "Type": "Module",
-                  "IOCLevel": "1",
-                  "Name": "In_Same_Directory_As_Blacklisted.sql",
-                  "MachineCount": "4"
-                },
-                {
-                  "Description": "Self signed",
-                  "Type": "Module",
-                  "IOCLevel": "3",
-                  "Name": "Self_Signed.sql",
-                  "MachineCount": "3"
-                },
-                {
-                  "Description": "Same certificate friendly name as blacklisted",
-                  "Type": "Module",
-                  "IOCLevel": "1",
-                  "Name": "Same_Certificate_FriendlyName_As_Blacklisted.sql",
-                  "MachineCount": "3"
-                },
-                {
-                  "Description": "Modifies services ImagePath",
-                  "Type": "Event",
-                  "IOCLevel": "1",
-                  "Name": "Modifies_Services_ImagePath.sql",
-                  "MachineCount": "5"
-                },
-                {
-                  "Description": "Renames file to executable",
-                  "Type": "Event",
-                  "IOCLevel": "2",
-                  "Name": "Renames_File_To_Executable.sql",
-                  "MachineCount": "2"
-                },
-                {
-                  "Description": "Reads document",
-                  "Type": "Event",
-                  "IOCLevel": "3",
-                  "Name": "Reads_Document.sql",
-                  "MachineCount": "1"
-                },
-                {
-                  "Description": "Runs CMD.EXE",
-                  "Type": "Event",
-                  "IOCLevel": "3",
-                  "Name": "Runs_CMD.sql",
-                  "MachineCount": "2"
-                },
-                {
-                  "Description": "Runs SC.EXE",
-                  "Type": "Event",
-                  "IOCLevel": "3",
-                  "Name": "Runs_SC.sql",
-                  "MachineCount": "11"
-                },
-                {
-                  "Description": "Runs SCHTASKS.EXE",
-                  "Type": "Event",
-                  "IOCLevel": "3",
-                  "Name": "Runs_SCHTASKS.sql",
-                  "MachineCount": "9"
-                }
-              ]
-            }
-          },
-          {
-            "details": {
-              "Processes": [
-                {
-                  "UserName": "Administrator",
-                  "IIOCLevel0": "0",
-                  "IIOCLevel1": "0",
-                  "IIOCLevel2": "0",
-                  "IIOCLevel3": "1",
-                  "IIOCScore": "1",
-                  "FileName": "explorer.exe",
-                  "Path": "C:\\Windows\\",
-                  "ModuleName": "explorer.exe",
-                  "Description": "Windows Explorer",
-                  "MachineCount": "1",
-                  "Platform": "",
-                  "Signature": "Need Revoke Update: Microsoft Windows"
-                }
-              ]
-            }
-          },
-          {
-            "details": {
-              "Network": [
-                {
-                  "FileName": "aa_ticket_8392051302.pif",
-                  "MachineName": "BED-ECAT-APP-02",
-                  "NetworkSegment": "185.36.134.0",
-                  "IIOCLevel0": "1",
-                  "IIOCLevel1": "1",
-                  "IIOCLevel2": "1",
-                  "IIOCLevel3": "5",
-                  "IIOCScore": "1024",
-                  "Path": "C:\\2015-05-11-malspam-associated-malware\\",
-                  "ModuleName": "aa_ticket_8392051302.pif",
-                  "Description": "LEViewer.exe",
-                  "MachineCount": "1",
-                  "Platform": "",
-                  "Signature": "Not Signed: Microsoft Corporation"
-                }
-              ]
-            }
-          },
-          {
-            "total_modules_count": "3642",
-            "details": {
-              "Items": [
-                {
-                  "Id": "000000000000000000000002",
-                  "Name": "w1.exe",
-                  "Properties": {
-                    "Name": "w1.exe",
-                    "ModuleName": "w1.exe",
-                    "IOCScore": {
-                      "__type": "Tools.IOCScore, Tools",
-                      "Level0": 1,
-                      "Level1": 2,
-                      "Level2": 0,
-                      "Level3": 3,
-                      "Level": 1,
-                      "Score": 1024,
-                      "FullScore": 1002000003
-                    },
-                    "IOCLevel0": 1,
-                    "IOCLevel1": 2,
-                    "IOCLevel2": 0,
-                    "IOCLevel3": 3,
-                    "Signature": "Not Signed: AGSoft",
-                    "AnalyticsScore": "0",
-                    "BiasStatusComment": "",
-                    "BiasStatusEnum": {
-                      "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
-                      "MappedValue": 0,
-                      "Value": -2,
-                      "DisplayName": "Blacklisted",
-                      "DisplayNameNeutral": "Blacklisted"
-                    },
-                    "GlobalMachineCount": 1,
-                    "HashMD5": "3F11C42687D09D4A56C715F671143A58",
-                    "HashSHA1": "8657909D4C3B14C63129E38D05D3845A90C57BF8",
-                    "HashSHA256": "00F3DDE7039DA997692A7DCA26D4B658694F8858C09CE2EBD6CD2575E1D1218D",
-                    "FileName": "w1.exe",
-                    "Path": "C:\\2015-05-11-malspam-associated-malware\\"
-                  },
-                  "Links": [
-                    {
-                      "rel": "Machine Module",
-                      "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000002"
-                    }
-                  ]
-                },
-                {
-                  "Id": "000000000000000000000001",
-                  "Name": "aa_ticket_9017937910.pif",
-                  "Properties": {
-                    "Name": "aa_ticket_9017937910.pif",
-                    "ModuleName": "aa_ticket_9017937910.pif",
-                    "IOCScore": {
-                      "__type": "Tools.IOCScore, Tools",
-                      "Level0": 1,
-                      "Level1": 1,
-                      "Level2": 1,
-                      "Level3": 5,
-                      "Level": 1,
-                      "Score": 1024,
-                      "FullScore": 1001001005
-                    },
-                    "IOCLevel0": 1,
-                    "IOCLevel1": 1,
-                    "IOCLevel2": 1,
-                    "IOCLevel3": 5,
-                    "Signature": "Not Signed: AGSoft",
-                    "AnalyticsScore": "0",
-                    "BiasStatusComment": "",
-                    "BiasStatusEnum": {
-                      "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
-                      "MappedValue": 0,
-                      "Value": -2,
-                      "DisplayName": "Blacklisted",
-                      "DisplayNameNeutral": "Blacklisted"
-                    },
-                    "GlobalMachineCount": 1,
-                    "HashMD5": "F21072077E88C74B9B6D67F81AE63D84",
-                    "HashSHA1": "74A586ABAD423AF4D969A0064248075FFBC3B3BF",
-                    "HashSHA256": "73F67FB17B849E5B752DBECB63D0E7EF93BC43A8778A542B6F955BEECCEA3411",
-                    "FileName": "aa_ticket_9017937910.pif",
-                    "Path": "C:\\2015-05-11-malspam-associated-malware\\"
-                  },
-                  "Links": [
-                    {
-                      "rel": "Machine Module",
-                      "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000001"
-                    }
-                  ]
-                },
-                {
-                  "Id": "000000000000000000000003",
-                  "Name": "w2.exe",
-                  "Properties": {
-                    "Name": "w2.exe",
-                    "ModuleName": "w2.exe",
-                    "IOCScore": {
-                      "__type": "Tools.IOCScore, Tools",
-                      "Level0": 1,
-                      "Level1": 2,
-                      "Level2": 0,
-                      "Level3": 3,
-                      "Level": 1,
-                      "Score": 1024,
-                      "FullScore": 1002000003
-                    },
-                    "IOCLevel0": 1,
-                    "IOCLevel1": 2,
-                    "IOCLevel2": 0,
-                    "IOCLevel3": 3,
-                    "Signature": "Not Signed: Microsoft Corporation",
-                    "AnalyticsScore": "0",
-                    "BiasStatusComment": " [...]",
-                    "BiasStatusEnum": {
-                      "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
-                      "MappedValue": 0,
-                      "Value": -2,
-                      "DisplayName": "Blacklisted",
-                      "DisplayNameNeutral": "Blacklisted"
-                    },
-                    "GlobalMachineCount": 1,
-                    "HashMD5": "6EB761EA46A40AD72018D3CEE915C4CD",
-                    "HashSHA1": "A2BDD69B38AD32C1FF70A219169E34B1924D66BB",
-                    "HashSHA256": "A184775757CF30F9593977EE0344CD6C54DEB4B14A012A7AF8E3A2CDBB85A749",
-                    "FileName": "w2.exe",
-                    "Path": "C:\\2015-05-11-malspam-associated-malware\\"
-                  },
-                  "Links": [
-                    {
-                      "rel": "Machine Module",
-                      "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000003"
-                    }
-                  ]
-                },
-                {
-                  "Id": "000000000000000000000000",
-                  "Name": "aa_ticket_8392051302.pif",
-                  "Properties": {
-                    "Name": "aa_ticket_8392051302.pif",
-                    "ModuleName": "aa_ticket_8392051302.pif",
-                    "IOCScore": {
-                      "__type": "Tools.IOCScore, Tools",
-                      "Level0": 1,
-                      "Level1": 1,
-                      "Level2": 1,
-                      "Level3": 5,
-                      "Level": 1,
-                      "Score": 1024,
-                      "FullScore": 1001001005
-                    },
-                    "IOCLevel0": 1,
-                    "IOCLevel1": 1,
-                    "IOCLevel2": 1,
-                    "IOCLevel3": 5,
-                    "Signature": "Not Signed: Microsoft Corporation",
-                    "AnalyticsScore": "0",
-                    "BiasStatusComment": "",
-                    "BiasStatusEnum": {
-                      "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
-                      "MappedValue": 0,
-                      "Value": -2,
-                      "DisplayName": "Blacklisted",
-                      "DisplayNameNeutral": "Blacklisted"
-                    },
-                    "GlobalMachineCount": 1,
-                    "HashMD5": "379C67AE879872D3FA0B601892C59605",
-                    "HashSHA1": "5522FB78749B8425F58B3F12C67C74D62E6EEDCA",
-                    "HashSHA256": "6A40ED9DBB0F4BD430D76C10750448669C2BCCA9AEA6C6E8743F7526C8FFD93F",
-                    "FileName": "aa_ticket_8392051302.pif",
-                    "Path": "C:\\2015-05-11-malspam-associated-malware\\"
-                  },
-                  "Links": [
-                    {
-                      "rel": "Machine Module",
-                      "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000000"
-                    }
-                  ]
-                },
-                {
-                  "Id": "0000000000000000000011D8",
-                  "Name": "baretail.exe",
-                  "Properties": {
-                    "Name": "baretail.exe",
-                    "ModuleName": "baretail.exe",
-                    "IOCScore": {
-                      "__type": "Tools.IOCScore, Tools",
-                      "Level0": 1,
-                      "Level1": 0,
-                      "Level2": 0,
-                      "Level3": 0,
-                      "Level": 1,
-                      "Score": 1024,
-                      "FullScore": 1000000000
-                    },
-                    "IOCLevel0": 1,
-                    "IOCLevel1": 0,
-                    "IOCLevel2": 0,
-                    "IOCLevel3": 0,
-                    "Signature": "Not Signed",
-                    "AnalyticsScore": "0",
-                    "BiasStatusComment": "",
-                    "BiasStatusEnum": {
-                      "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
-                      "MappedValue": 0,
-                      "Value": -2,
-                      "DisplayName": "Blacklisted",
-                      "DisplayNameNeutral": "Blacklisted"
-                    },
-                    "GlobalMachineCount": 3,
-                    "HashMD5": "F3E7A015C1D541528085D3F9581AB41F",
-                    "HashSHA1": "2AA7D3806D614FD9E1E6B099D134784A98B6DD9E",
-                    "HashSHA256": "160D6A3BDC9D64677643376F82E559EB4112289E6B6D722B5B3B32699D18BCA9",
-                    "FileName": "baretail.exe",
-                    "Path": "C:\\Users\\Administrator\\Desktop\\"
-                  },
-                  "Links": [
-                    {
-                      "rel": "Machine Module",
-                      "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/0000000000000000000011D8"
-                    }
-                  ]
-                }
-              ]
-            },
-            "minimum_ioc": 500
-          }
-        ],
-        "pagingEnabled": false,
-        "currentPageId": 0,
-        "failed": false,
-        "errorMessage": null,
-        "maxPages": 0
-      },
-      {
-        "queryId": "3473d31e-4196-4f06-8d57-41e5d095fcb2",
-        "resultList": [
-          {
-            "details": {
-              "IpReputation": {
-                "customerRiskyFeedbackPercentageTrend": [
-                  {
-                    "percentage": 3.62,
-                    "time": 1470182400000
-                  },
-                  {
-                    "percentage": 8.22,
-                    "time": 1471910400000
-                  }
-                ],
-                "customerPercentageTrend": [[
-                  {
-                    "percentage": 9.45,
-                    "time": 1468972800000
-                  },
-                  {
-                    "percentage": 5.67,
-                    "time": 1469404800000
-                  },
-                  {
-                    "percentage": 13.81,
-                    "time": 1469491200000
-                  },
-                  {
-                    "percentage": 13.28,
-                    "time": 1469664000000
-                  },
-                  {
-                    "percentage": 10.61,
-                    "time": 1470355200000
-                  },
-                  {
-                    "percentage": 6.81,
-                    "time": 1471910400000
-                  }
-                ]],
-                "feedback": {
-                  "status": "VIEWED",
-                  "dateMarked": 1472202063357
-                },
-                "customerInvestigatedPercentageTrend": [
-                  {
-                    "percentage": 30.06,
-                    "time": 1469491200000
-                  },
-                  {
-                    "percentage": 15.0,
-                    "time": 1469577600000
-                  },
-                  {
-                    "percentage": 43.65,
-                    "time": 1470787200000
-                  },
-                  {
-                    "percentage": 30.0,
-                    "time": 1471219200000
-                  },
-                  {
-                    "percentage": 48.69,
-                    "time": 1472169600000
-                  }
-                ],
-                "customerPercentage": 2.53,
-                "customerInvestigatedPercentage": 48.69,
-                "risk": "UNSAFE",
-                "unsafeModulesDownloaded": "None",
-                "riskReasonTypeList": [
-                  "COMMUNICATED_BY_UNSAFE_MODULE"
-                ],
-                "customerRiskyFeedbackPercentage": 8.22,
-                "customerNotRiskyFeedbackPercentage": 0.0,
-                "unsafeModulesCommunicated": [
-                  {
-                    "hashType": "MD5",
-                    "id": "0cfec238e1b0992274da5f065cccf87a"
-                  }
-                ],
-                "relatedDomains": [
-                  "issamox.ddns.net"
-                ],
-                "customerNotRiskyFeedbackPercentageTrend": [],
-                "riskScore": 100.0,
-                "id": "41.140.181.156",
-                "firstSeen": 1469025558535
-              }
-            }
-          }
-        ],
-        "dataSourceType": "LiveConnect",
-        "datasourceId": "57c149bfe4b0e8a1f1769a40",
-        "currentPageId": 0,
-        "pagingEnabled": "False",
-        "failed": "False",
-        "errorMessage": "None",
-        "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
-        "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
-        "maxPages": 0
+        "_id": "INC-132",
+        "alertCount": 600,
+        "averageAlertRiskScore": 90,
+        "created": {
+          "$date": "2016-02-04T06:01:39.644Z"
+        },
+        "name": "High Risk Alerts: Reporting Engine for 90.0",
+        "priority": "CRITICAL",
+        "status": "NEW"
       }
-    ]
+    ],
+    "pagingEnabled": false,
+    "currentPageId": 0,
+    "failed": false,
+    "errorMessage": null,
+    "maxPages": 0
   },
-  "request": {
-    "stream": {
-      "limit": 100000,
-      "batch": 1
-    },
-    "sort": [],
-    "filter": [
+  {
+    "resultId": "5b633727-ca0c-4c6e-b869-db65b1256fa8\/2",
+    "queryId": "d736d47c-8f2a-45b3-b4ad-1b88d6044af8",
+    "datasourceId": "57c7e594b3b318b147f79fc6",
+    "dataSourceName": "IMConn_Alerts_datasource",
+    "dataSourceType": "Alerts",
+    "resultList": [
       {
-        "field": "meta",
-        "value": "IP",
-        "isNull": false
+        "_id": {
+          "$oid": "56b2f16de4b07ebea57c4a3c"
+        },
+        "alert": {
+          "risk_score": 90.0,
+          "source": "Reporting Engine",
+          "name": "RERULE",
+          "numEvents": 41,
+          "timestamp": {
+            "$date": "2016-02-04T06:36:28.000Z"
+          }
+        },
+        "incidentId": "INC-132"
       },
       {
-        "field": "value",
-        "value": "10.101.47.53",
-        "isNull": false
+        "_id": {
+          "$oid": "56b429f5e4b0a1500b38521f"
+        },
+        "alert": {
+          "source": "Reporting Engine",
+          "timestamp": {
+            "$date": "2016-02-05T04:49:57.000Z"
+          },
+          "risk_score": 90.0,
+          "name": "RERULE",
+          "numEvents": 100
+        },
+        "incidentId": "INC-134"
+      },
+      {
+        "_id": {
+          "$oid": "56b43263e4b0a1500b385321"
+        },
+        "alert": {
+          "source": "Reporting Engine",
+          "timestamp": {
+            "$date": "2016-02-05T05:25:55.000Z"
+          },
+          "risk_score": 90.0,
+          "name": "RERULE",
+          "numEvents": 93
+        },
+        "incidentId": "INC-134"
+      },
+      {
+        "_id": {
+          "$oid": "56b96a8fe4b0a1500b385452"
+        },
+        "alert": {
+          "source": "Reporting Engine",
+          "timestamp": {
+            "$date": "2016-02-09T04:26:55.000Z"
+          },
+          "risk_score": 90.0,
+          "name": "RERULE",
+          "numEvents": 65
+        },
+        "incidentId": "INC-230"
+      },
+      {
+        "_id": {
+          "$oid": "56b96e8be4b0a1500b38545c"
+        },
+        "alert": {
+          "source": "Reporting Engine",
+          "timestamp": {
+            "$date": "2016-02-09T04:43:55.000Z"
+          },
+          "risk_score": 90.0,
+          "name": "RERULE",
+          "numEvents": 65
+        },
+        "incidentId": "INC-230"
       }
-    ]
+    ],
+    "pagingEnabled": false,
+    "currentPageId": 0,
+    "failed": false,
+    "errorMessage": null,
+    "maxPages": 0
+  },
+  {
+    "resultId": "5b633727-ca0c-4c6e-b869-db65b1256fa8\/3",
+    "queryId": "d736d47c-8f2a-45b3-b4ad-1b88d6044af8",
+    "datasourceId": "57c7e593b3b318b147f79fc3",
+    "dataSourceName": "ECATDS1_ECAT_datasource",
+    "dataSourceType": "ECAT",
+    "resultList": [
+      {
+        "details": {
+          "Machine": {
+            "ServicePackOS": "0",
+            "MachineStatus": "Online",
+            "VersionInfo": "4.1.0.0",
+            "UserName": "",
+            "OrganizationUnit": "",
+            "LocalIP": "10.101.47.53",
+            "NetworkSegment": "10.101.47.0",
+            "Gateway": "10.101.46.1",
+            "RemoteIP": "10.101.47.53",
+            "AdminStatus": "",
+            "Online": "True",
+            "IIOCScore": "1024",
+            "Comment": "",
+            "DNS": "10.100.174.10",
+            "IIOCLevel0": "1",
+            "IIOCLevel1": "5",
+            "IIOCLevel2": "7",
+            "IIOCLevel3": "21",
+            "Country": "USA",
+            "BootTime": "5\/12\/2015 3:57:36 AM",
+            "LastScan": "5\/14\/2015 9:00:51 AM",
+            "LastSeen": "5\/15\/2015 4:06:28 AM",
+            "MAC": "84:8F:69:E7:D1:3A",
+            "MachineID": "00000000-0000-0000-0000-000000000000",
+            "MachineName": "BED-ECAT-APP-02",
+            "FirewallDisabled": "False",
+            "OperatingSystem": "Microsoft Windows Server 2012 R2 Standard",
+            "Platform": "64-bit (x64)",
+            "Serial": "5BQZPW1",
+            "TimeZone": "Eastern Standard Time"
+          }
+        }
+      },
+      {
+        "details": {
+          "Iocs": [
+            {
+              "Description": "Autorun unsigned ServiceDLL",
+              "Type": "Module",
+              "IOCLevel": "2",
+              "Name": "Autorun_Unsigned_ServiceDLL.sql",
+              "MachineCount": "2"
+            },
+            {
+              "Description": "Compiled in last month",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Compiled_In_Last_Month.sql",
+              "MachineCount": "74"
+            },
+            {
+              "Description": "Created in last month",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Created_In_Last_Month.sql",
+              "MachineCount": "74"
+            },
+            {
+              "Description": "No file description",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "No_File_Description.sql",
+              "MachineCount": "4"
+            },
+            {
+              "Description": "Directory hidden",
+              "Type": "Module",
+              "IOCLevel": "2",
+              "Name": "Directory_Hidden.sql",
+              "MachineCount": "25"
+            },
+            {
+              "Description": "Directory encrypted",
+              "Type": "Module",
+              "IOCLevel": "2",
+              "Name": "Directory_Encrypted.sql",
+              "MachineCount": "23"
+            },
+            {
+              "Description": "Autorun",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Autorun.sql",
+              "MachineCount": "74"
+            },
+            {
+              "Description": "File access denied",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "File_Access_Denied.sql",
+              "MachineCount": "6"
+            },
+            {
+              "Description": "Beacon",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Beacon.sql",
+              "MachineCount": "16"
+            },
+            {
+              "Description": "Network access",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Network_Access.sql",
+              "MachineCount": "38"
+            },
+            {
+              "Description": "Bytes sent ratio",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Bytes_Sent_Ratio.sql",
+              "MachineCount": "9"
+            },
+            {
+              "Description": "High connection count",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "High_Connection_Count.sql",
+              "MachineCount": "18"
+            },
+            {
+              "Description": "Image mismatch",
+              "Type": "Module",
+              "IOCLevel": "2",
+              "Name": "Image_Mismatch.sql",
+              "MachineCount": "2"
+            },
+            {
+              "Description": "Temporary directory",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Temporary_Directory.sql",
+              "MachineCount": "13"
+            },
+            {
+              "Description": "File not found",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "File_Not_Found.sql",
+              "MachineCount": "33"
+            },
+            {
+              "Description": "Network listen",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Network_Listen.sql",
+              "MachineCount": "74"
+            },
+            {
+              "Description": "Notification registered",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Notification_Registered.sql",
+              "MachineCount": "50"
+            },
+            {
+              "Description": "Floating module",
+              "Type": "Module",
+              "IOCLevel": "2",
+              "Name": "Floating_Module.sql",
+              "MachineCount": "1"
+            },
+            {
+              "Description": "In uncommon directory",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "In_Uncommon_Directory.sql",
+              "MachineCount": "28"
+            },
+            {
+              "Description": "Blacklisted",
+              "Type": "Module",
+              "IOCLevel": "0",
+              "Name": "Blacklisted.sql",
+              "MachineCount": "6"
+            },
+            {
+              "Description": "Unsigned driver",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Unsigned_Driver.sql",
+              "MachineCount": "2"
+            },
+            {
+              "Description": "Invalid signature",
+              "Type": "Module",
+              "IOCLevel": "2",
+              "Name": "Invalid_Signature.sql",
+              "MachineCount": "1"
+            },
+            {
+              "Description": "Same PE compile date as blacklisted module",
+              "Type": "Module",
+              "IOCLevel": "1",
+              "Name": "Same_PE_Compile_Date_As_Blacklisted_Module.sql",
+              "MachineCount": "1"
+            },
+            {
+              "Description": "Created in last 24 hours",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Created_In_Last_24_Hours.sql",
+              "MachineCount": "64"
+            },
+            {
+              "Description": "Creation time near blacklisted creation time",
+              "Type": "Module",
+              "IOCLevel": "1",
+              "Name": "Creation_Time_Near_Blacklisted_Creation_Time.sql",
+              "MachineCount": "3"
+            },
+            {
+              "Description": "In same directory as blacklisted",
+              "Type": "Module",
+              "IOCLevel": "1",
+              "Name": "In_Same_Directory_As_Blacklisted.sql",
+              "MachineCount": "4"
+            },
+            {
+              "Description": "Self signed",
+              "Type": "Module",
+              "IOCLevel": "3",
+              "Name": "Self_Signed.sql",
+              "MachineCount": "3"
+            },
+            {
+              "Description": "Same certificate friendly name as blacklisted",
+              "Type": "Module",
+              "IOCLevel": "1",
+              "Name": "Same_Certificate_FriendlyName_As_Blacklisted.sql",
+              "MachineCount": "3"
+            },
+            {
+              "Description": "Modifies services ImagePath",
+              "Type": "Event",
+              "IOCLevel": "1",
+              "Name": "Modifies_Services_ImagePath.sql",
+              "MachineCount": "5"
+            },
+            {
+              "Description": "Renames file to executable",
+              "Type": "Event",
+              "IOCLevel": "2",
+              "Name": "Renames_File_To_Executable.sql",
+              "MachineCount": "2"
+            },
+            {
+              "Description": "Reads document",
+              "Type": "Event",
+              "IOCLevel": "3",
+              "Name": "Reads_Document.sql",
+              "MachineCount": "1"
+            },
+            {
+              "Description": "Runs CMD.EXE",
+              "Type": "Event",
+              "IOCLevel": "3",
+              "Name": "Runs_CMD.sql",
+              "MachineCount": "2"
+            },
+            {
+              "Description": "Runs SC.EXE",
+              "Type": "Event",
+              "IOCLevel": "3",
+              "Name": "Runs_SC.sql",
+              "MachineCount": "11"
+            },
+            {
+              "Description": "Runs SCHTASKS.EXE",
+              "Type": "Event",
+              "IOCLevel": "3",
+              "Name": "Runs_SCHTASKS.sql",
+              "MachineCount": "9"
+            }
+          ]
+        }
+      },
+      {
+        "details": {
+          "Processes": [
+            {
+              "UserName": "Administrator",
+              "IIOCLevel0": "0",
+              "IIOCLevel1": "0",
+              "IIOCLevel2": "0",
+              "IIOCLevel3": "1",
+              "IIOCScore": "1",
+              "FileName": "explorer.exe",
+              "Path": "C:\\Windows\\",
+              "ModuleName": "explorer.exe",
+              "Description": "Windows Explorer",
+              "MachineCount": "1",
+              "Platform": "",
+              "Signature": "Need Revoke Update: Microsoft Windows"
+            }
+          ]
+        }
+      },
+      {
+        "details": {
+          "Network": [
+            {
+              "FileName": "aa_ticket_8392051302.pif",
+              "MachineName": "BED-ECAT-APP-02",
+              "NetworkSegment": "185.36.134.0",
+              "IIOCLevel0": "1",
+              "IIOCLevel1": "1",
+              "IIOCLevel2": "1",
+              "IIOCLevel3": "5",
+              "IIOCScore": "1024",
+              "Path": "C:\\2015-05-11-malspam-associated-malware\\",
+              "ModuleName": "aa_ticket_8392051302.pif",
+              "Description": "LEViewer.exe",
+              "MachineCount": "1",
+              "Platform": "",
+              "Signature": "Not Signed: Microsoft Corporation"
+            }
+          ]
+        }
+      },
+      {
+        "total_modules_count": "3642",
+        "details": {
+          "Items": [
+            {
+              "Id": "000000000000000000000002",
+              "Name": "w1.exe",
+              "Properties": {
+                "Name": "w1.exe",
+                "ModuleName": "w1.exe",
+                "IOCScore": {
+                  "__type": "Tools.IOCScore, Tools",
+                  "Level0": 1,
+                  "Level1": 2,
+                  "Level2": 0,
+                  "Level3": 3,
+                  "Level": 1,
+                  "Score": 1024,
+                  "FullScore": 1002000003
+                },
+                "IOCLevel0": 1,
+                "IOCLevel1": 2,
+                "IOCLevel2": 0,
+                "IOCLevel3": 3,
+                "Signature": "Not Signed: AGSoft",
+                "AnalyticsScore": "0",
+                "BiasStatusComment": "",
+                "BiasStatusEnum": {
+                  "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
+                  "MappedValue": 0,
+                  "Value": -2,
+                  "DisplayName": "Blacklisted",
+                  "DisplayNameNeutral": "Blacklisted"
+                },
+                "GlobalMachineCount": 1,
+                "HashMD5": "3F11C42687D09D4A56C715F671143A58",
+                "HashSHA1": "8657909D4C3B14C63129E38D05D3845A90C57BF8",
+                "HashSHA256": "00F3DDE7039DA997692A7DCA26D4B658694F8858C09CE2EBD6CD2575E1D1218D",
+                "FileName": "w1.exe",
+                "Path": "C:\\2015-05-11-malspam-associated-malware\\"
+              },
+              "Links": [
+                {
+                  "rel": "Machine Module",
+                  "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000002"
+                }
+              ]
+            },
+            {
+              "Id": "000000000000000000000001",
+              "Name": "aa_ticket_9017937910.pif",
+              "Properties": {
+                "Name": "aa_ticket_9017937910.pif",
+                "ModuleName": "aa_ticket_9017937910.pif",
+                "IOCScore": {
+                  "__type": "Tools.IOCScore, Tools",
+                  "Level0": 1,
+                  "Level1": 1,
+                  "Level2": 1,
+                  "Level3": 5,
+                  "Level": 1,
+                  "Score": 1024,
+                  "FullScore": 1001001005
+                },
+                "IOCLevel0": 1,
+                "IOCLevel1": 1,
+                "IOCLevel2": 1,
+                "IOCLevel3": 5,
+                "Signature": "Not Signed: AGSoft",
+                "AnalyticsScore": "0",
+                "BiasStatusComment": "",
+                "BiasStatusEnum": {
+                  "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
+                  "MappedValue": 0,
+                  "Value": -2,
+                  "DisplayName": "Blacklisted",
+                  "DisplayNameNeutral": "Blacklisted"
+                },
+                "GlobalMachineCount": 1,
+                "HashMD5": "F21072077E88C74B9B6D67F81AE63D84",
+                "HashSHA1": "74A586ABAD423AF4D969A0064248075FFBC3B3BF",
+                "HashSHA256": "73F67FB17B849E5B752DBECB63D0E7EF93BC43A8778A542B6F955BEECCEA3411",
+                "FileName": "aa_ticket_9017937910.pif",
+                "Path": "C:\\2015-05-11-malspam-associated-malware\\"
+              },
+              "Links": [
+                {
+                  "rel": "Machine Module",
+                  "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000001"
+                }
+              ]
+            },
+            {
+              "Id": "000000000000000000000003",
+              "Name": "w2.exe",
+              "Properties": {
+                "Name": "w2.exe",
+                "ModuleName": "w2.exe",
+                "IOCScore": {
+                  "__type": "Tools.IOCScore, Tools",
+                  "Level0": 1,
+                  "Level1": 2,
+                  "Level2": 0,
+                  "Level3": 3,
+                  "Level": 1,
+                  "Score": 1024,
+                  "FullScore": 1002000003
+                },
+                "IOCLevel0": 1,
+                "IOCLevel1": 2,
+                "IOCLevel2": 0,
+                "IOCLevel3": 3,
+                "Signature": "Not Signed: Microsoft Corporation",
+                "AnalyticsScore": "0",
+                "BiasStatusComment": " [...]",
+                "BiasStatusEnum": {
+                  "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
+                  "MappedValue": 0,
+                  "Value": -2,
+                  "DisplayName": "Blacklisted",
+                  "DisplayNameNeutral": "Blacklisted"
+                },
+                "GlobalMachineCount": 1,
+                "HashMD5": "6EB761EA46A40AD72018D3CEE915C4CD",
+                "HashSHA1": "A2BDD69B38AD32C1FF70A219169E34B1924D66BB",
+                "HashSHA256": "A184775757CF30F9593977EE0344CD6C54DEB4B14A012A7AF8E3A2CDBB85A749",
+                "FileName": "w2.exe",
+                "Path": "C:\\2015-05-11-malspam-associated-malware\\"
+              },
+              "Links": [
+                {
+                  "rel": "Machine Module",
+                  "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000003"
+                }
+              ]
+            },
+            {
+              "Id": "000000000000000000000000",
+              "Name": "aa_ticket_8392051302.pif",
+              "Properties": {
+                "Name": "aa_ticket_8392051302.pif",
+                "ModuleName": "aa_ticket_8392051302.pif",
+                "IOCScore": {
+                  "__type": "Tools.IOCScore, Tools",
+                  "Level0": 1,
+                  "Level1": 1,
+                  "Level2": 1,
+                  "Level3": 5,
+                  "Level": 1,
+                  "Score": 1024,
+                  "FullScore": 1001001005
+                },
+                "IOCLevel0": 1,
+                "IOCLevel1": 1,
+                "IOCLevel2": 1,
+                "IOCLevel3": 5,
+                "Signature": "Not Signed: Microsoft Corporation",
+                "AnalyticsScore": "0",
+                "BiasStatusComment": "",
+                "BiasStatusEnum": {
+                  "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
+                  "MappedValue": 0,
+                  "Value": -2,
+                  "DisplayName": "Blacklisted",
+                  "DisplayNameNeutral": "Blacklisted"
+                },
+                "GlobalMachineCount": 1,
+                "HashMD5": "379C67AE879872D3FA0B601892C59605",
+                "HashSHA1": "5522FB78749B8425F58B3F12C67C74D62E6EEDCA",
+                "HashSHA256": "6A40ED9DBB0F4BD430D76C10750448669C2BCCA9AEA6C6E8743F7526C8FFD93F",
+                "FileName": "aa_ticket_8392051302.pif",
+                "Path": "C:\\2015-05-11-malspam-associated-malware\\"
+              },
+              "Links": [
+                {
+                  "rel": "Machine Module",
+                  "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/000000000000000000000000"
+                }
+              ]
+            },
+            {
+              "Id": "0000000000000000000011D8",
+              "Name": "baretail.exe",
+              "Properties": {
+                "Name": "baretail.exe",
+                "ModuleName": "baretail.exe",
+                "IOCScore": {
+                  "__type": "Tools.IOCScore, Tools",
+                  "Level0": 1,
+                  "Level1": 0,
+                  "Level2": 0,
+                  "Level3": 0,
+                  "Level": 1,
+                  "Score": 1024,
+                  "FullScore": 1000000000
+                },
+                "IOCLevel0": 1,
+                "IOCLevel1": 0,
+                "IOCLevel2": 0,
+                "IOCLevel3": 0,
+                "Signature": "Not Signed",
+                "AnalyticsScore": "0",
+                "BiasStatusComment": "",
+                "BiasStatusEnum": {
+                  "__type": "ECatDataModel.Enums.BiasStatusEnumType, ECatDataModel",
+                  "MappedValue": 0,
+                  "Value": -2,
+                  "DisplayName": "Blacklisted",
+                  "DisplayNameNeutral": "Blacklisted"
+                },
+                "GlobalMachineCount": 3,
+                "HashMD5": "F3E7A015C1D541528085D3F9581AB41F",
+                "HashSHA1": "2AA7D3806D614FD9E1E6B099D134784A98B6DD9E",
+                "HashSHA256": "160D6A3BDC9D64677643376F82E559EB4112289E6B6D722B5B3B32699D18BCA9",
+                "FileName": "baretail.exe",
+                "Path": "C:\\Users\\Administrator\\Desktop\\"
+              },
+              "Links": [
+                {
+                  "rel": "Machine Module",
+                  "href": "https:\/\/WIN-8BFOTR0VNJV:9443\/api\/v2\/machines\/10eba5c6-7d38-531c-3e09-7e114c25f3fb\/modules\/0000000000000000000011D8"
+                }
+              ]
+            }
+          ]
+        },
+        "minimum_ioc": 500
+      }
+    ],
+    "pagingEnabled": false,
+    "currentPageId": 0,
+    "failed": false,
+    "errorMessage": null,
+    "maxPages": 0
+  },
+  {
+    "queryId": "3473d31e-4196-4f06-8d57-41e5d095fcb2",
+    "resultList": [
+      {
+        "details": {
+          "IpReputation": {
+            "customerRiskyFeedbackPercentageTrend": [
+              {
+                "percentage": 3.62,
+                "time": 1470182400000
+              },
+              {
+                "percentage": 8.22,
+                "time": 1471910400000
+              }
+            ],
+            "customerPercentageTrend": [[
+              {
+                "percentage": 9.45,
+                "time": 1468972800000
+              },
+              {
+                "percentage": 5.67,
+                "time": 1469404800000
+              },
+              {
+                "percentage": 13.81,
+                "time": 1469491200000
+              },
+              {
+                "percentage": 13.28,
+                "time": 1469664000000
+              },
+              {
+                "percentage": 10.61,
+                "time": 1470355200000
+              },
+              {
+                "percentage": 6.81,
+                "time": 1471910400000
+              }
+            ]],
+            "feedback": {
+              "status": "VIEWED",
+              "dateMarked": 1472202063357
+            },
+            "customerInvestigatedPercentageTrend": [
+              {
+                "percentage": 30.06,
+                "time": 1469491200000
+              },
+              {
+                "percentage": 15.0,
+                "time": 1469577600000
+              },
+              {
+                "percentage": 43.65,
+                "time": 1470787200000
+              },
+              {
+                "percentage": 30.0,
+                "time": 1471219200000
+              },
+              {
+                "percentage": 48.69,
+                "time": 1472169600000
+              }
+            ],
+            "customerPercentage": 2.53,
+            "customerInvestigatedPercentage": 48.69,
+            "risk": "UNSAFE",
+            "unsafeModulesDownloaded": "None",
+            "riskReasonTypeList": [
+              "COMMUNICATED_BY_UNSAFE_MODULE"
+            ],
+            "customerRiskyFeedbackPercentage": 8.22,
+            "customerNotRiskyFeedbackPercentage": 0.0,
+            "unsafeModulesCommunicated": [
+              {
+                "hashType": "MD5",
+                "id": "0cfec238e1b0992274da5f065cccf87a"
+              }
+            ],
+            "relatedDomains": [
+              "issamox.ddns.net"
+            ],
+            "customerNotRiskyFeedbackPercentageTrend": [],
+            "riskScore": 100.0,
+            "id": "41.140.181.156",
+            "firstSeen": 1469025558535
+          }
+        }
+      }
+    ],
+    "dataSourceType": "LiveConnect",
+    "datasourceId": "57c149bfe4b0e8a1f1769a40",
+    "currentPageId": 0,
+    "pagingEnabled": "False",
+    "failed": "False",
+    "errorMessage": "None",
+    "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
+    "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
+    "maxPages": 0
   }
-}
+]
