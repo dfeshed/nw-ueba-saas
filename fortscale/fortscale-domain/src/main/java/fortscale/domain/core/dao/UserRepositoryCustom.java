@@ -126,6 +126,6 @@ public interface UserRepositoryCustom {
 
 	Criteria getUserCriteriaByUserIds(Set<String> userIds);
 
-    List<String> getDistinctFieldValues(String fieldName);
+    List getDistinctFieldValues(String fieldName);
 }
 

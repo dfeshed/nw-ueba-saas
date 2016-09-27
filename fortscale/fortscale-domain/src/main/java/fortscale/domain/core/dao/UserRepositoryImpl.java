@@ -679,7 +679,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<String> getDistinctFieldValues(String fieldName) {
+	public List getDistinctFieldValues(String fieldName) {
 		Query query = new Query(new Criteria(fieldName).exists(true));
 
 		return mongoTemplate.getCollection(User.collectionName).distinct(fieldName, query.getQueryObject());

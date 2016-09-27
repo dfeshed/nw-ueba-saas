@@ -8,6 +8,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.services.UserActivityService;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -90,13 +91,13 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	}
 
 	public void postCalculation(){
-		List<String> userIds = userService.getDistinctValuesByFieldName(User.ID_FIELD);
+		List<ObjectId> userIds = userService.getDistinctValuesByFieldName(User.ID_FIELD);
 
 		userIds.forEach(userId -> {
 			List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries
-					= userActivityService.getUserActivitySourceMachineEntries(userId, Integer.MAX_VALUE);
+					= userActivityService.getUserActivitySourceMachineEntries(userId.toString(), Integer.MAX_VALUE);
 
-			userService.updateSourceMachineCount(userId, userActivitySourceMachineEntries.size());
+			userService.updateSourceMachineCount(userId.toString(), userActivitySourceMachineEntries.size());
 		});
 	}
 }
