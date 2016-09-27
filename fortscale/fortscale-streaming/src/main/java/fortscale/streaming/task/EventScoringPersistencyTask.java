@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.service.task.EventScoringPersistencyTaskService;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -15,6 +16,9 @@ import org.apache.samza.task.TaskCoordinator;
 
 
 public class EventScoringPersistencyTask extends AbstractStreamTask{
+
+    private static final String PERFORMING_FLUSH_LOG_MSG = "performing event persistency flush";
+    private static Logger logger = Logger.getLogger(EventScoringPersistencyTask.class);
 
     private EventScoringPersistencyTaskService eventScoringPersistencyTaskService;
 
@@ -36,6 +40,8 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
         String topic = getIncomingMessageTopicName(envelope);
         if (topic.equals(EVENT_SCORING_PERSISTENCY_TASK_CONTROL_TOPIC))
         {
+            logger.info("received message={} from controlTopic={}, {}", PERFORMING_FLUSH_LOG_MSG,
+                    envelope,topic);
             eventScoringPersistencyTaskService.flush();
             return;
         }
@@ -47,6 +53,7 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
 
     @Override
     protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+        logger.info("wrappedWindow: {}",PERFORMING_FLUSH_LOG_MSG);
         eventScoringPersistencyTaskService.flush();
     }
 
@@ -55,6 +62,7 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
     @Override
     protected void wrappedClose() throws Exception {
         if(eventScoringPersistencyTaskService != null){
+            logger.info("wrappedClose: {}" ,PERFORMING_FLUSH_LOG_MSG);
             eventScoringPersistencyTaskService.flush();
         }
     }
