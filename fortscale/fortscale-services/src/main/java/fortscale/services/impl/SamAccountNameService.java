@@ -31,6 +31,8 @@ public class SamAccountNameService implements CachingService {
 
 		sAMAccountName = sAMAccountName.toLowerCase();
 
+
+		// in case that the SAMAAccount name exist at the blacklist
 		if (sAMAccountNamethatBlackList.containsKey(sAMAccountName))
 			return result;
 
