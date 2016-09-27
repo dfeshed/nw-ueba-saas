@@ -1,7 +1,7 @@
-import logging
 import json
-import sys
+import logging
 import os
+import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
@@ -55,6 +55,15 @@ class Manager(DontReloadModelsOverridingManager):
         if data_sources != data_sources_before_filtering:
             logger.warning("some of the data sources don't contain data in the enriched table. "
                            "Using only the following data sources: " + ', '.join(data_sources))
+        self._runner = bdp_utils.run.Runner(name='stepSAM.scores',
+                                            logger=logger,
+                                            host=host,
+                                            block=False)
+        self._builder = bdp_utils.run.Runner(name='stepSAM.build_models',
+                                             logger=logger,
+                                             host=host,
+                                             block=True,
+                                             block_until_log_reached='Spring context closed')
         self._data_sources = data_sources
         self._data_source_to_throttler = dict((data_source, Throttler(logger=logger,
                                                                       host=host,
@@ -66,15 +75,6 @@ class Manager(DontReloadModelsOverridingManager):
                                                                       convert_to_minutes_timeout=convert_to_minutes_timeout,
                                                                       start=self._get_start(data_source=data_source),
                                                                       end=self._get_end(data_source=data_source))) for data_source in self._data_sources)
-        self._runner = bdp_utils.run.Runner(name='stepSAM.scores',
-                                            logger=logger,
-                                            host=host,
-                                            block=False)
-        self._builder = bdp_utils.run.Runner(name='stepSAM.build_models',
-                                             logger=logger,
-                                             host=host,
-                                             block=True,
-                                             block_until_log_reached='Spring context closed')
 
     def _update_model_confs(self, path, model_confs, original_to_backup):
         updated = False
