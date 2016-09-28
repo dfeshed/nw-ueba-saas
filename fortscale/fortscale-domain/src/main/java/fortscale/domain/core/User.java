@@ -55,10 +55,7 @@ public class User extends AbstractDocument {
 	public static final String ADMIN = "admin";
 	public static final String EXECUTIVE = "executive";
 
-	public static final String adPositionFieldName = String.format("%s.%s", User.adInfoField, UserAdInfo.positionField);
-	public static final String adDepartmentFieldName  = String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField);
-
-    @Indexed
+	@Indexed
 	@Field(administratorAccountField)
 	private Boolean administratorAccount;
 	

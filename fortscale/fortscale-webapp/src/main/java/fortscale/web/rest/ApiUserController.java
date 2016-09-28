@@ -205,11 +205,10 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/extendedSearch", method=RequestMethod.GET)
 	@ResponseBody
 	@LogException
-	public  DataBean<List<User>> extendedSearch(UserRestFilter userRestFilter){
+	public DataBean<List<UserDetailsBean>> extendedSearch(UserRestFilter userRestFilter){
 		List<User> users = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
 
-		DataBean<List<User>> result = new DataBean<>();
-		result.setData(users);
+		DataBean<List<UserDetailsBean>> result = getUsersDetails(users);
 
 		return result;
 	}

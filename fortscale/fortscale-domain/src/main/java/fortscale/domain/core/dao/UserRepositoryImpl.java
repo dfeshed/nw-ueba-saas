@@ -658,11 +658,11 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 
 		if (CollectionUtils.isNotEmpty(userRestFilter.getPositions())){
-			criteriaList.add(new Criteria(User.adPositionFieldName).in(userRestFilter.getPositions()));
+			criteriaList.add(new Criteria(User.getAdInfoField(UserAdInfo.positionField)).in(userRestFilter.getPositions()));
 		}
 
 		if (CollectionUtils.isNotEmpty(userRestFilter.getDepartments())){
-			criteriaList.add(new Criteria(User.adDepartmentFieldName).in(userRestFilter.getDepartments()));
+			criteriaList.add(new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).in(userRestFilter.getDepartments()));
 		}
 
 		return criteriaList;
