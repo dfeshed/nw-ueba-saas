@@ -1,27 +1,29 @@
 {{#if (is-equal size 'min')}}
   <div class="mask size default" {{action "safeCallback" defaultSizeAction}}>{{rsa-icon name="arrow-right-9"}}</div>
 {{/if}}
-<header class="rsa-investigate-meta__header">
-  <nav class="rsa-investigate-meta__nav">
-    <h2>{{t "investigate.meta.title"}}</h2>
-  </nav>
-  <span class="rsa-investigate-meta__tools">
-    {{#if (is-equal size 'max')}}
-      <button class="size default" {{action "safeCallback" defaultSizeAction}}>{{rsa-icon name="arrow-left-9"}}</button>
-      <button class="size min" {{action "safeCallback" minSizeAction}}>{{rsa-icon name="close"}}</button>
-    {{else}}
-      <button class="size max" {{action "safeCallback" maxSizeAction}}>{{rsa-icon name="arrow-right-9"}}</button>
-      <button class="size min" {{action "safeCallback" minSizeAction}}>{{rsa-icon name="close"}}</button>
-    {{/if}}
-  </span>
-</header>
-<section class="rsa-investigate-meta__body">
-  {{rsa-investigate/meta/values-panel
-    query=query
-    group=group
-    language=language
-    aliases=aliases
-    metaKeyStates=metaKeyStates
-    clickValueAction=(action "safeCallback" clickValueAction)
-    toggleAction=(action "safeCallback" toggleAction)}}
+<section class="rsa-investigate-meta__content {{if hideDom 'hidden'}}">
+  <header class="rsa-investigate-meta__header">
+    <nav class="rsa-investigate-meta__nav">
+      <h2>{{t "investigate.meta.title"}}</h2>
+    </nav>
+    <span class="rsa-investigate-meta__tools">
+      {{#if (is-equal size 'max')}}
+        <button class="size default" {{action "safeCallback" defaultSizeAction}}>{{rsa-icon name="arrow-left-9"}}</button>
+        <button class="size min" {{action "safeCallback" minSizeAction}}>{{rsa-icon name="close"}}</button>
+      {{else}}
+        <button class="size max" {{action "safeCallback" maxSizeAction}}>{{rsa-icon name="arrow-right-9"}}</button>
+        <button class="size min" {{action "safeCallback" minSizeAction}}>{{rsa-icon name="close"}}</button>
+      {{/if}}
+    </span>
+  </header>
+  <section class="rsa-investigate-meta__body">
+    {{rsa-investigate/meta/values-panel
+      query=query
+      group=group
+      language=language
+      aliases=aliases
+      metaKeyStates=metaKeyStates
+      clickValueAction=(action "safeCallback" clickValueAction)
+      toggleAction=(action "safeCallback" toggleAction)}}
+  </section>
 </section>

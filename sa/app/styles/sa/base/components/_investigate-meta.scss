@@ -1,5 +1,18 @@
 .rsa-investigate-meta {
-  @include rsa-col(justify,fill);
+  position: relative;
+
+  &__content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    @include rsa-col(justify,fill);
+
+    &.hidden {
+      display: none;
+    }
+  }
 
   &-values-panel {
     position: absolute;
@@ -19,6 +32,7 @@
       bottom: 0;
       left: 0;
       right: 0;
+      z-index: 2;
       @include rsa-font(header,small);
 
       .rsa-icon {

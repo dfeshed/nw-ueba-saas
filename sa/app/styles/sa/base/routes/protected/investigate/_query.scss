@@ -34,6 +34,7 @@
       right: 0;
       transition-property: background-color right;
       transition-duration: 0.3s;
+      @include rsa-row(justify,fill);
     }
     &-slave {
       position: absolute;
@@ -55,28 +56,21 @@
 
     &-master-aside,
     &-master-main {
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      transition-property: left, right, max-width, margin, opacity;
-      transition-duration: 0.3s;
-      transition-delay: 0s 0s 0s 0s 0.3s;
+      transition: all 0.3s;
       overflow-x: hidden;
+      position: relative;
+    }
+    &-master-main {
+      @include rsa-vendor-prefix(flex-grow,1);
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    }
+    &-master-aside {
+      @include rsa-vendor-prefix(flex-shrink,0);
+      @include rsa-vendor-prefix(flex-basis,25%);
+      min-width: 40px;
     }
 
     /* meta vs events: default arrangement */
-    &-master-aside {
-      left: 0;
-      max-width: 2000px;
-      right: 75%;
-    }
-    &-master-main {
-      margin-left: 25%;
-      left: 0;
-      right: 0;
-      opacity: 1;
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
-    }
     &.meta-panel-size-default {
       .rsa-investigate-query__body {
         &-master-aside:hover,
@@ -90,15 +84,11 @@
     &.meta-panel-size-min {
       .rsa-investigate-query__body {
         &-master-aside {
-          left: 0;
-          max-width: 40px;
-          z-index: 1;
+          @include rsa-vendor-prefix(flex-basis,0);
           background-color: rsa-color(black,base,$rsa-nearly-transparent);
+          z-index: 1;
         }
         &-master-main {
-          margin-left: 0;
-          left: 40px;
-          right: 0;
           z-index: 2;
         }
       }
@@ -108,13 +98,11 @@
     &.meta-panel-size-max {
       .rsa-investigate-query__body {
         &-master-aside {
-          left: 0;
-          right: 0;
+          @include rsa-vendor-prefix(flex-basis,100%);
           z-index: 2;
         }
         &-master-main {
-          transition-delay: 0s;
-          opacity: 0;
+          display: none;
         }
       }
     }
@@ -149,8 +137,7 @@
     right: 1px;
     background-color: rsa-color(black,base,$rsa-nearly-transparent);
 
-    &__header,
-    .mask {
+    &__header {
       background-color: rsa-color(black,base,$rsa-nearly-transparent);
     }
 

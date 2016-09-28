@@ -2,7 +2,7 @@ import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
 
-const { Component } = Ember;
+const { run, Component } = Ember;
 
 export default Component.extend({
   tagName: 'article',
@@ -15,7 +15,59 @@ export default Component.extend({
    * @type {string}
    * @public
    */
-  size: 'default',
+  @computed()
+  size: {
+    get() {
+      return this.get('_size') || 'default';
+    },
+    set(value) {
+      const wasValue = this.get('_size');
+      const changed = wasValue !== value;
+      if (changed) {
+        if (value === 'min') {
+          this._didClose();
+        } else if (wasValue === 'min') {
+          this._didOpen();
+        }
+      }
+      this.set('_size', value);
+      return value;
+    }
+  },
+
+  // Invoked after `size` changes to `min` to something else.
+  // Responsible for hiding DOM content. Cancels any pending timer to unhide content.
+  _didClose() {
+    this._cancelUnhideTimer();
+    this.set('hideDom', true);
+  },
+
+  // Invoked after `size` changes from `min` to something else.
+  // Responsible for un-hiding DOM content after a delay, which gives the resize animation time to render smoothly
+  // and improves perceived performance. If a timer to un-hide the DOM is already in progress, let it continue and exit.
+  _didOpen() {
+    if (!this._unhideTimer) {
+      this._unhideTimer = run.later(() => {
+        this.set('hideDom', false);
+      }, this.get('unhideDelay'));
+    }
+  },
+
+  // Cancels any pending timer for unhiding the DOM. If no such timer, does nothing.
+  _cancelUnhideTimer() {
+    if (this._unhideTimer) {
+      run.cancel(this._unhideTimer);
+      this._unhideTimer = null;
+    }
+  },
+
+  willDestroy() {
+    this._cancelUnhideTimer();
+    this._super(...arguments);
+  },
+
+  // Duration (in millisec) of delay between opening of component & revealing its DOM content.
+  unhideDelay: 250,
 
   // Converts `size` to CSS class equivalent.
   @computed('size')
