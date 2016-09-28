@@ -66,43 +66,35 @@ moduleForComponent('rsa-respond/landing-page/respond-index/card-view', 'Integrat
         id: '1'
       }
     }),
-      EmberObject.create({
-        riskScore: 1,
-        id: 'INC-494',
-        name: 'Suspected command and control communication with www.mozilla.com',
-        createdBy: 'User X',
-        created: '2015-10-10',
-        lastUpdated: '2015-10-10',
-        statusSort: 0,
-        prioritySort: 0,
-        alertCount: 10,
-        eventCount: 2,
-        sources: ['Event Stream Analysis'],
-        assignee: {
-          id: '1'
-        }
-      })]);
+    EmberObject.create({
+      riskScore: 1,
+      id: 'INC-494',
+      name: 'Suspected command and control communication with www.mozilla.com',
+      createdBy: 'User X',
+      created: '2015-10-10',
+      lastUpdated: '2015-10-10',
+      statusSort: 0,
+      prioritySort: 0,
+      alertCount: 10,
+      eventCount: 2,
+      sources: ['Event Stream Analysis'],
+      assignee: {
+        id: '1'
+      }
+    })]);
+
+    let users = [
+      EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' })
+    ];
+
+    newCube.users = users;
+    inProgressCube.users = users;
 
     this.set('model', {
       newIncidents: newCube,
-      inProgressIncidents: inProgressCube,
-      users: [
-        EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
-        EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
-        EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' })
-      ],
-      categoryTags: [
-        EmberObject.create({
-          id: '1',
-          parent: 'parentCategory1',
-          name: 'childCategory1'
-        }),
-        EmberObject.create({
-          id: '2',
-          parent: 'parentCategory1',
-          name: 'childCategory2'
-        })
-      ]
+      inProgressIncidents: inProgressCube
     });
   }
 });

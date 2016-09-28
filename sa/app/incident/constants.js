@@ -18,7 +18,7 @@ export const incStatus = {
   REMEDIATION_REQUESTED: 3,
   REMEDIATION_COMPLETE: 4,
   CLOSED: 5,
-  FALSE_POSITIVE: 6
+  CLOSED_FALSE_POSITIVE: 6
 };
 
 export const incidentRiskThreshold = {

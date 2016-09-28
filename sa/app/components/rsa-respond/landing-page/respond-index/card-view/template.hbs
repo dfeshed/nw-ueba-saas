@@ -2,14 +2,14 @@
   <header class="rsa-respond-card__status-header">
     <span class="rsa-respond-card__status-header__item">
       {{t "incident.status.0"}} ({{model.newIncidents.results.length}})
-      {{rsa-update-indicator model=model.newIncidents.array updateKey='asyncUpdate'}}
+      {{rsa-update-indicator model=model.newIncidents.results updateKey='asyncUpdate' }}
     </span>
     {{rsa-respond/landing-page/respond-index/sort-options
-    label=(t "incident.sortFields.sortByLabel")
-    defaultSortOption=newIncSortOrder
-    sortOptions=newIncSortOrderList
-    viewType=newIncCardView
-    sortAction=(route-action "sortAction")
+      label=(t "incident.sortFields.sortByLabel")
+      defaultSortOption=newIncSortOrder
+      sortOptions=newIncSortOrderList
+      viewType=newIncCardView
+      sortAction=(route-action "sortAction")
     }}
   </header>
   {{#if (is-equal model.newIncidents.status 'wait')}}
@@ -31,15 +31,15 @@
   {{/if}}
   <header class="rsa-respond-card__status-header">
     {{rsa-respond/landing-page/respond-index/sort-options
-    label=(t "incident.sortFields.sortByLabel")
-    defaultSortOption=inProgSortOrder
-    sortOptions=inProgSortOrderList
-    sortAction=(route-action "sortAction")
-    viewType=inProgCardView
+      label=(t "incident.sortFields.sortByLabel")
+      defaultSortOption=inProgSortOrder
+      sortOptions=inProgSortOrderList
+      sortAction=(route-action "sortAction")
+      viewType=inProgCardView
     }}
     <span class="rsa-respond-card__status-header__item">
       {{t "incident.status.2"}} ({{model.inProgressIncidents.results.length}})
-      {{rsa-update-indicator model=model.inProgressIncidents.array updateKey='asyncUpdate'}}
+      {{rsa-update-indicator model=model.inProgressIncidents.results updateKey='asyncUpdate' }}
     </span>
   </header>
   {{#if (is-equal model.inProgressIncidents.status 'wait')}}

@@ -25,6 +25,18 @@ export default Route.extend({
   listViewCube: null,
   cardViewCube: null,
 
+  layoutService: service('layout'),
+
+  activate() {
+    this.set('layoutService.main', 'panelB');
+    this.set('layoutService.panelA', 'quarter');
+    this.set('layoutService.panelB', 'main');
+  },
+
+  deactivate() {
+    this.set('layoutService.actionConfig', null);
+  },
+
   /*
    * Creates a new stream object.
    * @param filter - array of object to filter the stream data
@@ -34,7 +46,6 @@ export default Route.extend({
   _createStream(filter, sort, subDestinationUrlParams, cube) {
     cube.set('status', 'wait');
     cube.set('users', {});
-
     this.request.streamRequest({
       method: 'stream',
       modelName: 'incident',
@@ -221,15 +232,28 @@ export default Route.extend({
       this.set('cardViewCube', incidentModels);
     } else {
       let incidentsCube = IncidentsCube.create({
-        array: []
+        array: [],
+        categoryTags: []
       });
       this.set('listViewCube', incidentsCube);
+
       // Kick off the initial page load data request.
       this._createStream([{ field: 'statusSort', values: incidentStatusIds }],
         [{ field: 'prioritySort', descending: true }],
         'new',
         incidentsCube);
 
+      this.request.streamRequest({
+        method: 'stream',
+        modelName: 'category-tags',
+        query: {},
+        onResponse: ({ data }) => {
+          set(incidentsCube, 'categoryTags', data);
+        },
+        onError() {
+          Logger.error('Error loading tags');
+        }
+      });
       // kick off both the async update stream
       this._createNotify([incidentsCube], (incidents)=>[incidents]);
 

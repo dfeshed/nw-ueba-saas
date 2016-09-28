@@ -257,7 +257,10 @@ export default $.extend({}, BaseTranslations, {
       riskScore: 'Risk Score',
       assignee: 'Assignee',
       alertCount: 'Alerts',
-      sources: 'Source'
+      sources: 'Source',
+      filters: {
+        reset: 'Reset Filters'
+      }
     },
     details: {
       createdOn: 'created on',

@@ -1,7 +1,11 @@
-{{rsa-respond/landing-page/respond-header modelCount=(unless isCardMode model.allIncidents.results.length)}}
+{{rsa-respond/landing-page/respond-header modelCount=(unless isCardMode model.allIncidents.array.length)}}
 
 {{#if isCardMode}}
   {{rsa-respond/landing-page/respond-index/card-view model=model sortAction=(route-action "sortAction")}}
 {{else}}
-  {{rsa-respond/landing-page/respond-index/list-view model=model sortAction=(route-action "sortAction")}}
+  {{rsa-respond/landing-page/respond-index/list-view
+    allIncidents=model.allIncidents
+    users=model.allIncidents.users
+    categoryTags=model.allIncidents.categoryTags
+    sortAction=(route-action "sortAction")}}
 {{/if}}

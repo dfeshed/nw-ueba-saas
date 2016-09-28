@@ -36,6 +36,11 @@ export default Base.extend({
         return (d.assignee && (d.assignee.firstName + d.assignee.lastName) || '');
       }
     },
+    'assigneeId': {
+      getter(d) {
+        return (d.assignee && d.assignee.id || '-1');
+      }
+    },
     'status': {
       dataType: 'number',
       propertyName: 'statusSort',
@@ -72,6 +77,11 @@ export default Base.extend({
     'eventCount': {
       getter(d) {
         return d.eventCount || 0;
+      }
+    },
+    categories: {
+      getter(d) {
+        return d.categories || [];
       }
     }
   },

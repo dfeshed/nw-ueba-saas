@@ -9,9 +9,11 @@ const {
 } = Ember;
 
 export default Component.extend({
-  model: null,
+  tagName: 'vbox',
 
   respondMode: service(),
+
+  model: null,
 
   @equal('respondMode.selected', 'card') isCardMode: true
 });

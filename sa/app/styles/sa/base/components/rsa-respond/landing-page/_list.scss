@@ -1,8 +1,45 @@
-.rsa-respond-list{
-  margin: 0 rsa-whitespace(less) 0 rsa-whitespace();
+.rsa-respond-list {
+
+  .panel-A.rsa-respond-list__panelA {
+    background-color: rsa-color(black, null, $rsa-translucent);
+  }
+
+  margin: 0 rsa-whitespace(less) 0 0;
+
+  &__filter-panel__priority {
+    .rsa-respond-list__filter-panel__title {
+      padding-top: 0;
+    }
+  }
+
+  &__filter-panel {
+    padding: rsa-whitespace(base);
+
+    &__title {
+      @include rsa-font(header, small);
+      color: rsa-color(gray, light);
+      padding-bottom: rsa-whitespace(less);
+      padding-top: rsa-whitespace(more);
+    }
+
+
+    .rsa-form-select {
+      margin-top: rsa-whitespace(more);
+      .rsa-form-label {
+        @include rsa-font(header, small);
+      }
+      .prompt {
+        color: rsa-color(gray, lighter);
+      }
+    }
+
+    &__reset-button {
+      padding-top: rsa-whitespace(more);
+    }
+  }
 
   .rsa-data-table {
-    width: 100%;
+    padding-left: rsa-whitespace(least);
 
     &-header-cell .hideSort{
       visibility: hidden;
@@ -26,7 +63,7 @@
     }
   }
 
-  &-name{
+  &-name, &-status, &-created, &-assignee {
     overflow: hidden;
     text-overflow: ellipsis;
   }
