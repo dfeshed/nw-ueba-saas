@@ -114,8 +114,6 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
             machines.removeAll(userAndOrganizationActivityHelper.getDeviceValuesToFilter());
             machines.remove("Other");
 
-//            List<UserActivityData.DeviceEntry> deviceEntries
-//                    = userDeviceUtils.convertDeviceDocumentsResponse(userActivitySourceMachineEntries, Integer.MAX_VALUE);
             userService.updateSourceMachineCount(userId.toString(), machines.size());
 		});
 	}

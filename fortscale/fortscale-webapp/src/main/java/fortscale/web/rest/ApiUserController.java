@@ -538,7 +538,7 @@ public class ApiUserController extends BaseController{
 			String[] userRow = {user.getUsername(), user.getDisplayName(), user.getAdInfo().getPosition(),
 					user.getAdInfo().getDepartment(), BooleanUtils.toStringTrueFalse(user.getFollowed()),
 					String.valueOf(user.getScore()), String.valueOf(user.getAlertsCount()),
-					String.valueOf(getDevices(user).size()), StringUtils.join(user.getTags(), ',')};
+					String.valueOf(user.getSourceMachineCount()), StringUtils.join(user.getTags(), ',')};
 			csvWriter.writeNext(userRow);
 		});
 		csvWriter.close();
