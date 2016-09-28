@@ -32,9 +32,6 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 	private UserActivityService userActivityService;
 
     @Autowired
-    private UserDeviceUtils userDeviceUtils;
-
-    @Autowired
     public UserAndOrganizationActivityHelper userAndOrganizationActivityHelper;
 
 	@Override
