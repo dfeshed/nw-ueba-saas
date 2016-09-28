@@ -8,6 +8,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
 import fortscale.services.UserActivityService;
+import fortscale.services.users.util.UserAndOrganizationActivityHelper;
 import fortscale.services.users.util.UserDeviceUtils;
 import fortscale.services.users.util.activity.UserActivityData;
 import org.bson.types.ObjectId;
@@ -32,6 +33,9 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 
     @Autowired
     private UserDeviceUtils userDeviceUtils;
+
+    @Autowired
+    public UserAndOrganizationActivityHelper userAndOrganizationActivityHelper;
 
 	@Override
 	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
@@ -101,10 +105,18 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 		userIds.forEach(userId -> {
 			List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries
 					= userActivityService.getUserActivitySourceMachineEntries(userId.toString(), Integer.MAX_VALUE);
+            Set<String> machines = new HashSet<>();
 
-            List<UserActivityData.DeviceEntry> deviceEntries
-                    = userDeviceUtils.convertDeviceDocumentsResponse(userActivitySourceMachineEntries, Integer.MAX_VALUE);
-            userService.updateSourceMachineCount(userId.toString(), deviceEntries.size());
+            userActivitySourceMachineEntries.forEach(userActivitySourceMachineDocument ->{
+                machines.addAll(userActivitySourceMachineDocument.getMachines().getMachinesHistogram().keySet());
+            });
+
+            machines.removeAll(userAndOrganizationActivityHelper.getDeviceValuesToFilter());
+            machines.remove("Other");
+
+//            List<UserActivityData.DeviceEntry> deviceEntries
+//                    = userDeviceUtils.convertDeviceDocumentsResponse(userActivitySourceMachineEntries, Integer.MAX_VALUE);
+            userService.updateSourceMachineCount(userId.toString(), machines.size());
 		});
 	}
 }
