@@ -139,7 +139,7 @@ def validate_not_running_same_period_twice(arguments):
               "(they haven't been synced yet but are about to)"
         sys.exit(1)
 
-    mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
+    mongo_db = mongo.get_db(host=arguments.host)
     for collection_name in filter(lambda name: name.startswith('aggr_'), mongo.get_all_collection_names(mongo_db)):
         data = list(mongo_db[collection_name].find({
             'startTime': {
