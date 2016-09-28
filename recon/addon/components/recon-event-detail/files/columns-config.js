@@ -1,27 +1,29 @@
+// Widths are minimums, essentially to accommodate the
+// header size
 export default [
   {
     field: 'fileName',
     title: 'recon.files.fileName',
-    width: '25%'
+    width: 75
   },
   {
     field: 'extension',
     title: 'recon.files.extension',
-    width: '10%'
+    width: 65
   },
   {
     field: 'mimeType',
     title: 'recon.files.mimeType',
-    width: '20%'
+    width: 75
   },
   {
     field: 'fileSize',
     title: 'recon.files.fileSize',
-    width: '10%'
+    width: 50
   },
   {
     field: 'hashes',
     title: 'recon.files.hashes',
-    width: '35%'
+    width: 305
   }
 ];
