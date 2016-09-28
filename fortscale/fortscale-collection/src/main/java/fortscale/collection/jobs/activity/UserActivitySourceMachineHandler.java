@@ -96,11 +96,17 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 		return userActivitySourceMachineConfigurationService;
 	}
 
+    /**
+     * Update the User collection with the count of distinct source devices each user uses
+     */
 	public void postCalculation(){
-		List<ObjectId> userIds = userService.getDistinctValuesByFieldName(User.ID_FIELD);
+		// Get all the users
+        List<ObjectId> userIds = userService.getDistinctValuesByFieldName(User.ID_FIELD);
 
 		userIds.forEach(userId -> {
-			List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries
+
+            // Get all the source machines for each user
+            List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries
 					= userActivityService.getUserActivitySourceMachineEntries(userId.toString(), Integer.MAX_VALUE);
             Set<String> machines = new HashSet<>();
 
@@ -108,9 +114,11 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
                 machines.addAll(userActivitySourceMachineDocument.getMachines().getMachinesHistogram().keySet());
             });
 
+            // Remove irrelevant values
             machines.removeAll(userAndOrganizationActivityHelper.getDeviceValuesToFilter());
             machines.remove("Other");
 
+            // Update the user document with the number
             userService.updateSourceMachineCount(userId.toString(), machines.size());
 		});
 	}
