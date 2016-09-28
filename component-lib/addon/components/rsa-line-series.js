@@ -15,6 +15,7 @@ const createLine = (xAccessorFn, yAccessorFn, curve) => {
 const createSymbol = d3.symbol().type(d3.symbolDiamond);
 
 export default Component.extend(HasChartParent, {
+  attributeBindings: ['clipPath:clip-path'],
   classNameBindings: [':rsa-line-series', 'clazzName'],
   tagName: 'path',
 
@@ -35,6 +36,9 @@ export default Component.extend(HasChartParent, {
 
   @computed('data', 'dataIndex')
   datum: (data, index) => data.objectAt(index),
+
+  @computed('clipId')
+  clipPath: (id) => `url(#${id})`,
 
   @computed('dataIndex')
   clazzName: (index) => `series-${index}`,

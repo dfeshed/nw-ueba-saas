@@ -1,7 +1,13 @@
 <svg width="100%" height="100%">
+  <defs>
+    <clipPath id="{{clipId}}">
+      <rect x="0" y="0" width="{{graphWidth}}" height="{{graphHeight}}"></rect>
+    </clipPath>
+  </defs>
   <g transform="translate({{margin.left}},{{margin.top}})">
     <rect class="rsa-chart-background" width="{{graphWidth}}" height="{{graphHeight}}"></rect>
     {{yield (hash
+      clipId=clipId
       data=data
       duration=duration
       graphHeight=graphHeight

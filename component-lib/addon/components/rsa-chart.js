@@ -34,6 +34,9 @@ export default Component.extend({
   yAxisStartsAtZero: true,
   yScaleFn: d3.scaleLinear,
 
+  @computed('elementId')
+  clipId: (id) => `clip-${id}`,
+
   @computed('chartWidth', 'margin')
   graphWidth(width, { left, right }) {
     const calculatedWidth = calcGraphWidth(width, left, right);
