@@ -9,6 +9,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -85,14 +87,17 @@ public class EntityEventBuilder {
 
 		getMetrics().updateEntityEventData++;
 
-		EntityEventData entityEventData = getEntityEventData(aggrFeatureEvent);
+		Pair<Boolean, EntityEventData> entityEventData = getEntityEventData(aggrFeatureEvent);
 		if (entityEventData != null) {
 			if ((aggrFeatureEvent.isOfTypeP() && aggrFeatureEvent.getAggregatedFeatureValue() > 0) ||
 					(aggrFeatureEvent.isOfTypeF() && aggrFeatureEvent.getScore() > 0)) {
-				entityEventData.addAggrFeatureEvent(aggrFeatureEvent);
-				entityEventDataStore.storeEntityEventData(entityEventData);
+				entityEventData.getRight().addAggrFeatureEvent(aggrFeatureEvent);
+				entityEventDataStore.storeEntityEventData(entityEventData.getRight());
 			} else {
 				getMetrics().zeroFeature++;
+				if (entityEventData.getLeft()) {
+					entityEventDataStore.storeEntityEventData(entityEventData.getRight());
+				}
 			}
 		}
 		else
@@ -151,7 +156,7 @@ public class EntityEventBuilder {
 		return Arrays.toString(contextFields.toArray(new String[contextFields.size()]));
 	}
 
-	private EntityEventData getEntityEventData(AggrEvent aggrFeatureEvent) {
+	private Pair<Boolean, EntityEventData> getEntityEventData(AggrEvent aggrFeatureEvent) {
 		List<String> contextFields = entityEventConf.getContextFields();
 		Map<String, String> context = aggrFeatureEvent.getContext(contextFields);
 		String contextId = getContextId(context);
@@ -177,11 +182,13 @@ public class EntityEventBuilder {
 		}
 
 		EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventConf.getName(), contextId, startTime, endTime);
+		boolean isCreated = false;
 		if (entityEventData == null) {
 			entityEventData = new EntityEventData(entityEventConf.getName(), context, contextId, startTime, endTime);
+			isCreated = true;
 		}
 
-		return entityEventData;
+		return new ImmutablePair<>(isCreated, entityEventData);
 	}
 
 	public static String getContextId(Map<String, String> context) {
