@@ -16,6 +16,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 @CompoundIndexes({
 	@CompoundIndex(name="usernameSourcIpIdx", def = "{'username': 1, 'sourceIp': 1}"),
 	@CompoundIndex(name="usernameCreatedAtEpochIdx", def = "{'username': 1, 'createdAtEpoch': -1}"),
+	@CompoundIndex(name="normalizedUsernameCreatedAtEpochIdx", def = "{'normalizedUsername': 1, 'createdAtEpoch': -1}"),
 })
 public class VpnSession extends AbstractDocument{
 	/**
@@ -52,7 +53,7 @@ public class VpnSession extends AbstractDocument{
 	
 	private String localIp;
 
-
+	@Indexed
 	private String normalizedUserName;
 	
 	private String hostname;	
