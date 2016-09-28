@@ -112,8 +112,8 @@ public class ApiUserController extends BaseController{
 		fieldsRequired.add(User.followedField);
 		fieldsRequired.add(User.displayNameField);
 		fieldsRequired.add(User.alertsCountField);
-		fieldsRequired.add(User.adPositionFieldName);
-		fieldsRequired.add(User.adDepartmentFieldName);
+		fieldsRequired.add(User.getAdInfoField(UserAdInfo.positionField));
+		fieldsRequired.add(User.getAdInfoField(UserAdInfo.departmentField));
 		fieldsRequired.add(User.tagsField);
 		fieldsRequired.add(User.sourceMachineCountField);
 	}
