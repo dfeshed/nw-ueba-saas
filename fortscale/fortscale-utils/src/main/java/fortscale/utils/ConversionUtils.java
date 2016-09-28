@@ -138,23 +138,23 @@ public final class ConversionUtils {
 	}
 
 	/*
- * Converts the CSV-formatted fields to a list of strings ("1,2,3,4" ---> [1,2,3,4]).
+ * Converts String that is split by some delimiter  to a list of strings ("1,2,3,4" ---> [1,2,3,4]).
  */
-	private static List<String> convertCSVToList(String fieldsCSV) {
-		List<String> ListedCSV = new ArrayList<>(); // to preserve insertion order
-
-		if (fieldsCSV != null) {
-			String[] fieldsArray = fieldsCSV.split(CSV_DELIMITER);
-			Collections.addAll(ListedCSV, fieldsArray);
+	public static List<String> convertStringToList(String str, String delimiter)
+	{
+		List<String> ListedSTR = new ArrayList<>(); // to preserve insertion order
+		if (str != null) {
+			String[] fieldsArray = str.split(delimiter);
+			Collections.addAll(ListedSTR, fieldsArray);
 		}
 
-		return ListedCSV;
+		return ListedSTR;
 	}
 
 	public static Map<String,String> splitCSVtoMap (String CSVfield)
 	{
 		Map<String,String> result = new LinkedHashMap<>();
-		List<String> csvAsList = ConversionUtils.convertCSVToList(CSVfield);
+		List<String> csvAsList = ConversionUtils.convertStringToList(CSVfield,CSV_DELIMITER);
 		for (String keyValuePair : csvAsList)
 		{
 			Map<String,String> res;
