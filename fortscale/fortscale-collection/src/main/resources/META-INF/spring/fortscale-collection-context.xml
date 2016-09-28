@@ -324,8 +324,6 @@
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
 
-	<bean id="userDeviceUtils" class="fortscale.services.users.util.UserDeviceUtils" scope="singleton" />
-
 	<bean id="userActivitySourceMachineHandler" class="fortscale.collection.jobs.activity.UserActivitySourceMachineHandler" scope="singleton" />
 
 	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper" scope="prototype">
