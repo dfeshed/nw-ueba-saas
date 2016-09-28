@@ -9,7 +9,7 @@
 						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 	
 	<!-- setup mongodb repositories -->
-	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
+	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}" username="${mongo.db.user}" password="#{ T(fortscale.utils.EncryptionUtils).decrypt('${mongo.db.password}')}"/>
 	
 	<mongo:template id="mongoTemplate" db-factory-ref="mongoDbFactory" write-concern="SAFE" />
 	
