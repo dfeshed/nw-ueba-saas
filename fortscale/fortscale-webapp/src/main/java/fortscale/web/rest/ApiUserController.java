@@ -577,9 +577,17 @@ public class ApiUserController extends BaseController{
 		return result;
 	}
 
+	/**
+	 * Getting the relevant users according to the filter requested
+	 * @param userRestFilter
+	 * @param pageRequest
+	 * @param fieldsRequired
+	 * @return
+	 */
 	private List<User> getUsers(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 
 		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+			// If search value requested get the list of user ids relevant to the search.
 			List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
 			List<String> userIds = new ArrayList<>();
 
@@ -590,9 +598,12 @@ public class ApiUserController extends BaseController{
 			userRestFilter.setUserIds(userIds);
 		}
 
+		// Get the relevant users by filter requested
 		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
 
+		// Add severity to the users
 		setSeverityOnUsersList(users);
+
 		return users;
 	}
 
