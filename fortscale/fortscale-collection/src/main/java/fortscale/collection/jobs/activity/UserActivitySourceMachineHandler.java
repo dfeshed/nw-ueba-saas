@@ -99,6 +99,7 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
     /**
      * Update the User collection with the count of distinct source devices each user uses
      */
+	@Override
 	public void postCalculation(){
 		// Get all the users
         List<ObjectId> userIds = userService.getDistinctValuesByFieldName(User.ID_FIELD);

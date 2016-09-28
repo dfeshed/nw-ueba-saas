@@ -345,7 +345,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     };
 
     public void postCalculation(){
-        // post calculation
+        // Runs all needs to be done after the calculation finished
     }
 
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
