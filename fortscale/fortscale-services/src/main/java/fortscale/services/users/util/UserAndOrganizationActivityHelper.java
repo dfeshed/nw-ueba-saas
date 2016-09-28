@@ -17,6 +17,7 @@ public class UserAndOrganizationActivityHelper {
     private final static String NOT_AVAILABLE_COUNTRY_VALUE = "N/A";
 
     private final static String NOT_AVAILABLE_MACHINE_VALUE = "N/A";
+    public final static String OTHER_MACHINE_VALUE = "Other";
 
     private Set<String> countryValuesToFilter;
     private Set<String> deviceValuesToFilter;

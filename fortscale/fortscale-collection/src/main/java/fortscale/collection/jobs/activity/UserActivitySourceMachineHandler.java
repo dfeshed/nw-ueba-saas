@@ -117,7 +117,7 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 
             // Remove irrelevant values
             machines.removeAll(userAndOrganizationActivityHelper.getDeviceValuesToFilter());
-            machines.remove("Other");
+            machines.remove(userAndOrganizationActivityHelper.OTHER_MACHINE_VALUE);
 
             // Update the user document with the number
             userService.updateSourceMachineCount(userId.toString(), machines.size());
