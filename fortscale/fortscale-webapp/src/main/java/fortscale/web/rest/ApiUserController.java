@@ -115,6 +115,7 @@ public class ApiUserController extends BaseController{
 		fieldsRequired.add(User.adPositionFieldName);
 		fieldsRequired.add(User.adDepartmentFieldName);
 		fieldsRequired.add(User.tagsField);
+		fieldsRequired.add(User.sourceMachineCountField);
 	}
 
 
