@@ -32,6 +32,7 @@
 	</context:component-scan>
 
     <bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
+	<bean id="userActivitySourceMachineHandler" class="fortscale.collection.jobs.activity.UserActivitySourceMachineHandler" scope="singleton" />
 
 </beans>
 
