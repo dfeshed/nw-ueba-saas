@@ -474,7 +474,12 @@ public class SplunkApi {
         		throw ioe;
         	} catch(Exception e){
 				if (numOfTries == 5) {
-					logger.warn("got the following exception while trying to get the next event from splunk", e);
+					final String message = "got the following exception while trying to get the next event from splunk";
+					if (e instanceof RuntimeException && e.getMessage().contains("Parent end element not found")) {
+						logger.debug(message, e);
+					} else {
+						logger.warn(message, e);
+					}
 					throw e;
 				}
         	}
