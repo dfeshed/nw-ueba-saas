@@ -29,7 +29,7 @@
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.details.overview.categoryTags'}}</div>
         {{rsa-form-tag-manager selectedTags=selectedCategories availableTags=normalizedTreeData addTagsLabel=(t 'incident.details.overview.addCategoryTags')}}
       </div>
-      {{#rsa-form-button isFullWidth=true class="rsa-respond-list__filter-panel__reset-button" click=(action 'resetFilters')}}
+      {{#rsa-form-button isFullWidth=true class="rsa-respond-list__filter-panel__reset-button" defaultAction=(action 'resetFilters')}}
         {{t 'incident.list.filters.reset'}}
       {{/rsa-form-button}}
     </div>

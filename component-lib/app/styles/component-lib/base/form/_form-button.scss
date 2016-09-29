@@ -65,22 +65,33 @@
       min-width: 100%;
       text-align: left;
 
+
+      // default styles exist for plain li tags with actions attached as well as embedded links
+      // additional dropdown styles can be added to implementation styles
       li {
         @include rsa-font(navigation, small);
         list-style: none;
         white-space: nowrap;
         display: block;
-        padding: 0 rsa-whitespace();
         vertical-align: bottom;
-        line-height: 2.5rem;
         border-bottom: 1px solid $formButtonDropdownOptionBorderColor;
-
+        line-height: 2.5rem;
+        padding: 0 rsa-whitespace();
+s
         &:last-child {
           border-bottom: none;
         }
 
         &:hover {
           background-color: $formButtonDropdownOptionHoverBackgroundColor;
+        }
+
+        a {
+          margin-left: calc(#{rsa-whitespace() * -1});
+          margin-right: calc(#{rsa-whitespace() * -1});
+          padding: 0 rsa-whitespace();
+          text-decoration: none;
+          display: block;
         }
       }
     }
@@ -359,6 +370,8 @@
       i {
         font-size: 1.25em;
         position: relative;
+        width: 100%;
+        height: 100%;
         top: 2px;
       }
     }

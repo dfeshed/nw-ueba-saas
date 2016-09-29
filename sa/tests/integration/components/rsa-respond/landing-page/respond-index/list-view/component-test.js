@@ -111,7 +111,7 @@ skip('Priority filter affects the number of incidents on screen', function(asser
   const done = assert.async();
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button .expand');
+  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button .rsa-form-button');
 
   setTimeout(function() {
     const totalIncidentCount = this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length;

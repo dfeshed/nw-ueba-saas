@@ -61,6 +61,8 @@ export default Component.extend({
 
   withDropdown: match('dropdown', /standard|split/),
 
+  defaultAction: null,
+
   /**
   * Responsible for toggling visibility of dropdown list
   * @public
@@ -73,34 +75,30 @@ export default Component.extend({
     this.set('isCollapsed', true);
   },
 
-  /**
-  * Event responsible for calling toggleOptions
-  * Skip if not isSplit to allow for action on primary button
-  * @public
-  */
-  click(event) {
-    event.stopPropagation();
-    if (this.get('withDropdown') && !this.get('isSplit') && !this.get('isDisabled')) {
-      this.toggleOptions();
-      this.get('eventBus').trigger('rsa-application-click', event.currentTarget);
-    }
-  },
-
   didInsertElement() {
-    let _this = this;
-    this.get('eventBus').on('rsa-application-click', function(targetEl) {
-      if (_this.$()) {
-        if (!_this.get('optionsCollapsed') && !_this.$().is(targetEl)) {
-          _this.collapseOptions();
+    this.get('eventBus').on('rsa-application-click', (targetEl) => {
+      if (this.get('isSplit')) {
+        if (!this.$('.expand i').is(targetEl)) {
+          this.collapseOptions();
+        }
+      } else {
+        if (this.$('.rsa-form-button') && !this.$('.rsa-form-button').is(targetEl) && !this.$('.expand').is(targetEl) && !this.$('.expand i').is(targetEl)) {
+          this.collapseOptions();
         }
       }
     });
   },
 
   actions: {
+
+    defaultAction() {
+      if (!this.get('isDisabled')) {
+        this.sendAction('defaultAction');
+      }
+    },
     /*
     * Template action responsible for calling toggleOptions
-    * Skip if and not isDisabled
+    * Skip if isDisabled
     * @public
     */
     toggleOptions() {
