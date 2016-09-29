@@ -12,8 +12,6 @@ export default Component.extend({
   // INPUTS
   endpointId: null,
   eventId: null,
-  meta: null,
-  packetFields: null,
   reconstructionType: null,
   showRequestData: null,
   showResponseData: null,

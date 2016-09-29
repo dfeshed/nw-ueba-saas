@@ -1,14 +1,15 @@
 {{recon-event-header
-  headerItems=headerItems
+  endpointId=endpointId
+  eventId=eventId
   index=index
   total=total
   closeRecon=closeAction
   expandRecon=expandAction
+  shrinkRecon=shrinkAction
   reconstructionType=reconstructionType
   showMetaDetails=showMetaDetails
   showRequestData=showRequestData
   showResponseData=showResponseData
-  shrinkRecon=shrinkAction
   toggleMetaDetails=(action 'toggleMetaDetails')
   toggleRequest=(action 'toggleRequest')
   toggleResponse=(action 'toggleResponse')
@@ -17,19 +18,19 @@
 
 <hbox>
   {{recon-event-content
-    eventId=eventId
     endpointId=endpointId
-    packetFields=packetFields
-    meta=meta
+    eventId=eventId
     reconstructionType=reconstructionType
-    showMetaDetails=showMetaDetails
     showRequestData=showRequestData
     showResponseData=showResponseData
   }}
 
   {{#if showMetaDetails}}
     <vbox xs="4" class="event-content-box">
-      {{recon-meta-content meta=meta}}
+      {{recon-meta-content
+        endpointId=endpointId
+        eventId=eventId
+        meta=meta}}
     </vbox>
   {{/if}}
 </hbox>

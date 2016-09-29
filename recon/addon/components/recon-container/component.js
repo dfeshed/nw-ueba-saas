@@ -1,9 +1,9 @@
 import Ember from 'ember';
 import layout from './template';
 import { TYPES_BY_NAME } from '../../utils/reconstruction-types';
+import { buildBaseQuery } from '../../utils/query-util';
 
 const {
-  A,
   Component,
   inject: {
     service
@@ -18,9 +18,6 @@ export default Component.extend({
   tagName: '',
 
   // Component state
-  packetFields: null,
-  headerError: null,
-  headerItems: null,
   reconstructionType: TYPES_BY_NAME.PACKET, // defaults to packet view
   showMetaDetails: false,
   showRequestData: true,
@@ -47,58 +44,12 @@ export default Component.extend({
   didReceiveAttrs() {
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
     assert('Cannot instantiate recon without endpointId and eventId.', endpointId && eventId);
-    this.set('packetFields', null);
     this.bootstrapRecon(endpointId, eventId);
   },
 
-  setHeaderItems(items) {
-    this.set('headerItems', items.reduce(function(headerItems, item) {
-      if (item.name === 'destination' || item.name === 'source') {
-        headerItems.pushObjects([
-          {
-            name: `${item.name} IP:PORT`,
-            value: item.value
-          }
-        ]);
-      } else {
-        headerItems.pushObject(item);
-      }
-
-      return headerItems;
-    }, A([])));
-  },
-
   bootstrapRecon(endpointId, eventId) {
-    const query = {
-      filter: [{
-        field: 'endpointId',
-        value: endpointId
-      }, {
-        field: 'sessionId',
-        value: eventId
-      }]
-    };
 
-    this.get('request').promiseRequest({
-      method: 'query',
-      modelName: 'reconstruction-summary',
-      query
-    }).then(({ data }) => {
-      this.setHeaderItems(data.summaryAttributes);
-      this.set('packetFields', data.packetFields);
-    }).catch((response) => {
-      this.set('headerError', response);
-    });
-
-    if (!this.get('meta')) {
-      this.get('request').promiseRequest({
-        method: 'stream',
-        modelName: 'core-event',
-        query
-      }).then(({ data }) => {
-        this.set('meta', data[0].metas);
-      });
-    }
+    const query = buildBaseQuery(endpointId, eventId);
 
     if (!this.get('language')) {
       this.get('request').promiseRequest({

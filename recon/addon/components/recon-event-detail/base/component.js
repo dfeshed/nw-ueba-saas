@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import { buildBaseQuery } from '../../../utils/query-util';
+
 const {
   Component,
   inject: {
@@ -22,18 +24,11 @@ export default Component.extend({
   },
 
   didReceiveAttrs() {
-    const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
     this.set('reconData', []);
     this.sendAction('contentError', null);
-    const query = {
-      filter: [{
-        field: 'endpointId',
-        value: endpointId
-      }, {
-        field: 'sessionId',
-        value: eventId
-      }]
-    };
+
+    const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
+    const query = buildBaseQuery(endpointId, eventId);
     this.retrieveData(query);
   }
 

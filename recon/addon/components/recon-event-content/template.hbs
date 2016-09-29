@@ -1,18 +1,14 @@
 {{#if contentError}}
   {{contentError}}
 {{else}}
-    <div class="scroll-box">
-      {{!-- a hack to avoid re-render, will go with better API for packetFields --}}
-      {{#if packetFields}}
-        {{component
-          reconstructionType.component
-          eventId=eventId
-          endpointId=endpointId
-          packetFields=packetFields
-          contentErrorAction=contentErrorAction
-          showRequestData=showRequestData
-          showResponseData=showResponseData
-        }}
-      {{/if}}
-    </div>
+  <div class="scroll-box">
+    {{component
+      reconstructionType.component
+      eventId=eventId
+      endpointId=endpointId
+      contentErrorAction=contentErrorAction
+      showRequestData=showRequestData
+      showResponseData=showResponseData
+    }}
+  </div>
 {{/if}}
