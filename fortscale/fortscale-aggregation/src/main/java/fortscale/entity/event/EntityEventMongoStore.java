@@ -1,14 +1,20 @@
 package fortscale.entity.event;
 
+import com.mongodb.BulkWriteResult;
 import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.domain.core.EntityEvent;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.BulkOperationException;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -21,7 +27,11 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
+	private static final Logger logger = Logger.getLogger(EntityEventMongoStore.class);
+	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
 
+	@Autowired
+	private StatsService statsService;
 	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
 	@Value("${fortscale.scored.entity.event.store.page.size}")
@@ -38,6 +48,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
 	public void save(EntityEvent entityEvent) {
 		String collectionName = ensureCollectionExists(entityEvent);
+		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
 		if (storePageSize > 1) {
 			List<EntityEvent> entityEventList = collectionToEntityEventListMap.get(collectionName);
 			if (entityEventList == null) {
@@ -50,6 +61,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 				collectionToEntityEventListMap.remove(collectionName);
 			}
 		} else {
+			collectionMetrics.writes++;
 			mongoTemplate.save(entityEvent, collectionName);
 		}
 	}
@@ -59,7 +71,29 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 			return;
 		}
 		for(String collectionName: collectionToEntityEventListMap.keySet()) {
-			mongoTemplate.insert(collectionToEntityEventListMap.get(collectionName), collectionName);
+			PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+
+			try {
+
+				List<EntityEvent> entityEvents = collectionToEntityEventListMap.get(collectionName);
+				BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
+						.insert(entityEvents).execute();
+				if (bulkOpResult.isAcknowledged()) {
+					int actualInsertedCount = bulkOpResult.getInsertedCount();
+					collectionMetrics.bulkWrites++;
+					collectionMetrics.bulkWriteDocumentCount += actualInsertedCount;
+					collectionMetrics.writes += actualInsertedCount;
+					logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
+				} else {
+					collectionMetrics.bulkWritesNotAcknowledged++;
+					logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
+				}
+			}
+			catch (BulkOperationException e) {
+				collectionMetrics.bulkWritesErrors++;
+				logger.error("failed to perform bulk insert into collection={}", collectionName, e);
+				throw e;
+			}
 		}
 		collectionToEntityEventListMap = new HashMap<>();
 	}
@@ -78,6 +112,8 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
 		String collectionName = getCollectionName(entityEventType);
 		if (mongoTemplate.collectionExists(collectionName)) {
+			PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+
 			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime);
 			Map<Long, List<EntityEvent>> dateToHighestEntityEvents = new HashMap<>(numOfDays);
 			while (numOfDays-- > 0) {
@@ -90,6 +126,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 						.limit(topK);
 				dateToHighestEntityEvents.put(startTime,
 						mongoTemplate.find(query, EntityEvent.class, collectionName));
+				collectionMetrics.reads++;
 				endTimeSeconds -= SECONDS_IN_DAY;
 			}
 			return dateToHighestEntityEvents;
@@ -131,9 +168,35 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		long totalNumberOfEvents = 0;
 
 		for(String collectionName: allScoredEntityEventCollectionNames) {
+			PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
 			totalNumberOfEvents += mongoTemplate.count(new Query(), collectionName);
+			collectionMetrics.reads++;
 		}
 
 		return totalNumberOfEvents;
+	}
+
+	/**
+	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
+	 * before any crud is preformed in this class, this method should be called
+	 *
+	 * @param collectionName metrics are per collection
+	 * @return metrics for collection
+	 */
+	private PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName)
+	{
+		if(collectionMetricsMap ==null)
+		{
+			collectionMetricsMap = new HashMap<>();
+		}
+
+		if(!collectionMetricsMap.containsKey(collectionName))
+		{
+			PersistenceTaskStoreMetrics collectionMetrics =
+					new PersistenceTaskStoreMetrics(statsService,collectionName);
+			collectionMetricsMap.put(collectionName,collectionMetrics);
+		}
+
+		return collectionMetricsMap.get(collectionName);
 	}
 }

@@ -9,6 +9,10 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 @StatsMetricsGroupParams(name = "aggregation.service.feature-buckets-store")
 public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
+
+
+
+
     public FeatureBucketsStoreMetrics(StatsService statsService,
                                       String storeType,
                                       FeatureBucketConf featureBucketConf) {
@@ -17,6 +21,8 @@ public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
             addTag("bucketName", featureBucketConf.getName());
         }});
     }
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long bulkWritesNotAcknowledged;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long retrieveContextsCalls;
