@@ -14,13 +14,24 @@ const {
 
 export default Component.extend({
   classNames: 'rsa-investigate-timeline',
-  classNameBindings: ['status'],
-  chartMargin: {
-    top: 10,    /* avoid zeroes to prevent shaving edges off peaks */
-    bottom: 30, /* big enough for some text */
-    left: 35,
-    right: 20
-  },
+  classNameBindings: ['status', 'isExpanded'],
+
+  /**
+   * An array of data to be plotted. The array can either be 1-D or 2-D. If 1-D, then it is assumed to be a single
+   * series of data. If 2-D, it is assumed to be a multi-series set of data.
+   * @type {[]}
+   * @public
+   */
+  data: undefined,
+
+  isExpanded: false,
+
+  /**
+   * Configurable callback to be invoked when there is an error and user clicks Retry button.
+   * @type {function}
+   * @public
+   */
+  retryAction: undefined,
 
   /**
    * The status of the request to fetch the timeline `data`.
@@ -31,26 +42,10 @@ export default Component.extend({
    */
   status: undefined,
 
-  /**
-   * An array of data to be plotted. The array can either be 1-D or 2-D. If 1-D, then it is assumed to be a single
-   * series of data. If 2-D, it is assumed to be a multi-series set of data.
-   * @type {[]}
-   * @public
-   */
-  data: undefined,
-
-  /**
-   * Configurable callback to be invoked when there is an error and user clicks Retry button.
-   * @type {function}
-   * @public
-   */
-  retryAction: undefined,
-
-  // Resolves to true if `status` is either 'wait' or 'rejected'. Used to toggle status indicator.
-  @computed('status')
-  isStatusWaitOrRejected(status = '') {
-    return !!status.match(/wait|rejected/);
-  },
+  timeFormat: service(),
+  timezone: service(),
+  xProp: 'value',
+  yProp: 'count',
 
   /**
    * The chart data structure, to be passed down to child `rsa-chart` component.
@@ -67,30 +62,48 @@ export default Component.extend({
     return [[]];
   },
 
-  xProp: 'value',
-  yProp: 'count',
+  @computed('isExpanded')
+  chartMargin(isExpanded) {
+    return isExpanded ?
+      { top: 10, bottom: 30, left: 35, right: 20 } :
+      { top: 4, bottom: 0, left: 0, right: 0 };
+  },
 
-  timezone: service(),
-  timeFormat: service(),
+  @computed('endTime')
+  endDate: (date) => date * 1000,
 
-  @computed('timezone.selected')
-  xScaleFn: (zone) => (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime,
+  // Resolves to true if `status` is either 'wait' or 'rejected'. Used to toggle status indicator.
+  @computed('status')
+  isStatusWaitOrRejected: (status = '') => !!status.match(/wait|rejected/),
+
+  @computed('startTime')
+  startDate: (date) => date * 1000,
 
   @computed('timeFormat.selected.key')
   tickformat: (format) => (format === '24hr') ? multiDate24Format : multiDateFormat,
 
-  @computed('startTime', 'endTime', 'chartData', 'xProp')
+  @computed('isExpanded')
+  toggleIcon: (isExpanded) => isExpanded ? 'shrink-horizontal-2' : 'expand-vertical-4',
+
+  @computed('startDate', 'endDate', 'chartData', 'xProp')
   xDomain: (start, end, chartData, xProp) => {
     let domain = [];
     if (!!start && !!end) {
-      domain = [start * 1000, end * 1000];
+      domain = [start, end];
     } else if (!!start || !!end) {
       domain = computeExtent(chartData, (d) => d[xProp]);
     }
     return domain;
   },
 
+  @computed('timezone.selected')
+  xScaleFn: (zone) => (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime,
+
   actions: {
-    safeCallback
+    safeCallback,
+
+    toggleContent() {
+      this.toggleProperty('isExpanded');
+    }
   }
 });

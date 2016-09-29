@@ -5,6 +5,12 @@
       language=model.queryNode.value.language.data
       aliases=model.queryNode.value.aliases.data
       services=model.services.data}}
+    {{rsa-investigate/timeline
+      data=model.queryNode.value.results.eventTimeline.data
+      status=model.queryNode.value.results.eventTimeline.status
+      retryAction=(route-action "eventTimelineGet" model.queryNode true)
+      startTime=model.queryNode.value.definition.startTime
+      endTime=model.queryNode.value.definition.endTime}}
   </header>
   <section class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
     <section class="rsa-investigate-query__body-master">
@@ -25,12 +31,6 @@
           toggleAction=(route-action "metaGroupKeyToggle" model.queryNode)}}
       </aside>
       <section class="rsa-investigate-query__body-master-main">
-        {{rsa-investigate/timeline
-          data=model.queryNode.value.results.eventTimeline.data
-          status=model.queryNode.value.results.eventTimeline.status
-          retryAction=(route-action "eventTimelineGet" model.queryNode true)
-          startTime=model.queryNode.value.definition.startTime
-          endTime=model.queryNode.value.definition.endTime}}
         {{rsa-investigate/events-table
           items=model.queryNode.value.results.events.data
           columnsConfig=model.eventColumnGroups.selected.columns

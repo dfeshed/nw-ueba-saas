@@ -1,7 +1,9 @@
-<header class="rsa-investigate-timeline__header">
-  <h2>{{t "investigate.events.title"}}</h2>
-</header>
 <section class="rsa-investigate-timeline__body">
+  <section class="timestamp">
+    {{moment-format startDate 'YYYY-MM-DD' locale=i18n.locale timeZone=timezone.selected}}
+    <span>{{moment-format startDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
+    {{moment-format startDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
+  </section>
   {{#rsa-chart
     data=chartData
     margin=chartMargin
@@ -17,16 +19,6 @@
       width=params.graphWidth
       height=params.graphHeight
     }}
-    {{rsa-line-series
-      clipId=params.clipId
-      data=params.data
-      dataIndex=0
-      xScale=params.xScale
-      yScale=params.yScale
-      xProp=xProp
-      yProp=yProp
-      duration=params.duration
-    }}
     {{rsa-x-axis
       height=params.graphHeight
       scale=params.xScale
@@ -38,21 +30,37 @@
       tickCount=6
       duration=params.duration
     }}
+    {{rsa-line-series
+      clipId=params.clipId
+      data=params.data
+      dataIndex=0
+      xScale=params.xScale
+      yScale=params.yScale
+      xProp=xProp
+      yProp=yProp
+      duration=params.duration
+    }}
   {{/rsa-chart}}
-  {{#if isStatusWaitOrRejected}}
-    <div class="status">
-      {{#if (is-equal status 'wait')}}
-        <div class="wait js-test-wait">
-          {{rsa-loader size="small" label=(t 'investigate.loading')}}
-        </div>
-      {{else if (is-equal status 'rejected')}}
-        <div class="rejected js-test-rejected">
-          <h2>{{t 'investigate.error.title'}}</h2>
-          {{#rsa-form-button isDanger=true class="js-test-retry" click=(action "safeCallback" retryAction)}}
-            {{t 'investigate.tryAgain'}}
-          {{/rsa-form-button}}
-        </div>
-      {{/if}}
-    </div>
-  {{/if}}
+  {{rsa-icon name=toggleIcon click=(action 'toggleContent')}}
+  <section class="timestamp right">
+    {{moment-format endDate 'YYYY-MM-DD' locale=i18n.locale timeZone=timezone.selected}}
+    <span>{{moment-format endDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
+    {{moment-format endDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
+  </section>
 </section>
+{{#if isStatusWaitOrRejected}}
+  <div class="status">
+    {{#if (is-equal status 'wait')}}
+      <div class="wait js-test-wait">
+        {{rsa-loader size="small" label=(t 'investigate.loading')}}
+      </div>
+    {{else if (is-equal status 'rejected')}}
+      <div class="rejected js-test-rejected">
+        <h2>{{t 'investigate.error.title'}}</h2>
+        {{#rsa-form-button isDanger=true class="js-test-retry" click=(action "safeCallback" retryAction)}}
+          {{t 'investigate.tryAgain'}}
+        {{/rsa-form-button}}
+      </div>
+    {{/if}}
+  </div>
+{{/if}}

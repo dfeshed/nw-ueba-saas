@@ -192,17 +192,63 @@
   }
 
   .rsa-investigate-timeline {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: $investigateTimelineHeight;
+    height: 2.5em;
+    &.is-expanded {
+      height: 200px;
+      .rsa-chart {
+        left: 0;
+        right: 0;
+        .rsa-x-axis,
+        .rsa-y-axis,
+        .points,
+        .grids {
+          display: block;
+        }
+      }
+      .rsa-icon {
+        right: 0;
+      }
+      .timestamp {
+        opacity: 0;
+      }
+    }
 
-    &__header {
-      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+    .rsa-icon {
+      position: absolute;
+      right: 170px;
+      transition: right 250ms;
+    }
+
+    .timestamp {
+      @include rsa-font(light);
+      position: absolute;
+      width: 170px;
+      padding: 0.75em 0;
+      text-align: center;
+      color: rsa-color(grey,light);
+      background-color: rsa-color(black,base,$rsa-translucent);
+      opacity: 1;
+      transition: opacity 250ms;
+      &.right {
+        right: 0;
+      }
+      span {
+        font-weight: 500;
+        color: white;
+      }
     }
 
     .rsa-chart {
+      margin: 0;
+      left: 170px;
+      right: 170px;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      .rsa-x-axis,
+      .rsa-y-axis,
+      .points,
+      .grids {
+        display: none;
+      }
       .domain,
       .tick line {
         stroke: rsa-color(black,base,$rsa-translucent);
@@ -215,7 +261,7 @@
 
   .rsa-investigate-events-table {
     position: absolute;
-    top: $investigateTimelineHeight;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
