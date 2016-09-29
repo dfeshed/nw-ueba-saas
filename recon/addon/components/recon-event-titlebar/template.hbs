@@ -18,25 +18,31 @@
   size='large'}}
 
 {{rsa-icon
-  active=showResponseData
+  active=showRequestData
   class='header-toggle'
+  click=toggleRequest
+  disabled=disablePacketIcons
   name='arrow-circle-right-2'
   size='large'}}
 
 {{rsa-icon
-  active=showRequestData
+  active=showResponseData
   class='header-toggle'
+  click=toggleResponse
+  disabled=disablePacketIcons
   name='arrow-circle-left-2'
   size='large'}}
 
 {{rsa-icon
   active=true
   class='header-toggle'
+  disabled=disablePacketIcons
   name='view-agenda'
   size='large'}}
 
 {{rsa-icon
   class='header-toggle'
+  disabled=disablePacketIcons
   name='layout-4'
   size='large'}}
 

@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import layout from './template';
 import computed from 'ember-computed-decorators';
-import { TYPES } from '../../utils/reconstruction-types';
+import { TYPES, TYPES_BY_NAME } from '../../utils/reconstruction-types';
 
 const { Component } = Ember;
 
@@ -27,6 +27,16 @@ export default Component.extend({
   // END INPUTS
 
   isExpanded: false,
+
+  /**
+  * Determines if we should disable packet related icons
+  * @return {boolean}  Whether icons should be disabled
+  * @public
+  */
+  @computed('reconstructionType')
+  disablePacketIcons({ code }) {
+    return code !== TYPES_BY_NAME.PACKET.code;
+  },
 
   @computed('reconstructionType')
   reconViewsConfig({ code }) {

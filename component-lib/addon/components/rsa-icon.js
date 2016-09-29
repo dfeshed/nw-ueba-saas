@@ -13,6 +13,7 @@ export default Component.extend({
 
   classNameBindings: [
     'active',
+    'disabled',
     'isLined:is-lined:is-filled',
     'iconClass',
     'isSmaller',

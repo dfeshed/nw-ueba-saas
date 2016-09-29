@@ -11,6 +11,8 @@ export default Component.extend({
   index: null,
   reconstructionType: null,
   showMetaDetails: null,
+  showRequestData: null,
+  showResponseData: null,
   total: null,
 
   // Actions
@@ -18,6 +20,8 @@ export default Component.extend({
   expandRecon: null,
   shrinkRecon: null,
   toggleMetaDetails: null,
+  toggleRequest: null,
+  toggleResponse: null,
   updateReconstructionView: null,
   // END INPUTS
 

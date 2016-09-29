@@ -129,7 +129,12 @@ export default Component.extend({
         this.toggleProperty('showMetaDetails');
       }
     },
-
+    toggleRequest() {
+      this.toggleProperty('showRequestData');
+    },
+    toggleResponse() {
+      this.toggleProperty('showResponseData');
+    },
     updateReconstructionView(viewType) {
       this.set('reconstructionType', viewType);
     }

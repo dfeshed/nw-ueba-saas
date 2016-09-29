@@ -171,6 +171,11 @@ export default Component.extend({
     return rows;
   },
 
+  @computed('packet.side', 'showRequestData', 'showResponseData')
+  shouldShowPacket(side, showRequestData, showResponseData) {
+    return (side === 'request' && showRequestData) || (side === 'response' && showResponseData);
+  },
+
   /**
    * Searches `packetFields` for a field whose position & size include the given byte index.
    * If found, returns the field and its index; otherwise returns `undefined`.

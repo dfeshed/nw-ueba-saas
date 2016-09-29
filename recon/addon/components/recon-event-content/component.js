@@ -15,6 +15,8 @@ export default Component.extend({
   meta: null,
   packetFields: null,
   reconstructionType: null,
+  showRequestData: null,
+  showResponseData: null,
   // END INPUTS
 
   actions: {
