@@ -68,7 +68,7 @@
   }
 
   .rsa-icon {
-    z-index: 2;
+    z-index: 3; /* overlays above .status sibling */
     cursor: pointer;
   }
 
@@ -90,5 +90,9 @@
   &.wait .rsa-chart,
   &.rejected .rsa-chart {
     opacity: $rsa-translucent;
+  }
+
+  &:not(.is-expanded) .rsa-loader__text {
+    display: none;
   }
 }
