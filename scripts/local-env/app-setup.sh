@@ -24,12 +24,10 @@ function installAppDeps {
 
 CWD=$(pwd)
 scriptDir="$(dirname $0)"
-cd $scriptDir
-
-. _util.sh
+. $scriptDir/_util.sh
 
 # mock-server is just NPM
-cd ../mock-server
+cd $scriptDir/../mock-server
 installNPMDeps mock-server
 
 installAppDeps component-lib

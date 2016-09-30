@@ -22,23 +22,40 @@ function hasVersion {
   fi
 }
 
-# Checks for NVM global created in .bash_profile
-# if its not there, NVM hasn't been installed, so install it
-if [ -z ${NVM_DIR+x} ]
+# At present, the script only supports OS X and Windows
+# Check if the user is on OS X
+if [ "$(uname)" == "Darwin" ]
 then
-  info "Installing NVM"
-  curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
-  success "NVM installed!"
+  # Checks for NVM global created in .bash_profile
+  # if its not there, NVM hasn't been installed, so install it
+  if [ -z ${NVM_DIR+x} ]
+  then
+    info "Detected OS X, Installing NVM"
+    curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash
+    success "NVM installed!"
+  else
+    info "NVM already present on OS X, not installing"
+  fi
+  # source in nvm so it can be used in this script
+  source ~/.nvm/nvm.sh
+  # install the required node version and make that version the default
+  nvm install $NODE_VERSION
+  nvm alias default $NODE_VERSION
+# User is not on OS X, must be on Windows
 else
-  info "NVM already present, not installing"
+  # Check if nvm-windows has been installed
+  if [ -d "${HOME}/AppData/Roaming/nvm" ]
+  then
+    success "Detected NVM for Windows"
+    # install the required node version and make that version the default
+    nvm install $NODE_VERSION
+    nvm use $NODE_VERSION
+  else
+    red "NVM is not installed on this Windows"
+    info "Please go to https://github.com/coreybutler/nvm-windows/releases and install NVM"
+    exit 1
+  fi
 fi
-
-# source in nvm so it can be used in this script
-source ~/.nvm/nvm.sh
-
-# install the required node version and make that version the default
-nvm install $NODE_VERSION
-nvm alias default $NODE_VERSION
 
 # install ember if it hasn't been
 if [[ "$(hasVersion "ember" $EMBER_CLI_VERSION)" == "false" ]]

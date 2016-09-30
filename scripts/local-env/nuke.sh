@@ -1,9 +1,7 @@
 CWD=$(pwd)
 
 scriptDir="$(dirname "$0")"
-cd $scriptDir
-
-. _util.sh
+. $scriptDir/_util.sh
 
 red $scriptDir
 
@@ -14,17 +12,17 @@ info "If this is your first time setting up environment, this part will be fast.
 
 function nukeNode {
   info "Removing $1 node_modules"
-  rm -rf ../$1/node_modules
-  mkdir ../$1/node_modules
-  touch ../$1/node_modules/.metadata_never_index
+  rm -rf $1/node_modules
+  mkdir $1/node_modules
+  touch $1/node_modules/.metadata_never_index
 }
 
 function nukeApp {
   nukeNode $1
   info "Removing $1 bower_components"
-  rm -rf ../$1/bower_components
-  mkdir ../$1/bower_components
-  touch ../$1/bower_components/.metadata_never_index
+  rm -rf $1/bower_components
+  mkdir $1/bower_components
+  touch $1/bower_components/.metadata_never_index
 }
 
 info "Cleaning NPM cache"
