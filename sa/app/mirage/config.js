@@ -19,6 +19,7 @@ import alerts from 'sa/mirage/sockets/routes/alerts';
 import coreServices from 'sa/mirage/sockets/routes/core-services';
 import coreEvents from 'sa/mirage/sockets/routes/core-events';
 import coreEventCounts from 'sa/mirage/sockets/routes/core-event-counts';
+import coreEventLog from 'sa/mirage/sockets/routes/core-event-log';
 import coreEventTimelines from 'sa/mirage/sockets/routes/core-event-timelines';
 import coreMetaKeys from 'sa/mirage/sockets/routes/core-meta-keys';
 import coreMetaValues from 'sa/mirage/sockets/routes/core-meta-values';
@@ -76,6 +77,7 @@ export default function() {
     coreServices(server);
     coreEvents(server);
     coreEventCounts(server);
+    coreEventLog(server);
     coreEventTimelines(server);
     coreMetaKeys(server);
     coreMetaValues(server);

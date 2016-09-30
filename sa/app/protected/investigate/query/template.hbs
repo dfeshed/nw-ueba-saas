@@ -40,6 +40,7 @@
           percent=model.queryNode.value.results.events.percent
           rowClickAction=(route-action "reconOpen" model.queryNode.value.definition.serviceId)
           loadMoreAction=(route-action "eventsGetMore" model.queryNode)
+          loadLogsAction=(route-action "eventsLogsGet" model.queryNode)
           stopAction=(route-action "eventsStop" model.queryNode)
           retryAction=(route-action "eventsGetMore" model.queryNode)
           totalCount=model.queryNode.value.results.eventCount.data

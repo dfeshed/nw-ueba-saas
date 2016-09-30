@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import hasherizeEventMeta from './hasherize-event-meta';
+import { setEventLogData, setEventLogDataStatus, getEventLogDataStatus } from './log-utils';
 
 const {
   assert,
@@ -71,8 +72,8 @@ function makeServerInputsForQuery(query, language) {
     );
 
   assert(
-    serviceId && startTime && endTime,
-    'Cannot make a core query without a service id, start time & end time.'
+    'Cannot make a core query without a service id, start time & end time.',
+    serviceId && startTime && endTime
   );
 
   return {
@@ -88,6 +89,7 @@ function makeServerInputsForQuery(query, language) {
  * Given an object representing a query, and a count threshold, computes the input parameters required to submit that
  * query's event count request to the server.
  * @param {object} query The query object. @see investigate/state/query
+ * @param {object} language The language object. @see investigate/state/language
  * @param {number} [threshold] Optional precision limit. Counts will not go higher than this number.
  * @public
  */
@@ -196,8 +198,8 @@ function executeMetaValuesRequest(request, inputs, values) {
  */
 function makeServerInputsForEndpointInfo(endpointId) {
   assert(
-    endpointId,
-    'Cannot make a core query without a service id.'
+    'Cannot make a core query without a service id.',
+    endpointId
   );
 
   return {
@@ -205,6 +207,60 @@ function makeServerInputsForEndpointInfo(endpointId) {
       { field: 'endpointId', value: endpointId }
     ]
   };
+}
+
+function buildEventLogStreamInputs(endpointId, eventIds = []) {
+  assert(
+    'Cannot make a core log query without an event id.',
+    eventIds.length
+  );
+  let inputs = makeServerInputsForEndpointInfo(endpointId);
+  inputs.filter.pushObject({ field: 'sessionIds', values: eventIds });
+  return inputs;
+}
+
+function executeLogDataRequest(request, inputs, events = []) {
+  return new RSVP.Promise((resolve, reject) => {
+
+    // Mark the event objects as waiting.
+    events.forEach((item) => {
+      setEventLogDataStatus(item, 'wait');
+    });
+
+    request.streamRequest({
+      method: 'stream',
+      modelName: 'core-event-log',
+      query: inputs,
+      onResponse({ data: { sessionId, log, code } }) {
+
+        // Each event (i.e., sessionId) gets its own response message with its own error code.
+        let item = events.findBy('sessionId', sessionId);
+
+        if (item) {
+          if (code) {
+            // Any non-zero code means there was an error.
+            setEventLogDataStatus(item, 'rejected');
+          } else {
+            // No error, cache the log data into the event object itself.
+            setEventLogData(item, log);
+            setEventLogDataStatus(item, 'resolved');
+          }
+        }
+      },
+      onCompleted: resolve,
+      onError() {
+        // The request won't complete, so mark any events still pending as error.
+        events
+          .filter((item) => {
+            return getEventLogDataStatus(item) === 'wait';
+          })
+          .forEach((item) => {
+            setEventLogDataStatus(item, 'rejected');
+          });
+        reject();
+      }
+    });
+  });
 }
 
 /**
@@ -330,5 +386,7 @@ export {
   makeServerInputsForEndpointInfo,
   parseEventQueryUri,
   uriEncodeEventQuery,
-  nwEncodeMetaFilterConditions
+  nwEncodeMetaFilterConditions,
+  buildEventLogStreamInputs,
+  executeLogDataRequest
 };

@@ -35,6 +35,7 @@
     columnsConfig=columnsConfig
     aliases=aliases
     onRowClick=rowClickAction
+    loadLogsAction=loadLogsAction
   }}
     {{#rsa-data-table/header as |column index|}}
       {{#with (meta-key-alias column.field language) as |names|}}
@@ -43,7 +44,7 @@
         </h2>
       {{/with}}
     {{/rsa-data-table/header}}
-    {{rsa-data-table/body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
+    {{rsa-investigate/events-table-body buffer=5 rowComponentClass="rsa-investigate/events-table-row"}}
     {{rsa-data-table/load-more status=status clickAction=loadMoreAction}}
   {{/rsa-data-table}}
 </section>

@@ -5,7 +5,12 @@
  * @public
  */
 import Ember from 'ember';
-import { buildEventStreamInputs, executeEventsRequest } from './helpers/query-utils';
+import {
+  buildEventStreamInputs,
+  executeEventsRequest,
+  buildEventLogStreamInputs,
+  executeLogDataRequest
+} from './helpers/query-utils';
 
 const { Mixin } = Ember;
 
@@ -135,6 +140,21 @@ export default Mixin.create({
       }
       this.send('eventsStop', queryNode);
       queryNode.get('value.results.events').reset();
+    },
+
+    /**
+     * Kicks off the fetching of log data for a given array of events.
+     * @param {object} queryNode The query which owns the given event records.
+     * @param {object[]} events The array of event records.
+     * @public
+     */
+    eventsLogsGet(queryNode, events = []) {
+      let inputs = buildEventLogStreamInputs(
+        queryNode.get('value.definition.serviceId'),
+        events.mapBy('sessionId')
+      );
+
+      executeLogDataRequest(this.request, inputs, events);
     }
   }
 });

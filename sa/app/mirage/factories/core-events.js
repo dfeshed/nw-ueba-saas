@@ -7,10 +7,10 @@
 import { faker, Factory } from 'ember-cli-mirage';
 import aliases from '../helpers/meta-aliases';
 
-const MEDIUMS = Object.keys(aliases.medium);
-const SERVICES = Object.keys(aliases.service);
-const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']);
-const TCP_DST_PORTS = Object.keys(aliases['tcp.dstport']);
+const MEDIUMS = Object.keys(aliases.medium).map(Number);
+const SERVICES = Object.keys(aliases.service).map(Number);
+const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']).map(Number);
+const TCP_DST_PORTS = Object.keys(aliases['tcp.dstport']).map(Number);
 const IP_PROTOS = Object.keys(aliases['ip.proto']);
 
 const now = +(new Date());

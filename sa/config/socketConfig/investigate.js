@@ -29,6 +29,13 @@ module.exports = function(environment) {
         requestDestination: '/ws/investigate/events/count'
       }
     },
+    'core-event-log': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/reconstruct/log-data',
+        requestDestination: '/ws/investigate/reconstruct/log-data/stream'
+      }
+    },
     'core-event-timeline': {
       socketUrl,
       query: {

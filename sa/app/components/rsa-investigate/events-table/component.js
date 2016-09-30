@@ -17,6 +17,7 @@ export default Component.extend({
   language: undefined,
   aliases: undefined,
   rowClickAction: undefined,
+  loadLogsAction: undefined,
 
   // Passed along to counter.
   loadMoreAction: undefined,
