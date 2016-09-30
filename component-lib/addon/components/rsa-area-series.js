@@ -38,8 +38,9 @@ export default Component.extend(HasChartParent, {
   @computed('data', 'dataIndex')
   datum: (data, index) => data.objectAt(index),
 
-  @computed('clipId')
-  clipPath: (id) => `url(#${id})`,
+  // If there's only one data element, we don't need a clipPath
+  @computed('clipId', 'datum')
+  clipPath: (id, datum) => datum.length > 1 ? `url(#${id})` : '',
 
   @computed('dataIndex')
   clazzName: (index) => `series-${index}`,
