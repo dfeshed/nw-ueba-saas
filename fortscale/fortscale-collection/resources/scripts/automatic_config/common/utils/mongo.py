@@ -12,8 +12,12 @@ def get_db(host):
         # check if an authentication is required
         db.collection_names()
     except Exception:
-        user = raw_input('Please enter mongo username: ')
-        password = getpass.getpass('Please enter mongo password: ')
+        if not sys.stdin.isatty():
+            user = sys.stdin.readline().strip()
+            password = sys.stdin.readline().strip()
+        else:
+            user = raw_input('Please enter mongo username: ')
+            password = getpass.getpass('Please enter mongo password: ')
         db.authenticate(user, password)
     return db
 
