@@ -115,6 +115,9 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 			mongoTemplate.indexOps(collectionName)
 					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_SCORE_FIELD_NAME)
 							.on(EntityEvent.ENTITY_EVENT_SCORE_FIELD_NAME, Sort.Direction.DESC));
+			mongoTemplate.indexOps(collectionName)
+					.ensureIndex(new Index().named(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME)
+							.on(EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME, Sort.Direction.DESC));
 		}
 		return collectionName;
 	}
