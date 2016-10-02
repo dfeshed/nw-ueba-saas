@@ -5,6 +5,7 @@ import sys
 from common import utils
 from common import visualizations
 from common.data.mongo import MongoData
+from common.utils import mongo
 from common.utils import score as score_utils
 from common.utils.io import print_verbose
 
@@ -114,7 +115,7 @@ class Entities:
         self.entity_type = entity_type
         self._daily = SingleTypeEntities(dir_path,
                                          entity_type + '_daily',
-                                         pymongo.MongoClient(mongo_ip, 27017).fortscale)
+                                         mongo.get_db(host=mongo_ip))
         self._hourly = SingleTypeEntities(dir_path,
                                           entity_type + '_hourly',
                                           pymongo.MongoClient(mongo_ip, 27017).fortscale)
