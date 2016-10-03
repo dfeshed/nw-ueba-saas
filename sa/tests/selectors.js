@@ -238,14 +238,14 @@ export default Ember$.extend({}, BaseSelectors, {
       'journalDelBtn': '.rsa-icon-bin-1',
       'journalDeleteConfirmBtn': '.rsa-journal-entry__delete-dialog__actions__confirm',
       'journalNte': '.rsa-journal-entry__note'
+    },
+    'investigate': {
+      'root': '.js-test-investigate-root',
+      'navigateLink': 'js-test-investigate-navigate-classic',
+      'eventsLink': 'js-test-investigate-events-classic',
+      'malwareLink': 'js-test-investigate-malware-classic',
+      'url': '/do/investigate',
+      'path': 'protected.investigate.index'
     }
-  },
-  'investigate': {
-    'root': '.js-test-investigate-root',
-    'navigateLink': 'js-test-investigate-navigate-classic',
-    'eventsLink': 'js-test-investigate-events-classic',
-    'malwareLink': 'js-test-investigate-malware-classic',
-    'url': '/do/investigate',
-    'path': 'protected.investigate.index'
   }
 });
