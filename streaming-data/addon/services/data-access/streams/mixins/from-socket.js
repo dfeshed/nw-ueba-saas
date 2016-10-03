@@ -223,7 +223,8 @@ export default Mixin.create({
         sub.send({}, params, cfg.requestDestination);
 
         me = null;
-      });
+      })
+      .catch(this.error.bind(this));
     return this;
   },
 
