@@ -56,5 +56,7 @@ export {
   setEventLogData,
   setEventLogDataStatus,
   eventHasLogData,
-  eventLogDataIsPending
+  eventLogDataIsPending,
+  META_KEY_LOG_DATA,
+  UI_KEY_LOG_DATA_STATUS
 };

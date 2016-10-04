@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import formatUtil from './format-util';
+import { isLogEvent, getEventLogData, getEventLogDataStatus } from 'sa/protected/investigate/actions/helpers/log-utils';
 import d3 from 'd3';
 
 const { get, isArray } = Ember;
@@ -53,6 +54,19 @@ function buildMetaSummaryContent($content, item, opts) {
       $content.node().appendChild(elRowContent);
     }
   }
+
+  const eventTypeIsLog = isLogEvent(item);
+
+  if (eventTypeIsLog) {
+    addMetaSummaryRow(
+      buildMetaKeyAndValue('device.type', item, opts)
+    );
+
+    addMetaSummaryRow(
+      buildMetaKeyAndValue('device.class', item, opts)
+    );
+  }
+
   addMetaSummaryRow(
     buildMetaSrcDstPair(['ip.src', 'ipv6.src'], ['ip.dst', 'ipv6.dst'], item, opts)
   );
@@ -64,6 +78,12 @@ function buildMetaSummaryContent($content, item, opts) {
   addMetaSummaryRow(
     buildMetaKeyAndValue('session.split', item, opts)
   );
+
+  if (eventTypeIsLog) {
+    addMetaSummaryRow(
+      buildLogContent(item)
+    );
+  }
 }
 
 // Builds the inner HTML for the custom "meta details" column.
@@ -183,6 +203,35 @@ function buildDefaultCellContent($content, field, item, opts) {
   $content
     .attr('title', tooltip)
     .text(text);
+}
+
+// Builds the inner HTML for a log data column's cell.
+function buildLogContent(item) {
+  const status = getEventLogDataStatus(item) || '';
+  const data = getEventLogData(item) || '';
+  let text = '';
+  let tooltip = '';
+
+  switch (status) {
+    case 'wait':
+      text = 'Loading logs...';
+      break;
+    case 'rejected':
+      text = 'Error loading logs.';
+      break;
+    default:
+      tooltip = data;
+      text = data;
+  }
+
+  const el = document.createElement('div');
+  d3.select(el)
+    .classed('log-data', true)
+    .attr('title', tooltip)
+    .attr('data-status', status)
+    .text(text);
+
+  return el;
 }
 
 export default {

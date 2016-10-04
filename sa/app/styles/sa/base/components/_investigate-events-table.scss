@@ -49,7 +49,7 @@
     &-body-cell {
       .content {
         display: block;
-        padding: rsa-whitespace();
+        padding: rsa-whitespace(least) rsa-whitespace();
       }
 
       .meta-key-and-value {
@@ -79,8 +79,16 @@
       }
 
 
-      /* For meta summary column, encourage the "src -> dst" IPs & ports to line up if possible. */
       &[data-field="custom.meta-summary"] {
+
+        .content {
+          /*
+           Preserve vertical space for log data in the meta-summary column. Do this for all records, even non-log
+           records, so that all rows share same height. (Events table requires uniform row heights for abs positioning.)
+           */
+          min-height: 2rem;
+        }
+
         .meta-src-dst-pair {
           display: inline-block;
 
@@ -89,9 +97,7 @@
             min-width: 17rem;
 
             .src {
-              /* For nicer horiz alignment, leave enough room for 1 IPv6 address. */
               display: inline-block;
-              min-width: 7rem;
             }
           }
         }
@@ -107,7 +113,6 @@
           margin-right: rsa-whitespace();
         }
       }
-
     }
   }
 }

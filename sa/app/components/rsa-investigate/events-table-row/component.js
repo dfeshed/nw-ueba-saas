@@ -1,6 +1,8 @@
 import Ember from 'ember';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
 import columnUtil from './column-util';
+import { UI_KEY_LOG_DATA_STATUS } from 'sa/protected/investigate/actions/helpers/log-utils';
+
 import d3 from 'd3';
 
 const {
@@ -117,8 +119,9 @@ export default Component.extend(RowMixin, {
     });
   },
 
-  // Triggers a redraw of the cells whenever the data item or columns model changes.
-  _columnsDidChange: observer('item', 'table.columns.[]', function() {
+  // Triggers a redraw of the cells whenever either (1) the data item changes, (2) the columns model changes, or
+  // (3) the status of the item's log data changes (log data is fetched async on-demand as the user scrolls).
+  _columnsOrDataDidChange: observer('item', 'table.columns.[]', `item.${UI_KEY_LOG_DATA_STATUS}`, function() {
     run.once(this, this._renderCells);
   }),
 
