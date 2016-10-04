@@ -47,7 +47,7 @@
     <span>{{moment-format endDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
     {{moment-format endDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
   </section>
-  {{#if isStatusWaitOrRejected}}
+  {{#if shouldShowStatus}}
     <div class="status">
       {{#if (is-equal status 'wait')}}
         <div class="wait js-test-wait">
@@ -55,10 +55,14 @@
         </div>
       {{else if (is-equal status 'rejected')}}
         <div class="rejected js-test-rejected">
-          <h2>{{t 'investigate.error.title'}}</h2>
-          {{#rsa-form-button isDanger=true class="js-test-retry" click=(action "safeCallback" retryAction)}}
-            {{t 'investigate.tryAgain'}}
-          {{/rsa-form-button}}
+          <p>
+            <span>{{t 'investigate.error.title'}}</span>
+            <a class="js-test-retry" {{action "safeCallback" retryAction}}>{{t 'investigate.tryAgain'}}</a>
+          </p>
+        </div>
+      {{else if isDataEmpty}}
+        <div class="empty js-test-empty">
+          <p>{{t 'investigate.empty.title'}}</p>
         </div>
       {{/if}}
     </div>

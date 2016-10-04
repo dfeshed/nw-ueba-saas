@@ -34,3 +34,33 @@ test('it renders an error indicator when status is \'rejected\'', function(asser
 
   retryButton.trigger('click');
 });
+
+test('it renders an empty message only when the status is \'resolved\' and no data is given', function(assert) {
+
+  this.setProperties({
+    status: 'wait',
+    data: undefined
+  });
+  this.render(hbs`{{rsa-investigate/timeline data=data status=status}}`);
+
+  this.set('data', [{ value: 1, count: 1 }]);
+  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 0, 'Expected empty message to be missing');
+
+  this.set('status', 'rejected');
+  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 0, 'Expected empty message to be missing');
+
+  this.set('status', 'resolved');
+  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 0, 'Expected empty message to be missing');
+
+  this.setProperties({
+    status: 'resolved',
+    data: []
+  });
+  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 1, 'Expected empty message in DOM');
+
+  this.setProperties({
+    status: 'resolved',
+    data: undefined
+  });
+  assert.equal(this.$('.rsa-investigate-timeline .js-test-empty').length, 1, 'Expected empty message in DOM');
+});

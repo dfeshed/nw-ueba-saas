@@ -82,8 +82,14 @@
     @include rsa-col(center,middle);
     text-align: center;
 
-    .rsa-form-button {
-      margin: rsa-whitespace() 0;
+    a {
+      color: rsa-color(blue);
+      cursor: pointer;
+      padding: 0 rsa-whitespace(less);
+
+      &:hover {
+        text-decoration: underline;
+      }
     }
   }
 

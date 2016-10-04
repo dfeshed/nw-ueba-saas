@@ -9,7 +9,8 @@ const {
   inject: {
     service
   },
-  isArray
+  isArray,
+  isEmpty
 } = Ember;
 
 export default Component.extend({
@@ -62,6 +63,11 @@ export default Component.extend({
     return [[]];
   },
 
+  @computed('data', 'status')
+  isDataEmpty(data, status) {
+    return isEmpty(data) && status === 'resolved';
+  },
+
   @computed('isExpanded')
   chartMargin(isExpanded) {
     return isExpanded ?
@@ -72,9 +78,10 @@ export default Component.extend({
   @computed('endTime')
   endDate: (date) => date * 1000,
 
-  // Resolves to true if `status` is either 'wait' or 'rejected'. Used to toggle status indicator.
-  @computed('status')
-  isStatusWaitOrRejected: (status = '') => !!status.match(/wait|rejected/),
+  // Resolves to true if either: (a) status == 'wait', or (b) status == 'rejected' or (c) isDataEmpty is truthy.
+  // Used to toggle status indicator.
+  @computed('status', 'isDataEmpty')
+  shouldShowStatus: (status = '', isEmpty) => !!status.match(/wait|rejected/) || isEmpty,
 
   @computed('startTime')
   startDate: (date) => date * 1000,
