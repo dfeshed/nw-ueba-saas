@@ -11,24 +11,24 @@
 </hbox>
 
 {{rsa-icon
-  active=showHeaderData
+  active=isHeaderOpen
   class='toggle-header header-toggle'
-  click=toggleHeaderData
+  click=(action "toggleHeader")
   name='layout-6'
   size='large'}}
 
 {{rsa-icon
-  active=showRequestData
+  active=isRequestShown
   class='header-toggle'
-  click=toggleRequest
+  click=(action "toggleRequest")
   disabled=disablePacketIcons
   name='arrow-circle-right-2'
   size='large'}}
 
 {{rsa-icon
-  active=showResponseData
+  active=isResponseShown
   class='header-toggle'
-  click=toggleResponse
+  click=(action "toggleResponse")
   disabled=disablePacketIcons
   name='arrow-circle-left-2'
   size='large'}}
@@ -47,9 +47,9 @@
   size='large'}}
 
 {{rsa-icon
-  active=showMetaDetails
+  active=isMetaShown
   class='toggle-meta header-toggle'
-  click=(action 'toggleMetaDetails')
+  click=(action 'toggleMeta')
   name='layout-2'
   size='large'}}
 
@@ -68,6 +68,6 @@
 
 {{rsa-icon
   class='header-toggle'
-  click=closeRecon
+  click=(action 'closeRecon')
   name='close'
   size='large'}}

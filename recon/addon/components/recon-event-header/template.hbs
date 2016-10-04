@@ -1,25 +1,9 @@
 <vbox fit class="recon-event-header">
-  {{recon-event-titlebar
-    closeRecon=closeRecon
-    expandRecon=expandRecon
-    shrinkRecon=shrinkRecon
-    index=index
-    total=total
-    showHeaderData=showHeaderData
-    showMetaDetails=showMetaDetails
-    reconstructionType=reconstructionType
-    showRequestData=showRequestData
-    showResponseData=showResponseData
-    toggleHeaderData=(action 'toggleHeaderData')
-    toggleMetaDetails=toggleMetaDetails
-    toggleRequest=toggleRequest
-    toggleResponse=toggleResponse
-    updateReconstructionView=updateReconstructionView
-  }}
+  {{recon-event-titlebar index=index total=total}}
 
   {{recon-event-dropdowns}}
 
-  {{#if showHeaderData}}
+  {{#if isHeaderOpen}}
     <div class="header-data">
       <grid responsive>
         {{#each headerItems as |item|}}

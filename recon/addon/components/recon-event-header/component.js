@@ -1,4 +1,6 @@
 import Ember from 'ember';
+import connect from 'ember-redux/components/connect';
+
 import layout from './template';
 import { buildBaseQuery } from '../../utils/query-util';
 
@@ -10,7 +12,11 @@ const {
   A
 } = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ visuals }) => ({
+  isHeaderOpen: visuals.isHeaderOpen
+});
+
+const EventHeaderComponent = Component.extend({
   request: service(),
   layout,
   tagName: '',
@@ -19,23 +25,9 @@ export default Component.extend({
   eventId: null,
   endpointId: null,
   index: null,
-  reconstructionType: null,
-  showMetaDetails: null,
-  showRequestData: null,
-  showResponseData: null,
   total: null,
-
-  // Actions
-  closeRecon: null,
-  expandRecon: null,
-  shrinkRecon: null,
-  toggleMetaDetails: null,
-  toggleRequest: null,
-  toggleResponse: null,
-  updateReconstructionView: null,
   // END INPUTS
 
-  showHeaderData: true,
   headerError: null,
   headerItems: null,
 
@@ -73,11 +65,8 @@ export default Component.extend({
 
       return headerItems;
     }, A([])));
-  },
-
-  actions: {
-    toggleHeaderData() {
-      this.toggleProperty('showHeaderData');
-    }
   }
+
 });
+
+export default connect(stateToComputed)(EventHeaderComponent);

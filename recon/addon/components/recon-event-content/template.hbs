@@ -3,12 +3,10 @@
 {{else}}
   <div class="scroll-box">
     {{component
-      reconstructionType.component
+      currentReconView.component
       eventId=eventId
       endpointId=endpointId
       contentErrorAction=contentErrorAction
-      showRequestData=showRequestData
-      showResponseData=showResponseData
     }}
   </div>
 {{/if}}

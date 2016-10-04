@@ -15,6 +15,12 @@ export default Component.extend({
   layout,
   classNameBindings: [':recon-meta-content', ':scroll-box'],
 
+  // INPUTS
+  endpointId: null,
+  eventId: null,
+  meta: null,
+  // END INPUTS
+
   didReceiveAttrs() {
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
     const query = buildBaseQuery(endpointId, eventId);

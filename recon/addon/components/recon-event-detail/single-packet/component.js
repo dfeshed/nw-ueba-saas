@@ -1,10 +1,17 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
+import connect from 'ember-redux/components/connect';
+
 import layout from './template';
 import { not, readOnly } from 'ember-computed-decorators';
 const { Component, K, on, run, set } = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ visuals }) => ({
+  isRequestShown: visuals.isRequestShown,
+  isResponseShown: visuals.isResponseShown
+});
+
+const SinglePacketComponent = Component.extend({
   layout,
   tagName: 'section',
   classNames: 'rsa-packet',
@@ -171,9 +178,9 @@ export default Component.extend({
     return rows;
   },
 
-  @computed('packet.side', 'showRequestData', 'showResponseData')
-  shouldShowPacket(side, showRequestData, showResponseData) {
-    return (side === 'request' && showRequestData) || (side === 'response' && showResponseData);
+  @computed('packet.side', 'isRequestShown', 'isResponseShown')
+  shouldShowPacket(side, isRequestShown, isResponseShown) {
+    return (side === 'request' && isRequestShown) || (side === 'response' && isResponseShown);
   },
 
   /**
@@ -217,3 +224,5 @@ export default Component.extend({
     this.get('observer').disconnect();
   }
 });
+
+export default connect(stateToComputed)(SinglePacketComponent);

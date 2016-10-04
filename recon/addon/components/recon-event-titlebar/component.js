@@ -1,44 +1,54 @@
 import Ember from 'ember';
-import layout from './template';
 import computed from 'ember-computed-decorators';
+import connect from 'ember-redux/components/connect';
+
+import layout from './template';
 import { TYPES, TYPES_BY_NAME } from '../../utils/reconstruction-types';
+import * as VisualActions from '../../actions/visual-creators';
+import * as DataActions from '../../actions/data-creators';
 
 const { Component } = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ visuals, data }) => ({
+  isHeaderOpen: visuals.isHeaderOpen,
+  isRequestShown: visuals.isRequestShown,
+  isResponseShown: visuals.isResponseShown,
+  isMetaShown: visuals.isMetaShown,
+  isReconExpanded: visuals.isReconExpanded,
+  currentReconView: data.currentReconView
+});
+
+const dispatchToActions = (dispatch) => ({
+  toggleHeader: () => dispatch(VisualActions.toggleReconHeader()),
+  toggleRequest: () => dispatch(VisualActions.toggleRequestData()),
+  toggleResponse: () => dispatch(VisualActions.toggleResponseData()),
+  toggleMeta: () => dispatch(VisualActions.toggleMetaData()),
+  toggleExpanded: () => dispatch(VisualActions.toggleReconExpanded()),
+  closeRecon: () => dispatch(VisualActions.closeRecon()),
+  updateReconstructionView: (newView) => dispatch(DataActions.changeReconView(newView))
+});
+
+const TitlebarComponent = Component.extend({
   layout,
   tagName: 'hbox',
   classNameBindings: [':recon-event-titlebar'],
 
   // INPUTS
   index: undefined,
-  reconstructionType: undefined,
   total: undefined,
-  showHeaderData: null,
-  showMetaDetails: null,
-
-  // Actions
-  closeRecon: null,
-  expandRecon: null,
-  shrinkRecon: null,
-  toggleHeaderData: null,
-  toggleMetaDetails: null,
-  updateReconstructionView: null,
   // END INPUTS
-
-  isExpanded: false,
 
   /**
   * Determines if we should disable packet related icons
   * @return {boolean}  Whether icons should be disabled
   * @public
   */
-  @computed('reconstructionType')
+  @computed('currentReconView')
   disablePacketIcons({ code }) {
     return code !== TYPES_BY_NAME.PACKET.code;
   },
 
-  @computed('reconstructionType')
+  @computed('currentReconView')
   reconViewsConfig({ code }) {
     return TYPES.map((c) => {
       return { ...c, selected: c.code === code };
@@ -52,7 +62,7 @@ export default Component.extend({
    * @type {string} The title to display
    * @public
    */
-  @computed('reconstructionType', 'index', 'total')
+  @computed('currentReconView', 'index', 'total')
   displayTitle: ({ label }, index, total) => {
     if (index !== undefined) {
       label = `${label} (${index + 1} of ${total})`;
@@ -60,37 +70,19 @@ export default Component.extend({
     return label;
   },
 
-  @computed('isExpanded')
-  arrowDirection: (isExpanded) => (isExpanded) ? 'right' : 'left',
+  @computed('isReconExpanded')
+  arrowDirection: (isReconExpanded) => (isReconExpanded) ? 'right' : 'left',
 
   actions: {
-    toggleExpanded() {
-      const isExpanded = this.get('isExpanded');
-      if (isExpanded) {
-        this.sendAction('shrinkRecon');
-        // when shrinking recon, need to make sure to hide meta
-        this.sendAction('toggleMetaDetails', true);
-      } else {
-        this.sendAction('expandRecon');
-      }
-      this.set('isExpanded', !isExpanded);
-    },
-
-    toggleMetaDetails() {
-      // need to expand recon to have meta open
-      if (!this.get('isExpanded')) {
-        this.send('toggleExpanded');
-      }
-      this.sendAction('toggleMetaDetails');
-    },
-
     findNewReconstructionView([code]) {
       // codes are int, comes in as string from form-select
       const newView = TYPES.findBy('code', parseInt(code, 10));
       if (newView) {
-        this.sendAction('updateReconstructionView', newView);
+        this.send('updateReconstructionView', newView);
       }
     }
   }
 
 });
+
+export default connect(stateToComputed, dispatchToActions)(TitlebarComponent);

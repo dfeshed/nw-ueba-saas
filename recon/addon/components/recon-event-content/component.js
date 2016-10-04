@@ -1,8 +1,14 @@
 import Ember from 'ember';
+import connect from 'ember-redux/components/connect';
 import layout from './template';
+
 const { Component } = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ data }) => ({
+  currentReconView: data.currentReconView
+});
+
+const EventContentComponent = Component.extend({
   layout,
   classNameBindings: [':recon-event-content'],
   tagName: 'vbox',
@@ -12,9 +18,6 @@ export default Component.extend({
   // INPUTS
   endpointId: null,
   eventId: null,
-  reconstructionType: null,
-  showRequestData: null,
-  showResponseData: null,
   // END INPUTS
 
   actions: {
@@ -23,3 +26,5 @@ export default Component.extend({
     }
   }
 });
+
+export default connect(stateToComputed)(EventContentComponent);

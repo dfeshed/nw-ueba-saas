@@ -1,28 +1,33 @@
 import Ember from 'ember';
+import connect from 'ember-redux/components/connect';
+
 import layout from './template';
-import { TYPES_BY_NAME } from '../../utils/reconstruction-types';
 import { buildBaseQuery } from '../../utils/query-util';
+import * as Actions from '../../actions/visual-creators';
 
 const {
   Component,
   inject: {
     service
   },
-  assert
+  assert,
+  observer
 } = Ember;
 
-export default Component.extend({
-  request: service(),
+const stateToComputed = ({ visuals }) => ({
+  isMetaShown: visuals.isMetaShown,
+  isReconExpanded: visuals.isReconExpanded,
+  isReconOpen: visuals.isReconOpen
+});
 
+const dispatchToActions = (dispatch) => ({
+  initializeRecon: () => dispatch(Actions.initializeRecon())
+});
+
+const ReconContainer = Component.extend({
+  request: service(),
   layout,
   tagName: '',
-
-  // Component state
-  reconstructionType: TYPES_BY_NAME.PACKET, // defaults to packet view
-  showMetaDetails: false,
-  showRequestData: true,
-  showResponseData: true,
-  // END Component state
 
   // BEGIN Component inputs
   endpointId: null,
@@ -40,6 +45,32 @@ export default Component.extend({
   expandAction: null,
   shrinkAction: null,
   // END Component inputs
+
+  init() {
+    this._super(...arguments);
+
+    // containing UI may not remember if recon was expanded when
+    // it was last used, if it was, expand it now
+    if (this.get('isReconExpanded')) {
+      this.sendAction('expandAction');
+    }
+
+    this.send('initializeRecon');
+  },
+
+  // Temporary observer hacks while only doing redux half-way
+  isReconExpandedChanged: observer('isReconExpanded', function() {
+    if (this.get('isReconExpanded')) {
+      this.sendAction('expandAction');
+    } else {
+      this.sendAction('shrinkAction');
+    }
+  }),
+  closeRecon: observer('isReconOpen', function() {
+    if (!this.get('isReconOpen')) {
+      this.sendAction('closeAction');
+    }
+  }),
 
   didReceiveAttrs() {
     const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
@@ -70,24 +101,8 @@ export default Component.extend({
         this.set('aliases', data);
       });
     }
-  },
-
-  actions: {
-    toggleMetaDetails(forceShrink = false) {
-      if (forceShrink) {
-        this.set('showMetaDetails', false);
-      } else {
-        this.toggleProperty('showMetaDetails');
-      }
-    },
-    toggleRequest() {
-      this.toggleProperty('showRequestData');
-    },
-    toggleResponse() {
-      this.toggleProperty('showResponseData');
-    },
-    updateReconstructionView(viewType) {
-      this.set('reconstructionType', viewType);
-    }
   }
+
 });
+
+export default connect(stateToComputed, dispatchToActions)(ReconContainer);
