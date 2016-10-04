@@ -22,10 +22,10 @@ const dispatchToActions = (dispatch) => ({
   toggleHeader: () => dispatch(VisualActions.toggleReconHeader()),
   toggleRequest: () => dispatch(VisualActions.toggleRequestData()),
   toggleResponse: () => dispatch(VisualActions.toggleResponseData()),
-  toggleMeta: () => dispatch(VisualActions.toggleMetaData()),
+  toggleMeta: () => dispatch(DataActions.toggleMetaData()),
   toggleExpanded: () => dispatch(VisualActions.toggleReconExpanded()),
   closeRecon: () => dispatch(VisualActions.closeRecon()),
-  updateReconstructionView: (newView) => dispatch(DataActions.changeReconView(newView))
+  updateReconstructionView: (newView) => dispatch(DataActions.setNewReconView(newView))
 });
 
 const TitlebarComponent = Component.extend({

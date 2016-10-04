@@ -1,12 +1,7 @@
 {{#if contentError}}
-  {{contentError}}
+  placeholder: Unable to retrieve content
 {{else}}
   <div class="scroll-box">
-    {{component
-      currentReconView.component
-      eventId=eventId
-      endpointId=endpointId
-      contentErrorAction=contentErrorAction
-    }}
+    {{component currentReconView.component}}
   </div>
 {{/if}}

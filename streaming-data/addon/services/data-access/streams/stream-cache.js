@@ -13,7 +13,9 @@ const { run } = Ember;
  * Keeps track of stream by route for future cleaning up on route change
  * unless in case where stream should continue
  */
-let _streams = {};
+let _streams = {
+  ANON: []
+};
 
 /**
  * For a given route name, clean up any other streams that should no longer be open.
@@ -23,6 +25,15 @@ let _streams = {};
  * @public
  */
 function cleanUpRouteStreams(newRouteName) {
+
+  // Nuke Anon streams, those registered with no route name
+  if (_streams.ANON.length > 0) {
+    _streams.ANON.forEach(({ stream }) => {
+      run.next(() => stream.stop());
+    });
+    _streams.ANON = [];
+  }
+
   Object.keys(_streams).forEach((routeName) => {
     // 1) if the new route isn't also the route we are looking at from the cache and
     // 2) the new route isn't a child of a child of a route with streams,
@@ -59,6 +70,10 @@ function registerStream(stream, routeName, streamOptions) {
         _streams[routeName] = [];
       }
       _streams[routeName].push({ stream, streamOptions });
+    } else {
+      // lacking route name, so add to anon routes that
+      // get cleaned up on any route change
+      _streams.ANON.push({ stream, streamOptions });
     }
   }
 }

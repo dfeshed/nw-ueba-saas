@@ -69,3 +69,19 @@ test('will not manage stream if told that the stream should stay alive on route 
     done();
   }, 10);
 });
+
+test('can take an Anon stream into the cache and remove it when a route changes', function(assert) {
+  assert.expect(1);
+  const done = assert.async();
+
+  const stream = Stream.create();
+  sinon.stub(stream, 'stop');
+
+  StreamCache.registerStream(stream, undefined, {});
+  StreamCache.cleanUpRouteStreams('/baz/foo');
+
+  setTimeout(function() {
+    assert.ok(stream.stop.calledOnce, 'stream\'s stop method was called');
+    done();
+  }, 10);
+});

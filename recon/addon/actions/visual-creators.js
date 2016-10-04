@@ -38,7 +38,6 @@ const _createToggleActionCreator = (type) => {
 const toggleReconHeader = _createToggleActionCreator(TYPES.TOGGLE_HEADER);
 const toggleRequestData = _createToggleActionCreator(TYPES.TOGGLE_REQUEST);
 const toggleResponseData = _createToggleActionCreator(TYPES.TOGGLE_RESPONSE);
-const toggleMetaData = _createToggleActionCreator(TYPES.TOGGLE_META);
 const toggleReconExpanded = _createToggleActionCreator(TYPES.TOGGLE_RECON_EXPANDED);
 
 /**
@@ -47,19 +46,10 @@ const toggleReconExpanded = _createToggleActionCreator(TYPES.TOGGLE_RECON_EXPAND
  */
 const closeRecon = () => ({ type: TYPES.CLOSE_RECON });
 
-/**
- * Builds action for initializing recon.
- * Will eventually do a good deal more than this.
- * @public
- */
-const initializeRecon = () => ({ type: TYPES.INITIALIZE });
-
 export {
   toggleReconHeader,
   toggleRequestData,
   toggleResponseData,
-  toggleMetaData,
   toggleReconExpanded,
-  closeRecon,
-  initializeRecon
+  closeRecon
 };

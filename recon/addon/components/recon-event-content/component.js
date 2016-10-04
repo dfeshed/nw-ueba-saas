@@ -5,26 +5,14 @@ import layout from './template';
 const { Component } = Ember;
 
 const stateToComputed = ({ data }) => ({
-  currentReconView: data.currentReconView
+  currentReconView: data.currentReconView,
+  contentError: data.contentError
 });
 
 const EventContentComponent = Component.extend({
   layout,
   classNameBindings: [':recon-event-content'],
-  tagName: 'vbox',
-
-  contentError: null,
-
-  // INPUTS
-  endpointId: null,
-  eventId: null,
-  // END INPUTS
-
-  actions: {
-    contentErrorAction(text) {
-      this.set('contentError', text);
-    }
-  }
+  tagName: 'vbox'
 });
 
 export default connect(stateToComputed)(EventContentComponent);

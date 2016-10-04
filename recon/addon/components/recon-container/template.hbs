@@ -1,16 +1,11 @@
-{{recon-event-header
-  endpointId=endpointId
-  eventId=eventId
-  index=index
-  total=total
-}}
+{{recon-event-header index=index total=total }}
 
 <hbox>
-  {{recon-event-content endpointId=endpointId eventId=eventId }}
+  {{recon-event-content}}
 
   {{#if isMetaShown}}
     <vbox xs="4" class="event-content-box">
-      {{recon-meta-content endpointId=endpointId eventId=eventId meta=meta}}
+      {{recon-meta-content}}
     </vbox>
   {{/if}}
 </hbox>

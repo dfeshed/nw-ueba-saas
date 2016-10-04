@@ -2,14 +2,10 @@ import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
-import { buildBaseQuery } from '../../utils/query-util';
-import * as Actions from '../../actions/visual-creators';
+import * as Actions from '../../actions/data-creators';
 
 const {
   Component,
-  inject: {
-    service
-  },
   assert,
   observer
 } = Ember;
@@ -21,11 +17,10 @@ const stateToComputed = ({ visuals }) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
-  initializeRecon: () => dispatch(Actions.initializeRecon())
+  initializeRecon: (inputs) => dispatch(Actions.initializeRecon(inputs))
 });
 
 const ReconContainer = Component.extend({
-  request: service(),
   layout,
   tagName: '',
 
@@ -54,8 +49,6 @@ const ReconContainer = Component.extend({
     if (this.get('isReconExpanded')) {
       this.sendAction('expandAction');
     }
-
-    this.send('initializeRecon');
   },
 
   // Temporary observer hacks while only doing redux half-way
@@ -73,34 +66,9 @@ const ReconContainer = Component.extend({
   }),
 
   didReceiveAttrs() {
-    const { endpointId, eventId } = this.getProperties('endpointId', 'eventId');
-    assert('Cannot instantiate recon without endpointId and eventId.', endpointId && eventId);
-    this.bootstrapRecon(endpointId, eventId);
-  },
-
-  bootstrapRecon(endpointId, eventId) {
-
-    const query = buildBaseQuery(endpointId, eventId);
-
-    if (!this.get('language')) {
-      this.get('request').promiseRequest({
-        method: 'query',
-        modelName: 'core-meta-key',
-        query
-      }).then(({ data }) => {
-        this.set('language', data);
-      });
-    }
-
-    if (!this.get('aliases')) {
-      this.get('request').promiseRequest({
-        method: 'query',
-        modelName: 'core-meta-alias',
-        query
-      }).then(({ data }) => {
-        this.set('aliases', data);
-      });
-    }
+    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'aliases');
+    assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
+    this.send('initializeRecon', inputs);
   }
 
 });

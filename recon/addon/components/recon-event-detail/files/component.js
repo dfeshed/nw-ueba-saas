@@ -1,6 +1,15 @@
-import DetailBase from '../base/component';
+import Ember from 'ember';
+import computed from 'ember-computed-decorators';
+import connect from 'ember-redux/components/connect';
+
 import layout from './template';
 import baseColumnsConfig from './columns-config';
+
+const { Component } = Ember;
+
+const stateToComputed = ({ data }) => ({
+  files: data.files
+});
 
 const calculateColumnWidth = (text) => {
   const canvas = document.createElement('canvas');
@@ -10,18 +19,21 @@ const calculateColumnWidth = (text) => {
   return width;
 };
 
-export default DetailBase.extend({
+const FileReconComponent = Component.extend({
   layout,
   classNameBindings: [':recon-event-detail-files'],
 
-  columnsConfig: null,
+  @computed('files')
+  columnsConfig(files) {
+    if (!files) {
+      return [];
+    }
 
-  processData({ data }) {
-    const effectiveColumnsConfig = baseColumnsConfig.map((conf) => {
+    return baseColumnsConfig.map((conf) => {
       const { field } = conf;
 
       // find longest string in data for this field
-      const longestFieldData = data.reduce((a, b) => a[field].length > b[field].length ? a[field] : b[field]);
+      const longestFieldData = files.reduce((a, b) => a[field].length > b[field].length ? a[field] : b[field]);
 
       // Calculate width of that longest field
       const calculatedWidth = calculateColumnWidth(longestFieldData[field]);
@@ -31,20 +43,7 @@ export default DetailBase.extend({
 
       return { ...conf, width };
     });
-
-    this.setProperties({
-      reconData: data,
-      columnsConfig: effectiveColumnsConfig
-    });
-  },
-
-  retrieveData(query) {
-    this.get('request').promiseRequest({
-      method: 'query',
-      modelName: 'reconstruction-file-data',
-      query
-    })
-    .then(this.processData.bind(this))
-    .catch(this.handleError.bind(this));
   }
 });
+
+export default connect(stateToComputed)(FileReconComponent);

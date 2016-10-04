@@ -1,8 +1,11 @@
 import Socket from './sockets';
-import { Stream, StreamCache } from './streams';
+import { StreamCache, Stream } from './streams';
+import { promiseRequest, streamRequest } from './requests';
 
 export {
   Socket,
+  StreamCache,
   Stream,
-  StreamCache
+  streamRequest,
+  promiseRequest
 };
