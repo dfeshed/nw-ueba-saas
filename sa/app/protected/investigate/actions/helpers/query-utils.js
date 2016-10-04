@@ -73,7 +73,7 @@ function makeServerInputsForQuery(query, language) {
 
   assert(
     'Cannot make a core query without a service id, start time & end time.',
-    serviceId && startTime && endTime
+    !isBlank(serviceId) && !isNaN(startTime) && !isNaN(endTime)
   );
 
   return {
@@ -199,7 +199,7 @@ function executeMetaValuesRequest(request, inputs, values) {
 function makeServerInputsForEndpointInfo(endpointId) {
   assert(
     'Cannot make a core query without a service id.',
-    endpointId
+    !isBlank(endpointId)
   );
 
   return {
@@ -272,7 +272,7 @@ function executeLogDataRequest(request, inputs, events = []) {
  * @public
  */
 function parseEventQueryUri(uri) {
-  let parts = uri ? uri.split('/') : {};
+  let parts = uri ? uri.split('/') : [];
   let [ serviceId, startTime, endTime ] = parts;
   startTime = Number(startTime);
   endTime = Number(endTime);
