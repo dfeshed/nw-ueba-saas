@@ -29,6 +29,12 @@ export default EmberObject.extend({
   // Pointer to the previously shown query node in the `queryTree`. Used for transitioning from node to node.
   lastQueryNode: undefined,
 
+  // Route-level status, indicating whether route is ready to fetch query data. Either "wait", "resolved" or "rejected".
+  routeStatus: undefined,
+
+  // If `routeStatus` is `rejected`, the reason for the error.
+  routeReason: undefined,
+
   // Represents groups of columns to display for events data table.
   eventColumnGroups: EventColumnGroups.create(),
 

@@ -26,6 +26,16 @@
     position: relative;   /* enables positioning of children */
     @include rsa-vendor-prefix(flex-grow, 1);
 
+    &-status {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 3;
+      @include rsa-col(center, middle);
+      text-align: center;
+    }
     &-master {
       position: absolute;
       top: 0;

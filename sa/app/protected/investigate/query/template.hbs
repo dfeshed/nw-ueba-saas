@@ -13,6 +13,11 @@
       endTime=model.queryNode.value.definition.endTime}}
   </header>
   <section class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
+    {{#if (is-equal model.routeStatus 'wait')}}
+      <section class="rsa-investigate-query__body-status">
+        {{rsa-loader size="largest"}}
+      </section>
+    {{/if}}
     <section class="rsa-investigate-query__body-master">
       <aside class="rsa-investigate-query__body-master-aside">
         {{rsa-investigate/meta

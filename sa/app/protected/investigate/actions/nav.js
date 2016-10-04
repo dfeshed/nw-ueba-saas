@@ -5,6 +5,7 @@ import { makeServerInputsForEndpointInfo } from './helpers/query-utils';
 import { eventQueryUri } from 'sa/helpers/event-query-uri';
 
 const {
+  Logger,
   Mixin,
   RSVP
 } = Ember;
@@ -32,7 +33,9 @@ export default Mixin.create({
       }
       this.setProperties({
         'state.queryNode': queryNode,
-        'state.lastQueryNode': wasQueryNode
+        'state.lastQueryNode': wasQueryNode,
+        'state.routeStatus': 'wait',
+        'state.routeReason': undefined
       });
 
       // Before fetching query results, first fetch language & aliases info, for presenting the results data correctly.
@@ -40,13 +43,23 @@ export default Mixin.create({
       RSVP.allSettled([
         this._getQueryLanguage(queryNode),
         this._getQueryAliases(queryNode)
-      ]).finally(() => {
-        this.send('resultsGet', queryNode, false);
-        // optimization: release data from 2nd-next-to-last-query
-        if (wasLastQueryNode !== queryNode && wasLastQueryNode !== wasQueryNode) {
-          this.send('resultsClear', wasLastQueryNode);
-        }
-      });
+      ])
+        .then(() => {
+          this.set('state.routeStatus', 'resolved');
+        })
+        .catch((reason) => {
+          this.setProperties({
+            'state.routeStatus': 'rejected',
+            'state.routeReason': reason
+          });
+        })
+        .finally(() => {
+          this.send('resultsGet', queryNode, false);
+          // optimization: release data from 2nd-next-to-last-query
+          if (wasLastQueryNode !== queryNode && wasLastQueryNode !== wasQueryNode) {
+            this.send('resultsClear', wasLastQueryNode);
+          }
+        });
     },
 
     /**
@@ -157,6 +170,7 @@ export default Mixin.create({
       data: []
     });
 
+    Logger.info('Fetching language for service ID:', serviceId);
     return this.request.promiseRequest({
       method: 'query',
       modelName: 'core-meta-key',
@@ -164,6 +178,7 @@ export default Mixin.create({
     })
       .then(({ data }) => {
         // store results in query node
+        Logger.info('Language fetched successfully for service ID:', serviceId);
         queryNodeLanguage.setProperties({
           status: 'resolved',
           data
@@ -171,6 +186,7 @@ export default Mixin.create({
       })
       .catch((reason) => {
         // store result in query node
+        Logger.warn('Error fetching language for service ID:', serviceId);
         queryNodeLanguage.setProperties({
           status: 'rejected',
           reason
@@ -200,6 +216,7 @@ export default Mixin.create({
 
       // Define callbacks for server call.
       const success = ({ data }) => {
+        Logger.info('Successfully fetched aliases for service ID:', serviceId);
         // store results in query node
         queryNodeAliases.setProperties({
           status: 'resolved',
@@ -210,6 +227,7 @@ export default Mixin.create({
         resolve();
       };
       const fail = function(reason) {
+        Logger.warn('Error fetching aliases for service ID:', serviceId);
         // store result in query node
         queryNodeAliases.setProperties({
           status: 'rejected',
@@ -231,6 +249,7 @@ export default Mixin.create({
         data: []
       });
 
+      Logger.info('Fetching aliases for service ID:', serviceId);
       this.request.promiseRequest({
         method: 'query',
         modelName: 'core-meta-alias',
