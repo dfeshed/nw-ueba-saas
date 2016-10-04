@@ -57,37 +57,41 @@
   {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.commActivity'}}{{/rsa-content-section-header}}
 
   <div class="rsa-context-panel__liveconnect__comm-activity">
-    <hbox>
-      <box fill class="rsa-context-panel__liveconnect__field">
-        <vbox>
-          {{rsa-content-definition label=(t 'context.lc.firstSeen')}}
-          {{rsa-content-datetime timestamp=liveConnectData.firstSeen withTimeAgo=true}}
-        </vbox>
-      </box>
+    <hbox fill>
+      <vbox class="rsa-context-panel__liveconnect__field">
+        {{rsa-content-definition label=(t 'context.lc.firstSeen')}}
+        {{rsa-content-datetime timestamp=liveConnectData.firstSeen withTimeAgo=true}}
+      </vbox>
     </hbox>
 
-    <hbox>
-      <vbox>
-        <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.activitySS'}}</div>
-        <div style="height: 200px; width: 200px;">Donut chart place holder</div>
-      </vbox>
-      <vbox fill>
+    <hbox fill class="rsa-context-panel__liveconnect__comm-activity__charts-parent">
+      <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
         <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.communityTrend'}}</div>
-        <div style="height: 200px; width: 200px;">Chart place holder</div>
-        {{!#rsa-chart data=liveConnectData.customerPercentageTrend xScale=xScale yScale=yScale xProp='time' yProp='percentage' width='100%' as |data xScale yScale graphHeight|}}
-        {{!rsa-line-series data=data xScale=xScale yScale=yScale xProp='time' yProp='percentage'}}
-        {{!rsa-x-axis height=graphHeight scale=xScale rotation=-25}}
-        {{!rsa-y-axis scale=yScale}}
-        {{!/rsa-chart}}
+        <div class="rsa-context-panel__liveconnect__community_trend">
+          {{#rsa-chart data=trendingCommunityActivity xProp='time' yProp='percentage' yDomain=fixedYDomain as |params|}}
+            {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+            {{rsa-x-axis height=params.graphHeight scale=params.xScale tickCount=4}}
+            {{rsa-y-axis scale=params.yScale tickCount=5}}
+            {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth yTickCount=5}}
+          {{/rsa-chart}}
+        </div>
 
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
           {{t 'context.lc.communityActivityDesc1' seen=liveConnectData.customerPercentage value=model.lookupKey}}<br>
           {{t 'context.lc.communityActivityDesc2' seen=liveConnectData.customerPercentage submitted=liveConnectData.customerInvestigatedPercentage}}<br>
         </div>
       </vbox>
-      <vbox>
+      <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
         <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.submitTrend'}}</div>
-        <div style="height: 200px; width: 200px;">Chart place holder</div>
+        <div class="rsa-context-panel__liveconnect__submission_trend">
+          {{#rsa-chart data=trendingSubmissionActivity xProp='time' yProp='percentage' yDomain=fixedYDomain as |params|}}
+            {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+            {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+            {{rsa-x-axis height=params.graphHeight scale=params.xScale tickCount=4}}
+            {{rsa-y-axis width=params.graphWidth scale=params.yScale tickCount=5}}
+            {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth yTickCount=5}}
+          {{/rsa-chart}}
+        </div>
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
           {{t 'context.lc.submittedActivityDesc1' submitted=liveConnectData.customerInvestigatedPercentage}}<br>
           {{t 'context.lc.submittedActivityDesc2' unsafe=liveConnectData.customerRiskyFeedbackPercentage}}<br>
@@ -95,18 +99,6 @@
           {{t 'context.lc.submittedActivityDesc4' unknown="##25##"}}<br>
         </div>
       </vbox>
-    </hbox>
-  </div>
-
-  {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskIndicators'}}{{/rsa-content-section-header}}
-
-  <div class="rsa-context-panel__liveconnect__risk-indicators">
-    <hbox fit>
-      <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.percentageTagged'}}</div>
-      <div class="rsa-context-panel__liveconnect__label">{{rsa-content-label label='##100% - 70%##' style='danger'}}</div>
-      <div class="rsa-context-panel__liveconnect__label">{{rsa-content-label label='##69% - 30%##' style='high'}}</div>
-      <div class="rsa-context-panel__liveconnect__label">{{rsa-content-label label='##<29%##' style='medium'}}</div>
-      <div class="rsa-context-panel__liveconnect__label">{{rsa-content-label label='##0##' isDisabled=true}}</div>
     </hbox>
   </div>
 

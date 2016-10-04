@@ -712,36 +712,48 @@
                 "time": 1470182400000
               },
               {
-                "percentage": 8.22,
+                "percentage": 28.22,
                 "time": 1471910400000
+              },
+              {
+                "percentage": 39.22,
+                "time": 1472910400000
+              },
+              {
+                "percentage": 58.22,
+                "time": 1473910400000
+              },
+              {
+                "percentage": 78.22,
+                "time": 1474910400000
               }
             ],
-            "customerPercentageTrend": [[
+            "customerPercentageTrend": [
               {
-                "percentage": 9.45,
+                "percentage": 10.45,
                 "time": 1468972800000
               },
               {
-                "percentage": 5.67,
+                "percentage": 25.67,
                 "time": 1469404800000
               },
               {
-                "percentage": 13.81,
+                "percentage": 33.81,
                 "time": 1469491200000
               },
               {
-                "percentage": 13.28,
+                "percentage": 53.28,
                 "time": 1469664000000
               },
               {
-                "percentage": 10.61,
+                "percentage": 80.61,
                 "time": 1470355200000
               },
               {
-                "percentage": 6.81,
+                "percentage": 96.81,
                 "time": 1471910400000
               }
-            ]],
+            ],
             "feedback": {
               "status": "VIEWED",
               "dateMarked": 1472202063357
@@ -786,7 +798,42 @@
             "relatedDomains": [
               "issamox.ddns.net"
             ],
-            "customerNotRiskyFeedbackPercentageTrend": [],
+            "customerUnknownFeedbackPercentageTrend" : [
+              {
+                "percentage": 23.62,
+                "time": 1470182400000
+              },
+              {
+                "percentage": 33.22,
+                "time": 1471910400000
+              },
+              {
+                "percentage": 10.22,
+                "time": 1472910400000
+              }
+            ],
+            "customerNotRiskyFeedbackPercentageTrend": [
+              {
+                "percentage": 73.62,
+                "time": 1470182400000
+              },
+              {
+                "percentage": 63.22,
+                "time": 1471910400000
+              },
+              {
+                "percentage": 18.22,
+                "time": 1472910400000
+              },
+              {
+                "percentage": 28.22,
+                "time": 1473910400000
+              },
+              {
+                "percentage": 10.22,
+                "time": 1474910400000
+              }
+            ],
             "riskScore": 100.0,
             "id": "41.140.181.156",
             "firstSeen": 1469025558535
