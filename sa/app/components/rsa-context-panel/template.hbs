@@ -1,13 +1,14 @@
 {{rsa-context-panel/header
 contextData=contextData
-hostCount=(if contextData.ecatData.host 1 0)
+hostCount=(if contextData.ecat.host 1 0)
 model=model
 closePanel=(route-action 'closeContextPanel')
 }}
 
-<section class="rsa-context-panel__body">
-  {{rsa-context-panel/ecat ecatData=contextData.ecatData}}
-  {{rsa-context-panel/incident-panel incidentData=contextData.incidentsData }}
-  {{rsa-context-panel/alerts-panel alertData=contextData.alertsData }}
-  {{rsa-context-panel/lc-community-activity liveConnectData=contextData.liveConnectData}}
-</section>
+ <section class="rsa-context-panel__body">
+   {{rsa-context-panel/ecat ecatData=contextData.ecat}}
+   {{#each columnHeader.datasourceList as |columns|}}
+     {{rsa-context-data-table data=(get contextData columns.dataSourceType)   title=(t columns.title ) modulesColumnListConfig=columns.columns headerdata=columns.header footerdata=columns.footer}}
+   {{/each}}
+   {{rsa-context-panel/lc-community-activity liveConnectData=contextData.liveConnectData}}
+ </section>

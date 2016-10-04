@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import DatasourceList from 'sa/context/datasource-list';
 
 const {
     Component
@@ -7,6 +8,9 @@ const {
 export default Component.extend({
   classNames: 'rsa-context-panel',
 
-  contextData: null
+  contextData: null,
+  columnHeader: {
+    datasourceList: DatasourceList
+  }
 
 });

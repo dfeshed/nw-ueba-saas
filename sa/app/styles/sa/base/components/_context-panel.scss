@@ -23,7 +23,7 @@ $font-fade-color: rsa-color(gray, light);
     overflow: auto;
   }
 
-  &__ecat, &__im {
+  &__ecat, &__context-data-table {
     color: $font-fade-color;
     height: 100%;
     width: -webkit-calc(100% - (4px));
@@ -34,6 +34,17 @@ $font-fade-color: rsa-color(gray, light);
       padding: rsa-whitespace();
     }
 
+    .heading-text>span {
+      float: right;
+      padding: rsa-whitespace(less);
+      color: $font-fade-color;
+    }
+
+    .footer-text {
+      @include rsa-font(footer, small);
+      color:$font-fade-color;
+      padding: rsa-whitespace();
+    }
     &__host-details {
       padding: rsa-whitespace();
       vbox {
@@ -59,7 +70,7 @@ $font-fade-color: rsa-color(gray, light);
       }
     }
 
-    &__module-details, &__iioc-details ,&__incidents, &__alerts {
+    &__module-details, &__iioc-details ,&__panel {
       width: 100%;
       margin: 0 rsa-whitespace(least) 0 rsa-whitespace(least);
 

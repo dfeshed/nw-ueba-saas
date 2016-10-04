@@ -10,8 +10,8 @@ const {
   isArray,
   inject: {
     service
-      }
-    } = Ember;
+  }
+} = Ember;
 
 export default Route.extend({
   layoutService: service('layout'),
@@ -41,7 +41,6 @@ export default Route.extend({
       ips: [],
       prefetch: [],
       contextData: {
-
         incidentsData: null,
         alertsData: null,
         ecatData: null,
@@ -95,12 +94,7 @@ export default Route.extend({
   _populateContextsData(contextData) {
 
     switch (contextData.dataSourceType) {
-      case 'Incidents':
-        set(this.currentModel.contextData, 'incidentsData', contextData.resultList);
-        break;
-      case 'Alerts':
-        set(this.currentModel.contextData, 'alertsData', contextData.resultList);
-        break;
+
       case 'ECAT':
         {
 
@@ -127,7 +121,7 @@ export default Route.extend({
             }
           });
 
-          set(this.currentModel.contextData, 'ecatData', ecatData);
+          set(this.currentModel.contextData, 'ecat', ecatData);
           break;
         }
       case 'LiveConnect':
@@ -143,7 +137,7 @@ export default Route.extend({
         break;
       default:
         {
-          Logger.error('Data Source is not supported by Context Hub ', contextData.dataSourceType);
+          set(this.currentModel.contextData, contextData.dataSourceType, contextData.resultList);
         }
     }
 
