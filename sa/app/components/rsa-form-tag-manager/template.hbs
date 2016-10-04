@@ -1,5 +1,5 @@
 {{#each selectedTags as |tag|}}
-  {{rsa-content-label label=(concat tag.parent ':' tag.name) size='small' click=(action 'tagSelected' tag)}}
+  {{rsa-content-label label=(concat tag.parent ':' tag.name) size='small' click=(action 'toggleTag' tag)}}
 {{/each}}
 
 {{#if contentTreeIsHidden}}
@@ -8,5 +8,5 @@
     <i class="rsa-form-tag-manager__tree-toggle__label">{{addTagsLabel}}</i>
   </div>
 {{else}}
-  {{rsa-content-tree rawCategoryData=tags tagSelected=(action 'tagSelected') toggleTreeVisibilityAction=(action 'toggleTreeVisibility')}}
+  {{rsa-content-tree rawCategoryData=tags tagSelected=(action 'toggleTag') toggleTreeVisibilityAction=(action 'toggleTreeVisibility')}}
 {{/if}}

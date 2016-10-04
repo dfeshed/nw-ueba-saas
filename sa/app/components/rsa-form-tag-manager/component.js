@@ -6,6 +6,7 @@ const {
   inject: {
     service
   },
+  get,
   set,
   $
 } = Ember;
@@ -32,12 +33,14 @@ export default Component.extend({
 
   /**
    * @name tags
-   * @description The entire list of available tags. Those that are already selected have `selected` property
-   * set to true.
+   * @description Return the entire list of available tags with an adition attribute `selected` which indicates
+   * if the tag should be displayed as selected in the list.
+   * This is only executed ONE TIME when the component is loaded.
    * @public
    */
-  @computed('availableTags', 'selectedTags')
-  tags: (availableTags, selectedTags) => {
+  @computed('availableTags.[]')
+  tags(availableTags) {
+    let selectedTags = this.get('selectedTags');
     availableTags.forEach((tag) => {
       tag.children.forEach((childNode) => {
         set(childNode, 'selected', selectedTags.any((selectedTag) => {
@@ -59,24 +62,38 @@ export default Component.extend({
     },
 
     /**
-     * @name tagSelected
+     * @name toggleTag
      * @description Adds or Removes a selected tag from the array containing the chosen tags.
      * @public
      */
-    tagSelected(tag) {
+    toggleTag(tag) {
+      let selectedTags = this.get('selectedTags').slice(0);
+      let availableTags = this.get('availableTags');
+      let tagFromAvailableTags = null;
 
-      let newArray = this.get('selectedTags').slice(0);
-
-      let existingTag = this.get('selectedTags').find((item) => {
-        return item.parent === tag.parent && item.name === tag.name;
-      });
-
-      if (!existingTag) {
-        newArray.pushObject(tag);
-      } else {
-        newArray.removeObject(existingTag);
+      // searching the selected tag in the list of all tags.
+      // using for loop instead of forEach to be able to break it once we found the inner element.
+      const len = availableTags.length;
+      for (let i = 0; i < len; i++) {
+        const parent = availableTags.objectAt(i);
+        if (parent.name === tag.parent) {
+          tagFromAvailableTags = parent.children.find((child) => child.name === tag.name);
+          break;
+        }
       }
-      this.set('selectedTags', newArray);
+
+      let isSelected = get(tagFromAvailableTags, 'selected');
+      if (isSelected) {
+        let existingTag = this.get('selectedTags').find((item) => {
+          return item.parent === tag.parent && item.name === tag.name;
+        });
+        selectedTags.removeObject(existingTag);
+      } else {
+        selectedTags.pushObject(tag);
+      }
+      set(tagFromAvailableTags, 'selected', !isSelected);
+
+      this.set('selectedTags', selectedTags);
     }
   }
 });
