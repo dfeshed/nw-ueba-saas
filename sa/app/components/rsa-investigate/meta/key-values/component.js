@@ -107,14 +107,14 @@ export default Component.extend({
 
     const $root = d3.select($el[0]);
 
-    let $update = $root.selectAll('a')
-      .data(data, function(d) {
-        return d.value;
-      });
+    // Remove the DOM from previous data set (if any).
+    // Why? The data is ordered by backend, and the DOM must match that order. Alas, we can't re-order the DOM via CSS
+    // (yet) because we are using a free-flowing "paragraph" layout (for now), so we must completely re-render the DOM.
+    $root.selectAll('a').remove();
 
-    $update.exit().remove();
-
-    let $enter = $update.enter()
+    let $enter = $root.selectAll('a')
+      .data(data, (d) => d.value)
+      .enter()
       .append('a')
       .classed('rsa-investigate-meta-key-values__value', true)
       .attr('title', function(d) {
