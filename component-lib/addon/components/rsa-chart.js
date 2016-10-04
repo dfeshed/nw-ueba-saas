@@ -71,7 +71,7 @@ export default Component.extend({
     this._super(...arguments);
     this._resizeListener = this.elementDidResize.bind(this);
     addResizeListener(this.element, this._resizeListener);
-    this.set('svgGroup', d3.select('svg g'));
+    this.set('svgGroup', d3.select(this.element).select('svg g'));
     run.scheduleOnce('afterRender', () => {
       this._resizeListener();
       if (this.get('interactive')) {
@@ -95,7 +95,7 @@ export default Component.extend({
     // coordinate of the mouse, we can just use `d3.mouse(this)`. Otherwise, we'd
     // have to save the `.rsa-chart-background` selection off and refer to it
     // each time the `mousemove` handler is invoked.
-    d3.select('.rsa-chart-background')
+    d3.select(this.element).select('.rsa-chart-background')
       .on('mouseout', function() {
         self.set('hoverIndex', null);
       })

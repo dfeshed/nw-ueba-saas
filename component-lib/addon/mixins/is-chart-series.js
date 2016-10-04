@@ -83,12 +83,12 @@ export default Mixin.create(HasChartParent, {
 
   onAfterRender(datum, xAccessor, duration) {
     const clazzName = this.get('clazzName');
-    let svgGroup = this.get('chart.svgGroup');
+    const svgGroup = this.get('chart.svgGroup');
 
     if (svgGroup) {
       // Append a group to the parent SVG so we can store our hover point
       svgGroup.append('g').attr('class', `points ${clazzName}`);
-      const point = d3.select(`.points.${clazzName}`).append('circle')
+      const point = svgGroup.select(`.points.${clazzName}`).append('circle')
         .attr('class', 'pt')
         .attr('r', 3)
         .attr('opacity', 0);

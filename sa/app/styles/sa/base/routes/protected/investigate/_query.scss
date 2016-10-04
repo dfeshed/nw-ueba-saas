@@ -202,69 +202,80 @@
   }
 
   .rsa-investigate-timeline {
-    height: 2.5em;
+    height: 2.5rem;
     &.is-expanded {
-      height: 200px;
-      .rsa-chart {
-        left: 0;
-        right: 0;
-        .rsa-x-axis,
-        .rsa-y-axis,
-        .points,
-        .grids {
-          display: block;
-        }
+      height: 250px;
+    }
+
+    .hover-data {
+      height: 1.5rem;
+      line-height: 2rem;
+      background-color: rsa-color(black,base,$rsa-nearly-transparent);
+      position: absolute;
+      top: 2.5rem;
+      left: 0;
+      right: 0;
+      padding-left: 35px;
+      @include rsa-font(light, small);
+      .rsa-content-datetime {
+        color: rsa-color(grey,light);
       }
-      .rsa-icon {
-        right: 0;
+      // We'll need to create some sort of color service that can generate consistent
+      // colors for multi-series data. For now, I'll just hardcode a few in. These
+      // are the same colors from _rsa_chart.scss.
+      .series-0 {
+        color: rsa-color(blue);
       }
-      .timestamp {
-        opacity: 0;
+      .series-1 {
+        color: rsa-color(blue, darker);
+      }
+      .series-2 {
+        color: rsa-color(blue, darkest);
       }
     }
 
     .rsa-icon {
       position: absolute;
-      right: 170px;
-      transition: right 250ms;
+      right: 0;
     }
 
     .timestamp {
       @include rsa-font(light);
       position: absolute;
-      width: 170px;
-      padding: 0.75em 0;
+      width: 185px;
+      height: 1rem;
+      padding: 0.75rem 0;
       text-align: center;
       color: rsa-color(grey,light);
       background-color: rsa-color(black,base,$rsa-translucent);
-      opacity: 1;
-      transition: opacity 250ms;
       &.right {
         right: 0;
       }
       span {
-        font-weight: 500;
+        @include rsa-font();
         color: white;
       }
     }
 
     .rsa-chart {
       margin: 0;
-      left: 170px;
-      right: 170px;
       background-color: rsa-color(black,base,$rsa-nearly-transparent);
-      .rsa-x-axis,
-      .rsa-y-axis,
-      .points,
-      .grids {
-        display: none;
+      &.master {
+        left: 185px;
+        right: 185px;
+        height: 2.5rem;
       }
-      .domain,
-      .tick line {
-        stroke: rsa-color(black,base,$rsa-translucent);
-      }
-      .tick text {
-        stroke-width: 0;
+      &.detail {
+        top: 4rem;
+        left: 0;
+        right: 0;
+        .domain,
+        .tick line {
+          stroke: rsa-color(black,base,$rsa-translucent);
+        }
+        .tick text {
+          stroke-width: 0;
+        }
       }
     }
   }

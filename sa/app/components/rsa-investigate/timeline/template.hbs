@@ -1,35 +1,18 @@
 <section class="rsa-investigate-timeline__body">
   <section class="timestamp">
-    {{moment-format startDate 'YYYY-MM-DD' locale=i18n.locale timeZone=timezone.selected}}
+    {{moment-format startDate dateFormatString locale=i18n.locale timeZone=timezone.selected}}
     <span>{{moment-format startDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
     {{moment-format startDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
   </section>
-  {{#rsa-chart
+  {{#rsa-chart class="master"
     data=chartData
-    margin=chartMargin
+    interactive=false
+    margin=masterChartMargin
     xScaleFn=xScaleFn
     xDomain=xDomain
     xProp=xProp
     yProp=yProp as |params|
   }}
-    {{rsa-chart-grids
-      xScale=params.xScale
-      yScale=params.yScale
-      yTickCount=6
-      width=params.graphWidth
-      height=params.graphHeight
-    }}
-    {{rsa-x-axis
-      height=params.graphHeight
-      scale=params.xScale
-      tickFormat=tickformat
-      duration=params.duration
-    }}
-    {{rsa-y-axis
-      scale=params.yScale
-      tickCount=6
-      duration=params.duration
-    }}
     {{rsa-line-series
       clipId=params.clipId
       data=params.data
@@ -41,12 +24,61 @@
       duration=params.duration
     }}
   {{/rsa-chart}}
-  {{rsa-icon name=toggleIcon click=(action 'toggleContent')}}
   <section class="timestamp right">
-    {{moment-format endDate 'YYYY-MM-DD' locale=i18n.locale timeZone=timezone.selected}}
+    {{moment-format endDate dateFormatString locale=i18n.locale timeZone=timezone.selected}}
     <span>{{moment-format endDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
     {{moment-format endDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
   </section>
+  {{rsa-icon name=toggleIcon click=(action 'toggleContent')}}
+  {{#if isExpanded}}
+    <section class="hover-data">
+      {{#if hoverValue}}
+        {{rsa-content-datetime timestamp=hoverValue.date}}
+        &ensp;-&ensp;
+        {{#each hoverValue.counts as |count index|}}
+          <span class="series-{{index}}">{{count}}&emsp;</span>
+        {{/each}}
+      {{/if}}
+    </section>  
+    {{#rsa-chart class="detail"
+      data=chartData
+      hoverIndex=hoverIndex
+      margin=detailChartMargin
+      xScaleFn=xScaleFn
+      xDomain=xDomain
+      xProp=xProp
+      yProp=yProp as |params|
+    }}
+      {{rsa-chart-grids
+        xScale=params.xScale
+        yScale=params.yScale
+        yTickCount=6
+        width=params.graphWidth
+        height=params.graphHeight
+      }}
+      {{rsa-x-axis
+        height=params.graphHeight
+        scale=params.xScale
+        tickFormat=tickformat
+        duration=params.duration
+      }}
+      {{rsa-y-axis
+        scale=params.yScale
+        tickCount=6
+        duration=params.duration
+      }}
+      {{rsa-line-series
+        clipId=params.clipId
+        data=params.data
+        dataIndex=0
+        xScale=params.xScale
+        yScale=params.yScale
+        xProp=xProp
+        yProp=yProp
+        duration=params.duration
+      }}
+    {{/rsa-chart}}
+  {{/if}}
   {{#if shouldShowStatus}}
     <div class="status">
       {{#if (is-equal status 'wait')}}
