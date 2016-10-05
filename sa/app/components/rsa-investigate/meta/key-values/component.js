@@ -12,7 +12,7 @@ const {
 
 export default Component.extend({
   classNames: 'rsa-investigate-meta-key-values',
-  classNameBindings: ['groupKey.isOpen:is-open', 'values.status'],
+  classNameBindings: ['groupKey.isOpen:is-open', 'values.status', 'values.isEmpty:is-empty'],
 
   // @see components/rsa-investigate/meta/values-panel
   group: undefined,

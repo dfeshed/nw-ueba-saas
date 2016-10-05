@@ -1,2 +1,33 @@
 .rsa-investigate-meta-values-panel {
+
+  &__empties {
+    padding: rsa-whitespace();
+    @include rsa-font(body,small);
+
+    &.hidden {
+      padding: 0;
+      height: 0;
+      overflow: hidden;
+    }
+
+    h2 {
+      @include rsa-font(heading,small,uppercase);
+      color: rsa-color(gray,light);
+    }
+
+    li {
+      color: rsa-color(gray);
+      display: inline;
+      list-style: none;
+      padding: rsa-whitespace(least) rsa-whitespace(least) rsa-whitespace(least) 0;
+
+      &:after {
+        content: ',';
+      }
+
+      &:last-of-type:after {
+        content: '';
+      }
+    }
+  }
 }

@@ -4,8 +4,8 @@
  * @public
  */
 import Ember from 'ember';
-import StreamState from './stream-state';
 import MetaKeyOptions from './meta-key-options';
+import MetaKeyValues from './meta-key-values';
 
 const {
   computed,
@@ -27,7 +27,7 @@ export default EmberObject.extend({
    * @public
    */
   values: computed(() => {
-    return StreamState.create();
+    return MetaKeyValues.create();
   }),
 
   /**

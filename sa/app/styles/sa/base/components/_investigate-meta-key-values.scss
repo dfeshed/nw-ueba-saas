@@ -7,6 +7,10 @@ $investigateMetaKeyToggleWidth: 1rem;
   z-index: 1;
   transition: transform 0.125s;
 
+  &.is-empty {
+    display: none;
+  }
+
   &.is-dragging {
     transition-duration: 0s;
     z-index: $investigateMetaKeyMaxZIndex;

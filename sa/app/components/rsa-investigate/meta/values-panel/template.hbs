@@ -10,3 +10,14 @@
     clickValueAction=clickValueAction
     toggleAction=(action "safeCallback" toggleAction groupKey)}}
 {{/each}}
+
+<footer class="rsa-investigate-meta-values-panel__empties">
+  {{#if emptyMetaKeyStates.length}}
+    <h2>The following meta keys have no values: ({{emptyMetaKeyStates.length}})</h2>
+  {{/if}}
+  <ul>
+    {{#each emptyMetaKeyStates as |keyState|}}
+      <li>{{keyState.info.displayName}}</li>
+    {{/each}}
+  </ul>
+</footer>
