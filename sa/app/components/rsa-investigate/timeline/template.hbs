@@ -29,7 +29,7 @@
     <span>{{moment-format endDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
     {{moment-format endDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
   </section>
-  {{rsa-icon name=toggleIcon click=(action 'toggleContent')}}
+  {{rsa-icon size='large' name=toggleIcon click=(action 'toggleContent')}}
   {{#if isExpanded}}
     <section class="hover-data">
       {{#if hoverValue}}

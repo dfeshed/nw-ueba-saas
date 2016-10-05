@@ -237,6 +237,8 @@
     .rsa-icon {
       position: absolute;
       right: 0;
+      padding: 7px 9px;
+      background-color: rsa-color(black,base,$rsa-translucent);
     }
 
     .timestamp {
@@ -249,7 +251,7 @@
       color: rsa-color(grey,light);
       background-color: rsa-color(black,base,$rsa-translucent);
       &.right {
-        right: 0;
+        right: 39px;
       }
       span {
         @include rsa-font();
@@ -262,7 +264,7 @@
       background-color: rsa-color(black,base,$rsa-nearly-transparent);
       &.master {
         left: 185px;
-        right: 185px;
+        right: 224px;
         height: 2.5rem;
       }
       &.detail {

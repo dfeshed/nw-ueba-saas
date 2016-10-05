@@ -14,6 +14,18 @@
   &.series-2 {
     stroke: rsa-color(blue, darkest);
   }
+  &.symbol {
+    stroke: none;
+    &.series-0 {
+      fill: rsa-color(blue);
+    }
+    &.series-1 {
+      fill: rsa-color(blue, darker);
+    }
+    &.series-2 {
+      fill: rsa-color(blue, darkest);
+    }
+  }
 }
 
 .rsa-area-series {

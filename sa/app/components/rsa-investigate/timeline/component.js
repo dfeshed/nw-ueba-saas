@@ -29,7 +29,7 @@ export default Component.extend({
   detailChartMargin: { top: 5, bottom: 30, left: 35, right: 10 },
   hoverIndex: null,
   isExpanded: false,
-  masterChartMargin: { top: 4, bottom: 0, left: 0, right: 0 },
+  masterChartMargin: { top: 8, bottom: 0, left: 5, right: 5 },
   /**
    * Configurable callback to be invoked when there is an error and user clicks Retry button.
    * @type {function}

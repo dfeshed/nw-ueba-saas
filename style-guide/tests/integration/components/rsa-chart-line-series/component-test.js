@@ -81,7 +81,7 @@ test('Symbol is drawn when there is only one data point', function(assert) {
   this.render(hbs `{{rsa-line-series data=data xScale=xScale yScale=yScale}}`);
   setTimeout(function() {
     // The path below relies on a diamond symbol using the default size
-    assert.equal(this.$('.rsa-line-series').attr('d'), 'M0,-7.444838872816797L4.298279727294168,0L0,7.444838872816797L-4.298279727294168,0Z', 'Testing to see if the correct path was generated for one data point');
+    assert.equal(this.$('.rsa-line-series').attr('d'), 'M0,-5.26429605180997L3.03934274260637,0L0,5.26429605180997L-3.03934274260637,0Z', 'Testing to see if the correct path was generated for one data point');
     done();
   }, 50);
 });

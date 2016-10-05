@@ -111,6 +111,8 @@ export default Component.extend({
           if (d0 && d1) {
             const index = x0 - d0[xProp] > d1[xProp] - x0 ? i : i - 1;
             self.set('hoverIndex', index);
+          } else {
+            self.set('hoverIndex', 0);
           }
         }
       });

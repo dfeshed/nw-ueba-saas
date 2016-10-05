@@ -14,7 +14,7 @@ const {
   warn
 } = Ember;
 
-const createSymbol = d3.symbol().type(d3.symbolDiamond);
+const createSymbol = d3.symbol().type(d3.symbolDiamond).size(32);
 
 export default Mixin.create(HasChartParent, {
   attributeBindings: ['clipPath:clip-path'],
@@ -102,15 +102,15 @@ export default Mixin.create(HasChartParent, {
 
   draw(datum, xAccessor, duration) {
     const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('pathFn');
+    const path = d3.select(this.element);
 
-    d3.select(this.element)
-      .datum(datum)
+    path.datum(datum)
       .transition().duration(duration)
       .attr('d', pathFn);
 
     if (datum.length === 1) {
       // move single point into position
-      d3.select(this.element)
+      path.classed('symbol', true)
         .attr('transform', `translate(${xAccessor(datum[0])}, 0)`);
     }
   }
