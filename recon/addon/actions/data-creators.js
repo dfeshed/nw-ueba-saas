@@ -9,8 +9,10 @@
  * @public
  */
 
-import * as TYPES from './types';
-import { TYPES_BY_NAME as RECON_VIEW_TYPES } from '../utils/reconstruction-types';
+import Ember from 'ember';
+
+import * as ACTION_TYPES from './types';
+import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import {
   fetchReconSummary,
   fetchMeta,
@@ -20,6 +22,7 @@ import {
   fetchAliases
 } from './fetch';
 
+const { Logger } = Ember;
 
 /**
  * Will fetch and dispatch event meta
@@ -30,16 +33,33 @@ const _dispatchMeta = (dispatch, dataState) => {
   fetchMeta(dataState)
     .then(({ data }) => {
       dispatch({
-        type: TYPES.META_RETRIEVE_SUCCESS,
+        type: ACTION_TYPES.META_RETRIEVE_SUCCESS,
         payload: data[0].metas
       });
-    }).catch((/* response */) => {
-    // TODO, dispatch error
+    }).catch((response) => {
+      Logger.error('Could not retrieve event meta', response);
+      dispatch({ type: ACTION_TYPES.META_RETRIEVE_FAILURE });
     });
 };
 
 /**
- * Will fetch and dispatch data required for each recon view type
+ * Generic handler for errors fetching reconstruction-type data
+ *
+ * @private
+ */
+const _handleContentError = (dispatch, response, type) => {
+  if (response.code !== 2) {
+    Logger.error(`Could not retrieve ${type} recon data`, response);
+  } else {
+    dispatch({
+      type: ACTION_TYPES.RECON_CONTENT_RETRIEVE_FAILURE,
+      payload: response.code
+    });
+  }
+};
+
+/**
+ * Will fetch data and dispatch actions for each recon view type
  *
  * @private
  */
@@ -47,29 +67,28 @@ const _dispatchReconViewData = (dispatch, { code }, dataState) => {
   // if is file recon, time to kick of request
   // for file recon data
   switch (code) {
-    case RECON_VIEW_TYPES.FILE.code:
+    case RECON_VIEW_TYPES_BY_NAME.FILE.code:
       fetchReconFiles(dataState)
         .then(({ data }) => {
           dispatch({
-            type: TYPES.RECON_FILES_RETRIEVE_SUCCESS,
+            type: ACTION_TYPES.RECON_FILES_RETRIEVE_SUCCESS,
             payload: data
           });
-        }).catch((/* response */) => {
-          dispatch({ type: TYPES.RECON_CONTENT_RETRIEVE_FAILURE });
+        }).catch((response) => {
+          _handleContentError(dispatch, response, 'file');
         });
       break;
-    case RECON_VIEW_TYPES.PACKET.code:
+    case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
       fetchPacketData(dataState)
-        .then(([packetFields, packets]) => {
+        .then(([packets]) => {
           dispatch({
-            type: TYPES.RECON_PACKETS_RETRIEVE_SUCCESS,
+            type: ACTION_TYPES.RECON_PACKETS_RETRIEVE_SUCCESS,
             payload: {
-              packetFields,
               packets
             }
           });
-        }).catch((/* response */) => {
-          dispatch({ type: TYPES.RECON_CONTENT_RETRIEVE_FAILURE });
+        }).catch((response) => {
+          _handleContentError(dispatch, response, 'packet');
         });
       break;
   }
@@ -82,6 +101,8 @@ const _dispatchReconViewData = (dispatch, { code }, dataState) => {
  * data not already available, will fetch the data for the
  * recon view
  *
+ * @param {object} newView an object from the reconstruction-types.js list
+ * @returns {function} redux-thunk
  * @public
  */
 const setNewReconView = (newView) => {
@@ -89,7 +110,7 @@ const setNewReconView = (newView) => {
 
     // first dispatch the new view
     dispatch({
-      type: TYPES.CHANGE_RECON_VIEW,
+      type: ACTION_TYPES.CHANGE_RECON_VIEW,
       payload: {
         newView
       }
@@ -117,6 +138,8 @@ const setNewReconView = (newView) => {
  * 4) The summary data for the event is fetched/dispatched
  * 5) If meta is not provided, and the meta panel is open, meta is fetched/dispatched
  *
+ * @param {object} reconInputs the hash of inputs provided to recon
+ * @returns {function} redux-thunk
  * @public
  */
 const initializeRecon = (reconInputs) => {
@@ -127,9 +150,9 @@ const initializeRecon = (reconInputs) => {
     // as previous state will be intact
     if (dataState.eventId !== reconInputs.eventId) {
 
-      // first, dispatch the inputs data
+      // first, dispatch the data provided to recon as input
       dispatch({
-        type: TYPES.INITIALIZE,
+        type: ACTION_TYPES.INITIALIZE,
         payload: reconInputs
       });
 
@@ -139,9 +162,13 @@ const initializeRecon = (reconInputs) => {
         fetchLanguage(reconInputs)
           .then(({ data }) => {
             dispatch({
-              type: TYPES.LANGUAGE_RETRIEVE_SUCCESS,
+              type: ACTION_TYPES.LANGUAGE_RETRIEVE_SUCCESS,
               payload: data
             });
+          }).catch((response) => {
+            // failure to get language is no good, but
+            // is not critical error no need to dispatch
+            Logger.error('Could not retrieve language', response);
           });
       }
 
@@ -151,18 +178,28 @@ const initializeRecon = (reconInputs) => {
         fetchAliases(reconInputs)
           .then(({ data }) => {
             dispatch({
-              type: TYPES.ALIASES_RETRIEVE_SUCCESS,
+              type: ACTION_TYPES.ALIASES_RETRIEVE_SUCCESS,
               payload: data
             });
+          }).catch((response) => {
+            // failure to get aliases is no good, but
+            // is not critical error no need to dispatch
+            Logger.error('Could not retrieve aliases', response);
           });
       }
 
       fetchReconSummary(reconInputs)
-        .then((headerItems) => {
+        .then(([headerItems, packetFields]) => {
           dispatch({
-            type: TYPES.SUMMARY_RETRIEVE_SUCCESS,
-            payload: headerItems
+            type: ACTION_TYPES.SUMMARY_RETRIEVE_SUCCESS,
+            payload: {
+              headerItems,
+              packetFields
+            }
           });
+        }).catch((response) => {
+          Logger.error('Could not retrieve recon event summary', response);
+          dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE_FAILURE });
         });
 
       // if meta not passed in, and meta is shown, then need to fetch
@@ -184,6 +221,9 @@ const initializeRecon = (reconInputs) => {
  *   then this action will retrieve the meta for the event
  *   and dispatch a META_RETRIEVED action
  *
+ * @param {boolean} [setTo] a means to force the 'toggle' to
+ *   set meta one way or another
+ * @returns {function} redux-thunk
  * @public
  */
 const toggleMetaData = (setTo) => {
@@ -201,7 +241,7 @@ const toggleMetaData = (setTo) => {
     // Handle setting of visual flag to
     // open/close meta
     let returnVal = {
-      type: TYPES.TOGGLE_META
+      type: ACTION_TYPES.TOGGLE_META
     };
 
     if (setTo !== undefined) {

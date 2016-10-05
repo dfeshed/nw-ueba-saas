@@ -1,4 +1,13 @@
-const TYPES = [{
+/*
+ * code: id
+ * name: is used by RECON_VIEW_TYPES_BY_NAME below, when
+ *   wanting to refer to a type by name
+ * label: used in dropdown selection
+ * component: Ember path to component that renders this view type
+ * dataKey: Redux state key where data for this type resides,
+ *   used for determining if data for type already exists in redux
+ */
+const RECON_VIEW_TYPES = [{
   code: 1,
   name: 'PACKET',
   label: 'Packet View',
@@ -12,10 +21,10 @@ const TYPES = [{
   dataKey: 'files'
 }];
 
-const TYPES_BY_NAME = {};
-TYPES.forEach((t) => TYPES_BY_NAME[t.name] = t);
+const RECON_VIEW_TYPES_BY_NAME = {};
+RECON_VIEW_TYPES.forEach((t) => RECON_VIEW_TYPES_BY_NAME[t.name] = t);
 
 export {
-  TYPES,
-  TYPES_BY_NAME
+  RECON_VIEW_TYPES,
+  RECON_VIEW_TYPES_BY_NAME
 };

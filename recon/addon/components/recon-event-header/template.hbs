@@ -1,15 +1,20 @@
 <vbox fit class="recon-event-header">
-  {{recon-event-titlebar index=index total=total}}
-
+  {{recon-event-titlebar}}
   {{recon-event-dropdowns}}
 
-  {{#if isHeaderOpen}}
-    <div class="header-data">
-      <grid responsive>
-        {{#each headerItems as |item|}}
-          {{recon-event-header-item name=item.name value=item.value}}
-        {{/each}}
-      </grid>
+  {{#if headerError}}
+    <div class="recon-error">
+      {{t 'recon.error.generic'}}
     </div>
+  {{else}}
+    {{#if isHeaderOpen}}
+      <div class="header-data">
+        <grid responsive>
+          {{#each headerItems as |item|}}
+            {{recon-event-header-item name=item.name value=item.value}}
+          {{/each}}
+        </grid>
+      </div>
+    {{/if}}
   {{/if}}
 </vbox>

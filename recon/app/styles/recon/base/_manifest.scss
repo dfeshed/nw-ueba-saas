@@ -1,3 +1,7 @@
 @import "./event-header/manifest";
-@import "./event-detail/_manifest";
+@import "./event-detail/manifest";
 @import "./meta-content/manifest";
+
+.recon-error {
+  padding: rsa-whitespace(more);
+}

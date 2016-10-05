@@ -1,6 +1,5 @@
 import Ember from 'ember';
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
-import { buildBaseQuery } from './util/query-util';
+import { basicPromiseRequest } from './util/query-util';
 
 const { RSVP, A } = Ember;
 
@@ -20,18 +19,16 @@ const _generateHeaderItems = (items) => (
 
 const fetchReconSummary = ({ endpointId, eventId }) => {
   return new RSVP.Promise((resolve, reject) => {
-    promiseRequest({
-      method: 'query',
-      modelName: 'reconstruction-summary',
-      query: buildBaseQuery(endpointId, eventId)
-    }).then(({ data }) => {
-      resolve(_generateHeaderItems(data.summaryAttributes));
-    }).catch((response) => {
-      reject(response);
-      // TODO, dispatch error
-    });
+    basicPromiseRequest(endpointId, eventId, 'reconstruction-summary')
+      .then(({ data }) => {
+        const headerItems = _generateHeaderItems(data.summaryAttributes);
+        // eventually packetFields should be moved out of this request
+        // but for now need to dig them out of response and expose them
+        resolve([headerItems, data.packetFields]);
+      }).catch((response) => {
+        reject(response);
+      });
   });
 };
 
 export default fetchReconSummary;
-

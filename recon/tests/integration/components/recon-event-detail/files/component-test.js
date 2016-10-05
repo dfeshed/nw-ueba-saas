@@ -3,7 +3,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
 import DataActions from 'recon/actions/data-creators';
-import { TYPES_BY_NAME as RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
+import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 
 
 const { run } = Ember;
@@ -17,7 +17,7 @@ moduleForComponent('recon-event-detail-files', 'Integration | Component | recon 
 
 test('it renders', function(assert) {
   const done = assert.async();
-  this.get('redux').dispatch(DataActions.setNewReconView(RECON_VIEW_TYPES.FILE));
+  this.get('redux').dispatch(DataActions.setNewReconView(RECON_VIEW_TYPES_BY_NAME.FILE));
 
   this.render(hbs`{{recon-event-detail/files}}`);
   run.later(() => {

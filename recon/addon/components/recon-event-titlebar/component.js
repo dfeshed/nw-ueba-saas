@@ -3,7 +3,7 @@ import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
-import { TYPES, TYPES_BY_NAME } from '../../utils/reconstruction-types';
+import { RECON_VIEW_TYPES, RECON_VIEW_TYPES_BY_NAME } from '../../utils/reconstruction-types';
 import * as VisualActions from '../../actions/visual-creators';
 import * as DataActions from '../../actions/data-creators';
 
@@ -15,7 +15,9 @@ const stateToComputed = ({ visuals, data }) => ({
   isResponseShown: visuals.isResponseShown,
   isMetaShown: visuals.isMetaShown,
   isReconExpanded: visuals.isReconExpanded,
-  currentReconView: data.currentReconView
+  currentReconView: data.currentReconView,
+  index: data.index,
+  total: data.total
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -33,11 +35,6 @@ const TitlebarComponent = Component.extend({
   tagName: 'hbox',
   classNameBindings: [':recon-event-titlebar'],
 
-  // INPUTS
-  index: undefined,
-  total: undefined,
-  // END INPUTS
-
   /**
   * Determines if we should disable packet related icons
   * @return {boolean}  Whether icons should be disabled
@@ -45,12 +42,19 @@ const TitlebarComponent = Component.extend({
   */
   @computed('currentReconView')
   disablePacketIcons({ code }) {
-    return code !== TYPES_BY_NAME.PACKET.code;
+    return code !== RECON_VIEW_TYPES_BY_NAME.PACKET.code;
   },
 
+  /**
+  * Processes RECON_VIEWS and setings selected flag for
+  * the one currently chosen
+  *
+  * @return {boolean}  Whether icons should be disabled
+  * @public
+  */
   @computed('currentReconView')
   reconViewsConfig({ code }) {
-    return TYPES.map((c) => {
+    return RECON_VIEW_TYPES.map((c) => {
       return { ...c, selected: c.code === code };
     });
   },
@@ -64,7 +68,7 @@ const TitlebarComponent = Component.extend({
    */
   @computed('currentReconView', 'index', 'total')
   displayTitle: ({ label }, index, total) => {
-    if (index !== undefined) {
+    if (index != null) {
       label = `${label} (${index + 1} of ${total})`;
     }
     return label;
@@ -74,9 +78,9 @@ const TitlebarComponent = Component.extend({
   arrowDirection: (isReconExpanded) => (isReconExpanded) ? 'right' : 'left',
 
   actions: {
+    // translates code to the recon view and sends action to update view
     findNewReconstructionView([code]) {
-      // codes are int, comes in as string from form-select
-      const newView = TYPES.findBy('code', parseInt(code, 10));
+      const newView = RECON_VIEW_TYPES.findBy('code', parseInt(code, 10));
       if (newView) {
         this.send('updateReconstructionView', newView);
       }

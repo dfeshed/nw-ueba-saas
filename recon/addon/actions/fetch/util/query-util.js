@@ -1,4 +1,6 @@
-const endpointFilter = function(endpointId) {
+import { promiseRequest } from 'streaming-data/services/data-access/requests';
+
+const endpointFilter = (endpointId) => {
   const query = {
     filter: [{
       field: 'endpointId',
@@ -9,7 +11,7 @@ const endpointFilter = function(endpointId) {
   return query;
 };
 
-const buildBaseQuery = function(endpointId, eventId) {
+const buildBaseQuery = (endpointId, eventId) => {
   const query = endpointFilter(endpointId);
   query.filter.push({
     field: 'sessionId',
@@ -18,7 +20,7 @@ const buildBaseQuery = function(endpointId, eventId) {
   return query;
 };
 
-const addSessionQueryFilter = function(query, sessionId) {
+const addSessionQueryFilter = (query, sessionId) => {
   const sessionQueryString = `(sessionid = ${sessionId})`;
   if (!query.filter) {
     query.filter = [];
@@ -37,7 +39,7 @@ const addSessionQueryFilter = function(query, sessionId) {
   return query;
 };
 
-const addCatchAllTimeRange = function(query) {
+const addCatchAllTimeRange = (query) => {
   if (!query.filter) {
     query.filter = [];
   }
@@ -53,7 +55,7 @@ const addCatchAllTimeRange = function(query) {
   return query;
 };
 
-const addStreaming = function(_query) {
+const addStreaming = (_query) => {
   const query = {
     ..._query,
     page: {
@@ -69,10 +71,20 @@ const addStreaming = function(_query) {
   return query;
 };
 
+const basicPromiseRequest = (endpointId, eventId, modelName) => {
+  const query = buildBaseQuery(endpointId, eventId);
+  return promiseRequest({
+    method: 'query',
+    modelName,
+    query
+  });
+};
+
 export {
   addCatchAllTimeRange,
   endpointFilter,
   buildBaseQuery,
   addStreaming,
-  addSessionQueryFilter
+  addSessionQueryFilter,
+  basicPromiseRequest
 };

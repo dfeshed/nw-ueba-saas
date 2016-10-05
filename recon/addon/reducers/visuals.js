@@ -1,4 +1,4 @@
-import * as TYPES from '../actions/types';
+import * as ACTION_TYPES from '../actions/types';
 import reduxActions from 'npm:redux-actions';
 
 const visualsInitialState = {
@@ -11,33 +11,33 @@ const visualsInitialState = {
 };
 
 const visuals = reduxActions.handleActions({
-  [TYPES.INITIALIZE]: (state) => ({
+  [ACTION_TYPES.INITIALIZE]: (state) => ({
     ...state,
     isReconOpen: true
   }),
 
-  [TYPES.TOGGLE_HEADER]: (state, { payload = {} }) => ({
+  [ACTION_TYPES.TOGGLE_HEADER]: (state, { payload = {} }) => ({
     ...state,
     isHeaderOpen: payload.setTo || !state.isHeaderOpen
   }),
 
-  [TYPES.TOGGLE_REQUEST]: (state, { payload = {} }) => ({
+  [ACTION_TYPES.TOGGLE_REQUEST]: (state, { payload = {} }) => ({
     ...state,
     isRequestShown: payload.setTo || !state.isRequestShown
   }),
 
-  [TYPES.TOGGLE_RESPONSE]: (state, { payload = {} }) => ({
+  [ACTION_TYPES.TOGGLE_RESPONSE]: (state, { payload = {} }) => ({
     ...state,
     isResponseShown: payload.setTo || !state.isResponseShown
   }),
 
-  [TYPES.CLOSE_RECON]: (state) => ({
+  [ACTION_TYPES.CLOSE_RECON]: (state) => ({
     ...state,
     isReconOpen: false
   }),
 
   // If meta is toggled on, need to expand recon
-  [TYPES.TOGGLE_META]: (state, { payload = {} }) => {
+  [ACTION_TYPES.TOGGLE_META]: (state, { payload = {} }) => {
     const isMetaShown = payload.setTo || !state.isMetaShown;
     const isReconExpanded = (isMetaShown) ? true : state.isReconExpanded;
 
@@ -49,7 +49,7 @@ const visuals = reduxActions.handleActions({
   },
 
   // If recon is shrunk, need to shrink meta too
-  [TYPES.TOGGLE_RECON_EXPANDED]: (state, { payload = {} }) => {
+  [ACTION_TYPES.TOGGLE_RECON_EXPANDED]: (state, { payload = {} }) => {
     const isReconExpanded = payload.setTo || !state.isReconExpanded;
     const isMetaShown = (!isReconExpanded) ? false : state.isMetaShown;
 

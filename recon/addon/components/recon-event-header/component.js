@@ -13,12 +13,7 @@ const stateToComputed = ({ visuals, data }) => ({
 
 const EventHeaderComponent = Component.extend({
   layout,
-  tagName: '',
-
-  // INPUTS
-  index: null,
-  total: null
-  // END INPUTS
+  tagName: ''
 });
 
 export default connect(stateToComputed)(EventHeaderComponent);

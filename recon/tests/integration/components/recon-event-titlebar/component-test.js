@@ -2,7 +2,7 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import sinon from 'sinon';
 
-import { TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
+import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 import DataActions from 'recon/actions/data-creators';
 
@@ -21,15 +21,16 @@ moduleForComponent('recon-event-titlebar', 'Integration | Component | recon even
 });
 
 test('no index or total shows just label for recon type', function(assert) {
-  this.render(hbs`{{recon-event-titlebar reconstructionType=reconstructionType}}`);
-  assert.equal(this.$('.prompt').text().trim(), TYPES_BY_NAME.PACKET.label);
+  this.render(hbs`{{recon-event-titlebar }}`);
+  assert.equal(this.$('.prompt').text().trim(), RECON_VIEW_TYPES_BY_NAME.PACKET.label);
 });
 
 test('title renders', function(assert) {
-  this.set('total', 555);
-  this.set('index', 25);
-  this.render(hbs`{{recon-event-titlebar index=index total=total}}`);
-  assert.equal(this.$('.prompt').text().trim(), `${TYPES_BY_NAME.PACKET.label} (26 of 555)`);
+  const total = 555;
+  const index = 25;
+  this.get('redux').dispatch(DataActions.initializeRecon({ total, index }));
+  this.render(hbs`{{recon-event-titlebar }}`);
+  assert.equal(this.$('.prompt').text().trim(), `${RECON_VIEW_TYPES_BY_NAME.PACKET.label} (26 of 555)`);
 });
 
 test('clicking close executes action', function(assert) {

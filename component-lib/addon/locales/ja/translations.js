@@ -93,6 +93,10 @@ export default {
       mimeType: 'ja_MIME Type',
       fileSize: 'ja_File Size',
       hashes: 'ja_Hashes'
+    },
+    error: {
+      generic: 'ja_An unexpected error has occurred attempting to retrieve this data.',
+      missingRecon: 'ja_This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'
     }
   }
 };

@@ -10,7 +10,7 @@
  * @public
  */
 
-import * as TYPES from './types';
+import * as ACTION_TYPES from './types';
 
 const _createToggleActionCreator = (type) => {
   return (setTo) => {
@@ -32,19 +32,19 @@ const _createToggleActionCreator = (type) => {
  * Builds action for toggling various recon features on/off.
  * Allows for forcing it to be on/off if `setTo` provided
  * @param {boolean} [setTo], an override to the toggle behavior
- *  will force open/close or show/hide
+ *   will force open/close or show/hide
  * @public
  */
-const toggleReconHeader = _createToggleActionCreator(TYPES.TOGGLE_HEADER);
-const toggleRequestData = _createToggleActionCreator(TYPES.TOGGLE_REQUEST);
-const toggleResponseData = _createToggleActionCreator(TYPES.TOGGLE_RESPONSE);
-const toggleReconExpanded = _createToggleActionCreator(TYPES.TOGGLE_RECON_EXPANDED);
+const toggleReconHeader = _createToggleActionCreator(ACTION_TYPES.TOGGLE_HEADER);
+const toggleRequestData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_REQUEST);
+const toggleResponseData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_RESPONSE);
+const toggleReconExpanded = _createToggleActionCreator(ACTION_TYPES.TOGGLE_RECON_EXPANDED);
 
 /**
  * Builds action for closing recon
  * @public
  */
-const closeRecon = () => ({ type: TYPES.CLOSE_RECON });
+const closeRecon = () => ({ type: ACTION_TYPES.CLOSE_RECON });
 
 export {
   toggleReconHeader,

@@ -1,22 +1,11 @@
-import { buildBaseQuery } from './util/query-util';
-import { promiseRequest } from 'streaming-data/services/data-access/requests';
+import { basicPromiseRequest } from './util/query-util';
 
 const fetchLanguage = ({ endpointId, eventId }) => {
-  const query = buildBaseQuery(endpointId, eventId);
-  return promiseRequest({
-    method: 'query',
-    modelName: 'core-meta-key',
-    query
-  });
+  return basicPromiseRequest(endpointId, eventId, 'core-meta-key');
 };
 
 const fetchAliases = ({ endpointId, eventId }) => {
-  const query = buildBaseQuery(endpointId, eventId);
-  return promiseRequest({
-    method: 'query',
-    modelName: 'core-meta-alias',
-    query
-  });
+  return basicPromiseRequest(endpointId, eventId, 'core-meta-alias');
 };
 
 export {

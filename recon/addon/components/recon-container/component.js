@@ -2,7 +2,7 @@ import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
-import * as Actions from '../../actions/data-creators';
+import * as DataActions from '../../actions/data-creators';
 
 const {
   Component,
@@ -17,7 +17,7 @@ const stateToComputed = ({ visuals }) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
-  initializeRecon: (inputs) => dispatch(Actions.initializeRecon(inputs))
+  initializeRecon: (inputs) => dispatch(DataActions.initializeRecon(inputs))
 });
 
 const ReconContainer = Component.extend({
@@ -52,6 +52,9 @@ const ReconContainer = Component.extend({
   },
 
   // Temporary observer hacks while only doing redux half-way
+  // If container participated in redux, then it would simply
+  // bind to the same isReconExpanded and act directly, without
+  // any need to pass expand/shrink/close actions into recon
   isReconExpandedChanged: observer('isReconExpanded', function() {
     if (this.get('isReconExpanded')) {
       this.sendAction('expandAction');
@@ -66,7 +69,7 @@ const ReconContainer = Component.extend({
   }),
 
   didReceiveAttrs() {
-    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'aliases');
+    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total');
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
     this.send('initializeRecon', inputs);
   }

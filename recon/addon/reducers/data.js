@@ -1,23 +1,36 @@
-import { TYPES_BY_NAME } from '../utils/reconstruction-types';
-import * as TYPES from '../actions/types';
+import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
+import * as ACTION_TYPES from '../actions/types';
 import reduxActions from 'npm:redux-actions';
 
 const dataInitialState = {
-  currentReconView: TYPES_BY_NAME.PACKET,
+  // view defaults to packet
+  currentReconView: RECON_VIEW_TYPES_BY_NAME.PACKET,
+
+  // Recon inputs
   endpointId: null,
   eventId: null,
+  total: null,
+  index: null,
+
+  // Recon inputs or fetched if not provided
   meta: null,
   aliases: null,
   language: null,
+
+  // Fetched data
   headerItems: null,
   files: null,
-  contentError: null,
   packetFields: null,
-  packets: null
+  packets: null,
+
+  // Error state
+  metaError: null,
+  headerError: null,
+  contentError: null
 };
 
 const data = reduxActions.handleActions({
-  [TYPES.INITIALIZE]: (state, { payload }) => {
+  [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
     // only clear out data if its a new event
     if (state.eventId === payload.eventId) {
       return {
@@ -36,35 +49,46 @@ const data = reduxActions.handleActions({
     }
   },
 
-  [TYPES.CHANGE_RECON_VIEW]: (state, { payload: { newView } }) => ({
+  [ACTION_TYPES.CHANGE_RECON_VIEW]: (state, { payload: { newView } }) => ({
     ...state,
     currentReconView: newView
   }),
 
-  [TYPES.META_RETRIEVE_SUCCESS]: (state, { payload }) => ({
+  [ACTION_TYPES.META_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     meta: payload
   }),
-
-  [TYPES.SUMMARY_RETRIEVE_SUCCESS]: (state, { payload }) => ({
+  [ACTION_TYPES.META_RETRIEVE_FAILURE]: (state) => ({
     ...state,
-    headerItems: payload
+    metaError: true,
+    meta: null
   }),
 
-  [TYPES.RECON_CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
+  [ACTION_TYPES.SUMMARY_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
-    contentError: payload
+    headerItems: payload.headerItems,
+    packetFields: payload.packetFields, // temporary until this data comes from packet retrieve actui
+    headerError: null
+  }),
+  [ACTION_TYPES.SUMMARY_RETRIEVE_FAILURE]: (state) => ({
+    ...state,
+    headerError: true,
+    headerItems: null
   }),
 
-  [TYPES.RECON_FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
+  [ACTION_TYPES.RECON_FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload
   }),
 
-  [TYPES.RECON_PACKETS_RETRIEVE_SUCCESS]: (state, { payload }) => ({
+  [ACTION_TYPES.RECON_PACKETS_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
-    packets: payload.packets,
-    packetFields: payload.packetFields
+    packets: payload.packets
+  }),
+
+  [ACTION_TYPES.RECON_CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
+    ...state,
+    contentError: payload
   })
 
 }, dataInitialState);

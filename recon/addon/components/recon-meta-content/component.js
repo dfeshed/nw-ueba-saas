@@ -5,7 +5,8 @@ import layout from './template';
 const { Component } = Ember;
 
 const stateToComputed = ({ data }) => ({
-  meta: data.meta
+  meta: data.meta,
+  metaError: data.metaError
 });
 
 const MetaContentComponent = Component.extend({

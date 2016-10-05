@@ -1,7 +1,9 @@
-{{#if contentError}}
-  placeholder: Unable to retrieve content
-{{else}}
-  <div class="scroll-box">
+<div class="scroll-box">
+  {{#if contentError}}
+    <div class="recon-error">
+      {{errorMessage}}
+    </div>
+  {{else}}
     {{component currentReconView.component}}
-  </div>
-{{/if}}
+  {{/if}}
+</div>
