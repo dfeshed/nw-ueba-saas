@@ -75,27 +75,36 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		}
 
 		for(String collectionName: collectionToAggrEventListMap.keySet()){
-			PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
-			try {
-				List<AggrEvent> aggrEvents = collectionToAggrEventListMap.get(collectionName);
-				BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
-						.insert(aggrEvents).execute();
-				if (bulkOpResult.isAcknowledged()) {
-					int actualInsertedCount = bulkOpResult.getInsertedCount();
-					collectionMetrics.bulkWrites++;
-					collectionMetrics.bulkWriteDocumentCount += actualInsertedCount;
-					collectionMetrics.writes += actualInsertedCount;
-					logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
-				} else {
-					collectionMetrics.bulkWritesNotAcknowledged++;
-					logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
-				}
-			} catch (BulkOperationException e) {
-				collectionMetrics.bulkWritesErrors++;
-				logger.error("failed to perform bulk insert into collection={}", collectionName, e);
-				throw e;
-			}
+			List<AggrEvent> aggrEvents = collectionToAggrEventListMap.get(collectionName);
+			bulkInsertAggrEvents(collectionName, aggrEvents);
 		}
+	}
+
+	/**
+	 * stores aggrEvents into collection in unordered bulk operation
+	 * @param collectionName where to insert
+	 * @param aggrEvents what to insert
+     */
+	private void bulkInsertAggrEvents(String collectionName, List<AggrEvent> aggrEvents) {
+		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+		try {
+            BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
+                    .insert(aggrEvents).execute();
+            if (bulkOpResult.isAcknowledged()) {
+                int actualInsertedCount = bulkOpResult.getInsertedCount();
+                collectionMetrics.bulkWrites++;
+                collectionMetrics.bulkWriteDocumentCount += actualInsertedCount;
+                collectionMetrics.writes += actualInsertedCount;
+                logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
+            } else {
+                collectionMetrics.bulkWritesNotAcknowledged++;
+                logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
+            }
+        } catch (BulkOperationException e) {
+            collectionMetrics.bulkWritesErrors++;
+            logger.error("failed to perform bulk insert into collection={}", collectionName, e);
+            throw e;
+        }
 	}
 
 	@SuppressWarnings("unchecked")

@@ -71,31 +71,39 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 			return;
 		}
 		for(String collectionName: collectionToEntityEventListMap.keySet()) {
-			PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
 
-			try {
-
-				List<EntityEvent> entityEvents = collectionToEntityEventListMap.get(collectionName);
-				BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
-						.insert(entityEvents).execute();
-				if (bulkOpResult.isAcknowledged()) {
-					int actualInsertedCount = bulkOpResult.getInsertedCount();
-					collectionMetrics.bulkWrites++;
-					collectionMetrics.bulkWriteDocumentCount += actualInsertedCount;
-					collectionMetrics.writes += actualInsertedCount;
-					logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
-				} else {
-					collectionMetrics.bulkWritesNotAcknowledged++;
-					logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
-				}
-			}
-			catch (BulkOperationException e) {
-				collectionMetrics.bulkWritesErrors++;
-				logger.error("failed to perform bulk insert into collection={}", collectionName, e);
-				throw e;
-			}
+			List<EntityEvent> entityEvents = collectionToEntityEventListMap.get(collectionName);
+			bulkInsertEntityEvents(collectionName, entityEvents);
 		}
 		collectionToEntityEventListMap = new HashMap<>();
+	}
+
+	/**
+	 * insert bulk of entity events
+	 * @param collectionName where to insert
+	 * @param entityEvents what to insert
+     */
+	private void bulkInsertEntityEvents(String collectionName, List<EntityEvent> entityEvents) {
+		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+		try {
+            BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
+                    .insert(entityEvents).execute();
+            if (bulkOpResult.isAcknowledged()) {
+                int actualInsertedCount = bulkOpResult.getInsertedCount();
+                collectionMetrics.bulkWrites++;
+                collectionMetrics.bulkWriteDocumentCount += actualInsertedCount;
+                collectionMetrics.writes += actualInsertedCount;
+                logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
+            } else {
+                collectionMetrics.bulkWritesNotAcknowledged++;
+                logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
+            }
+        }
+        catch (BulkOperationException e) {
+            collectionMetrics.bulkWritesErrors++;
+            logger.error("failed to perform bulk insert into collection={}", collectionName, e);
+            throw e;
+        }
 	}
 
 	private String getCollectionName(String entityEventType) {
