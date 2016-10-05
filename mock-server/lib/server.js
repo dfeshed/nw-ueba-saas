@@ -24,7 +24,15 @@ const start = function({ subscriptionLocations }, cb) {
   const app = express();
   eWs(app);
 
-  app.use(cors());
+  // SockJS v1.1.1 sets "withCredentials" XHR attribute to "true" for Cross Origin Resources (XHRCorsObject).
+  // Therefore "/info" request fails with the following error.
+  // A wildcard '*' cannot be used in the 'Access-Control-Allow-Origin' header when the credentials flag is true.
+
+  // Configuring expected CORS response headers.
+  // Access-Control-Allow-Origin=<Request Origin> to reflect the value of "Origin" Request header automatically.
+  // Access-Control-Allow-Credentials=true.
+
+  app.use(cors({ origin: true, credentials: true }));
   app.use(logger('dev'));
   app.use(bodyParser.json());
   app.use(bodyParser.urlencoded({ extended: false }));

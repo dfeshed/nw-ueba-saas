@@ -257,7 +257,7 @@ export default EmberObject.extend({
     }
 
     let stompClient = Stomp.over(
-      new SockJS(url, {}, { protocols_whitelist: ['websocket'] })
+      new SockJS(url, {}, { transports: ['websocket'] })
     );
     stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;
     this.set('stompClient', stompClient);

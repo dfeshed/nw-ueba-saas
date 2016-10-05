@@ -29,7 +29,7 @@ module.exports = function(defaults) {
     app.import(app.bowerDirectory + '/clipboard/dist/clipboard.js');
 
     // Websocket libraries: SockJS & STOMP
-    app.import(app.bowerDirectory + "/sockjs/sockjs.js");
+    app.import(app.bowerDirectory + "/sockjs-client/dist/sockjs.js");
     app.import(app.bowerDirectory + "/stomp-websocket/lib/stomp.js");
 
     // Crossfilter library (for filtering, aggregating & sorting).

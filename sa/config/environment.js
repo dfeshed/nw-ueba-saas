@@ -71,14 +71,14 @@ module.exports = function(environment) {
 
       // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
       'img-src': "'self' data:",
-      'connect-src': "'self' ws:",
+      'connect-src': "'self' ws: wss:",
       'font-src': "'self' data:",
       'style-src': "'self' 'unsafe-inline'"
     }
   };
 
   if (environment === 'development') {
-    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws:", mockServerUrl];
+    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
 
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
@@ -91,7 +91,7 @@ module.exports = function(environment) {
 
   if (environment === 'test') {
     // this allows connections to be made to mock-sever running on
-    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws:", mockServerUrl];
+    ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
 
 
     // Testem prefers this...

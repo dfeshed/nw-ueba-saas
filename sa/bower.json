@@ -10,7 +10,7 @@
     "lodash": "3.10.1",
     "mock-socket": "2.0.0",
     "Faker": "3.0.1",
-    "sockjs": "0.3.4",
+    "sockjs-client": "1.1.1",
     "stomp-websocket": "2.3.4",
     "tether-drop": "1.4.2",
     "javascript-detect-element-resize": "0.5.3"
