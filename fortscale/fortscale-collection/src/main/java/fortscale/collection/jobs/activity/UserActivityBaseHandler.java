@@ -157,6 +157,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             currBucketEndTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(2).minus(1).getMillis());
         }
 
+        postCalculation();
+
         long fullExecutionElapsedTime = System.nanoTime() - fullExecutionStartTime;
         logger.info("Full execution of Location Activity ({} active users) took {} seconds", totalNumberOfUsers,
 				durationInSecondsWithPrecision(fullExecutionElapsedTime));
@@ -342,7 +344,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return (newValue) -> newValue;
     };
 
-
+    public void postCalculation(){
+        // Runs all needs to be done after the calculation finished
+    }
 
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
 

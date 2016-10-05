@@ -22,6 +22,8 @@ public interface UserRepositoryCustom {
 
 	void updateFollowed(User user, boolean followed);
 
+	void updateSourceMachineCount(String userId, int sourceMachineCount);
+
 	List<User> findByDNs(Collection<String> dns);
 
 	List<User> findByGUIDs(Collection<String> guids);
@@ -29,6 +31,7 @@ public interface UserRepositoryCustom {
 	List<User> findByIds(Collection<String> ids);
 
 	List<User> findByUsernames(Collection<String> usernames);
+
 	Set<String> findByUsernameRegex(String usernameRegex);
 
 	List<User> findUsersBysAMAccountName(String usernames);
@@ -93,6 +96,7 @@ public interface UserRepositoryCustom {
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */
 	Set<String> syncTags(String username, List<String> tagsToAdd, List<String> tagsToRemove);
+
 	Set<String> getUserTags(String normalizedUsername);
 
 	List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
@@ -122,6 +126,6 @@ public interface UserRepositoryCustom {
 
 	Criteria getUserCriteriaByUserIds(Set<String> userIds);
 
-    List<String> getDistinctFieldValues(String fieldName);
+    List getDistinctFieldValues(String fieldName);
 }
 

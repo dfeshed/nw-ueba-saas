@@ -32,6 +32,5 @@
 	</context:component-scan>
 
     <bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
-
 </beans>
 

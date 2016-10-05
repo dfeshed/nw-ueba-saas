@@ -40,7 +40,7 @@ import java.util.Set;
 	@Qualifier("filterToUsersCache")
 	private CacheHandler<UserRestFilter, List<User>> filterToUsersCache;
 
-	List<String> fieldsRequired;
+	private List<String> fieldsRequired;
 
 	public UserWithAlertServiceImpl() {
 		fieldsRequired = new ArrayList<>();

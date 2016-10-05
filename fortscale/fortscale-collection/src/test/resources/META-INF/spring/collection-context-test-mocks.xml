@@ -34,7 +34,8 @@
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
     <mockito:mock id="usernameService" class="fortscale.services.impl.UsernameService"/>
-
+    <mockito:mock id="userActivityHandlerFactory" class="fortscale.collection.jobs.activity.UserActivityHandlerFactory"/>
+    <mockito:mock id="userActivitySourceMachineHandler" class="fortscale.collection.jobs.activity.UserActivitySourceMachineHandler"/>
     <bean id="globalConfiguration" class="fortscale.global.configuration.GlobalConfiguration"/>
 
 
