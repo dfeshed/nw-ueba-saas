@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -25,18 +26,25 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private static final Logger logger = Logger.getLogger(FeatureBucketsMongoStore.class);
 
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
+	private static final String COLLECTIONS_NAMES_DELIMTER =",";
+
 	private static final int EXPIRE_AFTER_SECONDS_DEFAULT = 90*24*3600;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+
 	@Autowired
 	private StatsService statsService;
 
 	//TODO: remove this after we test it and see that it works as we expected
 	@Value("${fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange.use.projection:false}")
 	boolean useProjection;
+
+	@Value("${fortscale.store.collection.backup.prefix}")
+	private String collectionsBackupPrefixListAsString;
 
 	private Map<FeatureBucketConf, FeatureBucketsStoreMetrics> featureBucketConfToMetric = new HashMap<>();
 
@@ -76,10 +84,33 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 	@Override
 	public List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(FeatureBucketConf featureBucketConf, String contextType, String ContextName, Long bucketStartTime, Long bucketEndTime) {
+		List<FeatureBucket> result = new ArrayList<>();
+
+		//In case of backups collections - will create the backup prefix list
+		List<String> collectionsBackupPrefixList = ConversionUtils.convertStringToList(collectionsBackupPrefixListAsString, COLLECTIONS_NAMES_DELIMTER);
+
 		String collectionName = getCollectionName(featureBucketConf);
+
+		//Get the data from the origin collection
+		result = readFromMongo(collectionName , contextType,  ContextName,  bucketStartTime,  bucketEndTime,featureBucketConf);
+
+		//get the data from each of the backup collections and combine it with the origin collection
+		final List<FeatureBucket> finalResult = result;
+		collectionsBackupPrefixList.forEach(prefix->{
+			if(!org.apache.commons.lang.StringUtils.isEmpty(prefix))
+				finalResult.addAll(readFromMongo(prefix + collectionName, contextType, ContextName, bucketStartTime, bucketEndTime,featureBucketConf));
+		});
+
+		return result;
+
+
+
+	}
+
+	private List<FeatureBucket> readFromMongo (String collectionName,String contextType, String ContextName, Long bucketStartTime, Long bucketEndTime,FeatureBucketConf featureBucketConf) {
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
 
-		if (mongoTemplate.collectionExists(collectionName)) {
+		try {
 			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
 
 			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
@@ -93,11 +124,15 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			metrics.retrievedFeatureBuckets += featureBuckets.size();
 			return featureBuckets;
 		}
-		else {
+		catch (Exception e) {
 			metrics.retrieveFeatureBucketsFailures++;
-			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
+			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName + " due to: " + e);
 		}
+
+
+
 	}
+
 
 	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
 		String collectionName = getCollectionName(featureBucketConf);
