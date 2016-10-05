@@ -38,6 +38,7 @@
         {{#rsa-form-select
           class="js-test-default-landing-page-select"
           label=(t 'userPreferences.defaultLandingPage.label')
+          multiple=false
           values=selectedLandingPage}}
           {{#each landingPage.options as |option|}}
             <option value={{option.key}}>{{t option.label}}</option>
@@ -52,6 +53,7 @@
       {{#rsa-form-select
         class="js-test-language-select"
         label=(t 'userPreferences.language')
+        multiple=false
         values=selectedLocale}}
         {{#each locales as |locale|}}
           <option value={{locale}}>{{t (concat 'languages.' locale )}}</option>
@@ -63,6 +65,7 @@
       {{#rsa-form-select
         class="js-test-time-zone-select"
         label=(t 'userPreferences.timeZone')
+        multiple=false
         values=selectedTimeZone}}
         {{#each timezone.options as |timezone|}}
           <option value={{timezone}}>{{timezone}}</option>
@@ -76,6 +79,7 @@
       {{#rsa-form-select
         class="js-test-date-format-select"
         label=(t 'userPreferences.dateFormat.label')
+        multiple=false
         values=selectedDateFormat}}
         {{#each dateFormat.options as |option|}}
           <option value={{option.key}}>{{t option.label}}</option>

@@ -1,14 +1,14 @@
 {{#if (is-equal servicesStatus 'wait')}}
-  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds label=(t 'investigate.service') prompt=(t 'investigate.loading')}}
+  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds multiple=false label=(t 'investigate.service') prompt=(t 'investigate.loading')}}
   {{/rsa-form-select}}
 {{else if services.length}}
-  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds label=(t 'investigate.service')}}
+  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds multiple=false label=(t 'investigate.service')}}
     {{#each services as |service|}}
       <option value="{{service.id}}">{{service.name}}</option>
     {{/each}}
   {{/rsa-form-select}}
 {{/if}}
-{{#rsa-form-select class="rsa-investigate-query-bar__time-range" values=selectedTimeRangeIds label=(t 'investigate.timeRange')}}
+{{#rsa-form-select class="rsa-investigate-query-bar__time-range" values=selectedTimeRangeIds multiple=false label=(t 'investigate.timeRange')}}
   {{#each timeRanges as |timeRange|}}
     <option value="{{timeRange.id}}">{{timeRange.name}}</option>
   {{/each}}
