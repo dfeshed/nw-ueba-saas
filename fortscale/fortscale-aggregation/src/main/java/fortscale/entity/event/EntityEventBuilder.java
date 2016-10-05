@@ -85,18 +85,26 @@ public class EntityEventBuilder {
 
 		getMetrics().updateEntityEventData++;
 
-		EntityEventData entityEventData = getEntityEventData(aggrFeatureEvent);
+		EntityEventDataQuery q = new EntityEventDataQuery(aggrFeatureEvent);
+		EntityEventData entityEventData = q.get();
+		boolean shouldStore = false;
+		if (entityEventData == null) {
+			entityEventData = q.create();
+			shouldStore = entityEventData != null;
+		}
 		if (entityEventData != null) {
 			if ((aggrFeatureEvent.isOfTypeP() && aggrFeatureEvent.getAggregatedFeatureValue() > 0) ||
 					(aggrFeatureEvent.isOfTypeF() && aggrFeatureEvent.getScore() > 0)) {
 				entityEventData.addAggrFeatureEvent(aggrFeatureEvent);
-				entityEventDataStore.storeEntityEventData(entityEventData);
+				shouldStore = true;
 			} else {
 				getMetrics().zeroFeature++;
 			}
+			if (shouldStore) {
+				entityEventDataStore.storeEntityEventData(entityEventData);
+			}
 		}
-		else
-		{
+		else {
 			getMetrics().nullEntityEventData++;
 		}
 	}
@@ -151,37 +159,53 @@ public class EntityEventBuilder {
 		return Arrays.toString(contextFields.toArray(new String[contextFields.size()]));
 	}
 
-	private EntityEventData getEntityEventData(AggrEvent aggrFeatureEvent) {
-		List<String> contextFields = entityEventConf.getContextFields();
-		Map<String, String> context = aggrFeatureEvent.getContext(contextFields);
-		String contextId = getContextId(context);
+	private class EntityEventDataQuery {
+		private Map<String, String> context;
+		private String contextId;
+		private Long startTime;
+		private Long endTime;
+		private boolean isError;
 
-		Long startTime = aggrFeatureEvent.getStartTimeUnix();
-		Long endTime = aggrFeatureEvent.getEndTimeUnix();
-
-		if(StringUtils.isBlank(contextId))
-		{
-			logger.warn("there is a blank contextId for entityEventConf={}, AggregatedFeatureName={} " ,entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
-			return null;
+		public EntityEventDataQuery(AggrEvent aggrFeatureEvent) {
+			List<String> contextFields = entityEventConf.getContextFields();
+			context = aggrFeatureEvent.getContext(contextFields);
+			contextId = getContextId(context);
+			startTime = aggrFeatureEvent.getStartTimeUnix();
+			endTime = aggrFeatureEvent.getEndTimeUnix();
+			if (StringUtils.isBlank(contextId)) {
+				logger.warn("there is a blank contextId for entityEventConf={}, AggregatedFeatureName={} ",
+						entityEventConf.getName(),
+						aggrFeatureEvent.getAggregatedFeatureName());
+				isError = true;
+				return;
+			}
+			String nullTimeMsg="aggrFeatureEvent {} is empty for entityEventConf={}, AggregatedFeatureName={}";
+			if (startTime == null) {
+				logger.warn(nullTimeMsg,"startTime",
+						entityEventConf.getName(),
+						aggrFeatureEvent.getAggregatedFeatureName());
+				isError = true;
+				return;
+			}
+			if (endTime == null) {
+				logger.warn(nullTimeMsg,
+						"endTime",
+						entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
+				isError = true;
+				return;
+			}
 		}
 
-		String nullTimeMsg="aggrFeatureEvent {} is empty for entityEventConf={}, AggregatedFeatureName={}";
-		if (startTime == null) {
-			logger.warn(nullTimeMsg,"startTime",entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
-			return null;
-		}
-		if (endTime == null)
-		{
-			logger.warn(nullTimeMsg,"endTime",entityEventConf.getName(),aggrFeatureEvent.getAggregatedFeatureName());
-			return null;
+		public EntityEventData get() {
+			return entityEventDataStore.getEntityEventData(entityEventConf.getName(), contextId, startTime, endTime);
 		}
 
-		EntityEventData entityEventData = entityEventDataStore.getEntityEventData(entityEventConf.getName(), contextId, startTime, endTime);
-		if (entityEventData == null) {
-			entityEventData = new EntityEventData(entityEventConf.getName(), context, contextId, startTime, endTime);
+		public EntityEventData create() {
+			if (isError) {
+				return null;
+			}
+			return new EntityEventData(entityEventConf.getName(), context, contextId, startTime, endTime);
 		}
-
-		return entityEventData;
 	}
 
 	public static String getContextId(Map<String, String> context) {
