@@ -132,9 +132,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
-	@Autowired
-	private CacheHandler<String, List<String>> userTagsCache;
-
 	private UserServiceMetrics serviceMetrics;
 
 	public void setListOfBuiltInADUsers(String listOfBuiltInADUsers) {
@@ -211,10 +208,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public User saveUser(User user){
 		user = userRepository.save(user);
 		usernameService.updateUsernameInCache(user);
-		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-		if (user.getTags() != null && user.getTags().size() > 0){
-			userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-		}
 		return user;
 	}
 
@@ -222,17 +215,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		userRepository.save(users);
 		for (User user : users) {
 			usernameService.updateUsernameInCache(user);
-			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-			if (user.getTags() != null && user.getTags().size() > 0) {
-				userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-			}
 		}
 	}
 
 	@Override
 	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
-
-
 		// get user by username
 		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
 
@@ -251,7 +238,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			String classifierId = getFirstClassifierId(userInfo, dataSourceUpdateOnlyFlagMap);
 			String logUsernameValue = userInfo.get(classifierId).getValue();
 
-
 			// need to create the user at mongo
 			serviceMetrics.attemptToCreateUser++;
 			user = createUser(ClassifierHelper.getUserApplicationId(classifierId), username, logUsernameValue);
@@ -261,8 +247,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				serviceMetrics.failedToCreateUser++;
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, username, logUsernameValue);
 			}
-
-
 		}
 
 		DateTime userCurrLast = user.getLastActivity();
@@ -870,7 +854,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 
 	public void updateTags(String username, Map<String, Boolean> tagSettings) {
-
 		// construct lists of tags to remove and tags to add from the map
 		List<String> tagsToAdd = new LinkedList<String>();
 		List<String> tagsToRemove = new LinkedList<String>();
@@ -880,55 +863,22 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			else
 				tagsToRemove.add(tag);
 		}
-		updateTags(username, tagsToAdd, tagsToRemove);
-	}
-
-	private void updateTags(String username, List<String> tagsToAdd, List<String> tagsToRemove){
-		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		//also update the tags cache with the new updates
-		List<String> tags = userTagsCache.get(username);
-		Set<String> tagSet = new HashSet<String>();
-		if (tags!=null) {
-			tagSet = new HashSet<String>(tags);
-		}
-		if (tagsToAdd != null)
-			tagSet.addAll(tagsToAdd);
-		if (tagsToRemove != null)
-			tagSet.removeAll(tagsToRemove);
-
-
-		tags = new ArrayList<String>(tagSet);
-
-
-		userTagsCache.put(username, tags);
 	}
 
 
 	@Override
 	public boolean isUserTagged(String username, String tag) {
-		// check if the user tags are kept in cache
-		List<String> tags = userTagsCache.get(username);
-		if (tags==null) {
-			// get tags from mongodb and add to cache
-			Set<String> tagSet = userRepository.getUserTags(username);
-			serviceMetrics.findTags++;
-			if (tagSet != null) {
-				tags = new ArrayList<String>(tagSet);
-				userTagsCache.put(username, tags);
-			} else {
-				serviceMetrics.tagsNotFound++;
-			}
+		// get tags from mongodb
+		Set<String> tagSet = userRepository.getUserTags(username);
+
+		if (tagSet == null) {
+			serviceMetrics.tagsNotFound++;
+			return false;
 		}
-		return tags!=null && tags.contains(tag);
-	}
 
-	@Override public CacheHandler getCache() {
-		return userTagsCache;
-	}
-
-	@Override public void setCache(CacheHandler cache) {
-		userTagsCache = cache;
+		serviceMetrics.findTags++;
+		return tagSet.contains(tag);
 	}
 
 	@Override
@@ -1049,17 +999,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	@Override
 	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username)
 	{
-		Set<String> tags = userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		userTagsCache.put(username, new ArrayList(tags));
-	}
-
-	@Override public void handleNewValue(String key, String value) throws Exception {
-		if(value == null){
-			getCache().remove(key);
-		}
-		else {
-			getCache().putFromString(key, value);
-		}
+		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 	}
 
 	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
@@ -1241,5 +1181,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	@Override
 	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
 		userRepository.updateSourceMachineCount(userId, sourceMachineCount);
+	}
+
+	@Override
+	public Set<String> getUserTags(String userName) {
+		return userRepository.getUserTags(userName);
 	}
 }

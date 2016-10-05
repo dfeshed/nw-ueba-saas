@@ -60,8 +60,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Set> userServiceStore = new KeyValueStoreMock<>();
 		userService = new UserServiceImpl();
-		userService.setCache(new KeyValueDbBasedCache<String, Set>(userServiceStore, Set.class));
-		task.topicToServiceMap.put("userUpdatesTopic", userService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> usernameStore = new KeyValueStoreMock<>();
@@ -169,38 +167,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		//Mockito.verify(task.tagService).addTagsToEvent("User 4", message);
 
 
-	}
-
-	@Test
-	public void wrappedProcess_should_add_user_tag_to_userService_cache() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		// prepare envelope
-		String userTag = "MY_TAG";
-		Set<String> tags = new HashSet<String>();
-		tags.add(userTag);
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(tags) , "userUpdatesTopic");
-		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-		// validate the tag was added to cache
-		assertEquals(tags,(Set) userService.getCache().get("key1"));
-	}
-
-	@Test
-	public void wrappedProcess_should_override_user_tag_in_userService_cache() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		// prepare envelope
-		String userTag = "MY_TAG";
-		Set<String> tags = new HashSet<String>();
-		tags.add(userTag);
-		Set<String> oldTags = new HashSet<String>();
-		oldTags.add("oldTag");
-		userService.getCache().put("key1",oldTags);
-		assertEquals(oldTags, (Set) userService.getCache().get("key1"));
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(tags) , "userUpdatesTopic");
-		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-		// validate the tag was added to cache
-		assertEquals(tags, (Set) userService.getCache().get("key1"));
 	}
 
 	@Test
