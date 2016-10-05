@@ -14,6 +14,8 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
@@ -22,6 +24,8 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 
 	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
+	@Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
+	private List<String> backupCollectionNamesPrefixes;
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -85,13 +89,31 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		return mongoTemplate.getCollection(collectionName).distinct(EntityEventData.CONTEXT_ID_FIELD, query.getQueryObject());
 	}
 
+	private String getCollectionName(String entityEventName) {
+		return String.format("%s_%s", eventTypeFieldValue, entityEventName);
+	}
 
-	public List<EntityEventData> findEntityEventsJokerDataByContextIdAndTimeRange(
-				EntityEventConf entityEventConf, String contextId, long startTimeSeconds, long endTimeSeconds) {
+	private List<String> getCollectionNames(String entityEventName) {
+		String collectionName = getCollectionName(entityEventName);
+		return Stream.concat(Stream.of(""), backupCollectionNamesPrefixes.stream())
+				.map(prefix -> prefix + collectionName)
+				.collect(Collectors.toList());
+	}
 
-		String entityEventConfName = entityEventConf.getName();
-		String collectionName = getCollectionName(entityEventConfName);
+	public List<EntityEventData> findEntityEventsJokerDataByContextIdAndTimeRange(EntityEventConf entityEventConf,
+																				  String contextId,
+																				  long startTimeSeconds,
+																				  long endTimeSeconds) {
+		return getCollectionNames(entityEventConf.getName()).stream()
+				.flatMap(collectionName -> findEntityEventsJokerDataByContextIdAndTimeRange(
+						collectionName, contextId, startTimeSeconds, endTimeSeconds).stream())
+				.collect(Collectors.toList());
+	}
 
+	private List<EntityEventData> findEntityEventsJokerDataByContextIdAndTimeRange(String collectionName,
+																				   String contextId,
+																				   long startTimeSeconds,
+																				   long endTimeSeconds) {
 		Query query = new Query();
 		query.addCriteria(where(EntityEventData.CONTEXT_ID_FIELD).is(contextId));
 		query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
@@ -198,10 +220,5 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 					.named(EntityEventData.MODIFIED_AT_DATE_FIELD)
 					.on(EntityEventData.MODIFIED_AT_DATE_FIELD, Direction.ASC));
 		}
-	}
-
-
-	private String getCollectionName(String entityEventName) {
-		return String.format("%s_%s", eventTypeFieldValue, entityEventName);
 	}
 }
