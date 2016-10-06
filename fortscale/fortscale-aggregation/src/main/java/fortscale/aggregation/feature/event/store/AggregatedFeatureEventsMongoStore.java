@@ -18,6 +18,7 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -27,6 +28,9 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public static final String COLLECTION_NAME_SEPARATOR = "__";
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsMongoStore.class);
 
+	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
+
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -34,11 +38,12 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	@Autowired
 	private StatsService statsService;
 
+	@Autowired
+	private AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService;
+
     @Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
     private List<String> backupCollectionNamesPrefixes;
 
-	@Value("${streaming.event.field.type.aggr_event}")
-	private String eventType;
 
 	private Map<String, String> aggregatedFeatureNameToExistingCollectionNameMap = new HashMap<>();
 	private List<String> allAggrFeatureEventCollectionNames;
@@ -54,7 +59,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	private String createCollectionIfNotExist(String aggregatedFeatureName){
 		String collectionName = aggregatedFeatureNameToExistingCollectionNameMap.get(aggregatedFeatureName);
 		if(collectionName == null){
-			collectionName = getCollectionName(aggregatedFeatureName);
+			collectionName = aggregatedFeatureNameTranslationService.toCollectionName(aggregatedFeatureName);
 			if(!mongoTemplate.collectionExists(collectionName)){
 				createCollection(collectionName, getRetentionInSeconds(aggregatedFeatureName));
 			}
@@ -150,14 +155,12 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		Query query = createTimeRangeQuery(startTime, endTime)
 				.addCriteria(Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId));
 
-        return getCollectionsNames(aggregatedFeatureName).stream()
-            .flatMap(collectionName -> mongoTemplate.find(query, AggrEvent.class, collectionName).stream())
-            .collect(Collectors.toList());
+        return getRunQueryOnAllFeatureNameCollections(aggregatedFeatureName, query);
 	}
 
 	private List<String> getCollectionsNames(String aggregatedFeatureName)
 	{
-		String collectionName = getCollectionName(aggregatedFeatureName);
+		String collectionName = aggregatedFeatureNameTranslationService.toCollectionName(aggregatedFeatureName);
 		List<String> collectionsNames = new ArrayList<>();
 		backupCollectionNamesPrefixes.forEach(backupPrefix ->
 				collectionsNames.add(String.format("%s%s",backupPrefix,collectionName)));
@@ -282,5 +285,56 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		}
 
 		return totalNumberOfEvents;
+	}
+
+	/**
+	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
+	 * before any crud is preformed in this class, this method should be called
+	 *
+	 * @param collectionName metrics are per collection
+	 * @return metrics for collection
+     */
+	public PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName)
+	{
+		if(collectionMetricsMap ==null)
+		{
+			collectionMetricsMap = new HashMap<>();
+		}
+
+		if(!collectionMetricsMap.containsKey(collectionName))
+		{
+			PersistenceTaskStoreMetrics collectionMetrics =
+					new PersistenceTaskStoreMetrics(statsService,collectionName);
+			collectionMetricsMap.put(collectionName,collectionMetrics);
+		}
+
+		return collectionMetricsMap.get(collectionName);
+	}
+
+
+	 /**
+	 * @param from greater than/equal of that date
+	 * @param to before or/equal to that date
+	 * @param aggregatedFeatureName feature to run on
+     * @return list of {@link AggrEvent} between thos dates
+     */
+	public List<AggrEvent> findAggrEventsByTimeRange(Instant from, Instant to, String aggregatedFeatureName) {
+
+		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(from);
+		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(to);
+		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+
+		return getRunQueryOnAllFeatureNameCollections(aggregatedFeatureName, query);
+	}
+
+	/**
+	 * one {@param aggregatedFeatureName} my contain several splitted collections in mongoDb (in case of large scale),
+	 * this method executes given {@param query} on all collectionNames
+     * @return list of {@link AggrEvent} answering the query
+     */
+	public List<AggrEvent> getRunQueryOnAllFeatureNameCollections(String aggregatedFeatureName, Query query) {
+		return getCollectionsNames(aggregatedFeatureName).stream()
+				.flatMap(collectionName -> mongoTemplate.find(query, AggrEvent.class, collectionName).stream())
+				.collect(Collectors.toList());
 	}
 }
