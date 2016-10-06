@@ -119,8 +119,8 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 
-		String collectionName = getCollectionName(aggregatedFeatureName);
-		getCollectionMetrics(collectionName).reads++;
+		String metricsCollectionName = getCollectionName(aggregatedFeatureName);
+		getCollectionMetrics(metricsCollectionName).reads++;
 		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
 		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
@@ -141,8 +141,8 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 			String contextId, Date startTime, Date endTime) {
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-		String collectionName = getCollectionName(aggregatedFeatureName);
-		getCollectionMetrics(collectionName).reads++;
+		String metricsCollectionName = getCollectionName(aggregatedFeatureName);
+		getCollectionMetrics(metricsCollectionName).reads++;
 		Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
 		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
