@@ -26,6 +26,9 @@ export default Route.extend({
       // fetching the new query's results.
       this.send('navGoto', null);
 
+      // Similar optimization to above: clear Recon's results (if any) so we don't glimpse them as we transition to results.
+      this.send('reconClose', true);
+
       // Navigate to results UI.
       this.transitionTo('protected.investigate.query', [
         serviceId,
