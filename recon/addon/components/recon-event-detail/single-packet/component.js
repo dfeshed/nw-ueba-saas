@@ -47,13 +47,14 @@ const SinglePacketComponent = Component.extend({
   onselect: K,
 
   /**
-   * An array of data values (as string characters) derived from decoding the base64-encoded `packet.raw`.
-   * @type {string[]}
+   * Determine the direction, request or response, for the arrow
+   * @param side Request or response
+   * @returns {string} right or left
    * @public
    */
-  @computed('packet.bytes')
-  decodedData(bytes) {
-    return atob(bytes || '').split('');
+  @computed('packet.side')
+  arrowDirection(side) {
+    return side === 'request' ? 'right' : 'left';
   },
 
   /**
@@ -66,9 +67,25 @@ const SinglePacketComponent = Component.extend({
     return decodedData.get('length') || 0;
   },
 
-  @computed('packet.side')
-  arrowDirection(side) {
-    return side === 'request' ? 'right' : 'left';
+  /**
+   * Determine the expand/collapse arrow direction for a single packet
+   * @param packetIsExpanded If expanded or not
+   * @returns {string} down or right
+   * @public
+   */
+  @computed('packetIsExpanded')
+  collapseArrowDirection(packetIsExpanded) {
+    return packetIsExpanded ? 'down' : 'right';
+  },
+
+  /**
+   * An array of data values (as string characters) derived from decoding the base64-encoded `packet.raw`.
+   * @type {string[]}
+   * @public
+   */
+  @computed('packet.bytes')
+  decodedData(bytes) {
+    return atob(bytes || '').split('');
   },
 
   /**

@@ -2,6 +2,7 @@
   &__header {
     padding: 6px 12px 6px 0px;
     position: relative;
+    padding-left: rsa-whitespace();
 
     box {
       margin-left: rsa-whitespace(less);
@@ -12,28 +13,35 @@
       width: $packet-offsets-width;
 
       .rsa-icon {
-        padding-right: rsa-whitespace(least);
+        padding-right: rsa-whitespace(less);
       }
 
       .text {
         @include rsa-font(header, small);
+        font-size: 0.85rem;
+        letter-spacing: 1px;
       }
     }
 
     .packet-details {
-      @include rsa-font(body);
+      @include rsa-font(body, small);
       padding: rsa-whitespace(less) 0;
       text-transform: capitalize;
       .label {
         @include rsa-font(header, small);
+        color: rsa-color(gray, light);
         margin-right: rsa-whitespace(least);
       }
       .rsa-icon {
+        font-size: 0.85rem;
+        padding-left: 0.1rem;
+        padding-right: 0.3rem;
         &:hover {
           cursor: pointer;
         }
       }
       .text {
+        @include rsa-font(body);
         margin-left: rsa-whitespace(least);
       }
     }
@@ -41,6 +49,7 @@
 
   &__body {
     @include rsa-row(justify,fill);
+    font-size: 0.85rem;
   }
 
   &__offsets {
@@ -50,7 +59,7 @@
 
     &.hex {
       td {
-        padding-left: 1.5rem;
+        padding-left: 2.75rem;
       }
     }
 

@@ -20,8 +20,7 @@
   }
 
   &__ascii {
-    border-left: 2px solid rgba(255, 255, 255, .2);
-    border-right: 1px solid rgba(255, 255, 255, .2);
+    margin-left: rsa-whitespace();
   }
 
   &.request {

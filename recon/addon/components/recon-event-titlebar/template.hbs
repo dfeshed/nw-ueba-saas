@@ -14,60 +14,51 @@
   active=isHeaderOpen
   class='toggle-header header-toggle'
   click=(action "toggleHeader")
-  name='layout-6'
-  size='large'}}
+  name='layout-6'}}
 
 {{rsa-icon
   active=isRequestShown
   class='header-toggle'
   click=(action "toggleRequest")
   disabled=disablePacketIcons
-  name='arrow-circle-right-2'
-  size='large'}}
+  name='arrow-circle-right-2'}}
 
 {{rsa-icon
   active=isResponseShown
   class='header-toggle'
   click=(action "toggleResponse")
   disabled=disablePacketIcons
-  name='arrow-circle-left-2'
-  size='large'}}
+  name='arrow-circle-left-2'}}
 
 {{rsa-icon
   active=true
   class='header-toggle'
   disabled=disablePacketIcons
-  name='view-agenda'
-  size='large'}}
+  name='view-agenda'}}
 
 {{rsa-icon
   class='header-toggle'
   disabled=disablePacketIcons
-  name='layout-4'
-  size='large'}}
+  name='layout-4'}}
 
 {{rsa-icon
   active=isMetaShown
   class='toggle-meta header-toggle'
   click=(action 'toggleMeta')
-  name='layout-2'
-  size='large'}}
+  name='layout-2'}}
 
 <div class="divider"></div>
 
 {{rsa-icon
   class='header-toggle'
-  name='cog'
-  size='large'}}
+  name='cog'}}
 
 {{rsa-icon
   class='header-toggle'
   click=(action 'toggleExpanded')
-  name=(concat 'arrow-' arrowDirection '-9')
-  size='large'}}
+  name=(concat 'arrow-' arrowDirection '-9')}}
 
 {{rsa-icon
   class='header-toggle'
   click=(action 'closeRecon')
-  name='close'
-  size='large'}}
+  name='close'}}

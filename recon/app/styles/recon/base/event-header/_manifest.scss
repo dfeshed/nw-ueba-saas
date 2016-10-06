@@ -18,7 +18,7 @@
 
   .divider {
     border-left: 1px solid rsa-color(white);
-    height: 2rem;
+    height: 1.5rem;
     margin: 5px;
   }
 
@@ -48,10 +48,15 @@
     @include adjust-rsa-form-select();
 
     .heading {
-      h2 {
-        color: rsa-color(white);
-        margin-top: rsa-whitespace(less);
-        @include rsa-font(header, large);
+      .rsa-form-select {
+        .prompt {
+          @include rsa-font(header, large);
+          font-weight: lighter;
+        }
+        .rsa-icon {
+          font-size: 1rem;
+          top: 10px;
+        }
       }
     }
 
