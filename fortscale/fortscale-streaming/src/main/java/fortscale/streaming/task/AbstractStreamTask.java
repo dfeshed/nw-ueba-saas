@@ -10,7 +10,6 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
-import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -384,6 +383,14 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	}
 
+	/**
+	 * Get topic name out of incoming message envelope
+	 * @param envelope - message received in {@link #wrappedProcess(IncomingMessageEnvelope, MessageCollector, TaskCoordinator)}
+	 * @return topic name of incoming message
+     */
+	protected String getIncomingMessageTopicName(IncomingMessageEnvelope envelope) {
+		return envelope.getSystemStreamPartition().getSystemStream().getStream();
+	}
 
 	// --- getters/setters ---
 

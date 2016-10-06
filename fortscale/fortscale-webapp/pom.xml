@@ -90,8 +90,8 @@
 					<artifactId>javax.servlet-api</artifactId>
 				</exclusion>
 				<exclusion>
-					<artifactId>servlet-api</artifactId>
 					<groupId>javax.servlet</groupId>
+					<artifactId>servlet-api</artifactId>
 				</exclusion>
 				<exclusion>
 					<artifactId>jsp-api</artifactId>
