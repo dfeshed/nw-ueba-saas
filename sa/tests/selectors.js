@@ -245,7 +245,17 @@ export default Ember$.extend({}, BaseSelectors, {
       'eventsLink': 'js-test-investigate-events-classic',
       'malwareLink': 'js-test-investigate-malware-classic',
       'url': '/do/investigate',
-      'path': 'protected.investigate.index'
+      'path': 'protected.investigate.index',
+
+      'serviceDropDown': '.rsa-investigate-query-bar__service .rsa-icon',
+      'defaultSelectedDropDown': '.rsa-investigate-query-bar__service .prompt div',
+      'serviceSelectOptions': '.rsa-investigate-query-bar__service select option',
+      'timeRangeDropDown': '.rsa-investigate-query-bar__time-range .rsa-icon',
+      'timeRangeSelectOptions': '.rsa-investigate-query-bar__time-range select option',
+      'queryButton': '.js-test-investigate-query-bar__submit',
+      'selectedServiceLbl': '.js-test-service',
+      'timeRangeLbl': '.datetime'
+
     }
   }
 });
