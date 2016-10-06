@@ -73,9 +73,9 @@ export default Component.extend({
 
     if (input) {
       if (this.get('model') !== this.get('value')) {
-        input.attr('checked', false);
+        input.prop('checked', false);
       } else {
-        input.attr('checked', true);
+        input.prop('checked', true);
       }
     }
   },
