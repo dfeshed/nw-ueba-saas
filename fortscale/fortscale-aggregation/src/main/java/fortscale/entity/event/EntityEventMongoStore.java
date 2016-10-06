@@ -57,7 +57,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 			}
 			entityEventList.add(entityEvent);
 			if (entityEventList.size() >= storePageSize) {
-				mongoTemplate.insert(entityEventList, collectionName);
+				bulkInsertEntityEvents(collectionName,entityEventList);
 				collectionToEntityEventListMap.remove(collectionName);
 			}
 		} else {
