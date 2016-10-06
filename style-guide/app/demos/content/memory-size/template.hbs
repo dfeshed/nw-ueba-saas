@@ -1,0 +1,37 @@
+<hbox fit>
+  {{spec-masthead model=model}}
+</hbox>
+
+<hbox>
+  <div class="scroll-box">
+    {{#spec-category}}
+      {{#spec-member title="Small left as bytes"}}
+        {{rsa-content-memsize size='256' }}
+        <code>
+          &#123;{rsa-content-memsize size='256' }}
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Large Converted to KB"}}
+        {{rsa-content-memsize size='2222' }}
+        <code>
+          &#123;{rsa-content-memsize size='2222' }}
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Larger Converted to MB"}}
+        {{rsa-content-memsize size='2222000' }}
+        <code>
+          &#123;{rsa-content-memsize size='2222000' }}
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member title="Largest Converted to GB"}}
+        {{rsa-content-memsize size='2222000000' }}
+        <code>
+          &#123;{rsa-content-memsize size='2222000000' }}
+        </code>
+      {{/spec-member}}
+    {{/spec-category}}
+  </div>
+</hbox>

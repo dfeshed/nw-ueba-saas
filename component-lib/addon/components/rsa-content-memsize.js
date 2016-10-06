@@ -8,13 +8,40 @@
  * @public
  */
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 
-const { computed, $, Component } = Ember;
+import layout from '../templates/components/rsa-content-memsize';
+
+const {
+  $,
+  Component,
+  inject: {
+    service
+  }
+} = Ember;
+
+const byteSizing = {
+  label: 'memsize.B',
+  bytes: 0
+};
+
+const sizing = [{
+  label: 'memsize.GB',
+  bytes: Math.pow(1024, 3)
+}, {
+  label: 'memsize.MB',
+  bytes: Math.pow(1024, 2)
+}, {
+  label: 'memsize.KB',
+  bytes: 1024
+}, byteSizing];
 
 export default Component.extend({
+  layout,
   tagName: 'span',
   classNames: 'rsa-content-memsize',
   attributeBindings: ['title'],
+  i18n: service(),
 
   /**
    * Size in bytes.
@@ -23,34 +50,25 @@ export default Component.extend({
    */
   size: undefined,
 
-  /**
-   * Computes whether or not to display the size in KB rather than bytes.
-   * Any size >= 1024 bytes will be displayed as KB.
-   * @type {boolean}
-   * @private
-   */
-  displayAsKB: computed('size', function() {
-    const size = this.get('size');
-    return $.isNumeric(size) && (size >= 1024);
-  }),
+  @computed('size')
+  translatedSize: (size) => {
+    if ($.isNumeric(size)) {
+      return sizing.find(({ bytes }) => size >= bytes);
+    }
+    return byteSizing;
+  },
 
-  /**
-   * The size amount in kilobytes, as a decimal string (e.g., "2.1").
-   * @type {string}
-   * @private
-   */
-  sizeAsKB: computed('size', function() {
-    return (this.get('size') / 1024).toFixed(1);
-  }),
+  @computed('size', 'translatedSize')
+  displaySize: (size, { bytes }) => bytes ? (size / bytes).toFixed(1) : size,
 
   /**
    * Tooltip for DOM, showing the precise size value in bytes.
    * @type {string}
    * @public
    */
-  title: computed('size', function() {
-    const size = this.get('size');
+  @computed('size')
+  title(size) {
     const i18n = this.get('i18n');
-    return $.isNumeric(size) ? `${size} ${i18n.t('investigate.bytes')}` : '';
-  })
+    return $.isNumeric(size) ? `${size} ${i18n.t('memsize.B')}` : '';
+  }
 });

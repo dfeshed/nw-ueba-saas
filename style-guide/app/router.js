@@ -52,6 +52,7 @@ Router.map(function() {
       this.route('badgeIcon');
       this.route('datetime');
       this.route('label');
+      this.route('memorySize');
       this.route('ipConnections');
       this.route('tooltip');
     });

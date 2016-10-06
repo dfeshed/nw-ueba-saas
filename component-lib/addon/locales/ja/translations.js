@@ -98,5 +98,12 @@ export default {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.',
       missingRecon: 'ja_This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'
     }
+  },
+  memsize: {
+    B: 'ja_bytes',
+    KB: 'ja_KB',
+    MB: 'ja_MB',
+    GB: 'ja_GB',
+    TB: 'ja_TB'
   }
 };
