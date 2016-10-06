@@ -41,6 +41,9 @@ export default Component.extend({
    */
   @computed('group.keys.[]', 'metaKeyStates.[]')
   metaKeyStatesForGroup: ((keys = [], states = []) => {
+    if (!states.length) {
+      return [];
+    }
     return keys.map((key) => {
       return states.findBy('info.metaName', get(key, 'name'));
     });
