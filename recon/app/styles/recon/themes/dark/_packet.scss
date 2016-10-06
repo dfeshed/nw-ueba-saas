@@ -19,11 +19,6 @@
     background-color: rsa-color(gray, dark, 0.5);
   }
 
-  &__hex {
-    border-right: 2px solid rgba(255, 255, 255, .2);
-    border-left: 1px solid rgba(255, 255, 255, .2);
-  }
-
   &__ascii {
     border-left: 2px solid rgba(255, 255, 255, .2);
     border-right: 1px solid rgba(255, 255, 255, .2);

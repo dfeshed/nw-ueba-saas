@@ -47,9 +47,14 @@ export default Component.extend({
 
   didInsertElement() {
     this._scheduleAfterRenderTasks();
+    // We have to clear tooltip data on scroll
+    $('.recon-event-detail-packets').scroll(() => {
+      this.set('hoverData', null);
+    });
   },
 
   willDestroyElement() {
+    this.set('hoverData', null);
     this._cells = null;
     this.detachDomListeners();
   },

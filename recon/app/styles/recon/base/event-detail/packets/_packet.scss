@@ -3,20 +3,12 @@
     padding: 6px 12px 6px 0px;
     position: relative;
 
-    h2 {
-      font-weight: bold;
-      text-transform: uppercase;
-
-      label {
-        padding-right: .5rem;
-      }
-      font-size: .8rem;
-      margin-bottom: 6px;
+    box {
+      margin-left: rsa-whitespace(less);
     }
 
     .request-response {
       color: rsa-color(blue);
-      display: inline-block;
       width: $packet-offsets-width;
 
       .rsa-icon {
@@ -28,8 +20,22 @@
       }
     }
 
-    .packet-number {
-      display: inline-block;
+    .packet-details {
+      @include rsa-font(body);
+      padding: rsa-whitespace(less) 0;
+      text-transform: capitalize;
+      .label {
+        @include rsa-font(header, small);
+        margin-right: rsa-whitespace(least);
+      }
+      .rsa-icon {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+      .text {
+        margin-left: rsa-whitespace(least);
+      }
     }
   }
 
@@ -44,7 +50,7 @@
 
     &.hex {
       td {
-        text-align: right;
+        padding-left: 1.5rem;
       }
     }
 

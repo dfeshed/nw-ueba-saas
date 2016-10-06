@@ -18,6 +18,7 @@ const SinglePacketComponent = Component.extend({
   classNameBindings: ['packet.side'],
   packet: null,
   packetFields: null,
+  packetIsExpanded: true,
   index: null,
   selection: null,
   viewportEntered: false,
@@ -222,6 +223,11 @@ const SinglePacketComponent = Component.extend({
   }),
   willDestroyElement() {
     this.get('observer').disconnect();
+  },
+  actions: {
+    expandPacket() {
+      this.toggleProperty('packetIsExpanded');
+    }
   }
 });
 
