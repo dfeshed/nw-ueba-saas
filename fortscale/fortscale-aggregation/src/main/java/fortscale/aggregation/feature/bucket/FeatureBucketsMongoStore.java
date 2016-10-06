@@ -175,6 +175,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 				logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
 			}
 		} catch (Exception e) {
+			// TODO: 10/6/16 DPM client should be aware of this failure
 			metrics.insertFeatureBucketsFailures++;
 			throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = "+featureBuckets.toString(), e);
 		}

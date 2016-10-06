@@ -101,7 +101,8 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
                 logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
             }
         } catch (BulkOperationException e) {
-            collectionMetrics.bulkWritesErrors++;
+			// TODO: 10/6/16 DPM client should be aware of this failure
+			collectionMetrics.bulkWritesErrors++;
             logger.error("failed to perform bulk insert into collection={}", collectionName, e);
             throw e;
         }
