@@ -13,15 +13,20 @@ import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
 
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+
+    @Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
+    private List<String> backupCollectionNamesPrefixes;
 
 	@Value("${streaming.event.field.type.aggr_event}")
 	private String eventType;
@@ -72,13 +77,20 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-		String collectionName = getCollectionName(aggregatedFeatureName);
 
 		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
 		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+
+
+        return (getCollectionsNames(aggregatedFeatureName).stream()
+                .flatMap(collectionName -> runDistinctContextQuery(collectionName,query).stream())
+                .collect(Collectors.toSet())).stream().collect(Collectors.toList());
+	}
+
+	private List<String> runDistinctContextQuery(String collectionName, Query query) {
 		return mongoTemplate.getCollection(collectionName)
-				.distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, query.getQueryObject());
+                    .distinct(AggrEvent.EVENT_FIELD_CONTEXT_ID, query.getQueryObject());
 	}
 
 	public List<AggrEvent> findAggrEventsByContextIdAndTimeRange(
@@ -86,13 +98,25 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 			String contextId, Date startTime, Date endTime) {
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-		String collectionName = getCollectionName(aggregatedFeatureName);
 
 		Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
 		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
 		Query query = new Query(contextIdCriteria.andOperator(startTimeCriteria, endTimeCriteria));
-		return mongoTemplate.find(query, AggrEvent.class, collectionName);
+
+        return getCollectionsNames(aggregatedFeatureName).stream()
+            .flatMap(collectionName -> mongoTemplate.find(query, AggrEvent.class, collectionName).stream())
+            .collect(Collectors.toList());
+	}
+
+	private List<String> getCollectionsNames(String aggregatedFeatureName)
+	{
+		String collectionName = getCollectionName(aggregatedFeatureName);
+		List<String> collectionsNames = new ArrayList<>();
+		backupCollectionNamesPrefixes.forEach(backupPrefix ->
+				collectionsNames.add(String.format("%s%s",backupPrefix,collectionName)));
+		collectionsNames.add(collectionName);
+		return collectionsNames;
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {
@@ -156,9 +180,9 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public long getTotalNumberOfScoredEvents() {
 		if(allAggrFeatureEventCollectionNames ==null) {
 			allAggrFeatureEventCollectionNames = new ArrayList<>();
-			aggregatedFeatureEventsConfService.getAggrFeatureEventNameList().forEach(aggrFeatureEventName ->
-					allAggrFeatureEventCollectionNames.add(getCollectionName(aggrFeatureEventName)));
-		}
+            aggregatedFeatureEventsConfService.getAggrFeatureEventNameList().forEach(aggrFeatureEventName ->
+                    allAggrFeatureEventCollectionNames.addAll(getCollectionsNames(aggrFeatureEventName)));
+        }
 
 		long totalNumberOfEvents = 0;
 
