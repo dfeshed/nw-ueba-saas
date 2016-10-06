@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.bucket;
 
+import com.mongodb.BulkWriteResult;
 import com.mongodb.WriteResult;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.utils.logging.Logger;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.index.Index.Duplicates;
@@ -161,10 +163,19 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		String collectionName = createCollectionIfNotExist(featureBucketConf, expireAfterSeconds);
 
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
+		metrics.insertFeatureBucketsCalls++;
 		try {
-			mongoTemplate.insert(featureBuckets, collectionName);
-			metrics.insertFeatureBucketsCalls++;
+			BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
+					.insert(featureBuckets).execute();
+			if (bulkOpResult.isAcknowledged()) {
+				int actualInsertedCount = bulkOpResult.getInsertedCount();
+				logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
+			} else {
+				metrics.bulkWritesNotAcknowledged++;
+				logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
+			}
 		} catch (Exception e) {
+			// TODO: 10/6/16 DPM client should be aware of this failure
 			metrics.insertFeatureBucketsFailures++;
 			throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = "+featureBuckets.toString(), e);
 		}

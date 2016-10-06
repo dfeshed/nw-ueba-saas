@@ -17,6 +17,8 @@ public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
             addTag("bucketName", featureBucketConf.getName());
         }});
     }
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long bulkWritesNotAcknowledged;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long retrieveContextsCalls;
