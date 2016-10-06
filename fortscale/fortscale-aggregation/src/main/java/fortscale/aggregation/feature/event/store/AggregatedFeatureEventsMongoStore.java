@@ -1,11 +1,17 @@
 package fortscale.aggregation.feature.event.store;
 
+import com.mongodb.BulkWriteResult;
 import fortscale.aggregation.feature.event.*;
+import fortscale.common.metrics.PersistenceTaskStoreMetrics;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.BulkOperationException;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -16,14 +22,19 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterReader {
-	private static final String COLLECTION_NAME_PREFIX = "scored_";
-	private static final String COLLECTION_NAME_SEPARATOR = "__";
+	public static final String COLLECTION_NAME_PREFIX = "scored_";
+	public static final String COLLECTION_NAME_SEPARATOR = "__";
+	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsMongoStore.class);
+
+	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
 
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
+	@Autowired
+	private StatsService statsService;
 
     @Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
     private List<String> backupCollectionNamesPrefixes;
@@ -37,6 +48,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public void storeEvent(AggrEvent aggregatedFeatureEvent) {
 		String aggregatedFeatureName = aggregatedFeatureEvent.getAggregatedFeatureName();
 		String collectionName = createCollectionIfNotExist(aggregatedFeatureName);
+		getCollectionMetrics(collectionName).writes++;
 		// Save aggregated feature event in Mongo collection
 		mongoTemplate.save(aggregatedFeatureEvent, collectionName);
 	}
@@ -68,8 +80,37 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		}
 
 		for(String collectionName: collectionToAggrEventListMap.keySet()){
-			mongoTemplate.insert(collectionToAggrEventListMap.get(collectionName), collectionName);
+			List<AggrEvent> aggrEvents = collectionToAggrEventListMap.get(collectionName);
+			bulkInsertAggrEvents(collectionName, aggrEvents);
 		}
+	}
+
+	/**
+	 * stores aggrEvents into collection in unordered bulk operation
+	 * @param collectionName where to insert
+	 * @param aggrEvents what to insert
+     */
+	private void bulkInsertAggrEvents(String collectionName, List<AggrEvent> aggrEvents) {
+		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+		try {
+            BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
+                    .insert(aggrEvents).execute();
+            if (bulkOpResult.isAcknowledged()) {
+                int actualInsertedCount = bulkOpResult.getInsertedCount();
+                collectionMetrics.bulkWrites++;
+                collectionMetrics.bulkWriteDocumentCount += actualInsertedCount;
+                collectionMetrics.writes += actualInsertedCount;
+                logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
+            } else {
+                collectionMetrics.bulkWritesNotAcknowledged++;
+                logger.error("bulk insert into collection={} wan't acknowledged", collectionName);
+            }
+        } catch (BulkOperationException e) {
+			// TODO: 10/6/16 DPM client should be aware of this failure
+			collectionMetrics.bulkWritesErrors++;
+            logger.error("failed to perform bulk insert into collection={}", collectionName, e);
+            throw e;
+        }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -78,6 +119,8 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 
+		String metricsCollectionName = getCollectionName(aggregatedFeatureName);
+		getCollectionMetrics(metricsCollectionName).reads++;
 		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
 		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
@@ -98,7 +141,8 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 			String contextId, Date startTime, Date endTime) {
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
-
+		String metricsCollectionName = getCollectionName(aggregatedFeatureName);
+		getCollectionMetrics(metricsCollectionName).reads++;
 		Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
 		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
 		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
@@ -187,10 +231,35 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		long totalNumberOfEvents = 0;
 
 		for(String collectionName: allAggrFeatureEventCollectionNames) {
+			getCollectionMetrics(collectionName).reads++;
 			totalNumberOfEvents += mongoTemplate.count(new Query(), collectionName);
 		}
 
 		return totalNumberOfEvents;
+	}
+
+	/**
+	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
+	 * before any crud is preformed in this class, this method should be called
+	 *
+	 * @param collectionName metrics are per collection
+	 * @return metrics for collection
+     */
+	public PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName)
+	{
+		if(collectionMetricsMap ==null)
+		{
+			collectionMetricsMap = new HashMap<>();
+		}
+
+		if(!collectionMetricsMap.containsKey(collectionName))
+		{
+			PersistenceTaskStoreMetrics collectionMetrics =
+					new PersistenceTaskStoreMetrics(statsService,collectionName);
+			collectionMetricsMap.put(collectionName,collectionMetrics);
+		}
+
+		return collectionMetricsMap.get(collectionName);
 	}
 
 }

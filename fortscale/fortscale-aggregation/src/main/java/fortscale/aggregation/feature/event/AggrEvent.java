@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.domain.core.FeatureScore;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -207,5 +208,15 @@ public class AggrEvent implements Serializable {
 
     public List<String> getDataSources() {
         return dataSources;
+    }
+
+    /**
+     * ToString, you know ...
+     *
+     * @return object as a String
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 }
