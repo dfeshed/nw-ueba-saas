@@ -80,26 +80,28 @@
 
 
       &[data-field="custom.meta-summary"] {
+        position: relative;
 
         .content {
-          /*
-           Preserve vertical space for log data in the meta-summary column. Do this for all records, even non-log
-           records, so that all rows share same height. (Events table requires uniform row heights for abs positioning.)
-           */
-          min-height: 2rem;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          overflow: hidden;
+          padding: 0;
         }
 
+        .meta-key-and-value,
         .meta-src-dst-pair {
           display: inline-block;
+          padding: rsa-whitespace(least) rsa-whitespace();
+        }
 
-          &[data-field="ip.src"] {
-            /* For nicer horiz alignment, leave enough room for 2 IPv6 addresses, plus an arrow between them. */
-            min-width: 17rem;
-
-            .src {
-              display: inline-block;
-            }
-          }
+        .log-data {
+          padding: rsa-whitespace(least) rsa-whitespace();
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
       }
 

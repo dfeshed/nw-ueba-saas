@@ -55,35 +55,28 @@ function buildMetaSummaryContent($content, item, opts) {
     }
   }
 
-  const eventTypeIsLog = isLogEvent(item);
+  if (isLogEvent(item)) {
 
-  if (eventTypeIsLog) {
-    addMetaSummaryRow(
-      buildMetaKeyAndValue('device.type', item, opts)
-    );
-
-    addMetaSummaryRow(
-      buildMetaKeyAndValue('device.class', item, opts)
-    );
-  }
-
-  addMetaSummaryRow(
-    buildMetaSrcDstPair(['ip.src', 'ipv6.src'], ['ip.dst', 'ipv6.dst'], item, opts)
-  );
-
-  addMetaSummaryRow(
-    buildMetaSrcDstPair(['tcp.srcport', 'udp.srcport'], ['tcp.dstport', 'udp.dstport'], item, opts)
-  );
-
-  addMetaSummaryRow(
-    buildMetaKeyAndValue('session.split', item, opts)
-  );
-
-  if (eventTypeIsLog) {
     addMetaSummaryRow(
       buildLogContent(item)
     );
+
+  } else {
+
+    addMetaSummaryRow(
+      buildMetaSrcDstPair(['ip.src', 'ipv6.src'], ['ip.dst', 'ipv6.dst'], item, opts)
+    );
+
+    addMetaSummaryRow(
+      buildMetaSrcDstPair(['tcp.srcport', 'udp.srcport'], ['tcp.dstport', 'udp.dstport'], item, opts)
+    );
+
+    addMetaSummaryRow(
+      buildMetaKeyAndValue('session.split', item, opts)
+    );
+
   }
+
 }
 
 // Builds the inner HTML for the custom "meta details" column.
