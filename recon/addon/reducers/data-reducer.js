@@ -26,7 +26,11 @@ const dataInitialState = {
   // Error state
   metaError: null,
   headerError: null,
-  contentError: null
+  contentError: null,
+
+  // loading states
+  contentLoading: false,
+  metaLoading: false
 };
 
 const data = reduxActions.handleActions({
@@ -54,20 +58,27 @@ const data = reduxActions.handleActions({
     currentReconView: newView
   }),
 
+  [ACTION_TYPES.META_RETRIEVE_STARTED]: (state) => ({
+    ...state,
+    metaError: null,
+    metaLoading: true
+  }),
   [ACTION_TYPES.META_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
-    meta: payload
+    meta: payload,
+    metaLoading: false
   }),
   [ACTION_TYPES.META_RETRIEVE_FAILURE]: (state) => ({
     ...state,
     metaError: true,
-    meta: null
+    meta: null,
+    metaLoading: false
   }),
 
   [ACTION_TYPES.SUMMARY_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     headerItems: payload.headerItems,
-    packetFields: payload.packetFields, // temporary until this data comes from packet retrieve actui
+    packetFields: payload.packetFields, // temporary until this data comes from packet retrieve
     headerError: null
   }),
   [ACTION_TYPES.SUMMARY_RETRIEVE_FAILURE]: (state) => ({
@@ -78,17 +89,26 @@ const data = reduxActions.handleActions({
 
   [ACTION_TYPES.RECON_FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
-    files: payload
+    files: payload,
+    contentLoading: false
   }),
 
   [ACTION_TYPES.RECON_PACKETS_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
-    packets: payload.packets
+    packets: payload.packets,
+    contentLoading: false
   }),
 
   [ACTION_TYPES.RECON_CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
     ...state,
-    contentError: payload
+    contentError: payload,
+    contentLoading: false
+  }),
+
+  [ACTION_TYPES.RECON_CONTENT_RETRIEVE_STARTED]: (state) => ({
+    ...state,
+    contentError: null,
+    contentLoading: true
   })
 
 }, dataInitialState);

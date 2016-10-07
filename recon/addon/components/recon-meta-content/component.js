@@ -6,7 +6,8 @@ const { Component } = Ember;
 
 const stateToComputed = ({ data }) => ({
   meta: data.meta,
-  metaError: data.metaError
+  metaError: data.metaError,
+  metaLoading: data.metaLoading
 });
 
 const MetaContentComponent = Component.extend({

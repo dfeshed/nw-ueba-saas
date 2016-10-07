@@ -1,16 +1,23 @@
-{{#if metaError}}
-  <div class="recon-error">
-    {{t 'recon.error.generic'}}
+{{#if metaLoading}}
+  <div class="recon-loader">
+    {{rsa-loader size='larger'}}
   </div>
 {{else}}
-  {{#if meta}}
-    <hbox class="meta-heading">
-      <h2>Related Meta</h2>
-    </hbox>
+  {{#if metaError}}
+    <div class="recon-error">
+      {{t 'recon.error.generic'}}
+    </div>
+  {{else}}
+    {{#if meta}}
+      <hbox class="meta-heading">
+        <h2>Related Meta</h2>
+      </hbox>
 
-    {{#each meta as |item|}}
-      {{recon-meta-content-item item=item}}
-    {{/each}}
+      {{#each meta as |item|}}
+        {{recon-meta-content-item item=item}}
+      {{/each}}
+    {{/if}}
   {{/if}}
 {{/if}}
+
 

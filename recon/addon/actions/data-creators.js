@@ -30,6 +30,8 @@ const { Logger } = Ember;
  * @private
  */
 const _dispatchMeta = (dispatch, dataState) => {
+  dispatch({ type: ACTION_TYPES.META_RETRIEVE_STARTED });
+
   fetchMeta(dataState)
     .then(({ data }) => {
       dispatch({
@@ -64,6 +66,9 @@ const _handleContentError = (dispatch, response, type) => {
  * @private
  */
 const _dispatchReconViewData = (dispatch, { code }, dataState) => {
+
+  dispatch({ type: ACTION_TYPES.RECON_CONTENT_RETRIEVE_STARTED });
+
   // if is file recon, time to kick of request
   // for file recon data
   switch (code) {

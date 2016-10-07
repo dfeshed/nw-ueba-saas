@@ -1,5 +1,5 @@
-import visuals from './visuals';
-import data from './data';
+import visuals from './visuals-reducer';
+import data from './data-reducer';
 
 export default {
   visuals,

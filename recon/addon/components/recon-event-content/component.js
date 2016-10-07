@@ -14,6 +14,7 @@ const {
 const stateToComputed = ({ data }) => ({
   currentReconView: data.currentReconView,
   contentError: data.contentError,
+  contentLoading: data.contentLoading,
   eventId: data.eventId
 });
 

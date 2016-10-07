@@ -1,9 +1,15 @@
 <div class="scroll-box">
-  {{#if contentError}}
-    <div class="recon-error">
-      {{errorMessage}}
+  {{#if contentLoading}}
+    <div class="recon-loader">
+      {{rsa-loader size='larger'}}
     </div>
   {{else}}
-    {{component currentReconView.component}}
+    {{#if contentError}}
+      <div class="recon-error">
+        {{errorMessage}}
+      </div>
+    {{else}}
+      {{component currentReconView.component}}
+    {{/if}}
   {{/if}}
 </div>
