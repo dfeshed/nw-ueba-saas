@@ -150,6 +150,14 @@ export default $.extend({}, BaseTranslations, {
       created: 'ja_Created',
       id: 'ja_Incident ID',
       timestamp: 'ja_timestamp'
+    },
+    list: {
+      title: 'ja_list',
+      createdByUser: 'ja_Author',
+      createdTimeStamp: 'ja_Created',
+      lastModifiedTimeStamp: 'ja_Updated',
+      dataSourceDescription: 'ja_Description',
+      dataSourceName: 'ja_Name'
     }
   },
   about: {

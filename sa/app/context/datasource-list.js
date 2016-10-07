@@ -1,5 +1,51 @@
 export default[
   {
+    dataSourceType: 'LIST',
+    header: ' ' ,
+    footer: '10 Items | Displaying 1 of 5|LAST UPDATED:',
+    title: 'context.list.title',
+
+    columns: [
+      {
+        field: 'dataSourceName',
+        title: 'context.list.dataSourceName',
+        width: '20%',
+        nested: 'dataSourceName',
+        dataType: 'header'
+
+      },
+      {
+        field: 'dataSourceDescription',
+        title: 'context.list.dataSourceDescription',
+        width: '20%',
+        nested: 'dataSourceDescription',
+        dataType: 'header'
+
+      },
+      {
+        field: 'createdByUser',
+        title: 'context.list.createdByUser',
+        width: '20%',
+        nested: 'dataSourceEntryMeta'
+
+      },
+      {
+        field: 'createdTimeStamp',
+        title: 'context.list.createdTimeStamp',
+        nested: 'dataSourceEntryMeta.createdTimeStamp',
+        width: '20%',
+        dataType: 'datetime'
+      },
+      {
+        field: 'lastModifiedTimeStamp',
+        title: 'context.list.lastModifiedTimeStamp',
+        width: '20%',
+        nested: 'dataSourceEntryMeta.lastModifiedTimeStamp',
+        dataType: 'datetime'
+      }
+    ]
+  },
+  {
     dataSourceType: 'Alerts',
     header: '' ,
     footer: '10 Items | Displaying 1 of 5|LAST UPDATED:' ,

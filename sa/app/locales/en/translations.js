@@ -154,6 +154,14 @@ export default $.extend({}, BaseTranslations, {
       id: 'Incident ID',
       timestamp: 'timestamp'
     },
+    list: {
+      title: 'list',
+      createdByUser: 'Author',
+      createdTimeStamp: 'Created',
+      lastModifiedTimeStamp: 'Updated',
+      dataSourceDescription: 'Description',
+      dataSourceName: 'Name'
+    },
     lc: {
       reviewStatus: 'Review Status',
       status: 'Status',

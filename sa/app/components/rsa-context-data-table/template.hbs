@@ -1,38 +1,50 @@
-<div class="heading-text" >
+<header class="heading-text">
   {{title}}{{headerdata}}
-  <span >{{rsa-icon style='lined' name='account-circle-1'}}</span>
-  <span >{{rsa-icon style='lined' name='information-circle'}}</span>
-  <span >{{rsa-icon style='lined' name='notepad-edit'}} </span>
-</div>
+  <span>{{rsa-icon style='lined' name='account-circle-1'}}</span>
+  <span>{{rsa-icon style='lined' name='information-circle'}}</span>
+  <span>{{rsa-icon style='lined' name='notepad-edit'}}</span>
+</header>
+<section class="rsa-context-panel__context-data-table__panel">
+  {{#each data as |columnData count|}}
+    {{#rsa-data-table lazy=true items=columnData.resultList columnsConfig=modulesColumnListConfig }}
+      {{#if (eq count 0)}}
+        {{#rsa-data-table/header as |column|}}
+          <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">{{if column.title (t column.title) column.field}}</span>
+        {{/rsa-data-table/header}}
+      {{/if}}
 
-<div class="rsa-context-panel__context-data-table__panel">
-  {{#rsa-data-table lazy=true items=data columnsConfig=modulesColumnListConfig}}
-    {{#rsa-data-table/header as |column|}}
-      <span class="js-move-handle js-header-cell {{column.class}} title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">{{if column.title (t column.title) column.field}}</span>
-    {{/rsa-data-table/header}}
-    {{#rsa-data-table/body as |item index column|}}
-      {{#if (is-equal column.dataType 'riskscore')}}
-        {{#rsa-data-table/body-cell item=item index=index column=column}}
-          {{component column.componentClass item=item index=index column=column
-            score=(get item column.nested ) isInline=true
-            style=(context/risk-score-to-badge-level (get item column.nested ))}}
-        {{/rsa-data-table/body-cell}}
-      {{else if (is-equal column.dataType 'datetime')}}
-        {{#rsa-data-table/body-cell item=item index=index column=column}}
-          {{#if (is-equal column.nested '')}}
-            {{rsa-content-datetime timestamp=item }}
-          {{else}}
-            {{rsa-content-datetime timestamp=(get item column.nested )  }}
-          {{/if}}
-        {{/rsa-data-table/body-cell}}
-      {{else}}
-        {{#if (is-equal column.nested '')}}
+      {{#rsa-data-table/body as |item index column|}}
+        {{#if (eq column.dataType 'header')}}
+          {{ rsa-data-table/body-cell item=columnData index=index column=column isInline=true}}
+        {{else if (eq column.dataType 'riskscore')}}
+          {{#rsa-data-table/body-cell item=item index=index column=column}}
+            {{component column.componentClass
+              item=item
+              index=index
+              column=column
+              score=(get item column.nested )
+              isInline=true
+              style=(context/risk-score-to-badge-level (get item column.nested ))}}
+          {{/rsa-data-table/body-cell}}
+
+        {{else if (eq column.dataType 'datetime')}}
+          {{#rsa-data-table/body-cell item=item index=index column=column}}
+            {{#if (eq column.nested '')}}
+              {{rsa-content-datetime timestamp=item   withTimeAgo=true displayTime=true displayDate=true}}
+            {{else}}
+              {{rsa-content-datetime timestamp=(get item column.nested )  }}
+            {{/if}}
+          {{/rsa-data-table/body-cell}}
+
+        {{else if (eq column.nested '')}}
           {{rsa-data-table/body-cell item=item index=index column=column isInline=true }}
+
         {{else}}
           {{rsa-data-table/body-cell item=(get item column.nested) index=index column=column isInline=true }}
+
         {{/if}}
-      {{/if}}
-    {{/rsa-data-table/body}}
-  {{/rsa-data-table}}
-</div>
-<div class="footer-text">{{footerdata}}</div>
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  {{/each}}
+</section>
+<footer class="footer-text"></footer>

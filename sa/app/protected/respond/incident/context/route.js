@@ -137,10 +137,11 @@ export default Route.extend({
         break;
       default:
         {
-          set(this.currentModel.contextData, contextData.dataSourceType, contextData.resultList);
+          const { dataSourceType } = contextData;
+          let { contextData: allContextData } = this.currentModel;
+          let allSourceTypeData = allContextData[dataSourceType] || [];
+          set(allContextData, dataSourceType, allSourceTypeData.concat(contextData));
         }
     }
-
   }
-
 });
