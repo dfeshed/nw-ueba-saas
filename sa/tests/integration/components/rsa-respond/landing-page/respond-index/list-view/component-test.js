@@ -1,4 +1,4 @@
-import { moduleForComponent, test, skip } from 'ember-qunit';
+import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import IncidentsCube from 'sa/utils/cube/incidents';
@@ -84,13 +84,19 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
 });
 
 test('it renders', function(assert) {
+  const done = assert.async();
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   assert.equal(this.$('.rsa-respond-list__filter-panel').length, 1, 'Filter panel is present');
   assert.equal(this.$('.rsa-data-table').length, 1, 'Data table is present');
+
+  setTimeout(function() {
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Priority filter works');
+    done();
+  }, 100);
 });
 
-test('filter panel renders', function(assert) {
+test('Filter panel renders', function(assert) {
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   assert.ok(this.$('.rsa-respond-list__filter-panel__priority'), 'Priority filter is present');
@@ -107,15 +113,13 @@ test('filter panel renders', function(assert) {
   assert.ok(this.$('.rsa-respond-list__filter-panel__reset-button'), 'Filter button is present');
 });
 
-skip('Priority filter affects the number of incidents on screen', function(assert) {
-  const done = assert.async();
+test('Priority filter affects the number of incidents on screen', function(assert) {
+  const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button .rsa-form-button');
+  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   setTimeout(function() {
-    const totalIncidentCount = this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length;
-
     // selecting priority MEDIUM
     this.$('.rsa-respond-list__filter-panel__priority .priority-1 input:first').prop('checked', true).trigger('change');
 
@@ -125,22 +129,22 @@ skip('Priority filter affects the number of incidents on screen', function(asser
       resetButton.click();
 
       setTimeout(function() {
-        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, totalIncidentCount, 'Reset-button resets selected priority filters');
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected priority filters');
         done();
-      }, 50);
-    }, 50);
-  }, 50);
+      }, 100);
+      done();
+    }, 100);
+    done();
+  }, 100);
 });
 
-skip('Status filter affects the number of incidents on screen', function(assert) {
-  const done = assert.async();
+test('Status filter affects the number of incidents on screen', function(assert) {
+  const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button .expand');
+  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   setTimeout(function() {
-    const totalIncidentCount = this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length;
-
     // selecting status ASSIGNED
     this.$('.rsa-respond-list__filter-panel__status .status-1 input:first').prop('checked', true).trigger('change');
 
@@ -150,22 +154,22 @@ skip('Status filter affects the number of incidents on screen', function(assert)
       resetButton.click();
 
       setTimeout(function() {
-        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, totalIncidentCount, 'Reset-button resets selected Status filters');
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected Status filters');
         done();
-      }, 50);
-    }, 50);
-  }, 50);
+      }, 100);
+      done();
+    }, 100);
+    done();
+  }, 100);
 });
 
-skip('Assignee filter affects the number of incidents on screen', function(assert) {
-  const done = assert.async();
+test('Assignee filter affects the number of incidents on screen', function(assert) {
+  const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button .expand');
+  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   setTimeout(function() {
-    const totalIncidentCount = this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length;
-
     // selecting assingee 1
     this.$('.rsa-respond-list__filter-panel__assignee-selector .prompt').click();
     this.$('.rsa-respond-list__filter-panel__assignee-selector select').val('1').trigger('change');
@@ -174,23 +178,24 @@ skip('Assignee filter affects the number of incidents on screen', function(asser
       assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 1, 'Assignee filter works');
 
       resetButton.click();
+
       setTimeout(function() {
-        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, totalIncidentCount, 'Reset-button resets selected Assignee filters');
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected Assignee filters');
         done();
-      }, 50);
-    }, 50);
-  }, 50);
+      }, 100);
+      done();
+    }, 100);
+    done();
+  }, 100);
 });
 
-skip('Category filters affects the number of incidents on screen', function(assert) {
-  const done = assert.async();
+test('Category filter affects the number of incidents on screen', function(assert) {
+  const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button .expand');
+  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   setTimeout(function() {
-    const totalIncidentCount = this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length;
-
     // selecting first Category
     this.$('.rsa-respond-list__filter-panel__category .rsa-form-tag-manager .rsa-form-tag-manager__tree-toggle__icon').click();
     this.$('.rsa-respond-list__filter-panel__category .rsa-form-tag-manager .rsa-content-tree .rsa-content-accordion:first-child').click();
@@ -200,10 +205,13 @@ skip('Category filters affects the number of incidents on screen', function(asse
       assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 1, 'Category filter works');
 
       resetButton.click();
+
       setTimeout(function() {
-        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, totalIncidentCount, 'Reset-button resets selected Category filters');
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected Category filters');
         done();
-      }, 50);
-    }, 50);
-  }, 50);
+      }, 100);
+      done();
+    }, 100);
+    done();
+  }, 100);
 });
