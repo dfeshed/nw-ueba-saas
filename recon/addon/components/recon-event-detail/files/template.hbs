@@ -12,6 +12,8 @@
         {{#each item.hashes as |hash|}}
           <span class="recon-file-hash">{{hash.type}}</span>: {{hash.value}} <br>
         {{/each}}
+      {{else if (eq column.field "fileSize")}}
+        {{rsa-content-memsize size=(get item column.field)}}
       {{else}}
         {{get item column.field}}
       {{/if}}

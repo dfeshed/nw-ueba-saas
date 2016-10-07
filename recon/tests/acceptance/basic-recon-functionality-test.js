@@ -55,7 +55,7 @@ test('change recon views', function(assert) {
   andThen(function() {
     run.later(function() {
       const str = find('.recon-event-content .scroll-box').text().trim().replace(/\s/g, '').substring(0, 100);
-      assert.equal(str, 'FileNameExtensionMIMETypeFileSizeHashesa_file_name.docxdocxapplication/vnd.openxmlformats-officedocu', 'Recon can change views');
+      assert.equal(str, 'FileNameMIMETypeFileSizeHashesa_file_name.docxapplication/vnd.openxmlformats-officedocument.wordproc', 'Recon can change views');
     }, 1000);
   });
 

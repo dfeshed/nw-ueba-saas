@@ -7,11 +7,6 @@ export default [
     width: 75
   },
   {
-    field: 'extension',
-    title: 'recon.files.extension',
-    width: 65
-  },
-  {
     field: 'mimeType',
     title: 'recon.files.mimeType',
     width: 75
@@ -19,7 +14,7 @@ export default [
   {
     field: 'fileSize',
     title: 'recon.files.fileSize',
-    width: 50
+    width: 80
   },
   {
     field: 'hashes',
