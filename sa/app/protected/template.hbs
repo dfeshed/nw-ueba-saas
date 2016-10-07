@@ -1,1 +1,3 @@
-{{outlet}}
+{{#if session.isAuthenticated}}
+  {{outlet}}
+{{/if}}

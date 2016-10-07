@@ -1,8 +1,8 @@
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import wait from 'ember-test-helpers/wait';
-import sinon from 'sinon';
+// import wait from 'ember-test-helpers/wait';
+// import sinon from 'sinon';
 
 const {
   Service
@@ -25,17 +25,17 @@ moduleForComponent('rsa-application-action-bar', 'Integration | Component | rsa-
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{rsa-application-action-bar}}`);
   assert.equal(this.$().find('.rsa-application-action-bar').length, 1);
-  assert.equal(this.$().find('.rsa-application-action-bar .incident-queue-trigger').length, 1);
+  // assert.equal(this.$().find('.rsa-application-action-bar .incident-queue-trigger').length, 1);
 });
 
-test('it calls toggleIncidentQueue on layoutService when clicking the trigger', function(assert) {
-  this.render(hbs `{{rsa-application-action-bar}}`);
-
-  let spy = sinon.spy(this.get('layoutService'), 'toggleIncidentQueue');
-
-  this.$().find('.incident-queue-trigger').click();
-
-  return wait().then(function() {
-    assert.ok(spy.calledOnce);
-  });
-});
+// test('it calls toggleIncidentQueue on layoutService when clicking the trigger', function(assert) {
+//   this.render(hbs `{{rsa-application-action-bar}}`);
+//
+//   let spy = sinon.spy(this.get('layoutService'), 'toggleIncidentQueue');
+//
+//   this.$().find('.incident-queue-trigger').click();
+//
+//   return wait().then(function() {
+//     assert.ok(spy.calledOnce);
+//   });
+// });

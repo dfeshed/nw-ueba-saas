@@ -1,5 +1,17 @@
 .rsa-login {
   color: $applicationLoginTypeColor;
+  background-image: url('images/NW-Background-Blur.jpg');
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-attachment: fixed;
+  background-size: 100% 100%;
+  height: 100vh;
+  width: 100vw;
+  position: absolute;
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
 
   .login-wrapper {
     box-sizing: border-box;
@@ -40,7 +52,7 @@
     padding: rsa-whitespace(more) rsa-whitespace(more);
 
     .rsa-logo {
-      height: 2rem;      
+      height: 2rem;
       overflow: hidden;
       white-space: nowrap;
       vertical-align: middle;

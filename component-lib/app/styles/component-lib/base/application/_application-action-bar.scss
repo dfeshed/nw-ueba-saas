@@ -1,6 +1,6 @@
 .rsa-application-action-bar {
   position: absolute;
-  top: 0;
+  top: $applicationHeaderHeight;
   left: 0;
   width: $applicationActionBarWidth;
   bottom: 0;
@@ -8,8 +8,24 @@
   @include rsa-layer(controls);
 
   .rsa-form-button-wrapper {
-    margin: 2px auto 0;
-    height: 38px;
+    text-align: center;
+    display: block;
+    border-bottom: 1px solid rsa-color(gray, dark);
+
+    .rsa-form-button {
+      height: $applicationActionBarWidth;
+      line-height: $applicationActionBarWidth;
+      padding: 0;
+      width: $applicationActionBarWidth;
+      vertical-align: middle;
+
+      i {
+        position: relative;
+        top: -1px;
+        left: -1px;
+      }
+    }
+
 
     &.is-active {
       i {

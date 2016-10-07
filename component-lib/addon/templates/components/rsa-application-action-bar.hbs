@@ -1,11 +1,11 @@
-{{#rsa-form-button
+{{!-- {{#rsa-form-button
   isIconOnly=true
   click=(action 'toggleIncidentQueue')
   class=(if layoutService.incidentQueueActive 'incident-queue-trigger is-active' 'incident-queue-trigger')}}
   {{rsa-icon
     name="inbox"
     style=(if layoutService.incidentQueueActive 'filled' 'lined')}}
-{{/rsa-form-button}}
+{{/rsa-form-button}} --}}
 
 {{#if (eq layoutService.actionConfig 'incident')}}
   {{#rsa-form-button

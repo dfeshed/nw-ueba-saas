@@ -1,36 +1,14 @@
+<span title={{concat (t 'application.title') ' ' (t 'application.version')}}>
+  {{rsa-logo animated=false}}
+</span>
+
+
 {{#if session.isAuthenticated}}
   {{yield}}
 {{/if}}
 
 <div class="global">
-  {{#rsa-form-button dropdown="standard" class="user-preferences-trigger"}}
-    {{rsa-icon
-      name="account-circle-1"
-      style='lined'}}
-    <span class="username">{{usernameFormat.username}}</span>
-    <ul>
-      {{#rsa-application-modal
-        eventId="userPreferences"
-        tagName="li"
-        label=(if session.isAuthenticated (t 'userPreferences.preferencesFor' user=usernameFormat.username) (t 'userPreferences.preferences'))}}
-        <span class="js-test-user-preferences-modal modal-trigger">
-          {{rsa-icon name='settings-2' style='lined'}}
-          {{t 'userPreferences.preferences'}}
-        </span>
-        <div class="modal-content">
-          {{rsa-application-user-preferences}}
-        </div>
-      {{/rsa-application-modal}}
-
-      {{#if session.isAuthenticated}}
-        <li {{action 'logout'}}>
-          {{rsa-icon name="logout-1" style="lined"}} {{t 'login.logout'}}
-        </li>
-      {{/if}}
-    </ul>
-  {{/rsa-form-button}}
-
-  {{#if session.isAuthenticated}}
+  {{!-- {{#if session.isAuthenticated}}
     {{#rsa-form-button
       isIconOnly=true
       click=(action 'toggleNotifications')
@@ -38,6 +16,29 @@
       {{rsa-icon
         name="alarm"
         style=(if layoutService.notificationsActive 'filled' 'lined')}}
+    {{/rsa-form-button}}
+  {{/if}} --}}
+
+  {{#rsa-application-modal
+    eventId="userPreferences"
+    label=(if session.isAuthenticated (t 'userPreferences.preferencesFor'
+    user=usernameFormat.username) (t 'userPreferences.preferences'))}}
+    <span class="user-preferences-trigger js-test-user-preferences-modal modal-trigger">
+      {{#rsa-form-button isIconOnly=true}}
+        {{rsa-icon name='settings-2' style='lined'}}
+      {{/rsa-form-button}}
+
+    </span>
+    <div class="modal-content">
+      {{rsa-application-user-preferences}}
+    </div>
+  {{/rsa-application-modal}}
+
+  {{#if session.isAuthenticated}}
+    {{#rsa-form-button
+      isIconOnly=true
+      click=(action 'logout')}}
+      {{rsa-icon name="logout-1" style="lined"}}
     {{/rsa-form-button}}
   {{/if}}
 </div>

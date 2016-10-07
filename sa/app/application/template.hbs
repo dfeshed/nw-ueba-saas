@@ -12,7 +12,7 @@
 {{/rsa-application-modal}}
 
 {{#if session.isAuthenticated}}
-  {{#rsa-application-header}}
+  {{#rsa-application-header version=version title=title}}
     {{#if features.showRespondRoute}}
       {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}{{t "respond.title"}}{{/link-to}}
     {{/if}}
@@ -23,19 +23,16 @@
     <a href="/live/search" class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
     <a href="/admin/appliances" class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
   {{/rsa-application-header}}
-{{/if}}
 
-{{#if session.isAuthenticated}}
   {{rsa-application-action-bar}}
-{{/if}}
 
-{{#rsa-application-content}}
+  {{#rsa-application-content}}
+    {{outlet}}
+  {{/rsa-application-content}}
+{{else}}
   {{outlet}}
-{{/rsa-application-content}}
-
-{{#if session.isAuthenticated}}
-  {{rsa-application-footer title=(t 'application.title') version=(t 'application.version')}}
 {{/if}}
+
 
 {{rsa-application-notifications-panel}}
 {{rsa-application-incident-queue-panel}}

@@ -4,9 +4,14 @@
   top: $applicationHeaderHeight;
   left: $applicationActionBarWidth;
   right: 0;
-  bottom: $applicationFooterHeight;
+  bottom: 0;
   overflow-y: scroll;
   transition: blur .65s, -webkit-filter .65s;
+
+  &.is-full-page {
+    top: 0;
+    left: 0;
+  }
 
   &.has-blur {
     transition: blur .65s, -webkit-filter .65s;
