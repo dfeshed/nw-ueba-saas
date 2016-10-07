@@ -9,8 +9,10 @@ export default Component.extend({
 
   classNames: ['rsa-nav-tab'],
 
-  classNameBindings: ['isActive'],
+  classNameBindings: ['isActive', 'isCompact'],
 
-  isActive: false
+  isActive: false,
+
+  isCompact: false
 
 });

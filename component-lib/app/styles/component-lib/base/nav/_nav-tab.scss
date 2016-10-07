@@ -9,6 +9,19 @@
   flex-grow: 1;
   box-sizing: border-box;
 
+  .imagery {
+    font-size: 2rem;
+    text-align: center;
+    margin-bottom: rsa-whitespace(less);
+    color: $navTabImageryTypeColor;
+  }
+
+  .label {
+    @include rsa-font(navigation);
+    text-align: center;
+    color: $navTabLabelTypeColor;
+  }
+
   &:hover {
     background-color: $navTabHoverBackgroundColor;
     cursor: pointer;
@@ -26,16 +39,20 @@
     }
   }
 
-  .imagery {
-    font-size: 2rem;
+  &.is-compact {
+    padding: 0;
     text-align: center;
-    margin-bottom: rsa-whitespace(less);
-    color: $navTabImageryTypeColor;
+    line-height: 3rem;
+
+    .imagery {
+      display: none;
+    }
+
+    .label {
+      @include rsa-font(navigation);
+      display: inline-block;
+      margin: 0;
+    }
   }
 
-  .label {
-    @include rsa-font(navigation);
-    text-align: center;
-    color: $navTabLabelTypeColor;
-  }
 }

@@ -6,7 +6,7 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member
-        title="Example"
+        title="Default"
         subtitle="To use the tab, simply add an action click handler and call whatever action you need in the consuming scope."}}
         <div class="rsa-nav-tab-group">
           {{#rsa-nav-tab isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
@@ -45,6 +45,48 @@
             <div>
               &#123;{#rsa-nav-tab isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
               <div>&lt;div class="imagery">3&lt;/div></div>
+              <div>&lt;div class="label">Option 3&lt;/div></div>
+              &#123;{/rsa-nav-tab}}
+            </div>
+            &lt;/div>
+          </div>
+        </code>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Compact"
+        subtitle="To use the tab, simply add an action click handler and call whatever action you need in the consuming scope."}}
+        <div class="rsa-nav-tab-group">
+          {{#rsa-nav-tab isCompact=true isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+            <div class="label">Option 1</div>
+          {{/rsa-nav-tab}}
+
+          {{#rsa-nav-tab isCompact=true isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+            <div class="label">Option 2</div>
+          {{/rsa-nav-tab}}
+
+          {{#rsa-nav-tab isCompact=true isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
+            <div class="label">Option 3</div>
+          {{/rsa-nav-tab}}
+        </div>
+
+        <code>
+          <div>
+            &lt;div class="rsa-nav-tab-group">
+            <div>
+              &#123;{#rsa-nav-tab isCompact=true isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+              <div>&lt;div class="label">Option 1&lt;/div></div>
+              &#123;{/rsa-nav-tab}}
+            </div>
+
+            <div>
+              &#123;{#rsa-nav-tab isCompact=true isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+              <div>&lt;div class="label">Option 2&lt;/div></div>
+              &#123;{/rsa-nav-tab}}
+            </div>
+
+            <div>
+              &#123;{#rsa-nav-tab isCompact=true isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
               <div>&lt;div class="label">Option 3&lt;/div></div>
               &#123;{/rsa-nav-tab}}
             </div>
