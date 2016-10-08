@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.event.store;
 
 import fortscale.aggregation.feature.event.*;
+import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
 import fortscale.utils.mongodb.FIndex;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

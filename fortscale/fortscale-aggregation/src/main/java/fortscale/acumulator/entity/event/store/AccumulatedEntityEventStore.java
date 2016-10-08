@@ -1,6 +1,6 @@
 package fortscale.acumulator.entity.event.store;
 
-import fortscale.acumulator.aggregation.AccumulatedAggregatedFeatureEvent;
+import fortscale.acumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 
 import java.util.List;
 
