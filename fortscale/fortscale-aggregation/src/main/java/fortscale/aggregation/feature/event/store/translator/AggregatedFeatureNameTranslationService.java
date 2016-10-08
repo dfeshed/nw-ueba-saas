@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.event.store;
+package fortscale.aggregation.feature.event.store.translator;
 
 import org.apache.commons.lang3.StringUtils;
 

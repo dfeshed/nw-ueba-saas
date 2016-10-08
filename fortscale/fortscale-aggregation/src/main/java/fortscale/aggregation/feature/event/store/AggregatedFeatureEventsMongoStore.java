@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.event.*;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.logging.Logger;
+import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
