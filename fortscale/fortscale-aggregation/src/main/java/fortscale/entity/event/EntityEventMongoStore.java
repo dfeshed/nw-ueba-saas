@@ -3,10 +3,10 @@ package fortscale.entity.event;
 import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.domain.core.EntityEvent;
+import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.collections.ListUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -15,20 +15,18 @@ import org.springframework.data.mongodb.core.index.Index;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EntityEventMongoStore  implements ScoredEventsCounterReader {
-	private static final String COLLECTION_NAME_PREFIX = "scored_";
-	private static final String COLLECTION_NAME_SEPARATOR = "__";
+
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 
 	@Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
 	private List<String> backupCollectionNamesPrefixes;
-	@Value("${streaming.event.field.type.entity_event}")
-	private String eventTypeFieldValue;
 	@Value("${fortscale.scored.entity.event.store.page.size}")
 	private int storePageSize;
 	@Autowired
@@ -37,6 +35,8 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private MongoDbUtilService mongoDbUtilService;
 	@Autowired
 	private EntityEventConfService entityEventConfService;
+	@Autowired
+	private EntityEventTranslationService translationService;
 
 	private Map<String, List<EntityEvent>> collectionToEntityEventListMap = new HashMap<>();
 	private List<String> allScoredEntityEventCollectionNames;
@@ -70,10 +70,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	}
 
 	private String getCollectionName(String entityEventType) {
-		return StringUtils.join(
-				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
-				eventTypeFieldValue, COLLECTION_NAME_SEPARATOR,
-				entityEventType);
+		return translationService.toCollectionName(entityEventType);
 	}
 
 	private String getCollectionName(EntityEvent entityEvent) {
@@ -155,5 +152,10 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		}
 
 		return totalNumberOfEvents;
+	}
+
+	public List<EntityEvent> findEntityEventsByTimeRange(Instant fromCursor, Instant toCursor, String featureName) {
+		// TODO: 10/9/16
+		return null;
 	}
 }

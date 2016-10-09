@@ -11,12 +11,13 @@ import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderSe
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationServiceConfig;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.entity.event.*;
+import fortscale.entity.event.translator.EntityEventTranslationServiceConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(AggregatedFeatureNameTranslationServiceConfig.class)
+@Import({AggregatedFeatureNameTranslationServiceConfig.class, EntityEventTranslationServiceConfig.class})
 public class ModelBuildingDependencies {
 
 	@Bean
