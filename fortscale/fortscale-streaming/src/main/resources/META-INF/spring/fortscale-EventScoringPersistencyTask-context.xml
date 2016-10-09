@@ -16,8 +16,7 @@
 
     <bean id="aggregatedEventPersistencyHandler" class="fortscale.streaming.service.event.AggregatedEventPersistencyHandler"/>
     <bean id="entityEventPersistencyHandler" class="fortscale.streaming.service.event.EntityEventPersistencyHandler"/>
-    <bean class="fortscale.entity.event.translator.EntityEventTranslationService"/>
-    <bean id="entityEventMongoStore" class="fortscale.entity.event.EntityEventMongoStore"/>
+    <bean class="fortscale.entity.event.translator.EntityEventTranslationServiceConfig"/>    <bean id="entityEventMongoStore" class="fortscale.entity.event.EntityEventMongoStore"/>
     <bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService"/>
     <bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
     <bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>

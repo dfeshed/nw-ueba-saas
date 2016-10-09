@@ -4,7 +4,6 @@ import com.github.fakemongo.Fongo;
 import fortscale.accumulator.accumulator.AccumulationParams;
 import fortscale.accumulator.aggregation.config.AggregatedFeatureEventsAccumulatorConfig;
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
-import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.accumulator.translator.AccumulatedFeatureTranslator;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
@@ -46,10 +45,6 @@ public class AggregatedFeatureEventsAccumulatorTest {
         private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
         @Autowired
         private StatsService statsService;
-        @Autowired
-        private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
-        @Autowired
-        private AccumulatedAggregatedFeatureEventStore accumulatedFeatureEventStore;
 
         private MongoDbFactory mongoDbFactory() {
             Fongo fongo = new Fongo(FORTSCALE_TEST_DB);
@@ -62,10 +57,6 @@ public class AggregatedFeatureEventsAccumulatorTest {
             return new MongoTemplate(mongoDbFactory());
         }
 
-        @Bean
-        public AggregatedFeatureEventsAccumulator aggregatedFeatureEventsAccumulator() {
-            return new AggregatedFeatureEventsAccumulator(aggregatedFeatureEventsMongoStore, accumulatedFeatureEventStore, statsService);
-        }
 
         @Bean
         public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {

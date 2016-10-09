@@ -13,6 +13,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 
 import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 /**
@@ -25,6 +26,7 @@ public class EntityEventAccumulator extends AccumulatorBase {
     private final AccumulatedEntityEventStore accumulatedEntityEventStore;
     private final StatsService statsService;
     private Map<String, EntityEventAccumulatorMetrics> metricsMap;
+    private Map<String, AccumulatedEntityEvent> accumulatedEntityEventMap;
 
     public EntityEventAccumulator(EntityEventMongoStore entityEventMongoStore,
                                   AccumulatedEntityEventStore accumulatedEntityEventStore,
@@ -43,14 +45,28 @@ public class EntityEventAccumulator extends AccumulatorBase {
     }
 
     @Override
-    public void accumulateEvents(String featureName, Instant fromCursor, Instant toCursor) {
+    public void accumulateEvents(String featureName, final Instant fromCursor, final Instant toCursor) {
+        accumulatedEntityEventMap = new HashMap<>();
+
         EntityEventAccumulatorMetrics metrics = getMetrics(featureName);
         metrics.fromTime = fromCursor.toEpochMilli();
         metrics.toTime = toCursor.toEpochMilli();
-        List<EntityEvent> entityEvents =
-                entityEventMongoStore.findEntityEventsByTimeRange(fromCursor, toCursor, featureName);
+        Instant creationTime = Instant.now();
+        Instant fromHourCursor = fromCursor;
+
+        // for each hour in a day - that way we are not uploading full-day of Aggr into the memory
+        while (fromHourCursor.isBefore(toCursor)) {
+            Instant nextHourCursor = fromHourCursor.plus(1, ChronoUnit.HOURS);
+            if (nextHourCursor.isAfter(toCursor)) {
+                nextHourCursor = toCursor;
+            }
+            List<EntityEvent> entityEvents =
+                    entityEventMongoStore.findEntityEventsByTimeRange(fromHourCursor, nextHourCursor, featureName);
+            accumulateEvents(entityEvents, fromCursor, toCursor, creationTime);
+            fromHourCursor = nextHourCursor;
+        }
         Collection<AccumulatedEntityEvent> accumulatedEvents =
-                accumulateEvents(entityEvents, fromCursor, toCursor);
+                accumulatedEntityEventMap.values();
         accumulatedEntityEventStore.insert(accumulatedEvents, featureName);
     }
 
@@ -59,9 +75,8 @@ public class EntityEventAccumulator extends AccumulatorBase {
         return accumulatedEntityEventStore.getLastAccumulatedEventStartTime(featureName);
     }
 
-    private Collection<AccumulatedEntityEvent> accumulateEvents(List<EntityEvent> events, Instant from, Instant to) {
-        Instant creationTime = Instant.now();
-        Map<String, AccumulatedEntityEvent> accumulatedEntityEventMap = new HashMap<>();
+    private Collection<AccumulatedEntityEvent> accumulateEvents(List<EntityEvent> events, Instant from, Instant to, Instant creationTime) {
+
         for (EntityEvent entityEvent : events) {
             String contextId = entityEvent.getContextId();
             // create accumulated event for this context if none exists
@@ -76,8 +91,7 @@ public class EntityEventAccumulator extends AccumulatorBase {
 
                 String featureName = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_NAME);
                 Map<String, List<Double>> aggregatedFeatureEventsValuesMap = accumulatedEvent.getAggregatedFeatureEventsValuesMap();
-                if(!aggregatedFeatureEventsValuesMap.containsKey(featureName))
-                {
+                if (!aggregatedFeatureEventsValuesMap.containsKey(featureName)) {
                     aggregatedFeatureEventsValuesMap.put(featureName, new ArrayList<>());
                 }
                 List<Double> scoreList = aggregatedFeatureEventsValuesMap.get(featureName);

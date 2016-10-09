@@ -40,12 +40,11 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
         this.translator = translator;
         this.statsService = statsService;
         this.featureMetricsMap = new HashMap<>();
-        this.existingCollections = new HashSet<String>();
+        this.existingCollections = new HashSet<>();
         String eventType = translator.getAggregatedFeatureNameTranslationService().getEventType();
         String collectionNameRegex = String.format(".*%s.*%s$", eventType, AccumulatedFeatureTranslator.ACCUMULATED_COLLECTION_SUFFIX);
         existingCollections = getACMExistingCollections(mongoTemplate,collectionNameRegex);
     }
-
 
 
     private String createCollectionIfNotExist(String featureName) {
@@ -78,8 +77,10 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
 
         // TODO: 10/6/16 replace in bulk operation at fortscale 3.0
         try {
-            String collectionName = createCollectionIfNotExist(featureName);
-            mongoTemplate.insert(events, collectionName);
+            if(!events.isEmpty()) {
+                String collectionName = createCollectionIfNotExist(featureName);
+                mongoTemplate.insert(events, collectionName);
+            }
         } catch (Exception e) {
             getMetics(featureName).insertFailure++;
             logger.error("exception occurred while inserting to accumulated collection of feature={}", featureName, e);

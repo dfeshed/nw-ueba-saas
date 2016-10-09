@@ -50,7 +50,7 @@ public abstract class AccumulatorBase implements Accumulator {
 
     protected abstract void beforeRun(AccumulationParams params);
 
-    public abstract void accumulateEvents(String featureName, Instant fromCursor, Instant toCursor);
+    public abstract void accumulateEvents(String featureName, final Instant fromCursor, final Instant toCursor);
 
 
 }
