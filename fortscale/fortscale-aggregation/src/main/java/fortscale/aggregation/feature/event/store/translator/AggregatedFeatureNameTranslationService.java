@@ -32,4 +32,7 @@ public class AggregatedFeatureNameTranslationService {
                 aggregatedFeatureName);
     }
 
+    public String getEventType() {
+        return eventType;
+    }
 }

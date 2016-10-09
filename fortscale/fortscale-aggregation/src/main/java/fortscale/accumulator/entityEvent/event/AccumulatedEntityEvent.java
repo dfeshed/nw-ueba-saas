@@ -1,4 +1,4 @@
-package fortscale.acumulator.entity.event;
+package fortscale.accumulator.entityEvent.event;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -21,7 +21,7 @@ import java.util.Map;
 public class AccumulatedEntityEvent {
 
     // --- field names as they appear in MongoDB ---
-    private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME = "start_time";
+    public static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME = "start_time";
     private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_END_TIME = "end_time";
     private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID = "contextId";
     private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_AGGREGATED_FEATURE_EVENTS_VALUES_MAP = "aggregated_feature_events_values_map";
@@ -53,22 +53,26 @@ public class AccumulatedEntityEvent {
         aggregatedFeatureEventsValuesMap = new HashMap<>();
     }
 
+    public AccumulatedEntityEvent(Instant startTime, Instant endTime, String contextId, Instant creationTime)
+    {
+        this();
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.contextId = contextId;
+        this.creationTime = creationTime;
+    }
+
     /**
      * C'tor
-     * @param id
      * @param startTime
      * @param endTime
      * @param contextId
      * @param aggregatedFeatureEventsValuesMap
      * @param creationTime
      */
-    public AccumulatedEntityEvent(String id, Instant startTime, Instant endTime, String contextId, Map<String, List<Double>> aggregatedFeatureEventsValuesMap, Instant creationTime) {
-        this.id = id;
-        this.startTime = startTime;
-        this.endTime = endTime;
-        this.contextId = contextId;
+    public AccumulatedEntityEvent(Instant startTime, Instant endTime, String contextId, Map<String, List<Double>> aggregatedFeatureEventsValuesMap, Instant creationTime) {
+        this(startTime,endTime,contextId,creationTime);
         this.aggregatedFeatureEventsValuesMap = aggregatedFeatureEventsValuesMap;
-        this.creationTime = creationTime;
     }
 
     // --- Getters/setters ---

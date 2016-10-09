@@ -1,8 +1,8 @@
-package fortscale.acumulator.aggregation.config;
+package fortscale.accumulator.aggregation.config;
 
-import fortscale.acumulator.aggregation.AggregatedFeatureEventsAccumulator;
-import fortscale.acumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
-import fortscale.acumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig;
+import fortscale.accumulator.aggregation.AggregatedFeatureEventsAccumulator;
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
+import fortscale.accumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.config.AggregatedFeatureEventsMongoStoreConfig;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -11,9 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
-/**
- * Created by barak_schuster on 10/8/16.
- */
 @Configuration
 @Import({AccumulatedAggregatedFeatureEventStoreConfig.class,
         AggregatedFeatureEventsMongoStoreConfig.class})

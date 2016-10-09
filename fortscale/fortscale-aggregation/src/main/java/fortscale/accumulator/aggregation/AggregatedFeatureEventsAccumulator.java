@@ -1,28 +1,26 @@
-package fortscale.acumulator.aggregation;
+package fortscale.accumulator.aggregation;
 
-import fortscale.acumulator.AccumulationParams;
-import fortscale.acumulator.Accumulator;
-import fortscale.acumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
-import fortscale.acumulator.aggregation.metrics.AggregatedFeatureEventsAccumulatorMetrics;
-import fortscale.acumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
+import fortscale.accumulator.accumulator.AccumulationParams;
+import fortscale.accumulator.accumulator.AccumulatorBase;
+import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
+import fortscale.accumulator.aggregation.metrics.AggregatedFeatureEventsAccumulatorMetrics;
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
 import java.time.Instant;
-import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static fortscale.acumulator.AccumulationParams.TimeFrame.DAILY;
-
 /**
+ * Accumulates several {@link AggrEvent} into accumulated {@link AccumulatedAggregatedFeatureEvent} per contextId by daily resolution
  * Created by barak_schuster on 10/6/16.
  */
-public class AggregatedFeatureEventsAccumulator implements Accumulator {
+public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
 
     private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsAccumulator.class);
     private final AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
@@ -39,49 +37,44 @@ public class AggregatedFeatureEventsAccumulator implements Accumulator {
     public AggregatedFeatureEventsAccumulator(AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore,
                                               AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore,
                                               StatsService statsService) {
+        super(logger);
         this.aggregatedFeatureEventsMongoStore = aggregatedFeatureEventsMongoStore;
         this.accumulatedAggregatedFeatureEventStore = accumulatedAggregatedFeatureEventStore;
         this.statsService = statsService;
         this.metricsMap = new HashMap<>();
     }
 
+    /**
+     * increase run metrics
+     * @param params
+     */
     @Override
-    public void run(AccumulationParams params) {
-        logger.info("running AggregatedFeatureEvents accumulation by params={}", params);
-        AccumulationParams.TimeFrame timeFrame = params.getTimeFrame();
-        if (!timeFrame.equals(DAILY)) {
-            throw new UnsupportedOperationException(String.format(
-                    "%s does not support accumulation of timeFrame=%s",
-                    getClass().getSimpleName(), timeFrame));
-        }
-
-        Instant from = params.getFrom();
-        Instant to = params.getTo();
-        Instant fromCursor = Instant.from(from);
-        String featureName = params.getFeatureName();
-        AggregatedFeatureEventsAccumulatorMetrics metrics = getMetrics(featureName);
+    protected void beforeRun(AccumulationParams params) {
+        AggregatedFeatureEventsAccumulatorMetrics metrics = getMetrics(params.getFeatureName());
         metrics.run++;
+    }
 
-        while (fromCursor.isBefore(to)) {
-            Instant toCursor;
+    /**
+     * retrieve events from original aggr events, accumulate them, write the accumulated result into new collection
+     * @param featureName
+     * @param fromCursor
+     * @param toCursor
+     */
+    @Override
+    public void accumulateEvents(String featureName, Instant fromCursor, Instant toCursor) {
+        AggregatedFeatureEventsAccumulatorMetrics metrics = getMetrics(featureName);
+        metrics.fromTime = fromCursor.toEpochMilli();
+        metrics.toTime = toCursor.toEpochMilli();
+        List<AggrEvent> aggregatedEvents =
+                aggregatedFeatureEventsMongoStore.findAggrEventsByTimeRange(fromCursor,toCursor, featureName);
+        Collection<AccumulatedAggregatedFeatureEvent> accumulatedEvents =
+                accumulateEvents(aggregatedEvents, fromCursor, toCursor);
+        accumulatedAggregatedFeatureEventStore.insert(accumulatedEvents,featureName );
+    }
 
-            if(fromCursor.plus(1, ChronoUnit.DAYS).isAfter(to))
-            {
-                toCursor = to;
-            }
-            else
-            {
-                toCursor =  fromCursor.plus(1, ChronoUnit.DAYS);
-            }
-            metrics.fromTime = fromCursor.toEpochMilli();
-            metrics.toTime = toCursor.toEpochMilli();
-            List<AggrEvent> aggregatedEvents = aggregatedFeatureEventsMongoStore.findAggrEventsByTimeRange(fromCursor,
-                    toCursor, featureName);
-            Collection<AccumulatedAggregatedFeatureEvent> accumulatedEvents = accumulateEvents(aggregatedEvents, fromCursor, to);
-            accumulatedAggregatedFeatureEventStore.insert(accumulatedEvents,featureName );
-
-            fromCursor = toCursor.plusMillis(1);
-        }
+    @Override
+    public Instant getLastAccumulatedEventStartTime(String featureName) {
+        return accumulatedAggregatedFeatureEventStore.getLastAccumulatedEventStartTime(featureName);
     }
 
     private Collection<AccumulatedAggregatedFeatureEvent> accumulateEvents(List<AggrEvent> aggrEvents, Instant from, Instant to) {

@@ -1,4 +1,4 @@
-package fortscale.acumulator;
+package fortscale.accumulator.accumulator;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
 

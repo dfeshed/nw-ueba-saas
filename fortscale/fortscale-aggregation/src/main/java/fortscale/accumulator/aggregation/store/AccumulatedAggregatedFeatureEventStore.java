@@ -1,7 +1,8 @@
-package fortscale.acumulator.aggregation.store;
+package fortscale.accumulator.aggregation.store;
 
-import fortscale.acumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
+import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 
+import java.time.Instant;
 import java.util.Collection;
 
 /**
@@ -10,4 +11,5 @@ import java.util.Collection;
 public interface AccumulatedAggregatedFeatureEventStore {
     void insert(Collection<AccumulatedAggregatedFeatureEvent> event, String featureName);
 
+    Instant getLastAccumulatedEventStartTime(String featureName);
 }

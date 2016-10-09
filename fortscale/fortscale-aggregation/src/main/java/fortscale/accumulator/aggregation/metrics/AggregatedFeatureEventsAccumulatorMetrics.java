@@ -1,6 +1,6 @@
-package fortscale.acumulator.aggregation.metrics;
+package fortscale.accumulator.aggregation.metrics;
 
-import fortscale.acumulator.aggregation.AggregatedFeatureEventsAccumulator;
+import fortscale.accumulator.aggregation.AggregatedFeatureEventsAccumulator;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -8,7 +8,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
-@StatsMetricsGroupParams(name = "accumulator.aggregated-feature-events.store")
+@StatsMetricsGroupParams(name = "accumulator.aggregated-feature-events.accumulator")
 public class AggregatedFeatureEventsAccumulatorMetrics extends StatsMetricsGroup {
 
     /**

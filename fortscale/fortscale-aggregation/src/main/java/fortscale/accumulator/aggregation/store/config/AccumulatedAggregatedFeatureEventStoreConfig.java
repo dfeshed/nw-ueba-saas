@@ -1,9 +1,9 @@
-package fortscale.acumulator.aggregation.store.config;
+package fortscale.accumulator.aggregation.store.config;
 
-import fortscale.acumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
-import fortscale.acumulator.aggregation.store.AccumulatedAggregatedFeatureEventStoreImpl;
-import fortscale.acumulator.translator.AccumulatedFeatureTranslator;
-import fortscale.acumulator.translator.config.AccumulatedFeatureTranslatorConfig;
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStoreImpl;
+import fortscale.accumulator.translator.AccumulatedFeatureTranslator;
+import fortscale.accumulator.translator.config.AccumulatedFeatureTranslatorConfig;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

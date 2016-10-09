@@ -10,6 +10,9 @@ import static fortscale.accumulator.translator.AccumulatedFeatureTranslator.DAIL
 import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_FEATURE_SUFFIX;
 import static fortscale.utils.time.TimeUtils.getAmountOfDaysInPeriod;
 
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Created by barak_schuster on 10/9/16.
  */

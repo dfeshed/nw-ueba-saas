@@ -1,6 +1,6 @@
-package fortscale.acumulator.aggregation.metrics;
+package fortscale.accumulator.aggregation.metrics;
 
-import fortscale.acumulator.aggregation.store.AccumulatedAggregatedFeatureEventStoreImpl;
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStoreImpl;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -13,9 +13,6 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "accumulator.aggregated-feature-events.store")
 public class AccumulatedAggregatedFeatureEventsStoreMetrics extends StatsMetricsGroup {
-
-
-
 
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
