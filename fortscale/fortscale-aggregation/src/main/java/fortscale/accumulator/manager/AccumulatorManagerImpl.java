@@ -3,7 +3,6 @@ package fortscale.accumulator.manager;
 import fortscale.accumulator.accumulator.AccumulationParams;
 import fortscale.accumulator.accumulator.Accumulator;
 import fortscale.accumulator.entityEvent.EntityEventAccumulator;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -15,7 +14,6 @@ import java.util.Set;
 public abstract class AccumulatorManagerImpl implements AccumulatorManger {
 
     private final Accumulator accumulator;
-    AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
     /**
      * C'tor

@@ -163,9 +163,8 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	 */
 	public List<EntityEvent> findEntityEventsByTimeRange(Instant from, Instant to, String featureName) {
 
-		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond());
-		Criteria endTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME).lte(to.getEpochSecond());
-		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to);
+		Query query = new Query(startTimeCriteria);
 
 		return getRunQueryOnAllFeatureNameCollections(featureName, query);
 	}
