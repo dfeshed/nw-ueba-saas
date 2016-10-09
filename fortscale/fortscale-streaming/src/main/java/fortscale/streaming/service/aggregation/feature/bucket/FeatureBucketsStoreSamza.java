@@ -164,10 +164,10 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		String key = getBucketKey(featureBucket);
 		FeatureBucket oldFeatureBucket = featureBucketStore.get(key);
 		
-		if(oldFeatureBucket == null && featureBucket.getId() == null){
+		if(oldFeatureBucket == null){
 			storeFeatureBucketForTheFirstTime(featureBucketConf, featureBucket);
 		}  else{
-			updateFeatureBucketBeforeEndTimeReached(featureBucketConf, featureBucket);
+			updateFeatureBucket(featureBucketConf, featureBucket);
 		}
 	}
 	
@@ -179,7 +179,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		featureBucketStore.put(key, featureBucket);
 	}
 	
-	private void updateFeatureBucketBeforeEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
+	private void updateFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
 		String key = getBucketKey(featureBucket);
 		featureBucketStore.put(key, featureBucket);
 	}

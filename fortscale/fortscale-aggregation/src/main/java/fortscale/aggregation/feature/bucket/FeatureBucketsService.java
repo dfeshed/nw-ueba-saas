@@ -72,8 +72,11 @@ public abstract class FeatureBucketsService {
 							newFeatureBuckets.add(featureBucket);
 						}
 					}
-					// this is not a new feature bucket. nothing to store/update here
+					// this is not a new feature bucket! it is already exists in both key-value store and MongoDb.
+					// the feature bucket arrived after sync - this should not happened in the common data path scenario
+					// and would not happened after DPM-integration since a dependency would be defined in the data path
 					if (featureBucket.getId() != null) {
+						// nothing to store/update here
 						continue;
 					}
 					metrics.featureBucketUpdates++;
