@@ -165,13 +165,15 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
 		metrics.insertFeatureBucketsCalls++;
 		try {
-			if (featureBuckets.isEmpty())
+			List<FeatureBucket> objectsToInsert = new LinkedList<>(featureBuckets);
+
+			if (objectsToInsert.isEmpty())
 			{
 				logger.info("empty Collection<FeatureBucket>, not inserting anything");
 				return;
 			}
 			BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
-					.insert(featureBuckets).execute();
+					.insert(objectsToInsert).execute();
 			if (bulkOpResult.isAcknowledged()) {
 				int actualInsertedCount = bulkOpResult.getInsertedCount();
 				logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
