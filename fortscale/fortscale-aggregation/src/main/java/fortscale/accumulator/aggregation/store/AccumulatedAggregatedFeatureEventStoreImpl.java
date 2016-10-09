@@ -58,7 +58,7 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
 
     private void createCollection(String collectionName, String featureName) {
         logger.info("creating new accumulated collection={}", collectionName);
-        AccumulatedAggregatedFeatureEventsStoreMetrics metics = getMetics(featureName);
+        AccumulatedAggregatedFeatureEventsStoreMetrics metics = getMetrics(featureName);
         metics.createCollection++;
         try {
             mongoTemplate.createCollection(collectionName);
@@ -73,7 +73,7 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
     @Override
     public void insert(Collection<AccumulatedAggregatedFeatureEvent> events, String featureName) {
         logger.debug("inserting {} events to accumulated feature={}", events.size(), featureName);
-        getMetics(featureName).insert++;
+        getMetrics(featureName).insert++;
 
         // TODO: 10/6/16 replace in bulk operation at fortscale 3.0
         try {
@@ -82,7 +82,7 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
                 mongoTemplate.insert(events, collectionName);
             }
         } catch (Exception e) {
-            getMetics(featureName).insertFailure++;
+            getMetrics(featureName).insertFailure++;
             logger.error("exception occurred while inserting to accumulated collection of feature={}", featureName, e);
             throw e;
         }
@@ -115,7 +115,7 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
      * @param featureName
      * @return feature CRUD metrics
      */
-    public AccumulatedAggregatedFeatureEventsStoreMetrics getMetics(String featureName) {
+    public AccumulatedAggregatedFeatureEventsStoreMetrics getMetrics(String featureName) {
         if (!featureMetricsMap.containsKey(featureName)) {
             AccumulatedAggregatedFeatureEventsStoreMetrics metrics =
                     new AccumulatedAggregatedFeatureEventsStoreMetrics(statsService, featureName);
