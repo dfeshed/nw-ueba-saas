@@ -81,7 +81,7 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
                 nextHourCursor = toCursor;
             }
             List<AggrEvent> aggregatedEvents =
-                    aggregatedFeatureEventsMongoStore.findAggrEventsByTimeRange(fromHourCursor, nextHourCursor, featureName);
+                    aggregatedFeatureEventsMongoStore.findAggrEventsByStartTimeRange(fromHourCursor, nextHourCursor, featureName);
             accumulateEvents(aggregatedEvents, fromCursor, toCursor, creationTime);
             fromHourCursor = nextHourCursor;
         }

@@ -44,7 +44,7 @@ public abstract class AccumulatorBase implements Accumulator {
             }
             accumulateEvents(featureName, fromCursor, toCursor);
 
-            fromCursor = toCursor.plusMillis(1);
+            fromCursor = toCursor;
         }
     }
 

@@ -1,10 +1,10 @@
 package fortscale.accumulator.aggregation;
 
-import com.google.common.collect.Sets;
 import fortscale.accumulator.accumulator.Accumulator;
 import fortscale.accumulator.manager.AccumulatorManagerImpl;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -27,6 +27,6 @@ public class AggregatedFeatureEventsAccumulatorManagerImpl  extends AccumulatorM
 
     @Override
     protected Set<String> getFeatureNames() {
-        return Sets.newHashSet(aggregatedFeatureEventsConfService.getAggrFeatureEventNameList());
+        return new HashSet<>(aggregatedFeatureEventsConfService.getAggrFeatureEventNameList());
     }
 }

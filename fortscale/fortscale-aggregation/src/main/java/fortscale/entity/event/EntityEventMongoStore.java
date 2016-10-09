@@ -34,7 +34,6 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final Logger logger = Logger.getLogger(EntityEventMongoStore.class);
 	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
 
-<<<<<<< HEAD
 	@Autowired
 	private StatsService statsService;
 	@Value("${streaming.event.field.type.entity_event}")
@@ -188,7 +187,6 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		return totalNumberOfEvents;
 	}
 
-<<<<<<< HEAD
 	/**
 	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
 	 * before any crud is preformed in this class, this method should be called
@@ -206,6 +204,8 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 					new PersistenceTaskStoreMetrics(statsService, collectionName);
 			collectionMetricsMap.put(collectionName, collectionMetrics);
 		}
+		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to);
+		Query query = new Query(startTimeCriteria);
 
 		return collectionMetricsMap.get(collectionName);
 	}
