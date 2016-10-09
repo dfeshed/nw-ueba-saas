@@ -3,6 +3,7 @@ package fortscale.accumulator.aggregation.store;
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.accumulator.aggregation.metrics.AccumulatedAggregatedFeatureEventsStoreMetrics;
 import fortscale.accumulator.translator.AccumulatedFeatureTranslator;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.data.domain.Sort;
@@ -12,8 +13,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.time.Instant;
 import java.util.*;
 
-import static fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME;
 import static fortscale.accumulator.util.AccumulatorStoreUtil.getACMExistingCollections;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * CRUD layer for {@link AccumulatedAggregatedFeatureEvent}
@@ -94,7 +95,8 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
 
         String collectionName = translator.toAcmAggrCollection(featureName);
         Query query = new Query();
-        Sort sort = new Sort(Sort.Direction.DESC, ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME);
+        Sort sort = new Sort(Sort.Direction.DESC,
+                AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME);
         query.with(sort);
         AccumulatedAggregatedFeatureEvent accumulatedAggregatedFeatureEvent =
                 mongoTemplate.findOne(query, AccumulatedAggregatedFeatureEvent.class, collectionName);
@@ -107,6 +109,30 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
 
         logger.debug("no accumulated events found for feature={}",featureName);
         return null;
+    }
+
+    @Override
+    public List<AccumulatedAggregatedFeatureEvent> findAccumulatedEventsByContextIdAndTimeRange(
+            AggregatedFeatureEventConf aggregatedFeatureEventConf,
+            String contextId,
+            Instant startTime,
+            Instant endTime) {
+        logger.debug("getting accumulated events for featureName={}", aggregatedFeatureEventConf.getName());
+
+        String collectionName = translator.toAcmAggrCollection(aggregatedFeatureEventConf.getName());
+        Query query = new Query();
+        query
+                .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID)
+                        .is(contextId))
+                .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME)
+                        .gte(startTime))
+                .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME)
+                        .lte(endTime));
+        List<AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEvent =
+                mongoTemplate.find(query, AccumulatedAggregatedFeatureEvent.class, collectionName);
+
+        logger.debug("found {} accumulated events", accumulatedAggregatedFeatureEvent.size());
+        return accumulatedAggregatedFeatureEvent;
     }
 
     /**

@@ -6,11 +6,11 @@ import net.minidev.json.JSONObject;
 
 import java.util.List;
 
-public class AggregatedFeatureValueRetrieverConf extends AbstractAggregatedFeatureValueRetrieverConf {
-	public static final String AGGREGATED_FEATURE_VALUE_RETRIEVER = "aggregated_feature_value_retriever";
+public class AccumulatedAggregatedFeatureValueRetrieverConf extends AbstractAggregatedFeatureValueRetrieverConf {
+	public static final String ACCUMULATED_AGGREGATED_FEATURE_VALUE_RETRIEVER = "accumulated_aggregated_feature_value_retriever";
 
 	@JsonCreator
-	public AggregatedFeatureValueRetrieverConf(
+	public AccumulatedAggregatedFeatureValueRetrieverConf(
 			@JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
 			@JsonProperty("functions") List<JSONObject> functions,
 			@JsonProperty("aggregatedFeatureEventConfName") String aggregatedFeatureEventConfName) {
@@ -19,6 +19,6 @@ public class AggregatedFeatureValueRetrieverConf extends AbstractAggregatedFeatu
 
 	@Override
 	public String getFactoryName() {
-		return AGGREGATED_FEATURE_VALUE_RETRIEVER;
+		return ACCUMULATED_AGGREGATED_FEATURE_VALUE_RETRIEVER;
 	}
 }
