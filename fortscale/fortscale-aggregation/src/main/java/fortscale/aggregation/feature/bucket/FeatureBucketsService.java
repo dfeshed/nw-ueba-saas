@@ -72,6 +72,10 @@ public abstract class FeatureBucketsService {
 							newFeatureBuckets.add(featureBucket);
 						}
 					}
+					// this is not a new feature bucket. nothing to store/update here
+					if (featureBucket.getId() != null) {
+						continue;
+					}
 					metrics.featureBucketUpdates++;
 					updateFeatureBucket(event, featureBucket, featureBucketConf);
 					storeFeatureBucket(featureBucket, featureBucketConf);
