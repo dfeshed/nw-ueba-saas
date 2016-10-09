@@ -165,8 +165,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
 		metrics.insertFeatureBucketsCalls++;
 		try {
+			List<FeatureBucket> objectsToInsert = new LinkedList<>(featureBuckets);
+
 			BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
-					.insert(featureBuckets).execute();
+					.insert(objectsToInsert).execute();
 			if (bulkOpResult.isAcknowledged()) {
 				int actualInsertedCount = bulkOpResult.getInsertedCount();
 				logger.debug("inserted={} documents into collection={} in bulk insert", actualInsertedCount, collectionName);
