@@ -1,12 +1,9 @@
 package fortscale.ml.model.builder;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.util.Assert;
 
-@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 public class SMARTValuesPriorModelBuilderConf implements IModelBuilderConf {
 	public static final String SMART_VALUES_PRIOR_MODEL_BUILDER = "smart_values_prior_model_builder";
 	private static final double QUANTILE_DEFAULT_VALUE = 0.99;
