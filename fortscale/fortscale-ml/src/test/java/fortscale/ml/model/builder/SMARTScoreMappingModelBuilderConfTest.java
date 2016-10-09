@@ -109,6 +109,5 @@ public class SMARTScoreMappingModelBuilderConfTest {
 		Assert.assertEquals(100, conf.getDefaultMaximalScore(), 0.00001);
 		Assert.assertEquals(2.0 / 7, conf.getLowOutliersFraction(), 0.00001);
 		Assert.assertEquals(1.0 / 7, conf.getHighOutliersFraction(), 0.00001);
-		Assert.assertEquals("smart_score_mapping_model_builder", conf.getFactoryName());
 	}
 }

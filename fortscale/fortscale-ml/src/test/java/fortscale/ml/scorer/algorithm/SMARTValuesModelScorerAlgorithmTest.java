@@ -1,6 +1,7 @@
 package fortscale.ml.scorer.algorithm;
 
 import fortscale.ml.model.SMARTValuesModel;
+import fortscale.ml.model.SMARTValuesPriorModel;
 import fortscale.ml.scorer.algorithms.SMARTValuesModelScorerAlgorithm;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +15,7 @@ import java.util.stream.IntStream;
 public class SMARTValuesModelScorerAlgorithmTest {
 
     private double calcScore(int globalInfluence,
-                             double globalPositiveValueMean,
+                             double prior,
                              List<Double> oldValues,
                              double valueToScore) {
         SMARTValuesModel model = new SMARTValuesModel();
@@ -23,19 +24,19 @@ public class SMARTValuesModelScorerAlgorithmTest {
         model.init(numOfZeroValues, oldValues.size() - numOfZeroValues, sumOfValues);
         SMARTValuesModelScorerAlgorithm scorerAlgorithm = new SMARTValuesModelScorerAlgorithm(globalInfluence);
 
-        SMARTValuesModel globalModel = new SMARTValuesModel();
-        globalModel.init(0, 1, globalPositiveValueMean);
+        SMARTValuesPriorModel priorModel = new SMARTValuesPriorModel();
+        priorModel.init(prior);
 
-        return scorerAlgorithm.calculateScore(valueToScore, model, globalModel);
+        return scorerAlgorithm.calculateScore(valueToScore, model, priorModel);
     }
 
     private void assertScoreRange(int globalInfluence,
-                                  double globalPositiveValueMean,
+                                  double prior,
                                   List<Double> oldValues,
                                   double valueToScore,
                                   double expectedRangeMin,
                                   double expectedRangeMax) {
-        double score = calcScore(globalInfluence, globalPositiveValueMean, oldValues, valueToScore);
+        double score = calcScore(globalInfluence, prior, oldValues, valueToScore);
         Assert.assertTrue(String.format("score (%e) >= expectedRangeMin (%e) does not hold", score, expectedRangeMin), score >= expectedRangeMin);
         Assert.assertTrue(String.format("score (%e) <= expectedRangeMax (%e) does not hold", score, expectedRangeMax), score <= expectedRangeMax);
     }
@@ -100,7 +101,7 @@ public class SMARTValuesModelScorerAlgorithmTest {
     }
 
     @Test
-    public void globalPositiveValueMeanShouldNotAffectTheScoreWhenGlobalInfluenceIsZero() {
+    public void priorShouldNotAffectTheScoreWhenGlobalInfluenceIsZero() {
         double value = 0.4;
         List<Double> oldValues = Arrays.asList(0.01, 0.3);
         int globalInfluence = 0;
@@ -109,7 +110,7 @@ public class SMARTValuesModelScorerAlgorithmTest {
     }
 
     @Test
-    public void shouldScoreDecreasinglyAsGlobalInfluenceIncreasesWhenGlobalPositiveValueMeanIsHigherThanUserHistory() {
+    public void shouldScoreDecreasinglyAsGlobalInfluenceIncreasesWhenPriorIsHigherThanUserHistory() {
         double[] scores = IntStream.range(0, 100)
                 .mapToDouble(globalInfluence -> calcScore(globalInfluence, 0.5, Arrays.asList(0.01, 0.03, 0.05, 0.1), 0.5))
                 .toArray();
@@ -117,7 +118,7 @@ public class SMARTValuesModelScorerAlgorithmTest {
     }
 
     @Test
-    public void shouldScoreTheSameAsGlobalInfluenceIncreasesWhenGlobalPositiveValueMeanIsLowerThanUserHistory() {
+    public void shouldScoreTheSameAsGlobalInfluenceIncreasesWhenPriorIsLowerThanUserHistory() {
         double[] scores = IntStream.range(0, 100)
                 .mapToDouble(globalInfluence -> calcScore(globalInfluence, 0.01, Arrays.asList(0.01, 0.03, 0.05, 0.1), 0.5))
                 .toArray();
@@ -126,9 +127,9 @@ public class SMARTValuesModelScorerAlgorithmTest {
     }
 
     @Test
-    public void shouldScoreDecreasinglyAsGlobalPositiveValueMeanIncreases() {
+    public void shouldScoreDecreasinglyAsPriorIncreases() {
         double[] scores = IntStream.range(0, 100)
-                .mapToDouble(globalPositiveValueMean -> calcScore(10, globalPositiveValueMean, Arrays.asList(0.01, 0.03, 0.05, 0.1), 0.5))
+                .mapToDouble(prior -> calcScore(10, prior, Arrays.asList(0.01, 0.03, 0.05, 0.1), 0.5))
                 .toArray();
         assertScoresMonotonicity(scores, false);
     }

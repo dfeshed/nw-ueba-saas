@@ -10,6 +10,7 @@ import fortscale.utils.factory.FactoryConfig;
 		@JsonSubTypes.Type(value = CategoryRarityModelBuilderConf.class, name = CategoryRarityModelBuilderConf.CATEGORY_RARITY_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = TimeModelBuilderConf.class, name = TimeModelBuilderConf.TIME_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = SMARTValuesModelBuilderConf.class, name = SMARTValuesModelBuilderConf.SMART_VALUES_MODEL_BUILDER),
+		@JsonSubTypes.Type(value = SMARTValuesPriorModelBuilderConf.class, name = SMARTValuesPriorModelBuilderConf.SMART_VALUES_PRIOR_MODEL_BUILDER),
 		@JsonSubTypes.Type(value = SMARTScoreMappingModelBuilderConf.class, name = SMARTScoreMappingModelBuilderConf.SMART_SCORE_MAPPING_MODEL_BUILDER)
 })
 public interface IModelBuilderConf extends FactoryConfig {}
