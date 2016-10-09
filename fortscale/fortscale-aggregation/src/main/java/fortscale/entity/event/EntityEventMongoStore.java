@@ -154,8 +154,30 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		return totalNumberOfEvents;
 	}
 
-	public List<EntityEvent> findEntityEventsByTimeRange(Instant fromCursor, Instant toCursor, String featureName) {
-		// TODO: 10/9/16
-		return null;
+	/**
+	 *
+	 * @param from greater than/equal of that date
+	 * @param to before or/equal to that date
+	 * @param featureName feature to run on
+	 * @return list of {@link EntityEvent} between those dates
+	 */
+	public List<EntityEvent> findEntityEventsByTimeRange(Instant from, Instant to, String featureName) {
+
+		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond());
+		Criteria endTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME).lte(to.getEpochSecond());
+		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria));
+
+		return getRunQueryOnAllFeatureNameCollections(featureName, query);
+	}
+
+	/**
+	 * one {@param featureName} my contain several splitted collections in mongoDb (in case of large scale),
+	 * this method executes given {@param query} on all collectionNames
+	 * @return list of {@link EntityEvent} answering the query
+	 */
+	public List<EntityEvent> getRunQueryOnAllFeatureNameCollections(String featureName, Query query) {
+		return getCollectionNames(featureName).stream()
+				.flatMap(collectionName -> mongoTemplate.find(query, EntityEvent.class, collectionName).stream())
+				.collect(Collectors.toList());
 	}
 }

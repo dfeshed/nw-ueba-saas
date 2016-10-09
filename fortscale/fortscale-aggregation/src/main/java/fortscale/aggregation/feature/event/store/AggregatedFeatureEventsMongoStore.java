@@ -189,7 +189,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	 * @param from greater than/equal of that date
 	 * @param to before or/equal to that date
 	 * @param aggregatedFeatureName feature to run on
-     * @return list of {@link AggrEvent} between thos dates
+     * @return list of {@link AggrEvent} between those dates
      */
 	public List<AggrEvent> findAggrEventsByTimeRange(Instant from, Instant to, String aggregatedFeatureName) {
 
