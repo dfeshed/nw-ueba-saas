@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.domain.core.EntityEvent;
+import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.logging.Logger;
 import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.MongoStoreUtils;
