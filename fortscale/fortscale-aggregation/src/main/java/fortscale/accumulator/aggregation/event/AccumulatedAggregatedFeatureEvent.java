@@ -20,9 +20,9 @@ public class AccumulatedAggregatedFeatureEvent {
 
     // --- field names as they appear in MongoDB ---
     public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME = "start_time";
-    private static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME = "end_time";
+    public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME = "end_time";
     private static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_AGGREGATED_FEATURE_VALUES = "aggregated_feature_values";
-    private static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID = "contextId";
+    public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID = "contextId";
     private static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CREATION_TIME = "creation_time";
 
     @Id
