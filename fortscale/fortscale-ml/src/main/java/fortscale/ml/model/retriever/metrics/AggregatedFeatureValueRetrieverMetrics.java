@@ -28,7 +28,7 @@ public class AggregatedFeatureValueRetrieverMetrics extends StatsMetricsGroup {
 	public long retrieve;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long aggregatedFeatureEvents;
+	public long aggregatedFeatureValues;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long getContextId;

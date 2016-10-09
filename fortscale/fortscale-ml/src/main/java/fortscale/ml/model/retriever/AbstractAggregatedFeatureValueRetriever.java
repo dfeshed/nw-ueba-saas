@@ -14,9 +14,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.stream.DoubleStream;
 
 @Configurable(preConstruction = true)
-public abstract class AbstractAggregatedFeatureValueRetriever<T> extends AbstractDataRetriever {
+public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDataRetriever {
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
@@ -37,22 +38,26 @@ public abstract class AbstractAggregatedFeatureValueRetriever<T> extends Abstrac
         metrics = new AggregatedFeatureValueRetrieverMetrics(statsService, aggregatedFeatureEventConfName, isAccumulation);
     }
 
-    protected abstract List<T> readObjects(AggregatedFeatureEventConf aggregatedFeatureEventConf,
-                                           String contextId,
-                                           Date startTime,
-                                           Date endTime);
-
-    protected abstract void addToHistogram(GenericHistogram histogram, T event);
+    protected abstract DoubleStream readAggregatedFeatureValues(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+                                                                String contextId,
+                                                                Date startTime,
+                                                                Date endTime);
 
     @Override
     public Object retrieve(String contextId, Date endTime) {
         metrics.retrieve++;
-        List<T> events = readObjects(aggregatedFeatureEventConf, contextId, getStartTime(endTime), endTime);
-        metrics.aggregatedFeatureEvents += events.size();
+        DoubleStream aggregatedFeatureValues = readAggregatedFeatureValues(
+                aggregatedFeatureEventConf,
+                contextId,
+                getStartTime(endTime),
+                endTime
+        );
         GenericHistogram reductionHistogram = new GenericHistogram();
-        for (T event : events) {
-            addToHistogram(reductionHistogram, event);
-        }
+        aggregatedFeatureValues.forEach(aggregatedFeatureValue -> {
+            metrics.aggregatedFeatureValues++;
+            // TODO: Retriever functions should be iterated and executed here.
+            reductionHistogram.add(aggregatedFeatureValue, 1d);
+        });
         return reductionHistogram.getN() > 0 ? reductionHistogram : null;
     }
 
