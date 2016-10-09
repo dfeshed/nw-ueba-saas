@@ -93,6 +93,10 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	private void bulkInsertAggrEvents(String collectionName, List<AggrEvent> aggrEvents) {
 		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
 		try {
+			if(aggrEvents.isEmpty())
+			{
+				return;
+			}
             BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
                     .insert(aggrEvents).execute();
             if (bulkOpResult.isAcknowledged()) {

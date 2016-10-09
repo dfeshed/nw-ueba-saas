@@ -86,6 +86,10 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private void bulkInsertEntityEvents(String collectionName, List<EntityEvent> entityEvents) {
 		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
 		try {
+			if (entityEvents.isEmpty())
+			{
+				return;
+			}
             BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
                     .insert(entityEvents).execute();
             if (bulkOpResult.isAcknowledged()) {

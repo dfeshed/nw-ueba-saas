@@ -165,6 +165,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
 		metrics.insertFeatureBucketsCalls++;
 		try {
+			if (featureBuckets.isEmpty())
+			{
+				logger.info("empty Collection<FeatureBucket>, not inserting anything");
+				return;
+			}
 			BulkWriteResult bulkOpResult = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, collectionName)
 					.insert(featureBuckets).execute();
 			if (bulkOpResult.isAcknowledged()) {
