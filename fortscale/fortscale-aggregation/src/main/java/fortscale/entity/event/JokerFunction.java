@@ -120,7 +120,7 @@ public class JokerFunction {
 				// discard betas which don't have corresponding Ps
 				.filter(aggrFeatureEventAndBeta -> aggrFeatureEventAndBeta.getLeft() != null)
 				// multiply each P's value by the corresponding beta
-				.mapToDouble(aggrFeatureEventAndBeta -> aggrFeatureEventAndBeta.getLeft().getAggregatedFeatureValue() * aggrFeatureEventAndBeta.getRight())
+				.mapToDouble(aggrFeatureEventAndBeta -> aggrFeatureEventAndBeta.getLeft().getScore() * aggrFeatureEventAndBeta.getRight())
 				.sum();
 
 		return maxScoresSum + pValuesSum;
