@@ -130,6 +130,9 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
                         .lte(endTime));
         List<AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEvent =
                 mongoTemplate.find(query, AccumulatedAggregatedFeatureEvent.class, collectionName);
+        AccumulatedAggregatedFeatureEventsStoreMetrics metrics = getMetrics(aggregatedFeatureEventConf.getName());
+        metrics.retrieveCalls++;
+        metrics.retrievedObjects += accumulatedAggregatedFeatureEvent.size();
 
         logger.debug("found {} accumulated events", accumulatedAggregatedFeatureEvent.size());
         return accumulatedAggregatedFeatureEvent;
