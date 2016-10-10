@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import com.squareup.okhttp.*;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
@@ -36,6 +37,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
@@ -281,27 +284,22 @@ public class ApiUserController extends BaseController{
 	 * API to update users tags by filter
 	 * @return
 	 */
-	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST,
-			consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
+	@ResponseBody
 	public ResponseEntity<TaggedUsersCount> addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter,
-			@PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
+		@PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
+
 		TaggedUsersCount result = new TaggedUsersCount();
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		List<User> usersByFilter = userWithAlertService.findUsersByFilter(userRestFilter, null, null);
-		int count = 0;
-		for (User user: usersByFilter) {
-			try {
-				addTagToUser(user, tagNames, addTag);
-				count++;
-			} catch (Exception ex) {
-				result.count = count;
-				return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
-			}
+		try {
+			result.count = userWithAlertService.updateTags(userRestFilter, addTag, tagNames);
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		result.count = count;
+
 		return new ResponseEntity(result, HttpStatus.OK);
 	}
 
@@ -607,7 +605,7 @@ public class ApiUserController extends BaseController{
 		return users;
 	}
 
-	private class TaggedUsersCount {
+	public class TaggedUsersCount {
 
 		public int count;
 

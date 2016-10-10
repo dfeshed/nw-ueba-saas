@@ -17,4 +17,6 @@ public interface UserWithAlertService{
 	void recalculateNumberOfUserAlertsByUserId(String userId);
 
     List<User> findFromCacheUsersByFilter(UserRestFilter userRestFilter);
+
+    int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames) throws Exception;
 }

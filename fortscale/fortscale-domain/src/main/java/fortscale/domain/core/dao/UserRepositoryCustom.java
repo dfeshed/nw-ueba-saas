@@ -127,5 +127,7 @@ public interface UserRepositoryCustom {
 	Criteria getUserCriteriaByUserIds(Set<String> userIds);
 
     List getDistinctFieldValues(String fieldName);
+
+	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList);
 }
 

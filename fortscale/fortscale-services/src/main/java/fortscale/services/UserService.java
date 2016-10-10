@@ -140,4 +140,6 @@ public interface UserService {
 	void updateSourceMachineCount(String userId, int sourceMachineCount);
 
 	Set<String> getUserTags(String userName);
+
+	int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames, Set<String> relevantUsers);
 }

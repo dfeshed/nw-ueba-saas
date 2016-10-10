@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -696,8 +697,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return getUsersByCriteria(criteria, pageable);
 	}
 
-
-
 	public HashSet<String> getUsersGUID(){
 		Query query = new Query();
 		query.fields().include(User.getAdInfoField(AdUser.objectGUIDField)).exclude(User.ID_FIELD);
@@ -799,6 +798,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.objectGUID = objectGUID;
 		}
 	}
-	
+
+	@Override
+	public int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList) {
+
+		Update update = new Update();
+		final int[] updatedDocuments = {0};
+
+		tagNames.forEach(tag -> {
+			Query query = new Query();
+			criteriaList.forEach(criteria -> query.addCriteria(criteria));
+
+			if (addTag){
+				update.push(User.tagsField, tag);
+				query.addCriteria(new Criteria(User.tagsField).not().in(tag));
+			}else{
+				update.pull(User.tagsField, tag);
+				query.addCriteria(new Criteria(User.tagsField).in(tag));
+			}
+
+			BulkOperations upsert = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+					.upsert(query, update);
+
+			updatedDocuments[0] += upsert.execute().getModifiedCount();
+		});
+
+		return updatedDocuments[0];
+	}
 }
 
