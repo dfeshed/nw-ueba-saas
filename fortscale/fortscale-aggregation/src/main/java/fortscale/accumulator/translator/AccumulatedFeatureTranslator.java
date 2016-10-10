@@ -75,6 +75,18 @@ public class AccumulatedFeatureTranslator {
         return entityEventTranslationService;
     }
 
+    public String aggrgatedCollectionNameRegex()
+    {
+        String eventType = aggregatedFeatureNameTranslationService.getEventType();
+        return String.format(".*%s.*%s$", eventType, ACCUMULATED_COLLECTION_SUFFIX);
+    }
+
+    public String entityEventCollectioNameRegex()
+    {
+        String eventType = entityEventTranslationService.getEventTypeFieldValue();
+        return String.format(".*%s.*%s$", eventType, ACCUMULATED_COLLECTION_SUFFIX);
+    }
+
     public AggregatedFeatureNameTranslationService getAggregatedFeatureNameTranslationService() {
         return aggregatedFeatureNameTranslationService;
     }

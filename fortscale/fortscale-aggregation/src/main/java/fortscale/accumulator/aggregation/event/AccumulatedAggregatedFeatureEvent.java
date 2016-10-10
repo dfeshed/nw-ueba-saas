@@ -1,7 +1,6 @@
 package fortscale.accumulator.aggregation.event;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -21,26 +20,19 @@ public class AccumulatedAggregatedFeatureEvent {
     // --- field names as they appear in MongoDB ---
     public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME = "start_time";
     public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME = "end_time";
-    private static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_AGGREGATED_FEATURE_VALUES = "aggregated_feature_values";
     public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID = "contextId";
-    private static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CREATION_TIME = "creation_time";
 
     @Id
     private String id;
 
-    @Field(ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME)
-    private Instant startTime;
+    private Instant start_time;
 
-    @Field(ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME)
-    private Instant endTime;
+    private Instant end_time;
 
-    @Field(ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID)
     private String contextId;
 
-    @Field(ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_AGGREGATED_FEATURE_VALUES)
     private List<Double> aggregatedFeatureValues;
 
-    @Field(ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CREATION_TIME)
     private Instant creationTime;
 
     /**
@@ -53,21 +45,21 @@ public class AccumulatedAggregatedFeatureEvent {
 
     /**
      * C'tor
-     * @param startTime
-     * @param endTime
+     * @param start_time
+     * @param end_time
      * @param contextId
      * @param aggregatedFeatureValues
      * @param creationTime
      */
-    public AccumulatedAggregatedFeatureEvent(Instant startTime, Instant endTime, String contextId, List<Double> aggregatedFeatureValues, Instant creationTime) {
-        this(startTime,endTime,contextId,creationTime);
+    public AccumulatedAggregatedFeatureEvent(Instant start_time, Instant end_time, String contextId, List<Double> aggregatedFeatureValues, Instant creationTime) {
+        this(start_time, end_time,contextId,creationTime);
         this.aggregatedFeatureValues = aggregatedFeatureValues;
     }
 
-    public AccumulatedAggregatedFeatureEvent(Instant startTime, Instant endTime, String contextId, Instant creationTime) {
+    public AccumulatedAggregatedFeatureEvent(Instant start_time, Instant end_time, String contextId, Instant creationTime) {
         this();
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.start_time = start_time;
+        this.end_time = end_time;
         this.contextId = contextId;
         this.creationTime = creationTime;
     }
@@ -82,20 +74,20 @@ public class AccumulatedAggregatedFeatureEvent {
         this.id = id;
     }
 
-    public Instant getStartTime() {
-        return startTime;
+    public Instant getStart_time() {
+        return start_time;
     }
 
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
+    public void setStart_time(Instant start_time) {
+        this.start_time = start_time;
     }
 
-    public Instant getEndTime() {
-        return endTime;
+    public Instant getEnd_time() {
+        return end_time;
     }
 
-    public void setEndTime(Instant endTime) {
-        this.endTime = endTime;
+    public void setEnd_time(Instant end_time) {
+        this.end_time = end_time;
     }
 
     public String getContextId() {

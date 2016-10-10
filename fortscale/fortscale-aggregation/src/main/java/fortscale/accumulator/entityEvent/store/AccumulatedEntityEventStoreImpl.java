@@ -41,9 +41,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
         this.featureMetricsMap = new HashMap<>();
         this.existingCollections = new HashSet<>();
 
-        String eventType = translator.getEntityEventTranslationService().getEventTypeFieldValue();
-        String collectionNameRegex = String.format(".*%s.*%s$", eventType, AccumulatedFeatureTranslator.ACCUMULATED_COLLECTION_SUFFIX);
-        existingCollections = getACMExistingCollections(mongoTemplate,collectionNameRegex);
+        existingCollections = getACMExistingCollections(mongoTemplate,translator.entityEventCollectioNameRegex());
     }
 
     @Override
@@ -74,7 +72,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
                 mongoTemplate.findOne(query, AccumulatedEntityEvent.class, collectionName);
 
         if (accumulatedEvent != null) {
-            Instant startTime = accumulatedEvent.getStartTime();
+            Instant startTime = accumulatedEvent.getStart_time();
             logger.debug("feature={} last accumulated event start time={}",featureName,startTime);
             return startTime;
         }

@@ -42,9 +42,8 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
         this.statsService = statsService;
         this.featureMetricsMap = new HashMap<>();
         this.existingCollections = new HashSet<>();
-        String eventType = translator.getAggregatedFeatureNameTranslationService().getEventType();
-        String collectionNameRegex = String.format(".*%s.*%s$", eventType, AccumulatedFeatureTranslator.ACCUMULATED_COLLECTION_SUFFIX);
-        existingCollections = getACMExistingCollections(mongoTemplate,collectionNameRegex);
+
+        existingCollections = getACMExistingCollections(mongoTemplate,translator.aggrgatedCollectionNameRegex());
     }
 
 
@@ -102,7 +101,7 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
                 mongoTemplate.findOne(query, AccumulatedAggregatedFeatureEvent.class, collectionName);
 
         if (accumulatedAggregatedFeatureEvent != null) {
-            Instant startTime = accumulatedAggregatedFeatureEvent.getStartTime();
+            Instant startTime = accumulatedAggregatedFeatureEvent.getStart_time();
             logger.debug("feature={} last accumulated event start time={}",featureName,startTime);
             return startTime;
         }
@@ -112,11 +111,11 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
     }
 
     @Override
-    public List<AccumulatedAggregatedFeatureEvent> findAccumulatedEventsByContextIdAndTimeRange(
+    public List<AccumulatedAggregatedFeatureEvent> findAccumulatedEventsByContextIdAndStartTimeRange(
             AggregatedFeatureEventConf aggregatedFeatureEventConf,
             String contextId,
-            Instant startTime,
-            Instant endTime) {
+            Instant startTimeFrom,
+            Instant startTimeTo) {
         logger.debug("getting accumulated events for featureName={}", aggregatedFeatureEventConf.getName());
 
         String collectionName = translator.toAcmAggrCollection(aggregatedFeatureEventConf.getName());
@@ -125,9 +124,8 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
                 .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID)
                         .is(contextId))
                 .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME)
-                        .gte(startTime))
-                .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME)
-                        .lte(endTime));
+                        .gte(startTimeFrom)
+                        .lt(startTimeTo));
         List<AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEvent =
                 mongoTemplate.find(query, AccumulatedAggregatedFeatureEvent.class, collectionName);
 

@@ -22,7 +22,7 @@ public class AccumulatedAggregatedFeatureValueRetriever extends AbstractAggregat
                                                        String contextId,
                                                        Date startTime,
                                                        Date endTime) {
-        return store.findAccumulatedEventsByContextIdAndTimeRange(
+        return store.findAccumulatedEventsByContextIdAndStartTimeRange(
                 aggregatedFeatureEventConf,
                 contextId,
                 getStartTime(endTime).toInstant(),
