@@ -2,6 +2,7 @@ import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
+import { RECON_VIEW_TYPES_BY_NAME } from '../../utils/reconstruction-types';
 import layout from './template';
 
 const {
@@ -15,6 +16,7 @@ const stateToComputed = ({ data }) => ({
   currentReconView: data.currentReconView,
   contentError: data.contentError,
   contentLoading: data.contentLoading,
+  headerLoading: data.headerLoading,
   eventId: data.eventId
 });
 
@@ -39,7 +41,32 @@ const EventContentComponent = Component.extend({
     } else {
       return this.get('i18n').t('recon.error.generic');
     }
+  },
+
+  /**
+   * Determines if the content is loading, results in spinner vs
+   * a component view
+   *
+   * @public
+   */
+  @computed('currentReconView', 'contentLoading', 'headerLoading')
+  isLoading({ code }, contentLoading, headerLoading) {
+    // if content is loading, its loading
+    if (contentLoading) {
+      return true;
+    }
+
+    // if content is not loading, and its not the packet view,
+    // we aren't waiting for anything anymore
+    if (code !== RECON_VIEW_TYPES_BY_NAME.PACKET.code) {
+      return false;
+    }
+
+    // if it is packet view, and the content is done loading
+    // then headerLoading is the determining factor
+    return headerLoading;
   }
+
 });
 
 export default connect(stateToComputed)(EventContentComponent);

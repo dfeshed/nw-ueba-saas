@@ -19,6 +19,7 @@ const dataInitialState = {
 
   // Fetched data
   headerItems: null,
+  headerLoading: null,
   files: null,
   packetFields: null,
   packets: null,
@@ -58,6 +59,7 @@ const data = reduxActions.handleActions({
     currentReconView: newView
   }),
 
+  // Meta reducing
   [ACTION_TYPES.META_RETRIEVE_STARTED]: (state) => ({
     ...state,
     metaError: null,
@@ -75,43 +77,51 @@ const data = reduxActions.handleActions({
     metaLoading: false
   }),
 
+  // Summary Reducing
+  [ACTION_TYPES.SUMMARY_RETRIEVE_STARTED]: (state) => ({
+    ...state,
+    headerItems: null,
+    packetFields: null, // temporary until this data comes from packet retrieve
+    headerError: null,
+    headerLoading: true
+  }),
   [ACTION_TYPES.SUMMARY_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     headerItems: payload.headerItems,
-    packetFields: payload.packetFields, // temporary until this data comes from packet retrieve
-    headerError: null
+    packetFields: payload.packetFields,  // temporary until this data comes from packet retrieve
+    headerLoading: false
   }),
   [ACTION_TYPES.SUMMARY_RETRIEVE_FAILURE]: (state) => ({
     ...state,
     headerError: true,
-    headerItems: null
+    headerLoading: false
   }),
 
+  // Content reducing
+  [ACTION_TYPES.RECON_CONTENT_RETRIEVE_STARTED]: (state) => ({
+    ...state,
+    contentError: null,
+    contentLoading: true
+  }),
   [ACTION_TYPES.RECON_FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload,
     contentLoading: false
   }),
-
-  // have packets already? then need to create new packet array with new ones at end
   [ACTION_TYPES.RECON_PACKETS_RETRIEVE_PAGE]: (state, { payload }) => ({
     ...state,
-    packets: state.packets ? [ ...state.packets, ...payload ] : payload,
-    contentLoading: false
+    contentLoading: false,
+    // have packets already? then this is another page of packets from API
+    // Need to create new packet array with new ones at end
+    packets: state.packets ? [ ...state.packets, ...payload ] : payload
   }),
-
   [ACTION_TYPES.RECON_CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
     ...state,
     contentError: payload,
     contentLoading: false
   }),
 
-  [ACTION_TYPES.RECON_CONTENT_RETRIEVE_STARTED]: (state) => ({
-    ...state,
-    contentError: null,
-    contentLoading: true
-  }),
-
+  // Download reducing
   [ACTION_TYPES.RECON_FILES_FILE_SELECTION_TOGGLED]: (state, { payload: fileId }) => {
     const newFiles = state.files.map((f) => {
       if (f.id === fileId) {
@@ -125,7 +135,6 @@ const data = reduxActions.handleActions({
       files: newFiles
     };
   },
-
   [ACTION_TYPES.RECON_FILE_DOWNLOAD_SUCCESS]: (state) => ({
     ...state,
     files: state.files.map((f) => ({ ...f, selected: false }))

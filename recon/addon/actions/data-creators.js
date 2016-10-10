@@ -187,6 +187,8 @@ const initializeRecon = (reconInputs) => {
           });
       }
 
+      dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE_STARTED });
+
       fetchReconSummary(reconInputs)
         .then(([headerItems, packetFields]) => {
           dispatch({
