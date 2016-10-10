@@ -84,17 +84,11 @@ const _dispatchReconViewData = (dispatch, { code }, dataState) => {
         });
       break;
     case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
-      fetchPacketData(dataState)
-        .then(([packets]) => {
-          dispatch({
-            type: ACTION_TYPES.RECON_PACKETS_RETRIEVE_SUCCESS,
-            payload: {
-              packets
-            }
-          });
-        }).catch((response) => {
-          _handleContentError(dispatch, response, 'packet');
-        });
+      fetchPacketData(
+        dataState,
+        (payload) => dispatch({ type: ACTION_TYPES.RECON_PACKETS_RETRIEVE_PAGE, payload }),
+        (response) => _handleContentError(dispatch, response, 'packet')
+      );
       break;
   }
 };

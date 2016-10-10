@@ -60,7 +60,7 @@ const addStreaming = (_query) => {
     ..._query,
     page: {
       index: 0,
-      size: 100
+      size: 10000 // can't page yet in UI yet, so just setting high
     },
     stream: {
       batch: 10,

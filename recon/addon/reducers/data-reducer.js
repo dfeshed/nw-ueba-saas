@@ -93,9 +93,10 @@ const data = reduxActions.handleActions({
     contentLoading: false
   }),
 
-  [ACTION_TYPES.RECON_PACKETS_RETRIEVE_SUCCESS]: (state, { payload }) => ({
+  // have packets already? then need to create new packet array with new ones at end
+  [ACTION_TYPES.RECON_PACKETS_RETRIEVE_PAGE]: (state, { payload }) => ({
     ...state,
-    packets: payload.packets,
+    packets: state.packets ? [ ...state.packets, ...payload ] : payload,
     contentLoading: false
   }),
 
