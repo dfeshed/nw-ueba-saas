@@ -112,13 +112,7 @@ public class JokerFunction {
 			String clusterName = entry.getKey();
 			Double maxScore = entry.getValue();
 			if (maxScore != null) {
-				Double alpha = alphas.get(clusterName);
-				if (alpha == null) {
-					String errorMsg = String.format("Missing alpha for cluster %s", clusterName);
-					logger.error(errorMsg);
-					throw new IllegalArgumentException(errorMsg);
-				}
-				maxScoresSum += alpha * maxScore;
+				maxScoresSum += alphas.get(clusterName) * maxScore;
 			}
 		}
 
