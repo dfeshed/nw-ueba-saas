@@ -52,16 +52,19 @@ public class AggregatedEventQueryMongoService implements AggregatedEventQuerySer
 				finalResult.addAll(readFromMongo(prefix + collectionName, contextType, ContextName, startTime, endTime));
 		});
 
-		return result;
+		return finalResult;
 
     }
 
 	private List<AggrEvent> readFromMongo (String collectionName,String contextType, String ContextName, Long startTime, Long endTime)
 	{
 		try{
-			Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-			Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
+			Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).gte(TimestampUtils.convertToSeconds(startTime));
+
+			Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).lte(TimestampUtils.convertToSeconds(endTime));
+
 			Criteria contextCriteria = createContextCriteria(contextType, ContextName);
+
 			Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria,contextCriteria));
 			return mongoTemplate.find(query, AggrEvent.class, collectionName);
 		}
