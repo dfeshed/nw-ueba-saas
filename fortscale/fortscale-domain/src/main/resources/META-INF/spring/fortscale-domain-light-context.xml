@@ -8,7 +8,7 @@
 	<description>domain light context.</description>
 
 
-	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
+	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}" username="${mongo.db.user}" password="#{ T(fortscale.utils.EncryptionUtils).decrypt('${mongo.db.password}')}"/>
 	
 	<mongo:mapping-converter id="mongoConverter" base-package="fortscale.domain" mapping-context-ref="mongoMappingContext" >
 		<mongo:custom-converters base-package="fortscale.domain" />
