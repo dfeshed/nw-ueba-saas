@@ -107,14 +107,12 @@ public class JokerFunction {
 			Map<String, JokerAggrEventData> aggrFeatureEventsMap,
 			Map<String, Double> clusterNameToMaxScoreMap) {
 
-		double maxScoresSum = 0;
-		for (Map.Entry<String, Double> entry : clusterNameToMaxScoreMap.entrySet()) {
-			String clusterName = entry.getKey();
-			Double maxScore = entry.getValue();
-			if (maxScore != null) {
-				maxScoresSum += alphas.get(clusterName) * maxScore;
-			}
-		}
+		double maxScoresSum = clusterNameToMaxScoreMap.entrySet().stream()
+				// discard clusters which for which no F was found in the data
+				.filter(clusterNameAndMaxScore -> clusterNameAndMaxScore.getValue() != null)
+				// multiply each cluster's score with the corresponding alpha
+				.mapToDouble(clusterNameAndMaxScore -> alphas.get(clusterNameAndMaxScore.getKey()) * clusterNameAndMaxScore.getValue())
+				.sum();
 
 		double pValuesSum = betas.entrySet().stream()
 				// pair each P to its beta
