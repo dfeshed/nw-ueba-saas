@@ -39,4 +39,8 @@ public class AccumulatedAggregatedFeatureEventsStoreMetrics extends StatsMetrics
     public long createCollection;
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long createFailure;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long retrieveCalls;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long retrievedObjects;
 }

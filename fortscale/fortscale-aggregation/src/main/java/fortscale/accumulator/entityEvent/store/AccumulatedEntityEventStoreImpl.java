@@ -47,14 +47,14 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
     @Override
     public void insert(Collection<AccumulatedEntityEvent> events, String featureName) {
         logger.debug("inserting {} events to accumulated feature={}", events.size(), featureName);
-        getMetics(featureName).insert++;
+        getMetrics(featureName).insert++;
 
         // TODO: 10/6/16 replace in bulk operation at fortscale 3.0
         try {
             String collectionName = createCollectionIfNotExist(featureName);
             mongoTemplate.insert(events, collectionName);
         } catch (Exception e) {
-            getMetics(featureName).insertFailure++;
+            getMetrics(featureName).insertFailure++;
             logger.error("exception occurred while inserting to accumulated collection of feature={}", featureName, e);
             throw e;
         }
@@ -87,7 +87,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
      * @param featureName
      * @return feature CRUD metrics
      */
-    public AccumulatedEntityEventStoreMetrics getMetics(String featureName) {
+    public AccumulatedEntityEventStoreMetrics getMetrics(String featureName) {
         if (!featureMetricsMap.containsKey(featureName)) {
             AccumulatedEntityEventStoreMetrics metrics =
                     new AccumulatedEntityEventStoreMetrics(statsService, featureName);
@@ -107,7 +107,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
 
     private void createCollection(String collectionName, String featureName) {
         logger.info("creating new accumulated collection={}", collectionName);
-        AccumulatedEntityEventStoreMetrics metics = getMetics(featureName);
+        AccumulatedEntityEventStoreMetrics metics = getMetrics(featureName);
         metics.createCollection++;
         try {
             mongoTemplate.createCollection(collectionName);

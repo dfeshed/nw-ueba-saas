@@ -1,7 +1,6 @@
 package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
@@ -134,14 +133,9 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 
 	private static Map<String, JokerAggrEventData> getJokerAggrEventDataMap(JokerEntityEventData jokerEntityEventData) {
 		Map<String, JokerAggrEventData> jokerAggrEventDataMap = new HashMap<>();
-
 		for (JokerAggrEventData jokerAggrEventData : jokerEntityEventData.getJokerAggrEventDatas()) {
-			String fullAggregatedFeatureEventName = AggregatedFeatureEventsConfUtilService
-					.buildFullAggregatedFeatureEventName(
-					jokerAggrEventData.getBucketConfName(), jokerAggrEventData.getAggregatedFeatureName());
-			jokerAggrEventDataMap.put(fullAggregatedFeatureEventName, jokerAggrEventData);
+			jokerAggrEventDataMap.put(jokerAggrEventData.getFullAggregatedFeatureEventName(), jokerAggrEventData);
 		}
-
 		return jokerAggrEventDataMap;
 	}
 
