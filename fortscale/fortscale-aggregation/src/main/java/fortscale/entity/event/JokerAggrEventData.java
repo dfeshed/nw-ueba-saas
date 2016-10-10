@@ -4,8 +4,8 @@ import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 
 public class JokerAggrEventData {
-	String fullAggregatedFeatureEventName;
-	Double score;
+	private String fullAggregatedFeatureEventName;
+	private Double score;
 
 	public JokerAggrEventData(String fullAggregatedFeatureEventName, Double score) {
 		this.fullAggregatedFeatureEventName = fullAggregatedFeatureEventName;
