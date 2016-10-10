@@ -211,18 +211,13 @@ export default Component.extend(DomWatcher, {
   actions: {
     /**
      * Attempts to navigate to the previous page before the current page.
-     * If there is no previous page, then attempts to "wrap around" to the last page, if any.
+     * If there is no previous page, then remains on the first page.
      * @public
      */
     previousPage() {
       let curr = this.get('currentPageIndex');
       if (curr) {
         this.decrementProperty('currentPageIndex');
-      } else {
-        let len = this.get('pages.length');
-        if (len) {
-          this.set('currentPageIndex', len - 1);
-        }
       }
     },
 

@@ -43,6 +43,33 @@ test('The number of content cards and navigational dots appropriately changes to
   assert.equal(this.$('.rsa-carousel__footer .dot').length, 5, 'Given a container width of 1000px and a card width of 350px, I should be showing five navigational dots.');
 });
 
+test('Left arrow button appearance and behavior.', function(assert) {
+  this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
+  this.render(hbs`
+    <div class="constraintContainer" style="width:1440px">
+      {{#rsa-carousel class="rsa-incident-carousel" items=mock as |incident|}}
+        <div class="rsa-content-card" style="width:350px"></div>
+      {{/rsa-carousel}}
+    </div>
+  `);
+  assert.equal(this.$('.rsa-carousel__arrow div.rsa-form-button-wrapper').hasClass('is-disabled'), true, 'On initial load left arrow should visually appear to be disabled.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:nth-child(1)').hasClass('is-selected'), true, 'On initial load, the first navigational dot should be selected.');
+  this.$('.rsa-carousel__arrow i.rsa-icon-arrow-left-12').trigger('click');
+  assert.equal(this.$('.rsa-carousel__footer .dot:last-child').hasClass('is-selected'), false, 'On initial load, when the left arrow is clicked, carousel should not wrap around to last page.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:first-child').hasClass('is-selected'), true, 'On initial load, when the left arrow is clicked, carousel first page should remain selected.');
+  this.$('.rsa-carousel__arrow i.rsa-icon-arrow-right-12').trigger('click');
+  assert.equal(this.$('.rsa-carousel__arrow div.rsa-form-button-wrapper').hasClass('is-disabled'), false, 'If navigated to right, the left arrow should be visually appear to be active');
+  this.$('.rsa-carousel__arrow i.rsa-icon-arrow-left-12').trigger('click');
+  assert.equal(this.$('.rsa-carousel__arrow div.rsa-form-button-wrapper').hasClass('is-disabled'), true, 'If navigated back to the first page, the left arrow should visually appear to be disabled.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:last-child').hasClass('is-selected'), false, 'If navigated back to the first page, when the left arrow is clicked, carousel should not wrap around to last page.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:first-child').hasClass('is-selected'), true, 'If navigated back to the first page, when the left arrow is clicked, carousel first page should remain selected.');
+  this.$('.rsa-carousel__arrow i.rsa-icon-arrow-right-12').trigger('click');
+  this.$('.rsa-carousel__footer .dot:first-child').trigger('click');
+  assert.equal(this.$('.rsa-carousel__arrow div.rsa-form-button-wrapper').hasClass('is-disabled'), true, 'If navigated back to first page using footer dot, the left arrow should visually appear to be disabled.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:last-child').hasClass('is-selected'), false, 'If navigated back to first page using footer dot, when the left arrow is clicked, carousel should not wrap around to last page.');
+  assert.equal(this.$('.rsa-carousel__footer .dot:first-child').hasClass('is-selected'), true, 'If navigated back to first page using footer dot, when the left arrow is clicked, carousel first page should remain selected.');
+});
+
 test('The navigational arrow buttons react properly to user clicks.', function(assert) {
   this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
   this.render(hbs`
