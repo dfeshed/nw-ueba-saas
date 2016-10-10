@@ -79,22 +79,28 @@ public class EntityEventAccumulator extends AccumulatorBase {
 
         for (EntityEvent entityEvent : events) {
             String contextId = entityEvent.getContextId();
-            // create accumulated event for this context if none exists
-            if (!accumulatedEntityEventMap.containsKey(contextId)) {
-                accumulatedEntityEventMap.put(contextId, new AccumulatedEntityEvent(from, to, contextId, creationTime));
-            }
 
             // get accumulated event for contextId
             AccumulatedEntityEvent accumulatedEvent = accumulatedEntityEventMap.get(contextId);
+
+            // create accumulated event for this context if none exists
+            if(accumulatedEvent == null)
+            {
+                accumulatedEvent = new AccumulatedEntityEvent(from, to, contextId, creationTime);
+                accumulatedEntityEventMap.put(contextId, accumulatedEvent);
+            }
 
             for (JSONObject aggrEvent : entityEvent.getAggregated_feature_events()) {
 
                 String featureName = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_NAME);
                 Map<String, List<Double>> aggregatedFeatureEventsValuesMap = accumulatedEvent.getAggregatedFeatureEventsValuesMap();
-                if (!aggregatedFeatureEventsValuesMap.containsKey(featureName)) {
-                    aggregatedFeatureEventsValuesMap.put(featureName, new ArrayList<>());
-                }
+
                 List<Double> scoreList = aggregatedFeatureEventsValuesMap.get(featureName);
+
+                if (scoreList == null) {
+                    scoreList = new ArrayList<>();
+                    aggregatedFeatureEventsValuesMap.put(featureName, scoreList);
+                }
 
                 String featureType = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_FEATURE_TYPE);
                 switch (featureType) {
@@ -122,12 +128,14 @@ public class EntityEventAccumulator extends AccumulatorBase {
      * @return feature metrics
      */
     public EntityEventAccumulatorMetrics getMetrics(String featureName) {
-        if (!metricsMap.containsKey(featureName)) {
-            EntityEventAccumulatorMetrics metrics =
-                    new EntityEventAccumulatorMetrics(statsService, featureName);
+        EntityEventAccumulatorMetrics metrics = metricsMap.get(featureName);
+        if (metrics == null)
+        {
+            metrics = new EntityEventAccumulatorMetrics(statsService, featureName);
             metricsMap.put(featureName, metrics);
         }
-        return metricsMap.get(featureName);
+
+        return metrics;
     }
 
 }
