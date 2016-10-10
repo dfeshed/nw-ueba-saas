@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
 
 import java.util.*;
@@ -116,26 +117,19 @@ public class JokerFunction {
 					String errorMsg = String.format("Missing alpha for cluster %s", clusterName);
 					logger.error(errorMsg);
 					throw new IllegalArgumentException(errorMsg);
-				} else {
-					maxScoresSum += alpha * maxScore;
 				}
+				maxScoresSum += alpha * maxScore;
 			}
 		}
 
-		double pValuesSum = 0;
-		for (Map.Entry<String, JokerAggrEventData> entry : aggrFeatureEventsMap.entrySet()) {
-			JokerAggrEventData aggrFeatureEvent = entry.getValue();
-			if (aggrFeatureEvent.isOfTypeP()) {
-				String pEventName = entry.getKey();
-				Double pValue = aggrFeatureEvent.getAggregatedFeatureValue();
-				if (pValue == null) {
-					String errorMsg = String.format("Event %s of type P must have a value field", pEventName);
-					logger.error(errorMsg);
-					throw new IllegalArgumentException(errorMsg);
-				}
-				pValuesSum += betas.get(pEventName) * pValue;
-			}
-		}
+		double pValuesSum = betas.entrySet().stream()
+				// pair each P to its beta
+				.map(pNameAndBeta -> new ImmutablePair<>(aggrFeatureEventsMap.get(pNameAndBeta.getKey()), pNameAndBeta.getValue()))
+				// discard betas which don't have corresponding Ps
+				.filter(aggrFeatureEventAndBeta -> aggrFeatureEventAndBeta.getLeft() != null)
+				// multiply each P's value by the corresponding beta
+				.mapToDouble(aggrFeatureEventAndBeta -> aggrFeatureEventAndBeta.getLeft().getAggregatedFeatureValue() * aggrFeatureEventAndBeta.getRight())
+				.sum();
 
 		return maxScoresSum + pValuesSum;
 	}
