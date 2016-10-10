@@ -125,7 +125,7 @@ public class AggregatedFeatureEventsAccumulatorTest {
         AccumulatedAggregatedFeatureEvent accumulatedAggregatedFeatureEvent = accumulatedEvents.get(0);
         Assert.assertEquals(accumulatedAggregatedFeatureEvent.getAggregatedFeatureValues(), expectedAccumulatedValues);
         Assert.assertEquals(accumulatedAggregatedFeatureEvent.getContextId(), contextId);
-        Assert.assertEquals(accumulatedAggregatedFeatureEvent.getStartTime(), from);
+        Assert.assertEquals(accumulatedAggregatedFeatureEvent.getStart_time(), from);
     }
 
 }

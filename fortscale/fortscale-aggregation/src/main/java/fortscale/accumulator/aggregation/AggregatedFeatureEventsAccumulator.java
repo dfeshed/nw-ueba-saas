@@ -28,7 +28,7 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
     private final StatsService statsService;
     private Map<String, AggregatedFeatureEventsAccumulatorMetrics> metricsMap;
     private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
-    private Map<String, AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEventMap;
+
 
     /**
      * C'tor
@@ -67,7 +67,7 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
      */
     @Override
     public void accumulateEvents(String featureName, final Instant fromCursor, final Instant toCursor) {
-        accumulatedAggregatedFeatureEventMap = new HashMap<>();
+        Map<String, AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEventMap = new HashMap<>();
         AggregatedFeatureEventsAccumulatorMetrics metrics = getMetrics(featureName);
         metrics.fromTime = fromCursor.toEpochMilli();
         metrics.toTime = toCursor.toEpochMilli();
@@ -82,7 +82,7 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
             }
             List<AggrEvent> aggregatedEvents =
                     aggregatedFeatureEventsMongoStore.findAggrEventsByStartTimeRange(fromHourCursor, nextHourCursor, featureName);
-            accumulateEvents(aggregatedEvents, fromCursor, toCursor, creationTime);
+            accumulateEvents(aggregatedEvents, fromCursor, toCursor, creationTime, accumulatedAggregatedFeatureEventMap);
             fromHourCursor = nextHourCursor;
         }
         Collection<AccumulatedAggregatedFeatureEvent> accumulatedEvents =
@@ -95,7 +95,7 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
         return accumulatedAggregatedFeatureEventStore.getLastAccumulatedEventStartTime(featureName);
     }
 
-    private void accumulateEvents(List<AggrEvent> aggrEvents, Instant from, Instant to, Instant creationTime) {
+    private void accumulateEvents(List<AggrEvent> aggrEvents, Instant from, Instant to, Instant creationTime, Map<String, AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEventMap) {
 
         for (AggrEvent event : aggrEvents) {
             String contextId = event.getContextId();

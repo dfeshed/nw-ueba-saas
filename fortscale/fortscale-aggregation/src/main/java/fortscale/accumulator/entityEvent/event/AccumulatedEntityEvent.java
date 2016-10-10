@@ -1,11 +1,9 @@
 package fortscale.accumulator.entityEvent.event;
 
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -14,7 +12,7 @@ import java.util.Map;
  *
  * this object is thinner in manner of amount of fields,
  * and also accumulates several {@link fortscale.domain.core.EntityEvent#aggregated_feature_events#value}
- * into single list {@link this#aggregatedFeatureEventsValuesMap}
+ * into single list {@link this#aggregated_feature_events_values_map}
  *
  * Created by barak_schuster on 10/6/16.
  */
@@ -22,57 +20,50 @@ public class AccumulatedEntityEvent {
 
     // --- field names as they appear in MongoDB ---
     public static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME = "start_time";
-    private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_END_TIME = "end_time";
-    private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID = "contextId";
-    private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_AGGREGATED_FEATURE_EVENTS_VALUES_MAP = "aggregated_feature_events_values_map";
-    private static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CREATION_TIME = "creation_time";
 
     @Id
     private String id;
 
-    @Field(ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME)
-    private Instant startTime;
 
-    @Field(ACCUMULATED_ENTITY_EVENT_FIELD_NAME_END_TIME)
-    private Instant endTime;
+    private Instant start_time;
 
-    @Field(ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID)
+    private Instant end_time;
+
     private String contextId;
 
-    @Field(ACCUMULATED_ENTITY_EVENT_FIELD_NAME_AGGREGATED_FEATURE_EVENTS_VALUES_MAP)
-    private Map<String,List<Double>> aggregatedFeatureEventsValuesMap;
+    // <bucket-featurename<hour, value>>
+    private Map<String,Double[]> aggregated_feature_events_values_map;
 
-    @Field(ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CREATION_TIME)
-    private Instant creationTime;
+    private Instant creation_time;
 
     /**
      * Default C'tor
      */
     public AccumulatedEntityEvent()
     {
-        aggregatedFeatureEventsValuesMap = new HashMap<>();
+        aggregated_feature_events_values_map = new HashMap<>();
     }
 
-    public AccumulatedEntityEvent(Instant startTime, Instant endTime, String contextId, Instant creationTime)
+    public AccumulatedEntityEvent(Instant start_time, Instant end_time, String contextId, Instant creation_time)
     {
         this();
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.start_time = start_time;
+        this.end_time = end_time;
         this.contextId = contextId;
-        this.creationTime = creationTime;
+        this.creation_time = creation_time;
     }
 
     /**
      * C'tor
-     * @param startTime
-     * @param endTime
+     * @param start_time
+     * @param end_time
      * @param contextId
-     * @param aggregatedFeatureEventsValuesMap
-     * @param creationTime
+     * @param aggregated_feature_events_values_map
+     * @param creation_time
      */
-    public AccumulatedEntityEvent(Instant startTime, Instant endTime, String contextId, Map<String, List<Double>> aggregatedFeatureEventsValuesMap, Instant creationTime) {
-        this(startTime,endTime,contextId,creationTime);
-        this.aggregatedFeatureEventsValuesMap = aggregatedFeatureEventsValuesMap;
+    public AccumulatedEntityEvent(Instant start_time, Instant end_time, String contextId, Map<String,Double[]>  aggregated_feature_events_values_map, Instant creation_time) {
+        this(start_time, end_time,contextId, creation_time);
+        this.aggregated_feature_events_values_map = aggregated_feature_events_values_map;
     }
 
     // --- Getters/setters ---
@@ -85,20 +76,20 @@ public class AccumulatedEntityEvent {
         this.id = id;
     }
 
-    public Instant getStartTime() {
-        return startTime;
+    public Instant getStart_time() {
+        return start_time;
     }
 
-    public void setStartTime(Instant startTime) {
-        this.startTime = startTime;
+    public void setStart_time(Instant start_time) {
+        this.start_time = start_time;
     }
 
-    public Instant getEndTime() {
-        return endTime;
+    public Instant getEnd_time() {
+        return end_time;
     }
 
-    public void setEndTime(Instant endTime) {
-        this.endTime = endTime;
+    public void setEnd_time(Instant end_time) {
+        this.end_time = end_time;
     }
 
     public String getContextId() {
@@ -109,19 +100,19 @@ public class AccumulatedEntityEvent {
         this.contextId = contextId;
     }
 
-    public Map<String, List<Double>> getAggregatedFeatureEventsValuesMap() {
-        return aggregatedFeatureEventsValuesMap;
+    public Map<String,Double[]>  getAggregated_feature_events_values_map() {
+        return aggregated_feature_events_values_map;
     }
 
-    public void setAggregatedFeatureEventsValuesMap(Map<String, List<Double>> aggregatedFeatureEventsValuesMap) {
-        this.aggregatedFeatureEventsValuesMap = aggregatedFeatureEventsValuesMap;
+    public void setAggregated_feature_events_values_map(Map<String,Double[]>  aggregated_feature_events_values_map) {
+        this.aggregated_feature_events_values_map = aggregated_feature_events_values_map;
     }
 
-    public Instant getCreationTime() {
-        return creationTime;
+    public Instant getCreation_time() {
+        return creation_time;
     }
 
-    public void setCreationTime(Instant creationTime) {
-        this.creationTime = creationTime;
+    public void setCreation_time(Instant creation_time) {
+        this.creation_time = creation_time;
     }
 }

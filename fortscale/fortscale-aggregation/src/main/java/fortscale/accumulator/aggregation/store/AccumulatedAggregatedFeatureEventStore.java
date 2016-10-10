@@ -15,7 +15,7 @@ public interface AccumulatedAggregatedFeatureEventStore {
 
     Instant getLastAccumulatedEventStartTime(String featureName);
 
-	List<AccumulatedAggregatedFeatureEvent> findAccumulatedEventsByContextIdAndTimeRange(
+	List<AccumulatedAggregatedFeatureEvent> findAccumulatedEventsByContextIdAndStartTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf,
 			String contextId,
 			Instant startTime,

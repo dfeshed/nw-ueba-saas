@@ -1,11 +1,11 @@
 package fortscale.accumulator.entityEvent;
 
-import com.github.fakemongo.Fongo;
 import fortscale.accumulator.entityEvent.config.EntityEventAccumulatorConfig;
 import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import net.minidev.json.parser.ParseException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,12 +14,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
-import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import java.io.IOException;
 import java.util.Properties;
 
 /**
@@ -28,28 +27,24 @@ import java.util.Properties;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 public class EntityEventAccumulatorTest {
+
+    private static final int HOUR_IN_SECONDS = 3600;
+
     @Configuration
     @Import({
             NullStatsServiceConfig.class,
-            EntityEventAccumulatorConfig.class
+            EntityEventAccumulatorConfig.class,
+            TestMongoConfig.class
     })
     @EnableSpringConfigured
     @EnableAnnotationConfiguration
     public static class springConfig {
-        private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
         @Autowired
         private StatsService statsService;
 
-        private MongoDbFactory mongoDbFactory() {
-            Fongo fongo = new Fongo(FORTSCALE_TEST_DB);
 
-            return new SimpleMongoDbFactory(fongo.getMongo(), FORTSCALE_TEST_DB);
-        }
 
-        @Bean
-        public MongoTemplate mongoTemplate() {
-            return new MongoTemplate(mongoDbFactory());
-        }
+
 
         @Bean
         public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
@@ -77,13 +72,29 @@ public class EntityEventAccumulatorTest {
     @Autowired
     EntityEventMongoStore entityEventMongoStore;
 
-    @Test
-    public void shouldAccumulateEvents()
-    {
-//        EntityEvent entityEvent = new EntityEvent();
-//        entityEventMongoStore.save();
-//        accumulator.run();
+    private final static String ENTITY_EVENT_JSON = "{\"start_time_unix\":1435176000,\"contextId\":\"normalized_username_normalized_username_14060866\",\"baseScore\":0.0,\"entity_event_value\":0.0,\"event_type\":\"entity_event\",\"score\":50.0,\"unreduced_score\":90.0,\"entity_event_name\": \"normalized_username_daily\",\"context\":{\"normalized_username\":\"normalized_username_14060866\"},\"end_time_unix\":1435179599,\"creation_epochtime\":1444297230,\"entity_event_type\":\"normalized_username_hourly\",\"date_time_unix\":1435179599,\"aggregated_feature_events\":[{\"creation_date_time\":\"2015-10-08 09:33:53\",\"aggregated_feature_value\":0.0,\"event_type\":\"aggr_event\",\"data_source\":\"aggr_event.normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly\",\"score\":null,\"aggregated_feature_type\":\"P\",\"data_sources\":[\"vpn_session\"],\"creation_epochtime\":1444296833,\"date_time_unix\":1435179599,\"start_time_unix\":1435176000,\"end_time\":\"2015-06-24 20:59:59\",\"bucket_conf_name\":\"normalized_username_vpn_session_hourly\",\"context\":{\"normalized_username\":\"normalized_username_14060866\"},\"start_time\":\"2015-06-24 20:00:00\",\"aggregated_feature_name\":\"sum_of_scores_rate_vpn_session_hourly\",\"end_time_unix\":1435179599,\"aggregated_feature_info\":{\"total\":0}}]}";
+    private final static String ENTITY_EVENT_JSON_2 = "{\"start_time_unix\":1435176000,\"contextId\":\"normalized_username_normalized_username_14060866\",\"baseScore\":0.0,\"entity_event_value\":0.0,\"event_type\":\"entity_event\",\"score\":50.0,\"unreduced_score\":90.0,\"entity_event_name\": \"normalized_username_daily\",\"context\":{\"normalized_username\":\"normalized_username_14060866\"},\"end_time_unix\":1435179599,\"creation_epochtime\":1444297230,\"entity_event_type\":\"normalized_username_hourly\",\"date_time_unix\":1435179599,\"aggregated_feature_events\":[{\"creation_date_time\":\"2015-10-08 09:33:53\",\"aggregated_feature_value\":0.0,\"event_type\":\"aggr_event\",\"data_source\":\"aggr_event.normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly\",\"score\":null,\"aggregated_feature_type\":\"P\",\"data_sources\":[\"vpn_session\"],\"creation_epochtime\":1444296833,\"date_time_unix\":1435179599,\"start_time_unix\":1435179600,\"end_time\":\"2015-06-24 20:59:59\",\"bucket_conf_name\":\"normalized_username_vpn_session_hourly\",\"context\":{\"normalized_username\":\"normalized_username_14060866\"},\"start_time\":\"2015-06-24 20:00:00\",\"aggregated_feature_name\":\"sum_of_scores_rate_vpn_session_hourly\",\"end_time_unix\":1435179599,\"aggregated_feature_info\":{\"total\":0}}]}";
+    private final static String ENTITY_EVENT_JSON_3 = "{\"start_time_unix\":1435176000,\"contextId\":\"normalized_username_normalized_username_14060866\",\"baseScore\":0.0,\"entity_event_value\":0.0,\"event_type\":\"entity_event\",\"score\":50.0,\"unreduced_score\":90.0,\"entity_event_name\": \"normalized_username_daily\",\"context\":{\"normalized_username\":\"normalized_username_14060866\"},\"end_time_unix\":1435179599,\"creation_epochtime\":1444297230,\"entity_event_type\":\"normalized_username_hourly\",\"date_time_unix\":1435179599,\"aggregated_feature_events\":[{\"creation_date_time\":\"2015-10-08 09:33:53\",\"aggregated_feature_value\":0.0,\"event_type\":\"aggr_event\",\"data_source\":\"aggr_event.normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly\",\"score\":null,\"aggregated_feature_type\":\"P\",\"data_sources\":[\"vpn_session\"],\"creation_epochtime\":1444296833,\"date_time_unix\":1435179599,\"start_time_unix\":1435179600,\"end_time\":\"2015-06-24 20:59:59\",\"bucket_conf_name\":\"normalized_username_vpn_session_hourly\",\"context\":{\"normalized_username\":\"normalized_username_14060866\"},\"start_time\":\"2015-06-24 20:00:00\",\"aggregated_feature_name\":\"sum_of_scores_rate_vpn_session_hourly\",\"end_time_unix\":1435179599,\"aggregated_feature_info\":{\"total\":0}}]}";
 
+    @Test
+    public void shouldAccumulateEvents() throws IOException, ParseException {
+//        JSONObject entityEventJsonObj = (JSONObject) JSONValue.parse(ENTITY_EVENT_JSON);
+//        EntityEvent entityEvent = EntityEvent.buildEntityEvent(entityEventJsonObj);
+//        entityEventMongoStore.save(entityEvent);
+//        JSONObject entityEventJsonObj2 = (JSONObject) JSONValue.parse(ENTITY_EVENT_JSON_2);
+//        EntityEvent entityEvent2 = EntityEvent.buildEntityEvent(entityEventJsonObj2);
+//        entityEventMongoStore.save(entityEvent2);
+//        JSONObject entityEventJsonObj3 = (JSONObject) JSONValue.parse(ENTITY_EVENT_JSON_3);
+//        EntityEvent entityEvent3 = EntityEvent.buildEntityEvent(entityEventJsonObj3);
+//        entityEventMongoStore.save(entityEvent3);
+//
+//        String entity_event_type = entityEvent.getEntity_event_type();
+//        Instant firstStartTime = Instant.ofEpochSecond(entityEvent.getStart_time_unix());
+//        Instant lastStartTime = Instant.ofEpochSecond(entityEvent3.getAggregated_feature_events().get(0).getAsNumber(AggrEvent.EVENT_FIELD_START_TIME_UNIX).longValue());
+//        List<EntityEvent> b = entityEventMongoStore.findEntityEventsByTimeRange(firstStartTime, lastStartTime, entity_event_type);
+//        accumulator.run(new AccumulationParams(entity_event_type, AccumulationParams.TimeFrame.DAILY,firstStartTime,lastStartTime));
+//
+//        mongoTemplate.findAll(AccumulatedEntityEvent.class,"scored___aggr_event__normalized_username_h_acm");
     }
 
 }

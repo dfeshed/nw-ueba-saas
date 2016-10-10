@@ -13,8 +13,14 @@ import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService.buildFullAggregatedFeatureEventName;
 
 /**
  * Accumulates several {@link EntityEvent} into accumulated {@link AccumulatedEntityEvent} per contextId by daily resolution
@@ -22,6 +28,7 @@ import java.util.*;
  */
 public class EntityEventAccumulator extends AccumulatorBase {
     private static final Logger logger = Logger.getLogger(EntityEventAccumulator.class);
+    private static final int HOURS_IN_DAY = 24;
     private final EntityEventMongoStore entityEventMongoStore;
     private final AccumulatedEntityEventStore accumulatedEntityEventStore;
     private final StatsService statsService;
@@ -90,25 +97,32 @@ public class EntityEventAccumulator extends AccumulatorBase {
                 accumulatedEntityEventMap.put(contextId, accumulatedEvent);
             }
 
+            Map<String,Double[]>  aggregatedFeatureEventsValuesMap = accumulatedEvent.getAggregated_feature_events_values_map();
+
             for (JSONObject aggrEvent : entityEvent.getAggregated_feature_events()) {
 
                 String featureName = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_NAME);
-                Map<String, List<Double>> aggregatedFeatureEventsValuesMap = accumulatedEvent.getAggregatedFeatureEventsValuesMap();
+                String bucketName = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_BUCKET_CONF_NAME);
+                String fullAggregatedFeatureEventName= buildFullAggregatedFeatureEventName(bucketName,featureName);
 
-                List<Double> scoreList = aggregatedFeatureEventsValuesMap.get(featureName);
+                long eventStartTimeEpochSeconds = aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_START_TIME_UNIX).longValue();
+                int eventHourOfDay = epochSecondsToHourOfDay(eventStartTimeEpochSeconds);
 
-                if (scoreList == null) {
-                    scoreList = new ArrayList<>();
-                    aggregatedFeatureEventsValuesMap.put(featureName, scoreList);
+                Double[] scoreMap = aggregatedFeatureEventsValuesMap.get(fullAggregatedFeatureEventName);
+                if (scoreMap == null)
+                {
+                    scoreMap = new Double[HOURS_IN_DAY];
+                    aggregatedFeatureEventsValuesMap.put(fullAggregatedFeatureEventName, scoreMap);
                 }
+
 
                 String featureType = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_FEATURE_TYPE);
                 switch (featureType) {
                     case "F":
-                        scoreList.add(aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_SCORE).doubleValue());
+                        scoreMap[eventHourOfDay] = aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_SCORE).doubleValue();
                         break;
                     case "P":
-                        scoreList.add(aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_VALUE).doubleValue());
+                        scoreMap[eventHourOfDay] =aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_VALUE).doubleValue();
                         break;
                     default:
                         String message = String.format("cannot accumulate entityEvent with aggrFeatureEvent of type=%s", featureType);
@@ -118,6 +132,15 @@ public class EntityEventAccumulator extends AccumulatorBase {
         }
         return accumulatedEntityEventMap.values();
 
+    }
+
+    /**
+     * converts epoch seconds to the hour of the day, for example
+     * @param eventStartTimeEpochSeconds
+     * @return
+     */
+    private int epochSecondsToHourOfDay(long eventStartTimeEpochSeconds) {
+        return Instant.ofEpochSecond(eventStartTimeEpochSeconds).atZone(ZoneId.of("UTC")).toLocalDateTime().getHour();
     }
 
 
