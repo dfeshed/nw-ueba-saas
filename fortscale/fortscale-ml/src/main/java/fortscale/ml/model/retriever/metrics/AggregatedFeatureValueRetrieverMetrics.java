@@ -13,10 +13,13 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "streaming.model.retriever.aggregated-feature-value")
 public class AggregatedFeatureValueRetrieverMetrics extends StatsMetricsGroup {
-	public AggregatedFeatureValueRetrieverMetrics(StatsService statsService, String aggregatedFeatureEventConfName) {
+	public AggregatedFeatureValueRetrieverMetrics(StatsService statsService,
+												  String aggregatedFeatureEventConfName,
+												  boolean isAccumulation) {
 		super(statsService, AggregatedFeatureValueRetriever.class, new StatsMetricsGroupAttributes() {
 			{
 				addTag("confName", aggregatedFeatureEventConfName);
+				addTag("isAccumulation", String.valueOf(isAccumulation));
 			}
 		});
 	}
@@ -25,7 +28,7 @@ public class AggregatedFeatureValueRetrieverMetrics extends StatsMetricsGroup {
 	public long retrieve;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long aggregatedFeatureEvents;
+	public long aggregatedFeatureValues;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long getContextId;
