@@ -49,12 +49,11 @@ export default Component.extend({
     this._scheduleAfterRenderTasks();
     // We have to clear tooltip data on scroll
     $('.recon-event-detail-packets').scroll(() => {
-      this.set('hoverData', null);
+      $('.rsa-byte-table-tooltip').removeClass('visible');
     });
   },
 
   willDestroyElement() {
-    this.set('hoverData', null);
     this._cells = null;
     this.detachDomListeners();
   },

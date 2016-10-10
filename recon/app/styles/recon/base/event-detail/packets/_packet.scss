@@ -1,11 +1,23 @@
 .rsa-packet {
   &__header {
+    background-color: rsa-color(gray, dark, 0.5);
+    border-color: $dark-border-color-medium;
+    color: $dark-fg-color;
     padding: 6px 12px 6px 0px;
     position: relative;
     padding-left: rsa-whitespace();
 
     box {
       margin-left: rsa-whitespace(less);
+    }
+
+    h3 {
+      color: #fff;
+    }
+
+    &:before {
+      border: 1pt solid $dark-border-color-medium;
+      background-color: $dark-bg-color;
     }
 
     .request-response {
@@ -49,6 +61,8 @@
 
   &__body {
     @include rsa-row(justify,fill);
+    background-color: rsa-color(gray, dark, 0.5);
+    color: $dark-fg-hover-color;
     font-size: 0.85rem;
   }
 
@@ -64,6 +78,7 @@
     }
 
     &.ascii {
+      margin-left: rsa-whitespace();
       td {
         text-align: left;
       }
@@ -83,6 +98,7 @@
   }
 
   &.request {
+    background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
     .rsa-packet {
       &__header {
         &:before {
@@ -93,6 +109,7 @@
   }
 
   &.response {
+    background-color: rsa-color(gray, darkest, $rsa-translucent);
     .rsa-packet {
       &__header {
         &:before {

@@ -1,10 +1,14 @@
 .rsa-byte-table-tooltip {
-  position: absolute;
-  z-index: 10000;
+  border: 1px solid rsa-color(blue);
+  box-shadow: 1px 1px 2px 0 #666;
+  background-color: rgba($dark-bg-color, .9);
+  color: $dark-fg-hover-color;
+  display: none; /* to be set at run-time by javascript */
   min-width: 5rem;
-  display: none;  /* to be set at run-time by javascript */
-  transition: left 100ms, top 100ms;
   padding: 3px 0;
+  position: absolute;
+  transition: left 100ms, top 100ms;
+  z-index: 10000;
 
   &.visible {
     display: block;
@@ -13,7 +17,7 @@
   div {
     color: rsa-color(gray, light);
     padding: 3px 12px 4px;
-    .label{
+    .label {
       @include rsa-font(header, small);
     }
   }

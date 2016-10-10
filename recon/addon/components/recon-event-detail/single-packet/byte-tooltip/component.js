@@ -9,10 +9,15 @@ const { Component, observer, run } = Ember;
 const DEFAULT_TYPE_OF_FIELD = {
   'eth.dst': 'mac',
   'eth.src': 'mac',
-  'eth.type': 'mac',
+  'eth.type': 'int',
+  'ip.addr': 'ip',
   'ip.src': 'ip',
   'ip.dst': 'ip',
+  'ip.dstport': 'int',
   'ip.proto': 'int',
+  'ipv6.src': 'ip',
+  'ipv6.dst': 'ip',
+  'ipv6.proto': 'int',
   'tcp.srcport': 'int',
   'tcp.dstport': 'int'
 };

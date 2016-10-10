@@ -44,12 +44,12 @@ $packet-byte-border-width: 1px;
       &:nth-of-type(4),
       &:nth-of-type(12) {
         &:before {
-          background-color: rgba(255,255,255,.1);
+          background-color: rgba(255, 255, 255, .1);
         }
       }
       &:nth-of-type(8) {
         &:before {
-          background-color: rgba(255,255,255,.2);
+          background-color: rgba(255, 255, 255, .2);
         }
       }
 
@@ -60,41 +60,64 @@ $packet-byte-border-width: 1px;
         margin: $packet-byte-margin-x;
       }
 
-
       &.header {
+        background-color: $dark-packet-header-bg-color;
+        color: #fff;
+
+        &[data-is-hover=true] {
+          &.packet-field-value {
+            span {
+              background-color: $dark-packet-field-hover-bg-color;
+              color: #000;
+            }
+          }
+        }
 
         &.packet-field-value {
+          span {
+            background-color: $dark-packet-field-bg-color;
+          }
           &:not(.start):not(.end) {
             span {
+              border-color: $dark-packet-field-border-color transparent;
+              border-width: $packet-byte-border-width 0;
               margin-left: 0;
               margin-right: 0;
               padding-left: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
               padding-right: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
-              border-width: $packet-byte-border-width 0;
             }
           }
           &.end:not(.start) {
             span {
+              border-color: $dark-packet-field-border-color $dark-packet-field-border-color $dark-packet-field-border-color transparent;
+              border-left: 0;
+              border-radius: 0 3px 3px 0;
               margin-left: 0;
               padding-left: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
-              border-radius: 0 3px 3px 0;
-              border-left: 0;
             }
           }
           &.start:not(.end) {
             span {
-              margin-right: 0;
-              padding-right: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
+              border-color: $dark-packet-field-border-color transparent $dark-packet-field-border-color $dark-packet-field-border-color;
               border-radius: 3px 0 0 3px;
               border-width: $packet-byte-border-width 0 $packet-byte-border-width $packet-byte-border-width;
+              margin-right: 0;
+              padding-right: $packet-byte-padding-x + $packet-byte-margin-x + $packet-byte-border-width;
             }
           }
           &.start.end {
             span {
+              border-color: $dark-packet-field-border-color;
               border-radius: 3px;
             }
           }
         }
+      }
+
+      &[data-is-selected=true] {
+        background-color: #99ccff;
+        color: #003366;
+        text-shadow: 0 0 0 transparent;
       }
     }
   }
@@ -104,6 +127,7 @@ $packet-byte-border-width: 1px;
       td:first-of-type {
         position: relative;
         &:before {
+          background-color: rgba(255, 255, 255, .2);
           content: '';
           position: absolute;
           top: 0;
@@ -114,6 +138,5 @@ $packet-byte-border-width: 1px;
         }
       }
     }
-
   }
 }

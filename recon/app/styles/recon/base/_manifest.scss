@@ -2,6 +2,11 @@
 @import "./event-detail/manifest";
 @import "./meta-content/manifest";
 
+.recon-container {
+  height: 100%;
+  overflow: hidden;
+}
+
 .recon-error {
   padding: rsa-whitespace(more);
 }
