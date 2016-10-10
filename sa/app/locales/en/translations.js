@@ -17,6 +17,7 @@ export default $.extend({}, BaseTranslations, {
     title: 'Respond',
     details: 'Respond contents go here.',
     myQueue: 'Incident Queue',
+    myFilteredQueue: 'Showing {{filteredCount}} of {{totalCount}}',
     allIncidents: 'All Incidents',
     incidents: 'Incidents',
     sort: 'Sort',

@@ -14,7 +14,11 @@
     float: left;
     padding: rsa-whitespace() 0;
     color: rsa-color(white);
-    text-transform: capitalize;
+
+    .count {
+      @include rsa-font(light, default);
+    }
+
   }
 
   &__options {

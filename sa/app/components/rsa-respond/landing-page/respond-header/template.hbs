@@ -1,6 +1,6 @@
 <span class="rsa-respond-index-header__label">
   {{t "respond.myQueue"}}
-  {{#if listViewActive}} ({{modelCount}}){{/if}}
+  {{#if listViewActive}} <span class="count">({{modelCount}}) </span> {{/if}}
 </span>
 <span class="rsa-respond-index-header__options">
   {{#rsa-form-button class=(concat 'rsa-respond-index-header__tile-btn' (unless listViewActive ' is-active')) isIconOnly=true click=(action 'tileIconClicked')}}

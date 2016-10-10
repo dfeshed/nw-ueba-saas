@@ -1,4 +1,4 @@
-{{rsa-respond/landing-page/respond-header modelCount=(unless isCardMode model.allIncidents.array.length)}}
+{{rsa-respond/landing-page/respond-header modelCount=(unless isCardMode filteredIncidentCount)}}
 
 {{#if isCardMode}}
   {{rsa-respond/landing-page/respond-index/card-view model=model sortAction=(route-action "sortAction")}}
