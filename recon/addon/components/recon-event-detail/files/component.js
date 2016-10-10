@@ -4,11 +4,16 @@ import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import baseColumnsConfig from './columns-config';
+import * as InteractionActions from 'recon/actions/interaction-creators';
 
 const { Component } = Ember;
 
 const stateToComputed = ({ data }) => ({
   files: data.files
+});
+
+const dispatchToActions = (dispatch) => ({
+  fileSelectionToggled: (fileId) => dispatch(InteractionActions.fileSelected(fileId))
 });
 
 const calculateColumnWidth = (text) => {
@@ -32,6 +37,11 @@ const FileReconComponent = Component.extend({
     return baseColumnsConfig.map((conf) => {
       const { field } = conf;
 
+      // first column has empty field, not calculating anything for it
+      if (field === '') {
+        return conf;
+      }
+
       // find longest string in data for this field
       const longestFieldData = files.reduce((a, b) => a[field].length > b[field].length ? a[field] : b[field]);
 
@@ -46,4 +56,4 @@ const FileReconComponent = Component.extend({
   }
 });
 
-export default connect(stateToComputed)(FileReconComponent);
+export default connect(stateToComputed, dispatchToActions)(FileReconComponent);

@@ -110,6 +110,25 @@ const data = reduxActions.handleActions({
     ...state,
     contentError: null,
     contentLoading: true
+  }),
+
+  [ACTION_TYPES.RECON_FILES_FILE_SELECTION_TOGGLED]: (state, { payload: fileId }) => {
+    const newFiles = state.files.map((f) => {
+      if (f.id === fileId) {
+        f.selected = !f.selected;
+      }
+      return f;
+    });
+
+    return {
+      ...state,
+      files: newFiles
+    };
+  },
+
+  [ACTION_TYPES.RECON_FILE_DOWNLOAD_SUCCESS]: (state) => ({
+    ...state,
+    files: state.files.map((f) => ({ ...f, selected: false }))
   })
 
 }, dataInitialState);

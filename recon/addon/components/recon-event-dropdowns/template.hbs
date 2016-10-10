@@ -1,14 +1,9 @@
 <grid>
   <hbox class="dropdowns">
 
-    {{#rsa-form-button dropdown='split' style='primary' }}
-      Export
-      <ul>
-        <li>foo</li>
-        <li>bar</li>
-      </ul>
-    {{/rsa-form-button}}
+    {{#rsa-form-button click=(action "downloadFiles")}}Export Files(s){{/rsa-form-button}}
 
+    {{#rsa-form-button}}Export PCAP{{/rsa-form-button}}
 
     {{#rsa-form-button dropdown='split' }}
       Decode

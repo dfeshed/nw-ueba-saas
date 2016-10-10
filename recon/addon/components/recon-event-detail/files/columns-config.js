@@ -2,6 +2,11 @@
 // header size
 export default [
   {
+    field: '',
+    title: '',
+    width: 30
+  },
+  {
     field: 'fileName',
     title: 'recon.files.fileName',
     width: 75

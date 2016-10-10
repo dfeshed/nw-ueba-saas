@@ -8,7 +8,9 @@
   {{#rsa-data-table/body as |item index column|}}
 
     {{#rsa-data-table/body-cell columnWidth=column.width}}
-      {{#if (eq column.field "hashes")}}
+      {{#if (eq column.field "")}}
+        {{rsa-form-checkbox value=item.selected click=(action "fileSelectionToggled" item.id)}}
+      {{else if (eq column.field "hashes")}}
         {{#each item.hashes as |hash|}}
           <span class="recon-file-hash">{{hash.type}}</span>: {{hash.value}} <br>
         {{/each}}
