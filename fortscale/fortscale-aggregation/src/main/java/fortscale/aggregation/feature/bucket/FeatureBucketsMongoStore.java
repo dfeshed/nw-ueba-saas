@@ -101,7 +101,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 				finalResult.addAll(readFromMongo(prefix + collectionName, contextType, ContextName, bucketStartTime, bucketEndTime,featureBucketConf));
 		});
 
-		return result;
+		return finalResult;
 
 
 
