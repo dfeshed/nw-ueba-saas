@@ -3,9 +3,9 @@ package fortscale.entity.event;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.utils.logging.Logger;
 import org.springframework.util.Assert;
+
 import java.util.*;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -63,13 +63,12 @@ public class JokerFunction {
 			for (String aggrFeatureEventName : entry.getValue()) {
 				JokerAggrEventData aggrFeatureEvent = aggrFeatureEventsMap.get(aggrFeatureEventName);
 				if (aggrFeatureEvent != null) {
-					if (!aggrFeatureEvent.isOfTypeF() || aggrFeatureEvent.getScore() == null) {
-						String errorMsg = String.format("Event %s must be of type F and contain a score field", aggrFeatureEventName);
+					if (aggrFeatureEvent.getScore() == null) {
+						String errorMsg = String.format("Event %s must contain a score field", aggrFeatureEventName);
 						logger.error(errorMsg);
 						throw new IllegalArgumentException(errorMsg);
-					} else {
-						aggrFeatureEvents.add(aggrFeatureEvent);
 					}
+					aggrFeatureEvents.add(aggrFeatureEvent);
 				}
 			}
 
@@ -133,16 +132,8 @@ public class JokerFunction {
 					String errorMsg = String.format("Event %s of type P must have a value field", pEventName);
 					logger.error(errorMsg);
 					throw new IllegalArgumentException(errorMsg);
-				} else {
-					Double beta = betas.get(pEventName);
-					if (beta == null) {
-						String errorMsg = String.format("Missing beta for P event %s", pEventName);
-						logger.error(errorMsg);
-						throw new IllegalArgumentException(errorMsg);
-					} else {
-						pValuesSum += beta * pValue;
-					}
 				}
+				pValuesSum += betas.get(pEventName) * pValue;
 			}
 		}
 
