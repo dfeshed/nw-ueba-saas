@@ -100,12 +100,13 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
         for (AggrEvent event : aggrEvents) {
             String contextId = event.getContextId();
 
-            // create accumulated event for this context if none exists
-            if (!accumulatedAggregatedFeatureEventMap.containsKey(contextId)) {
-                accumulatedAggregatedFeatureEventMap.put(contextId, new AccumulatedAggregatedFeatureEvent(from, to, contextId, creationTime));
-            }
             // get accumulated event for contextId
             AccumulatedAggregatedFeatureEvent accumulatedEvent = accumulatedAggregatedFeatureEventMap.get(contextId);
+            // create accumulated event for this context if none exists
+            if (accumulatedEvent == null) {
+                accumulatedEvent = new AccumulatedAggregatedFeatureEvent(from, to, contextId, creationTime);
+                accumulatedAggregatedFeatureEventMap.put(contextId, accumulatedEvent);
+            }
             // add aggregated feature value to accumulated event
             accumulatedEvent.getAggregatedFeatureValues().add(event.getAggregatedFeatureValue());
         }
@@ -118,12 +119,14 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
      * @return feature metrics
      */
     public AggregatedFeatureEventsAccumulatorMetrics getMetrics(String featureName) {
-        if (!metricsMap.containsKey(featureName)) {
-            AggregatedFeatureEventsAccumulatorMetrics metrics =
-                    new AggregatedFeatureEventsAccumulatorMetrics(statsService, featureName);
+
+        AggregatedFeatureEventsAccumulatorMetrics metrics = metricsMap.get(featureName);
+        if (metrics == null) {
+            metrics = new AggregatedFeatureEventsAccumulatorMetrics(statsService, featureName);
             metricsMap.put(featureName, metrics);
+
         }
-        return metricsMap.get(featureName);
+        return metrics;
     }
 
 }
