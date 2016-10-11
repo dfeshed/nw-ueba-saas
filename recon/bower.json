@@ -1,7 +1,6 @@
 {
   "name": "recon",
   "dependencies": {
-    "d3": "^4.2.2",
     "ember": "~2.8.0",
     "ember-cli-shims": "0.1.1",
     "javascript-detect-element-resize": "0.5.3",

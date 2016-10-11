@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import d3 from 'd3';
 import computed from 'ember-computed-decorators';
+import { axisBottom } from 'd3-axis';
 import { multiDateFormat } from '../utils/chart-utils';
+import { select } from 'd3-selection';
 
 const { Component } = Ember;
 
@@ -30,9 +31,9 @@ export default Component.extend({
     const scale = this.get('scale');
     if (scale) {
       const { rotation, tickCount } = this.getProperties('rotation', 'tickCount');
-      const axis = d3.select(this.element);
+      const axis = select(this.element);
       const format = this.get('tickFormat');
-      axis.call(d3.axisBottom(scale).ticks(tickCount).tickFormat(format));
+      axis.call(axisBottom(scale).ticks(tickCount).tickFormat(format));
       if (rotation) {
         this.rotateAxis(axis, rotation);
       }
@@ -42,7 +43,7 @@ export default Component.extend({
   didUpdateAttrs() {
     this._super(...arguments);
     const { rotation, tickCount, duration } = this.getProperties('rotation', 'tickCount', 'duration');
-    const axis = d3.select(this.element);
+    const axis = select(this.element);
     const format = this.get('tickFormat');
     const scale = this.get('scale');
     this.update(axis, scale, rotation, tickCount, format, duration);
@@ -50,7 +51,7 @@ export default Component.extend({
 
   update(axis, scale, rotation, tickCount, format, duration) {
     axis.transition().duration(duration)
-      .call(d3.axisBottom(scale).ticks(tickCount).tickFormat(format));
+      .call(axisBottom(scale).ticks(tickCount).tickFormat(format));
     if (rotation) {
       this.rotateAxis(axis, rotation);
     }

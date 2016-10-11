@@ -3,9 +3,12 @@
  * @public
  */
 import Ember from 'ember';
-import d3 from 'd3';
-import computed, { alias } from 'ember-computed-decorators';
 import HasChartParent from '../mixins/has-chart-parent';
+import computed, { alias } from 'ember-computed-decorators';
+import { select } from 'd3-selection';
+import { curveLinear, symbol, symbolDiamond } from 'd3-shape';
+import { scaleLinear, scaleTime } from 'd3-scale';
+import 'd3-transition';
 
 const {
   Mixin,
@@ -14,18 +17,18 @@ const {
   warn
 } = Ember;
 
-const createSymbol = d3.symbol().type(d3.symbolDiamond).size(32);
+const createSymbol = symbol().type(symbolDiamond).size(32);
 
 export default Mixin.create(HasChartParent, {
   attributeBindings: ['clipPath:clip-path'],
   duration: 0,
   data: [],
   dataIndex: 0,
-  interpolator: d3.curveLinear,
+  interpolator: curveLinear,
   xProp: 'x',
-  xScale: d3.scaleTime,
+  xScale: scaleTime,
   yProp: 'y',
-  yScale: d3.scaleLinear,
+  yScale: scaleLinear,
 
   @alias('chart.hoverIndex')
   hoverIndex: null,
@@ -83,7 +86,12 @@ export default Mixin.create(HasChartParent, {
 
   onAfterRender(datum, xAccessor, duration) {
     const clazzName = this.get('clazzName');
-    const svgGroup = this.get('chart.svgGroup');
+    let svgGroup = this.get('chart.svgGroup');
+
+    if (!svgGroup) {
+      // Provide a fallback that works for automated testing
+      svgGroup = select(this.parent).select('g');
+    }
 
     if (svgGroup) {
       // Append a group to the parent SVG so we can store our hover point
@@ -102,10 +110,9 @@ export default Mixin.create(HasChartParent, {
 
   draw(datum, xAccessor, duration) {
     const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('pathFn');
-    const path = d3.select(this.element);
+    const path = select(this.element).datum(datum);
 
-    path.datum(datum)
-      .transition().duration(duration)
+    path.transition().duration(duration)
       .attr('d', pathFn);
 
     if (datum.length === 1) {

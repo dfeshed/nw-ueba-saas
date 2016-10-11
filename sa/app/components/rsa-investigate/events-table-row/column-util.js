@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import formatUtil from './format-util';
 import { isLogEvent, getEventLogData, getEventLogDataStatus } from 'sa/protected/investigate/actions/helpers/log-utils';
-import d3 from 'd3';
+import { select } from 'd3-selection';
 
 const { get, isArray } = Ember;
 
@@ -143,7 +143,7 @@ function buildMetaSrcDstPair(srcMetaKey, dstMetaKey, item, opts) {
     return null;
   }
   let pair = document.createElement('div');
-  let $pair = d3.select(pair)
+  let $pair = select(pair)
     .classed('meta-src-dst-pair', true)
     .attr('data-field', (isArray(srcMetaKey) ? srcMetaKey[0] : srcMetaKey) || '');
   if (srcValue.raw !== undefined) {
@@ -172,7 +172,7 @@ function buildMetaKeyAndValue(metaKey, item, opts) {
   }
 
   let pair = document.createElement('div');
-  let $pair = d3.select(pair)
+  let $pair = select(pair)
     .classed('meta-key-and-value', true)
     .attr('data-field', (isArray(metaKey) ? metaKey[0] : metaKey) || '');
   $pair.append('span')
@@ -218,7 +218,7 @@ function buildLogContent(item) {
   }
 
   const el = document.createElement('div');
-  d3.select(el)
+  select(el)
     .classed('log-data', true)
     .attr('title', tooltip)
     .attr('data-status', status)

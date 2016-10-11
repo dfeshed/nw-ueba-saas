@@ -1,8 +1,9 @@
 import Ember from 'ember';
-import d3 from 'd3';
 import computed, { alias } from 'ember-computed-decorators';
-import { computeExtent, multiDateFormat, multiDate24Format } from 'component-lib/utils/chart-utils';
 import safeCallback from 'component-lib/utils/safe-callback';
+import { computeExtent, multiDateFormat, multiDate24Format } from 'component-lib/utils/chart-utils';
+import { format } from 'd3-format';
+import { scaleTime, scaleUtc } from 'd3-scale';
 
 const {
   Component,
@@ -75,7 +76,7 @@ export default Component.extend({
 
   @computed('chartData', 'hoverIndex', 'xProp', 'yProp')
   hoverValue: (data, index, xProp, yProp) => {
-    const countFormat = d3.format(',d');
+    const countFormat = format(',d');
     const points = data.map((datum) => datum.objectAt(index)).compact();
     const date = get(points, `firstObject.${xProp}`);
     const counts = points.map((point) => countFormat(point[yProp]));
@@ -113,7 +114,7 @@ export default Component.extend({
   },
 
   @computed('timezone.selected')
-  xScaleFn: (zone) => (zone === 'UTC') ? d3.scaleUtc : d3.scaleTime,
+  xScaleFn: (zone) => (zone === 'UTC') ? scaleUtc : scaleTime,
 
   actions: {
     safeCallback,

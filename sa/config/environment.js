@@ -76,6 +76,10 @@ module.exports = function(environment) {
       'connect-src': "'self' ws: wss:",
       'font-src': "'self' data:",
       'style-src': "'self' 'unsafe-inline'"
+    },
+    'ember-cli-d3-shape': {
+      only: ['d3-array', 'd3-axis', 'd3-collection', 'd3-color', 'd3-dispatch', 'd3-ease', 'd3-format', 'd3-interpolate', 'd3-path', 'd3-selection', 'd3-shape', 'd3-scale', 'd3-time', 'd3-timer', 'd3-time-format', 'd3-transition']
+
     }
   };
 

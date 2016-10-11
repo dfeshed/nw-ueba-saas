@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import d3 from 'd3';
+import { scaleLinear } from 'd3-scale';
 
 moduleForComponent('component:rsa-chart-grids', 'Integration | Component | rsa-chart-grids', {
   integration: true,
@@ -8,8 +8,8 @@ moduleForComponent('component:rsa-chart-grids', 'Integration | Component | rsa-c
   beforeEach() {
     this.width = 400;
     this.height = 150;
-    this.xScale = d3.scaleLinear().domain([1, 3]).range([0, this.width]);
-    this.yScale = d3.scaleLinear().domain([2, 10]).range([0, this.height]);
+    this.xScale = scaleLinear().domain([1, 3]).range([0, this.width]);
+    this.yScale = scaleLinear().domain([2, 10]).range([0, this.height]);
   }
 });
 

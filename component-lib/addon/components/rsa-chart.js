@@ -1,8 +1,10 @@
 import Ember from 'ember';
-import d3 from 'd3';
 import computed from 'ember-computed-decorators';
 import layout from '../templates/components/rsa-chart';
+import { bisector } from 'd3-array';
 import { calcGraphWidth, calcGraphHeight, computeExtent, createScale } from '../utils/chart-utils';
+import { scaleTime, scaleLinear } from 'd3-scale';
+import { select, mouse } from 'd3-selection';
 /* global addResizeListener */
 /* global removeResizeListener */
 
@@ -29,10 +31,10 @@ export default Component.extend({
   margin: { top: 5, bottom: 30, left: 30, right: 0 },
   xAxisStartsAtZero: false,
   xProp: 'x',
-  xScaleFn: d3.scaleTime,
+  xScaleFn: scaleTime,
   yProp: 'y',
   yAxisStartsAtZero: true,
-  yScaleFn: d3.scaleLinear,
+  yScaleFn: scaleLinear,
 
   @computed('elementId')
   clipId: (id) => `clip-${id}`,
@@ -71,7 +73,7 @@ export default Component.extend({
     this._super(...arguments);
     this._resizeListener = this.elementDidResize.bind(this);
     addResizeListener(this.element, this._resizeListener);
-    this.set('svgGroup', d3.select(this.element).select('svg g'));
+    this.set('svgGroup', select(this.element).select('svg g'));
     run.scheduleOnce('afterRender', () => {
       this._resizeListener();
       if (this.get('interactive')) {
@@ -95,7 +97,7 @@ export default Component.extend({
     // coordinate of the mouse, we can just use `d3.mouse(this)`. Otherwise, we'd
     // have to save the `.rsa-chart-background` selection off and refer to it
     // each time the `mousemove` handler is invoked.
-    d3.select(this.element).select('.rsa-chart-background')
+    select(this.element).select('.rsa-chart-background')
       .on('mouseout', function() {
         self.set('hoverIndex', null);
       })
@@ -103,8 +105,8 @@ export default Component.extend({
         const { xProp, xScale } = self.getProperties('xProp', 'xScale');
         const data = self.get('data').objectAt(0);
         if (data && data.length > 0) {
-          const x0 = xScale.invert(d3.mouse(this)[0]);
-          const bisectLeft = d3.bisector((d) => d[xProp]).left;
+          const x0 = xScale.invert(mouse(this)[0]);
+          const bisectLeft = bisector((d) => d[xProp]).left;
           const i = bisectLeft(data, x0, 1);
           const d0 = data[i - 1];
           const d1 = data[i];

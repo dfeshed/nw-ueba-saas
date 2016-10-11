@@ -1,5 +1,5 @@
 import { moduleFor, test } from 'ember-qunit';
-import d3 from 'd3';
+import { scaleLinear } from 'd3-scale';
 
 moduleFor('component:rsa-chart', 'Unit | rsa-chart', {
   unit: true
@@ -115,7 +115,7 @@ test('should correctly compute range', function(assert) {
 
 test('should correctly construct a scale function', function(assert) {
   const chart = this.subject();
-  chart.set('xScaleFn', d3.scaleLinear);
+  chart.set('xScaleFn', scaleLinear);
   chart.set('xDomain', [0, 1]);
   chart.set('xRange', [0, 10]);
   const scale = chart.get('xScale');

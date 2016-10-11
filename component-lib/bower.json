@@ -2,7 +2,6 @@
   "name": "component-lib",
   "dependencies": {
     "ember": "~2.8.0",
-    "ember-cli-shims": "0.1.1",
-    "d3": "^4.2.2"
+    "ember-cli-shims": "0.1.1"
   }
 }

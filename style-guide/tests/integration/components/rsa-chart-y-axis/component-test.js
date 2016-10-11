@@ -1,12 +1,12 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import d3 from 'd3';
+import { scaleLinear } from 'd3-scale';
 
 moduleForComponent('/rsa-y-axis', 'Integration | Component | rsa-y-axis', {
   integration: true,
 
   beforeEach() {
-    this.scale = d3.scaleLinear().domain([4, 6]).range([150, 0]);
+    this.scale = scaleLinear().domain([4, 6]).range([150, 0]);
   }
 });
 

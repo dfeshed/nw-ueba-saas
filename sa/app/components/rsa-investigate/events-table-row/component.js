@@ -2,8 +2,8 @@ import Ember from 'ember';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
 import columnUtil from './column-util';
 import { UI_KEY_LOG_DATA_STATUS } from 'sa/protected/investigate/actions/helpers/log-utils';
+import { select } from 'd3-selection';
 
-import d3 from 'd3';
 
 const {
   computed,
@@ -76,7 +76,7 @@ export default Component.extend(RowMixin, {
     if (!this.element) {
       return;
     }
-    const $el = d3.select(this.element);
+    const $el = select(this.element);
     const item = this.get('item');
 
     // Clear any prior rendered cells. It's important to specify the class name here because we don't
@@ -114,7 +114,7 @@ export default Component.extend(RowMixin, {
     const cells = this.$('.rsa-data-table-body-cell');
     const opts = this.get('_opts');
     (this.get('table.columns') || []).forEach((column, index) => {
-      let $cell = d3.select(cells[index]);
+      let $cell = select(cells[index]);
       columnUtil.applyCellWidth($cell, column, opts);
     });
   },

@@ -1,6 +1,7 @@
 import Ember from 'ember';
-import d3 from 'd3';
 import layout from '../templates/components/rsa-chart-grids';
+import { axisBottom, axisRight } from 'd3-axis';
+import { select } from 'd3-selection';
 
 const {
   Component,
@@ -34,15 +35,15 @@ export default Component.extend({
   },
 
   draw(width, height, xScale, yScale, xTickCount, yTickCount) {
-    const el = d3.select(this.element);
+    const el = select(this.element);
     if (this.get('showXGrid')) {
       el.select('.x').call(
-        d3.axisBottom(xScale).ticks(xTickCount).tickSize(height).tickFormat('')
+        axisBottom(xScale).ticks(xTickCount).tickSize(height).tickFormat('')
       );
     }
     if (this.get('showYGrid')) {
       el.select('.y').call(
-        d3.axisRight(yScale).ticks(yTickCount).tickSize(width).tickFormat('')
+        axisRight(yScale).ticks(yTickCount).tickSize(width).tickFormat('')
       );
     }
   }

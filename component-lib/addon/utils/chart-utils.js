@@ -1,16 +1,19 @@
-import d3 from 'd3';
+import { formatPrefix, formatSpecifier, precisionPrefix } from 'd3-format';
+import { max, min, tickStep } from 'd3-array';
+import { timeDay, timeHour, timeMinute, timeMonth, timeSecond, timeWeek, timeYear } from 'd3-time';
+import { timeFormat } from 'd3-time-format';
 
-const formatMillisecond = d3.timeFormat('.%L'); // .123
-const formatSecond = d3.timeFormat('%I:%M:%S'); // 01:15:05
-const formatSecond24 = d3.timeFormat('%H:%M:%S'); // 13:15:05
-const formatMinute = d3.timeFormat('%I:%M'); // 01:15
-const formatMinute24 = d3.timeFormat('%H:%M'); // 13:15
-const formatHour = d3.timeFormat('%I:%M %p'); // 01:00 PM
-const formatHour24 = d3.timeFormat('%H:%M'); // 13:00
-const formatDay = d3.timeFormat('%a %d'); // Tue 02
-const formatWeek = d3.timeFormat('%b %d'); // Jan 02
-const formatMonth = d3.timeFormat('%B'); // January
-const formatYear = d3.timeFormat('%Y'); // 2016
+const formatMillisecond = timeFormat('.%L'); // .123
+const formatSecond = timeFormat('%I:%M:%S'); // 01:15:05
+const formatSecond24 = timeFormat('%H:%M:%S'); // 13:15:05
+const formatMinute = timeFormat('%I:%M'); // 01:15
+const formatMinute24 = timeFormat('%H:%M'); // 13:15
+const formatHour = timeFormat('%I:%M %p'); // 01:00 PM
+const formatHour24 = timeFormat('%H:%M'); // 13:00
+const formatDay = timeFormat('%a %d'); // Tue 02
+const formatWeek = timeFormat('%b %d'); // Jan 02
+const formatMonth = timeFormat('%B'); // January
+const formatYear = timeFormat('%Y'); // 2016
 
 /**
  * Will find the minimum value within an Array of Arrays.
@@ -19,8 +22,8 @@ const formatYear = d3.timeFormat('%Y'); // 2016
  * @param accessorFn A function run against each Object in an Array to retrieve the property of interest
  * @return The mimimum value
  */
-export function min(data, accessorFn = undefined) {
-  return d3.min(data.map((d) => d3.min(d, accessorFn)));
+export function minimum(data, accessorFn = undefined) {
+  return min(data.map((d) => min(d, accessorFn)));
 }
 
 /**
@@ -30,8 +33,8 @@ export function min(data, accessorFn = undefined) {
  * @param accessorFn A function run against each Object in an Array to retrieve the property of interest
  * @return The maximum value
  */
-export function max(data, accessorFn = undefined) {
-  return d3.max(data.map((d) => d3.max(d, accessorFn)));
+export function maximum(data, accessorFn = undefined) {
+  return max(data.map((d) => max(d, accessorFn)));
 }
 
 /**
@@ -43,7 +46,7 @@ export function max(data, accessorFn = undefined) {
  * @return A 2 element Array with min/max values
  */
 export function computeExtent(data, accessorFn, zeroed) {
-  return [zeroed ? 0 : min(data, accessorFn), max(data, accessorFn)];
+  return [zeroed ? 0 : minimum(data, accessorFn), maximum(data, accessorFn)];
 }
 
 /**
@@ -82,11 +85,11 @@ export function calcGraphHeight(height, marginTop, marginBottom) {
  * @return A format that most closely matches a date boundry
  */
 export function multiDateFormat(date) {
-  return (d3.timeMinute(date) < date ? formatSecond :
-    d3.timeHour(date) < date ? formatMinute :
-    d3.timeDay(date) < date ? formatHour :
-    d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
-    d3.timeYear(date) < date ? formatMonth :
+  return (timeMinute(date) < date ? formatSecond :
+    timeHour(date) < date ? formatMinute :
+    timeDay(date) < date ? formatHour :
+    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
+    timeYear(date) < date ? formatMonth :
     formatYear)(date);
 }
 
@@ -101,11 +104,11 @@ export function multiDateFormat(date) {
  * @return A format that most closely matches a date boundry
  */
 export function multiDate24Format(date) {
-  return (d3.timeMinute(date) < date ? formatSecond24 :
-    d3.timeHour(date) < date ? formatMinute24 :
-    d3.timeDay(date) < date ? formatHour24 :
-    d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
-    d3.timeYear(date) < date ? formatMonth :
+  return (timeMinute(date) < date ? formatSecond24 :
+    timeHour(date) < date ? formatMinute24 :
+    timeDay(date) < date ? formatHour24 :
+    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
+    timeYear(date) < date ? formatMonth :
     formatYear)(date);
 }
 
@@ -116,12 +119,12 @@ export function multiDate24Format(date) {
  * @return A format that most closely matches a date boundry
  */
 export function multiDateMsFormat(date) {
-  return (d3.timeSecond(date) < date ? formatMillisecond :
-    d3.timeMinute(date) < date ? formatSecond :
-    d3.timeHour(date) < date ? formatMinute :
-    d3.timeDay(date) < date ? formatHour :
-    d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
-    d3.timeYear(date) < date ? formatMonth :
+  return (timeSecond(date) < date ? formatMillisecond :
+    timeMinute(date) < date ? formatSecond :
+    timeHour(date) < date ? formatMinute :
+    timeDay(date) < date ? formatHour :
+    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
+    timeYear(date) < date ? formatMonth :
     formatYear)(date);
 }
 
@@ -132,12 +135,12 @@ export function multiDateMsFormat(date) {
  * @return A format that most closely matches a date boundry
  */
 export function multiDateMs24Format(date) {
-  return (d3.timeSecond(date) < date ? formatMillisecond :
-    d3.timeMinute(date) < date ? formatSecond24 :
-    d3.timeHour(date) < date ? formatMinute24 :
-    d3.timeDay(date) < date ? formatHour24 :
-    d3.timeMonth(date) < date ? (d3.timeWeek(date) < date ? formatDay : formatWeek) :
-    d3.timeYear(date) < date ? formatMonth :
+  return (timeSecond(date) < date ? formatMillisecond :
+    timeMinute(date) < date ? formatSecond24 :
+    timeHour(date) < date ? formatMinute24 :
+    timeDay(date) < date ? formatHour24 :
+    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
+    timeYear(date) < date ? formatMonth :
     formatYear)(date);
 }
 
@@ -152,12 +155,12 @@ export function multiDateMs24Format(date) {
  * @return A SI-prefix format based on the largest value in the domain
  */
 export function siFormat(domain, count = 10) {
-  const specifier = d3.formatSpecifier('s');
-  const step = d3.tickStep(...domain, count);
+  const specifier = formatSpecifier('s');
+  const step = tickStep(...domain, count);
   const value = Math.max(...domain);
-  const precision = d3.precisionPrefix(step, value);
+  const precision = precisionPrefix(step, value);
   if (!specifier.precision && !isNaN(precision)) {
     specifier.precision = precision;
   }
-  return d3.formatPrefix(specifier, value);
+  return formatPrefix(specifier, value);
 }

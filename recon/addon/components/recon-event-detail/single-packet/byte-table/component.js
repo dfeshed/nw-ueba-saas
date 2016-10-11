@@ -1,7 +1,8 @@
 import Ember from 'ember';
 import Drag from 'recon/utils/drag';
-import d3 from 'd3';
 import layout from './template';
+import { event, select } from 'd3-selection';
+
 const { $, Component, K, observer, run } = Ember;
 
 export default Component.extend({
@@ -70,7 +71,7 @@ export default Component.extend({
 
   renderTable() {
     let { cellClass, headerCellClass, byteFormat } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat');
-    let el = d3.select(this.element);
+    let el = select(this.element);
 
     el.select('table').remove();
 
@@ -91,7 +92,7 @@ export default Component.extend({
               field: packetField.field,
               index: packetField.index,
               values: packetField.values,
-              position: { x: d3.event.pageX, y: d3.event.pageY }
+              position: { x: event.pageX, y: event.pageY }
             });
           })
           .on('mouseleave', () => {

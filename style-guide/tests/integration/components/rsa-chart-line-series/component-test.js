@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import d3 from 'd3';
+import { scaleLinear } from 'd3-scale';
 
 moduleForComponent('/rsa-line-series', 'Integration | Component | rsa-line-series', {
   integration: true,
@@ -23,10 +23,10 @@ moduleForComponent('/rsa-line-series', 'Integration | Component | rsa-line-serie
       { foo: 2, bar: 5 },
       { foo: 3, bar: 6 }
     ]];
-    this.xScale1 = d3.scaleLinear().domain([1, 3]).range([0, 400]);
-    this.yScale1 = d3.scaleLinear().domain([4, 6]).range([150, 0]);
-    this.xScale2 = d3.scaleLinear().domain([4, 6]).range([0, 400]);
-    this.yScale2 = d3.scaleLinear().domain([7, 9]).range([150, 0]);
+    this.xScale1 = scaleLinear().domain([1, 3]).range([0, 400]);
+    this.yScale1 = scaleLinear().domain([4, 6]).range([150, 0]);
+    this.xScale2 = scaleLinear().domain([4, 6]).range([0, 400]);
+    this.yScale2 = scaleLinear().domain([7, 9]).range([150, 0]);
   }
 });
 

@@ -2,7 +2,7 @@ import Ember from 'ember';
 import safeCallback from 'component-lib/utils/safe-callback';
 import computed from 'ember-computed-decorators';
 import { metaValueAlias } from 'sa/helpers/meta-value-alias';
-import d3 from 'd3';
+import { select } from 'd3-selection';
 
 const {
   merge,
@@ -105,7 +105,7 @@ export default Component.extend({
       resolvedData: data
     } = this.getProperties('groupKey.name', 'clickValueAction', 'resolvedData');
 
-    const $root = d3.select($el[0]);
+    const $root = select($el[0]);
 
     // Remove the DOM from previous data set (if any).
     // Why? The data is ordered by backend, and the DOM must match that order. Alas, we can't re-order the DOM via CSS
