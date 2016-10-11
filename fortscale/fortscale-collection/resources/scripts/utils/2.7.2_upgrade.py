@@ -5,10 +5,11 @@ import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', 'bdp', '2.6', 'step4', 'run']))
 from mongo_stats import remove_documents
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', 'bdp']))
+from bdp_utils.kafka import send
+from bdp_utils import parsers
+from bdp_utils.log import init_logging
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from bdp.bdp_utils.kafka import send
-from bdp.bdp_utils import parsers
-from bdp.bdp_utils.log import init_logging
 from automatic_config.common.utils.mongo import get_collection_names, get_collections_time_boundary
 
 
