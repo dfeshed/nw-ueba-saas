@@ -4,5 +4,5 @@ import { authenticateSession } from 'sa/tests/helpers/ember-simple-auth';
 const { Test } = Ember;
 
 export default Test.registerAsyncHelper('authenticateSession', function(app) {
-  authenticateSession(app, { 'authenticated': { 'authenticator': 'authenticator:sa-authenticator', 'access_token': 'success', 'username': 'admin', 'password': null } });
+  authenticateSession(app, { 'authenticator': 'authenticator:sa-authenticator', 'access_token': 'success', 'user': { 'id': 'local','name': 'Local Service','description': 'The local service administrator' }, 'password': null });
 });

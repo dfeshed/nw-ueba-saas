@@ -225,6 +225,10 @@ export default $.extend({}, BaseTranslations, {
       createdTimestamp: 'jp_created ',
       updatedTimestamp: 'jp_updated '
     },
+    queue: {
+      myQueue: 'ja_My Incidents',
+      allIncidents: 'ja_All Incidents'
+    },
     details: {
       createdOn: 'ja_created on',
       updatedOn: 'ja_updated on',
@@ -290,6 +294,7 @@ export default $.extend({}, BaseTranslations, {
       none: 'ja_None'
     },
     emptyNewMessage: 'ja_No new incidents',
+    emptyMessage: 'ja_No incidents',
     emptyInProgressMessage: 'ja_No incidents being worked on'
   },
   list: {

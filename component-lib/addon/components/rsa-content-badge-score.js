@@ -19,6 +19,7 @@ export default Component.extend({
                       'isDanger',
                       'isHigh',
                       'isSmall',
+                      'isSmaller',
                       'isLarge',
                       'isLarger',
                       'isLargest',
@@ -41,6 +42,7 @@ export default Component.extend({
   isHigh: computed.equal('style', 'high'),
   isDanger: computed.equal('style', 'danger'),
 
+  isSmaller: computed.equal('size', 'smaller'),
   isSmall: computed.equal('size', 'small'),
   isLarge: computed.equal('size', 'large'),
   isLarger: computed.equal('size', 'larger'),

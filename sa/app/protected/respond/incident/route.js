@@ -26,7 +26,7 @@ export default Route.extend({
   },
 
   deactivate() {
-    this.set('layoutService.actionConfig', null);
+    this.set('layoutService.actionConfig', 'app');
     this.set('layoutService.journalPanel', 'hidden');
     this.set('layoutService.displayJournal', false);
   },

@@ -77,3 +77,13 @@
     }
   }
 }
+
+.rsa-application-incident-queue-panel{
+  .rsa-incident-content-card {
+    background-color: transparent;
+    &.small-size {
+      width:calc(100% +  2px);
+    }
+    margin: 0;
+  }
+}

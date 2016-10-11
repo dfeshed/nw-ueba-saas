@@ -14,7 +14,7 @@ export default Service.extend({
 
   main: 'panelA',
 
-  actionConfig: null,
+  actionConfig: 'app',
 
   incidentQueueActive: false,
 

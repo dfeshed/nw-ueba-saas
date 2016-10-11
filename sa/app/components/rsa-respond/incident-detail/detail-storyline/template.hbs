@@ -35,7 +35,7 @@
       <div class="content main">
         <div class="main_row">
           <span class="source">{{indicator.originalHeaders.device_product}}</span> |
-          <span class="context">{{#link-to 'protected.respond.incident.context' '128.164.160.2'}}128.164.160.2{{/link-to}}</span> |
+          <span class="context">{{#link-to 'protected.respond.incident.context' indicator.alert.groupby_source_ip}}{{indicator.alert.groupby_source_ip}}{{/link-to}}</span> |
           {{indicator.originalHeaders.name}} |
           {{indicator.alert.risk_score}}
         </div>

@@ -26,7 +26,7 @@
     </vbox>
   {{else}}
     <vbox class='rsa-incident-tile-header-info' xs='2'>
-      {{rsa-content-badge-score class="rsa-incident-tile-score" score=incident.riskScore size="small" style=badgeStyle}}
+      {{rsa-content-badge-score class="rsa-incident-tile-score" score=incident.riskScore size=(if isQueue "smaller" "small") style=badgeStyle}}
     </vbox>
 
     <vbox class='rsa-incident-tile-header-info' xs='10'>
@@ -63,30 +63,53 @@
   </hbox>
 {{/if}}
 
-<hbox class="rsa-incident-tile-section">
-  <vbox xs="6" class="rsa-incident-tile-alert-col">
-    <div>
-      {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
-        <label class="rsa-incident-tile-alert-count">{{if incident.alertCount incident.alertCount '-'}}</label>
-      {{/rsa-content-definition}}
-
-      {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
-        <label class="rsa-incident-tile-event-count">{{if incident.eventCount incident.eventCount '-'}}</label>
-      {{/rsa-content-definition}}
-    </div>
-  </vbox>
-
-  <vbox xs="6">
-    {{#rsa-content-definition label=(t "incident.fields.sources")}}
-      <div class='rsa-incident-tile-sources'>
-        {{#each incidentSources as |source|}}
-          {{rsa-content-label label=source}}
-        {{/each}}
+{{#if isQueue}}
+  <hbox class="rsa-incident-tile-section">
+    <vbox xs="5" class="rsa-incident-tile-status-col">
+      <div>
+        {{#rsa-content-definition class="rsa-incident-tile-status-block" label=(t "incident.fields.status")}}
+          <label class="rsa-incident-tile-status">{{t (concat 'incident.status.' selectedStatus) }}</label>
+        {{/rsa-content-definition}}
       </div>
-    {{/rsa-content-definition}}
-  </vbox>
-</hbox>
+    </vbox>
 
+    <vbox xs="3">
+      {{#rsa-content-definition class="rsa-incident-tile-priority-block" label=(t "incident.fields.priority")}}
+        <label class="rsa-incident-tile-priority">{{t (concat 'incident.priority.' selectedPriority) }}</label>
+      {{/rsa-content-definition}}
+    </vbox>
+    <vbox xs="4">
+      {{#rsa-content-definition class="rsa-incident-tile-assignee-block" label=(t "incident.fields.assignee")}}
+        <label class="rsa-incident-tile-assignee">{{unless (is-equal selectedAssignee -1) (t 'incident.assignee.none') selectedAssignee}}</label>
+      {{/rsa-content-definition}}
+    </vbox>
+  </hbox>
+{{else}}
+  <hbox class="rsa-incident-tile-section">
+    <vbox xs="6" class="rsa-incident-tile-alert-col">
+      <div>
+        {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
+          <label class="rsa-incident-tile-alert-count">{{if incident.alertCount incident.alertCount '-'}}</label>
+        {{/rsa-content-definition}}
+
+        {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
+          <label class="rsa-incident-tile-event-count">{{if incident.eventCount incident.eventCount '-'}}</label>
+        {{/rsa-content-definition}}
+      </div>
+    </vbox>
+
+    <vbox xs="6">
+      {{#rsa-content-definition label=(t "incident.fields.sources")}}
+        <div class='rsa-incident-tile-sources'>
+          {{#each incidentSources as |source|}}
+            {{rsa-content-label label=source}}
+          {{/each}}
+        </div>
+      {{/rsa-content-definition}}
+    </vbox>
+  </hbox>
+
+{{/if}}
 {{#if contextualTimestamp}}
   <hbox class="rsa-incident-tile-section">
     <vbox xs="12" class="rsa-incident-tile-created-col">

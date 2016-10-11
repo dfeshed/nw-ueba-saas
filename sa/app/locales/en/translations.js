@@ -272,6 +272,10 @@ export default $.extend({}, BaseTranslations, {
         reset: 'Reset Filters'
       }
     },
+    queue: {
+      myQueue: 'My Incidents',
+      allIncidents: 'All Incidents'
+    },
     details: {
       createdOn: 'created on',
       updatedOn: 'updated on',
@@ -323,6 +327,7 @@ export default $.extend({}, BaseTranslations, {
       none: 'None'
     },
     emptyNewMessage: 'No new incidents',
+    emptyMessage: 'No incidents',
     emptyInProgressMessage: 'No incidents being worked on'
   },
   sort: {

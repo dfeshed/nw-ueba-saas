@@ -44,8 +44,8 @@
       margin: 0 auto;
     }
   }
-
-  &.is-small {
+  &.is-small,
+  &.is-smaller {
     .score {
       font-size: 1.75rem;
     }

@@ -61,3 +61,9 @@ test('it renders the progress bar with the correct color based on the style', fu
   let progressBar = this.$().find('.progress-bar').first();
   assert.equal(progressBar.css('background-image'), 'linear-gradient(90deg, rgba(255, 255, 255, 0), rgb(255, 160, 0))', 'Progress bar has medium color');
 });
+
+test('it includes the proper classes in smaller mode', function(assert) {
+  this.render(hbs `{{rsa-content-badge-score  size='smaller' score=50}}`);
+  assert.ok(this.$().find('svg').length <= 0, "Smaller mode sholdn't render svg");
+  assert.ok(this.$().find('circle').length <= 0, "Smaller mode sholdn't render circle");
+});

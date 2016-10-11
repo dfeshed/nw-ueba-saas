@@ -67,7 +67,7 @@ export default {
         'groupby_destination_ip': '',
         'name': 'Suspected command and control communication with 4554mb.ru',
         'numEvents': 1,
-        'groupby_source_ip': '',
+        'groupby_source_ip': '10.101.47.66',
         'groupby_source_username': '',
         'groupby_detector_ip': '',
         'timestamp': 1545940207482
@@ -144,7 +144,7 @@ export default {
         'groupby_destination_ip': '',
         'name': 'P2P software as detected by an Intrusion detection device',
         'numEvents': 1,
-        'groupby_source_ip': '',
+        'groupby_source_ip': '10.22.47.106',
         'groupby_source_username': '',
         'groupby_detector_ip': '',
         'timestamp': 1450940207482
@@ -225,7 +225,7 @@ export default {
         'groupby_destination_ip': '',
         'name': 'P2P software as detected by an Intrusion detection device',
         'numEvents': 1,
-        'groupby_source_ip': '',
+        'groupby_source_ip': '10.121.147.66',
         'groupby_source_username': '',
         'groupby_detector_ip': '',
         'timestamp': 1445940207482
@@ -304,7 +304,7 @@ export default {
         'groupby_destination_ip': '',
         'name': '',
         'numEvents': 1,
-        'groupby_source_ip': '',
+        'groupby_source_ip': '10.101.47.66',
         'groupby_source_username': '',
         'groupby_detector_ip': '',
         'timestamp': 1445940201482

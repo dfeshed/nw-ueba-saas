@@ -65,6 +65,7 @@ export default Component.extend({
    * @public
    */
   @equal('size', 'large') isLargeSize: null,
+
   /**
    * @name editModeActive
    * @description Defines when the tile allows user to interact with the content and save the changes;
@@ -99,6 +100,8 @@ export default Component.extend({
       this.sendAction('clickAction', this.get('incident'));
     }
   },
+
+  @equal('mode', 'queue') isQueue: null,
 
   /**
    * @name didInsertElement

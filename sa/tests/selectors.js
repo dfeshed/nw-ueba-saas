@@ -260,7 +260,17 @@ export default Ember$.extend({}, BaseSelectors, {
       'journalEditButton': '.rsa-icon-pencil-1',
       'journalDelBtn': '.rsa-icon-bin-1',
       'journalDeleteConfirmBtn': '.rsa-journal-entry__delete-dialog__actions__confirm',
-      'journalNte': '.rsa-journal-entry__note'
+      'journalNte': '.rsa-journal-entry__note',
+      'incidentQueuePanelBtn': '.incident-queue-trigger .rsa-icon',
+      'allIncidentsInQueueElm': '.rsa-application-incident-queue-panel a',
+      'allIncidentsBtn': '.js-all-incidents',
+      'incQueueIncScore': '.rsa-incident-tile-score .score',
+      'incQueueIncId': '.rsa-incident-tile-id-header',
+      'incQueueIncName': '.rsa-incident-tile-name',
+      'incQueueIncStatus': '.rsa-incident-tile-status',
+      'incQueueIncPriority': '.rsa-incident-tile-priority',
+      'incQueueIncAssignee': '.rsa-incident-tile-assignee',
+      'loaderWheelElm': '.rsa-loader__wheel'
     },
     'investigate': {
       'root': '.js-test-investigate-root',

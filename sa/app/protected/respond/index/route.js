@@ -7,6 +7,7 @@ const {
   inject: {
     service
   },
+  $,
   set,
   Logger,
   observer,
@@ -21,20 +22,25 @@ export const viewType = {
 
 export default Route.extend({
   session: service(),
+  layoutService: service('layout'),
   respondMode: service(),
   listViewCube: null,
   cardViewCube: null,
-
-  layoutService: service('layout'),
 
   activate() {
     this.set('layoutService.main', 'panelB');
     this.set('layoutService.panelA', 'quarter');
     this.set('layoutService.panelB', 'main');
+    this.set('layoutService.actionConfig', null);
+    /* close the incident queue panel, if it is in open state */
+    let disabledQueue = $('.incident-queue-trigger.is-disabled');
+    if (disabledQueue.length <= 0) {
+      $('.incident-queue-trigger').click();
+    }
   },
 
   deactivate() {
-    this.set('layoutService.actionConfig', null);
+    this.set('layoutService.actionConfig', 'app');
   },
 
   /*
@@ -75,7 +81,7 @@ export default Route.extend({
     let _currentSession = this.get('session');
 
     if (_currentSession) {
-      username = _currentSession.session.content.authenticated.username;
+      username = _currentSession.session.content.authenticated.user.id;
     } else {
       Logger.error('unable to read current username');
     }

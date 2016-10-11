@@ -29,7 +29,9 @@ export default Component.extend({
 
   actions: {
     toggleIncidentQueue() {
-      this.get('layoutService').toggleIncidentQueue();
+      if (this.$('.incident-queue-trigger.is-disabled').length <= 0) {
+        this.get('layoutService').toggleIncidentQueue();
+      }
     },
 
     toggleIncidentJournal() {

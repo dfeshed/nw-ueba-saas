@@ -1,1 +1,25 @@
-{{yield}}
+<div class="scroll-box rsa-hide-webkit-scrollbar">
+  <div class="rsa-nav-tab-group rsa-application-incident-queue-panel__tab" isActive=true>
+    {{#rsa-nav-tab class="js-my-incidents" isActive=(eq activeTab "my") click=(action 'fetchIncidents' 'my')}}
+      {{t 'incident.queue.myQueue'}}
+    {{/rsa-nav-tab}}
+    {{#rsa-nav-tab class='js-all-incidents' isActive=(eq activeTab "all") click=(action 'fetchIncidents' 'all')}}
+      {{t 'incident.queue.allIncidents'}}
+    {{/rsa-nav-tab}}
+  </div>
+  {{#if loadingData}}
+    {{rsa-loader size="large" class="rsa-application-incident-queue-panel__loader"}}
+  {{else}}
+    {{#if incidents}}
+      {{#each incidents as |incident|}}
+        {{#link-to 'protected.respond.incident' incident.id click=(action 'gotoIncidentDetail')}}
+          {{#rsa-content-card class="rsa-incident-content-card small-size"}}
+            {{rsa-respond/landing-page/incident-tile incident=incident size='small' mode='queue'}}
+          {{/rsa-content-card}}
+        {{/link-to}}
+      {{/each}}
+    {{else}}
+      {{t "incident.emptyMessage"}}
+    {{/if}}
+  {{/if}}
+</div>
