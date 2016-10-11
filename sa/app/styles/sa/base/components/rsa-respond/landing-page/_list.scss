@@ -1,10 +1,20 @@
 .rsa-respond-list {
 
-  .panel-A.rsa-respond-list__panelA {
-    background-color: rsa-color(black, null, $rsa-translucent);
+  &__select-columns {
+    position: absolute;
+    top: 0;
+    right: 0;
+    border-left: 1px solid black;
+    padding-left: 0.8rem;
+    width: 1.5rem;
+    height: 1.55rem;
+    padding-top: 0.6rem;
   }
 
-  margin: 0 rsa-whitespace(less) 0 0;
+  .panel-A.rsa-respond-list__panelA {
+    margin-top: 2px;
+    background-color: rsa-color(black, null, $rsa-translucent);
+  }
 
   &__filter-panel__priority {
     .rsa-respond-list__filter-panel__title {
@@ -22,7 +32,6 @@
       padding-top: rsa-whitespace(more);
     }
 
-
     .rsa-form-select {
       margin-top: rsa-whitespace(more);
       .rsa-form-label {
@@ -39,8 +48,10 @@
   }
 
   .rsa-data-table {
-    padding-left: rsa-whitespace(least);
 
+    &-header {
+      margin-bottom: 0;
+    }
     &-header-cell .hideSort{
       visibility: hidden;
     }
@@ -50,8 +61,7 @@
 
     &-header-cell,
     &-body-cell{
-      overflow:visible;
-      .incident-id {
+      .rsa-respond-list-incident-id {
         @include rsa-font(bold);
       }
       .rsa-respond-list-riskscore{
@@ -61,10 +71,21 @@
     button.expand {
       padding-left: rsa-whitespace(less);
     }
+
+    .rsa-data-table-header, .rsa-data-table-body-row {
+      padding-left: rsa-whitespace(less);
+    }
   }
 
-  &-name, &-status, &-created, &-assignee {
+  &-incident-id,
+  &-name,
+  &-priority,
+  &-status,
+  &-created,
+  &-assignee {
     overflow: hidden;
     text-overflow: ellipsis;
+    height: 100%;
+    padding-top: rsa-whitespace(less);
   }
 }

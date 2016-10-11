@@ -2,13 +2,40 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import IncidentsCube from 'sa/utils/cube/incidents';
+import wait from 'ember-test-helpers/wait';
 
-const { Object: EmberObject } = Ember;
+const {
+  Object: EmberObject,
+  Service,
+  Evented } = Ember;
+
+const eventBusStub = Service.extend(Evented, {});
+const FIX_ELEMENT_ID = 'tether_fix_style_element';
+
+function insertTetherFix() {
+  let styleElement = document.createElement('style');
+  styleElement.id = FIX_ELEMENT_ID;
+  styleElement.innerText =
+    '#ember-testing-container, #ember-testing-container * {' +
+      'position: static !important;' +
+    '}';
+
+  document.body.appendChild(styleElement);
+}
+
+function removeTetherFix() {
+  let styleElement = document.getElementById(FIX_ELEMENT_ID);
+  document.body.removeChild(styleElement);
+}
 
 moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integration | Component | rsa respond/landing page/respond index/list view', {
   integration: true,
 
   beforeEach() {
+    insertTetherFix();
+    this.register('service:event-bus', eventBusStub);
+    this.inject.service('event-bus', { as: 'eventBus' });
+
     let allCube = IncidentsCube.create({
       array: []
     });
@@ -80,6 +107,10 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
       users,
       categoryTags
     });
+  },
+
+  afterEach() {
+    removeTetherFix();
   }
 });
 
@@ -89,9 +120,10 @@ test('it renders', function(assert) {
 
   assert.equal(this.$('.rsa-respond-list__filter-panel').length, 1, 'Filter panel is present');
   assert.equal(this.$('.rsa-data-table').length, 1, 'Data table is present');
+  assert.equal(this.$('.rsa-respond-list__select-columns').length, 1, 'Column selection is present');
 
   setTimeout(function() {
-    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Priority filter works');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'All rows are displayed by default');
     done();
   }, 100);
 });
@@ -214,4 +246,33 @@ test('Category filter affects the number of incidents on screen', function(asser
     }, 100);
     done();
   }, 100);
+});
+
+test('Column selector displays columns', function(assert) {
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  this.get('eventBus').trigger('rsa-content-tooltip-display-selectColumnTooltip');
+
+  return wait().then(() => {
+    assert.equal(this.$('.rsa-content-tooltip .tooltip-content .rsa-form-checkbox').length, 10, 'Displaying all available columns on column-selector');
+    assert.equal(this.$('.rsa-content-tooltip .tooltip-content .rsa-form-checkbox.is-selected').length, 7, 'Default visible columns are selected by default');
+
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-header .rsa-data-table-header-row .rsa-data-table-header-cell').length, 7, 'Selected columns are visible by default');
+  });
+});
+
+test('Column selection affects visible columns on screen', function(assert) {
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.js-header-cell-rsa-respond-list-events').length, 0, 'Event-count column is not visible by default');
+
+  this.get('eventBus').trigger('rsa-content-tooltip-display-selectColumnTooltip');
+
+  return wait().then(() => {
+    this.$('.column-selection-eventCount input:first').prop('checked', true).trigger('change');
+
+    return wait().then(() => {
+      assert.equal(this.$('.js-header-cell-rsa-respond-list-events').length, 1, 'Event-count column is visible after column selection');
+    });
+  });
 });

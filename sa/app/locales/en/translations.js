@@ -263,6 +263,7 @@ export default $.extend({}, BaseTranslations, {
       name: 'Name',
       createdDate: 'Date created',
       status: 'Status',
+      priority: 'Priority',
       riskScore: 'Risk Score',
       assignee: 'Assignee',
       alertCount: 'Alerts',

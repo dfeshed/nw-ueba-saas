@@ -3,6 +3,7 @@ import IncidentHelper from 'sa/incident/helpers';
 import { viewType } from 'sa/protected/respond/index/route';
 import IncidentConstants from 'sa/incident/constants';
 import computed from 'ember-computed-decorators';
+import ListViewConfig from './config';
 
 const {
   Component,
@@ -21,75 +22,11 @@ export default Component.extend({
   // Array of selected statuses
   filteredStatuses: [],
 
-  // Config for the data table for the incidents list view landing page
-  incidentListConfig: [
-    {
-      field: 'riskScore',
-      title: 'incident.list.riskScore',
-      dataType: 'custom',
-      width: '7%',
-      class: 'rsa-respond-list-riskscore',
-      componentClass: 'rsa-content-badge-score',
-      isDescending: true
-    },
-    {
-      field: 'id',
-      title: 'incident.list.id',
-      class: 'incident-id',
-      width: '6%',
-      dataType: 'text'
-    },
-    {
-      field: 'name',
-      title: 'incident.list.name',
-      width: '35%',
-      class: 'rsa-respond-list-name',
-      dataType: 'text'
-    },
-    {
-      field: 'created',
-      title: 'incident.list.createdDate',
-      width: '10%',
-      class: 'rsa-respond-list-created',
-      dataType: 'date-time',
-      componentClass: 'rsa-content-datetime'
-    },
-    {
-      field: 'assigneeFirstLastName',
-      title: 'incident.list.assignee',
-      width: '10%',
-      class: 'rsa-respond-list-assignee',
-      dataType: 'text'
-    },
-    {
-      field: 'statusSort',
-      title: 'incident.list.status',
-      width: '12%',
-      class: 'rsa-respond-list-status',
-      dataType: 'text'
-    },
-    {
-      field: 'alertCount',
-      title: 'incident.list.alertCount',
-      width: '5%',
-      class: 'rsa-respond-list-alertCount',
-      dataType: 'text'
-    },
-    {
-      field: 'sources',
-      title: 'incident.list.sources',
-      width: '10%',
-      class: 'rsa-respond-list-sources',
-      dataType: 'text'
-    },
-    {
-      field: 'eventCount',
-      title: 'incident.fields.events',
-      width: '5%',
-      class: 'rsa-respond-list-events',
-      dataType: 'text'
-    }
-  ],
+  // Index of the last added column
+  lastAddedColumnIndex: 99,
+
+  // Full list of available columns to display
+  availableColumnsConfig: ListViewConfig.availableColumnsConfig,
 
   init() {
     this._super(...arguments);
@@ -97,6 +34,52 @@ export default Component.extend({
       'filteredPriorities': [],
       'filteredStatuses': []
     });
+  },
+
+  /**
+   * @description Selected and sorted columns for the data table
+   * @public
+   */
+  @computed('availableColumnsConfig.@each.visible')
+  incidentListConfig(availableColumnsConfig) {
+    let list = availableColumnsConfig.filterBy('visible', true);
+    this.setColumnWidth(list);
+    return list.sortBy('displayIndex');
+  },
+
+  /**
+   * @description List of all the columns. It runs only once since the list of available columns is static.
+   * Each column defines a computed-property to handle column selection
+   * @public
+   */
+  @computed('availableColumnsConfig')
+  allColumns(columns) {
+    columns.forEach((col) => {
+      col.reopen({
+        selected: emberComputed({
+          get: () => col.get('visible'),
+          set: (key, value) => {
+            run.once(() => {
+              if (value === true) {
+                // displayIndex of last selected column has the higher value
+                let lastAddedColumnIndex = this.incrementProperty('lastAddedColumnIndex');
+                col.set('displayIndex', lastAddedColumnIndex);
+              } else {
+                // When unselecting columns we prevents to unselect all of them
+                let visibleColumnsLength = columns.filterBy('visible', true).length;
+                if (visibleColumnsLength === 1) {
+                  col.set('selected', true);
+                  return value;
+                }
+              }
+              col.set('visible', value);
+            });
+            return value;
+          }
+        })
+      });
+    });
+    return columns;
   },
 
   @computed('categoryTags.[]')
@@ -251,6 +234,51 @@ export default Component.extend({
    */
   sourceShortName(source) {
     return IncidentHelper.sourceShortName(source);
+  },
+
+  /**
+   * @description Define the width of all the columns based on the following rule:
+   * Note: If a column has a `minWidth` attribute is considered as flexible.
+   * - Those columns with no `minWidth` attribute will keep their defined width.
+   * - Flexible columns will adjust their width based on the available
+   * space and the `minWidth` attribute after all the fix columns were processed.
+   * @private
+   */
+  setColumnWidth(list) {
+    let sumFixedWidth = 0;
+    let sumFlexibleWidth = 0;
+    let columnWidth,
+      availableWidth;
+
+    let fixedWidthColumns = list.filter((item) => !item.minWidth);
+    let flexibleWidthColumns = list.filter((item) => item.minWidth);
+
+    fixedWidthColumns.forEach((column) => {
+      sumFixedWidth += this.extractColumnWidth(column.get('width'));
+    });
+
+    flexibleWidthColumns.forEach((column) => {
+      sumFlexibleWidth += this.extractColumnWidth(column.get('minWidth'));
+    });
+
+    availableWidth = 100 - sumFixedWidth;
+    flexibleWidthColumns.forEach((column) => {
+      columnWidth = this.extractColumnWidth(column.get('minWidth'));
+      columnWidth = Math.round(availableWidth * columnWidth / sumFlexibleWidth);
+      column.set('width', `${ columnWidth }%`);
+    });
+  },
+
+  /**
+   * Extract the width value from the columns
+   * @private
+   */
+  extractColumnWidth(columnWidth) {
+    if (typeof columnWidth === 'string') {
+      return parseInt(columnWidth.replace('%', ''), 10);
+    } else {
+      return columnWidth;
+    }
   },
 
   actions: {

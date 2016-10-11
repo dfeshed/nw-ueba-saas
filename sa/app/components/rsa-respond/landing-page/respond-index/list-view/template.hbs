@@ -1,4 +1,4 @@
-{{#rsa-application-layout-manager class="rsa-respond-detail-layout-manager rsa-respond-list"}}
+{{#rsa-application-layout-manager class="rsa-respond-index-layout-manager rsa-respond-list"}}
   {{#rsa-application-layout-panel class="panel-A rsa-respond-list__panelA"}}
     <div class="rsa-respond-list__filter-panel">
       <div class="rsa-respond-list__filter-panel__priority">
@@ -36,6 +36,19 @@
   {{/rsa-application-layout-panel}}
 
   {{#rsa-application-layout-panel class="panel-B"}}
+    {{#rsa-content-help-trigger tooltip='selectColumnTooltip' class='rsa-respond-list__select-columns'}}
+      {{rsa-icon name='cog' style='filled'}}
+    {{/rsa-content-help-trigger}}
+    {{#rsa-content-tooltip position='bottom' tooltipId='selectColumnTooltip'}}
+      <section>
+        {{#each allColumns as |column|}}
+          {{rsa-form-checkbox
+            class=(concat 'column-selection-' column.field)
+            value=column.selected
+            label=(t column.title)}}
+        {{/each}}
+      </section>
+    {{/rsa-content-tooltip}}
     {{#rsa-data-table lazy=true onRowClick=(route-action "gotoIncidentDetail") items=allIncidents.results columnsConfig=incidentListConfig}}
       {{#rsa-data-table/header as |column|}}
         <span class="title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">
@@ -75,6 +88,8 @@
             {{else}}
               {{#if (is-equal column.field 'statusSort')}}
                 {{t (concat 'incident.status.' (get item column.field))}}
+              {{else if (is-equal column.field 'prioritySort')}}
+                {{t (concat 'incident.priority.' (get item column.field))}}
               {{else}}
                 {{#if (is-equal column.field 'assigneeFirstLastName')}}
                   {{get item 'assignee.firstName'}}

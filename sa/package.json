@@ -59,6 +59,7 @@
     "ember-simple-auth": "1.1.0",
     "ember-sinon": "0.5.1",
     "ember-sortable": "1.8.2",
+    "ember-tether": "0.3.1",
     "ember-truth-helpers": "1.2.0",
     "ember-wormhole": "^0.4.1",
     "eslint-plugin-ember-suave": "^0.1.2",
