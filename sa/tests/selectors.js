@@ -255,7 +255,6 @@ export default Ember$.extend({}, BaseSelectors, {
       'queryButton': '.js-test-investigate-query-bar__submit',
       'selectedServiceLbl': '.js-test-service',
       'timeRangeLbl': '.datetime'
-
     }
   }
 });
