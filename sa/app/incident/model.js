@@ -25,5 +25,7 @@ export default Model.extend({
   created: attr(),
   sources: attr(),
   categories: attr(),
-  notes: attr()
+  notes: attr(),
+  groupBySourceIp: attr(),
+  groupByDestinationIp: attr()
 });

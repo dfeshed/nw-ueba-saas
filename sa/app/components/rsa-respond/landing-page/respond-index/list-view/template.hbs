@@ -77,31 +77,27 @@
               {{#if (is-equal column.field 'riskScore')}}
                 {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column
                 score=(get item column.field) isInline=true style=(call-method this 'badgeStyle' (get item column.field))}}
+              {{else if (is-equal column.dataType 'date-time')}}
+                {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column  timestamp=(get item column.field)}}
               {{else}}
-                {{#if (is-equal column.dataType 'date-time')}}
-                  {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column  timestamp=(get item column.field)}}
-                {{else}}
-                  {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column click=(route-action "multiSelectIncident" item.id)
-                  class=(concat 'js-respond-listview-checkbox js-respond-listview-' item.id)}}
-                {{/if}}
+                {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column click=(route-action "multiSelectIncident" item.id)
+                class=(concat 'js-respond-listview-checkbox js-respond-listview-' item.id)}}
               {{/if}}
             {{else}}
               {{#if (is-equal column.field 'statusSort')}}
                 {{t (concat 'incident.status.' (get item column.field))}}
               {{else if (is-equal column.field 'prioritySort')}}
                 {{t (concat 'incident.priority.' (get item column.field))}}
+              {{else if (is-equal column.field 'assigneeFirstLastName')}}
+                {{get item 'assignee.firstName'}}
+              {{else if (is-equal column.field 'sources')}}
+                {{#each (get item column.field) as |source|}}
+                  {{rsa-content-label label=(call-method this 'sourceShortName' source)}}
+                {{/each}}
+              {{else if (or (eq column.field 'groupBySourceIp') (eq column.field 'groupByDestinationIp'))}}
+                {{call-method this 'groupByIp' (get item column.field)}}
               {{else}}
-                {{#if (is-equal column.field 'assigneeFirstLastName')}}
-                  {{get item 'assignee.firstName'}}
-                {{else}}
-                  {{#if (is-equal column.field 'sources')}}
-                    {{#each (get item column.field) as |source|}}
-                      {{rsa-content-label label=(call-method this 'sourceShortName' source)}}
-                    {{/each}}
-                  {{else}}
-                    {{get item column.field}}
-                  {{/if}}
-                {{/if}}
+                {{get item column.field}}
               {{/if}}
             {{/if}}
           </div>

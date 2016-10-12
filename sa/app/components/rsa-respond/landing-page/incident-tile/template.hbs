@@ -88,27 +88,41 @@
   <hbox class="rsa-incident-tile-section">
     <vbox xs="6" class="rsa-incident-tile-alert-col">
       <div>
-        {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
-          <label class="rsa-incident-tile-alert-count">{{if incident.alertCount incident.alertCount '-'}}</label>
-        {{/rsa-content-definition}}
+        {{#if isLargeSize}}
+          {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
+            <label class="rsa-incident-tile-alert-count">{{if incident.alertCount incident.alertCount '-'}}</label>
+          {{/rsa-content-definition}}
 
-        {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
-          <label class="rsa-incident-tile-event-count">{{if incident.eventCount incident.eventCount '-'}}</label>
-        {{/rsa-content-definition}}
+          {{#rsa-content-definition class="rsa-incident-tile-event-block" label=(t "incident.fields.events")}}
+            <label class="rsa-incident-tile-event-count">{{if incident.eventCount incident.eventCount '-'}}</label>
+          {{/rsa-content-definition}}
+        {{else}}
+          {{#rsa-content-definition class="rsa-incident-tile-priority-block" label=(t "incident.fields.priority")}}
+            <label class="rsa-incident-tile-priority">{{t (concat 'incident.priority.' incident.prioritySort)}}</label>
+          {{/rsa-content-definition}}
+          {{#rsa-content-definition class="rsa-incident-tile-alert-block" label=(t "incident.fields.alertCount")}}
+            <label class="rsa-incident-tile-alert-count">{{if incident.alertCount incident.alertCount '-'}}</label>
+          {{/rsa-content-definition}}
+        {{/if}}
       </div>
     </vbox>
-
     <vbox xs="6">
-      {{#rsa-content-definition label=(t "incident.fields.sources")}}
-        <div class='rsa-incident-tile-sources'>
-          {{#each incidentSources as |source|}}
-            {{rsa-content-label label=source}}
-          {{/each}}
-        </div>
-      {{/rsa-content-definition}}
+      {{rsa-content-ip-connections fromIPs=incident.groupBySourceIp toIPs=incident.groupByDestinationIp}}
     </vbox>
   </hbox>
-
+  {{#if isLargeSize}}
+    <hbox class="rsa-incident-tile-section">
+      <vbox xs="6">
+        {{#rsa-content-definition label=(t "incident.fields.sources")}}
+          <div class='rsa-incident-tile-sources'>
+            {{#each incidentSources as |source|}}
+              {{rsa-content-label label=source}}
+            {{/each}}
+          </div>
+        {{/rsa-content-definition}}
+      </vbox>
+    </hbox>
+  {{/if}}
 {{/if}}
 {{#if contextualTimestamp}}
   <hbox class="rsa-incident-tile-section">

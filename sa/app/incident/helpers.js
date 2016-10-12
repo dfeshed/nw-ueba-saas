@@ -2,7 +2,13 @@
  * @file Incident helper utilities
  * @public
  */
+import Ember from 'ember';
 import { incidentRiskThreshold } from 'sa/incident/constants';
+
+const {
+  isArray,
+  isNone
+} = Ember;
 
 const _SOURCES_MAP = [
   {
@@ -74,5 +80,22 @@ export default {
     });
 
     return normalizedCategories;
+  },
+
+  /**
+   * @description It returns a printable version of a IP array based on the input size:
+   * - If zero elements or null reference is passed, it returns a '-'
+   * - If the array has 1 element, it returns its value
+   * - If more than 1 element is in the array, the size of the array is returned
+   * @param array
+   * @public
+   */
+  groupByIp: (ipList) => {
+    if (isNone(ipList) || !isArray(ipList) || ipList.length === 0) {
+      return '-';
+    } else {
+      // temporarily hardcoding string `IPs`. It will removed when using another component to display list of IPs
+      return ipList.length === 1 ? ipList.get('firstObject') : `(${ ipList.length } IPs)`;
+    }
   }
 };

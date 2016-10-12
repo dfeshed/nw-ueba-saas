@@ -156,6 +156,12 @@ export default Component.extend({
     }
   },
 
+  @computed('incident.groupBySourceIp')
+  incidentSourceIp: IncidentHelper.groupByIp,
+
+  @computed('incident.groupByDestinationIp')
+  incidentDestinationIp: IncidentHelper.groupByIp,
+
   actions: {
     /**
      * @name nameLostFocus

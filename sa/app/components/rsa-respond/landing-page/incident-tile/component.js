@@ -17,7 +17,8 @@ const {
   Logger,
   isNone,
   merge,
-  run
+  run,
+  $
 } = Ember;
 
 export default Component.extend({
@@ -94,8 +95,8 @@ export default Component.extend({
    * @event
    * @public
    */
-  click() {
-    if (!this.get('editModeActive')) {
+  click(event) {
+    if (!this.get('editModeActive') && !$(event.target).parents('.rsa-content-ip-connections').length) {
       this.toggleProperty('clicked');
       this.sendAction('clickAction', this.get('incident'));
     }

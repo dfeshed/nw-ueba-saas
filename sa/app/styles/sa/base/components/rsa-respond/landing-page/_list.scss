@@ -82,7 +82,9 @@
   &-priority,
   &-status,
   &-created,
-  &-assignee {
+  &-assignee,
+  &-sourceIps,
+  &-destinationIps {
     overflow: hidden;
     text-overflow: ellipsis;
     height: 100%;

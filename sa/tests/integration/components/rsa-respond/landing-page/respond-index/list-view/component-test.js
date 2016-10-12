@@ -254,7 +254,7 @@ test('Column selector displays columns', function(assert) {
   this.get('eventBus').trigger('rsa-content-tooltip-display-selectColumnTooltip');
 
   return wait().then(() => {
-    assert.equal(this.$('.rsa-content-tooltip .tooltip-content .rsa-form-checkbox').length, 10, 'Displaying all available columns on column-selector');
+    assert.equal(this.$('.rsa-content-tooltip .tooltip-content .rsa-form-checkbox').length, 12, 'Displaying all available columns on column-selector');
     assert.equal(this.$('.rsa-content-tooltip .tooltip-content .rsa-form-checkbox.is-selected').length, 7, 'Default visible columns are selected by default');
 
     assert.equal(this.$('.rsa-data-table .rsa-data-table-header .rsa-data-table-header-row .rsa-data-table-header-cell').length, 7, 'Selected columns are visible by default');

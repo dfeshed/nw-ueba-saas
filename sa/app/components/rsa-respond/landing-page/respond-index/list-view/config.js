@@ -102,5 +102,19 @@ export const availableColumnsConfig = [
     dataType: 'text',
     visible: false,
     displayIndex: 9
+  }),
+  EmberObject.create({
+    field: 'groupBySourceIp',
+    title: 'incident.fields.groupBySourceIp',
+    width: '6%',
+    class: 'rsa-respond-list-sourceIps',
+    dataType: 'text'
+  }),
+  EmberObject.create({
+    field: 'groupByDestinationIp',
+    title: 'incident.fields.groupByDestinationIp',
+    width: '6%',
+    class: 'rsa-respond-list-destinationIps',
+    dataType: 'text'
   })
 ];

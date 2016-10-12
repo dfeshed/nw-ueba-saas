@@ -221,9 +221,11 @@ export default $.extend({}, BaseTranslations, {
       sources: 'ja_Sources',
       categories: 'ja_Categories',
       journal: 'ja_Journal',
-      events: 'jp_Events',
-      createdTimestamp: 'jp_created ',
-      updatedTimestamp: 'jp_updated '
+      events: 'ja_Events',
+      createdTimestamp: 'ja_created ',
+      updatedTimestamp: 'ja_updated ',
+      groupBySourceIp: 'ja_Source IP',
+      groupByDestinationIp: 'ja_Dest IP'
     },
     queue: {
       myQueue: 'ja_My Incidents',

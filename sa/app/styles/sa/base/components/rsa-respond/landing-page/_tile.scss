@@ -75,8 +75,9 @@
         margin-bottom: rsa-whitespace(less);
       }
 
-      .rsa-incident-tile-event-count, .rsa-incident-tile-alert-count {
+      .rsa-incident-tile-event-count, .rsa-incident-tile-alert-count, .rsa-incident-tile-priority {
         @include rsa-font(header, larger);
+        color: rsa-color(gray, light);
         line-height:1.9rem;
       }
 
@@ -133,6 +134,15 @@
           @include rsa-font(body, small);
           line-height: 140%;
         }
+      }
+    }
+    .rsa-incident-tile-alert-block {
+      margin-left: rsa-whitespace(base);
+      margin-right: 0;
+    }
+    .rsa-content-definition {
+      .rsa-incident-tile-priority, .rsa-incident-tile-alert-count {
+        @include rsa-font(body);
       }
     }
   }

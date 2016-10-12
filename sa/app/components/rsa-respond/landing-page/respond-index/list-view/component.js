@@ -237,6 +237,16 @@ export default Component.extend({
   },
 
   /**
+   * @description Returns a printable version of a IP array based on the input size:
+   * - If zero elements or null reference is passed, it returns a '-'
+   * - If the array has 1 element, it returns its value
+   * - If more than 1 element is in the array, the size of the array is returned
+   * @param array
+   * @public
+   */
+  groupByIp: IncidentHelper.groupByIp,
+
+  /**
    * @description Define the width of all the columns based on the following rule:
    * Note: If a column has a `minWidth` attribute is considered as flexible.
    * - Those columns with no `minWidth` attribute will keep their defined width.

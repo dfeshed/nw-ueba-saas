@@ -73,7 +73,11 @@ export default Ember$.extend({}, BaseSelectors, {
           'createdDateTimeAgoElm': 'span[class=rsa-incident-tile-created-date] span[class=time-ago]',
           'assigneeSelectOption': '.rsa-incident-tile-assignee-selector select option',
           'prioritySelectOpt': '.rsa-incident-tile-priority-selector select option',
-          'statusSelectOption': '.rsa-incident-tile-status-selector select option'
+          'statusSelectOption': '.rsa-incident-tile-status-selector select option',
+          'fromIpElm': '.from-ip .ip',
+          'toIpElm': '.to-ip .ip',
+          'multipleFromIpElm': '.from-ip .ip-count',
+          'multipleToIpElm': '.to-ip .ip-count'
         }
       },
       'listView': {
@@ -270,7 +274,9 @@ export default Ember$.extend({}, BaseSelectors, {
       'incQueueIncStatus': '.rsa-incident-tile-status',
       'incQueueIncPriority': '.rsa-incident-tile-priority',
       'incQueueIncAssignee': '.rsa-incident-tile-assignee',
-      'loaderWheelElm': '.rsa-loader__wheel'
+      'loaderWheelElm': '.rsa-loader__wheel',
+      'srcIpValueElm': '.rsa-incident-detail-header__source-ip label',
+      'destIpValueElm': '.rsa-incident-detail-header__destination-ip label'
     },
     'investigate': {
       'root': '.js-test-investigate-root',

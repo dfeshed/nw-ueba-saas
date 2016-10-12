@@ -256,7 +256,9 @@ export default $.extend({}, BaseTranslations, {
       journal: 'Journal',
       events: 'Events',
       createdTimestamp: 'created ',
-      updatedTimestamp: 'updated '
+      updatedTimestamp: 'updated ',
+      groupBySourceIp: 'Source IP',
+      groupByDestinationIp: 'Dest IP'
     },
     list: {
       id: 'ID',
