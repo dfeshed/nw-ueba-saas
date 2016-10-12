@@ -36,6 +36,12 @@ The `mock-server` node package provides the following function.
   * This will start the server after loading all your subscription files.
   * This function takes an `Object` with the following properties:
     * `subscriptionLocations`, `Array` or `String`, __required__, the directory(`String`) or directories(`Array` of `String`s) of your subscription files
+    * `routes`, `Array` of `Object`, each entry in the array represents a route the mock server should serve up. The keys for the `Object` are:
+      * `path`, __required__, the path to the endpoint, i.e. `'/foo/bar'`.
+      * `response`, __required__, this can be one of two things
+        * a `Function` that corresponds with the [Express Routing callback](https://expressjs.com/en/guide/routing.html) function signature
+        * Anything else will be treated as the content for a JSON response. So if, for instance, an Array of data is provided, that Array would be returned from the `path` provided.
+      * An HTTP `GET` is presumed. If other methods are necessary, they will need to be added. But the `routes` structure was build to accomodate future additions of options.
 * `shared.subscriptions`
   * This is a hash of shared/reusable subscription files, check `/shared/subscriptions`
 * `util.sendBatches({})`

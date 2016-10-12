@@ -16,7 +16,7 @@ import {
   subscriptionList
 } from './util';
 
-const start = function({ subscriptionLocations }, cb) {
+const start = function({ subscriptionLocations, routes }, cb) {
 
   // dynamically build subscription configuration based on user location input
   discoverSubscriptions(subscriptionLocations);
@@ -44,6 +44,8 @@ const start = function({ subscriptionLocations }, cb) {
     res.json({ 'version': '10.6.0.0-SNAPSHOT','commit': 28,'changeset': 'f716b11','date': 1435711785000 });
   });
   app.use('/socket/info', infoRoute);
+
+  _processConfiguredRoutes(routes, app);
 
   app.ws('/socket/*', function(ws /* , req */) {
     // send the sockjs open frame
@@ -105,7 +107,7 @@ const _handleMessage = function(ws, frame) {
 
       const outMsg = createMessage(ws.subscriptionHandler, frame, body);
       setTimeout(function() {
-        if (isClosed(ws)) {
+        if (_isClosed(ws)) {
           console.info('Client disconnected, not sending message');
         } else {
           ws.send(outMsg);
@@ -126,8 +128,20 @@ const _handleMessage = function(ws, frame) {
   }
 };
 
-const isClosed = function(ws) {
+const _isClosed = function(ws) {
   return ws.readyState === WebSocket.CLOSED || ws.readyState === WebSocket.CLOSING;
+};
+
+const _processConfiguredRoutes = function(routes, app) {
+  if (routes) {
+    routes.forEach((route) => {
+      if (typeof(route.response) === 'function') {
+        app.get(route.path, route.response);
+      } else {
+        app.get(route.path, (req, res) => res.json(route.response));
+      }
+    });
+  }
 };
 
 export {

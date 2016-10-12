@@ -7,7 +7,25 @@ const subscriptions = path.join(__dirname, 'harness', 'subscriptions');
 
 const startServer = function(done) {
   server.startServer({
-    subscriptionLocations: subscriptions
+    subscriptionLocations: subscriptions,
+    routes: [
+      {
+        path: '/foo/bar',
+        response: {
+          this: 'is',
+          json: 'return'
+        }
+      },
+      {
+        path: '/baz/what',
+        response: (req, res) => {
+          res.json({
+            passed: req.query.passed,
+            something: 'else'
+          });
+        }
+      }
+    ]
   }, done);
 };
 
