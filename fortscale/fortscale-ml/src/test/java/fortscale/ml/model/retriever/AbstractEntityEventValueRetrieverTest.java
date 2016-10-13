@@ -72,8 +72,9 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 
 		String contextId1 = "contextId1";
 		String contextId2 = "contextId2";
+		String contextId3 = "contextId3";
 		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class)))
-				.thenReturn((startTime, endTime) -> Arrays.asList(contextId1, contextId2));
+				.thenReturn((startTime, endTime) -> Arrays.asList(contextId1, contextId2, contextId3));
 
 		AbstractEntityEventValueRetriever retriever = new AbstractEntityEventValueRetriever(config, false) {
 			@Override
@@ -94,15 +95,19 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 							createJokerEntityEventData(0.5),
 							createJokerEntityEventData(0.7)
 					);
+				} else if (contextId3.equals(contextId)) {
+					return Stream.of(
+							createJokerEntityEventData(0.1),
+							createJokerEntityEventData(0.7)
+					);
 				}
 				return null;
 			}
 		};
 		GenericHistogram hist = (GenericHistogram) retriever.retrieve(null, new Date());
 
-		Assert.assertEquals(5, hist.getTotalCount(), 0.0000001);
-		Assert.assertEquals(3, hist.get(0.5), 0.0000001);
+		Assert.assertEquals(3, hist.getTotalCount(), 0.0000001);
 		Assert.assertEquals(1, hist.get(0.6), 0.0000001);
-		Assert.assertEquals(1, hist.get(0.7), 0.0000001);
+		Assert.assertEquals(2, hist.get(0.7), 0.0000001);
 	}
 }
