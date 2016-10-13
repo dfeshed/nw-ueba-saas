@@ -20,7 +20,7 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 	@Autowired
 	private AccumulatedEntityEventStore store;
 
-	public AccumulatedEntityEventValueRetriever(EntityEventValueRetrieverConf config) {
+	public AccumulatedEntityEventValueRetriever(AccumulatedEntityEventValueRetrieverConf config) {
 		super(config, false);
 	}
 
