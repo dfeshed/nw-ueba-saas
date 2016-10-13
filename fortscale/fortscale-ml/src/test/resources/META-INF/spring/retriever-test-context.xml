@@ -9,6 +9,7 @@
 
     <mockito:mock id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
     <mockito:mock id="contextSelectorFactoryService" class="fortscale.utils.factory.FactoryService"/>
+    <mockito:mock id="store" class="fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore"/>
     <bean class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig"/>
 
     <context:spring-configured/>

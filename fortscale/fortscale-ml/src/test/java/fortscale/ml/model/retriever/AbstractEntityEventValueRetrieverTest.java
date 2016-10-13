@@ -2,12 +2,10 @@ package fortscale.ml.model.retriever;
 
 import fortscale.common.util.GenericHistogram;
 import fortscale.entity.event.EntityEventConf;
-import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.JokerEntityEventData;
 import fortscale.ml.model.selector.EntityEventContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.FactoryService;
-import net.minidev.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,37 +14,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
 import java.util.stream.Stream;
 
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/retriever-test-context.xml"})
-public class AbstractEntityEventValueRetrieverTest {
-	@Autowired
-	private EntityEventConfService entityEventConfService;
+public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetrieverTestUtils {
 	@Autowired
 	private FactoryService<IContextSelector> contextSelectorFactoryService;
 
-	private static final String FULL_AGGREGATED_FEATURE_EVENT_NAME = "featureBucket.featureName";
-
-	private void registerEntityEventConf(AbstractEntityEventValueRetrieverConf config) {
-		String entityEventConfName = "entityEventConfName";
-		EntityEventConf entityEventConf = Mockito.mock(EntityEventConf.class);
-		when(entityEventConf.getName()).thenReturn(entityEventConfName);
-		when(config.getEntityEventConfName()).thenReturn(entityEventConfName);
-		when(entityEventConfService.getEntityEventConf(config.getEntityEventConfName())).thenReturn(entityEventConf);
-
-		Map<String, Object> entityEventFunction = new HashMap<>();
-		entityEventFunction.put("clusters", Collections.emptyMap());
-		entityEventFunction.put("alphas", Collections.emptyMap());
-		entityEventFunction.put("betas", Collections.singletonMap(FULL_AGGREGATED_FEATURE_EVENT_NAME, 1.0));
-		when(entityEventConf.getEntityEventFunction()).thenReturn(new JSONObject(entityEventFunction));
-	}
-
-	private JokerEntityEventData createJokerEntityEventData( double entityEventValue) {
-		return new JokerEntityEventData(0, Collections.singletonMap(FULL_AGGREGATED_FEATURE_EVENT_NAME, entityEventValue));
+	protected JokerEntityEventData createJokerEntityEventData( double entityEventValue) {
+		return new JokerEntityEventData(
+				0,
+				Collections.singletonMap(getFullAggregatedFeatureEventNameWithWeightOfOne(), entityEventValue)
+		);
 	}
 
 	@Test
