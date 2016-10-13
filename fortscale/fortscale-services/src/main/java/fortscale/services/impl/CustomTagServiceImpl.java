@@ -37,8 +37,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	private TagService tagService;
 	private ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper;
 
-	private Map<String, Set<String>> taggedUsers = new HashMap();
-
 	@Autowired
 	public CustomTagServiceImpl(UserRepository userRepository, UserService userService, TagService tagService,
 			ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper) {
@@ -51,7 +49,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Override
 	public void update() throws Exception {
 		logger.info("starting tagging process");
-		taggedUsers = new HashMap();
 		boolean warmedUpCache = false;
 		for (Tag tag : tagService.getAllTags()) {
 			logger.info("processing tag - {}", tag.getName());
@@ -112,12 +109,6 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		//add tags
 		for (Map.Entry<String, Set<String>> entry: tagsToAddToUsers.entrySet()) {
 			for (String username: entry.getValue()) {
-				Set<String> tags = taggedUsers.get(username);
-				if (tags == null) {
-					tags = new HashSet();
-				}
-				tags.add(entry.getKey());
-				taggedUsers.put(username, tags);
 				userService.updateUserTagList(Collections.singletonList(entry.getKey()), null, username);
 			}
 		}
@@ -156,20 +147,12 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		return completeGroupList;
 	}
 
-	private void refresh() {
-		taggedUsers = userService.findAllTaggedUsers();
-	}
-
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//add default tags to system
 		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true, true));
 		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true, true));
 		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true, true));
-		//In case that Lazy flag turned on the tags will be loaded from db during the tagging or querying process
-		if (!isLazyUpload) {
-			refresh();
-		}
 	}
 
 	@Override
@@ -184,22 +167,11 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				}
 			}
 		}
-		Set<String> userTags = taggedUsers.get(username);
-		if (userTags == null) {
-			userTags = new HashSet();
-		}
-		userTags.addAll(tags);
-		taggedUsers.put(username, userTags);
 		userService.updateUserTagList(tags, null, username);
 	}
 
 	@Override
 	public void removeUserTags(String username, List<String> tags) {
-		Set<String> userTags = taggedUsers.get(username);
-		if (userTags != null) {
-			userTags.removeAll(tags);
-		}
-		taggedUsers.put(username, userTags);
 		userService.updateUserTagList(null, tags, username);
 	}
 
