@@ -103,5 +103,16 @@ public class DGVerdasysTest {
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
 	}
 
+	@Test
+	public void test_replace_empty_value_to_0_bytes_written() {
+
+
+		String testCase = "Test empty value bytes_written";
+		String inputLine = "2016.04.21,4/21/2016 4:39:07 PM,4/21/2016 11:39:07 PM,outlook.exe,verdasys\\PRILEY-E6330,Windows,,,,,,Pat,Riley,C76742A7-B423-E64A-8E7E-309F77D17A40,verdasys\\priley,,microsoft,2505FA905BABE407B4A941E9D8A1C4E4265A3A77,0C0CA078AE55E9A98F0F7F22C6ED6CF6B42D150FA01301D5F53E2476EB499A51,microsoft outlook,14.0.7168.5000,Scanned,4/7/2016 3:28:50 PM,Virus Total: 0 / 57 scans positive.,,,,,outlook,priley@digitalguardian.com,RE: DBR - Security Recruiters,,6C74A982-9A5E-1037-F62B-806E7F7E7470,,,8318a11035bd5ddc1956f2360d4cace6,10a11883-bd35-dc5d-1956-f2360d4cace6,Outbound,Send Mail,,0,,False,False,False,True,False,True,0,False,0,False,False,False,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,priley@digitalguardian.com,,,,,\n";
+		String expectedOutput = "2016-04-21 23:39:07,1461281947,priley,,,PRILEY-E6330,PRILEY-E6330,,,,,,,,,C76742A7-B423-E64A-8E7E-309F77D17A40,,outlook.exe,,false,,,,,,outlook,,,,,,,priley@digitalguardian.com,RE: DBR - Security Recruiters,,Send Mail,,,6C74A982-9A5E-1037-F62B-806E7F7E7470,,False,,,true,false,,,,,,0,,,,,,,False,false,verdex,etl";
+
+		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+	}
+
 }
 
