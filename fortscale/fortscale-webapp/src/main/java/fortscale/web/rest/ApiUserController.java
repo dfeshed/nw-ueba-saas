@@ -1,7 +1,6 @@
 package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import com.squareup.okhttp.*;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
@@ -287,10 +286,10 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{addTag}/{tagNames}/tagUsers", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
 	@ResponseBody
-	public ResponseEntity<TaggedUsersCount> addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter,
-		@PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
+	public ResponseEntity<UsersCount> addRemoveTagByFilter(@RequestBody UserRestFilter userRestFilter,
+														   @PathVariable Boolean addTag, @PathVariable List<String> tagNames) throws JSONException {
 
-		TaggedUsersCount result = new TaggedUsersCount();
+		UsersCount result = new UsersCount();
 		if (CollectionUtils.isEmpty(tagNames)) {
 			return new ResponseEntity(result, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -546,19 +545,15 @@ public class ApiUserController extends BaseController{
 	@RequestMapping(value="/{watch}/followUsers", method = RequestMethod.POST,
 			consumes = MediaType.APPLICATION_JSON_VALUE)
 	@LogException
-	public Response followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch) {
+	public ResponseEntity<UsersCount> followUsersByFilter(@RequestBody UserRestFilter userRestFilter, @PathVariable Boolean watch) {
+
 		if (userRestFilter.getSize() == null) {
 			userRestFilter.setSize(Integer.MAX_VALUE);
 		}
-		DataBean<List<UserDetailsBean>> users = getUsers(userRestFilter);
-		if (CollectionUtils.isNotEmpty(users.getData())) {
-			users.getData().forEach(userDetailsBean -> {
-				User user = userDetailsBean.getUser();
-				user.setFollowed(watch);
-				userService.saveUser(user);
-			});
-		}
-		return Response.status(Response.Status.OK).build();
+
+		int usersUpdated = userWithAlertService.followUsersByFilter(userRestFilter, watch);
+
+		return ResponseEntity.status(HttpStatus.OK).body(new UsersCount(usersUpdated));
 	}
 
 	@RequestMapping(value="/{fieldName}/distinctValues", method=RequestMethod.GET)
@@ -605,10 +600,16 @@ public class ApiUserController extends BaseController{
 		return users;
 	}
 
-	public class TaggedUsersCount {
+	public class UsersCount {
 
 		public int count;
 
+		public UsersCount(int usersUpdated) {
+			this.count = usersUpdated;
+		}
+
+		public UsersCount() {
+		}
 	}
 
 	private void addAllWatched(DataBean<List<UserDetailsBean>> usersList, UserRestFilter userRestFilter) {

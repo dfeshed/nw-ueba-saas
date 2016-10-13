@@ -113,6 +113,22 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
+	public int updateFollowed(List<Criteria> criteriaList, boolean watch) {
+		Query query = new Query();
+
+		criteriaList.forEach(criteria -> query.addCriteria(criteria));
+
+		Update update = new Update();
+		update.set(User.followedField, watch);
+
+		BulkOperations upsert = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+				.upsert(query, update);
+
+		return upsert.execute().getModifiedCount();
+
+	}
+
+	@Override
 	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(new ObjectId(userId))),
 				update(User.sourceMachineCountField, sourceMachineCount), User.class);

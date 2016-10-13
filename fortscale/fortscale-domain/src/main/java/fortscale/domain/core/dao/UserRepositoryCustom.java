@@ -22,6 +22,8 @@ public interface UserRepositoryCustom {
 
 	void updateFollowed(User user, boolean followed);
 
+	int updateFollowed(List<Criteria> criteriaList, boolean watch);
+
 	void updateSourceMachineCount(String userId, int sourceMachineCount);
 
 	List<User> findByDNs(Collection<String> dns);

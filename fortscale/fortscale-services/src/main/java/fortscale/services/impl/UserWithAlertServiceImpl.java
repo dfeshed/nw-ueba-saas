@@ -268,4 +268,15 @@ import java.util.Set;
 		userService.updateTags(userRestFilter, addTag, tagNames, relevantUsers);
 		return countUsersByFilter(userRestFilter);
 	}
+
+	@Override
+	public int followUsersByFilter(UserRestFilter userRestFilter, Boolean watch) {
+		// Creating the filter
+		Set<String> relevantUsers = filterPreparations(userRestFilter);
+		if (!shouldStop(userRestFilter, relevantUsers)) {
+			return userService.updateWatched(userRestFilter, relevantUsers, watch);
+		}
+
+		return 0;
+	}
 }

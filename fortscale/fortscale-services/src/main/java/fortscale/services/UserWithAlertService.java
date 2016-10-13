@@ -19,4 +19,6 @@ public interface UserWithAlertService{
     List<User> findFromCacheUsersByFilter(UserRestFilter userRestFilter);
 
     int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames) throws Exception;
+
+	int followUsersByFilter(UserRestFilter userRestFilter, Boolean watch);
 }

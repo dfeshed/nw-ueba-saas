@@ -37,7 +37,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -1194,5 +1193,12 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
 
 		return userRepository.updateTagsByFilter(addTag, tagNames, criteriaList);
+	}
+
+	@Override
+	public int updateWatched(UserRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch) {
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
+
+		return userRepository.updateFollowed(criteriaList, watch);
 	}
 }
