@@ -65,11 +65,11 @@
         <!-- need to comment out when working in multi collector mode
         <trigger>
             <cron>
-                <name>wame_send_to_streaming_hourly_trigger</name>
+                <name>VERDASYSEX_send_to_streaming_hourly_trigger</name>
 
-                <group>WAME</group>
+                <group>VERDASYSEX</group>
                 <job-name>Scoring</job-name>
-                <job-group>WAME</job-group>
+                <job-group>VERDASYSEX</job-group>
                 <cron-expression>0 30 * * * ?</cron-expression>
             </cron>
         </trigger>
