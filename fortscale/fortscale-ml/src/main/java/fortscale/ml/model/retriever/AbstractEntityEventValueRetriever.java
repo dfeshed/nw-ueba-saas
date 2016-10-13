@@ -17,20 +17,36 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 @Configurable(preConstruction = true)
-public class EntityEventValueRetriever extends AbstractEntityEventValueRetriever {
-	private EntityEventDataCachedReaderService entityEventDataCachedReaderService;
-	private String entityEventConfName;
+public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetriever {
+	private static final Logger logger = Logger.getLogger(AbstractEntityEventValueRetriever.class);
+
+	@Autowired
+	private EntityEventConfService entityEventConfService;
+	@Autowired
+	private FactoryService<IContextSelector> contextSelectorFactoryService;
+	@Autowired
+	private StatsService statsService;
+
 	private EntityEventConf entityEventConf;
 	private JokerFunction jokerFunction;
 	private EntityEventValueRetrieverMetrics metrics;
 
-	public EntityEventValueRetriever(
-			EntityEventValueRetrieverConf config,
-			EntityEventDataCachedReaderService entityEventDataCachedReaderService) {
-		super(config, false);
-		this.entityEventDataCachedReaderService = entityEventDataCachedReaderService;
+	public AbstractEntityEventValueRetriever(AbstractEntityEventValueRetrieverConf config, boolean isAccumulation) {
+		super(config);
+		String entityEventConfName = config.getEntityEventConfName();
+		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
+		validate(config);
+		jokerFunction = getJokerFunction();
+		metrics = new EntityEventValueRetrieverMetrics(statsService, entityEventConfName, isAccumulation);
+	}
+
+	private void validate(AbstractEntityEventValueRetrieverConf config) {
+		if (entityEventConf == null) {
+			throw new InvalidEntityEventConfNameException(config.getEntityEventConfName());
+		}
 	}
 
 	@Override
@@ -41,44 +57,47 @@ public class EntityEventValueRetriever extends AbstractEntityEventValueRetriever
 		}
 
 		metrics.retrieveWithContextId++;
-		List<JokerEntityEventData> jokerEntityEventsData = entityEventDataCachedReaderService
-				.findEntityEventsJokerDataByContextIdAndTimeRange(
-				entityEventConf, contextId, getStartTime(endTime), endTime);
+		Stream<JokerEntityEventData> jokerEntityEventsData = readJokerEntityEventData(
+				entityEventConf,
+				contextId,
+				getStartTime(endTime),
+				endTime
+		);
 		GenericHistogram reductionHistogram = new GenericHistogram();
-
-		for (JokerEntityEventData jokerEntityEventData : jokerEntityEventsData) {
-			Double entityEventValue = jokerFunction.calculateEntityEventValue(
-					getJokerAggrEventDataMap(jokerEntityEventData));
+		jokerEntityEventsData.forEach(jokerEntityEventData -> {
+			Double entityEventValue =
+					jokerFunction.calculateEntityEventValue(getJokerAggrEventDataMap(jokerEntityEventData));
 			// TODO: Retriever functions should be iterated and executed here.
 			reductionHistogram.add(entityEventValue, 1d);
-		}
+		});
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
 	}
+
+	protected abstract Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf,
+																			 String contextId,
+																			 Date startTime,
+																			 Date endTime);
 
 	public Object retrieveUsingContextIds(Date endTime) {
 		metrics.retrieveWithNoContextId++;
 		Date startTime = getStartTime(endTime);
 		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(
-				new EntityEventContextSelectorConf(entityEventConfName));
+				new EntityEventContextSelectorConf(entityEventConf.getName()));
 		List<String> contextIds = contextSelector.getContexts(startTime, endTime);
 		metrics.contextIds++;
 		logger.info("Number of contextIds: " + contextIds.size());
 
 		GenericHistogram reductionHistogram = new GenericHistogram();
-		List<JokerEntityEventData> entityEventsData;
-
 		for (String contextId : contextIds) {
-			entityEventsData = entityEventDataCachedReaderService.findEntityEventsJokerDataByContextIdAndTimeRange(
-					entityEventConf, contextId, startTime, endTime);
-			metrics.entityEventsData += entityEventsData.size();
-
-			for (JokerEntityEventData jokerEntityEventData : entityEventsData) {
+			readJokerEntityEventData(
+					entityEventConf, contextId, startTime, endTime).forEach(jokerEntityEventData -> {
+				metrics.entityEventsData++;
 				Double entityEventValue = jokerFunction.calculateEntityEventValue(
 						getJokerAggrEventDataMap(jokerEntityEventData));
 				// TODO: Retriever functions should be iterated and executed here.
 				reductionHistogram.add(entityEventValue, 1d);
-			}
+			});
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
@@ -89,6 +108,13 @@ public class EntityEventValueRetriever extends AbstractEntityEventValueRetriever
 		throw new UnsupportedOperationException(String.format(
 				"%s does not support retrieval of a single feature",
 				getClass().getSimpleName()));
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		metrics.getContextId++;
+		Assert.notNull(context);
+		return EntityEventBuilder.getContextId(context);
 	}
 
 	private JokerFunction getJokerFunction() {
@@ -105,9 +131,14 @@ public class EntityEventValueRetriever extends AbstractEntityEventValueRetriever
 
 	private static Map<String, JokerAggrEventData> getJokerAggrEventDataMap(JokerEntityEventData jokerEntityEventData) {
 		Map<String, JokerAggrEventData> jokerAggrEventDataMap = new HashMap<>();
+
 		for (JokerAggrEventData jokerAggrEventData : jokerEntityEventData.getJokerAggrEventDatas()) {
-			jokerAggrEventDataMap.put(jokerAggrEventData.getFullAggregatedFeatureEventName(), jokerAggrEventData);
+			jokerAggrEventDataMap.put(
+					jokerAggrEventData.getFullAggregatedFeatureEventName(),
+					jokerAggrEventData
+			);
 		}
+
 		return jokerAggrEventDataMap;
 	}
 
@@ -123,22 +154,5 @@ public class EntityEventValueRetriever extends AbstractEntityEventValueRetriever
 	public List<String> getContextFieldNames() {
 		metrics.getContextFieldNames++;
 		return entityEventConf.getContextFields();
-	}
-
-	@Override
-	public String getContextId(Map<String, String> context) {
-		metrics.getContextId++;
-		Assert.notNull(context);
-		return EntityEventBuilder.getContextId(context);
-	}
-}
-
-	protected Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
-		return entityEventDataCachedReaderService.findEntityEventsJokerDataByContextIdAndTimeRange(
-				entityEventConf,
-				contextId,
-				getStartTime(endTime),
-				endTime
-		).stream();
 	}
 }

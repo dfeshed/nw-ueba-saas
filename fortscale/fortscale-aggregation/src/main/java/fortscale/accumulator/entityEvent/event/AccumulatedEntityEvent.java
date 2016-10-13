@@ -20,6 +20,7 @@ public class AccumulatedEntityEvent {
 
     // --- field names as they appear in MongoDB ---
     public static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME = "start_time";
+	public static final String ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID = "contextId";
 
     @Id
     private String id;

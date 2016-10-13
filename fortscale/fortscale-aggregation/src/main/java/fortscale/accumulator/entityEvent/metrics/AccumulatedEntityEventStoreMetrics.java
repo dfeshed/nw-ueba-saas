@@ -39,5 +39,9 @@ public class AccumulatedEntityEventStoreMetrics extends StatsMetricsGroup {
     public long createCollection;
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long createFailure;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long retrieveCalls;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long retrievedObjects;
 
 }

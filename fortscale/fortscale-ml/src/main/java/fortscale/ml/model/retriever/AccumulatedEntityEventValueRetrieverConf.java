@@ -6,11 +6,11 @@ import net.minidev.json.JSONObject;
 
 import java.util.List;
 
-public class EntityEventValueRetrieverConf extends AbstractEntityEventValueRetrieverConf {
-	public static final String ENTITY_EVENT_VALUE_RETRIEVER = "entity_event_value_retriever";
+public class AccumulatedEntityEventValueRetrieverConf extends AbstractEntityEventValueRetrieverConf {
+	public static final String ACCUMULATED_ENTITY_EVENT_VALUE_RETRIEVER = "accumulated_entity_event_value_retriever";
 
 	@JsonCreator
-	public EntityEventValueRetrieverConf(
+	public AccumulatedEntityEventValueRetrieverConf(
 			@JsonProperty("timeRangeInSeconds") long timeRangeInSeconds,
 			@JsonProperty("functions") List<JSONObject> functions,
 			@JsonProperty("entityEventConfName") String entityEventConfName) {
@@ -19,6 +19,6 @@ public class EntityEventValueRetrieverConf extends AbstractEntityEventValueRetri
 
 	@Override
 	public String getFactoryName() {
-		return ENTITY_EVENT_VALUE_RETRIEVER;
+		return ACCUMULATED_ENTITY_EVENT_VALUE_RETRIEVER;
 	}
 }
