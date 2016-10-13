@@ -32,11 +32,18 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 				getStartTime(endTime).toInstant(),
 				endTime.toInstant()
 		);
-		accumulatedEntityEvents.stream()
+		return accumulatedEntityEvents.stream()
 				// create multiple JokerEntityEventData from each accumulatedEntityEvent
 				.flatMap(accumulatedEntityEvent -> IntStream.range(
 						0,
-						accumulatedEntityEvent.getAggregated_feature_events_values_map().size()
+						// assuming all aggregated features have the same length, take the first one and deduce the
+						// number of JokerEntityEventData that should be created based on the length
+						accumulatedEntityEvent.getAggregated_feature_events_values_map()
+								.values()
+								.stream()
+								.findFirst()
+								.map(aggregatedFeatureEventValues -> aggregatedFeatureEventValues.length)
+								.orElseGet(() -> 0)
 				).mapToObj(aggrFeatureEventIndex -> {
 					Map<String, Double> fullAggregatedFeatureEventNameToScore = accumulatedEntityEvent
 							.getAggregated_feature_events_values_map()
@@ -55,7 +62,5 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 							accumulatedEntityEvent.getStart_time().getEpochSecond(),
 							fullAggregatedFeatureEventNameToScore);
 				}));
-
-		return null;
 	}
 }
