@@ -98,31 +98,31 @@ const data = reduxActions.handleActions({
   }),
 
   // Content reducing
-  [ACTION_TYPES.RECON_CONTENT_RETRIEVE_STARTED]: (state) => ({
+  [ACTION_TYPES.CONTENT_RETRIEVE_STARTED]: (state) => ({
     ...state,
     contentError: null,
     contentLoading: true
   }),
-  [ACTION_TYPES.RECON_FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
+  [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload,
     contentLoading: false
   }),
-  [ACTION_TYPES.RECON_PACKETS_RETRIEVE_PAGE]: (state, { payload }) => ({
+  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => ({
     ...state,
     contentLoading: false,
     // have packets already? then this is another page of packets from API
     // Need to create new packet array with new ones at end
     packets: state.packets ? [ ...state.packets, ...payload ] : payload
   }),
-  [ACTION_TYPES.RECON_CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
+  [ACTION_TYPES.CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
     ...state,
     contentError: payload,
     contentLoading: false
   }),
 
   // Download reducing
-  [ACTION_TYPES.RECON_FILES_FILE_SELECTION_TOGGLED]: (state, { payload: fileId }) => {
+  [ACTION_TYPES.FILES_FILE_SELECTION_TOGGLED]: (state, { payload: fileId }) => {
     const newFiles = state.files.map((f) => {
       if (f.id === fileId) {
         f.selected = !f.selected;
@@ -135,7 +135,7 @@ const data = reduxActions.handleActions({
       files: newFiles
     };
   },
-  [ACTION_TYPES.RECON_FILE_DOWNLOAD_SUCCESS]: (state) => ({
+  [ACTION_TYPES.FILE_DOWNLOAD_SUCCESS]: (state) => ({
     ...state,
     files: state.files.map((f) => ({ ...f, selected: false }))
   })

@@ -6,7 +6,7 @@ import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ data }) => ({
+const stateToComputed = ({ recon: { data } }) => ({
   files: data.files
 });
 

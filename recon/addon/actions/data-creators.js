@@ -54,7 +54,7 @@ const _handleContentError = (dispatch, response, type) => {
     Logger.error(`Could not retrieve ${type} recon data`, response);
   } else {
     dispatch({
-      type: ACTION_TYPES.RECON_CONTENT_RETRIEVE_FAILURE,
+      type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
       payload: response.code
     });
   }
@@ -67,7 +67,7 @@ const _handleContentError = (dispatch, response, type) => {
  */
 const _dispatchReconViewData = (dispatch, { code }, dataState) => {
 
-  dispatch({ type: ACTION_TYPES.RECON_CONTENT_RETRIEVE_STARTED });
+  dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
 
   // if is file recon, time to kick of request
   // for file recon data
@@ -76,7 +76,7 @@ const _dispatchReconViewData = (dispatch, { code }, dataState) => {
       fetchReconFiles(dataState)
         .then(({ data }) => {
           dispatch({
-            type: ACTION_TYPES.RECON_FILES_RETRIEVE_SUCCESS,
+            type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
             payload: data
           });
         }).catch((response) => {
@@ -86,7 +86,7 @@ const _dispatchReconViewData = (dispatch, { code }, dataState) => {
     case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
       fetchPacketData(
         dataState,
-        (payload) => dispatch({ type: ACTION_TYPES.RECON_PACKETS_RETRIEVE_PAGE, payload }),
+        (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload }),
         (response) => _handleContentError(dispatch, response, 'packet')
       );
       break;
@@ -118,7 +118,7 @@ const setNewReconView = (newView) => {
     // No need to fetch/dispatch recon view data if it already exists
     // in state. Means this recon view, for this event, has already had
     // its data fetched. On INITIALIZE the recon view data is wiped out
-    const dataState = getState().data;
+    const dataState = getState().recon.data;
     if (!dataState[newView.dataKey]) {
       _dispatchReconViewData(dispatch, newView, dataState);
     }
@@ -143,7 +143,7 @@ const setNewReconView = (newView) => {
  */
 const initializeRecon = (reconInputs) => {
   return (dispatch, getState) => {
-    const dataState = getState().data;
+    const dataState = getState().recon.data;
 
     // If its the same eventId, there is nothing to do
     // as previous state will be intact
@@ -205,7 +205,7 @@ const initializeRecon = (reconInputs) => {
 
       // if meta not passed in, and meta is shown, then need to fetch
       // meta data or panel will be empty
-      if (getState().visuals.isMetaShown === true && !reconInputs.meta) {
+      if (getState().recon.visuals.isMetaShown === true && !reconInputs.meta) {
         _dispatchMeta(dispatch, dataState);
       }
 
@@ -229,7 +229,7 @@ const initializeRecon = (reconInputs) => {
  */
 const toggleMetaData = (setTo) => {
   return (dispatch, getState) => {
-    const { visuals, data } = getState();
+    const { recon: { visuals, data } } = getState();
 
     // if 1) currently meta not shown
     // 2) not purposefully setting to closed

@@ -12,7 +12,7 @@ const {
   }
 } = Ember;
 
-const stateToComputed = ({ data }) => ({
+const stateToComputed = ({ recon: { data } }) => ({
   currentReconView: data.currentReconView,
   contentError: data.contentError,
   contentLoading: data.contentLoading,

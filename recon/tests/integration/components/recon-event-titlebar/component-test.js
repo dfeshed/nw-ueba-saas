@@ -42,7 +42,7 @@ test('clicking close executes action', function(assert) {
 test('clicking expand executes action', function(assert) {
   this.render(hbs`{{recon-event-titlebar}}`);
   this.$().find('.rsa-icon-arrow-left-9').click();
-  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.TOGGLE_RECON_EXPANDED);
+  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
 });
 
 test('clicking shrink executes multiple actions', function(assert) {
@@ -50,8 +50,8 @@ test('clicking shrink executes multiple actions', function(assert) {
   this.$().find('.rsa-icon-arrow-left-9').click();
   this.$().find('.rsa-icon-arrow-right-9').click();
   assert.ok(dispatchSpy.calledTwice);
-  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.TOGGLE_RECON_EXPANDED);
-  assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.TOGGLE_RECON_EXPANDED);
+  assert.equal(dispatchSpy.args[0][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
+  assert.equal(dispatchSpy.args[1][0].type, ACTION_TYPES.TOGGLE_EXPANDED);
 });
 
 test('calls action when reconstruction view is changed', function(assert) {

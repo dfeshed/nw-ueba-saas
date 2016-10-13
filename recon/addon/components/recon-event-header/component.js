@@ -5,7 +5,7 @@ import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ visuals, data }) => ({
+const stateToComputed = ({ recon: { visuals, data } }) => ({
   isHeaderOpen: visuals.isHeaderOpen,
   headerItems: data.headerItems,
   headerError: data.headerError

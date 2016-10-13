@@ -38,7 +38,7 @@ const _createToggleActionCreator = (type) => {
 const toggleReconHeader = _createToggleActionCreator(ACTION_TYPES.TOGGLE_HEADER);
 const toggleRequestData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_REQUEST);
 const toggleResponseData = _createToggleActionCreator(ACTION_TYPES.TOGGLE_RESPONSE);
-const toggleReconExpanded = _createToggleActionCreator(ACTION_TYPES.TOGGLE_RECON_EXPANDED);
+const toggleReconExpanded = _createToggleActionCreator(ACTION_TYPES.TOGGLE_EXPANDED);
 
 /**
  * Builds action for closing recon

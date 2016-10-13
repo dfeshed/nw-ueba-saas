@@ -8,7 +8,7 @@ import * as InteractionActions from 'recon/actions/interaction-creators';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ data }) => ({
+const stateToComputed = ({ recon: { data } }) => ({
   files: data.files
 });
 

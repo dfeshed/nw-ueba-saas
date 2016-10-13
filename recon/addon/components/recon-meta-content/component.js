@@ -4,7 +4,7 @@ import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ data }) => ({
+const stateToComputed = ({ recon: { data } }) => ({
   meta: data.meta,
   metaError: data.metaError,
   metaLoading: data.metaLoading

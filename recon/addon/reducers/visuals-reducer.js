@@ -49,7 +49,7 @@ const visuals = reduxActions.handleActions({
   },
 
   // If recon is shrunk, need to shrink meta too
-  [ACTION_TYPES.TOGGLE_RECON_EXPANDED]: (state, { payload = {} }) => {
+  [ACTION_TYPES.TOGGLE_EXPANDED]: (state, { payload = {} }) => {
     const isReconExpanded = payload.setTo || !state.isReconExpanded;
     const isMetaShown = (!isReconExpanded) ? false : state.isMetaShown;
 

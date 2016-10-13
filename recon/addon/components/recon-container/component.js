@@ -10,7 +10,7 @@ const {
   observer
 } = Ember;
 
-const stateToComputed = ({ visuals }) => ({
+const stateToComputed = ({ recon: { visuals } }) => ({
   isMetaShown: visuals.isMetaShown,
   isReconExpanded: visuals.isReconExpanded,
   isReconOpen: visuals.isReconOpen

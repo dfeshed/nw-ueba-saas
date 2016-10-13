@@ -4,7 +4,7 @@ import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ data }) => ({
+const stateToComputed = ({ recon: { data } }) => ({
   packetFields: data.packetFields,
   packets: data.packets
 });

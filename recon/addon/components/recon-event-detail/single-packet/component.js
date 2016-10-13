@@ -6,7 +6,7 @@ import layout from './template';
 import { not, readOnly } from 'ember-computed-decorators';
 const { Component, K, on, run, set } = Ember;
 
-const stateToComputed = ({ visuals }) => ({
+const stateToComputed = ({ recon: { visuals } }) => ({
   isRequestShown: visuals.isRequestShown,
   isResponseShown: visuals.isResponseShown
 });
