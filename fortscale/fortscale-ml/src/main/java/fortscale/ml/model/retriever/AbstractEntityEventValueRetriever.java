@@ -79,7 +79,7 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 																			 Date startTime,
 																			 Date endTime);
 
-	public Object retrieveUsingContextIds(Date endTime) {
+	private Object retrieveUsingContextIds(Date endTime) {
 		metrics.retrieveWithNoContextId++;
 		Date startTime = getStartTime(endTime);
 		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(
@@ -91,13 +91,17 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		GenericHistogram reductionHistogram = new GenericHistogram();
 		for (String contextId : contextIds) {
 			readJokerEntityEventData(
-					entityEventConf, contextId, startTime, endTime).forEach(jokerEntityEventData -> {
-				metrics.entityEventsData++;
-				Double entityEventValue = jokerFunction.calculateEntityEventValue(
-						getJokerAggrEventDataMap(jokerEntityEventData));
-				// TODO: Retriever functions should be iterated and executed here.
-				reductionHistogram.add(entityEventValue, 1d);
-			});
+					entityEventConf, contextId, startTime, endTime).
+					mapToDouble(jokerEntityEventData -> {
+						metrics.entityEventsData++;
+						return jokerFunction.calculateEntityEventValue(
+								getJokerAggrEventDataMap(jokerEntityEventData));
+					})
+					.max()
+					.ifPresent(maxEntityEventValue -> {
+						// TODO: Retriever functions should be iterated and executed here.
+						reductionHistogram.add(maxEntityEventValue, 1d);
+					});
 		}
 
 		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
