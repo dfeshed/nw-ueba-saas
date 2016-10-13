@@ -15,7 +15,7 @@
       </box>
     </hbox>
     <hbox class="packet-details">
-      <box xs="2" align="center" horizontal>
+      <box align="center" horizontal>
         <span>
           {{rsa-icon
             click=(action 'expandPacket')
@@ -25,7 +25,7 @@
           {{t 'list.packet'}}&nbsp;{{add index 1}}
         </span>
       </box>
-      <box align="end">
+      <box xs="3" align="end">
         {{moment-format packet.timestamp 'YYYY-MM-DD hh:mm:ss.ssss'}}
       </box>
       <box align="center" justify="end" horizontal>
@@ -34,7 +34,7 @@
       <box align="center" justify="end" horizontal>
         <span class="label">SEQ</span> {{packet.sequence}}
       </box>
-      <box align="end">
+      <box align="center" justify="end" horizontal>
         {{packet.payloadSize}} bytes
       </box>
     </hbox>

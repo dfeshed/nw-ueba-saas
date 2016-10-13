@@ -89,7 +89,7 @@
     @include rsa-vendor-prefix(flex-basis, 66%);
     @include rsa-vendor-prefix(flex-shrink, 1);
     @include rsa-vendor-prefix(flex-grow, 1);
-    margin-right: 1px;
+    margin-right: rsa-whitespace();
   }
 
   &__ascii {
