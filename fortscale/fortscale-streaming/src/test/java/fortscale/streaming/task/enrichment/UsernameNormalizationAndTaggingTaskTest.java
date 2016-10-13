@@ -170,32 +170,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 	}
 
 	@Test
-	public void wrappedProcess_should_add_user_tag_to_userService_cache() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		// prepare envelope
-		String userTag = "MY_TAG";
-		Set<String> tags = new HashSet<String>();
-		tags.add(userTag);
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(tags) , "userUpdatesTopic");
-		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-	}
-
-	@Test
-	public void wrappedProcess_should_override_user_tag_in_userService_cache() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		// prepare envelope
-		String userTag = "MY_TAG";
-		Set<String> tags = new HashSet<String>();
-		tags.add(userTag);
-		Set<String> oldTags = new HashSet<String>();
-		oldTags.add("oldTag");
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(tags) , "userUpdatesTopic");
-		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-	}
-
-	@Test
 	public void wrappedProcess_should_add_sensitive_machine_to_sensitiveMachineService_cache() throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		// prepare envelope
