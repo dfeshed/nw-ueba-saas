@@ -132,9 +132,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
-	@Autowired
-	private CacheHandler<String, List<String>> userTagsCache;
-
 	private UserServiceMetrics serviceMetrics;
 
 	public void setListOfBuiltInADUsers(String listOfBuiltInADUsers) {
@@ -211,10 +208,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public User saveUser(User user){
 		user = userRepository.save(user);
 		usernameService.updateUsernameInCache(user);
-		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-		if (user.getTags() != null && user.getTags().size() > 0){
-			userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-		}
 		return user;
 	}
 
@@ -222,10 +215,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		userRepository.save(users);
 		for (User user : users) {
 			usernameService.updateUsernameInCache(user);
-			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-			if (user.getTags() != null && user.getTags().size() > 0) {
-				userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-			}
 		}
 	}
 
@@ -788,6 +777,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
+	public Set<String> getUserTags(String username) {
+		return userRepository.getUserTags(username);
+	}
+
+	@Override
 	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave){
 		return createNewApplicationUserDetails(user, createNewApplicationUserDetails(userApplication, username), isSave);
 	}
@@ -886,49 +880,18 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private void updateTags(String username, List<String> tagsToAdd, List<String> tagsToRemove){
 		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		//also update the tags cache with the new updates
-		List<String> tags = userTagsCache.get(username);
-		Set<String> tagSet = new HashSet<String>();
-		if (tags!=null) {
-			tagSet = new HashSet<String>(tags);
-		}
-		if (tagsToAdd != null)
-			tagSet.addAll(tagsToAdd);
-		if (tagsToRemove != null)
-			tagSet.removeAll(tagsToRemove);
-
-
-		tags = new ArrayList<String>(tagSet);
-
-
-		userTagsCache.put(username, tags);
 	}
 
 
 	@Override
 	public boolean isUserTagged(String username, String tag) {
-		// check if the user tags are kept in cache
-		List<String> tags = userTagsCache.get(username);
-		if (tags==null) {
-			// get tags from mongodb and add to cache
-			Set<String> tagSet = userRepository.getUserTags(username);
-			serviceMetrics.findTags++;
-			if (tagSet != null) {
-				tags = new ArrayList<String>(tagSet);
-				userTagsCache.put(username, tags);
-			} else {
-				serviceMetrics.tagsNotFound++;
-			}
+		// get tags from mongodb
+		Set<String> tagSet = userRepository.getUserTags(username);
+		serviceMetrics.findTags++;
+		if (tagSet == null) {
+			serviceMetrics.tagsNotFound++;
 		}
-		return tags!=null && tags.contains(tag);
-	}
-
-	@Override public CacheHandler getCache() {
-		return userTagsCache;
-	}
-
-	@Override public void setCache(CacheHandler cache) {
-		userTagsCache = cache;
+		return tagSet!=null && tagSet.contains(tag);
 	}
 
 	@Override
@@ -1047,26 +1010,17 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username)
-	{
-		Set<String> tags = userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		userTagsCache.put(username, new ArrayList(tags));
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username) {
+		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 	}
 
-	@Override public void handleNewValue(String key, String value) throws Exception {
-		if(value == null){
-			getCache().remove(key);
-		}
-		else {
-			getCache().putFromString(key, value);
-		}
-	}
-
-	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
+	@Override
+	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		return userRepository.getUsersByPrefix(prefix, pageable);
 	}
 
-	@Override public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
+	@Override
+	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
 		return userRepository.getUsersByIds(ids, pageable);
 	}
 
@@ -1075,7 +1029,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userRepository.findOne(id);
 	}
 
-	@Override public Boolean isPasswordExpired(User user) {
+	@Override
+	public Boolean isPasswordExpired(User user) {
 		try{
 			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {

@@ -64,8 +64,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	@Autowired
 	private AlertTypesHisotryCache alertTypesHisotryCache;
 
-	@Autowired
-	private UserTagsCacheService userTagsCacheService;
 
 	@Autowired
 	@Qualifier("defaultTagToSeverityMapping")
@@ -85,7 +83,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * Alert forwarding service (for forwarding new alerts)
 	 */
 	@Autowired private ForwardingService forwardingService;
-
 
 
 	/**
@@ -156,7 +153,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                                 filter(event -> (event.getEvidenceType() == EvidenceType.Smart)).collect(Collectors.toList()));
 						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
 
-                        Set<String> userTags = userTagsCacheService.getUserTags(entityName);
+                        Set<String> userTags = userService.getUserTags(entityName);
 						List<Evidence> attachedTags = evidencesForAlertResolverService.handleTags(userTags,entityType, entityName, startDate, endDate);
 						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
@@ -208,7 +205,7 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 	private Severity getSeverity(String entityName, Integer roundScore) {
 		Severity severity;
-		Set<String> userTags= userTagsCacheService.getUserTags(entityName);
+		Set<String> userTags= userService.getUserTags(entityName);
 
 		if (Collections.disjoint(userTags, privilegedTags)){
 			//Regular user. No priviliged tags
