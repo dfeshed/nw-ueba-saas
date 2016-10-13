@@ -8,7 +8,7 @@
                            http://www.mockito.org/spring/mockito http://www.mockito.org/spring/mockito.xsd">
 
     <mockito:mock id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
-    <mockito:mock id="entityEventMongoStore" class="fortscale.entity.event.EntityEventMongoStore"/>
+    <mockito:mock id="contextSelectorFactoryService" class="fortscale.utils.factory.FactoryService"/>
     <bean class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig"/>
 
     <context:spring-configured/>
