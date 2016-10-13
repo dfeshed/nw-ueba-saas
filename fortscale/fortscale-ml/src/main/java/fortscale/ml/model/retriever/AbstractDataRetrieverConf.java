@@ -15,6 +15,7 @@ import java.util.List;
 		@JsonSubTypes.Type(value = AggregatedFeatureValueRetrieverConf.class, name = AggregatedFeatureValueRetrieverConf.AGGREGATED_FEATURE_VALUE_RETRIEVER),
 		@JsonSubTypes.Type(value = AccumulatedAggregatedFeatureValueRetrieverConf.class, name = AccumulatedAggregatedFeatureValueRetrieverConf.ACCUMULATED_AGGREGATED_FEATURE_VALUE_RETRIEVER),
 		@JsonSubTypes.Type(value = EntityEventValueRetrieverConf.class, name = EntityEventValueRetrieverConf.ENTITY_EVENT_VALUE_RETRIEVER),
+		@JsonSubTypes.Type(value = AccumulatedEntityEventValueRetrieverConf.class, name = AccumulatedEntityEventValueRetrieverConf.ACCUMULATED_ENTITY_EVENT_VALUE_RETRIEVER),
 		@JsonSubTypes.Type(value = EntityEventUnreducedScoreRetrieverConf.class, name = EntityEventUnreducedScoreRetrieverConf.ENTITY_EVENT_UNREDUCED_SCORE_RETRIEVER)
 })
 public abstract class AbstractDataRetrieverConf implements FactoryConfig {

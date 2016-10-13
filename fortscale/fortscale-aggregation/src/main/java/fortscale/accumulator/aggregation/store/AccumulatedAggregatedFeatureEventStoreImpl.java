@@ -112,28 +112,27 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
 
     @Override
     public List<AccumulatedAggregatedFeatureEvent> findAccumulatedEventsByContextIdAndStartTimeRange(
-            AggregatedFeatureEventConf aggregatedFeatureEventConf,
-            String contextId,
-            Instant startTimeFrom,
-            Instant startTimeTo) {
-        logger.debug("getting accumulated events for featureName={}", aggregatedFeatureEventConf.getName());
+			AggregatedFeatureEventConf aggregatedFeatureEventConf,
+			String contextId,
+			Instant startTimeFrom,
+			Instant startTimeTo) {
+		logger.debug("getting accumulated events for featureName={}", aggregatedFeatureEventConf.getName());
 
         String collectionName = translator.toAcmAggrCollection(aggregatedFeatureEventConf.getName());
-        Query query = new Query();
-        query
+        Query query = new Query()
                 .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID)
                         .is(contextId))
                 .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME)
                         .gte(startTimeFrom)
                         .lt(startTimeTo));
-        List<AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEvent =
+        List<AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEvents =
                 mongoTemplate.find(query, AccumulatedAggregatedFeatureEvent.class, collectionName);
         AccumulatedAggregatedFeatureEventsStoreMetrics metrics = getMetrics(aggregatedFeatureEventConf.getName());
         metrics.retrieveCalls++;
-        metrics.retrievedObjects += accumulatedAggregatedFeatureEvent.size();
+        metrics.retrievedObjects += accumulatedAggregatedFeatureEvents.size();
 
-        logger.debug("found {} accumulated events", accumulatedAggregatedFeatureEvent.size());
-        return accumulatedAggregatedFeatureEvent;
+        logger.debug("found {} accumulated events", accumulatedAggregatedFeatureEvents.size());
+        return accumulatedAggregatedFeatureEvents;
     }
 
     /**
