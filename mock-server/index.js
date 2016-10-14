@@ -11,7 +11,7 @@ require('babel-register')({
   // Presets have to be added here rather than in a .babelrc
   // because of how this module dynamically loads files from
   // other places in the file system
-  presets:["stage-0", "es2015"]
+  presets: ["babel-preset-stage-0", "babel-preset-es2015"].map(require.resolve)
 });
 
 var server = require('./lib/server');

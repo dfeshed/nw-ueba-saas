@@ -22,9 +22,7 @@ function runEmberTestWithMockServer {
   info "Starting Express mock test server for $1"
   cd $1
 
-  # force reload of mock server
-  rm -rf node_modules/mock-server
-  npm i
+  npm link ../mock-server
 
   # run mock server
   cd tests/server
@@ -33,8 +31,9 @@ function runEmberTestWithMockServer {
   local PID=$!
   success "$1 mock server started, process id: $PID"
 
-  # now run the tests
   cd ../..
+
+  # now run the tests
   info "Running 'ember test' for $1 on port $testemPort"
   MOCK_PORT=$mockPort ember test --test-port $testemPort
   local status=$?
@@ -58,9 +57,7 @@ function runEmberTestNoMockServer {
   info "Running 'ember test' for $1 on port $testemPort"
   cd $1
 
-  # force reload of mock server
-  rm -rf node_modules/mock-server
-  npm i
+  npm link ../mock-server
 
   ember test --test-port $testemPort
   checkError "Ember test failed for $1"

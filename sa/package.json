@@ -10,8 +10,7 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "node ./scripts/test",
-    "postinstall": "rm -rf node_modules/mock-server && npm install ../mock-server"
+    "test": "node ./scripts/test"
   },
   "repository": "",
   "engines": {
@@ -66,7 +65,6 @@
     "flexi": "1.2.0",
     "liquid-fire": "0.26.1",
     "loader.js": "^4.0.1",
-    "mock-server": "../mock-server",
     "redux": "3.6.0",
     "redux-actions": "0.12.0",
     "redux-thunk": "2.1.0"

@@ -16,6 +16,8 @@ function installAppDeps {
   bower install
   checkError "Failed to install Bower dependencies for $1, try again, if this persists (it shouldn't) then get some help."
 
+  npm link ../mock-server
+
   success "$1 is ready to go!"
 }
 

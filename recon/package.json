@@ -9,8 +9,7 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "ember try:each",
-    "postinstall": "rm -rf node_modules/mock-server && npm install ../mock-server"
+    "test": "ember try:each"
   },
   "repository": "",
   "engines": {
@@ -53,7 +52,6 @@
     "eslint-plugin-ember-suave": "^0.1.2",
     "faker": "3.1.0",
     "loader.js": "^4.0.1",
-    "mock-server": "../mock-server",
     "redux": "3.6.0",
     "redux-actions": "0.12.0",
     "redux-thunk": "2.1.0"
