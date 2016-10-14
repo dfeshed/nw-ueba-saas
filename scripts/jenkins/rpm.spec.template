@@ -1,7 +1,7 @@
 %define __jar_repack 0
 Name: sa-ui-client
 Version: NETWITNESS_VERSION
-Release: DATE.STABILITY.GIT_COMMIT.el7.centos
+Release: DATE.STABILITY.GIT_COMMIT.VERSION.centos
 Summary: Netwitness UI :: Client :: Netwitness
 License: (c) null
 Group: Applications/Internet
@@ -20,10 +20,13 @@ then
 else
   mv TMP_RPM_BUILD_ROOT RPM_BUILD_ROOT
 fi
+%define has_nginx %( if [ -d TMP_RPM_BUILD_ROOT/etc/nginx ]; then echo "1" ; else echo "0"; fi )
 
 %files
 
-%config  "/etc/nginx"
+%if %has_nginx
+    %config  "/etc/nginx"
+%endif
  "/opt/rsa/sa-ui/html"
 
 %post
