@@ -16,13 +16,20 @@ const dispatchToActions = (dispatch) => ({
 
 const ExportFilesComponent = Component.extend({
   layout,
+  showModal: false,
+
   actions: {
     launchDownload() {
       if (this.get('files').findBy('selected')) {
-        this.send('downloadFiles');
+        this.set('showModal', true);
+        // this.send('downloadFiles');
       } else {
         // doing nothing
       }
+    },
+
+    closeModal() {
+      this.set('showModal', false);
     }
   }
 });

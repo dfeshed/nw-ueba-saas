@@ -1,1 +1,13 @@
 {{#rsa-form-button click=(action 'launchDownload')}}Export Files(s){{/rsa-form-button}}
+
+{{#if showModal}}
+
+  {{#rsa-application-modal
+  eventId='recon-download-name-form'
+  label="Extract File(s)"
+  autoOpen=true
+  onClose=(action 'closeModal')}}
+    <div class='modal-content'> Modal Content </div>
+  {{/rsa-application-modal}}
+
+{{/if}}

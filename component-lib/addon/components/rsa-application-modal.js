@@ -29,20 +29,23 @@ export default Component.extend({
 
   label: null,
 
+  autoOpen: false,
+
+  onClose: null,
+
   init() {
     this.listen();
     this._super(arguments);
   },
 
   didInsertElement() {
-    let that = this;
-
-    run.schedule('afterRender', function() {
-      that.$('.modal-close').on('click', function() {
-        run.next(that, function() {
-          that.closeModal();
-        });
+    run.schedule('afterRender', () => {
+      this.$('.modal-close').on('click', () => {
+        run.next(() => this.closeModal());
       });
+      if (this.get('autoOpen')) {
+        this.openModal();
+      }
     });
   },
 
@@ -82,6 +85,9 @@ export default Component.extend({
     run.next(this, function() {
       this.updateModal(isOpen);
     });
+    if (this.get('onClose')) {
+      this.get('onClose')();
+    }
   },
 
   keyUp(e) {
