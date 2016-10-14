@@ -15,8 +15,8 @@ const DEFAULT_TYPE_OF_FIELD = {
   'ip.dst': 'ip',
   'ip.dstport': 'int',
   'ip.proto': 'int',
-  'ipv6.src': 'ip',
-  'ipv6.dst': 'ip',
+  'ipv6.src': 'ipv6',
+  'ipv6.dst': 'ipv6',
   'ipv6.proto': 'int',
   'tcp.srcport': 'int',
   'tcp.dstport': 'int'
@@ -26,6 +26,27 @@ function valsToHexArray(arr) {
   return arr.map((part) => {
     return intToHex(part.charCodeAt(0));
   });
+}
+function valsToIPV6(values) {
+  return valsToHexArray(values).reduce((ip, value, index, arr) => {
+    // Remove leading zeros
+    const parsedValue = value.replace(/\b(0(?!\b))+/g, '');
+
+    // If all zeros, we should check and see if the next one is also all zeros
+    const nextIsZeros = index < (arr.length - 1) && arr[index + 1].replace(/\b(0(?!\b))+/g, '') === '0';
+
+    if (parsedValue === '0') {
+      // If IP already ends with '::' we don't want to print the zero
+      if (ip.endsWith('::')) {
+        return ip;
+      }
+      if (!ip.includes('::') && nextIsZeros) {
+        return `${ip}:`;
+      }
+    }
+
+    return `${ip}${index !== 0 && !ip.endsWith('::') ? ':' : ''}${parsedValue}`;
+  }, '');
 }
 function hexArrayToInt(arr) {
   return hexToInt(arr.join(''));
@@ -58,6 +79,9 @@ export default Component.extend({
           valsToInt([values[2]]),
           valsToInt([values[3]])
         ].join('.');
+
+      case 'ipv6':
+        return valsToIPV6(values);
 
       case 'mac':
         return valsToHexArray(values).join(':');
