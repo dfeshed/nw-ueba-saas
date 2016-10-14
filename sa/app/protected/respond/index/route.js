@@ -7,7 +7,6 @@ const {
   inject: {
     service
   },
-  $,
   set,
   Logger,
   observer,
@@ -33,9 +32,9 @@ export default Route.extend({
     this.set('layoutService.panelB', 'main');
     this.set('layoutService.actionConfig', null);
     /* close the incident queue panel, if it is in open state */
-    let disabledQueue = $('.incident-queue-trigger.is-disabled');
-    if (disabledQueue.length <= 0) {
-      $('.incident-queue-trigger').click();
+    let queueExpanded = this.get('layoutService.incidentQueueActive');
+    if (queueExpanded) {
+      this.get('layoutService').toggleIncidentQueue();
     }
   },
 

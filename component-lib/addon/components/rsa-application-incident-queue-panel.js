@@ -5,7 +5,6 @@ import computed from 'ember-computed-decorators';
 
 const {
   Component,
-  $,
   inject: {
     service
   },
@@ -52,16 +51,12 @@ export default Component.extend({
   actions: {
     fetchIncidents(queue) {
       this.set('activeTab', queue);
-      if (queue === 'my') {
-        this.loadQueue('notify', this.get('username'));
-      } else {
-        this.loadQueue('stream', 'new');
-      }
+      this.fetchModel();
     },
     gotoIncidentDetail() {
       /* simulates the "incident queue" button click that in-turn hides the
       incident queue panel when an incident card is clicked */
-      $('.incident-queue-trigger').click();
+      this.get('layoutService').toggleIncidentQueue();
     }
   },
 
@@ -89,13 +84,22 @@ export default Component.extend({
     });
   },
 
+  fetchModel() {
+    let queue = this.get('activeTab');
+    if (queue === 'my') {
+      this.loadQueue('notify', this.get('username'));
+    } else {
+      this.loadQueue('stream', 'new');
+    }
+  },
+
   init() {
     this._super(arguments);
 
     this.get('eventBus').on('rsa-application-incident-queue-panel-will-toggle', () => {
       this.toggleProperty('isExpanded');
       if (this.get('isExpanded') === true) {
-        this.loadQueue('notify', this.get('username'));
+        this.fetchModel();
       } else {
         this.set('loadingData', false);
         this.set('incidents', null);
