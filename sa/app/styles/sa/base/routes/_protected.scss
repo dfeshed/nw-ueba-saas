@@ -1,0 +1,39 @@
+.rsa-protected {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  &__outlet {
+    z-index: 1;
+  }
+
+  &__aside {
+    overflow: hidden;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    width: 0;
+    z-index: 2;
+    transition: width 300ms;
+
+    .rsa-context-panel {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+    }
+  }
+
+  &.has-entity-info {
+    .rsa-protected {
+      &__aside {
+        width: 50%;
+        box-shadow: 0 0 rsa-whitespace() rsa-color(black, base, $rsa-nearly-opaque);
+      }
+    }
+  }
+}

@@ -3,7 +3,7 @@ $font-fade-color: rsa-color(gray, light);
 
 .rsa-context-panel{
   position: relative;
-  height: 100%;
+  @include rsa-col(justify,fill);
 
   &__sectionEnd {
     border-bottom: 1px solid #2d2c2c;;
@@ -16,9 +16,15 @@ $font-fade-color: rsa-color(gray, light);
     align-items: center;
   }
 
+  &-header {
+    @include rsa-vendor-prefix(flex-grow,0);
+    @include rsa-vendor-prefix(flex-shrink,0);
+  }
+
   &__body{
+    @include rsa-vendor-prefix(flex-grow,1);
+    @include rsa-vendor-prefix(flex-shrink,1);
     position: relative;
-    height: -webkit-calc(100%- 1000px);
     background-color: rsa-color(gray, darker);
     overflow: auto;
   }

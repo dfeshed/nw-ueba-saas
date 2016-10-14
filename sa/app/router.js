@@ -15,10 +15,7 @@ Router.map(function() {
     if (config.featureFlags['show-respond-route']) {
       this.route('respond', function() {
         this.route('incident', { path: '/incident/:incident_id' }, function() {
-          this.route('details', { path: '/details/:detail_id' }, function() {
-            this.route('context', { path: '/context/:context_id' });
-          });
-          this.route('context', { path: '/context/:context_id' });
+          this.route('details', { path: '/details/:detail_id' }, function() {});
         });
       });
     }
