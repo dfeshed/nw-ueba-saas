@@ -18,13 +18,13 @@ public class AccumulatedAggregatedFeatureEventStoreConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private AccumulatedAggregatedFeatureEventTranslator translator;
+    private AccumulatedAggregatedFeatureEventTranslator accumulatedAggregatedFeatureEventTranslator;
     @Autowired
     private StatsService statsService;
 
     @Bean
     public AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore()
     {
-        return new AccumulatedAggregatedFeatureEventStoreImpl(mongoTemplate,translator,statsService);
+        return new AccumulatedAggregatedFeatureEventStoreImpl(mongoTemplate,accumulatedAggregatedFeatureEventTranslator,statsService);
     }
 }

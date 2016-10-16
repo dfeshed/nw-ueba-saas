@@ -21,13 +21,13 @@ public class AccumulatedEntityEventStoreConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private AccumulatedEntityEventTranslator translator;
+    private AccumulatedEntityEventTranslator accumulatedEntityEventTranslator;
     @Autowired
     private StatsService statsService;
 
     @Bean
     public AccumulatedEntityEventStore accumulatedEntityEventStore()
     {
-        return new AccumulatedEntityEventStoreImpl(mongoTemplate,translator,statsService);
+        return new AccumulatedEntityEventStoreImpl(mongoTemplate,accumulatedEntityEventTranslator,statsService);
     }
 }
