@@ -2,7 +2,8 @@ package fortscale.accumulator.entityEvent.store;
 
 import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
 import fortscale.accumulator.entityEvent.metrics.AccumulatedEntityEventStoreMetrics;
-import fortscale.accumulator.translator.AccumulatedFeatureTranslator;
+import fortscale.accumulator.entityEvent.translator.AccumulatedEntityEventTranslator;
+import fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -24,7 +25,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
     private static final Logger logger = Logger.getLogger(AccumulatedEntityEventStoreImpl.class);
 
     private final MongoTemplate mongoTemplate;
-    private final AccumulatedFeatureTranslator translator;
+    private final BaseAccumulatedFeatureTranslator translator;
     private final StatsService statsService;
     private final Map<String,AccumulatedEntityEventStoreMetrics> featureMetricsMap;
     private Set<String> existingCollections;
@@ -35,7 +36,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
      * @param translator
      * @param statsService
      */
-    public AccumulatedEntityEventStoreImpl(MongoTemplate mongoTemplate, AccumulatedFeatureTranslator translator, StatsService statsService)
+    public AccumulatedEntityEventStoreImpl(MongoTemplate mongoTemplate, AccumulatedEntityEventTranslator translator, StatsService statsService)
     {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
@@ -43,7 +44,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
         this.featureMetricsMap = new HashMap<>();
         this.existingCollections = new HashSet<>();
 
-        existingCollections = getACMExistingCollections(mongoTemplate,translator.entityEventCollectioNameRegex());
+        existingCollections = getACMExistingCollections(mongoTemplate,translator.getAcmCollectionNameRegex());
     }
 
     @Override
@@ -66,7 +67,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
     public Instant getLastAccumulatedEventStartTime(String featureName) {
         logger.debug("getting last accumulated event for featureName={}",featureName);
 
-        String collectionName = translator.toAcmEntityEventCollection(featureName);
+        String collectionName = translator.toAcmCollectionName(featureName);
         Query query = new Query();
         Sort sort = new Sort(Sort.Direction.DESC, AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME);
         query.with(sort);
@@ -90,7 +91,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
                                                                                           Instant startTimeTo) {
         logger.debug("getting accumulated events for entity event name={}", entityEventConf.getName());
 
-        String collectionName = translator.toAcmAggrCollection(entityEventConf.getName());
+        String collectionName = translator.toAcmCollectionName(entityEventConf.getName());
         Query query = new Query()
                 .addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID)
                         .is(contextId))
@@ -123,7 +124,7 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
     }
 
     private String createCollectionIfNotExist(String featureName) {
-        String collectionName = translator.toAcmAggrCollection(featureName);
+        String collectionName = translator.toAcmCollectionName(featureName);
         if (!existingCollections.contains(collectionName)) {
             createCollection(collectionName, featureName);
             existingCollections.add(collectionName);

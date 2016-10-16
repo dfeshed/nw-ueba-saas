@@ -161,12 +161,12 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	 * @param featureName feature to run on
 	 * @return list of {@link EntityEvent} between those dates
 	 */
-	public List<EntityEvent> findEntityEventsByTimeRange(Instant from, Instant to, String featureName) {
+	public List<EntityEvent> findEntityEventsByStartTimeRange(Instant from, Instant to, String featureName) {
 
 		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to);
 		Query query = new Query(startTimeCriteria);
 
-		return getRunQueryOnAllFeatureNameCollections(featureName, query);
+		return findEntityEvents(featureName, query);
 	}
 
 	/**
@@ -174,7 +174,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	 * this method executes given {@param query} on all collectionNames
 	 * @return list of {@link EntityEvent} answering the query
 	 */
-	public List<EntityEvent> getRunQueryOnAllFeatureNameCollections(String featureName, Query query) {
+	public List<EntityEvent> findEntityEvents(String featureName, Query query) {
 		return getCollectionNames(featureName).stream()
 				.flatMap(collectionName -> mongoTemplate.find(query, EntityEvent.class, collectionName).stream())
 				.collect(Collectors.toList());

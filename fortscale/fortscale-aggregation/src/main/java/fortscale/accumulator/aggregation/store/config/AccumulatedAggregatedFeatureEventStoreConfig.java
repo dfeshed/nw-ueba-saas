@@ -2,8 +2,8 @@ package fortscale.accumulator.aggregation.store.config;
 
 import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStoreImpl;
-import fortscale.accumulator.translator.AccumulatedFeatureTranslator;
-import fortscale.accumulator.translator.config.AccumulatedFeatureTranslatorConfig;
+import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeatureEventTranslator;
+import fortscale.accumulator.aggregation.translator.config.AccumulatedAggregatedFeatureEventTranslatorConfig;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -13,12 +13,12 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 
 @Configuration
-@Import(AccumulatedFeatureTranslatorConfig.class)
+@Import(AccumulatedAggregatedFeatureEventTranslatorConfig.class)
 public class AccumulatedAggregatedFeatureEventStoreConfig {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-    private AccumulatedFeatureTranslator translator;
+    private AccumulatedAggregatedFeatureEventTranslator translator;
     @Autowired
     private StatsService statsService;
 

@@ -1,7 +1,7 @@
 package fortscale.accumulator.aggregation;
 
 import fortscale.accumulator.accumulator.AccumulationParams;
-import fortscale.accumulator.accumulator.AccumulatorBase;
+import fortscale.accumulator.accumulator.BaseAccumulator;
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.accumulator.aggregation.metrics.AggregatedFeatureEventsAccumulatorMetrics;
 import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
@@ -21,7 +21,7 @@ import java.util.Map;
  * Accumulates several {@link AggrEvent} into accumulated {@link AccumulatedAggregatedFeatureEvent} per contextId by daily resolution
  * Created by barak_schuster on 10/6/16.
  */
-public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
+public class AggregatedFeatureEventsAccumulator extends BaseAccumulator {
 
     private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsAccumulator.class);
     private final AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
@@ -95,7 +95,8 @@ public class AggregatedFeatureEventsAccumulator extends AccumulatorBase {
         return accumulatedAggregatedFeatureEventStore.getLastAccumulatedEventStartTime(featureName);
     }
 
-    private void accumulateEvents(List<AggrEvent> aggrEvents, Instant from, Instant to, Instant creationTime, Map<String, AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEventMap) {
+    private void accumulateEvents(List<AggrEvent> aggrEvents, Instant from, Instant to, Instant creationTime,
+                                  Map<String, AccumulatedAggregatedFeatureEvent> accumulatedAggregatedFeatureEventMap) {
 
         for (AggrEvent event : aggrEvents) {
             String contextId = event.getContextId();

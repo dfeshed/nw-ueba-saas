@@ -52,10 +52,6 @@ public class EntityEventAccumulatorTest {
         @Autowired
         private StatsService statsService;
 
-
-
-
-
         @Bean
         public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
             Properties properties = new Properties();
@@ -101,12 +97,12 @@ public class EntityEventAccumulatorTest {
         String entity_event_type = entityEvent.getEntity_event_type();
         Instant firstStartTime = Instant.ofEpochSecond(entityEvent.getStart_time_unix());
         Instant lastStartTime = Instant.ofEpochSecond(entityEvent3.getAggregated_feature_events().get(0).getAsNumber(AggrEvent.EVENT_FIELD_START_TIME_UNIX).longValue());
-        List<EntityEvent> b = entityEventMongoStore.findEntityEventsByTimeRange(firstStartTime, lastStartTime, entity_event_type);
+        List<EntityEvent> b = entityEventMongoStore.findEntityEventsByStartTimeRange(firstStartTime, lastStartTime, entity_event_type);
         AccumulationParams accumulationParams = new AccumulationParams(entity_event_type, AccumulationParams.TimeFrame.DAILY, firstStartTime, lastStartTime);
         accumulator.run(accumulationParams);
 
-        List<AccumulatedEntityEvent> accumulationResult = mongoTemplate.findAll(AccumulatedEntityEvent.class, "scored___aggr_event__normalized_username_h_acm");
-        Assert.assertEquals(accumulationResult.size(), 1);
+        List<AccumulatedEntityEvent> accumulationResult = mongoTemplate.findAll(AccumulatedEntityEvent.class, "scored___entity_event__normalized_username_h_acm");
+        Assert.assertEquals(1, accumulationResult.size());
         AccumulatedEntityEvent accumulatedEntityEvent = accumulationResult.get(0);
         Map<String, Double[]> aggregated_feature_events_values_map = accumulatedEntityEvent.getAggregated_feature_events_values_map();
         Double[] accumulatedEventHoursArray = aggregated_feature_events_values_map.get("normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly");

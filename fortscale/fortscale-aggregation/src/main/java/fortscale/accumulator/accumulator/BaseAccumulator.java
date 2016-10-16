@@ -10,10 +10,10 @@ import static fortscale.accumulator.accumulator.AccumulationParams.TimeFrame.DAI
 /**
  * Created by barak_schuster on 10/9/16.
  */
-public abstract class AccumulatorBase implements Accumulator {
+public abstract class BaseAccumulator implements Accumulator {
     private final Logger logger;
 
-    public AccumulatorBase(Logger logger) {
+    public BaseAccumulator(Logger logger) {
         this.logger = logger;
     }
 
@@ -37,11 +37,8 @@ public abstract class AccumulatorBase implements Accumulator {
         while (fromCursor.isBefore(to)) {
             Instant toCursor;
 
-            if (fromCursor.plus(1, ChronoUnit.DAYS).isAfter(to)) {
-                toCursor = to;
-            } else {
-                toCursor = fromCursor.plus(1, ChronoUnit.DAYS);
-            }
+            toCursor = fromCursor.plus(1, ChronoUnit.DAYS);
+
             accumulateEvents(featureName, fromCursor, toCursor);
 
             fromCursor = toCursor;
