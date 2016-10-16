@@ -27,6 +27,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
@@ -198,6 +199,8 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		if (collectionMetricsMap == null) {
 			collectionMetricsMap = new HashMap<>();
 		}
+	}
+	public List<EntityEvent> findEntityEventsByStartTimeRange(Instant from, Instant to, String featureName) {
 
 		if (!collectionMetricsMap.containsKey(collectionName)) {
 			PersistenceTaskStoreMetrics collectionMetrics =
@@ -211,7 +214,17 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	}
 
 	public List<EntityEvent> findEntityEventsByTimeRange(Instant fromCursor, Instant toCursor, String featureName) {
-		// TODO: 10/9/16
-		return null;
+		return findEntityEvents(featureName, query);
+	}
+
+	/**
+	 * one {@param featureName} my contain several splitted collections in mongoDb (in case of large scale),
+	 * this method executes given {@param query} on all collectionNames
+	 * @return list of {@link EntityEvent} answering the query
+	 */
+	public List<EntityEvent> findEntityEvents(String featureName, Query query) {
+		return getCollectionNames(featureName).stream()
+				.flatMap(collectionName -> mongoTemplate.find(query, EntityEvent.class, collectionName).stream())
+				.collect(Collectors.toList());
 	}
 }

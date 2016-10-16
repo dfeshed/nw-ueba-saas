@@ -4,7 +4,7 @@ import com.github.fakemongo.Fongo;
 import fortscale.accumulator.accumulator.AccumulationParams;
 import fortscale.accumulator.aggregation.config.AggregatedFeatureEventsAccumulatorConfig;
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
-import fortscale.accumulator.translator.AccumulatedFeatureTranslator;
+import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeatureEventTranslator;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -82,7 +82,7 @@ public class AggregatedFeatureEventsAccumulatorTest {
     }
 
     @Autowired
-    AccumulatedFeatureTranslator translator;
+    AccumulatedAggregatedFeatureEventTranslator translator;
     @Autowired
     private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
     @Autowired
@@ -115,7 +115,7 @@ public class AggregatedFeatureEventsAccumulatorTest {
         AccumulationParams params = new AccumulationParams(featureName, AccumulationParams.TimeFrame.DAILY, from, to);
         accumulator.run(params);
 
-        String accumulatedCollectionName = translator.toAcmAggrCollection(featureName);
+        String accumulatedCollectionName = translator.toAcmCollectionName(featureName);
         Assert.assertTrue(mongoTemplate.getCollectionNames().contains(accumulatedCollectionName));
         List<AccumulatedAggregatedFeatureEvent> accumulatedEvents = mongoTemplate.findAll(AccumulatedAggregatedFeatureEvent.class, accumulatedCollectionName);
         Assert.assertEquals(accumulatedEvents.size(), 1);

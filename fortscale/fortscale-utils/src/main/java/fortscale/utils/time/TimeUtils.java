@@ -2,6 +2,8 @@ package fortscale.utils.time;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -71,6 +73,15 @@ public class TimeUtils {
 
     public static boolean isOrdinalHourValid(Integer hour) {
         return hour > HOUR_UPPER_BOUND || hour < HOUR_LOWER_BOUND;
+    }
+
+    /**
+     * converts epoch seconds to the hour of the day,
+     * @param eventStartTimeEpochSeconds epoch time to convert
+     * @return for example 1476599697 (Sun, 16 Oct 2016 06:34:57 GMT) to 6
+     */
+    public static int epochSecondsToHourOfDay(long eventStartTimeEpochSeconds) {
+        return Instant.ofEpochSecond(eventStartTimeEpochSeconds).atZone(ZoneId.of("UTC")).toLocalDateTime().getHour();
     }
 
     private enum DayOfWeek { // TODO exists in JDK 1.8..

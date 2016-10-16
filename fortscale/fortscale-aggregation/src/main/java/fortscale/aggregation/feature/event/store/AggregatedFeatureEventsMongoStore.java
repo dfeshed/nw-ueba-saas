@@ -155,7 +155,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		Query query = createTimeRangeQuery(startTime, endTime)
 				.addCriteria(Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId));
 
-        return getRunQueryOnAllFeatureNameCollections(aggregatedFeatureName, query);
+        return findAggrEvents(aggregatedFeatureName, query);
 	}
 
 	private List<String> getCollectionsNames(String aggregatedFeatureName)
@@ -321,7 +321,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public List<AggrEvent> findAggrEventsByStartTimeRange(Instant from, Instant to, String aggregatedFeatureName) {
 		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(from).lt(to);
 		Query query = new Query(startTimeCriteria);
-		return getRunQueryOnAllFeatureNameCollections(aggregatedFeatureName, query);
+		return findAggrEvents(aggregatedFeatureName, query);
 	}
 
 	/**
@@ -329,7 +329,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	 * this method executes given {@param query} on all collectionNames
      * @return list of {@link AggrEvent} answering the query
      */
-	public List<AggrEvent> getRunQueryOnAllFeatureNameCollections(String aggregatedFeatureName, Query query) {
+	public List<AggrEvent> findAggrEvents(String aggregatedFeatureName, Query query) {
 		return getCollectionsNames(aggregatedFeatureName).stream()
 				.flatMap(collectionName -> mongoTemplate.find(query, AggrEvent.class, collectionName).stream())
 				.collect(Collectors.toList());

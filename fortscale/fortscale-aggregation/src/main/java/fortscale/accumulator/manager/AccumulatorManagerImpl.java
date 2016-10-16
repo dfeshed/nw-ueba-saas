@@ -65,14 +65,14 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         Instant lastAccumulatedEvent = getLastAccumulatedEventTime(feature);
         if (lastAccumulatedEvent != null) {
             if (lastAccumulatedEvent.isAfter(params.getFrom())) {
-                accumulateFrom = lastAccumulatedEvent.plusMillis(1);
+                accumulateFrom = lastAccumulatedEvent.plus(1,ChronoUnit.DAYS);
             } else {
                 accumulateFrom = params.getFrom();
             }
         } else {
             accumulateFrom = params.getFrom();
         }
-        return accumulateFrom;
+        return accumulateFrom.truncatedTo(ChronoUnit.DAYS);
     }
 
     /**

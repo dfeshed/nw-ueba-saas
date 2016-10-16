@@ -2,7 +2,8 @@ package fortscale.accumulator.aggregation.store;
 
 import fortscale.accumulator.aggregation.event.AccumulatedAggregatedFeatureEvent;
 import fortscale.accumulator.aggregation.metrics.AccumulatedAggregatedFeatureEventsStoreMetrics;
-import fortscale.accumulator.translator.AccumulatedFeatureTranslator;
+import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeatureEventTranslator;
+import fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -24,31 +25,30 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
     private static final Logger logger = Logger.getLogger(AccumulatedAggregatedFeatureEventStoreImpl.class);
 
     private final MongoTemplate mongoTemplate;
-    private final AccumulatedFeatureTranslator translator;
+    private final BaseAccumulatedFeatureTranslator translator;
     private final StatsService statsService;
     private Map<String, AccumulatedAggregatedFeatureEventsStoreMetrics> featureMetricsMap;
     private Set<String> existingCollections;
 
     /**
      * C'tor
-     *
-     * @param mongoTemplate
+     *  @param mongoTemplate
      * @param translator
      * @param statsService
      */
-    public AccumulatedAggregatedFeatureEventStoreImpl(MongoTemplate mongoTemplate, AccumulatedFeatureTranslator translator, StatsService statsService) {
+    public AccumulatedAggregatedFeatureEventStoreImpl(MongoTemplate mongoTemplate, AccumulatedAggregatedFeatureEventTranslator translator, StatsService statsService) {
         this.mongoTemplate = mongoTemplate;
         this.translator = translator;
         this.statsService = statsService;
         this.featureMetricsMap = new HashMap<>();
         this.existingCollections = new HashSet<>();
 
-        existingCollections = getACMExistingCollections(mongoTemplate,translator.aggrgatedCollectionNameRegex());
+        existingCollections = getACMExistingCollections(mongoTemplate,translator.getAcmCollectionNameRegex());
     }
 
 
     private String createCollectionIfNotExist(String featureName) {
-        String collectionName = translator.toAcmAggrCollection(featureName);
+        String collectionName = translator.toAcmCollectionName(featureName);
         if (!existingCollections.contains(collectionName)) {
             createCollection(collectionName, featureName);
             existingCollections.add(collectionName);
@@ -92,7 +92,7 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
     public Instant getLastAccumulatedEventStartTime(String featureName) {
         logger.debug("getting last accumulated event for featureName={}",featureName);
 
-        String collectionName = translator.toAcmAggrCollection(featureName);
+        String collectionName = translator.toAcmCollectionName(featureName);
         Query query = new Query();
         Sort sort = new Sort(Sort.Direction.DESC,
                 AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME);
@@ -118,7 +118,7 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
 			Instant startTimeTo) {
 		logger.debug("getting accumulated events for featureName={}", aggregatedFeatureEventConf.getName());
 
-        String collectionName = translator.toAcmAggrCollection(aggregatedFeatureEventConf.getName());
+        String collectionName = translator.toAcmCollectionName(aggregatedFeatureEventConf.getName());
         Query query = new Query()
                 .addCriteria(where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID)
                         .is(contextId))
