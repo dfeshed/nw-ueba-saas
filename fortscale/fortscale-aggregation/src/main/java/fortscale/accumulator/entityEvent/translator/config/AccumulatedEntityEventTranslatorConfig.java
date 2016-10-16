@@ -19,7 +19,7 @@ public class AccumulatedEntityEventTranslatorConfig {
     private EntityEventTranslationService aggregatedFeatureNameTranslationService;
 
     @Bean
-    public AccumulatedEntityEventTranslator accumulatedFeatureTranslator()
+    public AccumulatedEntityEventTranslator accumulatedEntityEventTranslator()
     {
         return new AccumulatedEntityEventTranslator (aggregatedFeatureNameTranslationService);
     }

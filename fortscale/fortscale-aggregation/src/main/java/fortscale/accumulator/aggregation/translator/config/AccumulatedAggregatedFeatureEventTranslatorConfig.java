@@ -16,7 +16,7 @@ public class AccumulatedAggregatedFeatureEventTranslatorConfig {
     private AggregatedFeatureNameTranslationService aggregatedFeatureNameTranslationService;
 
     @Bean
-    public AccumulatedAggregatedFeatureEventTranslator accumulatedFeatureTranslator()
+    public AccumulatedAggregatedFeatureEventTranslator accumulatedAggregatedFeatureEventTranslator()
     {
         return new AccumulatedAggregatedFeatureEventTranslator(aggregatedFeatureNameTranslationService);
     }
