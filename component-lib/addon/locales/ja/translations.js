@@ -92,7 +92,8 @@ export default {
       extension: 'ja_Extension',
       mimeType: 'ja_MIME Type',
       fileSize: 'ja_File Size',
-      hashes: 'ja_Hashes'
+      hashes: 'ja_Hashes',
+      noFiles: 'ja_There are no files available for this event.'
     },
     error: {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.',

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import computed from 'ember-computed-decorators';
+import computed, { empty } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
@@ -53,7 +53,10 @@ const FileReconComponent = Component.extend({
 
       return { ...conf, width };
     });
-  }
+  },
+
+  @empty('files') noFiles: null
+
 });
 
 export default connect(stateToComputed, dispatchToActions)(FileReconComponent);

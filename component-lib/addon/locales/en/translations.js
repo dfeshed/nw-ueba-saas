@@ -100,7 +100,8 @@ export default {
       extension: 'Extension',
       mimeType: 'MIME Type',
       fileSize: 'File Size',
-      hashes: 'Hashes'
+      hashes: 'Hashes',
+      noFiles: 'There are no files available for this event.'
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',

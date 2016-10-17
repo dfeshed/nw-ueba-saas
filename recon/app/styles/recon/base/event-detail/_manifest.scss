@@ -1,2 +1,6 @@
 @import "./packets/_manifest.scss";
 @import "./files/_manifest.scss";
+
+.recon-event-detail-feedback {
+  padding: rsa-whitespace();
+}
