@@ -7,19 +7,19 @@
 
 	<schedule>
 		<job>
-			<name>AggrAccumulator</name>
+			<name>EntityEvents</name>
 			<group>Accumulator</group>
-			<description>Triggers at the end of every day the accumulation of all aggregated events </description>
-			<job-class>fortscale.collection.jobs.accumulator.aggregation.AggrEventAccumulatorJob</job-class>
+			<description>Triggers at the end of every day the accumulation of all entity events </description>
+			<job-class>fortscale.collection.jobs.accumulator.entity.event.EntityEventAccumulatorJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
 		</job>
 
 		<trigger>
 			<cron>
-				<name>daily_aggr_events_accumulator_trigger</name>
+				<name>daily_entity_events_accumulator_trigger</name>
 				<group>Accumulator</group>
-				<job-name>AggrEventAccumulator</job-name>
+				<job-name>EntityEventAccumulator</job-name>
 				<job-group>Accumulator</job-group>
 				<cron-expression>0 0 1 * * ?</cron-expression>
 			</cron>

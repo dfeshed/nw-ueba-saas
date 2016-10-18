@@ -1,16 +1,12 @@
 package fortscale.collection.jobs.accumulator;
 
-import fortscale.accumulator.aggregation.AggregatedFeatureEventsAccumulatorManagerImpl;
-import fortscale.accumulator.entityEvent.EntityEventAccumulatorManagerImpl;
 import fortscale.accumulator.manager.AccumulatorManagerParams;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.utils.logging.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -21,11 +17,8 @@ import java.util.Set;
 /**
  * Created by barak_schuster on 10/6/16.
  */
-public class AccumulatorJob extends FortscaleJob {
-
-    private static final String ACCUMULATE_TYPE_ENTITY_EVENT = "entityEvent";
-    private static final String ACCUMULATE_TYPE_AGGR_EVENT = "aggrEvent";
-    private static Logger logger = Logger.getLogger(AccumulatorJob.class);
+public abstract class BaseAccumulatorJob extends FortscaleJob {
+    private static Logger logger = Logger.getLogger(BaseAccumulatorJob.class);
 
     @Value("${fortscale.accumulator.param.from}")
     private String accumulatorFromParam;
@@ -37,17 +30,8 @@ public class AccumulatorJob extends FortscaleJob {
     private String accumulatorFeatureNamesDelimiter;
     @Value("${fortscale.accumulator.param.from.days.ago}")
     private int accumulatorFromDaysAgo;
-    @Value("${fortscale.accumulator.param.type}")
-    private String accumulatorTypeParam;
 
-    @Autowired
-    private AggregatedFeatureEventsAccumulatorManagerImpl aggregatedFeatureEventsAccumulatorManager;
-
-    @Autowired
-    private EntityEventAccumulatorManagerImpl entityEventAccumulatorManager;
-
-    private AccumulatorManagerParams accumulatorManagerParams;
-    private String eventType;
+    protected AccumulatorManagerParams accumulatorManagerParams;
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -76,11 +60,6 @@ public class AccumulatorJob extends FortscaleJob {
                 accumulatorManagerParams.setFeatures(features);
             }
         }
-        String missingParamsErrMessage = String.format("param %s is missing. possible values: %s,%s",
-                accumulatorTypeParam,ACCUMULATE_TYPE_ENTITY_EVENT,ACCUMULATE_TYPE_AGGR_EVENT);
-        Assert.isTrue(map.containsKey(accumulatorTypeParam), missingParamsErrMessage);
-
-        eventType = jobDataMapExtension.getJobDataMapStringValue(map, accumulatorTypeParam);
     }
 
     @Override
@@ -97,15 +76,7 @@ public class AccumulatorJob extends FortscaleJob {
     protected void runSteps() throws Exception {
         startNewStep("Accumulator Job");
         try {
-            if(eventType.equals(ACCUMULATE_TYPE_ENTITY_EVENT))
-            {
-                entityEventAccumulatorManager.run(accumulatorManagerParams);
-            }
-
-            else if (eventType.equals(ACCUMULATE_TYPE_AGGR_EVENT))
-            {
-                aggregatedFeatureEventsAccumulatorManager.run(accumulatorManagerParams);
-            }
+            runAccumulation();
         }
         catch (Exception e)
         {
@@ -113,5 +84,18 @@ public class AccumulatorJob extends FortscaleJob {
         }
 
         finishStep();
+    }
+
+    /**
+     * executes accumulation via inherited-class specified accumulator
+     */
+    public abstract void runAccumulation();
+
+    /**
+     * Setter used for tests
+     * @param accumulatorManagerParams
+     */
+    public void setAccumulatorManagerParams(AccumulatorManagerParams accumulatorManagerParams) {
+        this.accumulatorManagerParams = accumulatorManagerParams;
     }
 }
