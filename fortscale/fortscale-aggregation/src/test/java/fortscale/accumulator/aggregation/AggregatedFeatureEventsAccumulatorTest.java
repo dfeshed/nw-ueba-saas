@@ -17,11 +17,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -33,6 +35,7 @@ import java.util.Properties;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@ActiveProfiles("test")
 public class AggregatedFeatureEventsAccumulatorTest {
     @Configuration
     @Import({
@@ -41,6 +44,7 @@ public class AggregatedFeatureEventsAccumulatorTest {
     })
     @EnableSpringConfigured
     @EnableAnnotationConfiguration
+    @Profile("test")
     public static class springConfig {
         private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
         @Autowired

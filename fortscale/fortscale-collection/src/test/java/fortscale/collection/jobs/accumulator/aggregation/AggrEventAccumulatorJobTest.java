@@ -8,7 +8,7 @@ import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeature
 import fortscale.accumulator.manager.AccumulatorManagerParams;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
-import fortscale.collection.jobs.accumulator.FortscaleJobMockedSpringConfig;
+import fortscale.collection.jobs.accumulator.FortscaleJobMockedTestSpringConfig;
 import fortscale.collection.jobs.accumulator.aggregation.config.AggrEventAccumulatorJobConfig;
 import fortscale.domain.core.FeatureScore;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -22,11 +22,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -40,8 +40,8 @@ import java.util.*;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@ActiveProfiles("test")
 public class AggrEventAccumulatorJobTest {
-
 
     private static final String FIRST_AGGR_EVENT_CREATION_TIME = "2016-10-01T00:00:00.000Z";
     private static final String FIRST_AGGR_EVENT_START_TIME = "2016-10-01T00:00:00.000Z";
@@ -62,10 +62,9 @@ public class AggrEventAccumulatorJobTest {
     @Import({
             NullStatsServiceConfig.class,
             AggrEventAccumulatorJobConfig.class,
-            FortscaleJobMockedSpringConfig.class
+            FortscaleJobMockedTestSpringConfig.class
     })
-    @EnableSpringConfigured
-    @EnableAnnotationConfiguration
+    @Profile("test")
     public static class springConfig {
         private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
         @Autowired

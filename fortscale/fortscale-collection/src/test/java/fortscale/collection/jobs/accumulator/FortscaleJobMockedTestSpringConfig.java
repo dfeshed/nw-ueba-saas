@@ -7,12 +7,15 @@ import fortscale.monitor.JobProgressReporter;
 import org.mockito.Mockito;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 /**
  * Created by barak_schuster on 10/18/16.
  */
 @Configuration
-public class FortscaleJobMockedSpringConfig {
+@Profile("test")
+public class FortscaleJobMockedTestSpringConfig {
+
     @Bean
     public JobProgressReporter jobProgressReporter()
     {
