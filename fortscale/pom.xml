@@ -77,7 +77,7 @@
 		<logback.version>1.0.13</logback.version>
 		<slf4j.version>1.7.2</slf4j.version>
 		<org.springframework-version>4.2.8.RELEASE</org.springframework-version>
-		<spring.security.core.version>4.0.2.RELEASE</spring.security.core.version>
+		<spring.security.core.version>4.1.0.RELEASE</spring.security.core.version>
 		<spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
 		<spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
@@ -156,11 +156,6 @@
 			<version>${java-lang-config.version}</version>
 			<scope>system</scope>
 			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>${servlet-api.version}</version>
 		</dependency>
 
 		<!-- mockito unit test mocking framework -->
