@@ -87,12 +87,19 @@ public class AggregatedFeatureEventsAccumulator extends BaseAccumulator {
         }
         Collection<AccumulatedAggregatedFeatureEvent> accumulatedEvents =
                 accumulatedAggregatedFeatureEventMap.values();
-        accumulatedAggregatedFeatureEventStore.insert(accumulatedEvents, featureName);
+        if(!accumulatedEvents.isEmpty()) {
+            accumulatedAggregatedFeatureEventStore.insert(accumulatedEvents, featureName);
+        }
     }
 
     @Override
     public Instant getLastAccumulatedEventStartTime(String featureName) {
         return accumulatedAggregatedFeatureEventStore.getLastAccumulatedEventStartTime(featureName);
+    }
+
+    @Override
+    public Instant getLastSourceEventStartTime(String featureName) {
+        return aggregatedFeatureEventsMongoStore.getLastAggrFeatureEventStartTime(featureName);
     }
 
     private void accumulateEvents(List<AggrEvent> aggrEvents, Instant from, Instant to, Instant creationTime,

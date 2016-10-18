@@ -73,12 +73,19 @@ public class EntityEventAccumulator extends BaseAccumulator {
         }
         Collection<AccumulatedEntityEvent> accumulatedEvents =
                 accumulatedEntityEventMap.values();
-        accumulatedEntityEventStore.insert(accumulatedEvents, featureName);
+        if(!accumulatedEvents.isEmpty()) {
+            accumulatedEntityEventStore.insert(accumulatedEvents, featureName);
+        }
     }
 
     @Override
     public Instant getLastAccumulatedEventStartTime(String featureName) {
         return accumulatedEntityEventStore.getLastAccumulatedEventStartTime(featureName);
+    }
+
+    @Override
+    public Instant getLastSourceEventStartTime(String featureName) {
+        return entityEventMongoStore.getLastEntityEventStartTime(featureName);
     }
 
     private void accumulateEvents(List<EntityEvent> events, Instant from, Instant to, Instant creationTime,
