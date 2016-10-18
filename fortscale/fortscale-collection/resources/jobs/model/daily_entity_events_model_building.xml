@@ -27,6 +27,10 @@
 					<key>targetTopic</key>
 					<value>${fortscale.model.build.entityEvents.control.input.topic}</value>
 				</entry>
+				<entry>
+					<key>fortscale.model.build.control.output.topic</key>
+					<value>${fortscale.model.build.control.output.topic}</value>
+				</entry>
 			</job-data-map>
 		</job>
 
