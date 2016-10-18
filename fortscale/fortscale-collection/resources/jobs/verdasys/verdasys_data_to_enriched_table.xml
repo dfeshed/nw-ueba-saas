@@ -8,15 +8,15 @@
     <schedule>
         <job>
             <name>Scoring</name>
-            <group>VERDASYSEX</group>
-            <description>Running VERDASYSEX Enrich</description>
+            <group>VERDASYS</group>
+            <description>Running VERDASYS Enrich</description>
             <job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>
                 <entry>
                     <key>impalaTableName</key>
-                    <value>${impala.data.verdasys_exchange.table.name}</value>
+                    <value>${impala.data.verdasys.table.name}</value>
                 </entry>
                 <entry>
                     <key>epochtimeField</key>
@@ -32,19 +32,19 @@
                 </entry>
                 <entry>
                     <key>impalaTableFields</key>
-                    <value>${impala.data.verdasys_exchange.table.fields}</value>
+                    <value>${impala.data.verdasys.table.fields}</value>
                 </entry>
                 <entry>
                     <key>impalaTablePartitionType</key>
-                    <value>${impala.data.verdasys_exchange.table.partition.type}</value>
+                    <value>${impala.data.verdasys.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTablePartitionType</key>
-                    <value>${impala.enricheddata.verdasys_exchange.table.partition.type}</value>
+                    <value>${impala.enricheddata.verdasys.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTable</key>
-                    <value>${impala.enricheddata.verdasys_exchange.table.name}</value>
+                    <value>${impala.enricheddata.verdasys.table.name}</value>
                 </entry>
                 <entry>
                     <key>throttlingSleep</key>
@@ -52,7 +52,7 @@
                 </entry>
                 <entry>
                     <key>dataSource</key>
-                    <value>verdex</value>
+                    <value>verd</value>
                 </entry>
                 <entry>
                     <key>lastState</key>

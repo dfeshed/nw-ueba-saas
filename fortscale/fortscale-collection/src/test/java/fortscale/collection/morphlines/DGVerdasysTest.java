@@ -34,11 +34,11 @@ public class DGVerdasysTest {
 
 
 		PropertiesResolver propertiesResolver = new PropertiesResolver("/META-INF/fortscale-collection-test.properties");
-		String kafkaMessageFields = propertiesResolver.getProperty("kafka.verdasys_exchange.message.record.fields");
+		String kafkaMessageFields = propertiesResolver.getProperty("kafka.verdasys.message.record.fields");
 
 		List<String> sshMessageOutputFields = ImpalaParser.getTableFieldNames(kafkaMessageFields);
-		String confFile = "resources/conf-files/parseVERDASYSEX.conf";
-		String confEnrichmentFile = "resources/conf-files/enrichment/readVERDASYSEX_enrich.conf";
+		String confFile = "resources/conf-files/parseVERDASYS.conf";
+		String confEnrichmentFile = "resources/conf-files/enrichment/readVERDASYS_enrich.conf";
 		morphlineTester.init(new String[]{confFile, confEnrichmentFile}, sshMessageOutputFields);
 	}
 

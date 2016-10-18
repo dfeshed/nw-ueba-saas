@@ -8,8 +8,8 @@
     <schedule>
         <job>
             <name>ETL</name>
-            <group>VERDASYSEX</group>   <!-- enter here your data source name -->
-            <description>process Verdasys excahne events to etl</description>
+            <group>VERDASYS</group>   <!-- enter here your data source name -->
+            <description>process Verdasys events to etl</description>
             <job-class>fortscale.collection.jobs.event.process.EventProcessJob</job-class> <!-- Important! all generic data sources should have EventProcessJob class! -->
             <durability>true</durability>
             <recover>true</recover>
@@ -17,15 +17,15 @@
             <job-data-map>
                 <entry>
                     <key>filesFilter</key>
-                    <value>VERDASYSEX_\d+.csv$</value> <!-- e.g :fits all files which looks something like this: CRMSF_1424237.csv -->
+                    <value>VERDASYS_\d+.csv$</value> <!-- e.g :fits all files which looks something like this: CRMSF_1424237.csv -->
                 </entry>
                 <entry>
                     <key>outputFields</key>
-                    <value>${impala.data.verdasys_exchange.table.fields}</value> <!-- the fields that would be saved to hfds. defined in fortscale-collection-overriding.properties -->
+                    <value>${impala.data.verdasys.table.fields}</value> <!-- the fields that would be saved to hfds. defined in fortscale-collection-overriding.properties -->
                 </entry>
                 <entry>
                     <key>messageOutputFields</key> <!-- the fields that would be passed to streaming. basically, all the outputFields + data_source and last_state fields. defined in fortscale-collection-overriding.properties  -->
-                    <value>${kafka.verdasys_exchange.message.record.fields}</value>
+                    <value>${kafka.verdasys.message.record.fields}</value>
                 </entry>
                 <entry>
                     <key>timestampField</key> <!-- no editing needed -->
@@ -33,27 +33,27 @@
                 </entry>
                 <entry>
                     <key>outputSeparator</key> <!-- define in fortscale-collection-overriding.properties -->
-                    <value>${impala.data.verdasys_exchange.table.delimiter}</value>
+                    <value>${impala.data.verdasys.table.delimiter}</value>
                 </entry>
                 <entry>
                     <key>morphlineFile</key> <!-- you should create a new one, and define its path in fortscale-collection-overriding.properties -->
-                    <value>${readVerdasysExchange.morphline}</value>
+                    <value>${readVerdasys.morphline}</value>
                 </entry>
                 <entry>
                     <key>morphlineEnrichment</key> <!-- you should create a new one, and define its path in fortscale-collection-overriding.properties -->
-                    <value>${enrichVerdasysExchange.morphline}</value>
+                    <value>${enrichVerdasys.morphline}</value>
                 </entry>
                 <entry>
                     <key>hadoopPath</key>           <!-- define in fortscale-collection-overriding.properties -->
-                    <value>${hdfs.user.data.verdasys_exchange.path}</value>
+                    <value>${hdfs.user.data.verdasys.path}</value>
                 </entry>
                 <entry>
                     <key>hadoopFilename</key> <!-- the file in hdfs that all the ETLed data would be saved -->
-                    <value>${impala.data.verdasys_exchange.table.name}.csv</value>
+                    <value>${impala.data.verdasys.table.name}.csv</value>
                 </entry>
                 <entry>
                     <key>impalaTableName</key>  <!-- define in fortscale-collection-overriding.properties -->
-                    <value>${impala.data.verdasys_exchange.table.name}</value>
+                    <value>${impala.data.verdasys.table.name}</value>
                 </entry>
                 <entry>
                     <key>partitionKeyFields</key>
@@ -65,7 +65,7 @@
                 </entry>
                 <entry>
                     <key>partitionStrategy</key> <!--  monthly, weekly or daily. define in fortscale-collection-overriding.properties -->
-                    <value>${impala.data.verdasys_exchange.table.partition.type}</value>
+                    <value>${impala.data.verdasys.table.partition.type}</value>
                 </entry>
             </job-data-map>
         </job>
