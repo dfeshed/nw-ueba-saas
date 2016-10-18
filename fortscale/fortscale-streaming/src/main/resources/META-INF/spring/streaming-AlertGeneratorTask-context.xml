@@ -143,9 +143,6 @@
     <bean id="singleTriggerAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SingleTriggerAlertCreationSubscriber" scope="prototype" />
 
 
-    <!-- UserTagService-->
-    <bean id="userTagsCacheService" class="fortscale.services.impl.UserTagsCacheServiceImpl" scope="singleton" />
-
     <bean id="ForwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton" />
 
 

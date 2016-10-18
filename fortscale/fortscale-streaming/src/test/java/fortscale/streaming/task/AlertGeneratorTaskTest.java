@@ -66,8 +66,6 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
 
     @Before
     public void setup() throws IOException {
-        //set topic names
-        inputTopic = "user-tag-service-cache-updates";
     }
 
     @After

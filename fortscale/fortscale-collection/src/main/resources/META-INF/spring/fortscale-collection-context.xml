@@ -259,24 +259,7 @@
 		<constructor-arg name="clazz" value="java.util.ArrayList" />
 	</bean>
 
-	<!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
-	<bean id="userTagsCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
-		<constructor-arg name="innerCache">
-			<bean class="fortscale.services.cache.MemoryBasedCache">
-				<constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-				<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
-				<constructor-arg name="clazz" value="java.lang.String" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="topicWriter">
-			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
-				<constructor-arg name="topic" value="${user-tag.service.cache.updates.topic}" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="clazz" value="java.util.Set" />
-	</bean>
-
-    <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl"/>
+	   <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl"/>
 
 	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 
