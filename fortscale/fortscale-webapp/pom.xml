@@ -254,7 +254,12 @@
 			<artifactId>opencsv</artifactId>
 			<version>${open-csv.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+			<scope>test</scope>
+		</dependency>
 
 		<!--  javax persistence needed by aspectj compile time depenceny injection with spring [SPR-6819] -->
 		<dependency>
