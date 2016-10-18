@@ -207,4 +207,21 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 				.flatMap(collectionName -> mongoTemplate.find(query, AggrEvent.class, collectionName).stream())
 				.collect(Collectors.toList());
 	}
+
+	public Instant getLastAggrFeatureEventStartTime(String featureName) {
+
+		Query query = new Query();
+		Sort sort = new Sort(Sort.Direction.DESC,
+				AggrEvent.EVENT_FIELD_START_TIME_UNIX);
+		query.with(sort);
+		query.limit(1);
+		List<AggrEvent> queryResult = findAggrEvents(featureName, query);
+
+		if(!queryResult.isEmpty())
+		{
+			long maxStartDate = queryResult.stream().max(Comparator.comparingLong(AggrEvent::getStartTimeUnix)).get().getStartTimeUnix();
+			return Instant.ofEpochSecond(maxStartDate);
+		}
+		return null;
+	}
 }

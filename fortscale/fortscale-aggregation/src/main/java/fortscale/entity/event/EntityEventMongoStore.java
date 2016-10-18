@@ -179,4 +179,21 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 				.flatMap(collectionName -> mongoTemplate.find(query, EntityEvent.class, collectionName).stream())
 				.collect(Collectors.toList());
 	}
+
+	public Instant getLastEntityEventStartTime(String featureName) {
+		Query query = new Query();
+		Sort sort = new Sort(Sort.Direction.DESC,
+				EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME);
+		query.with(sort);
+		query.limit(1);
+		List<EntityEvent> queryResult = findEntityEvents(featureName, query);
+
+		if(!queryResult.isEmpty())
+		{
+			long maxStartDate = queryResult.stream().max(Comparator.comparingLong(EntityEvent::getStart_time_unix)).get().getStart_time_unix();
+			return Instant.ofEpochSecond(maxStartDate);
+		}
+		return null;
+
+	}
 }
