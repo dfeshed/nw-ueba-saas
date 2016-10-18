@@ -41,7 +41,8 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         for (String feature : features) {
             Instant accumulateFrom = calcFromInstant(params, feature);
             Instant accumulateTo = getToInstant(params, feature);
-            if (accumulateTo == null) {
+            if(accumulateTo==null)
+            {
                 logger.info("found 0 events to accumulate for feature={}", feature);
                 return;
             }

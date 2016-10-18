@@ -8,6 +8,7 @@ import fortscale.accumulator.aggregation.translator.AccumulatedAggregatedFeature
 import fortscale.accumulator.manager.AccumulatorManagerParams;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
+import fortscale.collection.jobs.accumulator.FortscaleJobMockedSpringConfig;
 import fortscale.collection.jobs.accumulator.aggregation.config.AggrEventAccumulatorJobConfig;
 import fortscale.domain.core.FeatureScore;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -60,7 +61,8 @@ public class AggrEventAccumulatorJobTest {
     @Configuration
     @Import({
             NullStatsServiceConfig.class,
-            AggrEventAccumulatorJobConfig.class
+            AggrEventAccumulatorJobConfig.class,
+            FortscaleJobMockedSpringConfig.class
     })
     @EnableSpringConfigured
     @EnableAnnotationConfiguration
@@ -80,6 +82,10 @@ public class AggrEventAccumulatorJobTest {
             return new MongoTemplate(mongoDbFactory());
         }
 
+        @Bean
+        public AggrEventAccumulatorJob aggrEventAccumulatorJob() {
+            return new AggrEventAccumulatorJob();
+        }
 
         @Bean
         public static TestPropertiesPlaceholderConfigurer mainProcessPropertiesConfigurer() {
@@ -99,9 +105,14 @@ public class AggrEventAccumulatorJobTest {
             properties.put("fortscale.aggregation.feature.event.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/aggregation_events/overriding/*.json");
             properties.put("fortscale.aggregation.feature.event.conf.json.additional.files.path", "file:home/cloudera/fortscale/config/asl/aggregation_events/additional/*.json");
 
+            properties.put("fortscale.accumulator.param.from.days.ago", 30);
+            properties.put("fortscale.accumulator.param.from", "from");
+            properties.put("fortscale.accumulator.param.to", "to");
+            properties.put("fortscale.accumulator.param.featureNames", "featureNames");
+            properties.put("fortscale.accumulator.param.featureNames.delimiter", ",");
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
-
     }
 
     @Autowired
@@ -115,12 +126,11 @@ public class AggrEventAccumulatorJobTest {
     @Autowired
     private AggregatedFeatureEventsAccumulatorManagerImpl aggregatedFeatureEventsAccumulatorManager;
 
+    @Autowired
     private AggrEventAccumulatorJob job;
 
     @Before
     public void setup() {
-        job = new AggrEventAccumulatorJob();
-        job.setAggregatedFeatureEventsAccumulatorManager(aggregatedFeatureEventsAccumulatorManager);
 
         fillDb();
     }
@@ -158,8 +168,7 @@ public class AggrEventAccumulatorJobTest {
     }
 
     @Test
-    public void shouldAccumulateNothingForNoneExistingFeature()
-    {
+    public void shouldAccumulateNothingForNoneExistingFeature() {
         AccumulatorManagerParams accumulatorManagerParams = new AccumulatorManagerParams();
         Set<String> features = new HashSet<>();
         String nonExistingFeatureName = "nonExistingFeature";
@@ -199,8 +208,8 @@ public class AggrEventAccumulatorJobTest {
         accumulatedEvents =
                 mongoTemplate.findAll(AccumulatedAggregatedFeatureEvent.class, acmCollectionName);
         expectedAmountOfAccumulatedEvents =
-                Duration.between(ACCUMULATION_FROM_DATE_INSTANT,LAST_AGGR_EVENT_START_TIME_INSTANT).toDays();
-        validateAccumulatedEvents(accumulatedEvents,expectedAmountOfAccumulatedEvents);
+                Duration.between(ACCUMULATION_FROM_DATE_INSTANT, LAST_AGGR_EVENT_START_TIME_INSTANT).toDays();
+        validateAccumulatedEvents(accumulatedEvents, expectedAmountOfAccumulatedEvents);
     }
 
     private void validateAccumulatedEvents(List<AccumulatedAggregatedFeatureEvent> accumulatedEvents, long expectedAmountOfAccumulatedEvents) {

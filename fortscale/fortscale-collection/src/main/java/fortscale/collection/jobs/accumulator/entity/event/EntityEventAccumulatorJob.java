@@ -17,4 +17,5 @@ public class EntityEventAccumulatorJob extends BaseAccumulatorJob {
     public void runAccumulation() {
         entityEventAccumulatorManager.run(accumulatorManagerParams);
     }
+
 }

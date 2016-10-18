@@ -17,7 +17,4 @@ public class AggrEventAccumulatorJob extends BaseAccumulatorJob {
         aggregatedFeatureEventsAccumulatorManager.run(accumulatorManagerParams);
     }
 
-    public void setAggregatedFeatureEventsAccumulatorManager(AggregatedFeatureEventsAccumulatorManagerImpl aggregatedFeatureEventsAccumulatorManager) {
-        this.aggregatedFeatureEventsAccumulatorManager = aggregatedFeatureEventsAccumulatorManager;
-    }
 }
