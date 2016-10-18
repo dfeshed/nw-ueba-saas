@@ -267,6 +267,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'priorityDropDown': '.rsa-incident-detail-header__priority .rsa-icon',
       'prtySelOpt': '.rsa-incident-detail-header__priority select option',
       'alertsGridIcon': '.main .rsa-icon-arrow-right-12',
+      'alertsGridContentElm': '.main_row',
       'riskScoreElm': '.rsa-riskscore .score',
       'dateTime': '.rsa-respond-detail-grid .rsa-createddate .datetime',
       'eventsElm': '.rsa-alerts-events',
