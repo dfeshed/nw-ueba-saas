@@ -83,6 +83,9 @@ public class EntityEventAccumulatorJobTest {
             properties.put("fortscale.accumulator.param.featureNames", "featureNames");
             properties.put("fortscale.accumulator.param.featureNames.delimiter", ",");
 
+            properties.put("fortscale.accumulator.entity.event.retention.daily","P3M");
+            properties.put("fortscale.accumulator.entity.event.retention.hourly","P1M");
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
 

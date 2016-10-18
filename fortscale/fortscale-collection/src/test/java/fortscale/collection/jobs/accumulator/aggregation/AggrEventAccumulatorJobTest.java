@@ -110,6 +110,9 @@ public class AggrEventAccumulatorJobTest {
             properties.put("fortscale.accumulator.param.featureNames", "featureNames");
             properties.put("fortscale.accumulator.param.featureNames.delimiter", ",");
 
+            properties.put("fortscale.accumulator.aggr.feature.event.retention.daily","P3M");
+            properties.put("fortscale.accumulator.aggr.feature.event.retention.hourly","P1M");
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
     }

@@ -80,6 +80,9 @@ public class AggregatedFeatureEventsAccumulatorTest {
             properties.put("fortscale.aggregation.feature.event.conf.json.overriding.files.path", "file:home/cloudera/fortscale/config/asl/aggregation_events/overriding/*.json");
             properties.put("fortscale.aggregation.feature.event.conf.json.additional.files.path", "file:home/cloudera/fortscale/config/asl/aggregation_events/additional/*.json");
 
+            properties.put("fortscale.accumulator.aggr.feature.event.retention.daily","P3M");
+            properties.put("fortscale.accumulator.aggr.feature.event.retention.hourly","P1M");
+
             return new TestPropertiesPlaceholderConfigurer(properties);
         }
 

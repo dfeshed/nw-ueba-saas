@@ -21,6 +21,7 @@ public class AccumulatedAggregatedFeatureEvent {
     public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME = "start_time";
     public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME = "end_time";
     public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID = "contextId";
+    public static final String ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CREATION_TIME = "creationTime";
 
     @Id
     private String id;

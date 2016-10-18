@@ -8,9 +8,9 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class BaseAccumulatedFeatureTranslator {
 
-    private static final String DAILY_COLLECTION_SUFFIX = "daily";
+    public static final String DAILY_COLLECTION_SUFFIX = "daily";
     private static final String DAILY_COLLECTION_REGEX = String.format("%s$", DAILY_COLLECTION_SUFFIX);
-    private static final String HOURLY_COLLECTION_SUFFIX = "hourly";
+    public static final String HOURLY_COLLECTION_SUFFIX = "hourly";
     private static final String HOURLY_COLLECTION_REGEX = String.format("%s$", HOURLY_COLLECTION_SUFFIX);
     private static final String NAME_DELIMITER = "_";
     public static final String ACCUMULATED_COLLECTION_SUFFIX = String.format("%sacm", NAME_DELIMITER);
