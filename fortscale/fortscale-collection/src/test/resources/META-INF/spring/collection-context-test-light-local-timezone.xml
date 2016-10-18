@@ -29,6 +29,7 @@
 
     <!-- Hadoop mocks -->
     <mockito:mock id="hadoopFs" class="org.apache.hadoop.fs.FileSystem"/>
+    <mockito:mock id="userActivitySourceMachineHandler" class="fortscale.collection.jobs.activity.UserActivitySourceMachineHandler" />
 
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>

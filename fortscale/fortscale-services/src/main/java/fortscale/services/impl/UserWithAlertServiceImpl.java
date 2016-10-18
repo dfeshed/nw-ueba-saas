@@ -40,15 +40,16 @@ import java.util.Set;
 	@Qualifier("filterToUsersCache")
 	private CacheHandler<UserRestFilter, List<User>> filterToUsersCache;
 
-	List<String> fieldsRequired;
+	private List<String> fieldsRequired;
 
 	public UserWithAlertServiceImpl() {
 		fieldsRequired = new ArrayList<>();
 		fieldsRequired.add(User.ID_FIELD);
-		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.firstnameField));
-		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.lastnameField));
-		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.positionField));
-		fieldsRequired.add(String.format("%s.%s", User.adInfoField, UserAdInfo.departmentField));
+		fieldsRequired.add(User.getAdInfoField(UserAdInfo.firstnameField));
+		fieldsRequired.add(User.getAdInfoField(UserAdInfo.lastnameField));
+		fieldsRequired.add(User.getAdInfoField(UserAdInfo.positionField));
+		fieldsRequired.add(User.getAdInfoField(UserAdInfo.departmentField));
+		fieldsRequired.add(User.getAdInfoField(UserAdInfo.objectGUIDField));
 		fieldsRequired.add(User.usernameField);
 		fieldsRequired.add(User.followedField);
 		fieldsRequired.add(User.displayNameField);

@@ -1229,7 +1229,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public List<String> getDistinctValuesByFieldName(String fieldName) {
+	public List getDistinctValuesByFieldName(String fieldName) {
 		return userRepository.getDistinctFieldValues(fieldName);
 	}
 
@@ -1246,4 +1246,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		serviceMetrics = new UserServiceMetrics(statsService);
 	}
 
+
+	@Override
+	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
+		userRepository.updateSourceMachineCount(userId, sourceMachineCount);
+	}
 }
+

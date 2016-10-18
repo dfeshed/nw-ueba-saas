@@ -9,6 +9,7 @@ import fortscale.utils.test.category.HadoopTestCategory;
 import fortscale.utils.test.category.IntegrationTestCategory;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.TaskContext;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -19,6 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/streaming-raw-events-scoring-context.xml"})
 @Category(HadoopTestCategory.class)
