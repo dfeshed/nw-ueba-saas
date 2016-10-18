@@ -69,6 +69,9 @@ public class EntityEventAccumulatorTest {
             properties.put("fortscale.entity.event.global.params.json.file.path", "classpath:config/asl/entity_events_global_params.json");
             properties.put("fortscale.entity.event.global.params.conf.json.overriding.files.path", "file:home/cloudera/config/asl/entity_events/overriding/global_params*.json");
 
+            properties.put("fortscale.accumulator.entity.event.retention.daily","P3M");
+            properties.put("fortscale.accumulator.entity.event.retention.hourly","P1M");
+
             properties.put("fortscale.scored.entity.event.store.page.size",1);
 
             return new TestPropertiesPlaceholderConfigurer(properties);
