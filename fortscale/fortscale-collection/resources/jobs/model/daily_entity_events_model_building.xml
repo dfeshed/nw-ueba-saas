@@ -36,6 +36,7 @@
 					<key>${fortscale.model.build.message.field.select.high.score.contexts}</key>
 					<value>true</value>
 				</entry>
+
 			</job-data-map>
 		</job>
 
