@@ -3,7 +3,7 @@ package fortscale.collection.jobs.accumulator.entity.event;
 import com.github.fakemongo.Fongo;
 import fortscale.accumulator.entityEvent.EntityEventAccumulatorManagerImpl;
 import fortscale.accumulator.manager.AccumulatorManagerParams;
-import fortscale.collection.jobs.accumulator.FortscaleJobMockedSpringConfig;
+import fortscale.collection.jobs.accumulator.FortscaleJobMockedTestSpringConfig;
 import fortscale.collection.jobs.accumulator.entity.event.config.EntityEventAccumulatorJobConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -29,6 +29,7 @@ import java.util.Properties;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@ActiveProfiles("test")
 public class EntityEventAccumulatorJobTest {
 
     private static final String ACCUMULATION_FROM_DATE = "2016-10-01T00:00:00.000Z";
@@ -40,10 +41,9 @@ public class EntityEventAccumulatorJobTest {
     @Import({
             NullStatsServiceConfig.class,
             EntityEventAccumulatorJobConfig.class,
-            FortscaleJobMockedSpringConfig.class
+            FortscaleJobMockedTestSpringConfig.class
     })
-    @EnableSpringConfigured
-    @EnableAnnotationConfiguration
+    @Profile("test")
     public static class springConfig {
         private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
 
