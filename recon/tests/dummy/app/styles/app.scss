@@ -12,11 +12,6 @@ html, body {
 body {
   color: rsa-color(gray, light);
   margin: 0;
-  > div {
-    display: flex;
-    height: 100%;
-    flex-direction: column-reverse;
-  }
 }
 
 page {
