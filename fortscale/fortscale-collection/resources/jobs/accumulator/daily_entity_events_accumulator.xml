@@ -7,7 +7,7 @@
 
 	<schedule>
 		<job>
-			<name>EntityEvents</name>
+			<name>EntityEvent</name>
 			<group>Accumulator</group>
 			<description>Triggers at the end of every day the accumulation of all entity events </description>
 			<job-class>fortscale.collection.jobs.accumulator.entity.event.EntityEventAccumulatorJob</job-class>
@@ -19,7 +19,7 @@
 			<cron>
 				<name>daily_entity_events_accumulator_trigger</name>
 				<group>Accumulator</group>
-				<job-name>EntityEventAccumulator</job-name>
+				<job-name>EntityEvent</job-name>
 				<job-group>Accumulator</job-group>
 				<cron-expression>0 0 1 * * ?</cron-expression>
 			</cron>

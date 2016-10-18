@@ -97,7 +97,6 @@ public class EntityEventAccumulatorTest {
         String entity_event_type = entityEvent.getEntity_event_type();
         Instant firstStartTime = Instant.ofEpochSecond(entityEvent.getStart_time_unix());
         Instant lastStartTime = Instant.ofEpochSecond(entityEvent3.getAggregated_feature_events().get(0).getAsNumber(AggrEvent.EVENT_FIELD_START_TIME_UNIX).longValue());
-        List<EntityEvent> b = entityEventMongoStore.findEntityEventsByStartTimeRange(firstStartTime, lastStartTime, entity_event_type);
         AccumulationParams accumulationParams = new AccumulationParams(entity_event_type, AccumulationParams.TimeFrame.DAILY, firstStartTime, lastStartTime);
         accumulator.run(accumulationParams);
 
