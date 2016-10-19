@@ -89,6 +89,10 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         } else {
             accumulateFrom = params.getFrom();
         }
+        if(accumulateFrom == null)
+        {
+            accumulateFrom = accumulator.getDefaultFromPeriod(feature);
+        }
         return accumulateFrom.truncatedTo(ChronoUnit.DAYS);
     }
 

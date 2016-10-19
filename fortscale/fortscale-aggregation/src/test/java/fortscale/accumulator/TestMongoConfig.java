@@ -1,4 +1,4 @@
-package fortscale.accumulator.entityEvent;
+package fortscale.accumulator;
 
 import com.github.fakemongo.Fongo;
 import com.mongodb.Mongo;

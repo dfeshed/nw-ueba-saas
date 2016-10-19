@@ -1,5 +1,6 @@
 package fortscale.accumulator.entityEvent;
 
+import fortscale.accumulator.TestMongoConfig;
 import fortscale.accumulator.accumulator.AccumulationParams;
 import fortscale.accumulator.entityEvent.config.EntityEventAccumulatorConfig;
 import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
@@ -71,6 +72,8 @@ public class EntityEventAccumulatorTest {
 
             properties.put("fortscale.accumulator.entity.event.retention.daily","P3M");
             properties.put("fortscale.accumulator.entity.event.retention.hourly","P1M");
+            properties.put("fortscale.accumulator.entity.event.from.period.ago.daily","P3M");
+            properties.put("fortscale.accumulator.entity.event.from.period.ago.hourly","P1M");
 
             properties.put("fortscale.scored.entity.event.store.page.size",1);
 

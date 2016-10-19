@@ -7,9 +7,12 @@ import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.entity.event.config.EntityEventMongoStoreConfig;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+
+import java.time.Period;
 
 /**
  * Created by barak_schuster on 10/9/16.
@@ -24,10 +27,15 @@ public class EntityEventAccumulatorConfig {
     private AccumulatedEntityEventStore accumulatedEntityEventStore;
     @Autowired
     private StatsService statsService;
+    @Value("#{ T(java.time.Period).parse('${fortscale.accumulator.entity.event.from.period.ago.daily}')}")
+    private Period defaultEntityEventFromPeriodDaily;
+    @Value("#{ T(java.time.Period).parse('${fortscale.accumulator.entity.event.from.period.ago.hourly}')}")
+    private Period defaultEntityEventFromPeriodHourly;
 
     @Bean
     public EntityEventAccumulator entityEventAccumulator()
     {
-        return new EntityEventAccumulator(entityEventMongoStore,accumulatedEntityEventStore,statsService);
+        return new EntityEventAccumulator(entityEventMongoStore,accumulatedEntityEventStore,statsService,
+                defaultEntityEventFromPeriodDaily, defaultEntityEventFromPeriodHourly);
     }
 }

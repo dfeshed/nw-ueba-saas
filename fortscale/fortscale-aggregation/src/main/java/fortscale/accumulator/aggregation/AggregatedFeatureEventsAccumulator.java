@@ -11,6 +11,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
 import java.time.Instant;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,15 +33,17 @@ public class AggregatedFeatureEventsAccumulator extends BaseAccumulator {
 
     /**
      * C'tor
-     *
      * @param aggregatedFeatureEventsMongoStore
      * @param accumulatedAggregatedFeatureEventStore
      * @param statsService
+     * @param defaultFromPeriodDaily if accumulation is ran without from params, daily accumulation start from now-this period
+     * @param defaultFromPeriodHourly if accumulation is ran without from params, hourly accumulation start from now-this period
      */
     public AggregatedFeatureEventsAccumulator(AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore,
                                               AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore,
-                                              StatsService statsService) {
-        super(logger);
+                                              StatsService statsService, Period defaultFromPeriodDaily,
+                                              Period defaultFromPeriodHourly) {
+        super(logger,defaultFromPeriodDaily , defaultFromPeriodHourly);
         this.aggregatedFeatureEventsMongoStore = aggregatedFeatureEventsMongoStore;
         this.accumulatedAggregatedFeatureEventStore = accumulatedAggregatedFeatureEventStore;
         this.statsService = statsService;

@@ -13,6 +13,7 @@ import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 
 import java.time.Instant;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,10 +35,19 @@ public class EntityEventAccumulator extends BaseAccumulator {
     private final StatsService statsService;
     private Map<String, EntityEventAccumulatorMetrics> metricsMap;
 
+    /**
+     * C'tor
+     * @param entityEventMongoStore
+     * @param accumulatedEntityEventStore
+     * @param statsService
+     * @param defaultFromPeriodDaily if accumulation is ran without from params, daily accumulation start from now-this period
+     * @param defaultFromPeriodHourly if accumulation is ran without from params, hourly accumulation start from now-this period
+     */
     public EntityEventAccumulator(EntityEventMongoStore entityEventMongoStore,
                                   AccumulatedEntityEventStore accumulatedEntityEventStore,
-                                  StatsService statsService) {
-        super(logger);
+                                  StatsService statsService, Period defaultFromPeriodDaily,
+                                  Period defaultFromPeriodHourly) {
+        super(logger, defaultFromPeriodDaily, defaultFromPeriodHourly);
         this.entityEventMongoStore = entityEventMongoStore;
         this.accumulatedEntityEventStore = accumulatedEntityEventStore;
         this.statsService = statsService;
