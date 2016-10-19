@@ -1,0 +1,1199 @@
+{
+  "id": 2,
+  "title": "Collection - Accumulator aggregated feature events",
+  "originalTitle": "Collection - Accumulator aggregated feature events",
+  "tags": [
+    "Collection"
+  ],
+  "style": "dark",
+  "timezone": "utc",
+  "editable": true,
+  "hideControls": false,
+  "sharedCrosshair": true,
+  "rows": [
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 1,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_feature",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "feature"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "accumulator.aggregated-feature-events.accumulator",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "fromTime"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "feature",
+                  "operator": "=~",
+                  "value": "/^$Feature$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "From - logical time",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 2,
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": false,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_feature",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "feature"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "accumulator.aggregated-feature-events.accumulator",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "toTime"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "feature",
+                  "operator": "=~",
+                  "value": "/^$Feature$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "To - logical time",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "cumulative"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "none",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": true,
+      "title": "Time"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_feature",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "feature"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "accumulator.aggregated-feature-events.store",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "insert"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "feature",
+                  "operator": "=~",
+                  "value": "/^$Feature$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Store - Writes",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 5,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_feature",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "feature"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "accumulator.aggregated-feature-events.store",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "insertFailure"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "feature",
+                  "operator": "=~",
+                  "value": "/^$Feature$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Store - Write failures",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": true,
+      "title": "Writes"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 4,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_feature",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "feature"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "accumulator.aggregated-feature-events.store",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "retrieveCalls"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "feature",
+                  "operator": "=~",
+                  "value": "/^$Feature$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Store - Reads",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "rps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        },
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 6,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_feature",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "feature"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "accumulator.aggregated-feature-events.store",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "retrievedObjects"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "feature",
+                  "operator": "=~",
+                  "value": "/^$Feature$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "Store - Objects read",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "showTitle": true,
+      "title": "Reads"
+    }
+  ],
+  "time": {
+    "from": "now-24h",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "5s",
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ],
+    "time_options": [
+      "5m",
+      "15m",
+      "1h",
+      "6h",
+      "12h",
+      "24h",
+      "2d",
+      "7d",
+      "30d"
+    ]
+  },
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "tags": [],
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "Feature",
+        "multi": true,
+        "name": "Feature",
+        "options": [
+          {
+            "text": "All",
+            "value": "$__all",
+            "selected": true
+          },
+          {
+            "text": "distinct_number_of_countries_vpn_daily",
+            "value": "distinct_number_of_countries_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_countries_vpn_hourly",
+            "value": "distinct_number_of_countries_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_db_objects_oracle_daily",
+            "value": "distinct_number_of_db_objects_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_db_objects_oracle_hourly",
+            "value": "distinct_number_of_db_objects_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_events_prnlog_hourly",
+            "value": "distinct_number_of_events_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_file_size_bytes_prnlog_daily",
+            "value": "distinct_number_of_file_size_bytes_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_file_size_bytes_prnlog_hourly",
+            "value": "distinct_number_of_file_size_bytes_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily",
+            "value": "distinct_number_of_normalized_dst_machine_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_oracle_daily",
+            "value": "distinct_number_of_normalized_dst_machine_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_oracle_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_dst_machine_ssh_hourly",
+            "value": "distinct_number_of_normalized_dst_machine_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
+            "value": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ntlm_daily",
+            "value": "distinct_number_of_normalized_src_machine_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_oracle_daily",
+            "value": "distinct_number_of_normalized_src_machine_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_prnlog_hourly",
+            "value": "distinct_number_of_normalized_src_machine_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_ssh_daily",
+            "value": "distinct_number_of_normalized_src_machine_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_normalized_src_machine_vpn_hourly",
+            "value": "distinct_number_of_normalized_src_machine_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "distinct_number_of_total_pages_prnlog_daily",
+            "value": "distinct_number_of_total_pages_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_auth_method_events_ssh_daily",
+            "value": "highest_score_over_auth_method_events_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_crmsf_daily",
+            "value": "highest_score_over_date_time_events_crmsf_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_crmsf_hourly",
+            "value": "highest_score_over_date_time_events_crmsf_hourly",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_gwame_daily",
+            "value": "highest_score_over_date_time_events_gwame_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_kerberos_logins_daily",
+            "value": "highest_score_over_date_time_events_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_kerberos_logins_hourly",
+            "value": "highest_score_over_date_time_events_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_kerberos_tgt_daily",
+            "value": "highest_score_over_date_time_events_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_ntlm_daily",
+            "value": "highest_score_over_date_time_events_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_oracle_daily",
+            "value": "highest_score_over_date_time_events_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_ssh_hourly",
+            "value": "highest_score_over_date_time_events_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_vpn_daily",
+            "value": "highest_score_over_date_time_events_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_wame_daily",
+            "value": "highest_score_over_date_time_events_wame_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_score_over_date_time_events_wame_hourly",
+            "value": "highest_score_over_date_time_events_wame_hourly",
+            "selected": false
+          },
+          {
+            "text": "highest_scores_over_failure_code_kerberos_tgt_hourly",
+            "value": "highest_scores_over_failure_code_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "highest_scores_over_failure_code_ntlm_daily",
+            "value": "highest_scores_over_failure_code_ntlm_daily",
+            "selected": false
+          },
+          {
+            "text": "highest_scores_over_failure_code_ntlm_hourly",
+            "value": "highest_scores_over_failure_code_ntlm_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_gwame_daily",
+            "value": "number_of_events_gwame_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_gwame_hourly",
+            "value": "number_of_events_gwame_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_events_wame_daily",
+            "value": "number_of_events_wame_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_crmsf_daily",
+            "value": "number_of_failed_crmsf_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_logins_hourly",
+            "value": "number_of_failed_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_tgt_daily",
+            "value": "number_of_failed_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_kerberos_tgt_hourly",
+            "value": "number_of_failed_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_oracle_hourly",
+            "value": "number_of_failed_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ssh_daily",
+            "value": "number_of_failed_ssh_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_failed_ssh_events_hourly",
+            "value": "number_of_failed_ssh_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_crmsf_events_daily",
+            "value": "number_of_successful_crmsf_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_crmsf_events_hourly",
+            "value": "number_of_successful_crmsf_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_logins_daily",
+            "value": "number_of_successful_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_logins_hourly",
+            "value": "number_of_successful_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_kerberos_tgt_events_hourly",
+            "value": "number_of_successful_kerberos_tgt_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_oracle_events_daily",
+            "value": "number_of_successful_oracle_events_daily",
+            "selected": false
+          },
+          {
+            "text": "number_of_successful_oracle_events_hourly",
+            "value": "number_of_successful_oracle_events_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_file_size_prnlog_daily",
+            "value": "sum_of_file_size_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_file_size_prnlog_hourly",
+            "value": "sum_of_file_size_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_action_type_oracle_daily",
+            "value": "sum_of_highest_scores_over_action_type_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_action_type_oracle_hourly",
+            "value": "sum_of_highest_scores_over_action_type_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_country_vpn_daily",
+            "value": "sum_of_highest_scores_over_country_vpn_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_country_vpn_hourly",
+            "value": "sum_of_highest_scores_over_country_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_failure_code_kerberos_logins_hourly",
+            "value": "sum_of_highest_scores_over_failure_code_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_dst_machine_kerberos_logins_hourly",
+            "value": "sum_of_highest_scores_over_normalized_dst_machine_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_dst_machine_oracle_hourly",
+            "value": "sum_of_highest_scores_over_normalized_dst_machine_oracle_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_dst_machine_ssh_hourly",
+            "value": "sum_of_highest_scores_over_normalized_dst_machine_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_daily",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_hourly",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_ntlm_hourly",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_ntlm_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_oracle_daily",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_prnlog_daily",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_ssh_hourly",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_ssh_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_normalized_src_machine_vpn_hourly",
+            "value": "sum_of_highest_scores_over_normalized_src_machine_vpn_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_number_of_events_prnlog_daily",
+            "value": "sum_of_highest_scores_over_number_of_events_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_target_machine_prnlog_daily",
+            "value": "sum_of_highest_scores_over_target_machine_prnlog_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_over_target_machine_prnlog_hourly",
+            "value": "sum_of_highest_scores_over_target_machine_prnlog_hourly",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_per_action_type_wame_daily",
+            "value": "sum_of_highest_scores_per_action_type_wame_daily",
+            "selected": false
+          },
+          {
+            "text": "sum_of_highest_scores_per_action_type_wame_hourly",
+            "value": "sum_of_highest_scores_per_action_type_wame_hourly",
+            "selected": false
+          }
+        ],
+        "query": "SHOW TAG VALUES FROM \"accumulator.aggregated-feature-events.accumulator\" WITH KEY = \"feature\"",
+        "refresh": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "1m",
+  "schemaVersion": 12,
+  "version": 2,
+  "links": []
+}
