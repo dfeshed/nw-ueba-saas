@@ -259,7 +259,7 @@
 		<constructor-arg name="clazz" value="java.util.ArrayList" />
 	</bean>
 
-    <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl"/>
+    <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl" scope="prototype"/>/>
 
 	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 
