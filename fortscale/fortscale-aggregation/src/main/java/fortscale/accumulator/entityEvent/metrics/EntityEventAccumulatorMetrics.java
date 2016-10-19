@@ -11,7 +11,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 /**
  * Created by barak_schuster on 10/9/16.
  */
-@StatsMetricsGroupParams(name = "accumulator.aggregated-feature-events.accumulator")
+@StatsMetricsGroupParams(name = "accumulator.entity-events.accumulator")
 public class EntityEventAccumulatorMetrics extends StatsMetricsGroup {
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
