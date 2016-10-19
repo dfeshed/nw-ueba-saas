@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_FEATURE_SUFFIX;
+import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_FEATURE_SUFFIX;
 import static fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService.buildFullAggregatedFeatureEventName;
 import static fortscale.utils.time.TimeUtils.epochSecondsToHourOfDay;
 
@@ -30,6 +32,7 @@ import static fortscale.utils.time.TimeUtils.epochSecondsToHourOfDay;
 public class EntityEventAccumulator extends BaseAccumulator {
     private static final Logger logger = Logger.getLogger(EntityEventAccumulator.class);
     private static final int HOURS_IN_DAY = 24;
+    private static final int DAYS_IN_A_DAY = 1;
     private final EntityEventMongoStore entityEventMongoStore;
     private final AccumulatedEntityEventStore accumulatedEntityEventStore;
     private final StatsService statsService;
@@ -128,7 +131,19 @@ public class EntityEventAccumulator extends BaseAccumulator {
                 Double[] hourToScoreArray = aggregatedFeatureEventsValuesMap.get(fullAggregatedFeatureEventName);
                 if (hourToScoreArray == null)
                 {
-                    hourToScoreArray = new Double[HOURS_IN_DAY];
+                    if(featureName.endsWith(DAILY_FEATURE_SUFFIX))
+                    {
+                        hourToScoreArray = new Double[DAYS_IN_A_DAY];
+                    }
+                    else if(featureName.endsWith(HOURLY_FEATURE_SUFFIX))
+                    {
+                        hourToScoreArray = new Double[HOURS_IN_DAY];
+                    }
+                    else
+                    {
+                        throw new RuntimeException("unsupported feature name");
+                    }
+
                     aggregatedFeatureEventsValuesMap.put(fullAggregatedFeatureEventName, hourToScoreArray);
                 }
 

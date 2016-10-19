@@ -44,7 +44,7 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
             if(accumulateTo==null)
             {
                 logger.info("found 0 events to accumulate for feature={}", feature);
-                return;
+                continue;
             }
             AccumulationParams accumulationParams = new AccumulationParams(feature, AccumulationParams.TimeFrame.DAILY, accumulateFrom, accumulateTo);
             accumulator.run(accumulationParams);
