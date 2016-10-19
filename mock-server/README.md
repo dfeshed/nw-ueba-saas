@@ -1,20 +1,19 @@
 # NetWitness UI Mock Server
 
-`mock-server` is node.js package that you can use in your project to provide mock websocket endpoints to the Netwitness UI. It uses `Express`, a node.js web application framework, to serve up the endpoints.
+`mock-server` is node.js package that you can use in your NetWitness UI subproject to provide mock websocket and standard HTTP endpoints. It uses [Express](http://expressjs.com/), a node.js web application framework, to serve up the endpoints.
 
 ## Usage
 
 If you prefer to learn by reading code, check out [streaming-data's](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/master/streaming-data/tests/server) usage of the mock server.
 
-1. In your project's `package.json`, add `"mock-server": "../mock-server"` to `devDependencies`
-2. Create a `tests/server/server.js` file that will be used to start the mock server. The file name and location is important so that the jenkins build can easily find it later.
-3. `require` in the `mock-server` and pass the `startServer` function the path to the directory where your [subscriptions](#creating-subscriptions) are contained.  Ex: `require('mock-server').startServer({ subscriptionLocations: __dirname });`.  `__dirname` is a node.js reserved variable representing the directory the current file is in. You can also pass an array of paths to directories.
-4. Run your server: `node server.js`. The `mock-server` configured with your [project's subscriptions](#creating-subscriptions) will be started on port `9999`.
-5. In your project's `environment.js`, ensure the `socketUrl` contains the url of your server, to include the port (`9999`) it is started on.
+1. Create a `tests/server/server.js` file that will be used to start the mock server. The file name and location is important so that the jenkins build can easily find it later.
+2. `require` in the `mock-server` and pass the `startServer` function the path to the directory where your [subscriptions](#creating-web-socket-subscriptions) are contained.  Ex: `require('mock-server').startServer({ subscriptionLocations: __dirname });`.  `__dirname` is a node.js reserved variable representing the directory the current file is in. You can also pass an array of paths to directories. (Every subproject should have the `mock-server` `npm link`ed into it by the `welcome.sh` script so that it can be `require`d in by any node code.)
+3. Run your server: `node server.js`. The `mock-server` configured with your [project's subscriptions](#creating-web-socket-subscriptions) will be started on port `9999`.
+4. In your project's `environment.js`, ensure the `socketUrl` contains the url of your server, to include the port (`9999`) it is started on.
 
 ### Coding your `environment.js`
 
-The mock server starts on a different port than Ember does, so when providing a `socketUrl`, you need to alter the port. You'll need to include code in your `environment.js` that checks the environment and dynamically builds the `socketUrl` based on that environment. The mock server's `socketUrl` should take the form of `'http://localhost:' + mockPort + '/socket/'` where `mockPort` can be altered at the command line when running `ember test` or `ember s`.
+The mock server starts on a different port than Ember does, so when providing a `socketUrl` in your client application, you need to alter the port for the websocket URL. You'll probably want to include code in your `environment.js` that checks the environment and dynamically builds the `socketUrl` based on that environment. The mock server's `socketUrl` should take the form of `'http://localhost:' + mockPort + '/socket/'` where `mockPort` can be altered at the command line when running `ember test` or `ember s`.
 
 ### Altering the mock port
 
@@ -30,23 +29,25 @@ var socketUrl = 'http://localhost:' + mockPort + '/socket/';
 
 ## Functions
 
-The `mock-server` node package provides the following function.
+The `mock-server` node package provides the following functions and utilities.
 
-* `startServer({})`
+* `startServer({}, callback)`
+  * `require('mock-server').startServer`
   * This will start the server after loading all your subscription files.
   * This function takes an `Object` with the following properties:
     * `subscriptionLocations`, `Array` or `String`, __required__, the directory(`String`) or directories(`Array` of `String`s) of your subscription files
-    * `routes`, `Array` of `Object`, each entry in the array represents a route the mock server should serve up. The keys for the `Object` are:
-      * `path`, __required__, the path to the endpoint, i.e. `'/foo/bar'`.
-      * `response`, __required__, this can be one of two things
-        * a `Function` that corresponds with the [Express Routing callback](https://expressjs.com/en/guide/routing.html) function signature
-        * Anything else will be treated as the content for a JSON response. So if, for instance, an Array of data is provided, that Array would be returned from the `path` provided.
-      * An HTTP `GET` is presumed. If other methods are necessary, they will need to be added. But the `routes` structure was build to accomodate future additions of options.
+      * See [below for details on subscription creation](#creating-web-socket-subscriptions).
+    * `routes`, an optional `Array` of `Object`, each entry in the array represents an HTTP route (as opposed to web socket endpoint) the mock server should serve up.
+      * See [Creating HTTP endpoints](#creating-http-endpoints) below for details on how to configure HTTP routes.
+  * An optional 2nd parameter is a callback that is executed when the server has been started
 * `shared.subscriptions`
-  * This is a hash of shared/reusable subscription files, check `/shared/subscriptions`
+  * `require('mock-server').shared.subscriptions`
+  * This is a hash of shared/reusable subscription files, check [`/shared/subscriptions`](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/master/mock-server/shared/subscriptions).
+  * Feel free to add more if more can be shared across projects!
 * `util.sendBatches({})`
+  * `require('mock-server').util.sendBatches`
   * This function can manage a typical streaming request, with paging and batches, and send the results to the UI over time to mimic a true streaming response
-  * `sendBatches` takes an object has input, that object has the following parameters
+  * `sendBatches` takes an `Object` with the following properties:
     * `requestBody`, `Object`, __required__
       * The incoming request `body` object. Contains `page` and `stream` parameters as per streaming API.
     * `dataArray`, `Array`, __required__
@@ -56,7 +57,6 @@ The `mock-server` node package provides the following function.
     * `delayBetweenBatches`, `Number`
       * The number of milliseconds to delay between sending batches to the client
       * Defaults to `100` milliseconds
-
 * `mock-server/util: determineSocketUrl(environment, productionPath)`
   * Not used via `require('mock-server')`, instead it is used via `require('mock-server/util')`
     * See that file for why
@@ -66,13 +66,15 @@ The `mock-server` node package provides the following function.
   * To NOT point at the `mock-server` in `development` or `test`, start `ember` with the `NOMOCK` environment variable set to anything.
     * For example: `NOMOCK=1 ember s`
 
-## Creating Subscription.
+## Creating Web Socket Subscriptions
+
+The mock server serves up all of its websocket subscriptions at the `/socket` endpoint. You must create subscription files that correspond with the `destination` with which the UI is attempting to communicate. Multiple `destination`s allows a single socket endpoint to handle all communication.
 
 Each subscription file presents an endpoint you want to surface for your instance of the `mock-server`. Every entry in your `environment.js` will probably need a subscription file. A subscription file is a node.js file that must export an object containing specific properties.
 
 The `mock-server` will discover your subscription files inside the directory/directories you pass it when calling `startServer`. The `mock-server` uses babel to transpile your subscription files, so you can use all the same code conventions you use in the web application.
 
-### Subscritption Watching
+### Subscription Watching
 
 Normally with a node.js server, if something on the server changes (like a subscription file) the server has to be restarted. This isn't the case with `mock-server`. `mock-server` will watch the directories you provide it and re-`require` and re-calculate your project's subscriptions when __any__ file in directories you pass `startServer` changes. This means that as you are tweaking/crafting tests, there's no need to constantly bounce your mock server.
 
@@ -110,7 +112,6 @@ The following are the valid fields for the `body` object either returned by `mes
 * `request`, `Object`, the input frame's body as an object. This is required to be included in the `body`.
   * If no `request` is provided, a default of the original request is used.
   * This default should not need to change unless you are testing the `streaming-data` addon directly.
-
 
 ### Example Subscription Files
 
@@ -154,5 +155,48 @@ export default {
 };
 ```
 
+## Creating HTTP endpoints
+
+The `mock-server` also allows you to create normal HTTP endpoints. For now an HTTP `GET` is presumed. If other methods are necessary, they will need to be added. But the structure of the input to `startServer` was build to accomodate future additions of options.
+
+The second paramater to `startServer` is an `Array` of `Object`s, where the `Object`s take this shape:
+
+* `path`, __required__, the path to the endpoint, i.e. `'/foo/bar'`.
+* `response`, __required__, this can be one of two things
+  * a `Function` that corresponds with the [Express Routing callback](https://expressjs.com/en/guide/routing.html) function signature
+  * Anything else will be treated as the content for a JSON response. So if, for instance, an Array of data is provided, that Array would be returned from the `path` provided.
 
 
+### Example Route configurations
+
+#### With an Express Route Callback
+
+```javascript
+server.startServer({
+  subscriptionLocations: subscriptions,
+  routes: [{
+    path: '/baz/what',
+    response: (req, res) => {
+      res.json({
+        passed: req.query.passed,
+        something: 'else'
+      });
+    }
+  }]
+})
+```
+
+#### With an Object Return
+
+```javascript
+server.startServer({
+  subscriptionLocations: subscriptions,
+  routes: [{
+    path: '/foo/bar',
+    response: {
+      this: 'is',
+      json: 'return'
+    }
+  }]
+})
+```
