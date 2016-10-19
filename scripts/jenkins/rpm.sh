@@ -60,5 +60,7 @@ makeRPMDirs
 cp -rf $SA_ROOT/dist $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui/html
 buildRPM $timestamp "el7"
 
+mv $SA_RPM_ROOT/*.rpm $SA_RPM_ROOT/RPMS/noarch
+
 success "RPM build successful"
 info "********************"
