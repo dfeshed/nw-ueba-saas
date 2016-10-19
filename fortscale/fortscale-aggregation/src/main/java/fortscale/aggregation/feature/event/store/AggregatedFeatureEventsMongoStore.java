@@ -192,7 +192,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
      * @return list of {@link AggrEvent} between those dates
      */
 	public List<AggrEvent> findAggrEventsByStartTimeRange(Instant from, Instant to, String aggregatedFeatureName) {
-		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(from).lt(to);
+		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).gte(from.getEpochSecond()).lt(to.getEpochSecond());
 		Query query = new Query(startTimeCriteria);
 		return findAggrEvents(aggregatedFeatureName, query);
 	}

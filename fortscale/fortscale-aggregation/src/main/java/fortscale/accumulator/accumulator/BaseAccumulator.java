@@ -9,6 +9,7 @@ import java.time.temporal.ChronoUnit;
 import static fortscale.accumulator.accumulator.AccumulationParams.TimeFrame.DAILY;
 import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_COLLECTION_SUFFIX;
 import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_COLLECTION_SUFFIX;
+import static fortscale.utils.time.TimeUtils.getAmountOfDaysInPeriod;
 
 /**
  * Created by barak_schuster on 10/9/16.
@@ -62,17 +63,24 @@ public abstract class BaseAccumulator implements Accumulator {
     public abstract void accumulateEvents(String featureName, final Instant fromCursor, final Instant toCursor);
 
     public Instant getDefaultFromPeriod(String feature) {
+
+        Instant result = Instant.now();
         if(feature.endsWith(DAILY_COLLECTION_SUFFIX))
         {
-            return Instant.now().minus(defaultFromPeriodDaily.getDays(), ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
+            result = result.minus(getAmountOfDaysInPeriod(defaultFromPeriodDaily), ChronoUnit.DAYS);
         }
         else if(feature.endsWith(HOURLY_COLLECTION_SUFFIX))
         {
-            return Instant.now().minus(defaultFromPeriodHourly.getDays(), ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
+            result = result.minus(getAmountOfDaysInPeriod(defaultFromPeriodHourly), ChronoUnit.DAYS);
         }
         else
         {
             throw new RuntimeException("Unsupported feature name, should end with hourly/daily");
         }
+        result = result.truncatedTo(ChronoUnit.DAYS);
+
+        logger.info("from was not given, running accumulation from={}",result);
+
+        return result;
     }
 }

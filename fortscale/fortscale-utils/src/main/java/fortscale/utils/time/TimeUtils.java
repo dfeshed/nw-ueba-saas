@@ -3,6 +3,7 @@ package fortscale.utils.time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.Period;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
@@ -69,6 +70,10 @@ public class TimeUtils {
         }
 
         return null;
+    }
+
+    public static int getAmountOfDaysInPeriod(Period period) {
+        return period.getYears() * 365 + period.getMonths() * 30 + period.getDays();
     }
 
     public static boolean isOrdinalHourValid(Integer hour) {
