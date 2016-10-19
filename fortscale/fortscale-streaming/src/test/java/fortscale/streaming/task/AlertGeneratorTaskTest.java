@@ -65,8 +65,7 @@ public class AlertGeneratorTaskTest extends AbstractTaskTest{
     }
 
     @Before
-    public void setup() throws IOException {
-    }
+    public void setup() throws IOException {    }
 
     @After
     public void cleanup() throws IOException {

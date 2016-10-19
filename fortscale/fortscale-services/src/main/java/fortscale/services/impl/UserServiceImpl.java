@@ -997,8 +997,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username)
-	{
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username) {
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 	}
 
@@ -1006,7 +1005,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userRepository.getUsersByPrefix(prefix, pageable);
 	}
 
-	@Override public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
+	@Override
+	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
 		return userRepository.getUsersByIds(ids, pageable);
 	}
 
@@ -1015,7 +1015,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userRepository.findOne(id);
 	}
 
-	@Override public Boolean isPasswordExpired(User user) {
+	@Override
+	public Boolean isPasswordExpired(User user) {
 		try{
 			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {

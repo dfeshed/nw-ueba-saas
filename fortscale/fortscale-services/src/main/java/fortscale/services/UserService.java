@@ -42,6 +42,8 @@ public interface UserService {
 
 	boolean findIfUserExists(String username);
 
+	Set<String> getUserTags(String username);
+
 	String getUserId(String username);
 
 	User createUser(String userApplication, String username, String appUsername);
