@@ -6,8 +6,8 @@ import java.time.Period;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_COLLECTION_SUFFIX;
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_COLLECTION_SUFFIX;
+import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_FEATURE_SUFFIX;
+import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_FEATURE_SUFFIX;
 import static fortscale.utils.time.TimeUtils.getAmountOfDaysInPeriod;
 
 /**
@@ -20,11 +20,11 @@ public class AccumulatorStoreUtil {
 
     public static long getRetentionTimeInDays(String featureName, Period acmDailyEventRetentionDuration, Period acmHourlyRetentionDuration) {
         long retentionTimeInDays;
-        if(featureName.endsWith(DAILY_COLLECTION_SUFFIX))
+        if(featureName.endsWith(DAILY_FEATURE_SUFFIX))
         {
             retentionTimeInDays = getAmountOfDaysInPeriod(acmDailyEventRetentionDuration);
         }
-        else if (featureName.endsWith(HOURLY_COLLECTION_SUFFIX))
+        else if (featureName.endsWith(HOURLY_FEATURE_SUFFIX))
         {
             retentionTimeInDays = getAmountOfDaysInPeriod(acmHourlyRetentionDuration);
         }

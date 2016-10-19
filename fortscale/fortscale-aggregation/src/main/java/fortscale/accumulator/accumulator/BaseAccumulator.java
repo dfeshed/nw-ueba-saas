@@ -7,8 +7,8 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 
 import static fortscale.accumulator.accumulator.AccumulationParams.TimeFrame.DAILY;
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_COLLECTION_SUFFIX;
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_COLLECTION_SUFFIX;
+import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_FEATURE_SUFFIX;
+import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_FEATURE_SUFFIX;
 import static fortscale.utils.time.TimeUtils.getAmountOfDaysInPeriod;
 
 /**
@@ -65,11 +65,11 @@ public abstract class BaseAccumulator implements Accumulator {
     public Instant getDefaultFromPeriod(String feature) {
 
         Instant result = Instant.now();
-        if(feature.endsWith(DAILY_COLLECTION_SUFFIX))
+        if(feature.endsWith(DAILY_FEATURE_SUFFIX))
         {
             result = result.minus(getAmountOfDaysInPeriod(defaultFromPeriodDaily), ChronoUnit.DAYS);
         }
-        else if(feature.endsWith(HOURLY_COLLECTION_SUFFIX))
+        else if(feature.endsWith(HOURLY_FEATURE_SUFFIX))
         {
             result = result.minus(getAmountOfDaysInPeriod(defaultFromPeriodHourly), ChronoUnit.DAYS);
         }

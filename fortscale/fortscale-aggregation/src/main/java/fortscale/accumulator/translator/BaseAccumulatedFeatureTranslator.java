@@ -8,10 +8,10 @@ import org.apache.commons.lang3.StringUtils;
  */
 public abstract class BaseAccumulatedFeatureTranslator {
 
-    public static final String DAILY_COLLECTION_SUFFIX = "daily";
-    private static final String DAILY_COLLECTION_REGEX = String.format("%s$", DAILY_COLLECTION_SUFFIX);
-    public static final String HOURLY_COLLECTION_SUFFIX = "hourly";
-    private static final String HOURLY_COLLECTION_REGEX = String.format("%s$", HOURLY_COLLECTION_SUFFIX);
+    public static final String DAILY_FEATURE_SUFFIX = "daily";
+    private static final String DAILY_COLLECTION_REGEX = String.format("%s$", DAILY_FEATURE_SUFFIX);
+    public static final String HOURLY_FEATURE_SUFFIX = "hourly";
+    private static final String HOURLY_COLLECTION_REGEX = String.format("%s$", HOURLY_FEATURE_SUFFIX);
     private static final String NAME_DELIMITER = "_";
     public static final String ACCUMULATED_COLLECTION_SUFFIX = String.format("%sacm", NAME_DELIMITER);
     private static final String ACCUMULATED_DAILY_COLLECTION_SUFFIX = String.format("d%s", ACCUMULATED_COLLECTION_SUFFIX);
@@ -31,10 +31,10 @@ public abstract class BaseAccumulatedFeatureTranslator {
 
     protected String getAcmCollectionName(String originalCollectionName) {
         String collectionName;
-        if (originalCollectionName.endsWith(DAILY_COLLECTION_SUFFIX)) {
+        if (originalCollectionName.endsWith(DAILY_FEATURE_SUFFIX)) {
             collectionName =
                     originalCollectionName.replaceAll(DAILY_COLLECTION_REGEX, ACCUMULATED_DAILY_COLLECTION_SUFFIX);
-        } else if (originalCollectionName.endsWith(HOURLY_COLLECTION_SUFFIX)) {
+        } else if (originalCollectionName.endsWith(HOURLY_FEATURE_SUFFIX)) {
             collectionName =
                     originalCollectionName.replaceAll(HOURLY_COLLECTION_REGEX, ACCUMULATED_HOURLY_COLLECTION_SUFFIX);
         } else {
