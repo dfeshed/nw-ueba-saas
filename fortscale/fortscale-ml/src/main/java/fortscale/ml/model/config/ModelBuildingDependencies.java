@@ -1,5 +1,7 @@
 package fortscale.ml.model.config;
 
+import fortscale.accumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig;
+import fortscale.accumulator.entityEvent.store.config.AccumulatedEntityEventStoreConfig;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
@@ -17,7 +19,10 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import({AggregatedFeatureNameTranslationServiceConfig.class, EntityEventTranslationServiceConfig.class})
+@Import({AggregatedFeatureNameTranslationServiceConfig.class,
+		EntityEventTranslationServiceConfig.class,
+		AccumulatedAggregatedFeatureEventStoreConfig.class,
+		AccumulatedEntityEventStoreConfig.class})
 public class ModelBuildingDependencies {
 
 	@Bean
