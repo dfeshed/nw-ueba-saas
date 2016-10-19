@@ -8,8 +8,7 @@ import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -28,8 +27,6 @@ public abstract class BaseAccumulatorJob extends FortscaleJob {
     private String accumulatorFeatureNamesParam;
     @Value("${fortscale.accumulator.param.featureNames.delimiter}")
     private String accumulatorFeatureNamesDelimiter;
-    @Value("${fortscale.accumulator.param.from.days.ago}")
-    private int accumulatorFromDaysAgo;
 
     protected AccumulatorManagerParams accumulatorManagerParams;
 
@@ -39,12 +36,18 @@ public abstract class BaseAccumulatorJob extends FortscaleJob {
 
         accumulatorManagerParams = new AccumulatorManagerParams();
         if(map.containsKey(accumulatorFromParam)) {
-            accumulatorManagerParams.setFrom(jobDataMapExtension.getJobDataMapInstantValue(map, accumulatorFromParam));
-        }
-        else
-        {
-            Instant daysAgo = Instant.now().minus(accumulatorFromDaysAgo, ChronoUnit.DAYS).truncatedTo(ChronoUnit.DAYS);
-            accumulatorManagerParams.setFrom(daysAgo);
+            try {
+                accumulatorManagerParams.setFrom(jobDataMapExtension.getJobDataMapInstantValue(map, accumulatorFromParam));
+            }
+            catch (JobExecutionException je )
+            {
+                accumulatorManagerParams.setFrom(null);
+            }
+            catch (DateTimeParseException de)
+            {
+                logger.error("error while parsing param={}",accumulatorFromParam,de);
+                throw de;
+            }
         }
 
         if(map.containsKey(accumulatorToParam)) {
@@ -54,11 +57,8 @@ public abstract class BaseAccumulatorJob extends FortscaleJob {
         if(map.containsKey(accumulatorFeatureNamesParam))
         {
             String featuresStringValue = jobDataMapExtension.getJobDataMapStringValue(map, accumulatorFeatureNamesParam);
-
-            if (featuresStringValue != null) {
-                Set<String> features = new HashSet(Arrays.asList(featuresStringValue.split(accumulatorFeatureNamesDelimiter)));
-                accumulatorManagerParams.setFeatures(features);
-            }
+            Set<String> features = new HashSet(Arrays.asList(featuresStringValue.split(accumulatorFeatureNamesDelimiter)));
+            accumulatorManagerParams.setFeatures(features);
         }
     }
 
@@ -69,7 +69,7 @@ public abstract class BaseAccumulatorJob extends FortscaleJob {
 
     @Override
     protected boolean shouldReportDataReceived() {
-        return true;
+        return false;
     }
 
     @Override
