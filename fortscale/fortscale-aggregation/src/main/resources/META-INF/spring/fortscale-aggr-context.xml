@@ -8,7 +8,7 @@
 	<bean id="userInactivityFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.UserInactivityFeatureBucketStrategyFactory"/>
 	<bean id="vpnSessionFeatureBucketStrategyFactory" class="fortscale.aggregation.feature.bucket.strategy.VpnSessionFeatureBucketStrategyFactory"/>
 	<bean id="featureBucketsStore" class="fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore"/>
-	<bean id="store" class="fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore"/>
+	<bean id="AccumulatedAggregatedFeatureEventStoreConfig" class="fortscale.accumulator.aggregation.store.config.AccumulatedAggregatedFeatureEventStoreConfig"/>
 	<bean id="bucketConfigurationService" class="fortscale.aggregation.feature.bucket.BucketConfigurationService"/>
 	<bean id="dataSourcesSyncTimer" class="fortscale.aggregation.DataSourcesSyncTimer"/>
 	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
