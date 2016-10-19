@@ -41,4 +41,11 @@ public interface Accumulator {
      * @return returns null if no events found, last start time otherwise
      */
     Instant getLastSourceEventStartTime(String featureName);
+
+    /**
+     *
+     * @param feature
+     * @return now minus default period (start of day)
+     */
+    Instant getDefaultFromPeriod(String feature);
 }
