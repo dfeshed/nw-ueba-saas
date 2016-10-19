@@ -28,6 +28,7 @@ import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
@@ -130,6 +131,13 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		return getCollectionName(entityEvent.getEntity_event_type());
 	}
 
+	private List<String> getCollectionNames(String entityEventType) {
+		String collectionName = getCollectionName(entityEventType);
+		return Stream.concat(Stream.of(""), backupCollectionNamesPrefixes.stream())
+				.map(prefix -> prefix + collectionName)
+				.collect(Collectors.toList());
+	}
+
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
 		return MongoStoreUtils.getDateToTopScoredEvents(
 				statsService,
@@ -207,7 +215,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 					new PersistenceTaskStoreMetrics(statsService, collectionName);
 			collectionMetricsMap.put(collectionName, collectionMetrics);
 		}
-		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to);
+		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to.getEpochSecond());
 		Query query = new Query(startTimeCriteria);
 
 		return collectionMetricsMap.get(collectionName);
