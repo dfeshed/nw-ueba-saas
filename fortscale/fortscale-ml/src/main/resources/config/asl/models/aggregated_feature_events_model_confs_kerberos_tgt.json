@@ -7,7 +7,7 @@
                 "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly"
             }, 
             "retriever": {
-                "type": "aggregated_feature_value_retriever", 
+                "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
                 "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_hourly"
@@ -23,7 +23,7 @@
                 "aggregatedFeatureEventConfName": "number_of_failed_kerberos_tgt_hourly"
             }, 
             "retriever": {
-                "type": "aggregated_feature_value_retriever", 
+                "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
                 "aggregatedFeatureEventConfName": "number_of_failed_kerberos_tgt_hourly"
@@ -39,7 +39,7 @@
                 "aggregatedFeatureEventConfName": "number_of_successful_kerberos_tgt_events_hourly"
             }, 
             "retriever": {
-                "type": "aggregated_feature_value_retriever", 
+                "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
                 "aggregatedFeatureEventConfName": "number_of_successful_kerberos_tgt_events_hourly"
@@ -55,7 +55,7 @@
                 "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily"
             }, 
             "retriever": {
-                "type": "aggregated_feature_value_retriever", 
+                "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
                 "aggregatedFeatureEventConfName": "distinct_number_of_normalized_src_machine_kerberos_tgt_daily"
@@ -71,7 +71,7 @@
                 "aggregatedFeatureEventConfName": "number_of_failed_kerberos_tgt_daily"
             }, 
             "retriever": {
-                "type": "aggregated_feature_value_retriever", 
+                "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
                 "aggregatedFeatureEventConfName": "number_of_failed_kerberos_tgt_daily"
@@ -87,7 +87,7 @@
                 "aggregatedFeatureEventConfName": "number_of_successful_kerberos_tgt_events_daily"
             }, 
             "retriever": {
-                "type": "aggregated_feature_value_retriever", 
+                "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000, 
                 "functions": [], 
                 "aggregatedFeatureEventConfName": "number_of_successful_kerberos_tgt_events_daily"
