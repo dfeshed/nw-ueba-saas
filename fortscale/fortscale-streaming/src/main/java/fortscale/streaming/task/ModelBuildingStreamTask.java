@@ -15,7 +15,7 @@ import org.springframework.util.Assert;
 
 public class ModelBuildingStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
-	private static final String CONTROL_OUTPUT_TOPIC_KEY = "fortscale.model.build.control.output.topic";
+	public static final String CONTROL_OUTPUT_TOPIC_KEY = "fortscale.model.build.control.output.topic";
 	private static final String MODEL_FILTER_REGEX = "fortscale.model.build.all_models.model_name.filter.regex";
 
 	private KafkaModelBuildingListener modelBuildingListener;

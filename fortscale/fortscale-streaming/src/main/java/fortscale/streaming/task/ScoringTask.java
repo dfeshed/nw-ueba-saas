@@ -5,6 +5,7 @@ import fortscale.common.event.service.EventService;
 import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
 import fortscale.streaming.task.metrics.ScoringStreamingTaskMetrics;
@@ -18,8 +19,10 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.util.Assert;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.task.ModelBuildingStreamTask.CONTROL_OUTPUT_TOPIC_KEY;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 
@@ -31,7 +34,7 @@ public class ScoringTask extends AbstractStreamTask {
     private String timestampField;
     private Counter processedMessageCount;
     private Counter lastTimestampCount;
-
+    private String modelBuildingControlOutputTopic;
 
 
     @Override
@@ -46,11 +49,23 @@ public class ScoringTask extends AbstractStreamTask {
         wrappedCreateTaskMetrics();
 
         scoringTaskService = new ScoringTaskService(config, context);
-        eventService = SpringService.getInstance().resolve(EventService.class);
+        SpringService springService = SpringService.getInstance();
+        eventService = springService.resolve(EventService.class);
+        FortscaleValueResolver resolver = springService.resolve(FortscaleValueResolver.class);
+
+        modelBuildingControlOutputTopic = resolver.resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY);
+        Assert.hasText(modelBuildingControlOutputTopic);
     }
 
     @Override
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+        String topicName = getIncomingMessageTopicName(envelope);
+
+
+        if(topicName.equals(modelBuildingControlOutputTopic))
+        {
+            // TODO: 10/19/16 update model cache
+        }
         String messageText = (String)envelope.getMessage();
         JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
         Long timestamp = extractTimeStamp(message, messageText);
