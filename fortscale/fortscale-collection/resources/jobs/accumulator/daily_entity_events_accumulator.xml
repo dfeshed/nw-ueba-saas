@@ -21,7 +21,7 @@
 				<group>Accumulator</group>
 				<job-name>EntityEvent</job-name>
 				<job-group>Accumulator</job-group>
-				<cron-expression>0 0 1 * * ?</cron-expression>
+				<cron-expression>0 0 5 * * ?</cron-expression>
 			</cron>
 		</trigger>
 	</schedule>
