@@ -5,7 +5,7 @@
 # 3) Moves new RPM out to YUM directories
 #
 
-rpmFile=$SA_RPM_ROOT/RPMS/noarch/*.rpm
+rpmFile=$SA_RPM_ROOT/RPMS/noarch/*.el7.centos.noarch.rpm
 ver=$(rpm -qp $rpmFile --qf "%{VERSION}")
 
 major=$(echo $ver| awk -F . '{print $1}')
