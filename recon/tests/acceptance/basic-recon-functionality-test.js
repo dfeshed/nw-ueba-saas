@@ -16,7 +16,7 @@ test('show/hide header items', function(assert) {
     andThen(function() {
       assert.ok(find('.recon-event-header .header-item').length === 0, 'Header items hidden');
     });
-  }, 1000);
+  }, 2000);
 });
 
 test('show/hide meta', function(assert) {
@@ -30,7 +30,7 @@ test('show/hide meta', function(assert) {
     andThen(function() {
       assert.ok(find('.recon-meta-content').length === 1, 'Meta is shown');
     });
-  }, 1000);
+  }, 2000);
 });
 
 test('change recon views', function(assert) {
@@ -71,7 +71,7 @@ test('toggle request on/off', function(assert) {
       // Height should be > 0, as the requests are now shown
       assert.ok(find('.rsa-packet.request').first().height() > 0, 'Requests are shown');
     });
-  }, 1000);
+  }, 2000);
 });
 
 test('toggle response on/off', function(assert) {
@@ -93,5 +93,5 @@ test('toggle response on/off', function(assert) {
       // Height should be > 0, as the responses are now shown
       assert.ok(find('.rsa-packet.response').first().height() > 0, 'Responses are shown');
     });
-  }, 1000);
+  }, 2000);
 });
