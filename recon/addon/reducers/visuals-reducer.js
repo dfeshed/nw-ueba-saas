@@ -11,7 +11,7 @@ const visualsInitialState = {
 };
 
 const visuals = reduxActions.handleActions({
-  [ACTION_TYPES.INITIALIZE]: (state) => ({
+  [ACTION_TYPES.OPEN_RECON]: (state) => ({
     ...state,
     isReconOpen: true
   }),

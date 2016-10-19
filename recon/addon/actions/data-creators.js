@@ -145,6 +145,10 @@ const initializeRecon = (reconInputs) => {
   return (dispatch, getState) => {
     const dataState = getState().recon.data;
 
+    dispatch({
+      type: ACTION_TYPES.OPEN_RECON
+    });
+
     // If its the same eventId, there is nothing to do
     // as previous state will be intact
     if (dataState.eventId !== reconInputs.eventId) {

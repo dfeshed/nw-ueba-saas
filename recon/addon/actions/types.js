@@ -7,6 +7,7 @@ export const TOGGLE_RESPONSE = 'RECON::TOGGLE_RESPONSE';
 export const TOGGLE_META = 'RECON::TOGGLE_META';
 export const TOGGLE_EXPANDED = 'RECON::TOGGLE_EXPANDED';
 export const CLOSE_RECON = 'RECON::CLOSE_RECON';
+export const OPEN_RECON = 'RECON::OPEN_RECON';
 export const INITIALIZE = 'RECON::INITIALIZE';
 
 // Data action types
