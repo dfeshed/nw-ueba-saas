@@ -1,5 +1,7 @@
 package fortscale.ml.model;
 
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
+import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
@@ -45,12 +47,16 @@ public class ModelConfProductionConfFilesTest {
 	static class ContextConfiguration {
 		@Mock private FeatureBucketsReaderService featureBucketsReaderService;
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
+		@Mock private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
 		@Mock private EntityEventDataReaderService entityEventDataReaderService;
+		@Mock private AccumulatedEntityEventStore accumulatedEntityEventStore;
 		@Mock private EntityEventMongoStore entityEventMongoStore;
 
 		@Bean public FeatureBucketsReaderService getFeatureBucketsReaderService() {return featureBucketsReaderService;}
 		@Bean public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {return aggregatedFeatureEventsReaderService;}
+		@Bean public AccumulatedAggregatedFeatureEventStore getAccumulatedAggregatedFeatureEventStore() {return accumulatedAggregatedFeatureEventStore;}
 		@Bean public EntityEventDataReaderService getEntityEventDataReaderService() {return entityEventDataReaderService;}
+		@Bean public AccumulatedEntityEventStore getAccumulatedEntityEventStore() {return accumulatedEntityEventStore;}
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
 
 		@Bean
