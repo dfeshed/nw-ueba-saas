@@ -1,6 +1,8 @@
 package fortscale.collection.jobs.smart;
 
 import fortscale.utils.kafka.IMetricsDecider;
+import fortscale.utils.logging.Logger;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.util.Assert;
 
@@ -9,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CaptorMetricsDecider implements IMetricsDecider {
+	private static final Logger logger = Logger.getLogger(CaptorMetricsDecider.class);
+
 	private Collection<String> metricsToCapture;
 	private Map<String, Object> capturedMetrics;
 
@@ -32,8 +36,15 @@ public class CaptorMetricsDecider implements IMetricsDecider {
 		}
 
 		metricsToCapture.stream().filter(metrics::has)
-				.forEach(metricToCapture -> capturedMetrics.put(
-				metricToCapture, metrics.get(metricToCapture)));
+				.forEach(metricToCapture -> {
+					try {
+						capturedMetrics.put(
+								metricToCapture, metrics.get(metricToCapture));
+					} catch (JSONException e) {
+						// this should never happened since we have the "has" filter
+						logger.error("error capturing metirc={}",metricToCapture,e);
+					}
+				});
 
 		return capturedMetrics.size() == metricsToCapture.size();
 	}

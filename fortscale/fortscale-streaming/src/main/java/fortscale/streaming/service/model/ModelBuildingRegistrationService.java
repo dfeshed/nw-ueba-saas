@@ -1,12 +1,14 @@
 package fortscale.streaming.service.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
 import fortscale.ml.model.listener.IModelBuildingListener;
+import fortscale.ml.model.message.ModelBuildingCommandMessage;
 import fortscale.streaming.service.model.metrics.ModelBuildingRegistrationServiceMetrics;
 import fortscale.streaming.service.model.metrics.ModelBuildingRegistrationServiceSetMetrics;
-import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
@@ -28,6 +30,7 @@ import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 public class ModelBuildingRegistrationService {
 	private static final Logger logger = Logger.getLogger(ModelBuildingRegistrationService.class);
 	private final Pattern allModelsFilterRegexPattern;
+	private final ObjectMapper objectMapper;
 
 	@Autowired
 	private ModelConfService modelConfService;
@@ -36,12 +39,6 @@ public class ModelBuildingRegistrationService {
 	@Autowired
 	private StatsService statsService;
 
-	@Value("${fortscale.model.build.message.field.session.id}")
-	private String sessionIdJsonField;
-	@Value("${fortscale.model.build.message.field.model.conf.name}")
-	private String modelConfNameJsonField;
-	@Value("${fortscale.model.build.message.field.end.time.in.seconds}")
-	private String endTimeInSecondsJsonField;
 	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
@@ -60,6 +57,7 @@ public class ModelBuildingRegistrationService {
 		this.modelBuildingStore = modelBuildingStore;
 		this.metrics = new ModelBuildingRegistrationServiceMetrics(statsService);
 		this.setNameToMetrics = new HashMap<>();
+		objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
 
 		if(allModelsFilterRegex!=null) {
 			this.allModelsFilterRegexPattern = Pattern.compile(allModelsFilterRegex);
@@ -72,11 +70,13 @@ public class ModelBuildingRegistrationService {
 	}
 
 	public void process(JSONObject event) {
-		String sessionId = event.getAsString(sessionIdJsonField);
-		String modelConfName = event.getAsString(modelConfNameJsonField);
-		Long endTimeSec = ConversionUtils.convertToLong(event.get(endTimeInSecondsJsonField));
+		ModelBuildingCommandMessage modelBuildingCommandMessage = objectMapper.convertValue(event,ModelBuildingCommandMessage.class);
 
-		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
+		String sessionId = modelBuildingCommandMessage.getSessionId();
+		String modelConfName = modelBuildingCommandMessage.getModelConfName();
+		Long endTimeSec = modelBuildingCommandMessage.getEndTimeInSeconds();
+
+		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName)) {
 			metrics.processed++;
 			getSetMetrics(modelConfName).processed++; // TODO: modelConfName can be "ALL_MODELS" and later on "RAW_EVENT_MODELS" for example
 			Date endTime = endTimeSec < 0 ? null : new Date(convertToMilliSeconds(endTimeSec));

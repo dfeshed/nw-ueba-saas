@@ -1,11 +1,11 @@
 package fortscale.collection.jobs.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.ml.model.message.ModelBuildingCommandMessage;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.util.Collection;
@@ -18,16 +18,10 @@ public class ModelBuildingSyncService {
 	public static final String FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC = "fortscale.model.build.control.output.topic";
 	private static final Logger logger = Logger.getLogger(ModelBuildingSyncService.class);
 	private static final long MILLIS_TO_SLEEP_BETWEEN_END_TIME_EQUALITY_CHECKS = 1000;
+	private final ObjectMapper objectMapper;
 
 	private String controlInputTopic;
 	private String controlOutputTopic;
-
-	@Value("${fortscale.model.build.message.field.session.id}")
-	private String sessionIdJsonField;
-	@Value("${fortscale.model.build.message.field.model.conf.name}")
-	private String modelConfNameJsonField;
-	@Value("${fortscale.model.build.message.field.end.time.in.seconds}")
-	private String endTimeInSecondsJsonField;
 
 	private String sessionId;
 	private Collection<String> modelConfNames;
@@ -56,6 +50,7 @@ public class ModelBuildingSyncService {
 		this.timeoutInMillis = TimeUnit.SECONDS.toMillis(timeoutInSeconds);
 		this.controlInputTopic = controlInputTopic;
 		this.controlOutputTopic = controlOutputTopic;
+		this.objectMapper = new ObjectMapper();
 	}
 
 	public void init() {
@@ -78,7 +73,7 @@ public class ModelBuildingSyncService {
 		}
 	}
 
-	public void buildModelsIfNeeded(long currentTimeInSeconds) throws TimeoutException {
+	public void buildModelsIfNeeded(long currentTimeInSeconds) throws TimeoutException, JsonProcessingException {
 		long currentEndTimeInSeconds = (currentTimeInSeconds / secondsBetweenEndTimes) * secondsBetweenEndTimes;
 		if (lastEndTimeInSeconds == -1) lastEndTimeInSeconds = currentEndTimeInSeconds;
 
@@ -89,33 +84,29 @@ public class ModelBuildingSyncService {
 		}
 	}
 
-	public void buildModelsForcefully(long currentTimeInSeconds) throws TimeoutException {
+	public void buildModelsForcefully(long currentTimeInSeconds) throws TimeoutException, JsonProcessingException {
 		sendCommands(currentTimeInSeconds);
 		waitForSummaryMessages(currentTimeInSeconds);
 	}
 
-	public void initModelBuildingRegistrations() {
+	public void initModelBuildingRegistrations() throws JsonProcessingException {
 		logger.info("Initializing model building registrations: Session ID = {}.", sessionId);
-		JSONObject command = new JSONObject();
-		command.put(sessionIdJsonField, sessionId);
-		command.put(endTimeInSecondsJsonField, -1);
 
 		for (String modelConfName : modelConfNames) {
-			command.put(modelConfNameJsonField, modelConfName);
-			writer.send(null, command.toJSONString(JSONStyle.NO_COMPRESS));
+			ModelBuildingCommandMessage command = new ModelBuildingCommandMessage(sessionId,modelConfName,-1);
+			String commandJsonString = objectMapper.writeValueAsString(command);
+			writer.send(null, commandJsonString);
 		}
 	}
 
-	private void sendCommands(long endTimeInSeconds) {
+	private void sendCommands(long endTimeInSeconds) throws JsonProcessingException {
 		logger.info("Sending model building commands: Session ID = {}, end time in seconds = {}.",
 				sessionId, endTimeInSeconds);
-		JSONObject command = new JSONObject();
-		command.put(sessionIdJsonField, sessionId);
-		command.put(endTimeInSecondsJsonField, endTimeInSeconds);
 
 		for (String modelConfName : modelConfNames) {
-			command.put(modelConfNameJsonField, modelConfName);
-			writer.send(null, command.toJSONString(JSONStyle.NO_COMPRESS));
+			ModelBuildingCommandMessage command = new ModelBuildingCommandMessage(sessionId,modelConfName,endTimeInSeconds);
+			String commandJsonString = objectMapper.writeValueAsString(command);
+			writer.send(null, commandJsonString);
 		}
 	}
 

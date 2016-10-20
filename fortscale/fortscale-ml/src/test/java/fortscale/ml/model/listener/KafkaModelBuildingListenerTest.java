@@ -1,9 +1,13 @@
 package fortscale.ml.model.listener;
 
-import net.minidev.json.JSONObject;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
+import fortscale.ml.model.message.ModelBuildingStatusMessage;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,14 +35,6 @@ public class KafkaModelBuildingListenerTest {
 		@Bean
 		public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
 			Properties properties = new Properties();
-			properties.put("fortscale.model.build.message.field.session.id", "sessionId");
-			properties.put("fortscale.model.build.message.field.model.conf.name", "modelConfName");
-			properties.put("fortscale.model.build.message.field.end.time.in.seconds", "endTimeInSeconds");
-			properties.put("fortscale.model.build.message.field.context.id", "contextId");
-			properties.put("fortscale.model.build.message.field.is.successful", "isSuccessful");
-			properties.put("fortscale.model.build.message.field.details", "details");
-			properties.put("fortscale.model.build.message.field.num.of.successes", "numOfSuccesses");
-			properties.put("fortscale.model.build.message.field.num.of.failures", "numOfFailures");
 			PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
 			configurer.setProperties(properties);
 			return configurer;
@@ -46,7 +42,7 @@ public class KafkaModelBuildingListenerTest {
 	}
 
 	@Test
-	public void should_create_and_send_the_correct_model_building_status() {
+	public void should_create_and_send_the_correct_model_building_status() throws JsonProcessingException {
 		String outputTopicName = "testTopic";
 		KafkaModelBuildingListener kafkaModelBuildingListener = new KafkaModelBuildingListener(outputTopicName);
 
@@ -57,6 +53,7 @@ public class KafkaModelBuildingListenerTest {
 		String sessionId = "mySession";
 		String contextId = "testContextId";
 		Date endTime = new Date(1287576000000L);
+
 
 		JSONObject expectedJson = new JSONObject();
 		expectedJson.put("modelConfName", modelConfName);
@@ -72,8 +69,10 @@ public class KafkaModelBuildingListenerTest {
 
 		OutgoingMessageEnvelope envelope = argumentCaptor.getValue();
 		SystemStream systemStream = envelope.getSystemStream();
-		String message = (String)envelope.getMessage();
+		ModelBuildingStatusMessage message = (ModelBuildingStatusMessage)envelope.getMessage();
+		ObjectMapper objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
+		JSONObject messageJson = objectMapper.convertValue(message,JSONObject.class);
 		Assert.assertEquals(outputTopicName, systemStream.getStream());
-		Assert.assertEquals(expectedJson.toJSONString(), message);
+		Assert.assertEquals(expectedJson.toString(), messageJson.toString());
 	}
 }
