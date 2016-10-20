@@ -174,6 +174,11 @@ public class ProductionScorerConfFilesTest {
 
 				@Override
 				public void close() {}
+
+				@Override
+				public void deleteFromCache(String modelConfName, String contextId) {
+
+				}
 			};
 		}
 	}

@@ -2,19 +2,28 @@ package fortscale.streaming.service.model;
 
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
+import fortscale.ml.model.message.ModelBuildingStatusMessage;
 import fortscale.ml.model.store.ModelDAO;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.Date;
 
-public class LazyModelCacheManagerSamza extends ModelCacheManagerSamza {
+/**
+ * This class has a royal successor at the cache managing kingdom: {@link LazyTriggeredModelCacheManagerSamza is the new king!}
+ * Time managed cached, as appears at {@link this#isModelEndTimeOutdated(Date, long)} -
+ * is not needed when using {@link fortscale.streaming.service.scorer.ScoringTaskService#refreshModelCache(ModelBuildingStatusMessage)} -
+ * since models are deleted from cache when a new model is built, and are lazy loaded by demand
+ *
+ * should consider in the future if it should be maintained or deleted.
+ */
+public class LazyTimedModelCacheManagerSamza extends ModelCacheManagerSamza {
 	@Value("${fortscale.model.wait.sec.between.loads}")
 	private long waitSecBetweenLoads;
 	@Value("${fortscale.model.max.sec.diff.before.outdated}")
 	private long maxSecDiffBeforeOutdated;
 
-	public LazyModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
+	public LazyTimedModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		super(levelDbStoreName, modelConf);
 	}
 

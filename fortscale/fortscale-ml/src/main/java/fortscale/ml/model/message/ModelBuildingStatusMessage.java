@@ -2,6 +2,7 @@ package fortscale.ml.model.message;
 
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
  * represents model building status for contextId (user) in a model building session
@@ -50,6 +51,15 @@ public class ModelBuildingStatusMessage {
         this.contextId = contextId;
         this.isSuccessful = isSuccessful;
         this.details = details;
+    }
+
+    /**
+     *
+     * @return ToString you know...
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     // --- Getters/setters ---

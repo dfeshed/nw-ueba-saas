@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Configurable(preConstruction = true)
-public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
+public class DiscreteTriggeredModelCacheManagerSamza extends LazyTriggeredModelCacheManagerSamza {
 	private static final String WRONG_MODEL_TYPE_ERROR_MSG = String.format(
 			"Model must be of type %s", CategoryRarityModel.class.getSimpleName());
 	private static final String NULL_FEATURE_ERROR_MSG = String.format(
@@ -25,7 +25,7 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 	private static final String WRONG_FEATURE_VALUE_TYPE_ERROR_MSG_FORMAT =
 			"Value of feature %s must be of type " + FeatureStringValue.class.getSimpleName();
 
-	public DiscreteModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
+	public DiscreteTriggeredModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		super(levelDbStoreName, modelConf);
 	}
 
@@ -57,7 +57,7 @@ public class DiscreteModelCacheManagerSamza extends LazyModelCacheManagerSamza {
 
 	private CategoryRarityModel castModel(Model model) {
 		boolean isWrongModelType = CategoryRarityModel.class.isInstance(model);
-		if(isWrongModelType)
+		if(!isWrongModelType)
 		{
 			getMetrics().discreteCacheWrongModelType++;
 			Assert.isTrue(isWrongModelType,WRONG_MODEL_TYPE_ERROR_MSG);

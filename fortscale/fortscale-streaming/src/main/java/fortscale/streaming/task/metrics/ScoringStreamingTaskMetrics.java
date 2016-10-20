@@ -5,7 +5,6 @@ import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
-
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -14,6 +13,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "streaming.scoring.task")
 public class ScoringStreamingTaskMetrics  extends StatsMetricsGroup {
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -46,5 +46,7 @@ public class ScoringStreamingTaskMetrics  extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long calculateScores;
 
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long refreshModelCache;
 }
 

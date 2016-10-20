@@ -10,6 +10,7 @@ import fortscale.ml.model.store.ModelDAO;
 import fortscale.ml.model.store.ModelStore;
 import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.factory.FactoryService;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -25,6 +26,8 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class ModelCacheManagerSamza implements ModelCacheManager {
+	private static final Logger logger = Logger.getLogger(ModelCacheManagerSamza.class);
+
 	private static final String STORE_KEY_SEPARATOR = ".";
 
 	@Value("${fortscale.model.max.sec.diff.before.expired}")
@@ -78,6 +81,14 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		getMetrics().getModel++;
 		ModelDAO returned = getModelDao(feature, context, eventEpochtime);
 		return returned != null ? returned.getModel() : null;
+	}
+
+	@Override
+	public void deleteFromCache(String modelConfName, String contextId) {
+		getMetrics().deleteFromCache++;
+		String storeKey = getStoreKey(modelConfName, contextId);
+		logger.info("deleting key={} from store={}", storeKey, levelDbStoreName);
+		getStore().delete(storeKey);
 	}
 
 	protected ModelDAO getModelDao(Feature feature, Map<String, String> context, long eventEpochtime) {
@@ -138,11 +149,16 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	}
 
 	protected static String getStoreKey(ModelConf modelConf, String contextId) {
+		String modelConfName = modelConf.getName();
 		if (contextId != null) {
-			return StringUtils.join(modelConf.getName(), STORE_KEY_SEPARATOR, contextId);
+			return getStoreKey(contextId, modelConfName);
 		} else {
-			return modelConf.getName();
+			return modelConfName;
 		}
+	}
+
+	private static String getStoreKey(String contextId, String modelConfName) {
+		return StringUtils.join(modelConfName, STORE_KEY_SEPARATOR, contextId);
 	}
 
 	protected ModelsCacheInfo loadModelsCacheInfo(String contextId) {

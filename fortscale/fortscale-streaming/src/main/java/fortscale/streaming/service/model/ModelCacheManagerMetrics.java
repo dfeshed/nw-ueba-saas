@@ -12,6 +12,7 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "streaming.model.cache-service")
 public class ModelCacheManagerMetrics extends StatsMetricsGroup {
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -68,6 +69,9 @@ public class ModelCacheManagerMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long discreteCacheWrongFeatureValue;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long deleteFromCache;
 
 
 }

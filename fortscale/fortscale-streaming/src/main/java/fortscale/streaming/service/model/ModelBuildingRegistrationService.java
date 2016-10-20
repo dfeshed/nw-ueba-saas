@@ -76,7 +76,7 @@ public class ModelBuildingRegistrationService {
 		String modelConfName = modelBuildingCommandMessage.getModelConfName();
 		Long endTimeSec = modelBuildingCommandMessage.getEndTimeInSeconds();
 
-		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName)) {
+		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
 			metrics.processed++;
 			getSetMetrics(modelConfName).processed++; // TODO: modelConfName can be "ALL_MODELS" and later on "RAW_EVENT_MODELS" for example
 			Date endTime = endTimeSec < 0 ? null : new Date(convertToMilliSeconds(endTimeSec));

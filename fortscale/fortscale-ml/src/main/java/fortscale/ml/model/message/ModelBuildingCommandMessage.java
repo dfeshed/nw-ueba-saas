@@ -14,7 +14,7 @@ public class ModelBuildingCommandMessage {
 
     private String sessionId;
     private String modelConfName;
-    private long endTimeInSeconds;
+    private Long endTimeInSeconds;
 
     /**
      * Default c'tor
@@ -52,11 +52,11 @@ public class ModelBuildingCommandMessage {
         this.modelConfName = modelConfName;
     }
 
-    public long getEndTimeInSeconds() {
+    public Long getEndTimeInSeconds() {
         return endTimeInSeconds;
     }
 
-    public void setEndTimeInSeconds(long endTimeInSeconds) {
+    public void setEndTimeInSeconds(Long endTimeInSeconds) {
         this.endTimeInSeconds = endTimeInSeconds;
     }
 }

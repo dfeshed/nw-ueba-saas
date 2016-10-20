@@ -1,7 +1,10 @@
 package fortscale.streaming.task;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
 import fortscale.common.event.Event;
 import fortscale.common.event.service.EventService;
+import fortscale.ml.model.message.ModelBuildingStatusMessage;
 import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
@@ -35,6 +38,7 @@ public class ScoringTask extends AbstractStreamTask {
     private Counter processedMessageCount;
     private Counter lastTimestampCount;
     private String modelBuildingControlOutputTopic;
+    private ObjectMapper objectMapper;
 
 
     @Override
@@ -55,21 +59,34 @@ public class ScoringTask extends AbstractStreamTask {
 
         modelBuildingControlOutputTopic = resolver.resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY);
         Assert.hasText(modelBuildingControlOutputTopic);
+
+        objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
     }
 
     @Override
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         String topicName = getIncomingMessageTopicName(envelope);
 
-
-        if(topicName.equals(modelBuildingControlOutputTopic))
-        {
-            // TODO: 10/19/16 update model cache
-        }
         String messageText = (String)envelope.getMessage();
         JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
         Long timestamp = extractTimeStamp(message, messageText);
         taskMetrics.eventsTime = timestamp;
+
+        if(topicName.equals(modelBuildingControlOutputTopic))
+        {
+            handleModelBuildingEvent(messageText, message);
+        }
+        else {
+            handleEventToScore(collector, message, timestamp);
+        }
+
+        // todo: this metric should we removed after DPM is part of ther project
+        processedMessageCount.inc();
+
+        lastTimestampCount.set(timestamp);
+    }
+
+    private void handleEventToScore(MessageCollector collector, JSONObject message, Long timestamp) throws Exception {
         Event event = eventService.createEvent(message);
         StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 
@@ -82,14 +99,32 @@ public class ScoringTask extends AbstractStreamTask {
             taskMetrics.filteredEvents++;
             throw e;
         }
-
         scoringTaskService.sendEventToOutputTopic(collector, message);
         taskMetrics.sentEvents++;
+    }
 
-        // todo: this metric should we removed after DPM is part of ther project
-        processedMessageCount.inc();
-
-        lastTimestampCount.set(timestamp);
+    /**
+     * refreshes model cache if relevant
+     *
+     * @param messageText
+     * @param message
+     * @throws java.io.IOException
+     */
+    private void handleModelBuildingEvent(String messageText, JSONObject message) throws java.io.IOException {
+        // Check that input message is a status message
+        if (message.containsKey(ModelBuildingStatusMessage.CONTEXT_ID_FIELD_NAME)) {
+            ModelBuildingStatusMessage modelBuildingStatusMessage =
+                    objectMapper.readValue(messageText, ModelBuildingStatusMessage.class);
+            if (modelBuildingStatusMessage.isSuccessful()) {
+                taskMetrics.refreshModelCache++;
+                scoringTaskService.refreshModelCache(modelBuildingStatusMessage);
+            } else {
+                logger.warn("received modelBuildingStatusMessage with failure status: {} , not updating model cache",
+                        modelBuildingStatusMessage);
+            }
+        } else {
+            logger.debug("received model building summary message={}", message);
+        }
     }
 
     @Override

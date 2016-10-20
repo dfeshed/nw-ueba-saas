@@ -16,10 +16,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.Collections;
@@ -31,7 +28,11 @@ import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
-public class LazyModelCacheManagerSamzaTest {
+@Ignore
+/**
+ * {@link LazyTimedModelCacheManagerSamza} is not used
+ */
+public class LazyTimedModelCacheManagerSamzaTest {
 	private static final String DEFAULT_MODEL_CONF_NAME = "testModelConf";
 	private static final String DEFAULT_SESSION_ID = "testSession";
 	private static final String NORMALIZED_USERNAME_CONTEXT = "normalized_username";
@@ -71,7 +72,7 @@ public class LazyModelCacheManagerSamzaTest {
 		when(dataRetrieverFactoryService.getProduct(eq(retrieverConf))).thenReturn(retriever);
 		when(modelConf.getName()).thenReturn(DEFAULT_MODEL_CONF_NAME);
 		when(modelConf.getDataRetrieverConf()).thenReturn(retrieverConf);
-		modelCacheManager = new LazyModelCacheManagerSamza(storeName, modelConf);
+		modelCacheManager = new LazyTimedModelCacheManagerSamza(storeName, modelConf);
 	}
 
 	@Test
