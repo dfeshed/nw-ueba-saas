@@ -324,18 +324,21 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName1, reg1.getModelConfName());
 		Assert.assertEquals(currentEndTime1, reg1.getPreviousEndTime());
 		Assert.assertEquals(null, reg1.getCurrentEndTime());
+		Assert.assertEquals(emptyExtraParams, reg1.getExtraParams());
 
 		// Assert registration 2
 		Assert.assertEquals(sessionId2, reg2.getSessionId());
 		Assert.assertEquals(modelConfName1, reg2.getModelConfName());
 		Assert.assertEquals(currentEndTime2, reg2.getPreviousEndTime());
 		Assert.assertEquals(null, reg2.getCurrentEndTime());
+		Assert.assertEquals(emptyExtraParams, reg2.getExtraParams());
 
 		// Assert registration 3
 		Assert.assertEquals(sessionId2, reg3.getSessionId());
 		Assert.assertEquals(modelConfName2, reg3.getModelConfName());
 		Assert.assertEquals(currentEndTime2, reg3.getPreviousEndTime());
 		Assert.assertEquals(null, reg3.getCurrentEndTime());
+		Assert.assertEquals(emptyExtraParams, reg3.getExtraParams());
 	}
 
 	private static JSONObject createEvent(String sessionId, String modelConfName, Long endTimeInSeconds, ModelBuildingExtraParams extraParams) throws JsonProcessingException {
