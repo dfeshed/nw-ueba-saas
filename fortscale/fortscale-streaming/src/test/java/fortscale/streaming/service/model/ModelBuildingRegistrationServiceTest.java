@@ -144,6 +144,7 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName1, actualRegistration.getModelConfName());
 		Assert.assertEquals(null, actualRegistration.getPreviousEndTime());
 		Assert.assertEquals(new Date(TimeUnit.SECONDS.toMillis(endTimeInSeconds1)), actualRegistration.getCurrentEndTime());
+		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
 
 		// Assert existing registration
 		actualRegistration = argumentCaptor.getAllValues().get(1);
@@ -151,6 +152,7 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName2, actualRegistration.getModelConfName());
 		Assert.assertEquals(previousEndTime2, actualRegistration.getPreviousEndTime());
 		Assert.assertEquals(new Date(TimeUnit.SECONDS.toMillis(endTimeInSeconds2)), actualRegistration.getCurrentEndTime());
+		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
 	}
 
 	@Test
@@ -190,6 +192,7 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(null, actualRegistration.getPreviousEndTime());
 		Date expectedCurrentEndTime = new Date(TimeUnit.SECONDS.toMillis(endTimeInSeconds));
 		Assert.assertEquals(expectedCurrentEndTime, actualRegistration.getCurrentEndTime());
+		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
 
 		// Assert existing registration
 		actualRegistration = argumentCaptor.getAllValues().get(1);
@@ -197,6 +200,7 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName2, actualRegistration.getModelConfName());
 		Assert.assertEquals(previousEndTime, actualRegistration.getPreviousEndTime());
 		Assert.assertEquals(expectedCurrentEndTime, actualRegistration.getCurrentEndTime());
+		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
 	}
 
 	@Test
@@ -310,9 +314,18 @@ public class ModelBuildingRegistrationServiceTest {
 
 		// Verify interactions
 		verify(modelBuildingStore).getIterator();
-		verify(modelService).process(eq(modelBuildingListener), eq(sessionId1), eq(modelConfName1), eq(previousEndTime1), eq(currentEndTime1));
-		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName1), eq(previousEndTime2), eq(currentEndTime2));
-		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName2), eq(previousEndTime2), eq(currentEndTime2));
+		verify(modelService).process(eq(modelBuildingListener), eq(sessionId1), eq(modelConfName1),
+				eq(previousEndTime1), eq(currentEndTime1), eq(emptyExtraParams.getManagerParams()),
+				eq(emptyExtraParams.getSelectorParams()), eq(emptyExtraParams.getRetrieverParams()),
+				eq(emptyExtraParams.getBuilderParams()));
+		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName1),
+				eq(previousEndTime2), eq(currentEndTime2), eq(emptyExtraParams.getManagerParams()),
+				eq(emptyExtraParams.getSelectorParams()), eq(emptyExtraParams.getRetrieverParams()),
+				eq(emptyExtraParams.getBuilderParams()));
+		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName2),
+				eq(previousEndTime2), eq(currentEndTime2), eq(emptyExtraParams.getManagerParams()),
+				eq(emptyExtraParams.getSelectorParams()), eq(emptyExtraParams.getRetrieverParams()),
+				eq(emptyExtraParams.getBuilderParams()));
 		verify(modelBuildingStore).storeRegistration(eq(reg1));
 		verify(modelBuildingStore).storeRegistration(eq(reg2));
 		verify(modelBuildingStore).storeRegistration(eq(reg3));

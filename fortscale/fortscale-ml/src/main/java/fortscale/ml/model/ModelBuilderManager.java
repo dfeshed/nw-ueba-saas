@@ -16,9 +16,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
@@ -56,7 +54,10 @@ public class ModelBuilderManager {
         metrics = new ModelBuilderManagerMetrics(statsService, modelConf.getName());
     }
 
-    public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
+    public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime,
+                        Date currentEndTime, Map<String, String> managerParams,
+                        Map<String, String> selectorParams, Map<String, String> retrieverParams,
+                        Map<String, String> builderParams) {
         Assert.notNull(currentEndTime);
         List<String> contextIds;
 
@@ -76,7 +77,12 @@ public class ModelBuilderManager {
                 previousEndTime = new Date(currentEndTime.getTime() - TimeUnit.SECONDS.toMillis(selectorDeltaInSeconds));
             }
 
-            contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
+            contextIds = contextSelector.getContexts(previousEndTime, currentEndTime, selectorParams);
+            if (contextIds == null) {
+                logger.info("selector chose to ignore model building request");
+                metrics.selectorIgnoreRequest++;
+                contextIds = Collections.emptyList();
+            }
         } else {
             metrics.processWithNoContextSelector++;
             contextIds = new ArrayList<>();

@@ -139,7 +139,7 @@ public class ModelBasedScoreMapperFactoryTest {
 				});
 		if (!isGlobal) {
 			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(), factoryConfig ->
-					(startTime, endTime) -> Collections.singletonList("some_user_context"));
+					(startTime, endTime, extraParams) -> Collections.singletonList("some_user_context"));
 		}
 
 		when(featureExtractService.extract(Mockito.anySetOf(String.class), Mockito.any(Event.class)))

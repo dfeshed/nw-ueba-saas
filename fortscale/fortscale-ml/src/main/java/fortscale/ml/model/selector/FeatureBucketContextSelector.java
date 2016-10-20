@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class FeatureBucketContextSelector implements IContextSelector {
@@ -25,7 +26,10 @@ public class FeatureBucketContextSelector implements IContextSelector {
 		validate(config);
 	}
 	@Override
-	public List<String> getContexts(Date startTime, Date endTime) {
+	public List<String> getContexts(Date startTime, Date endTime, Map<String, String> extraParams) {
+		if (!extraParams.isEmpty()) {
+			return null;
+		}
 		return featureBucketsReaderService.findDistinctContextByTimeRange(
 				featureBucketConf, startTime.getTime(), endTime.getTime());
 	}

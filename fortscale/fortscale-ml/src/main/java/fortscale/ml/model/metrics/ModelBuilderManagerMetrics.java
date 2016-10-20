@@ -41,6 +41,9 @@ public class ModelBuilderManagerMetrics extends StatsMetricsGroup {
 	public long contextIds;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long selectorIgnoreRequest;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long successes;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)

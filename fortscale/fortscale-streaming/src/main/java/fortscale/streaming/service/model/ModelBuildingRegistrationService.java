@@ -131,8 +131,17 @@ public class ModelBuildingRegistrationService {
 					metrics.pendingRegistrations++;
 					getSetMetrics(reg.getModelConfName()).pendingRegistrations++;
 				} else {
-					modelService.process(modelBuildingListener, reg.getSessionId(), reg.getModelConfName(),
-							reg.getPreviousEndTime(), reg.getCurrentEndTime());
+					modelService.process(
+							modelBuildingListener,
+							reg.getSessionId(),
+							reg.getModelConfName(),
+							reg.getPreviousEndTime(),
+							reg.getCurrentEndTime(),
+							reg.getExtraParams().getManagerParams(),
+							reg.getExtraParams().getSelectorParams(),
+							reg.getExtraParams().getRetrieverParams(),
+							reg.getExtraParams().getBuilderParams()
+					);
 					metrics.handledRegistrations++;
 					getSetMetrics(reg.getModelConfName()).handledRegistrations++;
 					getSetMetrics(reg.getModelConfName()).lastHandledEndTime = convertToSeconds(reg.getCurrentEndTime());
