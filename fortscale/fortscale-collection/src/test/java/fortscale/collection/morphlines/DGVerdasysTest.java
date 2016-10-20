@@ -125,5 +125,16 @@ public class DGVerdasysTest {
         morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
     }
 
+    @Test
+    public void test_replace_account_name_with_machine_name() {
+
+
+        String testCase = "Test file type creation";
+        String inputLine = "2016.04.04,4/4/2016 9:31:15 AM,4/4/2016 1:31:15 PM,trustevaluationagent,testMachine@doamin.com,Mac,,,,,,,,1BBB8272-F253-467A-8141-9F35910FDD9D,Verdasys’s Mac\\_trustevaluationagent,,,,,,,Scanned,2/13/2015 6:26:34 PM,Virus Total: 0 / 55 scans positive.,,,,,UNKNOWN_HOST,,,,F19FC0CC-47C4-6545-8151-8BE641A93428,,,2c11f21a29e2f7f7346b2d62afa299af,1af2112c-e229-f7f7-346b-2d62afa299af,Inbound,Device Added,,0,,False,False,False,False,False,True,0,False,0,False,False,False,,,,,,,,,,,,,Not Blocked,0,50744,\\private\\var\\folders\\zz\\zyxvpxvq6csfxvn_n00000t000006h\\C\\mds\\,mdsDirectory.db_,,db_,F19FC0CD-47C4-6545-8151-8BE641A93428,50744,False,,,,,mdsDirectory.db,,\\private\\var\\db\\mds\\system\\,mdsDirectory.db,,db,,False,False,False,0,0,False,False,False,Fixed,,Fixed,,,,,,,\n";
+        String expectedOutput = "2016-04-04 13:31:15,1459776675,testMachine@doamin.com,,,testMachine@doamin.com,,,,,,,,,,1BBB8272-F253-467A-8141-9F35910FDD9D,,trustevaluationagent,0,50744,,Fixed,\\private\\var\\folders\\zz\\zyxvpxvq6csfxvn_n00000t000006h\\C\\mds\\,mdsDirectory.db_,.db_,.db,50744,,,,,,,,,,,Device Added,F19FC0CD-47C4-6545-8151-8BE641A93428,,F19FC0CC-47C4-6545-8151-8BE641A93428,,False,,False,false,false,,,,,mdsDirectory.db,0,,\\private\\var\\db\\mds\\system\\,,Fixed,mdsDirectory.db,,False,false,verd,etl";
+
+        morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+    }
+
 }
 
