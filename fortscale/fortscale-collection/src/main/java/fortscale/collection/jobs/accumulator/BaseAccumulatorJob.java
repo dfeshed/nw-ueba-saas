@@ -35,28 +35,24 @@ public abstract class BaseAccumulatorJob extends FortscaleJob {
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 
         accumulatorManagerParams = new AccumulatorManagerParams();
-        if(map.containsKey(accumulatorFromParam)) {
-            try {
-                accumulatorManagerParams.setFrom(jobDataMapExtension.getJobDataMapInstantValue(map, accumulatorFromParam));
-            }
-            catch (JobExecutionException je )
-            {
-                accumulatorManagerParams.setFrom(null);
-            }
-            catch (DateTimeParseException de)
-            {
-                logger.error("error while parsing param={}",accumulatorFromParam,de);
-                throw de;
-            }
+
+        try {
+            accumulatorManagerParams.setFrom(jobDataMapExtension.getJobDataMapInstantValue(map, accumulatorFromParam, null));
+        } catch (DateTimeParseException de) {
+            logger.error("error while parsing param={}", accumulatorFromParam, de);
+            throw de;
         }
 
-        if(map.containsKey(accumulatorToParam)) {
-            accumulatorManagerParams.setTo(jobDataMapExtension.getJobDataMapInstantValue(map, accumulatorToParam));
+        try {
+            accumulatorManagerParams.setTo(jobDataMapExtension.getJobDataMapInstantValue(map, accumulatorToParam, null));
+        } catch (DateTimeParseException de) {
+            logger.error("error while parsing param={}", accumulatorToParam, de);
+            throw de;
         }
 
-        if(map.containsKey(accumulatorFeatureNamesParam))
+        String featuresStringValue = jobDataMapExtension.getJobDataMapStringValue(map, accumulatorFeatureNamesParam,null);
+        if(featuresStringValue!=null)
         {
-            String featuresStringValue = jobDataMapExtension.getJobDataMapStringValue(map, accumulatorFeatureNamesParam);
             Set<String> features = new HashSet(Arrays.asList(featuresStringValue.split(accumulatorFeatureNamesDelimiter)));
             accumulatorManagerParams.setFeatures(features);
         }

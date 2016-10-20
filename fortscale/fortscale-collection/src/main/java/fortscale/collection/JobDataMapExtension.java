@@ -60,11 +60,14 @@ public class JobDataMapExtension implements ApplicationContextAware{
 		return value;
 	}
 
-	public Instant getJobDataMapInstantValue(JobDataMap map,String key)  throws JobExecutionException
+	public Instant getJobDataMapInstantValue(JobDataMap map, String key, Instant defaultValue)
 	{
-		String jobDataMapStringValue = getJobDataMapStringValue(map, key);
+		if (!map.containsKey(key))
+			return defaultValue;
 
-		return Instant.parse(jobDataMapStringValue);
+		String value = map.getString(key);
+
+		return Instant.parse(value);
 	}
 
 	/**
