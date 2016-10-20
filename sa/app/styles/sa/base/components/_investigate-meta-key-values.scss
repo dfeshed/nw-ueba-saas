@@ -63,9 +63,14 @@ $investigateMetaKeyToggleWidth: 1rem;
     padding: rsa-whitespace(least) 0;
     margin: 0 rsa-whitespace(less) rsa-whitespace(least) 0;
     line-height: 1.35rem;
+    cursor: pointer;
 
     &-metric {
       margin-left: rsa-whitespace(least);
+    }
+
+    &.is-context-lookup-enabled {
+      font-weight: bold;
     }
   }
 

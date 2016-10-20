@@ -2,7 +2,8 @@ import Ember from 'ember';
 import safeCallback from 'component-lib/utils/safe-callback';
 import computed from 'ember-computed-decorators';
 import { metaValueAlias } from 'sa/helpers/meta-value-alias';
-import { select } from 'd3-selection';
+import { select, event } from 'd3-selection';
+import entityTypeByMeta from 'sa/utils/context/entity-type-by-meta';
 
 const {
   merge,
@@ -102,8 +103,9 @@ export default Component.extend({
     const {
       'groupKey.name': groupKeyName,
       clickValueAction,
+      contextLookupAction,
       resolvedData: data
-    } = this.getProperties('groupKey.name', 'clickValueAction', 'resolvedData');
+    } = this.getProperties('groupKey.name', 'clickValueAction', 'contextLookupAction', 'resolvedData');
 
     const $root = select($el[0]);
 
@@ -123,6 +125,28 @@ export default Component.extend({
       .on('click', (d) => {
         this.send('safeCallback', clickValueAction, groupKeyName, d.value);
       });
+
+    // If the meta key corresponds to a known entity, enable context lookup on that meta value:
+    // that is, wire up the `contextLookupAction` to some DOM event on the meta value DOM.
+    // The UX design for the DOM interaction is still in progress; for now, wire it up to right-mouse click.
+    const entityType = entityTypeByMeta(groupKeyName) || {};
+    const { name: entityTypeName } = entityType;
+
+    if (entityTypeName) {
+      $enter
+        .classed('is-context-lookup-enabled', true)
+        .on('contextmenu', (d) => {
+          this.send('safeCallback', contextLookupAction, entityTypeName, d.value);
+          // prevent browser from showing native RMC menu
+          event.preventDefault();
+          // prevent browser from doing native text "highlighting"
+          try {
+            window.getSelection().removeAllRanges();
+          } catch (e) {
+            // browser doesn't support selection API; no harm done; swallow err
+          }
+        });
+    }
 
     $enter.append('span')
       .classed('rsa-investigate-meta-key-values__value-label', true)

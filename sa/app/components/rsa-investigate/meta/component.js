@@ -117,6 +117,13 @@ export default Component.extend({
   clickValueAction: undefined,
 
   /**
+   * Configurable callback to be invoked whenever user requests a context lookup on a meta value.
+   * @type {function}
+   * @public
+   */
+  contextLookupAction: undefined,
+
+  /**
    * The meta group for user to browse.
    * @type {{ keys: object[]}}
    * @public

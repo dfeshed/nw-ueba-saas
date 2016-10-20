@@ -28,6 +28,7 @@ export default Mixin.create({
         total
       });
       this.send('metaPanelSize', 'min');
+      this.send('contextPanelClose');
     },
 
     /**
