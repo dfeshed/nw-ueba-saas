@@ -38,15 +38,11 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		super(config);
 		String entityEventConfName = config.getEntityEventConfName();
 		entityEventConf = entityEventConfService.getEntityEventConf(entityEventConfName);
-		validate(config);
-		jokerFunction = getJokerFunction();
-		metrics = new EntityEventValueRetrieverMetrics(statsService, entityEventConfName, isAccumulation);
-	}
-
-	private void validate(AbstractEntityEventValueRetrieverConf config) {
 		if (entityEventConf == null) {
 			throw new InvalidEntityEventConfNameException(config.getEntityEventConfName());
 		}
+		jokerFunction = getJokerFunction();
+		metrics = new EntityEventValueRetrieverMetrics(statsService, entityEventConfName, isAccumulation);
 	}
 
 	@Override
