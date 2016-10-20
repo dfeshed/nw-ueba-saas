@@ -1193,7 +1193,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames, Set<String> relevantUsers) {
 		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
 
-		return userRepository.updateTagsByFilter(addTag, tagNames, criteriaList);
+		return userRepository.updateTagsByFilter(addTag, tagNames, criteriaList, userRestFilter.getUserTags());
 	}
 
 	@Override

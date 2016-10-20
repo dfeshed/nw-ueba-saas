@@ -265,8 +265,7 @@ import java.util.Set;
 			return 0;
 		}
 
-		userService.updateTags(userRestFilter, addTag, tagNames, relevantUsers);
-		return countUsersByFilter(userRestFilter);
+		return	userService.updateTags(userRestFilter, addTag, tagNames, relevantUsers);
 	}
 
 	@Override

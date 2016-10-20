@@ -130,6 +130,6 @@ public interface UserRepositoryCustom {
 
     List getDistinctFieldValues(String fieldName);
 
-	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList);
+	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags);
 }
 
