@@ -1,5 +1,7 @@
 package fortscale.streaming.service.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
@@ -14,7 +16,9 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -32,6 +36,8 @@ public class ModelBuildingRegistrationServiceTest {
 	private IModelBuildingListener modelBuildingListener;
 	private ModelBuildingSamzaStore modelBuildingStore;
 	private ModelBuildingRegistrationService regService;
+	private ModelBuildingExtraParams emptyExtraParams = new ModelBuildingExtraParams(
+			Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -49,8 +55,7 @@ public class ModelBuildingRegistrationServiceTest {
 	}
 
 	@Test
-	public void registration_service_should_filter_all_models_by_not_regex()
-	{
+	public void registration_service_should_filter_all_models_by_not_regex() throws IOException {
 		regService =  new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore,"^(?!entity).*");
 		// For one session, register all models
 		String sessionId = "mySession";
@@ -70,18 +75,17 @@ public class ModelBuildingRegistrationServiceTest {
 		// Second model is already registered
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2))).thenReturn(existingRegistration);
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, emptyExtraParams);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, emptyExtraParams));
 		verify(modelBuildingStore,times(1)).storeRegistration(any(ModelBuildingRegistration.class));
 
 	}
 
 	@Test
-	public void registration_service_should_filter_all_models_by_regex()
-	{
+	public void registration_service_should_filter_all_models_by_regex() throws IOException {
 		regService =  new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore,"^entity_.*");
 		// For one session, register all models
 		String sessionId = "mySession";
@@ -101,17 +105,17 @@ public class ModelBuildingRegistrationServiceTest {
 		// Second model is already registered
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2))).thenReturn(existingRegistration);
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, emptyExtraParams);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, emptyExtraParams));
 		verify(modelBuildingStore,times(1)).storeRegistration(any(ModelBuildingRegistration.class));
 
 	}
 
 	@Test
-	public void registration_service_should_process_an_event_for_one_session_and_one_model_conf_correctly() {
+	public void registration_service_should_process_an_event_for_one_session_and_one_model_conf_correctly() throws IOException {
 		// New registration
 		String sessionId1 = "mySession1";
 		String modelConfName1 = "myModelConf1";
@@ -123,12 +127,12 @@ public class ModelBuildingRegistrationServiceTest {
 		Date previousEndTime2 = new Date();
 		Date currentEndTime2 = new Date();
 		long endTimeInSeconds2 = 2000;
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2);
-		when(modelBuildingStore.getRegistration(eq(sessionId2), eq(modelConfName2))).thenReturn(existingRegistration);
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, emptyExtraParams);
+		when(modelBuildingStore.getRegistration(eq(sessionId2), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId1, modelConfName1, endTimeInSeconds1));
-		regService.process(createEvent(sessionId2, modelConfName2, endTimeInSeconds2));
+		regService.process(createEvent(sessionId1, modelConfName1, endTimeInSeconds1, emptyExtraParams));
+		regService.process(createEvent(sessionId2, modelConfName2, endTimeInSeconds2, emptyExtraParams));
 
 		// Captor arguments
 		ArgumentCaptor<ModelBuildingRegistration> argumentCaptor = ArgumentCaptor.forClass(ModelBuildingRegistration.class);
@@ -150,7 +154,7 @@ public class ModelBuildingRegistrationServiceTest {
 	}
 
 	@Test
-	public void registration_service_should_process_an_event_for_one_session_and_all_model_confs_correctly() {
+	public void registration_service_should_process_an_event_for_one_session_and_all_model_confs_correctly() throws IOException {
 		// For one session, register all models
 		String sessionId = "mySession";
 		String modelConfName = "all_models";
@@ -169,11 +173,11 @@ public class ModelBuildingRegistrationServiceTest {
 		// Second model is already registered
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2))).thenReturn(existingRegistration);
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, emptyExtraParams);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, emptyExtraParams));
 
 		// Captor arguments
 		ArgumentCaptor<ModelBuildingRegistration> argumentCaptor = ArgumentCaptor.forClass(ModelBuildingRegistration.class);
@@ -196,43 +200,43 @@ public class ModelBuildingRegistrationServiceTest {
 	}
 
 	@Test
-	public void registration_service_should_ignore_event_with_invalid_session_id() {
-		regService.process(createEvent("", "myModelConf", 4000L));
+	public void registration_service_should_ignore_event_with_invalid_session_id() throws IOException {
+		regService.process(createEvent("", "myModelConf", 4000L, emptyExtraParams));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_ignore_event_with_invalid_model_conf_name() {
-		regService.process(createEvent("mySession", "   ", 5000L));
+	public void registration_service_should_ignore_event_with_invalid_model_conf_name() throws IOException {
+		regService.process(createEvent("mySession", "   ", 5000L, emptyExtraParams));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_ignore_event_with_invalid_end_time() {
-		regService.process(createEvent("mySession", "myModelConf", null));
+	public void registration_service_should_ignore_event_with_invalid_end_time() throws IOException {
+		regService.process(createEvent("mySession", "myModelConf", null, emptyExtraParams));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_delete_one_registration() {
+	public void registration_service_should_delete_one_registration() throws IOException {
 		// Arrange
 		String sessionId = "mySession";
 		String modelConfName = "myModelConf";
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, -1L));
+		regService.process(createEvent(sessionId, modelConfName, -1L, emptyExtraParams));
 
 		// Assert
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName), eq(emptyExtraParams));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_delete_all_registrations_for_one_session() {
+	public void registration_service_should_delete_all_registrations_for_one_session() throws IOException {
 		// Arrange
 		String sessionId = "mySession";
 		String modelConfName = "ALL_MODELS";
@@ -246,12 +250,12 @@ public class ModelBuildingRegistrationServiceTest {
 		when(modelConfService.getModelConfs()).thenReturn(Arrays.asList(modelConf1, modelConf2));
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, -100L));
+		regService.process(createEvent(sessionId, modelConfName, -100L, emptyExtraParams));
 
 		// Assert
 		verify(modelConfService).getModelConfs();
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName1));
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName2));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName1), eq(emptyExtraParams));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
@@ -268,11 +272,11 @@ public class ModelBuildingRegistrationServiceTest {
 		final Date currentEndTime1 = new Date(3000);
 		final Date currentEndTime2 = new Date(4000);
 
-		final ModelBuildingRegistration reg1 = new ModelBuildingRegistration(sessionId1, modelConfName1, previousEndTime1, currentEndTime1);
+		final ModelBuildingRegistration reg1 = new ModelBuildingRegistration(sessionId1, modelConfName1, previousEndTime1, currentEndTime1, emptyExtraParams);
 		when(modelBuildingStore.getRegistration(eq(getKey(sessionId1, modelConfName1)))).thenReturn(reg1);
-		final ModelBuildingRegistration reg2 = new ModelBuildingRegistration(sessionId2, modelConfName1, previousEndTime2, currentEndTime2);
+		final ModelBuildingRegistration reg2 = new ModelBuildingRegistration(sessionId2, modelConfName1, previousEndTime2, currentEndTime2, emptyExtraParams);
 		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName1)))).thenReturn(reg2);
-		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2);
+		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, emptyExtraParams);
 		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName2)))).thenReturn(reg3);
 
 		// Imitate iterator
@@ -334,11 +338,12 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(null, reg3.getCurrentEndTime());
 	}
 
-	private static JSONObject createEvent(String sessionId, String modelConfName, Long endTimeInSeconds) {
+	private static JSONObject createEvent(String sessionId, String modelConfName, Long endTimeInSeconds, ModelBuildingExtraParams extraParams) throws JsonProcessingException {
 		JSONObject event = new JSONObject();
 		event.put("sessionId", sessionId);
 		event.put("modelConfName", modelConfName);
 		event.put("endTimeInSeconds", endTimeInSeconds);
+		event.put("extraParams", new ObjectMapper().writeValueAsString(extraParams));
 		return event;
 	}
 

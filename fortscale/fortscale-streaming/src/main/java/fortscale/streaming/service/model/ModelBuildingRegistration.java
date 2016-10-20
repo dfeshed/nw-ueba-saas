@@ -13,18 +13,21 @@ public class ModelBuildingRegistration {
 	private final String modelConfName;
 	private Date previousEndTime;
 	private Date currentEndTime;
+	private ModelBuildingExtraParams extraParams;
 
 	@JsonCreator
 	public ModelBuildingRegistration(
 			@JsonProperty("sessionId") String sessionId,
 			@JsonProperty("modelConfName") String modelConfName,
 			@JsonProperty("previousEndTime") Date previousEndTime,
-			@JsonProperty("currentEndTime") Date currentEndTime) {
+			@JsonProperty("currentEndTime") Date currentEndTime,
+			@JsonProperty("extraParams") ModelBuildingExtraParams extraParams) {
 
 		this.sessionId = sessionId;
 		this.modelConfName = modelConfName;
 		this.previousEndTime = previousEndTime;
 		this.currentEndTime = currentEndTime;
+		this.extraParams = extraParams;
 	}
 
 	public String getSessionId() {
@@ -49,5 +52,9 @@ public class ModelBuildingRegistration {
 
 	public void setCurrentEndTime(Date currentEndTime) {
 		this.currentEndTime = currentEndTime;
+	}
+
+	public ModelBuildingExtraParams getExtraParams() {
+		return extraParams;
 	}
 }

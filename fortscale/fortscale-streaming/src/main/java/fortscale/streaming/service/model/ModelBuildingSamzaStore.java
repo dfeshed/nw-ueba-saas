@@ -7,8 +7,6 @@ import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.util.Assert;
 
-import java.util.Iterator;
-
 public class ModelBuildingSamzaStore {
 	private static final String NULL_VALUE_ERROR_MSG_FORMAT = String.format(
 			"{} iterator indicates that the following key is present in the store, "
@@ -28,24 +26,24 @@ public class ModelBuildingSamzaStore {
 		Assert.notNull(modelBuildingStore);
 	}
 
-	public ModelBuildingRegistration getRegistration(String sessionId, String modelConfName) {
-		return modelBuildingStore.get(getKey(sessionId, modelConfName));
+	public ModelBuildingRegistration getRegistration(String sessionId, String modelConfName, ModelBuildingExtraParams extraParams) {
+		return modelBuildingStore.get(getKey(sessionId, modelConfName, extraParams));
 	}
 
 	public void storeRegistration(ModelBuildingRegistration registration) {
 		if (registration != null) {
-			String key = getKey(registration.getSessionId(), registration.getModelConfName());
+			String key = getKey(registration.getSessionId(), registration.getModelConfName(), registration.getExtraParams());
 			modelBuildingStore.put(key, registration);
 		}
 	}
 
-	public void deleteRegistration(String sessionId, String modelConfName) {
-		modelBuildingStore.delete(getKey(sessionId, modelConfName));
+	public void deleteRegistration(String sessionId, String modelConfName, ModelBuildingExtraParams extraParams) {
+		modelBuildingStore.delete(getKey(sessionId, modelConfName, extraParams));
 	}
 
 
-	private static String getKey(String sessionId, String modelConfName) {
-		return String.format("%s%s%s", sessionId, KEY_DELIMITER, modelConfName);
+	private static String getKey(String sessionId, String modelConfName, ModelBuildingExtraParams extraParams) {
+		return String.format("%s%s%s%d", sessionId, KEY_DELIMITER, modelConfName, extraParams.hashCode());
 	}
 
 	public KeyValueIterator<String, ModelBuildingRegistration> getIterator() {

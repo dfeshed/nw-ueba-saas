@@ -1,5 +1,6 @@
 package fortscale.streaming.service.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -42,6 +44,8 @@ public class ModelBuildingRegistrationService {
 	private String modelConfNameJsonField;
 	@Value("${fortscale.model.build.message.field.end.time.in.seconds}")
 	private String endTimeInSecondsJsonField;
+	@Value("${fortscale.model.build.message.field.extra.params}")
+	private String extraParamsJsonField;
 	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
@@ -71,10 +75,14 @@ public class ModelBuildingRegistrationService {
 		modelService.init();
 	}
 
-	public void process(JSONObject event) {
+	public void process(JSONObject event) throws IOException {
 		String sessionId = event.getAsString(sessionIdJsonField);
 		String modelConfName = event.getAsString(modelConfNameJsonField);
 		Long endTimeSec = ConversionUtils.convertToLong(event.get(endTimeInSecondsJsonField));
+		ModelBuildingExtraParams extraParams = new ObjectMapper().readValue(
+				event.getAsString(extraParamsJsonField),
+				ModelBuildingExtraParams.class
+		);
 
 		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
 			metrics.processed++;
@@ -90,15 +98,15 @@ public class ModelBuildingRegistrationService {
 						Matcher matcher = allModelsFilterRegexPattern.matcher(currentModelConfName);
 						if(matcher.matches())
 						{
-							process(sessionId, currentModelConfName, endTime);
+							process(sessionId, currentModelConfName, endTime, extraParams);
 						}
 					}
 					else {
-						process(sessionId, currentModelConfName, endTime);
+						process(sessionId, currentModelConfName, endTime, extraParams);
 					}
 				}
 			} else {
-				process(sessionId, modelConfName, endTime);
+				process(sessionId, modelConfName, endTime, extraParams);
 			}
 		} else {
 			metrics.ignored++;
@@ -144,18 +152,18 @@ public class ModelBuildingRegistrationService {
 		}
 	}
 
-	private void process(String sessionId, String modelConfName, Date endTime) {
+	private void process(String sessionId, String modelConfName, Date endTime, ModelBuildingExtraParams extraParams) {
 		if (endTime == null) {
-			modelBuildingStore.deleteRegistration(sessionId, modelConfName);
+			modelBuildingStore.deleteRegistration(sessionId, modelConfName, extraParams);
 			metrics.delete++;
 			getSetMetrics(modelConfName).delete++;
 			return;
 		}
 
-		ModelBuildingRegistration registration = modelBuildingStore.getRegistration(sessionId, modelConfName);
+		ModelBuildingRegistration registration = modelBuildingStore.getRegistration(sessionId, modelConfName, extraParams);
 
 		if (registration == null) {
-			registration = new ModelBuildingRegistration(sessionId, modelConfName, null, endTime);
+			registration = new ModelBuildingRegistration(sessionId, modelConfName, null, endTime, extraParams);
 		} else {
 			Date currentEndTime = registration.getCurrentEndTime();
 
