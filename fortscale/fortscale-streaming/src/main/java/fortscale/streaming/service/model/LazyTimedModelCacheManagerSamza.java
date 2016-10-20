@@ -15,7 +15,7 @@ import java.util.Date;
  * is not needed when using {@link fortscale.streaming.service.scorer.ScoringTaskService#refreshModelCache(ModelBuildingStatusMessage)} -
  * since models are deleted from cache when a new model is built, and are lazy loaded by demand
  *
- * should consider in the future if it should be maintained or deleted.
+ * should consider in the future if this class should be maintained/deleted/refactored, if there is still a use for the time logic.
  */
 public class LazyTimedModelCacheManagerSamza extends ModelCacheManagerSamza {
 	@Value("${fortscale.model.wait.sec.between.loads}")
