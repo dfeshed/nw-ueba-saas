@@ -1,10 +1,10 @@
 {{#if session.isAuthenticated}}
-  <hbox class="rsa-protected {{if (and entityId entityType) 'has-entity-info'}}">
-    <vbox class="rsa-protected__outlet">
+  <page class="rsa-protected {{if (and entityId entityType) 'has-entity-info'}}">
+    <page class="rsa-protected__outlet">
       {{outlet}}
-    </vbox>
+    </page>
     <aside class="rsa-protected__aside">
       {{rsa-context-panel entityId=entityId entityType=entityType closePanel=(route-action 'closeContextPanel')}}
     </aside>
-  </hbox>
+  </page>
 {{/if}}
