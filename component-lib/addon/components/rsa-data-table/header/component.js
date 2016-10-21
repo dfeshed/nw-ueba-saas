@@ -27,6 +27,13 @@ export default Component.extend(HasTableParent, {
   translateTitles: false,
 
   /**
+   * @name enableColumnSelector
+   * @description Whether or not to display the column selector icon
+   * @public
+   */
+  enableColumnSelector: false,
+
+  /**
    * Moves this component horizontally so that the children header cells will horizontally align with the
    * rsa-data-table/body's cells as the user scrolls horizontally.
    * @private

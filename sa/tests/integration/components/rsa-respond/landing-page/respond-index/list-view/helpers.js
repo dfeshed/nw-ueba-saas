@@ -3,7 +3,8 @@ import Ember from 'ember';
 const {
   RSVP: {
     Promise
-  }
+  },
+  run
 } = Ember;
 
 /**
@@ -27,7 +28,7 @@ export function waitFor(test, msec = 10, maxWait = 1000) {
 function _testCondition(resolve, test, msec, count, maxCount) {
   let testResult = test();
   if (!testResult && count < maxCount) {
-    setTimeout(function() {
+    run.later(function() {
       count++;
       _testCondition(resolve, test, msec, count, maxCount);
     }, msec);

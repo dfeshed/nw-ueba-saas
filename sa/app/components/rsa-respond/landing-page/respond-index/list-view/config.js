@@ -16,17 +16,15 @@ export const availableColumnsConfig = [
     class: 'rsa-respond-list-incident-id',
     width: '7%',
     dataType: 'text',
-    visible: true,
-    displayIndex: 0
+    visible: true
   }),
   EmberObject.create({
     field: 'name',
     title: 'incident.list.name',
-    minWidth: '35%',
+    width: '35%',
     class: 'rsa-respond-list-name',
     dataType: 'text',
-    visible: true,
-    displayIndex: 1
+    visible: true
   }),
   EmberObject.create({
     field: 'riskScore',
@@ -36,8 +34,7 @@ export const availableColumnsConfig = [
     class: 'rsa-respond-list-riskscore',
     componentClass: 'rsa-content-badge-score',
     isDescending: true,
-    visible: true,
-    displayIndex: 2
+    visible: true
   }),
   EmberObject.create({
     field: 'prioritySort',
@@ -45,8 +42,7 @@ export const availableColumnsConfig = [
     width: '6%',
     class: 'rsa-respond-list-priority',
     dataType: 'text',
-    visible: true,
-    displayIndex: 3
+    visible: true
   }),
   EmberObject.create({
     field: 'statusSort',
@@ -54,8 +50,7 @@ export const availableColumnsConfig = [
     width: '12%',
     class: 'rsa-respond-list-status',
     dataType: 'text',
-    visible: true,
-    displayIndex: 4
+    visible: true
   }),
   EmberObject.create({
     field: 'created',
@@ -64,17 +59,15 @@ export const availableColumnsConfig = [
     class: 'rsa-respond-list-created',
     dataType: 'date-time',
     componentClass: 'rsa-content-datetime',
-    visible: true,
-    displayIndex: 5
+    visible: true
   }),
   EmberObject.create({
     field: 'assigneeFirstLastName',
     title: 'incident.list.assignee',
-    minWidth: '10%',
+    width: '10%',
     class: 'rsa-respond-list-assignee',
     dataType: 'text',
-    visible: true,
-    displayIndex: 6
+    visible: true
   }),
   EmberObject.create({
     field: 'alertCount',
@@ -82,8 +75,7 @@ export const availableColumnsConfig = [
     width: '5%',
     class: 'rsa-respond-list-alertCount',
     dataType: 'text',
-    visible: false,
-    displayIndex: 7
+    visible: false
   }),
   EmberObject.create({
     field: 'sources',
@@ -91,8 +83,7 @@ export const availableColumnsConfig = [
     width: '10%',
     class: 'rsa-respond-list-sources',
     dataType: 'text',
-    visible: false,
-    displayIndex: 8
+    visible: false
   }),
   EmberObject.create({
     field: 'eventCount',
@@ -100,21 +91,22 @@ export const availableColumnsConfig = [
     width: '5%',
     class: 'rsa-respond-list-events',
     dataType: 'text',
-    visible: false,
-    displayIndex: 9
+    visible: false
   }),
   EmberObject.create({
     field: 'groupBySourceIp',
     title: 'incident.fields.groupBySourceIp',
     width: '6%',
     class: 'rsa-respond-list-sourceIps',
-    dataType: 'text'
+    dataType: 'text',
+    visible: false
   }),
   EmberObject.create({
     field: 'groupByDestinationIp',
     title: 'incident.fields.groupByDestinationIp',
     width: '6%',
     class: 'rsa-respond-list-destinationIps',
-    dataType: 'text'
+    dataType: 'text',
+    visible: false
   })
 ];

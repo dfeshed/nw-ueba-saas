@@ -11,6 +11,20 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     padding: rsa-whitespace(less) 0;
     margin: rsa-whitespace(less) 0;
     border-bottom: 1px solid rsa-color(black);
+
+    &__column-selector {
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-left: 1px solid rsa-color(black);
+      padding-left: 0.7rem;
+      width: 1.5rem;
+      height: 1.55rem;
+      padding-top: 0.6rem;
+      z-index: 99;
+      background-image: $applicationBodyBackgroundImage;
+      background-color: $applicationBodyBackgroundColor;
+    }
   }
 
   &-body {

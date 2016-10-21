@@ -16,7 +16,6 @@ $userPreferencesPanelHeaderBackgroundColor: rsa-color(blue);
 
 $applicationContentBlur: rsa-whitespace(least);
 
-$applicationModalBorderColor: ;
 $applicationModalBackgroundColor: rsa-color(gray, darkest);
 $applicationModalTypeColor: rsa-color(gray, lightest);
 $applicationModalBorderColor: rsa-color(black);
@@ -38,6 +37,12 @@ $applicationLoaderColor: rsa-color(gray, darker);
 $applicationLoaderColorAlt: rsa-color(blue);
 $applicationLoaderLabelColor: rsa-color(gray, lightest);
 
+$applicationBodyBackgroundImage: radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
+                     radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
+                     radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
+                     radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%);
+$applicationBodyBackgroundColor: rsa-color(gray, dark);
+
 @mixin global-nav() {
   position: fixed;
   left: 0;
@@ -52,11 +57,8 @@ body, html {
 }
 
 body {
-  background-image: radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
-                     radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
-                     radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
-                     radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%);
-  background-color: rsa-color(gray, dark);
+  background-image: $applicationBodyBackgroundImage;
+  background-color: $applicationBodyBackgroundColor;
 
   background-repeat: no-repeat;
   background-position: center center;

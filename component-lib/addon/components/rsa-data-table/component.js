@@ -8,10 +8,12 @@ const {
   set,
   Component,
   $,
-  Object: EmberObject
+  Object: EmberObject,
+  run
 } = Ember;
 
 const DEFAULT_COLUMN_WIDTH = 100;
+const DEFAULT_COLUMN_VISIBILITY = true;
 
 export default Component.extend(DomWatcher, {
   tagName: 'section',
@@ -134,6 +136,8 @@ export default Component.extend(DomWatcher, {
    * to `rsa-data-table/body-cell` if not provided. The component will be assigned 2 attributes at render time: `item`
    * (the data record from `items` to be rendered) and `column` (this column configuration object which corresponds
    * to the column to be rendered).
+   * (v) `visible=true`: Optional. If false the column is not selected in the column-selector dialog. Only used if `{{rsa-data-table/header}}` is included
+   * in the `{{#rsa-data-table}}` block with `enableColumnSelector=true`).
    * @type {string|string[]|object[]}
    * @public
    */
@@ -160,8 +164,12 @@ export default Component.extend(DomWatcher, {
     if (typeof columnsConfig === 'string') {
       columnsConfig = columnsConfig.split(',');
     }
-    return (columnsConfig && columnsConfig.map) ?
-      columnsConfig.map((cfg) => {
+
+    if (!columnsConfig || !columnsConfig.map) {
+      return [];
+    } else {
+      let lastAddedColumnIndex = 0;
+      let columns = columnsConfig.map((cfg) => {
         if (typeof cfg === 'string') {
           let [ field, title ] = cfg.split(':');
           cfg = { field, title };
@@ -171,12 +179,62 @@ export default Component.extend(DomWatcher, {
           if (isEmpty(get(column, 'width'))) {
             set(column, 'width', DEFAULT_COLUMN_WIDTH);
           }
+          if (isEmpty(get(column, 'visible'))) {
+            set(column, 'visible', DEFAULT_COLUMN_VISIBILITY);
+          }
+
+          set(column, 'displayIndex', lastAddedColumnIndex++);
+
+          column.reopen({
+            selected: computed({
+              get: () => column.get('visible'),
+              set: (key, value) => {
+                run.once(() => {
+                  let allColumns = this.get('columns');
+                  if (value === true) {
+                    // Newest selected columns are added at the end of the list table
+                    allColumns.removeObject(column);
+                    allColumns.addObject(column);
+                  } else {
+                    // When unselecting columns we make sure that at least one colum remains visible
+                    let visibleColumnsLength = allColumns.filterBy('visible', true).length;
+                    if (visibleColumnsLength === 1) {
+                      column.set('selected', true);
+                      return value;
+                    }
+                  }
+                  column.set('visible', value);
+                });
+                return value;
+              }
+            })
+          });
           return column;
         } else {
           return null;
         }
-      }).compact() : [];
+      });
+      return columns.compact();
+    }
   }).readOnly(),
+
+  /**
+   * @name visibleColumns
+   * @description Returns a list of visible and sorted columns
+   * @public
+   */
+  visibleColumns: computed('columns.@each.selected', function() {
+    return this.get('columns').filterBy('selected', true);
+  }),
+
+  /**
+   * @description Returns a list of all columns sorted by its default order regardless if the user moved columns,
+   * nor changed selected columns
+   * @public
+   */
+  sortedColumns: computed('columns.@each.displayIndex', function() {
+    return this.get('columns').sortBy('displayIndex');
+  }),
 
   actions: {
     /**

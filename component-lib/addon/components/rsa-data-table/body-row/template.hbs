@@ -6,7 +6,7 @@
 {{else}}
 
   {{!assume the consumer provided a block with a single table cell; iterate it for each column}}
-  {{#each table.columns as |column|}}
+  {{#each table.visibleColumns as |column|}}
     {{yield item index column}}
   {{/each}}
 

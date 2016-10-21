@@ -36,21 +36,8 @@
   {{/rsa-application-layout-panel}}
 
   {{#rsa-application-layout-panel class="panel-B"}}
-    {{#rsa-content-help-trigger tooltip='selectColumnTooltip' class='rsa-respond-list__select-columns'}}
-      {{rsa-icon name='cog' style='filled'}}
-    {{/rsa-content-help-trigger}}
-    {{#rsa-content-tooltip position='bottom' tooltipId='selectColumnTooltip'}}
-      <section>
-        {{#each allColumns as |column|}}
-          {{rsa-form-checkbox
-            class=(concat 'column-selection-' column.field)
-            value=column.selected
-            label=(t column.title)}}
-        {{/each}}
-      </section>
-    {{/rsa-content-tooltip}}
-    {{#rsa-data-table lazy=true onRowClick=(route-action "gotoIncidentDetail") items=allIncidents.results columnsConfig=incidentListConfig}}
-      {{#rsa-data-table/header as |column|}}
+    {{#rsa-data-table lazy=true onRowClick=(route-action "gotoIncidentDetail") items=allIncidents.results columnsConfig=availableColumnsConfig}}
+      {{#rsa-data-table/header enableColumnSelector=true as |column|}}
         <span class="title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">
           {{#if column.headerComponentClass}}
             {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column

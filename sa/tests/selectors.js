@@ -138,7 +138,7 @@ export default Ember$.extend({}, BaseSelectors, {
         'globalCatNameElm': '.rsa-content-accordion',
         'catNameElm': '.rsa-content-tree__child-label',
         'catTreeElm': '.rsa-content-tree__tree-container',
-        'addRemoveColIcon': '.rsa-respond-list__select-columns .rsa-icon',
+        'addRemoveColIcon': '.rsa-data-table-header__column-selector .rsa-icon',
         'riskScoreColChkBox': '.column-selection-riskScore .inner-wrapper',
         'idColChkBox': '.column-selection-id .inner-wrapper',
         'nameColChkBox': '.column-selection-name .inner-wrapper',

@@ -1,3 +1,22 @@
+{{#if enableColumnSelector}}
+
+  {{#rsa-content-help-trigger tooltip='columnSelectorTooltip' class='rsa-data-table-header__column-selector'}}
+    {{rsa-icon name='cog' style='filled'}}
+  {{/rsa-content-help-trigger}}
+
+  {{#rsa-content-tooltip position='bottom' tooltipId='columnSelectorTooltip'}}
+    <section>
+      {{#each table.sortedColumns as |column|}}
+        {{rsa-form-checkbox
+          class=(concat 'column-selection-' column.field)
+          value=column.selected
+          label=(t column.title)}}
+      {{/each}}
+    </section>
+  {{/rsa-content-tooltip}}
+
+{{/if}}
+
 {{#sortable-group
   tagName="div" class="rsa-data-table-header-row js-header-row" direction="x"
   onChange=(action "reorderColumns" target=table) as |group|}}
@@ -10,7 +29,7 @@
   {{else}}
 
     {{!for each column model, render a header-cell, wrapped in sortable-item so it can be drag-moved}}
-    {{#each table.columns as |column index|}}
+    {{#each table.visibleColumns as |column index|}}
 
       {{!check if the consumer provided a block for the header-cell contents}}
       {{#if hasBlock}}
@@ -42,4 +61,5 @@
     {{/each}}
 
   {{/if}}
+
 {{/sortable-group}}
