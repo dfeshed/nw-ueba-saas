@@ -26,24 +26,24 @@ public class ModelBuildingSamzaStore {
 		Assert.notNull(modelBuildingStore);
 	}
 
-	public ModelBuildingRegistration getRegistration(String sessionId, String modelConfName, ModelBuildingExtraParams extraParams) {
-		return modelBuildingStore.get(getKey(sessionId, modelConfName, extraParams));
+	public ModelBuildingRegistration getRegistration(String sessionId, String modelConfName, boolean selectHighScoreContexts) {
+		return modelBuildingStore.get(getKey(sessionId, modelConfName, selectHighScoreContexts));
 	}
 
 	public void storeRegistration(ModelBuildingRegistration registration) {
 		if (registration != null) {
-			String key = getKey(registration.getSessionId(), registration.getModelConfName(), registration.getExtraParams());
+			String key = getKey(registration.getSessionId(), registration.getModelConfName(), registration.selectHighScoreContexts());
 			modelBuildingStore.put(key, registration);
 		}
 	}
 
-	public void deleteRegistration(String sessionId, String modelConfName, ModelBuildingExtraParams extraParams) {
-		modelBuildingStore.delete(getKey(sessionId, modelConfName, extraParams));
+	public void deleteRegistration(String sessionId, String modelConfName, boolean selectHighScoreContexts) {
+		modelBuildingStore.delete(getKey(sessionId, modelConfName, selectHighScoreContexts));
 	}
 
 
-	private static String getKey(String sessionId, String modelConfName, ModelBuildingExtraParams extraParams) {
-		return String.format("%s%s%s%d", sessionId, KEY_DELIMITER, modelConfName, extraParams.hashCode());
+	private static String getKey(String sessionId, String modelConfName, boolean selectHighScoreContexts) {
+		return String.format("%s%s%s%b", sessionId, KEY_DELIMITER, modelConfName, selectHighScoreContexts);
 	}
 
 	public KeyValueIterator<String, ModelBuildingRegistration> getIterator() {

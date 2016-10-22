@@ -1,7 +1,6 @@
 package fortscale.streaming.service.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
@@ -16,9 +15,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -36,8 +33,6 @@ public class ModelBuildingRegistrationServiceTest {
 	private IModelBuildingListener modelBuildingListener;
 	private ModelBuildingSamzaStore modelBuildingStore;
 	private ModelBuildingRegistrationService regService;
-	private ModelBuildingExtraParams emptyExtraParams = new ModelBuildingExtraParams(
-			Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap(), Collections.emptyMap());
 
 	@BeforeClass
 	public static void setUpClass() {
@@ -55,7 +50,7 @@ public class ModelBuildingRegistrationServiceTest {
 	}
 
 	@Test
-	public void registration_service_should_filter_all_models_by_not_regex() throws IOException {
+	public void registration_service_should_filter_all_models_by_not_regex() throws JsonProcessingException {
 		regService =  new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore,"^(?!entity).*");
 		// For one session, register all models
 		String sessionId = "mySession";
@@ -75,17 +70,18 @@ public class ModelBuildingRegistrationServiceTest {
 		// Second model is already registered
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, emptyExtraParams);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
+		boolean selectHighScoreContexts = false;
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, emptyExtraParams));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts));
 		verify(modelBuildingStore,times(1)).storeRegistration(any(ModelBuildingRegistration.class));
 
 	}
 
 	@Test
-	public void registration_service_should_filter_all_models_by_regex() throws IOException {
+	public void registration_service_should_filter_all_models_by_regex() throws JsonProcessingException {
 		regService =  new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore,"^entity_.*");
 		// For one session, register all models
 		String sessionId = "mySession";
@@ -105,17 +101,18 @@ public class ModelBuildingRegistrationServiceTest {
 		// Second model is already registered
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, emptyExtraParams);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
+		boolean selectHighScoreContexts = false;
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, emptyExtraParams));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts));
 		verify(modelBuildingStore,times(1)).storeRegistration(any(ModelBuildingRegistration.class));
 
 	}
 
 	@Test
-	public void registration_service_should_process_an_event_for_one_session_and_one_model_conf_correctly() throws IOException {
+	public void registration_service_should_process_an_event_for_one_session_and_one_model_conf_correctly() throws JsonProcessingException {
 		// New registration
 		String sessionId1 = "mySession1";
 		String modelConfName1 = "myModelConf1";
@@ -127,12 +124,13 @@ public class ModelBuildingRegistrationServiceTest {
 		Date previousEndTime2 = new Date();
 		Date currentEndTime2 = new Date();
 		long endTimeInSeconds2 = 2000;
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, emptyExtraParams);
-		when(modelBuildingStore.getRegistration(eq(sessionId2), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
+		Boolean selectHighScoreContexts = false;
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, selectHighScoreContexts);
+		when(modelBuildingStore.getRegistration(eq(sessionId2), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId1, modelConfName1, endTimeInSeconds1, emptyExtraParams));
-		regService.process(createEvent(sessionId2, modelConfName2, endTimeInSeconds2, emptyExtraParams));
+		regService.process(createEvent(sessionId1, modelConfName1, endTimeInSeconds1, selectHighScoreContexts));
+		regService.process(createEvent(sessionId2, modelConfName2, endTimeInSeconds2, selectHighScoreContexts));
 
 		// Captor arguments
 		ArgumentCaptor<ModelBuildingRegistration> argumentCaptor = ArgumentCaptor.forClass(ModelBuildingRegistration.class);
@@ -144,7 +142,7 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName1, actualRegistration.getModelConfName());
 		Assert.assertEquals(null, actualRegistration.getPreviousEndTime());
 		Assert.assertEquals(new Date(TimeUnit.SECONDS.toMillis(endTimeInSeconds1)), actualRegistration.getCurrentEndTime());
-		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
+		Assert.assertEquals(selectHighScoreContexts, actualRegistration.selectHighScoreContexts());
 
 		// Assert existing registration
 		actualRegistration = argumentCaptor.getAllValues().get(1);
@@ -152,11 +150,11 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName2, actualRegistration.getModelConfName());
 		Assert.assertEquals(previousEndTime2, actualRegistration.getPreviousEndTime());
 		Assert.assertEquals(new Date(TimeUnit.SECONDS.toMillis(endTimeInSeconds2)), actualRegistration.getCurrentEndTime());
-		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
+		Assert.assertEquals(selectHighScoreContexts, actualRegistration.selectHighScoreContexts());
 	}
 
 	@Test
-	public void registration_service_should_process_an_event_for_one_session_and_all_model_confs_correctly() throws IOException {
+	public void registration_service_should_process_an_event_for_one_session_and_all_model_confs_correctly() throws JsonProcessingException {
 		// For one session, register all models
 		String sessionId = "mySession";
 		String modelConfName = "all_models";
@@ -175,11 +173,12 @@ public class ModelBuildingRegistrationServiceTest {
 		// Second model is already registered
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, emptyExtraParams);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams))).thenReturn(existingRegistration);
+		boolean selectHighScoreContexts = false;
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, emptyExtraParams));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts));
 
 		// Captor arguments
 		ArgumentCaptor<ModelBuildingRegistration> argumentCaptor = ArgumentCaptor.forClass(ModelBuildingRegistration.class);
@@ -192,7 +191,7 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(null, actualRegistration.getPreviousEndTime());
 		Date expectedCurrentEndTime = new Date(TimeUnit.SECONDS.toMillis(endTimeInSeconds));
 		Assert.assertEquals(expectedCurrentEndTime, actualRegistration.getCurrentEndTime());
-		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
+		Assert.assertEquals(selectHighScoreContexts, actualRegistration.selectHighScoreContexts());
 
 		// Assert existing registration
 		actualRegistration = argumentCaptor.getAllValues().get(1);
@@ -200,47 +199,48 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName2, actualRegistration.getModelConfName());
 		Assert.assertEquals(previousEndTime, actualRegistration.getPreviousEndTime());
 		Assert.assertEquals(expectedCurrentEndTime, actualRegistration.getCurrentEndTime());
-		Assert.assertEquals(emptyExtraParams, actualRegistration.getExtraParams());
+		Assert.assertEquals(selectHighScoreContexts, actualRegistration.selectHighScoreContexts());
 	}
 
 	@Test
-	public void registration_service_should_ignore_event_with_invalid_session_id() throws IOException {
-		regService.process(createEvent("", "myModelConf", 4000L, emptyExtraParams));
+	public void registration_service_should_ignore_event_with_invalid_session_id() throws JsonProcessingException {
+		regService.process(createEvent("", "myModelConf", 4000L, false));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_ignore_event_with_invalid_model_conf_name() throws IOException {
-		regService.process(createEvent("mySession", "   ", 5000L, emptyExtraParams));
+	public void registration_service_should_ignore_event_with_invalid_model_conf_name() throws JsonProcessingException {
+		regService.process(createEvent("mySession", "   ", 5000L, false));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_ignore_event_with_invalid_end_time() throws IOException {
-		regService.process(createEvent("mySession", "myModelConf", null, emptyExtraParams));
+	public void registration_service_should_ignore_event_with_invalid_end_time() throws JsonProcessingException {
+		regService.process(createEvent("mySession", "myModelConf", null, false));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_delete_one_registration() throws IOException {
+	public void registration_service_should_delete_one_registration() throws JsonProcessingException {
 		// Arrange
 		String sessionId = "mySession";
 		String modelConfName = "myModelConf";
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, -1L, emptyExtraParams));
+		boolean selectHighScoreContexts = false;
+		regService.process(createEvent(sessionId, modelConfName, -1L, selectHighScoreContexts));
 
 		// Assert
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName), eq(emptyExtraParams));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName), eq(selectHighScoreContexts));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
-	public void registration_service_should_delete_all_registrations_for_one_session() throws IOException {
+	public void registration_service_should_delete_all_registrations_for_one_session() throws JsonProcessingException {
 		// Arrange
 		String sessionId = "mySession";
 		String modelConfName = "ALL_MODELS";
@@ -254,12 +254,13 @@ public class ModelBuildingRegistrationServiceTest {
 		when(modelConfService.getModelConfs()).thenReturn(Arrays.asList(modelConf1, modelConf2));
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, -100L, emptyExtraParams));
+		boolean selectHighScoreContexts = false;
+		regService.process(createEvent(sessionId, modelConfName, -100L, selectHighScoreContexts));
 
 		// Assert
 		verify(modelConfService).getModelConfs();
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName1), eq(emptyExtraParams));
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName2), eq(emptyExtraParams));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName1), eq(selectHighScoreContexts));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
@@ -276,12 +277,13 @@ public class ModelBuildingRegistrationServiceTest {
 		final Date currentEndTime1 = new Date(3000);
 		final Date currentEndTime2 = new Date(4000);
 
-		final ModelBuildingRegistration reg1 = new ModelBuildingRegistration(sessionId1, modelConfName1, previousEndTime1, currentEndTime1, emptyExtraParams);
-		when(modelBuildingStore.getRegistration(eq(getKey(sessionId1, modelConfName1)))).thenReturn(reg1);
-		final ModelBuildingRegistration reg2 = new ModelBuildingRegistration(sessionId2, modelConfName1, previousEndTime2, currentEndTime2, emptyExtraParams);
-		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName1)))).thenReturn(reg2);
-		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, emptyExtraParams);
-		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName2)))).thenReturn(reg3);
+		Boolean selectHighScoreContexts = false;
+		final ModelBuildingRegistration reg1 = new ModelBuildingRegistration(sessionId1, modelConfName1, previousEndTime1, currentEndTime1, selectHighScoreContexts);
+		when(modelBuildingStore.getRegistration(eq(getKey(sessionId1, modelConfName1, selectHighScoreContexts)))).thenReturn(reg1);
+		final ModelBuildingRegistration reg2 = new ModelBuildingRegistration(sessionId2, modelConfName1, previousEndTime2, currentEndTime2, selectHighScoreContexts);
+		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName1, selectHighScoreContexts)))).thenReturn(reg2);
+		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, selectHighScoreContexts);
+		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName2, selectHighScoreContexts)))).thenReturn(reg3);
 
 		// Imitate iterator
 		when(modelBuildingStore.getIterator()).thenReturn(new KeyValueIterator<String, ModelBuildingRegistration>() {
@@ -298,9 +300,9 @@ public class ModelBuildingRegistrationServiceTest {
 			@Override
 			public Entry<String, ModelBuildingRegistration> next() {
 				switch (counter--) {
-					case 3: return new Entry<>(getKey(reg1.getSessionId(), reg1.getModelConfName()), reg1);
-					case 2: return new Entry<>(getKey(reg2.getSessionId(), reg2.getModelConfName()), reg2);
-					case 1: return new Entry<>(getKey(reg3.getSessionId(), reg3.getModelConfName()), reg3);
+					case 3: return new Entry<>(getKey(reg1.getSessionId(), reg1.getModelConfName(), selectHighScoreContexts), reg1);
+					case 2: return new Entry<>(getKey(reg2.getSessionId(), reg2.getModelConfName(), selectHighScoreContexts), reg2);
+					case 1: return new Entry<>(getKey(reg3.getSessionId(), reg3.getModelConfName(), selectHighScoreContexts), reg3);
 					default: return null;
 				}
 			}
@@ -315,17 +317,11 @@ public class ModelBuildingRegistrationServiceTest {
 		// Verify interactions
 		verify(modelBuildingStore).getIterator();
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId1), eq(modelConfName1),
-				eq(previousEndTime1), eq(currentEndTime1), eq(emptyExtraParams.getManagerParams()),
-				eq(emptyExtraParams.getSelectorParams()), eq(emptyExtraParams.getRetrieverParams()),
-				eq(emptyExtraParams.getBuilderParams()));
+				eq(previousEndTime1), eq(currentEndTime1), eq(selectHighScoreContexts));
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName1),
-				eq(previousEndTime2), eq(currentEndTime2), eq(emptyExtraParams.getManagerParams()),
-				eq(emptyExtraParams.getSelectorParams()), eq(emptyExtraParams.getRetrieverParams()),
-				eq(emptyExtraParams.getBuilderParams()));
+				eq(previousEndTime2), eq(currentEndTime2), eq(selectHighScoreContexts));
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName2),
-				eq(previousEndTime2), eq(currentEndTime2), eq(emptyExtraParams.getManagerParams()),
-				eq(emptyExtraParams.getSelectorParams()), eq(emptyExtraParams.getRetrieverParams()),
-				eq(emptyExtraParams.getBuilderParams()));
+				eq(previousEndTime2), eq(currentEndTime2), eq(selectHighScoreContexts));
 		verify(modelBuildingStore).storeRegistration(eq(reg1));
 		verify(modelBuildingStore).storeRegistration(eq(reg2));
 		verify(modelBuildingStore).storeRegistration(eq(reg3));
@@ -337,33 +333,33 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(modelConfName1, reg1.getModelConfName());
 		Assert.assertEquals(currentEndTime1, reg1.getPreviousEndTime());
 		Assert.assertEquals(null, reg1.getCurrentEndTime());
-		Assert.assertEquals(emptyExtraParams, reg1.getExtraParams());
+		Assert.assertEquals(selectHighScoreContexts, reg1.selectHighScoreContexts());
 
 		// Assert registration 2
 		Assert.assertEquals(sessionId2, reg2.getSessionId());
 		Assert.assertEquals(modelConfName1, reg2.getModelConfName());
 		Assert.assertEquals(currentEndTime2, reg2.getPreviousEndTime());
 		Assert.assertEquals(null, reg2.getCurrentEndTime());
-		Assert.assertEquals(emptyExtraParams, reg2.getExtraParams());
+		Assert.assertEquals(selectHighScoreContexts, reg2.selectHighScoreContexts());
 
 		// Assert registration 3
 		Assert.assertEquals(sessionId2, reg3.getSessionId());
 		Assert.assertEquals(modelConfName2, reg3.getModelConfName());
 		Assert.assertEquals(currentEndTime2, reg3.getPreviousEndTime());
 		Assert.assertEquals(null, reg3.getCurrentEndTime());
-		Assert.assertEquals(emptyExtraParams, reg3.getExtraParams());
+		Assert.assertEquals(selectHighScoreContexts, reg3.selectHighScoreContexts());
 	}
 
-	private static JSONObject createEvent(String sessionId, String modelConfName, Long endTimeInSeconds, ModelBuildingExtraParams extraParams) throws JsonProcessingException {
+	private static JSONObject createEvent(String sessionId, String modelConfName, Long endTimeInSeconds, boolean selectHighScoreContexts) throws JsonProcessingException {
 		JSONObject event = new JSONObject();
 		event.put("sessionId", sessionId);
 		event.put("modelConfName", modelConfName);
 		event.put("endTimeInSeconds", endTimeInSeconds);
-		event.put("extraParams", new ObjectMapper().writeValueAsString(extraParams));
+		event.put("selectHighScoreContexts", selectHighScoreContexts ? 1 : 0);
 		return event;
 	}
 
-	private static String getKey(String sessionId, String modelConfName) {
-		return String.format("%s%s%s", sessionId, KEY_DELIMITER, modelConfName);
+	private static String getKey(String sessionId, String modelConfName, boolean selectHighScoreContexts) {
+		return String.format("%s%s%s%b", sessionId, KEY_DELIMITER, modelConfName, selectHighScoreContexts);
 	}
 }

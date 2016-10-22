@@ -35,13 +35,16 @@ public class ModelBuilderManagerMetrics extends StatsMetricsGroup {
 	public long processWithPreviousEndTime;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getContexts;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getHighScoreContexts;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long processWithNoContextSelector;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long contextIds;
-
-	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long selectorIgnoreRequest;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long successes;

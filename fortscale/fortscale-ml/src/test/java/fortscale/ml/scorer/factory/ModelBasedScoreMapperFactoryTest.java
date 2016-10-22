@@ -139,7 +139,17 @@ public class ModelBasedScoreMapperFactoryTest {
 				});
 		if (!isGlobal) {
 			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(), factoryConfig ->
-					(startTime, endTime, extraParams) -> Collections.singletonList("some_user_context"));
+					new IContextSelector() {
+						@Override
+						public List<String> getContexts(Date startTime, Date endTime) {
+							return Collections.singletonList("some_user_context");
+						}
+
+						@Override
+						public List<String> getHighScoreContexts(Date startTime, Date endTime) {
+							return Collections.singletonList("some_user_context");
+						}
+					});
 		}
 
 		when(featureExtractService.extract(Mockito.anySetOf(String.class), Mockito.any(Event.class)))

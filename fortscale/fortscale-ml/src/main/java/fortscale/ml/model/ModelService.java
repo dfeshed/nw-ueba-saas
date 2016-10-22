@@ -29,13 +29,10 @@ public class ModelService {
 
 	public void process(
 			IModelBuildingListener listener, String sessionId, String modelConfName,
-			Date previousEndTime, Date currentEndTime, Map<String, String> managerParams,
-			Map<String, String> selectorParams, Map<String, String> retrieverParams,
-			Map<String, String> builderParams) {
+			Date previousEndTime, Date currentEndTime, boolean selectHighScoreContexts) {
 		ModelBuilderManager modelBuilderManager = modelConfNameToManager.get(modelConfName);
 		if (modelBuilderManager != null) {
-			modelBuilderManager.process(listener, sessionId, previousEndTime, currentEndTime,
-					managerParams, selectorParams, retrieverParams, builderParams);
+			modelBuilderManager.process(listener, sessionId, previousEndTime, currentEndTime, selectHighScoreContexts);
 		} else {
 			logger.error("Ignoring invalid model conf name {}.", modelConfName);
 		}

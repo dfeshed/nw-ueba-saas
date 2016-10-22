@@ -83,7 +83,7 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 		Date startTime = getStartTime(endTime);
 		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(
 				new EntityEventContextSelectorConf(entityEventConfName));
-		List<String> contextIds = contextSelector.getContexts(startTime, endTime, Collections.emptyMap());
+		List<String> contextIds = contextSelector.getContexts(startTime, endTime);
 		metrics.contextIds++;
 		logger.info("Number of contextIds: " + contextIds.size());
 

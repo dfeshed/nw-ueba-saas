@@ -1,6 +1,5 @@
 package fortscale.streaming.service.model;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ModelService;
@@ -18,7 +17,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -44,8 +42,8 @@ public class ModelBuildingRegistrationService {
 	private String modelConfNameJsonField;
 	@Value("${fortscale.model.build.message.field.end.time.in.seconds}")
 	private String endTimeInSecondsJsonField;
-	@Value("${fortscale.model.build.message.field.extra.params}")
-	private String extraParamsJsonField;
+	@Value("${fortscale.model.build.message.field.select.high.score.contexts}")
+	private String selectHighScoreContextsJsonField;
 	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
@@ -75,14 +73,11 @@ public class ModelBuildingRegistrationService {
 		modelService.init();
 	}
 
-	public void process(JSONObject event) throws IOException {
+	public void process(JSONObject event) {
 		String sessionId = event.getAsString(sessionIdJsonField);
 		String modelConfName = event.getAsString(modelConfNameJsonField);
 		Long endTimeSec = ConversionUtils.convertToLong(event.get(endTimeInSecondsJsonField));
-		ModelBuildingExtraParams extraParams = new ObjectMapper().readValue(
-				event.getAsString(extraParamsJsonField),
-				ModelBuildingExtraParams.class
-		);
+		boolean selectHighScoreContexts = !event.getOrDefault(selectHighScoreContextsJsonField, 0).equals(0);
 
 		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
 			metrics.processed++;
@@ -98,15 +93,15 @@ public class ModelBuildingRegistrationService {
 						Matcher matcher = allModelsFilterRegexPattern.matcher(currentModelConfName);
 						if(matcher.matches())
 						{
-							process(sessionId, currentModelConfName, endTime, extraParams);
+							process(sessionId, currentModelConfName, endTime, selectHighScoreContexts);
 						}
 					}
 					else {
-						process(sessionId, currentModelConfName, endTime, extraParams);
+						process(sessionId, currentModelConfName, endTime, selectHighScoreContexts);
 					}
 				}
 			} else {
-				process(sessionId, modelConfName, endTime, extraParams);
+				process(sessionId, modelConfName, endTime, selectHighScoreContexts);
 			}
 		} else {
 			metrics.ignored++;
@@ -137,10 +132,7 @@ public class ModelBuildingRegistrationService {
 							reg.getModelConfName(),
 							reg.getPreviousEndTime(),
 							reg.getCurrentEndTime(),
-							reg.getExtraParams().getManagerParams(),
-							reg.getExtraParams().getSelectorParams(),
-							reg.getExtraParams().getRetrieverParams(),
-							reg.getExtraParams().getBuilderParams()
+							reg.selectHighScoreContexts()
 					);
 					metrics.handledRegistrations++;
 					getSetMetrics(reg.getModelConfName()).handledRegistrations++;
@@ -161,18 +153,18 @@ public class ModelBuildingRegistrationService {
 		}
 	}
 
-	private void process(String sessionId, String modelConfName, Date endTime, ModelBuildingExtraParams extraParams) {
+	private void process(String sessionId, String modelConfName, Date endTime, boolean selectHighScoreContexts) {
 		if (endTime == null) {
-			modelBuildingStore.deleteRegistration(sessionId, modelConfName, extraParams);
+			modelBuildingStore.deleteRegistration(sessionId, modelConfName, selectHighScoreContexts);
 			metrics.delete++;
 			getSetMetrics(modelConfName).delete++;
 			return;
 		}
 
-		ModelBuildingRegistration registration = modelBuildingStore.getRegistration(sessionId, modelConfName, extraParams);
+		ModelBuildingRegistration registration = modelBuildingStore.getRegistration(sessionId, modelConfName, selectHighScoreContexts);
 
 		if (registration == null) {
-			registration = new ModelBuildingRegistration(sessionId, modelConfName, null, endTime, extraParams);
+			registration = new ModelBuildingRegistration(sessionId, modelConfName, null, endTime, selectHighScoreContexts);
 		} else {
 			Date currentEndTime = registration.getCurrentEndTime();
 

@@ -13,7 +13,7 @@ public class ModelBuildingRegistration {
 	private final String modelConfName;
 	private Date previousEndTime;
 	private Date currentEndTime;
-	private ModelBuildingExtraParams extraParams;
+	private boolean selectHighScoreContexts;
 
 	@JsonCreator
 	public ModelBuildingRegistration(
@@ -21,13 +21,15 @@ public class ModelBuildingRegistration {
 			@JsonProperty("modelConfName") String modelConfName,
 			@JsonProperty("previousEndTime") Date previousEndTime,
 			@JsonProperty("currentEndTime") Date currentEndTime,
-			@JsonProperty("extraParams") ModelBuildingExtraParams extraParams) {
-
+			@JsonProperty("selectHighScoreContexts") Boolean selectHighScoreContexts) {
+		if (selectHighScoreContexts == null) {
+			selectHighScoreContexts = false;
+		}
 		this.sessionId = sessionId;
 		this.modelConfName = modelConfName;
 		this.previousEndTime = previousEndTime;
 		this.currentEndTime = currentEndTime;
-		this.extraParams = extraParams;
+		this.selectHighScoreContexts = selectHighScoreContexts;
 	}
 
 	public String getSessionId() {
@@ -54,7 +56,7 @@ public class ModelBuildingRegistration {
 		this.currentEndTime = currentEndTime;
 	}
 
-	public ModelBuildingExtraParams getExtraParams() {
-		return extraParams;
+	public boolean selectHighScoreContexts() {
+		return selectHighScoreContexts;
 	}
 }

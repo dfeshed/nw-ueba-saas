@@ -9,10 +9,9 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 @Configurable(preConstruction = true)
-public class EntityEventContextSelector implements IContextSelector {
+public class EntityEventContextSelector extends AlertTriggeringHighScoreContextSelector {
 	@Autowired
 	private EntityEventConfService entityEventConfService;
 	@Autowired
@@ -30,10 +29,7 @@ public class EntityEventContextSelector implements IContextSelector {
 			throw new InvalidEntityEventConfNameException( config.getEntityEventConfName());
 	}
 	@Override
-	public List<String> getContexts(Date startTime, Date endTime, Map<String, String> extraParams) {
-		if (!extraParams.isEmpty()) {
-			return null;
-		}
+	public List<String> getContexts(Date startTime, Date endTime) {
 		return entityEventDataReaderService.findDistinctContextsByTimeRange(
 				entityEventConf, startTime, endTime);
 	}
