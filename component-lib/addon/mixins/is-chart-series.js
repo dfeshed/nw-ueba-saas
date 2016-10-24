@@ -110,15 +110,19 @@ export default Mixin.create(HasChartParent, {
 
   draw(datum, xAccessor, duration) {
     const pathFn = (datum.length === 1) ? this.get('symbolFn') : this.get('pathFn');
-    const path = select(this.element).datum(datum);
+    const path = select(this.element).datum(datum)
+      .classed('symbol', datum.length === 1 ? true : false);
 
     path.transition().duration(duration)
-      .attr('d', pathFn);
-
-    if (datum.length === 1) {
-      // move single point into position
-      path.classed('symbol', true)
-        .attr('transform', `translate(${xAccessor(datum[0])}, 0)`);
-    }
+      .attr('d', pathFn)
+      .attr('transform', () => {
+        let ret;
+        if (datum.length === 1) {
+          ret = `translate(${xAccessor(datum[0])},0)`;
+        } else {
+          ret = 'translate(0,0)';
+        }
+        return ret;
+      });
   }
 });
