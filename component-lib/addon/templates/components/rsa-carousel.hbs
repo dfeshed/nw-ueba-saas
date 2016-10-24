@@ -1,7 +1,7 @@
 <section class="rsa-carousel__body">
   <nav class="rsa-carousel__arrow js-carousel__arrow">
-    {{#rsa-form-button isDisabled=(unless currentPage.firstItemIndex true) isIconOnly=true}}
-      <span {{action "previousPage"}}>{{rsa-icon name="arrow-left-12" size="large"}}</span>
+    {{#rsa-form-button isDisabled=(unless currentPage.firstItemIndex true) isIconOnly=true defaultAction=(action 'previousPage')}}
+      <span>{{rsa-icon name="arrow-left-12" size="large"}}</span>
     {{/rsa-form-button}}
   </nav>
   <section class="rsa-carousel__viewport">
@@ -21,8 +21,8 @@
     {{/if}}
   </section>
   <nav class="rsa-carousel__arrow js-carousel__arrow">
-    {{#rsa-form-button isDisabled=(unless hasMultiplePages true) isIconOnly=true}}
-      <span {{action "nextPage"}}>{{rsa-icon name="arrow-right-12" size="large"}}</span>
+    {{#rsa-form-button isDisabled=(unless hasMultiplePages true) isIconOnly=true defaultAction=(action 'nextPage')}}
+      <span>{{rsa-icon name="arrow-right-12" size="large"}}</span>
     {{/rsa-form-button}}
   </nav>
 </section>
