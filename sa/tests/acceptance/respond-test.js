@@ -6,6 +6,7 @@ import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import config from 'sa/config/environment';
 import selectors from 'sa/tests/selectors';
 import Ember from 'ember';
+import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
 const { Logger } = Ember;
 
@@ -30,13 +31,9 @@ moduleForAcceptance('Acceptance | respond', {
     server.createList('incidents', 3);
     oldFeatureFlags = config.featureFlags;
   },
-  // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
-  // throw an error when it tries to re-create them.
   afterEach() {
     config.featureFlags = oldFeatureFlags;
-    (window.MockServers || []).forEach((server) => {
-      server.close();
-    });
+    teardownSockets.apply(this, arguments);
   }
 });
 

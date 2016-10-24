@@ -23,9 +23,8 @@ let _clients = {};
 
 /**
  * Requests a client at a given socket server URL.
- * Calling connect again with the same URL will NOT re-use the same client. It will create a new client.
- * We do this (for now, at least) to workaround issues where 2 streams using the same client, and the user cancelled
- * one stream (but not the other), thus disconnecting the client for both streams unintentionally.
+ * Calling connect again with the same URL WILL re-use the same client. In that case, the given `headers` argument
+ * is ignored and the original client's headers are used instead.
  * @param {String} url The server URL.
  * @param {Object} [headers] Optional key-value pairs to be included in the client request's headers.
  * @returns {Promise} A promise that either resolves once the client is made, or rejects if
@@ -34,11 +33,11 @@ let _clients = {};
  * @public
  */
 function connect(url, headers) {
-  let client = Client.create({ url, headers });
-  if (!_clients[url]) {
-    _clients[url] = [];
+  let client = _clients[url];
+  if (!client) {
+    client = Client.create({ url, headers });
+    _clients[url] = client;
   }
-  _clients[url].push(client);
   return client.get('promise');
 }
 
@@ -50,18 +49,21 @@ function connect(url, headers) {
  * @public
  */
 function disconnect(url) {
-  let clients = _clients[url];
-  if (clients) {
+  let client = _clients[url];
+  if (client) {
     delete _clients[url];
-    let promises = clients.map((client) => {
-      return client.disconnect();
-    });
-    return RSVP.all(promises).then(() => {
-      return clients;
-    });
+    return client.disconnect();
   } else {
     return RSVP.resolve([]);
   }
+}
+
+/**
+ * Requests a disconnect from all the registered socket server URLs.
+ * @public
+ */
+function disconnectAll() {
+  Object.keys(_clients).forEach(disconnect);
 }
 
 /**
@@ -124,6 +126,7 @@ class WebsocketConfigurationNotFoundException extends Error {
 export default {
   connect,
   disconnect,
+  disconnectAll,
   createStream,
   _findSocketConfig // exported for testing purposes
 };

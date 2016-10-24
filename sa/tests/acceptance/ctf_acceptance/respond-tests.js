@@ -2,10 +2,13 @@ import { test, skip } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import selectors from 'sa/tests/selectors';
 import Ember from 'ember';
+import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
 const { Logger } = Ember;
 
-moduleForAcceptance('CTF_Acceptance_respond');
+moduleForAcceptance('CTF_Acceptance_respond', {
+  afterEach: teardownSockets
+});
 
 test('Landing Page card components should be displayed on load', function(assert) {
   visit('/do/respond');

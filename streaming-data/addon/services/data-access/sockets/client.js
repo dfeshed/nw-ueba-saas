@@ -212,32 +212,29 @@ export default EmberObject.extend({
    */
   subscribe(destination, callback, headers) {
 
-    // Check for the requested subscription in the cache.
+    // Previously, we checked here for the requested subscription in the cache.
+    // But we are going to stop re-using subscriptions now, so that server requests have
+    // a 1-to-1 mapping with subscriptions, which we hope will allow us to re-use
+    // a single STOMP client for multiple requests to a microservice.
     let me = this;
     let subs = this.get('subscriptions');
-    let sub = subs.find(destination, callback);
+    // STOMP gives us the subscription object.
+    let sub = this.get('stompClient').subscribe(destination, _wrapCallback(callback), headers || {});
 
-    // We don't have this subscription cached, so create it and cache it now.
-    if (!sub) {
+    // We enhance the subscription object with a little extra logic & properties.
+    sub.destination = destination;
+    sub.send = function(h, b, d) {
+      h = h || {};
+      h.id = h.id || sub.id;
+      me.send(d || this.destination, h, b);
+    };
+    let unsub = sub.unsubscribe;
+    sub.unsubscribe = function() {
+      unsub.apply(this, []);
+      me.get('subscriptions').remove(this.destination, this);
+    };
 
-      // STOMP gives us the subscription object.
-      sub = this.get('stompClient').subscribe(destination, _wrapCallback(callback), headers || {});
-
-      // We enhance the subscription object with a little extra logic & properties.
-      sub.destination = destination;
-      sub.send = function(h, b, d) {
-        h = h || {};
-        h.id = h.id || sub.id;
-        me.send(d || this.destination, h, b);
-      };
-      let unsub = sub.unsubscribe;
-      sub.unsubscribe = function() {
-        unsub.apply(this, []);
-        me.get('subscriptions').remove(this.destination, this);
-      };
-
-      subs.add(destination, callback, sub);
-    }
+    subs.add(destination, callback, sub);
     return sub;
   },
 

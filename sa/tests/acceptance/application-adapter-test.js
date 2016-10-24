@@ -4,19 +4,14 @@ import Request from 'sa/services/request';
 import Adapter from 'sa/application/adapter';
 import Store from 'ember-data/store';
 import Ember from 'ember';
+import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
 const {
   Object: EmberObject
 } = Ember;
 
 moduleForAcceptance('Acceptance | application adapter', {
-  // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
-  // throw an error when it tries to re-create them.
-  afterEach() {
-    (window.MockServers || []).forEach((server) => {
-      server.close();
-    });
-  }
+  afterEach: teardownSockets
 });
 
 test('it can redirect calls to a socket and get a response from a mock server 1', function(assert) {

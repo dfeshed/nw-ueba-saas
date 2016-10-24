@@ -245,9 +245,9 @@ export default Mixin.create({
         }
       }
 
-      // Release this STOMP client connection to socket URL.
-      this._websocketClient.disconnect();
-      this._websocketClient = null;
+      // Release this STOMP client subscription, but don't disconnect the STOMP client
+      // because it may be re-used by other requests.
+      this._socketSubscription.unsubscribe();
     }
     return this;
   },

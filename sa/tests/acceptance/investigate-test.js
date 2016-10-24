@@ -2,6 +2,7 @@ import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import selectors from 'sa/tests/selectors';
 import config from 'sa/config/environment';
+import teardownSockets from 'sa/tests/helpers/teardown-sockets';
 
 const navLink = selectors.nav.investigateLink;
 let oldFeatureFlags;
@@ -10,13 +11,9 @@ moduleForAcceptance('Acceptance | investigate', {
   beforeEach() {
     oldFeatureFlags = config.featureFlags;
   },
-  // After each test, destroy the MockServer instances we've created (if any), so that the next test will not
-  // throw an error when it tries to re-create them.
   afterEach() {
     config.featureFlags = oldFeatureFlags;
-    (window.MockServers || []).forEach((server) => {
-      server.close();
-    });
+    teardownSockets.apply(this, arguments);
   }
 });
 
