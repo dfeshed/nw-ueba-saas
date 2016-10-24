@@ -1,6 +1,11 @@
+import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import { scaleLinear } from 'd3-scale';
+
+const {
+  run
+} = Ember;
 
 moduleForComponent('/rsa-line-series', 'Integration | Component | rsa-line-series', {
   integration: true,
@@ -41,7 +46,7 @@ test('generates path when supplied with required attributes', function(assert) {
   this.set('xScale', this.xScale1);
   this.set('yScale', this.yScale1);
   this.render(hbs `{{rsa-line-series data=data xScale=xScale yScale=yScale}}`);
-  setTimeout(function() {
+  run.later(this, function() {
     assert.equal(this.$('.rsa-line-series').attr('d'), 'M0,150L200,75L400,0', 'Testing to see if the correct path was generated');
     done();
   }, 50);
@@ -53,7 +58,7 @@ test('generates path when supplied with multiple series of data', function(asser
   this.set('xScale', this.xScale2);
   this.set('yScale', this.yScale2);
   this.render(hbs `{{rsa-line-series data=data dataIndex=1 xScale=xScale yScale=yScale}}`);
-  setTimeout(function() {
+  run.later(this, function() {
     assert.equal(this.$('.rsa-line-series').attr('d'), 'M0,150L200,75L400,0', 'Testing to see if the correct path was generated for the second data series');
     done();
   }, 50);
@@ -67,7 +72,7 @@ test('generates path when supplied with custom data accessor properties', functi
   this.set('xProp', 'foo');
   this.set('yProp', 'bar');
   this.render(hbs `{{rsa-line-series data=data xProp=xProp yProp=yProp xScale=xScale yScale=yScale}}`);
-  setTimeout(function() {
+  run.later(this, function() {
     assert.equal(this.$('.rsa-line-series').attr('d'), 'M0,150L200,75L400,0', 'Testing to see if the correct path was generated using custom x/y properties');
     done();
   }, 50);
@@ -79,9 +84,29 @@ test('Symbol is drawn when there is only one data point', function(assert) {
   this.set('xScale', this.xScale1);
   this.set('yScale', this.yScale1);
   this.render(hbs `{{rsa-line-series data=data xScale=xScale yScale=yScale}}`);
-  setTimeout(function() {
+  run.later(this, function() {
     // The path below relies on a diamond symbol using the default size
     assert.equal(this.$('.rsa-line-series').attr('d'), 'M0,-5.26429605180997L3.03934274260637,0L0,5.26429605180997L-3.03934274260637,0Z', 'Testing to see if the correct path was generated for one data point');
     done();
+  }, 50);
+});
+
+test('Symbol is drawn/removed when adding one data point, then multiple data points', function(assert) {
+  const done = assert.async();
+  this.set('data', [[{ x: 1, y: 4 }]]);
+  this.set('xScale', this.xScale1);
+  this.set('yScale', this.yScale1);
+  this.render(hbs `{{rsa-line-series data=data xScale=xScale yScale=yScale}}`);
+  run.later(this, function() {
+    assert.equal(this.$('.symbol').length, 1, 'Testing to see if a diamond was generated for one data point');
+    this.set('data', [[
+      { x: 1, y: 4 },
+      { x: 2, y: 5 },
+      { x: 3, y: 6 }
+    ]]);
+    run.later(this, function() {
+      assert.equal(this.$('.symbol').length, 0, 'Testing to see if the diamond class was removed when more data was added');
+      done();
+    }, 50);
   }, 50);
 });
