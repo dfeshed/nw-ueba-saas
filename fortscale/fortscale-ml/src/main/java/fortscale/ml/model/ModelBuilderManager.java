@@ -87,7 +87,10 @@ public class ModelBuilderManager {
         } else {
             metrics.processWithNoContextSelector++;
             contextIds = new ArrayList<>();
-            contextIds.add(null);
+            if (!selectHighScoreContexts) {
+                // global models can operate only on all of the users
+                contextIds.add(null);
+            }
         }
 
         metrics.contextIds += contextIds.size();

@@ -121,6 +121,18 @@ public class ModelBuilderManagerTest {
     }
 
 	@Test
+	public void shouldNotBuildGlobalModelsForHighScoreContexts() {
+		Date currentStartTime = new Date(1420156800000L);
+		Date currentEndTime = new Date(1420156800000L);
+		Model model = mock(Model.class);
+
+		mockBuild(null, currentStartTime, currentEndTime, model, true);
+		new ModelBuilderManager(modelConf).process(null, DEFAULT_SESSION_ID, null, currentEndTime, true);
+
+		verifyNoMoreInteractions(selector, retriever, builder, store);
+	}
+
+	@Test
 	public void shouldBuildAndStoreGlobalModel() {
 		Date currentStartTime = new Date(1420156800000L);
 		Date currentEndTime = new Date(1420156800000L);
