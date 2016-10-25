@@ -1,5 +1,7 @@
 package fortscale.ml.model.message;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * command message that orders ModelBuildingStreamTask to build models (by conf name) via input control topic
  * i.e.
@@ -32,6 +34,15 @@ public class ModelBuildingCommandMessage {
         this.sessionId = sessionId;
         this.modelConfName = modelConfName;
         this.endTimeInSeconds = endTimeInSeconds;
+    }
+
+    /**
+     *
+     * @return ToString you know...
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     // --- Getters/setters ---

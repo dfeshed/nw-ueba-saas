@@ -1,5 +1,7 @@
 package fortscale.ml.model.message;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
  * summarise model building status for model configuration name in a session
  * i.e
@@ -38,6 +40,15 @@ public class ModelBuildingSummaryMessage {
         this.endTimeInSeconds = endTimeInSeconds;
         this.numOfSuccesses = numOfSuccesses;
         this.numOfFailures = numOfFailures;
+    }
+
+    /**
+     *
+     * @return ToString you know...
+     */
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
     }
 
     // --- Getters/setters ---

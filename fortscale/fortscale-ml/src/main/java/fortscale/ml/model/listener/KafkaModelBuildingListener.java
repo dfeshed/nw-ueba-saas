@@ -1,8 +1,10 @@
 package fortscale.ml.model.listener;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.message.ModelBuildingStatusMessage;
 import fortscale.ml.model.message.ModelBuildingSummaryMessage;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -14,6 +16,8 @@ import java.util.Date;
 
 @Configurable(preConstruction = true)
 public class KafkaModelBuildingListener implements IModelBuildingListener {
+
+	private static final Logger logger = Logger.getLogger(KafkaModelBuildingListener.class);
 
 	private SystemStream systemStream;
 	private MessageCollector collector;
@@ -34,13 +38,24 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 				new ModelBuildingStatusMessage(sessionId,modelConfName,
 						TimestampUtils.convertToSeconds(endTime),contextId,isSuccessful,status.getMessage());
 
-		collector.send(new OutgoingMessageEnvelope(systemStream, message));
+		try {
+			String messageJsonString = mapper.writeValueAsString(message);
+			collector.send(new OutgoingMessageEnvelope(systemStream, messageJsonString ));
+		} catch (JsonProcessingException e) {
+			logger.error("error while parsing message={} to json string",message,e);
+		}
 	}
 
 	@Override
 	public void modelBuildingSummary(String modelConfName, String sessionId, Date endTime, long numOfSuccesses, long numOfFailures) {
-		ModelBuildingSummaryMessage modelBuildingSummaryMessage = new ModelBuildingSummaryMessage(sessionId,modelConfName,TimestampUtils.convertToSeconds(endTime),numOfSuccesses,numOfFailures);
-		collector.send(new OutgoingMessageEnvelope(systemStream, modelBuildingSummaryMessage));
+		ModelBuildingSummaryMessage message = new ModelBuildingSummaryMessage(sessionId,modelConfName,TimestampUtils.convertToSeconds(endTime),numOfSuccesses,numOfFailures);
+		try {
+			String messageJsonString = mapper.writeValueAsString(message);
+			collector.send(new OutgoingMessageEnvelope(systemStream, messageJsonString));
+		} catch (JsonProcessingException e) {
+			logger.error("error while parsing message={} to json string",message,e);
+		}
+
 	}
 
 	public void setMessageCollector(MessageCollector collector) {
