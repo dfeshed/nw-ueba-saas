@@ -20,6 +20,7 @@ public abstract class AlertTriggeringHighScoreContextSelector implements IContex
 		return alertsRepository.getAlertsByTimeRange(new DateRange(startTime.getTime(), endTime.getTime()), null, true)
 				.stream()
 				.map(Alert::getEntityName)
+				.distinct()
 				.collect(Collectors.toList());
 	}
 }
