@@ -86,7 +86,7 @@ public class ModelBuildingJob extends FortscaleJob {
 		event.put(sessionIdJsonField, sessionId);
 		long currTimeSec = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		event.put(endTimeInSecondsJsonField, currTimeSec);
-		event.put(selectHighScoreContextsJsonField, selectHighScoreContexts ? 1 : 0);
+		event.put(selectHighScoreContextsJsonField, selectHighScoreContexts);
 
 		if (buildAllModels) {
 			event.put(modelConfNameJsonField, allModelsConstantValue);

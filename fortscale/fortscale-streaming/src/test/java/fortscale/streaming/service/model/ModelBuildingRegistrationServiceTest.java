@@ -355,7 +355,7 @@ public class ModelBuildingRegistrationServiceTest {
 		event.put("sessionId", sessionId);
 		event.put("modelConfName", modelConfName);
 		event.put("endTimeInSeconds", endTimeInSeconds);
-		event.put("selectHighScoreContexts", selectHighScoreContexts ? 1 : 0);
+		event.put("selectHighScoreContexts", selectHighScoreContexts);
 		return event;
 	}
 

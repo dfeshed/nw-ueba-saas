@@ -77,7 +77,7 @@ public class ModelBuildingRegistrationService {
 		String sessionId = event.getAsString(sessionIdJsonField);
 		String modelConfName = event.getAsString(modelConfNameJsonField);
 		Long endTimeSec = ConversionUtils.convertToLong(event.get(endTimeInSecondsJsonField));
-		boolean selectHighScoreContexts = !event.getOrDefault(selectHighScoreContextsJsonField, 0).equals(0);
+		boolean selectHighScoreContexts = (boolean) event.getOrDefault(selectHighScoreContextsJsonField, false);
 
 		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
 			metrics.processed++;
