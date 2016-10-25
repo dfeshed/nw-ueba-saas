@@ -53,7 +53,7 @@ public class ModelBuilderManager {
         contextSelector = contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
         dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
         modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
-        metrics = new ModelBuilderManagerMetrics(statsService, modelConf.getName());
+        metrics = new ModelBuilderManagerMetrics(statsService, modelConf.getName(), contextSelector == null);
     }
 
     public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime,
@@ -65,6 +65,12 @@ public class ModelBuilderManager {
         metrics.currentEndTime = TimeUnit.MILLISECONDS.toSeconds(currentEndTime.getTime());
         logger.info("<<< Starting building models for {}, sessionId {}, previousEndTime {}, currentEndTime {}",
                 modelConf.getName(), sessionId, previousEndTime, currentEndTime);
+
+        if (selectHighScoreContexts) {
+            metrics.getHighScoreContexts++;
+        } else {
+            metrics.getContexts++;
+        }
 
         if (contextSelector != null) {
             if (previousEndTime == null) {
@@ -78,14 +84,11 @@ public class ModelBuilderManager {
             }
 
             if (selectHighScoreContexts) {
-                metrics.getHighScoreContexts++;
                 contextIds = contextSelector.getHighScoreContexts(previousEndTime, currentEndTime);
             } else {
-                metrics.getContexts++;
                 contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
             }
         } else {
-            metrics.processWithNoContextSelector++;
             contextIds = new ArrayList<>();
             if (!selectHighScoreContexts) {
                 // global models can operate only on all of the users
