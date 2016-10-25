@@ -4,7 +4,8 @@ export default [
   {
     field: '',
     title: '',
-    width: 30
+    width: 30,
+    isCheckboxColumn: true
   },
   {
     field: 'fileName',

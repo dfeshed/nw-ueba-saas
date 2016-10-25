@@ -34,6 +34,13 @@ const dataInitialState = {
   metaLoading: false
 };
 
+const allFilesSelection = (setTo) => {
+  return (state) => ({
+    ...state,
+    files: state.files.map((f) => ({ ...f, selected: setTo }))
+  });
+};
+
 const data = reduxActions.handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
     // only clear out data if its a new event
@@ -105,7 +112,10 @@ const data = reduxActions.handleActions({
   }),
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
-    files: payload,
+    files: payload.map((f) => {
+      f.selected = false;
+      return f;
+    }),
     contentLoading: false
   }),
   [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => ({
@@ -122,12 +132,16 @@ const data = reduxActions.handleActions({
   }),
 
   // Download reducing
-  [ACTION_TYPES.FILES_FILE_SELECTION_TOGGLED]: (state, { payload: fileId }) => {
-    const newFiles = state.files.map((f) => {
+  [ACTION_TYPES.FILES_FILE_TOGGLED]: (state, { payload: fileId }) => {
+    let newFiles = state.files.map((f) => {
       if (f.id === fileId) {
-        f.selected = !f.selected;
+        return {
+          ...f,
+          selected: !f.selected
+        };
+      } else {
+        return f;
       }
-      return f;
     });
 
     return {
@@ -135,10 +149,9 @@ const data = reduxActions.handleActions({
       files: newFiles
     };
   },
-  [ACTION_TYPES.FILE_DOWNLOAD_SUCCESS]: (state) => ({
-    ...state,
-    files: state.files.map((f) => ({ ...f, selected: false }))
-  })
+  [ACTION_TYPES.FILE_DOWNLOAD_SUCCESS]: allFilesSelection(false),
+  [ACTION_TYPES.FILES_DESELECT_ALL]: allFilesSelection(false),
+  [ACTION_TYPES.FILES_SELECT_ALL]: allFilesSelection(true)
 
 }, dataInitialState);
 

@@ -8,13 +8,21 @@
     fitToWidth=true
     columnsConfig=columnsConfig}}
 
-    {{rsa-data-table/header translateTitles=true}}
+    {{#rsa-data-table/header as |column index|}}
+      {{#if column.isCheckboxColumn}}
+        {{#if hasMultipleFiles}}
+          {{rsa-form-checkbox trackOwnValue=false value=allSelected click=(action "toggleAll")}}
+        {{/if}}
+      {{else}}
+        {{t column.title}}
+      {{/if}}
+    {{/rsa-data-table/header}}
 
     {{#rsa-data-table/body as |item index column|}}
 
       {{#rsa-data-table/body-cell columnWidth=column.width}}
-        {{#if (eq column.field "")}}
-          {{rsa-form-checkbox value=item.selected click=(action "fileSelectionToggled" item.id)}}
+        {{#if column.isCheckboxColumn}}
+          {{rsa-form-checkbox trackOwnValue=false value=item.selected click=(action "toggleOne" item.id)}}
         {{else if (eq column.field "hashes")}}
           {{#each item.hashes as |hash|}}
             <span class="recon-file-hash">{{hash.type}}</span>: {{hash.value}} <br>

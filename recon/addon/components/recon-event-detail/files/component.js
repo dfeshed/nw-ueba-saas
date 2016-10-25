@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import computed, { empty } from 'ember-computed-decorators';
+import computed, { empty, gt } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
@@ -13,7 +13,9 @@ const stateToComputed = ({ recon: { data } }) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
-  fileSelectionToggled: (fileId) => dispatch(InteractionActions.fileSelected(fileId))
+  fileSelectionToggled: (fileId) => dispatch(InteractionActions.fileSelected(fileId)),
+  selectAllFiles: () => dispatch(InteractionActions.selectAllFiles()),
+  deselectAllFiles: () => dispatch(InteractionActions.deselectAllFiles())
 });
 
 const calculateColumnWidth = (text) => {
@@ -28,13 +30,23 @@ const FileReconComponent = Component.extend({
   layout,
   classNameBindings: [':recon-event-detail-files'],
 
+  allSelected: false,
+  calculatedConfig: null,
+
   @computed('files')
   columnsConfig(files) {
     if (!files) {
       return [];
     }
 
-    return baseColumnsConfig.map((conf) => {
+    // if already calculated, don't calc again
+    // as it doesn't change when files change.
+    // Component starts over with new set of files
+    if (this.get('calculatedConfig')) {
+      return this.get('calculatedConfig');
+    }
+
+    const calculatedConfig = baseColumnsConfig.map((conf) => {
       const { field } = conf;
 
       // first column has empty field, not calculating anything for it
@@ -53,9 +65,39 @@ const FileReconComponent = Component.extend({
 
       return { ...conf, width };
     });
+
+    this.set('calculatedConfig', calculatedConfig);
+
+    return calculatedConfig;
   },
 
-  @empty('files') noFiles: null
+  @empty('files') noFiles: null,
+
+  @gt('files.length', 1) hasMultipleFiles: null,
+
+  actions: {
+    toggleAll(e) {
+      // get click events on span and input
+      // only want input
+      if (e.target.tagName === 'INPUT') {
+        if (this.get('allSelected')) {
+          this.send('selectAllFiles');
+        } else {
+          this.send('deselectAllFiles');
+        }
+
+        this.toggleProperty('allSelected');
+      }
+    },
+
+    toggleOne(id, e) {
+      // get click events on span and input
+      // only want input
+      if (e.target.tagName === 'INPUT') {
+        this.send('fileSelectionToggled', id);
+      }
+    }
+  }
 
 });
 

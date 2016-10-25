@@ -7,6 +7,10 @@ const fileSelected = (fileId) => {
   };
 };
 
+const deselectAllFiles = () => ({ type: ACTION_TYPES.FILES_SELECT_ALL });
+
+const selectAllFiles = () => ({ type: ACTION_TYPES.FILES_DESELECT_ALL });
+
 const downloadFiles = () => {
   return (dispatch, getState) => {
 
@@ -24,6 +28,8 @@ const downloadFiles = () => {
 };
 
 export {
+  deselectAllFiles,
+  selectAllFiles,
   downloadFiles,
   fileSelected
 };

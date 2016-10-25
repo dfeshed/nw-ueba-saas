@@ -35,9 +35,16 @@ export default Component.extend({
 
   isActive: false,
 
-  didInsertElement() {
-    this.syncInput();
+  /*
+   * Set to false if you are going to track/control
+   * the checkbox's value from outside this component.
+   *
+   * Setting to false prevents change events being fired
+   * after a bound value is updated from parent component.
+   */
+  trackOwnValue: true,
 
+  didInsertElement() {
     let that = this;
     this.$('input').on('focus', function() {
       run.next(that, function() {
@@ -56,16 +63,25 @@ export default Component.extend({
     });
   },
 
+  /*
+   * Reset checked when new attrs come in
+   */
+  didReceiveAttrs() {
+    this.syncInput();
+  },
+
   change() {
-    run.once(this, function() {
-      if (!this.get('isReadOnly') && !this.get('isDisabled')) {
-        if (this.$('input').is(':checked')) {
-          this.set('value', true);
-        } else {
-          this.set('value', false);
+    if (this.get('trackOwnValue')) {
+      run.once(this, function() {
+        if (!this.get('isReadOnly') && !this.get('isDisabled')) {
+          if (this.$('input').is(':checked')) {
+            this.set('value', true);
+          } else {
+            this.set('value', false);
+          }
         }
-      }
-    });
+      });
+    }
   },
 
   syncInput() {
