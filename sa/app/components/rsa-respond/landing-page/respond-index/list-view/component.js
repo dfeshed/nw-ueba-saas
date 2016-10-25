@@ -112,8 +112,36 @@ export default Component.extend({
     get: () => [],
     set(values) {
       run.once(() => {
-        this.applyFilters('assigneeId', (values || []).slice(0));
+        // Apply CSS style change
+        this.set('assigneeFilterActive', values.length > 0);
+        this.applyFilters('assigneeId', (values || []).slice());
       });
+      return values;
+    }
+  },
+
+  // Obtain beautified (user-friendly) list of sources that can be used in filter selection
+  availableSources: IncidentHelper.sourceLongNames(),
+
+  /**
+   * @name selectedSources
+   * @description List of selected sources used to filter Incidents.
+   * @public
+   */
+  @computed
+  selectedSources: {
+    get: () => [],
+    set(values) {
+      // by default no filter is selected. Empty array resets any pre-existing filter
+      let filterFn = null;
+      if (values.length > 0) {
+        // Custom filter function that will be applied to each incident for purpose of determining if that incident
+        // has at least one of the selected sources
+        filterFn = (incidentSources) => incidentSources.any((source) => values.includes(source));
+      }
+      // Apply CSS style change
+      this.set('sourceFilterActive', values.length > 0);
+      this.applyFilters('sources', filterFn);
       return values;
     }
   },
@@ -215,6 +243,7 @@ export default Component.extend({
       this.get('priorityList').setEach('value', false);
       this.setProperties({
         'selectedAssignee': [],
+        'selectedSources': [],
         'selectedCategories': []
       });
     }

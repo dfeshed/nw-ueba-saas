@@ -103,6 +103,7 @@ export default Component.extend({
     run.once(this, function() {
       this.decorateSelectOptions();
       this.updateSelectOptions();
+      this.deselectStaleOptions();
     });
   }),
 
@@ -143,6 +144,25 @@ export default Component.extend({
         that.set('humanReadableValues', optionObjects);
       }
     });
+  },
+
+  /*
+   * Check if values[] and selected options are out of sync which can occur when values[]
+   * is modified outside of removeSelection function or outside of component interaction
+   */
+  deselectStaleOptions() {
+    let staleSelectedOptions = this.$('option').map((key, option) => {
+      if (option.selected && !this.get('values').includes(option.value)) {
+        return option.value;
+      }
+    }).get();
+
+    // Deselect option values that got out of sync
+    if (staleSelectedOptions.length > 0) {
+      staleSelectedOptions.forEach((selectedOption) => {
+        this.$(`option[value="${selectedOption}"]`).prop('selected', false);
+      });
+    }
   },
 
   hasMultipleValues: computed('values.length', function() {
@@ -201,7 +221,7 @@ export default Component.extend({
 
     removeSelection(value) {
       if (!this.get('resolvedDisabled')) {
-        this.$(`option[value="${value}"]`).attr('selected', false);
+        this.$(`option[value="${value}"]`).prop('selected', false);
         this.set('values', this.$('select').val());
       }
     }

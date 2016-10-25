@@ -10,34 +10,65 @@ const {
   isNone
 } = Ember;
 
-const _SOURCES_MAP = [
-  {
-    test(source) {
-      return String(source).match(/event stream analysis/i);
-    },
-    short() {
-      return 'ESA';
-    }
+
+/**
+ * @name _SOURCES_MAP
+ * @description Private JSON object composed of source names and properties that are used
+ * to beautify source names for end-user.
+ * 1. short property can be used to display abbreviated source names (eg. in table columns)
+ * 2. long property can be used in any scenario where full source name should be displayed (eg. in rsa-form-select)
+ * @private
+ */
+const _SOURCES_MAP = {
+  'Event Stream Analysis': {
+    'short': 'ESA'
   },
-  {
-    test(source) {
-      return String(source).match(/ecat/i);
-    },
-    short() {
-      return 'ECAT';
-    }
-  }];
+  'Event Streaming Analytics': {
+    'short': 'ESA'
+  },
+  'ecat': {
+    'short': 'ECAT',
+    'long': 'ECAT'
+  },
+  'Malware Analysis': {
+    'short': 'MA'
+  },
+  'Reporting Engine': {
+    'short': 'RE'
+  },
+  'Security Analytics Investigator': {
+    'short': 'SAI'
+  },
+  'Web Threat Detection': {
+    'short': 'WTD'
+  }
+};
 
 export default {
+
+  /**
+   * @name sourceLongNames
+   * @description returns a styalized longname for each source (if any) or its original name
+   * @public
+   */
+  sourceLongNames() {
+    let names = [];
+    Object.keys(_SOURCES_MAP).forEach((source) => {
+      let sourceName = _SOURCES_MAP[source].long ? _SOURCES_MAP[source].long : source;
+      names.pushObject({ id: source, name: sourceName });
+    });
+    return names;
+  },
+
   /**
    * @name sourceShortName
+   * @param source Original name of the source as it is known on the server or the ID in the _SOURCE_MAP
    * @description returns a parametrized shortname for each source, if there is no configuration for the source, the
-   * initials are returned.
+   * initials are returned
    * @public
    */
   sourceShortName(source) {
-    let matchedRule = _SOURCES_MAP.find((rule) => rule.test(source));
-    return matchedRule ? matchedRule.short(source) : source.match(/\b\w/g).join('');
+    return _SOURCES_MAP[source] ? _SOURCES_MAP[source].short : source.match(/\b\w/g).join('');
   },
 
   /**

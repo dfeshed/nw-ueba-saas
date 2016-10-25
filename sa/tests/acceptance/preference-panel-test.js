@@ -53,7 +53,6 @@ test('Iteration: verify all options are available in components', function(asser
 
 test('User can set preferences and the values are stored in local storage', function(assert) {
   assert.expect(8);
-
   visit('/do/monitor');
   click('.user-preferences-trigger');
   click('.js-test-user-preferences-modal');

@@ -22,8 +22,8 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
       createdBy: 'User X',
       created: '2015-10-10',
       lastUpdated: '2015-10-10',
-      statusSort: 0,
-      prioritySort: 0,
+      statusSort: 0, // Status: New
+      prioritySort: 0, // Priority: Low
       alertCount: 10,
       eventCount: 2,
       sources: ['Event Stream Analysis'],
@@ -39,11 +39,11 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
       createdBy: 'User X',
       created: '2015-10-10',
       lastUpdated: '2015-10-10',
-      statusSort: 1,
-      prioritySort: 1,
+      statusSort: 1, // Status: Assigned
+      prioritySort: 1, // Priority: Medium
       alertCount: 10,
       eventCount: 2,
-      sources: ['Event Stream Analysis'],
+      sources: ['ecat', 'Web Threat Detection'],
       assignee: {
         id: '2'
       },
@@ -56,7 +56,25 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
         parent: 'parentCategory1',
         id: '2'
       }]
-    })]);
+    }),
+    EmberObject.create({
+      riskScore: 1,
+      id: 'INC-493',
+      name: 'Suspected command and control communication with www.mozilla.com',
+      createdBy: 'User X',
+      created: '2015-10-10',
+      lastUpdated: '2015-10-10',
+      statusSort: 2, // Status: In-Progress
+      prioritySort: 2, // Priority: High
+      alertCount: 10,
+      eventCount: 2,
+      sources: ['Malware Analysis', 'Web Threat Detection'],
+      assignee: {
+        id: '3'
+      },
+      categories: []
+    })
+    ]);
 
     let users = [
       EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
@@ -94,9 +112,9 @@ test('it renders', function(assert) {
   assert.equal(this.$('.rsa-data-table').length, 1, 'Data table is present');
 
   waitFor(
-    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
   ).then(() => {
-    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'All rows are displayed by default');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
     done();
   });
 });
@@ -112,6 +130,8 @@ test('Filter panel renders', function(assert) {
 
   assert.ok(this.$('.rsa-respond-list__filter-panel__assignee-selector'), 'Assignee filter is present');
 
+  assert.ok(this.$('.rsa-respond-list__filter-panel__source-selector'), 'Source filter is present');
+
   assert.ok(this.$('.rsa-respond-list__filter-panel__category'), 'Category filter is present');
   assert.ok(this.$('.rsa-respond-list__filter-panel__category .rsa-form-tag-manager'), 'Category options are present');
 
@@ -125,9 +145,9 @@ test('Priority filter affects the number of incidents on screen', function(asser
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
-    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
   ).then(() => {
-    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'All rows are displayed by default');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
 
     // selecting priority MEDIUM
     this.$('.rsa-respond-list__filter-panel__priority .priority-1 input:first').prop('checked', true).trigger('change');
@@ -140,9 +160,9 @@ test('Priority filter affects the number of incidents on screen', function(asser
       resetButton.click();
 
       waitFor(
-        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
       ).then(() => {
-        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected priority filters');
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected priority filters');
         done();
       });
       done();
@@ -158,9 +178,9 @@ test('Status filter affects the number of incidents on screen', function(assert)
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
-    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
   ).then(() => {
-    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'All rows are displayed by default');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
 
     // selecting status ASSIGNED
     this.$('.rsa-respond-list__filter-panel__status .status-1 input:first').prop('checked', true).trigger('change');
@@ -173,9 +193,9 @@ test('Status filter affects the number of incidents on screen', function(assert)
       resetButton.click();
 
       waitFor(
-        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
       ).then(() => {
-        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected Status filters');
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected Status filters');
         done();
       });
       done();
@@ -184,6 +204,78 @@ test('Status filter affects the number of incidents on screen', function(assert)
   });
 });
 
+test('Single-Select Source filter affects the number of incidents on the screen', function(assert) {
+
+  const done = assert.async(3);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+
+  waitFor(
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
+  ).then(() => {
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected Source filters');
+    // Do single-select to check that filtering by source works
+    this.$('.rsa-respond-list__filter-panel__source-selector .prompt').click();
+    this.$('.rsa-respond-list__filter-panel__source-selector select').val('Event Stream Analysis').trigger('change');
+
+    waitFor(
+      () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 1
+    ).then(() => {
+      // Check that filter was applied correctly
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 1, 'Source filter works');
+      resetButton.click();
+
+      waitFor(
+        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
+      ).then(() => {
+        // Check that reset button removed source filters
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected Source filters');
+        done();
+      });
+      done();
+    });
+    done();
+  });
+}),
+
+test('Multi-Select Source filter affects the number of incidents on the screen', function(assert) {
+
+  const done = assert.async(3);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+
+  waitFor(
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
+  ).then(() => {
+    // Check that all rows are displayed after reset button
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
+
+    // Do multi-source filter select
+    this.$('.rsa-respond-list__filter-panel__source-selector .prompt').click();
+    this.$('.rsa-respond-list__filter-panel__source-selector select').val(['Event Stream Analysis', 'ecat']).trigger('change');
+
+    waitFor(
+      () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+    ).then(() => {
+      // Check that multi-filter works
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Multi-select source filter works');
+      resetButton.click();
+
+      waitFor(
+        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
+      ).then(() => {
+        // Check that reset button works after multi-select source filtering
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected Source filters');
+        done();
+      });
+      done();
+    });
+    done();
+  });
+}),
+
 test('Assignee filter affects the number of incidents on screen', function(assert) {
   const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
@@ -191,9 +283,9 @@ test('Assignee filter affects the number of incidents on screen', function(asser
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
-    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
   ).then(() => {
-    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'All rows are displayed by default');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
     // selecting assingee 1
     this.$('.rsa-respond-list__filter-panel__assignee-selector .prompt').click();
     this.$('.rsa-respond-list__filter-panel__assignee-selector select').val('1').trigger('change');
@@ -206,9 +298,9 @@ test('Assignee filter affects the number of incidents on screen', function(asser
       resetButton.click();
 
       waitFor(
-        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+        () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
       ).then(() => {
-        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected Assignee filters');
+        assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected Assignee filters');
         done();
       });
       done();
@@ -224,9 +316,9 @@ test('Category filter affects the number of incidents on screen', function(asser
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
-    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
   ).then(() => {
-    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'All rows are displayed by default');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
 
     // selecting first Category (it requires 3 clicks)
     this.$('.rsa-respond-list__filter-panel__category .rsa-form-tag-manager .rsa-form-tag-manager__tree-toggle__icon').click();
@@ -245,9 +337,9 @@ test('Category filter affects the number of incidents on screen', function(asser
           resetButton.click();
 
           waitFor(
-            () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
+            () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
           ).then(() => {
-            assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 2, 'Reset-button resets selected Category filters');
+            assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected Category filters');
             done();
           });
           done();

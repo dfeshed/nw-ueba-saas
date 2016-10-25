@@ -271,7 +271,9 @@ export default $.extend({}, BaseTranslations, {
       alertCount: 'ja_Alerts',
       sources: 'ja_Source',
       filters: {
-        reset: 'ja_Reset Filters'
+        reset: 'ja_Reset Filters',
+        sources: 'ja_Select sources to filter by',
+        assignees: 'ja_Select assignees to filter by'
       }
     },
     status: {

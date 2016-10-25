@@ -271,7 +271,9 @@ export default $.extend({}, BaseTranslations, {
       alertCount: 'Alerts',
       sources: 'Source',
       filters: {
-        reset: 'Reset Filters'
+        reset: 'Reset Filters',
+        sources: 'Select sources to filter by',
+        assignees: 'Select assignees to filter by'
       }
     },
     queue: {

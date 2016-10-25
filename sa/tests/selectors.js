@@ -44,6 +44,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'url': '/do/respond',
       'path': 'protected.respond.index',
       'updateIndLbl': '.rsa-update-indicator__label',
+      'rsaIconClose': '.rsa-icon-close',
       'card': {
         'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
         'incSection': 'section[class$=rsa-d3list]',
@@ -133,6 +134,9 @@ export default Ember$.extend({}, BaseSelectors, {
         'alertsCountCol': '.rsa-respond-list-alertCount',
         'assigneeNameOpt': '.rsa-respond-list__filter-panel__assignee-selector option',
         'assigneeDropDownSel': '.rsa-respond-list__filter-panel__assignee-selector .rsa-icon-arrow-down-12',
+        'sourceNameOpt': '.rsa-respond-list__filter-panel__source-selector option',
+        'sourceDropDownSel': '.rsa-respond-list__filter-panel__source-selector .rsa-icon-arrow-down-12',
+        'sourceNameOptionTag': '.rsa-respond-list__filter-panel__source-selector .prompt .option-tag',
         'categoryTagPlusIcon': '.rsa-icon-add-circle-1',
         'globalCatIcon': '.rsa-icon-arrow-right-12',
         'globalCatNameElm': '.rsa-content-accordion',

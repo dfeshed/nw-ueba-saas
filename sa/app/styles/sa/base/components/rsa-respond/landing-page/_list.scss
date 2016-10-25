@@ -1,5 +1,21 @@
 .rsa-respond-list {
 
+  &-incident-id,
+  &-name,
+  &-priority,
+  &-status,
+  &-created,
+  &-assignee,
+  &-sourceIps,
+  &-destinationIps,
+  &-events,
+  &-alertCount {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 100%;
+    padding-top: rsa-whitespace(less);
+  }
+
   .panel-A.rsa-respond-list__panelA {
     margin-top: 2px;
     background-color: rsa-color(black, null, $rsa-translucent);
@@ -30,8 +46,25 @@
       .rsa-form-label {
         @include rsa-font(header, small);
       }
+
       .prompt {
-        color: rsa-color(gray, lighter);
+        @include rsa-font(body, small);
+        padding-left: 2px;
+        color: rsa-color(gray);
+        font-style: italic;
+      }
+
+    }
+
+    .assignee-filter-active,
+    .source-filter-active {
+      &.rsa-form-select {
+        .prompt {
+          @include rsa-font(body, small);
+          color: inherit;
+          padding-left: 0px;
+          font-style: normal;
+        }
       }
     }
 
@@ -70,19 +103,4 @@
     }
   }
 
-  &-incident-id,
-  &-name,
-  &-priority,
-  &-status,
-  &-created,
-  &-assignee,
-  &-sourceIps,
-  &-destinationIps,
-  &-events,
-  &-alertCount {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    height: 100%;
-    padding-top: rsa-whitespace(less);
-  }
 }
