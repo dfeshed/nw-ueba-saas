@@ -69,21 +69,21 @@ public class ScoringTask extends AbstractStreamTask {
 
         String messageText = (String)envelope.getMessage();
         JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
-        Long timestamp = extractTimeStamp(message, messageText);
-        taskMetrics.eventsTime = timestamp;
 
         if(topicName.equals(modelBuildingControlOutputTopic))
         {
             handleModelBuildingEvent(messageText, message);
         }
         else {
+            Long timestamp = extractTimeStamp(message, messageText);
+            taskMetrics.eventsTime = timestamp;
             handleEventToScore(collector, message, timestamp);
+            // todo: this metric should we removed after DPM is part of ther project
+            processedMessageCount.inc();
+
+            lastTimestampCount.set(timestamp);
         }
 
-        // todo: this metric should we removed after DPM is part of ther project
-        processedMessageCount.inc();
-
-        lastTimestampCount.set(timestamp);
     }
 
     private void handleEventToScore(MessageCollector collector, JSONObject message, Long timestamp) throws Exception {
