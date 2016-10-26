@@ -42,7 +42,7 @@
         "entityEventConfName": "normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
@@ -54,7 +54,7 @@
         "entityEventConfName": "normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -133,7 +133,7 @@
         "entityEventConfName": "data_exfiltration_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
@@ -145,7 +145,7 @@
         "entityEventConfName": "data_exfiltration_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -224,7 +224,7 @@
         "entityEventConfName": "brute_force_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
@@ -236,7 +236,7 @@
         "entityEventConfName": "brute_force_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -315,7 +315,7 @@
         "entityEventConfName": "snooping_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
@@ -327,7 +327,7 @@
         "entityEventConfName": "snooping_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -406,7 +406,7 @@
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
@@ -418,7 +418,7 @@
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
