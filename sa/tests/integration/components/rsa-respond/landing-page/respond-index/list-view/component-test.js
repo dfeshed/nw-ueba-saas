@@ -11,6 +11,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
   integration: true,
 
   beforeEach() {
+
     let allCube = IncidentsCube.create({
       array: []
     });

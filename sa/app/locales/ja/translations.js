@@ -299,7 +299,21 @@ export default $.extend({}, BaseTranslations, {
     },
     emptyNewMessage: 'ja_No new incidents',
     emptyMessage: 'ja_No incidents',
-    emptyInProgressMessage: 'ja_No incidents being worked on'
+    emptyInProgressMessage: 'ja_No incidents being worked on',
+    bulkEdit: {
+      statusSelectListLabel: 'ja_Status',
+      assigneeSelectListLabel: 'ja_Assignee',
+      prioritySelectListLabel: 'ja_Priority',
+      saveButton: 'ja_Save',
+      cancelButton: 'ja_Cancel',
+      modalOkButtonLabel: 'ja_OK',
+      successfulUpdateMessage: {
+        'one': 'ja_{{totalFields}} record updated successfully',
+        'other': 'ja_{{totalFields}} records updated successfully'
+      },
+      unsavedChangesModalHeader: 'ja_Unsaved Changes',
+      unsavedChangesModalMessage: 'ja_You have unsaved changes. Please save incident changes before filtering.'
+    }
   },
   list: {
     items: 'ja_items',

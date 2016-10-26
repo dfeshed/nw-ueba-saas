@@ -1,4 +1,107 @@
+.rsa-application-modal-content {
+  max-width: 400px;
+
+  .modal-content {
+    padding: rsa-whitespace();
+
+    .rsa-form-button-wrapper {
+      display: block;
+
+      .rsa-form-button {
+        margin: rsa-whitespace(less) auto 0;
+        display: block;
+      }
+    }
+  }
+}
+
+.bulk-edit.rsa-content-section-header {
+  margin-top: 2px;
+  background-color: rsa-color(black, null, $rsa-translucent);
+  padding-right: 0;
+  padding-left: rsa-whitespace(least);
+
+  .rsa-bulk-edit-button-group {
+    display: inline-block;
+    padding: 0;
+    margin: 0;
+
+    .rsa-bulk-edit-update-message{
+      transition: opacity 1s;
+      margin-left: rsa-whitespace();
+      padding: rsa-whitespace() 0;
+      display: inline-block;
+      @include rsa-font(body, small);
+      opacity: $rsa-opaque;
+
+      .rsa-icon {
+        margin-right: rsa-whitespace(least);
+        color: rsa-color(green);
+      }
+    }
+
+    .is-hidden{
+      display:none;
+    }
+
+    .is-shown{
+      transition: opacity 1s;
+      opacity: $rsa-transparent;
+    }
+  }
+  .rsa-bulk-edit-button-group:nth-child(2) {
+    border-left: 1px solid rsa-color(gray, light);
+
+    &.no-border {
+        border-left-width: 0px;
+    }
+  }
+  .rsa-bulk-edit-button-group:nth-child(2) .rsa-form-button-wrapper:first-child {
+    margin-left: rsa-whitespace();
+  }
+  .rsa-form-button-wrapper {
+    margin-right: rsa-whitespace(less);
+
+    &.rsa-form-status-select {
+      min-width: 195px;
+      text-align: left;
+
+      .rsa-form-button {
+        text-align: left;
+
+        button.expand {
+          float: right;
+        }
+      }
+    }
+
+    &.rsa-form-assignee-select {
+      min-width: 121px;
+      text-align: left;
+
+      .rsa-form-button {
+        text-align: left;
+
+        button.expand {
+          float: right;
+        }
+      }
+    }
+
+    ul {
+      li.selected-value {
+        background-color: rsa-color(blue, darker);
+      }
+    }
+  }
+}
+
 .rsa-respond-list {
+  .panel-B {
+    .rsa-hide-webkit-scrollbar {
+      margin-left: 2px;
+    }
+  }
 
   &-incident-id,
   &-name,
@@ -77,6 +180,11 @@
 
     &-header {
       margin-bottom: 0;
+
+      .rsa-form-checkbox{
+        margin: 0;
+        overflow: visible;
+      }
     }
     &-header-cell .hideSort{
       visibility: hidden;
@@ -87,6 +195,8 @@
 
     &-header-cell,
     &-body-cell{
+      overflow: visible;
+
       .rsa-respond-list-incident-id {
         @include rsa-font(bold);
       }

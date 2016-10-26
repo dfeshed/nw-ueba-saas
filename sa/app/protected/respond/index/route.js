@@ -284,7 +284,27 @@ export default Route.extend({
   },
 
   actions: {
-
+    /**
+     * @name bulkSave
+     * @description Modifies a set of incidents based on the property and value sent in an object and the incident ID's listed in an array.
+     * @param updateObject Contains a property and value that should be changed
+     * @param arrayOfIncidentIDs Contains a set of incident ID's as strings
+     * @public
+     */
+    bulkSave(updateObject, arrayOfIncidentIDs) {
+      this.request.promiseRequest({
+        method: 'updateRecord',
+        modelName: 'incident',
+        query: {
+          incidentIds: arrayOfIncidentIDs,
+          updates: updateObject
+        }
+      }).then((response) => {
+        Logger.debug(`Successfully saved: ${ response }`);
+      }).catch((reason) => {
+        Logger.error(`Unable to save: ${ reason }`);
+      });
+    },
     /**
      * @description Action handler that gets invoked when the user sorts incidents.
      * @param field Describes how to sort the incidents. Example: A 'Risk Score' field will sort incidents by Risk Score.

@@ -11,6 +11,16 @@ const {
 // full list of columns to be used in the list-view
 export const availableColumnsConfig = [
   EmberObject.create({
+    title: '',
+    class: 'rsa-form-row-checkbox',
+    width: '3%',
+    dataType: 'checkbox',
+    componentClass: 'rsa-form-checkbox',
+    visible: true,
+    disableSort: true,
+    headerComponentClass: 'rsa-form-checkbox'
+  }),
+  EmberObject.create({
     field: 'id',
     title: 'incident.list.id',
     class: 'rsa-respond-list-incident-id',

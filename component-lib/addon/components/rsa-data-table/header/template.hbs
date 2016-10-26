@@ -7,10 +7,12 @@
   {{#rsa-content-tooltip position='bottom' tooltipId='columnSelectorTooltip'}}
     <section>
       {{#each table.sortedColumns as |column|}}
-        {{rsa-form-checkbox
-          class=(concat 'column-selection-' column.field)
-          value=column.selected
-          label=(t column.title)}}
+        {{#if (not-eq column.dataType "checkbox")}}
+          {{rsa-form-checkbox
+            class=(concat 'column-selection-' column.field)
+            value=column.selected
+            label=(t column.title)}}
+        {{/if}}
       {{/each}}
     </section>
   {{/rsa-content-tooltip}}
