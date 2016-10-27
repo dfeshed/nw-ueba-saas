@@ -1,0 +1,68 @@
+{
+    "data-source-scorers": [
+        {
+            "data-source": "verdasys",
+            "scorers": [
+                {
+                    "type": "pareto-scorer",
+                    "name": "verdasys-event-scorer",
+                    "highest-score-weight": 0.65,
+                    "scorers": [
+                        {
+                            "type": "time-model-scorer",
+                            "name": "date_time_unix.normalized_username.verdasys.scorer",
+                            "model": {
+                                "name": "date_time_unix.normalized_username.verdasys"
+                            },
+                            "number-of-samples-to-influence-enough": 30,
+                            "use-certainty-to-calculate-score": true
+                        },
+                        {
+                            "type": "reduction-scorer",
+                            "name": "normalizedSrcMachineScorer",
+                            "main-scorer": {
+                                "type": "category-rarity-model-scorer",
+                                "name": "normalized_src_machine.normalized_username.verdasys.scorer",
+                                "model": {
+                                    "name": "normalized_src_machine.normalized_username.verdasys"
+                                },
+                                "max-rare-count": 5,
+                                "max-num-of-rare-features": 15
+                            },
+                            "reduction-scorer": {
+                                "type": "score-and-certainty-multiplier-scorer",
+                                "name": "normalized_username.normalized_src_machine.verdasys.scorer",
+                                "base-scorer": {
+                                    "type": "category-rarity-model-scorer",
+                                    "name": "normalized_username.normalized_src_machine.verdasys.base_scorer",
+                                    "model": {
+                                        "name": "normalized_username.normalized_src_machine.verdasys"
+                                    },
+                                    "max-rare-count": 5,
+                                    "max-num-of-rare-features": 15
+                                }
+                            },
+                            "reduction-weight": 0.5
+                        },
+                        {
+                            "type": "linear-score-reducer",
+                            "name": "authMethodScorer",
+                            "reduced-scorer": {
+                                "type": "category-rarity-model-scorer",
+                                "name": "auth_method.normalized_username.verdasys.scorer",
+                                "model": {
+                                    "name": "auth_method.normalized_username.verdasys"
+                                },
+                                "max-rare-count": 5,
+                                "max-num-of-rare-features": 15,
+                                "number-of-samples-to-influence-enough": 30,
+                                "use-certainty-to-calculate-score": true
+                            },
+                            "reducing-weight": 0.6
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
