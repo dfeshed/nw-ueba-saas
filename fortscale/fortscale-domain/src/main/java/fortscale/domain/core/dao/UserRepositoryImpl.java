@@ -819,7 +819,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags) {
 
 		Update update = new Update();
-		final int[] updatedDocuments = {0};
 
 		int count = getCount(addTag, tagNames, criteriaList, filteredTags);
 
