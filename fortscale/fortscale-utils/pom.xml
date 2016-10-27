@@ -156,6 +156,14 @@
 			<version>${pigunit.version}</version>
 			<exclusions>
 				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty-util</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
 					<artifactId>jsp-api</artifactId>
 					<groupId>javax.servlet.jsp</groupId>
 				</exclusion>
@@ -268,7 +276,11 @@
 			<artifactId>springockito-annotations</artifactId>
 			<scope>test</scope>
 		</dependency>
-
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>${servlet-api.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.hive</groupId>
 			<artifactId>hive-jdbc</artifactId>
@@ -277,6 +289,14 @@
 				<exclusion>
 					<groupId>asm</groupId>
 					<artifactId>asm-commons</artifactId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty-util</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
 				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
@@ -312,10 +332,6 @@
 			<artifactId>spring-data-mongodb</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-		</dependency>
-		<dependency>
 			<groupId>org.perf4j</groupId>
 			<artifactId>perf4j</artifactId>
 			<version>${perf4j.version}</version>
@@ -348,6 +364,14 @@
 					<artifactId>asm-commons</artifactId>
 				</exclusion>
 				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty-util</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
 					<artifactId>jsp-api</artifactId>
 					<groupId>javax.servlet.jsp</groupId>
 				</exclusion>
@@ -370,6 +394,14 @@
 			<artifactId>hadoop-core</artifactId>
 			<version>${hadoop-core.version}</version>
 			<exclusions>
+				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty-util</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
@@ -398,6 +430,14 @@
 			<version>${hadoop.version}</version>
 			<exclusions>
 				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty-util</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
@@ -425,6 +465,14 @@
 			<version>${hadoop.version}</version>
 			<exclusions>
 				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty-util</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
 				</exclusion>
@@ -451,6 +499,14 @@
 			<artifactId>hadoop-yarn-api</artifactId>
 			<version>${hadoop.version}</version>
 			<exclusions>
+				<exclusion>
+					<artifactId>jetty</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>jetty-util</artifactId>
+					<groupId>org.mortbay.jetty</groupId>
+				</exclusion>
 				<exclusion>
 					<groupId>org.slf4j</groupId>
 					<artifactId>slf4j-log4j12</artifactId>
