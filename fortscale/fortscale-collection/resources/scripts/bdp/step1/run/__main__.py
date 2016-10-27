@@ -8,10 +8,12 @@ from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
+from bdp_utils.run import step_runner_main
 from bdp_utils.samza import are_tasks_running
 from bdp_utils.log import init_logging
 
 logger = logging.getLogger('step1')
+init_logging(logger)
 
 
 def create_parser():
@@ -72,9 +74,9 @@ Usage example:
     return parser
 
 
+@step_runner_main(logger)
 def main():
     arguments = create_parser().parse_args()
-    init_logging(logger)
     if not are_tasks_running(logger=logger,
                              host=arguments.host,
                              task_names=['raw-events-prevalence-stats-task', 'hdfs-events-writer-task',
@@ -99,7 +101,8 @@ def main():
     for manager in managers:
         manager.run()
     if not validate(managers):
-        sys.exit(1)
+        return False
+    return True
 
 
 def validate(managers):
