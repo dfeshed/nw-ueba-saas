@@ -5,10 +5,8 @@ import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
 import fortscale.common.event.Event;
 import fortscale.common.event.service.EventService;
 import fortscale.ml.model.message.ModelBuildingStatusMessage;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
 import fortscale.streaming.task.metrics.ScoringStreamingTaskMetrics;
@@ -53,11 +51,10 @@ public class ScoringTask extends AbstractStreamTask {
         wrappedCreateTaskMetrics();
 
         scoringTaskService = new ScoringTaskService(config, context);
-        SpringService springService = SpringService.getInstance();
-        eventService = springService.resolve(EventService.class);
-        FortscaleValueResolver resolver = springService.resolve(FortscaleValueResolver.class);
 
-        modelBuildingControlOutputTopic = resolver.resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY);
+        eventService = springService.resolve(EventService.class);
+
+        modelBuildingControlOutputTopic = resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY,res);
         Assert.hasText(modelBuildingControlOutputTopic);
 
         objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
