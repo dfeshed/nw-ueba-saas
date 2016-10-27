@@ -18,7 +18,6 @@
                 "numOfBuckets": 30
             }
         },
-
         {
             "name": "bytes_read.normalized_username.verdasys",
             "selector": {
@@ -192,6 +191,42 @@
                 "functions": [],
                 "featureBucketConfName": "normalized_username_verdasys_daily",
                 "featureName": "source_file_type_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        },
+        {
+            "name": "normalized_username.normalized_src_machine.verdasys",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "normalized_src_machine_verdasys_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "normalized_src_machine_verdasys_daily",
+                "featureName": "normalized_username_histogram"
+            },
+            "builder": {
+                "type": "category_rarity_model_builder",
+                "numOfBuckets": 30
+            }
+        },
+        {
+            "name": "normalized_username.printer.verdasys",
+            "selector": {
+                "type": "feature_bucket_context_selector",
+                "featureBucketConfName": "printer_verdasys_daily"
+            },
+            "retriever": {
+                "type": "context_histogram_retriever",
+                "timeRangeInSeconds": 7776000,
+                "functions": [],
+                "featureBucketConfName": "printer_verdasys_daily",
+                "featureName": "normalized_username_histogram"
             },
             "builder": {
                 "type": "category_rarity_model_builder",

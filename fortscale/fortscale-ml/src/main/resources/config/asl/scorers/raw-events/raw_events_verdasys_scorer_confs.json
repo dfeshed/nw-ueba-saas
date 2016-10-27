@@ -1,7 +1,7 @@
 {
     "data-source-scorers": [
         {
-            "data-source": "verdasys",
+            "data-source": "",
             "scorers": [
                 {
                     "type": "pareto-scorer",
@@ -45,21 +45,273 @@
                             "reduction-weight": 0.5
                         },
                         {
-                            "type": "linear-score-reducer",
-                            "name": "authMethodScorer",
-                            "reduced-scorer": {
+                            "type": "category-rarity-model-scorer",
+                            "name": "application.normalized_username.verdasys.scorer",
+                            "model": {
+                                "name": "application.normalized_username.verdasys"
+                            },
+                            "max-rare-count": 5,
+                            "max-num-of-rare-features": 15,
+                            "number-of-samples-to-influence-enough": 30,
+                            "use-certainty-to-calculate-score": true
+                        },
+                        {
+                            "type": "category-rarity-model-scorer",
+                            "name": "destination_file_type.normalized_username.verdasys.scorer",
+                            "model": {
+                                "name": "destination_file_type.normalized_username.verdasys"
+                            },
+                            "max-rare-count": 5,
+                            "max-num-of-rare-features": 15,
+                            "number-of-samples-to-influence-enough": 30,
+                            "use-certainty-to-calculate-score": true
+                        },
+                        {
+                            "type": "category-rarity-model-scorer",
+                            "name": "email_sender.normalized_username.verdasys.scorer",
+                            "model": {
+                                "name": "email_sender.normalized_username.verdasys"
+                            },
+                            "max-rare-count": 5,
+                            "max-num-of-rare-features": 15,
+                            "number-of-samples-to-influence-enough": 30,
+                            "use-certainty-to-calculate-score": true
+                        },
+                        {
+                            "type": "category-rarity-model-scorer",
+                            "name": "event_description.normalized_username.verdasys.scorer",
+                            "model": {
+                                "name": "event_description.normalized_username.verdasys"
+                            },
+                            "max-rare-count": 5,
+                            "max-num-of-rare-features": 15,
+                            "number-of-samples-to-influence-enough": 30,
+                            "use-certainty-to-calculate-score": true
+                        },
+                        {
+                            "type": "reduction-scorer",
+                            "name": "printerScorer",
+                            "main-scorer": {
                                 "type": "category-rarity-model-scorer",
-                                "name": "auth_method.normalized_username.verdasys.scorer",
+                                "name": "printer.normalized_username.verdasys.scorer",
                                 "model": {
-                                    "name": "auth_method.normalized_username.verdasys"
+                                    "name": "printer.normalized_username.verdasys"
                                 },
                                 "max-rare-count": 5,
-                                "max-num-of-rare-features": 15,
+                                "max-num-of-rare-features": 15
+                            },
+                            "reduction-scorer": {
+                                "type": "score-and-certainty-multiplier-scorer",
+                                "name": "normalized_username.printer.verdasys.scorer",
+                                "base-scorer": {
+                                    "type": "category-rarity-model-scorer",
+                                    "name": "normalized_username.printer.verdasys.base_scorer",
+                                    "model": {
+                                        "name": "normalized_username.printer.verdasys"
+                                    },
+                                    "max-rare-count": 5,
+                                    "max-num-of-rare-features": 15
+                                }
+                            },
+                            "reduction-weight": 0.5
+                        },
+                        {
+                            "type": "category-rarity-model-scorer",
+                            "name": "source_file_type.normalized_username.verdasys.scorer",
+                            "model": {
+                                "name": "source_file_type.normalized_username.verdasys"
+                            },
+                            "max-rare-count": 5,
+                            "max-num-of-rare-features": 15,
+                            "number-of-samples-to-influence-enough": 30,
+                            "use-certainty-to-calculate-score": true
+                        },
+                        {
+                            "type": "low-values-score-reducer",
+                            "name": "bytesReadScorer",
+                            "base-scorer": {
+                                "type": "continuous-values-model-scorer",
+                                "name": "bytes_read.normalized_username.verdasys.scorer",
+                                "model": {
+                                    "name": "bytes_read.normalized_username.verdasys"
+                                },
+                                "quad-poly-calibration-conf": {
+                                    "a1": 1500.0,
+                                    "a2": 499999.0,
+                                    "sensitivity": 1.0,
+                                    "is-score-for-small-values": false
+                                },
                                 "number-of-samples-to-influence-enough": 30,
                                 "use-certainty-to-calculate-score": true
                             },
-                            "reducing-weight": 0.6
+                            "reduction-configs": [
+                                {
+                                    "reducingFeatureName": "readbytes",
+                                    "reducingFactor": 0,
+                                    "maxValueForFullyReduce": 25000000,
+                                    "minValueForNotReduce": 600000000
+                                }
+                            ]
+                        },
+                        {
+                            "type": "low-values-score-reducer",
+                            "name": "bytesWriteScorer",
+                            "base-scorer": {
+                                "type": "continuous-values-model-scorer",
+                                "name": "bytes_written.normalized_username.verdasys.scorer",
+                                "model": {
+                                    "name": "bytes_written.normalized_username.verdasys"
+                                },
+                                "quad-poly-calibration-conf": {
+                                    "a1": 1500.0,
+                                    "a2": 499999.0,
+                                    "sensitivity": 1.0,
+                                    "is-score-for-small-values": false
+                                },
+                                "number-of-samples-to-influence-enough": 30,
+                                "use-certainty-to-calculate-score": true
+                            },
+                            "reduction-configs": [
+                                {
+                                    "reducingFeatureName": "readbytes",
+                                    "reducingFactor": 0,
+                                    "maxValueForFullyReduce": 25000000,
+                                    "minValueForNotReduce": 600000000
+                                }
+                            ]
+                        },
+                        {
+                            "type": "low-values-score-reducer",
+                            "name": "DestFileSizeScorer",
+                            "base-scorer": {
+                                "type": "continuous-values-model-scorer",
+                                "name": "detail_file_size_kb.normalized_username.verdasys.scorer",
+                                "model": {
+                                    "name": "detail_file_size_kb.normalized_username.verdasys"
+                                },
+                                "quad-poly-calibration-conf": {
+                                    "a1": 1500.0,
+                                    "a2": 499999.0,
+                                    "sensitivity": 1.0,
+                                    "is-score-for-small-values": false
+                                },
+                                "number-of-samples-to-influence-enough": 30,
+                                "use-certainty-to-calculate-score": true
+                            },
+                            "reduction-configs": [
+                                {
+                                    "reducingFeatureName": "readbytes",
+                                    "reducingFactor": 0,
+                                    "maxValueForFullyReduce": 25000000,
+                                    "minValueForNotReduce": 600000000
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "hasAlertScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "hasAlertRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "has_alert_event",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "hasSrcClassScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "hasSrcClassRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "has_src_classification",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "isOutboundScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "isOutboundRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "is_outbound",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "isRemovableScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "isRemovableRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "is_removable",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "wasBlockedScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "wasBlockedRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "was_blocked_event",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "was_rdpScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "was_rdpRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "was_rdp",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "admin_activityScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "admin_activityRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "admin_activity",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "registry_changedScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "registry_changedRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "registry_changed",
+                                    "constant-score": 100
+                                }
+                            ]
                         }
+
                     ]
                 }
             ]
