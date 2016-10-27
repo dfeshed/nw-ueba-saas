@@ -1,5 +1,12 @@
 .rsa-respond-detail-layout-manager,
 .rsa-respond-list {
+  .rsa-data-table {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
   .rsa-data-table-body-row,
   .rsa-data-table-header-row{
     align-items: center;
@@ -9,5 +16,15 @@
   }
   .rsa-data-table-body-row:active {
     background-color: rgba(0,0,0,$rsa-translucent);
+  }
+}
+.rsa-respond-list {
+  .rsa-data-table {
+    top: 60px;
+  }
+}
+.rsa-respond-detail-layout-manager {
+  .rsa-data-table {
+    top: 30px;
   }
 }

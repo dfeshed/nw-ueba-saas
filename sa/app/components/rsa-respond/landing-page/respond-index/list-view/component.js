@@ -23,6 +23,10 @@ export default Component.extend({
   // Contains the values to be updated by bulk edit.
   updateObject: {},
 
+  // Number of buffered items to be rendered by data table
+  // 0 is the default, but we override this in integration tests
+  buffer: 0,
+
   // default sorted field for list view
   currentSort: 'riskScore',
 

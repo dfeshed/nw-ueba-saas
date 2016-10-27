@@ -8,7 +8,7 @@
     </span>
     {{#unless column.disableSort}}
       <span class="js-header-cell-sort-{{column.class}}">
-        <button class={{unless (is-equal currentSort column.field) "hideSort expand" "expand"}} {{action 'sort' column (if column.isDescending 'asc' 'desc')  on='click'}}>
+        <button class={{unless (eq currentSort column.field) "hideSort expand" "expand"}} {{action 'sort' column (if column.isDescending 'asc' 'desc')  on='click'}}>
           {{rsa-icon size="small" name=(if column.isDescending "arrow-down-12" "arrow-up-12")}}
         </button>
       </span>
@@ -18,20 +18,20 @@
     {{#rsa-data-table/body-cell item=item column=column index=index}}
       <div class="{{column.class}}">
         {{#if column.componentClass}}
-          {{#if (is-equal column.field 'alert.risk_score')}}
+          {{#if (eq column.field 'alert.risk_score')}}
             {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column
              score=(get item column.field) isInline=true style=(call-method this 'badgeStyle' (get item column.field))}}
           {{else}}
-            {{#if (is-equal column.dataType 'date-time')}}
+            {{#if (eq column.dataType 'date-time')}}
               {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column  timestamp=(get item column.field)}}
             {{else}}
-              {{#if (is-equal column.dataType 'arrow-image')}}
+              {{#if (eq column.dataType 'arrow-image')}}
                 {{component column.componentClass 'rsa-data-table/body-cell' item=item index=index column=column  size="smaller" name="arrow-right-7" class="direction"}}
               {{/if}}
             {{/if}}
           {{/if}}
         {{else}}
-          {{#if (is-equal column.field 'alert.source')}}
+          {{#if (eq column.field 'alert.source')}}
             {{rsa-content-label label=(call-method this 'sourceShortName' (get item column.field))}}
           {{else}}
             {{get item column.field}}

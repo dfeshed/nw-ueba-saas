@@ -107,7 +107,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
 test('it renders', function(assert) {
   assert.expect(3);
   const done = assert.async();
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   assert.equal(this.$('.rsa-respond-list__filter-panel').length, 1, 'Filter panel is present');
   assert.equal(this.$('.rsa-data-table').length, 1, 'Data table is present');
@@ -120,8 +120,21 @@ test('it renders', function(assert) {
   });
 });
 
-test('Filter panel renders', function(assert) {
+test('Lazy rendering', function(assert) {
+  assert.expect(1);
+  const done = assert.async();
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  waitFor(
+    () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 1
+  ).then(() => {
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 1, 'with default buffer(0), just 1 row is rendered even if there are 3 records');
+    done();
+  });
+});
+
+test('Filter panel renders', function(assert) {
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   assert.ok(this.$('.rsa-respond-list__filter-panel__priority'), 'Priority filter is present');
   assert.ok(this.$('.rsa-respond-list__filter-panel__priority .rsa-form-checkbox').length > 0, 'Priority options are present');
@@ -141,7 +154,7 @@ test('Filter panel renders', function(assert) {
 
 test('Priority filter affects the number of incidents on screen', function(assert) {
   const done = assert.async(3);
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
@@ -174,7 +187,7 @@ test('Priority filter affects the number of incidents on screen', function(asser
 
 test('Status filter affects the number of incidents on screen', function(assert) {
   const done = assert.async(3);
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
@@ -208,7 +221,7 @@ test('Status filter affects the number of incidents on screen', function(assert)
 test('Single-Select Source filter affects the number of incidents on the screen', function(assert) {
 
   const done = assert.async(3);
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
@@ -243,7 +256,7 @@ test('Single-Select Source filter affects the number of incidents on the screen'
 test('Multi-Select Source filter affects the number of incidents on the screen', function(assert) {
 
   const done = assert.async(3);
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
@@ -279,7 +292,7 @@ test('Multi-Select Source filter affects the number of incidents on the screen',
 
 test('Assignee filter affects the number of incidents on screen', function(assert) {
   const done = assert.async(3);
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
@@ -312,7 +325,7 @@ test('Assignee filter affects the number of incidents on screen', function(asser
 
 test('Category filter affects the number of incidents on screen', function(assert) {
   const done = assert.async(3);
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 

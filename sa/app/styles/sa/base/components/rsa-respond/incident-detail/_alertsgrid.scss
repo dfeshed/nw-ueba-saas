@@ -8,5 +8,11 @@
 .rsa-respond-detail-grid {
   .rsa-data-table{
     margin-left: rsa-whitespace(less);
+    .rsa-data-table-header {
+      padding-bottom: rsa-whitespace();
+    }
+    .spacer {
+      padding-top: rsa-whitespace(less);
+    }
   }
 }
