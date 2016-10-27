@@ -1,30 +1,109 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-
+const liveConnectData = {
+  'customerRiskyFeedbackPercentageTrend': [{
+    percentage: 3.62,
+    time: 1470182400000
+  },
+    {
+      percentage: 28.22,
+      time: 1471910400000
+    },
+    {
+      percentage: 39.22,
+      time: 1472910400000
+    },
+    {
+      percentage: 58.22,
+      time: 1473910400000
+    },
+    {
+      percentage: 78.22,
+      time: 1474910400000
+    }],
+  'customerPercentageTrend': [{
+    percentage: 10.45,
+    time: 1468972800000
+  },
+    {
+      percentage: 25.67,
+      time: 1469404800000
+    },
+    {
+      percentage: 33.81,
+      time: 1469491200000
+    },
+    {
+      percentage: 53.28,
+      time: 1469664000000
+    },
+    {
+      percentage: 80.61,
+      time: 1470355200000
+    },
+    {
+      percentage: 96.81,
+      time: 1471910400000
+    }],
+  'feedback': {},
+  'customerInvestigatedPercentageTrend': [{
+    percentage: 30.06,
+    time: 1469491200000
+  },
+    {
+      percentage: 15.0,
+      time: 1469577600000
+    },
+    {
+      percentage: 43.65,
+      time: 1470787200000
+    },
+    {
+      percentage: 30.0,
+      time: 1471219200000
+    },
+    {
+      percentage: 48.69,
+      time: 1472169600000
+    }],
+  'customerPercentage': 10.0,
+  'customerInvestigatedPercentage': 20.0,
+  'risk': null,
+  'unsafeModulesDownloaded': 'NONE',
+  'riskReasonTypeList': [],
+  'customerRiskyFeedbackPercentage': 23.0,
+  'customerNotRiskyFeedbackPercentage': 4.0,
+  'unsafeModulesCommunicated': [],
+  'relatedDomains': [],
+  'customerNotRiskyFeedbackPercentageTrend': [{
+    percentage: 73.62,
+    time: 1470182400000
+  },
+    {
+      percentage: 63.22,
+      time: 1471910400000
+    },
+    {
+      percentage: 18.22,
+      time: 1472910400000
+    },
+    {
+      percentage: 28.22,
+      time: 1473910400000
+    },
+    {
+      percentage: 10.22,
+      time: 1474910400000
+    }],
+  'riskScore': 31,
+  'id': '12.31.23.45',
+  'firstSeen': 1452485774539
+};
 moduleForComponent('rsa-context-panel/lc-community-activity', 'Integration | Component | rsa context panel/lc community activity', {
   integration: true
 });
 
 test('it renders correctly with the correct number of expected elements', function(assert) {
-  let liveConnectData = {
-    'customerRiskyFeedbackPercentageTrend': [],
-    'customerPercentageTrend': [],
-    'feedback': {},
-    'customerInvestigatedPercentageTrend': [],
-    'customerPercentage': 10.0,
-    'customerInvestigatedPercentage': 20.0,
-    'risk': null,
-    'unsafeModulesDownloaded': 'NONE',
-    'riskReasonTypeList': [],
-    'customerRiskyFeedbackPercentage': 23.0,
-    'customerNotRiskyFeedbackPercentage': 4.0,
-    'unsafeModulesCommunicated': [],
-    'relatedDomains': [],
-    'customerNotRiskyFeedbackPercentageTrend': [],
-    'riskScore': 31,
-    'id': '12.31.23.45',
-    'firstSeen': 1452485774539
-  };
   this.set('liveConnectData', liveConnectData);
   this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData}}`);
 
@@ -39,26 +118,6 @@ test('it renders correctly with the correct number of expected elements', functi
 });
 
 test('Radio button,Button and Drop down renders correctly', function(assert) {
-
-  let liveConnectData = {
-    'customerRiskyFeedbackPercentageTrend': [],
-    'customerPercentageTrend': [],
-    'feedback': {},
-    'customerInvestigatedPercentageTrend': [],
-    'customerPercentage': 10.0,
-    'customerInvestigatedPercentage': 20.0,
-    'risk': null,
-    'unsafeModulesDownloaded': 'NONE',
-    'riskReasonTypeList': [],
-    'customerRiskyFeedbackPercentage': 23.0,
-    'customerNotRiskyFeedbackPercentage': 4.0,
-    'unsafeModulesCommunicated': [],
-    'relatedDomains': [],
-    'customerNotRiskyFeedbackPercentageTrend': [],
-    'riskScore': 31,
-    'id': '12.31.23.45',
-    'firstSeen': 1452485774539
-  };
   this.set('liveConnectData', liveConnectData);
   this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData}}`);
 
@@ -71,105 +130,6 @@ test('Radio button,Button and Drop down renders correctly', function(assert) {
 });
 
 test('line charts are rendered correctly', function(assert) {
-  let liveConnectData = {
-    'customerRiskyFeedbackPercentageTrend': [{
-      percentage: 3.62,
-      time: 1470182400000
-    },
-      {
-        percentage: 28.22,
-        time: 1471910400000
-      },
-      {
-        percentage: 39.22,
-        time: 1472910400000
-      },
-      {
-        percentage: 58.22,
-        time: 1473910400000
-      },
-      {
-        percentage: 78.22,
-        time: 1474910400000
-      }],
-    'customerPercentageTrend': [{
-      percentage: 10.45,
-      time: 1468972800000
-    },
-      {
-        percentage: 25.67,
-        time: 1469404800000
-      },
-      {
-        percentage: 33.81,
-        time: 1469491200000
-      },
-      {
-        percentage: 53.28,
-        time: 1469664000000
-      },
-      {
-        percentage: 80.61,
-        time: 1470355200000
-      },
-      {
-        percentage: 96.81,
-        time: 1471910400000
-      }],
-    'feedback': {},
-    'customerInvestigatedPercentageTrend': [{
-      percentage: 30.06,
-      time: 1469491200000
-    },
-      {
-        percentage: 15.0,
-        time: 1469577600000
-      },
-      {
-        percentage: 43.65,
-        time: 1470787200000
-      },
-      {
-        percentage: 30.0,
-        time: 1471219200000
-      },
-      {
-        percentage: 48.69,
-        time: 1472169600000
-      }],
-    'customerPercentage': 10.0,
-    'customerInvestigatedPercentage': 20.0,
-    'risk': null,
-    'unsafeModulesDownloaded': 'NONE',
-    'riskReasonTypeList': [],
-    'customerRiskyFeedbackPercentage': 23.0,
-    'customerNotRiskyFeedbackPercentage': 4.0,
-    'unsafeModulesCommunicated': [],
-    'relatedDomains': [],
-    'customerNotRiskyFeedbackPercentageTrend': [{
-      percentage: 73.62,
-      time: 1470182400000
-    },
-      {
-        percentage: 63.22,
-        time: 1471910400000
-      },
-      {
-        percentage: 18.22,
-        time: 1472910400000
-      },
-      {
-        percentage: 28.22,
-        time: 1473910400000
-      },
-      {
-        percentage: 10.22,
-        time: 1474910400000
-      }],
-    'riskScore': 31,
-    'id': '12.31.23.45',
-    'firstSeen': 1452485774539
-  };
   this.set('liveConnectData', liveConnectData);
   this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData}}`);
 

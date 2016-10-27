@@ -191,7 +191,13 @@ export default $.extend({}, BaseTranslations, {
       submittedActivityDesc3: '<span class="rsa-context-panel__liveconnect__comm-activity__desc__safe">{{safe}}%</span> marked safe',
       submittedActivityDesc4: '<span class="rsa-context-panel__liveconnect__comm-activity__desc__unknown">{{unknown}}%</span> marked unknown',
       riskIndicators: 'Risk Indicators',
-      percentageTagged: '% Community Tagged'
+      identity: 'Identity',
+      asn: 'Autonomous System Number(ASN)',
+      prefix: 'Prefix',
+      countryCode: 'Country Code',
+      countryName: 'Country Name',
+      registrant: 'Organization',
+      fileDate: 'Date'
     }
   },
   about: {

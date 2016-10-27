@@ -228,5 +228,9 @@ $font-fade-color: rsa-color(gray, light);
         }
       }
     }
+
+    &__prefix .value {
+      color: rsa-color(blue);
+    }
   }
 }

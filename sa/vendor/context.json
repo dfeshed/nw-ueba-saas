@@ -939,7 +939,13 @@
             ],
             "riskScore": 100.0,
             "id": "41.140.181.156",
-            "firstSeen": 1469025558535
+            "firstSeen": 1469025558535,
+            "asn": "AS12257",
+            "prefix": "AS",
+            "countryCode": "01772",
+            "country": "US",
+            "registrant" : "XYZ/LLC",
+            "fileDate" : 1401972584000
           }
         }
       }
