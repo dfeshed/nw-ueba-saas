@@ -1,19 +1,35 @@
 .rsa-investigate-query-bar {
-  border: 1px solid rsa-color(white);
   @include rsa-row(left, bottom);
 
-  &__service,
-  &__time-range,
-  &__text,
+  &__service.with-dropdown,
+  &__time-range.with-dropdown {
+    @include rsa-vendor-prefix(flex-grow);
+    margin-left: rsa-whitespace(least);
+    // background-color: rsa-color(grey, darkest);
+    .rsa-form-button {
+      ul {
+        border-top: none;
+        li {
+          @include rsa-font(default, small);
+          letter-spacing: normal;
+          text-transform: none;
+          line-height: normal;
+          padding: rsa-whitespace(less) rsa-whitespace(less);
+          border: none;
+          color: rsa-color(grey);
+        }
+      }
+    }
+  }
   &__submit {
-    margin: rsa-whitespace(less);
+    @include rsa-vendor-prefix(flex-grow);
+    margin-left: rsa-whitespace();
   }
-
-  &__xservice,
-  &__xtime-range {
-    width: 200px;
-  }
-  &__xtext {
-    width: 200px;
+  .rsa-investigate-query-input {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    margin-left: rsa-whitespace(least);
+    &__icon {
+      margin-left: rsa-whitespace();
+    }
   }
 }

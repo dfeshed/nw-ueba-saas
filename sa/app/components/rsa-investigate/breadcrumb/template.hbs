@@ -39,4 +39,14 @@
       </ul>
     {{/rsa-form-button}}
   {{/each}}
+  {{#if isAddingMeta}}
+    {{rsa-investigate/query-input class='rsa-investigate-breadcrumb__query-input' queryString=queryString placeholder='Enter Value'}}
+    {{#rsa-form-button class='rsa-investigate-breadcrumb__submit' style='primary' click=(action 'submit' queryString)}}
+      Query Events
+    {{/rsa-form-button}}
+  {{else}}
+    {{#rsa-form-button class='rsa-investigate-breadcrumb__more' click=(action 'addMeta')}}
+      {{rsa-icon name='add-1' style='lined'}} More Meta (optional)
+    {{/rsa-form-button}}
+  {{/if}}
 </section>

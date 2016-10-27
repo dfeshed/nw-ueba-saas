@@ -4,7 +4,8 @@
       query=model.queryNode.value.definition
       language=model.queryNode.value.language.data
       aliases=model.queryNode.value.aliases.data
-      services=model.services.data}}
+      services=model.services.data
+      submitQuery=(route-action 'submitQuery')}}
     {{rsa-investigate/timeline
       data=model.queryNode.value.results.eventTimeline.data
       status=model.queryNode.value.results.eventTimeline.status

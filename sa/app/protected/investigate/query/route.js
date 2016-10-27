@@ -17,6 +17,7 @@ export default Route.extend({
   model(params) {
     const state = this.modelFor('protected.investigate');
     const filterAttrs = parseEventQueryUri(params.filter);
+    this.set('filterAttrs', filterAttrs);
 
     // @workaround Using `this.send()` throws an error if you are navigating to this route directly from a bookmark.
     // Ember tells us to use `transition.send()` in that case instead. We could, but then any sub-actions called by
@@ -26,5 +27,20 @@ export default Route.extend({
       this.send('navFindOrAdd', filterAttrs);
     });
     return state;
+  },
+
+  actions: {
+    submitQuery(query) {
+      const filterAttrs = this.get('filterAttrs');
+      const uri = (filterAttrs.metaFilter.uri && filterAttrs.metaFilter.uri !== '') ? filterAttrs.metaFilter.uri : null;
+      // Navigate to new results
+      this.transitionTo('protected.investigate.query', [
+        filterAttrs.serviceId,
+        filterAttrs.startTime,
+        filterAttrs.endTime,
+        uri,
+        query
+      ].compact().join('/'));
+    }
   }
 });

@@ -9,11 +9,13 @@ import { uriEncodeEventQuery } from 'sa/protected/investigate/actions/helpers/qu
 import formatUtil from '../events-table-row/format-util';
 import { metaKeyAlias } from 'sa/helpers/meta-key-alias';
 
-const { Component } = Ember;
+const { $, Component, run } = Ember;
 
 export default Component.extend({
   tagName: 'nav',
   classNames: 'rsa-investigate-breadcrumb',
+  isAddingMeta: false,
+  queryString: '',
 
   /**
    * An object whose properties are the filter parameters for a Netwitness Core query; including
@@ -126,5 +128,22 @@ export default Component.extend({
         deleteUri
       };
     });
+  },
+
+  actions: {
+    addMeta() {
+      this.toggleProperty('isAddingMeta');
+      run.next(this, function() {
+        $('.rsa-investigate-query-input input').focus();
+      });
+    },
+
+    submit(q) {
+      // Call action on route
+      this.sendAction('submitQuery', q);
+      // Cleanup
+      this.set('queryString', '');
+      this.toggleProperty('isAddingMeta');
+    }
   }
 });

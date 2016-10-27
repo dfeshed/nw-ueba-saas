@@ -1,32 +1,31 @@
 .rsa-investigate-index {
   position: relative;
   @include rsa-vendor-prefix(flex-grow, 1);
-  @include rsa-row(center, middle);
 
   &__body {
+    margin: rsa-whitespace() rsa-whitespace(more);
 
-    @include rsa-vendor-prefix(flex-shrink, 1);
-    @include rsa-col(center, middle);
-    margin: 0 rsa-whitespace(most) rsa-whitespace() rsa-whitespace(most);
-
-    &-header {
-      text-align: center;
-      margin: rsa-whitespace();
-
-      h2 {
-        white-space: nowrap;
-      }
+    &.resolved {
       p {
-        margin: rsa-whitespace(less) 0 rsa-whitespace();
-      }
-
-      .rsa-form-button {
-        margin-top: rsa-whitespace();
+        display: inline-block;
+        margin-right: rsa-whitespace();
+        max-width: 80%;
       }
     }
 
     .rsa-investigate-query-bar {
       width: 100%;
+    }
+
+    .rsa-loader {
+      &__wheel {
+        margin: 0;
+      }
+      &__text {
+        position: relative;
+        top: -2.8em;
+        right: -3em;
+      }
     }
   }
 }

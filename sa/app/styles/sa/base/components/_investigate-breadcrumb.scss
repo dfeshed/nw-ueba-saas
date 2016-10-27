@@ -1,11 +1,32 @@
 .rsa-investigate-breadcrumb {
+  &__crumbs {
+    @include rsa-row(left, bottom);
+  }
+
   &__crumb {
-    display: inline-block;
     list-style: none;
+  }
+
+  &__more {
+    display: inline;
+    margin-left: rsa-whitespace(least);
+    .rsa-icon {
+      color: rsa-color(grey);
+      margin-left: rsa-whitespace(less);
+    }
   }
 
   .rsa-investigate-time-range {
     display: inline;
+  }
+
+  .rsa-investigate-query-input {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    margin: 0 rsa-whitespace() 0 rsa-whitespace(least);
+    color: rsa-color(grey);
+    .rsa-icon {
+      margin-left: rsa-whitespace();
+    }
   }
 
   /*

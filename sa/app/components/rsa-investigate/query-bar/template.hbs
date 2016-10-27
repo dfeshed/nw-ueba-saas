@@ -1,20 +1,39 @@
-{{#if (is-equal servicesStatus 'wait')}}
-  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds multiple=false label=(t 'investigate.service') prompt=(t 'investigate.loading')}}
-  {{/rsa-form-select}}
-{{else if services.length}}
-  {{#rsa-form-select class="rsa-investigate-query-bar__service" values=selectedServiceIds multiple=false label=(t 'investigate.service')}}
+{{#rsa-form-button
+  class="rsa-investigate-query-bar__service"
+  dropdown='standard'
+  isDisabled=(is-equal servicesStatus 'wait')}}
+  {{#if selectedService}}
+    {{rsa-icon name='server-3' style='lined'}}
+    <span class="js-test-service">{{selectedService.name}}</span>
+  {{else}}
+    {{rsa-icon name='server-3' style='lined'}} Select a Service/Collection
+  {{/if}}
+  <ul>
     {{#each services as |service|}}
-      <option value="{{service.id}}">{{service.name}}</option>
+      <li value="{{service.id}}" {{action 'updateService' service}}>{{service.name}}</li>
     {{/each}}
-  {{/rsa-form-select}}
-{{/if}}
-{{#rsa-form-select class="rsa-investigate-query-bar__time-range" values=selectedTimeRangeIds multiple=false label=(t 'investigate.timeRange')}}
-  {{#each timeRanges as |timeRange|}}
-    <option value="{{timeRange.id}}">{{timeRange.name}}</option>
-  {{/each}}
-{{/rsa-form-select}}
-{{rsa-form-input class="rsa-investigate-query-bar__text" type="text" isReadOnly=true label=(t 'investigate.filter') placeholder="(optional)"}}
+  </ul>
+{{/rsa-form-button}}
+
+{{#rsa-form-button
+  class="rsa-investigate-query-bar__time-range"
+  dropdown='standard'}}
+  {{#if selectedTimeRange}}
+    {{rsa-icon name='clock-2' style='lined'}}
+    <span class="datetime">{{selectedTimeRange.name}}</span>
+  {{else}}
+   {{rsa-icon name='clock-2' style='lined'}} Select a Time Range
+  {{/if}}
+  <ul>
+    {{#each timeRanges as |timeRange|}}
+      <li value="{{timeRange.id}}" {{action 'updateRange' timeRange}}>{{timeRange.name}}</li>
+    {{/each}}
+  </ul>
+{{/rsa-form-button}}
+
+{{rsa-investigate/query-input class="rsa-investigate-query-bar__query-input" queryString=queryString}}
+
 {{#rsa-form-button class="rsa-investigate-query-bar__submit" click=(action "submit")
-  style="primary" isDisabled=(unless _submitIsEnabled true false)}}
-  <span class="js-test-investigate-query-bar__submit">Run Query</span>
+  style="primary" isDisabled=submitDisabled}}
+  <span class="js-test-investigate-query-bar__submit">Query Events</span>
 {{/rsa-form-button}}

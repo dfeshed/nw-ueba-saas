@@ -1,0 +1,33 @@
+.rsa-investigate-query-input {
+  @include rsa-row(left, middle);
+  border-bottom: 1px solid rsa-color(gray, light);
+  &:hover {
+    border-bottom-color: rsa-color(gray, lighter);
+    .rsa-investigate-query-input__icon {
+      color: rsa-color(gray, lighter);
+    }
+  }
+  &.has-value {
+    border-bottom-color: rsa-color(blue);
+  }
+
+  &__input {
+    @include rsa-vendor-prefix(flex-grow, 1);
+    input {
+      // This is temporary until we come up with a
+      // "query input" component that has the icon
+      // and cancel button.
+      border: none;
+    }
+  }
+
+  &__icon,
+  &__clear {
+    color: rsa-color(gray, light);
+  }
+  &__clear {
+    &:hover {
+      color: rsa-color(gray, lighter);
+    }
+  }
+}
