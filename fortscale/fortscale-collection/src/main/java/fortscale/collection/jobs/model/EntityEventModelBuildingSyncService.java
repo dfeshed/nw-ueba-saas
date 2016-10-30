@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * Created by barak_schuster on 10/30/16.
  */
-public class EntityEventModelBuildingSyncService extends ModelBuildingSyncService{
+public class EntityEventModelBuildingSyncService extends AccumulatedModelBuildingSyncService{
 
     @Autowired
     private EntityEventAccumulatorManagerImpl entityEventAccumulatorManager;
