@@ -2,6 +2,7 @@ package fortscale.collection.jobs.aggregation.events;
 
 import fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService;
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.model.AggregatedEventsModelBuildingSyncService;
 import fortscale.collection.jobs.model.ModelBuildingSyncService;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfServiceUtils;
@@ -61,6 +62,8 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 	@Autowired
 	private ModelStore modelStore;
 
+
+
 	private String sessionId;
 	private ModelBuildingSyncService modelBuildingSyncService;
 	private Collection<ModelConf> modelConfs;
@@ -111,7 +114,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
 		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
 		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
-		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
+		modelBuildingSyncService = new AggregatedEventsModelBuildingSyncService(sessionId, modelConfNames,
                 secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic);
 
 
