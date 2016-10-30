@@ -1,14 +1,21 @@
 package fortscale.collection.jobs.model;
 
+import org.springframework.beans.factory.annotation.Configurable;
+
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.ml.model.message.ModelBuildingCommandMessage;
+import fortscale.accumulator.manager.AccumulatorManagerParams;
+import fortscale.accumulator.manager.AccumulatorManger;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
+import java.time.Instant;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -99,7 +106,8 @@ public class ModelBuildingSyncService {
 		}
 	}
 
-	private void sendCommands(long endTimeInSeconds) throws JsonProcessingException {
+	protected void sendCommands(long endTimeInSeconds) throws JsonProcessingException {
+		accumulateIfNeeded(endTimeInSeconds);
 		logger.info("Sending model building commands: Session ID = {}, end time in seconds = {}.",
 				sessionId, endTimeInSeconds);
 
@@ -108,6 +116,30 @@ public class ModelBuildingSyncService {
 			String commandJsonString = objectMapper.writeValueAsString(command);
 			writer.send(null, commandJsonString);
 		}
+	}
+
+	/**
+	 * runs accumulation by specific accumulation manager
+	 * @param endTimeInSeconds
+     */
+	private void accumulateIfNeeded(long endTimeInSeconds) {
+		AccumulatorManger accumulatorManger = getAccumulatorManger();
+		if(accumulatorManger!=null) {
+			Set<String> features = new HashSet<>(modelConfNames);
+			AccumulatorManagerParams accumulatorManagerParams = new AccumulatorManagerParams();
+			accumulatorManagerParams.setFeatures(features);
+			accumulatorManagerParams.setTo(Instant.ofEpochSecond(endTimeInSeconds));
+			accumulatorManger.run(accumulatorManagerParams);
+		}
+	}
+
+	/**
+	 * overridden by inherited classes
+	 * @return
+     */
+	protected AccumulatorManger getAccumulatorManger()
+	{
+		return null;
 	}
 
 	private void waitForSummaryMessages(long endTimeInSeconds) throws TimeoutException {

@@ -1,6 +1,7 @@
 package fortscale.collection.jobs.smart;
 
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.model.EntityEventModelBuildingSyncService;
 import fortscale.collection.jobs.model.ModelBuildingSyncService;
 import fortscale.entity.event.EntityEventDataStore;
 import fortscale.entity.event.EntityEventService;
@@ -106,7 +107,7 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
 		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(jobDataMap, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
 		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(jobDataMap, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
-		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
+		modelBuildingSyncService = new EntityEventModelBuildingSyncService(sessionId, modelConfNames,
 				secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic);
 
 
