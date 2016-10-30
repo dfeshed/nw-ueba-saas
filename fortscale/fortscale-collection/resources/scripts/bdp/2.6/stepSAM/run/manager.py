@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models
+from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models_and_acm
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -243,8 +243,8 @@ class Manager(DontReloadModelsOverridingManager):
             return False
         return True
 
-    def _cleanup(self, fail_if_no_models=True):
-        return cleanup_everything_but_models(logger=logger,
+    def _cleanup(self, data_source=None, fail_if_no_models=True):
+        return cleanup_everything_but_models_and_acm(logger=logger,
                                              host=self._host,
                                              clean_overrides_key='stepSAM.cleanup',
                                              infer_start_and_end_from_collection_names_regex='^aggr_',
