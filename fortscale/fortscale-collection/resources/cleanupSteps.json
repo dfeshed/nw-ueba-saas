@@ -52,12 +52,12 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "evidences@@@evidenceType:::AnomalyAggregatedEvent###^model_((?!entity).)*(daily|hourly)$%%%regex@@@date:::endTime"
+        "dataSources": "evidences@@@evidenceType:::AnomalyAggregatedEvent###^model_((?!entity).)*(daily|hourly)$%%%regex@@@date:::endTime###^scored___entity_event.*(d_acm|h_acm)$%%%regex@@@date:::end_time"
       },
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "AggrFeatureEventToSend@@@date:::endTime###scored___aggr%%%prefix@@@date:::end_time_unix###entity_event_%%%prefix@@@date:::endTime"
+        "dataSources": "AggrFeatureEventToSend@@@date:::endTime###scored___aggr.*(daily|hourly)%%%prefix@@@date:::end_time_unix###entity_event_%%%prefix@@@date:::endTime###^scored___aggr.*(d_acm|h_acm)$%%%regex@@@date:::end_time"
       }
     ],
     "otherSteps": [
@@ -79,7 +79,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "^model_.*(entity){1}.*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event%%%prefix@@@date:::end_time_unix"
+        "dataSources": "^model_.*(entity){1}.*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event.*(daily|hourly)%%%regex@@@date:::end_time_unix###^scored___entity_event.*(d_acm|h_acm)$%%%regex@@@date:::end_time"
       }
     ],
     "otherSteps": [
