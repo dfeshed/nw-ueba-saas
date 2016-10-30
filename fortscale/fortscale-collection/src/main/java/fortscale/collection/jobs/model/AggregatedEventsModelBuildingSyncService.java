@@ -9,7 +9,7 @@ import java.util.Collection;
 /**
  * Created by barak_schuster on 10/30/16.
  */
-public class AggregatedEventsModelBuildingSyncService extends ModelBuildingSyncService {
+public class AggregatedEventsModelBuildingSyncService extends AccumulatedModelBuildingSyncService {
     @Autowired
     private AggregatedFeatureEventsAccumulatorManagerImpl aggregatedFeatureEventsAccumulatorManager;
 
