@@ -15,11 +15,12 @@ export default Component.extend({
 
   classNames: ['rsa-form-checkbox'],
 
-  classNameBindings: ['isError',
-                      'isDisabled',
-                      'isReadOnly',
-                      'isSelected',
-                      'isActive'],
+  classNameBindings: [
+    'isError',
+    'isDisabled',
+    'isReadOnly',
+    'isSelected',
+    'isActive'],
 
   label: null,
 

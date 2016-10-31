@@ -22,71 +22,75 @@ moduleForComponent('rsa-respond-index', 'Integration | Component | rsa respond/l
       array: []
     });
 
-    newCube.get('records').pushObjects([EmberObject.create({
-      riskScore: 1,
-      id: 'INC-1001',
-      name: 'Suspected command and control communication with www.mozilla.com',
-      createdBy: 'User X',
-      created: '2015-10-10',
-      lastUpdated: '2015-10-10',
-      statusSort: 0,
-      prioritySort: 0,
-      alertCount: 10,
-      eventCount: 2,
-      sources: ['Event Stream Analysis'],
-      assignee: {
-        id: '1'
-      }
-    }),
-    EmberObject.create({
-      riskScore: 1,
-      id: 'INC-1002',
-      name: 'Suspected command and control communication with www.mozilla.com',
-      createdBy: 'User X',
-      created: '2015-10-10',
-      lastUpdated: '2015-10-10',
-      statusSort: 0,
-      prioritySort: 0,
-      alertCount: 10,
-      eventCount: 2,
-      sources: ['Event Stream Analysis'],
-      assignee: {
-        id: '1'
-      }
-    })]);
+    newCube.get('records').pushObjects([
+      EmberObject.create({
+        riskScore: 1,
+        id: 'INC-1001',
+        name: 'Suspected command and control communication with www.mozilla.com',
+        createdBy: 'User X',
+        created: '2015-10-10',
+        lastUpdated: '2015-10-10',
+        statusSort: 0,
+        prioritySort: 0,
+        alertCount: 10,
+        eventCount: 2,
+        sources: ['Event Stream Analysis'],
+        assignee: {
+          id: '1'
+        }
+      }),
+      EmberObject.create({
+        riskScore: 1,
+        id: 'INC-1002',
+        name: 'Suspected command and control communication with www.mozilla.com',
+        createdBy: 'User X',
+        created: '2015-10-10',
+        lastUpdated: '2015-10-10',
+        statusSort: 0,
+        prioritySort: 0,
+        alertCount: 10,
+        eventCount: 2,
+        sources: ['Event Stream Analysis'],
+        assignee: {
+          id: '1'
+        }
+      })
+    ]);
 
-    inProgressCube.get('records').pushObjects([EmberObject.create({
-      riskScore: 1,
-      id: 'INC-1003',
-      name: 'Suspected command and control communication with www.mozilla.com',
-      createdBy: 'User X',
-      created: '2015-10-10',
-      lastUpdated: '2015-10-10',
-      statusSort: 0,
-      prioritySort: 1,  // priority MEDIUM
-      alertCount: 10,
-      eventCount: 2,
-      sources: ['Event Stream Analysis'],
-      assignee: {
-        id: '1'
-      }
-    }),
-    EmberObject.create({
-      riskScore: 1,
-      id: 'INC-1004',
-      name: 'Suspected command and control communication with www.mozilla.com',
-      createdBy: 'User X',
-      created: '2015-10-10',
-      lastUpdated: '2015-10-10',
-      statusSort: 0,
-      prioritySort: 0,
-      alertCount: 10,
-      eventCount: 2,
-      sources: ['Event Stream Analysis'],
-      assignee: {
-        id: '1'
-      }
-    })]);
+    inProgressCube.get('records').pushObjects([
+      EmberObject.create({
+        riskScore: 1,
+        id: 'INC-1003',
+        name: 'Suspected command and control communication with www.mozilla.com',
+        createdBy: 'User X',
+        created: '2015-10-10',
+        lastUpdated: '2015-10-10',
+        statusSort: 0,
+        prioritySort: 1,  // priority MEDIUM
+        alertCount: 10,
+        eventCount: 2,
+        sources: ['Event Stream Analysis'],
+        assignee: {
+          id: '1'
+        }
+      }),
+      EmberObject.create({
+        riskScore: 1,
+        id: 'INC-1004',
+        name: 'Suspected command and control communication with www.mozilla.com',
+        createdBy: 'User X',
+        created: '2015-10-10',
+        lastUpdated: '2015-10-10',
+        statusSort: 0,
+        prioritySort: 0,
+        alertCount: 10,
+        eventCount: 2,
+        sources: ['Event Stream Analysis'],
+        assignee: {
+          id: '1'
+        }
+      })
+    ]);
 
     allCube.get('records').pushObjects(newCube.get('records'));
     allCube.get('records').pushObjects(inProgressCube.get('records'));

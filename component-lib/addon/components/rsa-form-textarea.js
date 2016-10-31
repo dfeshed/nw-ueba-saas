@@ -16,10 +16,11 @@ export default Component.extend({
 
   classNames: ['rsa-form-textarea'],
 
-  classNameBindings: ['isReadOnly',
-                      'isDisabled',
-                      'isError',
-                      'isSuccess'],
+  classNameBindings: [
+    'isReadOnly',
+    'isDisabled',
+    'isError',
+    'isSuccess'],
 
   value: null,
 

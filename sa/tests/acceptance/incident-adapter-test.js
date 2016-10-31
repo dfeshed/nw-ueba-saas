@@ -47,10 +47,10 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   let type = { modelName: 'test' };
 
   let snapShot = { 'id': 1,
-                  changedAttributes() {
-                    return { 'priority': ['LOW', 'HIGH'] };
-                  }
-                };
+    changedAttributes() {
+      return { 'priority': ['LOW', 'HIGH'] };
+    }
+  };
 
   andThen(function() {
     return adapter.updateRecord(store, type, snapShot).then((response) => {

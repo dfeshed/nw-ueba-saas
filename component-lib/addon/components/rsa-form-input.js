@@ -15,11 +15,12 @@ export default Component.extend({
 
   classNames: ['rsa-form-input'],
 
-  classNameBindings: ['isReadOnly',
-                      'isDisabled',
-                      'isError',
-                      'isSuccess',
-                      'isInline'],
+  classNameBindings: [
+    'isReadOnly',
+    'isDisabled',
+    'isError',
+    'isSuccess',
+    'isInline'],
 
   value: null,
 

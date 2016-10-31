@@ -29,13 +29,14 @@ export default Component.extend({
 
   classNames: ['rsa-form-select'],
 
-  classNameBindings: ['optionsCollapsed',
-                      'isReadOnly',
-                      'isDisabled',
-                      'isError',
-                      'isInline',
-                      'isSmall',
-                      'hasMultipleValues:has-multiple-values:has-single-value'],
+  classNameBindings: [
+    'optionsCollapsed',
+    'isReadOnly',
+    'isDisabled',
+    'isError',
+    'isInline',
+    'isSmall',
+    'hasMultipleValues:has-multiple-values:has-single-value'],
 
   isReadOnly: false,
 

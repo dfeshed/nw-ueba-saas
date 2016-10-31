@@ -18,8 +18,9 @@ export default Component.extend({
 
   classNames: ['rsa-application-modal'],
 
-  classNameBindings: ['isOpen',
-                      'style'],
+  classNameBindings: [
+    'isOpen',
+    'style'],
 
   eventId: null,
 

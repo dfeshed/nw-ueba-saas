@@ -50,38 +50,40 @@ moduleForComponent('rsa-respond/landing-page/respond-index/card-view', 'Integrat
         }
       })]);
 
-    inProgressCube.get('records').pushObjects([EmberObject.create({
-      riskScore: 1,
-      id: 'INC-493',
-      name: 'Suspected command and control communication with www.mozilla.com',
-      createdBy: 'User X',
-      created: '2015-10-10',
-      lastUpdated: '2015-10-10',
-      statusSort: 0,
-      prioritySort: 0,
-      alertCount: 10,
-      eventCount: 2,
-      sources: ['Event Stream Analysis'],
-      assignee: {
-        id: '1'
-      }
-    }),
-    EmberObject.create({
-      riskScore: 1,
-      id: 'INC-494',
-      name: 'Suspected command and control communication with www.mozilla.com',
-      createdBy: 'User X',
-      created: '2015-10-10',
-      lastUpdated: '2015-10-10',
-      statusSort: 0,
-      prioritySort: 0,
-      alertCount: 10,
-      eventCount: 2,
-      sources: ['Event Stream Analysis'],
-      assignee: {
-        id: '1'
-      }
-    })]);
+    inProgressCube.get('records').pushObjects([
+      EmberObject.create({
+        riskScore: 1,
+        id: 'INC-493',
+        name: 'Suspected command and control communication with www.mozilla.com',
+        createdBy: 'User X',
+        created: '2015-10-10',
+        lastUpdated: '2015-10-10',
+        statusSort: 0,
+        prioritySort: 0,
+        alertCount: 10,
+        eventCount: 2,
+        sources: ['Event Stream Analysis'],
+        assignee: {
+          id: '1'
+        }
+      }),
+      EmberObject.create({
+        riskScore: 1,
+        id: 'INC-494',
+        name: 'Suspected command and control communication with www.mozilla.com',
+        createdBy: 'User X',
+        created: '2015-10-10',
+        lastUpdated: '2015-10-10',
+        statusSort: 0,
+        prioritySort: 0,
+        alertCount: 10,
+        eventCount: 2,
+        sources: ['Event Stream Analysis'],
+        assignee: {
+          id: '1'
+        }
+      })
+    ]);
 
     let users = [
       EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),

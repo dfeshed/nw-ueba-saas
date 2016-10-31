@@ -178,8 +178,8 @@ test('it renders', function(assert) {
   });
 
   let categoryTags = [EmberObject.create({ 'parent': 'Environmental', 'name': 'Deterioration', 'id': '562aae59e4b03ae1affcc4ff' }),
-      EmberObject.create({ 'parent': 'Error', 'name': 'Capacity shortage', 'id': '562aae59e4b03ae1affcc522' }),
-      EmberObject.create({ 'parent': 'Hacking', 'name': 'Session replay', 'id': '562aae59e4b03ae1affcc545' })];
+    EmberObject.create({ 'parent': 'Error', 'name': 'Capacity shortage', 'id': '562aae59e4b03ae1affcc522' }),
+    EmberObject.create({ 'parent': 'Hacking', 'name': 'Session replay', 'id': '562aae59e4b03ae1affcc545' })];
 
   this.set('incident', incident);
   this.set('categoryTags', categoryTags);

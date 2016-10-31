@@ -23,13 +23,14 @@ export default Component.extend({
 
   classNames: ['rsa-application-layout-manager'],
 
-  classNameBindings: ['layoutService.journalPanelClass',
-                      'layoutService.contextPanelClass',
-                      'layoutService.panelAClass',
-                      'layoutService.panelBClass',
-                      'layoutService.panelCClass',
-                      'layoutService.panelDClass',
-                      'layoutService.panelEClass'],
+  classNameBindings: [
+    'layoutService.journalPanelClass',
+    'layoutService.contextPanelClass',
+    'layoutService.panelAClass',
+    'layoutService.panelBClass',
+    'layoutService.panelCClass',
+    'layoutService.panelDClass',
+    'layoutService.panelEClass'],
 
   journalPanel: alias('layoutService.journalPanel'),
   contextPanel: alias('layoutService.contextPanel'),

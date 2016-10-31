@@ -15,11 +15,12 @@ export default Component.extend({
 
   classNames: ['rsa-form-radio'],
 
-  classNameBindings: ['isError',
-                      'isDisabled',
-                      'isReadOnly',
-                      'isSelected',
-                      'isActive'],
+  classNameBindings: [
+    'isError',
+    'isDisabled',
+    'isReadOnly',
+    'isSelected',
+    'isActive'],
 
   label: null,
 

@@ -12,19 +12,20 @@ export default Component.extend({
 
   classNames: ['rsa-content-badge-score'],
 
-  classNameBindings: ['hideLabel',
-                      'isLow',
-                      'isMedium',
-                      'isHigh',
-                      'isDanger',
-                      'isHigh',
-                      'isSmall',
-                      'isSmaller',
-                      'isLarge',
-                      'isLarger',
-                      'isLargest',
-                      'isInline',
-                      'progressBarLength'],
+  classNameBindings: [
+    'hideLabel',
+    'isLow',
+    'isMedium',
+    'isHigh',
+    'isDanger',
+    'isHigh',
+    'isSmall',
+    'isSmaller',
+    'isLarge',
+    'isLarger',
+    'isLargest',
+    'isInline',
+    'progressBarLength'],
 
   score: null,
 
