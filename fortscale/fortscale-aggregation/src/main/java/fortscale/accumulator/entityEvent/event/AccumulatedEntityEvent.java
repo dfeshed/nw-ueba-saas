@@ -4,7 +4,9 @@ import org.springframework.data.annotation.Id;
 
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * accumulated view of {@link fortscale.domain.core.EntityEvent}
@@ -35,7 +37,9 @@ public class AccumulatedEntityEvent {
     private String contextId;
 
     // <bucket-featurename<hour, value>>
-    private Map<String,Double[]> aggregated_feature_events_values_map;
+    private Map<String,Map<Integer,Double>> aggregated_feature_events_values_map;
+
+    private Set<Integer> activityTime;
 
     private Instant creation_time;
 
@@ -45,6 +49,7 @@ public class AccumulatedEntityEvent {
     public AccumulatedEntityEvent()
     {
         aggregated_feature_events_values_map = new HashMap<>();
+        activityTime = new HashSet<>();
     }
 
     public AccumulatedEntityEvent(Instant start_time, Instant end_time, String contextId, Instant creation_time)
@@ -64,9 +69,10 @@ public class AccumulatedEntityEvent {
      * @param aggregated_feature_events_values_map
      * @param creation_time
      */
-    public AccumulatedEntityEvent(Instant start_time, Instant end_time, String contextId, Map<String,Double[]>  aggregated_feature_events_values_map, Instant creation_time) {
+    public AccumulatedEntityEvent(Instant start_time, Instant end_time, String contextId, Map<String,Map<Integer,Double>>  aggregated_feature_events_values_map, Instant creation_time, Set<Integer> activityTime) {
         this(start_time, end_time,contextId, creation_time);
         this.aggregated_feature_events_values_map = aggregated_feature_events_values_map;
+        this.activityTime = activityTime;
     }
 
     // --- Getters/setters ---
@@ -103,12 +109,20 @@ public class AccumulatedEntityEvent {
         this.contextId = contextId;
     }
 
-    public Map<String,Double[]>  getAggregated_feature_events_values_map() {
+    public Map<String,Map<Integer,Double>>  getAggregated_feature_events_values_map() {
         return aggregated_feature_events_values_map;
     }
 
-    public void setAggregated_feature_events_values_map(Map<String,Double[]>  aggregated_feature_events_values_map) {
+    public void setAggregated_feature_events_values_map(Map<String,Map<Integer,Double>>  aggregated_feature_events_values_map) {
         this.aggregated_feature_events_values_map = aggregated_feature_events_values_map;
+    }
+
+    public Set<Integer> getActivityTime(){
+        return activityTime;
+    }
+
+    public void setActivityTime(Set<Integer> activityTime){
+        this.activityTime = activityTime;
     }
 
     public Instant getCreation_time() {
