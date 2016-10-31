@@ -114,15 +114,15 @@ public class EntityEventAccumulatorTest {
         List<AccumulatedEntityEvent> accumulationResult = mongoTemplate.findAll(AccumulatedEntityEvent.class, "scored___entity_event__normalized_username_h_acm");
         Assert.assertEquals(1, accumulationResult.size());
         AccumulatedEntityEvent accumulatedEntityEvent = accumulationResult.get(0);
-        Map<String, Double[]> aggregated_feature_events_values_map = accumulatedEntityEvent.getAggregated_feature_events_values_map();
-        Double[] accumulatedEventHoursArray = aggregated_feature_events_values_map.get("normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly");
+        Map<String, Map<Integer,Double>> aggregated_feature_events_values_map = accumulatedEntityEvent.getAggregated_feature_events_values_map();
+        Map<Integer,Double> accumulatedEventHoursArray = aggregated_feature_events_values_map.get("normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly");
         for (int i=0 ; i< 20; i++)
         {
-            Assert.assertNull(accumulatedEventHoursArray[i]);
+            Assert.assertNull(accumulatedEventHoursArray.get(i));
         }
-        Assert.assertNotNull(accumulatedEventHoursArray[20]);
-        Assert.assertNotNull(accumulatedEventHoursArray[21]);
-        Assert.assertNotNull(accumulatedEventHoursArray[22]);
+        Assert.assertNotNull(accumulatedEventHoursArray.get(20));
+        Assert.assertNotNull(accumulatedEventHoursArray.get(21));
+        Assert.assertNotNull(accumulatedEventHoursArray.get(22));
 
     }
 

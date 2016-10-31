@@ -15,10 +15,7 @@ import net.minidev.json.JSONObject;
 import java.time.Instant;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_FEATURE_SUFFIX;
 import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_FEATURE_SUFFIX;
@@ -117,7 +114,8 @@ public class EntityEventAccumulator extends BaseAccumulator {
                 accumulatedEntityEventMap.put(contextId, accumulatedEvent);
             }
 
-            Map<String,Double[]>  aggregatedFeatureEventsValuesMap = accumulatedEvent.getAggregated_feature_events_values_map();
+            Map<String,Map<Integer,Double>>  aggregatedFeatureEventsValuesMap = accumulatedEvent.getAggregated_feature_events_values_map();
+            Set<Integer> activityTimeSet = accumulatedEvent.getActivityTime();
 
             for (JSONObject aggrEvent : entityEvent.getAggregated_feature_events()) {
 
@@ -128,32 +126,23 @@ public class EntityEventAccumulator extends BaseAccumulator {
                 long eventStartTimeEpochSeconds = aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_START_TIME_UNIX).longValue();
                 int eventHourOfDay = epochSecondsToHourOfDay(eventStartTimeEpochSeconds);
 
-                Double[] hourToScoreArray = aggregatedFeatureEventsValuesMap.get(fullAggregatedFeatureEventName);
-                if (hourToScoreArray == null)
-                {
-                    if(featureName.endsWith(DAILY_FEATURE_SUFFIX))
-                    {
-                        hourToScoreArray = new Double[DAYS_IN_A_DAY];
-                    }
-                    else if(featureName.endsWith(HOURLY_FEATURE_SUFFIX))
-                    {
-                        hourToScoreArray = new Double[HOURS_IN_DAY];
-                    }
-                    else
-                    {
-                        throw new RuntimeException("unsupported feature name");
-                    }
+                activityTimeSet.add(eventHourOfDay);
 
-                    aggregatedFeatureEventsValuesMap.put(fullAggregatedFeatureEventName, hourToScoreArray);
+                Map<Integer,Double> hourToScoreMap = aggregatedFeatureEventsValuesMap.get(fullAggregatedFeatureEventName);
+                if (hourToScoreMap == null)
+                {
+                    hourToScoreMap = new HashMap<>();
+
+                    aggregatedFeatureEventsValuesMap.put(fullAggregatedFeatureEventName, hourToScoreMap);
                 }
 
                 String featureType = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_FEATURE_TYPE);
                 switch (featureType) {
                     case "F":
-                        hourToScoreArray[eventHourOfDay] = aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_SCORE).doubleValue();
+                        hourToScoreMap.put(eventHourOfDay, aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_SCORE).doubleValue());
                         break;
                     case "P":
-                        hourToScoreArray[eventHourOfDay] =aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_VALUE).doubleValue();
+                        hourToScoreMap.put(eventHourOfDay, aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_VALUE).doubleValue());
                         break;
                     default:
                         String message = String.format("cannot accumulate entityEvent with aggrFeatureEvent of type=%s", featureType);
