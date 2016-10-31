@@ -19,7 +19,14 @@ const RECON_VIEW_TYPES = [{
   label: 'File View',
   component: 'recon-event-detail/files',
   dataKey: 'files'
-}];
+}, {
+  code: 3,
+  name: 'TEXT',
+  label: 'Text View',
+  component: 'recon-event-detail/text',
+  dataKey: 'packets'
+}
+];
 
 const RECON_VIEW_TYPES_BY_NAME = {};
 RECON_VIEW_TYPES.forEach((t) => RECON_VIEW_TYPES_BY_NAME[t.name] = t);

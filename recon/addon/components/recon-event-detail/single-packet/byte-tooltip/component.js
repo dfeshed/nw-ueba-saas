@@ -27,8 +27,19 @@ function valsToHexArray(arr) {
     return intToHex(part.charCodeAt(0));
   });
 }
+/**
+ * The bytes array is passed in, converted to a hex array, then split into sections of 4 characters.
+ * fourCharHexArray is then reduced to format to the IPV6 standard, which dictates that:
+ * - sections of '0000' can be condensed to '0'
+ * - multiple zero sections in a row can be condensed to '::', but only one time
+ * For more info on IPV6 see https://www.tutorialspoint.com/ipv6/ipv6_address_types.htm
+ * @param values The array of single bytes
+ * @returns {string} the IPV6 formatted address
+ * @private
+ */
 function valsToIPV6(values) {
-  return valsToHexArray(values).reduce((ip, value, index, arr) => {
+  const fourCharHexArray = valsToHexArray(values).join('').match(/.{1,4}/g);
+  return fourCharHexArray.reduce((ip, value, index, arr) => {
     // Remove leading zeros
     const parsedValue = value.replace(/\b(0(?!\b))+/g, '');
 
@@ -40,6 +51,7 @@ function valsToIPV6(values) {
       if (ip.endsWith('::')) {
         return ip;
       }
+      // If IP does not have '::', and we have multiple zero sections, condense to '::'
       if (!ip.includes('::') && nextIsZeros) {
         return `${ip}:`;
       }
@@ -48,9 +60,20 @@ function valsToIPV6(values) {
     return `${ip}${index !== 0 && !ip.endsWith('::') ? ':' : ''}${parsedValue}`;
   }, '');
 }
+/**
+ * Takes an array of hex values and converts them to int
+ * @param arr The array of hex values
+ * @private
+ */
 function hexArrayToInt(arr) {
   return hexToInt(arr.join(''));
 }
+
+/**
+ * Converts array of bytes to ints
+ * @param arr The array of bytes
+ * @private
+ */
 function valsToInt(arr) {
   return hexArrayToInt(valsToHexArray(arr));
 }

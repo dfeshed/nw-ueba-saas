@@ -1,1 +1,7 @@
-{{yield}}
+{{#each parsedPackets as |packet index|}}
+  {{recon-event-detail/single-text
+    index=index
+    isLog=isLog
+    packet=packet
+  }}
+{{/each}}

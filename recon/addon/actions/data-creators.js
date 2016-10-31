@@ -84,6 +84,7 @@ const _dispatchReconViewData = (dispatch, { code }, dataState) => {
         });
       break;
     case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
+    case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
       fetchPacketData(
         dataState,
         (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload }),

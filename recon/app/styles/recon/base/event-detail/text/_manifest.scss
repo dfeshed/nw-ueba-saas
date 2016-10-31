@@ -1,0 +1,9 @@
+.recon-event-detail-text {
+  line-height: 1.5rem;
+  &.rsa-text-entry {
+    hbox {
+      overflow-x: hidden;
+      word-break: break-all;
+    }
+  }
+}
