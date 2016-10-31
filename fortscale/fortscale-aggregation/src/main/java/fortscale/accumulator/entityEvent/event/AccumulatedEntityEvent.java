@@ -69,9 +69,10 @@ public class AccumulatedEntityEvent {
      * @param aggregated_feature_events_values_map
      * @param creation_time
      */
-    public AccumulatedEntityEvent(Instant start_time, Instant end_time, String contextId, Map<String,Map<Integer,Double>>  aggregated_feature_events_values_map, Instant creation_time) {
+    public AccumulatedEntityEvent(Instant start_time, Instant end_time, String contextId, Map<String,Map<Integer,Double>>  aggregated_feature_events_values_map, Instant creation_time, Set<Integer> activityTime) {
         this(start_time, end_time,contextId, creation_time);
         this.aggregated_feature_events_values_map = aggregated_feature_events_values_map;
+        this.activityTime = activityTime;
     }
 
     // --- Getters/setters ---

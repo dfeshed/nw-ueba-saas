@@ -26,6 +26,10 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 		super(config, false);
 	}
 
+	public AccumulatedEntityEventValueRetriever(AccumulatedEntityEventValueRetrieverConf config,EntityEventConf entityEventConf) {
+		super(config, entityEventConf, false);
+	}
+
 	@Override
 	protected Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
 		List<AccumulatedEntityEvent> accumulatedEntityEvents = store.findAccumulatedEventsByContextIdAndStartTimeRange(
@@ -77,4 +81,8 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 //							fullAggregatedFeatureEventNameToScore);
 //				}));
 
+
+	public void setStore(AccumulatedEntityEventStore store){
+		this.store = store;
+	}
 }
