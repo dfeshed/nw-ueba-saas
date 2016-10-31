@@ -1,3 +1,4 @@
+import getpass
 import pymongo
 import re
 import sys
@@ -6,7 +7,19 @@ import time_utils
 
 
 def get_db(host):
-    return pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
+    db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
+    try:
+        # check if an authentication is required
+        db.collection_names()
+    except Exception:
+        if not sys.stdin.isatty():
+            user = sys.stdin.readline().strip()
+            password = sys.stdin.readline().strip()
+        else:
+            user = raw_input('Please enter mongo username: ')
+            password = getpass.getpass('Please enter mongo password: ')
+        db.authenticate(user, password)
+    return db
 
 
 def get_all_collection_names(mongo_db):
