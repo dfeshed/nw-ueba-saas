@@ -30,7 +30,7 @@
       {{#rsa-form-select label=(t 'incident.list.sources') prompt=(t 'incident.list.filters.sources') optionMaxVisible=availableSources.length
         values=selectedSources class=(concat 'rsa-respond-list__filter-panel__source-selector' (if sourceFilterActive ' source-filter-active'))}}
         {{#each availableSources as |source|}}
-          <option value={{source.id}}>{{source.name}}</option>
+          <option value={{source}}>{{source}}</option>
         {{/each}}
       {{/rsa-form-select}}
       {{#rsa-form-select label=(t 'incident.list.assignee') prompt=(t 'incident.list.filters.assignees') optionMaxVisible=users.length

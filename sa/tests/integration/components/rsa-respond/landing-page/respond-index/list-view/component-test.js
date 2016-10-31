@@ -44,7 +44,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
       prioritySort: 1, // Priority: Medium
       alertCount: 10,
       eventCount: 2,
-      sources: ['ecat', 'Web Threat Detection'],
+      sources: ['ECAT', 'Web Threat Detection'],
       assignee: {
         id: '2'
       },
@@ -268,7 +268,7 @@ test('Multi-Select Source filter affects the number of incidents on the screen',
 
     // Do multi-source filter select
     this.$('.rsa-respond-list__filter-panel__source-selector .prompt').click();
-    this.$('.rsa-respond-list__filter-panel__source-selector select').val(['Event Stream Analysis', 'ecat']).trigger('change');
+    this.$('.rsa-respond-list__filter-panel__source-selector select').val(['Event Stream Analysis', 'ECAT']).trigger('change');
 
     waitFor(
       () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2

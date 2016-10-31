@@ -14,7 +14,7 @@ test('it renders', function(assert) {
     'receivedTime': { '$date': 1452485729741 },
     'alert': {
       'name': 'Suspected C&C',
-      'source': ['Event Stream Analysis'],
+      'source': 'Event Stream Analysis',
       'risk_score': 20,
       'severity': 50,
       'events': [{

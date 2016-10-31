@@ -10,37 +10,31 @@ const {
   isNone
 } = Ember;
 
-
 /**
- * @name _SOURCES_MAP
- * @description Private JSON object composed of source names and properties that are used
- * to beautify source names for end-user.
- * 1. short property can be used to display abbreviated source names (eg. in table columns)
- * 2. long property can be used in any scenario where full source name should be displayed (eg. in rsa-form-select)
+ * @name _SOURCES_LIST
+ * @description Private array composed of all avialble sources.
  * @private
  */
-const _SOURCES_MAP = {
-  'Event Stream Analysis': {
-    'short': 'ESA'
-  },
-  'Event Streaming Analytics': {
-    'short': 'ESA'
-  },
-  'ecat': {
-    'short': 'ECAT',
-    'long': 'ECAT'
-  },
-  'Malware Analysis': {
-    'short': 'MA'
-  },
-  'Reporting Engine': {
-    'short': 'RE'
-  },
-  'Security Analytics Investigator': {
-    'short': 'SAI'
-  },
-  'Web Threat Detection': {
-    'short': 'WTD'
+const _SOURCES_LIST = [
+  'Event Stream Analysis',
+  'Event Streaming Analytics',
+  'ECAT',
+  'Malware Analysis',
+  'Reporting Engine',
+  'Security Analytics Investigator',
+  'Web Threat Detection'
+];
+
+/**
+ * @name _SOURCES_NAME_EXCEPTION
+ * @description Private JSON object composed of source names and properties that are used
+ * to beautify source names for end-user.
+ * short - property can be used to display abbreviated source names (eg. in table columns)
+ * @private
+ */
+const _SOURCES_NAME_EXCEPTION = {
+  'ECAT': {
+    'short': 'ECAT'
   }
 };
 
@@ -48,27 +42,22 @@ export default {
 
   /**
    * @name sourceLongNames
-   * @description returns a styalized longname for each source (if any) or its original name
+   * @description returns an array with a complete list of sources
    * @public
    */
   sourceLongNames() {
-    let names = [];
-    Object.keys(_SOURCES_MAP).forEach((source) => {
-      let sourceName = _SOURCES_MAP[source].long ? _SOURCES_MAP[source].long : source;
-      names.pushObject({ id: source, name: sourceName });
-    });
-    return names;
+    return _SOURCES_LIST;
   },
 
   /**
    * @name sourceShortName
-   * @param source Original name of the source as it is known on the server or the ID in the _SOURCE_MAP
+   * @param source a String value of original name of the source as it is known on the server (see _SOURCE_MAP)
    * @description returns a parametrized shortname for each source, if there is no configuration for the source, the
    * initials are returned
    * @public
    */
   sourceShortName(source) {
-    return _SOURCES_MAP[source] ? _SOURCES_MAP[source].short : source.match(/\b\w/g).join('');
+    return _SOURCES_NAME_EXCEPTION[source] ? _SOURCES_NAME_EXCEPTION[source].short : source.match(/\b\w/g).join('');
   },
 
   /**
