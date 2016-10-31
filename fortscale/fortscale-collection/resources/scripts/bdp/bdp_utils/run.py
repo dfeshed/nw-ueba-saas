@@ -189,9 +189,22 @@ class Runner(object):
     def _update_overrides(self, call_overrides):
         self._logger.info('updating overrides:' + '\n\t'.join([''] + call_overrides))
         bdp_overrides_file_path = '/home/cloudera/fortscale/BDPtool/target/resources/bdp-overriding.properties'
+        mongo_db_user = ""
+        mongo_db_password = ""
+        with open(bdp_overrides_file_path, 'w') as f:
+            for l in f.readlines():
+                if l.startswith("mongo_db_user="):
+                    mongo_db_user = l
+                if l.startswith("mongo_db_password="):
+                    mongo_db_password = l
+
         io.backup(path=bdp_overrides_file_path)
         with open(bdp_overrides_file_path, 'w') as f:
             f.write('\n'.join(call_overrides))
+            if mongo_db_user:
+                f.write('\n%s' % mongo_db_user)
+            if mongo_db_password:
+                f.write('\n%s' % mongo_db_password)
 
 
 class Cleaner(Runner):
