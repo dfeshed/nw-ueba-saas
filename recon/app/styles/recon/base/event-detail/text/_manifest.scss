@@ -1,9 +1,10 @@
 .recon-event-detail-text {
-  line-height: 1.5rem;
-  &.rsa-text-entry {
-    hbox {
+  line-height: 1.75rem;
+  .rsa-text-entry {
+    .text-container {
       overflow-x: hidden;
-      word-break: break-all;
+      padding: 0.5rem rsa-whitespace(more);
+      word-break: break-word;
     }
   }
 }

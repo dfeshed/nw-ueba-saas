@@ -42,7 +42,8 @@ const TitlebarComponent = Component.extend({
   */
   @computed('currentReconView')
   disablePacketIcons({ code }) {
-    return code !== RECON_VIEW_TYPES_BY_NAME.PACKET.code;
+    return code !== RECON_VIEW_TYPES_BY_NAME.PACKET.code &&
+    code !== RECON_VIEW_TYPES_BY_NAME.TEXT.code;
   },
 
   /**

@@ -66,6 +66,7 @@ test('packet text', function(assert) {
     index=index
     isLog=isLog
     packet=packet
+    shouldShowPacket=true
   }}`);
 
   const done = assert.async();
@@ -136,6 +137,7 @@ test('log text', function(assert) {
     index=index
     isLog=isLog
     packet=packet
+    shouldShowPacket=true
   }}`);
 
   const done = assert.async();
