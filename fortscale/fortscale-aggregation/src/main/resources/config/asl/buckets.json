@@ -2914,6 +2914,224 @@
                       "jsonPath": "[?(@.is_outbound == 'true')]"
                   }
               },
+
+              {
+                  "name": "mail_attachment_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.is_attachment_mail_event == 'true')]"
+                  }
+              },
+              {
+                  "name": "sent_mail_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.destination_file == 'message body')]"
+                  }
+              },
+              {
+                  "name": "email_recipient_histogram",
+                  "featureNamesMap": {
+                      "groupBy": [
+                          "email_recipient"
+                      ]
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_histogram_func"
+                  }
+              },
+              {
+                  "name": "CD_Burn_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'CD Burn')]"
+                  }
+              },
+              {
+                  "name": "file_archive_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Archive')]"
+                  }
+              },
+              {
+                  "name": "file_close_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Close')]"
+                  }
+              },
+              {
+                  "name": "file_copy_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Copy')]"
+                  }
+              },
+              {
+                  "name": "file_create_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Create')]"
+                  }
+
+              },
+              {
+                  "name": "file_delete_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Delete')]"
+                  }
+              },
+              {
+                  "name": "file_edit_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Edit')]"
+                  }
+              },
+              {
+                  "name": "file_move_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Move')]"
+                  }
+              },
+              {
+                  "name": "file_open_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Open')]"
+                  }
+              },
+              {
+                  "name": "file_read_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Read')]"
+                  }
+              },
+              {
+                  "name": "file_recycle_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Recycle')]"
+                  }
+              },
+              {
+                  "name": "file_rename_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Rename')]"
+                  }
+              },
+              {
+                  "name": "file_restore_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Restore')]"
+                  }
+              },
+              {
+                  "name": "file_saveas_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Save As')]"
+                  }
+              },
+              {
+                  "name": "file_write_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Write')]"
+                  }
+              },
+
               {
                   "name": "removable_event_counter",
                   "featureNamesMap": {
@@ -3250,6 +3468,224 @@
                       "jsonPath": "[?(@.is_outbound == 'true')]"
                   }
               },
+
+              {
+                  "name": "mail_attachment_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.is_attachment_mail_event == 'true')]"
+                  }
+              },
+              {
+                  "name": "sent_mail_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.destination_file == 'message body')]"
+                  }
+              },
+              {
+                  "name": "email_recipient_histogram",
+                  "featureNamesMap": {
+                      "groupBy": [
+                          "email_recipient"
+                      ]
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_histogram_func"
+                  }
+              },
+              {
+                  "name": "CD_Burn_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'CD Burn')]"
+                  }
+              },
+              {
+                  "name": "file_archive_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Archive')]"
+                  }
+              },
+              {
+                  "name": "file_close_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Close')]"
+                  }
+              },
+              {
+                  "name": "file_copy_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Copy')]"
+                  }
+              },
+              {
+                  "name": "file_create_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Create')]"
+                  }
+
+              },
+              {
+                  "name": "file_delete_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Delete')]"
+                  }
+              },
+              {
+                  "name": "file_edit_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Edit')]"
+                  }
+              },
+              {
+                  "name": "file_move_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Move')]"
+                  }
+              },
+              {
+                  "name": "file_open_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Open')]"
+                  }
+              },
+              {
+                  "name": "file_read_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Read')]"
+                  }
+              },
+              {
+                  "name": "file_recycle_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Recycle')]"
+                  }
+              },
+              {
+                  "name": "file_rename_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Rename')]"
+                  }
+              },
+              {
+                  "name": "file_restore_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Restore')]"
+                  }
+              },
+              {
+                  "name": "file_saveas_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Save As')]"
+                  }
+              },
+              {
+                  "name": "file_write_event_counter",
+                  "featureNamesMap": {
+
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_sum_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.event_description == 'File Write')]"
+                  }
+              },
+
               {
                   "name": "removable_event_counter",
                   "featureNamesMap": {

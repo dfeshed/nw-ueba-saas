@@ -48,6 +48,24 @@
                     "normalized_username_verdasys_daily.number_of_outbound_event_verdasys_daily",
                     "normalized_username_verdasys_daily.number_of_removable_event_verdasys_daily",
                     "normalized_username_verdasys_daily.number_of_blocked_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_daily",
+                    "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_daily",
                     "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily",
                     "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_dst_machine_kerberos_logins_daily",
                     "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_failure_code_kerberos_logins_daily",
@@ -218,6 +236,60 @@
                     ],
                     "distinct_blocked_event_verdasys": [
                         "normalized_username_verdasys_hourly.number_of_blocked_event_verdasys_daily"
+                    ],
+                    "distinct_email_attachment_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_daily"
+                    ],
+                    "distinct_email_recipient_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_daily"
+                    ],
+                    "distinct_sent_mail_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_daily"
+                    ],
+                    "distinct_CD_Burn_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_daily"
+                    ],
+                    "distinct_File_Archive_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_daily"
+                    ],
+                    "distinct_File_Close_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_daily"
+                    ],
+                    "distinct_File_Copy_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_daily"
+                    ],
+                    "distinct_File_Create_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_daily"
+                    ],
+                    "distinct_File_Delete_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_daily"
+                    ],
+                    "distinct_File_Edit_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_daily"
+                    ],
+                    "distinct_File_Move_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_daily"
+                    ],
+                    "distinct_File_Open_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_daily"
+                    ],
+                    "distinct_File_Read_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_daily"
+                    ],
+                    "distinct_File_Recycle_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_daily"
+                    ],
+                    "distinct_File_Rename_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_daily"
+                    ],
+                    "distinct_File_Restore_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_daily"
+                    ],
+                    "distinct_File_Saveas_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_daily"
+                    ],
+                    "distinct_File_Write_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_daily"
                     ]
                 },
                 "alphas": {
@@ -259,7 +331,25 @@
                     "distinct_classified_event_verdasys": 0.09,
                     "distinct_outbound_event_verdasys": 0.09,
                     "distinct_removable_event_verdasys": 0.09,
-                    "distinct_blocked_event_verdasys": 0.09
+                    "distinct_blocked_event_verdasys": 0.09,
+                    "distinct_email_attachment_verdasys":0.09,
+                    "distinct_email_recipient_verdasys":0.09,
+                    "distinct_sent_mail_verdasys":0.09,
+                    "distinct_CD_Burn_verdasys":0.09,
+                    "distinct_File_Archive_verdasys":0.09,
+                    "distinct_File_Close_verdasys":0.09,
+                    "distinct_File_Copy_verdasys":0.09,
+                    "distinct_File_Create_verdasys":0.09,
+                    "distinct_File_Delete_verdasys":0.09,
+                    "distinct_File_Edit_verdasys":0.09,
+                    "distinct_File_Move_verdasys":0.09,
+                    "distinct_File_Open_verdasys":0.09,
+                    "distinct_File_Read_verdasys":0.09,
+                    "distinct_File_Recycle_verdasys":0.09,
+                    "distinct_File_Rename_verdasys":0.09,
+                    "distinct_File_Restore_verdasys":0.09,
+                    "distinct_File_Saveas_verdasys":0.09,
+                    "distinct_File_Write_verdasys":0.09
                 },
                 "betas": {
                     "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily": 0.002,
@@ -360,6 +450,24 @@
                     "normalized_username_verdasys_hourly.number_of_outbound_event_verdasys_hourly",
                     "normalized_username_verdasys_hourly.number_of_removable_event_verdasys_hourly",
                     "normalized_username_verdasys_hourly.number_of_blocked_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_hourly",
+                    "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_hourly",
                     "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly",
                     "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_dst_machine_kerberos_logins_hourly",
                     "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_failure_code_kerberos_logins_hourly",
@@ -530,6 +638,60 @@
                     ],
                     "distinct_blocked_event_verdasys": [
                         "normalized_username_verdasys_hourly.number_of_blocked_event_verdasys_hourly"
+                    ],
+                    "distinct_email_attachment_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_hourly"
+                    ],
+                    "distinct_email_recipient_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_hourly"
+                    ],
+                    "distinct_sent_mail_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_hourly"
+                    ],
+                    "distinct_CD_Burn_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Archive_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Close_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Copy_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Create_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Delete_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Edit_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Move_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Open_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Read_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Recycle_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Rename_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Restore_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Saveas_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_hourly"
+                    ],
+                    "distinct_File_Write_verdasys": [
+                        "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_hourly"
                     ]
                 },
                 "alphas": {
@@ -572,7 +734,25 @@
                     "distinct_classified_event_verdasys": 0.09,
                     "distinct_outbound_event_verdasys": 0.09,
                     "distinct_removable_event_verdasys": 0.09,
-                    "distinct_blocked_event_verdasys": 0.09
+                    "distinct_blocked_event_verdasys": 0.09,
+                    "distinct_email_attachment_verdasys":0.09,
+                    "distinct_email_recipient_verdasys":0.09,
+                    "distinct_sent_mail_verdasys":0.09,
+                    "distinct_CD_Burn_verdasys":0.09,
+                    "distinct_File_Archive_verdasys":0.09,
+                    "distinct_File_Close_verdasys":0.09,
+                    "distinct_File_Copy_verdasys":0.09,
+                    "distinct_File_Create_verdasys":0.09,
+                    "distinct_File_Delete_verdasys":0.09,
+                    "distinct_File_Edit_verdasys":0.09,
+                    "distinct_File_Move_verdasys":0.09,
+                    "distinct_File_Open_verdasys":0.09,
+                    "distinct_File_Read_verdasys":0.09,
+                    "distinct_File_Recycle_verdasys":0.09,
+                    "distinct_File_Rename_verdasys":0.09,
+                    "distinct_File_Restore_verdasys":0.09,
+                    "distinct_File_Saveas_verdasys":0.09,
+                    "distinct_File_Write_verdasys":0.09
                 },
                 "betas": {
                     "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly": 0.002,

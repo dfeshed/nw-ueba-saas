@@ -310,8 +310,33 @@
                                     "constant-score": 100
                                 }
                             ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "isLogoffScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "isOutboundRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "is_logoff",
+                                    "constant-score": 100
+                                }
+                            ]
+                        },
+                        {
+                            "type": "max-scorer-container",
+                            "name": "isLogonScorer",
+                            "scorers": [
+                                {
+                                    "type": "constant-regex-scorer",
+                                    "name": "isOutboundRegexScorer",
+                                    "regex": "true",
+                                    "regex-field-name": "is_logon",
+                                    "constant-score": 100
+                                }
+                            ]
                         }
-
                     ]
                 }
             ]

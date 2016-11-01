@@ -256,7 +256,582 @@
                 }
             ]
         },
-
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_email_attachment_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_email_attachment_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_email_attachment_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_email_attachment_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_distinct_email_recipient",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_distinct_email_recipient_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_distinct_email_recipient.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_distinct_email_recipient.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_sent_mail_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_sent_mail_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_sent_mail_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_sent_mail_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_CD_Burn_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_CD_Burn_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_CD_Burn_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_CD_Burn_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Copy_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Copy_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Copy_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Copy_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Delete_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Delete_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Delete_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Delete_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Edit_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Edit_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Edit_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Edit_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Move_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Move_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Move_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Move_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Open_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Open_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Open_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Open_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Read_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Read_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Read_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Read_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Recycle_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Recycle_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Recycle_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Recycle_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Rename_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Rename_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Rename_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Rename_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Restore_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Restore_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Restore_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Restore_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Saveas_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Saveas_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Saveas_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Saveas_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Write_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Write_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Write_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Write_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Archive_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Archive_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Archive_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Archive_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Close_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Close_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Close_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Close_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_File_Create_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Create_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Create_event.normalized_username.verdasys.hourly.scorer",
+                        "model": {
+                            "name": "number_of_File_Create_event.normalized_username.verdasys.hourly"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
         {
             "data-source": "aggr_event.normalized_username_verdasys_hourly.number_of_distinct_normalized_src_machine_verdasys_daily",
             "scorers": [
@@ -512,9 +1087,582 @@
                     ]
                 }
             ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_email_attachment_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_email_attachment_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_email_attachment_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_email_attachment_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_distinct_email_recipient",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_distinct_email_recipient_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_distinct_email_recipient.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_distinct_email_recipient.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_sent_mail_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_sent_mail_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_sent_mail_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_sent_mail_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_CD_Burn_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_CD_Burn_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_CD_Burn_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_CD_Burn_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Copy_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Copy_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Copy_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Copy_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Delete_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Delete_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Delete_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Delete_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Edit_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Edit_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Edit_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Edit_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Move_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Move_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Move_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Move_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Open_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Open_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Open_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Open_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Read_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Read_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Read_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Read_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Recycle_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Recycle_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Recycle_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Recycle_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Rename_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Rename_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Rename_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Rename_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Restore_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Restore_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Restore_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Restore_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Saveas_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Saveas_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Saveas_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Saveas_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Write_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Write_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Write_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Write_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Archive_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Archive_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Archive_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Archive_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Close_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Close_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Close_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Close_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "data-source": "aggr_event.normalized_username_verdasys_daily.number_of_File_Create_event",
+            "scorers": [
+                {
+                    "type": "low-values-score-reducer",
+                    "name": "number_of_File_Create_event_verdasys_daily_scorer",
+                    "base-scorer": {
+                        "type": "continuous-values-model-scorer",
+                        "name": "number_of_File_Create_event.normalized_username.verdasys.daily.scorer",
+                        "model": {
+                            "name": "number_of_File_Create_event.normalized_username.verdasys.daily"
+                        },
+                        "quad-poly-calibration-conf": {
+                            "a1": 1500.0,
+                            "a2": 499999.0,
+                            "sensitivity": 1.0,
+                            "is-score-for-small-values": false
+                        },
+                        "number-of-samples-to-influence-enough": 30,
+                        "use-certainty-to-calculate-score": true
+                    },
+                    "reduction-configs": [
+                        {
+                            "reducingFeatureName": "aggregated_feature_value",
+                            "reducingFactor": 0.1,
+                            "maxValueForFullyReduce": 2,
+                            "minValueForNotReduce": 6
+                        }
+                    ]
+                }
+            ]
         }
-
-
-
     ]
 }

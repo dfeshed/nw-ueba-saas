@@ -2860,6 +2860,333 @@
           },
           "retentionStrategyName": "hourly_feature_retention_strategy"
       },
+
+      {
+          "name": "number_of_email_attachment_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "mail_attachment_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_distinct_email_recipient_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "groupBy": [
+                  "email_recipient_histogram"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_distinct_values_counter_func",
+              "includeValues": false
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_sent_mail_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "sent_mail_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_CD_Burn_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "CD_Burn_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Archive_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_archive_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Close_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_close_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Copy_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_copy_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Create_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_create_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Delete_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_delete_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Edit_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_edit_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Move_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_move_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Open_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_open_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Read_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_read_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Recycle_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_recycle_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Rename_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_rename_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Restore_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_restore_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Saveas_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_saveas_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Write_event_verdasys_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_write_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
+
       {
           "name": "highest_date_time_score_verdasys_hourly",
           "type": "P",
@@ -3234,6 +3561,331 @@
           "aggregatedFeatureNamesMap": {
               "sum": [
                   "blocked_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_email_attachment_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "mail_attachment_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_distinct_email_recipient_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "groupBy": [
+                  "email_recipient_histogram"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_distinct_values_counter_func",
+              "includeValues": false
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_sent_mail_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "sent_mail_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_CD_Burn_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "CD_Burn_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Archive_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_archive_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Close_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_close_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Copy_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_copy_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Create_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_create_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Delete_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_delete_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Edit_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_edit_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Move_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_move_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Open_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_open_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Read_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_read_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Recycle_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_recycle_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Rename_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_rename_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Restore_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_restore_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Saveas_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_saveas_event_counter"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
+      {
+          "name": "number_of_File_Write_event_verdasys_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_verdasys_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "file_write_event_counter"
               ]
           },
           "aggregatedFeatureEventFunction": {
