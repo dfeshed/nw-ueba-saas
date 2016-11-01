@@ -36,6 +36,8 @@ export function eventQueryUri([ queryAttrs, drillKey, drillValue ] /* , hash */)
       get(queryAttrs, 'metaFilter.conditions') || []
     );
     drillConditions.pushObject({
+      queryString: `${drillKey}=${drillValue}`,
+      isKeyValuePair: true,
       key: drillKey,
       value: drillValue
     });

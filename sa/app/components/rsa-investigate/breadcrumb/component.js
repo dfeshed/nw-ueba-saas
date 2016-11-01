@@ -104,29 +104,31 @@ export default Component.extend({
 
     let clone = query.clone();
 
-    return allConditions.map(({ key, value }, index) => {
-      const keyFormat = metaKeyAlias([ key, language ]);
-      const valueFormat = {
-        text: formatUtil.text(key, value, opts),
-        tooltip: formatUtil.tooltip(key, value, opts)
+    return allConditions.map(({ queryString, isKeyValuePair = false, key, value }, index) => {
+      let result = {
+        isKeyValuePair,
+        queryString
       };
+
+      if (isKeyValuePair) {
+        result.keyFormat = metaKeyAlias([key, language]);
+        result.valueFormat = {
+          text: formatUtil.text(key, value, opts),
+          tooltip: formatUtil.tooltip(key, value, opts)
+        };
+      }
 
       // Make a query clone whose conditions include only up to this condition.
       let thisAndPreviousConditions = allConditions.slice(0, index + 1);
       clone.set('metaFilter.conditions', thisAndPreviousConditions);
-      let gotoUri = uriEncodeEventQuery(clone);
+      result.gotoUri = uriEncodeEventQuery(clone);
 
       // Make a query clone whose conditions exclude just this condition.
       let allOtherConditions = [].concat(allConditions).removeAt(index);
       clone.set('metaFilter.conditions', allOtherConditions);
-      let deleteUri = uriEncodeEventQuery(clone);
+      result.deleteUri = uriEncodeEventQuery(clone);
 
-      return {
-        keyFormat,
-        valueFormat,
-        gotoUri,
-        deleteUri
-      };
+      return result;
     });
   },
 

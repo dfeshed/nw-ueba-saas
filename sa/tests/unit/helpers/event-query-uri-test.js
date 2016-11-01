@@ -10,6 +10,7 @@ const drillKey = 'foo';
 const drillValue = 'bar';
 const drillKey2 = 'ip.src';
 const drillValue2 = '1.2.3.4';
+const complexQueryString = 'foo > 2 && bar contains "exe"';
 
 const query = {
   serviceId,
@@ -26,7 +27,23 @@ const drillQuery = {
   startTime,
   endTime,
   metaFilter: {
-    conditions: [{ key: drillKey, value: drillValue }]
+    conditions: [{
+      queryString: `${drillKey}=${drillValue}`,
+      isKeyValuePair: true,
+      key: drillKey,
+      value: drillValue
+    }]
+  }
+};
+
+const complexDrillQuery = {
+  serviceId,
+  startTime,
+  endTime,
+  metaFilter: {
+    conditions: [{
+      queryString: complexQueryString
+    }]
   }
 };
 
@@ -51,4 +68,12 @@ test('it works', function(assert) {
     [ serviceId, startTime, endTime, `${drillKey}=${drillValue}`, `${drillKey2}=${drillValue2}` ].join('/'),
     'Expected URI string with service id, start & end time, and 2 drill conditions in meta filter.'
   );
+
+  result = eventQueryUri([ complexDrillQuery, drillKey2, drillValue2 ]);
+  assert.equal(
+    result,
+    [ serviceId, startTime, endTime, encodeURIComponent(complexQueryString), `${drillKey2}=${drillValue2}` ].join('/'),
+    'Expected URI string with service id, start & end time, a complex condition & a simple key-value pair condition.'
+  );
+
 });

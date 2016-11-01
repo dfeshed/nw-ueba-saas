@@ -22,12 +22,22 @@ test('it renders', function(assert) {
   const displayName1 = 'fooDisplayName';
   const metaValue1 = 'foo-value';
   const metaValueAlias1 = 'foo-value-alias';
-  const condition1 = { key: metaName1, value: metaValue1 };
+  const condition1 = {
+    queryString: `${metaName1}=${metaValue1}`,
+    isKeyValuePair: true,
+    key: metaName1,
+    value: metaValue1
+  };
 
   const metaName2 = 'bar';
   const displayName2 = 'barDisplayName';
   const metaValue2 = 'bar-value';
-  const condition2 = { key: metaName2, value: metaValue2 };
+  const condition2 = {
+    queryString: `${metaName2}=${metaValue2}`,
+    isKeyValuePair: true,
+    key: metaName2,
+    value: metaValue2
+  };
 
   const language = [
     { metaName: metaName1, displayName: displayName1 },

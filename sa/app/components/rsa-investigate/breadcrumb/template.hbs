@@ -18,11 +18,19 @@
   {{/rsa-form-button}}
   {{#each crumbs as |crumb|}}
     {{#rsa-form-button dropdown="standard" class="rsa-investigate-breadcrumb__crumb"}}
-      <span
-        class="js-test-value"
-        title={{concat crumb.keyFormat.bothNames ": " crumb.valueFormat.tooltip}}>
-        {{crumb.valueFormat.text}}
-      </span>
+      {{#if crumb.isKeyValuePair}}
+        <span
+          class="js-test-value"
+          title={{concat crumb.keyFormat.bothNames ": " crumb.valueFormat.tooltip}}>
+          {{crumb.valueFormat.text}}
+        </span>
+      {{else}}
+        <span
+          class="js-test-value"
+          title={{crumb.queryString}}>
+          {{crumb.queryString}}
+        </span>
+      {{/if}}
       <ul>
         {{#unless (is-equal crumb crumbs.lastObject)}}
           <li>

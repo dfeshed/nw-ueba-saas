@@ -312,12 +312,18 @@ function parseMetaFilterUri(uri) {
     return [];
   }
   return uri.split('/')
-    .map((pair) => {
-      let [ key, value ] = pair.split('=');
-      return {
-        key,
-        value: decodeURIComponent(value)
-      };
+    .map((queryString) => {
+      queryString = decodeURIComponent(queryString);
+      let condition = { queryString };
+      let matchPair = queryString.match(/([^\=]+)\=([^\=]+)/);
+      let matchAndOr = queryString.match(/\&\&|\|\|/);
+      if (matchPair && !matchAndOr) {
+        const [ , key, value ] = matchPair;
+        condition.isKeyValuePair = true;
+        condition.key = key;
+        condition.value = value;
+      }
+      return condition;
     });
 }
 
@@ -351,7 +357,9 @@ function uriEncodeEventQuery(queryAttrs) {
 function uriEncodeMetaFilterConditions(conditions = []) {
   return conditions
     .map((condition) => {
-      return `${condition.key}=${encodeURIComponent(condition.value)}`;
+      return condition.isKeyValuePair ?
+        `${condition.key}=${encodeURIComponent(condition.value)}` :
+        encodeURIComponent(condition.queryString);
     })
     .join('/');
 }
@@ -367,11 +375,15 @@ function uriEncodeMetaFilterConditions(conditions = []) {
 function nwEncodeMetaFilterConditions(conditions = [], language) {
   return conditions
     .map((condition) => {
-      const { key, value } = condition;
-      const keyDefinition = language.findBy('metaName', key);
-      const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
-      const valueEncoded = useQuotes ? `'${String(value).replace(/\'/g, '\\\'')}'` : value;
-      return `${key}=${valueEncoded}`;
+      const { queryString, isKeyValuePair, key, value } = condition;
+      if (isKeyValuePair) {
+        const keyDefinition = language.findBy('metaName', key);
+        const useQuotes = String(get(keyDefinition || {}, 'format')).toLowerCase() === 'text';
+        const valueEncoded = useQuotes ? `'${String(value).replace(/\'/g, '\\\'')}'` : value;
+        return `${key}=${valueEncoded}`;
+      } else {
+        return queryString;
+      }
     })
     .join(' && ');
 }
