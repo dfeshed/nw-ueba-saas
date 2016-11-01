@@ -2,7 +2,7 @@
   "name": "style-guide",
   "dependencies": {
     "clipboard": "1.5.10",
-    "ember": "~2.8.0",
+    "ember": "2.8.2",
     "ember-cli-shims": "0.1.1",
     "highlightjs": "8.9.1",
     "javascript-detect-element-resize": "0.5.3"
