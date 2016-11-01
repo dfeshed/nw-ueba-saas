@@ -191,7 +191,7 @@ class Runner(object):
         bdp_overrides_file_path = '/home/cloudera/fortscale/BDPtool/target/resources/bdp-overriding.properties'
         mongo_db_user = ""
         mongo_db_password = ""
-        with open(bdp_overrides_file_path, 'w') as f:
+        with open(bdp_overrides_file_path, 'r') as f:
             for l in f.readlines():
                 if l.startswith("mongo_db_user="):
                     mongo_db_user = l
