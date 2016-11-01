@@ -116,17 +116,13 @@ public class EntityEventAccumulator extends BaseAccumulator {
 
             Map<String,Map<Integer,Double>>  aggregatedFeatureEventsValuesMap = accumulatedEvent.getAggregated_feature_events_values_map();
             Set<Integer> activityTimeSet = accumulatedEvent.getActivityTime();
-
+            int eventHourOfDay = epochSecondsToHourOfDay(entityEvent.getStart_time_unix());
+            activityTimeSet.add(eventHourOfDay);
             for (JSONObject aggrEvent : entityEvent.getAggregated_feature_events()) {
 
                 String featureName = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_AGGREGATED_FEATURE_NAME);
                 String bucketName = aggrEvent.getAsString(AggrEvent.EVENT_FIELD_BUCKET_CONF_NAME);
                 String fullAggregatedFeatureEventName= buildFullAggregatedFeatureEventName(bucketName,featureName);
-
-                long eventStartTimeEpochSeconds = aggrEvent.getAsNumber(AggrEvent.EVENT_FIELD_START_TIME_UNIX).longValue();
-                int eventHourOfDay = epochSecondsToHourOfDay(eventStartTimeEpochSeconds);
-
-                activityTimeSet.add(eventHourOfDay);
 
                 Map<Integer,Double> hourToScoreMap = aggregatedFeatureEventsValuesMap.get(fullAggregatedFeatureEventName);
                 if (hourToScoreMap == null)
