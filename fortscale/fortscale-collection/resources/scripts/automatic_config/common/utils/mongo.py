@@ -5,12 +5,27 @@ import sys
 
 import time_utils
 
+def singleton(cls):
+    instances = {}
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+    return getinstance
+
+@singleton
+class MongoInstance:
+    db = None
+    connected = False
 
 def get_db(host):
-    db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
+    if MongoInstance.connected:
+        return MongoInstance.db
+    MongoInstance.connected = True
+    MongoInstance.db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
     try:
         # check if an authentication is required
-        get_all_collection_names(db)
+        MongoInstance.db.collection_names()
     except Exception:
         if not sys.stdin.isatty():
             user = sys.stdin.readline().strip()
@@ -18,8 +33,8 @@ def get_db(host):
         else:
             user = raw_input('Please enter mongo username: ')
             password = getpass.getpass('Please enter mongo password: ')
-        db.authenticate(user, password)
-    return db
+        MongoInstance.db.authenticate(user, password)
+    return MongoInstance.db
 
 
 def get_all_collection_names(mongo_db):
