@@ -57,7 +57,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "AggrFeatureEventToSend@@@date:::endTime###scored___aggr.*(daily|hourly)%%%prefix@@@date:::end_time_unix###entity_event_%%%prefix@@@date:::endTime###^scored___aggr.*(d_acm|h_acm)$%%%regex@@@date:::end_time"
+        "dataSources": "AggrFeatureEventToSend@@@date:::endTime###scored___aggr.*(daily|hourly)%%%regex@@@date:::end_time_unix###entity_event_%%%prefix@@@date:::endTime###^scored___aggr.*(d_acm|h_acm)$%%%regex@@@date:::end_time"
       }
     ],
     "otherSteps": [
