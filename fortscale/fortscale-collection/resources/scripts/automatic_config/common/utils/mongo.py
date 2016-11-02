@@ -5,6 +5,7 @@ import sys
 
 import time_utils
 
+
 def singleton(cls):
     instances = {}
     def getinstance():
