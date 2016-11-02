@@ -6,6 +6,8 @@ export default Route.extend({
     return {
       title: 'Area Series',
       description: 'Creates an SVG Path element used to represent a series of data as an area chart. ',
+      'jsRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-area-series.js',
+      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/app/styles/component-lib/base/content/_chart.scss',
       properties: [
         {
           name: 'data',

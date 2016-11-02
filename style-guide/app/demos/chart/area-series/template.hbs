@@ -9,15 +9,12 @@
         {{#rsa-chart data=model.singleSeries as |params|}}
           {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
         {{/rsa-chart}}
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries as |params|}}
-            <div>
-              &#123;{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET area1
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="area1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="multi series"}}
@@ -25,18 +22,13 @@
           {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
           {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
         {{/rsa-chart}}
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.multiSeries as |params|}}
-            <div>
-              &#123;{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-            </div>
-            <div>
-              &#123;{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET area2
+        {{#rsa-chart data=model.multiSeries as |params|}}
+          {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+          {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="area2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

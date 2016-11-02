@@ -7,16 +7,18 @@
     {{#spec-category}}
       {{#spec-member title="Without Title"}}
         {{rsa-logo}}
-        <code>
-          &#123;{rsa-logo}}
-        </code>
+        {{!-- BEGIN-SNIPPET rsa-logo
+        {{rsa-logo}}
+        END-SNIPPET --}}
+        {{code-snippet name="rsa-logo.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="With Title and Version"}}
         {{rsa-logo title="Style Guide" version="1.0"}}
-        <code>
-          &#123;{rsa-logo title="Style Guide" version="1.0"}}
-        </code>
+        {{!-- BEGIN-SNIPPET rsa-logo-with-version
+        {{rsa-logo title="Style Guide" version="1.0"}}
+        END-SNIPPET --}}
+        {{code-snippet name="rsa-logo-with-version.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

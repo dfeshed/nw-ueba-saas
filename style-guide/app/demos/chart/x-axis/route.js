@@ -6,6 +6,8 @@ export default Route.extend({
     return {
       title: 'X Axis',
       description: 'Creates an SVG G element used to group Text and Path elements that represent the X axis values.',
+      'jsRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-x-axis.js',
+      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/app/styles/component-lib/base/content/_chart.scss',
       properties: [
         {
           name: 'scale',

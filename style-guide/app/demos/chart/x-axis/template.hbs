@@ -9,31 +9,23 @@
         {{#rsa-chart data=model.singleSeries as |params|}}
           {{rsa-x-axis height=params.graphHeight scale=params.xScale}}
         {{/rsa-chart}}
-
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries as |params|}}
-            <div>
-              &#123;{rsa-x-axis height=params.graphHeight scale=params.xScale}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET x1
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="x1.hbs"}}
       {{/spec-member}}
       {{#spec-member title="rotation"}}
         {{#rsa-chart data=model.singleSeries as |params|}}
           {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
         {{/rsa-chart}}
-
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries as |params|}}
-            <div>
-              &#123;{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET x2
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="x2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

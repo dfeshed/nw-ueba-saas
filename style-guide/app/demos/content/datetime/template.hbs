@@ -7,42 +7,42 @@
     {{#spec-category}}
       {{#spec-member title="Default"}}
         {{rsa-content-datetime timestamp=1464108661196}}
-
-        <code>
-          &#123;{rsa-content-datetime timestamp=1464108661196}}
-        </code>
+        {{!-- BEGIN-SNIPPET datetime1
+        {{rsa-content-datetime timestamp=1464108661196}}
+        END-SNIPPET --}}
+        {{code-snippet name="datetime1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Date Only"}}
         {{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
-
-        <code>
-          &#123;{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
-        </code>
+        {{!-- BEGIN-SNIPPET datetime2
+        {{rsa-content-datetime timestamp=1464108661196 displayTime=false}}
+        END-SNIPPET --}}
+        {{code-snippet name="datetime2.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Time Only"}}
         {{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
-
-        <code>
-          &#123;{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
-        </code>
+        {{!-- BEGIN-SNIPPET datetime3
+        {{rsa-content-datetime timestamp=1464108661196 displayDate=false}}
+        END-SNIPPET --}}
+        {{code-snippet name="datetime3.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Time Ago"}}
         {{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
-
-        <code>
-          &#123;{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
-        </code>
+        {{!-- BEGIN-SNIPPET datetime4
+        {{rsa-content-datetime timestamp=1464108661196 asTimeAgo=true}}
+        END-SNIPPET --}}
+        {{code-snippet name="datetime4.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Date and Time Ago"}}
         {{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
-
-        <code>
-          &#123;{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
-        </code>
+        {{!-- BEGIN-SNIPPET datetime5
+        {{rsa-content-datetime timestamp=1464108661196 withTimeAgo=true}}
+        END-SNIPPET --}}
+        {{code-snippet name="datetime5.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

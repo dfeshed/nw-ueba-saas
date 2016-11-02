@@ -6,9 +6,10 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member title="Example"}}
-        <code>
-          this.get('fatalErrors').logError('This is an example error message');
-        </code>
+      {{!-- BEGIN-SNIPPET errors1
+      this.get('fatalErrors').logError('This is an example error message');
+      END-SNIPPET --}}
+      {{code-snippet name="errors1.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

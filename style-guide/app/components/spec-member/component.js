@@ -1,5 +1,5 @@
 import Ember from 'ember';
-const { Component } = Ember;
+const { Component, run } = Ember;
 
 export default Component.extend({
 
@@ -7,6 +7,29 @@ export default Component.extend({
 
   title: null,
 
-  subtitle: null
+  subtitle: null,
+
+  didInsertElement() {
+    run.schedule('afterRender', this, function() {
+      if (window.Clipboard) {
+        this.clipboard = new window.Clipboard('.hljs', {
+          target: (e) => {
+            return e;
+          }
+        });
+      }
+    });
+  },
+
+  /**
+   * Teardown for the onclick listener in Clipboard JS.
+   * @public
+   */
+  willDestroyElement() {
+    if (this.clipboard) {
+      this.clipboard.destroy();
+      this.clipboard = null;
+    }
+  }
 
 });

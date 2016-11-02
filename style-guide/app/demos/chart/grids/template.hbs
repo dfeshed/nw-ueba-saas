@@ -9,45 +9,36 @@
         {{#rsa-chart data=model.singleSeries as |params|}}
           {{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
         {{/rsa-chart}}
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries as |params|}}
-            <div>
-              &#123;{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET grid1
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids xScale=params.xScale yScale=params.yScale width=params.graphWidth height=params.graphHeight}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="grid1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="hide X grid lines"}}
         {{#rsa-chart data=model.singleSeries as |params|}}
           {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
         {{/rsa-chart}}
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries as |params|}}
-            <div>
-              &#123;{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET grid2
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="grid2.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="hide Y grid lines"}}
         {{#rsa-chart data=model.singleSeries as |params|}}
           {{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
         {{/rsa-chart}}
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries as |params|}}
-            <div>
-              &#123;{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET grid3
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-chart-grids showYGrid=false xScale=params.xScale height=params.graphHeight}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="grid3.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

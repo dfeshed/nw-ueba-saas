@@ -9,35 +9,25 @@
         {{#rsa-chart data=model.singleSeries as |params|}}
           {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale}}
         {{/rsa-chart}}
-
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries as |params|}}
-            <div>
-              &#123;{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET line1
+        {{#rsa-chart data=model.singleSeries as |params|}}
+          {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="line1.hbs"}}
       {{/spec-member}}
       {{#spec-member title="multi series"}}
         {{#rsa-chart data=model.multiSeries as |params|}}
           {{rsa-line-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale}}
           {{rsa-line-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale}}
         {{/rsa-chart}}
-
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.multiSeries as |params|}}
-            <div>
-              &#123;{rsa-line-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale}}
-            </div>
-            <div>
-              &#123;{rsa-line-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET line2
+        {{#rsa-chart data=model.multiSeries as |params|}}
+          {{rsa-line-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale}}
+          {{rsa-line-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="line2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

@@ -7,44 +7,43 @@
     {{#spec-category title="States"}}
       {{#spec-member title="Default"}}
         {{rsa-form-textarea label='Input Label'}}
-
-        <code>
-          &#123;{rsa-form-textarea label='Input Label'}}
-        </code>
+        {{!-- BEGIN-SNIPPET textareas1
+        {{rsa-form-textarea label='Input Label'}}
+        END-SNIPPET --}}
+        {{code-snippet name="textareas1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Read Only"}}
         {{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
-
-        <code>
-          &#123;{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
-        </code>
+        {{!-- BEGIN-SNIPPET textareas2
+        {{rsa-form-textarea value='Form input value' label='Input Label' isReadOnly=true}}
+        END-SNIPPET --}}
+        {{code-snippet name="textareas2.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Disabled"}}
         {{rsa-form-textarea label='Input Label' isDisabled=true}}
-
-        <code>
-          &#123;{rsa-form-textarea label='Input Label' isDisabled=true}}
-        </code>
+        {{!-- BEGIN-SNIPPET textareas3
+        {{rsa-form-textarea label='Input Label' isDisabled=true}}
+        END-SNIPPET --}}
+        {{code-snippet name="textareas3.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Success"}}
         {{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
-
-        <code>
-          &#123;{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
-        </code>
+        {{!-- BEGIN-SNIPPET textareas4
+        {{rsa-form-textarea value='Form input value' label='Input Label' isSuccess=true}}
+        END-SNIPPET --}}
+        {{code-snippet name="textareas4.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Error"}}
         {{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
-
-        <code>
-          &#123;{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
-        </code>
+        {{!-- BEGIN-SNIPPET textareas5
+        {{rsa-form-textarea value='Form input value' label='Input Label' isError=true}}
+        END-SNIPPET --}}
+        {{code-snippet name="textareas5.hbs"}}
       {{/spec-member}}
-
     {{/spec-category}}
   </div>
 </hbox>

@@ -181,7 +181,7 @@
 
 .rsa- {
   &logo {
-    text-align: center;
+    max-width: 20rem; 
 
     /* fudge factor, to compensate because logo is not horizontally symmetrical */
     /* margin-left: 7px; */

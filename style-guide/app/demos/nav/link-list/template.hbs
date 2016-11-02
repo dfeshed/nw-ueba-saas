@@ -12,23 +12,15 @@
             <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
           </ul>
         {{/rsa-nav-link-list}}
-
-        <code>
-          <div>
-            &#123;{#rsa-nav-link-list header='List Title'}}
-            <div>
-              &lt;ul>
-              <div>
-                &lt;li>{{#link-to 'index'}}Link 1{{/link-to}}&lt;/li>
-              </div>
-              <div>
-                &lt;li>{{#link-to 'index'}}Link 1{{/link-to}}&lt;/li>
-              </div>
-              &lt;/ul>
-            </div>
-            &#123;{/rsa-nav-link-list}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET linklist1
+        {{#rsa-nav-link-list header='List Title'}}
+          <ul>
+            <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
+            <li>{{#link-to 'index'}}Link 1{{/link-to}}</li>
+          </ul>
+        {{/rsa-nav-link-list}}
+        END-SNIPPET --}}
+        {{code-snippet name="linklist1.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

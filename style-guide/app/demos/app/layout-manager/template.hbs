@@ -26,37 +26,29 @@
             </div>
           </vbox>
         </vbox>
-
-        <code>
-          &lt;vbox>
-          <div>
-            <div>
-              &lt;vbox fit>
-              <div>&lt;h1>Header Text&lt;/h1></div>
-              &lt;/vbox>
+        {{!-- BEGIN-SNIPPET layout1
+        <vbox class="layout-demo">
+          <vbox fit>
+            <h1>Header Text</h1>
+          </vbox>
+          <vbox>
+            <div class="scroll-box">
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
+              <p>Text</p>
             </div>
-            <div>
-              &lt;vbox>
-              <div>
-                &lt;div class="scroll-box">
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                <div>&lt;p>Text&lt;/p></div>
-                &lt;/div>
-              </div>
-              &lt;/vbox>
-            </div>
-          </div>
-          &lt;/vbox>
-        </code>
+          </vbox>
+        </vbox>
+        END-SNIPPET --}}
+        {{code-snippet name="layout1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Header spanning panels with scrollable content"}}
@@ -114,79 +106,63 @@
             </vbox>
           </hbox>
         </vbox>
+        {{!-- BEGIN-SNIPPET layout2
+        <vbox class="layout-demo">
+          <vbox fit>
+            <h1>Header Text</h1>
+          </vbox>
+          <hbox>
+            <vbox sm="4">
+              <div class="scroll-box">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+              </div>
+            </vbox>
 
-        <code>
-          &lt;vbox>
-          <div>
-            <div>
-              &lt;vbox fit>
-              <div>&lt;h1>Header Text&lt;/h1></div>
-              &lt;/vbox>
-            </div>
-            <div>
-              &lt;hbox>
-              <div>
-                &lt;vbox sm="4">
-                <div>
-                  &lt;div class="scroll-box">
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  &lt;/div>
-                </div>
-                &lt;/vbox>
+            <vbox sm="4">
+              <div class="scroll-box">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
               </div>
-              <div>
-                &lt;vbox sm="4">
-                <div>
-                  &lt;div class="scroll-box">
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  &lt;/div>
-                </div>
-                &lt;/vbox>
+            </vbox>
+
+            <vbox sm="4">
+              <div class="scroll-box">
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
+                <p>Text</p>
               </div>
-              <div>
-                &lt;vbox sm="4">
-                <div>
-                  &lt;div class="scroll-box">
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  <div>&lt;p>Text&lt;/p></div>
-                  &lt;/div>
-                </div>
-                &lt;/vbox>
-              </div>
-              &lt;/hbox>
-            </div>
-          </div>
-          &lt;/vbox>
-        </code>
+            </vbox>
+          </hbox>
+        </vbox>
+        END-SNIPPET --}}
+        {{code-snippet name="layout2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
 
@@ -208,34 +184,38 @@
         {{/rsa-application-layout-manager}}
 
         <p>In the Route:</p>
-        <code>
-          <div>expandA() {</div>
-          <div>this.set('layoutService.main', 'panelA');</div>
-          <div>this.set('layoutService.panelA', 'main');</div>
-          <div>this.set('layoutService.panelB', 'quarter');</div>
-          <div>},</div>
-          <div>expandB() {</div>
-          <div>this.set('layoutService.main', 'panelB');</div>
-          <div>this.set('layoutService.panelA', 'quarter');</div>
-          <div>this.set('layoutService.panelB', 'main');</div>
-          <div>},</div>
-        </code>
+        {{!-- BEGIN-SNIPPET layout3
+        actions: {
+          expandA() {
+            this.set('layoutService.main', 'panelA');
+            this.set('layoutService.panelA', 'main');
+            this.set('layoutService.panelB', 'quarter');
+          },
+          expandB() {
+            this.set('layoutService.main', 'panelB');
+            this.set('layoutService.panelA', 'quarter');
+            this.set('layoutService.panelB', 'main');
+          }
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="layout3.hbs"}}
 
         <p>In the Template:</p>
-        <code>
-          <div>&#123;{#rsa-application-layout-manager}}</div>
-          <div>&#123;{#rsa-application-layout-panel class="panel-A"}}</div>
-          <div>&lt;span &#123;{action 'expandA'}}></div>
-          <div>Expand Panel A</div>
-          <div>&lt;/span></div>
-          <div>&#123;{/rsa-application-layout-panel}}</div>
-          <div>&#123;{#rsa-application-layout-panel class="panel-B"}}</div>
-          <div>&lt;span &#123;{action 'expandB'}}></div>
-          <div>Expand Panel B</div>
-          <div>&lt;/span></div>
-          <div>&#123;{/rsa-application-layout-panel}}</div>
-          <div>&#123;{/rsa-application-layout-manager}}</div>
-        </code>
+        {{!-- BEGIN-SNIPPET layout4
+        {{#rsa-application-layout-manager}}
+          {{#rsa-application-layout-panel class="panel-A"}}
+            <span {{action 'expandA'}}>
+              Expand Panel A
+            </span>
+          {{/rsa-application-layout-panel}}
+          {{#rsa-application-layout-panel class="panel-B"}}
+            <span {{action 'expandB'}}>
+              Expand Panel B
+            </span>
+          {{/rsa-application-layout-panel}}
+        {{/rsa-application-layout-manager}}
+        END-SNIPPET --}}
+        {{code-snippet name="layout4.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Toggle Panel Full Width"}}
@@ -253,32 +233,36 @@
         {{/rsa-application-layout-manager}}
 
         <p>In the Route:</p>
-        <code>
-          <div>expandC() {</div>
-          <div>this.set('layoutService.main', 'panelC');</div>
-          <div>this.set('layoutService.panelC', 'main');</div>
-          <div>this.set('layoutService.panelD', 'quarter');</div>
-          <div>},</div>
-          <div>expandDFullWidth() {</div>
-          <div>this.get('layoutService').toggleFullWidthPanel('panelD');</div>
-          <div>}</div>
-        </code>
+        {{!-- BEGIN-SNIPPET layout5
+        actions: {
+          expandC() {
+            this.set('layoutService.main', 'panelC');
+            this.set('layoutService.panelC', 'main');
+            this.set('layoutService.panelD', 'quarter');
+          },
+          expandDFullWidth() {
+            this.get('layoutService').toggleFullWidthPanel('panelD');
+          }
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="layout5.hbs"}}
 
         <p>In the Template:</p>
-        <code>
-          <div>&#123;{#rsa-application-layout-manager}}</div>
-          <div>&#123;{#rsa-application-layout-panel class="panel-C"}}</div>
-          <div>&lt;span &#123;{action 'expandC'}}></div>
-          <div>Expand Panel C</div>
-          <div>&lt;/span></div>
-          <div>&#123;{/rsa-application-layout-panel}}</div>
-          <div>&#123;{#rsa-application-layout-panel class="panel-D"}}</div>
-          <div>&lt;span &#123;{action 'expandDFullWidth'}}></div>
-          <div>Toggle Panel D Full Width</div>
-          <div>&lt;/span></div>
-          <div>&#123;{/rsa-application-layout-panel}}</div>
-          <div>&#123;{/rsa-application-layout-manager}}</div>
-        </code>
+        {{!-- BEGIN-SNIPPET layout6
+        {{#rsa-application-layout-manager}}
+          {{#rsa-application-layout-panel class="panel-C"}}
+            <span {{action 'expandC'}}>
+              Expand Panel C
+            </span>
+          {{/rsa-application-layout-panel}}
+          {{#rsa-application-layout-panel class="panel-D"}}
+            <span {{action 'expandDFullWidth'}}>
+              Toggle Panel D Full Width
+            </span>
+          {{/rsa-application-layout-panel}}
+        {{/rsa-application-layout-manager}}
+        END-SNIPPET --}}
+        {{code-snippet name="layout6.hbs"}}
       {{/spec-member}}
 
     {{/spec-category}}

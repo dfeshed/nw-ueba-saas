@@ -23,9 +23,9 @@ export default Route.extend({
       'subtitle': 'Flexible layout and workflow manager.',
       'description': 'The Application Layout Manager is used with the Layout Service to manage transitions between routes and/or user interactions. The Service can be called from Routes, Components, or controllers to update the layout.',
       'testFilter': 'rsa-application-layout-manager',
-      'jsRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/components/rsa-application-layout-manager.js',
-      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_application-layout-manager.scss',
-      'templateRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/addon/templates/components/rsa-application-layout-manager.hbs'
+      'jsRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-application-layout-manager.js',
+      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/app/styles/component-lib/base/application/_application-layout-manager.scss',
+      'templateRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/templates/components/rsa-application-layout-manager.hbs'
     };
   },
 

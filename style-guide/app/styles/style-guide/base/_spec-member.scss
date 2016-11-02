@@ -4,11 +4,11 @@
   padding: rsa-whitespace();
   color: rsa-color(gray, lighter);
   margin-bottom: rsa-whitespace();
-  
+
   &:last-child {
     margin-bottom: 0;
   }
-  
+
   > header {
     position: relative;
     margin-top: calc(#{rsa-whitespace()} * -1);
@@ -23,30 +23,33 @@
       margin-bottom: rsa-whitespace(least);
       @include rsa-font(header);
     }
-  
+
     > .subtitle {
-      @include rsa-font(paragraph, small);    
+      @include rsa-font(paragraph, small);
       margin-bottom: rsa-whitespace();
       color: rsa-color(gray, light);
-    }     
+    }
   }
-  
+
   > section {
     position: relative;
-    
+
+    pre,
     code {
       margin: rsa-whitespace() rsa-whitespace() rsa-whitespace() 0;
-      color: rsa-color(gray, lightest);
       border-left: rsa-whitespace(least) solid rsa-color(gray);
       padding-left: rsa-whitespace();
-      
+      background-color: transparent;
+
+      * {
+        color: rsa-color(gray, lightest);
+        @include rsa-font-code();
+      }
+
       &:last-child {
         margin-bottom: 0;
       }
-      
-      div div {
-        padding-left: rsa-whitespace();
-      }
+
     }
-  }    
+  }
 }

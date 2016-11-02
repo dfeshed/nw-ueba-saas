@@ -7,7 +7,7 @@ export default Route.extend({
     return {
       'title': 'Opacity',
       'subtitle': 'Standards for opactity.',
-      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/client/component-lib/app/styles/component-lib/base/_opacity.scss'
+      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/app/styles/component-lib/base/design/_opacity.scss'
     };
   }
 

@@ -6,6 +6,8 @@ export default Route.extend({
     return {
       title: 'Line Series',
       description: 'Creates an SVG Path element used to represent a series of data as a line chart. ',
+      'jsRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-line-series.js',
+      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/app/styles/component-lib/base/content/_chart.scss',
       properties: [
         {
           name: 'data',

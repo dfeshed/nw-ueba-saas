@@ -7,18 +7,18 @@
     {{#spec-category}}
       {{#spec-member title="Collapsed"}}
         {{#rsa-content-card isCollapsed=true}}Content{{/rsa-content-card}}
-
-        <code>
-          &#123;{#rsa-content-card isCollapsed=true}}Content&#123;{/rsa-content-card}}
-        </code>
+        {{!-- BEGIN-SNIPPET card1
+        {{#rsa-content-card isCollapsed=true}}Content{{/rsa-content-card}}
+        END-SNIPPET --}}
+        {{code-snippet name="card1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Expanded"}}
-        {{#rsa-content-card isCollapsed=true}}Content{{/rsa-content-card}}
-
-        <code>
-          &#123;{#rsa-content-card isCollapsed=true}}Content&#123;{/rsa-content-card}}
-        </code>
+        {{#rsa-content-card isCollapsed=false}}Content{{/rsa-content-card}}
+        {{!-- BEGIN-SNIPPET card2
+        {{#rsa-content-card isCollapsed=false}}Content{{/rsa-content-card}}
+        END-SNIPPET --}}
+        {{code-snippet name="card2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

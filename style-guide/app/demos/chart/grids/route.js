@@ -6,6 +6,9 @@ export default Route.extend({
     return {
       title: 'Grids',
       description: 'Creates grid lines.',
+      'jsRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-chart-grids.js',
+      'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/app/styles/component-lib/base/content/_chart.scss',
+      'templateRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/templates/components/rsa-chart-grids.hbs',
       singleSeries: [
         [
           { x: 1412011600000, y: 57240797 },

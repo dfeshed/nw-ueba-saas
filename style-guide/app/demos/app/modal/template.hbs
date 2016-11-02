@@ -17,24 +17,20 @@
             Modal Content
           </div>
         {{/rsa-application-modal}}
-
-        <code>
-          <div>
-            &#123;{#rsa-application-modal eventId='example' label="Modal Header"}}
-            <div>
-              &lt;div class='modal-trigger'>
-                Modal Trigger
-              &lt;/div>
-            </div>
-
-            <div>
-              &lt;div class='modal-content'>
-                Modal Content
-              &lt;/div>
-            </div>
-            &#123;{/rsa-application-modal}}
+        {{!-- BEGIN-SNIPPET modal1
+        {{#rsa-application-modal
+          label="Modal Header"
+          eventId='example'}}
+          <div class='modal-trigger'>
+            Modal Trigger
           </div>
-        </code>
+
+          <div class='modal-content'>
+            Modal Content
+          </div>
+        {{/rsa-application-modal}}
+        END-SNIPPET --}}
+        {{code-snippet name="modal1.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

@@ -48,7 +48,8 @@ module.exports = function(environment) {
       // Allows us to use base64 encoded images in HTML/CSS without firing a CSP error.
       "img-src": "'self' data:",
       'connect-src': "'self' ws:",
-      'font-src': "'self' data:"
+      'font-src': "'self' data:",
+      'style-src': "'self' 'unsafe-inline'"
     },
     'ember-cli-d3-shape': {
       only: ['d3-array', 'd3-axis', 'd3-collection', 'd3-color', 'd3-dispatch', 'd3-ease', 'd3-format', 'd3-interpolate', 'd3-path', 'd3-selection', 'd3-shape', 'd3-scale', 'd3-time', 'd3-timer', 'd3-time-format', 'd3-transition']

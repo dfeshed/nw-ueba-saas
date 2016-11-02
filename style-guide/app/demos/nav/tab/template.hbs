@@ -24,33 +24,25 @@
             <div class="label">Option 3</div>
           {{/rsa-nav-tab}}
         </div>
+        {{!-- BEGIN-SNIPPET tabs1
+        <div class="rsa-nav-tab-group">
+          {{#rsa-nav-tab isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+            <div class="imagery">1</div>
+            <div class="label">Option 1</div>
+          {{/rsa-nav-tab}}
 
-        <code>
-          <div>
-            &lt;div class="rsa-nav-tab-group">
-            <div>
-              &#123;{#rsa-nav-tab isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
-              <div>&lt;div class="imagery">1&lt;/div></div>
-              <div>&lt;div class="label">Option 1&lt;/div></div>
-              &#123;{/rsa-nav-tab}}
-            </div>
+          {{#rsa-nav-tab isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+            <div class="imagery">2</div>
+            <div class="label">Option 2</div>
+          {{/rsa-nav-tab}}
 
-            <div>
-              &#123;{#rsa-nav-tab isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
-              <div>&lt;div class="imagery">2&lt;/div></div>
-              <div>&lt;div class="label">Option 2&lt;/div></div>
-              &#123;{/rsa-nav-tab}}
-            </div>
-
-            <div>
-              &#123;{#rsa-nav-tab isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
-              <div>&lt;div class="imagery">3&lt;/div></div>
-              <div>&lt;div class="label">Option 3&lt;/div></div>
-              &#123;{/rsa-nav-tab}}
-            </div>
-            &lt;/div>
-          </div>
-        </code>
+          {{#rsa-nav-tab isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
+            <div class="imagery">3</div>
+            <div class="label">Option 3</div>
+          {{/rsa-nav-tab}}
+        </div>
+        END-SNIPPET --}}
+        {{code-snippet name="tabs1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member
@@ -69,30 +61,22 @@
             <div class="label">Option 3</div>
           {{/rsa-nav-tab}}
         </div>
+        {{!-- BEGIN-SNIPPET tabs2
+        <div class="rsa-nav-tab-group">
+          {{#rsa-nav-tab isCompact=true isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
+            <div class="label">Option 1</div>
+          {{/rsa-nav-tab}}
 
-        <code>
-          <div>
-            &lt;div class="rsa-nav-tab-group">
-            <div>
-              &#123;{#rsa-nav-tab isCompact=true isActive=optionOneIsActive click=(action 'activate' 'optionOneIsActive')}}
-              <div>&lt;div class="label">Option 1&lt;/div></div>
-              &#123;{/rsa-nav-tab}}
-            </div>
+          {{#rsa-nav-tab isCompact=true isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
+            <div class="label">Option 2</div>
+          {{/rsa-nav-tab}}
 
-            <div>
-              &#123;{#rsa-nav-tab isCompact=true isActive=optionTwoIsActive click=(action 'activate' 'optionTwoIsActive')}}
-              <div>&lt;div class="label">Option 2&lt;/div></div>
-              &#123;{/rsa-nav-tab}}
-            </div>
-
-            <div>
-              &#123;{#rsa-nav-tab isCompact=true isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
-              <div>&lt;div class="label">Option 3&lt;/div></div>
-              &#123;{/rsa-nav-tab}}
-            </div>
-            &lt;/div>
-          </div>
-        </code>
+          {{#rsa-nav-tab isCompact=true isActive=optionThreeIsActive click=(action 'activate' 'optionThreeIsActive')}}
+            <div class="label">Option 3</div>
+          {{/rsa-nav-tab}}
+        </div>
+        END-SNIPPET --}}
+        {{code-snippet name="tabs2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

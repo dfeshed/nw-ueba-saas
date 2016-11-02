@@ -7,10 +7,10 @@
     {{#spec-category}}
       {{#spec-member}}
         {{rsa-content-definition label='Data 1' value='A value with a long length'}}
-
-        <code>
-          &#123;{rsa-content-definition label='Data 1' value='A value with a long length'}}
-        </code>
+        {{!-- BEGIN-SNIPPET definition1
+        {{rsa-content-definition label='Data 1' value='A value with a long length'}}
+        END-SNIPPET --}}
+        {{code-snippet name="definition1.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

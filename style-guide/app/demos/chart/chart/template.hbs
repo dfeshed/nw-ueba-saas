@@ -6,16 +6,11 @@
   <div class="scroll-box">
     {{#spec-category}}
       {{#spec-member title="base chart"}}
-        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}
-        {{/rsa-chart}}
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}
-          </div>
-          <div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}{{/rsa-chart}}
+        {{!-- BEGIN-SNIPPET chart1
+        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' as |params|}}{{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="chart1.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="chart with series and axis"}}
@@ -24,21 +19,14 @@
           {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
           {{rsa-y-axis scale=params.yScale}}
         {{/rsa-chart}}
-        <code>
-          <div>
-            &#123;{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
-            <div>
-              &#123;{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
-            </div>
-            <div>
-              &#123;{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
-            </div>
-            <div>
-              &#123;{rsa-y-axis scale=params.yScale}}
-            </div>
-            &#123;{/rsa-chart}}
-          </div>
-        </code>
+        {{!-- BEGIN-SNIPPET chart2
+        {{#rsa-chart data=model.singleSeries xProp='value' yProp='count' width='100%' as |params|}}
+          {{rsa-line-series data=params.data xScale=params.xScale yScale=params.yScale xProp='value' yProp='count'}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale rotation=-25}}
+          {{rsa-y-axis scale=params.yScale}}
+        {{/rsa-chart}}
+        END-SNIPPET --}}
+        {{code-snippet name="chart2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

@@ -7,18 +7,19 @@
     {{#spec-category title="Examples"}}
       {{#spec-member title="Open"}}
         {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+        {{!-- BEGIN-SNIPPET accordion1
+        {{#rsa-content-accordion label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+        END-SNIPPET --}}
+        {{code-snippet name="accordion1.hbs"}}
 
-        <code>
-          &#123;{#rsa-content-accordion label='Accordion Label'}}Sample content example.&#123;{/rsa-content-accordion}}
-        </code>
       {{/spec-member}}
 
       {{#spec-member title="Closed"}}
         {{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
-
-        <code>
-          &#123;{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.&#123;{/rsa-content-accordion}}
-        </code>
+        {{!-- BEGIN-SNIPPET accordion2
+        {{#rsa-content-accordion isCollapsed=true label='Accordion Label'}}Sample content example.{{/rsa-content-accordion}}
+        END-SNIPPET --}}
+        {{code-snippet name="accordion2.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

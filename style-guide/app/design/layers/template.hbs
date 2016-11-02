@@ -7,44 +7,84 @@
     {{#spec-category}}
       {{#spec-member}}
         <div class='sg-demo-layer below'>
-          <code>
-            @include rsa-layer(below)
-          </code>
+          {{!-- BEGIN-SNIPPET layer1
+          @include rsa-layer(below)
+          END-SNIPPET --}}
+          {{code-snippet name="layer1.hbs"}}
+          {{!-- BEGIN-SNIPPET layer2
+          z-index: -1;
+          END-SNIPPET --}}
+          {{code-snippet name="layer2.hbs"}}
 
           <div class='sg-demo-layer base'>
-            <code>
-              @include rsa-layer()
-            </code>
+            {{!-- BEGIN-SNIPPET layer3
+            @include rsa-layer()
+            END-SNIPPET --}}
+            {{code-snippet name="layer3.hbs"}}
+            {{!-- BEGIN-SNIPPET layer4
+            z-index: 100;
+            END-SNIPPET --}}
+            {{code-snippet name="layer4.hbs"}}
 
             <div class='sg-demo-layer panels'>
-              <code>
-                @include rsa-layer(panels)
-              </code>
+              {{!-- BEGIN-SNIPPET layer5
+              @include rsa-layer(panels)
+              END-SNIPPET --}}
+              {{code-snippet name="layer5.hbs"}}
+              {{!-- BEGIN-SNIPPET layer6
+              z-index: 200;
+              END-SNIPPET --}}
+              {{code-snippet name="layer6.hbs"}}
 
               <div class='sg-demo-layer controls'>
-                <code>
-                  @include rsa-layer(controls)
-                </code>
+                {{!-- BEGIN-SNIPPET layer7
+                @include rsa-layer(controls)
+                END-SNIPPET --}}
+                {{code-snippet name="layer7.hbs"}}
+                {{!-- BEGIN-SNIPPET layer8
+                z-index: 300;
+                END-SNIPPET --}}
+                {{code-snippet name="layer8.hbs"}}
 
                 <div class='sg-demo-layer overlay'>
-                  <code>
-                    @include rsa-layer(overlay)
-                  </code>
+                  {{!-- BEGIN-SNIPPET layer9
+                  @include rsa-layer(overlay)
+                  END-SNIPPET --}}
+                  {{code-snippet name="layer9.hbs"}}
+                  {{!-- BEGIN-SNIPPET layer10
+                  z-index: 400;
+                  END-SNIPPET --}}
+                  {{code-snippet name="layer10.hbs"}}
 
                   <div class='sg-demo-layer modals'>
-                    <code>
-                      @include rsa-layer(modals)
-                    </code>
+                    {{!-- BEGIN-SNIPPET layer11
+                    @include rsa-layer(modals)
+                    END-SNIPPET --}}
+                    {{code-snippet name="layer11.hbs"}}
+                    {{!-- BEGIN-SNIPPET layer12
+                    z-index: 500;
+                    END-SNIPPET --}}
+                    {{code-snippet name="layer12.hbs"}}
 
                     <div class='sg-demo-layer tooltips'>
-                      <code>
-                        @include rsa-layer(tooltips)
-                      </code>
+                      {{!-- BEGIN-SNIPPET layer13
+                      @include rsa-layer(tooltips)
+                      END-SNIPPET --}}
+                      {{code-snippet name="layer13.hbs"}}
+                      {{!-- BEGIN-SNIPPET layer14
+                      z-index: 600;
+                      END-SNIPPET --}}
+                      {{code-snippet name="layer14.hbs"}}
 
                       <div class='sg-demo-layer above'>
-                        <code>
-                          @include rsa-layer(above)
-                        </code>
+                        {{!-- BEGIN-SNIPPET layer15
+                        @include rsa-layer(above)
+                        END-SNIPPET --}}
+                        {{code-snippet name="layer15.hbs"}}
+                        {{!-- BEGIN-SNIPPET layer16
+                        z-index: 1000;
+                        END-SNIPPET --}}
+                        {{code-snippet name="layer16.hbs"}}
                       </div>
                     </div>
                   </div>
