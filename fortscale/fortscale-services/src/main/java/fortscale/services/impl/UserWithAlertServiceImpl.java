@@ -93,7 +93,7 @@ import java.util.Set;
 	}
 
 	/**
-	 * If one of the filters (anomaly type, alert type, location or user ids ) was passed to the rest
+	 * If one of the filters (anomaly type, alert type, location, user ids or search value) was passed to the rest
 	 * and the user ids collection we got from it is empty there is no need to continue with the logic
 	 * @param userRestFilter
 	 * @param relevantUsers
@@ -103,7 +103,8 @@ import java.util.Set;
 		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getLocations()) ||
-				CollectionUtils.isNotEmpty(userRestFilter.getUserIds()))
+				CollectionUtils.isNotEmpty(userRestFilter.getUserIds()) ||
+				StringUtils.isNotEmpty(userRestFilter.getSearchValue()))
 				&& (CollectionUtils.isEmpty(relevantUsers));
 	}
 

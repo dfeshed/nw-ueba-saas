@@ -579,20 +579,27 @@ public class ApiUserController extends BaseController{
 	 */
 	private List<User> getUsers(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 
+		List<User> users = new ArrayList<>();
+
 		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
 			// If search value requested get the list of user ids relevant to the search.
 			List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
 			List<String> userIds = new ArrayList<>();
 
+			if (CollectionUtils.isEmpty(usersFromCache)){
+				// No users matched the search value
+				return users;
+			}
+
 			usersFromCache.forEach(user -> {
 				userIds.add(user.getId());
 			});
 
-			userRestFilter.setUserIds(userIds);
+			userRestFilter.getUserIds().addAll(userIds);
 		}
 
 		// Get the relevant users by filter requested
-		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
+		users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
 
 		// Add severity to the users
 		setSeverityOnUsersList(users);
