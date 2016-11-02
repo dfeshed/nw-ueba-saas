@@ -21,7 +21,7 @@ class MongoInstance:
 def get_db(host):
     if MongoInstance.connected:
         return MongoInstance.db
-    MongoInstance.connected = True13020
+    MongoInstance.connected = True
     MongoInstance.db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
     try:
         # check if an authentication is required
