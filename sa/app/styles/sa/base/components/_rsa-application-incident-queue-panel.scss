@@ -23,10 +23,47 @@
     left: 40%;
     top: 30%;
   }
+
   .rsa-incident-tile .rsa-incident-tile-header .rsa-incident-tile-header-info .rsa-incident-tile-name {
     padding: 0;
   }
+
   .scroll-box {
     overflow-x: hidden;
   }
+
+  .rsa-data-table {
+    position: absolute;
+    top: 45px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    .rsa-data-table-body-rows {
+      &:first-child {
+        margin-top: 2px;
+      }
+
+      .rsa-data-table-body-row {
+        padding: 0;
+
+        .rsa-data-table-body-cell {
+          &:hover {
+            @include tile-hover();
+          }
+
+          .rsa-content-card {
+            margin-left: 1px;
+            padding-right: 4px;
+
+            .rsa-incident-tile {
+              margin-top: 0;
+            }
+          }
+        }
+      }
+    }
+
+  }
+
 }

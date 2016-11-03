@@ -44,8 +44,12 @@ export default Ember$.extend({}, BaseSelectors, {
       'url': '/do/respond',
       'path': 'protected.respond.index',
       'updateIndLbl': '.rsa-update-indicator__label',
+      'rsaLoader': '.rsa-loader',
+      'rsaActiveElmCheck': 'is-active',
       'rsaIconClose': '.rsa-icon-close',
+      'rsaTableCell': '.rsa-data-table-body-cell',
       'card': {
+        'rsaContentCard': '.rsa-content-card',
         'allIncElm': 'header[class^=rsa-respond-index__toolbar] a[class=ember-view]',
         'incSection': 'section[class$=rsa-d3list]',
         'incTile': {
@@ -288,6 +292,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'journalDeleteConfirmBtn': '.rsa-journal-entry__delete-dialog__actions__confirm',
       'journalNte': '.rsa-journal-entry__note',
       'incidentQueuePanelBtn': '.incident-queue-trigger .rsa-icon',
+      'myIncidentsBtn': '.js-my-incidents',
       'allIncidentsInQueueElm': '.rsa-application-incident-queue-panel a',
       'allIncidentsBtn': '.js-all-incidents',
       'incQueueIncScore': '.rsa-incident-tile-score .score',

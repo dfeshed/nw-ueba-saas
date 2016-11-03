@@ -17,10 +17,7 @@
   &:hover {
 
     &:not(.clicked):not(.edit-mode-active) {
-      @include rsa-vendor-prefix(transition, background-color 1s);
-      cursor: pointer;
-      background-color: rsa-color(black, null, $rsa-translucent);
-      outline: 1px solid rsa-color(gray, base);
+       @include tile-hover();
     }
   }
 

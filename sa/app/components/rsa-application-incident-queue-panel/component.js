@@ -1,10 +1,17 @@
+/**
+ * @file Incident Tab component
+ *
+ * This component is used to display "My Incidents" and "All Incidents" tabs in a panel.
+ * Component is collapsed by default and expanded upon interaction.
+ * @public
+ */
 import Ember from 'ember';
-import layout from '../templates/components/rsa-application-incident-queue-panel';
 import { incidentStatusIds } from 'sa/incident/constants';
 import computed from 'ember-computed-decorators';
 
 const {
   Component,
+  Object: EmberObject,
   inject: {
     service
   },
@@ -12,8 +19,6 @@ const {
 } = Ember;
 
 export default Component.extend({
-  layout,
-
   eventBus: service('event-bus'),
 
   layoutService: service('layout'),
@@ -36,6 +41,13 @@ export default Component.extend({
 
   session: service(),
 
+  // Config that overrides dynamically set default width of rsa-data-table
+  customColumnConfig: [
+    EmberObject.create({
+      width: '100%'
+    })
+  ],
+
   // gets the logged in user id
   @computed('session')
   username(session) {
@@ -46,51 +58,6 @@ export default Component.extend({
       Logger.error('unable to read current username');
     }
     return username;
-  },
-
-  actions: {
-    fetchIncidents(queue) {
-      this.set('activeTab', queue);
-      this.fetchModel();
-    },
-    gotoIncidentDetail() {
-      /* simulates the "incident queue" button click that in-turn hides the
-      incident queue panel when an incident card is clicked */
-      this.get('layoutService').toggleIncidentQueue();
-    }
-  },
-
-  loadQueue(method, subDestinationUrlParams) {
-    this.set('loadingData', true);
-    let me = this;
-
-    this.get('request').streamRequest({
-      method,
-      modelName: 'incident',
-      query: {
-        filter: [{ field: 'statusSort', values: incidentStatusIds }],
-        sort: [{ field: 'riskScore', descending: true }],
-        subDestinationUrlParams
-      },
-      onResponse({ data }) {
-        me.set('loadingData', false);
-        if (data) {
-          me.set('incidents', data);
-        }
-      },
-      onError() {
-        Logger.error('Error processing stream call for incident queue');
-      }
-    });
-  },
-
-  fetchModel() {
-    let queue = this.get('activeTab');
-    if (queue === 'my') {
-      this.loadQueue('notify', this.get('username'));
-    } else {
-      this.loadQueue('stream', 'new');
-    }
   },
 
   init() {
@@ -105,5 +72,51 @@ export default Component.extend({
         this.set('incidents', null);
       }
     });
+  },
+
+  loadQueue(method, subDestinationUrlParams) {
+    this.set('loadingData', true);
+
+    this.get('request').streamRequest({
+      method,
+      modelName: 'incident',
+      query: {
+        filter: [{ field: 'statusSort', values: incidentStatusIds }],
+        sort: [{ field: 'riskScore', descending: true }],
+        subDestinationUrlParams
+      },
+      onResponse: ({ data }) => {
+        this.set('loadingData', false);
+        if (data) {
+          this.set('incidents', data);
+        }
+      },
+      onError: () => {
+        Logger.error('Error processing stream call for incident queue');
+        this.set('loadingData', false);
+      }
+    });
+  },
+
+  fetchModel() {
+    let queue = this.get('activeTab');
+    if (queue === 'my') {
+      this.loadQueue('notify', this.get('username'));
+    } else {
+      this.loadQueue('stream', 'new');
+    }
+  },
+
+  actions: {
+    fetchIncidents(queue) {
+      this.set('activeTab', queue);
+      this.fetchModel();
+    },
+    gotoIncidentDetail() {
+      /* simulates the "incident queue" button click that in-turn hides the
+       incident queue panel when an incident card is clicked */
+      this.get('layoutService').toggleIncidentQueue();
+    }
   }
+
 });
