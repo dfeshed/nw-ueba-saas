@@ -89,22 +89,27 @@ export default Component.extend({
     // For now, submits hard-coded values to illustrate the workflow.
     // In an upcoming PR we will fill out this component with dynamic content and submit dynamic values.
     submit() {
-      let fn = this.get('onSubmit');
+      const fn = this.get('onSubmit');
       Logger.assert(
         $.isFunction(fn),
         'Invalid onSubmit action defined for rsa-query-bar. Action aborted.'
       );
-      let serviceId = this.get('selectedService.id');
-      let timeRangeId = this.get('selectedTimeRange.id');
-      let timeRange = (this.get('timeRanges') || []).findBy('id', timeRangeId) || {};
-      let seconds = get(timeRange, 'seconds');
-      let nowInSeconds = parseInt(+(new Date()) / 1000, 10);
-      let queryString = this.get('queryString');
+      const serviceId = this.get('selectedService.id');
+      const timeRangeId = this.get('selectedTimeRange.id');
+      const timeRange = (this.get('timeRanges') || []).findBy('id', timeRangeId) || {};
+      const seconds = get(timeRange, 'seconds');
+      const now = new Date();
+      now.setSeconds(59);
+      now.setMilliseconds(0);
+      const toDate = now / 1000;
+      now.setSeconds(0);
+      // If user selects "All Data", seconds is zero; submit a start time of zero.
+      const fromDate = seconds ? now / 1000 - seconds : 0;
+      const queryString = this.get('queryString');
       fn(
         serviceId,
-        // If user selects "All Data", seconds is zero; submit a start time of zero.
-        seconds ? nowInSeconds - seconds : 0,
-        nowInSeconds,
+        fromDate,
+        toDate,
         queryString
       );
     },
