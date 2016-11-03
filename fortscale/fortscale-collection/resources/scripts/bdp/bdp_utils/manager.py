@@ -39,11 +39,11 @@ def cleanup_everything_but_models_and_acm(logger,
             logger.warning('no model collections in mongo')
     accumulated_backup_prefix = 'bkp_s_'
     scored_collection_prefix = "scored___"
-    renames = rename_documents(logger=logger,
+    acm_renames = rename_documents(logger=logger,
                                host=host,
                                collection_names_regex='^scored.*(aggr|entity).*(d_acm|h_acm)$',
                                name_to_new_name_cb=lambda name: accumulated_backup_prefix + name[len(scored_collection_prefix):])
-    if renames == 0:
+    if acm_renames == 0:
         logger.warning('no accumulated collections in mongo')
 
     logger.info('running cleanup...')
@@ -68,7 +68,7 @@ def cleanup_everything_but_models_and_acm(logger,
     if rename_documents(logger=logger,
                     host=host,
                     collection_names_regex='^' + accumulated_backup_prefix + '.*(d_acm|h_acm)$',
-                    name_to_new_name_cb=lambda name: scored_collection_prefix + name[len(accumulated_backup_prefix):]) != renames:
+                    name_to_new_name_cb=lambda name: scored_collection_prefix + name[len(accumulated_backup_prefix):]) != acm_renames:
         logger.error('failed to rename accumulated collections back')
         return False
     logger.info('DONE')
