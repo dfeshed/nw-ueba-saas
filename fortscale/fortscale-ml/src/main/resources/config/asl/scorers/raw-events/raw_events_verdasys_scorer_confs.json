@@ -242,7 +242,7 @@
                                     "name": "isOutboundRegexScorer",
                                     "regex": "true",
                                     "regex-field-name": "is_outbound",
-                                    "constant-score": 100
+                                    "constant-score": 80
                                 }
                             ]
                         },
@@ -255,7 +255,7 @@
                                     "name": "isRemovableRegexScorer",
                                     "regex": "true",
                                     "regex-field-name": "is_removable",
-                                    "constant-score": 100
+                                    "constant-score": 80
                                 }
                             ]
                         },
@@ -268,7 +268,7 @@
                                     "name": "wasBlockedRegexScorer",
                                     "regex": "true",
                                     "regex-field-name": "was_blocked_event",
-                                    "constant-score": 100
+                                    "constant-score": 0
                                 }
                             ]
                         },
