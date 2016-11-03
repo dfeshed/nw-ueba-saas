@@ -72,12 +72,12 @@ const createConnectMessage = function() {
  * If no body is provided, then subscription.message is called in order
  * to retrieve the body
  */
-const createMessage = function(subscription, frame, body = null) {
+const createMessage = function(subscription, frame, body = null, helpers) {
   const defaultBody = {
     code: 0,
     request: JSON.parse(frame.body)
   };
-  const subscriptionBody = body || subscription.message(frame);
+  const subscriptionBody = body || subscription.message(frame, helpers);
 
   // merging subscriptionBody over default body,
   // gives ability to override defaults in subscription

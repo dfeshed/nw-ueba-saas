@@ -46,7 +46,20 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/investigate/reconstruct/session-files',
         requestDestination: '/ws/investigate/reconstruct/session-files'
       }
+    },
+    'reconstruction-file-extract-job-id': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/extract/file',
+        requestDestination: '/ws/investigate/extract/file'
+      }
+    },
+    'investigate-notification': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/notification',
+        requestDestination: '/ws/investigate/notification'
+      }
     }
-
   };
 }

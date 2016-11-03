@@ -1,5 +1,17 @@
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
 
+const _addFilter = (query, field, value, valueKey = 'value') => {
+  if (!query.filter) {
+    query.filter = [];
+  }
+
+  let obj = { field };
+  obj[valueKey] = value;
+
+  query.filter.push(obj);
+  return query;
+};
+
 const endpointFilter = (endpointId) => {
   const query = {
     filter: [{
@@ -40,19 +52,15 @@ const addSessionQueryFilter = (query, sessionId) => {
 };
 
 const addCatchAllTimeRange = (query) => {
-  if (!query.filter) {
-    query.filter = [];
-  }
-
-  query.filter.push({
-    field: 'timeRange',
-    range: {
+  return _addFilter(
+    query,
+    'timeRange',
+    {
       from: 0,
       to: +new Date() / 1000
-    }
-  });
-
-  return query;
+    },
+    'range'
+  );
 };
 
 const addStreaming = (_query) => {
@@ -80,8 +88,27 @@ const basicPromiseRequest = (endpointId, eventId, modelName) => {
   });
 };
 
+const addFileTypeFilter = (query, type) => {
+  return _addFilter(
+    query,
+    'filetype',
+    type
+  );
+};
+
+const addSessionIdsFilter = (query, ids) => {
+  return _addFilter(
+    query,
+    'sessionIds',
+    ids,
+    'values'
+  );
+};
+
 export {
   addCatchAllTimeRange,
+  addFileTypeFilter,
+  addSessionIdsFilter,
   endpointFilter,
   buildBaseQuery,
   addStreaming,

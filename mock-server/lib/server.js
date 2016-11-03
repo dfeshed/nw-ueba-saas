@@ -92,6 +92,10 @@ const start = function({ subscriptionLocations, routes }, cb) {
   });
 };
 
+// App-wide cache of custom helpers. Helpers can be (optionally) defined by subscriptions at run-time. Helpers can
+// then be leveraged by subscription handlers at any point in the future.  Useful for sharing tools/data across subscriptions.
+const _subscriptionHelpers = {};
+
 const _handleMessage = function(ws, frame) {
   if (ws.subscriptionHandler) {
 
@@ -105,7 +109,7 @@ const _handleMessage = function(ws, frame) {
         return;
       }
 
-      const outMsg = createMessage(ws.subscriptionHandler, frame, body);
+      const outMsg = createMessage(ws.subscriptionHandler, frame, body, _subscriptionHelpers);
       setTimeout(function() {
         if (_isClosed(ws)) {
           console.info('Client disconnected, not sending message');
@@ -123,7 +127,7 @@ const _handleMessage = function(ws, frame) {
 
     // allow subscription to paginate on its own
     if (ws.subscriptionHandler.page) {
-      ws.subscriptionHandler.page(frame, sendMessage);
+      ws.subscriptionHandler.page(frame, sendMessage, _subscriptionHelpers);
     }
   }
 };

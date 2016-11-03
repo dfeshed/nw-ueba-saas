@@ -19,7 +19,8 @@ import {
   fetchReconFiles,
   fetchPacketData,
   fetchLanguage,
-  fetchAliases
+  fetchAliases,
+  fetchNotifications
 } from './fetch';
 
 const { Logger } = Ember;
@@ -260,8 +261,39 @@ const toggleMetaData = (setTo) => {
   };
 };
 
+/**
+ * Subscribe to notifications. Notifications tell us when any file downloads are finished/failed.
+ * Eventually we will have a standalone notifications UI outside of recon, but for now it's all handled internally in recon.
+ * @public
+ */
+const initializeNotifications = () => {
+  return (dispatch) => {
+    fetchNotifications(
+      // on successful init, will received a function for stopping all notification callbacks
+      (response) => {
+        dispatch({
+          type: ACTION_TYPES.NOTIFICATION_INIT_SUCCESS,
+          payload: { cancelFn: response }
+        });
+      },
+      // some job has finished and is ready for download
+      ({ data }) => {
+        dispatch({
+          type: ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS,
+          payload: data
+        });
+      },
+      // some job failed
+      (err) => {
+        Logger.error('Error in file extract job', err);
+      }
+    );
+  };
+};
+
 export {
   setNewReconView,
   initializeRecon,
-  toggleMetaData
+  toggleMetaData,
+  initializeNotifications
 };

@@ -3,6 +3,8 @@ import fetchMeta from './meta';
 import fetchReconFiles from './files';
 import fetchPacketData from './packets';
 import { fetchLanguage, fetchAliases } from './dictionaries';
+import fetchFileExtractJobId from './file-extract';
+import fetchNotifications from './notifications';
 
 export {
   fetchReconSummary,
@@ -10,5 +12,7 @@ export {
   fetchReconFiles,
   fetchPacketData,
   fetchLanguage,
-  fetchAliases
+  fetchAliases,
+  fetchNotifications,
+  fetchFileExtractJobId
 };

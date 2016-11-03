@@ -84,16 +84,20 @@ Normally with a node.js server, if something on the server changes (like a subsc
   * matches the `subscriptionDestination` for the desired enpoint in your project's `environment.js`
 * `requestDestination`, `String`, __required__
   * matches the `requestDestination` for the desired enpoint in your project's `environment.js`
-* `message(frame)`, `Function`,
-  * Takes a websocket Frame as input
+* `message(frame, helpers)`, `Function`,
+  * Takes a websocket Frame and a read/write-able application-level cache of helpers as input
   * Should `return` a [body object](#body-object).
+  * Can cache anything into `helpers` if needed in the future by this or any other subscription.
+  * Can read & use anything from `helpers`.
   * Either `message` or `page` is required. If both are provided, the subscription will be ignored.
-* `page(frame, sendMessageCallback)`, `Function`,
-  * Takes a websocket Frame as input
+* `page(frame, sendMessageCallback, helpers)`, `Function`,
+  * Takes a websocket Frame and a read/write-able application-level cache of helpers as input
   * Takes a `sendMessageCallback` which you call when you want to send a message to the client.
     * The `sendMessageCallback` should be provided a [body object](#body-object).
     * You can call this callback as many times and as frequently as you'd like. Each time it is called a message, with the body you provide the callback, is sent over the same websocket connection to the client.
   * Does not have a `return`
+  * Can cache anything into `helpers` if needed in the future by this or any other subscription.
+  * Can read & use anything from `helpers`.
   * Either `message` or `page` is required. If both are provided, the subscription will be ignored.
 * `delay`, `Number`, optional
   * how long the mock server should delay before sending the response

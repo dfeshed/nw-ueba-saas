@@ -2,6 +2,14 @@ import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import * as ACTION_TYPES from '../actions/types';
 import reduxActions from 'npm:redux-actions';
 
+// State of server jobs for downloading file(s)
+const fileExtractInitialState = {
+  fileExtractStatus: null,  // either 'init' (creating job), 'wait' (job executing), 'success' or 'error'
+  fileExtractError: null,   // error object
+  fileExtractJobId: null,   // job id for tracking notifications
+  fileExtractLink: null    // url for downloading successful job's results
+};
+
 const dataInitialState = {
   // view defaults to packet
   currentReconView: RECON_VIEW_TYPES_BY_NAME.PACKET,
@@ -23,6 +31,12 @@ const dataInitialState = {
   files: null,
   packetFields: null,
   packets: null,
+
+  ...fileExtractInitialState,
+
+  // callback for stopping notifications
+  // (obtained at run-time as a result from notifications initialization)
+  stopNotifications: null,
 
   // Error state
   metaError: null,
@@ -149,10 +163,32 @@ const data = reduxActions.handleActions({
       files: newFiles
     };
   },
-  [ACTION_TYPES.FILE_DOWNLOAD_SUCCESS]: allFilesSelection(false),
   [ACTION_TYPES.FILES_DESELECT_ALL]: allFilesSelection(false),
-  [ACTION_TYPES.FILES_SELECT_ALL]: allFilesSelection(true)
-
+  [ACTION_TYPES.FILES_SELECT_ALL]: allFilesSelection(true),
+  [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_STARTED]: (state) => ({
+    ...state,
+    ...fileExtractInitialState,
+    fileExtractStatus: 'init'
+  }),
+  [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_FAILURE]: (state, { payload }) => ({
+    ...state,
+    fileExtractStatus: 'error',
+    fileExtractError: payload
+  }),
+  [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_SUCCESS]: (state, { payload }) => ({
+    ...state,
+    fileExtractStatus: 'wait',
+    fileExtractJobId: payload.jobId
+  }),
+  [ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS]: (state, { payload }) => ({
+    ...state,
+    fileExtractStatus: 'success',
+    fileExtractLink: payload.link
+  }),
+  [ACTION_TYPES.NOTIFICATION_INIT_SUCCESS]: (state, { payload }) => ({
+    ...state,
+    stopNotifications: payload.cancelFn
+  })
 }, dataInitialState);
 
 export default data;
