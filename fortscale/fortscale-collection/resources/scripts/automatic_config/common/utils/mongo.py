@@ -19,13 +19,14 @@ class MongoInstance:
     connected = False
 
 def get_db(host):
-    if MongoInstance.connected:
-        return MongoInstance.db
-    MongoInstance.connected = True
-    MongoInstance.db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
+    mongo_instance = MongoInstance()
+    if mongo_instance.connected:
+        return mongo_instance.db
+    mongo_instance.connected = True
+    mongo_instance.db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
     try:
         # check if an authentication is required
-        MongoInstance.db.collection_names()
+        mongo_instance.db.collection_names()
     except Exception:
         if not sys.stdin.isatty():
             user = sys.stdin.readline().strip()
@@ -33,8 +34,8 @@ def get_db(host):
         else:
             user = raw_input('Please enter mongo username: ')
             password = getpass.getpass('Please enter mongo password: ')
-        MongoInstance.db.authenticate(user, password)
-    return MongoInstance.db
+        mongo_instance.db.authenticate(user, password)
+    return mongo_instance.db
 
 
 def get_all_collection_names(mongo_db):
