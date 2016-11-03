@@ -3,6 +3,7 @@ package fortscale.collection.jobs.smart;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.jobs.model.EntityEventModelBuildingSyncService;
 import fortscale.collection.jobs.model.ModelBuildingSyncService;
+import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataStore;
 import fortscale.entity.event.EntityEventService;
 import fortscale.ml.model.ModelConf;
@@ -16,10 +17,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -53,6 +51,8 @@ public class EntityEventsCreationJob extends FortscaleJob {
 	private ModelConfServiceUtils modelConfServiceUtils;
 	@Autowired
 	private ModelStore modelStore;
+	@Autowired
+	private EntityEventConfService entityEventConfService;
 
 	private long startTimeInSeconds;
 	private long endTimeInSeconds;
@@ -107,8 +107,9 @@ public class EntityEventsCreationJob extends FortscaleJob {
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
 		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(jobDataMap, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
 		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(jobDataMap, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
+		Set<String> featureNames = new HashSet<>(entityEventConfService.getEntityEventNames());
 		modelBuildingSyncService = new EntityEventModelBuildingSyncService(sessionId, modelConfNames,
-				secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic);
+				secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic,featureNames);
 
 
 		logger.info(String.format("Finish initializing EntityEventsCreationJob: startTimeInSeconds = %d, endTimeInSeconds = %d, batchSize = %d, checkRetries = %d, secondsBetweenModelSyncs = %d, modelBuildingTimeoutInSeconds = %d, eventProcessingSyncTimeoutInSeconds = %d",

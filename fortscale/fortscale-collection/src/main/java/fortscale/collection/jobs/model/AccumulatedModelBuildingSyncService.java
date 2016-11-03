@@ -15,8 +15,11 @@ import java.util.Set;
  * Created by barak_schuster on 10/30/16.
  */
 public abstract class AccumulatedModelBuildingSyncService extends ModelBuildingSyncService{
-    public AccumulatedModelBuildingSyncService(String sessionId, Collection<String> modelConfNames, long secondsBetweenEndTimes, long timeoutInSeconds, String controlInputTopic, String controlOutputTopic) {
+    private final Set<String> featureNames;
+
+    public AccumulatedModelBuildingSyncService(String sessionId, Collection<String> modelConfNames, long secondsBetweenEndTimes, long timeoutInSeconds, String controlInputTopic, String controlOutputTopic, Set<String> featureNames) {
         super(sessionId, modelConfNames, secondsBetweenEndTimes, timeoutInSeconds, controlInputTopic, controlOutputTopic);
+        this.featureNames = featureNames;
     }
 
     @Override
@@ -27,9 +30,8 @@ public abstract class AccumulatedModelBuildingSyncService extends ModelBuildingS
     }
 
     private void accumulate(long endTimeInSeconds) {
-        Set<String> features = new HashSet<>(modelConfNames);
         AccumulatorManagerParams accumulatorManagerParams = new AccumulatorManagerParams();
-        accumulatorManagerParams.setFeatures(features);
+        accumulatorManagerParams.setFeatures(featureNames);
         accumulatorManagerParams.setTo(Instant.ofEpochSecond(endTimeInSeconds));
         getAccumulatorManger().run(accumulatorManagerParams);
     }
