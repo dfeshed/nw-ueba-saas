@@ -57,12 +57,16 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
     let authentication = session.get('session.content').authenticated;
 
     if (authentication) {
-      localStorage.setItem(accessTokenKey, authentication.access_token);
-      localStorage.setItem(refreshTokenKey, authentication.refresh_token);
 
       let secure = document.location.protocol == 'https:' ? 'secure' : '';
+      localStorage.setItem(accessTokenKey, authentication.access_token);
       document.cookie = `access_token=${authentication.access_token};path=/;${secure}`;
-      document.cookie = `refresh_token=${authentication.refresh_token};path=/;${secure}`;
+
+      if (authentication.refresh_token) {
+        localStorage.setItem(refreshTokenKey, authentication.refresh_token);
+        document.cookie = `refresh_token=${authentication.refresh_token};path=/;${secure}`;
+      }
+
     } else {
       session.invalidate();
     }
