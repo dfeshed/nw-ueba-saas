@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import computed from 'ember-computed-decorators';
+import computed, { filterBy } from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import layout from './template';
 
@@ -43,17 +43,20 @@ const ExportFilesComponent = Component.extend({
     return !!((status || '').match(/init|wait/));
   },
 
-  @computed('isExportInProgress', 'files.length')
-  isExportDisabled(isExportInProgress, fileCount) {
-    return !fileCount || isExportInProgress;
+  @filterBy('files', 'selected', true)
+  selectedFiles: null,
+
+  @computed('isExportInProgress', 'selectedFiles.length')
+  isExportDisabled(isExportInProgress, selectedFileCount) {
+    return !selectedFileCount || isExportInProgress;
   },
 
-  @computed('isExportInProgress', 'files.length')
-  exportCaption(isExportInProgress, fileCount = 0) {
+  @computed('isExportInProgress', 'selectedFiles.length')
+  exportCaption(isExportInProgress, selectedFileCount = 0) {
     if (isExportInProgress) {
       return 'Exporting...';
-    } else if (fileCount > 1) {
-      return `Export Files (${fileCount})`;
+    } else if (selectedFileCount > 1) {
+      return `Export Files (${selectedFileCount})`;
     } else {
       return 'Export File';
     }

@@ -96,6 +96,18 @@ const addFileTypeFilter = (query, type) => {
   );
 };
 
+const addFileSelectionsFilter = (query, filenames = []) => {
+  if (filenames.length) {
+    query = _addFilter(
+      query,
+      'fileSelections',
+      filenames,
+      'values'
+    );
+  }
+  return query;
+};
+
 const addSessionIdsFilter = (query, ids) => {
   return _addFilter(
     query,
@@ -108,6 +120,7 @@ const addSessionIdsFilter = (query, ids) => {
 export {
   addCatchAllTimeRange,
   addFileTypeFilter,
+  addFileSelectionsFilter,
   addSessionIdsFilter,
   endpointFilter,
   buildBaseQuery,

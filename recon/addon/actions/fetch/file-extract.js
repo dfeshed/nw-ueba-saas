@@ -1,5 +1,5 @@
 import { promiseRequest } from 'streaming-data/services/data-access/requests';
-import { endpointFilter, addFileTypeFilter, addSessionIdsFilter } from './util/query-util';
+import { endpointFilter, addFileTypeFilter, addSessionIdsFilter, addFileSelectionsFilter } from './util/query-util';
 
 /**
  * Retrieves an ID from server for a job to extract the files of a given event id.
@@ -10,11 +10,12 @@ import { endpointFilter, addFileTypeFilter, addSessionIdsFilter } from './util/q
  * the actual files (zipped).
  * @public
  */
-function fetchFileExtractJobId(endpointId, eventId) {
+function fetchFileExtractJobId(endpointId, eventId, filenames) {
 
   let query = endpointFilter(endpointId);
   query = addFileTypeFilter(query, 'FILES');
   query = addSessionIdsFilter(query, [ eventId ]);
+  query = addFileSelectionsFilter(query, filenames);
 
   return promiseRequest({
     method: 'query',

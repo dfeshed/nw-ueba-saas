@@ -23,18 +23,24 @@ const downloadFiles = () => {
       recon: {
         data: {
           endpointId,
-          eventId
+          eventId,
+          files
         }
       }
     } = getState();
+
+    const selectedFileNames = (files || [])
+      .filterBy('selected', true)
+      .map((file) => file.fileName);
 
     // Dispatch the start of the job id retrieval.
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_STARTED
     });
 
+
     // Ask the server for a job id.
-    fetchFileExtractJobId(endpointId, eventId)
+    fetchFileExtractJobId(endpointId, eventId, selectedFileNames)
       .catch((e) => {
 
         // Unable to get a job id.
