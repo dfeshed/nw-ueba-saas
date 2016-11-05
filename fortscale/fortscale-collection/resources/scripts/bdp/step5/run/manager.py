@@ -17,6 +17,6 @@ class Manager:
 
     def run(self):
         self._runner \
-            .infer_start_and_end(collection_names_regex='^scored___entity_event_') \
+            .infer_start_and_end(collection_names_regex='^scored___entity_event_.*(daily|hourly)$') \
             .run(overrides_key='step5')
         return True
