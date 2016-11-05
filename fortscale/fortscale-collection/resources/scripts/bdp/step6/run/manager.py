@@ -1,6 +1,6 @@
 import logging
-import sys
 import os
+import sys
 from subprocess import call
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
@@ -19,7 +19,7 @@ class Manager:
         self._validation_polling = validation_polling
 
     def run(self):
-        scored_entity_collection_names_regex = '^scored___entity_event_'
+        scored_entity_collection_names_regex = '^scored___entity_event_((?!acm).)*$'
         start = get_collections_time_boundary(host=self._host,
                                               collection_names_regex=scored_entity_collection_names_regex,
                                               is_start=True)
