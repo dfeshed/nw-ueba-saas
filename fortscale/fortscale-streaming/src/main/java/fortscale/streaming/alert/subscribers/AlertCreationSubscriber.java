@@ -26,7 +26,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 	private static Logger logger = Logger.getLogger(AlertCreationSubscriber.class);
 
-
 	/**
 	 * Alerts service (for Mongo export)
 	 */
@@ -39,21 +38,10 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
     @Autowired
     private UserScoreService userScoreService;
 
-
-
-
 	/**
 	 * Computer service (for resolving id)
 	 */
 	@Autowired protected ComputerService computerService;
-
-
-
-	/**
-	 * Aggregated feature configuration service
-	 */
-	//@Autowired protected AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
-
 
 	@Autowired
 	private AlertFilterApplicableEvidencesService evidencesApplicableToAlertService;
@@ -63,9 +51,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
 	@Autowired
 	private AlertTypesHisotryCache alertTypesHisotryCache;
-
-	@Autowired
-	private UserTagsCacheService userTagsCacheService;
 
 	@Autowired
 	@Qualifier("defaultTagToSeverityMapping")
@@ -85,8 +70,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 	 * Alert forwarding service (for forwarding new alerts)
 	 */
 	@Autowired private ForwardingService forwardingService;
-
-
 
 	/**
 	 * Listener method called when Esper has detected a pattern match.
@@ -142,7 +125,8 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 					String title = decider.decideName(evidencesEligibleForDecider,timeframe);
 					Integer roundScore = decider.decideScore(evidencesEligibleForDecider, timeframe);
 
-					Severity severity = getSeverity(entityName, roundScore);
+					Set<String> userTags = userService.getUserTags(entityName);
+					Severity severity = getSeverity(entityName, roundScore, userTags);
 
 					if (title != null && severity != null) {
 						logger.info("Alert title = {}. Alert Severity = {}", title, severity);
@@ -156,7 +140,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
                                 filter(event -> (event.getEvidenceType() == EvidenceType.Smart)).collect(Collectors.toList()));
 						logger.info("Attaching {} F/P indicators to Alert: {}", attachedEntityEventIndicators.size(), attachedEntityEventIndicators);
 
-                        Set<String> userTags = userTagsCacheService.getUserTags(entityName);
 						List<Evidence> attachedTags = evidencesForAlertResolverService.handleTags(userTags,entityType, entityName, startDate, endDate);
 						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
@@ -169,8 +152,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 
                         //Add tag indicators
 						finalIndicatorsListForAlert.addAll(attachedTags);
-
-
 
                         double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
                         Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
@@ -202,16 +183,14 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
         if (finalIndicatorsListForAlert == null || finalIndicatorsListForAlert.size() == 0){
             throw new AlertCreationException("No indicators for the alert");
         }
-
     }
 
 
-	private Severity getSeverity(String entityName, Integer roundScore) {
+	private Severity getSeverity(String entityName, Integer roundScore, Set<String> userTags) {
 		Severity severity;
-		Set<String> userTags= userTagsCacheService.getUserTags(entityName);
 
 		if (Collections.disjoint(userTags, privilegedTags)){
-			//Regular user. No priviliged tags
+			//Regular user. No privileged tags
 			severity = defaultTagToSeverityMapping.getSeverityByScore(roundScore);
 		} else {
 			//Privileged
@@ -230,8 +209,6 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 		}
 		return  fortscaleEventList;
 	}
-
-
 
 	public void setEvidencesApplicableToAlertService(AlertFilterApplicableEvidencesService evidencesApplicableToAlertService) {
 		this.evidencesApplicableToAlertService = evidencesApplicableToAlertService;

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface UserService extends CachingService{
+public interface UserService {
 	void updateUserWithCurrentADInfo();
 	
 	void updateUserWithADInfo(Long timestampepoch);
@@ -41,6 +41,8 @@ public interface UserService extends CachingService{
 	void updateUser(User user, Update update);
 
 	boolean findIfUserExists(String username);
+
+	Set<String> getUserTags(String username);
 
 	String getUserId(String username);
 
@@ -138,4 +140,8 @@ public interface UserService extends CachingService{
     List getDistinctValuesByFieldName(String fieldName);
 
 	void updateSourceMachineCount(String userId, int sourceMachineCount);
+
+	int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames, Set<String> relevantUsers);
+
+	int updateWatched(UserRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch);
 }
