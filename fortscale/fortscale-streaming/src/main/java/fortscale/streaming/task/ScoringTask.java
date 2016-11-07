@@ -69,6 +69,7 @@ public class ScoringTask extends AbstractStreamTask {
 
         if(topicName.equals(modelBuildingControlOutputTopic))
         {
+            taskMetrics.modelBuildingEvents++;
             handleModelBuildingEvent(messageText, message);
         }
         else {

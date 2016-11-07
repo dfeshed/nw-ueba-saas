@@ -73,5 +73,7 @@ public class ModelCacheManagerMetrics extends StatsMetricsGroup {
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long deleteFromCache;
 
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long loadModelFromStore;
 
 }

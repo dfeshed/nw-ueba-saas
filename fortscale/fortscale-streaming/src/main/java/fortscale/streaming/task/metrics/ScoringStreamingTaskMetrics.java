@@ -44,6 +44,9 @@ public class ScoringStreamingTaskMetrics  extends StatsMetricsGroup {
     public long eventsTime;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
+    public long modelBuildingEvents;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
     public long calculateScores;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
