@@ -136,7 +136,7 @@ class Manager(DontReloadModelsOverridingManager):
         ]
         if self._cleanup_first:
             sub_steps.insert(0, ('cleanup before starting to process data sources',
-                                 lambda data_source: self._cleanup(data_source=data_source, fail_if_no_models=False),
+                                 lambda data_source: self._cleanup(fail_if_no_models=False),
                                  False))
         for step_name, step, run_once_per_data_source in sub_steps:
             for data_source in self._data_sources if run_once_per_data_source else [None]:
@@ -241,7 +241,7 @@ class Manager(DontReloadModelsOverridingManager):
             return False
         return True
 
-    def _cleanup(self, data_source=None, fail_if_no_models=True):
+    def _cleanup(self, fail_if_no_models=True):
         return cleanup_everything_but_models(logger=logger,
                                              host=self._host,
                                              clean_overrides_key='stepSAM.cleanup',
