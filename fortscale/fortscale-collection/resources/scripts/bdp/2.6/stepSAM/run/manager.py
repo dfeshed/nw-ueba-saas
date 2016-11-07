@@ -189,7 +189,6 @@ class Manager(DontReloadModelsOverridingManager):
                                      start_time_epoch=start,
                                      end_time_epoch=end):
             return False
-        self._send_dummy_event(end_time_epoch=end)
         logger.info('making sure bdp process exits...')
         kill_process()
         return self._restart_aggregation_task()
@@ -199,20 +198,23 @@ class Manager(DontReloadModelsOverridingManager):
             start_time_epoch -= (start_time_epoch % (60 * 60))
         if end_time_epoch % (60 * 60) != 0:
             end_time_epoch += (-end_time_epoch) % (60 * 60)
-        return validate_started_processing_everything(host=self._host,
-                                                      data_source=data_source,
-                                                      end_time_epoch=end_time_epoch,
-                                                      filtered_gap_in_minutes=self._filtered_gap_in_minutes,
-                                                      filtered_timeout_in_minutes=self._filtered_timeout_in_minutes) and \
-               block_until_everything_is_validated(host=self._host,
-                                                   start_time_epoch=start_time_epoch,
-                                                   end_time_epoch=end_time_epoch,
-                                                   wait_between_validations=self._polling_interval,
-                                                   max_delay=-1,
-                                                   timeout=0,
-                                                   polling_interval=0,
-                                                   data_sources=[data_source],
-                                                   logger=logger)
+        if validate_started_processing_everything(host=self._host,
+                                                  data_source=data_source,
+                                                  end_time_epoch=end_time_epoch,
+                                                  filtered_gap_in_minutes=self._filtered_gap_in_minutes,
+                                                  filtered_timeout_in_minutes=self._filtered_timeout_in_minutes):
+            self._send_dummy_event()
+            return block_until_everything_is_validated(host=self._host,
+                                                       start_time_epoch=start_time_epoch,
+                                                       end_time_epoch=end_time_epoch,
+                                                       wait_between_validations=self._polling_interval,
+                                                       max_delay=-1,
+                                                       timeout=0,
+                                                       polling_interval=0,
+                                                       data_sources=[data_source],
+                                                       logger=logger)
+        else:
+            return False
 
     def _send_dummy_event(self, end_time_epoch):
         # TODO: this code was copied from step2's manager.py - do a refactor
