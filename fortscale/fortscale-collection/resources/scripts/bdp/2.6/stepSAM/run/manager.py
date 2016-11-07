@@ -10,6 +10,7 @@ from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everyth
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
+from bdp_utils.kafka import send
 import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
@@ -188,6 +189,7 @@ class Manager(DontReloadModelsOverridingManager):
                                      start_time_epoch=start,
                                      end_time_epoch=end):
             return False
+        self._send_dummmy_event(end_time_epoch=end)
         logger.info('making sure bdp process exits...')
         kill_process()
         return self._restart_aggregation_task()
@@ -211,6 +213,14 @@ class Manager(DontReloadModelsOverridingManager):
                                                    polling_interval=0,
                                                    data_sources=[data_source],
                                                    logger=logger)
+
+    def _send_dummy_event(self, end_time_epoch):
+        logger.info('sending dummy event (so the last partial batch will be closed)...')
+        send(logger=logger,
+             host=self._host,
+             topic='fortscale-vpn-event-score-from-hdfs',
+             message='{\\"data_source\\": \\"dummy\\", \\"date_time_unix\\": ' +
+                     str(end_time_epoch + 1) + '}')
 
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)
