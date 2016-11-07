@@ -1,10 +1,14 @@
 .rsa-investigate-breadcrumb {
   &__crumbs {
     @include rsa-row(left, bottom);
+    flex-wrap: wrap;
   }
 
   &__crumb {
     list-style: none;
+    .rsa-form-button {
+      white-space: nowrap;
+    }
   }
 
   &__more {

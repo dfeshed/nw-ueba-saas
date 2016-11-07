@@ -2,18 +2,18 @@
 @mixin rsa-input-placeholder($color) {
   &::-webkit-input-placeholder { 
     color: $color;
-    line-height: 1.45rem;
   }
 
   &::-moz-placeholder {
     color: $color;  
-    line-height: 1.45rem;
   }
 
   &:-ms-input-placeholder {  
     color: $color;  
-    line-height: 1.45rem;
   }
+}
+input {
+  line-height: 1.45;
 }
 
 /* http://stackoverflow.com/questions/29580704/change-input-background-to-transparent-on-autocomplete-form */
