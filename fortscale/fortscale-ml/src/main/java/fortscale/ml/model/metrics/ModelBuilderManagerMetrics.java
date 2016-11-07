@@ -39,7 +39,13 @@ public class ModelBuilderManagerMetrics extends StatsMetricsGroup {
 	public long getContexts;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long specifiedContextIds;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long getHighScoreContexts;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long illegalRequest;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long contextIds;

@@ -139,7 +139,7 @@ public class ModelServiceTest {
 		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
 		Date currentEndTime = new Date(currentEndTimeInMillis);
-		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, false);
+		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, false, Collections.emptySet());
 
 		// Assert listener
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);

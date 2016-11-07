@@ -15,9 +15,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import static org.mockito.Matchers.eq;
@@ -71,11 +69,13 @@ public class ModelBuildingRegistrationServiceTest {
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
 		boolean selectHighScoreContexts = false;
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
+		Set<String> specifiedContextIds = Collections.emptySet();
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(
+				sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts), eq(specifiedContextIds))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts, specifiedContextIds));
 		verify(modelBuildingStore,times(1)).storeRegistration(any(ModelBuildingRegistration.class));
 
 	}
@@ -102,11 +102,13 @@ public class ModelBuildingRegistrationServiceTest {
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
 		boolean selectHighScoreContexts = false;
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
+		Set<String> specifiedContextIds = Collections.emptySet();
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(
+				sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts), eq(specifiedContextIds))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts, specifiedContextIds));
 		verify(modelBuildingStore,times(1)).storeRegistration(any(ModelBuildingRegistration.class));
 
 	}
@@ -125,12 +127,14 @@ public class ModelBuildingRegistrationServiceTest {
 		Date currentEndTime2 = new Date();
 		long endTimeInSeconds2 = 2000;
 		Boolean selectHighScoreContexts = false;
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, selectHighScoreContexts);
-		when(modelBuildingStore.getRegistration(eq(sessionId2), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
+		Set<String> specifiedContextIds = Collections.emptySet();
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(
+				sessionId2, modelConfName2, previousEndTime2, currentEndTime2, selectHighScoreContexts, specifiedContextIds);
+		when(modelBuildingStore.getRegistration(eq(sessionId2), eq(modelConfName2), eq(selectHighScoreContexts), eq(specifiedContextIds))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId1, modelConfName1, endTimeInSeconds1, selectHighScoreContexts));
-		regService.process(createEvent(sessionId2, modelConfName2, endTimeInSeconds2, selectHighScoreContexts));
+		regService.process(createEvent(sessionId1, modelConfName1, endTimeInSeconds1, selectHighScoreContexts, specifiedContextIds));
+		regService.process(createEvent(sessionId2, modelConfName2, endTimeInSeconds2, selectHighScoreContexts, specifiedContextIds));
 
 		// Captor arguments
 		ArgumentCaptor<ModelBuildingRegistration> argumentCaptor = ArgumentCaptor.forClass(ModelBuildingRegistration.class);
@@ -174,11 +178,13 @@ public class ModelBuildingRegistrationServiceTest {
 		Date previousEndTime = new Date();
 		Date currentEndTime = new Date();
 		boolean selectHighScoreContexts = false;
-		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts);
-		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts))).thenReturn(existingRegistration);
+		Set<String> specifiedContextIds = Collections.emptySet();
+		ModelBuildingRegistration existingRegistration = new ModelBuildingRegistration(
+				sessionId, modelConfName2, previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
+		when(modelBuildingStore.getRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts), eq(specifiedContextIds))).thenReturn(existingRegistration);
 
 		// Act
-		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts));
+		regService.process(createEvent(sessionId, modelConfName, endTimeInSeconds, selectHighScoreContexts, specifiedContextIds));
 
 		// Captor arguments
 		ArgumentCaptor<ModelBuildingRegistration> argumentCaptor = ArgumentCaptor.forClass(ModelBuildingRegistration.class);
@@ -204,21 +210,21 @@ public class ModelBuildingRegistrationServiceTest {
 
 	@Test
 	public void registration_service_should_ignore_event_with_invalid_session_id() throws JsonProcessingException {
-		regService.process(createEvent("", "myModelConf", 4000L, false));
+		regService.process(createEvent("", "myModelConf", 4000L, false, null));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
 	public void registration_service_should_ignore_event_with_invalid_model_conf_name() throws JsonProcessingException {
-		regService.process(createEvent("mySession", "   ", 5000L, false));
+		regService.process(createEvent("mySession", "   ", 5000L, false, null));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
 
 	@Test
 	public void registration_service_should_ignore_event_with_invalid_end_time() throws JsonProcessingException {
-		regService.process(createEvent("mySession", "myModelConf", null, false));
+		regService.process(createEvent("mySession", "myModelConf", null, false, null));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
@@ -231,10 +237,11 @@ public class ModelBuildingRegistrationServiceTest {
 
 		// Act
 		boolean selectHighScoreContexts = false;
-		regService.process(createEvent(sessionId, modelConfName, -1L, selectHighScoreContexts));
+		Set<String> specifiedContextIds = Collections.emptySet();
+		regService.process(createEvent(sessionId, modelConfName, -1L, selectHighScoreContexts, specifiedContextIds));
 
 		// Assert
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName), eq(selectHighScoreContexts));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName), eq(selectHighScoreContexts), eq(specifiedContextIds));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
@@ -255,12 +262,13 @@ public class ModelBuildingRegistrationServiceTest {
 
 		// Act
 		boolean selectHighScoreContexts = false;
-		regService.process(createEvent(sessionId, modelConfName, -100L, selectHighScoreContexts));
+		Set<String> specifiedContextIds = Collections.emptySet();
+		regService.process(createEvent(sessionId, modelConfName, -100L, selectHighScoreContexts, specifiedContextIds));
 
 		// Assert
 		verify(modelConfService).getModelConfs();
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName1), eq(selectHighScoreContexts));
-		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName1), eq(selectHighScoreContexts), eq(specifiedContextIds));
+		verify(modelBuildingStore).deleteRegistration(eq(sessionId), eq(modelConfName2), eq(selectHighScoreContexts), eq(specifiedContextIds));
 		verifyNoMoreInteractions(modelConfService);
 		verifyNoMoreInteractions(modelBuildingStore);
 	}
@@ -278,11 +286,12 @@ public class ModelBuildingRegistrationServiceTest {
 		final Date currentEndTime2 = new Date(4000);
 
 		Boolean selectHighScoreContexts = false;
-		final ModelBuildingRegistration reg1 = new ModelBuildingRegistration(sessionId1, modelConfName1, previousEndTime1, currentEndTime1, selectHighScoreContexts);
+		Set<String> specifiedContextIds = Collections.emptySet();
+		final ModelBuildingRegistration reg1 = new ModelBuildingRegistration(sessionId1, modelConfName1, previousEndTime1, currentEndTime1, selectHighScoreContexts, specifiedContextIds);
 		when(modelBuildingStore.getRegistration(eq(getKey(sessionId1, modelConfName1, selectHighScoreContexts)))).thenReturn(reg1);
-		final ModelBuildingRegistration reg2 = new ModelBuildingRegistration(sessionId2, modelConfName1, previousEndTime2, currentEndTime2, selectHighScoreContexts);
+		final ModelBuildingRegistration reg2 = new ModelBuildingRegistration(sessionId2, modelConfName1, previousEndTime2, currentEndTime2, selectHighScoreContexts, specifiedContextIds);
 		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName1, selectHighScoreContexts)))).thenReturn(reg2);
-		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, selectHighScoreContexts);
+		final ModelBuildingRegistration reg3 = new ModelBuildingRegistration(sessionId2, modelConfName2, previousEndTime2, currentEndTime2, selectHighScoreContexts, specifiedContextIds);
 		when(modelBuildingStore.getRegistration(eq(getKey(sessionId2, modelConfName2, selectHighScoreContexts)))).thenReturn(reg3);
 
 		// Imitate iterator
@@ -317,11 +326,11 @@ public class ModelBuildingRegistrationServiceTest {
 		// Verify interactions
 		verify(modelBuildingStore).getIterator();
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId1), eq(modelConfName1),
-				eq(previousEndTime1), eq(currentEndTime1), eq(selectHighScoreContexts));
+				eq(previousEndTime1), eq(currentEndTime1), eq(selectHighScoreContexts), eq(specifiedContextIds));
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName1),
-				eq(previousEndTime2), eq(currentEndTime2), eq(selectHighScoreContexts));
+				eq(previousEndTime2), eq(currentEndTime2), eq(selectHighScoreContexts), eq(specifiedContextIds));
 		verify(modelService).process(eq(modelBuildingListener), eq(sessionId2), eq(modelConfName2),
-				eq(previousEndTime2), eq(currentEndTime2), eq(selectHighScoreContexts));
+				eq(previousEndTime2), eq(currentEndTime2), eq(selectHighScoreContexts), eq(specifiedContextIds));
 		verify(modelBuildingStore).storeRegistration(eq(reg1));
 		verify(modelBuildingStore).storeRegistration(eq(reg2));
 		verify(modelBuildingStore).storeRegistration(eq(reg3));
@@ -350,12 +359,17 @@ public class ModelBuildingRegistrationServiceTest {
 		Assert.assertEquals(selectHighScoreContexts, reg3.selectHighScoreContexts());
 	}
 
-	private static JSONObject createEvent(String sessionId, String modelConfName, Long endTimeInSeconds, boolean selectHighScoreContexts) throws JsonProcessingException {
+	private static JSONObject createEvent(String sessionId,
+										  String modelConfName,
+										  Long endTimeInSeconds,
+										  boolean selectHighScoreContexts,
+										  Set<String> specifiedContextIds) throws JsonProcessingException {
 		JSONObject event = new JSONObject();
 		event.put("sessionId", sessionId);
 		event.put("modelConfName", modelConfName);
 		event.put("endTimeInSeconds", endTimeInSeconds);
 		event.put("selectHighScoreContexts", selectHighScoreContexts);
+		event.put("specifiedContextIds", specifiedContextIds);
 		return event;
 	}
 

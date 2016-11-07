@@ -7,11 +7,9 @@ import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.util.Assert;
 
+import java.util.Set;
+
 public class ModelBuildingSamzaStore {
-	private static final String NULL_VALUE_ERROR_MSG_FORMAT = String.format(
-			"{} iterator indicates that the following key is present in the store, "
-			.concat("but the getter returns a null value - returning null. ")
-			.concat("Key = {}, expected value type = %s."), ModelBuildingRegistration.class.getSimpleName());
 	private static final Logger logger = Logger.getLogger(ModelBuildingSamzaStore.class);
 	private static final String STORE_NAME_PROPERTY = "fortscale.model.building.store.name";
 	private static final String KEY_DELIMITER = "#";
@@ -26,24 +24,38 @@ public class ModelBuildingSamzaStore {
 		Assert.notNull(modelBuildingStore);
 	}
 
-	public ModelBuildingRegistration getRegistration(String sessionId, String modelConfName, boolean selectHighScoreContexts) {
-		return modelBuildingStore.get(getKey(sessionId, modelConfName, selectHighScoreContexts));
+	public ModelBuildingRegistration getRegistration(String sessionId,
+													 String modelConfName,
+													 boolean selectHighScoreContexts,
+													 Set<String> specifiedContextIds) {
+		return modelBuildingStore.get(getKey(sessionId, modelConfName, selectHighScoreContexts, specifiedContextIds));
 	}
 
 	public void storeRegistration(ModelBuildingRegistration registration) {
 		if (registration != null) {
-			String key = getKey(registration.getSessionId(), registration.getModelConfName(), registration.selectHighScoreContexts());
+			String key = getKey(
+					registration.getSessionId(),
+					registration.getModelConfName(),
+					registration.selectHighScoreContexts(),
+					registration.getSpecifiedContextIds()
+			);
 			modelBuildingStore.put(key, registration);
 		}
 	}
 
-	public void deleteRegistration(String sessionId, String modelConfName, boolean selectHighScoreContexts) {
-		modelBuildingStore.delete(getKey(sessionId, modelConfName, selectHighScoreContexts));
+	public void deleteRegistration(String sessionId,
+								   String modelConfName,
+								   boolean selectHighScoreContexts,
+								   Set<String> specifiedContextIds) {
+		modelBuildingStore.delete(getKey(sessionId, modelConfName, selectHighScoreContexts, specifiedContextIds));
 	}
 
 
-	private static String getKey(String sessionId, String modelConfName, boolean selectHighScoreContexts) {
-		return String.format("%s%s%s%b", sessionId, KEY_DELIMITER, modelConfName, selectHighScoreContexts);
+	private static String getKey(String sessionId,
+								 String modelConfName,
+								 boolean selectHighScoreContexts,
+								 Set<String> specifiedContextIds) {
+		return String.format("%s%s%s%b%s", sessionId, KEY_DELIMITER, modelConfName, selectHighScoreContexts, specifiedContextIds);
 	}
 
 	public KeyValueIterator<String, ModelBuildingRegistration> getIterator() {

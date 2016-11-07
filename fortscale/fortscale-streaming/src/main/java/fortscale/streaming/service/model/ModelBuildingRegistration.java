@@ -4,8 +4,10 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.springframework.util.Assert;
 
 import java.util.Date;
+import java.util.Set;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
 public class ModelBuildingRegistration {
@@ -14,6 +16,7 @@ public class ModelBuildingRegistration {
 	private Date previousEndTime;
 	private Date currentEndTime;
 	private boolean selectHighScoreContexts;
+	private Set<String> specifiedContextIds;
 
 	@JsonCreator
 	public ModelBuildingRegistration(
@@ -21,7 +24,9 @@ public class ModelBuildingRegistration {
 			@JsonProperty("modelConfName") String modelConfName,
 			@JsonProperty("previousEndTime") Date previousEndTime,
 			@JsonProperty("currentEndTime") Date currentEndTime,
-			@JsonProperty("selectHighScoreContexts") Boolean selectHighScoreContexts) {
+			@JsonProperty("selectHighScoreContexts") Boolean selectHighScoreContexts,
+			@JsonProperty("specifiedContextIds") Set<String> specifiedContextIds) {
+		Assert.notNull(specifiedContextIds);
 		if (selectHighScoreContexts == null) {
 			selectHighScoreContexts = false;
 		}
@@ -30,6 +35,7 @@ public class ModelBuildingRegistration {
 		this.previousEndTime = previousEndTime;
 		this.currentEndTime = currentEndTime;
 		this.selectHighScoreContexts = selectHighScoreContexts;
+		this.specifiedContextIds = specifiedContextIds;
 	}
 
 	public String getSessionId() {
@@ -58,5 +64,9 @@ public class ModelBuildingRegistration {
 
 	public boolean selectHighScoreContexts() {
 		return selectHighScoreContexts;
+	}
+
+	public Set<String> getSpecifiedContextIds() {
+		return specifiedContextIds;
 	}
 }
