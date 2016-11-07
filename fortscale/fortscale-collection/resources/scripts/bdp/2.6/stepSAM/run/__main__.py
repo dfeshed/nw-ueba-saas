@@ -79,6 +79,23 @@ Usage example:
                         const=True,
                         help='pass this flag if you want to run a bdp cleanup before '
                              'starting to process the data sources')
+    parser.add_argument('--filtered_gap_in_minutes',
+                        action='store',
+                        dest='filtered_gap_in_minutes',
+                        help='streaming might filter events from enriched. If the last enriched events '
+                             'are filtered the python script will get stuck, since it will '
+                             'wait indefinitely. The solution is to allow gap in the end in which events '
+                             'can be filtered. Default is 0',
+                        type=int,
+                        default=0)
+    parser.add_argument('--filtered_timeout_in_minutes',
+                        action='store',
+                        dest='filtered_timeout_in_minutes',
+                        help='if filtered_gap_in_minutes > 0 it means that a gap is allowed. Once the '
+                             'The waiting for the last enriched event to be processed will end once '
+                             'we get the last event, or once the timeout ends. Default is 5.',
+                        type=int,
+                        default=5)
     return parser
 
 
@@ -100,6 +117,8 @@ def main():
                convert_to_minutes_timeout=arguments.convert_to_minutes_timeout_in_minutes * 60,
                timeoutInSeconds=arguments.timeoutInSeconds,
                cleanup_first=arguments.cleanup_first,
+               filtered_gap_in_minutes=arguments.filtered_gap_in_minutes,
+               filtered_timeout_in_minutes=arguments.filtered_timeout_in_minutes,
                start=arguments.start,
                end=arguments.end) \
             .run():

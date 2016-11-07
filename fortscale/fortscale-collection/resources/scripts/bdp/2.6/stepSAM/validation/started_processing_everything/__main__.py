@@ -1,8 +1,9 @@
 import argparse
+import logging
 import os
 import sys
+
 from validation import validate_started_processing_everything
-import logging
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from bdp_utils import parsers, colorer
@@ -24,5 +25,7 @@ if __name__ == '__main__':
     arguments = parser.parse_args()
     if not validate_started_processing_everything(host=arguments.host,
                                                   data_source=arguments.data_source,
-                                                  end_time_epoch=arguments.end):
+                                                  end_time_epoch=arguments.end,
+                                                  filtered_gap_in_minutes=0,
+                                                  filtered_timeout_in_minutes=0):
         sys.exit(1)
