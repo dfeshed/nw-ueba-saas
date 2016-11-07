@@ -66,14 +66,17 @@ function installNodeTarballIfNecessary {
 # $1, NPM name for library
 # $2, executable name for library (can be different than NPM name, ember vs ember-cli)
 # $3, path to command
-# $4, desired version
+# $4, desired version to install
+# $5, optional, desired version to check if install needed,
+#   for when installed versions reports something different than version actually insatlled (phantomjs)
 function installNPMLibraryIfNecessary {
   local hasPath=$(pathExists $3)
-  if [[ ("$hasPath" == "true") && ("$(hasVersion $1 $2 $4)" == "true") ]]
+  local versionToCheck="${5:-4}"
+  if [[ ("$hasPath" == "true") && ("$(hasVersion $1 $2 $versionToCheck)" == "true") ]]
   then
     success "$1 version is: $4"
   else
-    info "Installing $1"
+    info "Installing $1 version $4"
     $NPM_BINARY --loglevel=silent install -g $1@$4
     checkError "Could not install $1"
     success "Installed $1 $4"
@@ -105,8 +108,9 @@ info "Node is now $(which node)"
 
 # install NPM libraries if necessary
 installNPMLibraryIfNecessary "bower" "bower" $BOWER_COMMAND $BOWER_VERSION
+ls -ltr $BINARIES
 installNPMLibraryIfNecessary "ember-cli" "ember" $EMBER_CLI_COMMAND $EMBER_CLI_VERSION
-installNPMLibraryIfNecessary "phantomjs-prebuilt" "phantomjs" $PHANTOMJS_COMMAND $PHANTOMJS_VERSION
+installNPMLibraryIfNecessary "phantomjs-prebuilt" "phantomjs" $PHANTOMJS_COMMAND $PHANTOMJS_PREBUILT_VERSION $PHANTOMJS_VERSION
 
 unsetWebProxy
 unsetHttpsProxy
