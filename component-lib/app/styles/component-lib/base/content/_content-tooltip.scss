@@ -1,20 +1,19 @@
 .ember-tether {
   @include rsa-layer(above);
+  display: inline-block;
 }
 
 .tooltip-content {
   background: rsa-color(gray, darker);
   color: rsa-color(gray, lighter);
-  width: 15rem;
   text-align: left;
   position: relative;
-  @include rsa-layer(above);
   box-shadow: 1px 1px 2px rsa-color(black, base, $rsa-translucent);
 
-  .close-icon, .next-icon {
+  .close-icon {
     position: absolute;
-    top: rsa-whitespace();
-    right: rsa-whitespace();
+    top: rsa-whitespace(less);
+    right: rsa-whitespace(less);
 
     i {
       top: 0;
@@ -27,26 +26,49 @@
     }
   }
 
-  .next-icon {
-    right: calc(#{rsa-whitespace(more)} + #{rsa-whitespace(least)});
+  svg {
+    width: 14px;
+    height: 14px;
+    position: absolute;
+
+    polygon {
+      fill: rsa-color(gray, darker);
+    }
+
+    line {
+      stroke-width: 1;
+
+      &.bottom {
+        stroke: rsa-color(gray, darker);
+      }
+    }
   }
 
-  header {
+  > header {
     @include rsa-font(header);
     padding: rsa-whitespace() rsa-whitespace(most) 0 rsa-whitespace();
   }
 
-  section {
+  > section {
     padding: rsa-whitespace() rsa-whitespace(more) rsa-whitespace() rsa-whitespace();
     @include rsa-font(paragraph, small);
     color: rsa-color(gray, lighter);
+    max-width: 25rem;
+    min-width: 15rem;
+  }
+
+  > p {
+    max-width: 25rem;
+    min-width: 15rem;
+    @include rsa-font(paragraph, small);
+    padding: rsa-whitespace() rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
   }
 
   &.standard {
-    border: 1px solid rsa-color(gray, light);
+    border: 1px solid rsa-color(gray, lightest);
 
     svg line {
-      stroke: rsa-color(gray, light);
+      stroke: rsa-color(gray, lightest);
     }
   }
 
@@ -75,59 +97,236 @@
   }
 
   &.top {
-    top: -1.25rem;
+    top: -1rem;
 
     svg {
       transform: rotate(0deg);
       right: calc(50% - 7px);
       bottom: -14px;
     }
+
+    &-left {
+      top: -1rem;
+      left: calc(-50% + 1rem + 7px);
+
+      svg {
+        transform: rotate(0deg);
+        right: 1rem;
+        bottom: -14px;
+      }
+    }
+
+    &-right {
+      top: -1rem;
+      left: calc(50% - 1rem - 7px);
+
+      svg {
+        transform: rotate(0deg);
+        left: 1rem;
+        bottom: -14px;
+      }
+    }
   }
 
   &.bottom {
-    top: 1.25rem;
+    bottom: -1rem;
 
     svg {
       transform: rotate(180deg);
       right: calc(50% - 7px);
       top: -14px;
     }
+
+    &-left {
+      bottom: -1rem;
+      left: calc(-50% + 1rem + 7px);
+
+      svg {
+        transform: rotate(180deg);
+        right: 1rem;
+        top: -14px;
+      }
+    }
+
+    &-right {
+      bottom: -1rem;
+      left: calc(50% - 1rem - 7px);
+
+      svg {
+        transform: rotate(180deg);
+        left: 1rem;
+        top: -14px;
+      }
+    }
   }
 
   &.left {
-    left: -1.25rem;
+    left: -1rem;
 
     svg {
-      transform: rotate(-90deg);
+      transform: rotate(270deg);
+      bottom: calc(50% - 7px);
       right: -14px;
-      top: calc(50% - 7px);
+    }
+
+    &-top {
+      left: -1rem;
+
+      svg {
+        transform: rotate(270deg);
+        right: -14px;
+        bottom: 1rem;
+      }
+    }
+
+    &-bottom {
+      left: -1rem;
+
+      svg {
+        transform: rotate(270deg);
+        right: -14px;
+        top: 1rem;
+      }
     }
   }
 
+
   &.right {
-    left: 1.25rem;
+    left: 1rem;
 
     svg {
       transform: rotate(90deg);
+      bottom: calc(50% - 7px);
       left: -14px;
-      top: calc(50% - 7px);
+    }
+
+    &-top {
+      left: 1rem;
+
+      svg {
+        transform: rotate(90deg);
+        left: -14px;
+        bottom: 1rem;
+      }
+    }
+
+    &-bottom {
+      left: 1rem;
+
+      svg {
+        transform: rotate(90deg);
+        left: -14px;
+        top: 1rem;
+      }
     }
   }
 
-  svg {
-    width: 14px;
-    height: 14px;
-    position: absolute;
-
-    polygon {
-      fill: rsa-color(gray, darker);
+  &.is-popover {
+    svg {
+      display: none!important;
     }
 
-    line {
-      stroke-width: 1;
+    &.left {
+      left: 0!important;
+      top: 0!important;
 
-      &.bottom {
-        stroke: rsa-color(gray, darker);
+      &-top {
+        left: 0!important;
+      }
+
+      &-bottom {
+        left: 0!important;
+      }
+    }
+
+    &.right {
+      left: 0!important;
+      top: 0!important;
+
+      &-top {
+        left: 0!important;
+      }
+      &-bottom {
+        left: 0!important;
+      }
+    }
+
+    &.top {
+      top: 0!important;
+      left: 0!important;
+
+      &-left {
+        top: 0!important;
+      }
+
+      &-right {
+        top: 0!important;
+      }
+    }
+
+    &.bottom {
+      top: 0!important;
+      left: 0!important;
+
+      &-left {
+        top: 0!important;
+      }
+
+      &-right {
+        top: 0!important;
+      }
+    }
+  }
+
+  .rsa-dropdown-action-list {
+    li {
+      border-bottom: 1px solid rsa-color(gray, dark);
+      @include rsa-font(body);
+      padding: rsa-whitespace(less) rsa-whitespace();
+    }
+  }
+
+  .rsa-dropdown-link-list {
+    li {
+      a {
+        @include rsa-font(body);
+        padding: rsa-whitespace(less) rsa-whitespace();
+        display: block;
+        text-decoration: none;
+      }
+    }
+  }
+
+  .rsa-dropdown-link-list,
+  .rsa-dropdown-action-list {
+    li {
+      border-bottom: 1px solid rsa-color(gray, dark);
+
+      &:last-child {
+        border-bottom: none!important;
+      }
+
+      &:hover {
+        background-color: rsa-color(blue, darker);
+        cursor: pointer;
+      }
+    }
+  }
+
+  &.primary {
+    .rsa-dropdown-link-list,
+    .rsa-dropdown-action-list {
+      li {
+        border-bottom: 1px solid rsa-color(blue, dark);
+      }
+    }
+  }
+
+  .error {
+    .rsa-dropdown-link-list,
+    .rsa-dropdown-action-list {
+      li {
+        border-bottom: 1px solid rsa-color(red, dark);
       }
     }
   }

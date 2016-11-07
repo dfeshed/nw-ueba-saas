@@ -149,7 +149,7 @@ test('User can reset to undo current changes in the panel.', function(assert) {
   // set theme to light
   click('#modalDestination .theme-radio-group .rsa-form-radio:first-of-type input');
   // click Reset button
-  click('#modalDestination .js-test-revert span');
+  click('#modalDestination .js-test-revert .rsa-form-button');
 
   // reopen the preference panel
   click('.user-preferences-trigger');

@@ -52,18 +52,26 @@
   {{#rsa-application-layout-panel class="panel-B"}}
     {{#rsa-content-section-header class='bulk-edit'}}
       <div class="rsa-bulk-edit-button-group">
-        {{#rsa-form-button dropdown='standard' isDisabled=isStatusSelectAvailable class='rsa-form-status-select'}}
-          {{t 'incident.bulkEdit.statusSelectListLabel'}}
-          <ul class='rsa-form-status-select'>
+        {{#rsa-content-help-trigger triggerEvent="click" tooltip='rsa-form-status-select'}}
+          {{#rsa-form-button class='rsa-form-status-select' isDisabled=isStatusSelectAvailable allowToggleActive=true withDropdown=true}}
+            {{t 'incident.bulkEdit.statusSelectListLabel'}}
+          {{/rsa-form-button}}
+        {{/rsa-content-help-trigger}}
+        {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='rsa-form-status-select'}}
+          <ul class="rsa-dropdown-action-list rsa-form-status-select">
             {{#each statusList as |status|}}
               <li value="{{status.id}}" class={{if status.selected 'selected-value'}} {{ action "updateSelectElement" status.id 'statusSort' statusList}}>{{t (concat 'incident.status.' status.id)}}</li>
             {{/each}}
           </ul>
-        {{/rsa-form-button}}
+        {{/rsa-content-tooltip}}
 
-        {{#rsa-form-button dropdown='standard' isDisabled=isSelectAvailable class='rsa-form-assignee-select'}}
-          {{t 'incident.bulkEdit.assigneeSelectListLabel'}}
-          <ul class='rsa-form-assignee-select'>
+        {{#rsa-content-help-trigger triggerEvent="click" tooltip='rsa-form-assignee-select'}}
+          {{#rsa-form-button class='rsa-form-assignee-select' isDisabled=isSelectAvailable allowToggleActive=true withDropdown=true}}
+            {{t 'incident.bulkEdit.assigneeSelectListLabel'}}
+          {{/rsa-form-button}}
+        {{/rsa-content-help-trigger}}
+        {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='rsa-form-assignee-select'}}
+          <ul class="rsa-dropdown-action-list rsa-form-assignee-select">
             {{#each usersList as |user|}}
               <li value="{{user.id}}" class={{if user.selected 'selected-value'}} {{ action "updateSelectElement" user 'assignee' usersList}}>
                 {{#if (eq user.id -1)}}
@@ -74,16 +82,20 @@
               </li>
             {{/each}}
           </ul>
-        {{/rsa-form-button}}
+        {{/rsa-content-tooltip}}
 
-        {{#rsa-form-button dropdown='standard' isDisabled=isSelectAvailable class='rsa-form-priority-select'}}
-          {{t 'incident.bulkEdit.prioritySelectListLabel'}}
-          <ul class='rsa-form-priority-select'>
+        {{#rsa-content-help-trigger triggerEvent="click" tooltip='rsa-form-priority-select'}}
+          {{#rsa-form-button class='rsa-form-priority-select' isDisabled=isSelectAvailable allowToggleActive=true withDropdown=true}}
+            {{t 'incident.bulkEdit.prioritySelectListLabel'}}
+          {{/rsa-form-button}}
+        {{/rsa-content-help-trigger}}
+        {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='rsa-form-priority-select'}}
+          <ul class="rsa-dropdown-action-list rsa-form-priority-select">
             {{#each priorityList as |priority|}}
               <li value="{{priority.id}}" class={{if priority.selected 'selected-value'}} {{ action "updateSelectElement" priority.id 'prioritySort' priorityList}}>{{t (concat 'incident.priority.' priority.id)}}</li>
             {{/each}}
           </ul>
-        {{/rsa-form-button}}
+        {{/rsa-content-tooltip}}
       </div>
       <div class="rsa-bulk-edit-button-group {{unless haveValuesChanged 'no-border'}}">
         {{#rsa-form-button style='primary' class=(unless haveValuesChanged "is-hidden") mouseUp=(action 'validateBulkSave')}}

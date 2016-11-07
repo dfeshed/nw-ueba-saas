@@ -1,4 +1,9 @@
-{{#unless withDropdown}}
+{{#if withDropdown}}
+  <button class="rsa-form-button" disabled={{isDisabled}}>
+    {{yield}}
+    {{rsa-icon name="arrow-down-12"}}
+  </button>
+{{else}}
   {{#if isSubmit}}
     <button type={{type}} disabled={{isDisabled}} class="rsa-form-button">
       {{yield}}
@@ -8,20 +13,4 @@
       {{yield}}
     </button>
   {{/if}}
-{{else}}
-  {{#if isSplit}}
-    <div class="rsa-form-button" {{action 'defaultAction' on='click'}}>
-      {{yield}}
-    </div>
-    <button class="expand" {{action 'toggleOptions' on='click'}}>
-      {{rsa-icon name="arrow-down-12"}}
-    </button>
-  {{else}}
-    <div class="rsa-form-button" {{action 'toggleOptions' on='click'}}>
-      {{yield}}
-      <button class="expand">
-        {{rsa-icon size="small" name="arrow-down-12"}}
-      </button>
-    </div>
-  {{/if}}
-{{/unless}}
+{{/if}}

@@ -79,7 +79,7 @@ export default {
     contextMenus: 'ja_Enable Context Menus'
   },
   ipConnections: {
-    ipCount: 'ja_({{count}} IPs)',
+    ipCount: '(ja_{{count}} IPs)',
     clickToCopy: 'ja_Click to copy IP address'
   },
   updateLabel: {

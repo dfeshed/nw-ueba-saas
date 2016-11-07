@@ -11,7 +11,7 @@ export default Route.extend({
     return {
       'title': 'IP Connections',
       'subtitle': 'Simple component for displaying IP Connections.',
-      'description': 'This component supports click to copy, and multiple addresses. An Array is expected for both toIPs and fromIPs in the case of single or multiple connections.',
+      'description': 'This component supports click to copy, and multiple addresses. An Array is expected for either toIPs and fromIPs in the case of single or multiple connections.',
       'testFilter': 'rsa-content-ip-connections',
       'jsRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/addon/components/rsa-content-ip-connections.js',
       'styleRepo': 'https://github.rsa.lab.emc.com/asoc/sa-ui/blob/master/component-lib/app/styles/component-lib/base/content/_content-definition.scss',

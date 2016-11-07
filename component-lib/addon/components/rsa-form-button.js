@@ -7,8 +7,7 @@ const {
     service
   },
   computed: {
-    equal,
-    match
+    equal
   }
 } = Ember;
 
@@ -22,32 +21,34 @@ export default Component.extend({
 
   classNames: ['rsa-form-button-wrapper'],
 
+  attributeBindings: ['title'],
+
   classNameBindings: [
-    'isCollapsed:is-collapsed:not-collapsed',
     'isDanger',
     'isDisabled',
     'isFullWidth',
     'isPrimary',
     'isStandard',
-    'positionOptions',
-    'isSplit',
     'isIconOnly',
-    'withDropdown'
+    'withDropdown',
+    'isActive'
   ],
 
-  isFullWidth: false,
+  style: 'standard', // ['standard', 'primary', 'danger']
 
-  isCollapsed: true,
+  isFullWidth: false,
 
   isIconOnly: false,
 
   isDisabled: false,
 
-  positionOptions: 'left',
+  withDropdown: false,
 
-  style: 'standard', // ['standard', 'primary', 'danger']
+  defaultAction: null,
 
-  dropdown: 'none', // ['none', 'standard', 'split']
+  isActive: false,
+
+  allowToggleActive: false,
 
   isSubmit: equal('type', 'submit'),
 
@@ -57,36 +58,10 @@ export default Component.extend({
 
   isDanger: equal('style', 'danger'),
 
-  isSplit: equal('dropdown', 'split'),
-
-  withDropdown: match('dropdown', /standard|split/),
-
-  defaultAction: null,
-
-  /**
-  * Responsible for toggling visibility of dropdown list
-  * @public
-  */
-  toggleOptions() {
-    this.toggleProperty('isCollapsed');
-  },
-
-  collapseOptions() {
-    this.set('isCollapsed', true);
-  },
-
-  didInsertElement() {
-    this.get('eventBus').on('rsa-application-click', (targetEl) => {
-      if (this.get('isSplit')) {
-        if (!this.$('.expand i').is(targetEl)) {
-          this.collapseOptions();
-        }
-      } else {
-        if (this.$('.rsa-form-button') && !this.$('.rsa-form-button').is(targetEl) && !this.$('.expand').is(targetEl) && !this.$('.expand i').is(targetEl)) {
-          this.collapseOptions();
-        }
-      }
-    });
+  click() {
+    if (this.get('allowToggleActive') && !this.get('isDisabled')) {
+      this.toggleProperty('isActive');
+    }
   },
 
   actions: {
@@ -95,16 +70,7 @@ export default Component.extend({
       if (!this.get('isDisabled')) {
         this.sendAction('defaultAction');
       }
-    },
-    /*
-    * Template action responsible for calling toggleOptions
-    * Skip if isDisabled
-    * @public
-    */
-    toggleOptions() {
-      if (!this.get('isDisabled')) {
-        this.toggleOptions();
-      }
     }
+
   }
 });

@@ -1,37 +1,56 @@
-<section class="rsa-investigate-breadcrumb__crumbs">
+<section class="rsa-investigate-breadcrumb__crumbs rsa-button-group">
   {{#if serviceObject}}
-    {{#rsa-form-button dropdown="none" class="rsa-investigate-breadcrumb__crumb" title=serviceObject.name}}
+    {{#rsa-form-button class="rsa-investigate-breadcrumb__crumb" title=serviceObject.name}}
       <span class="js-test-service">{{serviceObject.name}}</span>
     {{/rsa-form-button}}
   {{/if}}
-  {{#rsa-form-button dropdown=(if hasDrill "standard" "none") class="rsa-investigate-breadcrumb__crumb"}}
-    <span>{{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}</span>
-    {{#if hasDrill}}
-      <ul>
+
+  {{#if hasDrill}}
+    {{#rsa-content-help-trigger triggerEvent="click" tooltip='breadCrumbEndtime'}}
+      {{#rsa-form-button allowToggleActive=true withDropdown=true class="rsa-investigate-breadcrumb__crumb"}}
+        {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
+      {{/rsa-form-button}}
+    {{/rsa-content-help-trigger}}
+
+    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='breadCrumbEndtime'}}
+      <ul class="rsa-dropdown-link-list">
         <li>
           {{#link-to "protected.investigate.query" baseUri class="goto"}}
             Navigate Here
           {{/link-to}}
         </li>
       </ul>
-    {{/if}}
-  {{/rsa-form-button}}
+    {{/rsa-content-tooltip}}
+  {{else}}
+    {{#rsa-form-button class="rsa-investigate-breadcrumb__crumb"}}
+      {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
+    {{/rsa-form-button}}
+  {{/if}}
+
   {{#each crumbs as |crumb|}}
-    {{#rsa-form-button dropdown="standard" class="rsa-investigate-breadcrumb__crumb"}}
-      {{#if crumb.isKeyValuePair}}
-        <span
-          class="js-test-value"
-          title={{concat crumb.keyFormat.bothNames ": " crumb.valueFormat.tooltip}}>
-          {{crumb.queryString}}
-        </span>
-      {{else}}
-        <span
-          class="js-test-value"
-          title={{crumb.queryString}}>
-          {{crumb.queryString}}
-        </span>
-      {{/if}}
-      <ul>
+    {{#rsa-content-help-trigger triggerEvent="click" tooltip='breadCrumbFormat'}}
+      {{#rsa-form-button
+        allowToggleActive=true
+        withDropdown=true
+        class="rsa-investigate-breadcrumb__crumb"}}
+        {{#if crumb.isKeyValuePair}}
+          <span
+            class="js-test-value"
+            title={{concat crumb.keyFormat.bothNames ": " crumb.valueFormat.tooltip}}>
+            {{crumb.queryString}}
+          </span>
+        {{else}}
+          <span
+            class="js-test-value"
+            title={{crumb.queryString}}>
+            {{crumb.queryString}}
+          </span>
+        {{/if}}
+      {{/rsa-form-button}}
+    {{/rsa-content-help-trigger}}
+
+    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='breadCrumbFormat'}}
+      <ul class="rsa-dropdown-link-list">
         {{#unless (is-equal crumb crumbs.lastObject)}}
           <li>
             {{#link-to "protected.investigate.query" crumb.gotoUri class="goto"}}
@@ -45,7 +64,7 @@
           {{/link-to}}
         </li>
       </ul>
-    {{/rsa-form-button}}
+    {{/rsa-content-tooltip}}
   {{/each}}
   {{#if isAddingMeta}}
     {{rsa-investigate/query-input class='rsa-investigate-breadcrumb__query-input' queryString=queryString placeholder='Enter Value'}}

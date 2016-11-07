@@ -1,17 +1,19 @@
 /* Style placeholder */
 @mixin rsa-input-placeholder($color) {
-  &::-webkit-input-placeholder { 
+  &::-webkit-input-placeholder {
     color: $color;
   }
 
   &::-moz-placeholder {
-    color: $color;  
+    color: $color;
   }
 
-  &:-ms-input-placeholder {  
-    color: $color;  
+  &:-ms-input-placeholder {
+    color: $color;
+    line-height: 1.45rem;
   }
 }
+
 input {
   line-height: 1.45;
 }
@@ -29,9 +31,9 @@ input:-webkit-autofill:active {
   display: block;
   box-sizing: border-box;
   position: relative;
-  
+
   .rsa-form-label {
-    display: block;    
+    display: block;
     vertical-align: text-top;
     margin-bottom: rsa-whitespace(least);
     color: $formInputLabelColor;
@@ -44,7 +46,7 @@ input:-webkit-autofill:active {
     @include rsa-font();
     @include rsa-input-placeholder($formInputPlaceholderColor)
     color: $formInputTypeColor;
-        
+
     &:focus {
       border-color: $formInputFocusBorderColor;
       outline: none;
@@ -61,11 +63,11 @@ input:-webkit-autofill:active {
     outline: none;
     min-height: 10rem;
   }
-    
+
   &.is-success {
     input, textarea {
       color: $formInputSuccessTypeColor;
-      border-color: $formInputSuccessBorderColor;      
+      border-color: $formInputSuccessBorderColor;
     }
   }
 
@@ -82,7 +84,7 @@ input:-webkit-autofill:active {
       @include rsa-input-placeholder($formInputDisabledPlaceholderColor);
       color: $formInputDisabledTypeColor;
       border-color: $formInputDisabledBorderColor;
-      cursor: default;  
+      cursor: default;
     }
   }
 
@@ -93,7 +95,11 @@ input:-webkit-autofill:active {
       background-color: $formInputErrorBackgroundColor;
       border-color: $formInputErrorBorderColor;
     }
-    
+
+    .rsa-form-label {
+      color: $formInputErrorLabelColor;
+    }
+
     .error-icon {
       position: absolute;
       right: rsa-whitespace(less);
@@ -110,10 +116,10 @@ input:-webkit-autofill:active {
       padding: .8rem 0 0;
       float: left;
       vertical-align: baseline;
-      width: calc(((100% / 12) * 3) - 2px);      
+      width: calc(((100% / 12) * 3) - 2px);
     }
-    
-    &.is-error {  
+
+    &.is-error {
       .error-icon {
         top: 2rem;
       }
@@ -125,5 +131,5 @@ input:-webkit-autofill:active {
       width: calc(((100% / 12) * 9) - 2px);
       display: inline-block;
     }
-  }  
+  }
 }

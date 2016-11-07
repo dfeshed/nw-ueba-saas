@@ -60,7 +60,7 @@ test('it toggles submit button disabled with changes', function(assert) {
 test('it toggles withoutChanges after clicking revert', function(assert) {
   this.set('withoutChanges', false);
   this.render(hbs `{{rsa-application-user-preferences withoutChanges=withoutChanges}}`);
-  this.$().find('.js-test-revert span').click();
+  this.$().find('.js-test-revert .rsa-form-button').click();
   let _this = this;
   return wait().then(function() {
     return assert.equal(_this.get('withoutChanges'), true);

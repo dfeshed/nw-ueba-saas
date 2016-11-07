@@ -1,5 +1,11 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
+import wait from 'ember-test-helpers/wait';
+import Ember from 'ember';
+
+const {
+  $
+} = Ember;
 
 moduleForComponent('/rsa-content-ip-connections', 'Integration | Component | rsa-content-ip-connections', {
   integration: true
@@ -10,7 +16,16 @@ test('it includes the proper classes', function(assert) {
   this.set('from', ['bar']);
 
   this.render(hbs `{{rsa-content-ip-connections toIPs=to fromIPs=from}}`);
-  let component = this.$().find('.rsa-content-ip-connections').length;
+  let component = this.$().find('.rsa-content-ip-connections.vertical').length;
+  assert.equal(component, 1);
+});
+
+test('it includes the proper classes when flow is set to horizontal', function(assert) {
+  this.set('to', ['foo']);
+  this.set('from', ['bar']);
+
+  this.render(hbs `{{rsa-content-ip-connections flow="horizontal" toIPs=to fromIPs=from}}`);
+  let component = this.$().find('.rsa-content-ip-connections.horizontal').length;
   assert.equal(component, 1);
 });
 
@@ -55,13 +70,50 @@ test('it renders IP count when multiple records are present', function(assert) {
   assert.equal(from, '(2 IPs)');
 });
 
-test('it renders a button and dropdown with IP records when there are multiple', function(assert) {
+test('it renders a button and dropdown with to IP records when there are multiple', function(assert) {
   this.set('to', ['foo', 'foo2']);
   this.set('from', ['bar', 'bar2']);
 
   this.render(hbs `{{rsa-content-ip-connections toIPs=to fromIPs=from}}`);
-  let toListCount = this.$().find('.to-ip .rsa-form-button-wrapper.with-dropdown li').length;
-  let fromListCount = this.$().find('.from-ip .rsa-form-button-wrapper.with-dropdown li').length;
-  assert.equal(toListCount, 2);
-  assert.equal(fromListCount, 2);
+
+  this.$().find('.to-ip .rsa-form-button').click();
+
+  return wait().then(function() {
+    let toListCount = $('.to-ip.rsa-dropdown-action-list li').length;
+    assert.equal(toListCount, 2);
+  });
+});
+
+test('it renders a button and dropdown with from IP records when there are multiple', function(assert) {
+  this.set('to', ['foo', 'foo2']);
+  this.set('from', ['bar', 'bar2']);
+
+  this.render(hbs `{{rsa-content-ip-connections toIPs=to fromIPs=from}}`);
+
+  this.$().find('.from-ip .rsa-form-button').click();
+
+  return wait().then(function() {
+    let fromListCount = $('.from-ip.rsa-dropdown-action-list li').length;
+    assert.equal(fromListCount, 2);
+  });
+});
+
+test('it does not include the direction indicator or from-ip when only toIPS is passed', function(assert) {
+  this.set('to', ['foo']);
+
+  this.render(hbs `{{rsa-content-ip-connections toIPs=to}}`);
+  let direction = this.$().find('.rsa-content-ip-connections .direction').length;
+  let fromIps = this.$().find('.rsa-content-ip-connections .from-ip').length;
+  assert.equal(direction, 0);
+  assert.equal(fromIps, 0);
+});
+
+test('it does not include the direction indicator or to-ip when only fromIPS is passed', function(assert) {
+  this.set('from', ['foo']);
+
+  this.render(hbs `{{rsa-content-ip-connections fromIPs=to}}`);
+  let direction = this.$().find('.rsa-content-ip-connections .direction').length;
+  let toIps = this.$().find('.rsa-content-ip-connections .to-ip').length;
+  assert.equal(direction, 0);
+  assert.equal(toIps, 0);
 });

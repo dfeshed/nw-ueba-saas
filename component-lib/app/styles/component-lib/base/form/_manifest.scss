@@ -30,6 +30,7 @@ $formInputDisabledTypeColor: rsa-color(gray);
 $formInputDisabledBorderColor: rsa-color(gray);
 $formInputDisabledPlaceholderColor: rsa-color(gray);
 $formInputErrorTypeColor: rsa-color(gray, lightest);
+$formInputErrorLabelColor: rsa-color(red);
 $formInputErrorBorderColor: rsa-color(red);
 $formInputErrorPlaceholderColor: rsa-color(red, light);
 $formInputErrorBackgroundColor: rsa-color(red, base, $rsa-nearly-transparent);
@@ -98,7 +99,7 @@ $formButtonDangerDropdownOptionHoverBackgroundColor: rsa-color(red, darker);
 $formButtonDangerTypeColor: rsa-color(gray, lightest);
 $formButtonDangerHoverBackgroundColor: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
 $formButtonDangerActiveBackgroundColor: linear-gradient(180deg, rsa-color(red, dark), rsa-color(red));
-$formButtonDangerIconHoverColor: rsa-color(red, darker);
+$formButtonDangerIconHoverColor: rsa-color(red, light);
 
 $formButtonDisabledTypeColor: rsa-color(gray);
 $formButtonDisabledBorderColor: rsa-color(gray);

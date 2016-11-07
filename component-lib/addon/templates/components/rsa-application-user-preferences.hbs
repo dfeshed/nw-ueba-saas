@@ -146,8 +146,9 @@
     <vbox xs="6">
       {{#rsa-form-button
         isFullWidth=true
-        class="js-test-revert"}}
-        <span {{action 'revertUserPreferences'}}>{{t 'forms.reset'}}</span>
+        class="js-test-revert"
+        defaultAction=(action 'revertUserPreferences')}}
+        {{t 'forms.reset'}}
       {{/rsa-form-button}}
     </vbox>
 

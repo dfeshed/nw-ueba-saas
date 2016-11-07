@@ -1,5 +1,7 @@
 .rsa-content-ip-connections {
   color: $contentIpConnectionsTypeColor;
+  overflow: hidden;
+  position: relative;
 
   .circle {
     border: 1px solid $contentIpConnectionsCircleColor;
@@ -7,49 +9,50 @@
     height: .65rem;
     border-radius: 10rem;
     display: inline-block;
-    margin-right: rsa-whitespace(least);
   }
 
   .direction {
     margin: 0;
-    height: .65rem;
-    width: .65rem;
     text-align: center;
     overflow: hidden;
-    display: block;
     border: 1px solid transparent;
     color: $contentIpConnectionsDirectionIconColor;
   }
 
-  .rsa-form-button.is-standard {
-    font-weight: normal;
+  .rsa-form-button {
+    border: none;
     padding: 0;
-    vertical-align: baseline;
 
-    i {
-      position: relative;
-      top: 1px;
-    }
-
-    ul {
-      top: 1.15rem;
-      left: 0;
-      right: auto;
-      max-height: 8.5rem;
-      overflow: scroll;
+    .rsa-icon-arrow-down-12 {
+      margin-left: 0;
+      font-size: .65rem;
     }
   }
 
-  .rsa-form-button-wrapper {
-    &.with-dropdown {
-      .rsa-form-button {
-        padding: 0;
-        height: 1rem;
+  &.vertical {
+    .from-ip,
+    .to-ip,
+    .direction {
+      display: block;
+    }
 
-        .expand i {
-          top: 0;
-        }
-      }
+    .direction {
+      text-align: left;
+      margin: 0;
+      position: relative;
+      left: -1px;
+    }
+  }
+
+  &.horizontal {
+    .from-ip,
+    .to-ip {
+      float: left;
+    }
+
+    .direction {
+      float: left;
+      margin: 0 rsa-whitespace();
     }
   }
 }

@@ -4,24 +4,36 @@
   box-sizing: border-box;
   position:relative;
 
+  &.is-active {
+    .rsa-form-button {
+      color: $formButtonHoverTypeColor;
+    }
+  }
+
   .rsa-form-button {
     border: 1px solid transparent;
-    padding: 0 rsa-whitespace();
-    height: 3rem;
-    line-height: 3rem;
+    padding: rsa-whitespace(less) rsa-whitespace();
     color: $formButtonTypeColor;
     box-sizing: border-box;
     text-align: center;
+    line-height: 1rem;
 
     &:hover {
       cursor: pointer;
+    }
+
+    &:active {
       color: $formButtonHoverTypeColor;
     }
 
+
     i {
-      font-size: 1.5em;
-      margin-right: rsa-whitespace(least);
-      vertical-align: text-bottom;
+      font-size: 1.4em;
+      margin-right: rsa-whitespace(less);
+      vertical-align: top;
+      line-height: 1rem;
+      position: relative;
+      top: 1px;
 
       &.is-smaller { font-size: .8em; }
       &.is-small { font-size: 1em; }
@@ -29,13 +41,11 @@
       &.is-larger { font-size: 3em; }
       &.is-largest { font-size: 5em; }
     }
-  }
 
-  .expand {
-    display: none;
-    left: rsa-whitespace(least);
-    cursor: pointer;
-    box-sizing: border-box;
+    .rsa-icon-arrow-down-12 {
+      font-size: .9rem;
+      margin: 0 calc(#{rsa-whitespace(least)} * -1) 0 rsa-whitespace(least);
+    }
   }
 
   &.is-full-width {
@@ -48,77 +58,10 @@
     }
   }
 
-  &.is-collapsed {
-    ul {
-      display: none;
-    }
-  }
-
-  &.with-dropdown {
-    ul {
-      @include rsa-layer(above);
-      background-color: $formButtonDropdownBackgroundColor;
-      box-sizing: border-box;
-      list-style: none;
-      margin-top: -2px;
-      position: absolute;
-      min-width: 100%;
-      text-align: left;
-
-
-      // default styles exist for plain li tags with actions attached as well as embedded links
-      // additional dropdown styles can be added to implementation styles
-      li {
-        @include rsa-font(navigation, small);
-        list-style: none;
-        white-space: nowrap;
-        display: block;
-        vertical-align: bottom;
-        border-bottom: 1px solid $formButtonDropdownOptionBorderColor;
-        line-height: 2.5rem;
-        padding: 0 rsa-whitespace();
-s
-        &:last-child {
-          border-bottom: none;
-        }
-
-        &:hover {
-          background-color: $formButtonDropdownOptionHoverBackgroundColor;
-        }
-
-        a {
-          margin-left: calc(#{rsa-whitespace() * -1});
-          margin-right: calc(#{rsa-whitespace() * -1});
-          padding: 0 rsa-whitespace();
-          text-decoration: none;
-          display: block;
-        }
-      }
-    }
-
-    &.left {
-      ul {
-        left: 0;
-      }
-    }
-
-    &.right {
-      ul {
-        right: 0;
-      }
-    }
-  }
-
-  &.with-dropdown {
+  &:not(.is-icon-only) {
     .rsa-form-button {
-      .expand {
-        display: inline-block;
-
-        i {
-          position: relative;
-          top: -2px;
-          left: 4px;
-        }
+      i:not(.rsa-icon-arrow-down-12) {
+        margin-left: calc(#{rsa-whitespace(least)} * -1);
       }
     }
   }
@@ -128,28 +71,14 @@ s
       border-color: $formButtonBorderColor;
     }
 
-    &:not(.is-split) {
-      &:hover, &.not-collapsed {
-        .rsa-form-button {
-          border-color: $formButtonHoverBorderColor;
-        }
-      }
-
-      &:active {
-        background-color: $formButtonActiveBackgroundColor;
+    &:hover, &.is-active {
+      .rsa-form-button {
+        border-color: $formButtonHoverBorderColor;
       }
     }
-  }
 
-  &.is-standard:not(.is-disabled) {
-    ul {
-      border: 1px solid $formButtonDropdownBorderColor;
-
-      li {
-        &:hover {
-          color: $formButtonDropdownOptionHoverTypeColor;
-        }
-      }
+    &:active, &.is-active {
+      background-color: $formButtonActiveBackgroundColor;
     }
   }
 
@@ -159,28 +88,16 @@ s
       background-color: $formButtonPrimaryBackgroundColor;
     }
 
-    ul {
-      border: 1px solid $formButtonPrimaryDropdownBorderColor;
-
-      li {
-        &:hover {
-          background-color: $formButtonPrimaryDropdownOptionHoverBackgroundColor;
-        }
+    &:hover, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonPrimaryHoverBackgroundColor;
+        color: $formButtonPrimaryTypeColor;
       }
     }
 
-    &:not(.is-split) {
-      &:hover, &.not-collapsed {
-        .rsa-form-button {
-          background-image: $formButtonPrimaryHoverBackgroundColor;
-          color: $formButtonPrimaryTypeColor;
-        }
-      }
-
-      &:active {
-        .rsa-form-button {
-          background-image: $formButtonPrimaryActiveBackgroundColor;
-        }
+    &:active, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonPrimaryActiveBackgroundColor;
       }
     }
   }
@@ -191,30 +108,16 @@ s
       background-color: $formButtonDangerBackgroundColor;
     }
 
-    &:not(.is-split) {
-      &:hover, &.not-collapsed {
-        .rsa-form-button {
-          background-image: $formButtonDangerHoverBackgroundColor;
-          color: $formButtonDangerTypeColor;
-        }
-      }
-
-      &:active {
-        .rsa-form-button {
-          background-image: $formButtonDangerActiveBackgroundColor;
-        }
+    &:hover, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonDangerHoverBackgroundColor;
+        color: $formButtonDangerTypeColor;
       }
     }
-  }
 
-  &.is-danger:not(.is-disabled) {
-    ul {
-      border: 1px solid $formButtonDangerDropdownBorderColor;
-
-      li {
-        &:hover {
-          background-color: $formButtonDangerDropdownOptionHoverBackgroundColor;
-        }
+    &:active, &.is-active {
+      .rsa-form-button {
+        background-image: $formButtonDangerActiveBackgroundColor;
       }
     }
   }
@@ -222,10 +125,6 @@ s
   &.is-disabled {
     .rsa-form-button {
       color: $formButtonDisabledTypeColor;
-      cursor: default;
-    }
-
-    .expand {
       cursor: default;
     }
   }
@@ -241,28 +140,18 @@ s
     padding: 0;
 
     .rsa-form-button {
-      line-height: 1em;
       padding: rsa-whitespace(less);
 
       i {
         vertical-align: middle;
         margin-right: 0;
+        margin-left: 0;
       }
-    }
 
-    &.with-dropdown {
-      .rsa-form-button {
-        .expand {
-          i {
-            top: 2px;
-            left: 0;
-          }
-        }
+      .rsa-icon-arrow-down-12 {
+        font-size: .75rem;
+        top: 2px;
       }
-    }
-
-    ul {
-      margin-top: rsa-whitespace(least);
     }
 
     &.is-standard {
@@ -270,57 +159,23 @@ s
         color: $formButtonTypeColor;
       }
 
-      &:hover, &.not-collapsed {
+      &:hover:not(.is-active):not(.is-disabled) {
         .rsa-form-button {
           color: $formButtonIconHoverColor;
-        }
-      }
-
-      &.not-collapsed {
-        .rsa-form-button {
-          color: $formButtonIconHoverColor;
-          background-color: $formButtonActiveBackgroundColor;
-        }
-      }
-
-      ul {
-        border-color: $formButtonDropdownBorderColor;
-
-        li {
-          &:hover {
-            background-color: $formButtonPrimaryDropdownOptionHoverBackgroundColor;
-          }
         }
       }
     }
 
     &.is-danger {
       background: none;
+
       .rsa-form-button {
         color: $formButtonDangerBorderColor;
       }
 
-      &:hover, &.not-collapsed {
+      &:hover:not(.is-active):not(.is-disabled) {
         .rsa-form-button {
           color: $formButtonDangerIconHoverColor;
-        }
-      }
-
-      &.not-collapsed {
-        .rsa-form-button {
-          color: $formButtonDangerIconHoverColor;
-          background-color: $formButtonActiveBackgroundColor;
-        }
-      }
-
-      ul {
-        border-color: $formButtonDangerBorderColor;
-        color: $formButtonDangerTypeColor;
-
-        li {
-          &:hover {
-            background-color: $formButtonDangerHoverBackgroundColor;
-          }
         }
       }
     }
@@ -330,123 +185,71 @@ s
         color: $formButtonDisabledTypeColor;
       }
 
-      &:hover, &.not-collapsed {
+      &:hover {
         .rsa-form-button {
           color: $formButtonDisabledTypeColor;
         }
       }
     }
 
-
-    .expand {
-      font-size: .75rem;
-      left: 2px;
-    }
-
-    &:active:not(.is-disabled) {
+    &:active:not(.is-disabled), &.is-active {
       background-color: $formButtonActiveBackgroundColor;
     }
   }
+}
 
-  &.is-split {
-    .rsa-form-button {
-      float: left;
+.rsa-button-group {
+  overflow: hidden;
+
+  .rsa-form-button-wrapper, .rsa-content-tooltip {
+    float: left;
+    margin-right: 1px;
+
+    &.is-standard {
       margin-right: -1px;
+
+      &:hover {
+        @include rsa-layer(above);
+      }
     }
 
-    .expand {
-      border: 1px solid $formButtonBorderColor;
-      border-left: none;
-      height: 3rem;
-      line-height: 3rem;
-      width: 3rem;
-      text-align: center;
-      display: inline-block;
-      box-sizing: border-box;
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+}
+
+.rsa-icon-button-group {
+  overflow: hidden;
+
+  .rsa-form-button-wrapper, .rsa-content-tooltip {
+    float: left;
+    border-top: rsa-whitespace(least) solid transparent;
+    border-bottom: rsa-whitespace(least) solid transparent;
+    padding-bottom: rsa-whitespace(least);
+    padding-top: rsa-whitespace(least);
+    margin: 0 rsa-whitespace(least);
+
+    &.is-active {
+      border-bottom: rsa-whitespace(least) solid rsa-color(blue);
+    }
+
+    &:hover:not(.is-disabled):not(.is-active) {
+      border-bottom: rsa-whitespace(least) solid rsa-color(blue, base, $rsa-nearly-transparent);
+    }
+  }
+}
+
+
+.rsa-split-dropdown {
+  .rsa-form-button {
+    padding: rsa-whitespace(less) 0;
+
+    .rsa-icon-arrow-down-12 {
+      width: 2rem;
+      margin: 0 auto;
       position: relative;
-      left:0;
-      vertical-align: middle;
-
-      i {
-        font-size: 1.25em;
-        position: relative;
-        width: 100%;
-        height: 100%;
-        top: 2px;
-      }
-    }
-
-    &.is-full-width {
-      .rsa-form-button {
-        display: inline-block;
-        width: calc(100% - (1.5em + #{rsa-whitespace(less)} + #{rsa-whitespace(less)} + 4px) - #{rsa-whitespace(least)});
-      }
-    }
-
-    &.is-standard:not(.is-disabled):not(.is-icon-only) {
-      &:hover, &.not-collapsed {
-        .rsa-form-button, .expand {
-          border-color: $formButtonHoverBorderColor;
-          color: $formButtonHoverTypeColor;
-        }
-      }
-
-      &:active {
-        .rsa-form-button, .expand {
-          border-color: $formButtonHoverBorderColor;
-          background-color: $formButtonActiveBackgroundColor;
-        }
-      }
-    }
-
-    &.is-primary:not(.is-disabled):not(.is-icon-only) {
-      .expand {
-        margin-left: 2px;
-        border-color: $formButtonPrimaryBorderColor;
-        background-color: $formButtonPrimaryBackgroundColor;
-      }
-
-      &:hover, &.not-collapsed {
-        .rsa-form-button, .expand {
-          background-image: $formButtonPrimaryHoverBackgroundColor;
-          color: $formButtonPrimaryTypeColor;
-        }
-      }
-
-      &:active {
-        .rsa-form-button, .expand {
-          background-image: $formButtonPrimaryActiveBackgroundColor;
-        }
-      }
-    }
-
-    &.is-danger:not(.is-disabled):not(.is-icon-only) {
-      .expand {
-        margin-left: 2px;
-        border-color: $formButtonDangerBorderColor;
-        background-color: $formButtonDangerBackgroundColor;
-      }
-
-      &:hover, &.not-collapsed {
-        .rsa-form-button, .expand {
-          background-image: $formButtonDangerHoverBackgroundColor;
-          color: $formButtonDangerTypeColor;
-        }
-      }
-
-      &:active {
-        .rsa-form-button, .expand {
-          background-image: $formButtonDangerActiveBackgroundColor;
-        }
-      }
-    }
-
-    &.is-disabled:not(.is-icon-only) {
-      .expand {
-        border-color: $formButtonDisabledBorderColor;
-        background-color: none;
-        color: $formButtonDisabledTypeColor;
-      }
+      top: 1px;
     }
   }
 }

@@ -1,9 +1,11 @@
 {{#if isDisplayed}}
-  {{#ember-tether target=targetClass attachment=attachment}}
-    <div class="tooltip-content {{position}} {{style}} {{elementId}}">
-      <span class="close-icon" {{action 'hideTooltip'}}>
-        {{rsa-icon name="close" size="small"}}
-      </span>
+  {{#ember-tether target=target attachment=attachment}}
+    <div class="tooltip-content {{position}} {{style}} {{elementId}} {{if isPopover 'is-popover'}}" style={{styleModifiers}}>
+      {{#if displayCloseButton}}
+        <span class="close-icon" {{action 'hideTooltip'}}>
+          {{rsa-icon name="close" size="small"}}
+        </span>
+      {{/if}}
 
       {{yield}}
 

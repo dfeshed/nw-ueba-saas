@@ -5,7 +5,8 @@ const {
   Component,
   computed,
   computed: {
-    gt
+    gt,
+    equal
   },
   run
 } = Ember;
@@ -16,12 +17,32 @@ export default Component.extend({
 
   classNames: ['rsa-content-ip-connections'],
 
+  classNameBindings: ['multipleToIPs:multiple-ips', 'multipleFromIPs:multiple-ips', 'flow'],
+
   multipleToIPs: gt('toIPs.length', 1),
 
   multipleFromIPs: gt('fromIPs.length', 1),
 
+  isVertical: equal('flow', 'vertical'),
+
+  isHorizontal: equal('flow', 'horizontal'),
+
+  flow: 'vertical', // ['vertical', 'horizontal']
+
   noIPs: computed('toIPs.length', 'fromIPs.length', function() {
-    return (this.get('toIPs.length') === 0) || (this.get('fromIPs.length') === 0);
+    return (this.get('toIPs.length') === 0) && (this.get('fromIPs.length') === 0);
+  }),
+
+  toIpsId: computed(function() {
+    let id = Math.random().toString();
+    let formattedId = id.slice(2, id.length);
+    return `toIps${formattedId}`;
+  }),
+
+  fromIpsId: computed(function() {
+    let id = Math.random().toString();
+    let formattedId = id.slice(2, id.length);
+    return `fromIps${formattedId}`;
   }),
 
   toIPs: [],

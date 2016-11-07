@@ -5,7 +5,8 @@ import Ember from 'ember';
 
 const {
   Service,
-  Evented
+  Evented,
+  $
 } = Ember;
 
 const eventBusStub = Service.extend(Evented, {});
@@ -46,6 +47,11 @@ test('it includes the proper classes', function(assert) {
   assert.equal(this.$('.rsa-content-tooltip').length, 1);
 });
 
+test('it includes the proper classes when isPopover is true ', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isPopover=true isDisplayed=true tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal($('.is-popover').length, 1);
+});
+
 test('it includes the proper classes when is style is standard', function(assert) {
   this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
   assert.equal(this.$('.rsa-content-tooltip .tooltip-content.standard').length, 1);
@@ -66,6 +72,26 @@ test('it includes the proper classes when is position is top', function(assert) 
   assert.equal(this.$('.rsa-content-tooltip .tooltip-content.top').length, 1);
 });
 
+test('it includes the proper classes when is position is top-left', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="top-left" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.top-left').length, 1);
+});
+
+test('it includes the proper classes when is position is top-right', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="top-right" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.top-right').length, 1);
+});
+
+test('it includes the proper classes when is position is bottom-left', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="bottom-left" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.bottom-left').length, 1);
+});
+
+test('it includes the proper classes when is position is bottom-right', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="bottom-right" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.bottom-right').length, 1);
+});
+
 test('it includes the proper classes when is position is bottom', function(assert) {
   this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="bottom" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
   assert.equal(this.$('.rsa-content-tooltip .tooltip-content.bottom').length, 1);
@@ -76,14 +102,39 @@ test('it includes the proper classes when is position is left', function(assert)
   assert.equal(this.$('.rsa-content-tooltip .tooltip-content.left').length, 1);
 });
 
+test('it includes the proper classes when is position is left-top', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="left-top" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.left-top').length, 1);
+});
+
+test('it includes the proper classes when is position is left-bottom', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="left-bottom" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.left-bottom').length, 1);
+});
+
 test('it includes the proper classes when is position is right', function(assert) {
   this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="right" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
   assert.equal(this.$('.rsa-content-tooltip .tooltip-content.right').length, 1);
 });
 
+test('it includes the proper classes when is position is right-top', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="right-top" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.right-top').length, 1);
+});
+
+test('it includes the proper classes when is position is right-bottom', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true position="right-bottom" tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .tooltip-content.right-bottom').length, 1);
+});
+
 test('it displays the close button', function(assert) {
   this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip isDisplayed=true tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
   assert.equal(this.$('.rsa-content-tooltip .close-icon').length, 1);
+});
+
+test('it hides the close button when displayCloseButton is false', function(assert) {
+  this.render(hbs `<a class='foo'>Link</a>{{#rsa-content-tooltip displayCloseButton=false isDisplayed=true tooltipId="foo"}}Label{{/rsa-content-tooltip}}`);
+  assert.equal(this.$('.rsa-content-tooltip .close-icon').length, 0);
 });
 
 test('it toggles isDisplayed when the close button is clicked', function(assert) {
