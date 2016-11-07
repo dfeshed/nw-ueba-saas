@@ -85,9 +85,9 @@ Usage example:
                         help='streaming might filter events from enriched. If the last enriched events '
                              'are filtered the python script will get stuck, since it will '
                              'wait indefinitely. The solution is to allow gap in the end in which events '
-                             'can be filtered. Default is 0',
+                             'can be filtered. Default is 60',
                         type=int,
-                        default=0)
+                        default=60)
     parser.add_argument('--filtered_timeout_in_minutes',
                         action='store',
                         dest='filtered_timeout_in_minutes',
