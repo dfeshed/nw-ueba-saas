@@ -86,7 +86,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	@Override
 	public void deleteFromCache(String modelConfName, String contextId) {
 		getMetrics().deleteFromCache++;
-		String storeKey = getStoreKey(modelConfName, contextId);
+		String storeKey = getStoreKey(modelConfName,contextId);
 		logger.info("deleting key={} from store={}", storeKey, levelDbStoreName);
 		getStore().delete(storeKey);
 	}
@@ -151,13 +151,13 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	protected static String getStoreKey(ModelConf modelConf, String contextId) {
 		String modelConfName = modelConf.getName();
 		if (contextId != null) {
-			return getStoreKey(contextId, modelConfName);
+			return getStoreKey(modelConfName, contextId);
 		} else {
 			return modelConfName;
 		}
 	}
 
-	private static String getStoreKey(String contextId, String modelConfName) {
+	private static String getStoreKey(String modelConfName, String contextId) {
 		return StringUtils.join(modelConfName, STORE_KEY_SEPARATOR, contextId);
 	}
 
