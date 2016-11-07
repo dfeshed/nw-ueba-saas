@@ -203,7 +203,7 @@ class Manager(DontReloadModelsOverridingManager):
                                                   end_time_epoch=end_time_epoch,
                                                   filtered_gap_in_minutes=self._filtered_gap_in_minutes,
                                                   filtered_timeout_in_minutes=self._filtered_timeout_in_minutes):
-            self._send_dummy_event()
+            self._send_dummy_event(end_time_epoch=end_time_epoch)
             return block_until_everything_is_validated(host=self._host,
                                                        start_time_epoch=start_time_epoch,
                                                        end_time_epoch=end_time_epoch,
