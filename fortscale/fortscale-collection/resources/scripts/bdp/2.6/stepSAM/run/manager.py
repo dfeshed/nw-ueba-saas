@@ -215,6 +215,7 @@ class Manager(DontReloadModelsOverridingManager):
                                                    logger=logger)
 
     def _send_dummy_event(self, end_time_epoch):
+        # TODO: this code was copied from step2's manager.py - do a refactor
         logger.info('sending dummy event (so the last partial batch will be closed)...')
         send(logger=logger,
              host=self._host,
