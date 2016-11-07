@@ -189,7 +189,7 @@ class Manager(DontReloadModelsOverridingManager):
                                      start_time_epoch=start,
                                      end_time_epoch=end):
             return False
-        self._send_dummmy_event(end_time_epoch=end)
+        self._send_dummy_event(end_time_epoch=end)
         logger.info('making sure bdp process exits...')
         kill_process()
         return self._restart_aggregation_task()
