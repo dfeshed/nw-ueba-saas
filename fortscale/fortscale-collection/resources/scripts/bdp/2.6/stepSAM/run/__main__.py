@@ -88,14 +88,15 @@ Usage example:
                              'can be filtered. Default is 3600',
                         type=int,
                         default=3600)
-    parser.add_argument('--filtered_timeout_in_seconds',
+    parser.add_argument('--filtered_timeout_override_in_seconds',
                         action='store',
-                        dest='filtered_timeout_in_seconds',
+                        dest='filtered_timeout_override_in_seconds',
                         help='if filtered_gap_in_minutes > 0 it means that a gap is allowed. Once the '
                              'The waiting for the last enriched event to be processed will end once '
-                             'we get the last event, or once the timeout ends. Default is 300.',
-                        type=int,
-                        default=300)
+                             'we get the last event, or once the timeout ends. The timeout defaults to what is '
+                             'specified in --timeoutInSeconds. If --filtered_timeout_override_in_seconds is '
+                             'specified, the timeout will be overridden.',
+                        type=int)
     return parser
 
 
@@ -118,7 +119,7 @@ def main():
                timeoutInSeconds=arguments.timeoutInSeconds,
                cleanup_first=arguments.cleanup_first,
                filtered_gap_in_seconds=arguments.filtered_gap_in_seconds,
-               filtered_timeout_in_seconds=arguments.filtered_timeout_in_seconds,
+               filtered_timeout_override_in_seconds=arguments.filtered_timeout_override_in_seconds,
                start=arguments.start,
                end=arguments.end) \
             .run():

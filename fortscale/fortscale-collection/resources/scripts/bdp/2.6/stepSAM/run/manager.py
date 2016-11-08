@@ -39,7 +39,7 @@ class Manager(DontReloadModelsOverridingManager):
                  timeoutInSeconds,
                  cleanup_first,
                  filtered_gap_in_seconds,
-                 filtered_timeout_in_seconds,
+                 filtered_timeout_override_in_seconds,
                  start=None,
                  end=None):
         super(Manager, self).__init__(logger=logger,
@@ -48,8 +48,11 @@ class Manager(DontReloadModelsOverridingManager):
         self._host = host
         self._polling_interval = polling_interval
         self._timeoutInSeconds = timeoutInSeconds
-        self._filtered_timeout_in_seconds = filtered_timeout_in_seconds
         self._filtered_gap_in_seconds = filtered_gap_in_seconds
+        self._filtered_timeout_in_seconds = timeoutInSeconds if filtered_timeout_override_in_seconds is None else filtered_timeout_override_in_seconds
+        if self._filtered_gap_in_seconds is not None and self._filtered_timeout_in_seconds is None:
+            raise Exception('filtered_timeout_in_seconds or timeoutInSeconds must '
+                            'be specified if filtered_gap_in_seconds is specified')
         self._start = time_utils.get_epochtime(start) if start is not None else None
         self._end = time_utils.get_epochtime(end) if end is not None else None
         self._cleanup_first = cleanup_first
