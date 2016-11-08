@@ -5,6 +5,7 @@ function fetchNotifications(dispatchInit, dispatchPage, dispatchError) {
     method: 'stream',
     modelName: 'investigate-notification',
     query: {},
+    streamOptions: { requireRequestId: false },
     onInit: dispatchInit,
     onResponse: dispatchPage,
     onError: dispatchError
