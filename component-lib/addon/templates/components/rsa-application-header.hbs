@@ -2,7 +2,6 @@
   {{rsa-logo animated=false}}
 </span>
 
-
 {{#if session.isAuthenticated}}
   {{yield}}
 {{/if}}
@@ -27,12 +26,20 @@
       {{#rsa-form-button isIconOnly=true}}
         {{rsa-icon name='settings-2' style='lined'}}
       {{/rsa-form-button}}
-
     </span>
     <div class="modal-content">
       {{rsa-application-user-preferences}}
     </div>
   {{/rsa-application-modal}}
+
+  {{#if contextualHelp.module}}
+    {{#rsa-form-button
+      isIconOnly=true
+      class="global-contextual-help"
+      defaultAction=(action 'goToGlobalHelp')}}
+      {{rsa-icon name="help-circle" style="lined"}}
+    {{/rsa-form-button}}
+  {{/if}}
 
   {{#if session.isAuthenticated}}
     {{#rsa-form-button

@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-application-header';
+import ContextualHelp from '../mixins/contextual-help';
 
 const {
   Component,
@@ -8,7 +9,7 @@ const {
   }
 } = Ember;
 
-export default Component.extend({
+export default Component.extend(ContextualHelp, {
 
   eventBus: service(),
 

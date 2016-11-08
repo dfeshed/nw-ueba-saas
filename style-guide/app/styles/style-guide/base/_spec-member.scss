@@ -9,6 +9,11 @@
     margin-bottom: 0;
   }
 
+  p {
+    @include rsa-font(paragraph);
+    margin-bottom: rsa-whitespace();
+  }
+
   > header {
     position: relative;
     margin-top: calc(#{rsa-whitespace()} * -1);
@@ -49,7 +54,6 @@
       &:last-child {
         margin-bottom: 0;
       }
-
     }
   }
 }

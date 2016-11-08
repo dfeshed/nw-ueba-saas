@@ -32,6 +32,7 @@ Router.map(function() {
       this.route('action-bar');
       this.route('layout-manager');
       this.route('fatal-error');
+      this.route('contextual-help');
     });
 
     this.route('form', function() {
@@ -69,12 +70,6 @@ Router.map(function() {
       this.route('lineSeries');
       this.route('areaSeries');
       this.route('grids');
-    });
-  });
-
-  this.route('demo', function() {
-    this.route('content', function() {
-      this.route('ipConnections');
     });
   });
 });

@@ -17,3 +17,18 @@ test('it included a link to User Preferences', function(assert) {
   this.$('.js-test-user-preferences-modal').click();
   assert.equal(this.$('.js-test-user-preferences-modal').length, 1);
 });
+
+test('it does not include help link when contextualHelp.module is not populated', function(assert) {
+  this.render(hbs `<div id="modalDestination"></div>{{rsa-application-header}}`);
+
+  assert.equal(this.$('.global-contextual-help').length, 0);
+});
+
+test('it includes help link when contextualHelp.module is populated', function(assert) {
+  this.set('helpStub', {});
+  this.set('helpStub.module', 'foo');
+
+  this.render(hbs `<div id="modalDestination"></div>{{rsa-application-header contextualHelp=helpStub}}`);
+
+  assert.equal(this.$('.global-contextual-help').length, 1);
+});

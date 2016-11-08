@@ -21,6 +21,7 @@ export const viewType = {
 
 export default Route.extend({
   session: service(),
+  contextualHelp: service(),
   layoutService: service('layout'),
   respondMode: service(),
   listViewCube: null,
