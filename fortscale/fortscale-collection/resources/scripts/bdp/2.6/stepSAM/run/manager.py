@@ -38,8 +38,8 @@ class Manager(DontReloadModelsOverridingManager):
                  convert_to_minutes_timeout,
                  timeoutInSeconds,
                  cleanup_first,
-                 filtered_gap_in_minutes,
-                 filtered_timeout_in_minutes,
+                 filtered_gap_in_seconds,
+                 filtered_timeout_in_seconds,
                  start=None,
                  end=None):
         super(Manager, self).__init__(logger=logger,
@@ -48,8 +48,8 @@ class Manager(DontReloadModelsOverridingManager):
         self._host = host
         self._polling_interval = polling_interval
         self._timeoutInSeconds = timeoutInSeconds
-        self._filtered_timeout_in_minutes = filtered_timeout_in_minutes
-        self._filtered_gap_in_minutes = filtered_gap_in_minutes
+        self._filtered_timeout_in_seconds = filtered_timeout_in_seconds
+        self._filtered_gap_in_seconds = filtered_gap_in_seconds
         self._start = time_utils.get_epochtime(start) if start is not None else None
         self._end = time_utils.get_epochtime(end) if end is not None else None
         self._cleanup_first = cleanup_first
@@ -201,8 +201,8 @@ class Manager(DontReloadModelsOverridingManager):
         if validate_started_processing_everything(host=self._host,
                                                   data_source=data_source,
                                                   end_time_epoch=end_time_epoch,
-                                                  filtered_gap_in_minutes=self._filtered_gap_in_minutes,
-                                                  filtered_timeout_in_minutes=self._filtered_timeout_in_minutes):
+                                                  filtered_gap_in_seconds=self._filtered_gap_in_seconds,
+                                                  filtered_timeout_in_seconds=self._filtered_timeout_in_seconds):
             self._send_dummy_event(end_time_epoch=end_time_epoch)
             return block_until_everything_is_validated(host=self._host,
                                                        start_time_epoch=start_time_epoch,
