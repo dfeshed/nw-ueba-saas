@@ -114,11 +114,13 @@ export default Component.extend({
       );
     },
 
-    updateService(obj) {
+    updateService([ id ]) {
+      const obj = this.get('services').findBy('id', id);
       this.set('selectedService', obj);
     },
 
-    updateRange(obj) {
+    updateRange([ id ]) {
+      const obj = this.get('timeRanges').findBy('id', id);
       this.set('selectedTimeRange', obj);
     }
   }

@@ -1,35 +1,28 @@
-{{#rsa-form-button
+{{#rsa-form-select
   class="rsa-investigate-query-bar__service"
-  dropdown='standard'
-  isDisabled=(is-equal servicesStatus 'wait')}}
-  {{#if selectedService}}
-    {{rsa-icon name='server-3' style='lined'}}
-    <span class="js-test-service">{{selectedService.name}}</span>
-  {{else}}
-    {{rsa-icon name='server-3' style='lined'}} Select a Service
-  {{/if}}
-  <ul>
-    {{#each services as |service|}}
-      <li value="{{service.id}}" {{action 'updateService' service}}>{{service.name}}</li>
-    {{/each}}
-  </ul>
-{{/rsa-form-button}}
+  multiple=false
+  label='Select a Service'
+  prompt=(if selectedService selectedService.name 'Select a Service')
+  alwaysUsePrompt=true
+  onchange=(action 'updateService')
+}}
+  {{#each services as |service|}}
+    <option value={{service.id}}>{{service.name}}</option>
+  {{/each}}
+{{/rsa-form-select}}
 
-{{#rsa-form-button
+{{#rsa-form-select
   class="rsa-investigate-query-bar__time-range"
-  dropdown='standard'}}
-  {{#if selectedTimeRange}}
-    {{rsa-icon name='clock-2' style='lined'}}
-    <span class="datetime">{{selectedTimeRange.name}}</span>
-  {{else}}
-   {{rsa-icon name='clock-2' style='lined'}} Select a Time Range
-  {{/if}}
-  <ul>
-    {{#each timeRanges as |timeRange|}}
-      <li value="{{timeRange.id}}" {{action 'updateRange' timeRange}}>{{timeRange.name}}</li>
-    {{/each}}
-  </ul>
-{{/rsa-form-button}}
+  multiple=false
+  label='Select a Time Range'
+  prompt=(if selectedTimeRange selectedTimeRange.name 'Select a Time Range')
+  alwaysUsePrompt=true
+  onchange=(action 'updateRange')
+}}
+  {{#each timeRanges as |timeRange|}}
+    <option value={{timeRange.id}}>{{timeRange.name}}</option>
+  {{/each}}
+{{/rsa-form-select}}
 
 {{rsa-investigate/query-input class="rsa-investigate-query-bar__query-input" queryString=queryString}}
 

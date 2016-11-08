@@ -6,13 +6,13 @@
   {{/if}}
 
   {{#if hasDrill}}
-    {{#rsa-content-help-trigger triggerEvent="click" tooltip='breadCrumbEndtime'}}
+    {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbTimeTooltip-' elementId)}}
       {{#rsa-form-button allowToggleActive=true withDropdown=true class="rsa-investigate-breadcrumb__crumb"}}
         {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
       {{/rsa-form-button}}
     {{/rsa-content-help-trigger}}
 
-    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='breadCrumbEndtime'}}
+    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId=(concat 'breadCrumbTimeTooltip-' elementId)}}
       <ul class="rsa-dropdown-link-list">
         <li>
           {{#link-to "protected.investigate.query" baseUri class="goto"}}
@@ -27,8 +27,8 @@
     {{/rsa-form-button}}
   {{/if}}
 
-  {{#each crumbs as |crumb|}}
-    {{#rsa-content-help-trigger triggerEvent="click" tooltip='breadCrumbFormat'}}
+  {{#each crumbs as |crumb index|}}
+    {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbTooltip-' elementId '-' index)}}
       {{#rsa-form-button
         allowToggleActive=true
         withDropdown=true
@@ -49,7 +49,7 @@
       {{/rsa-form-button}}
     {{/rsa-content-help-trigger}}
 
-    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='breadCrumbFormat'}}
+    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId=(concat 'breadCrumbTooltip-' elementId '-' index)}}
       <ul class="rsa-dropdown-link-list">
         {{#unless (is-equal crumb crumbs.lastObject)}}
           <li>

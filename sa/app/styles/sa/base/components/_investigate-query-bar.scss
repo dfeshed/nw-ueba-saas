@@ -1,24 +1,18 @@
 .rsa-investigate-query-bar {
   @include rsa-row(left, bottom);
 
-  &__service.with-dropdown,
-  &__time-range.with-dropdown {
+  &__service,
+  &__time-range {
     @include rsa-vendor-prefix(flex-grow);
-    margin-left: rsa-whitespace(least);
-    // background-color: rsa-color(grey, darkest);
-    .rsa-form-button {
-      ul {
-        border-top: none;
-        li {
-          @include rsa-font(default, small);
-          letter-spacing: normal;
-          text-transform: none;
-          line-height: normal;
-          padding: rsa-whitespace(less) rsa-whitespace(less);
-          border: none;
-          color: rsa-color(grey);
-        }
-      }
+    margin-right: rsa-whitespace();
+    /*
+    @workaround The arrow icon in these dropdowns will not align properly if we
+    omit the label (.rsa-form-label). But we don't actually want to show any labels.
+    So we include the label in the DOM, for alignment, but make it invisible.
+    In the future, we'll be replacing these components with ember-power-select.
+    */
+    .rsa-form-label {
+      visibility: hidden;
     }
   }
   &__submit {
