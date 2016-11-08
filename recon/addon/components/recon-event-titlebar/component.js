@@ -10,13 +10,14 @@ import * as DataActions from '../../actions/data-creators';
 const { Component } = Ember;
 
 const stateToComputed = ({ recon: { visuals, data } }) => ({
+  currentReconView: data.currentReconView,
+  eventType: data.eventType,
+  index: data.index,
   isHeaderOpen: visuals.isHeaderOpen,
   isRequestShown: visuals.isRequestShown,
   isResponseShown: visuals.isResponseShown,
   isMetaShown: visuals.isMetaShown,
   isReconExpanded: visuals.isReconExpanded,
-  currentReconView: data.currentReconView,
-  index: data.index,
   total: data.total
 });
 
@@ -47,6 +48,17 @@ const TitlebarComponent = Component.extend({
   },
 
   /**
+   * Check if eventType is 'LOG'
+   * @param {object} eventType The event type object
+   * @returns {boolean} Log or not
+   * @public
+   */
+  @computed('eventType')
+  isLog(eventType) {
+    return eventType && eventType.name === 'LOG';
+  },
+
+  /**
   * Processes RECON_VIEWS and setings selected flag for
   * the one currently chosen
   *
@@ -55,8 +67,13 @@ const TitlebarComponent = Component.extend({
   */
   @computed('currentReconView')
   reconViewsConfig({ code }) {
-    return RECON_VIEW_TYPES.map((c) => {
-      return { ...c, selected: c.code === code };
+    return RECON_VIEW_TYPES.map((viewType) => {
+      const disabled = this.get('isLog') && (viewType.name === 'PACKET' || viewType.name === 'FILE');
+      return {
+        ...viewType,
+        disabled,
+        selected: viewType.code === code
+      };
     });
   },
 

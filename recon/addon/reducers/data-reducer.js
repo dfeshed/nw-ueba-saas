@@ -1,4 +1,5 @@
 import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
+import { EVENT_TYPES } from '../utils/event-types';
 import * as ACTION_TYPES from '../actions/types';
 import reduxActions from 'npm:redux-actions';
 
@@ -26,6 +27,7 @@ const dataInitialState = {
   language: null,
 
   // Fetched data
+  eventType: EVENT_TYPES[1],
   headerItems: null,
   headerLoading: null,
   files: null,
@@ -98,6 +100,11 @@ const data = reduxActions.handleActions({
     metaLoading: false
   }),
 
+  [ACTION_TYPES.SET_EVENT_TYPE]: (state, { payload: eventType }) => ({
+    ...state,
+    eventType
+  }),
+
   // Summary Reducing
   [ACTION_TYPES.SUMMARY_RETRIEVE_STARTED]: (state) => ({
     ...state,
@@ -137,7 +144,7 @@ const data = reduxActions.handleActions({
     contentLoading: false,
     // have packets already? then this is another page of packets from API
     // Need to create new packet array with new ones at end
-    packets: state.packets ? [ ...state.packets, ...payload ] : payload
+    packets: state.packets ? [...state.packets, ...payload] : payload
   }),
   [ACTION_TYPES.CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
     ...state,

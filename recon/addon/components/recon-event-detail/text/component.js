@@ -3,10 +3,10 @@ import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import layout from './template';
 
-const { Component, set } = Ember;
+const { Component, set, String: { htmlSafe } } = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
-  meta: data.meta,
+  eventType: data.eventType,
   packets: data.packets
 });
 
@@ -14,16 +14,14 @@ const TextReconComponent = Component.extend({
   layout,
   classNameBindings: [':recon-event-detail-text'],
   /**
-   * Check if medium is 32, and if so it is a log event
-   * @param meta
+   * Check if eventType is 'LOG'
+   * @param {object} eventType The event type object
    * @returns {boolean} Log or not
    * @public
    */
-  @computed('meta')
-  isLog(meta) {
-    return Boolean(meta.find((entry) => {
-      return entry[0] === 'medium' && entry[1] === 32;
-    }));
+  @computed('eventType')
+  isLog(eventType) {
+    return eventType && eventType.name === 'LOG';
   },
   /**
    * This parses packet data for display in the text view. Firstly, it strips packet headers, so all packets with
@@ -37,24 +35,27 @@ const TextReconComponent = Component.extend({
   @computed('packets')
   parsedPackets(packets) {
     let consecutiveText = '';
+    // Hack to guard against no packets for testing
+    if (!packets) {
+      return [];
+    }
     return packets.filter((packet) => {
       return packet.payloadSize > 0;
     }).reduce((textValues, packet, index, arr) => {
       const { bytes } = packet;
-      const decodedData = atob(bytes || '').split('');
-      const byteCount = decodedData.get('length') || 0;
+      // Decode and replace carriage returns and tabs
+      let decodedData = atob(bytes || '');
+      const byteCount = decodedData.length || 0;
       const payloadOffset = byteCount - (packet.payloadSize || 0);
 
-      const parsedBytes = decodedData.reduce((text, char, index) => {
-        if (!(index < payloadOffset)) {
-          text += (char.charCodeAt(0) > 31) ? char : '.';
-        }
-
-        return text;
-      }, '').replace(/(?:\r\n|\r|\n)/g, '<br/>');
-
-      // Add the parsedBytes to the aggregate text
-      consecutiveText += parsedBytes;
+      // Use substring to apply payload offset.
+      // Replace carriage returns with '<br>'
+      // Replace tabs with two spaces
+      // Replace any remaining ASCII 0-31 with '.'
+      consecutiveText += decodedData.substring(payloadOffset)
+        .replace(/(?:\r\n|\r|\n)/g, '<br>')
+        .replace(/\t/g, '&nbsp;&nbsp;')
+        .replace(/[\x00-\x1F]/g, '.');
 
       // Check if the last packet
       const isLastPacket = index === (arr.length - 1);
@@ -71,7 +72,7 @@ const TextReconComponent = Component.extend({
        * if we are on the last packet and have not pushed any text yet, we should push it.
        */
       if (nextSideDiffers || lastPacketWithTextRemaining) {
-        set(packet, 'text', consecutiveText);
+        set(packet, 'text', htmlSafe(consecutiveText));
         textValues.push(packet);
         consecutiveText = '';
       }

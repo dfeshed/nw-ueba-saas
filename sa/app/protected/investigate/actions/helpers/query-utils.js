@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import hasherizeEventMeta from './hasherize-event-meta';
-import { setEventLogData, setEventLogDataStatus, getEventLogDataStatus } from './log-utils';
+import { setEventLogData, setEventLogDataStatus, getEventLogDataStatus } from 'component-lib/utils/log-utils';
 
 const {
   assert,

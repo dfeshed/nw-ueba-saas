@@ -34,30 +34,48 @@
       padding: rsa-whitespace(less) rsa-whitespace(less);
       color: $formSelectOptionTypeColor;
 
-      &:hover {
-        background: $formSelectOptionHoverBackgroundColor;
+      &[disabled] {
+        background-color: $formSelectDisabledTagBackgroundColor;
+        color: $formSelectDisabledTagTypeColor;
       }
+      &:not([disabled]) {
+        &:hover {
+          background: $formSelectOptionHoverBackgroundColor;
+          cursor: pointer;
+        }
 
-      &:last-child {
-        border: none;
-      }
+        &:last-child {
+          border: none;
+        }
 
-      &:checked {
-        padding: rsa-whitespace(less) 0;
-        height: 1.35rem;
-      }
+        &:checked {
+          padding: rsa-whitespace(less) 0;
+          height: 1.35rem; &:hover {
+          background: $formSelectOptionHoverBackgroundColor;
+        }
 
-      &:checked:after {
-        height: calc(1.35rem + 1px);
-        position: relative;
-        top: -2rem;
-        content: attr(data-text);
-        width: 100%;
-        border: none;
-        display: block;
-        padding: rsa-whitespace(less) rsa-whitespace(less);
-        background: $formSelectOptionSelectedBackgroundColor;
-        color: $formSelectOptionSelectedTypeColor;
+          &:last-child {
+            border: none;
+          }
+
+          &:checked {
+            padding: rsa-whitespace(less) 0;
+            height: 1.35rem;
+          }
+
+          &:checked:after {
+            height: calc(1.35rem + 1px);
+            position: relative;
+            top: -2rem;
+            content: attr(data-text);
+            width: 100%;
+            border: none;
+            display: block;
+            padding: rsa-whitespace(less) rsa-whitespace(less);
+            background: $formSelectOptionSelectedBackgroundColor;
+            color: $formSelectOptionSelectedTypeColor;
+          }
+        }
       }
     }
   }

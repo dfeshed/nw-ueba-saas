@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import DataTableBody from 'component-lib/components/rsa-data-table/body/component';
-import { isLogEvent, eventHasLogData, eventLogDataIsPending } from 'sa/protected/investigate/actions/helpers/log-utils';
+import { isLogEvent, eventHasLogData, eventLogDataIsPending } from 'component-lib/utils/log-utils';
 const {
   observer,
   run,

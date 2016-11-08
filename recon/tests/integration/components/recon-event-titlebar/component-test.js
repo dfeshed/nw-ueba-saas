@@ -28,7 +28,7 @@ test('no index or total shows just label for recon type', function(assert) {
 test('title renders', function(assert) {
   const total = 555;
   const index = 25;
-  this.get('redux').dispatch(DataActions.initializeRecon({ total, index }));
+  this.get('redux').dispatch(DataActions.initializeRecon({ total, index, meta: [['medium', 1]] }));
   this.render(hbs`{{recon-event-titlebar }}`);
   assert.equal(this.$('.prompt').text().trim(), `${RECON_VIEW_TYPES_BY_NAME.PACKET.label} (26 of 555)`);
 });

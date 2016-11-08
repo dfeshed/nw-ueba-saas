@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import RowMixin from 'component-lib/components/rsa-data-table/mixins/is-row';
 import columnUtil from './column-util';
-import { UI_KEY_LOG_DATA_STATUS } from 'sa/protected/investigate/actions/helpers/log-utils';
+import { UI_KEY_LOG_DATA_STATUS } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
 
 

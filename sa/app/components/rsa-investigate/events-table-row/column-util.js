@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import formatUtil from './format-util';
-import { isLogEvent, getEventLogData, getEventLogDataStatus } from 'sa/protected/investigate/actions/helpers/log-utils';
+import { isLogEvent, getEventLogData, getEventLogDataStatus } from 'component-lib/utils/log-utils';
 import { select } from 'd3-selection';
 
 const { get, isArray } = Ember;

@@ -12,6 +12,7 @@
 import Ember from 'ember';
 
 import * as ACTION_TYPES from './types';
+import { determineEventType } from 'recon/utils/event-types';
 import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import {
   fetchReconSummary,
@@ -39,7 +40,12 @@ const _dispatchMeta = (dispatch, dataState) => {
         type: ACTION_TYPES.META_RETRIEVE_SUCCESS,
         payload: data[0].metas
       });
-    }).catch((response) => {
+
+      // have new meta, now need to possibly set to new recon view
+      // and fetch data for that view
+      _dispatchEvent(dispatch, dataState.currentReconView, data[0].metas);
+    })
+    .catch((response) => {
       Logger.error('Could not retrieve event meta', response);
       dispatch({ type: ACTION_TYPES.META_RETRIEVE_FAILURE });
     });
@@ -58,40 +64,6 @@ const _handleContentError = (dispatch, response, type) => {
       type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
       payload: response.code
     });
-  }
-};
-
-/**
- * Will fetch data and dispatch actions for each recon view type
- *
- * @private
- */
-const _dispatchReconViewData = (dispatch, { code }, dataState) => {
-
-  dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
-
-  // if is file recon, time to kick of request
-  // for file recon data
-  switch (code) {
-    case RECON_VIEW_TYPES_BY_NAME.FILE.code:
-      fetchReconFiles(dataState)
-        .then(({ data }) => {
-          dispatch({
-            type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
-            payload: data
-          });
-        }).catch((response) => {
-          _handleContentError(dispatch, response, 'file');
-        });
-      break;
-    case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
-    case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
-      fetchPacketData(
-        dataState,
-        (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload }),
-        (response) => _handleContentError(dispatch, response, 'packet')
-      );
-      break;
   }
 };
 
@@ -122,7 +94,32 @@ const setNewReconView = (newView) => {
     // its data fetched. On INITIALIZE the recon view data is wiped out
     const dataState = getState().recon.data;
     if (!dataState[newView.dataKey]) {
-      _dispatchReconViewData(dispatch, newView, dataState);
+      dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
+
+      // if is file recon, time to kick of request
+      // for file recon data
+      switch (newView.code) {
+        case RECON_VIEW_TYPES_BY_NAME.FILE.code:
+          fetchReconFiles(dataState)
+            .then(({ data }) => {
+              dispatch({
+                type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
+                payload: data
+              });
+            })
+            .catch((response) => {
+              _handleContentError(dispatch, response, 'file');
+            });
+          break;
+        case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
+        case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
+          fetchPacketData(
+            dataState,
+            (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload }),
+            (response) => _handleContentError(dispatch, response, 'packet')
+          );
+          break;
+      }
     }
   };
 };
@@ -137,7 +134,8 @@ const setNewReconView = (newView) => {
  * 2) If language is not an input, it is fetched/dispatched
  * 3) If aliases is not an input, it is fetched/dispatched
  * 4) The summary data for the event is fetched/dispatched
- * 5) If meta is not provided, and the meta panel is open, meta is fetched/dispatched
+ * 5) If meta is not provided, meta is fetched/dispatched
+ * 6) If meta is provided, the event data is fetched
  *
  * @param {object} reconInputs the hash of inputs provided to recon
  * @returns {function} redux-thunk
@@ -170,7 +168,8 @@ const initializeRecon = (reconInputs) => {
               type: ACTION_TYPES.LANGUAGE_RETRIEVE_SUCCESS,
               payload: data
             });
-          }).catch((response) => {
+          })
+          .catch((response) => {
             // failure to get language is no good, but
             // is not critical error no need to dispatch
             Logger.error('Could not retrieve language', response);
@@ -186,7 +185,8 @@ const initializeRecon = (reconInputs) => {
               type: ACTION_TYPES.ALIASES_RETRIEVE_SUCCESS,
               payload: data
             });
-          }).catch((response) => {
+          })
+          .catch((response) => {
             // failure to get aliases is no good, but
             // is not critical error no need to dispatch
             Logger.error('Could not retrieve aliases', response);
@@ -204,20 +204,45 @@ const initializeRecon = (reconInputs) => {
               packetFields
             }
           });
-        }).catch((response) => {
+        })
+        .catch((response) => {
           Logger.error('Could not retrieve recon event summary', response);
           dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE_FAILURE });
         });
 
-      // if meta not passed in, and meta is shown, then need to fetch
-      // meta data or panel will be empty
-      if (getState().recon.visuals.isMetaShown === true && !reconInputs.meta) {
+      // if meta not passed in then need to fetch it now
+      // (even if its not being displayed) as we need to
+      // use meta to determine which data to fetch and
+      // which recon view to display
+      if (!reconInputs.meta) {
         _dispatchMeta(dispatch, dataState);
+      } else {
+        _dispatchEvent(dispatch, dataState.currentReconView, reconInputs.meta);
       }
-
-      _dispatchReconViewData(dispatch, dataState.currentReconView, reconInputs);
     }
   };
+};
+
+/*
+ * Function reused whenever meta is determined, either when it is passed in
+ * or when it is retrieved
+ */
+const _dispatchEvent = (dispatch, reconView, meta) => {
+  // TODO we should optimize this and do the meta hashing in redux or a central location
+  // we currently do this here and for the event table
+  const eventType = determineEventType(meta);
+
+  dispatch({
+    type: ACTION_TYPES.SET_EVENT_TYPE,
+    payload: eventType
+  });
+
+  // If we need to force a specific view based on eventType, do so
+  const newReconView = eventType.forcedView || reconView;
+
+  // Taking advantage of existing action creator that handles
+  // changing the recon view AND fetching the appropriate data
+  dispatch(setNewReconView(newReconView));
 };
 
 /**

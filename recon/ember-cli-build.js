@@ -7,7 +7,9 @@ shim(EmberAddon);
 
 module.exports = function(defaults) {
   var app = new EmberAddon(defaults, {
-    // Add options here
+    babel: {
+      stage: 0,
+    }
   });
 
   /*

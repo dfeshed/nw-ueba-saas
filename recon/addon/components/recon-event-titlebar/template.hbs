@@ -1,11 +1,13 @@
 <hbox class='heading'>
   {{#rsa-form-select
-      multiple=false
-      prompt=displayTitle
-      alwaysUsePrompt=true
-      onchange=(action 'findNewReconstructionView')}}
+    multiple=false
+    prompt=displayTitle
+    alwaysUsePrompt=true
+    onchange=(action 'findNewReconstructionView')}}
     {{#each reconViewsConfig as |item|}}
-      <option value={{item.code}} selected={{item.selected}}>{{item.label}}</option>
+      <option value={{item.code}} selected={{item.selected}} disabled={{item.disabled}}>
+        {{~item.label~}}
+      </option>
     {{/each}}
   {{/rsa-form-select}}
 </hbox>

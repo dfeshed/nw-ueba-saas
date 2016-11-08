@@ -16,7 +16,7 @@ moduleForComponent('recon-event-content', 'Integration | Component | recon event
 
 test('it renders child view', function(assert) {
   const done = assert.async();
-  this.get('redux').dispatch(DataActions.initializeRecon({ eventId: 1, endpointId: 2 }));
+  this.get('redux').dispatch(DataActions.initializeRecon({ eventId: 1, endpointId: 2, meta: [['medium', 1]] }));
   this.render(hbs`{{recon-event-content}}`);
   run.later(() => {
     assert.equal(this.$().find('.recon-event-detail-packets').length, 1);
