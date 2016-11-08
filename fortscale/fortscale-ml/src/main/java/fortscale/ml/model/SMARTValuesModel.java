@@ -18,6 +18,11 @@ public class SMARTValuesModel implements Model {
 	}
 
 	@Override
+	public String toString() {
+		return String.format("<SMARTValuesModel: numOfZeroValues=%d, sumOfValues=%d, sumOfValues=%d>", numOfZeroValues, numOfPositiveValues, sumOfValues);
+	}
+
+	@Override
 	public long getNumOfSamples() {
 		return numOfZeroValues + numOfPositiveValues;
 	}
@@ -28,5 +33,9 @@ public class SMARTValuesModel implements Model {
 
 	public double getSumOfValues() {
 		return sumOfValues;
+	}
+
+	public long getNumOfZeroValues() {
+		return numOfZeroValues;
 	}
 }

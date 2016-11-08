@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.scorer.ScoreMapping;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.Map;
 
@@ -27,5 +28,14 @@ public class ScoreMappingModel implements Model {
 	@Override
 	public long getNumOfSamples() {
 		return 0;
+	}
+
+	/**
+	 *
+	 * @return ToString you know...
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

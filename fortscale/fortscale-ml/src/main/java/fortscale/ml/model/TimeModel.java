@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.utils.ConversionUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -106,6 +107,14 @@ public class TimeModel implements Model {
 	@Override
 	public long getNumOfSamples() {
 		return numOfSamples;
+	}
+	/**
+	 *
+	 * @return ToString you know...
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 
 	public CategoryRarityModel getCategoryRarityModel() {
