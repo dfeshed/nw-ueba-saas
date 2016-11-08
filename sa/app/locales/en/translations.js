@@ -308,6 +308,63 @@ export default $.extend({}, BaseTranslations, {
         header: 'Storyline',
         to: 'to'
       },
+      eventOverview: {
+        title: 'event overview',
+        content: 'content',
+        service: 'service',
+        type: 'type',
+        domain: 'domain',
+        networkEvent: 'network event',
+        source: 'source',
+        destination: 'destination',
+        domainInfo: 'domain information',
+        meta: 'event meta',
+        devicePort: 'device port',
+        deviceMacAddress: 'device mac address',
+        geolocationInfo: 'geolocation information',
+        user: 'user',
+        country: 'country',
+        city: 'city',
+        organization: 'organization',
+        domainRegistrar: 'domain registrar',
+        registrantName: 'registrant name',
+        notAvailable: 'Not Available',
+        badges: {
+          beaconBehavior: {
+            label: 'beacon behavior',
+            description: 'A high score indicates that the communications between this source IP and this domain are highly regular and therefore suspected Command and Control.'
+          },
+          domainAge: {
+            label: 'domain age',
+            description: 'A high score indicates that this domain is relatively new based on the registration date found at the registrar.'
+          },
+          expiringDomain: {
+            label: 'expiring Domain',
+            description: 'A high score means that the likelihood the domain will expire soon is high.'
+          },
+          rareDomain: {
+            label: 'rare domain',
+            description: 'A high score indicates that relatively few source IPs have connected to this domain on this network in the last week.'
+          },
+          noReferrers: {
+            label: 'no referers',
+            description: 'A high score indicates that a relatively low percentage of the IPs connecting to this domain have used referers.'
+          },
+          rareUserAgent: {
+            label: 'rare user agent',
+            description: 'A high score indicates that the domain has a high percentage of IPs using a rare user agent.'
+          }
+        },
+        relatedLinks: 'related links',
+        relatedLinkOptions: {
+          investigate_destination_domain: 'Investigate Destination Domain',
+          investigate_original_event: 'Investigate Original Event',
+          investigate_dst_ip: 'Investigate Destination IP Address',
+          investigate_src_ip: 'Investigate Source IP Address',
+          investigate_device_ip: 'Investigate Device IP Address',
+          investigate_session: 'Investigate Session'
+        }
+      },
       overview: {
         title: 'Overview',
         about: 'About Incident',

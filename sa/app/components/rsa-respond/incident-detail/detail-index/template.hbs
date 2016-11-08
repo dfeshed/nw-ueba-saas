@@ -32,6 +32,13 @@
     {{outlet 'indicator'}}
   {{/rsa-application-layout-panel}}
 
+  {{#rsa-application-layout-panel class="panel-D rsa-respond-event-wrapper"}}
+    {{rsa-respond/incident-detail/event-overview
+      model=event
+      closeEventOverviewPanelAction=(route-action 'closeEventOverviewPanel')
+      expandCollapseEventOverviewPanelAction=(route-action 'expandCollapseEventOverviewPanel')}}
+  {{/rsa-application-layout-panel}}
+
   {{#rsa-application-layout-panel class="context-panel"}}
     {{outlet}}
   {{/rsa-application-layout-panel}}

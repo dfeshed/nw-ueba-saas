@@ -77,20 +77,46 @@
   }
 
   &:not(.is-inline) {
-    &.is-danger {
-      background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+    &.invert-color {
+        &.is-danger {
+          circle {
+            stroke: rsa-color(red);
+          }
+        }
+        &.is-high {
+          circle {
+            stroke: rsa-color(orange);
+          }
+        }
+
+        &.is-medium {
+          circle {
+            stroke: rsa-color(amber);
+          }
+        }
+        &.is-low {
+           circle {
+            stroke: rsa-color(green);
+           }
+        }
     }
 
-    &.is-high {
-      background-image: linear-gradient(180deg, rsa-color(orange), rsa-color(orange, dark));
-    }
+    &:not(.invert-color) {
+      &.is-danger {
+        background-image: linear-gradient(180deg, rsa-color(red), rsa-color(red, dark));
+      }
 
-    &.is-medium {
-      background-image: linear-gradient(180deg, rsa-color(amber), rsa-color(amber, dark));
-    }
+      &.is-high {
+        background-image: linear-gradient(180deg, rsa-color(orange), rsa-color(orange, dark));
+      }
 
-    &.is-low {
-      background-image: linear-gradient(180deg, rsa-color(green), rsa-color(green, dark));
+      &.is-medium {
+        background-image: linear-gradient(180deg, rsa-color(amber), rsa-color(amber, dark));
+      }
+
+      &.is-low {
+        background-image: linear-gradient(180deg, rsa-color(green), rsa-color(green, dark));
+      }
     }
   }
 

@@ -1,7 +1,7 @@
 {{#rsa-content-section-header}}
   <h1>{{t 'incident.details.alertsGrid.title' count=model.length}}</h1>
 {{/rsa-content-section-header}}
-{{#rsa-data-table lazy=true onRowClick=(route-action "gotoIncidentDetail") items=model columnsConfig=alertsListConfig}}
+{{#rsa-data-table lazy=true onRowClick=(route-action "displayEvents") items=model columnsConfig=alertsListConfig}}
   {{#rsa-data-table/header as |column|}}
     <span class="title rsa-data-table-title" title="{{if column.title (t column.title) column.field}}">
       <span class="js-move-handle js-header-cell-{{column.class}}">{{if column.title (t column.title) column.field}}</span>

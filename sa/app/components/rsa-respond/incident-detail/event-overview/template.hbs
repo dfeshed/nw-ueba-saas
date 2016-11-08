@@ -1,0 +1,225 @@
+{{#rsa-content-section-header}}
+  <h1 class="event-overview__title">{{t 'incident.details.eventOverview.title'}}</h1>
+  {{#if closeEventOverviewPanelAction}}
+    {{#rsa-form-button defaultAction=(action 'closePanel') isIconOnly=true}}
+      {{rsa-icon name='close' size='small' style='filled'}}
+    {{/rsa-form-button}}
+  {{/if}}
+  {{#if expandCollapseEventOverviewPanelAction}}
+    {{#rsa-form-button defaultAction=(action 'expandCollapsePanel') isIconOnly=true}}
+      {{rsa-icon name=(if isFullWidth 'shrink-vertical-1' 'expand-horizontal-6') size='small' style='filled'}}
+    {{/rsa-form-button}}
+  {{/if}}
+{{/rsa-content-section-header}}
+
+{{#unless isModelLoaded}}
+  <div class='event-overview__loader'>{{rsa-loader size="large"}}</div>
+{{else}}
+  <hbox class='event-overview__header'>
+    <vbox xs=3>
+      {{rsa-content-definition label=(t 'incident.details.eventOverview.service') value=(truthy-or-default model.service (t 'incident.details.eventOverview.notAvailable'))}}
+    </vbox>
+    <vbox xs=3>
+      {{rsa-content-definition label=(t 'incident.details.eventOverview.content') value=(truthy-or-default model.content (t 'incident.details.eventOverview.notAvailable'))}}
+    </vbox>
+    <vbox xs=3>
+      {{rsa-content-definition label=(t 'incident.details.eventOverview.type') value=(truthy-or-default model.type (t 'incident.details.eventOverview.notAvailable'))}}
+    </vbox>
+    <vbox xs=3>
+      {{rsa-content-definition label=(t 'incident.details.eventOverview.domain') value=(truthy-or-default model.domain (t 'incident.details.eventOverview.notAvailable'))}}
+    </vbox>
+  </hbox>
+
+  {{#if (gt scoreBadges.length 0)}}
+    <div class='event-overview__summary'>
+      <div class='event-overview__summary__indicators'>
+        {{#each scoreBadges as |badge|}}
+          {{#rsa-content-tooltip position='top' tooltipId=(concat badge.key 'BadgeTooltip')}}
+            <section>{{t (concat 'incident.details.eventOverview.badges.' badge.key '.description')}}</section>
+          {{/rsa-content-tooltip}}
+          {{#rsa-content-help-trigger tooltip=(concat badge.key 'BadgeTooltip') class='event-overview__summary__indicators__group'}}
+            {{rsa-content-badge-score size='small' invertColor=true score=badge.score style=(call-method this 'badgeStyle' badge.score)}}
+            <span class='event-overview__summary__indicators__group__description'>{{t (concat 'incident.details.eventOverview.badges.' badge.key '.label')}}</span>
+          {{/rsa-content-help-trigger}}
+        {{/each}}
+      </div>
+
+      <div class='event-overview__summary__timestamp'>
+        {{t 'incident.details.eventOverview.networkEvent'}} {{truthy-or-default model.timestamp model.timestamp (t 'incident.details.eventOverview.notAvailable')}}
+      </div>
+    </div>
+  {{/if}}
+
+  <div class='event-overview__info js-detail-section'>
+
+    <div class='event-overview__source'>
+      <header class='event-overview__source__header'>
+        <span class='event-overview__source__header__label'>{{t 'incident.details.eventOverview.source'}}</span>
+        <span class='event-overview__source__header__ip-address'>{{model.ip_source}}</span>
+      </header>
+      <hbox class='event-overview__source__info'>
+        <vbox xs=3 class='event-overview__source__port'>
+          {{rsa-content-definition label=(t 'incident.details.eventOverview.devicePort') value=(truthy-or-default sourceDevice.port (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+        <vbox xs=3 class='event-overview__source__mac-address'>
+          {{rsa-content-definition label=(t 'incident.details.eventOverview.deviceMacAddress') value=(truthy-or-default sourceDevice.mac_address (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+        <vbox xs=3>
+          {{#if sourceDevice.geolocation.country}}
+            {{#rsa-content-definition class='event-overview__source__info__geolocation' label=(t 'incident.details.eventOverview.geolocationInfo')}}
+              <ul>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.country'}}</span>
+                  <span>{{sourceDevice.geolocation.country}}</span>
+                </li>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.city'}}</span>
+                  <span>{{sourceDevice.geolocation.city}}</span>
+                </li>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.organization'}}</span>
+                  <span>{{sourceDevice.geolocation.organization}}</span>
+                </li>
+              </ul>
+            {{/rsa-content-definition}}
+          {{else}}
+            {{rsa-content-definition label=(t 'incident.details.eventOverview.geolocationInfo') value=(t 'incident.details.eventOverview.notAvailable')}}
+          {{/if}}
+        </vbox>
+        <vbox xs=3 class='event-overview__source__user'>
+          {{rsa-content-definition label=(t 'incident.details.eventOverview.user') value=(truthy-or-default model.source.user.username (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+      </hbox>
+    </div>
+    <div class='event-overview__destination'>
+      <header class='event-overview__destination__header'>
+        <span class='event-overview__destination__header__label'>{{t 'incident.details.eventOverview.destination'}}</span>
+        <span class='event-overview__destination__header__ip-address'>{{model.ip_dst}}</span>
+      </header>
+      <hbox class='event-overview__destination__info'>
+        <vbox xs=3 class='event-overview__destination__port'>
+          {{rsa-content-definition label=(t 'incident.details.eventOverview.devicePort') value=(truthy-or-default destinationDevice.port (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+        <vbox xs=3 class='event-overview__destination__mac-address'>
+          {{rsa-content-definition label=(t 'incident.details.eventOverview.deviceMacAddress') value=(truthy-or-default destinationDevice.mac_address (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+        <vbox xs=3>
+          {{#if destinationDevice.geolocation.country}}
+            {{#rsa-content-definition class='event-overview__destination__info__geolocation' label=(t 'incident.details.eventOverview.geolocationInfo')}}
+              <ul>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.country'}}</span>
+                  <span>{{destinationDevice.geolocation.country}}</span>
+                </li>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.city'}}</span>
+                  <span>{{destinationDevice.geolocation.city}}</span>
+                </li>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.organization'}}</span>
+                  <span>{{destinationDevice.geolocation.organization}}</span>
+                </li>
+              </ul>
+            {{/rsa-content-definition}}
+          {{else}}
+            {{rsa-content-definition label=(t 'incident.details.eventOverview.geolocationInfo') value=(t 'incident.details.eventOverview.notAvailable')}}
+          {{/if}}
+        </vbox>
+        <vbox xs=3 class='event-overview__destination__user'>
+          {{rsa-content-definition label='User' value=(truthy-or-default model.destination.user.username (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+      </hbox>
+    </div>
+
+    <div class='event-overview__domain'>
+      <header class='event-overview__domain__header'>
+        <span class='event-overview__domain__header__label'>{{t 'incident.details.eventOverview.domainInfo'}}</span>
+        <span class='event-overview__domain__header__domain-value'>{{truthy-or-default whois.domain_name (t 'incident.details.eventOverview.notAvailable')}}</span>
+      </header>
+      <hbox class='event-overview__domain__info'>
+        <vbox xs=3 class='event-overview__domain__registrar'>
+          {{rsa-content-definition label=(t 'incident.details.eventOverview.domainRegistrar') value=(truthy-or-default whois.registrar_name (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+        <vbox xs=3 class='event-overview__domain__registrant'>
+          {{rsa-content-definition label=(t 'incident.details.eventOverview.registrantName') value=(truthy-or-default whois.registrant_name (t 'incident.details.eventOverview.notAvailable'))}}
+        </vbox>
+        <vbox xs=6>
+          {{#if whois.registrant_country}}
+            {{#rsa-content-definition class='event-overview__domain__info__geolocation' label=(t 'incident.details.eventOverview.geolocationInfo')}}
+              <ul>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.country'}}</span>
+                  <span>{{whois.registrant_country}}</span>
+                </li>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.city'}}</span>
+                  <span>{{whois.registrant_city}}</span>
+                </li>
+                <li>
+                  <span>{{t 'incident.details.eventOverview.organization'}}</span>
+                  <span>{{whois.registrant_organization}}</span>
+                </li>
+              </ul>
+            {{/rsa-content-definition}}
+          {{else}}
+            {{rsa-content-definition label=(t 'incident.details.eventOverview.geolocationInfo') value=(t 'incident.details.eventOverview.notAvailable')}}
+          {{/if}}
+        </vbox>
+      </hbox>
+    </div>
+  </div>
+
+  <div class='event-overview__meta js-meta-section'>
+    <header class='event-overview__meta__header'>
+      {{#rsa-form-button class='event-overview__meta__header__toggle' isIconOnly=true defaultAction=(action 'toggleMetaSection')}}
+        {{rsa-icon size='small' name=(if metaVisible 'arrow-down-8' 'arrow-right-8')}}
+      {{/rsa-form-button}}
+      <span class='event-overview__meta__header__label'>{{t 'incident.details.eventOverview.meta'}}</span>
+    </header>
+    {{#if metaVisible}}
+      {{#each normalizedMeta as |meta|}}
+        {{#if meta.showHeader}}
+          <header class='event-overview__meta__header event-overview__meta__header-meta-section'>
+            <span class='event-overview__meta__header__label'>{{meta.title}}</span>
+          </header>
+        {{/if}}
+        <hbox class='event-overview__meta__info'>
+          <vbox xs=6 class='event-overview__meta__col1'>
+            <ul>
+              {{#each-in meta.col0 as |key value|}}
+                <li class='event-overview__meta__info__key-value'>
+                  <span class='event-overview__meta__info__key-value__key'>{{key}}</span>
+                  <span class='event-overview__meta__info__key-value__value'>{{truthy-or-default value (t 'incident.details.eventOverview.notAvailable')}}</span>
+                </li>
+              {{/each-in}}
+            </ul>
+          </vbox>
+          <vbox xs=6 class='event-overview__meta__col2'>
+            <ul>
+              {{#each-in meta.col1 as |key value|}}
+                <li class='event-overview__meta__info__key-value'>
+                  <span class='event-overview__meta__info__key-value__key'>{{key}}</span>
+                  <span class='event-overview__meta__info__key-value__value'>{{truthy-or-default value (t 'incident.details.eventOverview.notAvailable')}}</span>
+                </li>
+              {{/each-in}}
+            </ul>
+          </vbox>
+        </hbox>
+      {{/each}}
+      <header class='event-overview__meta__header event-overview__meta__header-meta-section'>
+        <span class='event-overview__meta__header__label'>{{t 'incident.details.eventOverview.relatedLinks'}}</span>
+      </header>
+      <hbox class='event-overview__meta__info'>
+        <vbox xs=12>
+          {{#each model.related_links as |relatedLink|}}
+            {{#if relatedLink.url}}
+              <a class="event-overview__meta__related-links__link" href={{relatedLink.url}}>{{t (concat 'incident.details.eventOverview.relatedLinkOptions.' relatedLink.type)}}</a>
+            {{/if}}
+          {{else}}
+            <div class="event-overview__meta__related-links__no-links">{{t "incident.details.eventOverview.notAvailable"}}</div>
+          {{/each}}
+        </vbox>
+      </hbox>
+    {{/if}}
+  </div>
+{{/unless}}

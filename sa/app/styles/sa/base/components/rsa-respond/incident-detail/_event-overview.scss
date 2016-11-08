@@ -1,0 +1,221 @@
+.event-overview {
+  margin-left: 2px;
+
+  .rsa-content-section-header {
+    padding-right: rsa-whitespace();
+
+    .event-overview__title {
+      display: inline;
+      text-transform: capitalize;
+    }
+
+    .rsa-form-button-wrapper {
+      float: right;
+
+      .rsa-form-button {
+        padding-top: 0;
+        height: 100%;
+      }
+    }
+  }
+
+  &__header {
+    margin-top: 1px;
+    padding: rsa-whitespace();
+    background-color: $contentSectionHeaderBackgroundColor;
+    div {
+      text-overflow: ellipsis;
+      overflow: hidden;
+    }
+  }
+
+  &__summary {
+    border-top: solid 1px rsa-color(black);
+    padding: rsa-whitespace();
+    background-color: $contentSectionHeaderBackgroundColor;
+
+    &__indicators {
+      @include rsa-flex-direction(row);
+      @include rsa-flex-justify-content(flex-start);
+      @include rsa-flex-align-items(center);
+      @include rsa-vendor-prefix(flex-wrap, wrap);
+      @include rsa-vendor-prefix(align-content, center);
+
+      &__group {
+        @include rsa-flex-direction(row);
+        @include rsa-flex-justify-content(space-between);
+        @include rsa-flex-align-items(center);
+        @include rsa-vendor-prefix(flex-wrap, nowrap);
+        @include rsa-vendor-prefix(flex, 1 1 100px);
+
+        .rsa-content-badge-score {
+          @include rsa-vendor-prefix(flex, 0 0 calc(#{rsa-whitespace(more)} * 2));
+          .score {
+            @include rsa-font(body, base);
+          }
+          circle {
+            stroke-width: 4;
+          }
+        }
+        &__description {
+          @include rsa-font(default, small);
+          color: rsa-color(gray, lightest);
+          text-transform: capitalize;
+          flex: 1 1 auto;
+        }
+      }
+    }
+
+    &__timestamp {
+      @include rsa-font(header, small);
+      display: block;
+      color: rsa-color(gray);
+      letter-spacing: 0.05rem;
+      padding-top: rsa-whitespace(less);
+    }
+  }
+
+  &__info {
+    max-height: 500px;
+    @include rsa-vendor-prefix(transition, max-height .5s, opacity 1s);
+
+    &.hidden {
+      max-height: 0;
+      opacity: 0;
+      @include rsa-vendor-prefix(transition, max-height .3s, opacity .1s);
+    }
+  }
+
+  &__source,
+  &__destination,
+  &__domain,
+  &__meta {
+    background-color: rsa-color(black, null, $rsa-translucent);
+
+    &__header {
+      @include rsa-font(header, small);
+      background-color: rsa-color(black);
+      padding: rsa-whitespace(less) rsa-whitespace();
+
+      &__label {
+        color: rsa-color(blue, dark);
+      }
+      &__ip-address,
+      &__domain-value {
+        color: rsa-color(gray, light);
+      }
+    }
+
+    &__info {
+      padding: rsa-whitespace();
+
+      .rsa-content-definition .value {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+
+      &__geolocation {
+        ul {
+          @include rsa-font(header, small);
+          text-transform: capitalize;
+
+          li {
+            padding: rsa-whitespace(least) 0;
+            span {
+              &:first-child {
+                display: inline-block;
+                color: $contentDefinitionLabelColor;
+                line-height: 12px;
+                vertical-align: middle;
+
+                &:after {
+                  content: ":";
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &__source {
+    margin-top: 1px;
+  }
+
+  &__source,
+  &__destination,
+  &__domain, {
+    &__header {
+      &__label {
+        &:after {
+          content: ":";
+        }
+      }
+    }
+  }
+
+  &__meta {
+    &__header {
+      padding-top: rsa-whitespace(least);
+      padding-bottom: rsa-whitespace(least);
+    }
+    &__header__toggle.rsa-form-button-wrapper {
+      button.rsa-form-button {
+        padding: 0 rsa-whitespace(less) 0 0;
+        height: 1.5rem;
+      }
+    }
+
+
+    &__header-meta-section {
+      padding-top: rsa-whitespace(less);
+      padding-bottom: rsa-whitespace(less);
+    }
+
+    &__info__key-value {
+      &__key {
+        @include rsa-font(header, small);
+        color: $contentDefinitionLabelColor;
+        text-transform: lowercase;
+        float: left;
+        width: 50%;
+        line-height: 12px;
+        padding: rsa-whitespace(least) 0;
+        vertical-align: middle;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        padding: rsa-whitespace(least) 0;
+
+        &:after {
+          content: ":";
+        }
+      }
+
+      &__value {
+        @include rsa-font(header, small);
+        color: $contentDefinitionValueColor;
+        text-transform: capitalize;
+        width: 50%;
+        float: left;
+        line-height: 12px;
+        padding: rsa-whitespace(least) 0;
+        word-wrap: break-word;
+
+      }
+    }
+
+    &__related-links {
+      &__link {
+        @include rsa-font(default, small);
+        color: rsa-color(gray, light);
+      }
+      &__no-links {
+        @include rsa-font();
+        padding-top: rsa-whitespace();
+        color: rsa-color(gray, light);
+        text-align: center;
+      }
+    }
+  }
+}

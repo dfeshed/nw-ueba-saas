@@ -23,17 +23,19 @@ export default Route.extend({
     this.set('layoutService.main', 'panelB');
     this.set('layoutService.panelA', 'quarter');
     this.set('layoutService.panelB', 'main');
+    this.set('layoutService.panelD', 'hidden');
   },
 
   deactivate() {
     this.set('layoutService.actionConfig', 'app');
     this.set('layoutService.journalPanel', 'hidden');
     this.set('layoutService.displayJournal', false);
+    this.set('layoutService.panelD', 'hidden');
   },
 
   model(params) {
     this.set('incidentId', params.incident_id);
-    let details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [] };
+    let details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [], 'events': [] };
     this.request.streamRequest({
       method: 'stream',
       modelName: 'storyline',
@@ -173,6 +175,30 @@ export default Route.extend({
       }).catch(() => {
         Logger.error('Journal was not saved.');
       });
+    },
+
+    closeEventOverviewPanel() {
+      this.set('layoutService.main', 'panelC');
+      this.set('layoutService.panelB', 'half');
+      this.set('layoutService.panelC', 'half');
+      this.set('layoutService.panelD', 'hidden');
+    },
+
+    expandCollapseEventOverviewPanel(expandPanel) {
+      if (expandPanel) {
+        this.set('layoutService.journalPanel', 'hidden');
+        this.set('layoutService.panelA', 'hidden');
+        this.set('layoutService.panelB', 'hidden');
+
+        this.set('layoutService.main', 'panelD');
+        this.set('layoutService.panelC', 'half');
+        this.set('layoutService.panelD', 'half');
+      } else {
+        this.set('layoutService.main', 'panelC');
+        this.set('layoutService.panelB', 'quarter');
+        this.set('layoutService.panelC', 'half');
+        this.set('layoutService.panelD', 'quarter');
+      }
     }
   }
 });

@@ -253,6 +253,63 @@ export default $.extend({}, BaseTranslations, {
         header: 'ja-Storyline',
         to: 'ja-to'
       },
+      eventOverview: {
+        title: 'ja_Event Overview',
+        content: 'ja_content',
+        setvice: 'ja_service',
+        type: 'ja_Type',
+        domain: 'ja_domain',
+        networkEvent: 'ja_Network Event',
+        source: 'ja_source',
+        destination: 'ja_destination',
+        domainInfo: 'ja_domain information',
+        meta: 'ja_event meta',
+        devicePort: 'ja_device port',
+        deviceMacAddress: 'ja_device mac address',
+        geolocationInfo: 'ja_geolocation information',
+        user: 'ja_user',
+        country: 'ja_country',
+        city: 'ja_city',
+        organization: 'ja_organization',
+        domainRegistrar: 'ja_domain registrar',
+        registrantName: 'ja_registrant name',
+        notAvailable: 'ja_Not Available',
+        badges: {
+          beaconBehavior: {
+            label: 'ja_beacon behavior',
+            description: 'ja_A high score indicates that the communications between this source IP and this domain are highly regular and therefore suspected Command and Control.'
+          },
+          domainAge: {
+            label: 'ja_domain age',
+            description: 'ja_A high score indicates that this domain is relatively new based on the registration date found at the registrar.'
+          },
+          expiringDomain: {
+            label: 'ja_expiring Domain',
+            description: 'ja_A high score means that the likelihood the domain will expire soon is high.'
+          },
+          rareDomain: {
+            label: 'ja_rare domain',
+            description: 'ja_A high score indicates that relatively few source IPs have connected to this domain on this network in the last week.'
+          },
+          noReferrers: {
+            label: 'ja_no referers',
+            description: 'ja_A high score indicates that a relatively low percentage of the IPs connecting to this domain have used referers.'
+          },
+          rareUserAgent: {
+            label: 'ja_rare user agent',
+            description: 'ja_A high score indicates that the domain has a high percentage of IPs using a rare user agent.'
+          }
+        },
+        relatedLinks: 'ja_related links',
+        relatedLinkOptions: {
+          investigate_destination_domain: 'ja_Investigate Destination Domain',
+          investigate_original_event: 'ja_Investigate Original Event',
+          investigate_dst_ip: 'ja_Investigate Destination IP Address',
+          investigate_src_ip: 'ja_Investigate Source IP Address',
+          investigate_device_ip: 'ja_Investigate Device IP Address',
+          investigate_session: 'ja_Investigate Session'
+        }
+      },
       overview: {
         title: 'ja_Overview',
         about: 'ja_About Incident',

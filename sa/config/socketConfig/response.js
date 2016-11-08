@@ -16,7 +16,7 @@ module.exports = function(environment) {
         requestDestination: '/ws/response/incidents',
         cancelDestination: '/ws/response/cancel'
       },
-      storyline:{
+      storyline: {
         subscriptionDestination: '/user/queue/incident/storyline',
         requestDestination: '/ws/response/incident/storyline'
       },
@@ -70,6 +70,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/journal/delete',
         requestDestination: '/ws/response/journal/delete'
       }
+    },
+    events: {
+      socketUrl,
+      stream: {
+        defaultStreamLimit: 1000,
+        subscriptionDestination: '/user/queue/alert/events',
+        requestDestination: '/ws/response/alert/events'
+      }
     }
   };
-}
+};

@@ -31,7 +31,6 @@ export default Component.extend({
     return IncidentHelper.sourceShortName(source);
   },
 
-
   actions: {
     sort(column, direction) {
       let { field } = column;

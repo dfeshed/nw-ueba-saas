@@ -25,12 +25,14 @@ export default Component.extend({
     'isLarger',
     'isLargest',
     'isInline',
-    'progressBarLength'],
+    'progressBarLength',
+    'invertColor'],
 
   score: null,
 
   label: null,
   isInline: false,
+  invertColor: false,
 
   hideLabel: computed.not('label'),
 
