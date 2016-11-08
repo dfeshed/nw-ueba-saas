@@ -224,9 +224,8 @@ class Manager(DontReloadModelsOverridingManager):
         logger.info('sending dummy event (so the last partial batch will be closed)...')
         send(logger=logger,
              host=self._host,
-             topic='fortscale-vpn-event-score-from-hdfs',
-             message='{\\"data_source\\": \\"dummy\\", \\"date_time_unix\\": ' +
-                     str(end_time_epoch + 1) + '}')
+             topic='fortscale-aggregation-events-control',
+             message='{\\"date_time_unix\\": ' + str(end_time_epoch + 1) + '}')
 
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)
