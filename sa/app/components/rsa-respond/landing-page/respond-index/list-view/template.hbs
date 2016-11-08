@@ -52,7 +52,7 @@
   {{#rsa-application-layout-panel class="panel-B"}}
     {{#rsa-content-section-header class='bulk-edit'}}
       <div class="rsa-bulk-edit-button-group">
-        {{#rsa-content-help-trigger triggerEvent="click" tooltip='rsa-form-status-select'}}
+        {{#rsa-content-help-trigger isDisabled=isStatusSelectAvailable triggerEvent="click" tooltip='rsa-form-status-select'}}
           {{#rsa-form-button class='rsa-form-status-select' isDisabled=isStatusSelectAvailable allowToggleActive=true withDropdown=true}}
             {{t 'incident.bulkEdit.statusSelectListLabel'}}
           {{/rsa-form-button}}
@@ -65,7 +65,7 @@
           </ul>
         {{/rsa-content-tooltip}}
 
-        {{#rsa-content-help-trigger triggerEvent="click" tooltip='rsa-form-assignee-select'}}
+        {{#rsa-content-help-trigger isDisabled=isSelectAvailable triggerEvent="click" tooltip='rsa-form-assignee-select'}}
           {{#rsa-form-button class='rsa-form-assignee-select' isDisabled=isSelectAvailable allowToggleActive=true withDropdown=true}}
             {{t 'incident.bulkEdit.assigneeSelectListLabel'}}
           {{/rsa-form-button}}
@@ -84,7 +84,7 @@
           </ul>
         {{/rsa-content-tooltip}}
 
-        {{#rsa-content-help-trigger triggerEvent="click" tooltip='rsa-form-priority-select'}}
+        {{#rsa-content-help-trigger isDisabled=isSelectAvailable triggerEvent="click" tooltip='rsa-form-priority-select'}}
           {{#rsa-form-button class='rsa-form-priority-select' isDisabled=isSelectAvailable allowToggleActive=true withDropdown=true}}
             {{t 'incident.bulkEdit.prioritySelectListLabel'}}
           {{/rsa-form-button}}

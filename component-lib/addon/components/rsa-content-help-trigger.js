@@ -42,14 +42,18 @@ export default Component.extend({
 
   isHover: equal('triggerEvent', 'hover'),
 
+  isDisabled: false,
+
   mouseEnter() {
-    if (this.get('isHover')) {
-      let displayEvent = later(()=> {
-        let height = this.$().height();
-        let width = this.$().width();
-        this.get('eventBus').trigger(`rsa-content-tooltip-display-${this.get('tooltip')}`, height, width, this.get('elementId'));
-      }, this.get('displayDelay'));
-      this.set('displayEvent', displayEvent);
+    if (!this.get('isDisabled')) {
+      if (this.get('isHover')) {
+        let displayEvent = later(()=> {
+          let height = this.$().height();
+          let width = this.$().width();
+          this.get('eventBus').trigger(`rsa-content-tooltip-display-${this.get('tooltip')}`, height, width, this.get('elementId'));
+        }, this.get('displayDelay'));
+        this.set('displayEvent', displayEvent);
+      }
     }
   },
 
@@ -63,10 +67,12 @@ export default Component.extend({
   },
 
   click() {
-    if (this.get('isClick')) {
-      let height = this.$().height();
-      let width = this.$().width();
-      this.get('eventBus').trigger(`rsa-content-tooltip-toggle-${this.get('tooltip')}`, height, width, this.get('elementId'));
+    if (!this.get('isDisabled')) {
+      if (this.get('isClick')) {
+        let height = this.$().height();
+        let width = this.$().width();
+        this.get('eventBus').trigger(`rsa-content-tooltip-toggle-${this.get('tooltip')}`, height, width, this.get('elementId'));
+      }
     }
   }
 

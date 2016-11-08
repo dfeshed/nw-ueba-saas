@@ -3,6 +3,10 @@
   display: inline-block;
 }
 
+.rsa-content-tooltip {
+  position: absolute;
+}
+
 .tooltip-content {
   background: rsa-color(gray, darker);
   color: rsa-color(gray, lighter);

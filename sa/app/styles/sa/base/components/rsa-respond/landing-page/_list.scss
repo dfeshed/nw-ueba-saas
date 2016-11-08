@@ -16,20 +16,16 @@
 }
 
 .bulk-edit.rsa-content-section-header {
-  margin-top: 2px;
-  background-color: rsa-color(black, null, $rsa-translucent);
+  min-height: 30px;
   padding-right: 0;
-  padding-left: rsa-whitespace(least);
 
   .rsa-bulk-edit-button-group {
-    display: inline-block;
-    padding: 0;
-    margin: 0;
+    display: block;
 
     .rsa-bulk-edit-update-message{
       transition: opacity 1s;
       margin-left: rsa-whitespace();
-      padding: rsa-whitespace() 0;
+      padding: .66rem 0;
       display: inline-block;
       @include rsa-font(body, small);
       opacity: $rsa-opaque;
@@ -38,6 +34,44 @@
         margin-right: rsa-whitespace(least);
         color: rsa-color(green);
       }
+    }
+
+    .rsa-form-priority-select,
+    .rsa-form-status-select,
+    .rsa-form-assignee-select {
+      display: block;
+      float: left;
+      margin-right: rsa-whitespace(less);
+    }
+
+    .rsa-form-status-select {
+      .rsa-form-button {
+        min-width: 186px;
+      }
+    }
+
+    .rsa-form-assignee-select {
+      .rsa-form-button {
+        min-width: 114px;
+      }
+    }
+
+    .rsa-form-button-wrapper {
+      .rsa-form-button {
+        text-align: left;
+
+        .rsa-icon {
+          float: right;
+        }
+      }
+    }
+  }
+
+  .rsa-bulk-edit-button-group:nth-child(2) {
+    border-left: 1px solid rsa-color(gray, light);
+
+    &.no-border {
+      border-left-width: 0px;
     }
 
     .is-hidden{
@@ -49,50 +83,22 @@
       opacity: $rsa-transparent;
     }
   }
-  .rsa-bulk-edit-button-group:nth-child(2) {
-    border-left: 1px solid rsa-color(gray, light);
-
-    &.no-border {
-        border-left-width: 0px;
-    }
-  }
   .rsa-bulk-edit-button-group:nth-child(2) .rsa-form-button-wrapper:first-child {
-    margin-left: rsa-whitespace();
+    margin: 0 rsa-whitespace();
   }
-  .rsa-form-button-wrapper {
-    margin-right: rsa-whitespace(less);
+}
 
-    &.rsa-form-status-select {
-      min-width: 195px;
-      text-align: left;
-
-      .rsa-form-button {
-        text-align: left;
-
-        button.expand {
-          float: right;
-        }
-      }
+.tooltip-content {
+  .rsa-form-status-select,
+  .rsa-form-assignee-select,
+  .rsa-form-priority-select {
+    li.selected-value {
+      background-color: rsa-color(blue, darker);
     }
+  }
 
-    &.rsa-form-assignee-select {
-      min-width: 121px;
-      text-align: left;
-
-      .rsa-form-button {
-        text-align: left;
-
-        button.expand {
-          float: right;
-        }
-      }
-    }
-
-    ul {
-      li.selected-value {
-        background-color: rsa-color(blue, darker);
-      }
-    }
+  .rsa-form-priority-select {
+    min-width: 88px;
   }
 }
 
@@ -179,7 +185,13 @@
   .rsa-data-table {
 
     &-header {
+      margin-top: 5px;
+      padding-top: 1px;
       margin-bottom: 0;
+
+      &__column-selector {
+        padding-top: 4px;
+      }
 
       .rsa-form-checkbox{
         margin: 0;
