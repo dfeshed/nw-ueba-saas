@@ -73,7 +73,7 @@ data_sources_excluding_vpn_session_mandatory.add_argument('--data_sources',
                                                           dest='data_sources',
                                                           help='The data sources to use. If not specified - all of the '
                                                                'data sources will be used (which include ' +
-                                                               ', '.join(data_source_to_enriched_tables.keys()) +
+                                                               ', '.join(set(data_source_to_enriched_tables.keys()).difference(['vpn_session'])) +
                                                                '. To change that, please update '
                                                                'bdp/bdp_utils/data_sources.py)',
                                                           choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
