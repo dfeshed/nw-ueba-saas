@@ -66,28 +66,41 @@ data_sources.add_argument('--data_sources',
                           choices=data_source_to_enriched_tables.keys(),
                           default=data_source_to_enriched_tables.keys())
 
+data_source_mandatory = argparse.ArgumentParser(add_help=False)
+data_source_mandatory.add_argument('--data_source',
+                                   action='store',
+                                   dest='data_source',
+                                   help='The data source to use '
+                                        '(available data sources are declared in bdp/bdp_utils/data_sources.py. '
+                                        'In order to support new data source - please update the file)',
+                                   choices=data_source_to_enriched_tables.keys(),
+                                   required=True)
+
+data_sources_excluding_vpn_session = argparse.ArgumentParser(add_help=False)
+data_sources_excluding_vpn_session.add_argument('--data_sources',
+                                                nargs='+',
+                                                action='store',
+                                                dest='data_sources',
+                                                help='The data sources to use. If not specified - all of the '
+                                                     'data sources will be used (which include ' +
+                                                     ', '.join(set(data_source_to_enriched_tables.keys()).difference(['vpn_session'])) +
+                                                     '. To change that, please update '
+                                                     'bdp/bdp_utils/data_sources.py)',
+                                                choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
+                                                default=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']))
+
 data_sources_excluding_vpn_session_mandatory = argparse.ArgumentParser(add_help=False)
 data_sources_excluding_vpn_session_mandatory.add_argument('--data_sources',
                                                           nargs='+',
                                                           action='store',
                                                           dest='data_sources',
-                                                          help='The data sources to use. If not specified - all of the '
-                                                               'data sources will be used (which include ' +
+                                                          help='The data sources to use '
+                                                               '(available data sources include ' +
                                                                ', '.join(set(data_source_to_enriched_tables.keys()).difference(['vpn_session'])) +
                                                                '. To change that, please update '
                                                                'bdp/bdp_utils/data_sources.py)',
                                                           choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
                                                           required=True)
-
-data_source_mandatory = argparse.ArgumentParser(add_help=False)
-data_source_mandatory.add_argument('--data_source',
-                                   action='store',
-                                   dest='data_source',
-                                   help='The data source to use'
-                                        '(available data sources are declared in bdp/bdp_utils/data_sources.py. '
-                                        'In order to support new data source - please update the file)',
-                                   choices=data_source_to_enriched_tables.keys(),
-                                   required=True)
 
 validation_timeout = argparse.ArgumentParser(add_help=False)
 validation_timeout.add_argument('--timeout',

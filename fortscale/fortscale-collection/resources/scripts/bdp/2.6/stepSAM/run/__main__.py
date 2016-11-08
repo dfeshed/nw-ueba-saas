@@ -20,7 +20,7 @@ def create_parser():
                                      parents=[parsers.host,
                                               parsers.start_optional,
                                               parsers.end_optional,
-                                              parsers.data_sources,
+                                              parsers.data_sources_excluding_vpn_session,
                                               parsers.throttling,
                                               parsers.validation_polling_interval],
                                      prog='stepSAM/run',
