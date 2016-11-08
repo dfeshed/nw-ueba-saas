@@ -74,11 +74,11 @@ export default $.extend({}, BaseTranslations, {
       loading: 'Loading list of available services',
       empty: {
         title: 'Unable to find services.',
-        description: 'No brokers, concentrators or other services were detected. This may be due to a configuration or connectivity issue.'
+        description: 'No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
       },
       error: {
         title: 'Unable to load services.',
-        description: 'Unexpected error loading list of brokers, concentrators and other services to investigate. This may be due to a configuration or connectivity issue.'
+        description: 'Unexpected error loading the list of Brokers, Concentrators, and other services to investigate. This may be due to a configuration or connectivity issue.'
       }
     },
     customQuery: {
