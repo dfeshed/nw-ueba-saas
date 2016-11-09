@@ -17,10 +17,8 @@ module.exports = {
     this._super.included.apply(this, arguments);
 
     // Websocket libraries: SockJS & STOMP
-    app.import(app.bowerDirectory + "/sockjs-client/dist/sockjs.js");
-    app.import(app.bowerDirectory + "/stomp-websocket/lib/stomp.js");
-
-    this.eachAddonInvoke('included', arguments);
+    app.import("bower_components/sockjs-client/dist/sockjs.js");
+    app.import("bower_components/stomp-websocket/lib/stomp.js");
   },
   init: function() {
     this._super.init && this._super.init.apply(this, arguments);

@@ -1,4 +1,4 @@
-/* global require, module */
+/* eslint-disable */
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var shim = require('flexi/lib/pod-templates-shim');
 
@@ -30,13 +30,6 @@ module.exports = function(defaults) {
 
   // HighlightJS library: for highlighting HBS snippets.
   app.import(app.bowerDirectory + '/highlightjs/highlight.pack.js');
-
-  // ClipboardJS library: for Copy To Clipboard functionality.
-  app.import(app.bowerDirectory + '/clipboard/dist/clipboard.js');
-
-  // Library to detect resize events in any DOM element: detect-element-resize
-  // (Used by rsa-chart)
-  app.import(app.bowerDirectory + "/javascript-detect-element-resize/detect-element-resize.js");
 
   return app.toTree();
 };

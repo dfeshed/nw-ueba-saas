@@ -20,7 +20,6 @@ module.exports = function(defaults) {
   */
 
   app.import('vendor/haxors/promise.js');
-  app.import(app.bowerDirectory + "/javascript-detect-element-resize/detect-element-resize.js");
 
   return app.toTree();
 };

@@ -1,7 +1,19 @@
+/* eslint-disable */
 'use strict';
 
 module.exports = {
   name: 'component-lib',
+  options: {
+    nodeAssets: {
+      'clipboard': {
+        srcDir: 'dist',
+        import: ['clipboard.js']
+      },
+      'javascript-detect-element-resize': {
+        import: ['detect-element-resize.js', 'styles.css']
+      }
+    }
+  },
 
   /**
    * Allows live-reloading when this addon changes even when being served by another projects `ember serve`.
@@ -19,7 +31,7 @@ module.exports = {
    * @public
    */
   included: function(app) {
-    this._super.included(app);
+    this._super.included.apply(this, arguments);
 
     // Assets that are referenced by CSS must go in the consuming app's /assets/ subdir.
     app.import('vendor/fonts/open-sans-v13-latin-regular.eot', { destDir: 'assets/fonts/' });

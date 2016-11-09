@@ -168,7 +168,7 @@ test('User should be able to setStatus, Assignee and Priority', function(assert)
 /* @TODO these asserts fail in phantomJS environment with an error
   not ok 123 PhantomJS 2.1 - Global error: TypeError: undefined is not an object (evaluating 'expand.firstElementChild')
   this is coming from javascript-detect-element-resize
-  https://github.com/sdecima/javascript-detect-element-resize/blob/master/detect-element-resize.js#L31
+  https://github.rsa.lab.emc.com/bellg3//javascript-detect-element-resize/blob/master/detect-element-resize.js#L31
   Once we've integrated flexi hopefully we'll be able to replace this addon with flexi helpers
   and uncomment this test.*/
 skip('Toggle list button renders incidents list view with right number of columns', function(assert) {
