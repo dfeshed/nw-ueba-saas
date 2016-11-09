@@ -17,8 +17,8 @@ logger = logging.getLogger('stepSAM.validation')
 def validate_started_processing_everything(host,
                                            data_source,
                                            end_time_epoch,
-                                           filtered_gap_in_minutes,
-                                           filtered_timeout_in_minutes):
+                                           filtered_gap_in_seconds,
+                                           filtered_timeout_in_seconds):
     connection = impala_utils.connect(host=host)
     logger.info('validating that all events' +
                 ((' up until ' + time_utils.timestamp_to_str(end_time_epoch)) if end_time_epoch else '') +
@@ -44,10 +44,10 @@ def validate_started_processing_everything(host,
                 logger.error("FAILED: "
                              "validation can't be performed on data source whose enriched table is being filled")
                 return False
-            elif processed_event_time >= last_event_time - filtered_gap_in_minutes * 60:
+            elif processed_event_time >= last_event_time - filtered_gap_in_seconds:
                 if time_entered_filtered_gap is None:
                     time_entered_filtered_gap = time.time()
-                if time.time() - time_entered_filtered_gap >= filtered_timeout_in_minutes * 60:
+                if time.time() - time_entered_filtered_gap >= filtered_timeout_in_seconds:
                     logger.info('some of the last events were not processed - maybe due to filtering')
                     logger.info('DONE')
                     return True
