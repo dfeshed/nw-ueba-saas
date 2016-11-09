@@ -107,10 +107,15 @@ rm $MOD_PATH_FILE
 info "Node is now $(which node)"
 
 # install NPM libraries if necessary
+installNPMLibraryIfNecessary "yarn" "yarn" $YARN_COMMAND $YARN_VERSION
 installNPMLibraryIfNecessary "bower" "bower" $BOWER_COMMAND $BOWER_VERSION
-ls -ltr $BINARIES
 installNPMLibraryIfNecessary "ember-cli" "ember" $EMBER_CLI_COMMAND $EMBER_CLI_VERSION
 installNPMLibraryIfNecessary "phantomjs-prebuilt" "phantomjs" $PHANTOMJS_COMMAND $PHANTOMJS_PREBUILT_VERSION $PHANTOMJS_VERSION
+
+# Have to do this so that yarn doesn't go to registry.yarnpkg which causes
+# tier2 permission issues. registry.yarnpkg is a reverse proxy placeholder
+# in case the Yarn folks feel that improvements can be made on the other end
+yarn config set registry https://registry.npmjs.org/
 
 unsetWebProxy
 unsetHttpsProxy

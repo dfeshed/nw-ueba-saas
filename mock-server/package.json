@@ -4,7 +4,7 @@
   "description": "An Express server for building NetWitness UI mock services.",
   "directories": {},
   "scripts": {
-    "eslint": "eslint lib shared test",
+    "eslint": "./node_modules/.bin/eslint lib shared test",
     "test": "MOCK_PORT=4400 ./node_modules/.bin/mocha --compilers js:babel-register"
   },
   "repository": "",

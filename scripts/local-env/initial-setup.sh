@@ -4,6 +4,7 @@
 # Software versions kept in external file for repeated use
 # this brings the following variables in
 # NODE_VERSION
+# YARN_VERSION
 # EMBER_CLI_VERSION
 # BOWER_VERSION
 # PHANTOMJS_VERSION
@@ -11,7 +12,7 @@ scriptDir="$(dirname "$0")"
 source $scriptDir/versions
 source $scriptDir/_util.sh
 
-echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nember-cli: $EMBER_CLI_VERSION\nbower: $BOWER_VERSION\nphantomjs-prebuilt: $PHANTOMJS_VERSION\n"
+echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nYarn: $YARN_VERSION\nember-cli: $EMBER_CLI_VERSION\nbower: $BOWER_VERSION\nphantomjs-prebuilt: $PHANTOMJS_VERSION\n"
 
 function hasVersion {
   if [[ $($1 --version) =~ "$2" ]]
@@ -57,25 +58,24 @@ else
   fi
 fi
 
-# install ember if it hasn't been
-if [[ "$(hasVersion "ember" $EMBER_CLI_VERSION)" == "false" ]]
-then
-  info "Installing ember-cli"
-  npm install -g ember-cli@$EMBER_CLI_VERSION
-  success "ember-cli installed!"
-else
-  info "Proper ember-cli version already installed"
-fi
+# $1 name of library
+# $2 NPM name of library
+# $3 CLI name for library
+# $4 version of library
+function installGlobalDependency {
+  if [[ "$(hasVersion $3 $4)" == "false" ]]
+  then
+    info "Installing $1"
+    npm install -g $2@$4
+    success "$1 installed!"
+  else
+    info "Proper $1 version already installed"
+  fi
+}
 
-# install bower if it hasn't been
-if [[ "$(hasVersion "bower" $BOWER_VERSION)" == "false" ]]
-then
-  info "Installing bower"
-  npm install -g bower@$BOWER_VERSION
-  success "Bower installed!"
-else
-  info "Proper bower version already installed"
-fi
+installGlobalDependency "Yarn" "yarn" "yarn" $YARN_VERSION
+installGlobalDependency "ember-cli" "ember-cli" "ember" $EMBER_CLI_VERSION
+installGlobalDependency "Bower" "bower" "bower" $BOWER_VERSION
 
 # install phantomjs-prebuilt if it hasn't been
 if [[ "$(hasVersion "phantomjs" $PHANTOMJS_VERSION)" == "false" ]]
@@ -86,6 +86,11 @@ then
 else
   info "Proper phantomjs-prebuilt version already installed"
 fi
+
+# Have to do this so that yarn doesn't go to registry.yarnpkg which causes
+# tier2 permission issues. registry.yarnpkg is a reverse proxy placeholder
+# in case the Yarn folks feel that improvements can be made on the other end
+yarn config set registry https://registry.npmjs.org/
 
 # Yay!
 success "Initial setup complete!"
