@@ -37,7 +37,7 @@ class Manager:
                          'collection=' + collection_name,
                          'datefield=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix'),
                          'filters=' + ('' if collection_name == EVIDENCES else 'score:::gte:::50###') + 'end_time_unix:::gt:::' + str(start),
-                         'sort=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix'), + '###asc',
+                         'sort=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix') + '###asc',
                          'jobmonitor=alert-generator-task',
                          'classmonitor=fortscale.streaming.task.AlertGeneratorTask',
                          'batch=200000',
