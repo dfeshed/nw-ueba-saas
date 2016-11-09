@@ -2,7 +2,6 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,12 +19,14 @@ public class SMARTScoreMappingModel extends ScoreMappingModel {
 		mapping.put(threshold - EPSILON, 49D);
 		super.init(mapping);
 	}
-	/**
-	 *
-	 * @return ToString you know...
-	 */
+
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		String scoreMappingStr="null";
+		if(scoreMappingConf.getMapping()!=null)
+		{
+			scoreMappingStr = scoreMappingConf.getMapping().toString();
+		}
+		return String.format("<SMARTScoreMappingModel: scoreMappingConf=%s>", scoreMappingStr);
 	}
 }

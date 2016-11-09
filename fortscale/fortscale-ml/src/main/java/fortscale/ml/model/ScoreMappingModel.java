@@ -3,7 +3,6 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.scorer.ScoreMapping;
-import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.Map;
 
@@ -11,7 +10,7 @@ import java.util.Map;
 		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
 		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class ScoreMappingModel implements Model {
-	private ScoreMapping.ScoreMappingConf scoreMappingConf;
+	protected ScoreMapping.ScoreMappingConf scoreMappingConf;
 
 	public ScoreMappingModel() {
 		scoreMappingConf = new ScoreMapping.ScoreMappingConf();
@@ -30,12 +29,13 @@ public class ScoreMappingModel implements Model {
 		return 0;
 	}
 
-	/**
-	 *
-	 * @return ToString you know...
-	 */
 	@Override
 	public String toString() {
-		return ToStringBuilder.reflectionToString(this);
+		String scoreMappingStr="null";
+		if(scoreMappingConf.getMapping()!=null)
+		{
+			scoreMappingStr = scoreMappingConf.getMapping().toString();
+		}
+		return String.format("<ScoreMappingModel: scoreMappingConf=%s>", scoreMappingStr);
 	}
 }

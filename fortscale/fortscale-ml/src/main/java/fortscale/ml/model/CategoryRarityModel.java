@@ -3,6 +3,7 @@ package fortscale.ml.model;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,6 +45,17 @@ public class CategoryRarityModel implements Model {
 			numOfSamples += numOfFeatures * occurrences;
 			numDistinctFeatures += numOfFeatures;
 		}
+	}
+
+	@Override
+	public String toString() {
+		String featureOccurencessStr="null";
+		if(featureOccurrences!=null)
+		{
+			featureOccurencessStr = featureOccurrences.toString();
+		}
+		return String.format("<CategoryRarityModel: buckets=%s, numOfSamples=%d, numDistinctFeatures=%d, featureOccurrences=%s>", Arrays.toString(buckets),numOfSamples,numDistinctFeatures, featureOccurencessStr);
+
 	}
 
 	public double[] getBuckets() {

@@ -19,7 +19,7 @@ public class SMARTValuesModel implements Model {
 
 	@Override
 	public String toString() {
-		return String.format("<SMARTValuesModel: numOfZeroValues=%d, sumOfValues=%d, sumOfValues=%d>", numOfZeroValues, numOfPositiveValues, sumOfValues);
+		return String.format("<SMARTValuesModel: numOfZeroValues=%d, sumOfValues=%d, sumOfValues=%f>", numOfZeroValues, numOfPositiveValues, sumOfValues);
 	}
 
 	@Override
