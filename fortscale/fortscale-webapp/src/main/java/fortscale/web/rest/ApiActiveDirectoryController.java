@@ -13,6 +13,9 @@ import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +37,9 @@ public class ApiActiveDirectoryController {
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
+
+	@Autowired
+	private SimpMessagingTemplate template;
 
 	/**
 	 * Updates or creates config items.
@@ -90,10 +96,81 @@ public class ApiActiveDirectoryController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.GET)
+	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@LogException
 	public List<AdConnection> getActiveDirectory() {
 		return activeDirectoryService.getAdConnectionsFromDatabase();
 	}
+
+	@RequestMapping("/ad_fetch" )
+//	@SendTo("/topic/showResult")
+	public void startAdFetch2() throws Exception {
+		//Thread.sleep(30000);
+		FetchETLResponse f = new FetchETLResponse(10, "AD Users");
+		this.template.convertAndSend("/wizard/ad-fetch-response", f);
+
+		//Thread.sleep(30000);
+		FetchETLResponse f2 = new FetchETLResponse(15, "AD Groups");
+		this.template.convertAndSend("/wizard/ad-fetch-response",f2);
+
+		//Thread.sleep(30000);
+		FetchETLResponse f3 = new FetchETLResponse(15, "AD OU");
+		this.template.convertAndSend("/wizard/ad-fetch-response",f3);
+
+		//Thread.sleep(30000);
+		FetchETLResponse f4 = new FetchETLResponse(15, "AD Other");
+		this.template.convertAndSend("/wizard/ad-fetch-response",f4);
+
+	}
+
+	/*@MessageMapping("/active_directory/ad_fetch" )
+//	@SendTo("/topic/showResult")
+	public void startAdFetch() throws Exception {
+		//Thread.sleep(30000);
+		FetchETLResponse f = new FetchETLResponse(10, "AD Users");
+		this.template.convertAndSend("/wizard/ad-fetch-response", f);
+
+		//Thread.sleep(30000);
+		FetchETLResponse f2 = new FetchETLResponse(15, "AD Groups");
+		this.template.convertAndSend("/wizard/ad-fetch-response",f2);
+
+		//Thread.sleep(30000);
+		FetchETLResponse f3 = new FetchETLResponse(15, "AD OU");
+		this.template.convertAndSend("/wizard/ad-fetch-response",f3);
+
+		//Thread.sleep(30000);
+		FetchETLResponse f4 = new FetchETLResponse(15, "AD Other");
+		this.template.convertAndSend("/wizard/ad-fetch-response",f4);
+
+	}*/
+
+	public static class FetchETLResponse{
+		private int objectsCount;
+		private  String stepName;
+		private boolean success;
+
+		public FetchETLResponse(int objectsCount, String stepName) {
+			this.objectsCount = objectsCount;
+			this.stepName = stepName;
+		}
+
+		public int getObjectsCount() {
+			return objectsCount;
+		}
+
+		public void setObjectsCount(int objectsCount) {
+			this.objectsCount = objectsCount;
+		}
+
+		public String getStepName() {
+			return stepName;
+		}
+
+		public void setStepName(String stepName) {
+			this.stepName = stepName;
+		}
+	}
+
+
 
 }
