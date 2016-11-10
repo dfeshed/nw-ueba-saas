@@ -23,6 +23,7 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/active_directory/ad_fetch")
                 .setHandshakeHandler(new DefaultHandshakeHandler(new TomcatRequestUpgradeStrategy()))
-                .withSockJS();
+                .setAllowedOrigins("*").withSockJS();
+
     }
 }

@@ -96,7 +96,7 @@ public class ApiActiveDirectoryController {
 		}
 	}
 
-	@RequestMapping(method = RequestMethod.POST,value = "/test")
+	@RequestMapping(method = RequestMethod.GET)
 	@LogException
 	public List<AdConnection> getActiveDirectory() {
 		return activeDirectoryService.getAdConnectionsFromDatabase();
@@ -123,26 +123,6 @@ public class ApiActiveDirectoryController {
 
 	}
 
-	/*@MessageMapping("/active_directory/ad_fetch" )
-//	@SendTo("/topic/showResult")
-	public void startAdFetch() throws Exception {
-		//Thread.sleep(30000);
-		FetchETLResponse f = new FetchETLResponse(10, "AD Users");
-		this.template.convertAndSend("/wizard/ad-fetch-response", f);
-
-		//Thread.sleep(30000);
-		FetchETLResponse f2 = new FetchETLResponse(15, "AD Groups");
-		this.template.convertAndSend("/wizard/ad-fetch-response",f2);
-
-		//Thread.sleep(30000);
-		FetchETLResponse f3 = new FetchETLResponse(15, "AD OU");
-		this.template.convertAndSend("/wizard/ad-fetch-response",f3);
-
-		//Thread.sleep(30000);
-		FetchETLResponse f4 = new FetchETLResponse(15, "AD Other");
-		this.template.convertAndSend("/wizard/ad-fetch-response",f4);
-
-	}*/
 
 	public static class FetchETLResponse{
 		private int objectsCount;
