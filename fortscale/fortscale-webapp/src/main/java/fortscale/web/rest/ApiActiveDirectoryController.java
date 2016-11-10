@@ -124,6 +124,9 @@ public class ApiActiveDirectoryController {
 	}
 
 
+
+	//TODO: Extract this pojo class  out of the controler to be and beans   foldaer
+
 	public static class FetchETLResponse{
 		private int objectsCount;
 		private  String stepName;
@@ -148,6 +151,14 @@ public class ApiActiveDirectoryController {
 
 		public void setStepName(String stepName) {
 			this.stepName = stepName;
+		}
+
+		public boolean isSuccess() {
+			return success;
+		}
+
+		public void setSuccess(boolean success) {
+			this.success = success;
 		}
 	}
 
