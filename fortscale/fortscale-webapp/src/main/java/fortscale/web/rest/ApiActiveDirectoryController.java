@@ -26,6 +26,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,8 +46,12 @@ public class ApiActiveDirectoryController {
 	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_OTHER));
 	private static final String RESPONSE_DESTINATION = "/wizard/ad-fetch-response";
 
+	private AtomicBoolean adTaskInProgress = new AtomicBoolean(false);
+
+
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
+
 	@Autowired
 	private SimpMessagingTemplate template;
 
@@ -112,19 +117,34 @@ public class ApiActiveDirectoryController {
 	}
 	
 	@RequestMapping("/ad_fetch" )
-	public void startAdFetchAndEtl() throws Exception {
+	public ResponseEntity executeAdFetchAndEtl() {
 
-		//todo: mutex
+		if (adTaskInProgress.compareAndSet(false, true)) {
+			logger.debug("Starting Active Directory fetch and ETL");
 
-		logger.debug("Starting Active Directory fetch and ETL");
+			final ExecutorService executorService = Executors.newFixedThreadPool(4, runnable -> {
+				Thread thread = new Thread(runnable);
+				thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
+				return thread;
+			});
 
-		final ExecutorService executorService = Executors.newFixedThreadPool(4, runnable -> {
-			Thread thread = new Thread(runnable);
-			thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-			return thread;
-		});
+			try {
+				dataSources.forEach(dataSource -> executorService.execute(new FetchEtlTask(dataSource)));
+			} finally {
+				executorService.shutdown();
+			}
 
-		dataSources.forEach(dataSource -> executorService.submit(new FetchEtlTask(dataSource)));
+			logger.debug("Finished Active Directory fetch and ETL");
+
+			adTaskInProgress.set(false);
+			return new ResponseEntity(HttpStatus.OK);
+		}
+		else {
+			logger.warn("Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.");
+			return new ResponseEntity(HttpStatus.LOCKED);
+		}
+
+
 	}
 
 	public enum AdTaskType {
