@@ -10,7 +10,7 @@ def get_db(host):
     db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
     try:
         # check if an authentication is required
-        db.collection_names()
+        get_all_collection_names(db)
     except Exception:
         if not sys.stdin.isatty():
             user = sys.stdin.readline().strip()
