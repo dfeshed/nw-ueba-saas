@@ -27,7 +27,7 @@ public class LazyTriggeredModelCacheManagerSamza extends ModelCacheManagerSamza 
 		ModelDAO modelDao = null;
 
 		// loads model by demand if none exists in cache
-		if (modelsCacheInfo == null) {
+		if (modelsCacheInfo == null || modelsCacheInfo.getNumOfModelDaos() == 0) {
 			metrics.loadModelFromStore++;
 			// todo change log to debug
 			logger.info("model={} for context={} does not exists in cache... loading from store",modelConf.getName(),contextId);
