@@ -1,7 +1,8 @@
 import json
-import time
 import os
 import sys
+
+import time
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils.kafka import read_metrics
@@ -67,7 +68,7 @@ def validate_no_missing_events(host, timeout, start, end):
                     if metric_to_count.get(metric_entity_events_streaming_received_message_count, 0) > num_of_fs_and_ps_to_be_processed:
                         logger.warning('too many entity events were created')
                     logger.info('OK')
-                    return True
+                    return metric_to_count.get(metric_event_scoring_persistency_message_count, 0)
                 else:
                     logger.error('FAILED')
                     return False
