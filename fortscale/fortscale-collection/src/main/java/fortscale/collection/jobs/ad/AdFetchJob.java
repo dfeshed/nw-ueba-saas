@@ -5,10 +5,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.utils.logging.Logger;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.naming.NamingEnumeration;
@@ -20,7 +17,14 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by Amir Keren on 17/05/2015.
@@ -43,10 +47,16 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 	private BufferedWriter fileWriter;
+	private String resultsFileId;
+	private String resultsFileName;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		final JobKey key = jobExecutionContext.getJobDetail().getKey();
+		resultsFileName = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase();
+
 		// get parameters values from the job data map
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
@@ -54,6 +64,10 @@ public class AdFetchJob extends FortscaleJob {
 		filter = jobDataMapExtension.getJobDataMapStringValue(map, "filter");
 		//AD selected fields
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
+
+		// random generated ID for deployment wizard fetch and ETL results
+		resultsFileId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsFileId");
+
 	}
 
 	@Override
@@ -71,9 +85,13 @@ public class AdFetchJob extends FortscaleJob {
 		if (!isSucceeded) {
 			return;
 		}
+
+		Path file = Paths.get("/tmp/"  + resultsFileName + "_" + resultsFileId);
+		List<String> lines = new ArrayList<>(Collections.singletonList("success=true"));
+		final Path write = Files.write(file, lines, Charset.forName("UTF-8"));
 	}
 
-	private boolean prepareSinkFileStep() throws JobExecutionException{
+	private boolean prepareSinkFileStep() throws JobExecutionException {
 		startNewStep("Prepare sink file");
 		logger.debug("creating output file at {}", outputPath);
 		// ensure output path exists

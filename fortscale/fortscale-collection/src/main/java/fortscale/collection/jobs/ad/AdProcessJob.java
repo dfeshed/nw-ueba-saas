@@ -10,15 +10,19 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 @DisallowConcurrentExecution
 public abstract class AdProcessJob extends FortscaleJob {
@@ -54,9 +58,15 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	String outputSeparator;
 
+	private String resultsFileId;
+	private String resultsFileName;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		final JobKey key = jobExecutionContext.getJobDetail().getKey();
+		resultsFileName = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase();
 
 		// get parameters values from the job data map
 		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
@@ -72,6 +82,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 
+		// random generated ID for deployment wizard fetch and ETL results
+		resultsFileId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsFileId");
 	}
 
 	@Override
@@ -112,9 +124,12 @@ public abstract class AdProcessJob extends FortscaleJob {
 			morphline.close();
 		}
 
-		
+
 		runFinalStep();
 
+		Path file = Paths.get("/tmp/"  + resultsFileName + "_" + resultsFileId);
+		List<String> lines = new ArrayList<>(Collections.singletonList("success=true"));
+		final Path write = Files.write(file, lines, Charset.forName("UTF-8"));
 	}
 	
 	protected void runFinalStep() throws Exception{
