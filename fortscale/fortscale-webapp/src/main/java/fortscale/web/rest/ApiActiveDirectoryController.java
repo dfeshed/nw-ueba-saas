@@ -39,11 +39,11 @@ public class ApiActiveDirectoryController {
 
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
-	private static final String AD_USERS = "AD Users";
-	private static final String AD_GROUPS = "AD Groups";
-	private static final String AD_OU = "AD OU";
-	private static final String AD_OTHER = "AD Other";
-	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_OTHER));
+	private static final String AD_USERS = "User";
+	private static final String AD_GROUPS = "Group";
+	private static final String AD_OU = "OU";
+	private static final String AD_Devices = "Computer";
+	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_Devices));
 	private static final String RESPONSE_DESTINATION = "/wizard/ad-fetch-response";
 
 	private AtomicBoolean adTaskInProgress = new AtomicBoolean(false);
@@ -215,6 +215,7 @@ public class ApiActiveDirectoryController {
 			final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, fetchResponse);
 
+
 			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
 		}
@@ -230,7 +231,9 @@ public class ApiActiveDirectoryController {
 			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
 			Process process;
 			try {
-				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, adTaskType.toString(), dataSource));
+				final String jobName = dataSource + "_" + adTaskType.toString();
+				UUID resultsFileId = UUID.randomUUID();
+				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, "AD", "resultsFileId="+resultsFileId));
 				process = new ProcessBuilder(arguments).start();
 			} catch (IOException e) {
 				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
@@ -250,22 +253,34 @@ public class ApiActiveDirectoryController {
 
 			logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSource, status);
 
-			Map<String, String> taskResults = new HashMap<>();
-			try (Stream<String> stream = Files.lines(Paths.get(TASK_RESULTS_PATH + "/" + adTaskType.toString() + "_" + dataSource))) {
-				final List<String> lines = stream.collect(Collectors.toList());
-				for (String line : lines) {
-					final String[] split = line.split(DELIMITER);
-					if (split.length != 2) {
-						logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSource);
-						return new AdTaskResponse(adTaskType, false, -1, dataSource);
-					}
+			Map<String, String> taskResults;
 
-					taskResults.put(split[0], split[1]);
+			final String filePath = TASK_RESULTS_PATH + "/" + dataSource.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
+			try {
+				taskResults = new HashMap<>();
+				try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
+                    final List<String> lines = stream.collect(Collectors.toList());
+                    for (String line : lines) {
+                        final String[] split = line.split(DELIMITER);
+                        if (split.length != 2) {
+                            logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSource);
+                            return new AdTaskResponse(adTaskType, false, -1, dataSource);
+                        }
+
+                        taskResults.put(split[0], split[1]);
+                    }
+                } catch (IOException e) {
+                    logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
+                    return new AdTaskResponse(adTaskType, false, -1, dataSource);
+                }
+			} finally {
+				try {
+					Files.delete(Paths.get(filePath));
+				} catch (IOException e) {
+					logger.warn("Failed to delete results file {}.", filePath);
 				}
-			} catch (IOException e) {
-				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
-				return new AdTaskResponse(adTaskType, false, -1, dataSource);
 			}
+
 
 			final String success = taskResults.get(KEY_SUCCESS);
 			if (success == null) {
