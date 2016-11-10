@@ -4,7 +4,7 @@
     {{rsa-icon name='cog' style='filled'}}
   {{/rsa-content-help-trigger}}
 
-  {{#rsa-content-tooltip position='bottom' tooltipId='columnSelectorTooltip'}}
+  {{#rsa-content-tooltip position='left-bottom' tooltipId='columnSelectorTooltip'}}
     <section>
       {{#each table.sortedColumns as |column|}}
         {{#if (not-eq column.dataType "checkbox")}}

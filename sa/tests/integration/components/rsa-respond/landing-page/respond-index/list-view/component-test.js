@@ -106,12 +106,13 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
 });
 
 test('it renders', function(assert) {
-  assert.expect(3);
+  assert.expect(4);
   const done = assert.async();
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
   assert.equal(this.$('.rsa-respond-list__filter-panel').length, 1, 'Filter panel is present');
   assert.equal(this.$('.rsa-data-table').length, 1, 'Data table is present');
+  assert.equal(this.$('.bulk-edit-bar').length, 1, 'Bulk edit bar is present');
 
   waitFor(
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3

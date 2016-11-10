@@ -51,7 +51,7 @@ export default Route.extend({
    */
   _createStream(filter, sort, subDestinationUrlParams, cube) {
     cube.set('status', 'wait');
-    cube.set('users', {});
+    cube.set('users', []);
     this.request.streamRequest({
       method: 'stream',
       modelName: 'incident',
@@ -272,12 +272,12 @@ export default Route.extend({
   },
 
   afterModel(resolvedModel) {
-    this.get('store').findAll('user').then((user) => {
+    this.get('store').findAll('user').then((users) => {
       if (this.get('respondMode.selected') === 'card') {
-        set(resolvedModel.newIncidents, 'users', user);
-        set(resolvedModel.inProgressIncidents, 'users', user);
+        set(resolvedModel.newIncidents, 'users', users);
+        set(resolvedModel.inProgressIncidents, 'users', users);
       } else {
-        set(resolvedModel.allIncidents, 'users', user);
+        set(resolvedModel.allIncidents, 'users', users);
       }
     }).catch(() => {
       Logger.error('Error getting users');
