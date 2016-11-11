@@ -50,9 +50,11 @@
 
         &:checked {
           padding: rsa-whitespace(less) 0;
-          height: 1.35rem; &:hover {
-          background: $formSelectOptionHoverBackgroundColor;
-        }
+          height: 1.35rem;
+
+          &:hover {
+            background: $formSelectOptionHoverBackgroundColor;
+          }
 
           &:last-child {
             border: none;

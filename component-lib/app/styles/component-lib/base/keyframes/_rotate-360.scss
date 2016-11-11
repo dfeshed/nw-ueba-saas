@@ -3,35 +3,35 @@
  * Useful for "wait" animation.
  */
 @keyframes rsa-rotate-360 {
-    0% {
-        transform: rotate(0);
-    }
-    100% {
-        transform: rotate(360deg);
-    }
+  0% {
+    transform: rotate(0);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 @-webkit-keyframes rsa-rotate-360 {
-    0% {
-        -webkit-transform: rotate(0);
-    }
-    100% {
-        -webkit-transform: rotate(360deg);
-    }
+  0% {
+    -webkit-transform: rotate(0);
+  }
+  100% {
+    -webkit-transform: rotate(360deg);
+  }
 }
 @-moz-keyframes rsa-rotate-360 {
-    0% {
-        -moz-transform: rotate(0);
-    }
-    100% {
-        -moz-transform: rotate(360deg);
-    }
+  0% {
+    -moz-transform: rotate(0);
+  }
+  100% {
+    -moz-transform: rotate(360deg);
+  }
 }
 @-ms-keyframes rsa-rotate-360 {
-    0% {
-        -ms-transform: rotate(0);
-    }
-    100% {
-        -ms-transform: rotate(360deg);
-    }
+  0% {
+    -ms-transform: rotate(0);
+  }
+  100% {
+    -ms-transform: rotate(360deg);
+  }
 }
 

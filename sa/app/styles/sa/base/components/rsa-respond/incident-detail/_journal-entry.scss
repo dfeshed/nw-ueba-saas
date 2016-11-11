@@ -112,21 +112,21 @@
     background-color: rsa-color(black, base, $rsa-translucent);
 
     .rsa-journal-entry__edit-note, .rsa-form-textarea textarea {
-          min-height: 8rem;
-        }
+      min-height: 8rem;
+    }
 
     .rsa-journal-entry__edit-attached-files {
-        display: inline-block;
-      }
+      display: inline-block;
+    }
 
     .rsa-journal-entry__edit-milestone {
-        display: block;
-      }
+      display: block;
+    }
 
     .rsa-journal-entry__actions {
       display: block;
-      }
     }
+  }
 
   &__delete-dialog {
     padding: rsa-whitespace();

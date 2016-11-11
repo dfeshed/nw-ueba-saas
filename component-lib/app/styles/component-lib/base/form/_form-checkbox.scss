@@ -23,7 +23,7 @@
       line-height: calc(.5rem + 2px);
       vertical-align: middle;
       overflow: hidden;
-      
+
       .rsa-icon {
         top: 3px;
         left: 2px;
@@ -32,16 +32,16 @@
       }
 
       input {
-         position: relative;
-         left: -100rem;
-         display: block;
-       }
+        position: relative;
+        left: -100rem;
+        display: block;
+      }
     }
-  }  
-  
+  }
+
   &:hover:not(.is-disabled):not(.is-read-only) {
     cursor: pointer;
-  
+
     .outer-wrapper {
       border-color: $formCheckboxHoverBorderColor;
     }
@@ -55,17 +55,17 @@
 
   &.is-active:not(.is-disabled):not(.is-read-only):not(.is-error) {
     .outer-wrapper {
-      border-color: $formCheckboxActiveColor;  
+      border-color: $formCheckboxActiveColor;
     }
   }
 
-  &.is-error {  
+  &.is-error {
     .rsa-form-label {
       color: $formCheckboxErrorColor;
-    }  
+    }
 
     .outer-wrapper {
-      border-color: $formCheckboxErrorColor;      
+      border-color: $formCheckboxErrorColor;
     }
   }
 
@@ -75,10 +75,10 @@
     }
   }
 
-  &.is-disabled {  
+  &.is-disabled {
     .rsa-form-label {
       color: $formCheckboxDisabledColor;
-    }  
+    }
 
     .outer-wrapper {
       color: $formCheckboxDisabledColor;
@@ -91,7 +91,7 @@
     }
   }
 
-  &.is-read-only {  
+  &.is-read-only {
     .outer-wrapper {
       color: $formCheckboxDisabledColor;
     }
@@ -99,7 +99,7 @@
 
   &.is-read-only.is-selected {
     .inner-wrapper {
-        color: $formCheckboxDisabledColor;
+      color: $formCheckboxDisabledColor;
     }
   }
 

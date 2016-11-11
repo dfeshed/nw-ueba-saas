@@ -44,6 +44,7 @@
       margin: 0 auto;
     }
   }
+
   &.is-small,
   &.is-smaller {
     .score {
@@ -78,27 +79,27 @@
 
   &:not(.is-inline) {
     &.invert-color {
-        &.is-danger {
-          circle {
-            stroke: rsa-color(red);
-          }
+      &.is-danger {
+        circle {
+          stroke: rsa-color(red);
         }
-        &.is-high {
-          circle {
-            stroke: rsa-color(orange);
-          }
+      }
+      &.is-high {
+        circle {
+          stroke: rsa-color(orange);
         }
+      }
 
-        &.is-medium {
-          circle {
-            stroke: rsa-color(amber);
-          }
+      &.is-medium {
+        circle {
+          stroke: rsa-color(amber);
         }
-        &.is-low {
-           circle {
-            stroke: rsa-color(green);
-           }
+      }
+      &.is-low {
+        circle {
+          stroke: rsa-color(green);
         }
+      }
     }
 
     &:not(.invert-color) {

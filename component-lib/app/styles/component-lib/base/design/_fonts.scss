@@ -5,12 +5,13 @@
  * should copy those files into the consuming app's /assets/ subdir at build time.
  */
 
- /* open-sans-300 - latin */
+/* open-sans-300 - latin */
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 300;
   src: url('fonts/open-sans-v13-latin-300.eot'); /* IE9 Compat Modes */
+  // sass-lint:disable-block indentation
   src: local('Open Sans Light'), local('OpenSans-Light'),
     url('fonts/open-sans-v13-latin-300.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
     url('fonts/open-sans-v13-latin-300.woff2') format('woff2'), /* Super Modern Browsers */
@@ -25,6 +26,7 @@
   font-style: normal;
   font-weight: 400;
   src: url('fonts/open-sans-v13-latin-regular.eot'); /* IE9 Compat Modes */
+  // sass-lint:disable-block indentation
   src: local('Open Sans'), local('OpenSans'),
     url('fonts/open-sans-v13-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
     url('fonts/open-sans-v13-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
@@ -38,6 +40,7 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
+  // sass-lint:disable-block indentation
   src: url('fonts/open-sans-v13-latin-700.eot'); /* IE9 Compat Modes */
     src: local('Open Sans Bold'), local('OpenSans-Bold'),
     url('fonts/open-sans-v13-latin-700.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
@@ -53,6 +56,7 @@
   font-style: normal;
   font-weight: 800;
   src: url('fonts/open-sans-v13-latin-800.eot'); /* IE9 Compat Modes */
+  // sass-lint:disable-block indentation
   src: local('Open Sans Extrabold'), local('OpenSans-Extrabold'),
     url('fonts/open-sans-v13-latin-800.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
     url('fonts/open-sans-v13-latin-800.woff2') format('woff2'), /* Super Modern Browsers */

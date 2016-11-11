@@ -6,11 +6,11 @@
 
 /* Applies a name-value CSS pair. Handles browser prefixes. */
 @mixin rsa-vendor-prefix($name, $argument...) { /* The "..." enables support for arguments that include commas. */
-    -webkit-#{$name}: #{$argument};
-    -ms-#{$name}: #{$argument};
-    -moz-#{$name}: #{$argument};
-    -o-#{$name}: #{$argument};
-    #{$name}: #{$argument};
+  -webkit-#{$name}: #{$argument};
+  -ms-#{$name}: #{$argument};
+  -moz-#{$name}: #{$argument};
+  -o-#{$name}: #{$argument};
+  #{$name}: #{$argument};
 }
 
 /*

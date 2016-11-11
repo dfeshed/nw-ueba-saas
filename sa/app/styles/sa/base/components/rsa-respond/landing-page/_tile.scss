@@ -15,9 +15,8 @@
   }
 
   &:hover {
-
     &:not(.clicked):not(.edit-mode-active) {
-       @include tile-hover();
+      @include tile-hover();
     }
   }
 
