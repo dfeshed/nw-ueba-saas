@@ -44,7 +44,8 @@ export default Component.extend({
         incidentsData: null,
         alertsData: null,
         ecatData: null,
-        liveConnectData: null
+        liveConnectDataIp: null,
+        liveConnectDataFile: null
       }
     };
 
@@ -124,12 +125,25 @@ export default Component.extend({
       case 'LiveConnect':
         contextData.resultList.forEach((obj) => {
           let lcData = null;
-          if (obj && obj.details && obj.details.IpReputation) {
-            let ipRep = obj.details.IpReputation;
-            lcData = LiveConnect.create();
-            setProperties(lcData, { ...ipRep });
+          const entityType = this.get('entityType');
+          switch (entityType) {
+            case 'FILE':
+              if (obj && obj.details && obj.details.FileReputation) {
+                let fileRep = obj.details.FileReputation;
+                lcData = LiveConnect.create();
+                setProperties(lcData, fileRep);
+                set(this.get('model').contextData, 'liveConnectDataFile', lcData);
+              }
+              break;
+            case 'IP' :
+              if (obj && obj.details && obj.details.IpReputation) {
+                let ipRep = obj.details.IpReputation;
+                lcData = LiveConnect.create();
+                setProperties(lcData, ipRep);
+                set(this.get('model').contextData, 'liveConnectDataIp', lcData);
+              }
+              break;
           }
-          set(this.get('model').contextData, 'liveConnectData', lcData);
         });
         break;
 

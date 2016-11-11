@@ -809,133 +809,87 @@
       {
         "details": {
           "IpReputation": {
-            "customerRiskyFeedbackPercentageTrend": [
-              {
-                "percentage": 3.62,
-                "time": 1470182400000
-              },
-              {
-                "percentage": 28.22,
-                "time": 1471910400000
-              },
-              {
-                "percentage": 39.22,
-                "time": 1472910400000
-              },
-              {
-                "percentage": 58.22,
-                "time": 1473910400000
-              },
-              {
-                "percentage": 78.22,
-                "time": 1474910400000
-              }
-            ],
-            "customerPercentageTrend": [
-              {
-                "percentage": 10.45,
-                "time": 1468972800000
-              },
-              {
-                "percentage": 25.67,
-                "time": 1469404800000
-              },
-              {
-                "percentage": 33.81,
-                "time": 1469491200000
-              },
-              {
-                "percentage": 53.28,
-                "time": 1469664000000
-              },
-              {
-                "percentage": 80.61,
-                "time": 1470355200000
-              },
-              {
-                "percentage": 96.81,
-                "time": 1471910400000
-              }
-            ],
             "feedback": {
               "status": "VIEWED",
               "dateMarked": 1472202063357
             },
-            "customerInvestigatedPercentageTrend": [
+            "risk": "UNSAFE",
+            "customerPercentage": 34.24,
+            "customerPercentageTrend": [
               {
-                "percentage": 30.06,
-                "time": 1469491200000
+                "time": 1401926400000,
+                "percentage": 9.45
               },
               {
-                "percentage": 15.0,
-                "time": 1469577600000
-              },
-              {
-                "percentage": 43.65,
-                "time": 1470787200000
-              },
-              {
-                "percentage": 30.0,
-                "time": 1471219200000
-              },
-              {
-                "percentage": 48.69,
-                "time": 1472169600000
+                "time": 1445731200000,
+                "percentage": 34.24
               }
             ],
-            "customerPercentage": 2.53,
-            "customerInvestigatedPercentage": 48.69,
-            "risk": "UNSAFE",
+            "customerRiskyFeedbackPercentage": 100.0,
+            "customerRiskyFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 55.5
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 45.7
+              }
+            ],
+            "customerNotRiskyFeedbackPercentage": 0.0,
+            "customerNotRiskyFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 9.45
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 34.24
+              }
+            ],
+            "customerInvestigatedPercentage": 9.45,
+            "customerInvestigatedPercentageTrend": [
+              {
+                "time": 1474934400000,
+                "percentage": 9.45
+              }
+            ],
+            "customerUnknownFeedbackPercentage": 0.0,
+            "customerUnknownFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 9.45
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 34.24
+              }
+            ],
+            "customerSuspiciousFeedbackPercentage": 0.0,
+            "customerSuspiciousFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 20.45
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 34.24
+              }
+            ],
+            "customerHighRiskFeedbackPercentage": 0.0,
+            "customerHighRiskFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 75.45
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 64.24
+              }
+            ],
             "unsafeModulesDownloaded": "None",
             "riskReasonTypeList": [
               "COMMUNICATED_BY_UNSAFE_MODULE"
-            ],
-            "customerRiskyFeedbackPercentage": 8.22,
-            "customerNotRiskyFeedbackPercentage": 0.0,
-            "unsafeModulesCommunicated": [
-              {
-                "hashType": "MD5",
-                "id": "0cfec238e1b0992274da5f065cccf87a"
-              }
-            ],
-            "relatedDomains": [
-              "issamox.ddns.net"
-            ],
-            "customerUnknownFeedbackPercentageTrend" : [
-              {
-                "percentage": 23.62,
-                "time": 1470182400000
-              },
-              {
-                "percentage": 33.22,
-                "time": 1471910400000
-              },
-              {
-                "percentage": 10.22,
-                "time": 1472910400000
-              }
-            ],
-            "customerNotRiskyFeedbackPercentageTrend": [
-              {
-                "percentage": 73.62,
-                "time": 1470182400000
-              },
-              {
-                "percentage": 63.22,
-                "time": 1471910400000
-              },
-              {
-                "percentage": 18.22,
-                "time": 1472910400000
-              },
-              {
-                "percentage": 28.22,
-                "time": 1473910400000
-              },
-              {
-                "percentage": 10.22,
-                "time": 1474910400000
-              }
             ],
             "riskScore": 100.0,
             "id": "41.140.181.156",
@@ -944,8 +898,154 @@
             "prefix": "AS",
             "countryCode": "01772",
             "country": "US",
-            "registrant" : "XYZ/LLC",
-            "fileDate" : 1401972584000
+            "registrant": "XYZ/LLC",
+            "fileDate": 1401972584000
+          }
+        }
+      }
+    ],
+    "dataSourceType": "LiveConnect",
+    "datasourceId": "57c149bfe4b0e8a1f1769a40",
+    "currentPageId": 0,
+    "pagingEnabled": "False",
+    "failed": "False",
+    "errorMessage": "None",
+    "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
+    "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
+    "maxPages": 0
+  },
+  {
+    "queryId": "3473d31e-4196-4f06-8d57-41e5d095fcb2",
+    "resultList": [
+      {
+        "details": {
+          "FileReputation": {
+            "id": "1a708f247cc6a7364b873c029bbdf459",
+            "firstSeen": 1476077742000,
+            "risk": "UNSAFE",
+            "riskReasonTypeList": [
+              "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
+              "ASSOCIATED_WITH_RISKY_DOMAIN"
+            ],
+            "relatedDomains": [
+              {
+                "id": "Thisdomainsmailidistooolongfortestingweareusingthisfoo.com",
+                "risk": "UNSAFE",
+                "countryCode": "US",
+                "creationDate": 1475002318162,
+                "expiredDate": 1475002318162,
+                "registrantEmail": "bar@foo.com"
+              }
+            ],
+            "relatedFiles": [
+              {
+                "id": "1a708f247cc6a7364b873c029bbdf459",
+                "risk": "UNKNOWN",
+                "unique": false,
+                "fileName": "filename1",
+                "importHashFunction": "c6a7364b873c029",
+                "compiledTime": 1401972584000
+              },
+              {
+                "id": "2a708f247cc6a7364b873c029bbdf459",
+                "risk": "UNSAFE",
+                "unique": true,
+                "fileName": "filename2",
+                "importHashFunction": "c6a7364b873c030",
+                "compiledTime": 1401972584000
+              }
+            ],
+            "customerPercentage": 34.24,
+            "customerPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 9.45
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 34.24
+              }
+            ],
+            "customerRiskyFeedbackPercentage": 100.0,
+            "customerRiskyFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 55.5
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 45.5
+              }
+            ],
+            "customerNotRiskyFeedbackPercentage": 0.0,
+            "customerNotRiskyFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 9.45
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 34.24
+              }
+            ],
+            "customerInvestigatedPercentage": 9.45,
+            "customerInvestigatedPercentageTrend": [
+              {
+                "time": 1474934400000,
+                "percentage": 9.45
+              }
+            ],
+            "customerUnknownFeedbackPercentage": 0.0,
+            "customerUnknownFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 9.45
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 34.24
+              }
+            ],
+            "customerSuspiciousFeedbackPercentage": 0.0,
+            "customerSuspiciousFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 20.5
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 34.24
+              }
+            ],
+            "customerHighRiskFeedbackPercentage": 0.0,
+            "customerHighRiskFeedbackPercentageTrend": [
+              {
+                "time": 1401926400000,
+                "percentage": 75.5
+              },
+              {
+                "time": 1445731200000,
+                "percentage": 64.5
+              }
+            ],
+            "hashType": "MD5",
+            "unique": false,
+            "fileName": "Filename1",
+            "importHashFunction": "2a708f247cc6a7364",
+            "sha1": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "fileSize": 100000,
+            "compileTime": 1401972584000,
+            "mimeType": "APPLICATION/EXE",
+            "certIssuer": "EMC SSl Decryption Authority EMC Corporation Global Security Organization ",
+            "certSubject": "Subject of the cert",
+            "certSerial": "2312369847239045",
+            "certSigAlgo": "SHA1 with RSA Encryption",
+            "certThumbprint": "as ad 34 de 43 rf oh as ad 34 de 43 rf oh hg ok as ad 34 de 43 rf oh as ad 34 de 43 rf oh hg ok as ad 34 de 43 rf oh as ad 34 de 43 rf oh hg ok as ad 34 de 43 rf oh as ad 34 de 43 rf oh hg ok as ad 34 de 43 rf oh as ad 34 de 43 rf oh hg ok as ad 34 de 43 rf oh as ad 34 de 43 rf oh hg ok",
+            "certNotValidBefore": 1401972584000,
+            "certNotValidAfter": 1401972584000,
+            "certId": 23123123212,
+            "impHash": "32 characters"
           }
         }
       }

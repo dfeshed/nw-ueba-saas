@@ -197,7 +197,23 @@ export default $.extend({}, BaseTranslations, {
       countryCode: 'Country Code',
       countryName: 'Country Name',
       registrant: 'Organization',
-      fileDate: 'Date'
+      fileDate: 'Date',
+      fileName: 'FILE NAME',
+      fileSize: 'FILE SIZE',
+      md5: 'MD5',
+      compileTime: 'COMPILE TIME',
+      sh1: 'SH1',
+      mimeType: 'MIME TYPE',
+      sh256: 'SH256',
+      certificateInfo: 'Certificate Information',
+      certIssuer: 'Certificate Issuer',
+      certSubject: 'Certificate Subject',
+      certSerial: 'Certificate Serial Number',
+      certSigAlgo: 'Signature Algorithm',
+      certThumbprint: 'Certificate Counter Signature',
+      certNotValidBefore: 'Certificate Not Valid Before',
+      certNotValidAfter: 'Certificate Not Valid After'
+
     }
   },
   about: {
