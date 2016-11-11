@@ -25,6 +25,8 @@ let _clients = {};
  * Requests a client at a given socket server URL.
  * Calling connect again with the same URL WILL re-use the same client. In that case, the given `headers` argument
  * is ignored and the original client's headers are used instead.
+ * Avoids re-using prior client if that client is both neither connected nor awaiting a connection.
+ * That can happen if an error on the server has collapsed a previously open connection.
  * @param {String} url The server URL.
  * @param {Object} [headers] Optional key-value pairs to be included in the client request's headers.
  * @returns {Promise} A promise that either resolves once the client is made, or rejects if
@@ -34,7 +36,11 @@ let _clients = {};
  */
 function connect(url, headers) {
   let client = _clients[url];
-  if (!client) {
+  const hasStomp = client && client.stompClient;
+  const hasStompConnection = hasStomp && client.stompClient.connected;
+  const awaitsStompConnection = hasStomp && client.get('isConnecting');
+
+  if (!hasStompConnection && !awaitsStompConnection) {
     client = Client.create({ url, headers });
     _clients[url] = client;
   }

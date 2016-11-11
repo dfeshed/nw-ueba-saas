@@ -115,10 +115,21 @@ export default EmberObject.extend({
   disconnected: false,
 
   /**
+   * If true, indicates that CONNECT message has been sent but a response has not yet been received.
+   * If the STOMP client object already exposed such a property, we wouldn't need this; but it
+   * doesn't, so we do.
+   * @type {boolean}
+   * @public
+   */
+  isConnecting: false,
+
+  /**
    * Opens a server connection to this instance's `url`.
    * Essentially a wrapper to the STOMP client's `connect` method, but adds a promise API, which resolves with this
    * instance when a CONNECTED message has been received from the socket server.  The promise is also cached in this
    * instance's `promise` attribute, for future reference.
+   * This method also sets this instance's `isConnecting` attr to `true` while awaiting the response to the CONNECT message,
+   * and then back to `false` if/when the response is received.
    * @returns Promise
    * @public
    */
@@ -132,9 +143,14 @@ export default EmberObject.extend({
     let me = this;
     return this.set('promise',
       new RSVP.Promise(function(resolve, reject) {
+        me.set('isConnecting', true);
         me.get('stompClient').connect(headers, function() {
+          me.set('isConnecting', false);
           resolve(me);
-        }, reject);
+        }, function(e) {
+          me.set('isConnecting', false);
+          reject(e);
+        });
       })
     );
   },
