@@ -55,7 +55,7 @@ const FileReconComponent = Component.extend({
       }
 
       // find longest string in data for this field
-      const longestFieldData = files.reduce((a, b) => a[field].length > b[field].length ? a[field] : b[field]);
+      const longestFieldData = files.reduce((a, b) => a[field].length > b[field].length ? a : b);
 
       // Calculate width of that longest field
       const calculatedWidth = calculateColumnWidth(longestFieldData[field]);

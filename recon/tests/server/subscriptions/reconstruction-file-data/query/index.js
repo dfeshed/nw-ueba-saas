@@ -59,5 +59,32 @@ const data = [{
     type: 'sha1',
     value: '5a39b799a8f6399999999d4ee024715ed25e252a'
   }]
+}, {
+  type: 'session',
+  extension: 'pdf',
+  fileName: 'a_pdf_name2.pdf',
+  mimeType: 'application/pdf',
+  id: '778899',
+  fileSize: 12341,
+  hashes: [{
+    type: 'md5',
+    value: 'f71f80acccccccb06419a895cadd1a47'
+  }, {
+    type: 'sha1',
+    value: '5a39b799a8f6399999999d4ee024715ed25e252a'
+  }]
+}, {
+  type: 'session',
+  extension: 'pdf',
+  fileName: 'a_pdf_name3.pdf',
+  mimeType: 'application/pdf',
+  id: '990011',
+  fileSize: 12341,
+  hashes: [{
+    type: 'md5',
+    value: 'f71f80acccccccb06419a895cadd1a47'
+  }, {
+    type: 'sha1',
+    value: '5a39b799a8f6399999999d4ee024715ed25e252a'
+  }]
 }];
-

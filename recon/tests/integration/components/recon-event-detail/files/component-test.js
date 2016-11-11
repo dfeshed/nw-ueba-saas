@@ -39,14 +39,14 @@ test('it renders an empty message when no files', function(assert) {
   }, 400);
 });
 
-test('with 2 rows of data, 3 checkboxes total, has one in header', function(assert) {
+test('with 4 rows of data, 5 checkboxes total, has one in header', function(assert) {
   const done = assert.async();
   this.get('redux').dispatch(DataActions.setNewReconView(RECON_VIEW_TYPES_BY_NAME.FILE));
 
   this.render(hbs`{{recon-event-detail/files}}`);
   run.later(() => {
     const numInputs = this.$('input').length;
-    assert.equal(numInputs, 3);
+    assert.equal(numInputs, 5);
     done();
   }, 400);
 });
@@ -60,7 +60,7 @@ test('clicking top checkbox clicks them all', function(assert) {
   run.later(() => {
     this.$('input').first().click();
     run.later(() => {
-      assert.equal(this.$('.is-selected').length, 3);
+      assert.equal(this.$('.is-selected').length, 5);
       done();
     }, 600);
   }, 400);
