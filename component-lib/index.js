@@ -1,8 +1,11 @@
 /* eslint-disable */
 'use strict';
 
+var isDevelopingAddon = require('../common').isDevelopingAddon;
+var projectName = 'component-lib';
+
 module.exports = {
-  name: 'component-lib',
+  name: projectName,
   options: {
     nodeAssets: {
       'clipboard': {
@@ -15,14 +18,8 @@ module.exports = {
     }
   },
 
-  /**
-   * Allows live-reloading when this addon changes even when being served by another projects `ember serve`.
-   * @see https://github.com/ember-cli/ember-cli/blob/master/ADDON_HOOKS.md#isdevelopingaddon
-   * @public
-   */
-  isDevelopingAddon: function() {
-    return true;
-  },
+  // See ../common.js for details on this function
+  isDevelopingAddon: isDevelopingAddon(projectName),
 
   /**
    * Imports assets (fonts, graphics, etc) into the consuming app.
@@ -72,5 +69,4 @@ module.exports = {
     this.options.babel = this.options.babel || {};
     this.options.babel.stage = 0;
   }
-
 };

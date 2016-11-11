@@ -1,31 +1,30 @@
 /* eslint-disable */
-
-var path = require('path');
-
 'use strict';
 
-module.exports = {
-  name: 'recon',
+var path = require('path');
+var isDevelopingAddon = require('../common').isDevelopingAddon;
+var projectName = 'recon';
 
-  /**
-   * Allows live-reloading when this addon changes even when being served by another projects `ember serve`.
-   * @see https://github.com/ember-cli/ember-cli/blob/master/ADDON_HOOKS.md#isdevelopingaddon
-   * @public
-   */
-  isDevelopingAddon: function() {
-    return true;
-  },
+module.exports = {
+  name: projectName,
+
+  // See ../common.js for details on this function
+  isDevelopingAddon: isDevelopingAddon(projectName),
+
   included: function(app) {
     this._super.included.apply(this, arguments);
 
     app.import('vendor/intersection-observer.js');
   },
+
   init: function() {
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
     this.options.babel = this.options.babel || {};
     this.options.babel.stage = 0;
   },
+
   socketRouteGenerator: require('./config/socketRoutes'),
+
   mockDestinations: path.join(__dirname, 'tests', 'server', 'subscriptions')
 };
