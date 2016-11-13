@@ -29,11 +29,10 @@ public class LazyTriggeredModelCacheManagerSamza extends ModelCacheManagerSamza 
 		// loads model by demand if none exists in cache
 		if (modelsCacheInfo == null || modelsCacheInfo.getNumOfModelDaos() == 0) {
 			metrics.loadModelFromStore++;
-			// todo change log to debug
-			logger.info("model={} for context={} does not exists in cache... loading from store",modelConf.getName(),contextId);
+			logger.debug("model={} for context={} does not exists in cache... loading from store",modelConf.getName(),contextId);
 			modelsCacheInfo = loadModelsCacheInfo(contextId);
 			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
-			logger.info("loaded modelDao={} for context={} eventTime={}",modelDao,contextId,eventEpochtime);
+			logger.debug("loaded modelDao={} for context={} eventTime={}",modelDao,contextId,eventEpochtime);
 		}
 
 		// If there is no suitable model in the cache or in the DB, simply return the latest one
