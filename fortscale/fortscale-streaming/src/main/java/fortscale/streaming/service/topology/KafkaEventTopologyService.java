@@ -29,7 +29,7 @@ public class KafkaEventTopologyService implements EventTopologyService, Initiali
     private static final String ERROR_MSG_NO_OUTPUT_TOPIC = "Failed to send message. No mathcing output topic. The message: %s.";
     private static final String ERROR_MSG_NULL_JOB_NAME = "Job name is not set. The job name must be set prior to calling sendEvent() method.";
 
-    @Value("${fortscale.streaming.turbo.mode}")
+    @Value("${fortscale.streaming.turbo.mode:true}")
     private boolean isTurboMode;
     @Value("${fortscale.streaming.topology.event_topology_json:}")
     private String eventTopologyJsonFileName;

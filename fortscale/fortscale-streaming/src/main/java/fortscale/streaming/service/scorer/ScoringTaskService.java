@@ -46,7 +46,7 @@ public class ScoringTaskService {
     @Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
 
-    @Value("${fortscale.streaming.turbo.mode}")
+    @Value("${fortscale.streaming.turbo.mode:true}")
     private boolean isTurboMode;
 
     private String jobName;
