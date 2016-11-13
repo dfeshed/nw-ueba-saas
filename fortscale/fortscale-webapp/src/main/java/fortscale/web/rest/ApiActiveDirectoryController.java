@@ -43,7 +43,7 @@ public class ApiActiveDirectoryController {
 	private static final String AD_OU = "AD OU";
 	private static final String AD_OTHER = "AD Other";
 	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_OTHER));
-	private static final String RESPONSE_DESTINATION = "/wizard/ad-fetch-response";
+	private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -111,7 +111,7 @@ public class ApiActiveDirectoryController {
 		return activeDirectoryService.getAdConnectionsFromDatabase();
 	}
 	
-	@RequestMapping("/ad_fetch" )
+	@RequestMapping("/ad_fetch_etl" )
 	public void startAdFetchAndEtl() throws Exception {
 
 		//todo: mutex
@@ -194,6 +194,7 @@ public class ApiActiveDirectoryController {
 
 			final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, fetchResponse);
+			//Todo - if failer, don't execute the ETL
 
 			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
@@ -207,6 +208,7 @@ public class ApiActiveDirectoryController {
 		 * @return an AdTaskResponse representing the results of the task
 		 */
 		private AdTaskResponse executeAdTask(AdTaskType adTaskType, String dataSource) {
+
 			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
 			Process process;
 			try {
@@ -260,6 +262,7 @@ public class ApiActiveDirectoryController {
 			}
 
 			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), Integer.parseInt(objectsCount), dataSource);
+
 		}
 	}
 
