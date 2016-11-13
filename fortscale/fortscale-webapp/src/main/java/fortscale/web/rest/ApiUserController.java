@@ -109,6 +109,9 @@ public class ApiUserController extends BaseController{
 	private static final String DEFAULT_SORT_FIELD = "username";
 	private final String extendedSearchSortFields;
 
+	private List<String> extendedSearchfieldsRequired;
+
+
 	public ApiUserController() {
 		fieldsRequired = new ArrayList<>();
 		fieldsRequired.add(User.ID_FIELD);
@@ -123,6 +126,18 @@ public class ApiUserController extends BaseController{
 
 		extendedSearchSortFields = String.format("%s, %s, %s, %s, %s, %s", User.getAdInfoField(UserAdInfo.firstnameField), User.getAdInfoField(UserAdInfo.lastnameField),
 				User.displayNameField, User.usernameField, User.getAdInfoField(UserAdInfo.positionField), User.getAdInfoField(UserAdInfo.departmentField));
+
+		extendedSearchfieldsRequired = new ArrayList<>();
+		extendedSearchfieldsRequired.add(User.ID_FIELD);
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.firstnameField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.lastnameField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.positionField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.departmentField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.objectGUIDField));
+		extendedSearchfieldsRequired.add(User.usernameField);
+		extendedSearchfieldsRequired.add(User.followedField);
+		extendedSearchfieldsRequired.add(User.displayNameField);
+		extendedSearchfieldsRequired.add(User.scoreField);
 	}
 
 	/**
@@ -214,7 +229,9 @@ public class ApiUserController extends BaseController{
 	public DataBean<List<UserDetailsBean>> extendedSearch(UserRestFilter userRestFilter){
 
 
-		List<User> users = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
+		PageRequest pagetRequest = createPaging(userRestFilter);
+		List<User> users = getUsers(userRestFilter, pagetRequest, extendedSearchfieldsRequired);
+//				userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
 
 		DataBean<List<UserDetailsBean>> result = getUsersDetails(users);
 
