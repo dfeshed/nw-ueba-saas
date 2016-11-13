@@ -23,6 +23,7 @@ public class LazyTimedModelCacheManagerSamza extends ModelCacheManagerSamza {
 	@Value("${fortscale.model.max.sec.diff.before.outdated}")
 	private long maxSecDiffBeforeOutdated;
 
+
 	public LazyTimedModelCacheManagerSamza(String levelDbStoreName, ModelConf modelConf) {
 		super(levelDbStoreName, modelConf);
 	}
@@ -34,7 +35,7 @@ public class LazyTimedModelCacheManagerSamza extends ModelCacheManagerSamza {
 		ModelDAO modelDao = null;
 		boolean isLoadModel = false;
 		if (modelsCacheInfo != null) {
-			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
+			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime, futureDiffBetweenModelAndEvent);
 			if ((modelDao == null || isModelEndTimeOutdated(modelDao.getEndTime(), eventEpochtime)) && canLoadModelsCacheInfo(modelsCacheInfo)) {
 				isLoadModel = true;
 			}
@@ -44,7 +45,7 @@ public class LazyTimedModelCacheManagerSamza extends ModelCacheManagerSamza {
 
 		if (isLoadModel) {
 			modelsCacheInfo = loadModelsCacheInfo(contextId);
-			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
+			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime, futureDiffBetweenModelAndEvent);
 		}
 
 		// If there is no suitable model in the cache or in the DB, simply return the latest one

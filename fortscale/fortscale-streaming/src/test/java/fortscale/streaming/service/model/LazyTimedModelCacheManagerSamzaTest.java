@@ -243,7 +243,7 @@ public class LazyTimedModelCacheManagerSamzaTest {
 		verifyNoMoreInteractions(mongo);
 		modelsCacheInfo = cache.get(ModelCacheManagerSamza.getStoreKey(modelConf, DEFAULT_CONTEXT_ID));
 		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
-		Assert.assertEquals(expectedModelDao, modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(eventTime)));
+		Assert.assertEquals(expectedModelDao, modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(eventTime), 0));
 	}
 
 	private Pair<ModelDAO, ModelDAO> populateForDefault(Date mongoStartTime, Date mongoEndTime, Date cacheStartTime, Date cacheEndTime, Date lastLoadTime) {
@@ -285,7 +285,7 @@ public class LazyTimedModelCacheManagerSamzaTest {
 
 			if (expectedModelDaoInCache != null) {
 				long currentEpochtime = convertToSeconds(new Date());
-				ModelDAO modelDaoWithLatestEndTime = next.getValue().getModelDaoWithLatestEndTimeLte(currentEpochtime);
+				ModelDAO modelDaoWithLatestEndTime = next.getValue().getModelDaoWithLatestEndTimeLte(currentEpochtime, 0);
 				Assert.assertEquals(expectedModelDaoInCache, modelDaoWithLatestEndTime);
 			}
 		}

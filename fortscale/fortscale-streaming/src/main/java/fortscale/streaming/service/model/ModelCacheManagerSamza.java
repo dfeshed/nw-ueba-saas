@@ -34,6 +34,8 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	private long maxSecDiffBeforeExpired;
 	@Value("${fortscale.model.wait.sec.between.last.usage.epochtime.updates}")
 	private long waitSecBetweenLastUsageEpochtimeUpdates;
+	@Value("${fortscale.model.max.sec.futureDiffBetweenModelAndEvent}")
+	protected long futureDiffBetweenModelAndEvent;
 
 	@Autowired
 	private FactoryService<AbstractDataRetriever> dataRetrieverFactoryService;
@@ -137,7 +139,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		{
 			getMetrics().modelDoesNotExist++;
 		}
-		ModelDAO result = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
+		ModelDAO result = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime, futureDiffBetweenModelAndEvent);
 
 		if (result==null && doesModelExist)
 		{
