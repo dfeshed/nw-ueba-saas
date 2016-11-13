@@ -18,13 +18,12 @@ public class UsernameNormalizationConfig implements StreamingTaskConfig {
 	private Boolean updateOnlyFlag;
 	private String classifier;
 	private UsernameNormalizationService usernameNormalizationService;
-	private Boolean shouldBeTaged;
 
 
 	public UsernameNormalizationConfig(String outputTopic, String normalizationBasedField, String
 			domainField, String fakeDomain, String normalizedUsernameField, String partitionField, Boolean
 			updateOnlyFlag, String classifier,
-			UsernameNormalizationService usernameNormalizationService,Boolean shouldBeTaged) {
+			UsernameNormalizationService usernameNormalizationService) {
 		this.outputTopic = outputTopic;
 		this.normalizationBasedField = normalizationBasedField;
 		this.domainField = domainField;
@@ -34,7 +33,6 @@ public class UsernameNormalizationConfig implements StreamingTaskConfig {
 		this.updateOnlyFlag = updateOnlyFlag;
 		this.classifier = classifier;
 		this.usernameNormalizationService = usernameNormalizationService;
-		this.shouldBeTaged = shouldBeTaged;
 	}
 
 	public String getOutputTopic() {
@@ -109,11 +107,4 @@ public class UsernameNormalizationConfig implements StreamingTaskConfig {
 		this.usernameNormalizationService = usernameNormalizationService;
 	}
 
-	public Boolean getShouldBeTagged() {
-		return shouldBeTaged;
-	}
-
-	public void setShouldBeTaged(Boolean shouldBeTaged) {
-		this.shouldBeTaged = shouldBeTaged;
-	}
 }

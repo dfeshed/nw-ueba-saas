@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='utf-8'?>
+<job-scheduling-data
+		xmlns="http://www.quartz-scheduler.org/xml/JobSchedulingData"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.quartz-scheduler.org/xml/JobSchedulingData http://www.quartz-scheduler.org/xml/job_scheduling_data_2_0.xsd"
+		version="2.0">
+
+	<schedule>
+        <!--TODO: rename this (and all relevant stuff) to be "high score contexts" (and not "entity events") -->
+		<job>
+			<name>DailyEntityEventsModelBuilding</name>
+			<group>Model</group>
+			<description>Triggers once a day the building of all configured models only for users who triggered an alert</description>
+			<job-class>fortscale.collection.jobs.model.ModelBuildingJob</job-class>
+			<durability>true</durability>
+			<recover>true</recover>
+
+			<job-data-map>
+				<entry>
+					<key>sessionId</key>
+					<value>highScoreModels</value>
+				</entry>
+				<entry>
+					<key>buildAllModels</key>
+					<value>true</value>
+				</entry>
+				<entry>
+					<key>targetTopic</key>
+					<value>${fortscale.model.build.entityEvents.control.input.topic}</value>
+				</entry>
+				<entry>
+					<key>fortscale.model.build.control.output.topic</key>
+					<value>${fortscale.model.build.control.output.topic}</value>
+				</entry>
+				<entry>
+					<key>${fortscale.model.build.message.field.select.high.score.contexts}</key>
+					<value>true</value>
+				</entry>
+			</job-data-map>
+		</job>
+
+		<trigger>
+			<cron>
+				<name>daily_entity_events_model_building_trigger</name>
+				<group>Model</group>
+				<job-name>DailyEntityEventsModelBuilding</job-name>
+				<job-group>Model</job-group>
+				<cron-expression>0 0 1 * * ?</cron-expression>
+			</cron>
+		</trigger>
+	</schedule>
+</job-scheduling-data>

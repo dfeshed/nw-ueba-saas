@@ -69,7 +69,7 @@ def all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time):
     return mongo.get_db(host).FeatureBucketMetadata.find_one({
         'isSynced': False,
         'startTime' if use_start_time else 'endTime': {
-            '$gte': start_time_epoch,
-            '$lt': end_time_epoch
+            '$gte': start_time_epoch if start_time_epoch is not None else 0,
+            '$lt': end_time_epoch if end_time_epoch is not None else sys.maxint
         }
     }) is None

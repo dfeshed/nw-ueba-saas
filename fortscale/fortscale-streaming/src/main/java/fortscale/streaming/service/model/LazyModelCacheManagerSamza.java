@@ -38,7 +38,8 @@ public class LazyModelCacheManagerSamza extends ModelCacheManagerSamza {
 			modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(eventEpochtime);
 		}
 
-		return modelDao;
+		// If there is no suitable model in the cache or in the DB, simply return the latest one
+		return modelDao == null ? modelsCacheInfo.getModelDaoWithLatestEndTime() : modelDao;
 	}
 
 	private boolean canLoadModelsCacheInfo(ModelsCacheInfo modelsCacheInfo) {

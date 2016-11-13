@@ -13,6 +13,12 @@
             <job-class>fortscale.collection.jobs.activity.UserActivityJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
+            <job-data-map>
+                <entry>
+                    <key>sequential</key>
+                    <value>false</value>
+                </entry>
+            </job-data-map>
         </job>
 
         <trigger>

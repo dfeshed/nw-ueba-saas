@@ -578,7 +578,7 @@ public class CleanJob extends FortscaleJob {
 	 */
 	private boolean clearKafka(boolean doValidate) {
 		logger.info("attempting to clear all kafka topics");
-		return kafkaService.deleteAllEntities(doValidate);
+		return kafkaService.deleteAllEntitiesIncludingDataFolder(doValidate);
 	}
 
 	/***

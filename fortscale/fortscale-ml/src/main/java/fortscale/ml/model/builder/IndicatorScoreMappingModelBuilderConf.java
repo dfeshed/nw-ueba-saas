@@ -8,7 +8,7 @@ public class IndicatorScoreMappingModelBuilderConf extends SMARTScoreMappingMode
 
 	@JsonCreator
 	public IndicatorScoreMappingModelBuilderConf() {
-		super(50, 100);
+		super(null, null, 50, 100, null, null);
 	}
 
 	@Override

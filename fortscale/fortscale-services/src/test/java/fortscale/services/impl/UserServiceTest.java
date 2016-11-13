@@ -7,7 +7,6 @@ import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.ClassifierScore;
 import fortscale.domain.core.Computer;
 import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ComputerRepository;
@@ -67,10 +66,7 @@ public class UserServiceTest {
 	
 	@Mock
 	private EventScoreDAO vpnDAO;
-	
-	@Mock
-	private ImpalaWriterFactory impalaWriterFactory;
-	
+
 	@Mock
 	private ADParser adUserParser;
 
@@ -151,62 +147,6 @@ public class UserServiceTest {
 		assertEquals(machine2.getIsSensitive(), true);
 		assertEquals(machine2.getOperatingSystem(), "LINUX");
 		assertEquals(machine2.getUsageClassifiers(), null);
-	}
-
-	@Test
-	public void removeClassifierFromAllUsersTest() {
-		// Arrange
-		int numOfUsers = 100;
-		int pageSize = 23;
-
-		List<User> listOfUsers = new ArrayList<>(numOfUsers);
-		Set<List<User>> subLists = new HashSet<>();
-		userService.setPageSize(pageSize);
-
-		for (int i = 0; i < numOfUsers; i++) {
-			User user = new User();
-			user.setUsername("user" + i);
-
-			ClassifierScore score = new ClassifierScore();
-			score.setClassifierId("Login");
-			user.putClassifierScore(score);
-
-			score = new ClassifierScore();
-			score.setClassifierId("SSH");
-			user.putClassifierScore(score);
-
-			score = new ClassifierScore();
-			score.setClassifierId("VPN");
-			user.putClassifierScore(score);
-
-			listOfUsers.add(user);
-		}
-
-		when(userRepository.count()).thenReturn((long)numOfUsers);
-		int numOfPages = ((numOfUsers - 1) / pageSize) + 1;
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, pageSize);
-			int first = i * pageSize;
-			int last = Math.min((i + 1) * pageSize, numOfUsers);
-			List<User> subList = listOfUsers.subList(first, last);
-			when(userRepository.findAllExcludeAdInfo(pageRequest)).thenReturn(subList);
-			subLists.add(subList);
-		}
-
-		// Act
-		userService.removeClassifierFromAllUsers("Login");
-		userService.removeClassifierFromAllUsers("SSH");
-		userService.removeClassifierFromAllUsers("VPN");
-
-		// Assert
-		for (List<User> subList : subLists)
-			verify(userRepository, times(3)).save(subList);
-
-		for (User user : listOfUsers) {
-			verify(usernameService, times(3)).updateUsernameInCache(user);
-			assertTrue(user.getTags().size() == 0);
-			assertTrue(user.getScores().isEmpty());
-		}
 	}
 
 	@Test

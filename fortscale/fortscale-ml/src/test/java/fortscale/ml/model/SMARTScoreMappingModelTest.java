@@ -18,6 +18,7 @@ public class SMARTScoreMappingModelTest {
 		Map<Double, Double> mapping = model.getScoreMappingConf().getMapping();
 
 		Assert.assertEquals(0, mapping.get(0D), 0.0001);
+		Assert.assertEquals(49, mapping.get(threshold - SMARTScoreMappingModel.EPSILON), 0.0001);
 		Assert.assertEquals(50, mapping.get(threshold), 0.0001);
 		Assert.assertEquals(100, mapping.get(maximalScore), 0.0001);
 		Assert.assertEquals(100, mapping.get(100D), 0.0001);

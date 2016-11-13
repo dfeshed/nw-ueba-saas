@@ -132,7 +132,9 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 		{
 			getMetrics().modelNotFoundInTimePeriod++;
 		}
-		return result;
+
+		// If there is no suitable model in the cache, simply return the latest one
+		return result == null ? modelsCacheInfo.getModelDaoWithLatestEndTime() : result;
 	}
 
 	protected static String getStoreKey(ModelConf modelConf, String contextId) {

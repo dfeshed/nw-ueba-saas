@@ -164,7 +164,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         // and date_time_unix<=#{end_time}
         try {
             String entityId = tableToEntityIdAndIPField.get(tableName).getLeft();
-
             List<Term> conditions = new ArrayList<>();
             conditions.add(dataQueryHelper.createUserTerm(entityId, username));
             CustomedFilter filter = new CustomedFilter(SOURCE_IP_COLUMN, "equals", ip);
@@ -172,8 +171,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
             conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(entityId, EVENT_TIME_UTC,
                     (Long) lateralMovement.get(notificationStartTimestampField),
                     (Long) lateralMovement.get(notificationEndTimestampField)));
-            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(), -1,
-                    DataQueryDTOImpl.class);
+            DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(entityId, "*", conditions, new ArrayList<>(),
+                    -1, DataQueryDTOImpl.class);
             List<Map<String, Object>> results = runQuery(dataQueryDTO);
             if (results!=null && results.size() > 0) {
                 User user = userService.findByUsername(username);

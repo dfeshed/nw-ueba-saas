@@ -9,21 +9,20 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 @CompoundIndexes({
-		@CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
+		@CompoundIndex(name = "user_start_time", def = "{'entityId': -1, 'startTime': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class UserActivityDocument extends AbstractAuditableDocument { //Todo: when you subclass this make sure that you add the new document class to UserActivityDocumentFactory.getInstanceByActivityName(String activityName)
-	public static final String USER_NAME_FIELD_NAME = "normalizedUsername";
+	public static final String ENTITY_ID_FIELD_NAME = "entityId";
 	public static final String START_TIME_FIELD_NAME = "startTime";
 	public static final String END_TIME_FIELD_NAME = "endTime";
 	public static final String DATA_SOURCES_FIELD_NAME = "dataSources";
 	@Indexed
-	@Field(USER_NAME_FIELD_NAME)
-	protected String normalizedUsername;
+	@Field(ENTITY_ID_FIELD_NAME)
+	protected String entityId;
 	@Indexed
 	@Field(START_TIME_FIELD_NAME)
 	protected Long startTime;
@@ -32,12 +31,12 @@ public abstract class UserActivityDocument extends AbstractAuditableDocument { /
 	@Field(DATA_SOURCES_FIELD_NAME)
 	private List<String> dataSources;
 
-	public String getNormalizedUsername() {
-		return normalizedUsername;
+	public String getEntityId() {
+		return entityId;
 	}
 
-	public void setNormalizedUsername(String normalizedUsername) {
-		this.normalizedUsername = normalizedUsername;
+	public void setEntityId(String entityId) {
+		this.entityId = entityId;
 	}
 
 	public Long getStartTime() {

@@ -2,8 +2,8 @@ package fortscale.web.extensions;
 
 import fortscale.domain.dto.DateRange;
 import fortscale.web.beans.bean.editors.DateRangeEditor;
-import fortscale.web.beans.request.AlertRestFilter;
-import fortscale.web.beans.request.DataSourceAnomalyTypePairListWrapperPropertyEditor;
+import fortscale.domain.rest.AlertRestFilter;
+import fortscale.domain.rest.DataSourceAnomalyTypePairListWrapperPropertyEditor;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;

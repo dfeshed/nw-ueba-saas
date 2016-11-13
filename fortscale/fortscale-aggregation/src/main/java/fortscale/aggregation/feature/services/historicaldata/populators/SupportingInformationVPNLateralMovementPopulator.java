@@ -29,12 +29,17 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 
 	private static Logger logger = Logger.getLogger(SupportingInformationVPNLateralMovementPopulator.class);
 
+	private static final String SOURCE_MACHINE = "source_machine";
 	private static final String TARGET_MACHINE = "target_machine";
 	private static final String DATA_SOURCE = "data_source";
 	private static final String DISPLAY_NAME = "display_name";
 	private static final String ENTITY_ID = "entity_id";
 	private static final String VPN_SESSION = "vpn_session";
 	private static final String NORMALIZED_USERNAME = "normalized_username";
+	private static final String SOURCE_IP = "source_ip";
+	private static final String LOCAL_IP = "local_ip";
+	private static final String COUNTRY_NAME = "country_name";
+	private static final String EVENT_SCORE = "event_score";
 
     /**
      * Populates the supporting information data based on the context value, evidence time and anomaly value.
@@ -75,8 +80,10 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 			SupportingInformationKey supportingInformationKey = new SupportingInformationDualKey(Long.
 					toString(startTimeInMillis), Long.toString(endTimeInMillis), vpnSessionOverlap.getUsername());
 			vpnLateralMovementMap.put(supportingInformationKey, vpnSessionOverlap.getUsername());
-			additionalInformationMap.put(supportingInformationKey, createAdditionalInformationValues("", VPN_SESSION,
-					displayName, evidence.getEntityName(), vpnSessionOverlap.getEntity_id()));
+			additionalInformationMap.put(supportingInformationKey, createAdditionalInformationValues("", "",
+					VPN_SESSION, displayName, evidence.getEntityName(), vpnSessionOverlap.getEntity_id(),
+					vpnSessionOverlap.getSource_ip(), vpnSessionOverlap.getLocal_ip(), vpnSessionOverlap.getCountry(),
+					vpnSessionOverlap.getEventscore()));
 		}
 		for (VpnLateralMovement vpnLateralMovement: vpnLateralMovementEvents.getUser_activity_events()) {
 			long time = vpnLateralMovement.getEvent_time_utc();
@@ -89,9 +96,10 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
 					toString(startTimeInMillis), vpnLateralMovement.getUsername());
 			vpnLateralMovementMap.put(supportingInformationKey, vpnLateralMovement.getUsername());
 			additionalInformationMap.put(supportingInformationKey,
-					createAdditionalInformationValues(vpnLateralMovement.getNormalized_dst_machine(),
-							vpnLateralMovement.getData_source(), displayName,
-							vpnLateralMovement.getNormalized_username(), vpnLateralMovement.getEntity_id()));
+					createAdditionalInformationValues(vpnLateralMovement.getNormalized_src_machine(),
+							vpnLateralMovement.getNormalized_dst_machine(), vpnLateralMovement.getData_source(),
+							displayName, vpnLateralMovement.getNormalized_username(), vpnLateralMovement.getEntity_id(),
+							vpnLateralMovement.getSource_ip(), "", "", vpnLateralMovement.getEventscore()));
 		}
         SupportingInformationGenericData<String> supportingInformationData =
 				new SupportingInformationGenericData<>(vpnLateralMovementMap);
@@ -99,14 +107,20 @@ public class SupportingInformationVPNLateralMovementPopulator implements Support
         return supportingInformationData;
     }
 
-	private Map<String, Object> createAdditionalInformationValues(String targetMachine, String dataSource,
-			String displayName, String normalizedUsername, String entityId) {
+	private Map<String, Object> createAdditionalInformationValues(String sourceMachine, String targetMachine,
+			String dataSource, String displayName, String normalizedUsername, String entityId, String sourceIp,
+			String localIp, String countryName, long eventScore) {
 		Map<String, Object> additionalInformationValues = new HashMap<>();
+		additionalInformationValues.put(SOURCE_MACHINE, sourceMachine);
 		additionalInformationValues.put(TARGET_MACHINE, targetMachine);
 		additionalInformationValues.put(DATA_SOURCE, dataSource);
 		additionalInformationValues.put(DISPLAY_NAME, displayName);
 		additionalInformationValues.put(NORMALIZED_USERNAME, normalizedUsername);
 		additionalInformationValues.put(ENTITY_ID, entityId);
+		additionalInformationValues.put(SOURCE_IP, sourceIp);
+		additionalInformationValues.put(LOCAL_IP, localIp);
+		additionalInformationValues.put(COUNTRY_NAME, countryName);
+		additionalInformationValues.put(EVENT_SCORE, eventScore);
 		return additionalInformationValues;
 	}
 

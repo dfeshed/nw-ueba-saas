@@ -308,14 +308,19 @@ public class EventProcessJob implements Job {
 	protected boolean processFile(File file) throws IOException {
 
 
+        long totalLines=0;
+
 		BufferedLineReader reader = new BufferedLineReader();
 		reader.open(file);
 		ItemContext itemContext = new ItemContext(file.getName(),taskMonitoringHelper,morphlineMetrics);
 
-		LineNumberReader lnr = new LineNumberReader(new FileReader(file));
-		lnr.skip(Long.MAX_VALUE);
-		long totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
-		lnr.close();
+        //read the line number only in case that the linesPrintEnabled flag is turned on
+        if (linesPrintEnabled) {
+            LineNumberReader lnr = new LineNumberReader(new FileReader(file));
+            lnr.skip(Long.MAX_VALUE);
+            totalLines = lnr.getLineNumber() + 1; //Add 1 because line index starts at 0
+            lnr.close();
+        }
 
 		try {
 			int numOfLines = 0;

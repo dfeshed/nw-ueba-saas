@@ -6,6 +6,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
+import fortscale.domain.core.dao.AlertsRepositoryCustom;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.entity.event.EntityEventGlobalParamsConfService;
@@ -48,12 +49,14 @@ public class ModelConfProductionConfFilesTest {
 		@Mock private EntityEventDataReaderService entityEventDataReaderService;
 		@Mock private EntityEventMongoStore entityEventMongoStore;
 		@Mock private ModelStore modelStore;
+		@Mock private AlertsRepositoryCustom alertsRepositoryCustom;
 
 		@Bean public FeatureBucketsReaderService getFeatureBucketsReaderService() {return featureBucketsReaderService;}
 		@Bean public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {return aggregatedFeatureEventsReaderService;}
 		@Bean public EntityEventDataReaderService getEntityEventDataReaderService() {return entityEventDataReaderService;}
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
 		@Bean public ModelStore getModelStore() {return modelStore;}
+		@Bean public AlertsRepositoryCustom getAlertsRepositoryCustom() {return alertsRepositoryCustom;}
 
 		@Bean
 		public BucketConfigurationService bucketConfigurationService() {

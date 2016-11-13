@@ -111,7 +111,7 @@ public class StatsServiceImpl implements StatsService {
                             boolean isExternalMetricUpdateTick, boolean isExternalEnginePushTick) {
 
         logger.info("Creating StatsServiceImpl instance with engine={} " +
-                    "processName={} processGroupName={} processPID={} hostnameService={} ",
+                    "processName={} processGroupName={} processPID={} hostnameService={} " +
                     "tickSeconds={}" +
                     "metricsUpdatePeriodSeconds={} metricsUpdateSlipWarnSeconds={}" +
                     "enginePushPeriodSeconds={} enginePushSlipWarnSeconds={}" +

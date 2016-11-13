@@ -21,6 +21,7 @@ public class ModelBuildingJob extends FortscaleJob {
 	private static final String MODELS_TO_BUILD_KEY_NAME = "modelsToBuild";
 	private static final String DELIMITER = ",";
 	private static final String TARGET_TOPIC_KEY_NAME = "targetTopic";
+	private static final String SELECT_HIGH_SCORE_CONTEXTS = "selectHighScoreContexts";
 
 	@Value("${fortscale.model.build.message.field.session.id}")
 	private String sessionIdJsonField;
@@ -28,6 +29,8 @@ public class ModelBuildingJob extends FortscaleJob {
 	private String modelConfNameJsonField;
 	@Value("${fortscale.model.build.message.field.end.time.in.seconds}")
 	private String endTimeInSecondsJsonField;
+	@Value("${fortscale.model.build.message.field.select.high.score.contexts}")
+	private String selectHighScoreContextsJsonField;
 	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
@@ -35,6 +38,7 @@ public class ModelBuildingJob extends FortscaleJob {
 	private boolean buildAllModels;
 	private List<String> modelsToBuild;
 	private String targetTopic;
+	private boolean selectHighScoreContexts;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -59,6 +63,7 @@ public class ModelBuildingJob extends FortscaleJob {
 
 		targetTopic = jobDataMapExtension.getJobDataMapStringValue(jobDataMap, TARGET_TOPIC_KEY_NAME, null);
 		Assert.hasText(targetTopic, "Missing valid target topic name.");
+		selectHighScoreContexts = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, SELECT_HIGH_SCORE_CONTEXTS, false);
 	}
 
 	@Override
@@ -81,6 +86,7 @@ public class ModelBuildingJob extends FortscaleJob {
 		event.put(sessionIdJsonField, sessionId);
 		long currTimeSec = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		event.put(endTimeInSecondsJsonField, currTimeSec);
+		event.put(selectHighScoreContextsJsonField, selectHighScoreContexts);
 
 		if (buildAllModels) {
 			event.put(modelConfNameJsonField, allModelsConstantValue);

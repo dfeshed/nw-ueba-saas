@@ -6,18 +6,20 @@ import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.core.dao.UserScorePercentilesRepository;
 import fortscale.services.AlertsService;
 import fortscale.services.UserScoreService;
+import fortscale.services.UserService;
+import fortscale.services.UserWithAlertService;
 import fortscale.services.cache.CacheHandler;
 import fortscale.services.configuration.Impl.UserScoreConfiguration;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.support.ManagedMap;
 import org.springframework.stereotype.Service;
-import fortscale.utils.logging.Logger;
 
 import javax.annotation.PostConstruct;
-import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -34,7 +36,7 @@ public class UserScoreServiceImpl implements UserScoreService {
     public static final int DAYS_RELEVENT_FOR_UNRESOLVED_ALERTS_DEFAULT = 90;
 
     /**
-     * Default values  of mapiing percentiles to user severity.
+     * Default values  of mapping percentiles to user severity.
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_LOW_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT will get low severity
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_MEDIUM_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT will get medium severity
      * Users with user score between - MIN_PERCENTIL_USER_SEVERITY_HIGH_DEFAULT - MIN_PERCENTIL_USER_SEVERITY_CRITICAL_DEFAULT will get high severity
@@ -49,10 +51,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     public static final String APP_CONF_PREFIX = "user.socre.conf";
     private static final String SCORE_SEVERITIES_CACHE = "SCORE_SEVERITIES_CACHE";
 
-
-
-
-
     private Logger logger = Logger.getLogger(this.getClass());
 
     /*
@@ -65,7 +63,6 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private UserScorePercentilesRepository userScorePercentilesRepository;
 
-
     @Autowired
     private UserRepository userRepository;
 
@@ -75,11 +72,16 @@ public class UserScoreServiceImpl implements UserScoreService {
     @Autowired
     private AlertsRepository alertsRepository;
 
-
     @Autowired
     private ApplicationConfigurationHelper applicationConfigurationHelper;
 
+    @Autowired
+    private UserService userService;
+
     private UserScoreConfiguration userScoreConfiguration;
+
+    @Autowired
+    private UserWithAlertService userWithAlertService;
 
     @PostConstruct
     public void init()  {
@@ -129,13 +131,18 @@ public class UserScoreServiceImpl implements UserScoreService {
      * Get all the alerts of user with the contribution of each alert to the total score,
      * and sum all the points. Save the score to the alert and return the new score.
      *
-     * @param userName
+     * @param userId
      * @return the new user socre
      */
-    public double recalculateUserScore(String userName) {
+    public double recalculateUserScore(String userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            logger.error("Failed to find user with id {}", userId);
+            return -1;
+        }
 
+        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userId);
 
-        Set<Alert> alerts = alertsService.getAlertsRelevantToUserScore(userName);
         double userScore = 0;
         for (Alert alert : alerts) {
             double updatedUserScoreContributionForAlert = getUserScoreContributionForAlertSeverity(alert.getSeverity(), alert.getFeedback(), alert.getStartDate());
@@ -151,13 +158,10 @@ public class UserScoreServiceImpl implements UserScoreService {
                 alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
 
-
-
             userScore += alert.getUserScoreContribution();
         }
-        User user = userRepository.findByUsername(userName);
-        user.setScore(userScore);
 
+        user.setScore(userScore);
 
         userRepository.save(user);
         return userScore;
@@ -316,12 +320,12 @@ public class UserScoreServiceImpl implements UserScoreService {
     public List<Pair<Double, Integer>> calculateAllUsersScores() {
         //Step 1 - get all relevant users
         logger.info("Get all relevant users");
-        Set<String> userNames = alertsService.getDistinctUserNamesFromAlertsRelevantToUserScore();
-        logger.info("Going to update score for {} users" + userNames.size());
+        Set<String> userIds = alertsService.getDistinctUserIdsFromAlertsRelevantToUserScore();
+        logger.info("Going to update score for {} users" + userIds.size());
         //Step 2 - Update all users
         Map<Double, AtomicInteger> scoresAtomicHistogram = new HashMap<>();
-        for (String userName : userNames) {
-            double score = this.recalculateUserScore(userName);
+        for (String userId : userIds) {
+            double score = this.recalculateUserScore(userId);
             //Add to
             AtomicInteger count = scoresAtomicHistogram.get(score);
             if (count == null) {
@@ -330,6 +334,7 @@ public class UserScoreServiceImpl implements UserScoreService {
             }
             count.incrementAndGet();
 
+            userWithAlertService.recalculateNumberOfUserAlertsByUserId(userId);
         }
         logger.info("Finish updating user score");
 
@@ -340,7 +345,6 @@ public class UserScoreServiceImpl implements UserScoreService {
         });
         return scoresHistogram;
     }
-
 
     /**
      * Translate the user score to severity, using the percentiles table and configuration.
@@ -354,11 +358,7 @@ public class UserScoreServiceImpl implements UserScoreService {
      * @return
      */
     public Severity getUserSeverityForScore(double userScore) {
-        NavigableMap<Double, Severity> severityNavigableMap = userScoreSeveritiesCache.get(SCORE_SEVERITIES_CACHE);
-        if (severityNavigableMap == null) {
-            severityNavigableMap = loadSeveritiesToCache();
-            userScoreSeveritiesCache.put(SCORE_SEVERITIES_CACHE, severityNavigableMap);
-        }
+        NavigableMap<Double, Severity> severityNavigableMap = getSeverityNavigableMap();
 
         Map.Entry<Double,Severity> value = severityNavigableMap.ceilingEntry(userScore);
         Severity userSeverity;
@@ -368,6 +368,50 @@ public class UserScoreServiceImpl implements UserScoreService {
             userSeverity=value.getValue();
         }
         return userSeverity;
+    }
+
+    private NavigableMap<Double, Severity> getSeverityNavigableMap() {
+        NavigableMap<Double, Severity> severityNavigableMap = userScoreSeveritiesCache.get(SCORE_SEVERITIES_CACHE);
+        if (severityNavigableMap == null) {
+            severityNavigableMap = loadSeveritiesToCache();
+            userScoreSeveritiesCache.put(SCORE_SEVERITIES_CACHE, severityNavigableMap);
+        }
+        return severityNavigableMap;
+    }
+
+    public Map<Severity, Double[]> getSeverityRange(){
+        NavigableMap<Double, Severity> severityNavigableMap = new TreeMap<>(getSeverityNavigableMap());
+
+        return convertToRangeMap(severityNavigableMap);
+    }
+
+    private Map<Severity, Double[]> convertToRangeMap(NavigableMap<Double, Severity> severityNavigableMap) {
+        Map<Severity, Double[]> rangeMap = new ManagedMap<>();
+        Map.Entry<Double, Severity> doubleSeverityEntry = severityNavigableMap.pollFirstEntry();
+
+        Double minLimit = 1d;
+        Double maxLimit = 0d;
+        Severity currSeverity = doubleSeverityEntry.getValue();
+
+        // Calculating the score range for each severity
+        while (doubleSeverityEntry != null) {
+            if (!currSeverity.equals(doubleSeverityEntry.getValue())){
+                rangeMap.put(currSeverity, new Double[]{minLimit, doubleSeverityEntry.getKey()});
+                minLimit = doubleSeverityEntry.getKey();
+                currSeverity = doubleSeverityEntry.getValue();
+            }
+
+            if (currSeverity.equals(doubleSeverityEntry.getValue())) {
+                if (maxLimit < doubleSeverityEntry.getKey()) {
+                    maxLimit = doubleSeverityEntry.getKey();
+                }
+            }
+
+            doubleSeverityEntry = severityNavigableMap.pollFirstEntry();
+        }
+
+        rangeMap.put(Severity.Critical, new Double[]{minLimit, Double.MAX_VALUE});
+        return rangeMap;
     }
 
     /**
@@ -387,16 +431,14 @@ public class UserScoreServiceImpl implements UserScoreService {
             throw new RuntimeException("UserScorePercentiles collection can have only one active document");
         }
         UserScorePercentiles userScorePercentiles = percentiles.get(0);
-        for (UserSingleScorePercentile percentile : userScorePercentiles.getUserScorePercentileCollection()) {
-            if (percentile!=null) {
-                severityNavigableMap.put((double) percentile.getMaxScoreInPercentile(), userScoreConfiguration.fetchSeverity(percentile.getPercentile()));
-            }
-        }
+		userScorePercentiles.getUserScorePercentileCollection().stream().filter(percentile -> percentile != null).
+				forEach(percentile -> severityNavigableMap.put((double) percentile.getMaxScoreInPercentile(),
+						userScoreConfiguration.fetchSeverity(percentile.getPercentile())));
         return severityNavigableMap;
     }
-
 
     public void setUserScoreConfiguration(UserScoreConfiguration userScoreConfiguration) {
         this.userScoreConfiguration = userScoreConfiguration;
     }
+
 }

@@ -23,10 +23,11 @@ import java.util.concurrent.TimeUnit;
 @DisallowConcurrentExecution
 public class UserActivityJob extends FortscaleJob {
 
-    private static final int NUMBER_OF_ACTIVITIES = 5;
-    private static Logger logger = Logger.getLogger(UserActivityJob.class);
+	private static Logger logger = Logger.getLogger(UserActivityJob.class);
 
+    private static final int NUMBER_OF_ACTIVITIES = 6;
 	private static final String ACTIVITY_PARAM = "activity";
+	private static final String RUN_SEQUENTIAL_PARAM = "sequential";
 
     @Value("${user.activity.num.of.last.days.to.calculate:90}")
     protected int userActivityNumOfLastDaysToCalculate;
@@ -37,13 +38,13 @@ public class UserActivityJob extends FortscaleJob {
 	private UserActivityHandlerFactory userActivityHandlerFactory;
 
 	private UserActivityType userActivityType;
+	private boolean runSequential;
 
     public UserActivityJob() {}
 
     @Override
     protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
         logger.info("Loading Entity Activity Job Parameters..");
-        logger.info("Finished Loading Entity Activity Job Parameters");
         JobDataMap map = jobExecutionContext.getMergedJobDataMap();
         // get parameters values from the job data map
 		if (map.containsKey(ACTIVITY_PARAM)) {
@@ -55,6 +56,8 @@ public class UserActivityJob extends FortscaleJob {
 				throw new JobExecutionException("Activity " + activityName + " not found! exiting...");
 			}
 		}
+		runSequential = jobDataMapExtension.getJobDataMapBooleanValue(map, RUN_SEQUENTIAL_PARAM, false);
+		logger.info("Finished Loading Entity Activity Job Parameters");
     }
 
     @Override
@@ -71,8 +74,12 @@ public class UserActivityJob extends FortscaleJob {
     @Override
     public void runSteps() throws Exception {
         logger.info("Start Executing User Activity job..");
-        ExecutorService activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
-        //TODO: need to add the ability to manually execute one of the jobs and only once for PS/QA/Testing
+		ExecutorService activitiesThreadPool;
+		if (runSequential) {
+			activitiesThreadPool = Executors.newFixedThreadPool(1);
+		} else {
+			activitiesThreadPool = Executors.newFixedThreadPool(NUMBER_OF_ACTIVITIES);
+		}
         Set<Runnable> activitiesTasks = createActivitiesTasks();
         try {
             activitiesTasks.forEach(activitiesThreadPool::execute);
@@ -106,7 +113,11 @@ public class UserActivityJob extends FortscaleJob {
         final String activityName = userActivityConfigurationService.getUserActivityConfiguration().getActivities().
 				toString();
         Thread.currentThread().setName(String.format("Activity-%s-thread", activityName));
-        calculateActivity(userActivityConfigurationService);
+		try {
+			calculateActivity(userActivityConfigurationService);
+		} catch (Exception ex) {
+			logger.error("Activity {} failed with exception - {}", activityName, ex.toString());
+		}
     }
 
     private void calculateActivity(UserActivityConfigurationService userActivityConfigurationService) {

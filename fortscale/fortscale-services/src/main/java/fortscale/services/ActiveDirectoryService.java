@@ -10,12 +10,12 @@ import java.util.List;
  */
 public interface ActiveDirectoryService {
 
-    void getFromActiveDirectory(String filter, String
-            adFields, int resultLimit, ActiveDirectoryResultHandler handler) throws Exception;
-
+    void getFromActiveDirectory(String filter, String adFields, int resultLimit, ActiveDirectoryResultHandler handler)
+            throws Exception;
     List<AdConnection> getAdConnectionsFromDatabase();
-
     List<String> getDomainControllers();
-
     void saveDomainControllersInDatabase(List<String> domainControllers);
+	void saveAdConnectionsInDatabase(List<AdConnection> adConnections);
+    String canConnect(AdConnection adConnection);
+
 }

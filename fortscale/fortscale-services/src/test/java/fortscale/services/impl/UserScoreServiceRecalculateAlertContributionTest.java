@@ -1,13 +1,12 @@
 package fortscale.services.impl;
 
-
-import fortscale.domain.core.*;
-import junitparams.JUnitParamsRunner;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.User;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -108,14 +107,14 @@ public class UserScoreServiceRecalculateAlertContributionTest extends UserScoreS
 
 
     private void executeRecalculateUserScoreOnAlert(Alert alert, double expectedUserScoreContribution, boolean expectedFlag) {
-        Mockito.when(alertsService.getAlertsRelevantToUserScore(USER_NAME)).thenReturn(new HashSet(Arrays.asList(alert)));
+        Mockito.when(alertsService.getAlertsRelevantToUserScore(USER_ID)).thenReturn(new HashSet(Arrays.asList(alert)));
 
 
         User u = new User();
-        u.setUsername(USER_NAME);
-        Mockito.when(userRepository.findByUsername(USER_NAME)).thenReturn(u);
+        u.setUsername(USER_ID);
+        Mockito.when(userService.getUserById(USER_ID)).thenReturn(u);
 
-        double score = userScoreService.recalculateUserScore(USER_NAME);
+        double score = userScoreService.recalculateUserScore(USER_ID);
 
         Assert.assertEquals(expectedUserScoreContribution, alert.getUserScoreContribution(), 0);
         Assert.assertEquals(expectedFlag, alert.isUserScoreContributionFlag());

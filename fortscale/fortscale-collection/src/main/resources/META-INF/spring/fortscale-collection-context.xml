@@ -253,22 +253,13 @@
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
-	<!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
-	<bean id="userTagsCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
-		<constructor-arg name="innerCache">
-			<bean class="fortscale.services.cache.MemoryBasedCache">
-				<constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-				<constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
-				<constructor-arg name="clazz" value="java.lang.String" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="topicWriter">
-			<bean class="fortscale.utils.kafka.KafkaEventsWriter">
-				<constructor-arg name="topic" value="${user-tag.service.cache.updates.topic}" />
-			</bean>
-		</constructor-arg>
-		<constructor-arg name="clazz" value="java.util.Set" />
+	<bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
+		<constructor-arg name="maxSize" value="${users.with.alerts.service.cache.max.items:10}" />
+		<constructor-arg name="timeToExpire" value="${users.with.alerts.service.cache.timeToExpireSec:600}" />
+		<constructor-arg name="clazz" value="java.util.ArrayList" />
 	</bean>
+
+    <bean id="fortscaleDateFormatService" class="fortscale.collection.services.time.FortscaleDateFormatServiceImpl" scope="prototype"/>
 
 	<bean id="retentionStrategiesConfService" class="fortscale.aggregation.feature.event.RetentionStrategiesConfService"/>
 
@@ -310,13 +301,13 @@
 
 	<bean id="tagService" class="fortscale.services.impl.TagServiceImpl" scope="singleton"/>
 
-	<bean id="userTaggingService" class="fortscale.services.impl.UserTaggingServiceImpl" scope="singleton"/>
-
 	<bean id="splunkFetch" class="fortscale.collection.jobs.fetch.siem.Splunk" scope="prototype"/>
 
 	<bean id="qradarFetch" class="fortscale.collection.jobs.fetch.siem.QRadar" scope="prototype"/>
 
 	<bean id="cleanupManagement" class="fortscale.collection.jobs.cleanup.CleanupManagement" scope="singleton"/>
+
+	<bean id="userActivitySourceMachineHandler" class="fortscale.collection.jobs.activity.UserActivitySourceMachineHandler" scope="singleton" />
 
 	<bean class="fortscale.streaming.task.monitor.TaskMonitoringHelper" scope="prototype">
 		<property name="isMonitoredTask" value="true"/>

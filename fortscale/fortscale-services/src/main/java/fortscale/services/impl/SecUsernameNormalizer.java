@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import fortscale.services.impl.metrics.UsernameNormalizerMetrics;
 import fortscale.utils.ConfigurationUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
@@ -50,6 +51,7 @@ public class SecUsernameNormalizer extends UsernameNormalizer {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
+		serviceMetrics = new UsernameNormalizerMetrics(statsService);
 		if (!StringUtils.isEmpty(matchersString)) {
 			String[][] matchersArray = ConfigurationUtils.getStringArrays(matchersString);
 			regexMatcher = new RegexMatcher(matchersArray);

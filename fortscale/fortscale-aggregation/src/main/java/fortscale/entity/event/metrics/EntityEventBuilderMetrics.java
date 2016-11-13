@@ -1,13 +1,11 @@
 package fortscale.entity.event.metrics;
 
 import fortscale.entity.event.EntityEventBuilder;
-import fortscale.entity.event.EntityEventService;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
-import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
 @StatsMetricsGroupParams(name = "streaming.entity-events.builder")
@@ -33,6 +31,9 @@ public class EntityEventBuilderMetrics extends StatsMetricsGroup {
     }
     @StatsDoubleMetricParams (rateSeconds = 1)
     public long updateEntityEventData;
+
+    @StatsDoubleMetricParams (rateSeconds = 1)
+    public long zeroFeature;
 
     @StatsDoubleMetricParams (rateSeconds = 1)
     public long sendEntityEvent;

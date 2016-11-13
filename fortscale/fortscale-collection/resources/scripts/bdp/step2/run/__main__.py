@@ -11,6 +11,7 @@ from validation.validation import validate_all_buckets_synced
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
+from bdp_utils.run import step_runner_main
 from bdp_utils.data_sources import data_source_to_score_tables
 from bdp_utils.samza import are_tasks_running
 from bdp_utils.log import init_logging
@@ -96,13 +97,30 @@ Usage examples:
                                   help='If --block_on_data_sources is not specified, you should specify how many days '
                                        'back should be analyzed in order to find what tables to block on',
                                   type=int)
+
+    models_scheduler_parent = argparse.ArgumentParser(add_help=False)
+    models_scheduler_parent.add_argument('--build_models_interval_in_hours',
+                                         action='store',
+                                         dest='build_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building models. '
+                                              'If not specified, no models will be built '
+                                              '(they can, however be built by an external entity).',
+                                         type=int)
+    models_scheduler_parent.add_argument('--build_entity_models_interval_in_hours',
+                                         action='store',
+                                         dest='build_entity_models_interval_in_hours',
+                                         help='The logic time interval (in hours) for building entity models. '
+                                              'If not specified, no entity models will be built '
+                                              '(they can, however be built by an external entity).',
+                                         type=int)
+
     subparsers = parser.add_subparsers(help='commands')
     common_parents = [more_args_parent,
                       parsers.host,
                       parsers.start]
     online_parser = subparsers.add_parser('online',
                                           help='Run the step in online mode',
-                                          parents=common_parents + [parsers.online_manager])
+                                          parents=common_parents + [parsers.online_manager, models_scheduler_parent])
     online_parser.set_defaults(is_online_mode=True)
     offline_parser = subparsers.add_parser('offline',
                                            help='Run the step in offline mode',
@@ -122,7 +140,7 @@ def validate_not_running_same_period_twice(arguments):
               "(they haven't been synced yet but are about to)"
         sys.exit(1)
 
-    mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
+    mongo_db = mongo.get_db(host=arguments.host)
     for collection_name in filter(lambda name: name.startswith('aggr_'), mongo.get_all_collection_names(mongo_db)):
         data = list(mongo_db[collection_name].find({
             'startTime': {
@@ -135,10 +153,12 @@ def validate_not_running_same_period_twice(arguments):
             sys.exit(1)
 
 
+@step_runner_main(logger)
 def main():
     arguments = create_parser().parse_args()
     init_logging(logger)
     if not are_tasks_running(logger=logger,
+                             host=arguments.host,
                              task_names=['aggregation-events-streaming']):
         sys.exit(1)
 
@@ -156,11 +176,17 @@ def main():
                timeout=arguments.timeout * 60 if 'timeout' in arguments else None,
                validation_batches_delay=arguments.validation_batches_delay,
                max_delay=arguments.max_delay * 60 * 60 if 'max_delay' in arguments else -1,
-               batch_size_in_hours=arguments.batch_size) \
+               batch_size_in_hours=arguments.batch_size,
+               build_models_interval=(arguments.build_models_interval_in_hours * 60 * 60)
+               if 'build_models_interval_in_hours' in arguments and arguments.build_models_interval_in_hours is not None else None,
+               build_entity_models_interval=(arguments.build_entity_models_interval_in_hours * 60 * 60)
+               if 'build_entity_models_interval_in_hours' in arguments and arguments.build_entity_models_interval_in_hours is not None else None) \
             .run():
         logger.info('finished successfully')
+        return True
     else:
-        logger.error('failed')
+        logger.error('FAILED')
+        return False
 
 
 if __name__ == '__main__':

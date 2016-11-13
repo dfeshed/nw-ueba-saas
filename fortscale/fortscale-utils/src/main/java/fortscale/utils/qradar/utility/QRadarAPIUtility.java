@@ -259,7 +259,9 @@ public class QRadarAPIUtility {
 				isRequestSuccessful = true;
 			} else {
 				retryNumber++;
-				Thread.sleep(sleepInMilliseconds);
+				if (sleepInMilliseconds > 0) {
+					Thread.sleep(sleepInMilliseconds);
+				}
 			}
 		}
 		return result;

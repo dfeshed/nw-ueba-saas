@@ -1,7 +1,7 @@
-import logging
 import json
-import sys
+import logging
 import os
+import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
@@ -10,6 +10,7 @@ from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everyth
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
+from bdp_utils.kafka import send
 import bdp_utils.run
 from step2.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
@@ -23,6 +24,8 @@ logger = logging.getLogger('stepSAM')
 class Manager(DontReloadModelsOverridingManager):
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
+    _JAR_NAME = 'fortscale-ml-1.1.0-SNAPSHOT.jar'
+    _MODELS_PATH_IN_JAR = 'config/asl/models/'
 
     def __init__(self,
                  host,
@@ -35,6 +38,8 @@ class Manager(DontReloadModelsOverridingManager):
                  convert_to_minutes_timeout,
                  timeoutInSeconds,
                  cleanup_first,
+                 filtered_gap_in_seconds,
+                 filtered_timeout_override_in_seconds,
                  start=None,
                  end=None):
         super(Manager, self).__init__(logger=logger,
@@ -43,6 +48,11 @@ class Manager(DontReloadModelsOverridingManager):
         self._host = host
         self._polling_interval = polling_interval
         self._timeoutInSeconds = timeoutInSeconds
+        self._filtered_gap_in_seconds = filtered_gap_in_seconds
+        self._filtered_timeout_in_seconds = timeoutInSeconds if filtered_timeout_override_in_seconds is None else filtered_timeout_override_in_seconds
+        if self._filtered_gap_in_seconds is not None and self._filtered_timeout_in_seconds is None:
+            raise Exception('filtered_timeout_in_seconds or timeoutInSeconds must '
+                            'be specified if filtered_gap_in_seconds is specified')
         self._start = time_utils.get_epochtime(start) if start is not None else None
         self._end = time_utils.get_epochtime(end) if end is not None else None
         self._cleanup_first = cleanup_first
@@ -55,6 +65,15 @@ class Manager(DontReloadModelsOverridingManager):
         if data_sources != data_sources_before_filtering:
             logger.warning("some of the data sources don't contain data in the enriched table. "
                            "Using only the following data sources: " + ', '.join(data_sources))
+        self._runner = bdp_utils.run.Runner(name='stepSAM.scores',
+                                            logger=logger,
+                                            host=host,
+                                            block=False)
+        self._builder = bdp_utils.run.Runner(name='stepSAM.build_models',
+                                             logger=logger,
+                                             host=host,
+                                             block=True,
+                                             block_until_log_reached='Spring context closed')
         self._data_sources = data_sources
         self._data_source_to_throttler = dict((data_source, Throttler(logger=logger,
                                                                       host=host,
@@ -66,15 +85,6 @@ class Manager(DontReloadModelsOverridingManager):
                                                                       convert_to_minutes_timeout=convert_to_minutes_timeout,
                                                                       start=self._get_start(data_source=data_source),
                                                                       end=self._get_end(data_source=data_source))) for data_source in self._data_sources)
-        self._runner = bdp_utils.run.Runner(name='stepSAM.scores',
-                                            logger=logger,
-                                            host=host,
-                                            block=False)
-        self._builder = bdp_utils.run.Runner(name='stepSAM.build_models',
-                                             logger=logger,
-                                             host=host,
-                                             block=True,
-                                             block_until_log_reached='Spring context closed')
 
     def _update_model_confs(self, path, model_confs, original_to_backup):
         updated = False
@@ -92,19 +102,14 @@ class Manager(DontReloadModelsOverridingManager):
     def _prepare_overriding_model_builders_config(self):
         logger.info('updating overriding models...')
         original_to_backup = {}
-        for data_source in self._data_sources:
-            data_source_raw_events_model_file_name = \
-                'raw_events_model_confs_' + (data_source if data_source != 'kerberos' else 'kerberos_logins') + '.json'
-            data_source_model_confs_path = Manager._MODEL_CONFS_OVERRIDING_PATH + '/' + \
-                                           data_source_raw_events_model_file_name
-            with io.open_overrides_file(overriding_path=data_source_model_confs_path,
-                                        jar_name='fortscale-ml-1.1.0-SNAPSHOT.jar',
-                                        path_in_jar='config/asl/models/' +
-                                                data_source_raw_events_model_file_name) as f:
-                model_confs = json.load(f)
-            self._update_model_confs(path=data_source_model_confs_path,
-                                     model_confs=model_confs,
-                                     original_to_backup=original_to_backup)
+        for f in io.iter_overrides_files(overriding_path=Manager._MODEL_CONFS_OVERRIDING_PATH,
+                                         jar_name=Manager._JAR_NAME,
+                                         path_in_jar=Manager._MODELS_PATH_IN_JAR,
+                                         create_if_not_exist=True):
+            if os.path.splitext(f.name)[1] == '.json':
+                self._update_model_confs(path=f.name,
+                                         model_confs=json.load(f),
+                                         original_to_backup=original_to_backup)
         return original_to_backup
 
     def _prepare_additional_model_builders_config(self):
@@ -114,10 +119,9 @@ class Manager(DontReloadModelsOverridingManager):
             for filename in os.listdir(Manager._MODEL_CONFS_ADDITIONAL_PATH):
                 file_path = os.path.sep.join([Manager._MODEL_CONFS_ADDITIONAL_PATH, filename])
                 with open(file_path, 'r') as f:
-                    model_confs = json.load(f)
-                self._update_model_confs(path=file_path,
-                                         model_confs=model_confs,
-                                         original_to_backup=original_to_backup)
+                    self._update_model_confs(path=file_path,
+                                             model_confs=json.load(f),
+                                             original_to_backup=original_to_backup)
         return original_to_backup
 
     def _backup_and_override(self):
@@ -135,7 +139,7 @@ class Manager(DontReloadModelsOverridingManager):
         ]
         if self._cleanup_first:
             sub_steps.insert(0, ('cleanup before starting to process data sources',
-                                 lambda data_source: self._cleanup(data_source=data_source, fail_if_no_models=False),
+                                 lambda data_source: self._cleanup(fail_if_no_models=False),
                                  False))
         for step_name, step, run_once_per_data_source in sub_steps:
             for data_source in self._data_sources if run_once_per_data_source else [None]:
@@ -197,18 +201,31 @@ class Manager(DontReloadModelsOverridingManager):
             start_time_epoch -= (start_time_epoch % (60 * 60))
         if end_time_epoch % (60 * 60) != 0:
             end_time_epoch += (-end_time_epoch) % (60 * 60)
-        return validate_started_processing_everything(host=self._host,
-                                                      data_source=data_source,
-                                                      end_time_epoch=end_time_epoch) and \
-               block_until_everything_is_validated(host=self._host,
-                                                   start_time_epoch=start_time_epoch,
-                                                   end_time_epoch=end_time_epoch,
-                                                   wait_between_validations=self._polling_interval,
-                                                   max_delay=-1,
-                                                   timeout=0,
-                                                   polling_interval=0,
-                                                   data_sources=[data_source],
-                                                   logger=logger)
+        if validate_started_processing_everything(host=self._host,
+                                                  data_source=data_source,
+                                                  end_time_epoch=end_time_epoch,
+                                                  filtered_gap_in_seconds=self._filtered_gap_in_seconds,
+                                                  filtered_timeout_in_seconds=self._filtered_timeout_in_seconds):
+            self._send_dummy_event(end_time_epoch=end_time_epoch)
+            return block_until_everything_is_validated(host=self._host,
+                                                       start_time_epoch=start_time_epoch,
+                                                       end_time_epoch=end_time_epoch,
+                                                       wait_between_validations=self._polling_interval,
+                                                       max_delay=-1,
+                                                       timeout=0,
+                                                       polling_interval=0,
+                                                       data_sources=[data_source],
+                                                       logger=logger)
+        else:
+            return False
+
+    def _send_dummy_event(self, end_time_epoch):
+        # TODO: this code was copied from step2's manager.py - do a refactor
+        logger.info('sending dummy event (so the last partial batch will be closed)...')
+        send(logger=logger,
+             host=self._host,
+             topic='fortscale-aggregation-events-control',
+             message='{\\"date_time_unix\\": ' + str(end_time_epoch + 1) + '}')
 
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)
@@ -226,7 +243,7 @@ class Manager(DontReloadModelsOverridingManager):
             return False
         return True
 
-    def _cleanup(self, data_source=None, fail_if_no_models=True):
+    def _cleanup(self, fail_if_no_models=True):
         return cleanup_everything_but_models(logger=logger,
                                              host=self._host,
                                              clean_overrides_key='stepSAM.cleanup',

@@ -14,10 +14,13 @@ import org.apache.samza.task.*;
 import org.springframework.util.Assert;
 
 public class ModelBuildingStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+
 	private static final String CONTROL_OUTPUT_TOPIC_KEY = "fortscale.model.build.control.output.topic";
+	private static final String MODEL_FILTER_REGEX = "fortscale.model.build.all_models.model_name.filter.regex";
 
 	private KafkaModelBuildingListener modelBuildingListener;
 	private ModelBuildingRegistrationService modelBuildingRegistrationService;
+	private String allModelFilterRegex;
 
 	@Override
 	protected void wrappedInit(Config config, TaskContext context) throws Exception {
@@ -25,9 +28,10 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 		String controlOutputTopic = resolver.resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY);
 		Assert.hasText(controlOutputTopic);
 
+		allModelFilterRegex = resolver.resolveStringValue(config,MODEL_FILTER_REGEX);
 		modelBuildingListener = new KafkaModelBuildingListener(controlOutputTopic);
 		ModelBuildingSamzaStore modelBuildingStore = new ModelBuildingSamzaStore(new ExtendedSamzaTaskContext(context, config));
-		modelBuildingRegistrationService = new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore);
+		modelBuildingRegistrationService = new ModelBuildingRegistrationService(modelBuildingListener, modelBuildingStore,allModelFilterRegex);
 	}
 
 	@Override

@@ -5,6 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class SMARTScoreMappingModelBuilderTest {
 	@Test(expected = IllegalArgumentException.class)
@@ -17,113 +18,191 @@ public class SMARTScoreMappingModelBuilderTest {
 		new SMARTValuesModelBuilder().build("");
 	}
 
+	private SMARTScoreMappingModel buildModel(double defaultThreshold,
+											  double defaultMaximalScore,
+											  double minThreshold,
+											  double minMaximalScore,
+											  double lowOutliersFraction,
+											  double highOutliersFraction,
+											  Double[]... dailyScores) {
+		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
+		for (int day = 0; day < dailyScores.length; day++) {
+			dateToHighestScores.put((long) day, Arrays.asList(dailyScores[day]));
+		}
+		SMARTScoreMappingModelBuilderConf conf = new SMARTScoreMappingModelBuilderConf(
+				defaultThreshold,
+				defaultMaximalScore,
+				minThreshold,
+				minMaximalScore,
+				lowOutliersFraction,
+				highOutliersFraction
+		);
+		return new SMARTScoreMappingModelBuilder(conf).build(dateToHighestScores);
+	}
+
+	private void assertContains(double expected, Set<Double> actual) {
+		Assert.assertTrue(String.format("expected: %s, actual: %s", expected, actual),
+				actual.stream().anyMatch(a -> Math.abs(expected - a) <= SMARTScoreMappingModelBuilder.EPSILON / 10));
+	}
+
+	private void assertModel(double expectedThreshold, double expectedMaximalValue, SMARTScoreMappingModel model) {
+		Map<Double, Double> mapping = model.getScoreMappingConf().getMapping();
+		Set<Double> actualThresholds = findKeysByValue(mapping, 50D);
+		Set<Double> actualMaximalValues = findKeysByValue(mapping, 100D);
+		Assert.assertTrue(actualMaximalValues.contains(100D));
+		Assert.assertTrue(findKeysByValue(mapping, 0D).contains(0D));
+		assertContains(expectedThreshold, actualThresholds);
+		assertContains(expectedMaximalValue, actualMaximalValues);
+	}
+
+	private void assertModel(double expectedThreshold, SMARTScoreMappingModel model) {
+		assertModel(expectedThreshold, 100D, model);
+	}
+
+	private Set<Double> findKeysByValue(Map<Double, Double> mapping, double value) {
+		return mapping.entrySet().stream()
+				.filter(entry -> entry.getValue() == value)
+				.mapToDouble(Map.Entry::getKey)
+				.boxed()
+				.collect(Collectors.toSet());
+	}
+
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfOneDay() {
-		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
+		Double[] scores = {80D, 90D, 95D, 99D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
 
-		long yesterday = 0L;
-		List<Double> scores = Arrays.asList(90D, 95D, 99D);
-		dateToHighestScores.put(yesterday, scores);
+		assertModel(85D, 99D, model);
+	}
 
-		SMARTScoreMappingModel newModel =
-				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
+	@Test
+	public void shouldBuildModelCorrectlyWhenHaveToChooseBetweenTooManyAlertsAndTooFew() {
+		Double[] scores = {80D, 80D, 80D, 90D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
 
-		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(0) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
-		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(scores.size() - 1)), 0.0001);
+		assertModel(85D, 90D, model);
+	}
+
+	@Test
+	public void shouldCreateThresholdBiggerThanGivenScoresIfAllScoresAreTheSame() {
+		Double[] scores = {80D, 80D, 80D, 80D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores);
+
+		findKeysByValue(model.getScoreMappingConf().getMapping(), 50D).forEach(threshold -> Assert.assertTrue(threshold > 80D));
+		assertModel(80D + SMARTScoreMappingModelBuilder.EPSILON, 80D + SMARTScoreMappingModelBuilder.EPSILON * 2, model);
 	}
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfTwoDays() {
-		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
+		Double[] scores1 = {0D, 20D, 30D, 40D, 90D, 95D, 99D};
+		Double[] scores2 = {0D, 20D, 30D, 40D, 80D, 95D, 97D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores1, scores2);
 
-		long twoDaysAgo = 0L;
-		List<Double> scores1 = Arrays.asList(90D, 95D, 99D);
-		dateToHighestScores.put(twoDaysAgo, scores1);
+		assertModel(60D, 99D, model);
+	}
 
-		long yesterday = 1L;
-		List<Double> scores2 = Arrays.asList(80D, 95D, 97D);
-		dateToHighestScores.put(yesterday, scores2);
+	@Test
+	public void shouldDiscardHighOutlierWhenCalculatingThreshold() {
+		Double[] scores1 = {60D, 70D, 100D};
+		Double[] scores2 = {50D, 80D, 100D};
 
-		SMARTScoreMappingModel newModel =
-				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
+		SMARTScoreMappingModel modelWithOutliers = buildModel(
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				scores1,
+				scores2
+		);
+		assertModel(90D, modelWithOutliers);
 
-		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				(scores1.get(0) + scores2.get(0)) / 2 + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
-		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
-				Math.max(scores1.get(scores1.size() - 1), scores2.get(scores2.size() - 1))), 0.0001);
+		SMARTScoreMappingModel modelWithoutOutliers = buildModel(
+				0,
+				0,
+				0,
+				0,
+				0,
+				0.5,
+				scores1,
+				scores2
+		);
+		assertModel(85D, modelWithoutOutliers);
+	}
+
+	@Test
+	public void shouldDiscardLowOutlierWhenCalculatingThreshold() {
+		Double[] scores1 = {60D, 70D, 100D};
+		Double[] scores2 = {50D, 80D, 100D};
+
+		SMARTScoreMappingModel modelWithOutliers = buildModel(
+				0,
+				0,
+				0,
+				0,
+				0,
+				0,
+				scores1,
+				scores2
+		);
+		assertModel(90D, modelWithOutliers);
+
+		SMARTScoreMappingModel modelWithoutOutliers = buildModel(
+				0,
+				0,
+				0,
+				0,
+				0.5,
+				0,
+				scores1,
+				scores2
+		);
+		assertModel(90D, modelWithoutOutliers);
 	}
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenEmptyDataOfOneDay() {
-		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
+		double defaultThreshold = 30;
+		double defaultMaximalScore = 80;
+		SMARTScoreMappingModel model = buildModel(defaultThreshold, defaultMaximalScore, 0, 0, 0, 0, new Double[]{});
 
-		long yesterday = 0L;
-		dateToHighestScores.put(yesterday, Collections.emptyList());
-
-		SMARTScoreMappingModel newModel =
-				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
-
-		Map<Double, Double> mapping = newModel.getScoreMappingConf().getMapping();
-		Assert.assertEquals(3, mapping.size());
-		Assert.assertEquals(0, mapping.get(0D), 0.0001);
-		Assert.assertEquals(50, mapping.get(50D), 0.0001);
-		Assert.assertEquals(100, mapping.get(100D), 0.0001);
+		assertModel(defaultThreshold, defaultMaximalScore, model);
 	}
 
 	@Test
 	public void shouldBuildModelCorrectlyWhenGivenDataOfOneDayAndEmptyDataOfAnotherDay() {
-		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
+		Double[] scores1 = {0D, 20D, 30D, 80D, 90D, 95D, 99D};
+		Double[] scores2 = {};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores1, scores2);
 
-		long twoDaysAgo = 0L;
-		List<Double> scores = Arrays.asList(90D, 95D, 99D);
-		dateToHighestScores.put(twoDaysAgo, scores);
+		assertModel(85D, 99D, model);
+	}
 
-		long yesterday = 1L;
-		dateToHighestScores.put(yesterday, Collections.emptyList());
+	@Test
+	public void shouldBuildModelCorrectlyWhenGivenDataOfOneDayAndPartialDataOfAnotherDay() {
+		Double[] scores1 = {0D, 20D, 30D, 80D, 90D, 95D, 99D};
+		Double[] scores2 = {97D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores1, scores2);
 
-		SMARTScoreMappingModel newModel =
-				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, 0)).build(dateToHighestScores);
-
-		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(0) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
-		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(scores.size() - 1)), 0.0001);
+		assertModel(85D, 99D, model);
 	}
 
 	@Test
 	public void shouldNotCreateThresholdLowerThanMinThreshold() {
-		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
-
-		long yesterday = 0L;
-		List<Double> scores = Arrays.asList(90D, 95D, 99D);
-		dateToHighestScores.put(yesterday, scores);
-
 		double minThreshold = 95;
-		SMARTScoreMappingModel newModel =
-				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(minThreshold, minThreshold))
-						.build(dateToHighestScores);
+		Double[] scores = {0D, 90D, 95D, 99D};
+		SMARTScoreMappingModel model = buildModel(0, 0, minThreshold, minThreshold, 0, 0, scores);
 
-		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(minThreshold), 0.0001);
-		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(scores.size() - 1)), 0.0001);
+		assertModel(minThreshold, 99D, model);
 	}
 
 	@Test
 	public void shouldNotCreateMaximalScoreLowerThanMinMaximalScore() {
-		Map<Long, List<Double>> dateToHighestScores = new HashMap<>();
-
-		long yesterday = 0L;
-		List<Double> scores = Arrays.asList(10D, 25D, 30D);
-		dateToHighestScores.put(yesterday, scores);
-
 		double minMaximalScore = 50;
-		SMARTScoreMappingModel newModel =
-				new SMARTScoreMappingModelBuilder(new SMARTScoreMappingModelBuilderConf(0, minMaximalScore)).build(dateToHighestScores);
+		Double[] scores = {0D, 10D, 25D, 30D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, minMaximalScore, 0, 0, scores);
 
-		Assert.assertEquals(50D, newModel.getScoreMappingConf().getMapping().get(
-				scores.get(0) + SMARTScoreMappingModelBuilder.EPSILON), 0.0001);
-		Assert.assertEquals(100D, newModel.getScoreMappingConf().getMapping().get(minMaximalScore), 0.0001);
+		assertModel(5D, minMaximalScore, model);
 	}
 }

@@ -24,9 +24,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Properties;
+import java.util.*;
 
 import static org.mockito.Mockito.*;
 
@@ -84,46 +82,106 @@ public class ModelBuilderManagerTest {
         new ModelBuilderManager(null);
     }
 
-    @Test
-    public void shouldBuildAndStoreModelsForAllSelectedEntities() {
-        Date previousEndTime = new Date(1419552000000L);
-        Date currentStartTime = new Date(1420156800000L);
-        Date currentEndTime = new Date(1420156800000L);
-        String[] ids = {"user1", "user2"};
-        Model[] models = {mock(Model.class), mock(Model.class)};
-        boolean[] successes = {true, true};
+	@Test
+	public void shouldBuildAndStoreModelsForAllSelectedContexts() {
+		shouldBuildAndStoreModelsForAllSelectedContexts(false, Collections.emptySet());
+	}
 
-        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentStartTime, currentEndTime, ids, models, successes);
-        manager.process(null, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
+	@Test
+	public void shouldBuildAndStoreModelsForHighScoreContexts() {
+		shouldBuildAndStoreModelsForAllSelectedContexts(true, Collections.emptySet());
+	}
 
-        verify(selector).getContexts(eq(previousEndTime), eq(currentEndTime));
-        verify(builder, times(ids.length)).build(any());
-        for (int i = 0; i < ids.length; i++) {
-            verify(retriever).retrieve(eq(ids[i]), eq(currentEndTime));
-            verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentStartTime), eq(currentEndTime));
-        }
+	@Test
+	public void shouldBuildAndStoreModelsForSpecifiedContexts() {
+		shouldBuildAndStoreModelsForAllSelectedContexts(false, new HashSet<>(Arrays.asList("user1", "user2")));
+	}
 
-        verifyNoMoreInteractions(selector, retriever, builder, store);
+	private void shouldBuildAndStoreModelsForAllSelectedContexts(boolean selectHighScoreContexts, Set<String> specifiedContextIds) {
+		Date previousEndTime = new Date(1419552000000L);
+		Date currentStartTime = new Date(1420156800000L);
+		Date currentEndTime = new Date(1420156800000L);
+		String[] ids = specifiedContextIds == null ? new String[]{"user1", "user2"} : specifiedContextIds.toArray(new String[]{});
+		Model[] models = {mock(Model.class), mock(Model.class)};
+		boolean[] successes = {true, true};
+
+		ModelBuilderManager manager = createProcessScenario(previousEndTime, currentStartTime, currentEndTime,
+				ids, models, successes);
+		manager.process(null, DEFAULT_SESSION_ID, previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
+
+		if (specifiedContextIds.isEmpty()) {
+			if (selectHighScoreContexts) {
+				verify(selector).getHighScoreContexts(eq(previousEndTime), eq(currentEndTime));
+			} else {
+				verify(selector).getContexts(eq(previousEndTime), eq(currentEndTime));
+			}
+		}
+		verify(builder, times(ids.length)).build(any());
+		for (int i = 0; i < ids.length; i++) {
+			verify(retriever).retrieve(eq(ids[i]), eq(currentEndTime));
+			verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), eq(ids[i]), eq(models[i]), eq(currentStartTime), eq(currentEndTime));
+		}
+
+		verifyNoMoreInteractions(selector, retriever, builder, store);
     }
 
-    @Test
-    public void shouldBuildAndStoreGlobalModel() {
-        Date currentStartTime = new Date(1420156800000L);
-        Date currentEndTime = new Date(1420156800000L);
-        Model[] models = {mock(Model.class)};
-        boolean[] successes = {true};
+	@Test
+	public void shouldNotBuildGlobalModelsForHighScoreContexts() {
+		Date currentStartTime = new Date(1420156800000L);
+		Date currentEndTime = new Date(1420156800000L);
+		Model model = mock(Model.class);
 
-        ModelBuilderManager manager = createProcessScenario(null, currentStartTime, currentEndTime, null, models, successes);
-        manager.process(null, DEFAULT_SESSION_ID, null, currentEndTime);
+		mockBuild(null, currentStartTime, currentEndTime, model, true);
+		new ModelBuilderManager(modelConf).process(null, DEFAULT_SESSION_ID, null, currentEndTime, true, Collections.emptySet());
 
-        verify(retriever).retrieve(isNull(String.class), eq(currentEndTime));
-        verify(builder).build(any());
-        verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), isNull(String.class), eq(models[0]), eq(currentStartTime), eq(currentEndTime));
+		verifyNoMoreInteractions(selector, retriever, builder, store);
+	}
 
-        verifyNoMoreInteractions(selector, retriever, builder, store);
-    }
+	@Test
+	public void shouldNotBuildGlobalModelsForSpecifiedContexts() {
+		Date currentStartTime = new Date(1420156800000L);
+		Date currentEndTime = new Date(1420156800000L);
+		Model model = mock(Model.class);
 
-    @Test
+		mockBuild(null, currentStartTime, currentEndTime, model, true);
+		new ModelBuilderManager(modelConf).process(null, DEFAULT_SESSION_ID, null, currentEndTime, false, Collections.singleton("user"));
+
+		verifyNoMoreInteractions(selector, retriever, builder, store);
+	}
+
+	@Test
+	public void shouldBuildAndStoreGlobalModel() {
+		Date currentStartTime = new Date(1420156800000L);
+		Date currentEndTime = new Date(1420156800000L);
+		Model model = mock(Model.class);
+
+		mockBuild(null, currentStartTime, currentEndTime, model, true);
+		new ModelBuilderManager(modelConf).process(null, DEFAULT_SESSION_ID, null, currentEndTime, false, Collections.emptySet());
+
+		verify(retriever).retrieve(isNull(String.class), eq(currentEndTime));
+		verify(builder).build(any());
+		verify(store).save(eq(modelConf), eq(DEFAULT_SESSION_ID), isNull(String.class), eq(model), eq(currentStartTime), eq(currentEndTime));
+
+		verifyNoMoreInteractions(selector, retriever, builder, store);
+	}
+
+	@Test
+	public void shouldNotBuildModelsWhenBothHighScoreContextsAndSpecifiedContextsAreGiven() {
+		Date previousEndTime = new Date(1419552000000L);
+		Date currentStartTime = new Date(1420156800000L);
+		Date currentEndTime = new Date(1420156800000L);
+		String[] ids = new String[]{"user1", "user2"};
+		Model[] models = {mock(Model.class), mock(Model.class)};
+		boolean[] successes = {true, true};
+
+		ModelBuilderManager manager = createProcessScenario(previousEndTime, currentStartTime, currentEndTime,
+				ids, models, successes);
+		manager.process(null, DEFAULT_SESSION_ID, previousEndTime, currentEndTime, true, Collections.singleton(ids[0]));
+
+		verifyNoMoreInteractions(selector, retriever, builder, store);
+	}
+
+	@Test
     public void shouldInformListenerOnModelBuildingStatus() {
         String modelConfName = "testModelConf";
         when(modelConf.getName()).thenReturn(modelConfName);
@@ -136,8 +194,9 @@ public class ModelBuilderManagerTest {
         boolean[] successes = {true, false};
 
         IModelBuildingListener listener = mock(IModelBuildingListener.class);
-        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentStartTime, currentEndTime, ids, models, successes);
-        manager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime);
+        ModelBuilderManager manager = createProcessScenario(previousEndTime, currentStartTime, currentEndTime,
+                ids, models, successes);
+        manager.process(listener, DEFAULT_SESSION_ID, previousEndTime, currentEndTime, false, Collections.emptySet());
 
         for (int i = 0; i < ids.length; i++) {
             ModelBuildingStatus status = successes[i] ? ModelBuildingStatus.SUCCESS : ModelBuildingStatus.STORE_FAILURE;
@@ -160,21 +219,16 @@ public class ModelBuilderManagerTest {
     }
 
     private ModelBuilderManager createProcessScenario(
-            Date previousEndTime, Date currentStartTime, Date currentEndTime, String[] ids, Model[] models, boolean[] successes) {
-
-        if (ids != null) {
-            IContextSelectorConf selectorConf = mock(IContextSelectorConf.class);
-            when(modelConf.getContextSelectorConf()).thenReturn(selectorConf);
-            when(factoryService.getProduct(eq(selectorConf))).thenReturn(selector);
-            when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
-
-            for (int i = 0; i < ids.length; i++) {
-                mockBuild(ids[i], currentStartTime, currentEndTime, models[i], successes[i]);
-            }
-        } else {
-            mockBuild(null, currentStartTime, currentEndTime, models[0], successes[0]);
-        }
-
+            Date previousEndTime, Date currentStartTime, Date currentEndTime,
+            String[] ids, Model[] models, boolean[] successes) {
+        IContextSelectorConf selectorConf = mock(IContextSelectorConf.class);
+        when(modelConf.getContextSelectorConf()).thenReturn(selectorConf);
+        when(factoryService.getProduct(eq(selectorConf))).thenReturn(selector);
+		when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
+		when(selector.getHighScoreContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
+		for (int i = 0; i < ids.length; i++) {
+			mockBuild(ids[i], currentStartTime, currentEndTime, models[i], successes[i]);
+		}
         return new ModelBuilderManager(modelConf);
     }
 }

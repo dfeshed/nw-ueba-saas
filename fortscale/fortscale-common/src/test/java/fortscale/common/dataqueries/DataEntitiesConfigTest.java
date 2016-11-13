@@ -31,7 +31,7 @@ public class DataEntitiesConfigTest  implements EmbeddedValueResolverAware {
 
 
     public static String dto1 = "{\"fields\":[],\"conditions\":{\"type\":\"term\",\"logicalOperator\":\"AND\",\"terms\":[{\"field\":{\"id\":\"event_score\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50,\"valueType\":\"NUMBER\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":\"1414184400\",\"valueType\":\"STRING\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"lesserThanOrEquals\",\"type\":\"field\",\"value\":\"1414360799\",\"valueType\":\"STRING\"}]},\"entities\":[\"kerberos_logins\"],\"sort\":[{\"field\":{\"id\":\"event_score\"},\"direction\":\"DESC\"},{\"field\":{\"id\":\"event_time\"},\"direction\":\"DESC\"}],\"limit\":20,\"offset\":0}";
-    public static String joinDTOJson = "{\"fields\":[{\"entity\":\"kerberos_logins\",\"allFields\":true},{\"entity\":\"users\",\"id\":\"displayName\"},{\"entity\":\"users\",\"id\":\"id\"},{\"entity\":\"users\",\"id\":\"is_user_administrator\"},{\"entity\":\"users\",\"id\":\"is_user_executive\"},{\"entity\":\"users\",\"id\":\"accountIsDisabled\"},{\"entity\":\"users\",\"id\":\"is_user_service\"},{\"entity\":\"users\",\"id\":\"followed\"}],\"conditions\":{\"type\":\"term\",\"logicalOperator\":\"AND\",\"terms\":[{\"field\":{\"id\":\"event_score\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50,\"valueType\":\"NUMBER\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":1418209915,\"valueType\":\"STRING\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"lesserThanOrEquals\",\"type\":\"field\",\"value\":1418296315,\"valueType\":\"STRING\"}]},\"entities\":[\"kerberos_logins\"],\"join\":[{\"type\":\"RIGHT\",\"entity\":\"users\",\"left\":{\"entity\":\"kerberos_logins\",\"field\":\"normalized_username\"},\"right\":{\"entity\":\"users\",\"field\":\"normalized_username\"}}],\"sort\":[],\"limit\":50,\"offset\":0}";
+    public static String joinDTOJson = "{\"fields\":[{\"entity\":\"kerberos_logins\",\"allFields\":true},{\"entity\":\"users\",\"id\":\"displayName\"},{\"entity\":\"users\",\"id\":\"id\"},{\"entity\":\"users\",\"id\":\"accountIsDisabled\"},{\"entity\":\"users\",\"id\":\"followed\"}],\"conditions\":{\"type\":\"term\",\"logicalOperator\":\"AND\",\"terms\":[{\"field\":{\"id\":\"event_score\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":50,\"valueType\":\"NUMBER\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"greaterThanOrEquals\",\"type\":\"field\",\"value\":1418209915,\"valueType\":\"STRING\"},{\"field\":{\"id\":\"event_time_utc\"},\"queryOperator\":\"lesserThanOrEquals\",\"type\":\"field\",\"value\":1418296315,\"valueType\":\"STRING\"}]},\"entities\":[\"kerberos_logins\"],\"join\":[{\"type\":\"RIGHT\",\"entity\":\"users\",\"left\":{\"entity\":\"kerberos_logins\",\"field\":\"normalized_username\"},\"right\":{\"entity\":\"users\",\"field\":\"normalized_username\"}}],\"sort\":[],\"limit\":50,\"offset\":0}";
 
     protected DataQueryDTO dataQueryDTO1;
     protected DataQueryDTO joinDTO;
@@ -181,7 +181,7 @@ public class DataEntitiesConfigTest  implements EmbeddedValueResolverAware {
 
         String listString="";
         for (String s : arr){ listString += s + ", ";}
-        assertEquals("Get all entity fields of kerberos_logins", "source_machine_type, destination_machine_type, failure_code, source_machine_score, destination_machine, destination_machine_score, is_from_vpn, is_sensitive_machine, is_user_service, event_time_score, event_score, is_user_administrator, is_user_executive, severity, type, username, normalized_username, source_ip, source_machine, status, event_time, event_time_utc, ",listString);
+        assertEquals("Get all entity fields of kerberos_logins", "source_machine_type, destination_machine_type, failure_code, source_machine_score, destination_machine, destination_machine_score, is_from_vpn, is_sensitive_machine, event_time_score, event_score, severity, type, username, normalized_username, source_ip, source_machine, status, event_time, event_time_utc, ",listString);
     }
 
     @Test
@@ -195,7 +195,7 @@ public class DataEntitiesConfigTest  implements EmbeddedValueResolverAware {
 
         String listString="";
         for (DataEntityField field : entitiesMap.get("kerberos_logins").getFields()){ listString += field.getId() + ", ";}
-        assertEquals("SQL Select Part for DTO1" ,"username, type, normalized_username, source_ip, source_machine_type, source_machine, destination_machine_type, destination_machine, failure_code, status, is_user_administrator, is_user_executive, is_sensitive_machine, is_from_vpn, is_user_service, event_time, event_time_utc, event_score, event_time_score, source_machine_score, destination_machine_score, severity, ",listString );
+        assertEquals("SQL Select Part for DTO1" ,"username, type, normalized_username, source_ip, source_machine_type, source_machine, destination_machine_type, destination_machine, failure_code, status, is_sensitive_machine, is_from_vpn, event_time, event_time_utc, event_score, event_time_score, source_machine_score, destination_machine_score, severity, ",listString );
     }
 
     @Test
@@ -203,7 +203,7 @@ public class DataEntitiesConfigTest  implements EmbeddedValueResolverAware {
         DataEntity entity = dataEntitiesConfig.getLogicalEntity("kerberos_logins");
         String listString="";
         for (DataEntityField field : entity.getFields()){ listString += field.getId() + ", ";}
-        assertEquals("SQL Select Part for kerberos_logins DTO" , "username, type, normalized_username, source_ip, source_machine_type, source_machine, destination_machine_type, destination_machine, failure_code, status, is_user_administrator, is_user_executive, is_sensitive_machine, is_from_vpn, is_user_service, event_time, event_time_utc, event_score, event_time_score, source_machine_score, destination_machine_score, severity, ",listString);
+        assertEquals("SQL Select Part for kerberos_logins DTO" , "username, type, normalized_username, source_ip, source_machine_type, source_machine, destination_machine_type, destination_machine, failure_code, status, is_sensitive_machine, is_from_vpn, event_time, event_time_utc, event_score, event_time_score, source_machine_score, destination_machine_score, severity, ",listString);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package fortscale.streaming.service.scorer;
 
+import fortscale.domain.core.EntityEvent;
 import fortscale.domain.core.FeatureScore;
 import net.minidev.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +36,11 @@ public class FeatureScoreJsonEventHandler {
         }
 
         if(featureScoreOutput != null){
-            event.put(eventFieldName, Math.round(featureScoreOutput.getScore()));
+            //TODO: all scores should be saved in full precision (without rounding)
+            double score = featureScoreOutput.getScore();
+            event.put(eventFieldName, EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME.equals(eventFieldName) ?
+                    score :
+                    Math.round(score));
         }
     }
 }

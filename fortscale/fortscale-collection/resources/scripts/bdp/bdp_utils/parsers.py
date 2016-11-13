@@ -1,8 +1,9 @@
 import argparse
-import sys
 import os
+import sys
 
 from data_sources import data_source_to_enriched_tables
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
@@ -65,28 +66,41 @@ data_sources.add_argument('--data_sources',
                           choices=data_source_to_enriched_tables.keys(),
                           default=data_source_to_enriched_tables.keys())
 
+data_source_mandatory = argparse.ArgumentParser(add_help=False)
+data_source_mandatory.add_argument('--data_source',
+                                   action='store',
+                                   dest='data_source',
+                                   help='The data source to use '
+                                        '(available data sources are declared in bdp/bdp_utils/data_sources.py. '
+                                        'In order to support new data source - please update the file)',
+                                   choices=data_source_to_enriched_tables.keys(),
+                                   required=True)
+
+data_sources_excluding_vpn_session = argparse.ArgumentParser(add_help=False)
+data_sources_excluding_vpn_session.add_argument('--data_sources',
+                                                nargs='+',
+                                                action='store',
+                                                dest='data_sources',
+                                                help='The data sources to use. If not specified - all of the '
+                                                     'data sources will be used (which include ' +
+                                                     ', '.join(set(data_source_to_enriched_tables.keys()).difference(['vpn_session'])) +
+                                                     '. To change that, please update '
+                                                     'bdp/bdp_utils/data_sources.py)',
+                                                choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
+                                                default=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']))
+
 data_sources_excluding_vpn_session_mandatory = argparse.ArgumentParser(add_help=False)
 data_sources_excluding_vpn_session_mandatory.add_argument('--data_sources',
                                                           nargs='+',
                                                           action='store',
                                                           dest='data_sources',
-                                                          help='The data sources to use. If not specified - all of the '
-                                                               'data sources will be used (which include ' +
-                                                               ', '.join(data_source_to_enriched_tables.keys()) +
+                                                          help='The data sources to use '
+                                                               '(available data sources include ' +
+                                                               ', '.join(set(data_source_to_enriched_tables.keys()).difference(['vpn_session'])) +
                                                                '. To change that, please update '
                                                                'bdp/bdp_utils/data_sources.py)',
                                                           choices=set(data_source_to_enriched_tables.keys()).difference(['vpn_session']),
                                                           required=True)
-
-data_source_mandatory = argparse.ArgumentParser(add_help=False)
-data_source_mandatory.add_argument('--data_source',
-                                   action='store',
-                                   dest='data_source',
-                                   help='The data source to use'
-                                        '(available data sources are declared in bdp/bdp_utils/data_sources.py. '
-                                        'In order to support new data source - please update the file)',
-                                   choices=data_source_to_enriched_tables.keys(),
-                                   required=True)
 
 validation_timeout = argparse.ArgumentParser(add_help=False)
 validation_timeout.add_argument('--timeout',
@@ -157,7 +171,7 @@ def _throttling_force_type(i):
         splitted = [definition.strip().split('=') for definition in i.split(',')]
         return dict((a, int(b)) for a, b in splitted)
     except Exception:
-        raise argparse.ArgumentTypeError('must be of format <data_source>:<number>,<data_source>:<number>...')
+        raise argparse.ArgumentTypeError('must be of format <data_source>=<number>,<data_source>=<number>...')
 
 
 throttling = argparse.ArgumentParser(add_help=False)
@@ -193,9 +207,9 @@ throttling.add_argument('--force_max_gap_in_seconds',
                              "(in this case a warning will be displayed). This should be a valid json with mapping "
                              "from data source to int",
                         type=_throttling_force_type)
-throttling.add_argument('--convert_to_minutes_timeout',
+throttling.add_argument('--convert_to_minutes_timeout_in_minutes',
                         action='store',
-                        dest='convert_to_minutes_timeout',
+                        dest='convert_to_minutes_timeout_in_minutes',
                         help="When calculating duration in minutes out of max batch size and max gap daily queries "
                              "are performed against impala. The more days we query - the better the duration estimate "
                              "is. If you want this process to take only a limited amount of time, impala queries will "
