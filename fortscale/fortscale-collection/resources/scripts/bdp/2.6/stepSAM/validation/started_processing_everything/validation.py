@@ -1,6 +1,8 @@
 import os
 import sys
 
+import time
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.kafka import read_metrics
@@ -14,7 +16,9 @@ logger = logging.getLogger('stepSAM.validation')
 
 def validate_started_processing_everything(host,
                                            data_source,
-                                           end_time_epoch):
+                                           end_time_epoch,
+                                           filtered_gap_in_seconds,
+                                           filtered_timeout_in_seconds):
     connection = impala_utils.connect(host=host)
     logger.info('validating that all events' +
                 ((' up until ' + time_utils.timestamp_to_str(end_time_epoch)) if end_time_epoch else '') +
@@ -27,6 +31,7 @@ def validate_started_processing_everything(host,
         logger.info('there are no enriched events in this data source')
         return True
 
+    time_entered_filtered_gap = None
     with read_metrics(logger,
                       host,
                       'aggregation-events-streaming-last-message-epochtime') as m:
@@ -39,3 +44,10 @@ def validate_started_processing_everything(host,
                 logger.error("FAILED: "
                              "validation can't be performed on data source whose enriched table is being filled")
                 return False
+            elif processed_event_time >= last_event_time - filtered_gap_in_seconds:
+                if time_entered_filtered_gap is None:
+                    time_entered_filtered_gap = time.time()
+                if time.time() - time_entered_filtered_gap >= filtered_timeout_in_seconds:
+                    logger.info('some of the last events were not processed - maybe due to filtering')
+                    logger.info('DONE')
+                    return True

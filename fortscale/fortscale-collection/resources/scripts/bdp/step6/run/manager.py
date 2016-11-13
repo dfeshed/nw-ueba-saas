@@ -23,8 +23,9 @@ class Manager:
         start = get_collections_time_boundary(host=self._host,
                                               collection_names_regex=scored_entity_collection_names_regex,
                                               is_start=True)
-        for collection_name in get_collection_names(host=self._host,
-                                                    collection_names_regex=scored_entity_collection_names_regex):
+        EVIDENCES = 'evidences'
+        for collection_name in [EVIDENCES] + get_collection_names(host=self._host,
+                                                                  collection_names_regex=scored_entity_collection_names_regex):
             call_args = ['nohup',
                          'java',
                          '-jar',
@@ -32,11 +33,11 @@ class Manager:
                          'fortscale-collection-1.1.0-SNAPSHOT.jar',
                          'MongoToKafka',
                          'Forwarding',
-                         'topics=fortscale-entity-event-score-bdp',
+                         'topics=' + ('fortscale-evidences' if collection_name == EVIDENCES else 'fortscale-entity-event-score-bdp'),
                          'collection=' + collection_name,
-                         'datefield=end_time_unix',
-                         'filters=score:::gte:::50###end_time_unix:::gt:::' + str(start),
-                         'sort=end_time_unix###asc',
+                         'datefield=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix'),
+                         'filters=' + ('' if collection_name == EVIDENCES else 'score:::gte:::50###') + 'end_time_unix:::gt:::' + str(start),
+                         'sort=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix') + '###asc',
                          'jobmonitor=alert-generator-task',
                          'classmonitor=fortscale.streaming.task.AlertGeneratorTask',
                          'batch=200000',

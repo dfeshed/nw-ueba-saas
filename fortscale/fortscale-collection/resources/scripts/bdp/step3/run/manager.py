@@ -4,7 +4,7 @@ import shutil
 import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from validation import validate_no_missing_events, validate_entities_synced
+from validation import validate_no_missing_events, validate_entities_synced, validate_scored_aggr_synced
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
@@ -96,13 +96,17 @@ class Manager(DontReloadModelsOverridingManager):
 
     def _run_scores(self):
         kill_process = self._runner.run(overrides_key='step3.scores')
-        is_valid = validate_no_missing_events(host=self._host,
-                                              timeout=self._validation_timeout,
-                                              start=self._runner.get_start(),
-                                              end=self._runner.get_end())
+        num_of_scored_events = validate_no_missing_events(host=self._host,
+                                                          timeout=self._validation_timeout,
+                                                          start=self._runner.get_start(),
+                                                          end=self._runner.get_end())
         logger.info('making sure bdp process exits...')
         kill_process()
-        return is_valid and self._sync_entities()
+        return num_of_scored_events and self._sync_entities() and validate_scored_aggr_synced(logger=logger,
+                                                                                              host=self._host,
+                                                                                              num_of_scored_events=num_of_scored_events,
+                                                                                              timeout=self._validation_timeout,
+                                                                                              polling=self._validation_polling)
 
     def _sync_entities(self):
         logger.info('syncing entities...')

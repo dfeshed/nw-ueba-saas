@@ -5,20 +5,15 @@ from impala.dbapi import connect
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
-
-
-_DATA_SOURCE_TO_IMPALA_TABLE = {
-    'kerberos': 'authenticationscores',
-    'kerberos_tgt': 'kerberostgtscore',
-    'vpn_session': 'vpnsessiondatares',
-}
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
+from bdp_utils.data_sources import data_source_to_score_tables
 
 
 def _get_impala_table_name(connection, data_source):
     available_table_names = _get_all_impala_table_names(connection)
     table_name_options = [data_source + 'score', data_source + 'scores', data_source + 'datares']
-    if _DATA_SOURCE_TO_IMPALA_TABLE.has_key(data_source):
-        table_name_options.append(_DATA_SOURCE_TO_IMPALA_TABLE[data_source])
+    if data_source_to_score_tables.has_key(data_source):
+        table_name_options.append(data_source_to_score_tables[data_source])
     for table_name in table_name_options:
         if table_name in available_table_names:
             return table_name

@@ -20,7 +20,7 @@ def create_parser():
                                      parents=[parsers.host,
                                               parsers.start_optional,
                                               parsers.end_optional,
-                                              parsers.data_sources,
+                                              parsers.data_sources_excluding_vpn_session,
                                               parsers.throttling,
                                               parsers.validation_polling_interval],
                                      prog='stepSAM/run',
@@ -79,6 +79,24 @@ Usage example:
                         const=True,
                         help='pass this flag if you want to run a bdp cleanup before '
                              'starting to process the data sources')
+    parser.add_argument('--filtered_gap_in_seconds',
+                        action='store',
+                        dest='filtered_gap_in_seconds',
+                        help='streaming might filter events from enriched. If the last enriched events '
+                             'are filtered the python script will get stuck, since it will '
+                             'wait indefinitely. The solution is to allow gap in the end in which events '
+                             'can be filtered. Default is 3600',
+                        type=int,
+                        default=3600)
+    parser.add_argument('--filtered_timeout_override_in_seconds',
+                        action='store',
+                        dest='filtered_timeout_override_in_seconds',
+                        help='if filtered_gap_in_minutes > 0 it means that a gap is allowed. Once the '
+                             'The waiting for the last enriched event to be processed will end once '
+                             'we get the last event, or once the timeout ends. The timeout defaults to what is '
+                             'specified in --timeoutInSeconds. If --filtered_timeout_override_in_seconds is '
+                             'specified, the timeout will be overridden.',
+                        type=int)
     return parser
 
 
@@ -100,6 +118,8 @@ def main():
                convert_to_minutes_timeout=arguments.convert_to_minutes_timeout_in_minutes * 60,
                timeoutInSeconds=arguments.timeoutInSeconds,
                cleanup_first=arguments.cleanup_first,
+               filtered_gap_in_seconds=arguments.filtered_gap_in_seconds,
+               filtered_timeout_override_in_seconds=arguments.filtered_timeout_override_in_seconds,
                start=arguments.start,
                end=arguments.end) \
             .run():
