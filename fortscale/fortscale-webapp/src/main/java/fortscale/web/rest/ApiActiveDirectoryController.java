@@ -228,9 +228,10 @@ public class ApiActiveDirectoryController {
 		private AdTaskResponse executeAdTask(AdTaskType adTaskType, String dataSource) {
 			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
 			Process process;
+			UUID resultsFileId = UUID.randomUUID();
+			final String filePath = TASK_RESULTS_PATH + "/" + dataSource.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
 			try {
 				final String jobName = dataSource + "_" + adTaskType.toString();
-				UUID resultsFileId = UUID.randomUUID();
 				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, "AD", "resultsFileId="+resultsFileId));
 				process = new ProcessBuilder(arguments).start();
 			} catch (IOException e) {
@@ -253,7 +254,6 @@ public class ApiActiveDirectoryController {
 
 			Map<String, String> taskResults;
 
-			final String filePath = TASK_RESULTS_PATH + "/" + dataSource.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
 			try {
 				taskResults = new HashMap<>();
 				try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
