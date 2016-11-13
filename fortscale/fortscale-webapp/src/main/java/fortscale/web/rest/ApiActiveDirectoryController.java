@@ -44,14 +44,13 @@ public class ApiActiveDirectoryController {
 	private static final String AD_OU = "OU";
 	private static final String AD_Devices = "Computer";
 	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_Devices));
-	private static final String RESPONSE_DESTINATION = "/wizard/ad-fetch-response";
+	private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
 	private AtomicBoolean adTaskInProgress = new AtomicBoolean(false);
 
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
-
 	@Autowired
 	private SimpMessagingTemplate template;
 
@@ -116,7 +115,7 @@ public class ApiActiveDirectoryController {
 		return activeDirectoryService.getAdConnectionsFromDatabase();
 	}
 	
-	@RequestMapping("/ad_fetch" )
+	@RequestMapping("/ad_fetch_etl" )
 	public ResponseEntity executeAdFetchAndEtl() {
 
 		if (adTaskInProgress.compareAndSet(false, true)) {
@@ -215,7 +214,6 @@ public class ApiActiveDirectoryController {
 			final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, fetchResponse);
 
-
 			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
 		}
@@ -259,20 +257,20 @@ public class ApiActiveDirectoryController {
 			try {
 				taskResults = new HashMap<>();
 				try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
-                    final List<String> lines = stream.collect(Collectors.toList());
-                    for (String line : lines) {
-                        final String[] split = line.split(DELIMITER);
-                        if (split.length != 2) {
-                            logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSource);
-                            return new AdTaskResponse(adTaskType, false, -1, dataSource);
-                        }
+					final List<String> lines = stream.collect(Collectors.toList());
+					for (String line : lines) {
+						final String[] split = line.split(DELIMITER);
+						if (split.length != 2) {
+							logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSource);
+							return new AdTaskResponse(adTaskType, false, -1, dataSource);
+						}
 
-                        taskResults.put(split[0], split[1]);
-                    }
-                } catch (IOException e) {
-                    logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
-                    return new AdTaskResponse(adTaskType, false, -1, dataSource);
-                }
+						taskResults.put(split[0], split[1]);
+					}
+				} catch (IOException e) {
+					logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
+					return new AdTaskResponse(adTaskType, false, -1, dataSource);
+				}
 			} finally {
 				try {
 					Files.delete(Paths.get(filePath));
