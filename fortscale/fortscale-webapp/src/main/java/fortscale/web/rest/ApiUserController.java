@@ -39,6 +39,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.core.Response;
@@ -106,6 +107,7 @@ public class ApiUserController extends BaseController{
 	private UserWithAlertService userWithAlertService;
 
 	private static final String DEFAULT_SORT_FIELD = "username";
+	private final String extendedSearchSortFields;
 
 	public ApiUserController() {
 		fieldsRequired = new ArrayList<>();
@@ -118,16 +120,18 @@ public class ApiUserController extends BaseController{
 		fieldsRequired.add(User.getAdInfoField(UserAdInfo.departmentField));
 		fieldsRequired.add(User.tagsField);
 		fieldsRequired.add(User.sourceMachineCountField);
-	}
 
+		extendedSearchSortFields = String.format("%s, %s, %s, %s, %s, %s", User.getAdInfoField(UserAdInfo.firstnameField), User.getAdInfoField(UserAdInfo.lastnameField),
+				User.displayNameField, User.usernameField, User.getAdInfoField(UserAdInfo.positionField), User.getAdInfoField(UserAdInfo.departmentField));
+	}
 
 	/**
 	 * The API to get all users. GET: /api/user
 	 */
 	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
 	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
-		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(),
-				userRestFilter.getSortField(), userRestFilter.getSortDirection());
+
+		PageRequest pageRequest = createPaging(userRestFilter);
 
 		List<User> users = getUsers(userRestFilter, pageRequest, null);
 
@@ -208,6 +212,8 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> extendedSearch(UserRestFilter userRestFilter){
+
+
 		List<User> users = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
 
 		DataBean<List<UserDetailsBean>> result = getUsersDetails(users);
@@ -581,23 +587,6 @@ public class ApiUserController extends BaseController{
 
 		List<User> users = new ArrayList<>();
 
-		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
-			// If search value requested get the list of user ids relevant to the search.
-			List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
-			List<String> userIds = new ArrayList<>();
-
-			if (CollectionUtils.isEmpty(usersFromCache)){
-				// No users matched the search value
-				return users;
-			}
-
-			usersFromCache.forEach(user -> {
-				userIds.add(user.getId());
-			});
-
-			userRestFilter.getUserIds().addAll(userIds);
-		}
-
 		// Get the relevant users by filter requested
 		users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
 
@@ -655,18 +644,22 @@ public class ApiUserController extends BaseController{
 		return userSourceMachines;
 	}
 
-	private PageRequest createPaging(Integer size, Integer fromPage, String sortField, String sortDirection) {
+	private PageRequest createPaging(UserRestFilter userRestFilter) {
 
-		Sort sortUserDesc = createSorting(sortField, sortDirection);
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue()) && userRestFilter.getSortField()== null){
+			userRestFilter.setSortField(extendedSearchSortFields);
+		}
+
+		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 
 		// Create paging
 		Integer pageSize = 10;
-		if (size != null) {
-			pageSize = size;
+		if (userRestFilter.getSize() != null) {
+			pageSize = userRestFilter.getSize();
 		}
 		Integer pageNumber = 0;
-		if (fromPage != null) {
-			pageNumber = fromPage - 1;
+		if (userRestFilter.getFromPage() != null) {
+			pageNumber = userRestFilter.getFromPage() - 1;
 		}
 		return new PageRequest(pageNumber, pageSize, sortUserDesc);
 	}

@@ -8,6 +8,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,7 +293,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			query.addCriteria(criteria);
 		}
 
-		if (CollectionUtils.isNotEmpty(fieldsRequired)){
+ 		if (CollectionUtils.isNotEmpty(fieldsRequired)){
 			fieldsRequired.forEach(field -> {
 				query.fields().include(field);
 			});
@@ -599,6 +600,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter) {
 		// Create criteria list
 		List<Criteria> criteriaList = new ArrayList<>();
+
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+			String startsWithRegex = "^"+userRestFilter.getSearchValue() + ".*i";
+			Criteria firstNameCriteria = new Criteria(User.getAdInfoField(UserAdInfo.firstnameField)).regex(startsWithRegex);
+			Criteria lastNameCriteria = new Criteria(User.getAdInfoField(UserAdInfo.lastnameField)).regex(startsWithRegex);
+			Criteria displayNameCriteria = new Criteria(User.displayNameField).regex(startsWithRegex);
+			Criteria userNameCriteria = new Criteria(User.usernameField).regex(startsWithRegex);
+			Criteria positionCriteria = new Criteria(User.getAdInfoField(UserAdInfo.positionField)).regex(startsWithRegex);
+			Criteria departmentCriteria = new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).regex(startsWithRegex);
+
+			criteriaList.add(new Criteria().orOperator(firstNameCriteria, lastNameCriteria, displayNameCriteria, userNameCriteria, positionCriteria, departmentCriteria));
+		}
 
 		if (userRestFilter.getDisabledSince() != null && !userRestFilter.getDisabledSince().isEmpty()) {
 			criteriaList.add(where("adInfo.disableAccountTime").gte(new Date(Long.parseLong(userRestFilter.getDisabledSince()))));

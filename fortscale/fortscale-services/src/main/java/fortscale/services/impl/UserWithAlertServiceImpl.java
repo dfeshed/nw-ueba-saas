@@ -68,7 +68,72 @@ import java.util.Set;
 			return result;
 		}
 
-		result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired);
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+			result = userService.findUsersByFilter(userRestFilter, null, relevantUsers, fieldsRequired);
+			return getResultsForTheSearch(result, userRestFilter.getSearchValue(), userRestFilter.getSize(), userRestFilter.getFromPage());
+		}
+		else {
+			return userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired);
+		}
+	}
+
+	private List<User> getResultsForTheSearch(List<User> users, String searchValue, Integer size, Integer fromPage) {
+
+		List<User> result = new ArrayList<>();
+
+		if (CollectionUtils.isNotEmpty(users)){
+			List<User> firstNameResults = new ArrayList<>();
+			List<User> lastNameResults = new ArrayList<>();
+			List<User> displayNameResults = new ArrayList<>();
+			List<User> usernameResults = new ArrayList<>();
+			List<User> positionResults = new ArrayList<>();
+			List<User> departmentResults = new ArrayList<>();
+
+			users.forEach(user -> {
+				if (StringUtils.isNotEmpty(user.getAdInfo().getFirstname())
+						&& (user.getAdInfo().getFirstname().toLowerCase().startsWith(searchValue))){
+					firstNameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getAdInfo().getLastname())
+						&& (user.getAdInfo().getLastname().toLowerCase().startsWith(searchValue))){
+					lastNameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getDisplayName()) && (user.getDisplayName().toLowerCase().startsWith(searchValue))){
+					displayNameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getUsername())
+						&& (user.getUsername().toLowerCase().startsWith(searchValue))){
+					usernameResults.add(user);
+				} else if (StringUtils.isNotEmpty(user.getAdInfo().getPosition())
+						&& (user.getAdInfo().getPosition().toLowerCase().startsWith(searchValue))){
+					positionResults.add(user);
+				} else if(StringUtils.isNotEmpty(user.getAdInfo().getDepartment())
+						&& (user.getAdInfo().getDepartment().toLowerCase().startsWith(searchValue))){
+					departmentResults.add(user);
+				}
+			});
+
+			result.addAll(firstNameResults);
+			result.addAll(lastNameResults);
+			result.addAll(displayNameResults);
+			result.addAll(usernameResults);
+			result.addAll(positionResults);
+			result.addAll(departmentResults);
+		}
+
+		// Extracting only the required users according to page size and number
+		if (size != null && CollectionUtils.isNotEmpty(result)){
+			int startFrom = 0;
+
+			if (fromPage != null && fromPage > 1){
+				startFrom = size * (fromPage - 1);
+			}
+
+			int endIndex = startFrom + size;
+
+			if (endIndex > result.size()){
+				endIndex = result.size();
+			}
+
+			return result.subList(startFrom, endIndex);
+		}
 		return result;
 	}
 
@@ -103,8 +168,7 @@ import java.util.Set;
 		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getLocations()) ||
-				CollectionUtils.isNotEmpty(userRestFilter.getUserIds()) ||
-				StringUtils.isNotEmpty(userRestFilter.getSearchValue()))
+				CollectionUtils.isNotEmpty(userRestFilter.getUserIds()) )
 				&& (CollectionUtils.isEmpty(relevantUsers));
 	}
 
