@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class SMARTValuesModelScorerAlgorithmTest {
@@ -38,13 +39,6 @@ public class SMARTValuesModelScorerAlgorithmTest {
         double score = calcScore(globalInfluence, globalPositiveValueMean, oldValues, valueToScore);
         Assert.assertTrue(String.format("score (%e) >= expectedRangeMin (%e) does not hold", score, expectedRangeMin), score >= expectedRangeMin);
         Assert.assertTrue(String.format("score (%e) <= expectedRangeMax (%e) does not hold", score, expectedRangeMax), score <= expectedRangeMax);
-    }
-
-    private void assertScoresMonotonicity(double[] scores, boolean isIncreasing) {
-        int sign = isIncreasing ? 1 : -1;
-        Assert.assertTrue(IntStream.range(0, scores.length - 1)
-                .allMatch(i -> sign * scores[i] <= sign * scores[i + 1]));
-        Assert.assertTrue(sign * scores[0] < sign * scores[scores.length - 1]);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -82,11 +76,12 @@ public class SMARTValuesModelScorerAlgorithmTest {
 
     @Test
     public void shouldScoreIncreasinglyAsValueIncreases() {
-        double[] scores = IntStream.range(0, 100)
+        List<Double> scores = IntStream.range(0, 100)
                 .mapToDouble(i -> i / 100.)
                 .map(value -> calcScore(1, 0, Arrays.asList(0.01, 0.03, 0.05, 0.1), value))
-                .toArray();
-        assertScoresMonotonicity(scores, true);
+                .boxed()
+                .collect(Collectors.toList());
+        ScorerAlgorithmTestUtils.assertScoresIncrease(scores);
     }
 
     @Test
@@ -110,10 +105,11 @@ public class SMARTValuesModelScorerAlgorithmTest {
 
     @Test
     public void shouldScoreDecreasinglyAsGlobalInfluenceIncreasesWhenGlobalPositiveValueMeanIsHigherThanUserHistory() {
-        double[] scores = IntStream.range(0, 100)
+        List<Double> scores = IntStream.range(0, 100)
                 .mapToDouble(globalInfluence -> calcScore(globalInfluence, 0.5, Arrays.asList(0.01, 0.03, 0.05, 0.1), 0.5))
-                .toArray();
-        assertScoresMonotonicity(scores, false);
+                .boxed()
+                .collect(Collectors.toList());
+        ScorerAlgorithmTestUtils.assertScoresDecrease(scores);
     }
 
     @Test
@@ -127,10 +123,11 @@ public class SMARTValuesModelScorerAlgorithmTest {
 
     @Test
     public void shouldScoreDecreasinglyAsGlobalPositiveValueMeanIncreases() {
-        double[] scores = IntStream.range(0, 100)
+        List<Double> scores = IntStream.range(0, 100)
                 .mapToDouble(globalPositiveValueMean -> calcScore(10, globalPositiveValueMean, Arrays.asList(0.01, 0.03, 0.05, 0.1), 0.5))
-                .toArray();
-        assertScoresMonotonicity(scores, false);
+                .boxed()
+                .collect(Collectors.toList());
+        ScorerAlgorithmTestUtils.assertScoresDecrease(scores);
     }
 
     @Test

@@ -113,13 +113,6 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 				getClass().getSimpleName()));
 	}
 
-	@Override
-	public String getContextId(Map<String, String> context) {
-		metrics.getContextId++;
-		Assert.notNull(context);
-		return EntityEventBuilder.getContextId(context);
-	}
-
 	private JokerFunction getJokerFunction() {
 		String jokerFunctionJson = entityEventConf.getEntityEventFunction().toJSONString();
 
@@ -157,5 +150,12 @@ public class EntityEventValueRetriever extends AbstractDataRetriever {
 	public List<String> getContextFieldNames() {
 		metrics.getContextFieldNames++;
 		return entityEventConf.getContextFields();
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		metrics.getContextId++;
+		Assert.notNull(context);
+		return EntityEventBuilder.getContextId(context);
 	}
 }

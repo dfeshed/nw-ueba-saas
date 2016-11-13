@@ -15,9 +15,9 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
+import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -48,12 +48,14 @@ public class ModelConfProductionConfFilesTest {
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
 		@Mock private EntityEventDataReaderService entityEventDataReaderService;
 		@Mock private EntityEventMongoStore entityEventMongoStore;
+		@Mock private ModelStore modelStore;
 		@Mock private AlertsRepositoryCustom alertsRepositoryCustom;
 
 		@Bean public FeatureBucketsReaderService getFeatureBucketsReaderService() {return featureBucketsReaderService;}
 		@Bean public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {return aggregatedFeatureEventsReaderService;}
 		@Bean public EntityEventDataReaderService getEntityEventDataReaderService() {return entityEventDataReaderService;}
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
+		@Bean public ModelStore getModelStore() {return modelStore;}
 		@Bean public AlertsRepositoryCustom getAlertsRepositoryCustom() {return alertsRepositoryCustom;}
 
 		@Bean
@@ -149,19 +151,11 @@ public class ModelConfProductionConfFilesTest {
 
 	@Test
 	public void ShouldBeValidConf() {
-		int counter = 0;
-
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
 			IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
 			if (contextSelectorConf != null) contextSelectorFactoryService.getProduct(contextSelectorConf);
 			dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
 			modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
-			counter++;
 		}
-
-		int expRawEventsModelConfs = 53;
-		int expAggrEventsModelConfs = 64;
-		int expEntityEventsModelConfs = 30;
-		Assert.assertEquals(expRawEventsModelConfs + expAggrEventsModelConfs + expEntityEventsModelConfs, counter);
 	}
 }

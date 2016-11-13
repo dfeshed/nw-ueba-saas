@@ -5,10 +5,10 @@ import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.domain.core.EntityEvent;
-import fortscale.utils.logging.Logger;
+import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.mongodb.FIndex;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,7 +17,6 @@ import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.util.*;
@@ -26,9 +25,7 @@ import java.util.concurrent.TimeUnit;
 public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final String COLLECTION_NAME_PREFIX = "scored_";
 	private static final String COLLECTION_NAME_SEPARATOR = "__";
-	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 	private static final Logger logger = Logger.getLogger(EntityEventMongoStore.class);
-	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
 
 	@Autowired
 	private StatsService statsService;
@@ -48,7 +45,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
 	public void save(EntityEvent entityEvent) {
 		String collectionName = ensureCollectionExists(entityEvent);
-		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+		PersistenceTaskStoreMetrics collectionMetrics = MongoStoreUtils.getCollectionMetrics(statsService, collectionName);
 		if (storePageSize > 1) {
 			List<EntityEvent> entityEventList = collectionToEntityEventListMap.get(collectionName);
 			if (entityEventList == null) {
@@ -84,7 +81,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	 * @param entityEvents what to insert
      */
 	private void bulkInsertEntityEvents(String collectionName, List<EntityEvent> entityEvents) {
-		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+		PersistenceTaskStoreMetrics collectionMetrics = MongoStoreUtils.getCollectionMetrics(statsService, collectionName);
 		try {
 			if (entityEvents.isEmpty())
 			{
@@ -123,29 +120,17 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	}
 
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
-		String collectionName = getCollectionName(entityEventType);
-		if (mongoTemplate.collectionExists(collectionName)) {
-			PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
-
-			long endTimeSeconds = TimestampUtils.convertToSeconds(endTime);
-			Map<Long, List<EntityEvent>> dateToHighestEntityEvents = new HashMap<>(numOfDays);
-			while (numOfDays-- > 0) {
-				long startTime = endTimeSeconds - SECONDS_IN_DAY;
-				Query query = new Query()
-						.addCriteria(Criteria.where(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME)
-								.gt(startTime)
-								.lte(endTimeSeconds))
-						.with(new Sort(Sort.Direction.DESC, EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME))
-						.limit(topK);
-				dateToHighestEntityEvents.put(startTime,
-						mongoTemplate.find(query, EntityEvent.class, collectionName));
-				collectionMetrics.reads++;
-				endTimeSeconds -= SECONDS_IN_DAY;
-			}
-			return dateToHighestEntityEvents;
-		} else {
-			return Collections.emptyMap();
-		}
+		return MongoStoreUtils.getDateToTopScoredEvents(
+				statsService,
+				mongoTemplate,
+				getCollectionName(entityEventType),
+				EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME,
+				EntityEvent.ENTITY_EVENT_UNREDUCED_SCORE_FIELD_NAME,
+				endTime,
+				numOfDays,
+				topK,
+				EntityEvent.class
+		);
 	}
 
 	private String ensureCollectionExists(EntityEvent entityEvent) {
@@ -184,35 +169,11 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		long totalNumberOfEvents = 0;
 
 		for(String collectionName: allScoredEntityEventCollectionNames) {
-			PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+			PersistenceTaskStoreMetrics collectionMetrics = MongoStoreUtils.getCollectionMetrics(statsService, collectionName);
 			totalNumberOfEvents += mongoTemplate.count(new Query(), collectionName);
 			collectionMetrics.reads++;
 		}
 
 		return totalNumberOfEvents;
-	}
-
-	/**
-	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
-	 * before any crud is preformed in this class, this method should be called
-	 *
-	 * @param collectionName metrics are per collection
-	 * @return metrics for collection
-	 */
-	private PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName)
-	{
-		if(collectionMetricsMap ==null)
-		{
-			collectionMetricsMap = new HashMap<>();
-		}
-
-		if(!collectionMetricsMap.containsKey(collectionName))
-		{
-			PersistenceTaskStoreMetrics collectionMetrics =
-					new PersistenceTaskStoreMetrics(statsService,collectionName);
-			collectionMetricsMap.put(collectionName,collectionMetrics);
-		}
-
-		return collectionMetricsMap.get(collectionName);
 	}
 }

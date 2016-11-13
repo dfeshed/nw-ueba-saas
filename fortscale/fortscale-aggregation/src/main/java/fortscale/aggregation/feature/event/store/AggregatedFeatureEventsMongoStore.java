@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.event.store;
 import com.mongodb.BulkWriteResult;
 import fortscale.aggregation.feature.event.*;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
+import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -26,9 +27,6 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public static final String COLLECTION_NAME_SEPARATOR = "__";
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsMongoStore.class);
 
-	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
-
-
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -48,7 +46,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public void storeEvent(AggrEvent aggregatedFeatureEvent) {
 		String aggregatedFeatureName = aggregatedFeatureEvent.getAggregatedFeatureName();
 		String collectionName = createCollectionIfNotExist(aggregatedFeatureName);
-		getCollectionMetrics(collectionName).writes++;
+		MongoStoreUtils.getCollectionMetrics(statsService, collectionName).writes++;
 		// Save aggregated feature event in Mongo collection
 		mongoTemplate.save(aggregatedFeatureEvent, collectionName);
 	}
@@ -85,13 +83,19 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		}
 	}
 
+	private Query createTimeRangeQuery(Date startTime, Date endTime) {
+		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
+		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
+		return new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+	}
+
 	/**
 	 * stores aggrEvents into collection in unordered bulk operation
 	 * @param collectionName where to insert
 	 * @param aggrEvents what to insert
      */
 	private void bulkInsertAggrEvents(String collectionName, List<AggrEvent> aggrEvents) {
-		PersistenceTaskStoreMetrics collectionMetrics = getCollectionMetrics(collectionName);
+		PersistenceTaskStoreMetrics collectionMetrics = MongoStoreUtils.getCollectionMetrics(statsService, collectionName);
 		try {
 			if(aggrEvents.isEmpty())
 			{
@@ -124,11 +128,8 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 
 		String metricsCollectionName = getCollectionName(aggregatedFeatureName);
-		getCollectionMetrics(metricsCollectionName).reads++;
-		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
-		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
-		Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
-
+		MongoStoreUtils.getCollectionMetrics(statsService, metricsCollectionName).reads++;
+		Query query = createTimeRangeQuery(startTime, endTime);
 
         return (getCollectionsNames(aggregatedFeatureName).stream()
                 .flatMap(collectionName -> runDistinctContextQuery(collectionName,query).stream())
@@ -143,14 +144,11 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public List<AggrEvent> findAggrEventsByContextIdAndTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf,
 			String contextId, Date startTime, Date endTime) {
-
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
 		String metricsCollectionName = getCollectionName(aggregatedFeatureName);
-		getCollectionMetrics(metricsCollectionName).reads++;
-		Criteria contextIdCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
-		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTime);
-		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_END_TIME).lte(endTime);
-		Query query = new Query(contextIdCriteria.andOperator(startTimeCriteria, endTimeCriteria));
+		MongoStoreUtils.getCollectionMetrics(statsService, metricsCollectionName).reads++;
+		Query query = createTimeRangeQuery(startTime, endTime)
+				.addCriteria(Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId));
 
         return getCollectionsNames(aggregatedFeatureName).stream()
             .flatMap(collectionName -> mongoTemplate.find(query, AggrEvent.class, collectionName).stream())
@@ -167,11 +165,55 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		return collectionsNames;
 	}
 
+	public long findNumOfAggrEventsByTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+											   Date startTime,
+											   Date endTime) {
+		return getCollectionsNames(aggregatedFeatureEventConf.getName()).stream()
+				.mapToLong(collectionName -> mongoTemplate.count(createTimeRangeQuery(startTime, endTime), AggrEvent.class, collectionName))
+				.sum();
+	}
+
+	public AggrEvent findAggrEventWithTopKScore(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+												Date startTime,
+												Date endTime,
+												int k) {
+		Query query = createTimeRangeQuery(startTime, endTime)
+				.with(new Sort(Sort.Direction.DESC, AggrEvent.EVENT_FIELD_SCORE))
+				.limit(k);
+		return getCollectionsNames(aggregatedFeatureEventConf.getName()).stream()
+				.flatMap(collectionName -> mongoTemplate.find(query, AggrEvent.class, collectionName).stream())
+				.sorted(Comparator.comparing(aggrEvent -> aggrEvent.getScore()))
+				.skip(k - 1)
+				.findFirst()
+				.get();
+	}
+
+	public Map<Long, List<AggrEvent>> getDateToTopAggrEvents(AggregatedFeatureEventConf aggregatedFeatureEventConf,
+															 Date endTime,
+															 int numOfDays,
+															 int topK) {
+		return MongoStoreUtils.getDateToTopScoredEvents(
+				statsService,
+				mongoTemplate,
+				getCollectionName(aggregatedFeatureEventConf),
+				AggrEvent.EVENT_FIELD_END_TIME_UNIX,
+				AggrEvent.EVENT_FIELD_SCORE,
+				endTime,
+				numOfDays,
+				topK,
+				AggrEvent.class
+		);
+	}
+
 	private String getCollectionName(String aggregatedFeatureName) {
 		return StringUtils.join(
 				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
 				eventType, COLLECTION_NAME_SEPARATOR,
 				aggregatedFeatureName);
+	}
+
+	private String getCollectionName(AggregatedFeatureEventConf aggregatedFeatureEventConf) {
+		return getCollectionName(aggregatedFeatureEventConf.getName());
 	}
 
 	private long getRetentionInSeconds(String aggregatedFeatureName) {
@@ -235,35 +277,10 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 		long totalNumberOfEvents = 0;
 
 		for(String collectionName: allAggrFeatureEventCollectionNames) {
-			getCollectionMetrics(collectionName).reads++;
+			MongoStoreUtils.getCollectionMetrics(statsService, collectionName).reads++;
 			totalNumberOfEvents += mongoTemplate.count(new Query(), collectionName);
 		}
 
 		return totalNumberOfEvents;
 	}
-
-	/**
-	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
-	 * before any crud is preformed in this class, this method should be called
-	 *
-	 * @param collectionName metrics are per collection
-	 * @return metrics for collection
-     */
-	public PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName)
-	{
-		if(collectionMetricsMap ==null)
-		{
-			collectionMetricsMap = new HashMap<>();
-		}
-
-		if(!collectionMetricsMap.containsKey(collectionName))
-		{
-			PersistenceTaskStoreMetrics collectionMetrics =
-					new PersistenceTaskStoreMetrics(statsService,collectionName);
-			collectionMetricsMap.put(collectionName,collectionMetrics);
-		}
-
-		return collectionMetricsMap.get(collectionName);
-	}
-
 }
