@@ -36,7 +36,7 @@
 				<group>Model</group>
 				<job-name>DailyModelBuilding</job-name>
 				<job-group>Model</job-group>
-				<cron-expression>0 0 1 * * SUN</cron-expression>
+				<cron-expression>0 0 0 ? * SUN</cron-expression>
 			</cron>
 		</trigger>
 	</schedule>
