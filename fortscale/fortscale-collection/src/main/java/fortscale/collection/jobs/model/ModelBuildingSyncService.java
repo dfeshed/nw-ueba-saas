@@ -93,7 +93,7 @@ public class ModelBuildingSyncService {
 		logger.info("Initializing model building registrations: Session ID = {}.", sessionId);
 
 		for (String modelConfName : modelConfNames) {
-			ModelBuildingCommandMessage command = new ModelBuildingCommandMessage(sessionId,modelConfName,-1);
+			ModelBuildingCommandMessage command = new ModelBuildingCommandMessage(sessionId,modelConfName,-1,false);
 			String commandJsonString = objectMapper.writeValueAsString(command);
 			writer.send(null, commandJsonString);
 		}
@@ -104,7 +104,7 @@ public class ModelBuildingSyncService {
 				sessionId, endTimeInSeconds);
 
 		for (String modelConfName : modelConfNames) {
-			ModelBuildingCommandMessage command = new ModelBuildingCommandMessage(sessionId,modelConfName,endTimeInSeconds);
+			ModelBuildingCommandMessage command = new ModelBuildingCommandMessage(sessionId,modelConfName,endTimeInSeconds,false);
 			String commandJsonString = objectMapper.writeValueAsString(command);
 			writer.send(null, commandJsonString);
 		}

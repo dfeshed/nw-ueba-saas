@@ -75,8 +75,8 @@ public class ModelBuildingRegistrationService {
 		String sessionId = modelBuildingCommandMessage.getSessionId();
 		String modelConfName = modelBuildingCommandMessage.getModelConfName();
 		Long endTimeSec = modelBuildingCommandMessage.getEndTimeInSeconds();
-		boolean selectHighScoreContexts = (boolean) event.getOrDefault(selectHighScoreContextsJsonField, false);
-		Set<String> specifiedContextIds = (Set<String>) event.getOrDefault(specifiedContextIdsJsonField, Collections.emptySet());
+		boolean selectHighScoreContexts = modelBuildingCommandMessage.isSelectHighScoreContexts();
+		Set<String> specifiedContextIds = modelBuildingCommandMessage.getSpecifiedContextIds();
 
 		if (StringUtils.hasText(sessionId) && StringUtils.hasText(modelConfName) && endTimeSec != null) {
 			metrics.processed++;
@@ -92,15 +92,15 @@ public class ModelBuildingRegistrationService {
 						Matcher matcher = allModelsFilterRegexPattern.matcher(currentModelConfName);
 						if(matcher.matches())
 						{
-							process(sessionId, currentModelConfName, endTime);
+							process(sessionId, currentModelConfName, endTime, selectHighScoreContexts, specifiedContextIds);
 						}
 					}
 					else {
-						process(sessionId, currentModelConfName, endTime);
+						process(sessionId, currentModelConfName, endTime, selectHighScoreContexts, specifiedContextIds);
 					}
 				}
 			} else {
-				process(sessionId, modelConfName, endTime);
+				process(sessionId, modelConfName, endTime , selectHighScoreContexts, specifiedContextIds);
 			}
 		} else {
 			metrics.ignored++;
@@ -125,9 +125,9 @@ public class ModelBuildingRegistrationService {
 					metrics.pendingRegistrations++;
 					getSetMetrics(reg.getModelConfName()).pendingRegistrations++;
 				} else {
-					modelService.process(modelBuildingListener, reg.getSessionId(), reg.getModelConfName(),
-							reg.getPreviousEndTime(), reg.getCurrentEndTime());
 					metrics.handledRegistrations++;
+					modelService.process(modelBuildingListener, reg.getSessionId(), reg.getModelConfName(),
+							reg.getPreviousEndTime(), reg.getCurrentEndTime(),reg.selectHighScoreContexts(),reg.getSpecifiedContextIds());
 					getSetMetrics(reg.getModelConfName()).handledRegistrations++;
 					getSetMetrics(reg.getModelConfName()).lastHandledEndTime = convertToSeconds(reg.getCurrentEndTime());
 					reg.setPreviousEndTime(reg.getCurrentEndTime());
@@ -146,18 +146,23 @@ public class ModelBuildingRegistrationService {
 		}
 	}
 
-	private void process(String sessionId, String modelConfName, Date endTime) {
+	private void process(String sessionId,
+						 String modelConfName,
+						 Date endTime,
+						 boolean selectHighScoreContexts,
+						 Set<String> specifiedContextIds) {
 		if (endTime == null) {
-			modelBuildingStore.deleteRegistration(sessionId, modelConfName);
+			modelBuildingStore.deleteRegistration(sessionId, modelConfName, selectHighScoreContexts, specifiedContextIds);
 			metrics.delete++;
 			getSetMetrics(modelConfName).delete++;
 			return;
 		}
 
-		ModelBuildingRegistration registration = modelBuildingStore.getRegistration(sessionId, modelConfName);
+		ModelBuildingRegistration registration = modelBuildingStore.getRegistration(
+				sessionId, modelConfName, selectHighScoreContexts, specifiedContextIds);
 
 		if (registration == null) {
-			registration = new ModelBuildingRegistration(sessionId, modelConfName, null, endTime);
+			registration = new ModelBuildingRegistration(sessionId, modelConfName, null, endTime, selectHighScoreContexts, specifiedContextIds);
 		} else {
 			Date currentEndTime = registration.getCurrentEndTime();
 
