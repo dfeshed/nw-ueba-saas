@@ -2,11 +2,11 @@
 <hbox>
   <vbox>
     <div class="rsa-context-panel__liveconnect__field">
-      {{rsa-content-definition label=(t 'context.lc.asn') value=liveConnectData.asn}}
+      {{rsa-content-definition label=(t 'context.lc.asn') value=liveConnectData.asnNumber}}
     </div>
-    <vbox class="rsa-context-panel__liveconnect__field">
-      {{rsa-content-definition class="rsa-context-panel__liveconnect__prefix" label=(t 'context.lc.prefix') value=liveConnectData.prefix}}
-    </vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.registrant') value=liveConnectData.asnOrganization}}
+    </div>
   </vbox>
   <vbox>
     <div class="rsa-context-panel__liveconnect__field">
@@ -15,14 +15,5 @@
     <div class="rsa-context-panel__liveconnect__field">
       {{rsa-content-definition label=(t 'context.lc.countryName') value=liveConnectData.country}}
     </div>
-  </vbox>
-  <vbox>
-    <div class="rsa-context-panel__liveconnect__field">
-      {{rsa-content-definition label=(t 'context.lc.registrant') value=liveConnectData.registrant}}
-    </div>
-    <vbox class="rsa-context-panel__liveconnect__field">
-      {{rsa-content-definition label=(t 'context.lc.fileDate')}}
-      {{rsa-content-datetime timestamp=liveConnectData.fileDate}}
-    </vbox>
   </vbox>
 </hbox>

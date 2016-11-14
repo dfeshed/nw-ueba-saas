@@ -33,8 +33,7 @@ test('it renders', function(assert) {
   };
   this.set('liveConnectData', liveConnectData);
   this.render(hbs`{{rsa-context-panel/lc-identity liveConnectData=liveConnectData}}`);
-  assert.equal(this.$('.rsa-content-datetime').length, 1, 'Correct number of rsa-content-datetime elements found');
-  assert.equal(this.$('.rsa-content-definition').length, 6,'Correct number of rsa-content-definition elements found');
+  assert.equal(this.$('.rsa-content-definition').length, 4,'Correct number of rsa-content-definition elements found');
 
 
 });
