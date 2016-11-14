@@ -1,5 +1,19 @@
-PORTS=(7351 7352 7353 7354 7355 7356 7357 7358 7359 7360 7361 7362 7363 7364 7365 7366 7367 7368 7369 7370 7371 7372 7373 7374 7375 7376 7377 7378 7379 7380)
-MOCK_PORTS=(9980 9981 9982 9983 9984 9985 9986 9987 9988 9989 9990 9991 9992 9993 9994 9995 9996 9997)
+if [ -z ${TESTEM_PORTS+x} ]
+then
+  fail "Must export TESTEM_PORTS variable before running script"
+  exit 1
+fi
+
+if [ -z ${MOCK_SERVER_PORTS+x} ]
+then
+  fail "Must export MOCK_SERVER_PORTS variable before running script"
+  exit 1
+fi
+
+# Turn strings into arrays
+# cannot export arrays at command line
+IFS=', ' read -r -a TESTEM_PORTS_ARRAY <<< "$TESTEM_PORTS"
+IFS=', ' read -r -a MOCK_SERVER_PORTS_ARRAY <<< "$MOCK_SERVER_PORTS"
 
 function runAppYarnInstall {
   info "Running 'yarn' for $1"
@@ -16,8 +30,8 @@ function runAppBowerInstall {
 }
 
 function runEmberTestWithMockServer {
-  local mockPort=${MOCK_PORTS[$RANDOM % ${#MOCK_PORTS[@]} ]}
-  local testemPort=${PORTS[$RANDOM % ${#PORTS[@]} ]}
+  local mockPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
+  local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
 
   info "Starting Express mock test server for $1"
 
@@ -49,7 +63,7 @@ function runEmberTestWithMockServer {
 }
 
 function runEmberTestNoMockServer {
-  testemPort=${PORTS[$RANDOM % ${#PORTS[@]} ]}
+  testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
   info "Running 'ember exam' for $1 on port $testemPort"
   ember exam --split=4 --parallel --test-port $testemPort
   checkError "Ember exam/test failed for $1"
