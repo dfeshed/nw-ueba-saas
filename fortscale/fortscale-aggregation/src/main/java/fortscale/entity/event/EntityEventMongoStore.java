@@ -207,22 +207,20 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		if (collectionMetricsMap == null) {
 			collectionMetricsMap = new HashMap<>();
 		}
+		PersistenceTaskStoreMetrics metrics = collectionMetricsMap.get(collectionName);
+		if(metrics==null) {
+			metrics = new PersistenceTaskStoreMetrics(statsService, collectionName);
+			collectionMetricsMap.put(collectionName,metrics);
+		}
+		return metrics;
 	}
+
 	public List<EntityEvent> findEntityEventsByStartTimeRange(Instant from, Instant to, String featureName) {
 
-		if (!collectionMetricsMap.containsKey(collectionName)) {
-			PersistenceTaskStoreMetrics collectionMetrics =
-					new PersistenceTaskStoreMetrics(statsService, collectionName);
-			collectionMetricsMap.put(collectionName, collectionMetrics);
-		}
 		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to.getEpochSecond());
 		Query query = new Query(startTimeCriteria);
 
-		return collectionMetricsMap.get(collectionName);
-	}
-
-	public List<EntityEvent> findEntityEventsByTimeRange(Instant fromCursor, Instant toCursor, String featureName) {
-		return findEntityEvents(featureName, query);
+		return findEntityEvents(featureName,query);
 	}
 
 	/**
