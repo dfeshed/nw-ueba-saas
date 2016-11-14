@@ -6,8 +6,6 @@ import java.time.Period;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_COLLECTION_SUFFIX;
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_COLLECTION_SUFFIX;
 import static fortscale.utils.time.TimeUtils.getAmountOfDaysInPeriod;
 
 /**
