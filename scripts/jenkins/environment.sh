@@ -71,7 +71,7 @@ function installNodeTarballIfNecessary {
 #   for when installed versions reports something different than version actually insatlled (phantomjs)
 function installNPMLibraryIfNecessary {
   local hasPath=$(pathExists $3)
-  local versionToCheck="${5:-4}"
+  local versionToCheck="${5:-$4}"
   if [[ ("$hasPath" == "true") && ("$(hasVersion $1 $2 $versionToCheck)" == "true") ]]
   then
     success "$1 version is: $4"
