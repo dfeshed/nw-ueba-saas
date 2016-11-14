@@ -2487,6 +2487,16 @@ ember-data@^2.8.0:
     semver "^5.1.0"
     silent-error "^1.0.0"
 
+ember-exam@0.5.0:
+  version "0.5.0"
+  resolved "https://registry.npmjs.org/ember-exam/-/ember-exam-0.5.0.tgz#29fcf089f53183c9aea0b76a0ff1e60332f096fb"
+  dependencies:
+    chalk "^1.1.3"
+    cli-table2 "^0.2.0"
+    debug "^2.2.0"
+    ember-cli-babel "^5.1.6"
+    fs-extra "^0.30.0"
+
 ember-export-application-global@^1.0.5:
   version "1.1.1"
   resolved "https://registry.npmjs.org/ember-export-application-global/-/ember-export-application-global-1.1.1.tgz#f257d5271268932a89d7392679ce4db89d7154af"

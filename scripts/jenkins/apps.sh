@@ -31,8 +31,8 @@ function runEmberTestWithMockServer {
   cd ../..
 
   # now run the tests
-  info "Running 'ember test' for $1 on port $testemPort"
-  MOCK_PORT=$mockPort ember test --test-port $testemPort
+  info "Running 'ember exam' for $1 on port $testemPort"
+  MOCK_PORT=$mockPort ember exam --split=4 --parallel --test-port $testemPort
   local status=$?
 
   # kill mock server
@@ -45,15 +45,15 @@ function runEmberTestWithMockServer {
     exit $status
   fi
 
-  success "'ember test' for $1 was successful"
+  success "'ember exam' for $1 was successful"
 }
 
 function runEmberTestNoMockServer {
   testemPort=${PORTS[$RANDOM % ${#PORTS[@]} ]}
-  info "Running 'ember test' for $1 on port $testemPort"
-  ember test --test-port $testemPort
-  checkError "Ember test failed for $1"
-  success "'ember test' for $1 was successful"
+  info "Running 'ember exam' for $1 on port $testemPort"
+  ember exam --split=4 --parallel --test-port $testemPort
+  checkError "Ember exam/test failed for $1"
+  success "'ember exam' for $1 was successful"
 }
 
 function runEmberBuild {
