@@ -34,10 +34,13 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final Logger logger = Logger.getLogger(EntityEventMongoStore.class);
 	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
 
+<<<<<<< HEAD
 	@Autowired
 	private StatsService statsService;
 	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
+
+
 	@Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
 	private List<String> backupCollectionNamesPrefixes;
 	@Value("${fortscale.scored.entity.event.store.page.size}")
@@ -185,6 +188,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		return totalNumberOfEvents;
 	}
 
+<<<<<<< HEAD
 	/**
 	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
 	 * before any crud is preformed in this class, this method should be called
@@ -204,5 +208,10 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		}
 
 		return collectionMetricsMap.get(collectionName);
+	}
+
+	public List<EntityEvent> findEntityEventsByTimeRange(Instant fromCursor, Instant toCursor, String featureName) {
+		// TODO: 10/9/16
+		return null;
 	}
 }
