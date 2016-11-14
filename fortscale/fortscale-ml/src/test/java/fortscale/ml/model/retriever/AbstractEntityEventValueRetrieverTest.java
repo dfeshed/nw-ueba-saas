@@ -3,7 +3,6 @@ package fortscale.ml.model.retriever;
 import fortscale.common.util.GenericHistogram;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.JokerEntityEventData;
-import fortscale.ml.model.selector.EntityEventContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.FactoryService;
 import org.junit.Assert;
@@ -14,12 +13,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Stream;
-
-import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/retriever-test-context.xml"})
@@ -73,8 +69,8 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 		String contextId1 = "contextId1";
 		String contextId2 = "contextId2";
 		String contextId3 = "contextId3";
-		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class)))
-				.thenReturn((startTime, endTime) -> Arrays.asList(contextId1, contextId2, contextId3));
+//		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class)))
+//				.thenReturn((startTime, endTime) -> Arrays.asList(contextId1, contextId2, contextId3));
 
 		AbstractEntityEventValueRetriever retriever = new AbstractEntityEventValueRetriever(config, false) {
 			@Override

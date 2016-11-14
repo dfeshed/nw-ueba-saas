@@ -1,5 +1,6 @@
 package fortscale.collection.jobs.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import fortscale.accumulator.manager.AccumulatorManagerParams;
 import fortscale.accumulator.manager.AccumulatorManger;
 
@@ -22,8 +23,7 @@ public abstract class AccumulatedModelBuildingSyncService extends ModelBuildingS
     }
 
     @Override
-    protected void sendCommands(long endTimeInSeconds)
-    {
+    protected void sendCommands(long endTimeInSeconds) throws JsonProcessingException {
         accumulate(endTimeInSeconds);
         super.sendCommands(endTimeInSeconds);
     }
