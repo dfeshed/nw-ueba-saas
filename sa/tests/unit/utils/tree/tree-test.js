@@ -7,18 +7,18 @@ module('Unit | Utility | tree/tree');
 test('it can be created and then assigned a root', function(assert) {
   assert.expect(2);
 
-  let tree = Tree.create();
+  const tree = Tree.create();
   assert.ok(tree);
 
-  let node = TreeNode.create({ value: 'rootNode' });
+  const node = TreeNode.create({ value: 'rootNode' });
   tree.add(node);
   assert.equal(tree.get('root'), node, 'root was updated successfully');
 });
 
 test('it can find a node by using native triple equals', function(assert) {
-  let tree = Tree.create();
-  let node1 = TreeNode.create({ value: 'foo' });
-  let node2 = TreeNode.create({ value: 'bar' });
+  const tree = Tree.create();
+  const node1 = TreeNode.create({ value: 'foo' });
+  const node2 = TreeNode.create({ value: 'bar' });
 
   tree.add(node1).add(node2);
   assert.equal(tree.find('bar'), node2, 'node was found successfully without a compare function');
@@ -29,14 +29,14 @@ test('it can find a node by using the node value\'s \'isEqual\' method', functio
     return this.raw === value;
   };
 
-  let tree = Tree.create();
-  let node1 = TreeNode.create({
+  const tree = Tree.create();
+  const node1 = TreeNode.create({
     value: {
       raw: 'foo',
       isEqual
     }
   });
-  let node2 = TreeNode.create({
+  const node2 = TreeNode.create({
     value: {
       raw: 'bar',
       isEqual

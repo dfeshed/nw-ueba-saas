@@ -112,7 +112,7 @@ export default Component.extend({
    */
   didInsertElement() {
     this._super(...arguments);
-    let _this = this;
+    const _this = this;
 
     this.get('eventBus').on('rsa-application-click', function(targetEl) {
       if (_this.$()) {
@@ -148,7 +148,7 @@ export default Component.extend({
    */
   @computed('incident.name', 'isLargeSize')
   incidentName(name, isLargeSize) {
-    let maxLength = isLargeSize ? 63 : 90;
+    const maxLength = isLargeSize ? 63 : 90;
 
     if (name && name.length > maxLength) {
       run.once(() => {
@@ -262,11 +262,11 @@ export default Component.extend({
       if (!this.get('editModeActive')) {
         Logger.log('Updating Incident and calling saveIncidentAction action to save it');
 
-        let pendingPriority = this.get('pendingPriority');
-        let pendingStatus = this.get('pendingStatus');
-        let pendingAssignee = this.get('pendingAssignee');
+        const pendingPriority = this.get('pendingPriority');
+        const pendingStatus = this.get('pendingStatus');
+        const pendingAssignee = this.get('pendingAssignee');
 
-        let attributeChanged = {};
+        const attributeChanged = {};
 
         if (!isNone(pendingPriority)) {
           this.setProperties({
@@ -293,8 +293,8 @@ export default Component.extend({
             this.set('incident.assignee', null);
             merge(attributeChanged, { assignee: null });
           } else {
-            let updatedAssigneeUser = this.get('users').findBy('id', pendingAssignee);
-            let assigneeAttributes = updatedAssigneeUser.getProperties('id', 'firstName', 'lastName', 'email');
+            const updatedAssigneeUser = this.get('users').findBy('id', pendingAssignee);
+            const assigneeAttributes = updatedAssigneeUser.getProperties('id', 'firstName', 'lastName', 'email');
             this.set('incident.assignee', assigneeAttributes);
             merge(attributeChanged, { assignee: assigneeAttributes });
           }

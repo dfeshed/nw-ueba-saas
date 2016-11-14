@@ -15,7 +15,7 @@ const {
 // @param {string} filter A Core filter condition (typically for meta keys other than 'sessionid').
 // @param {string} [startSessionId] Optional lower bound (exclusive) for session IDs.
 function addSessionIdFilter(filter, startSessionId) {
-  let out = [];
+  const out = [];
   if (startSessionId) {
     out.push(`(sessionid > ${startSessionId})`);
   }
@@ -37,18 +37,18 @@ function addSessionIdFilter(filter, startSessionId) {
  * @public
  */
 function buildEventStreamInputs(query, language, limit, batch = 1, startSessionId = null) {
-  let inputs = makeServerInputsForQuery(query, language);
+  const inputs = makeServerInputsForQuery(query, language);
   inputs.stream = { limit, batch };
-  let metaFilterInput = inputs.filter.findBy('field', 'query');
+  const metaFilterInput = inputs.filter.findBy('field', 'query');
   metaFilterInput.value = addSessionIdFilter(metaFilterInput.value, startSessionId);
   return inputs;
 }
 
 function buildMetaValueStreamInputs(metaName, query, language, queryOptions, limit, batch) {
-  let inputs = buildEventStreamInputs(query, language, limit, batch);
+  const inputs = buildEventStreamInputs(query, language, limit, batch);
   inputs.filter.pushObject({ field: 'metaName', value: metaName });
   if (queryOptions) {
-    let { size, metric, sortField, sortOrder } = getProperties(queryOptions, 'size', 'metric', 'sortField', 'sortOrder');
+    const { size, metric, sortField, sortOrder } = getProperties(queryOptions, 'size', 'metric', 'sortField', 'sortOrder');
     inputs.filter.pushObjects([
       { field: 'valuesCount', value: size },
       { field: 'flags', value: `${metric},sort-${sortField},order-${sortOrder}` }
@@ -65,7 +65,7 @@ function buildMetaValueStreamInputs(metaName, query, language, queryOptions, lim
  * @public
  */
 function makeServerInputsForQuery(query, language) {
-  let {
+  const {
       serviceId, startTime, endTime, metaFilter
     } = getProperties(
       query || {}, 'serviceId', 'startTime', 'endTime', 'metaFilter'
@@ -94,7 +94,7 @@ function makeServerInputsForQuery(query, language) {
  * @public
  */
 function makeServerInputsForEventCount(query, language, threshold) {
-  let out = makeServerInputsForQuery(query, language);
+  const out = makeServerInputsForQuery(query, language);
   if (threshold) {
     out.filter.push({ field: 'threshold', value: threshold });
   }
@@ -115,7 +115,7 @@ function executeEventsRequest(request, inputs, events) {
       events.set('stopStreaming', stopStream);
     },
     onResponse(response) {
-      let arr = response && response.data;
+      const arr = response && response.data;
       if (arr) {
         arr.forEach(hasherizeEventMeta);
         const data = events.get('data');
@@ -214,7 +214,7 @@ function buildEventLogStreamInputs(endpointId, eventIds = []) {
     'Cannot make a core log query without an event id.',
     eventIds.length
   );
-  let inputs = makeServerInputsForEndpointInfo(endpointId);
+  const inputs = makeServerInputsForEndpointInfo(endpointId);
   inputs.filter.pushObject({ field: 'sessionIds', values: eventIds });
   return inputs;
 }
@@ -234,7 +234,7 @@ function executeLogDataRequest(request, inputs, events = []) {
       onResponse({ data: { sessionId, log, code } }) {
 
         // Each event (i.e., sessionId) gets its own response message with its own error code.
-        let item = events.findBy('sessionId', sessionId);
+        const item = events.findBy('sessionId', sessionId);
 
         if (item) {
           if (code) {
@@ -272,15 +272,16 @@ function executeLogDataRequest(request, inputs, events = []) {
  * @public
  */
 function parseEventQueryUri(uri) {
-  let parts = uri ? uri.split('/') : [];
-  let [ serviceId, startTime, endTime ] = parts;
+  const parts = uri ? uri.split('/') : [];
+  const [ serviceId ] = parts;
+  let [ startTime, endTime ] = parts;
   startTime = Number(startTime);
   endTime = Number(endTime);
 
-  let metaFilterUri = parts.slice(3, parts.length)
+  const metaFilterUri = parts.slice(3, parts.length)
     .join('/');
 
-  let metaFilterConditions = parseMetaFilterUri(metaFilterUri);
+  const metaFilterConditions = parseMetaFilterUri(metaFilterUri);
 
   return {
     serviceId,
@@ -314,9 +315,9 @@ function parseMetaFilterUri(uri) {
   return uri.split('/')
     .map((queryString) => {
       queryString = decodeURIComponent(queryString);
-      let condition = { queryString };
-      let matchPair = queryString.match(/([^\=]+)\=([^\=]+)/);
-      let matchAndOr = queryString.match(/\&\&|\|\|/);
+      const condition = { queryString };
+      const matchPair = queryString.match(/([^\=]+)\=([^\=]+)/);
+      const matchAndOr = queryString.match(/\&\&|\|\|/);
       if (matchPair && !matchAndOr) {
         const [ , key, value ] = matchPair;
         condition.isKeyValuePair = true;
@@ -337,12 +338,12 @@ function parseMetaFilterUri(uri) {
  * @public
  */
 function uriEncodeEventQuery(queryAttrs) {
-  let {
+  const {
     serviceId, startTime, endTime, metaFilter
   } = getProperties(queryAttrs, 'serviceId', 'startTime', 'endTime', 'metaFilter');
 
-  let conditions = get(metaFilter || {}, 'conditions');
-  let metaFilterUri = uriEncodeMetaFilterConditions(conditions);
+  const conditions = get(metaFilter || {}, 'conditions');
+  const metaFilterUri = uriEncodeMetaFilterConditions(conditions);
 
   return [ serviceId, startTime, endTime, metaFilterUri ].join('/');
 }

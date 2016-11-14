@@ -30,8 +30,8 @@ export default Component.extend({
 
   size: 'small',
   isSmall: computed('loaderSizeLabels', 'size', function() {
-    let loaderSizeLabels = this.get('loaderSizeLabels');
-    let size = this.get('size');
+    const loaderSizeLabels = this.get('loaderSizeLabels');
+    const size = this.get('size');
 
     return (!loaderSizeLabels.includes(size) || size === 'small');
   }),

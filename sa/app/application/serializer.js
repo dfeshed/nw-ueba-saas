@@ -11,7 +11,7 @@ const { isArray } = Ember;
 // Converts a single POJO from a typical RSA record structure (e.g., `{id, foo, bar, ..}`) to a JSON API
 // document's record structure (e.g., `{id, type, attributes: {foo, bar, ..}}`).
 function normalizeHash(modelName, hash) {
-  let { id } = hash;
+  const { id } = hash;
   delete hash.id;
   return {
     id,
@@ -43,11 +43,11 @@ export default RESTSerializer.extend({
    * @public
    */
   normalizeResponse(store, primaryModelClass, payload/* , id, requestType */) {
-    let { modelName } = primaryModelClass;
-    let isArrayB = isArray(payload.data);
-    let dataArray = isArrayB ? payload.data : [payload.data];
+    const { modelName } = primaryModelClass;
+    const isArrayB = isArray(payload.data);
+    const dataArray = isArrayB ? payload.data : [payload.data];
 
-    let normalizedArray = dataArray.map((datum) => {
+    const normalizedArray = dataArray.map((datum) => {
       return normalizeHash(modelName, datum);
     });
 

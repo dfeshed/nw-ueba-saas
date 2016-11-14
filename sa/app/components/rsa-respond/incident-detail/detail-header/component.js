@@ -71,12 +71,12 @@ export default Component.extend({
       const statusSort = statusSorts.get('firstObject');
       Logger.log(`Status changed detected: ${ statusSort }`);
       run.once(() => {
-        let statusVal = parseInt(statusSort, 10);
+        const statusVal = parseInt(statusSort, 10);
         this.setProperties({
           'incident.statusSort': statusVal,
           'incident.status': IncidentConstants.incidentStatusString[ statusVal ]
         });
-        let attributeChanged = {
+        const attributeChanged = {
           status: this.get('incident.status'),
           statusSort: this.get('incident.statusSort')
         };
@@ -100,12 +100,12 @@ export default Component.extend({
       Logger.log(`Priority change detected: ${ prioritySort }`);
 
       run.once(() => {
-        let priorityVal = parseInt(prioritySort, 10);
+        const priorityVal = parseInt(prioritySort, 10);
         this.setProperties({
           'incident.prioritySort': priorityVal,
           'incident.priority': IncidentConstants.incidentPriorityString[ priorityVal ]
         });
-        let attributeChanged = {
+        const attributeChanged = {
           priority: this.get('incident.priority'),
           prioritySort: this.get('incident.prioritySort')
         };
@@ -132,7 +132,7 @@ export default Component.extend({
         if (assigneeId === '-1') {
           this.set('incident.assignee', null);
         } else {
-          let updatedAssigneeUser = this.get('users').findBy('id', assigneeId);
+          const updatedAssigneeUser = this.get('users').findBy('id', assigneeId);
           this.set('incident.assignee', updatedAssigneeUser.getProperties('id', 'firstName', 'lastName', 'email'));
         }
         this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'));

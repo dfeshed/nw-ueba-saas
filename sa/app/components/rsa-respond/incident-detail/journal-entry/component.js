@@ -49,7 +49,7 @@ export default Component.extend({
    */
   @computed('addMode', 'editModeActive')
   isReadOnly(addMode, editModeActive) {
-    let isEditable = (addMode === true || editModeActive === true);
+    const isEditable = (addMode === true || editModeActive === true);
     return isEditable;
   },
 
@@ -151,11 +151,11 @@ export default Component.extend({
 
       if (this.get('addMode') === true) {
         // Creates a new JournalEntry
-        let newMilestone = this.get('newMilestone');
-        let newAuthor = this.get('currentUser');
-        let newNote = this.get('newNote');
+        const newMilestone = this.get('newMilestone');
+        const newAuthor = this.get('currentUser');
+        const newNote = this.get('newNote');
 
-        let newJournal = {
+        const newJournal = {
           notes: newNote,
           milestone: newMilestone,
           author: newAuthor

@@ -42,7 +42,7 @@ export default Component.extend({
       // sorted filed will be alert.source, alert.risk_Score, etc.
       // back-end expects the sort field to be sent as 'score, risk-score'
       // so formatting accordingly and bubbline the action to route
-      let index = field.indexOf('.');
+      const index = field.indexOf('.');
       field = field.substring(index + 1, field.length);
       this.sendAction('sortAction', field, direction);
     }

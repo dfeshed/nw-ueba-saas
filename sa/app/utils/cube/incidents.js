@@ -16,7 +16,7 @@ export default Base.extend({
       dataType: 'string',
       propertyName: 'id',
       getter(d) {
-        let match = (d.id || '').match(/\-(\d+)$/);
+        const match = (d.id || '').match(/\-(\d+)$/);
         return match ? parseInt(match[1], 10) : d.id;
       }
     },

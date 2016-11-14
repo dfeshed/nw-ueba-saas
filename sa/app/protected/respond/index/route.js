@@ -33,7 +33,7 @@ export default Route.extend({
     this.set('layoutService.panelB', 'main');
     this.set('layoutService.actionConfig', null);
     /* close the incident queue panel, if it is in open state */
-    let queueExpanded = this.get('layoutService.incidentQueueActive');
+    const queueExpanded = this.get('layoutService.incidentQueueActive');
     if (queueExpanded) {
       this.get('layoutService').toggleIncidentQueue();
     }
@@ -78,7 +78,7 @@ export default Route.extend({
    */
   _createNotify(cubes, filterFunc) {
     let username;
-    let _currentSession = this.get('session');
+    const _currentSession = this.get('session');
 
     if (_currentSession) {
       username = _currentSession.session.content.authenticated.user.id;
@@ -126,14 +126,14 @@ export default Route.extend({
     // If the user is in card view and the status is not in 'new', 'assigned' or 'in progress' remove it
     if (this.get('respondMode.selected') === 'card') {
       let incidentsToBeRemoved = [];
-      let cardViewStatuses = [incStatus.ASSIGNED,incStatus.IN_PROGRESS, incStatus.NEW ];
+      const cardViewStatuses = [incStatus.ASSIGNED,incStatus.IN_PROGRESS, incStatus.NEW ];
 
       incidentsToBeRemoved = incidents.filter((incident) => {
         return (cardViewStatuses.indexOf(incident.statusSort) < 0);
       });
       cubes.forEach((cube) => {
         incidentsToBeRemoved.forEach((incident, index) => {
-          let records = cube.get('records');
+          const records = cube.get('records');
           if (records.findBy('id', incident.id)) {
             records.edit(incident.id, {}, true);
             incidentsToBeRemoved.splice(index, 1);
@@ -142,14 +142,14 @@ export default Route.extend({
       });
     }
 
-    let filteredIncidents = filterFunc(incidents);
-    let [newIncidentsCube, inProgressCube] = cubes;
+    const filteredIncidents = filterFunc(incidents);
+    const [newIncidentsCube, inProgressCube] = cubes;
 
     filteredIncidents.forEach((incidents, index) => {
       // For each of the updated incident, check if the incident already exists in the cube.
       // If so, edit with the latest value, else add it to the list of records
-      let records = cubes[ index ].get('records');
-      let recordsToAdd = [];
+      const records = cubes[ index ].get('records');
+      const recordsToAdd = [];
 
       // notificationCode 0 => incidents was added, 1 => incidents were edited, 2 => incidents were deleted
       if (notificationCode === 0) {
@@ -203,10 +203,10 @@ export default Route.extend({
     let incidentModels;
 
     if (this.get('respondMode.selected') === 'card') {
-      let newCube = IncidentsCube.create({
+      const newCube = IncidentsCube.create({
         array: []
       });
-      let inProgressCube = IncidentsCube.create({
+      const inProgressCube = IncidentsCube.create({
         array: [],
         sortField: 'lastUpdated'
       });
@@ -237,7 +237,7 @@ export default Route.extend({
       };
       this.set('cardViewCube', incidentModels);
     } else {
-      let incidentsCube = IncidentsCube.create({
+      const incidentsCube = IncidentsCube.create({
         array: [],
         categoryTags: []
       });

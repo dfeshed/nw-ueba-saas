@@ -95,7 +95,7 @@ export default Component.extend(RowMixin, {
     const field = get(column, 'field');
     const opts = this.get('_opts');
 
-    let $cell = $row.append('div')
+    const $cell = $row.append('div')
       .classed('rsa-data-table-body-cell', true)
       .attr('data-field', field);
 
@@ -114,7 +114,7 @@ export default Component.extend(RowMixin, {
     const cells = this.$('.rsa-data-table-body-cell');
     const opts = this.get('_opts');
     (this.get('table.columns') || []).forEach((column, index) => {
-      let $cell = select(cells[index]);
+      const $cell = select(cells[index]);
       columnUtil.applyCellWidth($cell, column, opts);
     });
   },

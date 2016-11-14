@@ -88,13 +88,13 @@ export default EmberObject.extend({
    * @public
    */
   groups: computed('grouping', 'cube.results', function() {
-    let results = this.get('cube.results');
-    let totalCount = results && results.length;
-    let all = this.get('grouping').all();
-    let maxCount = all.reduce(function(p, v) {
+    const results = this.get('cube.results');
+    const totalCount = results && results.length;
+    const all = this.get('grouping').all();
+    const maxCount = all.reduce(function(p, v) {
       return (p > v.value ? p : v.value);
     }, 1);
-    let out = all.map(function(group) {
+    const out = all.map(function(group) {
       return {
         key: group.key,
         value: group.value,
@@ -103,7 +103,7 @@ export default EmberObject.extend({
         maxPercent: maxCount ? group.value / maxCount : group.value
       };
     });
-    let hash = {};
+    const hash = {};
 
     out.forEach(function(item) {
       hash[item.key] = item;

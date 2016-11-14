@@ -4,7 +4,7 @@ moduleFor('service:contextual-help', 'Unit | Service | contextual help', {
 });
 
 test('it populates the global help url', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
 
   service.set('i18n', {});
   service.set('i18n.locale', 'foo');
@@ -16,14 +16,14 @@ test('it populates the global help url', function(assert) {
 });
 
 test('it returns the contextual help url', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
 
   service.set('i18n', {});
   service.set('i18n.locale', 'foo');
   service.set('version', 'foo');
 
-  let topic = 'foo';
-  let module = 'foo';
+  const topic = 'foo';
+  const module = 'foo';
 
   assert.equal(service.generateUrl(module, topic), 'http://cms.netwitness.com/sadocs?locale=foo&version=foo&module=foo&topic=foo');
 });

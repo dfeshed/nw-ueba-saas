@@ -24,7 +24,7 @@ const _REGEX = /\s*,\s*/;
 // Generates a function that will return true only if it is passed an array that contains at least one value from
 // a given array.
 function _makeArrayItemFinder(arr) {
-  let hash = {};
+  const hash = {};
   if (arr) {
     arr.forEach(function(item) {
       hash[item] = true;
@@ -78,7 +78,7 @@ export default DefaultFilter.extend({
    * @public
    */
   native: computed('value', 'type', function() {
-    let value = this.get('value');
+    const value = this.get('value');
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
         return null;

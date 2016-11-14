@@ -6,13 +6,13 @@ moduleForModel('incident', 'Unit | Model | incident', {
 });
 
 test('it exists', function(assert) {
-  let model = this.subject();
+  const model = this.subject();
   // let store = this.store();
   assert.ok(!!model);
 });
 
 test('check model values', function(assert) {
-  let myModel = {
+  const myModel = {
     name: 'Incident 1',
     alertCount: 10,
     eventCount: 20,
@@ -32,7 +32,7 @@ test('check model values', function(assert) {
     notes: []
   };
 
-  let model = this.subject(myModel);
+  const model = this.subject(myModel);
 
   assert.equal(model.get('name'), 'Incident 1', 'Invalid incident name');
   assert.equal(model.get('averageAlertRiskScore'), 80, 'Invalid incident averageAlertRiskScore');

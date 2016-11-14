@@ -25,8 +25,8 @@ export default Mixin.create({
       if (!queryNode) {
         return;
       }
-      let eventCount = queryNode.get('value.results.eventCount');
-      let skipLoad = !forceReload && (eventCount.get('status') || '').match(/wait|resolved/);
+      const eventCount = queryNode.get('value.results.eventCount');
+      const skipLoad = !forceReload && (eventCount.get('status') || '').match(/wait|resolved/);
       if (skipLoad) {
         return;
       }

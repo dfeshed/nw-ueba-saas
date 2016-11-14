@@ -35,7 +35,7 @@ export default Route.extend({
 
   model(params) {
     this.set('incidentId', params.incident_id);
-    let details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [], 'events': [] };
+    const details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [], 'events': [] };
     this.request.streamRequest({
       method: 'stream',
       modelName: 'storyline',
@@ -80,7 +80,7 @@ export default Route.extend({
   },
 
   afterModel(resolvedModel) {
-    let currentIncidentId = this.get('incidentId');
+    const currentIncidentId = this.get('incidentId');
 
     this.request.streamRequest({
       method: 'notify',
@@ -94,7 +94,7 @@ export default Route.extend({
       },
       onResponse: ({ data }) => {
         if (typeOf(data) === 'array') {
-          let innerIncident = data.findBy('id', currentIncidentId);
+          const innerIncident = data.findBy('id', currentIncidentId);
           // Updating the whole incident when we received a notification
           if (innerIncident) {
             set(resolvedModel, 'incident', [innerIncident]);
@@ -137,7 +137,7 @@ export default Route.extend({
      */
     saveAction(updatedField, updatedValue) {
       Logger.debug(`Updating incident ${ this.get('incidentId') }`);
-      let incident = this.store.peekRecord('incident', this.get('incidentId'));
+      const incident = this.store.peekRecord('incident', this.get('incidentId'));
       if (incident) {
         this._updateRecord(incident, updatedField, updatedValue);
       } else {
@@ -154,7 +154,7 @@ export default Route.extend({
      * @public
      */
     saveJournal(jsonNote, mode) {
-      let query = {
+      const query = {
         incidentId: this.get('incidentId'),
         journalId: jsonNote.id
       };

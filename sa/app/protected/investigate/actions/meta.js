@@ -25,9 +25,9 @@ export default Mixin.create({
       }
 
       // Ensure we have one state object per each possible meta key's request for values.
-      let metaKeyStates = queryNode.get('value.results.metaKeyStates');
+      const metaKeyStates = queryNode.get('value.results.metaKeyStates');
       if (!metaKeyStates.length) {
-        let states = queryNode.get('value.language.data').map((info) => {
+        const states = queryNode.get('value.language.data').map((info) => {
           return MetaKeyState.create({
             info
           });
@@ -68,7 +68,7 @@ export default Mixin.create({
         return;
       }
 
-      let freeJobCount = MAX_JOBS_QUEUE_SIZE - this.get('state.meta.jobs.length');
+      const freeJobCount = MAX_JOBS_QUEUE_SIZE - this.get('state.meta.jobs.length');
       if (freeJobCount) {
         let candidates = group.keys
           .filterBy('isOpen', true)   // only fetch open keys
@@ -115,7 +115,7 @@ export default Mixin.create({
      */
     metaGroupKeyToggle(queryNode, key) {
       if (key) {
-        let isOpen = !get(key, 'isOpen');
+        const isOpen = !get(key, 'isOpen');
         set(key, 'isOpen', isOpen);
         if (queryNode && isOpen) {
           this.send('metaGet', queryNode, false);
@@ -177,7 +177,7 @@ export default Mixin.create({
   _metaJobsRemove(jobs) {
     if (jobs) {
       jobs.forEach((job) => {
-        let values = job.metaKeyState.get('values');
+        const values = job.metaKeyState.get('values');
         if (values.get('status') === 'streaming') {
           values.get('stopStreaming')();
         }
@@ -191,7 +191,7 @@ export default Mixin.create({
     if (!queryDefinition) {
       return;
     }
-    let obsolete = this.get('state.meta.jobs')
+    const obsolete = this.get('state.meta.jobs')
       .filter((job) => !queryDefinition.isEqual(job.queryDefinition) || (job.metaKeyState.get('values.status') !== 'streaming'));
     this._metaJobsRemove(obsolete);
   },

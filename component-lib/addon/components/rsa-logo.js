@@ -78,13 +78,13 @@ export default Component.extend({
     }
 
     // For each DOM node (in this component) with the special HTML attribute, set an animationDelay.
-    let me = this;
+    const me = this;
     this.$(`[${_HTML_ATTR}]`).css('animationDelay', function() {
 
       // Read the node's delay index and the corresponding delay value (ms).
-      let $el = me.$(this);
-      let index = parseInt($el.attr(_HTML_ATTR), 10) || 0;
-      let delay = delays[Math.min(maxIndex, index)];
+      const $el = me.$(this);
+      const index = parseInt($el.attr(_HTML_ATTR), 10) || 0;
+      const delay = delays[Math.min(maxIndex, index)];
 
       return `${delay}ms`;
     });

@@ -63,11 +63,11 @@ export default Mixin.create({
 
   // Attach a resize listener, and call it manually the 1st time.
   _initSizeBindings() {
-    let { element } = this;
+    const { element } = this;
     if (!element) {
       return;
     }
-    let callback = run.bind(this, function() {
+    const callback = run.bind(this, function() {
       this.setProperties({
         clientWidth: element.clientWidth,
         clientHeight: element.clientHeight

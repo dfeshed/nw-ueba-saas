@@ -21,10 +21,10 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   const router = EmberObject.create({
     currentRouteName: null
   });
-  let request = Request.create({ router });
-  let adapter = Adapter.create({ request });
-  let store = Store.create();
-  let type = { modelName: 'test' };
+  const request = Request.create({ router });
+  const adapter = Adapter.create({ request });
+  const store = Store.create();
+  const type = { modelName: 'test' };
 
   andThen(function() {
     return adapter.findRecord(store, type, 'id1', {}).then((response) => {
@@ -41,12 +41,12 @@ test('it can redirect calls to a socket and get a response from a mock server', 
   const router = EmberObject.create({
     currentRouteName: null
   });
-  let request = Request.create({ router });
-  let adapter = Adapter.create({ request });
-  let store = Store.create();
-  let type = { modelName: 'test' };
+  const request = Request.create({ router });
+  const adapter = Adapter.create({ request });
+  const store = Store.create();
+  const type = { modelName: 'test' };
 
-  let snapShot = { 'id': 1,
+  const snapShot = { 'id': 1,
     changedAttributes() {
       return { 'priority': ['LOW', 'HIGH'] };
     }

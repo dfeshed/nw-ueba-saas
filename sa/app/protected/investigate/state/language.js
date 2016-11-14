@@ -15,7 +15,7 @@ export default PromiseState.extend({
    */
   @computed('data')
   defaultMetaGroup(data = []) {
-    let keys = data
+    const keys = data
       .reject(languageUtil.isHidden)
       .map((obj) => {
         return {

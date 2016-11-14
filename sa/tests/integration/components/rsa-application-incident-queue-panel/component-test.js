@@ -11,9 +11,9 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{rsa-application-incident-queue-panel}}`);
 
-  let myIncidentsTab = this.$(selectors.pages.incident.myIncidentsBtn);
-  let allIncidentsTab = this.$(selectors.pages.incident.allIncidentsBtn);
-  let isActive = selectors.pages.respond.rsaActiveElmCheck;
+  const myIncidentsTab = this.$(selectors.pages.incident.myIncidentsBtn);
+  const allIncidentsTab = this.$(selectors.pages.incident.allIncidentsBtn);
+  const isActive = selectors.pages.respond.rsaActiveElmCheck;
 
   assert.equal(myIncidentsTab.length, 1, 'My Incident Tab is available for selection');
   assert.equal(allIncidentsTab.length, 1, 'All Incident Tab is available for selection');
@@ -22,7 +22,7 @@ test('it renders', function(assert) {
   assert.notOk(allIncidentsTab.hasClass(isActive), 'All Incident Tab is not selected by default');
 
   // Check incident count (default = 0)
-  let incidents = this.$(selectors.pages.respond.rsaTableCell).find(selectors.pages.respond.card.rsaContentCard);
+  const incidents = this.$(selectors.pages.respond.rsaTableCell).find(selectors.pages.respond.card.rsaContentCard);
   assert.ok(incidents.length === 0, 'Incident does not exists');
 
 
@@ -40,9 +40,9 @@ test('Change tabs', function(assert) {
   waitFor(
     () => this.$(selectors.pages.respond.rsaLoader).length === 0
   ).then(() => {
-    let myIncidentsTab = this.$(selectors.pages.incident.myIncidentsBtn);
-    let allIncidentsTab = this.$(selectors.pages.incident.allIncidentsBtn);
-    let isActive = selectors.pages.respond.rsaActiveElmCheck;
+    const myIncidentsTab = this.$(selectors.pages.incident.myIncidentsBtn);
+    const allIncidentsTab = this.$(selectors.pages.incident.allIncidentsBtn);
+    const isActive = selectors.pages.respond.rsaActiveElmCheck;
     assert.notOk(myIncidentsTab.hasClass(isActive), 'My Incident Tab is not selected');
     assert.ok(allIncidentsTab.hasClass(isActive), 'All Incident Tab is selected');
     done();
@@ -52,7 +52,7 @@ test('Change tabs', function(assert) {
 
 test('Render with data', function(assert) {
 
-  let incident = {
+  const incident = {
     'id': 'INC-2',
     'name': 'Suspected command and control communication with 4554mb.ru',
     'summary': 'Incident Summary',
@@ -65,11 +65,11 @@ test('Render with data', function(assert) {
     'assignee': null
   };
 
-  let arr = [incident];
+  const arr = [incident];
   this.set('incidents', arr);
   this.render(hbs`{{rsa-application-incident-queue-panel incidents=incidents}}`);
 
-  let incidents = this.$(selectors.pages.respond.rsaTableCell).find(selectors.pages.respond.card.rsaContentCard);
+  const incidents = this.$(selectors.pages.respond.rsaTableCell).find(selectors.pages.respond.card.rsaContentCard);
 
   assert.ok(incidents.length === 1, 'Incident exists.');
 });

@@ -13,7 +13,7 @@ const { run } = Ember;
  * Keeps track of stream by route for future cleaning up on route change
  * unless in case where stream should continue
  */
-let _streams = {
+const _streams = {
   ANON: []
 };
 

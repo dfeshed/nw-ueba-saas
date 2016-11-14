@@ -23,7 +23,7 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @public
    */
   subscribe(observer) {
-    let sub = {
+    const sub = {
       observer,
       stream: this,
       dispose() {
@@ -133,10 +133,10 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @private
    */
   _notifyAll(type, args) {
-    let resolvedArgs = [].slice.call(args || []).concat([this]);
+    const resolvedArgs = [].slice.call(args || []).concat([this]);
 
     this._subscriptions.forEach(function(sub) {
-      let o = sub.observer;
+      const o = sub.observer;
       if (o[type]) {
         o[type](...resolvedArgs);
       }

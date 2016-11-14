@@ -8,8 +8,8 @@ export default function(server) {
 
   // Mock the response for store.stream('core-event') with records from the mirage DB collection "core-events":
   server.route('core-event', 'stream', function(message, frames, server) {
-    let [ firstFrame ] = frames;
-    let { body: { filter, stream: { limit } } } = firstFrame;
+    const [ firstFrame ] = frames;
+    const { body: { filter, stream: { limit } } } = firstFrame;
     let all = server.mirageServer.db['core-events'];
 
     // Generate more mock data if we only have a little.  We do this here, on-demand, rather than at app startup,
@@ -19,10 +19,10 @@ export default function(server) {
       all = server.mirageServer.db['core-events'];
     }
 
-    let query = (filter || []).findBy('field', 'query');
-    let queryValue = query && query.value;
-    let match = queryValue ? String(queryValue).match(/\(sessionid > ([0-9]+)\)/) : null;
-    let sessionId = match && parseInt(match[1], 10);
+    const query = (filter || []).findBy('field', 'query');
+    const queryValue = query && query.value;
+    const match = queryValue ? String(queryValue).match(/\(sessionid > ([0-9]+)\)/) : null;
+    const sessionId = match && parseInt(match[1], 10);
     let results = !sessionId ? all : all.filter(function(evt) {
       return evt.sessionId > sessionId;
     });

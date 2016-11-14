@@ -7,19 +7,19 @@ moduleFor('service:date-format', 'Unit | Service | date format', {
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.ok(service);
 });
 
 test('it uses the correct localStorageKey', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.equal(service.get('localStorageKey'), 'rsa::securityAnalytics::dateFormatPreference');
 });
 
 test('it provides the correct options', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.equal(service.get('options.length'), 3);
-  let options = service.get('options').map(function(option) {
+  const options = service.get('options').map(function(option) {
     return option.key;
   });
   assert.ok(options.includes('MM/DD/YYYY'));
@@ -28,6 +28,6 @@ test('it provides the correct options', function(assert) {
 });
 
 test('it has the correct default', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.equal(service.get('defaultSelection'), 'MM/DD/YYYY');
 });

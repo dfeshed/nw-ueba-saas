@@ -78,8 +78,8 @@ export default Mixin.create({
     navFindOrAdd(filterParams) {
 
       // Do we already have a query that matches the incoming params?
-      let state = this.get('state');
-      let queryTree = state.get('queryTree');
+      const state = this.get('state');
+      const queryTree = state.get('queryTree');
       let queryNode = queryTree.find(filterParams);
       if (!queryNode) {
 

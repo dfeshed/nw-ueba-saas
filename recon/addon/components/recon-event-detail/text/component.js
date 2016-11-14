@@ -44,7 +44,7 @@ const TextReconComponent = Component.extend({
     }).reduce((textValues, packet, index, arr) => {
       const { bytes } = packet;
       // Decode and replace carriage returns and tabs
-      let decodedData = atob(bytes || '');
+      const decodedData = atob(bytes || '');
       const byteCount = decodedData.length || 0;
       const payloadOffset = byteCount - (packet.payloadSize || 0);
 

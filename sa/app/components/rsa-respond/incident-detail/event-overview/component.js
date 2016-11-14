@@ -34,7 +34,7 @@ export default Component.extend({
 
   @computed('model.enrichment')
   scoreBadges: (enrichment) => {
-    let normalizedEnrichment = [];
+    const normalizedEnrichment = [];
     if (!isNone(enrichment)) {
       if (!isNone(enrichment.smooth) && !isNone(enrichment.smooth.smooth_beaconing_score)) {
         normalizedEnrichment.addObject({ key: 'beaconBehavior', score: Math.round(enrichment.smooth.smooth_beaconing_score) });
@@ -64,8 +64,8 @@ export default Component.extend({
 
   @computed('model')
   normalizedMeta(model) {
-    let rootNode = { title: '', key: 'meta', col1: {}, showHeader: false };
-    let normalizedMeta = this._normalizeMetaElement(model, rootNode, [ rootNode ]);
+    const rootNode = { title: '', key: 'meta', col1: {}, showHeader: false };
+    const normalizedMeta = this._normalizeMetaElement(model, rootNode, [ rootNode ]);
     return normalizedMeta;
   },
 
@@ -85,12 +85,12 @@ export default Component.extend({
   _normalizeMetaElement: (element, parentNode, normalizedMeta) => {
     let colName, elKeyName;
     let colNum = 1;
-    let keys = Object.keys(element);
+    const keys = Object.keys(element);
 
     keys.forEach((key) => {
 
-      let value = element[key];
-      let type = typeOf(value);
+      const value = element[key];
+      const type = typeOf(value);
 
       if (type === 'array') {
 
@@ -130,16 +130,16 @@ export default Component.extend({
    * @private
    */
   _normalizeMetaObject(metaKey, metaValue, parentMeta, normalizedMeta) {
-    let keyName = `${ parentMeta.key }::${ metaKey }`;
-    let title = this._createTitle(parentMeta.title, metaKey);
+    const keyName = `${ parentMeta.key }::${ metaKey }`;
+    const title = this._createTitle(parentMeta.title, metaKey);
 
-    let newNode = { title, key: keyName, col0: {}, showHeader: true };
+    const newNode = { title, key: keyName, col0: {}, showHeader: true };
 
     normalizedMeta.addObject(newNode);
     this._normalizeMetaElement(metaValue, newNode, normalizedMeta);
 
     // when the just added object is empty, we remove it to avoid an empty section
-    let parentObj = normalizedMeta.findBy('key', keyName);
+    const parentObj = normalizedMeta.findBy('key', keyName);
     if (Object.keys(parentObj.col0).length === 0) {
       normalizedMeta.removeObject(parentObj);
     }
@@ -186,7 +186,7 @@ export default Component.extend({
     },
 
     expandCollapsePanel() {
-      let isFullWidth = this.toggleProperty('isFullWidth');
+      const isFullWidth = this.toggleProperty('isFullWidth');
       this.sendAction('expandCollapseEventOverviewPanelAction', isFullWidth);
     }
   }

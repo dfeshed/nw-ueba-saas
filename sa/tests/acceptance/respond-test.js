@@ -83,10 +83,10 @@ test('Landing Page card components should be displayed on load by default', func
   andThen(function() {
     assert.equal(currentPath(), selectors.pages.respond.path);
 
-    let respondHeader = find(selectors.pages.respond.toggleViewHeader).first();
+    const respondHeader = find(selectors.pages.respond.toggleViewHeader).first();
     assert.equal(respondHeader.length, 1, 'Respond header is visible');
 
-    let el = find(selectors.pages.respond.card.incTile.editButton);
+    const el = find(selectors.pages.respond.card.incTile.editButton);
 
     assert.notOk(el.hasClass('hide'), 'Edit button is invisible by default');
     triggerEvent(el[0], 'mouseover');
@@ -129,7 +129,7 @@ test('Selectors should be visible on click', function(assert) {
 test('User should be able to setStatus, Assignee and Priority', function(assert) {
   visit('/do/respond');
   andThen(() => {
-    let editBtn = find(selectors.pages.respond.card.incTile.editButton).first();
+    const editBtn = find(selectors.pages.respond.card.incTile.editButton).first();
     andThen(function() {
       triggerEvent(editBtn, 'mouseover');
 
@@ -149,12 +149,12 @@ test('User should be able to setStatus, Assignee and Priority', function(assert)
 
           andThen(()=> {
 
-            let statusLabel = find(selectors.pages.respond.card.incTile.statusLabel).first();
-            let statusVal = statusLabel.text().trim();
+            const statusLabel = find(selectors.pages.respond.card.incTile.statusLabel).first();
+            const statusVal = statusLabel.text().trim();
             assert.equal(statusVal.toLowerCase(), 'in progress', 'Verified that status is set correctly');
 
-            let priorityLabel = find(selectors.pages.respond.card.incTile.priorityLabel).first();
-            let priorityVal = priorityLabel.text().trim();
+            const priorityLabel = find(selectors.pages.respond.card.incTile.priorityLabel).first();
+            const priorityVal = priorityLabel.text().trim();
             assert.equal(priorityVal.toLowerCase(), 'medium', 'Verified that priority is set correctly');
 
             navigateToMonitor();
@@ -175,15 +175,15 @@ skip('Toggle list button renders incidents list view with right number of column
 
   visit('/do/respond');
   andThen(() => {
-    let listViewBtn = find(selectors.pages.respond.listViewBtn);
+    const listViewBtn = find(selectors.pages.respond.listViewBtn);
     click(listViewBtn);
 
     andThen(() => {
 
-      let table = find(selectors.pages.respond.list.table);
+      const table = find(selectors.pages.respond.list.table);
       assert.equal(table.length, 1, 'Table with incidents is displayed');
 
-      let columns = find(selectors.pages.respond.list.columns);
+      const columns = find(selectors.pages.respond.list.columns);
       assert.ok(columns, 'Table has columns');
       assert.equal(columns.length, 9, 'Table displays proper number of columns');
 
@@ -195,7 +195,7 @@ skip('Toggle list button renders incidents list view with right number of column
 test('Side panel queue button is disabled', function(assert) {
   visit('/do/respond');
   andThen(() => {
-    let queue = find('.incident-queue-trigger.is-disabled');
+    const queue = find('.incident-queue-trigger.is-disabled');
     assert.equal(queue.length, 1, 'Incident queue button in side panel is disabled in landing page');
   });
 });

@@ -34,14 +34,14 @@ export default Component.extend({
   }),
 
   toIpsId: computed(function() {
-    let id = Math.random().toString();
-    let formattedId = id.slice(2, id.length);
+    const id = Math.random().toString();
+    const formattedId = id.slice(2, id.length);
     return `toIps${formattedId}`;
   }),
 
   fromIpsId: computed(function() {
-    let id = Math.random().toString();
-    let formattedId = id.slice(2, id.length);
+    const id = Math.random().toString();
+    const formattedId = id.slice(2, id.length);
     return `fromIps${formattedId}`;
   }),
 

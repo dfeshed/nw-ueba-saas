@@ -7,7 +7,7 @@ test('it works', function(assert) {
   assert.expect(15);
 
   // Inspect the package.
-  let util = timeUtil;
+  const util = timeUtil;
   assert.ok(util, 'Package not defined.');
 
   // Inspect the UNITS enumeration.
@@ -23,19 +23,19 @@ test('it works', function(assert) {
   // Inspect the toUnit() method.
   assert.ok(typeof util.toUnit === 'function', 'toUnit() method not defined.');
 
-  let MS_TEN_MINUTES = 10 * 60 * 1000;
+  const MS_TEN_MINUTES = 10 * 60 * 1000;
   assert.equal(util.toUnit(MS_TEN_MINUTES), util.UNITS.HOUR, 'Unexpected result from toUnit.');
 
-  let MS_TEN_HOURS = 10 * 60 * 60 * 1000;
+  const MS_TEN_HOURS = 10 * 60 * 60 * 1000;
   assert.equal(util.toUnit(MS_TEN_HOURS), util.UNITS.DAY, 'Unexpected result from toUnit.');
 
-  let MS_36_HOURS = 36 * 60 * 60 * 1000;
+  const MS_36_HOURS = 36 * 60 * 60 * 1000;
   assert.equal(util.toUnit(MS_36_HOURS), util.UNITS.DAY, 'Unexpected result from toUnit.');
 
-  let MS_5_DAYS = 5 * 24 * 60 * 60 * 1000;
+  const MS_5_DAYS = 5 * 24 * 60 * 60 * 1000;
   assert.equal(util.toUnit(MS_5_DAYS), util.UNITS.WEEK, 'Unexpected result from toUnit.');
 
-  let MS_10_DAYS = 10 * 24 * 60 * 60 * 1000;
+  const MS_10_DAYS = 10 * 24 * 60 * 60 * 1000;
   assert.equal(util.toUnit(MS_10_DAYS), util.UNITS.MONTH, 'Unexpected result from toUnit.');
 
   // Inspect the toMillisec() method.

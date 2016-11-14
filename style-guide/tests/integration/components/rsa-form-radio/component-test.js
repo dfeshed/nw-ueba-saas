@@ -13,31 +13,31 @@ test('it renders', function(assert) {
 
 test('it has a label', function(assert) {
   this.render(hbs `{{rsa-form-radio label="Foo"}}`);
-  let label = this.$().find('.rsa-form-label').text();
+  const label = this.$().find('.rsa-form-label').text();
   assert.equal(label, 'Foo');
 });
 
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{rsa-form-radio}}`);
-  let label = this.$().find('label').first();
+  const label = this.$().find('label').first();
   assert.ok(label.hasClass('rsa-form-radio'));
 });
 
 test('it includes the proper classes when isDisabled is true', function(assert) {
   this.render(hbs `{{rsa-form-radio isDisabled=true}}`);
-  let label = this.$().find('label').first();
+  const label = this.$().find('label').first();
   assert.ok(label.hasClass('is-disabled'));
 });
 
 test('it includes the proper classes when isReadOnly is true', function(assert) {
   this.render(hbs `{{rsa-form-radio isReadOnly=true}}`);
-  let label = this.$().find('label').first();
+  const label = this.$().find('label').first();
   assert.ok(label.hasClass('is-read-only'));
 });
 
 test('it includes the proper classes when isError is true', function(assert) {
   this.render(hbs `{{rsa-form-radio isError=true}}`);
-  let label = this.$().find('label').first();
+  const label = this.$().find('label').first();
   assert.ok(label.hasClass('is-error'));
 });
 
@@ -45,7 +45,7 @@ test('it updates the value', function(assert) {
   this.set('model', null);
   this.render(hbs `{{rsa-form-radio model=model value='foo'}}{{rsa-form-radio model=model value='bar'}}`);
   this.$('input:first').prop('checked', true).trigger('change');
-  let that = this;
+  const that = this;
   return wait().then(function() {
     assert.equal(that.get('model'), 'foo');
   });

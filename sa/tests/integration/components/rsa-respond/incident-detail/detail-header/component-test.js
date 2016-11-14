@@ -12,7 +12,7 @@ moduleForComponent('rsa-incident-detail-header', 'Integration | Component | rsa 
 
 test('The incident detail header component is rendered properly.', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     name: 'Suspected command and control communication with www.mozilla.com',
@@ -30,7 +30,7 @@ test('The incident detail header component is rendered properly.', function(asse
     groupBySourceIp: ['1.1.1.1'],
     groupByDestinationIp: ['2.2.2.2']
   });
-  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -73,7 +73,7 @@ test('The incident detail header component is rendered properly.', function(asse
 
 test('The incident status, priority and assignee are saved', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     name: 'Suspected command and control communication with www.mozilla.com',
@@ -91,7 +91,7 @@ test('The incident status, priority and assignee are saved', function(assert) {
     groupBySourceIp: ['1.1.1.1'],
     groupByDestinationIp: ['2.2.2.2']
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -104,21 +104,21 @@ test('The incident status, priority and assignee are saved', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
-  let statusVal = this.$('.rsa-incident-detail-header__status select').val();
+  const statusVal = this.$('.rsa-incident-detail-header__status select').val();
   assert.equal(statusVal, 0, 'Tile displays the current Incident status.');
 
   this.$('.rsa-incident-detail-header__status .prompt').click();
   this.$('.rsa-incident-detail-header__status select').val(1).trigger('change');
   assert.equal(incident.statusSort, 1, 'After updating the Select, the incident status has the new value');
 
-  let priorityVal = this.$('.rsa-incident-detail-header__priority select').val();
+  const priorityVal = this.$('.rsa-incident-detail-header__priority select').val();
   assert.equal(priorityVal, 0, 'Tile displays the current Incident priority.');
 
   this.$('.rsa-incident-detail-header__priority .prompt').click();
   this.$('.rsa-incident-detail-header__priority select').val(1).trigger('change');
   assert.equal(incident.prioritySort, 1, 'After updating the Select, the incident priority has the new value');
 
-  let assigneeVal = this.$('.rsa-incident-detail-header__assignee select').val();
+  const assigneeVal = this.$('.rsa-incident-detail-header__assignee select').val();
   assert.equal(assigneeVal, 1, 'Tile displays the current Incident priority.');
 
   this.$('.rsa-incident-detail-header__assignee .prompt').click();
@@ -133,7 +133,7 @@ test('The incident status, priority and assignee are saved', function(assert) {
 
 test('Manually changing the state of an incident to Closed disables editable fields', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     name: 'Suspected command and control communication with www.mozilla.com',
@@ -149,7 +149,7 @@ test('Manually changing the state of an incident to Closed disables editable fie
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -173,7 +173,7 @@ test('Manually changing the state of an incident to Closed disables editable fie
 
 test('Incident priority order check (Critical -> Low)', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     name: 'Suspected command and control communication with www.mozilla.com',
@@ -188,7 +188,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -199,9 +199,9 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
 
-  let container = this.$(selectors.pages.respond.details.header.detailHeader);
+  const container = this.$(selectors.pages.respond.details.header.detailHeader);
 
-  let priorityOptionList = container.find(this.$(selectors.pages.respond.details.header.prioritySelectOption));
+  const priorityOptionList = container.find(this.$(selectors.pages.respond.details.header.prioritySelectOption));
 
   assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
   assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
@@ -211,7 +211,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
 
 test('Alert and event count missing test', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     name: 'Suspected command and control communication with www.mozilla.com',
@@ -225,7 +225,7 @@ test('Alert and event count missing test', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -245,7 +245,7 @@ test('Alert and event count missing test', function(assert) {
 
 test('Testing source & destination IP values.', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     name: 'Suspected command and control communication with www.mozilla.com',
@@ -263,7 +263,7 @@ test('Testing source & destination IP values.', function(assert) {
     groupBySourceIp: ['1.1.1.1', '1.1.1.2'],
     groupByDestinationIp: ['2.2.2.2', '2.1.1.1']
   });
-  let users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 

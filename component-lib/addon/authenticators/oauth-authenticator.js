@@ -27,7 +27,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   session: service(),
 
   _addListeners: function() {
-    let session = this.get('session');
+    const session = this.get('session');
 
     // when the session invalidates aka 'logout', clean up
     session.on('invalidationSucceeded', () => {
@@ -54,11 +54,11 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
     const { accessTokenKey, refreshTokenKey, session } =
       this.getProperties('accessTokenKey', 'refreshTokenKey', 'session');
 
-    let authentication = session.get('session.content').authenticated;
+    const authentication = session.get('session.content').authenticated;
 
     if (authentication) {
 
-      let secure = document.location.protocol == 'https:' ? 'secure' : '';
+      const secure = document.location.protocol == 'https:' ? 'secure' : '';
       localStorage.setItem(accessTokenKey, authentication.access_token);
       document.cookie = `access_token=${authentication.access_token};path=/;${secure}`;
 

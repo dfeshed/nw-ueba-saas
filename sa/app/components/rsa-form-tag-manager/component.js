@@ -40,7 +40,7 @@ export default Component.extend({
    */
   @computed('availableTags.[]')
   tags(availableTags) {
-    let selectedTags = this.get('selectedTags');
+    const selectedTags = this.get('selectedTags');
     availableTags.forEach((tag) => {
       tag.children.forEach((childNode) => {
         set(childNode, 'selected', selectedTags.any((selectedTag) => {
@@ -67,8 +67,8 @@ export default Component.extend({
      * @public
      */
     toggleTag(tag) {
-      let selectedTags = this.get('selectedTags').slice(0);
-      let availableTags = this.get('availableTags');
+      const selectedTags = this.get('selectedTags').slice(0);
+      const availableTags = this.get('availableTags');
       let tagFromAvailableTags = null;
 
       // searching the selected tag in the list of all tags.
@@ -82,9 +82,9 @@ export default Component.extend({
         }
       }
 
-      let isSelected = get(tagFromAvailableTags, 'selected');
+      const isSelected = get(tagFromAvailableTags, 'selected');
       if (isSelected) {
-        let existingTag = this.get('selectedTags').find((item) => {
+        const existingTag = this.get('selectedTags').find((item) => {
           return item.parent === tag.parent && item.name === tag.name;
         });
         selectedTags.removeObject(existingTag);

@@ -169,13 +169,13 @@ export default Component.extend(DomWatcher, {
       return [];
     } else {
       let lastAddedColumnIndex = 0;
-      let columns = columnsConfig.map((cfg) => {
+      const columns = columnsConfig.map((cfg) => {
         if (typeof cfg === 'string') {
-          let [ field, title ] = cfg.split(':');
+          const [ field, title ] = cfg.split(':');
           cfg = { field, title };
         }
         if (typeof cfg === 'object') {
-          let column = $.isFunction(cfg.get) ? cfg : EmberObject.create(cfg);
+          const column = $.isFunction(cfg.get) ? cfg : EmberObject.create(cfg);
           if (isEmpty(get(column, 'width'))) {
             set(column, 'width', DEFAULT_COLUMN_WIDTH);
           }
@@ -190,14 +190,14 @@ export default Component.extend(DomWatcher, {
               get: () => column.get('visible'),
               set: (key, value) => {
                 run.once(() => {
-                  let allColumns = this.get('columns');
+                  const allColumns = this.get('columns');
                   if (value === true) {
                     // Newest selected columns are added at the end of the list table
                     allColumns.removeObject(column);
                     allColumns.addObject(column);
                   } else {
                     // When unselecting columns we make sure that at least one colum remains visible
-                    let visibleColumnsLength = allColumns.filterBy('visible', true).length;
+                    const visibleColumnsLength = allColumns.filterBy('visible', true).length;
                     if (visibleColumnsLength === 1) {
                       column.set('selected', true);
                       return value;
@@ -246,16 +246,16 @@ export default Component.extend(DomWatcher, {
      * @public
      */
     reorderColumns(newColumns, draggedColumn) {
-      let columns = this.get('columns');
+      const columns = this.get('columns');
       if (!columns || !columns.length || !this.get('enableReorderColumns')) {
         return;
       }
-      let fromIndex = columns.indexOf(draggedColumn);
-      let toIndex = newColumns.indexOf(draggedColumn);
+      const fromIndex = columns.indexOf(draggedColumn);
+      const toIndex = newColumns.indexOf(draggedColumn);
 
       if (fromIndex !== toIndex) {
 
-        let fn = this.get('onReorderColumns');
+        const fn = this.get('onReorderColumns');
         if ($.isFunction(fn)) {
           if (!fn.apply(this, [columns, newColumns, draggedColumn, fromIndex, toIndex])) {
             return;
@@ -277,7 +277,7 @@ export default Component.extend(DomWatcher, {
       if (!column || !this.get('enableResizeColumn')) {
         return;
       }
-      let fn = this.get('onResizeColumn');
+      const fn = this.get('onResizeColumn');
       if ($.isFunction(fn)) {
         if (!fn.apply(this, [column, width])) {
           return;
@@ -293,7 +293,7 @@ export default Component.extend(DomWatcher, {
      * @public
      */
     rowClick(/* item, index, e */) {
-      let fn = this.get('onRowClick');
+      const fn = this.get('onRowClick');
       if ($.isFunction(fn)) {
         fn.apply(this, arguments);
       }

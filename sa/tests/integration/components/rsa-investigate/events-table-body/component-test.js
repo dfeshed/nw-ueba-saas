@@ -121,7 +121,7 @@ test('it only sends log events without data to its loadEventsLogsAction when it 
         'Expected to submit the known number of log events without data'
       );
       events.forEach((evt) => {
-        let found = logEventsWithoutLogData.findBy('sessionId', evt.sessionId);
+        const found = logEventsWithoutLogData.findBy('sessionId', evt.sessionId);
         assert.ok(found, 'Expected to find the submitted event in the list of known log events without data');
       });
     }

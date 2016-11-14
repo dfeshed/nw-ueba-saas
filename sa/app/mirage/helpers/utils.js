@@ -10,9 +10,9 @@
  * @public
  */
 export function parsePostData(query) {
-  let result = {};
+  const result = {};
   query.split('&').forEach(function(part) {
-    let item = part.split('=');
+    const item = part.split('=');
     result[item[0]] = decodeURIComponent(item[1]);
   });
   return result;

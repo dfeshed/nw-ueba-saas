@@ -105,8 +105,8 @@ export default EmberObject.extend({
    * @private
    */
   dragmove(e) {
-    let pos = [e.pageX, e.pageY];
-    let origin = this.get('mouseDownAt');
+    const pos = [e.pageX, e.pageY];
+    const origin = this.get('mouseDownAt');
     this.setProperties({
       mouseMoveAt: pos,
       delta: [pos[0] - origin[0], pos[1] - origin[1]]
@@ -154,9 +154,9 @@ export default EmberObject.extend({
    * @private
    */
   detachBodyListeners() {
-    let hash = this.get('bodyListeners') || {};
+    const hash = this.get('bodyListeners') || {};
     Object.keys(hash).forEach((eventName) => {
-      let handler = hash[eventName];
+      const handler = hash[eventName];
       if (handler) {
         $(document.body).off(eventName, handler);
       }
@@ -171,7 +171,7 @@ export default EmberObject.extend({
    * @private
    */
   hook(type, e) {
-    let callback = (this.get('on') || {})[type];
+    const callback = (this.get('on') || {})[type];
     if (callback) {
       callback.apply(this, [e]);
     }

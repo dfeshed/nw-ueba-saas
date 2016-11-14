@@ -29,8 +29,8 @@ const {
  */
 function _shouldParseBody(message) {
   if (message) {
-    let hdrs = message.headers;
-    let type = hdrs && hdrs['content-type'];
+    const hdrs = message.headers;
+    const type = hdrs && hdrs['content-type'];
 
     return type ?
       (type.indexOf('application/json') >= 0) :
@@ -134,13 +134,13 @@ export default EmberObject.extend({
    * @public
    */
   connect() {
-    let headers = this.headers || {};
+    const headers = this.headers || {};
 
-    let accessToken = localStorage.getItem('rsa-oauth2-jwt-access-token');
+    const accessToken = localStorage.getItem('rsa-oauth2-jwt-access-token');
     headers['X-CSRF-TOKEN'] = localStorage.getItem('rsa-x-csrf-token');
     headers.Upgrade = 'websocket';
     headers.Authorization = `Bearer ${accessToken}`;
-    let me = this;
+    const me = this;
     return this.set('promise',
       new RSVP.Promise(function(resolve, reject) {
         me.set('isConnecting', true);
@@ -164,7 +164,7 @@ export default EmberObject.extend({
    * @public
    */
   disconnect() {
-    let me = this;
+    const me = this;
     if (me.get('disconnected')) {
       return RSVP.Promise.resolve(me);
     } else {
@@ -232,10 +232,10 @@ export default EmberObject.extend({
     // But we are going to stop re-using subscriptions now, so that server requests have
     // a 1-to-1 mapping with subscriptions, which we hope will allow us to re-use
     // a single STOMP client for multiple requests to a microservice.
-    let me = this;
-    let subs = this.get('subscriptions');
+    const me = this;
+    const subs = this.get('subscriptions');
     // STOMP gives us the subscription object.
-    let sub = this.get('stompClient').subscribe(destination, _wrapCallback(callback), headers || {});
+    const sub = this.get('stompClient').subscribe(destination, _wrapCallback(callback), headers || {});
 
     // We enhance the subscription object with a little extra logic & properties.
     sub.destination = destination;
@@ -244,7 +244,7 @@ export default EmberObject.extend({
       h.id = h.id || sub.id;
       me.send(d || this.destination, h, b);
     };
-    let unsub = sub.unsubscribe;
+    const unsub = sub.unsubscribe;
     sub.unsubscribe = function() {
       unsub.apply(this, []);
       me.get('subscriptions').remove(this.destination, this);
@@ -264,12 +264,12 @@ export default EmberObject.extend({
   init() {
     this._super(...arguments);
 
-    let url = this.get('url');
+    const url = this.get('url');
     if (!url) {
       throw ('Invalid socket URL for STOMP client connection.');
     }
 
-    let stompClient = Stomp.over(
+    const stompClient = Stomp.over(
       new SockJS(url, {}, { transports: ['websocket'] })
     );
     stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;

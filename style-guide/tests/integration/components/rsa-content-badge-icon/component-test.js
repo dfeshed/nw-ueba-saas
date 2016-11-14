@@ -7,48 +7,48 @@ moduleForComponent('/rsa-content-badge-icon', 'Integration | Component | rsa-con
 
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon}}`);
-  let badgeCount = this.$().find('.rsa-content-badge-icon').length;
+  const badgeCount = this.$().find('.rsa-content-badge-icon').length;
   assert.equal(badgeCount, 1);
 });
 
 test('it sets the label', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon label='Foo'}}`);
-  let label = this.$().find('h5').text();
+  const label = this.$().find('h5').text();
   assert.notEqual(label.indexOf('Foo'), -1);
 });
 
 test('it includes the icon', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon='account-circle-1' label='Foo'}}`);
-  let icon = this.$().find('i');
+  const icon = this.$().find('i');
   assert.ok(icon.hasClass('rsa-icon-account-circle-1'));
 });
 
 test('it includes the proper classes when isDanger is true', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon='account-circle-1' label='Foo' isDanger=true}}`);
-  let badge = this.$().find('.rsa-content-badge-icon').first();
+  const badge = this.$().find('.rsa-content-badge-icon').first();
   assert.ok(badge.hasClass('is-danger'));
 });
 
 test('it includes the proper classes when isLow is true', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon='account-circle-1' label='Foo' isLow=true}}`);
-  let badge = this.$().find('.rsa-content-badge-icon').first();
+  const badge = this.$().find('.rsa-content-badge-icon').first();
   assert.ok(badge.hasClass('is-low'));
 });
 
 test('it includes the proper classes when isMedium is true', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon='account-circle-1' label='Foo' isMedium=true}}`);
-  let badge = this.$().find('.rsa-content-badge-icon').first();
+  const badge = this.$().find('.rsa-content-badge-icon').first();
   assert.ok(badge.hasClass('is-medium'));
 });
 
 test('it includes the proper classes when isHigh is true', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon='account-circle-1' label='Foo' isHigh=true}}`);
-  let badge = this.$().find('.rsa-content-badge-icon').first();
+  const badge = this.$().find('.rsa-content-badge-icon').first();
   assert.ok(badge.hasClass('is-high'));
 });
 
 test('it includes the proper classes when isPassive is true', function(assert) {
   this.render(hbs `{{rsa-content-badge-icon icon='account-circle-1' label='Foo' isPassive=true}}`);
-  let badge = this.$().find('.rsa-content-badge-icon').first();
+  const badge = this.$().find('.rsa-content-badge-icon').first();
   assert.ok(badge.hasClass('is-passive'));
 });

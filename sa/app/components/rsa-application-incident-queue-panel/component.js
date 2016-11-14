@@ -99,7 +99,7 @@ export default Component.extend({
   },
 
   fetchModel() {
-    let queue = this.get('activeTab');
+    const queue = this.get('activeTab');
     if (queue === 'my') {
       this.loadQueue('notify', this.get('username'));
     } else {

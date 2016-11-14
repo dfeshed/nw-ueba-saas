@@ -16,7 +16,7 @@ RESERVED_KEYS.forEach((key) => {
 // the width is currently `auto`.
 function applyCellWidth($cell, column, opts) {
   let width = get(column, 'width');
-  let hasAutoWidth = (width === 'auto');
+  const hasAutoWidth = (width === 'auto');
   if (!hasAutoWidth) {
     width = formatUtil.width(width, opts);
   }
@@ -30,7 +30,7 @@ function applyCellWidth($cell, column, opts) {
 // the value of a given meta key, but rather a composite of values derived from some app-specific logic.  Such
 // columns were supported in 10.6 and need to be supported here.
 function buildCellContent($cell, field, item, opts) {
-  let $content = $cell.append('div')
+  const $content = $cell.append('div')
     .classed('content', true);
 
   switch (field) {
@@ -137,13 +137,13 @@ function buildMetaDetailsContent($content, item, opts) {
 // Renders an arrow pointing from source to destination.
 // Only the meta values are rendered, not the meta keys.
 function buildMetaSrcDstPair(srcMetaKey, dstMetaKey, item, opts) {
-  let srcValue = formatUtil.value(srcMetaKey, item, opts);
-  let dstValue = formatUtil.value(dstMetaKey, item, opts);
+  const srcValue = formatUtil.value(srcMetaKey, item, opts);
+  const dstValue = formatUtil.value(dstMetaKey, item, opts);
   if ((srcValue.raw == undefined) && (dstValue.raw === undefined)) {
     return null;
   }
-  let pair = document.createElement('div');
-  let $pair = select(pair)
+  const pair = document.createElement('div');
+  const $pair = select(pair)
     .classed('meta-src-dst-pair', true)
     .attr('data-field', (isArray(srcMetaKey) ? srcMetaKey[0] : srcMetaKey) || '');
   if (srcValue.raw !== undefined) {
@@ -166,13 +166,13 @@ function buildMetaSrcDstPair(srcMetaKey, dstMetaKey, item, opts) {
 
 // Builds the DOM for the meta key & value of a given meta key.
 function buildMetaKeyAndValue(metaKey, item, opts) {
-  let value = formatUtil.value(metaKey, item, opts);
+  const value = formatUtil.value(metaKey, item, opts);
   if (value.raw === undefined) {
     return null;
   }
 
-  let pair = document.createElement('div');
-  let $pair = select(pair)
+  const pair = document.createElement('div');
+  const $pair = select(pair)
     .classed('meta-key-and-value', true)
     .attr('data-field', (isArray(metaKey) ? metaKey[0] : metaKey) || '');
   $pair.append('span')

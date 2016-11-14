@@ -17,9 +17,9 @@ export default ApplicationAdapter.extend({
     // http://emberjs.com/api/data/classes/DS.Snapshot.html#method_changedAttributes
     // get the changed attributes from the model snapshot, get the keys and
     // constructs the socket body
-    let changedAttributes = snapshot.changedAttributes();
-    let changedAttributesKey = Object.keys(changedAttributes);
-    let updates = {};
+    const changedAttributes = snapshot.changedAttributes();
+    const changedAttributesKey = Object.keys(changedAttributes);
+    const updates = {};
 
     // changedAttributes contains an array of [oldValue , newValue]
     // pass the new value to the websocket call
@@ -27,7 +27,7 @@ export default ApplicationAdapter.extend({
       updates[key] = changedAttributes[key][1];
     });
 
-    let socketBody = {
+    const socketBody = {
       incidentId: snapshot.id,
       incidentIds: null,
       updates

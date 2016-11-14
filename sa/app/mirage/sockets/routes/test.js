@@ -45,7 +45,7 @@ export default function(server) {
 
   server.route('test', 'findRecord', function(message, frames, server) {
     // Respond with a dummy record.
-    let frame = (frames && frames[0]) || {};
+    const frame = (frames && frames[0]) || {};
     server.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',
       'content-type': 'application/json'
@@ -58,7 +58,7 @@ export default function(server) {
 
   server.route('test', 'updateRecord', function(message, frames, server) {
     // Respond with dummy confirmation.
-    let frame = (frames && frames[0]) || {};
+    const frame = (frames && frames[0]) || {};
     server.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',
       'content-type': 'application/json'

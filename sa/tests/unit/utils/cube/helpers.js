@@ -30,11 +30,11 @@ export function arrayCompare(arr, length, field, values, assert, errMessage) {
 
   // Compare the values at given indices of the array.
   if (arr && field && values) {
-    for (let k in values) {
+    for (const k in values) {
       if (values.hasOwnProperty(k)) {
-        let idx = parseInt(k, 10);
-        let found = arr[idx] && arr[idx][field];
-        let expected = values[idx];
+        const idx = parseInt(k, 10);
+        const found = arr[idx] && arr[idx][field];
+        const expected = values[idx];
         assert.equal(found, expected, `Unexpected value in result at index: ${idx}${errMessage}`);
       }
     }
@@ -57,11 +57,11 @@ export function includesCompare(cube, field, values, assert, errMessage) {
   }
   errMessage = errMessage || '';
 
-  let filter = cube.get('fields')[field].get('filter');
+  const filter = cube.get('fields')[field].get('filter');
   assert.ok(filter, `Unable to create filter for cube field ${field}`);
-  for (let j in values) {
+  for (const j in values) {
     if (values.hasOwnProperty(j)) {
-      let val = isNaN(Number(j)) ? j : Number(j);
+      const val = isNaN(Number(j)) ? j : Number(j);
       assert.equal(
         filter.includes(val),
         values[j],
@@ -85,7 +85,7 @@ export function includesCompare(cube, field, values, assert, errMessage) {
  * @public
  */
 export function testSorting(sortField, orderField, fieldsCfg, records, assert, errMessage) {
-  let len = records && records.length;
+  const len = records && records.length;
   if (!len || !assert) {
     return;
   }
@@ -102,7 +102,7 @@ export function testSorting(sortField, orderField, fieldsCfg, records, assert, e
   }
 
   // Instantiate the object and populate data.
-  let obj = Cube.create({ fieldsConfig: fieldsCfg });
+  const obj = Cube.create({ fieldsConfig: fieldsCfg });
   assert.ok(obj, 'Unable to create object.');
   obj.get('records').pushObjects(records);
 
@@ -118,7 +118,7 @@ export function testSorting(sortField, orderField, fieldsCfg, records, assert, e
  * @public
  */
 export function testGrouping(cube, field, expectedGroups, errMessage, assert) {
-  let foundGroups = cube.get('fields')[field].get('groups');
+  const foundGroups = cube.get('fields')[field].get('groups');
   assert.ok(foundGroups, `Unable to fetch groups for field${ field}.${errMessage}`);
 
   if (expectedGroups) {

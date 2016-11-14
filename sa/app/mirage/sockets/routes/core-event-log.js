@@ -4,12 +4,12 @@ export default function(server) {
 
   // Mock the response for store.stream('core-event-log'):
   server.route('core-event-log', 'stream', function(message, frames, server) {
-    let [ firstFrame ] = frames;
-    let { body: { filter } } = firstFrame;
+    const [ firstFrame ] = frames;
+    const { body: { filter } } = firstFrame;
 
     // Find the list of session ids in the request's filter.
-    let sessionIdFilter = (filter || []).findBy('field', 'sessionIds');
-    let sessionIds = sessionIdFilter && sessionIdFilter.values;
+    const sessionIdFilter = (filter || []).findBy('field', 'sessionIds');
+    const sessionIds = sessionIdFilter && sessionIdFilter.values;
 
     // For each requested session id..
     (sessionIds || []).forEach((sessionId) => {

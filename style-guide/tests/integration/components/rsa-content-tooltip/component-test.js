@@ -13,7 +13,7 @@ const eventBusStub = Service.extend(Evented, {});
 const FIX_ELEMENT_ID = 'tether_fix_style_element';
 
 function insertTetherFix() {
-  let styleElement = document.createElement('style');
+  const styleElement = document.createElement('style');
   styleElement.id = FIX_ELEMENT_ID;
   styleElement.innerText =
     '#ember-testing-container, #ember-testing-container * {' +
@@ -24,7 +24,7 @@ function insertTetherFix() {
 }
 
 function removeTetherFix() {
-  let styleElement = document.getElementById(FIX_ELEMENT_ID);
+  const styleElement = document.getElementById(FIX_ELEMENT_ID);
   document.body.removeChild(styleElement);
 }
 

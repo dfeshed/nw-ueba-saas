@@ -75,14 +75,14 @@ export default Component.extend({
   },
 
   openModal() {
-    let isOpen = true;
+    const isOpen = true;
     run.next(this, function() {
       this.updateModal(isOpen);
     });
   },
 
   closeModal() {
-    let isOpen = false;
+    const isOpen = false;
     run.next(this, function() {
       this.updateModal(isOpen);
     });

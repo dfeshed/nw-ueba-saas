@@ -11,7 +11,7 @@ moduleForComponent('/rsa-application-user-preferences', 'Integration | Component
 
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{rsa-application-user-preferences}}`);
-  let pref = this.$().find('.user-preferences-panel').length;
+  const pref = this.$().find('.user-preferences-panel').length;
   assert.equal(pref, 1);
 });
 
@@ -61,7 +61,7 @@ test('it toggles withoutChanges after clicking revert', function(assert) {
   this.set('withoutChanges', false);
   this.render(hbs `{{rsa-application-user-preferences withoutChanges=withoutChanges}}`);
   this.$().find('.js-test-revert .rsa-form-button').click();
-  let _this = this;
+  const _this = this;
   return wait().then(function() {
     return assert.equal(_this.get('withoutChanges'), true);
   });

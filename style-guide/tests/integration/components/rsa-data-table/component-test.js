@@ -11,7 +11,7 @@ const eventBusStub = Service.extend(Evented, {});
 const FIX_ELEMENT_ID = 'tether_fix_style_element';
 
 function insertTetherFix() {
-  let styleElement = document.createElement('style');
+  const styleElement = document.createElement('style');
   styleElement.id = FIX_ELEMENT_ID;
   styleElement.innerText =
     '#ember-testing-container, #ember-testing-container * {' +
@@ -22,7 +22,7 @@ function insertTetherFix() {
 }
 
 function removeTetherFix() {
-  let styleElement = document.getElementById(FIX_ELEMENT_ID);
+  const styleElement = document.getElementById(FIX_ELEMENT_ID);
   document.body.removeChild(styleElement);
 }
 
@@ -83,15 +83,15 @@ test('it renders declaratively with the correct number of expected elements.', f
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
-  let rows = this.$('.rsa-data-table-body-row');
+  const rows = this.$('.rsa-data-table-body-row');
   assert.equal(rows.length, mockCount, 'Correct number of body-row dom elements found.');
   assert.equal(this.$('.rsa-data-table-body-cell').length, mockCount * 2, 'Correct number of body-cell dom elements found.');
 
-  let firstRow = rows.first();
+  const firstRow = rows.first();
   assert.equal(firstRow.find('.rsa-data-table-body-cell').first().text().trim(), 'foo0', 'Correct contents of body-cell found.');
   assert.equal(firstRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), 'bar0', 'Correct contents of body-cell found.');
 
-  let lastRow = rows.last();
+  const lastRow = rows.last();
   assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), `foo${mockCount - 1}`, 'Correct contents of body-cell found.');
   assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), `bar${mockCount - 1}`, 'Correct contents of body-cell found.');
 
@@ -117,15 +117,15 @@ test('it renders imperatively (with a string config) the correct number of expec
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
-  let rows = this.$('.rsa-data-table-body-row');
+  const rows = this.$('.rsa-data-table-body-row');
   assert.equal(rows.length, mockCount, 'Correct number of body-row dom elements found.');
   assert.equal(this.$('.rsa-data-table-body-cell').length, mockCount * 2, 'Correct number of body-cell dom elements found.');
 
-  let firstRow = rows.first();
+  const firstRow = rows.first();
   assert.equal(firstRow.find('.rsa-data-table-body-cell').first().text().trim(), 'foo0', 'Correct contents of body-cell found.');
   assert.equal(firstRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), 'bar0', 'Correct contents of body-cell found.');
 
-  let lastRow = rows.last();
+  const lastRow = rows.last();
   assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), `foo${mockCount - 1}`, 'Correct contents of body-cell found.');
   assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), `bar${mockCount - 1}`, 'Correct contents of body-cell found.');
 
@@ -151,15 +151,15 @@ test('it renders imperatively (with an array config) the correct number of expec
 
   assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
 
-  let rows = this.$('.rsa-data-table-body-row');
+  const rows = this.$('.rsa-data-table-body-row');
   assert.equal(rows.length, mockCount, 'Correct number of body-row dom elements found.');
   assert.equal(this.$('.rsa-data-table-body-cell').length, mockCount * 2, 'Correct number of body-cell dom elements found.');
 
-  let firstRow = rows.first();
+  const firstRow = rows.first();
   assert.equal(firstRow.find('.rsa-data-table-body-cell').first().text().trim(), 'foo0', 'Correct contents of body-cell found.');
   assert.equal(firstRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), 'bar0', 'Correct contents of body-cell found.');
 
-  let lastRow = rows.last();
+  const lastRow = rows.last();
   assert.equal(lastRow.find('.rsa-data-table-body-cell').first().text().trim(), 'foo9', 'Correct contents of body-cell found.');
   assert.equal(lastRow.find('.rsa-data-table-body-cell').slice(1, 2).text().trim(), 'bar9', 'Correct contents of body-cell found.');
 
@@ -183,24 +183,24 @@ test('it renders only a subset of the data when lazy rendering is enabled', func
     {{/rsa-data-table}}
   `);
 
-  let $table = this.$('.rsa-data-table');
-  let $header = this.$('.rsa-data-table-header');
-  let rowHeight = $header.outerHeight() || 12;
+  const $table = this.$('.rsa-data-table');
+  const $header = this.$('.rsa-data-table-header');
+  const rowHeight = $header.outerHeight() || 12;
 
   $table.css('height', `${rowHeight}px`);
-  let initialRowCount = $table.find('.rsa-data-table-body-row').length;
+  const initialRowCount = $table.find('.rsa-data-table-body-row').length;
   assert.ok(initialRowCount < mockCount, 'For a short enough table, not all data rows are rendered.');
 
   $table.css('height', `${rowHeight * mockCount}`);
   return wait().then(function() {
-    let laterRowCount = $table.find('.rsa-data-table-body-row').length;
+    const laterRowCount = $table.find('.rsa-data-table-body-row').length;
     assert.ok(initialRowCount < laterRowCount, 'More rows are rendered when data table is made taller.');
   });
 
 });
 
 test('Column selector displays available columns', function(assert) {
-  let mockColumnsConfig = [{ id: 'a', visible: true }, { id: 'b', visible: false }];
+  const mockColumnsConfig = [{ id: 'a', visible: true }, { id: 'b', visible: false }];
   this.setProperties({
     items: mockItems,
     columnsConfig: mockColumnsConfig
@@ -228,7 +228,7 @@ test('Column selector displays available columns', function(assert) {
 });
 
 test('Column selection affects visible columns on screen', function(assert) {
-  let mockColumnsConfig = [
+  const mockColumnsConfig = [
     { id: 'a', field: 'fieldA', visible: true, class: 'column-a' },
     { id: 'b', field: 'fieldB', visible: false, class: 'column-b' }
   ];

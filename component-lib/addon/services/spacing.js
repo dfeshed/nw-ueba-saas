@@ -22,8 +22,8 @@ export default Service.extend({
   defaultSelection: 'loose',
 
   init() {
-    let localStorageSpacing = localStorage[this.get('localStorageKey')];
-    let defaultSelection = this.get('defaultSelection');
+    const localStorageSpacing = localStorage[this.get('localStorageKey')];
+    const defaultSelection = this.get('defaultSelection');
     let currentSelection = null;
 
     if (localStorageSpacing) {

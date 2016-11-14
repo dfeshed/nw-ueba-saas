@@ -8,7 +8,7 @@ const ENUMS_BY_META_NAME = {};
 });
 
 function mockMetaValueForKey(metaName) {
-  let enums = ENUMS_BY_META_NAME[metaName];
+  const enums = ENUMS_BY_META_NAME[metaName];
   if (enums) {
     return faker.random.arrayElement(enums);
 
@@ -38,7 +38,7 @@ function mockMetaValueForKey(metaName) {
 }
 
 function mockMetaValuesForKey(keyName, size) {
-  let values = [];
+  const values = [];
   let i;
   for (i = 0; i < size; i++) {
     values.push(mockMetaValueForKey(keyName));
@@ -65,12 +65,12 @@ export default function(server) {
     // What meta key are we fetching values for?
     let [ frame ] = frames;
     frame = frame || {};
-    let { body } = frame;
-    let { filter } = body;
-    let metaFilter = (filter || []).findBy('field', 'metaName') || {};
-    let metaName = metaFilter.value;
+    const { body } = frame;
+    const { filter } = body;
+    const metaFilter = (filter || []).findBy('field', 'metaName') || {};
+    const metaName = metaFilter.value;
 
-    let data = mockResultForKey(metaName, SIZE);
+    const data = mockResultForKey(metaName, SIZE);
 
     // Simulate progress update response.
     server.sendFrame('MESSAGE', {

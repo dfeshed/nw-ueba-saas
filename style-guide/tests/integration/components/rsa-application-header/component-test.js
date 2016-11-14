@@ -7,7 +7,7 @@ moduleForComponent('/rsa-application-header', 'Integration | Component | rsa-app
 
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{rsa-application-header}}`);
-  let header = this.$().find('.rsa-application-header').length;
+  const header = this.$().find('.rsa-application-header').length;
   assert.equal(header, 1);
 });
 

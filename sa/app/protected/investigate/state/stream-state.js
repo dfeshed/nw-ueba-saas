@@ -56,9 +56,9 @@ export default EmberObject.extend({
     if (this.get('status') === 'complete') {
       return 100;
     }
-    let { anchor, goal } = this.getProperties('anchor', 'goal');
-    let spread = goal - anchor;
-    let len = this.get('data.length') || 0;
+    const { anchor, goal } = this.getProperties('anchor', 'goal');
+    const spread = goal - anchor;
+    const len = this.get('data.length') || 0;
     if (spread && $.isNumeric(spread)) {
       return parseInt(100 * (len - anchor) / spread, 10);
     } else {

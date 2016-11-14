@@ -7,8 +7,8 @@ const {
 } = Ember;
 
 export function metaKeyAlias([ metaName, language ]) {
-  let key = isArray(language) && language.findBy('metaName', metaName);
-  let displayName = key && get(key, 'displayName');
+  const key = isArray(language) && language.findBy('metaName', metaName);
+  const displayName = key && get(key, 'displayName');
   return {
     metaName,
     displayName: displayName || metaName,

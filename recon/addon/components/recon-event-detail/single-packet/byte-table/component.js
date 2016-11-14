@@ -70,24 +70,24 @@ export default Component.extend({
   },
 
   renderTable() {
-    let { cellClass, headerCellClass, byteFormat } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat');
-    let el = select(this.element);
+    const { cellClass, headerCellClass, byteFormat } = this.getProperties('cellClass', 'headerCellClass', 'byteFormat');
+    const el = select(this.element);
 
     el.select('table').remove();
 
-    let table = el.append('table');
-    let cells = this._cells = [];
+    const table = el.append('table');
+    const cells = this._cells = [];
 
     this.get('byteRows').forEach((byteRow) => {
-      let tr = table.append('tr');
+      const tr = table.append('tr');
       byteRow.forEach((byte) => {
-        let td = tr.append('td')
+        const td = tr.append('td')
           .attr('class', `${cellClass} ${byte.packetField ? byte.packetField.roles : ''} ${byte.isHeader ? headerCellClass : ''}`)
           .datum(byte);
 
         if (byte.isHeader) {
           td.on('mouseenter', (d) => {
-            let packetField = d && d.packetField;
+            const packetField = d && d.packetField;
             this.set('hoverData', !packetField ? null : {
               field: packetField.field,
               index: packetField.index,
@@ -123,8 +123,8 @@ export default Component.extend({
    * @private
    */
   hoverDataDidChange: observer('hoverData', function() {
-    let tds = this.$(`.${this.get('headerCellClass')}`);
-    let toggleHover = function(isHover, position, length) {
+    const tds = this.$(`.${this.get('headerCellClass')}`);
+    const toggleHover = function(isHover, position, length) {
       [].slice.apply(tds, [position, position + length])
           .forEach((td) => {
             td.setAttribute('data-is-hover', isHover);
@@ -155,7 +155,7 @@ export default Component.extend({
    * @private
    */
   mouseDown(e) {
-    let drag = this._drag = this._drag || Drag.create({
+    const drag = this._drag = this._drag || Drag.create({
       on: {
         dragmove: () => {
           this._updateSelection();
@@ -168,7 +168,7 @@ export default Component.extend({
   },
 
   _updateSelection() {
-    let selection = window.getSelection && window.getSelection();
+    const selection = window.getSelection && window.getSelection();
     if (!selection || selection.isCollapsed) {
 
       // Nothing selected by user.
@@ -177,8 +177,8 @@ export default Component.extend({
     } else {
 
       // Something selected by user.
-      let bytes = this.get('bytes');
-      let cells = this._cells || [];
+      const bytes = this.get('bytes');
+      const cells = this._cells || [];
       let start = -1;
       let end = -1;
 
@@ -188,7 +188,7 @@ export default Component.extend({
       cells.forEach((cell, index) => {
 
         // Check if the DOM element is within the user's selection.
-        let selected = selection.containsNode(cell, true /* true = partlyContained*/);
+        const selected = selection.containsNode(cell, true /* true = partlyContained*/);
 
         // Update the `isSelected` property of the corresponding item in the `bytesMeta` array.
         // Ember.set(bytes[index], 'isSelected', selected);
@@ -220,7 +220,7 @@ export default Component.extend({
    * @private
    */
   _clearSelection() {
-    let selection = this.get('selection');
+    const selection = this.get('selection');
     if (selection) {
       // this.get('bytes').slice(selection.start, selection.end + 1).forEach((byte) => {
       //  Ember.set(byte, 'isSelected', false);
@@ -234,8 +234,8 @@ export default Component.extend({
    * @private
    */
   selectionDidChange: observer('selection', function() {
-    let tds = this.$(`.${this.get('cellClass')}`);
-    let toggleSelected = function(isSelected, start, end) {
+    const tds = this.$(`.${this.get('cellClass')}`);
+    const toggleSelected = function(isSelected, start, end) {
       [].slice.apply(tds, [start, end + 1]).forEach((td) => {
         td.setAttribute('data-is-selected', isSelected);
       });

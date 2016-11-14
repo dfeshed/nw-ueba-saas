@@ -8,14 +8,14 @@ const { run } = Ember;
 
 module('Unit | Utility | cube/base');
 
-let ARRAY_TYPE_RECORDS = [
+const ARRAY_TYPE_RECORDS = [
   { id: 0, countries: ['USA'], sortOrder: 2 },
   { id: 1, countries: ['Canada'], sortOrder: 0 },
   { id: 2, countries: ['Korea'], sortOrder: 1 },
   { id: 3, countries: ['USA', 'Canada'], sortOrder: 3 },
   { id: 4, countries: ['USA', 'Korea'], sortOrder: 4 }
 ];
-let CSV_TYPE_RECORDS = [
+const CSV_TYPE_RECORDS = [
   { id: 0, countries: 'USA', sortOrder: 2 },
   { id: 1, countries: 'Canada', sortOrder: 0 },
   { id: 2, countries: 'Korea', sortOrder: 1 },
@@ -26,7 +26,7 @@ let CSV_TYPE_RECORDS = [
 test('it exists, stores records, and maintains filters', function(assert) {
 
   // Instantiate a cube and confirm its data size.
-  let obj = Cube.create({
+  const obj = Cube.create({
     fieldsConfig: {
       id: {
         type: ENUM_FIELD_TYPE.DEFAULT
@@ -108,12 +108,12 @@ test('it sorts fields of type csv', function(assert) {
 test('it resorts its results after a record has been edited', function(assert) {
   assert.expect(9);
 
-  let array = [
+  const array = [
       { myid: 'z', name: 'Z' },
       { myid: 'a', name: 'A' },
       { myid: 'j', name: 'J' }
   ];
-  let obj = Cube.create({
+  const obj = Cube.create({
     fieldsConfig: {
       myid: {
         type: ENUM_FIELD_TYPE.DEFAULT
@@ -159,11 +159,11 @@ test('it resorts its results after a record has been edited', function(assert) {
 test('it filters fields of default type', function(assert) {
 
   // Instantiate the object.
-  let obj = Cube.create();
+  const obj = Cube.create();
   assert.ok(obj, 'Unable to create object.');
 
   // Feed it data and tell it how to sort the data so we can predict the results of these operations.
-  let FIELD_KEY = 'field1';
+  const FIELD_KEY = 'field1';
   obj.get('records').pushObjects([
     { field1: 1 },
     { field1: 2 },
@@ -362,7 +362,7 @@ test('it filters fields of default type', function(assert) {
 function testFilteringByNonDefaultField(indexField, filterField, fieldsCfg, records, assert) {
 
   // Instantiate the object.
-  let obj = Cube.create({ fieldsConfig: fieldsCfg });
+  const obj = Cube.create({ fieldsConfig: fieldsCfg });
   assert.ok(obj, 'Unable to create object.');
 
   // Feed it data and tell it how to sort the data so we can predict the results of these operations.
@@ -550,8 +550,8 @@ test('it filters fields of csv type', function(assert) {
 test('it groups fields of default type', function(assert) {
 
   // Initialize the cube.
-  let FIELD_KEY = 'field1';
-  let obj = Cube.create({
+  const FIELD_KEY = 'field1';
+  const obj = Cube.create({
     fieldsConfig: {
       field1: {
         dataType: 'number'
@@ -601,7 +601,7 @@ test('it groups fields of default type', function(assert) {
 function testGroupingByNonDefaultField(fieldsCfg, records, groupField, recordsToAdd, expected, expectedAfterAdd, assert) {
 
   // Initialize the cube.
-  let obj = Cube.create({
+  const obj = Cube.create({
     fieldsConfig: fieldsCfg,
     sortBy: groupField
   });

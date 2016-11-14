@@ -85,7 +85,7 @@ export default Component.extend({
     if (!query) {
       return '';
     }
-    let clone = query.clone();
+    const clone = query.clone();
     clone.metaFilter.conditions.clear();
     return uriEncodeEventQuery(clone);
   },
@@ -97,15 +97,15 @@ export default Component.extend({
   // * `deleteUri`: URI for the hyperlink to remove this filter condition.
   @computed('query', 'language', '_opts')
   crumbs(query, language, opts) {
-    let allConditions = query && query.get('metaFilter.conditions');
+    const allConditions = query && query.get('metaFilter.conditions');
     if (!allConditions || !allConditions.length) {
       return [];
     }
 
-    let clone = query.clone();
+    const clone = query.clone();
 
     return allConditions.map(({ queryString, isKeyValuePair = false, key, value }, index) => {
-      let result = {
+      const result = {
         isKeyValuePair,
         queryString
       };
@@ -119,12 +119,12 @@ export default Component.extend({
       }
 
       // Make a query clone whose conditions include only up to this condition.
-      let thisAndPreviousConditions = allConditions.slice(0, index + 1);
+      const thisAndPreviousConditions = allConditions.slice(0, index + 1);
       clone.set('metaFilter.conditions', thisAndPreviousConditions);
       result.gotoUri = uriEncodeEventQuery(clone);
 
       // Make a query clone whose conditions exclude just this condition.
-      let allOtherConditions = [].concat(allConditions).removeAt(index);
+      const allOtherConditions = [].concat(allConditions).removeAt(index);
       clone.set('metaFilter.conditions', allOtherConditions);
       result.deleteUri = uriEncodeEventQuery(clone);
 

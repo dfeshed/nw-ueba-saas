@@ -22,8 +22,8 @@ export default Service.extend({
   defaultSelection: '24hr',
 
   init() {
-    let localStorageKey = localStorage[this.get('localStorageKey')];
-    let defaultSelection = this.get('defaultSelection');
+    const localStorageKey = localStorage[this.get('localStorageKey')];
+    const defaultSelection = this.get('defaultSelection');
     let currentSelection = null;
 
     if (localStorageKey) {

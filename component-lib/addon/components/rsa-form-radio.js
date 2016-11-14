@@ -41,7 +41,7 @@ export default Component.extend({
   didInsertElement() {
     this.syncInput();
 
-    let that = this;
+    const that = this;
     this.$('input').on('focus', function() {
       run.next(that, function() {
         if (!that.get('isDestroyed')) {
@@ -70,7 +70,7 @@ export default Component.extend({
   },
 
   syncInput() {
-    let input = this.$('input');
+    const input = this.$('input');
 
     if (input) {
       if (this.get('model') !== this.get('value')) {

@@ -39,8 +39,8 @@ export default Component.extend({
 
   togglePanelBlur() {
     run.next(() => {
-      let notificationsActive = this.get('layoutService.notificationsActive');
-      let incidentQueueActive = this.get('layoutService.incidentQueueActive');
+      const notificationsActive = this.get('layoutService.notificationsActive');
+      const incidentQueueActive = this.get('layoutService.incidentQueueActive');
 
       if (notificationsActive || incidentQueueActive) {
         this.set('hasBlur', true);

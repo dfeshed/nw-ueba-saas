@@ -23,7 +23,7 @@ function sendBatches({
     pageEnd = dataLength;
   }
 
-  let batches = [];
+  const batches = [];
   for (let i = pageStart; i < pageEnd; i += batch) {
     let batchSize = batch;
     if (i + batch > pageEnd) {

@@ -58,7 +58,7 @@ export default DefaultDim.extend({
   }),
 
   grouping: computed('dimension', function() {
-    let prop = this.get('propertyName');
+    const prop = this.get('propertyName');
     return this.get('dimension')
             .groupAll()
             .reduce(
@@ -76,12 +76,12 @@ export default DefaultDim.extend({
    * @public
    */
   groups: computed('grouping', 'cube.results', function() {
-    let results = this.get('cube.results');
-    let totalCount = results && results.length;
-    let groups = this.get('grouping').value();
+    const results = this.get('cube.results');
+    const totalCount = results && results.length;
+    const groups = this.get('grouping').value();
 
     groups.all = function() {
-      let newObject = [];
+      const newObject = [];
       let key;
 
       for (key in this) {
@@ -95,11 +95,11 @@ export default DefaultDim.extend({
       return newObject;
     };
 
-    let all = groups.all();
-    let maxCount = all.reduce(function(p, v) {
+    const all = groups.all();
+    const maxCount = all.reduce(function(p, v) {
       return (p > v.value ? p : v.value);
     }, 1);
-    let out = all.map(function(group) {
+    const out = all.map(function(group) {
       return {
         key: group.key,
         value: group.value,
@@ -108,7 +108,7 @@ export default DefaultDim.extend({
         maxPercent: maxCount ? group.value / maxCount : group.value
       };
     });
-    let hash = {};
+    const hash = {};
 
     out.forEach(function(item) {
       hash[item.key] = item;

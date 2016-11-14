@@ -7,6 +7,6 @@ moduleForComponent('/rsa-content-section-header', 'Integration | Component | rsa
 
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{rsa-content-section-header label='foo'}}`);
-  let header = this.$().find('.rsa-content-section-header').length;
+  const header = this.$().find('.rsa-content-section-header').length;
   assert.equal(header, 1);
 });

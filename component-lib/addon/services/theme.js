@@ -22,8 +22,8 @@ export default Service.extend({
 
   init() {
     run.next(this, function() {
-      let localStorageSpacing = localStorage[this.get('localStorageKey')];
-      let defaultSelection = this.get('defaultSelection');
+      const localStorageSpacing = localStorage[this.get('localStorageKey')];
+      const defaultSelection = this.get('defaultSelection');
       let currentSelection = null;
 
       if (localStorageSpacing) {
@@ -46,7 +46,7 @@ export default Service.extend({
 
   updateRootClass() {
     run.next(this, function() {
-      let config = getOwner(this).resolveRegistration('config:environment');
+      const config = getOwner(this).resolveRegistration('config:environment');
       let rootEl = null;
       let $root = null;
 

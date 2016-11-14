@@ -14,9 +14,9 @@ let newJournalID = 1;
 
 export default function(server) {
   server.route('incident', 'stream', function(message, frames, server) {
-    let { filter } = frames[0].body;
-    let statusFilter = (filter || []).findBy('field', 'statusSort') || {};
-    let records = server.mirageServer.db.incidents;
+    const { filter } = frames[0].body;
+    const statusFilter = (filter || []).findBy('field', 'statusSort') || {};
+    const records = server.mirageServer.db.incidents;
     let filteredRecords = [];
 
     if (statusFilter && typeOf(statusFilter.value) !== 'undefined') {
@@ -37,10 +37,10 @@ export default function(server) {
   });
 
   server.route('incident', 'notify', function(message, frames, server) {
-    let { filter } = frames[0].body;
-    let idFilter = (filter || []).findBy('field', 'id') || {};
+    const { filter } = frames[0].body;
+    const idFilter = (filter || []).findBy('field', 'id') || {};
     let incidents;
-    let db = server.mirageServer.db.incidents;
+    const db = server.mirageServer.db.incidents;
 
     // filter by incident id
     if (idFilter && typeOf(idFilter.value) !== 'undefined') {
@@ -50,7 +50,7 @@ export default function(server) {
       incidents = db.where({ 'statusSort': 0 });
     }
     // update the first 10 incidents
-    let response = incidents.slice(0, 10);
+    const response = incidents.slice(0, 10);
 
     // to mock async add/update/delete change the notificationCode here
     // notificationCode can be 0/1/2 -> incident(s) in the response were added/updated/deleted respectively
@@ -59,7 +59,7 @@ export default function(server) {
     if (response.notificationCode === 0) {
       // create a new incident
       response.push(IncidentSamples.newIncident, IncidentSamples.assignedIncident, IncidentSamples.inProgressIncident);
-      let newIncident = db.where({ 'id': IncidentSamples.newIncident.id });
+      const newIncident = db.where({ 'id': IncidentSamples.newIncident.id });
       if (newIncident.length <= 0) {
         // if one incident doesnt exist assume all 3 incidents aren't there in db and add them
         db.insert(IncidentSamples.newIncident);
@@ -99,10 +99,10 @@ export default function(server) {
   });
 
   server.route('incident', 'queryRecord', function(message, frames, server) {
-    let frame = (frames && frames[0]) || {};
-    let db = server.mirageServer.db.incidents;
-    let { incidentId } = frame.body;
-    let incident = db.find(incidentId);
+    const frame = (frames && frames[0]) || {};
+    const db = server.mirageServer.db.incidents;
+    const { incidentId } = frame.body;
+    const incident = db.find(incidentId);
     incident.id = incidentId;
     incident.type = 'incident';
 
@@ -117,10 +117,10 @@ export default function(server) {
   });
 
   server.route('incident', 'updateRecord', function(message, frames, server) {
-    let frame = (frames && frames[0]) || {};
+    const frame = (frames && frames[0]) || {};
 
     let updatedCount = 0;
-    let db = server.mirageServer.db.incidents;
+    const db = server.mirageServer.db.incidents;
     if (frame.body.incidentId) {
       db.update(frame.body.incidentId, frame.body.updates);
       updatedCount = 1;

@@ -7,16 +7,16 @@ moduleForComponent('rsa-respond/landing-page/respond-index/sort-options', 'Integ
 
 test('The New Incident sort options component is rendered properly.', function(assert) {
 
-  let mockLabel = 'Sort By:';
+  const mockLabel = 'Sort By:';
   this.set('label', mockLabel);
 
-  let mockDefaultSortOption = 'riskScore';
+  const mockDefaultSortOption = 'riskScore';
   this.set('defaultSortOption', mockDefaultSortOption);
 
-  let mockViewType = 'newIncCardView';
+  const mockViewType = 'newIncCardView';
   this.set('viewType', mockViewType);
 
-  let allSortOptions = [
+  const allSortOptions = [
     'alertCount',
     'assigneeFirstLastName',
     'dateCreated',
@@ -39,16 +39,16 @@ test('The New Incident sort options component is rendered properly.', function(a
     sortAction=(action externalMockSortAction)
   }}`);
 
-  let container = this.$('.sort-options');
+  const container = this.$('.sort-options');
 
-  let label = container.find('.rsa-form-select .rsa-form-label');
+  const label = container.find('.rsa-form-select .rsa-form-label');
   assert.equal(label.text(), mockLabel, 'Label Text');
 
-  let sortSelectForm = container.find('.rsa-form-select');
-  let prompt = sortSelectForm.find('.prompt');
+  const sortSelectForm = container.find('.rsa-form-select');
+  const prompt = sortSelectForm.find('.prompt');
   assert.equal(prompt.text().trim(), 'Risk Score', 'Default selected sort option');
 
-  let sortMenuOptions = sortSelectForm.find('select option');
+  const sortMenuOptions = sortSelectForm.find('select option');
 
   assert.equal(sortMenuOptions[0].innerText, 'Alerts', 'First priority is Alerts');
   assert.equal(sortMenuOptions[1].innerText, 'Assignee', 'Second priority is Assignee');
@@ -58,16 +58,16 @@ test('The New Incident sort options component is rendered properly.', function(a
   assert.equal(sortMenuOptions[5].innerText, 'Risk Score', 'Fourth priority is Risk Score');
   assert.equal(sortMenuOptions[6].innerText, 'Date Updated', 'Fifth priority is Date Updated');
 
-  let directionButton = container.find('.rsa-form-button-wrapper .rsa-form-button');
-  let directionIcon = directionButton.find('.rsa-icon');
+  const directionButton = container.find('.rsa-form-button-wrapper .rsa-form-button');
+  const directionIcon = directionButton.find('.rsa-icon');
   assert.ok(directionIcon.hasClass('rsa-icon-arrow-down-7'), 'Direction button icon shows arrow down.');
   assert.notOk(directionIcon.hasClass('rsa-icon-arrow-up-7'),'Direction button icon does not show arrow up.');
 
   // Define expected action params
   this.set('externalMockSortAction', (field, direction, view) => {
-    let expectedField = 'alertCount';
-    let expectedDir = 'desc';
-    let expectedView = 'newIncCardView';
+    const expectedField = 'alertCount';
+    const expectedDir = 'desc';
+    const expectedView = 'newIncCardView';
     assert.deepEqual(field, expectedField, 'Expected field post sort selection click.');
     assert.deepEqual(direction, expectedDir, 'Expected direction post sort selection click.');
     assert.deepEqual(view, expectedView, 'Expected view post sort selection click.');
@@ -79,9 +79,9 @@ test('The New Incident sort options component is rendered properly.', function(a
 
   // Define expected action params
   this.set('externalMockSortAction', (field, direction, view) => {
-    let expectedField = 'alertCount';
-    let expectedDir = 'asc';
-    let expectedView = 'newIncCardView';
+    const expectedField = 'alertCount';
+    const expectedDir = 'asc';
+    const expectedView = 'newIncCardView';
     assert.deepEqual(field, expectedField, 'Expected field post direction button click.');
     assert.deepEqual(direction, expectedDir, 'Expected direction post direction click.');
     assert.deepEqual(view, expectedView, 'Expected view post direction click.');

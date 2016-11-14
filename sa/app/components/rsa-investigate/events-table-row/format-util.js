@@ -27,7 +27,7 @@ function value(field, item, opts) {
     definedField = field.find((fieldName) => item[fieldName] !== undefined) || field[0];
   }
 
-  let raw = item[definedField];
+  const raw = item[definedField];
   return {
     raw,
     alias: text(definedField, raw, opts),
@@ -119,15 +119,15 @@ function tooltip(field, value, opts = {}) {
  * @public
  */
 function width(value, opts = {}) {
-  let w = _parseNumberAndUnits(value) || _parseNumberAndUnits(opts.defaultWidth);
+  const w = _parseNumberAndUnits(value) || _parseNumberAndUnits(opts.defaultWidth);
   return w.auto ? 'auto' : `${w.num}${w.units || 'px'}`;
 }
 
 // Formats a given number of bytes into a string with units (e.g., 'bytes', 'KB', 'MB', 'GB', 'TB').
 // The unit labels and the decimal precision can be configured via the `opts` hash argument.
 function _size(value, opts = {}, dontAggregate = false) {
-  let precision = opts.precision || 0;
-  let i18nSize = (opts.i18n && opts.i18n.size) || {};
+  const precision = opts.precision || 0;
+  const i18nSize = (opts.i18n && opts.i18n.size) || {};
 
   if (dontAggregate || (value < aKB)) {
     return `${value} ${i18nSize.bytes || 'bytes'}`;
@@ -144,7 +144,7 @@ function _size(value, opts = {}, dontAggregate = false) {
 
 // Formats a given timestamp value into a string using given (optional) format.
 function _time(value, opts = {}) {
-  let mom = moment(value);
+  const mom = moment(value);
   if (opts.timeZone) {
     mom.tz(opts.timeZone);
   }
@@ -159,9 +159,9 @@ function _parseNumberAndUnits(value) {
     if (value === 'auto') {
       return { auto: true };
     } else {
-      let match = String(value).match(/([\d\.]+)([^\d]*)/);
-      let num = match && Number(match[1]);
-      let units = (match && match[2]) || '';
+      const match = String(value).match(/([\d\.]+)([^\d]*)/);
+      const num = match && Number(match[1]);
+      const units = (match && match[2]) || '';
 
       if (!isNaN(num)) {
         return { num, units };

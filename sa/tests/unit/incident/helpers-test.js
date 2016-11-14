@@ -8,11 +8,11 @@ test('Test incident/helpers is available', function(assert) {
 });
 
 test('Test source map long names', function(assert) {
-  let sources = Helpers.sourceLongNames();
+  const sources = Helpers.sourceLongNames();
   assert.equal(sources.length, 7, 'Source map has correct number of known sources.');
 
   // Check source long names as they are going to be displayed to the user
-  let sourceLongNames = sources.map((source) => source);
+  const sourceLongNames = sources.map((source) => source);
   assert.ok(sourceLongNames.includes('Event Stream Analysis'), 'Long Name: Event Stream Analysis');
   assert.ok(sourceLongNames.includes('Event Streaming Analytics'), 'Long Name: Event Streaming Analytics');
   assert.ok(sourceLongNames.includes('ECAT'), 'Long Name: ECAT');

@@ -20,12 +20,12 @@ moduleFor('service:layout', 'Unit | Service | layout', {
 });
 
 test('it exists', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.ok(service);
 });
 
 test('sets defaults', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.equal(service.get('main'), 'panelA');
   assert.equal(service.get('incidentQueueActive'), false);
   assert.equal(service.get('notificationsActive'), false);
@@ -40,7 +40,7 @@ test('sets defaults', function(assert) {
 });
 
 test('sets panel classes', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.equal(service.get('journalPanelClass'), 'journal-hidden');
   assert.equal(service.get('contextPanelClass'), 'context-hidden');
   assert.equal(service.get('panelAClass'), 'panel-A-hidden');
@@ -51,23 +51,23 @@ test('sets panel classes', function(assert) {
 });
 
 test('toggle incident queue', function(assert) {
-  let service = this.subject();
-  let spy = sinon.spy(service.get('eventBus'), 'trigger');
+  const service = this.subject();
+  const spy = sinon.spy(service.get('eventBus'), 'trigger');
   service.toggleNotifications();
   assert.ok(spy.withArgs('rsa-application-notifications-panel-will-toggle').calledOnce);
   assert.equal(service.get('notificationsActive'), true);
 });
 
 test('toggle notifications', function(assert) {
-  let service = this.subject();
-  let spy = sinon.spy(service.get('eventBus'), 'trigger');
+  const service = this.subject();
+  const spy = sinon.spy(service.get('eventBus'), 'trigger');
   service.toggleIncidentQueue();
   assert.ok(spy.withArgs('rsa-application-incident-queue-panel-will-toggle').calledOnce);
   assert.equal(service.get('incidentQueueActive'), true);
 });
 
 test('toggle panel full width', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   service.set('panelA', 'quarter');
   service.set('panelB', 'main');
   service.set('main', 'panelB');

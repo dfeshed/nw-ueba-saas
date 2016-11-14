@@ -69,7 +69,7 @@ test('it renders a row of cells correctly', function(assert) {
     clickAction=clickAction}}`);
 
   // Check row is there.
-  let $root = this.$('.rsa-investigate-events-table-row');
+  const $root = this.$('.rsa-investigate-events-table-row');
   assert.equal($root.length, 1, 'Expected root DOM node with class name');
 
   // Check cells are there.
@@ -106,7 +106,7 @@ test('it renders a row of cells correctly', function(assert) {
 
   // Check that cells are refreshed if columns model is rearranged.
   run(() => {
-    let column = columns.shiftObject();
+    const column = columns.shiftObject();
     columns.pushObject(column);
   });
 

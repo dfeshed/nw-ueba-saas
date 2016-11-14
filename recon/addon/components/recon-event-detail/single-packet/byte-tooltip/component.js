@@ -133,7 +133,7 @@ export default Component.extend({
   },
 
   _move() {
-    let { position, visible } = this.getProperties('position', 'visible');
+    const { position, visible } = this.getProperties('position', 'visible');
     if (visible && position) {
       this.element.style.left = `${position.x - 125}px`;
       this.element.style.top = `${position.y - 65}px`;

@@ -114,7 +114,7 @@ export default Component.extend({
     // (yet) because we are using a free-flowing "paragraph" layout (for now), so we must completely re-render the DOM.
     $root.selectAll('a').remove();
 
-    let $enter = $root.selectAll('a')
+    const $enter = $root.selectAll('a')
       .data(data, (d) => d.value)
       .enter()
       .append('a')

@@ -11,7 +11,7 @@ moduleForComponent('rsa-incident-tile', 'Integration | Component | rsa respond/l
 
 test('The tile component is rendered properly.', function(assert) {
 
-  let testInc = EmberObject.create({
+  const testInc = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'riskScore': 96,
@@ -31,7 +31,7 @@ test('The tile component is rendered properly.', function(assert) {
     groupByDestinationIp: ['2.2.2.2']
   });
 
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' }) ];
 
@@ -89,7 +89,7 @@ test('The tile component renders the proper contextual timestamp.', function(ass
    * | New     | 05/01/2016 10:25:15 | 1462123515000 |
    * | Updated | 05/20/2016 11:23:15 | 1463768595000 |
    */
-  let mockIncident = EmberObject.create({
+  const mockIncident = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'riskScore': 96,
@@ -121,7 +121,7 @@ test('The tile component renders the proper contextual timestamp.', function(ass
 });
 
 test('Edit button stays visible after click and the mouse leaves the component', function(assert) {
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -135,7 +135,7 @@ test('Edit button stays visible after click and the mouse leaves the component',
     }
   });
 
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -146,7 +146,7 @@ test('Edit button stays visible after click and the mouse leaves the component',
     {{rsa-respond/landing-page/incident-tile incident=incident}}
   `);
 
-  let container = this.$('.rsa-incident-tile');
+  const container = this.$('.rsa-incident-tile');
   container.trigger('mouseenter');
   this.$('.rsa-edit-tool').trigger('click');
   container.trigger('mouseleave');
@@ -156,7 +156,7 @@ test('Edit button stays visible after click and the mouse leaves the component',
 });
 
 test('Edit mode is disabled if starting to edit another tile', function(assert) {
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -170,7 +170,7 @@ test('Edit mode is disabled if starting to edit another tile', function(assert) 
     }
   });
 
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -181,8 +181,8 @@ test('Edit mode is disabled if starting to edit another tile', function(assert) 
     {{rsa-respond/landing-page/incident-tile id='tile1' incident=incident users=users}}{{rsa-respond/landing-page/incident-tile id='tile2' incident=incident users=users}}
   `);
 
-  let tile1 = this.$('#tile1');
-  let tile2 = this.$('#tile2');
+  const tile1 = this.$('#tile1');
+  const tile2 = this.$('#tile2');
 
   tile1.trigger('mouseenter');
   tile1.find('.rsa-edit-tool').trigger('click');
@@ -199,10 +199,10 @@ test('Edit mode is disabled if starting to edit another tile', function(assert) 
 });
 
 test('Clicking off a card in edit mode exits edit mode without saving any field changes', function(assert) {
-  let preStatusValue = 0;
-  let newStatusValue = 1;
+  const preStatusValue = 0;
+  const newStatusValue = 1;
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -216,7 +216,7 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
     }
   });
 
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -225,12 +225,12 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}} <div class='.other-component'/>
   `);
 
-  let container = this.$('.rsa-incident-tile');
+  const container = this.$('.rsa-incident-tile');
   container.trigger('mouseenter');
 
   this.$('.rsa-edit-tool').trigger('click');
 
-  let tileStatusVal = container.find('.rsa-incident-tile-status-selector').val();
+  const tileStatusVal = container.find('.rsa-incident-tile-status-selector').val();
   assert.equal(incident.statusSort, tileStatusVal, 'Tile displays the current Incident status.');
 
   container.find('.rsa-incident-tile-status-selector').val(newStatusValue);
@@ -243,7 +243,7 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
 });
 
 test('Assignee field contains at least one option', function(assert) {
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -257,7 +257,7 @@ test('Assignee field contains at least one option', function(assert) {
     }
   });
 
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
 
   this.set('incident', incident);
   this.set('users', users);
@@ -266,20 +266,20 @@ test('Assignee field contains at least one option', function(assert) {
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
-  let container = this.$('.rsa-incident-tile');
+  const container = this.$('.rsa-incident-tile');
   container.trigger('mouseenter');
 
   this.$('.rsa-edit-tool').trigger('click');
 
-  let selectorOptionCount = container.find('.rsa-incident-tile-assignee-selector option').length;
+  const selectorOptionCount = container.find('.rsa-incident-tile-assignee-selector option').length;
   assert.notEqual(0, selectorOptionCount, 'Tile displays the current Incident status.');
 
 });
 
 test('Incident status changed after press save', function(assert) {
-  let preStatusValue = 0;
-  let newStatusValue = '1';
-  let incident = EmberObject.create({
+  const preStatusValue = 0;
+  const newStatusValue = '1';
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -292,7 +292,7 @@ test('Incident status changed after press save', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -304,12 +304,12 @@ test('Incident status changed after press save', function(assert) {
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
-  let container = this.$('.rsa-incident-tile');
+  const container = this.$('.rsa-incident-tile');
   container.trigger('mouseenter');
 
   this.$('.rsa-edit-tool').trigger('click');
 
-  let tileStatusVal = container.find('.rsa-incident-tile-status-selector select').val();
+  const tileStatusVal = container.find('.rsa-incident-tile-status-selector select').val();
   assert.equal(incident.statusSort, tileStatusVal, 'Tile displays the current Incident status.');
 
   container.find('.rsa-incident-tile-status-selector .prompt').click();
@@ -322,9 +322,9 @@ test('Incident status changed after press save', function(assert) {
 });
 
 test('Incident priority changed after press save', function(assert) {
-  let prePriorityValue = 0;
-  let newPriorityValue = 1;
-  let incident = EmberObject.create({
+  const prePriorityValue = 0;
+  const newPriorityValue = 1;
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -337,7 +337,7 @@ test('Incident priority changed after press save', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -348,12 +348,12 @@ test('Incident priority changed after press save', function(assert) {
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
-  let container = this.$('.rsa-incident-tile');
+  const container = this.$('.rsa-incident-tile');
   container.trigger('mouseenter');
 
   this.$('.rsa-edit-tool').trigger('click'); // switching to edit mode
 
-  let tilePriorityVal = container.find('.rsa-incident-tile-priority-selector select').val();
+  const tilePriorityVal = container.find('.rsa-incident-tile-priority-selector select').val();
   assert.equal(incident.prioritySort, tilePriorityVal, 'Tile displays the current Incident priority.');
 
   container.find('.rsa-incident-tile-priority-selector .prompt').click();
@@ -366,9 +366,9 @@ test('Incident priority changed after press save', function(assert) {
 });
 
 test('Incident Assignee changed after press save', function(assert) {
-  let assigneeIdOne = 1;
-  let assigneeIdTwo = 2;
-  let incident = EmberObject.create({
+  const assigneeIdOne = 1;
+  const assigneeIdTwo = 2;
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -381,7 +381,7 @@ test('Incident Assignee changed after press save', function(assert) {
       id: assigneeIdOne
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -392,12 +392,12 @@ test('Incident Assignee changed after press save', function(assert) {
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
-  let container = this.$('.rsa-incident-tile');
+  const container = this.$('.rsa-incident-tile');
   container.trigger('mouseenter');
 
   this.$('.rsa-edit-tool').trigger('click'); // switching to edit mode
 
-  let tileAssigneeVal = container.find('.rsa-incident-tile-assignee-selector select').val();
+  const tileAssigneeVal = container.find('.rsa-incident-tile-assignee-selector select').val();
   assert.equal(incident.assignee.id, tileAssigneeVal, 'Tile displays the current Incident assignee.');
 
   container.find('.rsa-incident-tile-assignee-selector .prompt').click();
@@ -411,7 +411,7 @@ test('Incident Assignee changed after press save', function(assert) {
 
 test('The update indicator component is rendered properly when an asynchronous update is available', function(assert) {
 
-  let testInc = EmberObject.create({
+  const testInc = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'riskScore': 96,'prioritySort': 0,
@@ -420,7 +420,7 @@ test('The update indicator component is rendered properly when an asynchronous u
     'assignee': { 'id': '1' },
     'asyncUpdate': true
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -433,7 +433,7 @@ test('The update indicator component is rendered properly when an asynchronous u
 
 test('The update indicator component is rendered properly when an asynchronous update is not available', function(assert) {
 
-  let testInc = EmberObject.create({
+  const testInc = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'riskScore': 96,'prioritySort': 0,
@@ -441,7 +441,7 @@ test('The update indicator component is rendered properly when an asynchronous u
     'created': 1452485774539,
     'assignee': { 'id': '1' }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -454,12 +454,12 @@ test('The update indicator component is rendered properly when an asynchronous u
 
 test('If the alert count is missing, then the default value is "-".', function(assert) {
 
-  let testInc = EmberObject.create({
+  const testInc = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'eventCount': 5
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -471,12 +471,12 @@ test('If the alert count is missing, then the default value is "-".', function(a
 
 test('If the event count is missing, then the default value is "-".', function(assert) {
 
-  let testInc = EmberObject.create({
+  const testInc = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'alertCount': 5
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
 
   this.set('testInc', testInc);
   this.set('users', users);
@@ -488,7 +488,7 @@ test('If the event count is missing, then the default value is "-".', function(a
 
 test('Incident priority order check (Critical -> Low)', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -501,7 +501,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -512,12 +512,12 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
-  let container = this.$(selectors.pages.respond.card.incTile.incidentTile);
+  const container = this.$(selectors.pages.respond.card.incTile.incidentTile);
   container.trigger('mouseenter');
 
   this.$(selectors.pages.respond.card.incTile.editButton).trigger('click');
 
-  let priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOpt));
+  const priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOpt));
 
   assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
   assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
@@ -528,7 +528,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
 
 test('Incident priority order check (Critical -> Low)', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -541,7 +541,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
       id: '1'
     }
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
@@ -552,12 +552,12 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
   `);
 
-  let container = this.$(selectors.pages.respond.card.incTile.incidentTile);
+  const container = this.$(selectors.pages.respond.card.incTile.incidentTile);
   container.trigger('mouseenter');
 
   this.$(selectors.pages.respond.card.incTile.editButton).trigger('click');
 
-  let priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOpt));
+  const priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOpt));
 
   assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
   assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
@@ -568,7 +568,7 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
 
 
 test('Incident Tile gets rendered in queue mode', function(assert) {
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     createdBy: 'User X',
@@ -579,7 +579,7 @@ test('Incident Tile gets rendered in queue mode', function(assert) {
     sources: ['Event Stream Analysis'],
     assignee: {}
   });
-  let users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
+  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
     EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
     EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 

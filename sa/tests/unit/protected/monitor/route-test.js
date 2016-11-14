@@ -6,6 +6,6 @@ moduleFor('route:protected/monitor', 'Unit | Route | protected/monitor', {
 });
 
 test('it exists', function(assert) {
-  let route = this.subject();
+  const route = this.subject();
   assert.ok(route);
 });

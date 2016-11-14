@@ -15,7 +15,7 @@ export default function(server) {
       end = new Date().getTime() + minute;// default to now
     }
     let i = 1440;
-    let data = [];
+    const data = [];
     while (i-- >= 0) {
       data.unshift({
         name: 'minute',

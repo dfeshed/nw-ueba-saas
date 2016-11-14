@@ -7,13 +7,13 @@ moduleForComponent('rsa-respond/incident-detail/detail-overview', 'Integration |
 });
 
 test('it renders', function(assert) {
-  let model = {
+  const model = {
     id: 'INC-1',
     summary: 'Test Summary'
   };
   model.save = function() {};
 
-  let saveAction = function(updatedField, updatedVal) {
+  const saveAction = function(updatedField, updatedVal) {
     assert.equal(updatedField, 'summary', 'Testing detail overview has right updated field');
     assert.equal(updatedVal, 'Updated Summary', 'Testing detail overview has right  updated summary');
   };
@@ -25,7 +25,7 @@ test('it renders', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-overview model=model saveAction=saveAction}}`);
 
-  let element = this.$(selectors.pages.respond.details.overview.textarea);
+  const element = this.$(selectors.pages.respond.details.overview.textarea);
   assert.equal(element[0].value, 'Test Summary', 'Testing detail overview has right summary');
 
   element.val('Updated Summary');

@@ -30,13 +30,13 @@ test('it renders the appropriate DOM for a given threshold', function(assert) {
 test('it fires callbacks as expected', function(assert) {
   assert.expect(6);
 
-  let goAction = (() => {
+  const goAction = (() => {
     assert.ok(true, 'goAction was invoked.');
   });
-  let stopAction = (() => {
+  const stopAction = (() => {
     assert.ok(true, 'stopAction was invoked.');
   });
-  let retryAction = (() => {
+  const retryAction = (() => {
     assert.ok(true, 'retryAction was invoked.');
   });
   let $el;

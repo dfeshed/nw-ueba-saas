@@ -65,13 +65,13 @@ export default Component.extend({
   @computed('allIncidents.results.@each.checked')
   headerCheckbox: {
     get() {
-      let totalIncidentsLength = this.get('allIncidents.results.length');
-      let selectedIncident = this.get('allIncidents.results').findBy('checked', true);
+      const totalIncidentsLength = this.get('allIncidents.results.length');
+      const selectedIncident = this.get('allIncidents.results').findBy('checked', true);
 
       let isHeaderSelected = false;
       if (selectedIncident) {
         // when all the incidents on screen are selected we also select the header. Any other case, the header gets deselected
-        let allSelectedIncidents = this.get('allIncidents.results').filterBy('checked', true);
+        const allSelectedIncidents = this.get('allIncidents.results').filterBy('checked', true);
         isHeaderSelected = (allSelectedIncidents.length === totalIncidentsLength);
       }
       return isHeaderSelected;
@@ -93,13 +93,13 @@ export default Component.extend({
    */
   @computed()
   statusList() {
-    let statusArray = IncidentConstants.incidentStatusIds.map((statusId) => {
+    const statusArray = IncidentConstants.incidentStatusIds.map((statusId) => {
       return {
         id: statusId,
         value: emberComputed({
           get: () => this.get('filteredStatuses').includes(statusId),
           set: (key, value) => {
-            let editInProgress = value && this.get('isBulkEditInProgress');
+            const editInProgress = value && this.get('isBulkEditInProgress');
 
             if (!editInProgress) {
               this.updateFilterValue('status', 'filteredStatuses', statusId, value);
@@ -123,13 +123,13 @@ export default Component.extend({
    */
   @computed()
   priorityList() {
-    let priorityArray = IncidentConstants.incidentPriorityIds.map((priorityId) => {
+    const priorityArray = IncidentConstants.incidentPriorityIds.map((priorityId) => {
       return {
         id: priorityId,
         value: emberComputed({
           get: () => this.get('filteredPriorities').includes(priorityId),
           set: (key, value) => {
-            let editInProgress = value && this.get('isBulkEditInProgress');
+            const editInProgress = value && this.get('isBulkEditInProgress');
 
             if (!editInProgress) {
               this.updateFilterValue('priority', 'filteredPriorities', priorityId, value);
@@ -171,7 +171,7 @@ export default Component.extend({
   selectedAssignee: {
     get: () => [],
     set(values) {
-      let editInProgress = (values && values.length > 0 && this.get('isBulkEditInProgress'));
+      const editInProgress = (values && values.length > 0 && this.get('isBulkEditInProgress'));
 
       if (!editInProgress) {
         run.once(() => {
@@ -202,7 +202,7 @@ export default Component.extend({
         filterFn = (incidentSources) => incidentSources.any((source) => values.includes(source));
       }
 
-      let editInProgress = values.length > 0 && this.get('isBulkEditInProgress');
+      const editInProgress = values.length > 0 && this.get('isBulkEditInProgress');
 
       if (!editInProgress) {
         this.applyFilters('sources', filterFn);
@@ -239,7 +239,7 @@ export default Component.extend({
         };
       }
 
-      let editInProgress = values && values.length > 0 && this.get('isBulkEditInProgress');
+      const editInProgress = values && values.length > 0 && this.get('isBulkEditInProgress');
 
       if (!editInProgress) {
         this.applyFilters('categories', filterValue);
@@ -258,8 +258,8 @@ export default Component.extend({
    * @public
    */
   applyFilters(fieldName, values) {
-    let filters = this.get('allIncidents').filters();
-    let filter = filters.findBy('field', fieldName);
+    const filters = this.get('allIncidents').filters();
+    const filter = filters.findBy('field', fieldName);
 
     if (!values || values.length === 0) {
       filters.removeObject(filter);
@@ -315,7 +315,7 @@ export default Component.extend({
    */
   toggleAllCheckboxes(forcedValue) {
     let newValue = forcedValue;
-    let allIncidents = this.get('allIncidents.results');
+    const allIncidents = this.get('allIncidents.results');
 
     if (typeof forcedValue !== 'boolean') {
       newValue = this.toggleProperty('headerCheckbox');
@@ -372,7 +372,7 @@ export default Component.extend({
      * @public
      */
     toggleCheckBox(itemID) {
-      let specificIncident = this.get('allIncidents.results').findBy('id', itemID);
+      const specificIncident = this.get('allIncidents.results').findBy('id', itemID);
       set(specificIncident, 'checked', !specificIncident.checked);
       this.set('showBulkEditMessage', false);
     },

@@ -28,7 +28,7 @@ export default DataTableBody.extend({
     const visibles = [ first, ...this.get('_visibleItems') ];
 
     // Find all the visible items that need to have their log data fetched.
-    let logEvents = visibles.filter((event) => {
+    const logEvents = visibles.filter((event) => {
       return isLogEvent(event) && !eventHasLogData(event) && !eventLogDataIsPending(event);
     });
 

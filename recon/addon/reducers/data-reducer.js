@@ -154,7 +154,7 @@ const data = reduxActions.handleActions({
 
   // Download reducing
   [ACTION_TYPES.FILES_FILE_TOGGLED]: (state, { payload: fileId }) => {
-    let newFiles = state.files.map((f) => {
+    const newFiles = state.files.map((f) => {
       if (f.id === fileId) {
         return {
           ...f,

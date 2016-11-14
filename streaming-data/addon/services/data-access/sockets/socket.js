@@ -19,7 +19,7 @@ const {
  * @type {}
  * @private
  */
-let _clients = {};
+const _clients = {};
 
 /**
  * Requests a client at a given socket server URL.
@@ -55,7 +55,7 @@ function connect(url, headers) {
  * @public
  */
 function disconnect(url) {
-  let client = _clients[url];
+  const client = _clients[url];
   if (client) {
     delete _clients[url];
     return client.disconnect();
@@ -104,8 +104,8 @@ function createStream(method, modelName, query, streamOptions = {}) {
    * @private
    */
 function _findSocketConfig(modelName, method) {
-  let modelConfig = ((config.socketRoutes || {})[modelName] || {});
-  let cfg = modelConfig[method];
+  const modelConfig = ((config.socketRoutes || {})[modelName] || {});
+  const cfg = modelConfig[method];
 
   if (cfg) {
     cfg.socketUrl = modelConfig.socketUrl;

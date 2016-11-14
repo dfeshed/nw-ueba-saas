@@ -6,19 +6,19 @@ moduleForModel('user', 'Unit | Model | user', {
 });
 
 test('it exists', function(assert) {
-  let model = this.subject();
+  const model = this.subject();
   // let store = this.store();
   assert.ok(!!model);
 });
 
 test('check model values', function(assert) {
-  let myModel = {
+  const myModel = {
     email: 'tony@rsa.com',
     firstName: 'John',
     lastName: 'Doe'
   };
 
-  let model = this.subject(myModel);
+  const model = this.subject(myModel);
 
   assert.equal(model.get('email'), 'tony@rsa.com', 'Invalid user email');
   assert.equal(model.get('firstName'), 'John', 'Invalid user firstName');

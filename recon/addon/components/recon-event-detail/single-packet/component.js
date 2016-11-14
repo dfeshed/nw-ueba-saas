@@ -129,7 +129,7 @@ const SinglePacketComponent = Component.extend({
 
       // Decoded data has changed, so convert it into integers, hex & ascii.
       bytes = decodedData.map((char, index) => {
-        let int = char.charCodeAt(0);
+        const int = char.charCodeAt(0);
         return {
           index,
           int,
@@ -155,13 +155,13 @@ const SinglePacketComponent = Component.extend({
         }
 
         // Which packet field does this byte's position fall into?
-        let found = this.findPacketFieldForByte(index);
+        const found = this.findPacketFieldForByte(index);
         if (!found) {
           return;
         }
 
         // Found the field; cache field info in order to use it in template (highlighting, tooltips, etc).
-        let roles = ['packet-field-value'];
+        const roles = ['packet-field-value'];
         if (index === found.field.position) {
           roles.push('start');
         }
@@ -187,8 +187,8 @@ const SinglePacketComponent = Component.extend({
    */
   @computed('bytes', 'bytesPerRow')
   byteRows(bytes, bytesPerRow) {
-    let rows = [];
-    let len = bytes.length;
+    const rows = [];
+    const len = bytes.length;
     let i;
     for (i = 0; i < len; i = i + bytesPerRow) {
       rows.push(bytes.slice(i, i + bytesPerRow));
@@ -208,7 +208,7 @@ const SinglePacketComponent = Component.extend({
    * @public
    */
   findPacketFieldForByte(byteIndex) {
-    let field = (this.get('packetFields') || []).find((field) => {
+    const field = (this.get('packetFields') || []).find((field) => {
       return (byteIndex >= field.position) && (byteIndex < (field.position + field.length));
     });
 

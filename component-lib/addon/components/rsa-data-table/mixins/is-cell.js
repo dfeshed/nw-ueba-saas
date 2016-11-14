@@ -25,9 +25,9 @@ function _parseNumberAndUnits(value) {
     if (value === 'auto') {
       return { auto: true };
     } else {
-      let match = String(value).match(/([\d\.]+)([^\d]*)/);
-      let num = match && Number(match[1]);
-      let units = (match && match[2]) || '';
+      const match = String(value).match(/([\d\.]+)([^\d]*)/);
+      const num = match && Number(match[1]);
+      const units = (match && match[2]) || '';
 
       if (!isNaN(num)) {
         return { num, units };
@@ -80,7 +80,7 @@ export default Mixin.create(CspStyleMixin, HasTableParent, {
    * @private
    */
   _resolvedWidth: computed('columnWidth', 'column.width', function() {
-    let w = _parseNumberAndUnits(this.get('columnWidth')) ||
+    const w = _parseNumberAndUnits(this.get('columnWidth')) ||
       _parseNumberAndUnits(this.get('column.width')) ||
       _parseNumberAndUnits(DEFAULT_WIDTH);
     return w.auto ? 'auto' : `${w.num}${w.units || 'px'}`;

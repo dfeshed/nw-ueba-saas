@@ -55,10 +55,10 @@ export default Component.extend({
    */
   @computed('users.[]')
   usersList(users) {
-    let unAssigneeUser = {
+    const unAssigneeUser = {
       'id': -1
     };
-    let arrUsers = [ unAssigneeUser ];
+    const arrUsers = [ unAssigneeUser ];
 
     if (users) {
       arrUsers.addObjects(users);
@@ -80,21 +80,21 @@ export default Component.extend({
    */
   @computed('incidents.@each.checked')
   isSelectAvailable(incidents) {
-    let checkedIncidents = incidents.filterBy('checked', true);
-    let arrayOfSelectedIncidentIDs = checkedIncidents.map(function(item) {
+    const checkedIncidents = incidents.filterBy('checked', true);
+    const arrayOfSelectedIncidentIDs = checkedIncidents.map(function(item) {
       return item.id;
     });
-    let foundClosedItem = checkedIncidents.findBy('statusSort', IncidentConstants.incStatus.CLOSED);
-    let foundFalsePositiveItem = checkedIncidents.findBy('statusSort', IncidentConstants.incStatus.CLOSED_FALSE_POSITIVE);
-    let selectionAvailableEvaluation = (
+    const foundClosedItem = checkedIncidents.findBy('statusSort', IncidentConstants.incStatus.CLOSED);
+    const foundFalsePositiveItem = checkedIncidents.findBy('statusSort', IncidentConstants.incStatus.CLOSED_FALSE_POSITIVE);
+    const selectionAvailableEvaluation = (
         arrayOfSelectedIncidentIDs.length === 0 ||
         typeOf(foundClosedItem) !== 'undefined' ||
         typeOf(foundFalsePositiveItem) !== 'undefined'
     );
 
     if (selectionAvailableEvaluation) {
-      let selectedUsersListItem = this.get('usersList').findBy('selected', true);
-      let selectedPriorityListItem = this.get('priorityList').findBy('selected', true);
+      const selectedUsersListItem = this.get('usersList').findBy('selected', true);
+      const selectedPriorityListItem = this.get('priorityList').findBy('selected', true);
 
       if (typeOf(selectedUsersListItem) !== 'undefined') {
         set(selectedUsersListItem, 'selected', false);
@@ -118,8 +118,8 @@ export default Component.extend({
    */
   @computed('incidents.@each.checked')
   isStatusSelectorDisabled(incidents) {
-    let selectedIncident = incidents.findBy('checked', true);
-    let noIncidentSelected = typeOf(selectedIncident) === 'undefined';
+    const selectedIncident = incidents.findBy('checked', true);
+    const noIncidentSelected = typeOf(selectedIncident) === 'undefined';
     if (noIncidentSelected) {
       this.resetSelectionForm();
     }
@@ -135,16 +135,13 @@ export default Component.extend({
    * @private
    */
   toggleEditSelection(selectionValue, collection) {
-    let areTheSameSelection,
-      selectedObject,
-      previousSelected,
-      newSelectedValue;
+    let areTheSameSelection, newSelectedValue;
 
-    selectedObject = (typeof selectionValue != 'object') ?
+    const selectedObject = (typeof selectionValue != 'object') ?
       collection.findBy('id', selectionValue) :
       collection.findBy('id', selectionValue.id);
 
-    previousSelected = collection.findBy('selected', true);
+    const previousSelected = collection.findBy('selected', true);
 
     if (previousSelected) {
       areTheSameSelection = previousSelected.id === selectedObject.id;
@@ -168,9 +165,9 @@ export default Component.extend({
    * @public
    */
   resetSelectionForm() {
-    let selectedStatusListItem = this.get('statusList').findBy('selected', true);
-    let selectedPriorityListItem = this.get('priorityList').findBy('selected', true);
-    let selectedUsersListItem = this.get('usersList').findBy('selected', true);
+    const selectedStatusListItem = this.get('statusList').findBy('selected', true);
+    const selectedPriorityListItem = this.get('priorityList').findBy('selected', true);
+    const selectedUsersListItem = this.get('usersList').findBy('selected', true);
 
     if (typeOf(selectedStatusListItem) !== 'undefined') {
       set(selectedStatusListItem, 'selected', false);
@@ -189,7 +186,7 @@ export default Component.extend({
   },
 
   toggleSuccessMessage(totalCheckedEvents) {
-    let self = this;
+    const self = this;
     this.set('totalFieldsUpdated', totalCheckedEvents);
     this.set('showSuccessMessage', true);
 
@@ -220,7 +217,7 @@ export default Component.extend({
      */
     updateSelectElement(selectionValue, fieldName, collection) {
       let newSelectedValue;
-      let isEmberClass = typeof selectionValue.get === 'function';
+      const isEmberClass = typeof selectionValue.get === 'function';
 
       switch (fieldName) {
         case 'prioritySort':
@@ -250,8 +247,8 @@ export default Component.extend({
      * @public
      */
     validateBulkSave() {
-      let checkedIncidents = this.get('incidents').filterBy('checked', true);
-      let arrayOfSelectedIncidentIDs = checkedIncidents.map(function(item) {
+      const checkedIncidents = this.get('incidents').filterBy('checked', true);
+      const arrayOfSelectedIncidentIDs = checkedIncidents.map(function(item) {
         return item.id;
       });
 

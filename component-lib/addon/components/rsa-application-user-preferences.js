@@ -53,7 +53,7 @@ export default Component.extend({
         if (localStorage.getItem('rsa-i18n-default-locale')) {
           this.set('i18n.locale', localStorage.getItem('rsa-i18n-default-locale'));
         } else {
-          let config = getOwner(this).resolveRegistration('config:environment');
+          const config = getOwner(this).resolveRegistration('config:environment');
 
           this.set('i18n.locale', config.i18n.defaultLocale);
           localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);

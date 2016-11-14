@@ -5,7 +5,7 @@ export default function(server) {
     const aliases = server.mirageServer.db['core-meta-aliases'];
     const [ aliasHash ] = aliases;
 
-    let firstFrame = (frames && frames[0]) || {};
+    const firstFrame = (frames && frames[0]) || {};
     server.sendFrame('MESSAGE', {
       subscription: (firstFrame.headers || {}).id || '',
       'content-type': 'application/json'

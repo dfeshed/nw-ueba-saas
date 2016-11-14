@@ -12,7 +12,7 @@ test('it renders', function(assert) {
 
 test('it has a label', function(assert) {
   this.render(hbs `{{rsa-form-select label='Foo'}}`);
-  let label = this.$().find('.rsa-form-label').text();
+  const label = this.$().find('.rsa-form-label').text();
   assert.equal(label, 'Foo');
 });
 

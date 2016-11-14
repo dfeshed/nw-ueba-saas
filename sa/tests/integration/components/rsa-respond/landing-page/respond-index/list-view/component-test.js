@@ -12,7 +12,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
 
   beforeEach() {
 
-    let allCube = IncidentsCube.create({
+    const allCube = IncidentsCube.create({
       array: []
     });
 
@@ -78,13 +78,13 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
       })
     ]);
 
-    let users = [
+    const users = [
       EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
       EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
       EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' })
     ];
 
-    let categoryTags = [
+    const categoryTags = [
       EmberObject.create({
         id: '1',
         parent: 'parentCategory1',
@@ -158,7 +158,7 @@ test('Priority filter affects the number of incidents on screen', function(asser
   const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+  const resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
@@ -191,7 +191,7 @@ test('Status filter affects the number of incidents on screen', function(assert)
   const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+  const resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
@@ -225,7 +225,7 @@ test('Single-Select Source filter affects the number of incidents on the screen'
   const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+  const resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
@@ -260,7 +260,7 @@ test('Multi-Select Source filter affects the number of incidents on the screen',
   const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+  const resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
@@ -296,7 +296,7 @@ test('Assignee filter affects the number of incidents on screen', function(asser
   const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+  const resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
@@ -329,7 +329,7 @@ test('Category filter affects the number of incidents on screen', function(asser
   const done = assert.async(3);
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
-  let resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
+  const resetButton = this.$().find('.rsa-respond-list__filter-panel__reset-button button');
 
   waitFor(
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3

@@ -89,7 +89,7 @@ export default Component.extend({
     this.decorateSelectOptions();
     this.updateSelectOptions();
 
-    let _this = this;
+    const _this = this;
     this.get('eventBus').on('rsa-application-click', function(targetEl) {
       if (_this.$()) {
         if (!_this.get('optionsCollapsed') && !_this.$().is(targetEl)) {
@@ -110,13 +110,13 @@ export default Component.extend({
 
   decorateSelectOptions() {
     run.schedule('afterRender', () => {
-      let options = this.$('option');
+      const options = this.$('option');
       if (options) {
         this.set('optionCount', options.length);
 
         options.each(function(i, optionEl) {
-          let option = $(optionEl);
-          let text = option.text();
+          const option = $(optionEl);
+          const text = option.text();
           option.attr('data-text', text);
         });
       }
@@ -124,7 +124,7 @@ export default Component.extend({
   },
 
   updateSelectOptions() {
-    let that = this;
+    const that = this;
 
     run.schedule('afterRender', function() {
       if (that.get('values.length') > 0) {
@@ -132,9 +132,9 @@ export default Component.extend({
           that.$('select').val(that.get('values'));
         }
 
-        let optionObjects = [];
+        const optionObjects = [];
         that.get('values').forEach(function(value) {
-          let option = that.$(`option[value="${value}"]`);
+          const option = that.$(`option[value="${value}"]`);
           if (option) {
             optionObjects.addObject({
               value: option.attr('value'),
@@ -152,7 +152,7 @@ export default Component.extend({
    * is modified outside of removeSelection function or outside of component interaction
    */
   deselectStaleOptions() {
-    let staleSelectedOptions = this.$('option').map((key, option) => {
+    const staleSelectedOptions = this.$('option').map((key, option) => {
       if (option.selected && !this.get('values').includes(option.value)) {
         return option.value;
       }
@@ -198,7 +198,7 @@ export default Component.extend({
 
   click(event) {
     if (!this.get('resolvedDisabled')) {
-      let that = this;
+      const that = this;
 
       run.schedule('afterRender', function() {
         that.$().focus();

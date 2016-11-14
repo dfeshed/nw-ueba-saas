@@ -89,7 +89,7 @@ export default EmberObject.extend({
     this._rate = (!this._interval ? 0 : parseInt(this.get('rate'), 10)) || this._queue.length;
 
     // Kick off the thread.
-    let delay = parseInt(this.get('delay'), 10) || 0;
+    const delay = parseInt(this.get('delay'), 10) || 0;
     if (delay) {
       this._timer = run.later(this, '_step', delay);
     } else {
@@ -103,7 +103,7 @@ export default EmberObject.extend({
    * @private
    */
   _step() {
-    let batch = this._queue.splice(0, this._rate);
+    const batch = this._queue.splice(0, this._rate);
 
     // Call next for each member of batch.
     if (this._onNext) {

@@ -37,7 +37,7 @@ export default Service.extend({
   topic: null,
 
   buildURL(params) {
-    let queryStr = $.param(params);
+    const queryStr = $.param(params);
     return encodeURI(`${this.get('urlBase')}?${queryStr}`);
   },
 

@@ -15,8 +15,8 @@ export default Service.extend({
   defaultSelection: 'America/New_York',
 
   init() {
-    let localStorageSpacing = localStorage[this.get('localStorageKey')];
-    let defaultSelection = this.get('defaultSelection');
+    const localStorageSpacing = localStorage[this.get('localStorageKey')];
+    const defaultSelection = this.get('defaultSelection');
     let currentSelection = null;
 
     if (localStorageSpacing) {

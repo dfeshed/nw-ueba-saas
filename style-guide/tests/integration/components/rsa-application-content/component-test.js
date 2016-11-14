@@ -24,13 +24,13 @@ moduleForComponent('/rsa-application-content', 'Integration | Component | rsa-ap
 
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{rsa-application-content}}`);
-  let content = this.$().find('.rsa-application-content').length;
+  const content = this.$().find('.rsa-application-content').length;
   assert.equal(content, 1);
 });
 
 test('it includes the proper classes when hasBlur is true', function(assert) {
   this.render(hbs `{{#rsa-application-content hasBlur=true}}foo{{/rsa-application-content}}`);
-  let content = this.$().find('.rsa-application-content').first();
+  const content = this.$().find('.rsa-application-content').first();
   assert.ok(content.hasClass('has-blur'));
 });
 
@@ -40,7 +40,7 @@ test('it updates hasBlur when rsa-application-modal-did-open is triggered', func
   assert.equal(this.get('initialBlur'), false);
   this.get('eventBus').trigger('rsa-application-modal-did-open');
 
-  let that = this;
+  const that = this;
   return wait().then(function() {
     assert.equal(that.get('initialBlur'), true);
   });
@@ -65,7 +65,7 @@ test('it updates hasBlur when rsa-application-incident-queue-panel-will-toggle i
   assert.equal(this.get('initialBlur'), false);
   this.get('eventBus').trigger('rsa-application-incident-queue-panel-will-toggle');
 
-  let that = this;
+  const that = this;
   return wait().then(function() {
     assert.equal(that.get('initialBlur'), true);
   });
@@ -79,7 +79,7 @@ test('it removes hasBlur is true when both notificationsActive and incidentQueue
   assert.equal(this.get('initialBlur'), true);
   this.get('eventBus').trigger('rsa-application-notifications-panel-will-toggle');
 
-  let that = this;
+  const that = this;
   return wait().then(function() {
     assert.equal(that.get('initialBlur'), false);
   });

@@ -12,7 +12,7 @@ moduleForComponent('rsa-incident-tile', 'Integration | Incident | Constants', {
 });
 
 test('Status are defined for all languages', function(assert) {
-  let i18n = this.get('i18n');
+  const i18n = this.get('i18n');
 
   config.moment.includeLocales.forEach((locale) => {
     i18n.set('locale', locale);
@@ -23,7 +23,7 @@ test('Status are defined for all languages', function(assert) {
 });
 
 test('Priorities are defined for all languages', function(assert) {
-  let i18n = this.get('i18n');
+  const i18n = this.get('i18n');
 
   config.moment.includeLocales.forEach((locale) => {
     i18n.set('locale', locale);
@@ -34,7 +34,7 @@ test('Priorities are defined for all languages', function(assert) {
 });
 
 test('Milestones are defined for all languages', function(assert) {
-  let i18n = this.get('i18n');
+  const i18n = this.get('i18n');
 
   config.moment.includeLocales.forEach((locale) => {
     i18n.set('locale', locale);

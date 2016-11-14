@@ -10,7 +10,7 @@ const { computed, Component } = Ember;
 
 function computedMillisecFromSec(propName) {
   return computed(propName, function() {
-    let time = this.get(propName);
+    const time = this.get(propName);
     return !time ? time : time * 1000;
   });
 }

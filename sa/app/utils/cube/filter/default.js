@@ -24,7 +24,7 @@ function _typeOfFilterValue(val) {
   if (val === null) {
     return ENUM_TYPE.EMPTY;
   }
-  let t = (typeof val);
+  const t = (typeof val);
   if (t === 'function') {
     return ENUM_TYPE.FUNC;
   } else if ((t === 'object') && val.hasOwnProperty('from') && val.hasOwnProperty('to')) {
@@ -38,7 +38,7 @@ function _typeOfFilterValue(val) {
 
 // Generates a function that will return true only if it is passed a value from a given array.
 function _makeArrayItemFinder(arr) {
-  let hash = {};
+  const hash = {};
   if (arr) {
     arr.forEach(function(item) {
       hash[item] = true;
@@ -91,7 +91,7 @@ export default EmberObject.extend({
    * @public
    */
   native: computed('value', 'type', function() {
-    let value = this.get('value');
+    const value = this.get('value');
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
       case ENUM_TYPE.EXACT:
@@ -132,8 +132,8 @@ export default EmberObject.extend({
       return this;
     }
 
-    let addType = _typeOfFilterValue(val);
-    let curr = this.get('value');
+    const addType = _typeOfFilterValue(val);
+    const curr = this.get('value');
     let arr, changed;
 
     switch (this.get('type')) {
@@ -196,8 +196,8 @@ export default EmberObject.extend({
       return this;
     }
 
-    let removeType = _typeOfFilterValue(val);
-    let curr = this.get('value');
+    const removeType = _typeOfFilterValue(val);
+    const curr = this.get('value');
     let arr;
 
     switch (this.get('type')) {
@@ -216,7 +216,7 @@ export default EmberObject.extend({
           case ENUM_TYPE.LIST:
             arr = [].concat(curr);
             val.forEach(function(item) {
-              let index = arr.indexOf(item);
+              const index = arr.indexOf(item);
               if (index > -1) {
                 arr.splice(index, 1);
               }
@@ -245,7 +245,7 @@ export default EmberObject.extend({
    * @public
    */
   includes(val) {
-    let value = this.get('value');
+    const value = this.get('value');
     switch (this.get('type')) {
       case ENUM_TYPE.EMPTY:
         return true;

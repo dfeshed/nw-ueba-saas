@@ -43,6 +43,7 @@ module.exports = {
         'A' // Ember.A
       ]
     }],
+    'no-const-assign': 'error',
     'no-empty': 'error',
     'no-multiple-empty-lines': 'error',
     'no-multi-spaces': 'error',
@@ -57,7 +58,7 @@ module.exports = {
       'initialized': 'never'
     }],
     'operator-linebreak': ['error', 'after'],
-    //'prefer-const': 'error', // We will enable this later
+    'prefer-const': 'error',
     'prefer-spread': 'error',
     'prefer-template': 'error',
     'quotes': ['error', 'single', {

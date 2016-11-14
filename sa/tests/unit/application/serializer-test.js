@@ -11,7 +11,7 @@ moduleFor('serializer:application', 'Unit | Serializer | application', {
 });
 
 test('it exists', function(assert) {
-  let serializer = this.subject();
+  const serializer = this.subject();
   assert.ok(serializer);
 });
 
@@ -39,8 +39,8 @@ test('Serializer normalizes correctly for a payload with basic single object', f
     }
   };
 
-  let store = getOwner(this).lookup('service:store');
-  let result = this.subject().normalizeResponse(store, { modelName }, inputHash);
+  const store = getOwner(this).lookup('service:store');
+  const result = this.subject().normalizeResponse(store, { modelName }, inputHash);
 
   assert.deepEqual(result, expectedOutputHash, 'Unexpected result.');
 });
@@ -84,8 +84,8 @@ test('Serializer normalizes correctly for a payload with an array of two objects
     ]
   };
 
-  let store = getOwner(this).lookup('service:store');
-  let result = this.subject().normalizeResponse(store, { modelName }, inputHash);
+  const store = getOwner(this).lookup('service:store');
+  const result = this.subject().normalizeResponse(store, { modelName }, inputHash);
 
   assert.deepEqual(result, expectedOutputHash, 'Unexpected result.');
 });

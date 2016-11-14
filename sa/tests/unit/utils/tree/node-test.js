@@ -5,7 +5,7 @@ module('Unit | Utility | tree/node');
 
 test('it can be instantiated as an orphan without parent and children', function(assert) {
   assert.expect(3);
-  let node = TreeNode.create({
+  const node = TreeNode.create({
     value: 'myValue'
   });
   assert.equal(node.get('value'), 'myValue', 'its value is applied correctly');
@@ -16,9 +16,9 @@ test('it can be instantiated as an orphan without parent and children', function
 test('children can be added and removed from it', function(assert) {
   assert.expect(5);
 
-  let parent = TreeNode.create({ value: 0 });
-  let child1 = TreeNode.create({ value: 1 });
-  let child2 = TreeNode.create({ value: 2 });
+  const parent = TreeNode.create({ value: 0 });
+  const child1 = TreeNode.create({ value: 1 });
+  const child2 = TreeNode.create({ value: 2 });
 
   parent.addChild(child1).addChild(child2);
 

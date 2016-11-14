@@ -5,7 +5,7 @@ moduleForComponent('rsa-respond/incident-detail/event-overview', 'Integration | 
   integration: true,
 
   beforeEach() {
-    let event = {
+    const event = {
       'referer': 'curl/7.24.0',
       'alias_host': '4554mb.ru',
       'data': [{

@@ -31,8 +31,8 @@ export default Mixin.create({
       if (!queryNode) {
         return;
       }
-      let events = queryNode.get('value.results.events');
-      let skipLoad = !forceReload && (events.get('status') || '').match(/streaming|complete|stopped/);
+      const events = queryNode.get('value.results.events');
+      const skipLoad = !forceReload && (events.get('status') || '').match(/streaming|complete|stopped/);
       if (skipLoad) {
         return;
       }
@@ -50,9 +50,9 @@ export default Mixin.create({
       // If so, skip the query for the records.  (If the event count hasn't come back yet, no worries, submit this
       // query for now. We'll also add a check for count=0 in the count response callback, and that check will
       // abort this server call if need be.)
-      let eventCountStatus = queryNode.get('value.results.eventCount.status');
-      let eventCountData = queryNode.get('value.results.eventCount.data');
-      let eventCountIsZero = (eventCountStatus === 'resolved') && (eventCountData === 0);
+      const eventCountStatus = queryNode.get('value.results.eventCount.status');
+      const eventCountData = queryNode.get('value.results.eventCount.data');
+      const eventCountIsZero = (eventCountStatus === 'resolved') && (eventCountData === 0);
       if (eventCountIsZero) {
         events.set('status', 'complete');
         return;
@@ -80,12 +80,12 @@ export default Mixin.create({
       }
 
       // Wire up stream to state.events and start streaming.
-      let events = queryNode.get('value.results.events');
-      let len = events.get('data.length') || 0;
-      let limit = STREAM_LIMIT; // for now, always fetch STREAM_LIMIT; future: consider computing limit from len?
-      let anchor = len;
-      let goal = len + limit;
-      let lastSessionId = len ? events.get('data.lastObject.sessionId') : null;
+      const events = queryNode.get('value.results.events');
+      const len = events.get('data.length') || 0;
+      const limit = STREAM_LIMIT; // for now, always fetch STREAM_LIMIT; future: consider computing limit from len?
+      const anchor = len;
+      const goal = len + limit;
+      const lastSessionId = len ? events.get('data.lastObject.sessionId') : null;
 
       events.setProperties({
         anchor,
@@ -117,7 +117,7 @@ export default Mixin.create({
       if (!queryNode) {
         return;
       }
-      let events = queryNode.get('value.results.events');
+      const events = queryNode.get('value.results.events');
       if (events.get('status') === 'streaming') {
         events.get('stopStreaming')();
         // @workaround until event-count properly sends complete message
@@ -149,7 +149,7 @@ export default Mixin.create({
      * @public
      */
     eventsLogsGet(queryNode, events = []) {
-      let inputs = buildEventLogStreamInputs(
+      const inputs = buildEventLogStreamInputs(
         queryNode.get('value.definition.serviceId'),
         events.mapBy('sessionId')
       );

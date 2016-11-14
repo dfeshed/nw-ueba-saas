@@ -7,16 +7,16 @@ moduleFor('service:timezone', 'Unit | Service | timezone', {
 
 // Replace this with your real tests.
 test('it exists', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.ok(service);
 });
 
 test('it uses the correct localStorageKey', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.equal(service.get('localStorageKey'), 'rsa::securityAnalytics::timeZonePreference');
 });
 
 test('it has the correct default', function(assert) {
-  let service = this.subject();
+  const service = this.subject();
   assert.equal(service.get('defaultSelection'), 'America/New_York');
 });

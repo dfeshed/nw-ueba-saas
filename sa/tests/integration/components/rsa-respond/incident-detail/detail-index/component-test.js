@@ -9,7 +9,7 @@ moduleForComponent('rsa-respond/incident-detail/detail-index', 'Integration | Co
 });
 
 test('it renders', function(assert) {
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
     name: 'Suspected command and control communication with www.mozilla.com',
@@ -177,7 +177,7 @@ test('it renders', function(assert) {
           'groupby_filename': 'cotlow_awards.cfm' } }]
   });
 
-  let categoryTags = [EmberObject.create({ 'parent': 'Environmental', 'name': 'Deterioration', 'id': '562aae59e4b03ae1affcc4ff' }),
+  const categoryTags = [EmberObject.create({ 'parent': 'Environmental', 'name': 'Deterioration', 'id': '562aae59e4b03ae1affcc4ff' }),
     EmberObject.create({ 'parent': 'Error', 'name': 'Capacity shortage', 'id': '562aae59e4b03ae1affcc522' }),
     EmberObject.create({ 'parent': 'Hacking', 'name': 'Session replay', 'id': '562aae59e4b03ae1affcc545' })];
 

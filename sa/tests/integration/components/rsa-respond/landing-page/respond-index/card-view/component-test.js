@@ -10,10 +10,10 @@ moduleForComponent('rsa-respond/landing-page/respond-index/card-view', 'Integrat
   integration: true,
 
   beforeEach() {
-    let newCube = IncidentsCube.create({
+    const newCube = IncidentsCube.create({
       array: []
     });
-    let inProgressCube = IncidentsCube.create({
+    const inProgressCube = IncidentsCube.create({
       array: []
     });
 
@@ -85,7 +85,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/card-view', 'Integrat
       })
     ]);
 
-    let users = [
+    const users = [
       EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
       EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
       EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' })
@@ -107,7 +107,7 @@ test('it renders', function(assert) {
 
   assert.equal(this.$('.rsa-respond-card__status-header').length, 2, 'There are 2 rsa-respond-card__status-header elements');
   assert.equal(this.$('.rsa-incident-carousel').length, 2, '2 carousel elements are present');
-  let that = this;
+  const that = this;
   return wait().then(function() {
     assert.equal(that.$('.rsa-incident-tile').length, 6, 'Correct number of Tile components are present');
   });

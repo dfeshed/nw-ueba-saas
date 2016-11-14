@@ -35,15 +35,15 @@ import context from 'sa/mirage/sockets/routes/context';
   @private
 */
 function uniqueSocketUrls() {
-  let urls = [];
+  const urls = [];
   Object.keys(config.socketRoutes || {}).forEach((modelName) => {
-    let modelConfig = config.socketRoutes[modelName];
-    let { socketUrl } = modelConfig;
+    const modelConfig = config.socketRoutes[modelName];
+    const { socketUrl } = modelConfig;
     if (socketUrl && socketUrl.indexOf('localhost') === -1) {
       urls.push(modelConfig.socketUrl);
     }
     Object.keys(modelConfig).forEach((method) => {
-      let methodConfig = modelConfig[method];
+      const methodConfig = modelConfig[method];
       if ((typeof methodConfig === 'object') && methodConfig.socketUrl) {
         urls.push(methodConfig.socketUrl);
       }
@@ -67,7 +67,7 @@ export default function() {
   // So initialize a MockServer for each supported socket url.
   // For each MockServer we instantiate, configure any socket "routes" that we want to mock.
   window.MockServers = uniqueSocketUrls().map((url) => {
-    let server = new MockServer(url);
+    const server = new MockServer(url);
     server.init();
     connect(server);
     disconnect(server);

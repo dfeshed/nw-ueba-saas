@@ -5,7 +5,7 @@ const _addFilter = (query, field, value, valueKey = 'value') => {
     query.filter = [];
   }
 
-  let obj = { field };
+  const obj = { field };
   obj[valueKey] = value;
 
   query.filter.push(obj);
@@ -38,7 +38,7 @@ const addSessionQueryFilter = (query, sessionId) => {
     query.filter = [];
   }
 
-  let queryFilter = query.filter.findBy('field', 'query');
+  const queryFilter = query.filter.findBy('field', 'query');
   if (queryFilter) {
     queryFilter.value = [queryFilter.value, sessionQueryString].join(' && ');
   } else {

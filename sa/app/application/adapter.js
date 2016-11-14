@@ -28,7 +28,7 @@ export default RESTAdapter.extend({
 
   /* sets the csrf header for all AJAX calls */
   headers: computed(function() {
-    let csrfValue = localStorage.getItem(this.get('csrfKey'));
+    const csrfValue = localStorage.getItem(this.get('csrfKey'));
     return {
       'X-CSRF-TOKEN': csrfValue
     };

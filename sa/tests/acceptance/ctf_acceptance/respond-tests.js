@@ -14,7 +14,7 @@ test('Landing Page card components should be displayed on load', function(assert
   visit('/do/respond');
   andThen(function() {
     assert.equal(currentPath(), selectors.pages.respond.path);
-    let el = find(selectors.pages.respond.incTile.editButton);
+    const el = find(selectors.pages.respond.incTile.editButton);
     andThen(function() {
       assert.notOk(el.hasClass('hide'), 'Edit button is invisible by default');
       triggerEvent(el[0], 'mouseover');
@@ -55,15 +55,15 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
 
   visit('/do/respond');
   andThen(function() {
-    let editBtn = find(selectors.pages.respond.incTile.editButton);
+    const editBtn = find(selectors.pages.respond.incTile.editButton);
     andThen(function() {
       triggerEvent(editBtn[0], 'mouseover');
       andThen(function() {
         click(editBtn[0]);
         andThen(function() {
           let el = find(selectors.pages.respond.incTile.statusSelect);
-          let assignee = find(selectors.pages.respond.incTile.assigneeSelect);
-          let priority = find(selectors.pages.respond.incTile.prioritySelect);
+          const assignee = find(selectors.pages.respond.incTile.assigneeSelect);
+          const priority = find(selectors.pages.respond.incTile.prioritySelect);
           andThen(function() {
             Logger.debug('Setting the Status');
             fillIn(el[0], 2);
@@ -76,10 +76,10 @@ skip('User should be able to setStatus, Assignee and Priority', function(assert)
               andThen(function() {
                 el = find(selectors.pages.respond.incTile.statusLabel);
                 andThen(function() {
-                  let status = el[0].innerHTML.trim();
+                  const status = el[0].innerHTML.trim();
                   assert.equal(status.toLowerCase(), 'new');
                   Logger.debug('Verified that status is set correctly');
-                  let currPriority = find(selectors.pages.respond.incTile.priorityLabel);
+                  const currPriority = find(selectors.pages.respond.incTile.priorityLabel);
                   assert.equal(currPriority[0].innerText.indexOf('Medium'), -1);
                   Logger.debug('Verified that Priority field is set correctly');
                 });

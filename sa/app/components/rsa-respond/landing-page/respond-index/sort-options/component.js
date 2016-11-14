@@ -46,7 +46,7 @@ export default Component.extend({
      */
     toggleSortDir() {
       this.toggleProperty('isDesc');
-      let options = this.get('selectedSortOption');
+      const options = this.get('selectedSortOption');
       this.sendAction('sortAction', options[0], this.get('direction'), this.get('viewType'));
     }
 

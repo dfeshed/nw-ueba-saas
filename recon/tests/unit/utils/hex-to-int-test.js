@@ -5,6 +5,6 @@ module('Unit | Utility | hex to int');
 
 // Replace this with your real tests.
 test('hexToInt works', function(assert) {
-  let result = hexToInt('00000000a');
+  const result = hexToInt('00000000a');
   assert.equal(result, 10);
 });

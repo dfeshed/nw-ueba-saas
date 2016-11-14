@@ -48,7 +48,7 @@ const Query = EmberObject.extend({
    * @public
    */
   clone() {
-    let attrs = this.getProperties('serviceId', 'startTime', 'endTime');
+    const attrs = this.getProperties('serviceId', 'startTime', 'endTime');
     attrs.metaFilter = {
       uri: this.get('metaFilter.uri'),
       conditions: [].concat(this.get('metaFilter.conditions'))

@@ -71,7 +71,7 @@ export default Component.extend(HasTableParent, {
     if (!e) {
       return;
     }
-    let [ x0, y0 ] = this._dragStartPos;
+    const [ x0, y0 ] = this._dragStartPos;
     this._dragDelta = [ e.pageX - x0 , e.pageY - y0 ];
     this._resizeMe();
   },
@@ -94,12 +94,12 @@ export default Component.extend(HasTableParent, {
    * @private
    */
   _measureMe() {
-    let { column, side } = this.getProperties('column', 'side');
+    const { column, side } = this.getProperties('column', 'side');
     let target = column;
 
     if (side === 'left') {
-      let columns = this.get('table.columns');
-      let index = columns.indexOf(column);
+      const columns = this.get('table.columns');
+      const index = columns.indexOf(column);
 
       if (index > 0) {
         target = columns[index - 1];
@@ -131,13 +131,13 @@ export default Component.extend(HasTableParent, {
    * @private
    */
   _resizeMe() {
-    let target = this._resizeColumn;
-    let initial = this._initialWidth;
+    const target = this._resizeColumn;
+    const initial = this._initialWidth;
 
     if (target && !isNaN(initial)) {
       let width = initial + this._dragDelta[0];
       width = Math.max(this.get('minWidth'), Math.min(width, this.get('maxWidth')));
-      let fn = this.get('resizeAction');
+      const fn = this.get('resizeAction');
       if ($.isFunction(fn)) {
         fn(target, width);
       }

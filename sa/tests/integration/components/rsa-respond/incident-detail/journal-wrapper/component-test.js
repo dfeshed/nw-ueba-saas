@@ -10,7 +10,7 @@ moduleForComponent('rsa-journal-entry', 'Integration | Component | rsa respond/i
 
 test('it renders default elements', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -45,7 +45,7 @@ test('it renders default elements', function(assert) {
 
 test('Filter bar can be visible', function(assert) {
 
-  let incident = EmberObject.create({
+  const incident = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -59,7 +59,7 @@ test('Filter bar can be visible', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/journal-wrapper incident=incident}}`);
 
-  let sortPanel = this.$('.rsa-journal-wrapper__journal-sort');
+  const sortPanel = this.$('.rsa-journal-wrapper__journal-sort');
   assert.ok(sortPanel.hasClass('hidden'), 'Sort panel is hidden by default');
 
   this.$('.rsa-journal-wrapper__filter-button').trigger('click');

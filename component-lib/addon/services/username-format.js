@@ -43,7 +43,7 @@ export default Service.extend({
   }),
 
   init() {
-    let local = localStorage.getItem(this.get('localStorageKey'));
+    const local = localStorage.getItem(this.get('localStorageKey'));
 
     if (local) {
       this.set('friendlyUsername', local);

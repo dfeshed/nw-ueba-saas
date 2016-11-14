@@ -44,7 +44,7 @@ export default Component.extend(HasTableParent, {
   didInsertElement() {
     this._super(...arguments);
     run.schedule('afterRender', () => {
-      let rowsElement = this.get('table.body.rows.element');
+      const rowsElement = this.get('table.body.rows.element');
       if (!rowsElement) {
         Logger.warn('Unable to insert load-more into data-table.body.rows; DOM was not found.');
       } else {

@@ -16,12 +16,12 @@ const {
 // otherwise, just uses triple equals with node's value.
 function recursiveFind(value, node) {
   if (node) {
-    let nodeValue = get(node, 'value');
+    const nodeValue = get(node, 'value');
     if ($.isFunction(nodeValue.isEqual) ? nodeValue.isEqual(value) : (value === nodeValue)) {
       return node;
     }
-    let children = get(node, 'children');
-    let len = (children && children.length) || 0;
+    const children = get(node, 'children');
+    const len = (children && children.length) || 0;
     let i;
 
     for (i = 0; i < len; i++) {
@@ -71,7 +71,7 @@ export default EmberObject.extend({
    */
   remove(node) {
     if (node) {
-      let parent = node.get('parent');
+      const parent = node.get('parent');
       if (parent) {
         parent.removeChild(node);
       } else if (this.get('root') === node) {

@@ -25,14 +25,14 @@ export function eventQueryUri([ queryAttrs, drillKey, drillValue ] /* , hash */)
   if (!drillKey) {
     return uriEncodeEventQuery(queryAttrs);
   } else {
-    let drillQueryAttrs = getProperties(
+    const drillQueryAttrs = getProperties(
       queryAttrs,
       'serviceId',
       'startTime',
       'endTime',
       'metaFilter'
     );
-    let drillConditions = [].concat(
+    const drillConditions = [].concat(
       get(queryAttrs, 'metaFilter.conditions') || []
     );
     drillConditions.pushObject({

@@ -14,6 +14,6 @@ test('it works', function(assert) {
   };
 
   // This should call ctxt.sum(1,2), which should return return 'foo,bar'].
-  let result = callMethod([ctxt, 'sum', 1, 2]);
+  const result = callMethod([ctxt, 'sum', 1, 2]);
   assert.equal(result, 3, 'Unexpected response from method invocation.');
 });

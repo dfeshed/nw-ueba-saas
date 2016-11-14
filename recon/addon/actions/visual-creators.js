@@ -14,7 +14,7 @@ import * as ACTION_TYPES from './types';
 
 const _createToggleActionCreator = (type) => {
   return (setTo) => {
-    let returnVal = {
+    const returnVal = {
       type
     };
 

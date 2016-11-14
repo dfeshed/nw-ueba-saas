@@ -4,8 +4,8 @@ import { module, test } from 'qunit';
 module('Unit | Utility | stream/mixins/to array');
 
 test('it pushes payloads to the target array', function(assert) {
-  let stream = Stream.create().autoStart();
-  let target = [];
+  const stream = Stream.create().autoStart();
+  const target = [];
 
   stream.toArray(target);
   stream.next('foo');
@@ -28,10 +28,10 @@ test('it copies the expected properties to the target array', function(assert) {
     page: { foo: 'bar' }
   };
 
-  let propNames = Object.keys(PROPS);
-  let propCount = propNames.length;
-  let stream = Stream.create(PROPS).autoStart();
-  let target = [];
+  const propNames = Object.keys(PROPS);
+  const propCount = propNames.length;
+  const stream = Stream.create(PROPS).autoStart();
+  const target = [];
 
   stream.toArray(target);
   stream.next(0);

@@ -40,8 +40,8 @@ export default Route.extend({
     if (params.detail_id !== 'C2') {
       return null;
     }
-    let alerts = [];
-    let sort = this.get('sort');
+    const alerts = [];
+    const sort = this.get('sort');
 
     this.request.streamRequest({
       method: 'stream',
@@ -75,7 +75,7 @@ export default Route.extend({
       this.set('layoutService.panelD', 'half');
       this.set('layoutService.journalPanel', 'hidden');
 
-      let parentModel = this.modelFor('protected.respond.incident');
+      const parentModel = this.modelFor('protected.respond.incident');
 
       this.request.streamRequest({
         method: 'stream',

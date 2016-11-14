@@ -46,7 +46,7 @@ export default Component.extend({
   trackOwnValue: true,
 
   didInsertElement() {
-    let that = this;
+    const that = this;
     this.$('input').on('focus', function() {
       run.next(that, function() {
         if (!that.get('isDestroyed')) {
@@ -87,7 +87,7 @@ export default Component.extend({
 
   syncInput() {
     run.once(this, function() {
-      let input = this.$('input');
+      const input = this.$('input');
       if (input) {
         if ((this.get('value') === false) || (this.get('value') === 'false')) {
           input.attr('checked', false);

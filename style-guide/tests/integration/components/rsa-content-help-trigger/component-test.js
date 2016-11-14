@@ -28,7 +28,7 @@ test('it includes the proper classes', function(assert) {
 test('it emits the rsa-content-tooltip-display event on mouseenter', function(assert) {
   this.render(hbs `{{#rsa-content-help-trigger tooltip="foo"}}Trigger{{/rsa-content-help-trigger}}`);
 
-  let spy = sinon.spy(this.get('eventBus'), 'trigger');
+  const spy = sinon.spy(this.get('eventBus'), 'trigger');
 
   this.$().find('.rsa-content-help-trigger').mouseenter();
 
@@ -40,7 +40,7 @@ test('it emits the rsa-content-tooltip-display event on mouseenter', function(as
 test('it emits the rsa-content-tooltip-hide event on mouseleave', function(assert) {
   this.render(hbs `{{#rsa-content-help-trigger tooltip="foo"}}Trigger{{/rsa-content-help-trigger}}`);
 
-  let spy = sinon.spy(this.get('eventBus'), 'trigger');
+  const spy = sinon.spy(this.get('eventBus'), 'trigger');
 
   this.$().find('.rsa-content-help-trigger').mouseleave();
 

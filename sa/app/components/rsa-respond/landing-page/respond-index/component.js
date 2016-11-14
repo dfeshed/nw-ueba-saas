@@ -23,14 +23,14 @@ export default Component.extend({
     get(count = 0, total = 0) {
 
       // Format output for display to show proper delimiter for large incident count (eg. 1000 will be 1,000 for en-US)
-      let locale = this.get('i18n.locale');
+      const locale = this.get('i18n.locale');
       total = total.toLocaleString(locale);
       count = count.toLocaleString(locale);
 
       if (total === count) {
         return count;
       } else {
-        let filteredCount = this.get('i18n').t('respond.myFilteredQueue', { filteredCount: count, totalCount: total });
+        const filteredCount = this.get('i18n').t('respond.myFilteredQueue', { filteredCount: count, totalCount: total });
         return filteredCount;
       }
     }

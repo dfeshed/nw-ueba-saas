@@ -4,17 +4,17 @@
 // If any duplicate keys are found in `metas`, only the last key value will be applied.
 export default function(evt) {
   if (evt) {
-    let { metas } = evt;
+    const { metas } = evt;
     if (!metas) {
       return;
     }
 
     // This function will be executed thousands of times, with high frequency, so its need to be performant.
     // Therefore we forego using closures & `[].forEach()` and instead use a `for` loop.
-    let len = (metas && metas.length) || 0;
+    const len = (metas && metas.length) || 0;
     let i;
     for (i = 0; i < len; i++) {
-      let meta = metas[i];
+      const meta = metas[i];
       evt[meta[0]] = meta[1];
     }
   }

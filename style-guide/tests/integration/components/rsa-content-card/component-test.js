@@ -7,6 +7,6 @@ moduleForComponent('/rsa-content-card', 'Integration | Component | rsa-content-c
 
 test('it includes the proper classes', function(assert) {
   this.render(hbs `{{#rsa-content-card}}foo{{/rsa-content-card}}`);
-  let cardCount = this.$().find('.rsa-content-card').length;
+  const cardCount = this.$().find('.rsa-content-card').length;
   assert.equal(cardCount, 1);
 });

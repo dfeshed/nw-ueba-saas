@@ -8,7 +8,7 @@ const SOURCE = [0, 1, 2];
 test('it notifies subscribers of the source array\'s existing contents', function(assert) {
   assert.expect(SOURCE.length);
 
-  let stream = Stream.create().fromArray(SOURCE);
+  const stream = Stream.create().fromArray(SOURCE);
   stream.subscribe({
     onNext: (val) => {
       assert.equal(typeof val, 'number', 'Subscriber was notified with an expected value data type.');
@@ -30,7 +30,7 @@ test('it supports autoStart', function(assert) {
 });
 
 test('it notifies subscribers of additions to the source array', function(assert) {
-  let arr = [].concat(SOURCE);
+  const arr = [].concat(SOURCE);
   assert.expect(arr.length + 1);
 
   Stream.create().fromArray(arr)

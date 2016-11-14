@@ -33,7 +33,7 @@ export default Component.extend({
 
     const { entityId, entityType } = this.getProperties('entityId', 'entityType');
 
-    let contextModels = {
+    const contextModels = {
       displayContextPanel: true,
       lookupKey: entityId,
       meta: entityType,
@@ -63,7 +63,7 @@ export default Component.extend({
    */
   _doCHLookup(lookupKey, meta) {
     Logger.info('fetching context data for lookup key ', lookupKey);
-    let filter = [];
+    const filter = [];
     if (lookupKey && meta) {
       filter.push({ field: 'meta', value: meta });
       filter.push({ field: 'value', value: lookupKey });
@@ -95,10 +95,10 @@ export default Component.extend({
 
       case 'ECAT':
         {
-          let ecatData = Ecat.create();
+          const ecatData = Ecat.create();
 
           contextData.resultList.forEach((obj) => {
-            let { Machine, Iocs, Processes, Network } = obj.details;
+            const { Machine, Iocs, Processes, Network } = obj.details;
             // get details and push into the respective objects
             if (Machine) {
               set(ecatData, 'host', Machine);
@@ -136,14 +136,15 @@ export default Component.extend({
         {
           const { dataSourceType } = contextData;
           const model = this.get('model');
-          let { contextData: allContextData } = model;
-          let allSourceTypeData = allContextData[dataSourceType] || [];
+          const { contextData: allContextData } = model;
+          const allSourceTypeData = allContextData[dataSourceType] || [];
           set(allContextData, dataSourceType, allSourceTypeData.concat(contextData));
         }
     }
   },
+
   _parseLiveConnectData(entityType, record) {
-    let lcData = LiveConnect.create();
+    const lcData = LiveConnect.create();
     switch (entityType) {
       case 'LiveConnect-Ip':
         lcData.set('IpInfo', record[0].IpInfo);

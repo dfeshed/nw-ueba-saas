@@ -5,6 +5,6 @@ module('Unit | Utility | int to hex');
 
 
 test('intToHex works', function(assert) {
-  let result = intToHex(10, 16);
+  const result = intToHex(10, 16);
   assert.equal(result, '00000000a');
 });

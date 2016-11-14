@@ -6,7 +6,7 @@ moduleForComponent('rsa-context-panel/lc-identity', 'Integration | Component | r
 });
 
 test('it renders', function(assert) {
-  let liveConnectData = {
+  const liveConnectData = {
     'customerRiskyFeedbackPercentageTrend': [],
     'customerPercentageTrend': [],
     'feedback': {},

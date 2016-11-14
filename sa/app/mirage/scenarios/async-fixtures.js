@@ -22,7 +22,7 @@ export default function(server, collectionNames) {
     promise = RSVP.resolve();
   } else {
     // We have collections to load. For each, fetch via Ajax & cache a promise.
-    let defs = collectionNames.map((name) => {
+    const defs = collectionNames.map((name) => {
       return new RSVP.Promise((resolve) => {
 
         $.ajax({
@@ -41,7 +41,7 @@ export default function(server, collectionNames) {
 
             // Create a Mirage collection to store the data.
             server.db.createCollection(name);
-            let collection = server.db[name];
+            const collection = server.db[name];
 
             // Feed the data into the collection on an interval thread, to avoid locking browser.
             Thread.create({

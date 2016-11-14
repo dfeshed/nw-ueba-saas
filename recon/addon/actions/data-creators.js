@@ -272,7 +272,7 @@ const toggleMetaData = (setTo) => {
 
     // Handle setting of visual flag to
     // open/close meta
-    let returnVal = {
+    const returnVal = {
       type: ACTION_TYPES.TOGGLE_META
     };
 

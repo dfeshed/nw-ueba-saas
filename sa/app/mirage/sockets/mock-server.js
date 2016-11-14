@@ -12,7 +12,7 @@ const DEFAULT_STREAM_BATCH = 9;
 // If `page.size` is zero or unspecified, no size limit is applied.
 function _getItemsPage(page, items) {
   page = page || {};
-  let { index, size } = page;
+  const { index, size } = page;
 
   if (typeof index === 'number') {
     if ((typeof size === 'number') && size) {
@@ -111,8 +111,8 @@ MockServer.prototype.sendFrame = function(command, headers, body, delay) {
     }
   }
 
-  let me = this;
-  let doSend = function() {
+  const me = this;
+  const doSend = function() {
     me.send(Stomp.Frame.marshall(command, headers, body));
   };
 
@@ -130,7 +130,7 @@ MockServer.prototype.sendFrame = function(command, headers, body, delay) {
 MockServer.prototype.sendList = function(items, page, total, frames, delay, notificationCode) {
   // Apply default arguments as needed.
   total = total || (items && items.length) || 0;
-  let frame = (frames && frames[0]) || {};
+  const frame = (frames && frames[0]) || {};
 
   // If paging is requested, slice off the request subset of items.
   items = _getItemsPage(page, items);
@@ -162,18 +162,18 @@ MockServer.prototype.streamList = function(items, page, total, frames, delay, se
   // Apply default arguments as needed.
   delay = (typeof delay === 'number') ? delay : 100;
   total = total || (items && items.length) || 0;
-  let notificationCode = (typeof items.notificationCode !== 'undefined') ? items.notificationCode : -1;
+  const notificationCode = (typeof items.notificationCode !== 'undefined') ? items.notificationCode : -1;
 
   // If paging is requested, slice off the request subset of items.
   items = _getItemsPage(page, items);
 
   // Send the requested items in batches of `rate` at a time, pausing between batches for `interval` millisec.
-  let me = this;
-  let [ frame ] = frames;
-  let { body } = frame;
-  let { stream } = body;
-  let rateValue = (stream && (stream.batch || stream.limit)) || DEFAULT_STREAM_BATCH;
-  let onCompleted = !sendCompletedMsg ? null : function() {
+  const me = this;
+  const [ frame ] = frames;
+  const { body } = frame;
+  const { stream } = body;
+  const rateValue = (stream && (stream.batch || stream.limit)) || DEFAULT_STREAM_BATCH;
+  const onCompleted = !sendCompletedMsg ? null : function() {
     me.sendFrame('MESSAGE', {
       subscription: (frame.headers || {}).id || '',
       'content-type': 'application/json'
@@ -202,13 +202,13 @@ MockServer.prototype.streamList = function(items, page, total, frames, delay, se
  * @returns {object} This instance, for chaining.
  * @private
  */
-let _super = MockServer.prototype.init;
+const _super = MockServer.prototype.init;
 MockServer.prototype.init = function() {
   if (_super) {
     _super.apply(this, arguments);
   }
 
-  let me = this;
+  const me = this;
   this.on('message', (message) => {
     me._handle(message);
   });
@@ -221,9 +221,9 @@ MockServer.prototype.init = function() {
  * @private
  */
 MockServer.prototype._handle = function(message) {
-  let me = this;
-  let { frames } = Stomp.Frame.unmarshall(message);
-  let body = frames && frames[0] && frames[0].body;
+  const me = this;
+  const { frames } = Stomp.Frame.unmarshall(message);
+  const body = frames && frames[0] && frames[0].body;
 
   if (body && (typeof body === 'string')) {
     frames[0].body = JSON.parse(body);

@@ -32,7 +32,7 @@ export default Component.extend({
     if (isEmpty(this.get('model'))) {
       return true;
     }
-    let hasUpdate = this.get('model')[this.get('updateKey')] || false;
+    const hasUpdate = this.get('model')[this.get('updateKey')] || false;
     return (this.get('isIconOnly')) ? !hasUpdate : this.get('totalUpdated') === 0;
   })
 });

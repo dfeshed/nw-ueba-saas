@@ -48,7 +48,7 @@ export default Component.extend({
   anchorWidth: 0,
 
   verticalModifier: computed('anchorHeight', function() {
-    let halfAnchorHeight = `${this.get('anchorHeight') / 2}px`;
+    const halfAnchorHeight = `${this.get('anchorHeight') / 2}px`;
     let styleString;
 
     if (!this.get('isPopover')) {
@@ -67,8 +67,8 @@ export default Component.extend({
   }),
 
   horizontalModifier: computed('anchorWidth', 'anchorHeight', function() {
-    let anchorWidth = `${this.get('anchorWidth')}px`;
-    let anchorHeight = `${this.get('anchorHeight')}px`;
+    const anchorWidth = `${this.get('anchorWidth')}px`;
+    const anchorHeight = `${this.get('anchorHeight')}px`;
     let styleString;
 
     if (this.get('isPopover')) {

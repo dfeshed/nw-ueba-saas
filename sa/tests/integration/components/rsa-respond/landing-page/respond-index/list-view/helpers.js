@@ -16,9 +16,9 @@ const {
  * @public
  */
 export function waitFor(test, msec = 10, maxWait = 1000) {
-  let promise = new Promise((resolve) => {
-    let maxCount = Math.ceil(maxWait / msec);
-    let count = 0;
+  const promise = new Promise((resolve) => {
+    const maxCount = Math.ceil(maxWait / msec);
+    const count = 0;
     _testCondition(resolve, test, msec, count, maxCount);
   });
 
@@ -26,7 +26,7 @@ export function waitFor(test, msec = 10, maxWait = 1000) {
 }
 
 function _testCondition(resolve, test, msec, count, maxCount) {
-  let testResult = test();
+  const testResult = test();
   if (!testResult && count < maxCount) {
     run.later(function() {
       count++;

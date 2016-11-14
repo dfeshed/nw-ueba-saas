@@ -106,8 +106,8 @@ export default Mixin.create({
   _resolvedSocketRequestParams: computed('socketRequestParams', 'socketConfig', function() {
 
     // Merge `socketRequestParams` with defaults from the resolved socket config.
-    let cfg = this.get('socketConfig');
-    let params = merge(
+    const cfg = this.get('socketConfig');
+    const params = merge(
       merge({}, cfg.defaultQueryParams || {}),
       this.get('socketRequestParams') || {}
     );
@@ -160,7 +160,7 @@ export default Mixin.create({
    * @public
    */
   error() {
-    let ret = this._super(...arguments);
+    const ret = this._super(...arguments);
     this._stopFromSocket();
     return ret;
   },
@@ -170,7 +170,7 @@ export default Mixin.create({
    * @public
    */
   completed() {
-    let ret = this._super(...arguments);
+    const ret = this._super(...arguments);
     this._stopFromSocket();
     return ret;
   },
@@ -191,7 +191,7 @@ export default Mixin.create({
     }
 
     // Resolve request params: Ensure given params always include an id & stream.limit; set them if necessary.
-    let params = this.get('_resolvedSocketRequestParams');
+    const params = this.get('_resolvedSocketRequestParams');
 
     // Initialize properties before connecting to socket server.
     // This allows subscribers to access state even while awaiting socket responses.
@@ -210,14 +210,14 @@ export default Mixin.create({
 
     // Connect to socket server.
     let me = this;
-    let callback = run.bind(this, this._onmessage);
+    const callback = run.bind(this, this._onmessage);
 
     this.get('fetchSocketClient')()
       .then(function(websocketClient) {
         me._websocketClient = websocketClient;
 
         // Subscribe to destination.
-        let sub = me._socketSubscription = websocketClient.subscribe(subscriptionDestination, callback, null);
+        const sub = me._socketSubscription = websocketClient.subscribe(subscriptionDestination, callback, null);
 
         // Send query message for the stream.
         sub.send({}, params, cfg.requestDestination);
@@ -236,8 +236,8 @@ export default Mixin.create({
   _stopFromSocket() {
     if (this._websocketClient) {
       if (this.get('isStreaming')) {
-        let dest = this.get('socketConfig.cancelDestination');
-        let id = this.get('_resolvedSocketRequestParams.id');
+        const dest = this.get('socketConfig.cancelDestination');
+        const id = this.get('_resolvedSocketRequestParams.id');
 
         if (dest && id) {
           this._websocketClient.send(dest, {}, { id, cancel: true });
@@ -261,8 +261,8 @@ export default Mixin.create({
    * @private
    */
   _onmessage(message) {
-    let response = message && message.body;
-    let request = response && response.request;
+    const response = message && message.body;
+    const request = response && response.request;
 
     // If we require response ids, validate that the response & request ids match.
     if (this.get('requireRequestId')) {
@@ -285,20 +285,20 @@ export default Mixin.create({
     } else {
 
       // The response has no error code; update stream properties & notify observers.
-      let { data, meta } = response;
+      const { data, meta } = response;
 
       // The `count` is just a running counter computed from measuring `response.data.length`.
-      let added = (data && data.length) || 0;
-      let count = added + this.get('count');
+      const added = (data && data.length) || 0;
+      const count = added + this.get('count');
 
       // The `total` property is read from the optional `response.meta`, if given.
-      let total = meta && meta.total;
+      const total = meta && meta.total;
 
         // The `goal` property is derived from `total`, `page.index` & `page.size`, if given.
       let goal = total;
 
       if (total && request) {
-        let { page } = request;
+        const { page } = request;
         if (page && page.size) {  // Watch out for page.size === 0, which means fetch all records.
           goal = Math.min(page.size, total - page.index);
         }
@@ -307,7 +307,7 @@ export default Mixin.create({
       // The `progress` property is derived from `count` and `goal`, if `goal` is known. If `goal` is not known,
       // `progress` should be left undefined; we don't want to set it to 100 because then the stream will think it
       // is complete, and will stop listening for more messages.
-      let progress = goal ? parseInt(100 * count / goal, 10) : undefined;
+      const progress = goal ? parseInt(100 * count / goal, 10) : undefined;
 
       // Store these properties on the stream instance, as well as any properties in the `response.meta`.
       this.setProperties(

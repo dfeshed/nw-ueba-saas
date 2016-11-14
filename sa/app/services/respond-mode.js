@@ -15,8 +15,8 @@ export default Service.extend({
   defaultSelection: 'card',
 
   init() {
-    let localStorageRespondMode = localStorage[this.get('localStorageKey')];
-    let defaultSelection = this.get('defaultSelection');
+    const localStorageRespondMode = localStorage[this.get('localStorageKey')];
+    const defaultSelection = this.get('defaultSelection');
     let currentSelection = null;
 
     if (localStorageRespondMode) {
@@ -34,7 +34,7 @@ export default Service.extend({
       return localStorage[this.get('localStorageKey')];
     },
     set(key, value) {
-      let _this = this;
+      const _this = this;
       run.once(function() {
         localStorage[_this.get('localStorageKey')] = value;
       });

@@ -10,7 +10,7 @@ moduleForComponent('rsa-journal-entry', 'Integration | Component | rsa respond/i
 
 test('it renders default elements', function(assert) {
 
-  let journalEntry = EmberObject.create({
+  const journalEntry = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -50,7 +50,7 @@ test('it renders default elements', function(assert) {
 
 test('it renders editable elements with addMode', function(assert) {
 
-  let journalEntry = EmberObject.create({
+  const journalEntry = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -78,7 +78,7 @@ test('it renders editable elements with addMode', function(assert) {
 
 test('Elements are not visible by default with addMode', function(assert) {
 
-  let journalEntry = EmberObject.create({
+  const journalEntry = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -106,7 +106,7 @@ test('Elements are not visible by default with addMode', function(assert) {
 
 test('It switches to edit mode after clicking the edit button', function(assert) {
 
-  let journalEntry = EmberObject.create({
+  const journalEntry = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],
@@ -134,7 +134,7 @@ test('It switches to edit mode after clicking the edit button', function(assert)
 
 test('Test delete confirm dialog shows up when clicking the delete button', function(assert) {
 
-  let journalEntry = EmberObject.create({
+  const journalEntry = EmberObject.create({
     'id': '10',
     'note': 'Checked on the accounts deactivated. Called the concerned dept to validate. Attached a list of accounts for future references',
     'filenames': ['hr-passwords.pdf', 'log.txt'],

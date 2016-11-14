@@ -82,7 +82,7 @@ export default {
    * @public
    */
   normalizeCategoryTags(categoryTags = []) {
-    let normalizedCategories = [];
+    const normalizedCategories = [];
 
     categoryTags.forEach((category) => {
       let objParent = normalizedCategories.findBy('name', category.parent);

@@ -12,13 +12,13 @@ moduleForComponent('rsa-respond-index', 'Integration | Component | rsa respond/l
 
     this.set('i18n', this.container.lookup('service:i18n'));
 
-    let newCube = IncidentsCube.create({
+    const newCube = IncidentsCube.create({
       array: []
     });
-    let inProgressCube = IncidentsCube.create({
+    const inProgressCube = IncidentsCube.create({
       array: []
     });
-    let allCube = IncidentsCube.create({
+    const allCube = IncidentsCube.create({
       array: []
     });
 
@@ -118,14 +118,14 @@ test('Changing filter affects total incident count indicator', function(assert) 
   this.$('.rsa-respond-index-header__list-btn').trigger('click');
 
 
-  let countLabelValue = this.$('.rsa-respond-index-header__label').text();
+  const countLabelValue = this.$('.rsa-respond-index-header__label').text();
   Logger.log(`countLabelValue: ${ countLabelValue }`);
   assert.ok(countLabelValue.indexOf('4') != -1, 'Check initial incident count');
 
   // Filter incidents by Medium priority where Medium priority equates to prioritySort: 1 inside incident object
   this.$('.rsa-respond-list__filter-panel__priority .priority-1 input:first').prop('checked', true).trigger('change');
 
-  let filteredCountLabelValue = this.$('.rsa-respond-index-header__label').text();
+  const filteredCountLabelValue = this.$('.rsa-respond-index-header__label').text();
   assert.ok(filteredCountLabelValue.indexOf('Showing 1 of 4') != -1, 'Check filtered incident count');
 
 });

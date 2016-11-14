@@ -87,7 +87,7 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, CspStyleMi
    * @public
    */
   click(e) {
-    let fn = this.get('clickAction');
+    const fn = this.get('clickAction');
     if ($.isFunction(fn)) {
       fn(this.get('item'), this.get('index'), e);
     }

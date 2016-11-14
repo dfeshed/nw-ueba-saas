@@ -48,11 +48,11 @@ export default Mixin.create({
 
   // Attach a scroll listener, and call it manually the 1st time.
   _initScrollBindings() {
-    let { element } = this;
+    const { element } = this;
     if (!element) {
       return;
     }
-    let callback = (() => {
+    const callback = (() => {
       run.throttle(this, function() {
         this.setProperties({
           scrollLeft: element.scrollLeft,

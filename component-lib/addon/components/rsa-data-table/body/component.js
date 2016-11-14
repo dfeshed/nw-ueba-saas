@@ -76,7 +76,7 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    */
   _firstIndex: computed('table.lazy', '_rowHeight', 'scrollTop', function() {
     if (this.get('table.lazy')) {
-      let rowHeight = this.get('_rowHeight');
+      const rowHeight = this.get('_rowHeight');
       return rowHeight ? parseInt(this.get('scrollTop') / rowHeight, 10) : 0;
     } else {
       return 0;
@@ -102,7 +102,7 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    */
   _lastIndex: computed('table.lazy', '_firstIndex', '_rowHeight', 'clientHeight', function() {
     if (this.get('table.lazy')) {
-      let rowHeight = this.get('_rowHeight');
+      const rowHeight = this.get('_rowHeight');
       return rowHeight ? this.get('_firstIndex') + Math.ceil(this.get('clientHeight') / rowHeight) : 0;
     } else {
       return this.get('items.length') || 0;
@@ -125,15 +125,15 @@ export default Component.extend(HasTableParent, DomIsReady, SizeBindings, Scroll
    * @private
    */
   _visibleItems: computed('items.[]', '_firstBufferedIndex', '_lastBufferedIndex', function() {
-    let items = this.get('items');
-    let len = items && items.length;
+    const items = this.get('items');
+    const len = items && items.length;
 
     if (!len) {
       return [];
     }
 
-    let first = this.get('_firstBufferedIndex');
-    let last = this.get('_lastBufferedIndex');
+    const first = this.get('_firstBufferedIndex');
+    const last = this.get('_lastBufferedIndex');
 
     return items.slice(first, last + 1);
   }),

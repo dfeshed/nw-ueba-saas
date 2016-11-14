@@ -5,7 +5,7 @@
  */
 
 export function initialize(app) {
-  let config = app.resolveRegistration('config:environment');
+  const config = app.resolveRegistration('config:environment');
   let delay = 0;
 
   if (config) {
@@ -14,7 +14,7 @@ export function initialize(app) {
 
   if (delay) {
     // Read the delay amount from the config, if any (default = 0).
-    let ms = Math.max(0, parseInt(delay, 10) || 0);
+    const ms = Math.max(0, parseInt(delay, 10) || 0);
     if (ms) {
 
       // Don't let the app become ready yet.

@@ -69,7 +69,7 @@ export default Mixin.create({
    * @private
    */
   _startFromArray() {
-    let source = this.get('sourceArray');
+    const source = this.get('sourceArray');
 
     // If we are have already started, ignore & exit.
     if (this.get('isStreaming') || !source) {
@@ -110,7 +110,7 @@ export default Mixin.create({
    */
   arrayDidChange(observedObj, start, removeCount, addCount) {
     if (addCount) {
-      let me = this;
+      const me = this;
       observedObj.slice(start, start + addCount).forEach((item) => {
         me.next(item, me);
       });

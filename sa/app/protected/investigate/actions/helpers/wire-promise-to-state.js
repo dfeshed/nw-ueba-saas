@@ -50,7 +50,7 @@ export default function(fetch, state, forceReload = false, cancel = null) {
 
   // Kick off the function that generates the promise and cache the promise, if it's then-able.
   // Does the fetch return a then-able object?
-  let promise = fetch();
+  const promise = fetch();
   if (!$.isFunction(promise && promise.then)) {
     state.setProperties({
       status: 'rejected',
