@@ -2,6 +2,9 @@ import Ember from 'ember';
 import layout from '../templates/components/rsa-form-select';
 
 const {
+  Logger: {
+    warn
+  },
   Component,
   inject: {
     service
@@ -86,6 +89,8 @@ export default Component.extend({
   }),
 
   didInsertElement() {
+    warn('DEPRECATION: rsa-form-select has been deprecated. Use power-select instead.');
+
     this.decorateSelectOptions();
     this.updateSelectOptions();
 

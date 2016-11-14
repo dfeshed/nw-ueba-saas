@@ -69,4 +69,5 @@ module.exports = {
     this.options.babel = this.options.babel || {};
     this.options.babel.stage = 0;
   }
+
 };

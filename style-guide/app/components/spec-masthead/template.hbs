@@ -5,7 +5,10 @@
 {{/if}}
 
 {{#if model.description}}
-  <p class="description">{{description}}</p>
+  <div class="description">
+    <p>{{description}}</p>
+    {{yield}}
+  </div>
 {{/if}}
 
 <h3>Reference Links:</h3>

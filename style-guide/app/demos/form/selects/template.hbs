@@ -1,130 +1,226 @@
 <hbox fit>
-  {{spec-masthead model=model}}
+  {{#spec-masthead model=model}}
+    <p>
+      For additional documentation on ember-power-select, visit their <a href="https://github.com/cibernox/ember-power-select">Github page</a>.
+    </p>
+  {{/spec-masthead}}
 </hbox>
 
 <hbox>
   <div class="scroll-box">
-    {{#spec-category title="States"}}
+    {{#spec-category title="Styles"}}
       {{#spec-member title="Default"}}
-        {{#rsa-form-select label='Select Label'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select
+            placeholder="Make a selection"
+            options=options
+            selected=selected
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         {{!-- BEGIN-SNIPPET selects1
-        {{#rsa-form-select label='Select Label'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select
+            placeholder="Make a selection"
+            options=options
+            selected=selected
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         END-SNIPPET --}}
         {{code-snippet name="selects1.hbs"}}
       {{/spec-member}}
 
-      {{#spec-member title="Inline"}}
-        {{#rsa-form-select isInline=true label='Select Label'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+      {{#spec-member title="Inline" subtitle="Use plain CSS to specify width as needed."}}
+        <label class="rsa-form-label power-select">
+          <span class="label-text">
+            Select Label
+          </span>
+
+          {{#power-select
+            placeholder="Make a selection"
+            triggerClass="inline"
+            options=options
+            selected=selected
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         {{!-- BEGIN-SNIPPET selects2
-        {{#rsa-form-select isInline=true label='Select Label'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+        <label class="rsa-form-label power-select">
+          <span class="label-text">
+            Select Label
+          </span>
+
+          {{#power-select
+            placeholder="Make a selection"
+            triggerClass="inline"
+            options=options
+            selected=selected
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         END-SNIPPET --}}
         {{code-snippet name="selects2.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Small"}}
-        {{#rsa-form-select label='Select Label' isSmall=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+        <label class="rsa-form-label is-small power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select
+            placeholder="Make a selection"
+            options=options
+            selected=selected
+            triggerClass="is-small"
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         {{!-- BEGIN-SNIPPET selects3
-        {{#rsa-form-select label='Select Label' isSmall=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+        <label class="rsa-form-label is-small power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select
+            placeholder="Make a selection"
+            options=options
+            selected=selected
+            triggerClass="is-small"
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         END-SNIPPET --}}
         {{code-snippet name="selects3.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Danger"}}
-        {{#rsa-form-select label='Select Label' isError=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+        <label class="rsa-form-label is-error power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select
+            placeholder="Make a selection"
+            options=options
+            selected=selected
+            triggerClass="is-error"
+            dropdownClass="is-error"
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         {{!-- BEGIN-SNIPPET selects4
-        {{#rsa-form-select label='Select Label' isError=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-          <option value='3'>Val 3</option>
-        {{/rsa-form-select}}
+        <label class="rsa-form-label is-error power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select
+            placeholder="Make a selection"
+            options=options
+            selected=selected
+            triggerClass="is-error"
+            dropdownClass="is-error"
+            searchPlaceholder="Type to filter options"
+            onchange=(action 'setSelect') as |option|}}
+            {{option}}
+          {{/power-select}}
+        </label>
         END-SNIPPET --}}
         {{code-snippet name="selects4.hbs"}}
       {{/spec-member}}
+    {{/spec-category}}
 
-      {{#spec-member title="Read Only"}}
-        {{#rsa-form-select label='Select Label' isDisabled=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
+    {{#spec-category title="Examples"}}
+      {{#spec-member title="Disabled"}}
+        <p>
+          There is no disabled or readonly states for selects.
+          Instead of treating this as a state within the component, we chose to not present those values as selects at all.
+          Use an if statement to display the raw value in the UI when the select would be disabled, and render the select component when it would be enabled.
+        </p>
+
+        {{#if isDisabled}}
+          {{options.firstObject}}
+        {{else}}
+          <label class="rsa-form-label power-select">
+            <div class="label-text">
+              Select Label
+            </div>
+
+            {{#power-select
+              placeholder="Make a selection"
+              options=options
+              selected=options.firstObject
+              searchPlaceholder="Type to filter options"
+              onchange=(action 'setSelect') as |option|}}
+              {{option}}
+            {{/power-select}}
+          </label>
+        {{/if}}
+
         {{!-- BEGIN-SNIPPET selects5
-        {{#rsa-form-select label='Select Label' isDisabled=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
+        {{#if isDisabled}}
+          {{options.firstObject}}
+        {{else}}
+          <label class="rsa-form-label power-select">
+            <div class="label-text">
+              Select Label
+            </div>
+
+            {{#power-select
+              placeholder="Make a selection"
+              options=options
+              selected=options.firstObject
+              searchPlaceholder="Type to filter options"
+              onchange=(action 'setSelect') as |option|}}
+              {{option}}
+            {{/power-select}}
+          </label>
+        {{/if}}
         END-SNIPPET --}}
         {{code-snippet name="selects5.hbs"}}
       {{/spec-member}}
 
-      {{#spec-member title="Disabled"}}
-        {{#rsa-form-select label='Select Label' isReadOnly=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
+      {{#spec-member title="Width and Layout"}}
+        <p>
+          Selects can be laid out one of two ways.
+          Either, use a grid to define columns, and allow the selects to occupy the default width of the container.
+          Or, you can assign widths to the trigger and dropdown elements as seen below.
+        </p>
+
         {{!-- BEGIN-SNIPPET selects6
-        {{#rsa-form-select label='Select Label' isReadOnly=true}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
+        .ember-power-select-trigger {
+          width: 20rem;
+        }
+
+        .ember-power-select-dropdown {
+          width: 20rem;
+        }
         END-SNIPPET --}}
         {{code-snippet name="selects6.hbs"}}
-      {{/spec-member}}
-    {{/spec-category}}
-
-    {{#spec-category title="Customizations"}}
-      {{#spec-member title="Update the Prompt"}}
-        {{#rsa-form-select label='Select Label' prompt='Look this is updated!'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
-        {{!-- BEGIN-SNIPPET selects7
-        {{#rsa-form-select label='Select Label' prompt='Look this is updated!'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
-        END-SNIPPET --}}
-        {{code-snippet name="selects7.hbs"}}
-      {{/spec-member}}
-
-      {{#spec-member title="Do not update the prompt" subtitle="This allows the implementation to control the prompt"}}
-        {{#rsa-form-select label='Select Label' alwaysUsePrompt=true prompt='This will not update when you change the value!'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
-        {{!-- BEGIN-SNIPPET selects8
-        {{#rsa-form-select label='Select Label' alwaysUsePrompt=true prompt='This will not update when you change the value!'}}
-          <option value='1'>Val 1</option>
-          <option value='2'>Val 2</option>
-        {{/rsa-form-select}}
-        END-SNIPPET --}}
-        {{code-snippet name="selects8.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
   </div>

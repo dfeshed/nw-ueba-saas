@@ -1,3 +1,165 @@
+$ember-power-select-text-color: rsa-color(gray, lightest);
+$ember-power-select-trigger-border-bottom: 1px solid rsa-color(gray, light);
+$ember-power-select-default-border-radius: 0;
+$ember-power-select-highlighted-background: rsa-color(blue, darker);
+$ember-power-select-selected-background: rsa-color(blue, dark);
+$ember-power-select-option-padding: rsa-whitespace();
+$ember-power-select-line-height: 2rem;
+
+@import "../../../ember-power-select";
+
+.power-select {
+  .label-text {
+    vertical-align: bottom;
+    box-sizing: border-box;
+    color: $formSelectLabelColor;
+    margin-bottom: rsa-whitespace(less);
+  }
+
+  &.is-error {
+    .label-text {
+      color: rsa-color(red);
+    }
+  }
+
+  &.is-small {
+    .label-text {
+      @include rsa-font(body, small);
+    }
+  }
+
+  span.label-text {
+    position: relative;
+    top: calc(#{rsa-whitespace(less)} * -1);
+    vertical-align: text-top;
+    margin-right: rsa-whitespace();
+  }
+}
+
+
+.ember-power-select-dropdown {
+  border: 1px solid rsa-color(blue)!important;
+  background: rsa-color(gray, darkest);
+
+  &.is-error {
+    border: 1px solid rsa-color(red)!important;
+
+    .ember-power-select-option {
+      &[aria-selected="true"] {
+        background-color: rsa-color(red);
+      }
+      &[aria-current="true"] {
+        background-color: rsa-color(red, darker);
+      }
+    }
+  }
+
+  .ember-power-select-search {
+    padding: 0 rsa-whitespace(less) rsa-whitespace(least);
+
+    &-input {
+      padding: rsa-whitespace(least);
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+  }
+
+}
+
+.ember-power-select-trigger {
+  outline: none;
+  background: transparent;
+  border-left: none!important;
+  border-right: none!important;
+  border-top: none!important;
+  border-bottom: 1px solid rsa-color(gray, light);
+
+  &.is-error {
+    border-bottom: 1px solid rsa-color(red);
+    background-color: $formSelectErrorBackgroundColor;
+
+    .ember-power-select-status-icon {
+      color: rsa-color(red);
+    }
+
+    &:hover {
+      border-bottom: 1px solid rsa-color(red);
+
+      .ember-power-select-status-icon {
+        color: rsa-color(red);
+      }
+    }
+  }
+
+  &.inline {
+    display: inline-block;
+  }
+
+  &.is-small {
+    @include rsa-font(body, small);
+  }
+
+  .ember-power-select-selected-item, .ember-power-select-placeholder {
+    color: $ember-power-select-text-color;
+    margin-left: rsa-whitespace(least);
+    margin-right: rsa-whitespace();
+  }
+
+  .ember-power-select-status-icon {
+    border-color: transparent;
+    width: .6rem;
+    right: 0;
+    top: 0;
+    bottom: auto;
+    display: block;
+    line-height: 1.75em;
+    color: rsa-color(gray, light);
+
+    &:after {
+      font-size: .6rem;
+      font-family: 'Streamline-2-Line';
+      content: "\f436";
+      display: block;
+      line-height: 1.75em;
+    }
+  }
+
+  &[aria-expanded="true"],
+  &--active {
+    border-bottom: 1px solid transparent;
+
+    &:hover {
+      border-bottom: 1px solid transparent;
+    }
+
+    .ember-power-select-status-icon {
+      color: rsa-color(gray, lightest);
+      transform: none;
+    }
+
+    &.is-error {
+      color: rsa-color(red);
+      border-bottom: 1px solid rsa-color(red);
+
+      .ember-power-select-status-icon {
+        color: rsa-color(red);
+      }
+
+    }
+  }
+
+  &:hover {
+    cursor: pointer;
+    border-bottom: 1px solid rsa-color(gray, lightest);
+
+    .ember-power-select-status-icon {
+      color: rsa-color(gray, lightest);
+    }
+  }
+}
+
+
 .rsa-form-select {
   position: relative;
   overflow: visible;
