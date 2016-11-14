@@ -1,12 +1,10 @@
 package fortscale.collection.jobs.model;
 
-import org.springframework.beans.factory.annotation.Configurable;
-
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.ml.model.message.ModelBuildingCommandMessage;
 import fortscale.accumulator.manager.AccumulatorManagerParams;
 import fortscale.accumulator.manager.AccumulatorManger;
+import fortscale.ml.model.message.ModelBuildingCommandMessage;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Configurable;
