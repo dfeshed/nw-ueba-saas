@@ -2,8 +2,6 @@ package fortscale.collection.jobs.model;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.accumulator.manager.AccumulatorManagerParams;
-import fortscale.accumulator.manager.AccumulatorManger;
 import fortscale.ml.model.message.ModelBuildingCommandMessage;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.logging.Logger;
