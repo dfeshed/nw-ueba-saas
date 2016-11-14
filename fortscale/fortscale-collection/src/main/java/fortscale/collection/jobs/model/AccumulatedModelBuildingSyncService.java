@@ -5,7 +5,6 @@ import fortscale.accumulator.manager.AccumulatorManger;
 
 import java.time.Instant;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 /**

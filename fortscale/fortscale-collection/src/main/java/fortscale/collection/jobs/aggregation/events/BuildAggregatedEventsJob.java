@@ -16,12 +16,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Map;
 import java.util.*;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC;
