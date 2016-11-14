@@ -43,3 +43,15 @@ test('it renders spinner', function(assert) {
     done();
   }, 400);
 });
+
+test('log events redirect to text view', function(assert) {
+  const done = assert.async();
+  this.get('redux').dispatch(DataActions.initializeRecon({ eventId: 1, endpointId: 2, meta: [['medium', 32]] }));
+  this.render(hbs`{{recon-event-content}}`);
+  run.later(() => {
+    assert.equal(this.$('.recon-event-detail-text').length, 1, 'On the Text View');
+    assert.equal(this.$('.recon-event-detail-packets').length, 0, 'Not on the Packet View');
+    assert.equal(this.$('.recon-event-detail-files').length, 0, 'Not on the File View');
+    done();
+  }, 400);
+});

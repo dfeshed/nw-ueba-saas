@@ -78,3 +78,27 @@ test('clicking meta toggle executes actions', function(assert) {
   assert.ok(actionSpy.calledOnce);
   actionSpy.reset();
 });
+
+test('all views enabled for network sessions', function(assert) {
+  assert.expect(3);
+  const total = 555;
+  const index = 25;
+  this.get('redux').dispatch(DataActions.initializeRecon({ total, index, meta: [['medium', 1]] }));
+  this.render(hbs`{{recon-event-titlebar }}`);
+  assert.equal(this.$('option[value="1"]').prop('disabled'), false, 'Packet View is enabled');
+  assert.equal(this.$('option[value="2"]').prop('disabled'), false, 'File View is enabled');
+  assert.equal(this.$('option[value="3"]').prop('disabled'), false, 'Text View is enabled');
+});
+
+test('everything but text is disabled for logs', function(assert) {
+  assert.expect(3);
+  const total = 555;
+  const index = 25;
+  this.get('redux').dispatch(DataActions.initializeRecon({ total, index, meta: [['medium', 32]] }));
+  this.render(hbs`{{recon-event-titlebar }}`);
+  assert.equal(this.$('option[value="1"]').prop('disabled'), true, 'Packet View is disabled');
+  assert.equal(this.$('option[value="2"]').prop('disabled'), true, 'File View is disabled');
+  assert.equal(this.$('option[value="3"]').prop('disabled'), false, 'Text View is enabled');
+});
+
+
