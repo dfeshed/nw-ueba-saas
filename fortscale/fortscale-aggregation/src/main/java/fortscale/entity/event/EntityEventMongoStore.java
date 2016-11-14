@@ -9,7 +9,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.mongodb.FIndex;
-import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
