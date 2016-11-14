@@ -173,8 +173,8 @@ $font-fade-color: rsa-color(gray, light);
           fill: rsa-color(red, base, $rsa-somewhat-opaque);
         }
         &.series-1 {
-          stroke: rsa-color(green);
-          fill: rsa-color(green, base, $rsa-somewhat-opaque);
+          stroke: rsa-color(orange);
+          fill: rsa-color(orange, base, $rsa-somewhat-opaque);
         }
         &.series-2 {
           stroke: rsa-color(amber, dark);
@@ -214,9 +214,17 @@ $font-fade-color: rsa-color(gray, light);
           @include rsa-font(bold);
           color: rsa-color(orange);
         }
-        &__unsafe {
+        &__high-risk {
           @include rsa-font(bold);
           color: rsa-color(red, darker);
+        }
+        &__unsafe{
+          @include rsa-font(bold);
+          color: rsa-color(orange);
+        }
+        &__suspicious {
+          @include rsa-font(bold);
+          color: rsa-color(amber, light);
         }
         &__safe {
           @include rsa-font(bold);
@@ -224,7 +232,7 @@ $font-fade-color: rsa-color(gray, light);
         }
         &__unknown {
           @include rsa-font(bold);
-          color: rsa-color(amber, dark);
+          color: rsa-color(gray, light);
         }
       }
     }

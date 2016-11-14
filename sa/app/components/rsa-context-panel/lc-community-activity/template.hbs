@@ -78,7 +78,6 @@
 
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
           {{t 'context.lc.communityActivityDesc1' seen=liveConnectData.customerPercentage value=model.lookupKey}}<br>
-          {{t 'context.lc.communityActivityDesc2' seen=liveConnectData.customerPercentage submitted=liveConnectData.customerInvestigatedPercentage}}<br>
         </div>
       </vbox>
       <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
@@ -87,6 +86,7 @@
           {{#rsa-chart data=trendingSubmissionActivity xProp='time' yProp='percentage' yDomain=fixedYDomain as |params|}}
             {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
             {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+            {{rsa-area-series data=params.data dataIndex=2 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
             {{rsa-x-axis height=params.graphHeight scale=params.xScale tickCount=4}}
             {{rsa-y-axis width=params.graphWidth scale=params.yScale tickCount=5}}
             {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth yTickCount=5}}
@@ -94,10 +94,19 @@
         </div>
         <div class="rsa-context-panel__liveconnect__comm-activity__desc">
           {{t 'context.lc.submittedActivityDesc1' submitted=liveConnectData.customerInvestigatedPercentage}}<br>
-          {{t 'context.lc.submittedActivityDesc2' unsafe=liveConnectData.customerRiskyFeedbackPercentage}}<br>
-          {{t 'context.lc.submittedActivityDesc3' safe=liveConnectData.customerNotRiskyFeedbackPercentage}}<br>
-          {{t 'context.lc.submittedActivityDesc4' unknown="##25##"}}<br>
         </div>
+        <hbox>
+          <div class="rsa-context-panel__liveconnect__comm-activity__desc">
+            {{t 'context.lc.submittedActivityDesc2' highrisk=liveConnectData.customerHighRiskFeedbackPercentage}}<br>
+            {{t 'context.lc.submittedActivityDesc3' unsafe=liveConnectData.customerRiskyFeedbackPercentage}}<br>
+            {{t 'context.lc.submittedActivityDesc4' suspicious=liveConnectData.customerSuspiciousFeedbackPercentage}}<br>
+          </div>
+          <div class="rsa-context-panel__liveconnect__comm-activity__desc">
+            {{rsa-content-definition label=(t 'context.lc.submittedActivityDesc5')}}<br>
+            {{t 'context.lc.submittedActivityDesc6' safe=liveConnectData.customerNotRiskyFeedbackPercentage}}<br>
+            {{t 'context.lc.submittedActivityDesc7' unknown=liveConnectData.customerUnknownFeedbackPercentage}}<br>
+          </div>
+        </hbox>
       </vbox>
     </hbox>
   </div>

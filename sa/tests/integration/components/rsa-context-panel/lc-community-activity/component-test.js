@@ -1,103 +1,90 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 const liveConnectData = {
-  'customerRiskyFeedbackPercentageTrend': [{
-    percentage: 3.62,
-    time: 1470182400000
+  'id': '1a708f247cc6a7364b873c029bbdf459',
+  'firstSeen': 1476077742000,
+  'risk': 'UNSAFE',
+  'feedback': {
+    'status': 'VIEWED',
+    'dateMarked': 1477388194946
   },
+  'riskReasonTypeList': [
+    'BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER',
+    'ASSOCIATED_WITH_RISKY_DOMAIN'
+  ],
+  'customerPercentage': 34.24,
+  'customerPercentageTrend': [
     {
-      percentage: 28.22,
-      time: 1471910400000
+      'time': 1401926400000,
+      'percentage': 9.45
     },
     {
-      percentage: 39.22,
-      time: 1472910400000
+      'time': 1445731200000,
+      'percentage': 34.24
+    }
+  ],
+  'customerRiskyFeedbackPercentage': 100.0,
+  'customerRiskyFeedbackPercentageTrend': [
+    {
+      'time': 1401926400000,
+      'percentage': 55.5
     },
     {
-      percentage: 58.22,
-      time: 1473910400000
+      'time': 1445731200000,
+      'percentage': 45.5
+    }
+  ],
+  'customerNotRiskyFeedbackPercentage': 0.0,
+  'customerNotRiskyFeedbackPercentageTrend': [
+    {
+      'time': 1401926400000,
+      'percentage': 9.45
     },
     {
-      percentage: 78.22,
-      time: 1474910400000
-    }],
-  'customerPercentageTrend': [{
-    percentage: 10.45,
-    time: 1468972800000
-  },
+      'time': 1445731200000,
+      'percentage': 34.24
+    }
+  ],
+  'customerInvestigatedPercentage': 9.45,
+  'customerInvestigatedPercentageTrend': [
     {
-      percentage: 25.67,
-      time: 1469404800000
+      'time': 1474934400000,
+      'percentage': 9.45
+    }
+  ],
+  'customerUnknownFeedbackPercentage': 0.0,
+  'customerUnknownFeedbackPercentageTrend': [
+    {
+      'time': 1401926400000,
+      'percentage': 9.45
     },
     {
-      percentage: 33.81,
-      time: 1469491200000
+      'time': 1445731200000,
+      'percentage': 34.24
+    }
+  ],
+  'customerSuspiciousFeedbackPercentage': 0.0,
+  'customerSuspiciousFeedbackPercentageTrend': [
+    {
+      'time': 1401926400000,
+      'percentage': 20.5
     },
     {
-      percentage: 53.28,
-      time: 1469664000000
+      'time': 1445731200000,
+      'percentage': 34.24
+    }
+  ],
+  'customerHighRiskFeedbackPercentage': 0.0,
+  'customerHighRiskFeedbackPercentageTrend': [
+    {
+      'time': 1401926400000,
+      'percentage': 75.5
     },
     {
-      percentage: 80.61,
-      time: 1470355200000
-    },
-    {
-      percentage: 96.81,
-      time: 1471910400000
-    }],
-  'feedback': {},
-  'customerInvestigatedPercentageTrend': [{
-    percentage: 30.06,
-    time: 1469491200000
-  },
-    {
-      percentage: 15.0,
-      time: 1469577600000
-    },
-    {
-      percentage: 43.65,
-      time: 1470787200000
-    },
-    {
-      percentage: 30.0,
-      time: 1471219200000
-    },
-    {
-      percentage: 48.69,
-      time: 1472169600000
-    }],
-  'customerPercentage': 10.0,
-  'customerInvestigatedPercentage': 20.0,
-  'risk': null,
-  'unsafeModulesDownloaded': 'NONE',
-  'riskReasonTypeList': [],
-  'customerRiskyFeedbackPercentage': 23.0,
-  'customerNotRiskyFeedbackPercentage': 4.0,
-  'unsafeModulesCommunicated': [],
-  'relatedDomains': [],
-  'customerNotRiskyFeedbackPercentageTrend': [{
-    percentage: 73.62,
-    time: 1470182400000
-  },
-    {
-      percentage: 63.22,
-      time: 1471910400000
-    },
-    {
-      percentage: 18.22,
-      time: 1472910400000
-    },
-    {
-      percentage: 28.22,
-      time: 1473910400000
-    },
-    {
-      percentage: 10.22,
-      time: 1474910400000
-    }],
-  'riskScore': 31,
-  'id': '12.31.23.45',
-  'firstSeen': 1452485774539
+      'time': 1445731200000,
+      'percentage': 64.5
+    }
+  ]
 };
 moduleForComponent('rsa-context-panel/lc-community-activity', 'Integration | Component | rsa context panel/lc community activity', {
   integration: true
@@ -109,7 +96,7 @@ test('it renders correctly with the correct number of expected elements', functi
 
   assert.equal(this.$('.rsa-context-panel__liveconnect__reviewstatus__col-1').length, 1, 'review status element exists.');
   assert.equal(this.$('.rsa-form-radio-group-label').length, 2, 'Radio group label elements present');
-  assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity__desc').length, 2, 'Community Activity description element exists');
+  assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity__desc').length, 4, 'Community Activity description element exists');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity').length, 1, 'Community Activity element exists');
   // assert.equal(this.$('.rsa-context-panel__liveconnect__risk-indicators').length, 1, 'Risk Indicators element exists');
   assert.equal(this.$('.rsa-content-section-header').length, 2, 'Correct number of section header elements found');
@@ -134,7 +121,7 @@ test('line charts are rendered correctly', function(assert) {
   this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData}}`);
 
   assert.equal(this.$('.rsa-chart').length, 2, 'Correct number of .rsa-chart  is present');
-  assert.equal(this.$('.rsa-area-series').length, 3, 'Correct number of .rsa-area-series is present');
+  assert.equal(this.$('.rsa-area-series').length, 4, 'Correct number of .rsa-area-series is present');
   assert.equal(this.$('.rsa-x-axis').length, 2, 'Correct number of .rsa-x-axis is present');
   assert.equal(this.$('.rsa-y-axis').length, 2, 'Correct number of .rsa-y-axis is present');
   assert.equal(this.$('.grids').length, 2, 'Correct number of .grids is present');
