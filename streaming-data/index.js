@@ -8,15 +8,24 @@ var projectName = 'streaming-data';
 module.exports = {
   name: projectName,
 
+  options: {
+    nodeAssets: {
+      'sockjs-client-web': {
+        srcDir: 'dist',
+        import: ['sockjs.js']
+      },
+      '@mind-trace/stompjs': {
+        srcDir: 'lib',
+        import: ['stomp.js']
+      }
+    }
+  },
+
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName),
 
   included: function(app) {
     this._super.included.apply(this, arguments);
-
-    // Websocket libraries: SockJS & STOMP
-    app.import("bower_components/sockjs-client/dist/sockjs.js");
-    app.import("bower_components/stomp-websocket/lib/stomp.js");
   },
 
   init: function() {

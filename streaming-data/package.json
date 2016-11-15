@@ -43,9 +43,12 @@
     "ember-addon"
   ],
   "dependencies": {
+    "@mind-trace/stompjs": "2.3.5",
     "ember-cli-babel": "^5.1.6",
     "ember-cli-htmlbars": "^1.0.3",
-    "ember-get-config": "0.1.9"
+    "ember-cli-node-assets": "0.1.4",
+    "ember-get-config": "0.1.9",
+    "sockjs-client-web": "1.1.1"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"
