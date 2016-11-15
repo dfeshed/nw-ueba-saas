@@ -13,10 +13,11 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "streaming.model.retriever.entity-event-value")
 public class EntityEventValueRetrieverMetrics extends StatsMetricsGroup {
-	public EntityEventValueRetrieverMetrics(StatsService statsService, String entityEventConfName) {
+	public EntityEventValueRetrieverMetrics(StatsService statsService, String entityEventConfName, boolean isAccumulation) {
 		super(statsService, EntityEventValueRetriever.class, new StatsMetricsGroupAttributes() {
 			{
 				addTag("confName", entityEventConfName);
+				addTag("isAccumulation", String.valueOf(isAccumulation));
 			}
 		});
 	}

@@ -24,7 +24,7 @@ public class ModelBuildingSyncService {
 	private String controlOutputTopic;
 
 	private String sessionId;
-	private Collection<String> modelConfNames;
+	protected Collection<String> modelConfNames;
 	private long secondsBetweenEndTimes;
 	private long timeoutInMillis;
 
@@ -99,7 +99,7 @@ public class ModelBuildingSyncService {
 		}
 	}
 
-	private void sendCommands(long endTimeInSeconds) throws JsonProcessingException {
+	protected void sendCommands(long endTimeInSeconds) throws JsonProcessingException {
 		logger.info("Sending model building commands: Session ID = {}, end time in seconds = {}.",
 				sessionId, endTimeInSeconds);
 
