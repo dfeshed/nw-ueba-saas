@@ -10,7 +10,7 @@
 
 ul.storyline{
   li {
-    display: flex;
+    @include rsa-flex-direction(row);
   }
 
   li div.timeline {
@@ -40,17 +40,16 @@ ul.storyline{
   }
   .main__icon {
     flex: 0 0 auto;
-    padding-top: rsa-whitespace(less);
     padding-right: rsa-whitespace();
   }
 
   li div.main {
     margin-top: rsa-whitespace(less);
     color: rsa-color(white);
-    display: flex;
-    flex-direction: row;
     flex: 1;
     background-color: rsa-color(black, null, $rsa-nearly-transparent);
+    @include rsa-flex-direction(row);
+    @include rsa-flex-align-items(center);
   }
 
   .main_row {

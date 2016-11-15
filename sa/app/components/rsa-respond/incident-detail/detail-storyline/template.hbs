@@ -22,11 +22,11 @@
         {{rsa-content-datetime displayDate=false timestamp=indicator.alert.timestamp}}
       </div>
       <div class='icon'>
-        {{#if (is-equal indicator.alert.clientSource 'C2')}}
+        {{#if (eq indicator.alert.clientSource 'C2')}}
           {{rsa-icon name="link-2" size="small"}}
-        {{else if (is-equal indicator.alert.clientSource 'ECAT')}}
+        {{else if (eq indicator.alert.clientSource 'ECAT')}}
           {{rsa-icon name="computer-imac-1" size="small"}}
-        {{else if (is-equal indicator.alert.clientSource 'UBA')}}
+        {{else if (eq indicator.alert.clientSource 'UBA')}}
           {{rsa-icon name="person-2" size="small"}}
         {{else}}
           {{rsa-icon name="flag-triangle-2" size="small"}}
@@ -40,17 +40,15 @@
           <span class='score'>{{t 'incident.fields.riskScore'}}: {{indicator.alert.risk_score}}</span>
         </div>
         <div class="main__icon">
-          {{#rsa-form-button isIconOnly=true}}
-            {{#if (is-equal indicator.alert.clientSource 'C2')}}
-              {{#link-to 'protected.respond.incident.details' 'C2'}}
-                {{rsa-icon name="arrow-right-12" size="smaller"}}
-              {{/link-to}}
-            {{else}}
-              {{#link-to 'protected.respond.incident.details' 'Indicator'}}
-                {{rsa-icon name="arrow-right-12" size="smaller"}}
-              {{/link-to}}
-            {{/if}}
-          {{/rsa-form-button}}
+          {{#if (eq indicator.alert.clientSource 'C2')}}
+            {{#link-to 'protected.respond.incident.details' 'C2'}}
+              {{rsa-icon name="arrow-right-12" size="smaller"}}
+            {{/link-to}}
+          {{else}}
+            {{#link-to 'protected.respond.incident.details' 'Indicator'}}
+              {{rsa-icon name="arrow-right-12" size="smaller"}}
+            {{/link-to}}
+          {{/if}}
         </div>
       </div>
     </li>
