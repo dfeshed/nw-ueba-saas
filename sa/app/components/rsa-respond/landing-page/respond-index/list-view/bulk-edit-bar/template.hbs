@@ -47,10 +47,10 @@
   </div>
 
   <div class="rsa-bulk-edit-button-group {{unless isBulkEditInProgress 'no-border'}}">
-    {{#rsa-form-button style='primary' class=(unless isBulkEditInProgress "is-hidden") mouseUp=(action 'validateBulkSave')}}
+    {{#rsa-form-button style='primary' class=(unless isBulkEditInProgress "is-hidden") defaultAction=(action 'validateBulkSave')}}
       {{t 'incident.bulkEdit.saveButton'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button class=(unless isBulkEditInProgress "is-hidden") mouseUp=(action 'handleCancelButton')}}
+    {{#rsa-form-button class=(unless isBulkEditInProgress "is-hidden") defaultAction=(action 'handleCancelButton')}}
       {{t 'incident.bulkEdit.cancelButton'}}
     {{/rsa-form-button}}
     <span class="rsa-bulk-edit-update-message {{unless showSuccessMessage 'is-shown'}}">

@@ -5,7 +5,10 @@ import IncidentsCube from 'sa/utils/cube/incidents';
 import wait from 'ember-test-helpers/wait';
 import { waitFor } from './helpers';
 
-const { Object: EmberObject } = Ember;
+const {
+  run,
+  Object: EmberObject
+} = Ember;
 
 moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integration | Component | rsa respond/landing page/respond index/list view', {
   integration: true,
@@ -363,5 +366,56 @@ test('Category filter affects the number of incidents on screen', function(asser
         done();
       });
     });
+  });
+});
+
+test('All incients are checked and then unchecked when the header checkbox is toggled.', function(assert) {
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.rsa-form-row-checkbox').length, this.get('allIncidents.array.length'), 'The proper number of checkboxes was found');
+  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.is-selected').length, 0, 'None of the checkboxes are currently selected.');
+
+  this.$('.js-respond-listview-checkbox-header input').prop('checked', true).trigger('change');
+  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.is-selected').length, this.get('allIncidents.array.length'), 'All of the checkboxes are currently selected.');
+
+  this.$('.js-respond-listview-checkbox-header input').prop('checked', false).trigger('change');
+  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.is-selected').length, 0, 'None of the checkboxes are currently selected.');
+});
+
+test('An alert modal appears if filters are used during a bulk edit in progress', function(assert) {
+  const done = assert.async(5);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  run(() => {
+    this.$('.rsa-form-row-checkbox:first .rsa-form-checkbox input').prop('checked', true).trigger('change');
+  });
+
+  this.$('.rsa-content-help-trigger.rsa-form-status-select .rsa-form-button').click();
+  wait().then(() => {
+    this.$('ul.rsa-form-status-select li[value="2"]').click();
+
+    this.$('.rsa-content-help-trigger.rsa-form-assignee-select .rsa-form-button').click();
+    wait().then(() => {
+      this.$('ul.rsa-form-assignee-select li[value="2"]').click();
+
+      this.$('.rsa-content-help-trigger.rsa-form-priority-select .rsa-form-button').click();
+      wait().then(() => {
+        this.$('ul.rsa-form-priority-select li[value="2"]').click();
+        this.$('.rsa-respond-list__filter-panel__priority .priority-1 input:first').prop('checked', true).trigger('change');
+
+        wait().then(() => {
+          this.$('.rsa-bulk-edit-button-group:nth-child(2) .rsa-form-button-wrapper:first .rsa-form-button').click();
+
+          wait().then(() => {
+            assert.equal(this.$('.rsa-application-modal .modal-content p').text().trim(), 'You have unsaved changes. Please save incident changes before filtering.', 'The modal appears with the proper message.');
+            done();
+          });
+          done();
+        });
+        done();
+      });
+      done();
+    });
+    done();
   });
 });

@@ -186,13 +186,14 @@ export default Component.extend({
   },
 
   toggleSuccessMessage(totalCheckedEvents) {
-    const self = this;
     this.set('totalFieldsUpdated', totalCheckedEvents);
     this.set('showSuccessMessage', true);
 
-    run.later((function() {
-      self.set('showSuccessMessage', false);
-    }), 15000);
+    run.later(() => {
+      if (!this.isDestroyed) {
+        this.set('showSuccessMessage', false);
+      }
+    }, 15000);
   },
 
   actions: {
