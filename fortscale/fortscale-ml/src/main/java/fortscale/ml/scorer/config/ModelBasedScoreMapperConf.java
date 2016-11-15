@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.util.Assert;
 
 
@@ -22,7 +21,6 @@ public class ModelBasedScoreMapperConf extends AbstractScorerConf {
 
 		super(name);
 		Assert.notNull(modelInfo);
-		Assert.isTrue(StringUtils.isNotBlank(modelInfo.getModelName()), "model name must be provided and cannot be blank.");
 		Assert.notNull(baseScorerConf);
 		this.modelInfo = modelInfo;
 		this.baseScorerConf = baseScorerConf;

@@ -36,25 +36,34 @@ public abstract class MessageCollectorGenericDecorator implements MessageCollect
 
             return;
         }
+        JSONObject jsonMessage;
 
         // extract original envelope values
         SystemStream systemStream = envelope.getSystemStream();
         Object partitionKey = envelope.getPartitionKey();
-        String messageText = (String) envelope.getMessage();
 
-        JSONObject message;
+        Object message = envelope.getMessage();
+        // minor optimization in case the message is already a jsonObject
+        if(message instanceof JSONObject)
+        {
+            jsonMessage = (JSONObject) message;
+        }
+        // in case the object is a string -> convert it to json
+        else {
+            String messageText = (String) envelope.getMessage();
 
-        try {
-            message = (JSONObject) JSONValue.parseWithException(messageText);
-        } catch (ParseException e) {
-            throw new RuntimeException("Could not parse message: " + messageText);
+            try {
+                jsonMessage = (JSONObject) JSONValue.parseWithException(messageText);
+            } catch (ParseException e) {
+                throw new RuntimeException("Could not parse message: " + messageText);
+            }
         }
 
         for (Map.Entry<String, Object> keyValueEntry : additionalKeyValueMap.entrySet()) {
-            message.put(keyValueEntry.getKey(), keyValueEntry.getValue());
+            jsonMessage.put(keyValueEntry.getKey(), keyValueEntry.getValue());
         }
 
-        OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, message.toJSONString());
+        OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, jsonMessage.toJSONString());
 
         messageCollector.send(outgoingMessageEnvelope);
     }

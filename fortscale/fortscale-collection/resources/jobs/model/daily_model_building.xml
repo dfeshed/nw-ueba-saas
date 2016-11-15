@@ -9,7 +9,7 @@
 		<job>
 			<name>DailyModelBuilding</name>
 			<group>Model</group>
-			<description>Triggers at the end of every day the building of all configured models</description>
+			<description>Triggers once a week the building of all configured models</description>
 			<job-class>fortscale.collection.jobs.model.ModelBuildingJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
@@ -27,6 +27,10 @@
 					<key>targetTopic</key>
 					<value>${fortscale.model.build.control.input.topic}</value>
 				</entry>
+				<entry>
+					<key>fortscale.model.build.control.output.topic</key>
+					<value>${fortscale.model.build.control.output.topic}</value>
+				</entry>
 			</job-data-map>
 		</job>
 
@@ -36,7 +40,7 @@
 				<group>Model</group>
 				<job-name>DailyModelBuilding</job-name>
 				<job-group>Model</job-group>
-				<cron-expression>0 0 1 * * ?</cron-expression>
+				<cron-expression>0 0 0 ? * SUN</cron-expression>
 			</cron>
 		</trigger-->
 	</schedule>

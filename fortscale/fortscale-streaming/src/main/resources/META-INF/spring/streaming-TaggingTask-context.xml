@@ -162,13 +162,6 @@
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
-    <!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
-    <bean id="userTagsCache" class="fortscale.services.cache.MemoryBasedCache">
-        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
-        <constructor-arg name="clazz" value="java.lang.String" />
-    </bean>
-
     <bean id="adGroupsCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${adgroups.resolver.cache.max.items:30000}" />
         <constructor-arg name="timeToExpire" value="${adgroups.resolver.blacklist.timeToExpireSec:3600}" />

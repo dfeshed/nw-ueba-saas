@@ -6,7 +6,6 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.impl.SpringService;
-import fortscale.services.impl.UserTagsCacheServiceImpl;
 import fortscale.streaming.alert.event.wrappers.EventWrapper;
 import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
@@ -40,11 +39,9 @@ import static fortscale.utils.ConversionUtils.convertToLong;
  */
 public class AlertGeneratorTask extends AbstractStreamTask
 {
-
 	private static Logger logger = LoggerFactory.getLogger(AlertGeneratorTask.class);
 
     private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
-    private static String userTagsKey = "user-tag";
 
 	List<EPStatement> epsStatements = new ArrayList<>();
 
@@ -62,10 +59,6 @@ public class AlertGeneratorTask extends AbstractStreamTask
 	protected ObjectMapper mapper = new ObjectMapper();
 
 	private Counter lastTimestampCount;
-
-
-
-	private UserTagsCacheServiceImpl userTagsCacheService;
 
 	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception{
 
@@ -94,27 +87,12 @@ public class AlertGeneratorTask extends AbstractStreamTask
 
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				String.format("%s-last-message-epochtime", config.get("job.name")));
-
-		userTagsCacheService = SpringService.getInstance().resolve(UserTagsCacheServiceImpl.class);
-
-
-
 	}
-
 
 	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
 			TaskCoordinator coordinator) throws Exception {
 		// parse the message into json
 		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
-
-        //Update the UserTagCahceService
-        if (inputTopic.equals("user-tag-service-cache-updates"))
-        {
-            Set<String> tags = mapper.readValue((String)envelope.getMessage(), Set.class);
-            this.userTagsCacheService.addUserTags((String) envelope.getKey(),tags);
-        }
-
 
 		if (inputTopicMapping.containsKey(inputTopic)) {
 			Object info = convertMessageToEsperRepresentationObject(envelope, inputTopic);
@@ -148,10 +126,8 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		}
 	}
 
-
 	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 	}
-
 
 	@Override protected void wrappedClose() throws Exception {
 		for (EPStatement esperEventStatement : epsStatements) {
@@ -311,7 +287,6 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		epsStatements.add(epStatement);
 	}
 
-
 	//create dynamic statements if necessary
 	private  void createDynamicStatements(String inputTopic, Object info) throws Exception {
 		if (inputTopicMapping.get(inputTopic).getDynamicStatements() != null && inputTopicMapping.get(inputTopic).getEventWrapper() != null) {
@@ -325,9 +300,6 @@ public class AlertGeneratorTask extends AbstractStreamTask
 			}
 		}
 	}
-
-
-
 
 	// inner class for holding input topic configurations
 	protected static class TopicConfiguration {
@@ -390,9 +362,5 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		public void setTimeStampField(String timeStampField) {
 			this.timeStampField = timeStampField;
 		}
-
-
-
 	}
-
 }

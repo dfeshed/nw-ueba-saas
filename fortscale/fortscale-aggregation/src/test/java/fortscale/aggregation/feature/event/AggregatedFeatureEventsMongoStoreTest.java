@@ -3,6 +3,8 @@ package fortscale.aggregation.feature.event;
 import com.github.fakemongo.Fongo;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
+import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationServiceConfig;
+import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import org.junit.Assert;
@@ -34,7 +36,9 @@ public class AggregatedFeatureEventsMongoStoreTest {
 
     @Configuration
     @Import({
-            NullStatsServiceConfig.class
+            NullStatsServiceConfig.class,
+            AggregatedFeatureNameTranslationServiceConfig.class
+
     })
     @EnableSpringConfigured
     @EnableAnnotationConfiguration
@@ -109,9 +113,9 @@ public class AggregatedFeatureEventsMongoStoreTest {
         AggrEvent aggrEvent =
                 getNewAggrEvent(aggrFeatureName);
         String collectionName = getCollectionName(aggrFeatureName);
-        long writesBefore = store.getCollectionMetrics(collectionName).writes;
+        long writesBefore = MongoStoreUtils.getCollectionMetrics(null, collectionName).writes;
         store.storeEvent(aggrEvent);
-        long writesAfter = store.getCollectionMetrics(collectionName).writes;
+        long writesAfter = MongoStoreUtils.getCollectionMetrics(null, collectionName).writes;
         Assert.assertTrue(mongoTemplate.getCollectionNames().contains(collectionName));
         Assert.assertEquals(writesAfter ,writesBefore + 1);
     }
@@ -133,15 +137,15 @@ public class AggregatedFeatureEventsMongoStoreTest {
         String collectionName1 = getCollectionName(aggrFeatureName1);
         String collectionName2 = getCollectionName(aggrFeatureName2);
 
-        long writesBefore1 = store.getCollectionMetrics(collectionName1).writes;
-        long bulkWritesBefore1 = store.getCollectionMetrics(collectionName1).bulkWrites;
-        long writesBefore2 = store.getCollectionMetrics(collectionName2).writes;
-        long bulkWritesBefore2 = store.getCollectionMetrics(collectionName2).bulkWrites;
+        long writesBefore1 = MongoStoreUtils.getCollectionMetrics(null, collectionName1).writes;
+        long bulkWritesBefore1 = MongoStoreUtils.getCollectionMetrics(null, collectionName1).bulkWrites;
+        long writesBefore2 = MongoStoreUtils.getCollectionMetrics(null, collectionName2).writes;
+        long bulkWritesBefore2 = MongoStoreUtils.getCollectionMetrics(null, collectionName2).bulkWrites;
         store.storeEvent(aggrEvents);
-        long writesAfter1 = store.getCollectionMetrics(collectionName1).writes;
-        long bulkWritesAfter1 = store.getCollectionMetrics(collectionName1).bulkWrites;
-        long writesAfter2 = store.getCollectionMetrics(collectionName2).writes;
-        long bulkWritesAfter2 = store.getCollectionMetrics(collectionName2).bulkWrites;
+        long writesAfter1 = MongoStoreUtils.getCollectionMetrics(null, collectionName1).writes;
+        long bulkWritesAfter1 = MongoStoreUtils.getCollectionMetrics(null, collectionName1).bulkWrites;
+        long writesAfter2 = MongoStoreUtils.getCollectionMetrics(null, collectionName2).writes;
+        long bulkWritesAfter2 = MongoStoreUtils.getCollectionMetrics(null, collectionName2).bulkWrites;
 
         Assert.assertTrue(mongoTemplate.getCollectionNames().contains(collectionName1));
         Assert.assertEquals(writesAfter1 ,writesBefore1 + generatedEventsCount);

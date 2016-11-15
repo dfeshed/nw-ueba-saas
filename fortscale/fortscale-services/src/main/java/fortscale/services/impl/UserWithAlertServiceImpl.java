@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Alert;
+import fortscale.domain.core.Tag;
 import fortscale.domain.core.User;
 import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.rest.UserRestFilter;
@@ -39,6 +40,9 @@ import java.util.Set;
 	@Autowired()
 	@Qualifier("filterToUsersCache")
 	private CacheHandler<UserRestFilter, List<User>> filterToUsersCache;
+
+	@Autowired
+	private TagService tagService;
 
 	private List<String> fieldsRequired;
 
@@ -89,7 +93,7 @@ import java.util.Set;
 	}
 
 	/**
-	 * If one of the filters (anomaly type, alert type, location or user ids ) was passed to the rest
+	 * If one of the filters (anomaly type, alert type, location, user ids or search value) was passed to the rest
 	 * and the user ids collection we got from it is empty there is no need to continue with the logic
 	 * @param userRestFilter
 	 * @param relevantUsers
@@ -99,7 +103,8 @@ import java.util.Set;
 		return (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes()) ||
 				CollectionUtils.isNotEmpty(userRestFilter.getLocations()) ||
-				CollectionUtils.isNotEmpty(userRestFilter.getUserIds()))
+				CollectionUtils.isNotEmpty(userRestFilter.getUserIds()) ||
+				StringUtils.isNotEmpty(userRestFilter.getSearchValue()))
 				&& (CollectionUtils.isEmpty(relevantUsers));
 	}
 
@@ -236,6 +241,42 @@ import java.util.Set;
 		}
 
 		return result;
+	}
 
+	@Override
+	public int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames) throws Exception {
+
+		// Create tag if needed
+		if (addTag) {
+			for (String tag : tagNames) {
+				//if there's no such tag in the system
+				if (tagService.getTag(tag) == null) {
+					//try to add the new tag
+					if (!tagService.addTag(new Tag(tag))) {
+						//if failed
+						throw new Exception("failed to add new tag - " + tag);
+					}
+				}
+			}
+		}
+
+		// Creating the filter
+		Set<String> relevantUsers = filterPreparations(userRestFilter);
+		if (shouldStop(userRestFilter, relevantUsers)) {
+			return 0;
+		}
+
+		return	userService.updateTags(userRestFilter, addTag, tagNames, relevantUsers);
+	}
+
+	@Override
+	public int followUsersByFilter(UserRestFilter userRestFilter, Boolean watch) {
+		// Creating the filter
+		Set<String> relevantUsers = filterPreparations(userRestFilter);
+		if (!shouldStop(userRestFilter, relevantUsers)) {
+			return userService.updateWatched(userRestFilter, relevantUsers, watch);
+		}
+
+		return 0;
 	}
 }

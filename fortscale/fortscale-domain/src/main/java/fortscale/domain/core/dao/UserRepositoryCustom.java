@@ -22,6 +22,8 @@ public interface UserRepositoryCustom {
 
 	void updateFollowed(User user, boolean followed);
 
+	int updateFollowed(List<Criteria> criteriaList, boolean watch);
+
 	void updateSourceMachineCount(String userId, int sourceMachineCount);
 
 	List<User> findByDNs(Collection<String> dns);
@@ -129,6 +131,8 @@ public interface UserRepositoryCustom {
 	Criteria getUserCriteriaByUserIds(Set<String> userIds);
 
     List getDistinctFieldValues(String fieldName);
+
+	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags);
 
 }
 

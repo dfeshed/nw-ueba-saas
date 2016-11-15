@@ -15,6 +15,47 @@ from automatic_config.common.utils import time_utils, io
 from automatic_config.common.utils.mongo import get_collections_time_boundary
 
 
+class _Locker:
+    _LOCK_FILE_PATH = os.path.dirname(os.path.abspath(__file__)) + '/step.lock'
+
+    def __init__(self, logger):
+        self._logger = logger
+
+    def get_path(self):
+        return _Locker._LOCK_FILE_PATH
+
+    def read(self):
+        if os.path.isfile(_Locker._LOCK_FILE_PATH):
+            with open(_Locker._LOCK_FILE_PATH, 'r') as lock_file:
+                return lock_file.read()
+        return None
+
+    def lock(self):
+        with open(_Locker._LOCK_FILE_PATH, 'w') as lock_file:
+            lock_file.write(self._logger.name)
+
+    def unlock(self):
+        os.remove(_Locker._LOCK_FILE_PATH)
+
+
+def step_runner_main(logger):
+    def wrapper(main):
+        def run_main():
+            locker = _Locker(logger)
+            lock_name = locker.read()
+            if lock_name not in [None, logger.name]:
+                logger.error(lock_name + ' has been started but failed to finish! If you still want to run ' +
+                             logger.name + ' - do it on your own risk (after removing ' + locker.get_path() + ')')
+                return
+            locker.lock()
+            if main():
+                locker.unlock()
+            else:
+                sys.exit(1)
+        return run_main
+    return wrapper
+
+
 def validate_bdp_flag(is_online_mode):
     with open('/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties', 'r') as f:
         for l in f.readlines():
@@ -148,9 +189,22 @@ class Runner(object):
     def _update_overrides(self, call_overrides):
         self._logger.info('updating overrides:' + '\n\t'.join([''] + call_overrides))
         bdp_overrides_file_path = '/home/cloudera/fortscale/BDPtool/target/resources/bdp-overriding.properties'
+        mongo_db_user = ""
+        mongo_db_password = ""
+        with open(bdp_overrides_file_path, 'r') as f:
+            for l in f.readlines():
+                if l.startswith("mongo_db_user="):
+                    mongo_db_user = l
+                if l.startswith("mongo_db_password="):
+                    mongo_db_password = l
+
         io.backup(path=bdp_overrides_file_path)
         with open(bdp_overrides_file_path, 'w') as f:
             f.write('\n'.join(call_overrides))
+            if mongo_db_user:
+                f.write('\n%s' % mongo_db_user)
+            if mongo_db_password:
+                f.write('\n%s' % mongo_db_password)
 
 
 class Cleaner(Runner):

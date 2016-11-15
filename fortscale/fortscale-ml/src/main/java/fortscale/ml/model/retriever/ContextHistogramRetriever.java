@@ -50,13 +50,6 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	}
 
 	@Override
-	public String getContextId(Map<String, String> context) {
-		metrics.getContextId++;
-		Assert.notEmpty(context);
-		return FeatureBucketUtils.buildContextId(context);
-	}
-
-	@Override
 	public Set<String> getEventFeatureNames() {
 		metrics.getEventFeatureNames++;
 		return featureBucketConf.getAggregatedFeatureConf(featureName).getAllFeatureNames();
@@ -66,6 +59,13 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 	public List<String> getContextFieldNames() {
 		metrics.getContextFieldNames++;
 		return featureBucketConf.getContextFieldNames();
+	}
+
+	@Override
+	public String getContextId(Map<String, String> context) {
+		metrics.getContextId++;
+		Assert.notEmpty(context);
+		return FeatureBucketUtils.buildContextId(context);
 	}
 
 	private GenericHistogram doRetrieve(String contextId, Date endTime, String featureValue) {

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -109,6 +110,22 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public void updateFollowed(User user, boolean followed) {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.followedField, followed), User.class);
+	}
+
+	@Override
+	public int updateFollowed(List<Criteria> criteriaList, boolean watch) {
+		Query query = new Query();
+
+		criteriaList.forEach(criteria -> query.addCriteria(criteria));
+
+		Update update = new Update();
+		update.set(User.followedField, watch);
+
+		BulkOperations upsert = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+				.upsert(query, update);
+
+		return upsert.execute().getModifiedCount();
+
 	}
 
 	@Override
@@ -697,8 +714,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return getUsersByCriteria(criteria, pageable);
 	}
 
-
-
 	public HashSet<String> getUsersGUID(){
 		Query query = new Query();
 		query.fields().include(User.getAdInfoField(AdUser.objectGUIDField)).exclude(User.ID_FIELD);
@@ -800,6 +815,57 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.objectGUID = objectGUID;
 		}
 	}
-	
+
+	@Override
+	public int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags) {
+
+		Update update = new Update();
+
+		int count = getCount(addTag, tagNames, criteriaList, filteredTags);
+
+		tagNames.forEach(tag -> {
+			Query query = new Query();
+			criteriaList.forEach(criteria -> query.addCriteria(criteria));
+
+			Update remove = new Update();
+			remove.pull(User.tagsField, tag);
+			mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+					.upsert(query, remove).execute();
+
+			if (addTag){
+				// Adding the tag
+				update.push(User.tagsField, tag);
+				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+						.upsert(query, update).execute();
+			}
+		});
+
+		return count;
+	}
+
+	private int getCount(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags) {
+		int count;
+		if (!addTag) {
+			List<Criteria> countCriteria = new ArrayList<>();
+			criteriaList.forEach(criteria -> {
+				if (filteredTags == null){
+					countCriteria.addAll(criteriaList);
+					countCriteria.add(new Criteria(User.tagsField).in(tagNames));
+				}else {
+					if (criteria.getKey().equals(User.tagsField)) {
+						Criteria newCriteria = new Criteria(User.tagsField);
+						newCriteria.in(CollectionUtils.union(tagNames, filteredTags));
+						countCriteria.add(newCriteria);
+					} else {
+						countCriteria.add(criteria);
+					}
+				}
+			});
+			count = countAllUsers(countCriteria);
+		}else{
+			count = countAllUsers(criteriaList);
+		}
+		return count;
+	}
 }
 

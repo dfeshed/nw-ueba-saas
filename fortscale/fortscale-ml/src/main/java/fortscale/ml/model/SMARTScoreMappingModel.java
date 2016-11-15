@@ -19,4 +19,14 @@ public class SMARTScoreMappingModel extends ScoreMappingModel {
 		mapping.put(threshold - EPSILON, 49D);
 		super.init(mapping);
 	}
+
+	@Override
+	public String toString() {
+		String scoreMappingStr="null";
+		if(scoreMappingConf.getMapping()!=null)
+		{
+			scoreMappingStr = scoreMappingConf.getMapping().toString();
+		}
+		return String.format("<SMARTScoreMappingModel: scoreMappingConf=%s>", scoreMappingStr);
+	}
 }
