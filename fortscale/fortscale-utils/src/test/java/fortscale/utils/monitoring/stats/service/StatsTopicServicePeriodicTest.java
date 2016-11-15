@@ -72,7 +72,7 @@ public class StatsTopicServicePeriodicTest {
     StatsService statsService;
 
     @Test
-    @Ignore
+    //@Ignore
     public void testPeriodicUpdates() throws InterruptedException {
 
         final long pointCount = 100;
@@ -84,6 +84,10 @@ public class StatsTopicServicePeriodicTest {
 
         StatsServiceTestingTrigoService slowTrigoService =
                  new StatsServiceTestingTrigoService(statsService, "periodic", "fast", SLOW_DEGREE_RATE, false);
+
+        // uncommnet to check unregister metrics group (yak!)
+        //fastTrigoService.unregister();
+        //slowTrigoService.unregister();
 
         for (long n = 0 ; n < pointCount ; n++) {
 
