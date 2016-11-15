@@ -27,6 +27,6 @@ public class AggregatedFeatureEventsAccumulatorManagerImpl  extends AccumulatorM
 
     @Override
     protected Set<String> getFeatureNames() {
-        return new HashSet<>(aggregatedFeatureEventsConfService.getAggrFeatureEventNameList());
+        return new HashSet<>(aggregatedFeatureEventsConfService.getFAggrFeatureEventNameList());
     }
 }
