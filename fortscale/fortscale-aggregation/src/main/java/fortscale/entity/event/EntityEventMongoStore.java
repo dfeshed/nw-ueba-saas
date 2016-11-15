@@ -5,11 +5,15 @@ import fortscale.aggregation.feature.event.ScoredEventsCounterReader;
 import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.domain.core.EntityEvent;
+import fortscale.entity.event.translator.EntityEventTranslationService;
+import fortscale.utils.logging.Logger;
+import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.mongodb.FIndex;
-import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import fortscale.utils.time.TimestampUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.collections.ListUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -17,20 +21,29 @@ import org.springframework.data.mongodb.BulkOperationException;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class EntityEventMongoStore  implements ScoredEventsCounterReader {
-	private static final String COLLECTION_NAME_PREFIX = "scored_";
-	private static final String COLLECTION_NAME_SEPARATOR = "__";
+
+	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 	private static final Logger logger = Logger.getLogger(EntityEventMongoStore.class);
+	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
 
 	@Autowired
 	private StatsService statsService;
 	@Value("${streaming.event.field.type.entity_event}")
 	private String eventTypeFieldValue;
+
+
+	@Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
+	private List<String> backupCollectionNamesPrefixes;
 	@Value("${fortscale.scored.entity.event.store.page.size}")
 	private int storePageSize;
 	@Autowired
@@ -39,6 +52,8 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private MongoDbUtilService mongoDbUtilService;
 	@Autowired
 	private EntityEventConfService entityEventConfService;
+	@Autowired
+	private EntityEventTranslationService translationService;
 
 	private Map<String, List<EntityEvent>> collectionToEntityEventListMap = new HashMap<>();
 	private List<String> allScoredEntityEventCollectionNames;
@@ -109,14 +124,18 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	}
 
 	private String getCollectionName(String entityEventType) {
-		return StringUtils.join(
-				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
-				eventTypeFieldValue, COLLECTION_NAME_SEPARATOR,
-				entityEventType);
+		return translationService.toCollectionName(entityEventType);
 	}
 
 	private String getCollectionName(EntityEvent entityEvent) {
 		return getCollectionName(entityEvent.getEntity_event_type());
+	}
+
+	private List<String> getCollectionNames(String entityEventType) {
+		String collectionName = getCollectionName(entityEventType);
+		return Stream.concat(Stream.of(""), backupCollectionNamesPrefixes.stream())
+				.map(prefix -> prefix + collectionName)
+				.collect(Collectors.toList());
 	}
 
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
@@ -175,5 +194,60 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		}
 
 		return totalNumberOfEvents;
+	}
+
+	/**
+	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
+	 * before any crud is preformed in this class, this method should be called
+	 *
+	 * @param collectionName metrics are per collection
+	 * @return metrics for collection
+	 */
+	private PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName) {
+		if (collectionMetricsMap == null) {
+			collectionMetricsMap = new HashMap<>();
+		}
+		PersistenceTaskStoreMetrics metrics = collectionMetricsMap.get(collectionName);
+		if(metrics==null) {
+			metrics = new PersistenceTaskStoreMetrics(statsService, collectionName);
+			collectionMetricsMap.put(collectionName,metrics);
+		}
+		return metrics;
+	}
+
+	public List<EntityEvent> findEntityEventsByStartTimeRange(Instant from, Instant to, String featureName) {
+
+		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to.getEpochSecond());
+		Query query = new Query(startTimeCriteria);
+
+		return findEntityEvents(featureName,query);
+	}
+
+	/**
+	 * one {@param featureName} my contain several splitted collections in mongoDb (in case of large scale),
+	 * this method executes given {@param query} on all collectionNames
+	 * @return list of {@link EntityEvent} answering the query
+	 */
+	public List<EntityEvent> findEntityEvents(String featureName, Query query) {
+		return getCollectionNames(featureName).stream()
+				.flatMap(collectionName -> mongoTemplate.find(query, EntityEvent.class, collectionName).stream())
+				.collect(Collectors.toList());
+	}
+
+	public Instant getLastEntityEventStartTime(String featureName) {
+		Query query = new Query();
+		Sort sort = new Sort(Sort.Direction.DESC,
+				EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME);
+		query.with(sort);
+		query.limit(1);
+		List<EntityEvent> queryResult = findEntityEvents(featureName, query);
+
+		if(!queryResult.isEmpty())
+		{
+			long maxStartDate = queryResult.stream().max(Comparator.comparingLong(EntityEvent::getStart_time_unix)).get().getStart_time_unix();
+			return Instant.ofEpochSecond(maxStartDate);
+		}
+		return null;
+
 	}
 }

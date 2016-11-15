@@ -180,7 +180,7 @@ public class StatsServiceImpl implements StatsService {
      *  Register StatsMetricsGroup object to the stats service.
      *
      *  The registration has those steps:
-     *    1. Verify a stats engine is registered
+     *    1. Verify a stats engine is registered (???)
      *    2. Creates an group handler for the statsGroup and bind it to this service
      *    3. Add the group handler to the service metrics group handler list
      *
@@ -212,6 +212,62 @@ public class StatsServiceImpl implements StatsService {
 
             String msg = String.format("A problem while registering metrics group %s had obscured. Instrumented class is %s",
                                         metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
+            throw (new StatsMetricsExceptions.ProblemWhileRegisteringMetricsGroupException(msg, ex));
+
+        }
+
+    }
+
+    /**
+     *
+     * Unregisters a metrics group object from the stats services.
+     *
+     *  The un-registration has those steps:
+     *    1. Get the stats group handler from the metrics group (if any)
+     *    2. Remove the group handler from the service metrics group handler list
+     *
+     * @param metricsGroup - metrics group to unregister
+     */
+    public void unregisterStatsMetricsGroup(StatsMetricsGroup metricsGroup) {
+
+        // Get the stats group handler
+
+        logger.debug("Unregistering StatsMetricsGroup class {} instrumented class{}",
+                metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
+
+        try { // Just in case
+
+            // Get the group handler from the metrics group
+            StatsMetricsGroupHandler groupHandler = metricsGroup.getStatsMetricsGroupHandler();
+
+            // Check no group handler
+            if (groupHandler == null) {
+                logger.warn("Failed to unregister StatsMetricsGroup class {} instrumented class{} - null group handler",
+                        metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
+                return;
+            }
+
+
+            // Remove the group handler to the group handler list
+            // Be thread safe :-)
+            boolean found;
+            synchronized (metricsGroupHandlersListLock) {
+                found = metricsGroupHandlersList.remove(groupHandler);
+            }
+
+            // Check attempt to remove non-existing group handler
+            if (!found) {
+                logger.warn("Failed to unregister StatsMetricsGroup class {} instrumented class{} - not registered",
+                        metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
+            }
+
+        }
+        catch (Exception ex){
+            logger.error("A problem while unregistering metrics group {} had obscured. Instrumented class is {}",
+                    metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
+
+            String msg = String.format("A problem while unregistering metrics group %s had obscured. Instrumented class is %s",
+                    metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
             throw (new StatsMetricsExceptions.ProblemWhileRegisteringMetricsGroupException(msg, ex));
 
         }

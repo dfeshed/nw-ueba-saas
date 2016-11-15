@@ -307,7 +307,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	@Override
     public Set<Alert> getAlertsRelevantToUserScore(String userId){
 
-
         Query query = getQueryForAlertsRelevantToUserScore(userId);
         query.fields().exclude(Alert.evidencesField);
 
@@ -350,7 +349,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	}
 
-
 	@Override
 	public Set<String> getDistinctUserIdByUserRestFilter(UserRestFilter userRestFilter) {
 		Query query = new Query();
@@ -382,7 +380,6 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 	}
 
 	private  Query getQueryForAlertsRelevantToUserScore(String userId) {
-
         Criteria criteria = new Criteria();
         criteria.where(Alert.feedbackField).ne(AlertFeedback.None).
                 and(Alert.userScoreContributionFlagField).is(Boolean.TRUE);

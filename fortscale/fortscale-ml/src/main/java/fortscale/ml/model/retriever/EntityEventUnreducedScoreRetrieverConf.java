@@ -22,7 +22,6 @@ public class EntityEventUnreducedScoreRetrieverConf extends AbstractDataRetrieve
 			@JsonProperty("numOfAlertsPerDay") Double numOfAlertsPerDay) {
 
 		super(numOfDays * 60 * 60 * 24, functions);
-
 		Assert.hasText(entityEventConfName);
 		Assert.isTrue(numOfAlertsPerDay != null && numOfAlertsPerDay > 0);
 		this.entityEventConfName = entityEventConfName;

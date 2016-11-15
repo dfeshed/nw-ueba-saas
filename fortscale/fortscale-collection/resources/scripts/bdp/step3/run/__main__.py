@@ -93,9 +93,7 @@ def main():
         return True
     else:
         logger.error('FAILED')
-
         return False
-
 
 
 if __name__ == '__main__':

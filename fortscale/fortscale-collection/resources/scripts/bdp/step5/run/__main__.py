@@ -45,8 +45,5 @@ def main():
     else:
         logger.error('FAILED')
         return False
-
-
-
 if __name__ == '__main__':
     main()

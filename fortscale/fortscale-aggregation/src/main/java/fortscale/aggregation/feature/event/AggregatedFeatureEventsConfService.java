@@ -2,8 +2,8 @@ package fortscale.aggregation.feature.event;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.aggregation.exceptions.AggregatedFeatureEventConfNameMissingInBucketsException;
 import fortscale.aggregation.configuration.AslConfigurationService;
+import fortscale.aggregation.exceptions.AggregatedFeatureEventConfNameMissingInBucketsException;
 import fortscale.aggregation.feature.bucket.AggregatedFeatureConf;
 import fortscale.aggregation.feature.bucket.BucketAlreadyExistException;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
+
+import static fortscale.aggregation.feature.event.AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE;
 
 public class AggregatedFeatureEventsConfService extends AslConfigurationService {
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsConfService.class);
@@ -198,6 +200,18 @@ public class AggregatedFeatureEventsConfService extends AslConfigurationService 
 
 		aggregatedFeatureEventConfList.forEach(aggregatedFeatureEventConf -> {
 			names.add(aggregatedFeatureEventConf.getName());
+		});
+
+		return names;
+	}
+
+	public List<String> getFAggrFeatureEventNameList() {
+		List<String> names = new ArrayList<>();
+
+		aggregatedFeatureEventConfList.forEach(aggregatedFeatureEventConf -> {
+			if(aggregatedFeatureEventConf.getType().toUpperCase().equals(AGGREGATED_FEATURE_TYPE_F_VALUE)) {
+				names.add(aggregatedFeatureEventConf.getName());
+			}
 		});
 
 		return names;

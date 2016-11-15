@@ -78,7 +78,6 @@ public class AlertsServiceImpl implements AlertsService {
 		userScoreService.recalculateUserScore(alert.getEntityId());
 
 		userWithAlertService.recalculateNumberOfUserAlertsByUserId(alert.getEntityId());
-
 		return alert;
 	}
 
@@ -136,7 +135,6 @@ public class AlertsServiceImpl implements AlertsService {
 	@Override
 	public void add(Alert alert) {
 		alertsRepository.add(alert);
-
 		userScoreService.recalculateUserScore(alert.getEntityName());
 		userWithAlertService.recalculateNumberOfUserAlertsByUserName(alert.getEntityName());
 	}

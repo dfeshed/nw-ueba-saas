@@ -398,19 +398,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public void updateUserWithADInfo(AdUser adUser) {
-		if(adUser.getObjectGUID() == null) {
-			logger.warn("got ad user with no ObjectGUID name field.");
-			serviceMetrics.emptyGUID++;
-			return;
-		}
-		if(adUser.getDistinguishedName() == null) {
-			logger.warn("got ad user with no distinguished name field.");
-			serviceMetrics.emptyDN++;
-			return;
-		}
-
-
 		User user =  findUserByObjectGUID(adUser.getObjectGUID());
+
+		//When changed logic
 		Date whenChanged = null;
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
@@ -439,7 +429,78 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			}
 		}
 
-		final UserAdInfo userAdInfo = new UserAdInfo();
+		boolean isSaveUser = false;
+		if(user==null)
+		{
+			user = new User();
+			isSaveUser = true;
+		}
+
+		//create the Ad user info field
+		final UserAdInfo userAdInfo = createUserAdInfo(user,adUser,whenChanged,groups,directReports,isSaveUser);
+
+
+		String username = user.getUsername();
+		user.setAdInfo(userAdInfo);
+
+		final String searchField = createSearchField(userAdInfo, username);
+
+		String noDomainUsername = null;
+		if(!StringUtils.isEmpty(username)) {
+			noDomainUsername = StringUtils.split(username, '@')[0];
+		}
+
+		//New user that supposed to be saved
+		if(isSaveUser){
+			if(!StringUtils.isEmpty(username)) {
+				//user.setUsername(username);
+				user.setNoDomainUsername(noDomainUsername);
+				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+
+				//check if there is another user with the same username (old record of user)
+				//in case of true move the old record into duplicatedUser collection and update the new record with old fortscale relevant information (i.e scores, last activity etc )
+				User oldUserRecord  = userRepository.findByUsername(username);
+
+
+				//In case that the oldUserRecord is not null (we have other record on User collection with the same username ) and also doesnt exist in the ad built in users (doesnt have principal name only SAMAccountName )
+				if (oldUserRecord != null && needToBeDeleted(oldUserRecord)) {
+					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
+					updateUserWithOldInfo(deletedUser,user);
+					try {
+						duplicatedUserRepository.save(deletedUser);
+					} catch (Exception ex) {
+						serviceMetrics.failedToCreateDeletedUser++;
+						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);
+					}
+					userRepository.delete(oldUserRecord);
+				}
+			}
+			user.setSearchField(searchField);
+			user.setWhenCreated(userAdInfo.getWhenCreated());
+
+
+			saveUser(user);
+		} else{
+			Update update = new Update();
+			update.set(User.adInfoField, userAdInfo);
+			update.set(User.whenCreatedField, userAdInfo.getWhenCreated());
+			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
+				update.set(User.usernameField, username);
+			}
+			if(!StringUtils.isEmpty(noDomainUsername) && (noDomainUsername!=null && !noDomainUsername.equals(user.getNoDomainUsername()))){
+				update.set(User.noDomainUsernameField, noDomainUsername);
+			}
+			if(!searchField.equals(user.getSearchField())){
+				update.set(User.searchFieldName, searchField);
+			}
+			updateUser(user, update);
+		}
+	}
+
+	public UserAdInfo createUserAdInfo(User user,AdUser adUser,Date whenChanged,Set<AdUserGroup> groups,Set<AdUserDirectReport> directReports,boolean isNewUser)
+	{
+		UserAdInfo userAdInfo = new UserAdInfo();
+
 		userAdInfo.setObjectGUID(adUser.getObjectGUID());
 		userAdInfo.setDn(adUser.getDistinguishedName());
 		userAdInfo.setFirstname(adUser.getGivenName());
@@ -503,9 +564,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		// update user's direct reports
 		userAdInfo.setAdDirectReports(directReports);
 
+		//calculate the disable Account Time
 		DateTime disableAccountTime = null;
 		if (userAdInfo.getIsAccountDisabled()){
-			if (user == null || !user.getAdInfo().getIsAccountDisabled()){
+			if (!user.getAdInfo().getIsAccountDisabled()){
 				disableAccountTime = new DateTime(whenChanged);
 			} else{
 				disableAccountTime = user.getAdInfo().getDisableAccountTime();
@@ -513,87 +575,33 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		userAdInfo.setDisableAccountTime(disableAccountTime);
 
-		boolean isSaveUser = false;
-		if(user == null){
-			user = new User();
-			isSaveUser = true;
-		}
 
-		String oldDisplayName = user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
 
-		user.setAdInfo(userAdInfo);
+		String username="";
 
-		String username = adUser.getUserPrincipalName();
-		if(StringUtils.isEmpty(username)) {
-			username = adUser.getsAMAccountName();
-		}
+		//In case the user does not exist and we are going to create a new user we want that the username will be taken from the principal name or the SAMAccount name
+		//Other wise we will keep the existing username
+		if(isNewUser){
 
-		if(!StringUtils.isEmpty(username)) {
-			username = username.toLowerCase();
-		} else{
-			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
-			serviceMetrics.emptyUsername++;
-		}
+			username = adUser.getUserPrincipalName();
+			if(StringUtils.isEmpty(username)) {
+				username = adUser.getsAMAccountName();
+			}
 
-		String displayName = userAdInfo.getFirstname() + " " + userAdInfo.getLastname();
-
-		final String searchField = createSearchField(userAdInfo, username);
-
-		String noDomainUsername = null;
-		if(!StringUtils.isEmpty(username)) {
-			noDomainUsername = StringUtils.split(username, '@')[0];
-		}
-
-		//New user that supposed to be saved
-		if(isSaveUser){
 			if(!StringUtils.isEmpty(username)) {
-				user.setUsername(username);
-				user.setNoDomainUsername(noDomainUsername);
-				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
-
-				//check if there is another user with the same username (old record of user)
-				//in case of true move the old record into duplicatedUser collection and update thje new record with old fortscale relevant information (i.e scores, last activity etc )
-				User oldUserRecord  = userRepository.findByUsername(username);
-
-
-
-
-				//In case that the oldUserRecord is not null (we have other record on User collection with the same username ) and also doesnt exist in the ad built in users (doesnt have principal name only SAMAccountName )
-				if (oldUserRecord != null && needToBeDeleted(oldUserRecord)) {
-					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
-					updateUserWithOldInfo(deletedUser,user);
-					try {
-						deletedUser = duplicatedUserRepository.save(deletedUser);
-					} catch (Exception ex) {
-						serviceMetrics.failedToCreateDeletedUser++;
-						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);
-					}
-					userRepository.delete(oldUserRecord);
-				}
+				username = username.toLowerCase();
+			} else{
+				logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+				serviceMetrics.emptyUsername++;
 			}
-			user.setSearchField(searchField);
-			user.setWhenCreated(userAdInfo.getWhenCreated());
 
-
-			saveUser(user);
-		} else{
-			Update update = new Update();
-			update.set(User.adInfoField, userAdInfo);
-			update.set(User.whenCreatedField, userAdInfo.getWhenCreated());
-			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
-				update.set(User.usernameField, username);
-			}
-			if(!StringUtils.isEmpty(displayName) && !displayName.equals(oldDisplayName)){
-				update.set(User.displayNameField, displayName);
-			}
-			if(!StringUtils.isEmpty(noDomainUsername) && !noDomainUsername.equals(user.getNoDomainUsername())){
-				update.set(User.noDomainUsernameField, noDomainUsername);
-			}
-			if(!searchField.equals(user.getSearchField())){
-				update.set(User.searchFieldName, searchField);
-			}
-			updateUser(user, update);
 		}
+		else{
+			username = user.getUsername();
+		}
+
+		user.setUsername(username);
+		return userAdInfo;
 	}
 
 	public boolean needToBeDeleted(User oldUserRecord)
@@ -1179,10 +1187,12 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		serviceMetrics = new UserServiceMetrics(statsService);
 	}
 
+
 	@Override
 	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
 		userRepository.updateSourceMachineCount(userId, sourceMachineCount);
 	}
+
 
 	@Override
 	public Set<String> getUserTags(String userName) {

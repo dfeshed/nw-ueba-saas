@@ -119,7 +119,6 @@ public interface AlertsRepositoryCustom {
 
     Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore();
 
-
 	Set<String> getDistinctAlertNames(Set<String> feedbackSet);
 
     Set<Alert> getAlertsRelevantToUserScore(String userId);

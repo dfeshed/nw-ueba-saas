@@ -124,7 +124,8 @@ public interface UserRepositoryCustom {
 	 * @return
 	 */
 
-	String findByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
+	String findUserNameByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
+
 
 	List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
 
@@ -133,5 +134,6 @@ public interface UserRepositoryCustom {
     List getDistinctFieldValues(String fieldName);
 
 	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags);
+
 }
 
