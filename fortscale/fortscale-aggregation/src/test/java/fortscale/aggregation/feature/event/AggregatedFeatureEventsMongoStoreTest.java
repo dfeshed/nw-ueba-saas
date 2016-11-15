@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.event;
 import com.github.fakemongo.Fongo;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
+import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationServiceConfig;
 import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
@@ -35,7 +36,9 @@ public class AggregatedFeatureEventsMongoStoreTest {
 
     @Configuration
     @Import({
-            NullStatsServiceConfig.class
+            NullStatsServiceConfig.class,
+            AggregatedFeatureNameTranslationServiceConfig.class
+
     })
     @EnableSpringConfigured
     @EnableAnnotationConfiguration

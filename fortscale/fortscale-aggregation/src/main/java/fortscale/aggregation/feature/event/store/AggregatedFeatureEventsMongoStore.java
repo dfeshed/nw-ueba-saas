@@ -28,9 +28,6 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	public static final String COLLECTION_NAME_SEPARATOR = "__";
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsMongoStore.class);
 
-	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
-
-
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	@Autowired
@@ -209,10 +206,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	}
 
 	private String getCollectionName(String aggregatedFeatureName) {
-		return StringUtils.join(
-				COLLECTION_NAME_PREFIX, COLLECTION_NAME_SEPARATOR,
-				eventType, COLLECTION_NAME_SEPARATOR,
-				aggregatedFeatureName);
+		return aggregatedFeatureNameTranslationService.toCollectionName(aggregatedFeatureName);
 	}
 
 	private String getCollectionName(AggregatedFeatureEventConf aggregatedFeatureEventConf) {
@@ -286,31 +280,6 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
 		return totalNumberOfEvents;
 	}
-
-	/**
-	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
-	 * before any crud is preformed in this class, this method should be called
-	 *
-	 * @param collectionName metrics are per collection
-	 * @return metrics for collection
-     */
-	public PersistenceTaskStoreMetrics getCollectionMetrics(String collectionName)
-	{
-		if(collectionMetricsMap ==null)
-		{
-			collectionMetricsMap = new HashMap<>();
-		}
-
-		if(!collectionMetricsMap.containsKey(collectionName))
-		{
-			PersistenceTaskStoreMetrics collectionMetrics =
-					new PersistenceTaskStoreMetrics(statsService,collectionName);
-			collectionMetricsMap.put(collectionName,collectionMetrics);
-		}
-
-		return collectionMetricsMap.get(collectionName);
-	}
-
 
 	 /**
 	 * @param from greater than/equal of that date
