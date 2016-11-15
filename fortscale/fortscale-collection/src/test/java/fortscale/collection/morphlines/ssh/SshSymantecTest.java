@@ -8,10 +8,7 @@ import junitparams.JUnitParamsRunner;
 import junitparams.Parameters;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -69,6 +66,7 @@ public class SshSymantecTest {
 		morphlineTester.close();
 	}
 
+	@Ignore
 	@Test
 	@Parameters
 	public void testSshSingleLines(String testCase, String inputLine, String expectedOutput) {
