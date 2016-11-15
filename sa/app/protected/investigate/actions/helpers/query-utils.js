@@ -126,10 +126,12 @@ function executeEventsRequest(request, inputs, events) {
         }
       }
     },
-    onError(response) {
+    onError(response = {}) {
+      const { code, meta: { message } = {} } = response;
       events.setProperties({
         status: 'error',
-        reason: response && response.code
+        reason: code,
+        message
       });
     },
     onCompleted() {

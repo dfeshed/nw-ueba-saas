@@ -68,7 +68,8 @@ export default $.extend({}, BaseTranslations, {
       title: 'ja_Meta'
     },
     events: {
-      title: 'ja_Events'
+      title: 'ja_Events',
+      error: 'ja_An unexpected error occurred when executing this query.'
     },
     services: {
       loading: 'ja_Loading list of available services',

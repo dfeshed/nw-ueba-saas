@@ -6,12 +6,18 @@
       aliases=model.queryNode.value.aliases.data
       services=model.services.data
       submitQuery=(route-action 'submitQuery')}}
-    {{rsa-investigate/timeline
-      data=model.queryNode.value.results.eventTimeline.data
-      status=model.queryNode.value.results.eventTimeline.status
-      retryAction=(route-action "eventTimelineGet" model.queryNode true)
-      startTime=model.queryNode.value.definition.startTime
-      endTime=model.queryNode.value.definition.endTime}}
+    {{#if (is-equal model.queryNode.value.results.events.status 'error')}}
+      <div class="query-error">
+        {{or model.queryNode.value.results.events.message (t 'investigate.events.error')}}
+      </div>
+    {{else}}
+      {{rsa-investigate/timeline
+        data=model.queryNode.value.results.eventTimeline.data
+        status=model.queryNode.value.results.eventTimeline.status
+        retryAction=(route-action "eventTimelineGet" model.queryNode true)
+        startTime=model.queryNode.value.definition.startTime
+        endTime=model.queryNode.value.definition.endTime}}
+    {{/if}}
   </header>
   <section class="rsa-investigate-query__body recon-is-{{model.recon.display}} meta-panel-size-{{model.meta.panelSize}}">
     {{#if (is-equal model.routeStatus 'wait')}}
