@@ -27,6 +27,7 @@ public class EntityEventUnreducedScoreRetrieverTest {
 
 	@Test
 	public void shouldFilterEntityEventsWithoutUnreducedScore() {
+
 		EntityEventUnreducedScoreRetrieverConf config = new EntityEventUnreducedScoreRetrieverConf(Collections.emptyList(), "entityEventConfName", 21, 3D);
 		EntityEventConf entityEventConf = Mockito.mock(EntityEventConf.class);
 		when(entityEventConfService.getEntityEventConf(config.getEntityEventConfName())).thenReturn(entityEventConf);

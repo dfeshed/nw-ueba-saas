@@ -48,8 +48,10 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected MongoTemplate mongoTemplate;
 	@Autowired
 	protected UserService userService;
+
 	@Autowired
 	protected UsernameService usernameService;
+
 
 	@Value("${user.activity.mongo.batch.size:10000}")
 	private int mongoBatchSize;
@@ -208,6 +210,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         Map<String, List<String>> dataSourceToUserIds = new HashMap<>();
 		DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
 		List<User> users = userService.getUsersActiveSinceIncludingUsernameAndLogLastActivity(startDate);
+
         for (String dataSource : dataSources) {
 			//we don't have vpn_session in the log last activity
 			final String logDataSource = dataSource.toLowerCase().equals("vpn_session") ? "vpn" : dataSource;

@@ -87,4 +87,12 @@ public class UsernameNormalizerMetrics extends StatsMetricsGroup {
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long moreThanOneSAMAccountFoundSSH;
 
+	// Number of users that was not mattched the regexp or thier  matching was not exist at the AD
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long MissNormalizationUsingheRegExpSec;
+
+	// Number of users that was Missed normalization at Sec normalizer
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long MissNormalizationSec;
+
 }

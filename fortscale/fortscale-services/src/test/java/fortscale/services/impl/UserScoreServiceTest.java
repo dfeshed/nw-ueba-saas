@@ -20,6 +20,7 @@ public class UserScoreServiceTest extends UserScoreServiceTestAbstract {
 
     @Test
     public void alertWithUserScoreApprovedTest(){
+
         Alert a1 =  getAlert(Severity.High, AlertFeedback.Approved,true);
         double a1Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a1.getSeverity(), a1.getFeedback(),a1.getStartDate());
         Alert a2 =  getAlert(Severity.Critical,AlertFeedback.Approved,true);

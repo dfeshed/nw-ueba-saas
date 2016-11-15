@@ -94,6 +94,7 @@ public interface UserRepositoryCustom {
 
 	HashSet<String> getUsersGUID();
 
+
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */
@@ -122,7 +123,8 @@ public interface UserRepositoryCustom {
 	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
 	 * @return
 	 */
-	String findByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
+
+	String findUserNameByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
 
 	List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
 
@@ -131,5 +133,6 @@ public interface UserRepositoryCustom {
     List getDistinctFieldValues(String fieldName);
 
 	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags);
+
 }
 

@@ -110,6 +110,7 @@ public interface AlertsService {
 
     Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore();
 
+
     Set<Alert> getAlertsRelevantToUserScore(String userId);
 
 	List<Alert> getOpenAlertsByUsername(String userName);

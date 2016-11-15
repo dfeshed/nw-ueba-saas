@@ -294,6 +294,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         return  new HashSet<>(userNames);
     }
 
+
 	@Override public Set<String> getDistinctAlertNames(Set<String> feedbackSet) {
 
 		Query query = buildQueryByUserNameAndFeedback(null, feedbackSet);
