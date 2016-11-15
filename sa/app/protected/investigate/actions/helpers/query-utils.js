@@ -274,7 +274,7 @@ function executeLogDataRequest(request, inputs, events = []) {
 function parseEventQueryUri(uri) {
   const parts = uri ? uri.split('/') : [];
   const [ serviceId ] = parts;
-  let [ startTime, endTime ] = parts;
+  let [ , startTime, endTime ] = parts;
   startTime = Number(startTime);
   endTime = Number(endTime);
 
