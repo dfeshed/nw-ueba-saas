@@ -70,4 +70,10 @@ public class SMARTValuesModelScorerTest {
         SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
         scorer.calculateScore(new SMARTValuesModel(), Collections.singletonList(new SMARTValuesModel()), new Feature("name", "a"));
     }
+
+    @Test
+    public void shouldGiveScoreWhenEverythingIsOk() {
+        SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
+        scorer.calculateScore(new SMARTValuesModel(), Collections.singletonList(new SMARTValuesModel()), new Feature("name", 1.0));
+    }
 }

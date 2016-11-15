@@ -8,14 +8,17 @@ import java.util.List;
  * Date: 8/30/2015.
  */
 public enum AlertFeedback {
-	None ("NONE"),
-	Approved ("APPROVED"),
-	Rejected("REJECTED");
+	None ("NONE", "No Feedback"),
+	Approved ("APPROVED", "Actual Risk"),
+	Rejected("REJECTED", "No Risk");
 
 	private String upperCaseValue;
+	private String prettyValue;
 
-	private AlertFeedback(String upperCaseValue) {
+	private AlertFeedback(String upperCaseValue, String prettyValue) {
+
 		this.upperCaseValue = upperCaseValue;
+		this.prettyValue = prettyValue;
 	}
 
 	public static List<String> getUpperCaseValues(){
@@ -32,5 +35,9 @@ public enum AlertFeedback {
 			}
 		}
 		return null;
+	}
+
+	public String getPrettyValue(){
+		return this.prettyValue;
 	}
 }

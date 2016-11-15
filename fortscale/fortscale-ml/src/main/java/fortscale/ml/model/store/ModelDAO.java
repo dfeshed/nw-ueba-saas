@@ -3,6 +3,7 @@ package fortscale.ml.model.store;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import fortscale.ml.model.Model;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.util.Assert;
@@ -110,5 +111,14 @@ public class ModelDAO {
 		Assert.isNull(this.creationTime, CREATION_TIME_CAN_BE_SET_ONLY_ONCE_ERROR_MSG);
 		this.creationTime = creationTime;
 		return this;
+	}
+
+	/**
+	 *
+	 * @return ToString you know...
+	 */
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

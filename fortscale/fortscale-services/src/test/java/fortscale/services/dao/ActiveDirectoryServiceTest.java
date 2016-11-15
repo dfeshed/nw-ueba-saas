@@ -26,7 +26,6 @@ import static org.mockito.Mockito.*;
 public class ActiveDirectoryServiceTest {
 
     private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
-    private static final String AD_CONNECTIONS_CONFIGURATION_KEY = "system.activeDirectory.settings";
     private static final String DOMAIN_CONTROLLERS_AS_STRING = "CN: DC1,CN: DC2";
     private static final ArrayList<String> DOMAIN_CONTROLLERS_AS_LIST = new ArrayList<>(Arrays.asList(DOMAIN_CONTROLLERS_AS_STRING.split(",")));
     private static final List<AdConnection> AD_CONNECTIONS = Stream.of(new AdConnection(), new AdConnection()).collect(Collectors.toList());
@@ -42,7 +41,8 @@ public class ActiveDirectoryServiceTest {
     @Before
     public void setUp() throws Exception {
         // using doReturn instead of when+thenReturn because they don't handle returning generic lists well
-        doReturn(AD_CONNECTIONS).when(applicationConfigurationService).getApplicationConfigurationAsObjects(AD_CONNECTIONS_CONFIGURATION_KEY, AdConnection.class);
+        doReturn(AD_CONNECTIONS).when(applicationConfigurationService).
+				getApplicationConfigurationAsObjects(AdConnection.ACTIVE_DIRECTORY_KEY, AdConnection.class);
         // we don't want to actually save anything
         doNothing().when(applicationConfigurationService).insertConfigItem(any(), any());
 

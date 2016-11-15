@@ -12,7 +12,7 @@ import java.util.Map;
 
 @Document(collection = UserActivityTargetDeviceDocument.COLLECTION_NAME)
 @CompoundIndexes({
-		@CompoundIndex(name = "user_start_time", def = "{'normalizedUsername': -1, 'startTime': 1}")
+		@CompoundIndex(name = "user_start_time", def = "{'entityId': -1, 'startTime': 1}")
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserActivityTargetDeviceDocument extends UserActivityDeviceDocument {

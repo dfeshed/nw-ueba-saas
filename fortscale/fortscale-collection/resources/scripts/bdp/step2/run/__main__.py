@@ -11,6 +11,7 @@ from validation.validation import validate_all_buckets_synced
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
+from bdp_utils.run import step_runner_main
 from bdp_utils.data_sources import data_source_to_score_tables
 from bdp_utils.samza import are_tasks_running
 from bdp_utils.log import init_logging
@@ -139,7 +140,7 @@ def validate_not_running_same_period_twice(arguments):
               "(they haven't been synced yet but are about to)"
         sys.exit(1)
 
-    mongo_db = pymongo.MongoClient(arguments.host, 27017).fortscale
+    mongo_db = mongo.get_db(host=arguments.host)
     for collection_name in filter(lambda name: name.startswith('aggr_'), mongo.get_all_collection_names(mongo_db)):
         data = list(mongo_db[collection_name].find({
             'startTime': {
@@ -152,6 +153,7 @@ def validate_not_running_same_period_twice(arguments):
             sys.exit(1)
 
 
+@step_runner_main(logger)
 def main():
     arguments = create_parser().parse_args()
     init_logging(logger)
@@ -181,8 +183,12 @@ def main():
                if 'build_entity_models_interval_in_hours' in arguments and arguments.build_entity_models_interval_in_hours is not None else None) \
             .run():
         logger.info('finished successfully')
+
+        return True
     else:
         logger.error('FAILED')
+        return False
+
 
 
 if __name__ == '__main__':

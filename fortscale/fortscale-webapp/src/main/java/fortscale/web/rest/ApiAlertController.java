@@ -13,8 +13,9 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.ValueCountBean;
 import fortscale.web.beans.request.AlertFilterHelperImpl;
-import fortscale.web.beans.request.AlertRestFilter;
+import fortscale.domain.rest.AlertRestFilter;
 import fortscale.web.beans.request.CommentRequest;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
@@ -38,10 +39,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -92,6 +90,24 @@ public class ApiAlertController extends BaseController {
 		return response;
 	}
 
+	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
+		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
+
+		for (Map.Entry<String, Integer> alertTypeToCountEntry : alertsService.getAlertsTypesCounted(ignoreRejected).entrySet()){
+			alertTypesNameAndCount.add(new ValueCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue()));
+		}
+
+		DataBean<Set<ValueCountBean>> result = new DataBean<>();
+
+		result.setData(alertTypesNameAndCount);
+		result.setTotal(alertTypesNameAndCount.size());
+
+		return result;
+	}
+
 	/**
 	 *  The format of the dates in the exported file
 	 */
@@ -129,6 +145,7 @@ public class ApiAlertController extends BaseController {
 				START_TIME_COLUMN_NAME,
 				NUMBER_OF_INDICATORS_COLUMN_NAME,
 				STATUS_COLUMN_NAME,
+				FEEDBACK_COLUMN_NAME,
 				SEVERITY_COLUMN_NAME};
 
 		csvWriter.writeNext(tableTitleRow);
@@ -146,7 +163,8 @@ public class ApiAlertController extends BaseController {
 					alert.getEntityName(),
 					simpleDateFormat.format(new Date(alert.getStartDate())),
 					evidencesSizeAsString,
-					alert.getStatus().name(),
+					alert.getStatus().getPrettyValue(),
+					alert.getFeedback().getPrettyValue(),
 					alert.getSeverity().name()};
 			csvWriter.writeNext(alertRow);
 
@@ -220,7 +238,6 @@ public class ApiAlertController extends BaseController {
 		}
 		return entities;
 	}
-
 
 	private Map<Severity, Integer> countSeverities (AlertRestFilter filter) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();

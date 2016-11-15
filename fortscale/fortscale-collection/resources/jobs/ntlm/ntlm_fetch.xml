@@ -38,6 +38,10 @@
                     <value>{getNTLMdata}</value>
                 </entry>
                 <entry>
+                    <key>delimiter</key>
+                    <value>,</value>
+                </entry>
+                <entry>
                     <key>runSavedQuery</key>
                     <value>false</value>
                 </entry>

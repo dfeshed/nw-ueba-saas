@@ -37,6 +37,12 @@ public class BatchScheduler {
 
 	public static void main(String[] args) {
 		try {
+
+			// Log process arguments.
+			// The right way to do it is convert collection to StandardProcess that does this for free.
+			// Meanwhile, this is Q&D workaround
+			logger.info("Process arguments(tmp): {}", Arrays.toString(args));
+
 			BatchScheduler batch = new BatchScheduler();
 
 			if (args.length==0) {

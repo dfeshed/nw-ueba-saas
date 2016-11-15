@@ -7,10 +7,12 @@ from manager import Manager
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils import parsers
+from bdp_utils.run import step_runner_main
 from bdp_utils.samza import are_tasks_running
 from bdp_utils.log import init_logging
 
 logger = logging.getLogger('2.6-step4')
+init_logging(logger)
 
 
 def create_parser():
@@ -54,9 +56,9 @@ Inner workings:
     return parser
 
 
+@step_runner_main(logger)
 def main():
     arguments = create_parser().parse_args()
-    init_logging(logger)
     if not are_tasks_running(logger=logger,
                              host=arguments.host,
                              task_names=['event-scoring-persistency-task', 'entity-events-scoring-task']):
@@ -66,8 +68,12 @@ def main():
                validation_timeout=arguments.timeout * 60,
                validation_polling=arguments.polling_interval * 60).run():
         logger.info('finished successfully')
+        return True
     else:
         logger.error('FAILED')
+
+        return False
+
 
 
 if __name__ == '__main__':

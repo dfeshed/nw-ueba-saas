@@ -72,6 +72,18 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
+    public void updateConfigItemAsObject(String key, Object value) {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            Map<String,String> items = new HashMap<>();
+            items.put(key,mapper.writeValueAsString(value));
+            this.updateConfigItems(items );
+        } catch (Exception ex) {
+            logger.error("failed to convert object to string - " + ex);
+        }
+    }
+
+    @Override
     public Map<String, String> getApplicationConfigurationByNamespace(String namespace) {
         List<ApplicationConfiguration> applicationConfigurations = applicationConfigurationRepository.
                 findByKeyStartsWith(namespace);
@@ -82,6 +94,13 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
             }
         }
         return result;
+    }
+
+    @Override
+    public List<ApplicationConfiguration> getApplicationConfigurationAsListByNamespace(String namespace) {
+        return applicationConfigurationRepository.
+                findByKeyStartsWith(namespace);
+
     }
 
     @Override

@@ -105,6 +105,12 @@
 			<groupId>org.apache.flume</groupId>
 			<artifactId>flume-ng-core</artifactId>
 			<version>${flume.version}</version>
+			<exclusions>
+				<exclusion>
+				<groupId>org.mortbay.jetty</groupId>
+				<artifactId>servlet-api</artifactId>
+			</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.flume</groupId>

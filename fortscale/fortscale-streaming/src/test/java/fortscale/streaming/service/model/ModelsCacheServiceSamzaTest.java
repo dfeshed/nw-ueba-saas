@@ -123,7 +123,7 @@ public class ModelsCacheServiceSamzaTest {
 		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
 		modelsCacheInfo = cache.get(ModelCacheManagerSamza.getStoreKey(containers.get(2).getModelConf(), DEFAULT_CONTEXT_ID));
 		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
-		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(new Date()));
+		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(new Date()), 0);
 		Assert.assertEquals(modelDao3, modelDao);
 		Assert.assertEquals(5, expectedModel3.getFeatureCount(feature3.getValue().toString()), 0);
 	}

@@ -5,7 +5,6 @@ import fortscale.services.UserService;
 import fortscale.services.impl.UserServiceImpl;
 import fortscale.services.impl.UsernameService;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
-import fortscale.streaming.service.UserTagsService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationConfig;
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
@@ -61,8 +60,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// create the computer service with the levelDB cache
 		KeyValueStore<String,Set> userServiceStore = new KeyValueStoreMock<>();
 		userService = new UserServiceImpl();
-		userService.setCache(new KeyValueDbBasedCache<String, Set>(userServiceStore, Set.class));
-		task.topicToServiceMap.put("userUpdatesTopic", userService);
 
 		// create the SensitiveMachine service with the levelDB cache
 		KeyValueStore<String,String> usernameStore = new KeyValueStoreMock<>();
@@ -104,11 +101,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// configuration
 		UsernameNormalizationService usernameNormalizationService = Mockito.mock(UsernameNormalizationService.class);
 		task.dataSourceToConfigurationMap.put(new StreamingTaskDataSourceConfigKey("vpn", "etl"), new UsernameNormalizationConfig("output1",
-				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService,true));
-
-		// tagging
-		task.tagService = Mockito.mock(UserTagsService.class);
-		Mockito.when(task.tagService.getUserService()).thenReturn(Mockito.mock(UserService.class));
+				usernameField, "domain", "", normalizedUsernameField, "key", true, "vpn", usernameNormalizationService));
 
 
 		// User2 with normalized username
@@ -121,7 +114,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.verify(usernameNormalizationService, never()).normalizeUsername(eq(anyString()), anyString(), null);
 		// validate tagging
 		JSONObject message = (JSONObject) JSONValue.parseWithException(MESSAGE_2);
-		Mockito.verify(task.tagService).addTagsToEvent("User 2", message);
 
 
 		// User 1 without normalized name, success in normalization
@@ -153,8 +145,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
 		//Mockito.verify(usernameNormalizationService).normalizeUsername("user3", "domain", message, null, false);
-		// validate tagging
-		Mockito.verify(task.tagService, never()).addTagsToEvent(anyString(), eq(message));
 
 
 		// User 4 without normalized name, failure in normalization and no drop of record
@@ -177,38 +167,6 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		//Mockito.verify(task.tagService).addTagsToEvent("User 4", message);
 
 
-	}
-
-	@Test
-	public void wrappedProcess_should_add_user_tag_to_userService_cache() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		// prepare envelope
-		String userTag = "MY_TAG";
-		Set<String> tags = new HashSet<String>();
-		tags.add(userTag);
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(tags) , "userUpdatesTopic");
-		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-		// validate the tag was added to cache
-		assertEquals(tags,(Set) userService.getCache().get("key1"));
-	}
-
-	@Test
-	public void wrappedProcess_should_override_user_tag_in_userService_cache() throws Exception {
-		ObjectMapper mapper = new ObjectMapper();
-		// prepare envelope
-		String userTag = "MY_TAG";
-		Set<String> tags = new HashSet<String>();
-		tags.add(userTag);
-		Set<String> oldTags = new HashSet<String>();
-		oldTags.add("oldTag");
-		userService.getCache().put("key1",oldTags);
-		assertEquals(oldTags, (Set) userService.getCache().get("key1"));
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(tags) , "userUpdatesTopic");
-		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-		// validate the tag was added to cache
-		assertEquals(tags, (Set) userService.getCache().get("key1"));
 	}
 
 	@Test

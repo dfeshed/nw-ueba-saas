@@ -2,6 +2,7 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.google.common.base.Joiner;
 import fortscale.utils.ConversionUtils;
 import org.springframework.util.Assert;
 
@@ -106,6 +107,17 @@ public class TimeModel implements Model {
 	@Override
 	public long getNumOfSamples() {
 		return numOfSamples;
+	}
+
+	@Override
+	public String toString() {
+
+		String smoothedBucketsStr="null";
+		if(smoothedBuckets!=null) {
+
+			smoothedBucketsStr = Joiner.on(",").join(smoothedBuckets);
+		}
+		return String.format("<TimeModel: timeResolution=%d bucketSize=%d smoothedBuckets=%s numOfSamples=%d categoryRarityModel=%s>", timeResolution,bucketSize,smoothedBucketsStr,numOfSamples,categoryRarityModel.toString());
 	}
 
 	public CategoryRarityModel getCategoryRarityModel() {

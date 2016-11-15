@@ -1,8 +1,9 @@
 import logging
-from mongo_stats import remove_documents
-
 import os
 import sys
+
+from mongo_stats import remove_documents
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from step4.validation.distribution.validation import validate_distribution
 from step4.validation.missing_events.validation import validate_no_missing_events
@@ -40,7 +41,7 @@ class Manager(DontReloadModelsOverridingManager):
         entity_event_value_models_regex = r'model_entity_event\.(.*\.)?normalized_username\.'
         alert_control_models_regex = r'model_entity_event\.(.*\.)?global.alert_control\.'
         models_regex = '(' + entity_event_value_models_regex + '|' + alert_control_models_regex + ')'
-        scored_entity_events_regex = 'scored___entity_event_'
+        scored_entity_events_regex = 'scored___entity_event_((?!acm).)*$'
         self._runner.infer_start_and_end(collection_names_regex='^entity_event_(?!meta_data)')
         end_rounded = ((self._runner.get_end() / (60 * 60 * 24)) + 1) * (60 * 60 * 24)
         self._builder.set_start(end_rounded).set_end(end_rounded)

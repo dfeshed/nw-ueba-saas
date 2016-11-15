@@ -139,7 +139,7 @@ public class ModelServiceTest {
 		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
 		Date currentEndTime = new Date(currentEndTimeInMillis);
-		modelService.process(listener, sessionId, modelConfName, null, currentEndTime);
+		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, false, Collections.emptySet());
 
 		// Assert listener
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
@@ -165,10 +165,8 @@ public class ModelServiceTest {
 		verify(mongoTemplate, times(2)).insert(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
 		verifyNoMoreInteractions(mongoTemplate);
 
-		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
-		expectedId1Model.setParameters(96, 316.667, 81.223);
-		ContinuousDataModel expectedId2Model = new ContinuousDataModel();
-		expectedId2Model.setParameters(75, 7.319, 6.540);
+		ContinuousDataModel expectedId1Model = new ContinuousDataModel().setParameters(96, 316.666667, 81.223286, 400);
+		ContinuousDataModel expectedId2Model = new ContinuousDataModel().setParameters(75, 7.319200, 6.539804, 17);
 
 		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().get(0);
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());

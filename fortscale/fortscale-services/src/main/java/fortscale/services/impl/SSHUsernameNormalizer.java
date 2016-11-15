@@ -1,6 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.services.ComputerService;
+import fortscale.services.impl.metrics.UsernameNormalizerMetrics;
 import fortscale.utils.logging.Logger;
 
 import java.util.List;
@@ -72,9 +73,6 @@ public class SSHUsernameNormalizer extends UsernameNormalizer {
 		return ret;
 	}
 
-	@Override
-	public void afterPropertiesSet() throws Exception {
-
-	}
 
 }
+

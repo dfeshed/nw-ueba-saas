@@ -120,15 +120,6 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 				Collection<FeatureBucket> featureBuckets = entry.getValue();
 
 				insertFeatureBuckets(featureBucketConf, featureBuckets);
-
-				for(FeatureBucket featureBucket: featureBuckets) {
-					if(featureBucket.getId()==null) {
-						errorMsg += String.format("\nfeatureBucket.getId() is null after inserting the bucket to mongodb: bucktConfName %s, bucketId %s", featureBucketConf.getName(), featureBucket.getBucketId());
-						error = true;
-					}
-					String key = getBucketKey(featureBucketConf.getName(), featureBucket.getBucketId());
-					featureBucketStore.put(key, featureBucket);
-				}
 			}
 
 			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime);
@@ -173,12 +164,10 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		String key = getBucketKey(featureBucket);
 		FeatureBucket oldFeatureBucket = featureBucketStore.get(key);
 		
-		if(oldFeatureBucket == null && featureBucket.getId() == null){
+		if(oldFeatureBucket == null){
 			storeFeatureBucketForTheFirstTime(featureBucketConf, featureBucket);
-		} else if(featureBucket.getId() != null || featureBucket.getEndTime() < dataSourcesSyncTimer.getLastEventEpochtime()){
-			updateFeatureBucketAfterEndTimeReached(featureBucketConf, featureBucket);
-		} else{
-			updateFeatureBucketBeforeEndTimeReached(featureBucketConf, featureBucket);
+		}  else{
+			updateFeatureBucket(featureBucketConf, featureBucket);
 		}
 	}
 	
@@ -190,7 +179,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		featureBucketStore.put(key, featureBucket);
 	}
 	
-	private void updateFeatureBucketBeforeEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
+	private void updateFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket){
 		String key = getBucketKey(featureBucket);
 		featureBucketStore.put(key, featureBucket);
 	}

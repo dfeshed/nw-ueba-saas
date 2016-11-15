@@ -47,22 +47,6 @@
 					<key>morphlineFile</key>
 					<value>${ad.read.users.morphline}</value>
 				</entry>
-				<entry>
-					<key>hadoopDirPath</key>
-					<value>${hdfs.user.data.ldap.users.path}</value>
-				</entry>
-				<entry>
-					<key>filenameFormat</key>
-					<value>users%d.csv</value>
-				</entry>
-                <entry>
-                    <key>partitionStrategy</key>
-                    <value>${impala.ldapusers.table.partition.type}</value>
-                </entry>
-				<entry>
-					<key>impalaTableName</key>
-					<value>${impala.ldapusers.table.name}</value>
-				</entry>
             </job-data-map>
 		</job>
 		

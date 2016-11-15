@@ -6,7 +6,9 @@ import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
-import fortscale.domain.core.*;
+import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.Computer;
+import fortscale.domain.core.User;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
@@ -24,9 +26,11 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
@@ -34,37 +38,34 @@ import static org.mockito.Mockito.*;
 public class UserServiceTest {
 	@Mock
 	private MongoOperations mongoTemplate;
-	
+
 	@Mock
 	private AdUserRepository adUserRepository;
-	
+
 	@Mock
 	private AdUserThumbnailRepository adUserThumbnailRepository;
 
 	@Mock
 	private AdGroupRepository adGroupRepository;
-	
+
 	@Mock
 	private UserRepository userRepository;
-	
+
 	@Mock
 	private ComputerRepository computerRepository;
-	
+
 	@Mock
 	private UserMachineDAO userMachineDAO;
-	
+
 	@Mock
 	private EventScoreDAO loginDAO;
 
 	@Mock
 	private EventScoreDAO sshDAO;
-	
+
 	@Mock
 	private EventScoreDAO vpnDAO;
-	
-	@Mock
-	private ImpalaWriterFactory impalaWriterFactory;
-	
+
 	@Mock
 	private ADParser adUserParser;
 
@@ -73,7 +74,7 @@ public class UserServiceTest {
 
 	@InjectMocks
 	private UserServiceImpl userService;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
@@ -90,7 +91,7 @@ public class UserServiceTest {
 		assertEquals(username, user.getApplicationUserDetails(userApplication.getId()).getUserName());
 		verify(userRepository, times(1)).save(user);
 	}
-	
+
 	@Test
 	public void createNewApplicationUserDetailsAlreadyExistTest(){
 		User user = new User();
@@ -103,7 +104,7 @@ public class UserServiceTest {
 		assertEquals(username, user.getApplicationUserDetails(userApplication.getId()).getUserName());
 		verify(userRepository, never()).save((User)any());
 	}
-	
+
 	@SuppressWarnings("unchecked")
 	@Test
 	public void getUserMachinesTest(){
@@ -148,62 +149,6 @@ public class UserServiceTest {
 	}
 
 	@Test
-	public void removeClassifierFromAllUsersTest() {
-		// Arrange
-		int numOfUsers = 100;
-		int pageSize = 23;
-
-		List<User> listOfUsers = new ArrayList<>(numOfUsers);
-		Set<List<User>> subLists = new HashSet<>();
-		userService.setPageSize(pageSize);
-
-		for (int i = 0; i < numOfUsers; i++) {
-			User user = new User();
-			user.setUsername("user" + i);
-
-			ClassifierScore score = new ClassifierScore();
-			score.setClassifierId("Login");
-			user.putClassifierScore(score);
-
-			score = new ClassifierScore();
-			score.setClassifierId("SSH");
-			user.putClassifierScore(score);
-
-			score = new ClassifierScore();
-			score.setClassifierId("VPN");
-			user.putClassifierScore(score);
-
-			listOfUsers.add(user);
-		}
-
-		when(userRepository.count()).thenReturn((long)numOfUsers);
-		int numOfPages = ((numOfUsers - 1) / pageSize) + 1;
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, pageSize);
-			int first = i * pageSize;
-			int last = Math.min((i + 1) * pageSize, numOfUsers);
-			List<User> subList = listOfUsers.subList(first, last);
-			when(userRepository.findAllExcludeAdInfo(pageRequest)).thenReturn(subList);
-			subLists.add(subList);
-		}
-
-		// Act
-		userService.removeClassifierFromAllUsers("Login");
-		userService.removeClassifierFromAllUsers("SSH");
-		userService.removeClassifierFromAllUsers("VPN");
-
-		// Assert
-		for (List<User> subList : subLists)
-			verify(userRepository, times(3)).save(subList);
-
-		for (User user : listOfUsers) {
-			verify(usernameService, times(3)).updateUsernameInCache(user);
-			assertTrue(user.getTags().size() == 0);
-			assertTrue(user.getScores().isEmpty());
-		}
-	}
-
-	@Test
 	public void updateUserWithADInfoTest() {
 		// Arrange
 		int numOfUsers = 100;
@@ -242,41 +187,6 @@ public class UserServiceTest {
 		verify(userRepository, times(numOfUsers)).save(any(User.class));
 		verify(usernameService, times(numOfUsers)).updateUsernameInCache(any(User.class));
 		verify(mongoTemplate, never()).updateFirst(any(Query.class), any(Update.class), any(Class.class));
-	}
-
-	@Test
-	public void userNameSyncWithPrincipalNameForFirstTimeCreationTest()
-	{
-		User newUser = new User();
-		AdUser adUser = new AdUser();
-		adUser.setUserPrincipalName("principalTest@test.dom");
-		adUser.setsAMAccountName("principalTest");
-		adUser.setDistinguishedName("principalTestDN");
-		adUser.setObjectGUID("12345");
-
-		UserAdInfo userAdInfo = userService.createUserAdInfo(newUser,adUser,new Date(),new HashSet<>(),new HashSet<>(),true);
-
-		assertTrue(newUser.getUsername().equals("principaltest@test.dom") && userAdInfo.getUserPrincipalName().equals("principalTest@test.dom"));
-
-
-	}
-
-	@Test
-	public void userNameKeepPrincipalNameStaticForAnyADChangesTest()
-	{
-		User existUser = new User();
-		existUser.setUsername("principaltest@test.dom");
-		AdUser adUser = new AdUser();
-		adUser.setUserPrincipalName("principalTest@test.dom2");
-		adUser.setsAMAccountName("principalTest");
-		adUser.setDistinguishedName("principalTestDN");
-		adUser.setObjectGUID("12345");
-
-		UserAdInfo userAdInfo = userService.createUserAdInfo(existUser,adUser,new Date(),new HashSet<>(),new HashSet<>(),false);
-
-		assertTrue(existUser.getUsername().equals("principaltest@test.dom") && userAdInfo.getUserPrincipalName().equals("principalTest@test.dom2"));
-
-
 	}
 
 	@Test

@@ -2,6 +2,7 @@ package fortscale.collection.jobs;
 
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.kafka.IMetricsDecider;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.util.Assert;
 
@@ -29,8 +30,13 @@ public class EqualityMetricsDecider implements IMetricsDecider {
 		}
 
 		for (Map.Entry<String, Object> entry : keyToExpectedValueEntries) {
-			if (!metrics.has(entry.getKey())) return false;
-			Object actualValue = metrics.get(entry.getKey());
+
+			Object actualValue;
+			try {
+				actualValue = metrics.get(entry.getKey());
+			} catch (JSONException e) {
+				return false;
+			}
 			Object expectedValue = entry.getValue();
 
 			if (actualValue instanceof Number) {

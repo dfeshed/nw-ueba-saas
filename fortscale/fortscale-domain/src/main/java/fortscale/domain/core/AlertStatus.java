@@ -8,13 +8,16 @@ import java.util.List;
  * Date: 6/22/2015.
  */
 public enum AlertStatus {
-	Open ("OPEN"),
-	Closed("CLOSED");
+	Open ("OPEN", "Reviewed"),
+	Closed("CLOSED", "Unreviewed");
 
 	private String upperCaseValue;
+	private String prettyValue;
 
-	private AlertStatus(String upperCaseValue) {
+	private AlertStatus(String upperCaseValue, String prettyValue) {
+
 		this.upperCaseValue = upperCaseValue;
+		this.prettyValue = prettyValue;
 	}
 
 	public static List<String> getUpperCaseValues(){
@@ -31,5 +34,9 @@ public enum AlertStatus {
 			}
 		}
 		return null;
+	}
+
+	public String getPrettyValue(){
+		return this.prettyValue;
 	}
 }

@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC;
@@ -179,7 +178,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		// Check and build models if needed
 		try {
 			modelBuildingSyncService.buildModelsIfNeeded(endTimeLte);
-		} catch (TimeoutException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 			throw e;
 		}
