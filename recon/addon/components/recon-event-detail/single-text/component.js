@@ -3,8 +3,7 @@ import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
-import { not, readOnly } from 'ember-computed-decorators';
-const { Component, on, run } = Ember;
+const { Component } = Ember;
 
 const stateToComputed = ({ recon: { visuals } }) => ({
   isRequestShown: visuals.isRequestShown,
@@ -18,8 +17,6 @@ const SingleTextComponent = Component.extend({
   classNameBindings: ['packet.side'],
   packet: null,
   index: null,
-  viewportEntered: false,
-  @readOnly @not('viewportEntered') viewportExited: null,
 
   /**
    * Determine the direction, request or response, for the arrow
@@ -37,30 +34,6 @@ const SingleTextComponent = Component.extend({
     return (side === 'request' && isRequestShown) || (side === 'response' && isResponseShown);
   },
 
-  /**
-   * Observe the component's this.element intersecting with the root element
-   * @private
-   */
-  setupIntersectionObserver: on('didInsertElement', function() {
-    const options = {
-      rootMargin: '2000px 0px 2000px 0px',
-      threshold: 0
-    };
-
-    const observer = new IntersectionObserver(([entry]) => {
-      run(() => {
-        // If intersectionRatio <= 0 it is hidden
-        this.set('viewportEntered', entry.intersectionRatio > 0);
-      });
-    }, options);
-
-    observer.observe(this.element);
-
-    this.set('observer', observer);
-  }),
-  willDestroyElement() {
-    this.get('observer').disconnect();
-  },
   actions: {
     expandPacket() {
       this.toggleProperty('packetIsExpanded');

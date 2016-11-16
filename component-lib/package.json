@@ -65,6 +65,7 @@
     "ember-i18n": "4.3.2",
     "ember-cli-node-assets": "0.1.4",
     "ember-simple-auth": "1.1.0",
+    "ember-spaniel": "0.1.0",
     "flexi": "1.2.0"
   },
   "ember-addon": {

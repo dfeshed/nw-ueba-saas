@@ -4,6 +4,7 @@ import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import { not, readOnly } from 'ember-computed-decorators';
+import { SpanielObserver } from 'spaniel';
 const { Component, K, on, run, set } = Ember;
 
 const stateToComputed = ({ recon: { visuals } }) => ({
@@ -223,14 +224,16 @@ const SinglePacketComponent = Component.extend({
    */
   setupIntersectionObserver: on('didInsertElement', function() {
     const options = {
-      rootMargin: '2000px 0px 2000px 0px',
-      threshold: 0
+      rootMargin: '-2000px 0px -2000px 0px',
+      threshold: [{
+        ratio: 0.05,
+        time: 0
+      }]
     };
 
-    const observer = new IntersectionObserver(([entry]) => {
+    const observer = new SpanielObserver(([entry]) => {
       run(() => {
-        // If intersectionRatio <= 0 it is hidden
-        this.set('viewportEntered', entry.intersectionRatio > 0);
+        this.set('viewportEntered', entry.entering);
       });
     }, options);
 
