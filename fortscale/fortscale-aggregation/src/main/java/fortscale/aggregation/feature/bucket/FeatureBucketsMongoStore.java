@@ -100,7 +100,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		//Get the data from the origin collection
 		result = readFromMongo(collectionNames,query,featureBucketConf);
 
-		return finalResult;
+		return result;
 
 
 
