@@ -1,4 +1,4 @@
-var determineSocketUrl = require('mock-server/util').determineSocketUrl;
+var determineSocketUrl = require('../../common').determineSocketUrl;
 
 module.exports = function(environment) {
 
