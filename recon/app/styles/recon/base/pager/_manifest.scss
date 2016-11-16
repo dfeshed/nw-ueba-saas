@@ -1,0 +1,12 @@
+.recon-pager {
+  @include rsa-font(body, small);
+  padding: rsa-whitespace();
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  &.is-hidden {
+    display: none;
+  }
+}

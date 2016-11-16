@@ -63,12 +63,13 @@ const addCatchAllTimeRange = (query) => {
   );
 };
 
-const addStreaming = (_query) => {
+const addStreaming = (_query, pageSize = 10000) => {
+  // can't page yet in UI yet, so just set default pageSize high
   const query = {
     ..._query,
     page: {
       index: 0,
-      size: 10000 // can't page yet in UI yet, so just setting high
+      size: pageSize
     },
     stream: {
       batch: 10,

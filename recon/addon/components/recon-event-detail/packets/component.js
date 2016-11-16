@@ -6,7 +6,8 @@ const { Component } = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
   packetFields: data.packetFields,
-  packets: data.packets
+  packets: data.packets,
+  pageSize: data.packetsPageSize
 });
 
 const PacketReconComponent = Component.extend({

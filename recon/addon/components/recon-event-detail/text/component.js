@@ -7,7 +7,8 @@ const { Component, set, String: { htmlSafe } } = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
   eventType: data.eventType,
-  packets: data.packets
+  packets: data.packets,
+  pageSize: data.packetsPageSize
 });
 
 const TextReconComponent = Component.extend({
