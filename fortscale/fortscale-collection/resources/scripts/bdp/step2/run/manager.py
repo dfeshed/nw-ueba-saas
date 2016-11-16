@@ -98,9 +98,8 @@ class Manager(OnlineManager):
         validation_end_time = time_utils.get_epochtime(self._last_batch_end_time)
         send(logger=logger,
              host=self._host,
-             topic='fortscale-vpn-event-score-from-hdfs',
-             message='{\\"data_source\\": \\"dummy\\", \\"date_time_unix\\": ' +
-                     str(validation_end_time + 1) + '}')
+             topic='fortscale-aggregation-events-control',
+             message='{\\"date_time_unix\\": ' + str(validation_end_time + 1) + '}')
         logger.info('validating last partial batch...')
         validation_start_time = \
             validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60

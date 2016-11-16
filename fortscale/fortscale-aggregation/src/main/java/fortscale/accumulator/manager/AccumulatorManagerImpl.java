@@ -80,10 +80,6 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
     private Instant calcFromInstant(AccumulatorManagerParams params, String feature) {
         Instant accumulateFrom;
         Instant lastAccumulatedEvent = getLastAccumulatedEventTime(feature);
-        if(params.getFrom() == null)
-        {
-            params.setFrom(accumulator.getDefaultFromPeriod(feature));
-        }
         if (lastAccumulatedEvent != null) {
             if (lastAccumulatedEvent.isAfter(params.getFrom())) {
                 accumulateFrom = lastAccumulatedEvent.plus(1,ChronoUnit.DAYS);
@@ -93,7 +89,10 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         } else {
             accumulateFrom = params.getFrom();
         }
-
+        if(accumulateFrom == null)
+        {
+            accumulateFrom = accumulator.getDefaultFromPeriod(feature);
+        }
         return accumulateFrom.truncatedTo(ChronoUnit.DAYS);
     }
 

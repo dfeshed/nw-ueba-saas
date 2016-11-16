@@ -22,7 +22,10 @@ public class UserActivityEntryHashMap extends HashMap<String, Double> {
         }
     }
 
-    public Set<Entry<String, Double>> getTopEntries(int limit) {
+    public Set<Entry<String, Double>> getTopEntries(Integer limit) {
+        if (limit == null){
+            limit = this.size();
+        }
         if (totalCount > 0) {
             Set<Entry<String, Double>> topEntries = this.entrySet()
                     .stream()

@@ -77,6 +77,17 @@ public interface StatsService {
 
     /**
      *
+     * Unregisters a metrics group object, an application metrics group object from the services.
+     *
+     * This function is called from the merticsGroup unregister method. IT SHOULD NOT BE CALLED FROM APPLICATION CODE!
+     *
+     * @param metricsGroup - metrics group to unregister
+     */
+    void unregisterStatsMetricsGroup(StatsMetricsGroup metricsGroup);
+
+
+    /**
+     *
      * tick function should be called periodically to update stats and to write them to the engine
      *
      * @param epoch - time when tick occurred. This epoch as parameter enables easy testing

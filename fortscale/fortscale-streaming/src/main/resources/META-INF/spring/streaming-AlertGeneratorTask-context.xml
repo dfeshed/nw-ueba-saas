@@ -71,6 +71,12 @@
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
+    <bean id="filterToUsersCache" class="fortscale.services.cache.MemoryBasedCache">
+        <constructor-arg name="maxSize" value="${users.with.alerts.service.cache.max.items:10}" />
+        <constructor-arg name="timeToExpire" value="${users.with.alerts.service.cache.timeToExpireSec:600}" />
+        <constructor-arg name="clazz" value="java.util.ArrayList" />
+    </bean>
+
     <!-- computer service cache that uses memory based implementation and send updates to kafka topics are injected here -->
     <bean id="computerServiceCache" class="fortscale.services.cache.KafkaPropogateUpdatesCache">
         <constructor-arg name="innerCache">
@@ -114,16 +120,7 @@
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
-    <!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
-    <bean id="userTagsCache" class="fortscale.services.cache.MemoryBasedCache">
-        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
-        <constructor-arg name="clazz" value="java.lang.String" />
-    </bean>
-
     <bean id="samAccountNameService" class="fortscale.services.impl.SamAccountNameService" scope="singleton"/>
-
-    <bean id="impalaWriterFactory" class="fortscale.services.impl.ImpalaWriterFactoryImpl" />
 
     <bean id="computerService" class="fortscale.services.impl.ComputerServiceImpl"/>
 
@@ -145,9 +142,6 @@
 
     <bean id="singleTriggerAlertCreationSubscriber" class="fortscale.streaming.alert.subscribers.SingleTriggerAlertCreationSubscriber" scope="prototype" />
 
-
-    <!-- UserTagService-->
-    <bean id="userTagsCacheService" class="fortscale.services.impl.UserTagsCacheServiceImpl" scope="singleton" />
 
     <bean id="ForwardingService" class="fortscale.services.impl.ForwadingServiceImpl" scope="singleton" />
 

@@ -20,7 +20,16 @@ public interface ActiveDirectoryDAO {
     void getAndHandle(String filter, String
             adFields, int resultLimit, ActiveDirectoryResultHandler handler, List<AdConnection> adConnections)
             throws Exception;
-
     List<String> getDomainControllers(List<AdConnection> AdConnections) throws Exception;
+
+	/**
+	 *
+	 * This method tests to see if a connection to ad can be made
+	 *
+	 * @param adConnection  The Active Directory connection object
+	 * @return				The result of the connection - empty for success or response error otherwise
+	 * @throws Exception
+	 */
+    String connectToAD(AdConnection adConnection) throws Exception;
 
 }

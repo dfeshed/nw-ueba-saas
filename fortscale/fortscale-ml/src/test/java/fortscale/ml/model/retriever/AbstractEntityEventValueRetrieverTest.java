@@ -3,6 +3,7 @@ package fortscale.ml.model.retriever;
 import fortscale.common.util.GenericHistogram;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.JokerEntityEventData;
+import fortscale.ml.model.selector.EntityEventContextSelector;
 import fortscale.ml.model.selector.EntityEventContextSelectorConf;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.utils.factory.FactoryService;
@@ -73,8 +74,13 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 		String contextId1 = "contextId1";
 		String contextId2 = "contextId2";
 		String contextId3 = "contextId3";
-		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class)))
-				.thenReturn((startTime, endTime) -> Arrays.asList(contextId1, contextId2, contextId3));
+
+
+		IContextSelector contextSelector = Mockito.mock(EntityEventContextSelector.class);
+		when(contextSelector.getContexts(Mockito.any(Date.class),Mockito.any(Date.class))).thenReturn(Arrays.asList(contextId1, contextId2, contextId3));
+		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class))).thenReturn(contextSelector);
+
+
 
 		AbstractEntityEventValueRetriever retriever = new AbstractEntityEventValueRetriever(config, false) {
 			@Override

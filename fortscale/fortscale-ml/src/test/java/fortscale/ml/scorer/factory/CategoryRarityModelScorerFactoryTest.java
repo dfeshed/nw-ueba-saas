@@ -94,11 +94,6 @@ public class CategoryRarityModelScorerFactoryTest {
 					}
 
 					@Override
-					public String getContextId(Map<String, String> context) {
-						return null;
-					}
-
-					@Override
 					public Set<String> getEventFeatureNames() {
 						return featureNamesSet;
 					}
@@ -107,6 +102,11 @@ public class CategoryRarityModelScorerFactoryTest {
 					public List<String> getContextFieldNames() {
 
 						return contextFieldNames;
+					}
+
+					@Override
+					public String getContextId(Map<String, String> context) {
+						return null;
 					}
 				});
 

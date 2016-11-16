@@ -1,5 +1,6 @@
 package fortscale.web.beans.request;
 
+import fortscale.domain.rest.RestFilter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 
@@ -13,7 +14,7 @@ import org.springframework.data.domain.Sort;
  */
 
 
-public abstract class RequestFilterHelperImpl<T extends  RestFilter,R> {
+public abstract class RequestFilterHelperImpl<T extends RestFilter,R> {
 
     //Constants
     protected static final int DEFAULT_PAGE_SIZE = 200;

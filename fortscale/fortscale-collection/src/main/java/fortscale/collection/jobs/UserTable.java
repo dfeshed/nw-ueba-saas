@@ -100,41 +100,6 @@ public class UserTable implements IUserTable {
 	}
 
 
-
-	private Double getScore(Classifier classifier){
-		Double ret = null;
-		ClassifierScore classifierScore = user.getScore(classifier.getId());
-		if(classifierScore != null){
-			ret = classifierScore.getScore();
-			if(ret != null){
-				ret = new Double(Math.round(ret));
-			}
-		}
-		
-		return ret;
-	}
-
-	@Override
-	public Double getSecScore() {
-		return getScore(Classifier.auth);
-	}
-
-	@Override
-	public Double getSshScore() {
-		return getScore(Classifier.ssh);
-	}
-
-	@Override
-	public Double getVpnScore() {
-		return getScore(Classifier.vpn);
-	}
-
-
-	@Override
-	public Double getTotalScore() {
-		return getScore(Classifier.total);
-	}
-
 	@Override
 	public String getDisplayName() {
 		return user.getDisplayName();

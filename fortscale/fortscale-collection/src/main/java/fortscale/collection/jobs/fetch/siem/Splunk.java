@@ -20,7 +20,6 @@ import java.util.Properties;
 @DisallowConcurrentExecution
 public class Splunk extends FetchJob {
 
-	public static final String SIEM_NAME = "splunk";
 	public static final String DEFAULT_USER = "admin";
 	public static final int DEFAULT_PORT = 8089;
 
@@ -29,9 +28,9 @@ public class Splunk extends FetchJob {
 	private boolean runSavedQuery;
 
 	@Override
-	protected boolean connect(String hostName, String port, String username, String password) throws Exception {
+	protected boolean connect(String hostName, Integer port, String username, String password) throws Exception {
 		// connect to Splunk
-		int portNumber = port == null ? DEFAULT_PORT : Integer.parseInt(port);
+		int portNumber = port == null ? DEFAULT_PORT : port;
 		String user = username == null ? DEFAULT_USER : username;
 		logger.debug("trying to connect Splunk at {}@{}:{}", username, hostName, port);
 		splunkApi = new SplunkApi(hostName, portNumber, user, EncryptionUtils.decrypt(password));

@@ -28,11 +28,6 @@ public class NTLMTest {
 	private String confFile = "resources/conf-files/parseNTLM.conf";
 	private String confEnrichmentFile = "resources/conf-files/enrichment/readNTLM_enrich.conf";
 
-
-
-
-
-
 	@SuppressWarnings("resource")
 	@BeforeClass
 	public static void setUpClass() {
@@ -73,13 +68,15 @@ public class NTLMTest {
 				$(
 						"Regular Event",
 						$(
+								"\"2015-12-10T05:43:11.000+0200\",esm,0x0,1.2.3.4,\"Fs-DC-01.Fortscale.dom\"",
 								"\"2015-12-10T05:43:11.000+0200\",esm,0x0,MCAFEE,\"Fs-DC-01.Fortscale.dom\"",
 								"\"2015-12-10T05:40:05.000+0200\",,\"splunk-ldap\",0x0,\"FS-DC-01\",\"Fs-DC-01.Fortscale.dom\"",
                                 //To lower case test:
                                 "\"2015-12-10T05:43:11.000+0200\",esm,0X6,MCAFEE,\"Fs-DC-01.Fortscale.dom\"",
-								"2016-05-15T11:00:00.000+00:00,TEST@test.com,0x0,\\\\TEST-PRD-03,TEST-TYO1-C1-6.test.com"
+								"2016-05-15T11:00:00.000+0000,TEST@test.com,0x0,\\\\TEST-PRD-03,TEST-TYO1-C1-6.test.com"
 						),
 						$(
+								(String)null,
 								"2015-12-10 03:43:11,1449718991,esm,0x0,MCAFEE,Fs-DC-01.Fortscale.dom",
 								(String)null,
                                 "2015-12-10 03:43:11,1449718991,esm,0x6,MCAFEE,Fs-DC-01.Fortscale.dom",

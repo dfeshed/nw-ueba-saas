@@ -18,6 +18,19 @@ class MongoInstance:
     db = None
     connected = False
 
+def singleton(cls):
+    instances = {}
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+    return getinstance
+
+@singleton
+class MongoInstance:
+    db = None
+    connected = False
+
 def get_db(host):
     mongo_instance = MongoInstance()
     if mongo_instance.connected:
