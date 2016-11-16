@@ -48,7 +48,6 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     protected MongoTemplate mongoTemplate;
 	@Autowired
 	protected UserService userService;
-
 	@Autowired
 	protected UsernameService usernameService;
 

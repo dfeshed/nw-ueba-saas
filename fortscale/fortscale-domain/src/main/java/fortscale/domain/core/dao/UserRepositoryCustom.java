@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import java.util.*;
 
 public interface UserRepositoryCustom {
+
 	User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
 
 	List<User> findByApplicationUserName(String applicationName, List<String> usernames);
@@ -94,7 +95,6 @@ public interface UserRepositoryCustom {
 
 	HashSet<String> getUsersGUID();
 
-
 	/**
 	 * Sync user tags according to the list of tags given (adds and removes neccesary tags)
 	 */
@@ -125,6 +125,7 @@ public interface UserRepositoryCustom {
 	 */
 
 	String findUserNameByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
+
 
 	List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
 

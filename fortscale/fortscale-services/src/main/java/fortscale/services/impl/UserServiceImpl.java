@@ -173,7 +173,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				serviceMetrics.updatedUsers++;
 				updateUser(logUsername, updateAppUsername, logEventId, userApplicationId, userId);
 			}
-        } else{
+		} else{
 			createNewUser(classifierId, normalizedUsername, logUsername, logEventId, userApplicationId);
 		}
 	}
@@ -184,20 +184,20 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		usernameService.addLogUsername(user, logEventId, logUsername);
 		saveUser(user);
 		if(user == null || user.getId() == null){
-            logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
+			logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
 			serviceMetrics.failedToCreateUser++;
-        } else{
-            usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
-            usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
-        }
+		} else{
+			usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
+			usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
+		}
 	}
 
 	private void updateUser(String logUsername, boolean updateAppUsername, String logEventId, String userApplicationId, String userId) {
 		Update update = new Update();
 		usernameService.fillUpdateLogUsername(update, logUsername, logEventId);
 		if(updateAppUsername){
-            usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
-        }
+			usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
+		}
 
 		updateUserInMongo(userId, update);
 
@@ -467,7 +467,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
 					updateUserWithOldInfo(deletedUser,user);
 					try {
-						 duplicatedUserRepository.save(deletedUser);
+						duplicatedUserRepository.save(deletedUser);
 					} catch (Exception ex) {
 						serviceMetrics.failedToCreateDeletedUser++;
 						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);

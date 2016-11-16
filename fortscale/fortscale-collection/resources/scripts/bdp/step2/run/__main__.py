@@ -183,10 +183,12 @@ def main():
                if 'build_entity_models_interval_in_hours' in arguments and arguments.build_entity_models_interval_in_hours is not None else None) \
             .run():
         logger.info('finished successfully')
+
         return True
     else:
         logger.error('FAILED')
         return False
+
 
 
 if __name__ == '__main__':

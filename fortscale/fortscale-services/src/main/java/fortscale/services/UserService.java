@@ -30,7 +30,6 @@ public interface UserService {
 
 	List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
 
-
 	ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 
 	List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
