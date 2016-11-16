@@ -2,51 +2,39 @@
 
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
 var shim = require('flexi/lib/pod-templates-shim');
+var environmentConfig = require('./config/environment');
+
+var appEnv = EmberApp.env();
+var ENV = environmentConfig(appEnv);
+var addonConfig = ENV['ember-cli-mirage'] || {};
+var enabledInProd = (appEnv === "production") && addonConfig.enabled;
+var mirageEnabled = enabledInProd || (appEnv !== 'production')
 
 shim(EmberApp);
 
 module.exports = function(defaults) {
-    var app = new EmberApp(defaults, {
-      babel: {
-        stage: 0,
+  var app = new EmberApp(defaults, {
+    babel: {
+      stage: 0,
+    },
+    nodeAssets: {
+      'crossfilter': {
+        import: ['crossfilter.js']
+      },
+      'mock-socket': {
+        srcDir: 'dist',
+        import: ['mock-socket.js'],
+        enabled: mirageEnabled
       }
-    });
+    }
+  });
 
-    // Use `app.import` to add additional libraries to the generated
-    // output files.
-    //
-    // If you need to use different assets in different
-    // environments, specify an object as the first parameter. That
-    // object's keys should be the environment name and the values
-    // should be the asset to use in that environment.
-    //
-    // If the library that you are including contains AMD or ES6
-    // modules that you would like to import into your application
-    // please specify an object with the list of modules as keys
-    // along with the exports of each module as its value.
+  if (mirageEnabled) {
+    // Load the JSON file with incidents
+    app.import("vendor/incident.json");
+    app.import("vendor/alerts.json");
+    app.import("vendor/context.json");
+  }
 
-    // Crossfilter library (for filtering, aggregating & sorting).
-    app.import(app.bowerDirectory + "/crossfilter/crossfilter.js");
-
-    // Dropdown libraries: tether & drop (drop depends on tether)
-    app.import(app.bowerDirectory + "/tether/dist/js/tether.js");
-    app.import(app.bowerDirectory + "/tether-drop/dist/js/drop.js");
-
-    // Mock websocket library: MockSocket (only imported with mirage)
-    (function(){
-        function _mirageIsEnabled(){
-            var addonConfig = app.project.config(app.env)['ember-cli-mirage'] || {},
-                enabledInProd = (app.env === "production") && addonConfig.enabled;
-            return enabledInProd || (app.env !== 'production');
-        }
-        if (_mirageIsEnabled()){
-            app.import(app.bowerDirectory + "/mock-socket/dist/mock-socket.js");
-
-            // Load the JSON file with incidents
-            app.import("vendor/incident.json");
-            app.import("vendor/alerts.json");
-            app.import("vendor/context.json");
-        }
-    })();
-    return app.toTree();
+  return app.toTree();
 };
