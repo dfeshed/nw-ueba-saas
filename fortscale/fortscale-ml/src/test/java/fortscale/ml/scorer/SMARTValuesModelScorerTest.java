@@ -3,6 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.CategoryRarityModel;
 import fortscale.ml.model.SMARTValuesModel;
+import fortscale.ml.model.SMARTValuesPriorModel;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
@@ -74,6 +75,6 @@ public class SMARTValuesModelScorerTest {
     @Test
     public void shouldGiveScoreWhenEverythingIsOk() {
         SMARTValuesModelScorer scorer = createScorer(Collections.singletonList("additional model name"), 0);
-        scorer.calculateScore(new SMARTValuesModel(), Collections.singletonList(new SMARTValuesModel()), new Feature("name", 1.0));
+        scorer.calculateScore(new SMARTValuesModel(), Collections.singletonList(new SMARTValuesPriorModel()), new Feature("name", 1.0));
     }
 }

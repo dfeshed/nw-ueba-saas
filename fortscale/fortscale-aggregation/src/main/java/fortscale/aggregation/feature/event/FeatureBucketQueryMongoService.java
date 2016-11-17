@@ -51,7 +51,7 @@ public class FeatureBucketQueryMongoService implements FeatureBucketQueryService
 				finalResult.addAll(readFromMongo(prefix + collectionName, contextType, ContextName, startTime, endTime));
 		});
 
-		return result;
+		return finalResult;
 
     }
 

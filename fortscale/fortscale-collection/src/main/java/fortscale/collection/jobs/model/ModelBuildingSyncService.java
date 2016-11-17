@@ -100,6 +100,7 @@ public class ModelBuildingSyncService {
 	}
 
 	protected void sendCommands(long endTimeInSeconds) throws JsonProcessingException {
+
 		logger.info("Sending model building commands: Session ID = {}, end time in seconds = {}.",
 				sessionId, endTimeInSeconds);
 

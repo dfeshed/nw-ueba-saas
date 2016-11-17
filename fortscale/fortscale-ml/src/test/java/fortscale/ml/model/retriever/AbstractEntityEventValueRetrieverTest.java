@@ -75,9 +75,11 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 		String contextId2 = "contextId2";
 		String contextId3 = "contextId3";
 
+
 		IContextSelector contextSelector = Mockito.mock(EntityEventContextSelector.class);
 		when(contextSelector.getContexts(Mockito.any(Date.class),Mockito.any(Date.class))).thenReturn(Arrays.asList(contextId1, contextId2, contextId3));
 		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class))).thenReturn(contextSelector);
+
 
 
 		AbstractEntityEventValueRetriever retriever = new AbstractEntityEventValueRetriever(config, false) {
