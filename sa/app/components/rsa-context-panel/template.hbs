@@ -16,6 +16,7 @@ closePanel=(route-action 'closeContextPanel')
    {{else if (is-equal model.meta 'FILE')}}
      {{rsa-context-panel/lc-community-activity liveConnectData=contextData.liveConnectData.FileReputation model=model}}
      {{rsa-context-panel/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
+     {{rsa-context-panel/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
    {{else if (is-equal model.meta 'DOMAIN')}}
      {{rsa-context-panel/lc-community-activity liveConnectData=contextData.liveConnectData.DomainReputation model=model}}
    {{/if}}

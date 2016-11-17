@@ -240,5 +240,12 @@ $font-fade-color: rsa-color(gray, light);
     &__prefix .value {
       color: rsa-color(blue);
     }
+    &__block {
+      margin-top: rsa-whitespace();
+      margin-left: rsa-whitespace();
+      margin-bottom: rsa-whitespace();
+      background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+      padding: rsa-whitespace();
+    }
   }
 }

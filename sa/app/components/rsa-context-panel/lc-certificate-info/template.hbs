@@ -1,0 +1,34 @@
+{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.certificateInfo'}}{{/rsa-content-section-header}}
+<hbox>
+  <vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.certIssuer') value=liveConnectData.certIssuer}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.certSigAlgo') value=liveConnectData.certSigAlgo}}
+    </div>
+  </vbox>
+  <vbox>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.certNotValidBefore')}}
+      {{rsa-content-datetime timestamp=liveConnectData.certNotValidBefore}}
+    </vbox>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.certNotValidAfter')}}
+      {{rsa-content-datetime timestamp=liveConnectData.certNotValidAfter}}
+    </vbox>
+  </vbox>
+</hbox>
+
+<div class="rsa-context-panel__liveconnect__block">
+  {{rsa-content-definition label=(t 'context.lc.certSerial') value=liveConnectData.certSerial}}
+</div>
+
+<div class="rsa-context-panel__liveconnect__block">
+  {{rsa-content-definition label=(t 'context.lc.certSubject') value=liveConnectData.certSubject}}
+</div>
+
+<div class="rsa-context-panel__liveconnect__block">
+  {{rsa-content-definition label=(t 'context.lc.certThumbprint') value=liveConnectData.certThumbprint}}
+</div>
+
