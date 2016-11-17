@@ -64,17 +64,11 @@ import java.util.Set;
 
 		Set<String> relevantUsers = filterPreparations(userRestFilter);
 
-		if (shouldStop(userRestFilter, relevantUsers)) {
-			return result;
+		if (!shouldStop(userRestFilter, relevantUsers)) {
+			result = userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired);
 		}
 
-		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
-			result = userService.findUsersByFilter(userRestFilter, null, relevantUsers, fieldsRequired);
-			return getResultsForTheSearch(result, userRestFilter.getSearchValue(), userRestFilter.getSize(), userRestFilter.getFromPage());
-		}
-		else {
-			return userService.findUsersByFilter(userRestFilter, pageRequest, relevantUsers, fieldsRequired);
-		}
+		return result;
 	}
 
 	private List<User> getResultsForTheSearch(List<User> users, String searchValue, Integer size, Integer fromPage) {
@@ -342,5 +336,14 @@ import java.util.Set;
 		}
 
 		return 0;
+	}
+
+	@Override
+	public List<User> findUsersWithSearchValue(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
+		// Get all the users relevant to the search
+		List<User> result = findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
+
+		// Get the top users
+		return getResultsForTheSearch(result, userRestFilter.getSearchValue(), userRestFilter.getSize(), userRestFilter.getFromPage());
 	}
 }

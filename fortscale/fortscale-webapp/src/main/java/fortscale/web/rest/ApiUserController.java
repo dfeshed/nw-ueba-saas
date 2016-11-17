@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import javax.jws.soap.SOAPBinding;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.ws.rs.core.Response;
@@ -150,6 +149,7 @@ public class ApiUserController extends BaseController{
 
 		List<User> users = getUsers(userRestFilter, pageRequest, null);
 
+		// Build the response
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
 		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
@@ -159,6 +159,7 @@ public class ApiUserController extends BaseController{
 		if (BooleanUtils.isTrue(userRestFilter.getAddAllWatched())) {
 			addAllWatched(usersList, userRestFilter);
 		}
+
 		return usersList;
 	}
 
@@ -227,13 +228,20 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> extendedSearch(UserRestFilter userRestFilter){
+		DataBean<List<UserDetailsBean>> result = new DataBean<>();
 
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())) {
 
-		PageRequest pagetRequest = createPaging(userRestFilter);
-		List<User> users = getUsers(userRestFilter, pagetRequest, extendedSearchfieldsRequired);
-//				userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
+			Sort sorting = createSorting(extendedSearchSortFields, userRestFilter.getSortDirection());
+			PageRequest pageRequest = new PageRequest(0, Integer.MAX_VALUE, sorting);
 
-		DataBean<List<UserDetailsBean>> result = getUsersDetails(users);
+			List<User> users = userWithAlertService.findUsersWithSearchValue(userRestFilter, pageRequest, extendedSearchfieldsRequired);
+
+			// Add severity to the users
+			setSeverityOnUsersList(users);
+
+			result = getUsersDetails(users);
+		}
 
 		return result;
 	}
@@ -602,10 +610,8 @@ public class ApiUserController extends BaseController{
 	 */
 	private List<User> getUsers(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 
-		List<User> users = new ArrayList<>();
-
 		// Get the relevant users by filter requested
-		users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
 
 		// Add severity to the users
 		setSeverityOnUsersList(users);
@@ -662,10 +668,6 @@ public class ApiUserController extends BaseController{
 	}
 
 	private PageRequest createPaging(UserRestFilter userRestFilter) {
-
-		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue()) && userRestFilter.getSortField()== null){
-			userRestFilter.setSortField(extendedSearchSortFields);
-		}
 
 		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 

@@ -600,16 +600,24 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter) {
 		// Create criteria list
 		List<Criteria> criteriaList = new ArrayList<>();
+		String startsWithRegex = "^"+userRestFilter.getSearchValue() + ".*i";
 
 		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
-			String startsWithRegex = "^"+userRestFilter.getSearchValue() + ".*i";
 			Criteria firstNameCriteria = new Criteria(User.getAdInfoField(UserAdInfo.firstnameField)).regex(startsWithRegex);
 			Criteria lastNameCriteria = new Criteria(User.getAdInfoField(UserAdInfo.lastnameField)).regex(startsWithRegex);
 			Criteria displayNameCriteria = new Criteria(User.displayNameField).regex(startsWithRegex);
 			Criteria userNameCriteria = new Criteria(User.usernameField).regex(startsWithRegex);
-			Criteria positionCriteria = new Criteria(User.getAdInfoField(UserAdInfo.positionField)).regex(startsWithRegex);
-			Criteria departmentCriteria = new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).regex(startsWithRegex);
+			Criteria positionCriteria = null;
+			Criteria departmentCriteria = null;
 
+			// If the users are filtered by position don't check for the search value
+			if (CollectionUtils.isEmpty(userRestFilter.getPositions())) {
+				positionCriteria = new Criteria(User.getAdInfoField(UserAdInfo.positionField)).regex(startsWithRegex);
+			}
+			// If the users are filtered by department don't check for the search value
+			if (CollectionUtils.isEmpty(userRestFilter.getDepartments())) {
+				departmentCriteria = new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).regex(startsWithRegex);
+			}
 			criteriaList.add(new Criteria().orOperator(firstNameCriteria, lastNameCriteria, displayNameCriteria, userNameCriteria, positionCriteria, departmentCriteria));
 		}
 
