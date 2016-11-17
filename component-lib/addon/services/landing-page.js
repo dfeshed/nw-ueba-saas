@@ -52,7 +52,7 @@ export default Service.extend({
 
     set(key, value) {
       this.set('_selected', value);
-      this.storeLocally(value);
+      this.storeLocally(value.key);
       return value;
     }
   })

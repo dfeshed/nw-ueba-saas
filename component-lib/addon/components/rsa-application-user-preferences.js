@@ -8,7 +8,6 @@ const {
   inject: {
     service
   },
-  isEmpty,
   run,
   isNone
  } = Ember;
@@ -31,8 +30,6 @@ export default Component.extend({
 
   contextMenus: service('context-menus'),
 
-  spacing: service('spacing'),
-
   timeFormat: service('time-format'),
 
   usernameFormat: service('username-format'),
@@ -40,10 +37,6 @@ export default Component.extend({
   landingPage: service('landing-page'),
 
   dateFormat: service('date-format'),
-
-  password: null,
-
-  passwordConfirm: null,
 
   withoutChanges: true,
 
@@ -60,11 +53,6 @@ export default Component.extend({
         }
       }
     });
-  },
-
-  @computed('password', 'passwordConfirm')
-  hasPasswordError(password, passwordConfirm) {
-    return !isEmpty(password) && !isEmpty(passwordConfirm) && (password !== passwordConfirm);
   },
 
   @computed('i18n.locales')
@@ -87,17 +75,6 @@ export default Component.extend({
     }
   },
 
-  @computed('i18n.locale')
-  selectedLocale: {
-    get: (locale) => [locale],
-
-    set(locales) {
-      this.set('withoutChanges', false);
-      this.set('pendingLocale', locales);
-      return locales;
-    }
-  },
-
   @computed('timeFormat.selected')
   selectedTimeFormat: {
     get: (selectedTimeformat) => selectedTimeformat,
@@ -106,61 +83,6 @@ export default Component.extend({
       this.set('withoutChanges', false);
       this.set('pendingTimeFormat', selectedTimeFormat);
       return selectedTimeFormat;
-    }
-  },
-
-  @computed('theme.selected')
-  selectedTheme: {
-    get: (selectedTheme) => selectedTheme,
-
-    set(selectedTheme) {
-      this.set('withoutChanges', false);
-      this.set('pendingTheme', selectedTheme);
-      return selectedTheme;
-    }
-  },
-
-  @computed('spacing.selected')
-  selectedSpacing: {
-    get: (selectedSpacing) => selectedSpacing,
-
-    set(selectedSpacing) {
-      this.set('withoutChanges', false);
-      this.set('pendingSpacing', selectedSpacing);
-      return selectedSpacing;
-    }
-  },
-
-  @computed('landingPage.selected.key')
-  selectedLandingPage: {
-    get: (selectedLandingPage) => [selectedLandingPage],
-
-    set(selectedLandingPages) {
-      this.set('withoutChanges', false);
-      this.set('pendingLandingPage', selectedLandingPages.get('firstObject'));
-      return selectedLandingPages;
-    }
-  },
-
-  @computed('timezone.selected')
-  selectedTimeZone: {
-    get: (selectedTimeZone) => [selectedTimeZone],
-
-    set(selectedTimeZones) {
-      this.set('withoutChanges', false);
-      this.set('pendingTimezone', selectedTimeZones);
-      return selectedTimeZones;
-    }
-  },
-
-  @computed('dateFormat.selected')
-  selectedDateFormat: {
-    get: (selectedDateFormat) => [selectedDateFormat.key],
-
-    set(selectedDateFormats) {
-      this.set('withoutChanges', false);
-      this.set('pendingDateFormat', selectedDateFormats.get('firstObject'));
-      return selectedDateFormats;
     }
   },
 
@@ -187,16 +109,13 @@ export default Component.extend({
   },
 
   saveUserPreferences() {
-    this.set('password', null);
-    this.set('passwordConfirm', null);
-
     if (this.get('pendingLocale')) {
       this.set('i18n.locale', this.get('pendingLocale'));
       localStorage.setItem('rsa-i18n-default-locale', this.get('pendingLocale'));
     }
 
     if (this.get('pendingTimezone')) {
-      this.set('timezone.selected', this.get('pendingTimezone.firstObject'));
+      this.set('timezone.selected', this.get('pendingTimezone'));
     }
 
     if (this.get('pendingDateFormat')) {
@@ -209,14 +128,6 @@ export default Component.extend({
 
     if (this.get('pendingTimeFormat')) {
       this.set('timeFormat.selected', this.get('pendingTimeFormat.key'));
-    }
-
-    if (this.get('pendingTheme')) {
-      this.set('theme.selected', this.get('pendingTheme.key'));
-    }
-
-    if (this.get('pendingSpacing')) {
-      this.set('spacing.selected', this.get('pendingSpacing.key'));
     }
 
     if (!isNone(this.get('pendingNotifications'))) {
@@ -239,29 +150,14 @@ export default Component.extend({
   },
 
   revertUserPreferences() {
-    this.set('password', null);
-    this.set('passwordConfirm', null);
-
-    this.set('selectedLocale', [this.get('i18n.locale')]);
     this.set('pendingLocale', null);
-
-    this.set('selectedTimeZone', [this.get('timezone.selected')]);
+    this.set('pendingLandingPage', null);
     this.set('pendingTimeZone', null);
-
-    this.set('selectedDateFormat', [this.get('dateFormat.selected.key')]);
     this.set('pendingDateFormat', null);
 
     this.set('selectedTimeFormat', this.get('timeFormat.selected'));
     this.set('pendingTimeFormat', null);
 
-    this.set('selectedTheme', this.get('theme.selected'));
-    this.set('pendingTheme', null);
-
-    this.set('selectedSpacing', this.get('spacing.selected'));
-    this.set('pendingSpacing', null);
-
-    this.set('selectedLandingPage', [this.get('landingPage.selected.key')]);
-    this.set('pendingLandingPage', null);
 
     this.set('selectedNotifications', this.get('notifications.enabled'));
     this.set('pendingNotifications', null);
@@ -280,6 +176,26 @@ export default Component.extend({
   },
 
   actions: {
+    setDefaultLandingPage(selection) {
+      this.set('pendingLandingPage', selection);
+      this.set('withoutChanges', false);
+    },
+
+    setLocale(selection) {
+      this.set('pendingLocale', selection);
+      this.set('withoutChanges', false);
+    },
+
+    setTimezone(selection) {
+      this.set('pendingTimezone', selection);
+      this.set('withoutChanges', false);
+    },
+
+    setDateFormat(selection) {
+      this.set('pendingDateFormat', selection);
+      this.set('withoutChanges', false);
+    },
+
     saveUserPreferences() {
       this.saveUserPreferences();
     },

@@ -1,8 +1,8 @@
 {{#rsa-application-layout-manager class="rsa-respond-index-layout-manager rsa-respond-list"}}
   {{#rsa-application-modal eventId='bulk-edit-changes' label=(t "incident.bulkEdit.unsavedChangesModalHeader") }}
-    <div class='modal-content'>
+    <div class='modal-content rsa-respond-bulk-edit-confirm'>
       <p>{{ t "incident.bulkEdit.unsavedChangesModalMessage" }}</p>
-      {{#rsa-form-button defaultAction=(action 'closeBulkEditModal')}}
+      {{#rsa-form-button isFullWidth=true defaultAction=(action 'closeBulkEditModal')}}
         {{t 'incident.bulkEdit.modalOkButtonLabel'}}
       {{/rsa-form-button}}
     </div>
