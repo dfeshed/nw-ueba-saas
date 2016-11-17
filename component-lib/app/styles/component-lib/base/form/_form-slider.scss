@@ -1,0 +1,118 @@
+.rsa-form-slider {
+  display: block;
+  margin: rsa-whitespace(less) 0;
+
+  .noUi-background {
+    background: $formSliderBackgroundColor;
+    box-shadow: none;
+  }
+
+  .noUi-connect {
+    background: $formSliderConnectColor;
+  }
+
+  .noUi-target {
+    border: none;
+  }
+
+  .noUi-horizontal {
+    height: 3px;
+  }
+
+  .noUi-handle {
+    width: 18px;
+    height: 18px;
+    left: 0px;
+    top: -7px;
+    border: none;
+    border-radius: 18px;
+    background: $formSliderHandleColor;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .noUi-tooltip {
+    display: block;
+    color: $formSliderToolTipTextColor;
+    padding: rsa-whitespace(least);
+    border: 1px solid $formSliderToolTipBoxBorderColor;
+    background: $formSliderToolTipBoxBackgroundColor;
+    left: -3px;
+  }
+
+  .noUi-horizontal .noUi-handle-upper .noUi-tooltip {
+    top: -32px;
+    bottom: inherit;
+  }
+
+  &:hover:not(.is-disabled):not(.is-read-only) {
+    cursor: pointer;
+
+    .noUi-background {
+      background: $formSliderHoverBackgroundColor;
+    }
+    .noUi-handle {
+      cursor: pointer;
+      background: $formSliderHoverHandleColor ;
+    }
+    .noUi-connect {
+      background: $formSliderHoverConnectColor;
+    }
+  }
+
+  .noUi-handle:after, .noUi-handle:before {
+    display: none;
+  }
+
+  &.is-disabled {
+    cursor: default;
+
+    .noUi-background {
+      background: $formSliderDisabledBackgroundColor;
+    }
+
+    .noUi-handle {
+      cursor: default;
+      background: $formSliderDisabledHandleColor ;
+    }
+
+    .noUi-connect {
+      background: $formSliderDisabledConnectColor;
+    }
+  }
+
+  &.is-read-only {
+    cursor: default;
+
+    .noUi-background {
+      background: $formSliderReadOnlyBackgroundColor;
+    }
+
+    .noUi-handle {
+      cursor: default;
+      background: $formSliderReadOnlyHandleColor;
+    }
+
+    .noUi-connect {
+      background: $formSliderReadOnlyConnectColor;
+    }
+  }
+
+  .noUi-active {
+    border: 1.5px solid $formSliderActiveColor;
+  }
+
+  &.is-error {
+    .noUi-background {
+      background: $formSliderErrorBackgroundColor;
+    }
+
+    .noUi-handle {
+      background: $formSliderErrorHandleColor;
+    }
+
+    .noUi-connect {
+      background: $formSliderErrorConnectColor;
+    }
+  }
+}

@@ -42,6 +42,7 @@ Router.map(function() {
       this.route('checkboxes');
       this.route('textareas');
       this.route('inputs');
+      this.route('sliders');
     });
 
     this.route('content', function() {

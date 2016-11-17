@@ -2312,6 +2312,13 @@ ember-cli-normalize-entity-name@^1.0.0:
   dependencies:
     silent-error "^1.0.0"
 
+ember-cli-nouislider@0.10.0:
+  version "0.10.0"
+  resolved "https://registry.npmjs.org/ember-cli-nouislider/-/ember-cli-nouislider-0.10.0.tgz#94bda98cc3d8809cbceb41cdf151b715528e5570"
+  dependencies:
+    ember-cli-babel "^5.1.6"
+    ember-cli-htmlbars "^1.0.3"
+
 ember-cli-path-utils@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/ember-cli-path-utils/-/ember-cli-path-utils-1.0.0.tgz#4e39af8b55301cddc5017739b77a804fba2071ed"
