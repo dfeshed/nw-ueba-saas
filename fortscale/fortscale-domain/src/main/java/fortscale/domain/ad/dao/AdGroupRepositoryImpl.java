@@ -1,16 +1,16 @@
 package fortscale.domain.ad.dao;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
-import java.util.List;
-
+import fortscale.domain.ad.AdGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
-import fortscale.domain.ad.AdGroup;
+import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdGroupRepositoryCustom {
 	@Autowired
@@ -31,6 +31,18 @@ public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdG
 		query.fields().include(AdGroup.memberField);
 		query.fields().include(AdGroup.dnField);
 		query.limit(maxNumberOfReturnElements);
+
+		return mongoTemplate.find(query, AdGroup.class);
+	}
+
+	@Override
+	public List<AdGroup> getActiveDirectoryGroupsNameStartsWith(String startsWith) {
+		Query query = new Query(where(AdGroup.memberField).exists(true));
+		query.fields().include(AdGroup.memberField);
+		query.fields().include(AdGroup.dnField);
+
+		String startsWithRegex = "^" + startsWith;
+		query.addCriteria(new Criteria(AdGroup.nameField).regex(startsWithRegex, "i"));
 
 		return mongoTemplate.find(query, AdGroup.class);
 	}

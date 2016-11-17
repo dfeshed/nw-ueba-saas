@@ -1,6 +1,8 @@
 package fortscale.services;
 
 import fortscale.domain.ad.AdConnection;
+import fortscale.domain.ad.AdGroup;
+import fortscale.domain.ad.AdOU;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 
 import java.util.List;
@@ -17,5 +19,6 @@ public interface ActiveDirectoryService {
     void saveDomainControllersInDatabase(List<String> domainControllers);
 	void saveAdConnectionsInDatabase(List<AdConnection> adConnections);
     String canConnect(AdConnection adConnection);
-
+    List<AdGroup> getGroupsByNameStartingWithIgnoreCase(String startsWith);
+    List<AdOU> getOusByNameStartingWithIgnoreCase(String startsWith);
 }

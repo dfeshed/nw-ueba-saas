@@ -3,8 +3,9 @@ package fortscale.services.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.ad.AdConnection;
-import fortscale.domain.ad.dao.ActiveDirectoryDAO;
-import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
+import fortscale.domain.ad.AdGroup;
+import fortscale.domain.ad.AdOU;
+import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
@@ -21,19 +22,35 @@ import java.util.List;
 @Service("ActiveDirectoryService")
 public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
 
-	private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
+    private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
-	private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
+    private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
 
     @Value("${ad.connections}")
     private String adConnectionsFile;
 
+
+
     private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
+    private final AdGroupRepository adGroupRepository;
+    private final AdOURepository adOURepository;
+    private final AdUserRepository adUserRepository;
+    private final AdComputerRepository adComputerRepository;
+
 
     @Autowired
-    public ActiveDirectoryServiceImpl(ActiveDirectoryDAO activeDirectoryDAO,
-                                      ApplicationConfigurationService applicationConfigurationService) {
+    public ActiveDirectoryServiceImpl(
+                                    ActiveDirectoryDAO activeDirectoryDAO,
+                                    ApplicationConfigurationService applicationConfigurationService,
+                                    AdGroupRepository adGroupRepository,
+                                    AdOURepository adOURepository,
+                                    AdUserRepository adUserRepository,
+                                    AdComputerRepository adComputerRepository) {
+        this.adGroupRepository = adGroupRepository;
+        this.adOURepository = adOURepository;
+        this.adUserRepository = adUserRepository;
+        this.adComputerRepository = adComputerRepository;
         this.activeDirectoryDAO = activeDirectoryDAO;
         this.applicationConfigurationService = applicationConfigurationService;
     }
@@ -74,24 +91,34 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
     }
 
-	@Override
-	public void saveAdConnectionsInDatabase(List<AdConnection> adConnections) {
-		applicationConfigurationService.updateConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY,adConnections);
-	}
+    @Override
+    public void saveAdConnectionsInDatabase(List<AdConnection> adConnections) {
+        applicationConfigurationService.updateConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY,adConnections);
+    }
 
-	@Override
-	public String canConnect(AdConnection adConnection) {
-		String result;
-		try {
-			result = activeDirectoryDAO.connectToAD(adConnection);
-		} catch (Exception ex) {
-			logger.error("failed to connect to ad - {}", ex);
-			result = ex.getLocalizedMessage();
-		}
-		return result;
-	}
+    @Override
+    public String canConnect(AdConnection adConnection) {
+        String result;
+        try {
+            result = activeDirectoryDAO.connectToAD(adConnection);
+        } catch (Exception ex) {
+            logger.error("failed to connect to ad - {}", ex);
+            result = ex.getLocalizedMessage();
+        }
+        return result;
+    }
 
-	@Override
+    @Override
+    public List<AdGroup> getGroupsByNameStartingWithIgnoreCase(String startsWith) {
+        return adGroupRepository.findByNameStartingWithIgnoreCase(startsWith);
+    }
+
+    @Override
+    public List<AdOU> getOusByNameStartingWithIgnoreCase(String startsWith) {
+        return adOURepository.findByNameStartingWithIgnoreCase(startsWith);
+    }
+
+    @Override
     public List<String> getDomainControllers() {
         List<String> domainControllers = new ArrayList<>();
         try {
