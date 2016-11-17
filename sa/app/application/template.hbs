@@ -11,7 +11,7 @@
   </div>
 {{/rsa-application-modal}}
 
-{{#if session.isAuthenticated}}
+{{#if session.isFullyAuthenticated}}
   {{#rsa-application-header version=version title=title}}
     {{#if features.showRespondRoute}}
       {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}{{t "respond.title"}}{{/link-to}}

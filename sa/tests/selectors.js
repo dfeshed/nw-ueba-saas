@@ -14,7 +14,8 @@ export default Ember$.extend({}, BaseSelectors, {
     'changeLocaleButton': '.js-test-nav-locale-btn',
     'enLocaleListItem': '.js-test-nav-locale-en-li',
     'jpLocaleListItem': '.js-test-nav-locale-jp-li',
-    'logoutButton': '.js-test-nav-logout-btn'
+    'preferenceButton': '.js-test-user-preferences-modal .rsa-form-button',
+    'logoutButton': '.global>.rsa-form-button-wrapper .rsa-form-button'
   },
   'pages': {
     'monitor': {
@@ -328,9 +329,9 @@ export default Ember$.extend({}, BaseSelectors, {
     },
     'investigate': {
       'root': '.js-test-investigate-root',
-      'navigateLink': 'js-test-investigate-navigate-classic',
-      'eventsLink': 'js-test-investigate-events-classic',
-      'malwareLink': 'js-test-investigate-malware-classic',
+      'navigateLink': '.js-test-investigate-navigate-classic',
+      'eventsLink': '.js-test-investigate-events-classic',
+      'malwareLink': '.js-test-investigate-malware-classic',
       'url': '/do/investigate',
       'path': 'protected.investigate.index',
       'serviceDropDown': '.rsa-investigate-query-bar__service .rsa-form-button',

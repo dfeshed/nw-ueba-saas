@@ -6,7 +6,7 @@
 import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 
-const { Route } = Ember;
+const { Route, inject: { service } } = Ember;
 
 /**
  * Add AuthenticatedRouteMixin to ensure the routes extending from this
@@ -15,6 +15,9 @@ const { Route } = Ember;
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
+
+  session: service(),
+
   queryParams: {
     /**
      * The type of entity to be looked up in the Context Panel.
@@ -43,5 +46,16 @@ export default Route.extend(AuthenticatedRouteMixin, {
         entityType: undefined
       });
     }
+  },
+
+  beforeModel() {
+    const query = window.location.search;
+    if (typeof query === 'undefined' || query.indexOf('?next=') != 0) {
+      if (this.get('session.isAuthenticated')) {
+        this.set('session.isFullyAuthenticated', true);
+      }
+    }
+
+    return this._super(...arguments);
   }
 });

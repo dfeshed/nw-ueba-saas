@@ -34,10 +34,6 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       // no longer need to observe changes
       session.get('session').removeObserver('content.authenticated', this, this._updateTokens);
 
-      // delete the cookies
-      document.cookie = 'access_token=;expires=Thu, 01 Jan 1970 00:00:01 GMT';
-      document.cookie = 'refresh_token=;expires=Thu, 01 Jan 1970 00:00:01 GMT';
-
       const accessTokenKey = this.get('accessTokenKey');
       const refreshTokenKey = this.get('refreshTokenKey');
 
@@ -58,16 +54,14 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
 
     if (authentication) {
 
-      const secure = document.location.protocol == 'https:' ? 'secure' : '';
       localStorage.setItem(accessTokenKey, authentication.access_token);
-      document.cookie = `access_token=${authentication.access_token};path=/;${secure}`;
 
       if (authentication.refresh_token) {
         localStorage.setItem(refreshTokenKey, authentication.refresh_token);
-        document.cookie = `refresh_token=${authentication.refresh_token};path=/;${secure}`;
       }
 
     } else {
+      session.get('session').set('isFullyAuthenticated',false);
       session.invalidate();
     }
   }
