@@ -1,3 +1,9 @@
+// sass-lint:disable no-color-hex
+
+$selected-bg-color: #99ccff;
+$selected-color: #003366;
+$dark-box-shadow-color: #666;
+
 $dark-bg-color: rgba(0,0,0,.5); /* was: #38404b; */
 $dark-fg-dim-color: rsa-color(white, base, $rsa-nearly-transparent);  /* was: rgba(255,255,255,.5); */ /* was: #768699; */
 $dark-fg-color: rsa-color(white, base, $rsa-nearly-opaque);  /* was: rgba(255,255,255,.7); */  /* was: #768699; */

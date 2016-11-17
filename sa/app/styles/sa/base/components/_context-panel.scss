@@ -6,7 +6,7 @@ $font-fade-color: rsa-color(gray, light);
   @include rsa-col(justify,fill);
 
   &__sectionEnd {
-    border-bottom: 1px solid #2d2c2c;;
+    border-bottom: 1px solid rsa-color(gray, darker);
   }
 
   &__loader {

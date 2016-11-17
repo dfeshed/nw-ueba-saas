@@ -1,6 +1,6 @@
 .rsa-byte-table-tooltip {
   border: 1px solid rsa-color(blue);
-  box-shadow: 1px 1px 2px 0 #666;
+  box-shadow: 1px 1px 2px 0 $dark-box-shadow-color;
   background-color: rgba($dark-bg-color, .9);
   color: $dark-fg-hover-color;
   display: none; /* to be set at run-time by javascript */

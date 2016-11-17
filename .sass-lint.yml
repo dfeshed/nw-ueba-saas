@@ -5,3 +5,18 @@ rules:
     - 2
     -
       size: 2
+  attribute-quotes:
+    - 2
+    -
+      include: true
+  clean-import-paths:
+    - 2
+    -
+      leading-underscore: false
+      filename-extension: false
+  declarations-before-nesting: 2
+  empty-args:
+    - 2
+    -
+      include: true
+  no-color-hex: 2

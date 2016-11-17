@@ -62,13 +62,13 @@ $packet-byte-border-width: 1px;
 
       &.header {
         background-color: $dark-packet-header-bg-color;
-        color: #fff;
+        color: rsa-color(white);
 
-        &[data-is-hover=true] {
+        &[data-is-hover="true"] {
           &.packet-field-value {
             span {
               background-color: $dark-packet-field-hover-bg-color;
-              color: #000;
+              color: rsa-color(black);
             }
           }
         }
@@ -114,9 +114,9 @@ $packet-byte-border-width: 1px;
         }
       }
 
-      &[data-is-selected=true] {
-        background-color: #99ccff;
-        color: #003366;
+      &[data-is-selected="true"] {
+        background-color: $selected-bg-color;
+        color: $selected-color;
         text-shadow: 0 0 0 transparent;
       }
     }

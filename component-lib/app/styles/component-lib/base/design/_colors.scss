@@ -1,7 +1,9 @@
+// sass-lint:disable no-color-hex
+
 /*
  * @file Global list of named colors.
  * These named colors can be used across RSA themes for consistency.
- * Grey is the only color with 3 distinct modifiers. 
+ * Grey is the only color with 3 distinct modifiers.
  * Other color's darkest and lightest modifiers have been mapped to darker and lighter for API consistency.
  */
 
@@ -10,7 +12,7 @@ $rsa-colors: (
   white: #fff,
   black: #000,
 
-  gray: (  
+  gray: (
     darkest:  #161616,
     darker:   #212121,
     dark:     #424242,
@@ -30,7 +32,7 @@ $rsa-colors: (
     lightest: #B3E5FC
   ),
 
-  green: (  
+  green: (
     darkest:  #33691E,
     darker:   #33691E,
     dark:     #689F38,
@@ -40,7 +42,7 @@ $rsa-colors: (
     lightest: #DCEDC8
   ),
 
-  red: (  
+  red: (
     darkest:  #A60808,
     darker:   #A60808,
     dark:     #C91818,
@@ -50,7 +52,7 @@ $rsa-colors: (
     lightest: #FFCCD1
   ),
 
-  orange: (  
+  orange: (
     darkest:  #BF360C,
     darker:   #BF360C,
     dark:     #E64A19,
@@ -99,32 +101,32 @@ $rsa-colors: (
 
 /* rsa-color */
 
-/* 
- * Colors: [ black, 
- *           white, 
- *           grey, 
- *           blue, 
- *           green, 
- *           red, 
- *           orange, 
- *           amber, 
- *           brand-primary, 
- *           status-warning, 
+/*
+ * Colors: [ black,
+ *           white,
+ *           grey,
+ *           blue,
+ *           green,
+ *           red,
+ *           orange,
+ *           amber,
+ *           brand-primary,
+ *           status-warning,
  *           status-success ]
- * 
- * Modifiers: [ darkest, 
- *              darker, 
- *              dark, 
- *              base, 
- *              light, 
- *              lighter, 
+ *
+ * Modifiers: [ darkest,
+ *              darker,
+ *              dark,
+ *              base,
+ *              light,
+ *              lighter,
  *              lightest ]
- * 
- * Opacity: [ $rsa-opaque, 
- *            $rsa-translucent, 
- *            $rsa-nearly-opaque, 
+ *
+ * Opacity: [ $rsa-opaque,
+ *            $rsa-translucent,
+ *            $rsa-nearly-opaque,
  *            $rsa-nearly-transparent ]
- * 
+ *
  * Examples: color: rsa-color(blue)
  *           color: rsa-color(amber, lighter)
  *           background-color: rsa-color(status-success, base, $rsa-nearly-transparent)
@@ -141,4 +143,4 @@ $rsa-colors: (
   } @else {
     @return rgba(map-get(map-get($rsa-colors, $colorStr), $modifier), $opacity);
   }
-} 
+}
