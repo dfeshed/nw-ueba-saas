@@ -1,6 +1,10 @@
 package fortscale.web.rest;
 
+import fortscale.domain.ad.AdGroup;
+import fortscale.domain.ad.AdOU;
+import fortscale.domain.ad.AdObject;
 import fortscale.domain.core.Tag;
+import fortscale.services.ActiveDirectoryService;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.services.UserTagService;
@@ -19,29 +23,29 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Controller
 @RequestMapping("/api/tags")
 public class ApiSystemSetupTagsController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
-    public static final String EMPTY_RESPONSE_STRING = "{}";
+    private static final String EMPTY_RESPONSE_STRING = "{}";
+    public static final String KEY_GROUPS = "groups";
+    public static final String KEY_OUS = "ous";
 
     private final TagService tagService;
-
     private final UserTagService userTagService;
-
-    private UserService userService;
+    private final UserService userService;
+    private final ActiveDirectoryService activeDirectoryService;
 
 
     @Autowired
-    public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, UserService userService) {
+    public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, UserService userService, ActiveDirectoryService activeDirectoryService) {
         this.tagService = tagService;
         this.userTagService = userTagService;
         this.userService = userService;
+        this.activeDirectoryService = activeDirectoryService;
     }
 
 
@@ -102,6 +106,26 @@ public class ApiSystemSetupTagsController extends BaseController {
             return new ResponseEntity<>("{" + ex.getLocalizedMessage() + "}", HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(EMPTY_RESPONSE_STRING, HttpStatus.OK);
+    }
+
+
+    /**
+     * This method adds/removes tags to/from the users in the users collection
+     * @return
+     */
+    @RequestMapping(value="/search", method=RequestMethod.GET)
+    @LogException
+    public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameStartingWith(String startsWith) {
+        try {
+            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameStartingWithIgnoreCase(startsWith);
+            final List<AdOU> ous = activeDirectoryService.getOusByNameStartingWithIgnoreCase(startsWith);
+            final HashMap<String, List<? extends AdObject>> resultsMap = new HashMap<>();
+            resultsMap.put(KEY_GROUPS, groups);
+            resultsMap.put(KEY_OUS, ous);
+            return new ResponseEntity<>(resultsMap, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
 
