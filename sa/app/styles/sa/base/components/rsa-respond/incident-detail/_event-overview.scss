@@ -23,9 +23,12 @@
     margin-top: 1px;
     padding: rsa-whitespace();
     background-color: $contentSectionHeaderBackgroundColor;
-    div {
-      text-overflow: ellipsis;
-      overflow: hidden;
+    .rsa-content-definition {
+      .value {
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 15px;
+      }
     }
   }
 
@@ -173,7 +176,17 @@
       padding-bottom: rsa-whitespace(less);
     }
 
+    &__col0,
+    &__col1 {
+      width: 100%;
+      li {
+        display: inline-block;
+      }
+    }
+
     &__info__key-value {
+      width: 100%;
+
       &__key {
         @include rsa-font(header, small);
         color: $contentDefinitionLabelColor;

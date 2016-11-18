@@ -33,38 +33,50 @@ export default Component.extend({
   isModelLoaded: (model) => !isNone(model),
 
   @computed('model.enrichment')
-  scoreBadges: (enrichment) => {
-    const normalizedEnrichment = [];
+  scoreBadges(enrichment) {
+    const scoreBadges = [];
+
     if (!isNone(enrichment)) {
-      if (!isNone(enrichment.smooth) && !isNone(enrichment.smooth.smooth_beaconing_score)) {
-        normalizedEnrichment.addObject({ key: 'beaconBehavior', score: Math.round(enrichment.smooth.smooth_beaconing_score) });
-      }
-      if (!isNone(enrichment.whois)) {
-        if (!isNone(enrichment.whois.age_score)) {
-          normalizedEnrichment.addObject({ key: 'domainAge', score: Math.round(enrichment.whois.age_score) });
+
+      const badgeScoreConfig = [
+        { badgeName: 'beaconBehavior', metaKeys: ['smooth.smooth_beaconing_score', 'rsa_analytics_http-packet_c2_beaconing_score', 'rsa_analytics_http-log_c2_beaconing_score'] },
+        { badgeName: 'domainAge', metaKeys: ['whois.age_score', 'rsa_analytics_http-packet_c2_whois_age_score', 'rsa_analytics_http-log_c2_whois_age_score'] },
+        { badgeName: 'expiringDomain', metaKeys: ['whois.validity_score', 'rsa_analytics_http-packet_c2_whois_validity_score', 'rsa_analytics_http-log_c2_whois_validity_score'] },
+        { badgeName: 'noReferrers', metaKeys: ['domain.referer_ratio_score', 'rsa_analytics_http-packet_c2_referer_ratio_score', 'rsa_analytics_http-log_c2_referer_ratio_score'] },
+        { badgeName: 'rareUserAgent', metaKeys: ['domain.ua_ratio_score', 'rsa_analytics_http-packet_c2_ua_ratio_score', 'rsa_analytics_http-log_c2_ua_ratio_score'] },
+        { badgeName: 'rareDomain', metaKeys: ['domain.referer_score', 'rsa_analytics_http-packet_c2_referer_score', 'rsa_analytics_http-log_c2_referer_score'] }
+      ];
+
+      badgeScoreConfig.forEach((config) => {
+        const score = this._readScoreValue(enrichment, config.metaKeys);
+        if (!isNone(score)) {
+          scoreBadges.addObject({ key: config.badgeName, score: Math.round(score) });
         }
-        if (!isNone(enrichment.whois.validity_score)) {
-          normalizedEnrichment.addObject({ key: 'expiringDomain', score: Math.round(enrichment.whois.validity_score) });
-        }
-      }
-      if (!isNone(enrichment.domain)) {
-        if (!isNone(enrichment.domain.referer_score)) {
-          normalizedEnrichment.addObject({ key: 'rareDomain', score: Math.round(enrichment.domain.referer_score) });
-        }
-        if (!isNone(enrichment.domain.referer_ratio_score)) {
-          normalizedEnrichment.addObject({ key: 'noReferrers', score: Math.round(enrichment.domain.referer_ratio_score) });
-        }
-        if (!isNone(enrichment.domain.ua_ratio_score)) {
-          normalizedEnrichment.addObject({ key: 'rareUserAgent', score: Math.round(enrichment.domain.ua_ratio_score) });
-        }
+      });
+
+    }
+    return scoreBadges;
+  },
+
+  /**
+   * @description helper method that, given a list of keys `metaKeys`, returns the first value that is not `null` nor `undefined`
+   * @private
+   */
+  _readScoreValue(enrichment, metaKeys) {
+    let score = null;
+    for (let index = 0; index < metaKeys.length && isNone(score); index++) {
+      const metaKey = metaKeys.objectAt(index);
+      const val = get(enrichment, metaKey);
+      if (!isNone(val)) {
+        score = Math.round(val);
       }
     }
-    return normalizedEnrichment;
+    return score;
   },
 
   @computed('model')
   normalizedMeta(model) {
-    const rootNode = { title: '', key: 'meta', col1: {}, showHeader: false };
+    const rootNode = { title: '', key: 'meta', showHeader: false };
     const normalizedMeta = this._normalizeMetaElement(model, rootNode, [ rootNode ]);
     return normalizedMeta;
   },
@@ -82,9 +94,15 @@ export default Component.extend({
    * @param {Array} normalizedMeta: the destination where the normilized element will be stored
    * @private
    */
-  _normalizeMetaElement: (element, parentNode, normalizedMeta) => {
+  _normalizeMetaElement: (element, parentNode, normalizedMeta, elementIndex = 0) => {
     let colName, elKeyName;
     let colNum = 1;
+
+    // if a meta element has just a value (string, number, etc), we create an object of it.
+    if (typeOf(element) !== 'object' && typeOf(element) !== 'array') {
+      element = { [elementIndex]: element };
+    }
+
     const keys = Object.keys(element);
 
     keys.forEach((key) => {
@@ -101,7 +119,7 @@ export default Component.extend({
             if (value.length > 1) {
               elKeyName = `${ elKeyName } [${ index }]`;
             }
-            this._normalizeMetaObject(elKeyName, el, parentNode, normalizedMeta);
+            this._normalizeMetaObject(elKeyName, el, parentNode, normalizedMeta, index);
           });
         }
 
@@ -115,10 +133,13 @@ export default Component.extend({
         colName = `col${colNum}`;
 
         if (isNone(parentNode[colName])) {
-          parentNode[colName] = {};
+          parentNode[colName] = [];
         }
-        parentNode[colName][key] = String(value);
-
+        parentNode[colName].addObject({
+          key,
+          label: String(key).replace(/_/g, ' '),
+          value: String(value)
+        });
       }
     });
     return normalizedMeta;
@@ -129,18 +150,18 @@ export default Component.extend({
    * @description normalize a meta object to be displayed in the meta panel
    * @private
    */
-  _normalizeMetaObject(metaKey, metaValue, parentMeta, normalizedMeta) {
+  _normalizeMetaObject(metaKey, metaValue, parentMeta, normalizedMeta, arrayElementIndex) {
     const keyName = `${ parentMeta.key }::${ metaKey }`;
     const title = this._createTitle(parentMeta.title, metaKey);
 
-    const newNode = { title, key: keyName, col0: {}, showHeader: true };
+    const newNode = { title, key: keyName, col0: [], showHeader: true };
 
     normalizedMeta.addObject(newNode);
-    this._normalizeMetaElement(metaValue, newNode, normalizedMeta);
+    this._normalizeMetaElement(metaValue, newNode, normalizedMeta, arrayElementIndex);
 
     // when the just added object is empty, we remove it to avoid an empty section
     const parentObj = normalizedMeta.findBy('key', keyName);
-    if (Object.keys(parentObj.col0).length === 0) {
+    if (parentObj.col0.length === 0) {
       normalizedMeta.removeObject(parentObj);
     }
   },

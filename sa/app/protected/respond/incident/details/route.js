@@ -77,6 +77,8 @@ export default Route.extend({
 
       const parentModel = this.modelFor('protected.respond.incident');
 
+      set(parentModel, 'events', []);
+
       this.request.streamRequest({
         method: 'stream',
         modelName: 'events',

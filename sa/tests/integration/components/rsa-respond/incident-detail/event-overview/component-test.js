@@ -146,5 +146,5 @@ test('When no model, the loader component is in place', function(assert) {
   this.render(hbs`{{rsa-respond/incident-detail/event-overview}}`);
 
   assert.equal(this.$('.event-overview').length, 1, 'Testing event-overview element exists');
-  assert.equal(this.$('.event-overview__loader').length, 1, 'Testing event-overview__loader element exists');
+  assert.equal(this.$('.event-overview .respond-loader').length, 1, 'Testing event-overview__loader element exists');
 });

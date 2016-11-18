@@ -13,7 +13,7 @@
 {{/rsa-content-section-header}}
 
 {{#unless isModelLoaded}}
-  <div class='event-overview__loader'>{{rsa-loader size="large"}}</div>
+  <div class='respond-loader'>{{rsa-loader size="large"}}</div>
 {{else}}
   <hbox class='event-overview__header'>
     <vbox xs=3>
@@ -178,30 +178,30 @@
     </header>
     {{#if metaVisible}}
       {{#each normalizedMeta as |meta|}}
-        {{#if meta.showHeader}}
+        {{#if (and meta.showHeader meta.title)}}
           <header class='event-overview__meta__header event-overview__meta__header-meta-section'>
             <span class='event-overview__meta__header__label'>{{meta.title}}</span>
           </header>
         {{/if}}
         <hbox class='event-overview__meta__info'>
-          <vbox xs=6 class='event-overview__meta__col1'>
+          <vbox xs=6 class='event-overview__meta__col0'>
             <ul>
-              {{#each-in meta.col0 as |key value|}}
+              {{#each meta.col0 as |key|}}
                 <li class='event-overview__meta__info__key-value'>
-                  <span class='event-overview__meta__info__key-value__key'>{{key}}</span>
-                  <span class='event-overview__meta__info__key-value__value'>{{truthy-or-default value (t 'incident.details.eventOverview.notAvailable')}}</span>
+                  <span class='event-overview__meta__info__key-value__key'>{{key.label}}</span>
+                  <span class='event-overview__meta__info__key-value__value'>{{truthy-or-default key.value (t 'incident.details.eventOverview.notAvailable')}}</span>
                 </li>
-              {{/each-in}}
+              {{/each}}
             </ul>
           </vbox>
-          <vbox xs=6 class='event-overview__meta__col2'>
+          <vbox xs=6 class='event-overview__meta__col1'>
             <ul>
-              {{#each-in meta.col1 as |key value|}}
+              {{#each meta.col1 as |key|}}
                 <li class='event-overview__meta__info__key-value'>
-                  <span class='event-overview__meta__info__key-value__key'>{{key}}</span>
-                  <span class='event-overview__meta__info__key-value__value'>{{truthy-or-default value (t 'incident.details.eventOverview.notAvailable')}}</span>
+                  <span class='event-overview__meta__info__key-value__key'>{{key.label}}</span>
+                  <span class='event-overview__meta__info__key-value__value'>{{truthy-or-default key.value (t 'incident.details.eventOverview.notAvailable')}}</span>
                 </li>
-              {{/each-in}}
+              {{/each}}
             </ul>
           </vbox>
         </hbox>
