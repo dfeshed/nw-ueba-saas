@@ -1,8 +1,31 @@
 <section class="rsa-investigate-breadcrumb__crumbs rsa-button-group">
   {{#if serviceObject}}
-    {{#rsa-form-button class="rsa-investigate-breadcrumb__crumb" title=serviceObject.name}}
-      <span class="js-test-service">{{serviceObject.name}}</span>
-    {{/rsa-form-button}}
+    {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbServiceTooltip-' elementId)}}
+      {{#rsa-form-button
+        class="rsa-investigate-breadcrumb__crumb"
+        allowToggleActive=true
+        title=serviceObject.name
+        withDropdown=true}}
+        <span class="js-test-service">{{serviceObject.name}}</span>
+      {{/rsa-form-button}}
+    {{/rsa-content-help-trigger}}
+
+    {{#rsa-content-tooltip
+      displayCloseButton=false
+      isPopover=true
+      position='bottom-right'
+      tooltipId=(concat 'breadCrumbServiceTooltip-' elementId)
+      as |hideTooltip|}}
+      <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
+        {{#each servicesWithURI as |service|}}
+          <li>
+            {{#link-to "protected.investigate.query" service.queryURI class="goto"}}
+              {{service.name}}
+            {{/link-to}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/rsa-content-tooltip}}
   {{/if}}
 
   {{#if hasDrill}}

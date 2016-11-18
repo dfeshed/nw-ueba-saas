@@ -18,13 +18,12 @@ export default Component.extend({
   queryString: '',
 
   /**
-   * An object whose properties are the filter parameters for a Netwitness Core query; including
-   * `serviceId`, `startTime`, `endTime` and an optional `metaFilter`.
-   * @see protected/investigate/state/query
+   * Hash of meta value alias lookup tables, keyed by meta key.
+   * Used for rendering user-friendly aliases for meta key values.
    * @type {object}
    * @public
    */
-  query: undefined,
+  aliases: undefined,
 
   /**
    * Array of meta key definitions for given query.
@@ -35,12 +34,13 @@ export default Component.extend({
   language: undefined,
 
   /**
-   * Hash of meta value alias lookup tables, keyed by meta key.
-   * Used for rendering user-friendly aliases for meta key values.
+   * An object whose properties are the filter parameters for a Netwitness Core query; including
+   * `serviceId`, `startTime`, `endTime` and an optional `metaFilter`.
+   * @see protected/investigate/state/query
    * @type {object}
    * @public
    */
-  aliases: undefined,
+  query: undefined,
 
   /**
    * List of known Netwitness Core services.
@@ -49,6 +49,17 @@ export default Component.extend({
    * @public
    */
   services: undefined,
+
+  @computed('services.[]', 'query')
+  servicesWithURI(services, query) {
+    return services.map((service) => {
+      const clone = query.clone();
+      clone.metaFilter.conditions.clear();
+      clone.set('serviceId', service.get('id'));
+      service.set('queryURI', uriEncodeEventQuery(clone));
+      return service;
+    });
+  },
 
   // Compute an options hash for the utilities which will format the meta values.
   // The options hash will include any meta value aliases defined on the Core device.
