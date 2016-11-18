@@ -1,0 +1,7 @@
+{
+  "name": "common-build-utils",
+  "version": "1.0.0",
+  "dependencies": {
+    "fs-extra": "1.0.0"
+  }
+}

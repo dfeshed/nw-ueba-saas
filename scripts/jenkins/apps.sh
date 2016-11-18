@@ -117,6 +117,11 @@ info "Building apps"
 # Run node script that will check bower versions for all projects
 node scripts/jenkins/check-bower-versions.js
 
+# install common scripts deps
+cd scripts/common
+yarn
+cd $CWD
+
 setWebProxy
 
 # Yarn install and run eslint/tests on mock-server code

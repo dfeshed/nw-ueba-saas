@@ -28,7 +28,11 @@ CWD=$(pwd)
 scriptDir="$(dirname $0)"
 . $scriptDir/_util.sh
 
-# mock-server is just NPM
+# run install on common build node utilities
+cd $scriptDir/common
+yarn
+
+# mock-server is just Yarn install
 cd $scriptDir/../mock-server
 installYarnDeps mock-server
 yarn link

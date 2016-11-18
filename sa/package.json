@@ -10,7 +10,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "node ./scripts/test"
+    "test": "node ./scripts/test",
+    "postinstall": "node ../scripts/common/fake-out-bower jquery faker,Faker fake-xml-http-request,FakeXMLHttpRequest route-recognizer pretender"
   },
   "repository": "",
   "engines": {
@@ -67,10 +68,13 @@
     "ember-truth-helpers": "1.2.0",
     "ember-wormhole": "^0.4.1",
     "eslint-plugin-ember-suave": "^0.1.2",
+    "faker": "3.0.1",
     "flexi": "1.2.0",
+    "jquery": "3.1.1",
     "liquid-fire": "0.26.1",
     "loader.js": "^4.0.1",
     "mock-socket": "2.0.0",
+    "pretender": "0.11.0",
     "redux": "3.6.0",
     "redux-actions": "0.12.0",
     "redux-thunk": "2.1.0"

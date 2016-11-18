@@ -10,7 +10,8 @@
   "scripts": {
     "build": "ember build",
     "start": "ember server",
-    "test": "node ./scripts/test"
+    "test": "node ./scripts/test",
+    "postinstall": "node ../scripts/common/fake-out-bower jquery"
   },
   "repository": "",
   "engines": {
@@ -60,6 +61,7 @@
     "ember-wormhole": "^0.4.1",
     "eslint-plugin-ember-suave": "^0.1.2",
     "flexi": "1.2.0",
+    "jquery": "3.1.1",
     "highlightjs": "9.8.0",
     "loader.js": "^4.0.1"
   },
