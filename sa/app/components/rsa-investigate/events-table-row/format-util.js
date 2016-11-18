@@ -31,7 +31,8 @@ function value(field, item, opts) {
   return {
     raw,
     alias: text(definedField, raw, opts),
-    textAndAlias: tooltip(definedField, raw, opts)
+    textAndAlias: tooltip(definedField, raw, opts),
+    key: definedField
   };
 }
 
@@ -148,7 +149,7 @@ function _time(value, opts = {}) {
   if (opts.timeZone) {
     mom.tz(opts.timeZone);
   }
-  return mom.format(opts.dateTimeFormat || 'YYYY-MM-DD[T]HH:mm:ss');
+  return mom.format(opts.dateTimeFormat || 'YYYY/MM/DD[T]HH:mm:ss');
 }
 
 // Parses a given width value into a number and units (if any).

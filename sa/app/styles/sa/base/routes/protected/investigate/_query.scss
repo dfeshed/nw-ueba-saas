@@ -305,11 +305,6 @@
     }
 
     .rsa-data-table {
-      &-header-cell,
-      &-body-cell {
-        border-right: 1px dashed rsa-color(black,base,$rsa-nearly-transparent);
-      }
-
       &-header,
       &-body-row {
         border-bottom: 1px solid rsa-color(black,base,$rsa-nearly-transparent);

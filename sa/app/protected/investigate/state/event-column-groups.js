@@ -5,68 +5,44 @@ const {
   Object: EmberObject
 } = Ember;
 
-const baseColumns = [{
-  field: 'sessionId',
-  title: 'ID'
-}, {
-  field: 'time',
-  title: 'Event Time',
-  width: 150
-}, {
-  field: 'medium',
-  title: 'Event Type'
-}];
+const baseColumns = [
+  { field: 'time', title: 'Time', width: 100 },
+  { field: 'medium', title: 'Event Type' },
+  { field: 'size', title: 'Size' }
+];
 
-const groups = [{
-  name: 'List View',
-  columns: baseColumns.concat([{
-    field: 'size',
-    title: 'Size'
+const groups = [
+  {
+    name: 'List View',
+    columns: baseColumns.concat([
+      { field: 'custom.meta-summary', title: 'Summary', width: 'auto' }
+    ])
   }, {
-    field: 'custom.meta-summary',
-    title: 'Summary',
-    width: 'auto'
-  }])
-}, {
-  name: 'Details View',
-  columns: baseColumns.concat([{
-    field: 'custom.theme',
-    title: 'Event Theme'
+    name: 'Details View',
+    columns: baseColumns.concat([
+      { field: 'custom.theme', title: 'Event Theme' },
+      { field: 'custom.meta-details', title: 'Details', width: 'auto' }
+    ])
   }, {
-    field: 'size',
-    title: 'Size'
+    name: 'Log View',
+    columns: baseColumns.concat([
+      { field: 'log', width: 'auto' },
+      { field: 'ip.src' },
+      { field: 'ip.dst' },
+      { field: 'event.theme' },
+      { field: 'device.type' }
+    ])
   }, {
-    field: 'custom.meta-details',
-    title: 'Details',
-    width: 'auto'
-  }])
-}, {
-  name: 'Log View',
-  columns: baseColumns.concat([{
-    field: 'device.type',
-    title: 'Service Type'
-  }, {
-    field: 'device.class',
-    title: 'Service Class'
-  }, {
-    field: 'log',
-    title: 'Logs',
-    width: 'auto'
-  }])
-}, {
-  name: 'Network View',
-  columns: baseColumns.concat([{
-    field: 'ip.proto'
-  }, {
-    field: 'ip.src'
-  }, {
-    field: 'tcp.srcport'
-  }, {
-    field: 'ip.dst'
-  }, {
-    field: 'tcp.dstport'
-  }])
-}];
+    name: 'Network View',
+    columns: baseColumns.concat([
+      { field: 'ip.proto' },
+      { field: 'ip.src' },
+      { field: 'tcp.srcport' },
+      { field: 'ip.dst' },
+      { field: 'tcp.dstport' }
+    ])
+  }
+];
 
 export default EmberObject.extend({
   /**

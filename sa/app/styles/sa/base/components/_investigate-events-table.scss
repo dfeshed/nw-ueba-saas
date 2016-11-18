@@ -34,22 +34,38 @@
 
     &-header {
       /* @workaround Clear defaults that were introduced for Response UI. */
-      padding: 0;
       margin: 0;
+      padding: 0;
       border: 0;
     }
 
     &-header-cell {
+      &:first-child {
+        .title {
+          padding-left: rsa-whitespace();
+        }
+      }
       .title {
         display: block;
-        padding: rsa-whitespace(less) rsa-whitespace();
+        padding: rsa-whitespace(less) 0;
       }
+    }
+
+    &-body-row {
+      color: rsa-color(grey, lighter);
     }
 
     &-body-cell {
       .content {
         display: block;
-        padding: rsa-whitespace(least) rsa-whitespace();
+        padding: rsa-whitespace(less) 0;
+      }
+
+      .time {
+        padding-left: rsa-whitespace();
+        &:first-child {
+          padding-bottom: rsa-whitespace(least);
+        }
       }
 
       .meta-key-and-value {
@@ -98,8 +114,17 @@
           padding: rsa-whitespace(least) rsa-whitespace();
         }
 
+        .meta-key-value-pairs {
+          color: rsa-color(grey, light);
+          .value {
+            color: rsa-color(grey, lighter);
+            padding-left: rsa-whitespace(least);
+          }
+        }
+
+        .meta-key-value-pairs,
         .log-data {
-          padding: rsa-whitespace(least) rsa-whitespace();
+          padding: rsa-whitespace(least) 0;
           overflow: hidden;
           text-overflow: ellipsis;
         }
