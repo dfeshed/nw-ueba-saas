@@ -119,13 +119,17 @@ node scripts/jenkins/check-bower-versions.js
 
 setWebProxy
 
-# Yarn install and run eslint on mock-server code
+# Yarn install and run eslint/tests on mock-server code
 cd mock-server
 runAppYarnInstall mock-server
 info "Running ESLint on mock-server"
 yarn run eslint
 checkError "ESLint failed for mock-server"
-success "mock-server ESLint success"
+info "Running mock-server tests"
+mockServerTestPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
+MOCK_PORT=$mockServerTestPort yarn test
+checkError "mock-server tests failed"
+success "mock-server tests passed"
 yarn link
 cd $CWD
 

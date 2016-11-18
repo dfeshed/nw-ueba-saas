@@ -84,8 +84,9 @@ const start = function({ subscriptionLocations, routes }, cb) {
   });
 
   // error handlers
-  const server = app.listen(process.env.MOCK_PORT || 9999, function() {
-    console.info(chalk.green('Mock server ready ready to go!'));
+  const port = process.env.MOCK_PORT || 9999;
+  const server = app.listen(port, function() {
+    console.info(chalk.green(`Mock server ready ready to go on port ${port}!`));
     if (cb) {
       cb(server);
     }

@@ -5,7 +5,8 @@
   "directories": {},
   "scripts": {
     "eslint": "./node_modules/.bin/eslint lib shared test",
-    "test": "MOCK_PORT=4400 ./node_modules/.bin/mocha --compilers js:babel-register"
+    "test_port": "MOCK_PORT=4400 ./node_modules/.bin/mocha --compilers js:babel-register",
+    "test": "./node_modules/.bin/mocha --compilers js:babel-register"
   },
   "repository": "",
   "engines": {

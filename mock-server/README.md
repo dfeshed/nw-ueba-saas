@@ -2,6 +2,10 @@
 
 `mock-server` is node.js package that you can use in your NetWitness UI subproject to provide mock websocket and standard HTTP endpoints. It uses [Express](http://expressjs.com/), a node.js web application framework, to serve up the endpoints.
 
+## Running tests
+
+`npm run test_port`
+
 ## Usage
 
 If you prefer to learn by reading code, check out [streaming-data's](https://github.rsa.lab.emc.com/asoc/sa-ui/tree/master/streaming-data/tests/server) usage of the mock server.
