@@ -11,12 +11,7 @@
       margin-right: rsa-whitespace();
     }
   }
-
-  .export-files-iframe {
-    /* This iframe is hidden from user, used only to download exported files. */
-    display: none;
-  }
-
+  
   .export-files-button {
     .rsa-loader {
       display: inline-block;

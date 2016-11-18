@@ -4,7 +4,11 @@ import computed, { filterBy } from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 import layout from './template';
 
-const { Component } = Ember;
+const {
+  Component,
+  isEmpty,
+  observer
+} = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
   files: data.files,
@@ -13,7 +17,8 @@ const stateToComputed = ({ recon: { data } }) => ({
 });
 
 const dispatchToActions = (dispatch) => ({
-  downloadFiles: () => dispatch(InteractionActions.downloadFiles())
+  downloadFiles: () => dispatch(InteractionActions.downloadFiles()),
+  didDownloadFiles: () => dispatch(InteractionActions.didDownloadFiles())
 });
 
 const ExportFilesComponent = Component.extend({
@@ -60,7 +65,21 @@ const ExportFilesComponent = Component.extend({
     } else {
       return 'Export File';
     }
-  }
+  },
+
+  // If extractLink is not empty, download the link and fire action
+  extractLinkDidChange: observer('extractLink', function() {
+    // Since redux state is immutable, this observer will get triggered with any state change, even if
+    // extractLink value itself didn't change.  So check to see if the value really changed.
+    const extractLink = this.get('extractLink');
+    const lastExtractLink = this._lastExtractLink;
+    const reallyDidChange = extractLink !== lastExtractLink;
+    if (reallyDidChange && !isEmpty(extractLink)) {
+      this._lastExtractLink = extractLink;
+      window.open(extractLink);
+      this.send('didDownloadFiles');
+    }
+  })
 });
 
 export default connect(stateToComputed, dispatchToActions)(ExportFilesComponent);

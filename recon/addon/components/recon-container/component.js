@@ -20,7 +20,8 @@ const stateToComputed = ({ recon: { visuals, data } }) => ({
 
 const dispatchToActions = (dispatch) => ({
   initializeRecon: (inputs) => dispatch(DataActions.initializeRecon(inputs)),
-  initializeNotifications: () => dispatch(DataActions.initializeNotifications())
+  initializeNotifications: () => dispatch(DataActions.initializeNotifications()),
+  teardownNotifications: () => dispatch(DataActions.teardownNotifications())
 });
 
 const ReconContainer = Component.extend({
@@ -67,6 +68,7 @@ const ReconContainer = Component.extend({
     const stopFn = this.get('stopNotifications');
     if (stopFn) {
       stopFn();
+      this.send('teardownNotifications');
     }
 
     this._super(...arguments);

@@ -66,9 +66,12 @@ const downloadFiles = () => {
   };
 };
 
+const didDownloadFiles = () => ({ type: ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED });
+
 export {
   deselectAllFiles,
   selectAllFiles,
   downloadFiles,
+  didDownloadFiles,
   fileSelected
 };

@@ -69,10 +69,12 @@ const data = reduxActions.handleActions({
     } else {
       // reset to initial data state
       // then persist user's current recon view
+      // and persist the notifications cancel callback because that's not event-specific
       // then overlay the inputs
       return {
         ...dataInitialState,
         currentReconView: state.currentReconView,
+        stopNotifications: state.stopNotifications,
         ...payload
       };
     }
@@ -193,9 +195,26 @@ const data = reduxActions.handleActions({
     fileExtractStatus: 'success',
     fileExtractLink: payload.link
   }),
+  [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state, { payload }) => {
+    // if the currently downloaded job matches the job in the current state,
+    // reset the state; otherwise, no-op
+    return ((payload && payload.link) === state.fileExtractLink) ? {
+      ...state,
+      ...fileExtractInitialState
+    } : {
+      ...state
+    };
+  },
   [ACTION_TYPES.NOTIFICATION_INIT_SUCCESS]: (state, { payload }) => ({
     ...state,
     stopNotifications: payload.cancelFn
+  }),
+  [ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS]: (state) => ({
+    // clear the callback that tears down notifications, and
+    // clear any pending/completed file extraction state
+    ...state,
+    ...fileExtractInitialState,
+    stopNotifications: null
   })
 }, dataInitialState);
 

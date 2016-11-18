@@ -316,9 +316,12 @@ const initializeNotifications = () => {
   };
 };
 
+const teardownNotifications = () => ({ type: ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS });
+
 export {
   setNewReconView,
   initializeRecon,
   toggleMetaData,
-  initializeNotifications
+  initializeNotifications,
+  teardownNotifications
 };
