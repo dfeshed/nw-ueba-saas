@@ -29,8 +29,10 @@ scriptDir="$(dirname $0)"
 . $scriptDir/_util.sh
 
 # run install on common build node utilities
+info "Running install for common build utilities"
 cd $scriptDir/common
 yarn
+cd ../..
 
 # mock-server is just Yarn install
 cd $scriptDir/../mock-server
