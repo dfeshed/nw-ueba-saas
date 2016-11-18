@@ -43,6 +43,7 @@ Router.map(function() {
       this.route('textareas');
       this.route('inputs');
       this.route('sliders');
+      this.route('datetime');
     });
 
     this.route('content', function() {

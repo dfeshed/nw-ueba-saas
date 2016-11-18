@@ -1,0 +1,35 @@
+<span class="rsa-form-label">
+  {{label}}
+  {{#if isError}}
+    {{#if errorMessage}}
+      {{rsa-icon name='report-problem-triangle' title=errorMessage class='error-icon' size='large'}}
+    {{/if}}
+  {{else}}
+    {{rsa-icon name="calendar-2" style='lined' class='datetime-picker-icon' size='large'}}
+  {{/if}}
+</span>
+{{rsa-form-date
+  value=value
+  disabled=resolvedDisabled
+  placeholder=placeholder
+  readonly=isReadOnly
+  yearRange=yearRange
+  theme=theme
+  format=dateFormat
+  onSelection=onDateSelection
+  onOpen=onDateOpen
+  onClose=onDateClose
+  onDraw=onDateDraw
+  firstDay=firstDay
+  minDate=minDate
+  maxDate=maxDate
+  useUTC=useUTC
+  options=options
+  showTime=showTime
+  showSeconds=showSeconds
+  use24hour=use24hour
+  incrementHourBy=incrementHourBy
+  incrementMinuteBy=incrementMinuteBy
+  incrementSecondBy=incrementSecondBy
+  timeLabel=timeLabel
+}}

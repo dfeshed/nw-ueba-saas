@@ -124,9 +124,26 @@ $formButtonDangerIconHoverColor: rsa-color(red, light);
 $formButtonDisabledTypeColor: rsa-color(gray);
 $formButtonDisabledBorderColor: rsa-color(gray);
 
+$formDateTimeIconColor: rsa-color(white);
+$formDateTimeBg: rsa-color(gray, dark, $rsa-opaque);
+$formDateTimeBorderColor: rsa-color(gray, dark);
+$formDateTimeBottomBorderColor: rsa-color(gray, dark);
+$formDateTimeToday: rsa-color(blue, light);
+$formDateTimeHoverBg: rsa-color(gray, darker, $rsa-nearly-opaque);
+$formDateTimeHover: rsa-color(white);
+$formDateTimeSelected: rsa-color(white);
+$formDateTimeSelectedBg: rsa-color(gray, dark, $rsa-opaque);
+$formDateTimeSelectedBorderColor: rsa-color(blue, light);
+$formDateTimeButtonBg: rsa-color(gray, dark, $rsa-opaque);
+$formDateTimeButton: rsa-color(white);
+$formDateTimeDaysOfWeekColor: rsa-color(gray, light);
+$formDateTimeYearMonthTextColor: rsa-color(white);
+$formDateTimeDisabledDayTextColor: rsa-color(gray, light, $rsa-nearly-transparent);
+
 @import 'form-input';
 @import 'form-radio';
 @import 'form-checkbox';
 @import 'form-slider';
 @import 'form-select';
 @import 'form-button';
+@import 'form-datetime-picker';

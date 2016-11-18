@@ -35,6 +35,11 @@ module.exports = function(defaults) {
     app.import("vendor/alerts.json");
     app.import("vendor/context.json");
   }
+  // Pikaday-time library: for calendar picker.
+  app.import(app.bowerDirectory + '/pikaday-time/pikaday.js');
+
+  // Pikaday-time library: Default stylesheet for Pikadate-time.
+  app.import(app.bowerDirectory + '/pikaday-time/css/pikaday.css');
 
   return app.toTree();
 };

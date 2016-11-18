@@ -1,0 +1,113 @@
+.datetime-picker-icon {
+  position: absolute;
+  right: rsa-whitespace(less);
+  top: 1.75rem;
+  color: $formDateTimeIconColor;
+}
+
+.pika-single.dark-theme {
+  color: $formDateTimeYearMonthTextColor;
+  background-color: $formDateTimeBg;
+  border: 1px solid $formDateTimeBorderColor;
+  border-bottom-color: $formDateTimeBottomBorderColor;
+}
+
+.dark-theme {
+  .pika-label {
+    background-color: $formDateTimeBg;
+  }
+  
+  .pika-select-hour {
+    -webkit-appearance: none;
+    background: $formDateTimeBg;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABG2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+Gkqr6gAAAYZpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZG/S0JRFMc/atEPi6AcGhocoiEsyiJqKyX6gYhYQVaLvvwRaD7eUyIaG1odHPpBSxItzbVF/0AQBNUUQWs0FLSEvM7VwIg8l3vv537vOefeey7Yl9NaxmwYgsxmzgjP+NzLkRV30zNOOnHQgi2qmfpUKBSgrn3eY1Pz3YDKVd/vX3Oux00NbM3Ck5pu5IRnhYNbOV3xvrBLS0XXhc+FPYZcUPhR6bEqvypOVtiucrqMxbBf2CXsTv7i2C/WUkZGeFS4N5POaz/3US9pi28uLShdeg8mYWbw4WaOafyMMcyEjGMM4GVQVtSJ91big2QlVpNRZxuDDZKkyOERNS/Z4zInRI9LS4uHmPqDv7U1EyPe6glt89D4Ylkf/dB0BOU9y/o6saxyCRxSl+tiLT5bhPE30Qs1rfcYOnbh4qqmxU7hsgDdT3rUiFYkh3R7IgHvZ9Aega5baF2t1u1nn9IDLO5A4AYODqFP/DvWvgGOfWcEfG5EMAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAJdJREFUKJHVzzFLggEYxPF7QkUSBQcHG5oaBBcnCdz8eEK0NFRgX6QtaO/juP1cFOTlNV298e7+B5fcjArPSXpV9XMNgGWS+6DwgvkV0BPecHc0uvjAwz/QBFv0m8EQXxi1QINDNj63OsUneideB+94vPRjhtfD98IGi2avzsCrJOskuyR/VfXd7HTawKr6xSRJvw26Me0BsARyyG+VRyQAAAAASUVORK5CYII=');
+    background-position: 97% center;
+    background-repeat: no-repeat;
+    border: 0;
+    color: $formDateTimeYearMonthTextColor;
+    margin: 2px;
+    overflow: hidden;
+    padding: 2px 20px 2px 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .pika-select-minute {
+    -webkit-appearance: none;
+    background: $formDateTimeBg;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABG2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+Gkqr6gAAAYZpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZG/S0JRFMc/atEPi6AcGhocoiEsyiJqKyX6gYhYQVaLvvwRaD7eUyIaG1odHPpBSxItzbVF/0AQBNUUQWs0FLSEvM7VwIg8l3vv537vOefeey7Yl9NaxmwYgsxmzgjP+NzLkRV30zNOOnHQgi2qmfpUKBSgrn3eY1Pz3YDKVd/vX3Oux00NbM3Ck5pu5IRnhYNbOV3xvrBLS0XXhc+FPYZcUPhR6bEqvypOVtiucrqMxbBf2CXsTv7i2C/WUkZGeFS4N5POaz/3US9pi28uLShdeg8mYWbw4WaOafyMMcyEjGMM4GVQVtSJ91big2QlVpNRZxuDDZKkyOERNS/Z4zInRI9LS4uHmPqDv7U1EyPe6glt89D4Ylkf/dB0BOU9y/o6saxyCRxSl+tiLT5bhPE30Qs1rfcYOnbh4qqmxU7hsgDdT3rUiFYkh3R7IgHvZ9Aega5baF2t1u1nn9IDLO5A4AYODqFP/DvWvgGOfWcEfG5EMAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAJdJREFUKJHVzzFLggEYxPF7QkUSBQcHG5oaBBcnCdz8eEK0NFRgX6QtaO/juP1cFOTlNV298e7+B5fcjArPSXpV9XMNgGWS+6DwgvkV0BPecHc0uvjAwz/QBFv0m8EQXxi1QINDNj63OsUneideB+94vPRjhtfD98IGi2avzsCrJOskuyR/VfXd7HTawKr6xSRJvw26Me0BsARyyG+VRyQAAAAASUVORK5CYII=');
+    background-position: 97% center;
+    background-repeat: no-repeat;
+    border: 0;
+    color: $formDateTimeYearMonthTextColor;
+    margin: 2px;
+    overflow: hidden;
+    padding: 2px 20px 2px 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .pika-select-second {
+    -webkit-appearance: none;
+    background: $formDateTimeBg;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAABG2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPD94cGFja2V0IGJlZ2luPSLvu78iIGlkPSJXNU0wTXBDZWhpSHpyZVN6TlRjemtjOWQiPz4KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS41LjAiPgogPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4KICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIi8+CiA8L3JkZjpSREY+CjwveDp4bXBtZXRhPgo8P3hwYWNrZXQgZW5kPSJyIj8+Gkqr6gAAAYZpQ0NQc1JHQiBJRUM2MTk2Ni0yLjEAACiRdZG/S0JRFMc/atEPi6AcGhocoiEsyiJqKyX6gYhYQVaLvvwRaD7eUyIaG1odHPpBSxItzbVF/0AQBNUUQWs0FLSEvM7VwIg8l3vv537vOefeey7Yl9NaxmwYgsxmzgjP+NzLkRV30zNOOnHQgi2qmfpUKBSgrn3eY1Pz3YDKVd/vX3Oux00NbM3Ck5pu5IRnhYNbOV3xvrBLS0XXhc+FPYZcUPhR6bEqvypOVtiucrqMxbBf2CXsTv7i2C/WUkZGeFS4N5POaz/3US9pi28uLShdeg8mYWbw4WaOafyMMcyEjGMM4GVQVtSJ91big2QlVpNRZxuDDZKkyOERNS/Z4zInRI9LS4uHmPqDv7U1EyPe6glt89D4Ylkf/dB0BOU9y/o6saxyCRxSl+tiLT5bhPE30Qs1rfcYOnbh4qqmxU7hsgDdT3rUiFYkh3R7IgHvZ9Aega5baF2t1u1nn9IDLO5A4AYODqFP/DvWvgGOfWcEfG5EMAAAAAlwSFlzAAALEwAACxMBAJqcGAAAAJdJREFUKJHVzzFLggEYxPF7QkUSBQcHG5oaBBcnCdz8eEK0NFRgX6QtaO/juP1cFOTlNV298e7+B5fcjArPSXpV9XMNgGWS+6DwgvkV0BPecHc0uvjAwz/QBFv0m8EQXxi1QINDNj63OsUneideB+94vPRjhtfD98IGi2avzsCrJOskuyR/VfXd7HTawKr6xSRJvw26Me0BsARyyG+VRyQAAAAASUVORK5CYII=');
+    background-position: 97% center;
+    background-repeat: no-repeat;
+    border: 0;
+    color: $formDateTimeYearMonthTextColor;
+    margin: 2px;
+    overflow: hidden;
+    padding: 2px 20px 2px 5px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .pika-prev,
+  .is-rtl .pika-next {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAQAAACGG/bgAAAAQ0lEQVR4Ae3KIQ4AIBTD0N0/IeHGI3UIRA3ut/Zl+ltXc5++htVAmIAwAWECwgSEKbgthEoIlRAqIVRCqINQB9nDgQd7ktwFo6UpWQAAAABJRU5ErkJggg==');
+  }
+
+  .pika-next,
+  .is-rtl .pika-prev {
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABQAAAAeCAQAAACGG/bgAAAAP0lEQVQ4y+3TMQoAMAgEwfwfAvvjTZ1uGzuvHhBPPGczEG+FRqqRaqQaqUaqkX6QBmmjacvQ6qEVTjsh+xizebvlaWptGXZAAAAAAElFTkSuQmCC');
+  }
+
+  .pika-table th {
+    color: $formDateTimeDaysOfWeekColor;
+  }
+
+  .pika-button {
+    color: $formDateTimeButton;
+    background: $formDateTimeButtonBg;
+    text-align: center;
+  }
+
+  .pika-week {
+    color: $formDateTimeDaysOfWeekColor;
+  }
+
+  .is-today .pika-button {
+    color: $formDateTimeToday;
+  }
+
+  .is-selected .pika-button {
+    color: $formDateTimeSelected;
+    background: $formDateTimeSelectedBg;
+    box-shadow: none;
+    border-radius: 0;
+    border-bottom: 1px solid $formDateTimeSelectedBorderColor;
+  }
+
+  .is-disabled .pika-button {
+    color: $formDateTimeDisabledDayTextColor;
+  }
+
+  .pika-button:hover {
+    color: $formDateTimeHover !important;
+    background: $formDateTimeHoverBg !important;
+    border-radius: 0;
+  }
+}
