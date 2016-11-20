@@ -26,7 +26,7 @@ import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -46,8 +46,8 @@ public class ApiActiveDirectoryController {
 	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_Devices));
 	private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
-	private AtomicBoolean adTaskInProgress = new AtomicBoolean(false);
 
+	private AtomicInteger numAdTasksInProgress = new AtomicInteger(0);
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -118,7 +118,7 @@ public class ApiActiveDirectoryController {
 	@RequestMapping("/ad_fetch_etl" )
 	public ResponseEntity executeAdFetchAndEtl() {
 
-		if (adTaskInProgress.compareAndSet(false, true)) {
+		if (numAdTasksInProgress.compareAndSet(0, 1)) {
 			logger.debug("Starting Active Directory fetch and ETL");
 
 			final ExecutorService executorService = Executors.newFixedThreadPool(4, runnable -> {
@@ -135,7 +135,7 @@ public class ApiActiveDirectoryController {
 
 			logger.debug("Finished Active Directory fetch and ETL");
 
-			adTaskInProgress.set(false);
+			numAdTasksInProgress.decrementAndGet();
 			return new ResponseEntity(HttpStatus.OK);
 		}
 		else {
@@ -209,6 +209,7 @@ public class ApiActiveDirectoryController {
 
 		@Override
 		public void run() {
+			numAdTasksInProgress.incrementAndGet();
 			Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
 
 			final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
@@ -237,6 +238,7 @@ public class ApiActiveDirectoryController {
 			} catch (IOException e) {
 				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
 				return new AdTaskResponse(adTaskType, false, -1, dataSource);
+				numAdTasksInProgress.decrementAndGet();
 			}
 			int status;
 			try {
@@ -248,6 +250,7 @@ public class ApiActiveDirectoryController {
 				}
 				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSource, e);
 				return new AdTaskResponse(adTaskType, false, -1, dataSource);
+				numAdTasksInProgress.decrementAndGet();
 			}
 
 			logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSource, status);
@@ -263,6 +266,7 @@ public class ApiActiveDirectoryController {
 						if (split.length != 2) {
 							logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSource);
 							return new AdTaskResponse(adTaskType, false, -1, dataSource);
+                            numAdTasksInProgress.decrementAndGet();
 						}
 
 						taskResults.put(split[0], split[1]);
@@ -270,6 +274,7 @@ public class ApiActiveDirectoryController {
 				} catch (IOException e) {
 					logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
 					return new AdTaskResponse(adTaskType, false, -1, dataSource);
+					numAdTasksInProgress.decrementAndGet();
 				}
 			} finally {
 				try {
@@ -284,6 +289,7 @@ public class ApiActiveDirectoryController {
 			if (success == null) {
 				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSource);
 				return new AdTaskResponse(adTaskType, false, -1, dataSource);
+				numAdTasksInProgress.decrementAndGet();
 			}
 
 			final String objectsCount = taskResults.get(KEY_OBJECT_COUNT);
@@ -293,6 +299,7 @@ public class ApiActiveDirectoryController {
 			}
 
 			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), Integer.parseInt(objectsCount), dataSource);
+			numAdTasksInProgress.decrementAndGet();
 		}
 	}
 
