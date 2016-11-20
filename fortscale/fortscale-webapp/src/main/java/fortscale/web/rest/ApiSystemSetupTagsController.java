@@ -31,8 +31,8 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
     private static final String EMPTY_RESPONSE_STRING = "{}";
-    public static final String KEY_GROUPS = "groups";
-    public static final String KEY_OUS = "ous";
+    private static final String KEY_GROUPS = "groups";
+    private static final String KEY_OUS = "ous";
 
     private final TagService tagService;
     private final UserTagService userTagService;
