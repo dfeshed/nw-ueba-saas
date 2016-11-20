@@ -67,7 +67,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     /**
      * This method updates tags in the tags collection and removes newly-inactive tags from the users collection
-     * @return
+     * @return the HTTP status of the request and an error message if there was an error
      */
     @RequestMapping(value="/user_tags", method=RequestMethod.POST)
     @LogException
@@ -94,7 +94,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     /**
      * This method adds/removes tags to/from the users in the users collection
-     * @return
+     * @return the HTTP status of the request and an error message if there was an error
      */
     @RequestMapping(value="/tagUsers", method=RequestMethod.GET)
     @LogException
@@ -111,12 +111,13 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     /**
      * This method adds/removes tags to/from the users in the users collection
-     * @return
+     * @return the HTTP status of the request and a map of the groups and ous
      */
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
     public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameStartingWith(String startsWith) {
         try {
+            logger.debug("Searching for groups and OUs stating with {}", startsWith);
             final List<AdGroup> groups = activeDirectoryService.getGroupsByNameStartingWithIgnoreCase(startsWith);
             final List<AdOU> ous = activeDirectoryService.getOusByNameStartingWithIgnoreCase(startsWith);
             final HashMap<String, List<? extends AdObject>> resultsMap = new HashMap<>();
@@ -124,18 +125,12 @@ public class ApiSystemSetupTagsController extends BaseController {
             resultsMap.put(KEY_OUS, ous);
             return new ResponseEntity<>(resultsMap, HttpStatus.OK);
         } catch (Exception ex) {
+            logger.error("Failed to search for groups and OUs", ex);
             return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-
-
-
-
-
-
-
-
+    
 //
 //    /**
 //     * API to update user tags
