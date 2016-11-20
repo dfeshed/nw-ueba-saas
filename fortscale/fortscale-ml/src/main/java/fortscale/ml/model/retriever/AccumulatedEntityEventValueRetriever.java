@@ -47,12 +47,12 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 					String featureName = aggrFeature.getKey();
 					if (activityTimeScore == null) {
 						logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName,activityTime);
-						activityTimeScore = 0d;
 					}
 					else {
 						logger.debug("score={} for aggrFeature={} at activityTime={}", activityTimeScore, featureName, activityTime);
+						fullAggregatedFeatureEventNameToScore.put(featureName, activityTimeScore);
 					}
-					fullAggregatedFeatureEventNameToScore.put(featureName, activityTimeScore);
+
 				}
 				jokerEntityEventDataList.add(new JokerEntityEventData(accumulatedEntityEvent.getStart_time().getEpochSecond(), fullAggregatedFeatureEventNameToScore));
 			}

@@ -111,6 +111,6 @@ public class AccumulatedEntityEventValueRetrieverTest extends EntityEventValueRe
 				.sorted()
 				.collect(Collectors.toList());
 
-		Assert.assertEquals(Arrays.asList(0.0, 3.0), scores);
+		Assert.assertEquals(Arrays.asList(3.0), scores);
 	}
 }
