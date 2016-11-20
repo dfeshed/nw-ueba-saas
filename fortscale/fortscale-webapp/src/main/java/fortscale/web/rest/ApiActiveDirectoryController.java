@@ -11,7 +11,6 @@ import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -227,63 +226,24 @@ public class ApiActiveDirectoryController {
 		private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
             final String dataSourceName = dataSource.toString();
             logger.debug("Executing task {} for data source {}", adTaskType, dataSourceName);
-			Process process;
-			UUID resultsFileId = UUID.randomUUID();
-			final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
-			try {
-				final String jobName = dataSourceName + "_" + adTaskType.toString();
-				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsFileId="+resultsFileId));
-				process = new ProcessBuilder(arguments).start();
-			} catch (IOException e) {
-				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
-				numAdTasksInProgress.decrementAndGet();
-				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
-			}
-			int status;
-			try {
-				status = process.waitFor();
-			} catch (InterruptedException e) {
-				if (process.isAlive()) {
-					logger.error("Killing the process forcibly");
-					process.destroyForcibly();
-				}
-				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSourceName, e);
-				numAdTasksInProgress.decrementAndGet();
-				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
-			}
 
-			logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSourceName, status);
+            UUID resultsFileId = UUID.randomUUID();
+            final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
 
-			Map<String, String> taskResults;
+            /* run task */
+            if (!runTask(dataSourceName, adTaskType, resultsFileId)) {
+                numAdTasksInProgress.decrementAndGet();
+                return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+            }
 
-			try {
-				taskResults = new HashMap<>();
-				try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
-					final List<String> lines = stream.collect(Collectors.toList());
-					for (String line : lines) {
-						final String[] split = line.split(DELIMITER);
-						if (split.length != 2) {
-							logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSourceName);
-                            numAdTasksInProgress.decrementAndGet();
-                            return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
-						}
+            /* get task results from file */
+            final Map<String, String> taskResults = getTaskResults(dataSourceName, adTaskType, filePath);
+            if (taskResults == null) {
+                numAdTasksInProgress.decrementAndGet();
+                return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+            }
 
-						taskResults.put(split[0], split[1]);
-					}
-				} catch (IOException e) {
-					logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
-					numAdTasksInProgress.decrementAndGet();
-					return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
-				}
-			} finally {
-				try {
-					Files.delete(Paths.get(filePath));
-				} catch (IOException e) {
-					logger.warn("Failed to delete results file {}.", filePath);
-				}
-			}
-
-
+            /* process results and understand if task finished successfully */
 			final String success = taskResults.get(KEY_SUCCESS);
 			if (success == null) {
 				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
@@ -291,13 +251,74 @@ public class ApiActiveDirectoryController {
 				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
 			}
 
-            final MongoRepository repository = activeDirectoryService.getRepository(dataSource);
-            long objectsCount = repository.count();
+			/* get objects count for this data source from mongo */
+            final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
 
 			numAdTasksInProgress.decrementAndGet();
 			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
 		}
-	}
+
+
+
+
+
+
+
+        private Map<String, String> getTaskResults(Object dataSourceName, Object adTaskType, String filePath) {
+            Map<String, String> taskResults = new HashMap<>();
+            try {
+                try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
+                    final List<String> lines = stream.collect(Collectors.toList());
+                    for (String line : lines) {
+                        final String[] split = line.split(DELIMITER);
+                        if (split.length != 2) {
+                            logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSourceName);
+                            return null;
+                        }
+
+                        taskResults.put(split[0], split[1]);
+                    }
+                } catch (IOException e) {
+                    logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
+                    return null;
+                }
+            } finally {
+                try {
+                    Files.delete(Paths.get(filePath));
+                } catch (IOException e) {
+                    logger.warn("Failed to delete results file {}.", filePath);
+                }
+            }
+
+            return taskResults;
+        }
+
+        private boolean runTask(String dataSourceName, AdTaskType adTaskType, UUID resultsFileId) {
+            Process process;
+            try {
+                final String jobName = dataSourceName + "_" + adTaskType.toString();
+                final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsFileId="+resultsFileId));
+                process = new ProcessBuilder(arguments).start();
+            } catch (IOException e) {
+                logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
+                return false;
+            }
+            int status;
+            try {
+                status = process.waitFor();
+            } catch (InterruptedException e) {
+                if (process.isAlive()) {
+                    logger.error("Killing the process forcibly");
+                    process.destroyForcibly();
+                }
+                logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSourceName, e);
+                return false;
+            }
+
+            logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSourceName, status);
+            return true;
+        }
+    }
 
 
 
