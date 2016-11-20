@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import fortscale.domain.ad.AdConnection;
+import fortscale.domain.ad.AdObject;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
@@ -10,6 +11,7 @@ import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -39,13 +41,9 @@ public class ApiActiveDirectoryController {
 
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
-	private static final String AD_USERS = "User";
-	private static final String AD_GROUPS = "Group";
-	private static final String AD_OU = "OU";
-	private static final String AD_Devices = "Computer";
-	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_Devices));
-	private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
+    private static final List<AdObject.AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObject.AdObjectType.values()));
+    private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
 	private AtomicInteger numAdTasksInProgress = new AtomicInteger(0);
 
@@ -164,10 +162,10 @@ public class ApiActiveDirectoryController {
 	public static class AdTaskResponse {
 		private AdTaskType taskType;
 		private boolean success;
-		private int objectsCount;
+		private long objectsCount;
 		private String dataSource;
 
-		public AdTaskResponse(AdTaskType taskType, boolean success, int objectsCount, String dataSource) {
+		public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource) {
 			this.taskType = taskType;
 			this.success = success;
 			this.objectsCount = objectsCount;
@@ -182,7 +180,7 @@ public class ApiActiveDirectoryController {
 			return success;
 		}
 
-		public int getObjectsCount() {
+		public long getObjectsCount() {
 			return objectsCount;
 		}
 
@@ -196,15 +194,14 @@ public class ApiActiveDirectoryController {
 
 		public static final String TASK_RESULTS_PATH = "/tmp";
 		public static final String DELIMITER = "=";
-		public static final String KEY_SUCCESS = "success"; //Todo: should be shared between this and collection
-		public static final String KEY_OBJECT_COUNT = "objectCount"; //Todo: should be shared between this and collection
-		public static final String COLLECTION_JAR_NAME = "COLLECTION JAR NAME";
+		public static final String KEY_SUCCESS = "success";
 		public static final String COLLECTION_JAR_NAME = "${user.home.dir}/fortscale/fortscale-core/fortscale/fortscale-collection/target/fortscale-collection-1.1.0-SNAPSHOT.jar";
 		public static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
+        public static final String AD_JOB_GROUP = "AD";
 
-		private final String dataSource;
+        private final AdObject.AdObjectType dataSource;
 
-		public FetchEtlTask(String dataSource) {
+		public FetchEtlTask(AdObject.AdObjectType dataSource) {
 			this.dataSource = dataSource;
 		}
 
@@ -227,19 +224,20 @@ public class ApiActiveDirectoryController {
 		 * @param dataSource the data source
 		 * @return an AdTaskResponse representing the results of the task
 		 */
-		private AdTaskResponse executeAdTask(AdTaskType adTaskType, String dataSource) {
-			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
+		private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
+            final String dataSourceName = dataSource.toString();
+            logger.debug("Executing task {} for data source {}", adTaskType, dataSourceName);
 			Process process;
 			UUID resultsFileId = UUID.randomUUID();
-			final String filePath = TASK_RESULTS_PATH + "/" + dataSource.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
+			final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
 			try {
-				final String jobName = dataSource + "_" + adTaskType.toString();
-				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, "AD", "resultsFileId="+resultsFileId));
+				final String jobName = dataSourceName + "_" + adTaskType.toString();
+				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsFileId="+resultsFileId));
 				process = new ProcessBuilder(arguments).start();
 			} catch (IOException e) {
-				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
-				return new AdTaskResponse(adTaskType, false, -1, dataSource);
+				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
 				numAdTasksInProgress.decrementAndGet();
+				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
 			}
 			int status;
 			try {
@@ -249,12 +247,12 @@ public class ApiActiveDirectoryController {
 					logger.error("Killing the process forcibly");
 					process.destroyForcibly();
 				}
-				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSource, e);
-				return new AdTaskResponse(adTaskType, false, -1, dataSource);
+				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSourceName, e);
 				numAdTasksInProgress.decrementAndGet();
+				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
 			}
 
-			logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSource, status);
+			logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSourceName, status);
 
 			Map<String, String> taskResults;
 
@@ -265,17 +263,17 @@ public class ApiActiveDirectoryController {
 					for (String line : lines) {
 						final String[] split = line.split(DELIMITER);
 						if (split.length != 2) {
-							logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSource);
-							return new AdTaskResponse(adTaskType, false, -1, dataSource);
+							logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSourceName);
                             numAdTasksInProgress.decrementAndGet();
+                            return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
 						}
 
 						taskResults.put(split[0], split[1]);
 					}
 				} catch (IOException e) {
-					logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
-					return new AdTaskResponse(adTaskType, false, -1, dataSource);
+					logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
 					numAdTasksInProgress.decrementAndGet();
+					return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
 				}
 			} finally {
 				try {
@@ -288,19 +286,16 @@ public class ApiActiveDirectoryController {
 
 			final String success = taskResults.get(KEY_SUCCESS);
 			if (success == null) {
-				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSource);
-				return new AdTaskResponse(adTaskType, false, -1, dataSource);
+				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
 				numAdTasksInProgress.decrementAndGet();
+				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
 			}
 
-			final String objectsCount = taskResults.get(KEY_OBJECT_COUNT);
-			if (objectsCount == null) {
-				logger.error("Invalid output for task {} for dta source {}. Objects count is missing. Task Failed", adTaskType, dataSource);
-				return new AdTaskResponse(adTaskType, false, -1, dataSource);
-			}
+            final MongoRepository repository = activeDirectoryService.getRepository(dataSource);
+            long objectsCount = repository.count();
 
-			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), Integer.parseInt(objectsCount), dataSource);
 			numAdTasksInProgress.decrementAndGet();
+			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
 		}
 	}
 

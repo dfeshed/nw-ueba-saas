@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
+import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
@@ -12,6 +13,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -85,6 +87,29 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
+    public List<String> getDomainControllers() {
+        List<String> domainControllers = new ArrayList<>();
+        try {
+            logger.info("Trying to retrieve Domain Controllers from DB");
+            domainControllers = getDomainControllersFromDatabase();
+            if (domainControllers.isEmpty()) {
+                logger.warn("No Domain Controllers were found in DB. Trying to retrieve DCs from Active Directory");
+                domainControllers = getDomainControllersFromActiveDirectory();
+                if (!domainControllers.isEmpty()) {
+                    logger.debug("Found domain controllers in Active Directory");
+                    saveDomainControllersInDatabase(domainControllers);
+                } else {
+                    logger.warn("No domain Controllers were found in Active Directory");
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Failed to retrieve domain controllers");
+        }
+
+        return domainControllers;
+    }
+
+    @Override
     public void saveDomainControllersInDatabase(List<String> domainControllers) {
         logger.debug("Saving domain controllers in database");
         String value = String.join(",", domainControllers);
@@ -109,6 +134,26 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
+    public Long getGroupsCount() {
+        return adGroupRepository.count();
+    }
+
+    @Override
+    public Long getOusCount() {
+        return adOURepository.count();
+    }
+
+    @Override
+    public Long getUserCount() {
+        return adUserRepository.count();
+    }
+
+    @Override
+    public Long getComputersCount() {
+        return adComputerRepository.count();
+    }
+
+    @Override
     public List<AdGroup> getGroupsByNameStartingWithIgnoreCase(String startsWith) {
         return adGroupRepository.findByNameStartingWithIgnoreCase(startsWith);
     }
@@ -119,26 +164,19 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public List<String> getDomainControllers() {
-        List<String> domainControllers = new ArrayList<>();
-        try {
-            logger.info("Trying to retrieve Domain Controllers from DB");
-            domainControllers = getDomainControllersFromDatabase();
-            if (domainControllers.isEmpty()) {
-                logger.warn("No Domain Controllers were found in DB. Trying to retrieve DCs from Active Directory");
-                domainControllers = getDomainControllersFromActiveDirectory();
-                if (!domainControllers.isEmpty()) {
-                    logger.debug("Found domain controllers in Active Directory");
-                    saveDomainControllersInDatabase(domainControllers);
-                } else {
-                    logger.warn("No domain Controllers were found in Active Directory");
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Failed to retrieve domain controllers");
+    public MongoRepository getRepository(AdObject.AdObjectType adObjectType) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository;
+            case OU:
+                return adOURepository;
+            case USER:
+                return adUserRepository;
+            case COMPUTER:
+                return adComputerRepository;
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
         }
-
-        return domainControllers;
     }
 
 
