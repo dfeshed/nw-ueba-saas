@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @RequestMapping("/api/tags")
@@ -33,11 +35,13 @@ public class ApiSystemSetupTagsController extends BaseController {
     private static final String EMPTY_RESPONSE_STRING = "{}";
     private static final String KEY_GROUPS = "groups";
     private static final String KEY_OUS = "ous";
+    public static final String COLLECTION_JAR_NAME = "${user.home.dir}/fortscale/fortscale-core/fortscale/fortscale-collection/target/fortscale-collection-1.1.0-SNAPSHOT.jar";
 
     private final TagService tagService;
     private final UserTagService userTagService;
     private final UserService userService;
     private final ActiveDirectoryService activeDirectoryService;
+    private AtomicBoolean taggingTaskInProgress = new AtomicBoolean(false);
 
 
     @Autowired
@@ -130,7 +134,61 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    
+    /**
+     * This method adds/removes tags to/from the users in the users collection
+     * @return the HTTP status of the request and a map of the groups and ous
+     */
+    @RequestMapping(value="/run_tagging_task", method=RequestMethod.GET)
+    @LogException
+    public ResponseEntity<String> runTaggingTask() {
+        if (taggingTaskInProgress.compareAndSet(false, true)) {
+            logger.debug("Starting Tagging task from deployment wizard");
+            Process process;
+            try {
+                final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, "User", "Tagging"));
+                process = new ProcessBuilder(arguments).start();
+            } catch (IOException e) {
+                final String msg = "Execution of tagging task from deployment wizard has failed. " + e.getLocalizedMessage();
+                logger.error(msg);
+                taggingTaskInProgress.set(false);
+                return new ResponseEntity<>("{" + msg + "}", HttpStatus.BAD_REQUEST);
+            }
+            int status;
+            try {
+                status = process.waitFor();
+            } catch (InterruptedException e) {
+                if (process.isAlive()) {
+                    logger.error("Killing the process forcibly");
+                    process.destroyForcibly();
+                }
+                final String msg = "Execution of tagging task from deployment wizard has been interrupted. Task failed. " + e.getLocalizedMessage();
+                logger.error(msg);
+                taggingTaskInProgress.set(false);
+                return new ResponseEntity<>("{" + msg + "}", HttpStatus.BAD_REQUEST);
+            }
+
+
+            if (status != 0) {
+                final String msg = String.format("Execution of tagging task from deployment wizard has finished with status %d. Task failed.", status);
+                taggingTaskInProgress.set(false);
+                return new ResponseEntity<>("{" + msg + "}", HttpStatus.BAD_REQUEST);
+            }
+            else {
+                logger.debug("Tagging task from deployment wizard has finished successfully");
+                taggingTaskInProgress.set(false);
+                return new ResponseEntity<>(EMPTY_RESPONSE_STRING, HttpStatus.OK);
+            }
+        }
+        else {
+            final String msg = "Tagging task is already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
+            logger.warn(msg);
+            return new ResponseEntity<>("{" + msg + "}", HttpStatus.LOCKED);
+        }
+    }
+
+}
+
+
 //
 //    /**
 //     * API to update user tags
@@ -170,4 +228,4 @@ public class ApiSystemSetupTagsController extends BaseController {
 //            userTagService.removeUserTags(user.getUsername(), tags);
 //        }
 //    }
-}
+
