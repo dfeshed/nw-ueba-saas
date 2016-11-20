@@ -14,5 +14,4 @@ public interface AdUserRepository extends MongoRepository<AdUser, String>, AdUse
 	AdUser findByDistinguishedName(String distinguishedName);
 	List<AdUser> findByDistinguishedNameIgnoreCaseContaining(String distinguishedName);
 	List<AdUser> findByLastModifiedExists(boolean exists);
-	List<AdUser> findByUsernameIgnoreCase(String username);
 }
