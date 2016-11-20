@@ -166,4 +166,11 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		metrics.getContextFieldNames++;
 		return entityEventConf.getContextFields();
 	}
+
+	public void setJokerFunction(JokerFunction jokerFunction) {
+		this.jokerFunction = jokerFunction;
+	}
+
+
+
 }
