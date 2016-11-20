@@ -145,6 +145,27 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			return featureBuckets;
 	}
 
+	private FeatureBucket readOneFromMongo(List<String> collectionNames, Query query, FeatureBucketConf featureBucketConf) {
+		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
+
+		for (String collection : collectionNames) {
+			try {
+				FeatureBucket featureBucket;
+				metrics.retrieveFeatureBucketsCalls++;
+				featureBucket = mongoTemplate.findOne(query, FeatureBucket.class, collection);
+				if (featureBucket != null) {
+					metrics.retrievedFeatureBuckets++;
+					return featureBucket;
+				}
+			} catch (Exception e) {
+				metrics.retrieveFeatureBucketsFailures++;
+				throw new RuntimeException("Could not fetch feature buckets from collection " + collection + " due to: " + e);
+			}
+		}
+
+		return null;
+	}
+
 
 	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
 		List<FeatureBucket> result = new ArrayList<>();
@@ -176,15 +197,15 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
-		List<FeatureBucket> result = new ArrayList<>();
+
 
 		List<String> collectionNames = getCollectionNames(featureBucketConf);
 
 		Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
 
-		result = readFromMongo(collectionNames,query,featureBucketConf);
+		FeatureBucket result = readOneFromMongo(collectionNames,query,featureBucketConf);
 
-		return result.get(0);
+		return result;
 
 	}
 	
