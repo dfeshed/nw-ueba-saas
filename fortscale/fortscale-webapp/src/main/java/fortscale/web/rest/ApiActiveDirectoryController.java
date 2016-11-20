@@ -199,6 +199,7 @@ public class ApiActiveDirectoryController {
 		public static final String KEY_SUCCESS = "success"; //Todo: should be shared between this and collection
 		public static final String KEY_OBJECT_COUNT = "objectCount"; //Todo: should be shared between this and collection
 		public static final String COLLECTION_JAR_NAME = "COLLECTION JAR NAME";
+		public static final String COLLECTION_JAR_NAME = "${user.home.dir}/fortscale/fortscale-core/fortscale/fortscale-collection/target/fortscale-collection-1.1.0-SNAPSHOT.jar";
 		public static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
 
 		private final String dataSource;
