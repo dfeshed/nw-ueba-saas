@@ -6,12 +6,16 @@ const {
   Component,
   inject: {
     service
-  }
+  },
+  RSVP,
+  $
 } = Ember;
 
 export default Component.extend(ContextualHelp, {
 
   eventBus: service(),
+
+  ajax: service(),
 
   layoutService: service('layout'),
 
@@ -23,7 +27,20 @@ export default Component.extend(ContextualHelp, {
 
   actions: {
     logout() {
-      this.get('session').invalidate();
+      return new RSVP.Promise((resolve) => {
+        $.ajax({
+          type: 'POST',
+          url: '/oauth/logout',
+          timeout: 3000,
+          data: {
+            access_token: this.get('session').get('data.authenticated.access_token')
+          }
+        })
+          .done(() => {
+            this.get('session').invalidate();
+            resolve();
+          });
+      });
     },
 
     toggleNotifications() {
