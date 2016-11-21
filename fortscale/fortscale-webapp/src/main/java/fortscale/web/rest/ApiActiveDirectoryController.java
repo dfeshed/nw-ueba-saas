@@ -9,6 +9,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
 import org.json.JSONException;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +29,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static fortscale.web.rest.ApiActiveDirectoryController.AdTaskType.ETL;
@@ -35,7 +37,7 @@ import static fortscale.web.rest.ApiActiveDirectoryController.AdTaskType.FETCH;
 
 @Controller
 @RequestMapping(value = "/api/active_directory")
-public class ApiActiveDirectoryController {
+public class ApiActiveDirectoryController implements InitializingBean {
 
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
@@ -46,7 +48,12 @@ public class ApiActiveDirectoryController {
 	private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_Devices));
 	private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
-	private AtomicBoolean adTaskInProgress = new AtomicBoolean(false);
+	//private AtomicBoolean adTaskInProgress = new AtomicBoolean(false);
+	private static Map<String,Boolean> adTaskInProgress = new HashMap<>();
+
+	public void afterPropertiesSet() throws Exception {
+		dataSources.forEach(dataSource -> adTaskInProgress.put(dataSource, Boolean.FALSE));
+	}
 
 
 	@Autowired
@@ -118,7 +125,10 @@ public class ApiActiveDirectoryController {
 	@RequestMapping("/ad_fetch_etl" )
 	public ResponseEntity executeAdFetchAndEtl() {
 
-		if (adTaskInProgress.compareAndSet(false, true)) {
+
+		//if (adTaskInProgress.compareAndSet(false, true)) {
+		if (!this.isAnyTaskRunning()){
+
 			logger.debug("Starting Active Directory fetch and ETL");
 
 			final ExecutorService executorService = Executors.newFixedThreadPool(4, runnable -> {
@@ -128,14 +138,18 @@ public class ApiActiveDirectoryController {
 			});
 
 			try {
+
 				dataSources.forEach(dataSource -> executorService.execute(new FetchEtlTask(dataSource)));
+
 			} finally {
+
 				executorService.shutdown();
 			}
 
+
 			logger.debug("Finished Active Directory fetch and ETL");
 
-			adTaskInProgress.set(false);
+		//	adTaskInProgress.set(false);
 			return new ResponseEntity(HttpStatus.OK);
 		}
 		else {
@@ -144,6 +158,27 @@ public class ApiActiveDirectoryController {
 		}
 
 
+	}
+
+	@RequestMapping(method = RequestMethod.GET,value = "/ad_etl_fetch_status")
+	@LogException
+	public List<JobStatus> getJobStatus() {
+		List<JobStatus> statuses = new ArrayList<>();
+		dataSources.forEach(dataSource -> {
+			statuses.add(new JobStatus(dataSource, new Date().getTime(),ApiActiveDirectoryController.adTaskInProgress.get(dataSource)));
+		});
+		return statuses;
+
+	}
+
+	private boolean isAnyTaskRunning(){
+
+		for (Boolean isRunning : this.adTaskInProgress.values()){
+			if(isRunning){
+				return  true;
+			}
+		}
+		return  false;// No task run
 	}
 
 	public enum AdTaskType {
@@ -161,17 +196,45 @@ public class ApiActiveDirectoryController {
 		}
 	}
 
+	public static class JobStatus{
+		private String dataSource;
+		private long lastSuccessfullExecution;
+		private boolean isRunningNow;
+
+		public JobStatus(String dataSource, long lastSuccessfullExecution, boolean isRunningNow) {
+			this.dataSource = dataSource;
+			this.lastSuccessfullExecution = lastSuccessfullExecution;
+			this.isRunningNow = isRunningNow;
+		}
+
+		public String getDataSource() {
+			return dataSource;
+		}
+
+		public long getLastSuccessfullExecution() {
+			return lastSuccessfullExecution;
+		}
+
+		public boolean isRunningNow() {
+			return isRunningNow;
+		}
+
+	}
+
 	public static class AdTaskResponse {
 		private AdTaskType taskType;
 		private boolean success;
 		private int objectsCount;
 		private String dataSource;
+		private long lastSuccessfullExecution;
 
-		public AdTaskResponse(AdTaskType taskType, boolean success, int objectsCount, String dataSource) {
+		public AdTaskResponse(AdTaskType taskType, boolean success, int objectsCount, String dataSource, long lastSuccessfullExecution) {
 			this.taskType = taskType;
 			this.success = success;
 			this.objectsCount = objectsCount;
 			this.dataSource = dataSource;
+			this.lastSuccessfullExecution = lastSuccessfullExecution;
+
 		}
 
 		public AdTaskType getTaskType() {
@@ -188,6 +251,10 @@ public class ApiActiveDirectoryController {
 
 		public String getDataSource() {
 			return dataSource;
+		}
+
+		public long getLastSuccessfullExecution() {
+			return lastSuccessfullExecution;
 		}
 
 	}
@@ -210,12 +277,13 @@ public class ApiActiveDirectoryController {
 		@Override
 		public void run() {
 			Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
-
+			ApiActiveDirectoryController.adTaskInProgress.put(dataSource,Boolean.TRUE);
 			final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, fetchResponse);
 
 			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
+			ApiActiveDirectoryController.adTaskInProgress.put(dataSource,Boolean.FALSE);
 		}
 
 
@@ -226,7 +294,19 @@ public class ApiActiveDirectoryController {
 		 * @return an AdTaskResponse representing the results of the task
 		 */
 		private AdTaskResponse executeAdTask(AdTaskType adTaskType, String dataSource) {
-			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
+
+			Random r = new Random();
+			int waitSeconds= r.ints(0, (99 + 1)).findFirst().getAsInt();
+			try {
+				Thread.sleep(waitSeconds * 1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+
+			Random r2 = new Random();
+			int numberInstances= r2.ints(0, (99 + 1)).findFirst().getAsInt();
+			return new AdTaskResponse(adTaskType, Boolean.TRUE, numberInstances,dataSource, new Date().getTime());
+		/*	logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
 			Process process;
 			UUID resultsFileId = UUID.randomUUID();
 			final String filePath = TASK_RESULTS_PATH + "/" + dataSource.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
@@ -292,7 +372,7 @@ public class ApiActiveDirectoryController {
 				return new AdTaskResponse(adTaskType, false, -1, dataSource);
 			}
 
-			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), Integer.parseInt(objectsCount), dataSource);
+			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), Integer.parseInt(objectsCount), dataSource);*/
 		}
 	}
 
