@@ -8,5 +8,5 @@ import java.util.List;
 public interface AdGroupRepository  extends MongoRepository<AdGroup,String>, AdGroupRepositoryCustom{
 	List<AdGroup> findByLastModifiedExists(boolean exists);
 	String findByName(String adName);
-	List<AdGroup> findByNameStartingWithIgnoreCase(String startsWith);
+	List<AdGroup> findByNameLikeIgnoreCase(String contains);
 }
