@@ -11,7 +11,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/common/fake-out-bower jquery"
+    "postinstall": "node ../scripts/common/fake-out-bower jquery nouislider"
   },
   "repository": "",
   "engines": {
@@ -35,7 +35,6 @@
     "ember-cli-inject-live-reload": "^1.4.0",
     "ember-cli-moment-shim": "2.1.0",
     "ember-cli-node-assets": "0.1.4",
-    "ember-cli-nouislider": "0.10.0",
     "ember-cli-qunit": "^2.1.0",
     "ember-cli-release": "^0.2.9",
     "ember-cli-sass": "5.5.2",
@@ -63,7 +62,8 @@
     "flexi": "1.2.0",
     "jquery": "3.1.1",
     "highlightjs": "9.8.0",
-    "loader.js": "^4.0.1"
+    "loader.js": "^4.0.1",
+    "nouislider": "^8.0.1"
   },
   "ember-addon": {
     "paths": [

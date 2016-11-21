@@ -14,6 +14,9 @@ module.exports = {
       },
       'javascript-detect-element-resize': {
         import: ['detect-element-resize.js', 'styles.css']
+      },
+      'pikaday-time': {
+        import: ['pikaday.js', 'css/pikaday.css']
       }
     }
   },

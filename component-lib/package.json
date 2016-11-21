@@ -10,7 +10,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/common/fake-out-bower jquery"
+    "postinstall": "node ../scripts/common/fake-out-bower jquery nouislider"
   },
   "repository": "",
   "engines": {
@@ -32,7 +32,6 @@
     "ember-cli-htmlbars-inline-precompile": "^0.3.1",
     "ember-cli-inject-live-reload": "^1.4.0",
     "ember-cli-moment-shim": "2.1.0",
-    "ember-cli-nouislider": "0.10.0",
     "ember-cli-qunit": "^2.1.0",
     "ember-cli-release": "^0.2.9",
     "ember-cli-sass-lint": "git://github.rsa.lab.emc.com/bashfd/ember-cli-sass-lint.git#feature/in-addon-linting",
@@ -65,11 +64,14 @@
   "dependencies": {
     "ember-cli-babel": "^5.1.6",
     "ember-cli-htmlbars": "^1.0.3",
-    "ember-i18n": "4.3.2",
     "ember-cli-node-assets": "0.1.4",
+    "ember-cli-nouislider": "0.10.0",
+    "ember-i18n": "4.3.2",
     "ember-simple-auth": "1.1.0",
     "ember-spaniel": "0.1.0",
-    "flexi": "1.2.0"
+    "pikaday-time": "1.4.1",
+    "flexi": "1.2.0",
+    "nouislider": "^8.0.1"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

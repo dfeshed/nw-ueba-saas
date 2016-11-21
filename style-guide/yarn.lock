@@ -2102,13 +2102,6 @@ ember-cli-normalize-entity-name@^1.0.0:
   dependencies:
     silent-error "^1.0.0"
 
-ember-cli-nouislider@0.10.0:
-  version "0.10.0"
-  resolved "https://registry.npmjs.org/ember-cli-nouislider/-/ember-cli-nouislider-0.10.0.tgz#94bda98cc3d8809cbceb41cdf151b715528e5570"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-    ember-cli-htmlbars "^1.0.3"
-
 ember-cli-path-utils@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/ember-cli-path-utils/-/ember-cli-path-utils-1.0.0.tgz#4e39af8b55301cddc5017739b77a804fba2071ed"
@@ -4654,6 +4647,10 @@ normalize-package-data@^2.0.0, normalize-package-data@^2.3.2, normalize-package-
     is-builtin-module "^1.0.0"
     semver "2 || 3 || 4 || 5"
     validate-npm-package-license "^3.0.1"
+
+nouislider@^8.0.1:
+  version "8.5.1"
+  resolved "https://registry.npmjs.org/nouislider/-/nouislider-8.5.1.tgz#df8dedd0e0de1afb074c33be1e6cf4d2919662e4"
 
 npm-cache-filename@~1.0.2:
   version "1.0.2"

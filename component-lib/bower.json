@@ -2,8 +2,6 @@
   "name": "component-lib",
   "dependencies": {
     "ember": "2.8.2",
-    "ember-cli-shims": "0.1.1",
-    "nouislider": "^8.0.1",
-    "pikaday-time": "1.4.1"
+    "ember-cli-shims": "0.1.1"
   }
 }

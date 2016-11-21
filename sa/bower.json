@@ -3,7 +3,6 @@
   "dependencies": {
     "ember": "2.8.2",
     "ember-cli-shims": "0.1.1",
-    "lodash": "3.10.1",
-    "pikaday-time": "1.4.1"
+    "lodash": "3.10.1"
   }
 }

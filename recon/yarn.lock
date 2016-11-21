@@ -4867,6 +4867,10 @@ normalize-package-data@^2.0.0, normalize-package-data@^2.3.2, normalize-package-
     semver "2 || 3 || 4 || 5"
     validate-npm-package-license "^3.0.1"
 
+nouislider@^8.0.1:
+  version "8.5.1"
+  resolved "https://registry.npmjs.org/nouislider/-/nouislider-8.5.1.tgz#df8dedd0e0de1afb074c33be1e6cf4d2919662e4"
+
 npm-cache-filename@~1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/npm-cache-filename/-/npm-cache-filename-1.0.2.tgz#ded306c5b0bfc870a9e9faf823bc5f283e05ae11"

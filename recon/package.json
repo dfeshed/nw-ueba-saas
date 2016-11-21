@@ -10,7 +10,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
-    "postinstall": "node ../scripts/common/fake-out-bower jquery"
+    "postinstall": "node ../scripts/common/fake-out-bower jquery nouislider"
   },
   "repository": "",
   "engines": {
@@ -58,6 +58,7 @@
     "faker": "3.1.0",
     "jquery": "3.1.1",
     "loader.js": "^4.0.1",
+    "nouislider": "^8.0.1",
     "redux": "3.6.0",
     "redux-actions": "0.12.0",
     "redux-thunk": "2.1.0"

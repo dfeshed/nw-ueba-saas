@@ -11,7 +11,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/common/fake-out-bower jquery faker,Faker fake-xml-http-request,FakeXMLHttpRequest route-recognizer pretender"
+    "postinstall": "node ../scripts/common/fake-out-bower jquery faker,Faker fake-xml-http-request,FakeXMLHttpRequest route-recognizer pretender nouislider"
   },
   "repository": "",
   "engines": {
@@ -74,6 +74,7 @@
     "liquid-fire": "0.26.1",
     "loader.js": "^4.0.1",
     "mock-socket": "2.0.0",
+    "nouislider": "^8.0.1",
     "pretender": "0.11.0",
     "redux": "3.6.0",
     "redux-actions": "0.12.0",
