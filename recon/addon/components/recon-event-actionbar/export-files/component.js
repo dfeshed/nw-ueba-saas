@@ -76,8 +76,11 @@ const ExportFilesComponent = Component.extend({
     const reallyDidChange = extractLink !== lastExtractLink;
     if (reallyDidChange && !isEmpty(extractLink)) {
       this._lastExtractLink = extractLink;
-      window.open(extractLink);
-      this.send('didDownloadFiles');
+      const [ el ] = this.$('.js-export-files-iframe');
+      if (el) {
+        el.src = extractLink;
+        this.send('didDownloadFiles');
+      }
     }
   })
 });

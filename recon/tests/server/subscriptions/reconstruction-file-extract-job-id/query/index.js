@@ -8,8 +8,11 @@ export default {
 
     setTimeout(function() {
       if (typeof helpers.sendNotificationMessage === 'function') {
+        // after a wait, notify that requested file is ready for download
+        // use the sample file in vendor, but create a unique URL for each job so we can test multiple times
+        const now = Number(new Date());
         helpers.sendNotificationMessage({
-          link: `http://www.google.com/#q=rsa-job-${jobId}`
+          link: `/data/file-extract-job.zip?datetime=${now}`
         });
       }
     }, 1000);
