@@ -280,7 +280,7 @@ public class ApiActiveDirectoryController implements InitializingBean {
 			final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, fetchResponse);
 
-			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource));
+			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
 			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
 			//ApiActiveDirectoryController.adTaskInProgress.put(dataSource,Boolean.FALSE);
 		}
@@ -293,60 +293,73 @@ public class ApiActiveDirectoryController implements InitializingBean {
 		 * @return an AdTaskResponse representing the results of the task
 		 */
 		private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
-            final String dataSourceName = dataSource.toString();
-			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
-			Process process;
-			UUID resultsFileId = UUID.randomUUID();
-			final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
+			Random r = new Random();
+			int waitSeconds= r.ints(0, (99 + 1)).findFirst().getAsInt();
 			try {
-				final String jobName = dataSource + "_" + adTaskType.toString();
-				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, "AD", "resultsFileId="+resultsFileId));
-				process = new ProcessBuilder(arguments).start();
-			} catch (IOException e) {
-				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
-				return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-			}
-			int status;
-			try {
-				status = process.waitFor();
+				Thread.sleep(waitSeconds * 1000);
 			} catch (InterruptedException e) {
-				if (process.isAlive()) {
-					logger.error("Killing the process forcibly");
-					process.destroyForcibly();
-				}
-				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSource, e);
-				return new AdTaskResponse(adTaskType, false, -1, dataSource.toString(),new Date().getTime());
+				e.printStackTrace();
 			}
 
-
-
-
-            /* run task */
-            if (!runTask(dataSourceName, adTaskType, resultsFileId)) {
-                //numAdTasksInProgress.decrementAndGet();
-                return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-            }
-
-            /* get task results from file */
-            final Map<String, String> taskResults = getTaskResults(dataSourceName, adTaskType, filePath);
-            if (taskResults == null) {
-               // numAdTasksInProgress.decrementAndGet();
-                return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-            }
-
-            /* process results and understand if task finished successfully */
-			final String success = taskResults.get(KEY_SUCCESS);
-			if (success == null) {
-				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
-			//	numAdTasksInProgress.decrementAndGet();
-				return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-			}
-
-			/* get objects count for this data source from mongo */
-            final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
-
-			//numAdTasksInProgress.decrementAndGet();
-			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName, new Date().getTime());
+			Random r2 = new Random();
+			int numberInstances= AdObject.AdObjectType.OU.equals(dataSource)? -1 :
+					r2.ints(0, (99 + 1)).findFirst().getAsInt();
+			return new AdTaskResponse(adTaskType, Boolean.TRUE, numberInstances,dataSource.toString(), new Date().getTime());
+//
+//            final String dataSourceName = dataSource.toString();
+//			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
+//			Process process;
+//			UUID resultsFileId = UUID.randomUUID();
+//			final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
+//			try {
+//				final String jobName = dataSource + "_" + adTaskType.toString();
+//				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, "AD", "resultsFileId="+resultsFileId));
+//				process = new ProcessBuilder(arguments).start();
+//			} catch (IOException e) {
+//				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
+//				return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
+//			}
+//			int status;
+//			try {
+//				status = process.waitFor();
+//			} catch (InterruptedException e) {
+//				if (process.isAlive()) {
+//					logger.error("Killing the process forcibly");
+//					process.destroyForcibly();
+//				}
+//				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSource, e);
+//				return new AdTaskResponse(adTaskType, false, -1, dataSource.toString(),new Date().getTime());
+//			}
+//
+//
+//
+//
+//            /* run task */
+//            if (!runTask(dataSourceName, adTaskType, resultsFileId)) {
+//                //numAdTasksInProgress.decrementAndGet();
+//                return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
+//            }
+//
+//            /* get task results from file */
+//            final Map<String, String> taskResults = getTaskResults(dataSourceName, adTaskType, filePath);
+//            if (taskResults == null) {
+//               // numAdTasksInProgress.decrementAndGet();
+//                return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
+//            }
+//
+//            /* process results and understand if task finished successfully */
+//			final String success = taskResults.get(KEY_SUCCESS);
+//			if (success == null) {
+//				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
+//			//	numAdTasksInProgress.decrementAndGet();
+//				return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
+//			}
+//
+//			/* get objects count for this data source from mongo */
+//            final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
+//
+//			//numAdTasksInProgress.decrementAndGet();
+//			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName, new Date().getTime());
 		}
 
 
