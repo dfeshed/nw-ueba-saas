@@ -25,7 +25,7 @@ public interface ActiveDirectoryService {
     List<AdOU> getOusByNameStartingWithIgnoreCase(String startsWith);
     Long getGroupsCount();
     Long getOusCount();
-    Long getUserCount();
+    Long getUsersCount();
     Long getComputersCount();
     MongoRepository getRepository(AdObject.AdObjectType adObjectType);
 

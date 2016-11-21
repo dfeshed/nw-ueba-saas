@@ -144,7 +144,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public Long getUserCount() {
+    public Long getUsersCount() {
         return adUserRepository.count();
     }
 
