@@ -108,14 +108,27 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         return result;
     }
 
+    /**
+     * This method queries the {@link AdGroup} collection and returns a list of {@link AdGroup}s whose 'name' field contains the given {@param contains}.
+     * This method is case-insensitive
+     *
+     * @param contains the string that {@link AdGroup}'s 'name' field needs to contain
+     * @return         a list of {@link AdGroup}s whose 'name' field contains the given {@param contains}
+     */
     @Override
-    public List<AdGroup> getGroupsByNameStartingWithIgnoreCase(String startsWith) {
-        return adGroupRepository.findByNameStartingWithIgnoreCase(startsWith);
+    public List<AdGroup> getGroupsByNameContains(String contains) {
+        return adGroupRepository.findByNameLikeIgnoreCase(contains);
     }
 
+    /**
+     * This method queries the {@link AdOU} collection and returns a list of {@link AdOU}s whose 'ou' field contains the given {@param contains}.
+     * This method is case-insensitive
+     * @param contains the string that {@link AdOU}'s 'ou' field needs to contain
+     * @return         a list of {@link AdOU}s whose 'ou' field contains the given {@param contains}
+     */
     @Override
-    public List<AdOU> getOusByNameStartingWithIgnoreCase(String startsWith) {
-        return adOURepository.findByOuStartingWithIgnoreCase(startsWith);
+    public List<AdOU> getOusByOuContains(String contains) {
+        return adOURepository.findByOuLikeIgnoreCase(contains);
     }
 
     @Override

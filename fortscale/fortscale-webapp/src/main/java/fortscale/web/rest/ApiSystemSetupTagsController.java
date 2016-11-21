@@ -122,8 +122,8 @@ public class ApiSystemSetupTagsController extends BaseController {
     public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameStartingWith(String startsWith) {
         try {
             logger.debug("Searching for groups and OUs stating with {}", startsWith);
-            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameStartingWithIgnoreCase(startsWith);
-            final List<AdOU> ous = activeDirectoryService.getOusByNameStartingWithIgnoreCase(startsWith);
+            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameContains(startsWith);
+            final List<AdOU> ous = activeDirectoryService.getOusByOuContains(startsWith);
             final HashMap<String, List<? extends AdObject>> resultsMap = new HashMap<>();
             resultsMap.put(KEY_GROUPS, groups);
             resultsMap.put(KEY_OUS, ous);
@@ -135,8 +135,8 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
     /**
-     * This method adds/removes tags to/from the users in the users collection
-     * @return the HTTP status of the request and a map of the groups and ous
+     * This method executes the user tagging task
+     * @return the HTTP status of the request and an error message if there was an error
      */
     @RequestMapping(value="/run_tagging_task", method=RequestMethod.GET)
     @LogException

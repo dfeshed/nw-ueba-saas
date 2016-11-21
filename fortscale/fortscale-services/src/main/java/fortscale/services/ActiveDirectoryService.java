@@ -19,6 +19,6 @@ public interface ActiveDirectoryService {
     void saveDomainControllersInDatabase(List<String> domainControllers);
 	void saveAdConnectionsInDatabase(List<AdConnection> adConnections);
     String canConnect(AdConnection adConnection);
-    List<AdGroup> getGroupsByNameStartingWithIgnoreCase(String startsWith);
-    List<AdOU> getOusByNameStartingWithIgnoreCase(String startsWith);
+    List<AdGroup> getGroupsByNameContains(String contains);
+    List<AdOU> getOusByOuContains(String contains);
 }
