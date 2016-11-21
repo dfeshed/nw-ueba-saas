@@ -1,8 +1,7 @@
 package fortscale.services.dao;
 
 import fortscale.domain.ad.AdConnection;
-import fortscale.domain.ad.dao.ActiveDirectoryDAO;
-import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
+import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.impl.ActiveDirectoryServiceImpl;
@@ -35,6 +34,14 @@ public class ActiveDirectoryServiceTest {
     private ApplicationConfigurationService applicationConfigurationService;
     @Mock
     private ActiveDirectoryDAO activeDirectoryDAO;
+    @Mock
+    private AdGroupRepository adGroupRepository;
+    @Mock
+    private AdOURepository adOURepository;
+    @Mock
+    private AdUserRepository adUserRepository;
+    @Mock
+    private AdComputerRepository adComputerRepository;
 
     private ActiveDirectoryService testedActiveDirectoryService;
 
@@ -46,7 +53,12 @@ public class ActiveDirectoryServiceTest {
         // we don't want to actually save anything
         doNothing().when(applicationConfigurationService).insertConfigItem(any(), any());
 
-        testedActiveDirectoryService = new ActiveDirectoryServiceImpl(activeDirectoryDAO, applicationConfigurationService);
+        testedActiveDirectoryService = new ActiveDirectoryServiceImpl(activeDirectoryDAO,
+                applicationConfigurationService,
+                adGroupRepository,
+                adOURepository,
+                adUserRepository,
+                adComputerRepository);
     }
 
     @Test
