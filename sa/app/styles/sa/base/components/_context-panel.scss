@@ -236,6 +236,38 @@ $font-fade-color: rsa-color(gray, light);
         }
       }
     }
+    &__risk-indicators {
+      padding: rsa-whitespace();
+      &__category-panel {
+        width: 50%;
+        &__cat-header {
+          @include rsa-font(header);
+        }
+      }
+      &__tags-panel {
+        padding-top: rsa-whitespace(least);
+        padding-bottom: rsa-whitespace();
+      }
+      &__tooltip {
+        width: 90vw;
+      }
+    }
+    &__risk-indicators {
+      padding: rsa-whitespace();
+      &__category-panel {
+        width: 50%;
+        &__cat-header {
+          @include rsa-font(header);
+        }
+      }
+      &__tags-panel {
+        padding-top: rsa-whitespace(least);
+        padding-bottom: rsa-whitespace();
+      }
+      &__tooltip {
+        width: 90vw;
+      }
+    }
 
     &__prefix .value {
       color: rsa-color(blue);

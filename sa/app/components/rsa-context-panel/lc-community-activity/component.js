@@ -14,5 +14,33 @@ export default Component.extend({
   trendingCommunityActivity: (seenTrend) => [seenTrend],
 
   @computed('liveConnectData')
-  trendingSubmissionActivity: (lcData) => [lcData.customerHighRiskFeedbackPercentageTrend, lcData.customerRiskyFeedbackPercentageTrend, lcData.customerSuspiciousFeedbackPercentageTrend]
+  trendingSubmissionActivity: (lcData) => ([
+    lcData.customerHighRiskFeedbackPercentageTrend,
+    lcData.customerRiskyFeedbackPercentageTrend,
+    lcData.customerSuspiciousFeedbackPercentageTrend
+  ]),
+
+  @computed('liveConnectData.tags', 'allTags')
+  riskIndicatorCategories: (riskIndicatorTags, allTags) => {
+    // Collect tags to be highlighted
+    const tagsToHighlight = riskIndicatorTags ? riskIndicatorTags.map((tag) => tag.name) : [];
+
+    // Map all tags to respective fields identified by the category name
+    const categories = {};
+    if (allTags && allTags.length > 0) {
+      allTags.forEach((tag) => {
+        tag.highlight = tagsToHighlight.indexOf(tag.name) > -1; // set highlight flag for indicated tags
+        if (!categories.hasOwnProperty(tag.category)) {
+          categories[tag.category] = {
+            categoryText: tag.categoryText,
+            tags: [] // array to hold all tags belonging to this category
+          };
+        }
+        categories[tag.category].tags.push(tag);
+      });
+    }
+
+    // Finally return all values as array
+    return Object.keys(categories).map((key) => categories[key]);
+  }
 });

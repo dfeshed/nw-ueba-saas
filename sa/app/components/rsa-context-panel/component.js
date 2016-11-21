@@ -43,7 +43,7 @@ export default Component.extend({
         incidentsData: null,
         alertsData: null,
         ecatData: null,
-        liveConnectData: null
+        liveConnectData: LiveConnect.create()
       }
     };
 
@@ -125,8 +125,8 @@ export default Component.extend({
       case 'LiveConnect-Ip':
       case 'LiveConnect-Domain':
         contextData.resultList.forEach((obj) => {
-          if (obj && obj.record && obj.record.length) {
-            set(this.get('model').contextData, 'liveConnectData', this._parseLiveConnectData(contextData.dataSourceType, obj.record));
+          if (obj && obj.record && obj.record.length > 2) {
+            this._parseLiveConnectData(contextData.dataSourceType, obj.record);
           } else {
             set(this.get('model').contextData, 'liveConnectData', null);
           }
@@ -144,7 +144,7 @@ export default Component.extend({
   },
 
   _parseLiveConnectData(entityType, record) {
-    const lcData = LiveConnect.create();
+    const lcData = this.get('model').contextData.liveConnectData;
     switch (entityType) {
       case 'LiveConnect-Ip':
         lcData.set('IpInfo', record[0].IpInfo);
@@ -159,6 +159,6 @@ export default Component.extend({
         lcData.set('DomainReputation', record[1].DomainReputation);
         break;
     }
-    return lcData;
+    lcData.set('allTags', record[2].LiveConnectApi.riskTagTypes);
   }
 });

@@ -832,6 +832,24 @@
                 "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
                 "ASSOCIATED_WITH_RISKY_DOMAIN"
               ],
+              "tags":[
+                {
+                  "value" : "RECONNAISSANCE_SCANNING",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "SCANNING",
+                  "nameText" : "Scanning",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_TOR",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "TOR",
+                  "nameText" : "Tor",
+                  "description" : "Some description for this tag that is configured in the server."
+                }
+              ],
               "relatedDomains": [
                 {
                   "id": "Thisdomainsmailidistooolongfortestingweareusingthisfoo.com",
@@ -931,6 +949,92 @@
                 {
                   "time": 1445731200000,
                   "percentage": 64.5
+                }
+              ]
+            }
+          },
+          {
+            "LiveConnectApi" : {
+              "riskTagTypes": [
+                {
+                  "value" : "RECONNAISSANCE_SCANNING",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "SCANNING",
+                  "nameText" : "Scanning",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_BRUTE_FORCE",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "BRUTE_FORCE",
+                  "nameText" : "Brute Force",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_VPN",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "VPN",
+                  "nameText" : "VPN",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_TOR",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "TOR",
+                  "nameText" : "Tor",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "DELIVERY_EXPLOIT",
+                  "category" : "DELIVERY",
+                  "categoryText" : "DELIVERY",
+                  "name" : "EXPLOIT",
+                  "nameText" : "Exploit",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "DELIVERY_PHISHING",
+                  "category" : "DELIVERY",
+                  "categoryText" : "DELIVERY",
+                  "name" : "PHISHING",
+                  "nameText" : "Phishing",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "C2C_BEACONING",
+                  "category" : "C2C",
+                  "categoryText" : "Command & Control",
+                  "name" : "BEACONING",
+                  "nameText" : "Beaconing",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "LATERAL_MOVEMENT_RDP",
+                  "category" : "LATERAL_MOVEMENT",
+                  "categoryText" : "LATERAL MOVEMENT",
+                  "name" : "RDP",
+                  "nameText" : "RDP",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "PRIVILEGE_ESCALATION_PASSWORD_DUMPERS",
+                  "category" : "PRIVILEGE_ESCALATION",
+                  "categoryText" : "PRIVILEGE ESCALATION",
+                  "name" : "PASSWORD_DUMPERS",
+                  "nameText" : "Password Dumpers",
+                  "description" : "Utilities that extract clear text passwords or password hashes with or without a salt."
+                },
+                {
+                  "value" : "PACKAGE_EXF_FTP",
+                  "category" : "PACKAGE_EXF",
+                  "categoryText" : "PACKAGE EXFILTRATION",
+                  "name" : "FTP",
+                  "nameText" : "FTP",
+                  "description" : "Utilities that extract clear text passwords or password hashes with or without a salt."
                 }
               ]
             }
@@ -986,6 +1090,24 @@
                 "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
                 "ASSOCIATED_WITH_RISKY_DOMAIN"
               ],
+              "tags":[
+                {
+                  "value" : "RECONNAISSANCE_SCANNING",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "SCANNING",
+                  "nameText" : "Scanning",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_TOR",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "TOR",
+                  "nameText" : "Tor",
+                  "description" : "Some description for this tag that is configured in the server."
+                }
+              ],
               "relatedDomains": [
                 {
                   "id": "Thisdomainsmailidistooolongfortestingweareusingthisfoo.com",
@@ -1088,6 +1210,92 @@
                 }
               ]
             }
+          },
+          {
+            "LiveConnectApi" : {
+              "riskTagTypes": [
+                {
+                  "value" : "RECONNAISSANCE_SCANNING",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "SCANNING",
+                  "nameText" : "Scanning",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_BRUTE_FORCE",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "BRUTE_FORCE",
+                  "nameText" : "Brute Force",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_VPN",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "VPN",
+                  "nameText" : "VPN",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_TOR",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "TOR",
+                  "nameText" : "Tor",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "DELIVERY_EXPLOIT",
+                  "category" : "DELIVERY",
+                  "categoryText" : "DELIVERY",
+                  "name" : "EXPLOIT",
+                  "nameText" : "Exploit",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "DELIVERY_PHISHING",
+                  "category" : "DELIVERY",
+                  "categoryText" : "DELIVERY",
+                  "name" : "PHISHING",
+                  "nameText" : "Phishing",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "C2C_BEACONING",
+                  "category" : "C2C",
+                  "categoryText" : "Command & Control",
+                  "name" : "BEACONING",
+                  "nameText" : "Beaconing",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "LATERAL_MOVEMENT_RDP",
+                  "category" : "LATERAL_MOVEMENT",
+                  "categoryText" : "LATERAL MOVEMENT",
+                  "name" : "RDP",
+                  "nameText" : "RDP",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "PRIVILEGE_ESCALATION_PASSWORD_DUMPERS",
+                  "category" : "PRIVILEGE_ESCALATION",
+                  "categoryText" : "PRIVILEGE ESCALATION",
+                  "name" : "PASSWORD_DUMPERS",
+                  "nameText" : "Password Dumpers",
+                  "description" : "Utilities that extract clear text passwords or password hashes with or without a salt."
+                },
+                {
+                  "value" : "PACKAGE_EXF_FTP",
+                  "category" : "PACKAGE_EXF",
+                  "categoryText" : "PACKAGE EXFILTRATION",
+                  "name" : "FTP",
+                  "nameText" : "FTP",
+                  "description" : "Utilities that extract clear text passwords or password hashes with or without a salt."
+                }
+              ]
+            }
           }
         ]
       }
@@ -1139,6 +1347,24 @@
               "riskReasonTypeList": [
                 "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
                 "ASSOCIATED_WITH_RISKY_DOMAIN"
+              ],
+              "tags":[
+                {
+                  "value" : "RECONNAISSANCE_SCANNING",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "SCANNING",
+                  "nameText" : "Scanning",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_TOR",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "TOR",
+                  "nameText" : "Tor",
+                  "description" : "Some description for this tag that is configured in the server."
+                }
               ],
               "relatedDomains": [
                 {
@@ -1239,6 +1465,92 @@
                 {
                   "time": 1445731200000,
                   "percentage": 64.5
+                }
+              ]
+            }
+          },
+          {
+            "LiveConnectApi" : {
+              "riskTagTypes": [
+                {
+                  "value" : "RECONNAISSANCE_SCANNING",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "SCANNING",
+                  "nameText" : "Scanning",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_BRUTE_FORCE",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "BRUTE_FORCE",
+                  "nameText" : "Brute Force",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_VPN",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "VPN",
+                  "nameText" : "VPN",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "RECONNAISSANCE_TOR",
+                  "category" : "RECONNAISSANCE",
+                  "categoryText" : "RECONNAISSANCE",
+                  "name" : "TOR",
+                  "nameText" : "Tor",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "DELIVERY_EXPLOIT",
+                  "category" : "DELIVERY",
+                  "categoryText" : "DELIVERY",
+                  "name" : "EXPLOIT",
+                  "nameText" : "Exploit",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "DELIVERY_PHISHING",
+                  "category" : "DELIVERY",
+                  "categoryText" : "DELIVERY",
+                  "name" : "PHISHING",
+                  "nameText" : "Phishing",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "C2C_BEACONING",
+                  "category" : "C2C",
+                  "categoryText" : "Command & Control",
+                  "name" : "BEACONING",
+                  "nameText" : "Beaconing",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "LATERAL_MOVEMENT_RDP",
+                  "category" : "LATERAL_MOVEMENT",
+                  "categoryText" : "LATERAL MOVEMENT",
+                  "name" : "RDP",
+                  "nameText" : "RDP",
+                  "description" : "Some description for this tag that is configured in the server."
+                },
+                {
+                  "value" : "PRIVILEGE_ESCALATION_PASSWORD_DUMPERS",
+                  "category" : "PRIVILEGE_ESCALATION",
+                  "categoryText" : "PRIVILEGE ESCALATION",
+                  "name" : "PASSWORD_DUMPERS",
+                  "nameText" : "Password Dumpers",
+                  "description" : "Utilities that extract clear text passwords or password hashes with or without a salt."
+                },
+                {
+                  "value" : "PACKAGE_EXF_FTP",
+                  "category" : "PACKAGE_EXF",
+                  "categoryText" : "PACKAGE EXFILTRATION",
+                  "name" : "FTP",
+                  "nameText" : "FTP",
+                  "description" : "Utilities that extract clear text passwords or password hashes with or without a salt."
                 }
               ]
             }

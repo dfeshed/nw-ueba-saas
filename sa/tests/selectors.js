@@ -345,6 +345,17 @@ export default Ember$.extend({}, BaseSelectors, {
       'breadcrumbMoreButton': '.rsa-investigate-breadcrumb__more .rsa-form-button',
       'breadcrumbQueryInput': '.rsa-investigate-breadcrumb__query-input input',
       'breadcrumbQueryButton': '.rsa-investigate-breadcrumb__submit .rsa-form-button'
+    },
+    'contextpanel': {
+      'liveconnect': {
+        'riskIndicators': {
+          'container': '.rsa-context-panel__liveconnect__risk-indicators',
+          'categoriesPanel': '.rsa-context-panel__liveconnect__risk-indicators__category-panel',
+          'category': '.rsa-context-panel__liveconnect__risk-indicators__category-panel__cat-header',
+          'tagHighlighted': '.js-test-risk-indicator-tag .highlighted',
+          'tagDisabled': '.js-test-risk-indicator-tag .disabled'
+        }
+      }
     }
   }
 });

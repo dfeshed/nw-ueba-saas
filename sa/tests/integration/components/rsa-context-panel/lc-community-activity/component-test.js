@@ -34,6 +34,24 @@ const liveConnectData = {
       'percentage': 45.5
     }
   ],
+  'tags': [
+    {
+      'value': 'RECONNAISSANCE_SCANNING',
+      'category': 'RECONNAISSANCE',
+      'categoryText': 'RECONNAISSANCE',
+      'name': 'SCANNING',
+      'nameText': 'Scanning',
+      'description': 'Some description'
+    },
+    {
+      'value': 'RECONNAISSANCE_TOR',
+      'category': 'RECONNAISSANCE',
+      'categoryText': 'RECONNAISSANCE',
+      'name': 'TOR',
+      'nameText': 'Tor',
+      'description': 'Some description'
+    }
+  ],
   'customerNotRiskyFeedbackPercentage': 0.0,
   'customerNotRiskyFeedbackPercentageTrend': [
     {
@@ -86,27 +104,40 @@ const liveConnectData = {
     }
   ]
 };
+const allTags = [
+  {
+    'value': 'RECONNAISSANCE_SCANNING',
+    'category': 'RECONNAISSANCE',
+    'categoryText': 'RECONNAISSANCE',
+    'name': 'SCANNING',
+    'nameText': 'Scanning',
+    'description': 'Some description'
+  }
+];
+
 moduleForComponent('rsa-context-panel/lc-community-activity', 'Integration | Component | rsa context panel/lc community activity', {
   integration: true
 });
 
 test('it renders correctly with the correct number of expected elements', function(assert) {
   this.set('liveConnectData', liveConnectData);
-  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData}}`);
+  this.set('allTags', allTags);
+  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags}}`);
 
   assert.equal(this.$('.rsa-context-panel__liveconnect__reviewstatus__col-1').length, 1, 'review status element exists.');
   assert.equal(this.$('.rsa-form-radio-group-label').length, 2, 'Radio group label elements present');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity__desc').length, 4, 'Community Activity description element exists');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity').length, 1, 'Community Activity element exists');
   // assert.equal(this.$('.rsa-context-panel__liveconnect__risk-indicators').length, 1, 'Risk Indicators element exists');
-  assert.equal(this.$('.rsa-content-section-header').length, 2, 'Correct number of section header elements found');
+  assert.equal(this.$('.rsa-content-section-header').length, 3, 'Correct number of section header elements found');
   assert.equal(this.$('.rsa-content-datetime').length, 2, 'Correct number of rsa-content-datetime elements found');
 
 });
 
 test('Radio button,Button and Drop down renders correctly', function(assert) {
   this.set('liveConnectData', liveConnectData);
-  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData}}`);
+  this.set('allTags', allTags);
+  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags}}`);
 
   assert.equal(this.$('.rsa-form-radio').length, 6, 'Correct number of Radio group inputs is present');
 
@@ -118,7 +149,8 @@ test('Radio button,Button and Drop down renders correctly', function(assert) {
 
 test('line charts are rendered correctly', function(assert) {
   this.set('liveConnectData', liveConnectData);
-  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData}}`);
+  this.set('allTags', allTags);
+  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags}}`);
 
   assert.equal(this.$('.rsa-chart').length, 2, 'Correct number of .rsa-chart  is present');
   assert.equal(this.$('.rsa-area-series').length, 4, 'Correct number of .rsa-area-series is present');
