@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import wait from 'ember-test-helpers/wait';
 
@@ -167,7 +167,7 @@ test('it renders imperatively (with an array config) the correct number of expec
   assert.equal(this.$('.rsa-data-table-header-cell').length, 2, 'Correct number of body-cell dom elements found.');
 });
 
-test('it renders only a subset of the data when lazy rendering is enabled', function(assert) {
+skip('it renders only a subset of the data when lazy rendering is enabled', function(assert) {
   this.setProperties({
     items: mockItems,
     columnsConfig: mockColumnsConfig
