@@ -118,25 +118,24 @@
   <hbox class="rsa-context-panel__liveconnect__risk-indicators">
     {{#each riskIndicatorCategories as |category|}}
       <vbox class="rsa-context-panel__liveconnect__risk-indicators__category-panel">
-        <div>
-          <span class="rsa-context-panel__liveconnect__risk-indicators__category-panel__cat-header">
-            {{category.categoryText}}
-          </span>
-        </div>
+        <span class="rsa-context-panel__liveconnect__risk-indicators__category-panel__cat-header">
+          {{category.categoryText}}
+        </span>
         <hbox class="rsa-context-panel__liveconnect__risk-indicators__tags-panel">
-          {{#each category.tags as |tag|}}
-            {{#if tag.highlight}}
-              {{#rsa-content-help-trigger tooltip=tag.name}}
-                {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
-              {{/rsa-content-help-trigger}}
-              {{#rsa-content-tooltip position='top' tooltipId=tag.name
-                  class="rsa-context-panel__liveconnect__risk-indicators__tooltip"}}
-                <section>{{tag.description}}</section>
-              {{/rsa-content-tooltip}}
-            {{else}}
-              {{rsa-content-label label=tag.nameText isDisabled=true class="js-test-risk-indicator-tag disabled"}}
-            {{/if}}
-          {{/each}}
+          <div>
+            {{#each category.tags as |tag|}}
+              {{#if tag.highlight}}
+                {{#rsa-content-help-trigger tooltip=tag.name}}
+                  {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
+                {{/rsa-content-help-trigger}}
+                {{#rsa-content-tooltip position='top-left' tooltipId=tag.name}}
+                  <section>{{tag.description}}</section>
+                {{/rsa-content-tooltip}}
+              {{else}}
+                {{rsa-content-label label=tag.nameText isDisabled=true class="js-test-risk-indicator-tag disabled"}}
+              {{/if}}
+            {{/each}}
+          </div>
         </hbox>
       </vbox>
     {{/each}}

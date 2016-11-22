@@ -29,14 +29,18 @@ export default Component.extend({
     const categories = {};
     if (allTags && allTags.length > 0) {
       allTags.forEach((tag) => {
-        tag.highlight = tagsToHighlight.indexOf(tag.name) > -1; // set highlight flag for indicated tags
         if (!categories.hasOwnProperty(tag.category)) {
           categories[tag.category] = {
             categoryText: tag.categoryText,
             tags: [] // array to hold all tags belonging to this category
           };
         }
-        categories[tag.category].tags.push(tag);
+        if (tagsToHighlight.indexOf(tag.name) > -1) {
+          tag.highlight = true; // set highlight flag for indicated tags
+          categories[tag.category].tags.unshift(tag); // If highlighted, add to the start
+        } else {
+          categories[tag.category].tags.push(tag);
+        }
       });
     }
 
