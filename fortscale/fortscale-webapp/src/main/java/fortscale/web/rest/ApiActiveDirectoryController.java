@@ -229,7 +229,7 @@ public class ApiActiveDirectoryController implements InitializingBean {
 
 	public static class JobStatus{
 		private String dataSource;
-		private long lastSuccessfullExecution;
+		private Long lastSuccessfullExecution;
 		private boolean isRunningNow;
 
 		public JobStatus(String dataSource, Long lastSuccessfullExecution, boolean isRunningNow) {
@@ -322,7 +322,7 @@ public class ApiActiveDirectoryController implements InitializingBean {
 			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
 
 			long finishTime = System.currentTimeMillis();
-			this.applicationConfigurationService.insertConfigItemAsObject(ApiActiveDirectoryController.LAST_AD_EXECUTION_COMPLETE_PREFIX + dataSource.toString(), finishTime);
+			applicationConfigurationService.insertConfigItemAsObject(ApiActiveDirectoryController.LAST_AD_EXECUTION_COMPLETE_PREFIX + dataSource.toString(), finishTime);
 			etlResponse.setLastSuccessfullExecution(finishTime);
 			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
 			//ApiActiveDirectoryController.adTaskInProgress.put(dataSource,Boolean.FALSE);
