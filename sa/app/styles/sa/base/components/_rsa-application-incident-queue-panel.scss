@@ -1,3 +1,5 @@
+$panel-background-color: rsa-color(gray, darker);
+
 .rsa-application-incident-queue-panel {
   transition: width .65s;
   position: absolute;
@@ -6,7 +8,7 @@
   bottom: 0;
   width: 0;
   border-top: 1px solid rsa-color(gray, darkest);
-  background-color: rsa-color(gray, darker);
+  background-color: $panel-background-color;
   display: none;
 
   &.is-expanded {
@@ -30,6 +32,10 @@
 
   .scroll-box {
     overflow-x: hidden;
+
+    // specific to Internet Exlorer
+    background-color: $panel-background-color;
+    @include rsa-layer(panels);
   }
 
   .rsa-data-table {
