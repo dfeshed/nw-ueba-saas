@@ -213,8 +213,22 @@ export default $.extend({}, BaseTranslations, {
       certSigAlgo: 'ja_Signature Algorithm',
       certThumbprint: 'ja_Certificate Counter Signature',
       certNotValidBefore: 'ja_Certificate Not Valid Before',
-      certNotValidAfter: 'ja_Certificate Not Valid After'
-
+      certNotValidAfter: 'ja_Certificate Not Valid After',
+      whois: 'ja_WHOIS',
+      whoisCreatedDate: 'ja_Created date',
+      whoisUpdatedDate: 'ja_Updated date',
+      whoisExpiredDate: 'ja_Expired date',
+      whoisRegType: 'ja_Type',
+      whoisRegName: 'ja_Name',
+      whoisRegOrg: 'ja_Organization',
+      whoisRegStreet: 'ja_Street',
+      whoisRegCity: 'ja_city',
+      whoisRegState: 'ja_State',
+      whoisPostalCode: 'ja_Postal Code',
+      whoisCountry: 'ja_Country',
+      whoisPhone: 'ja_Phone',
+      wohisFax: 'ja_Fax',
+      whoisEmail: 'ja_Email'
     }
   },
   about: {

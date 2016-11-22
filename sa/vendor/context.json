@@ -850,34 +850,6 @@
                   "description" : "Some description for this tag that is configured in the server."
                 }
               ],
-              "relatedDomains": [
-                {
-                  "id": "Thisdomainsmailidistooolongfortestingweareusingthisfoo.com",
-                  "risk": "UNSAFE",
-                  "countryCode": "US",
-                  "creationDate": 1475002318162,
-                  "expiredDate": 1475002318162,
-                  "registrantEmail": "bar@foo.com"
-                }
-              ],
-              "relatedFiles": [
-                {
-                  "id": "1a708f247cc6a7364b873c029bbdf459",
-                  "risk": "UNKNOWN",
-                  "unique": false,
-                  "fileName": "filename1",
-                  "importHashFunction": "c6a7364b873c029",
-                  "compiledTime": 1401972584000
-                },
-                {
-                  "id": "2a708f247cc6a7364b873c029bbdf459",
-                  "risk": "UNSAFE",
-                  "unique": true,
-                  "fileName": "filename2",
-                  "importHashFunction": "c6a7364b873c030",
-                  "compiledTime": 1401972584000
-                }
-              ],
               "customerPercentage": 34.24,
               "customerPercentageTrend": [
                 {
@@ -1108,34 +1080,6 @@
                   "description" : "Some description for this tag that is configured in the server."
                 }
               ],
-              "relatedDomains": [
-                {
-                  "id": "Thisdomainsmailidistooolongfortestingweareusingthisfoo.com",
-                  "risk": "UNSAFE",
-                  "countryCode": "US",
-                  "creationDate": 1475002318162,
-                  "expiredDate": 1475002318162,
-                  "registrantEmail": "bar@foo.com"
-                }
-              ],
-              "relatedFiles": [
-                {
-                  "id": "1a708f247cc6a7364b873c029bbdf459",
-                  "risk": "UNKNOWN",
-                  "unique": false,
-                  "fileName": "filename1",
-                  "importHashFunction": "c6a7364b873c029",
-                  "compiledTime": 1401972584000
-                },
-                {
-                  "id": "2a708f247cc6a7364b873c029bbdf459",
-                  "risk": "UNSAFE",
-                  "unique": true,
-                  "fileName": "filename2",
-                  "importHashFunction": "c6a7364b873c030",
-                  "compiledTime": 1401972584000
-                }
-              ],
               "customerPercentage": 34.24,
               "customerPercentageTrend": [
                 {
@@ -1323,16 +1267,16 @@
               "whoisUpdatedDate": 1445731200000,
               "whoisExpiredDate": 1445731200000,
               "whoisRegType": "32characters",
-              "whoisRegName": "128characters",
-              "whoisRegOrg": "255characters",
-              "whoisRegStreet": "255characters",
-              "whoisRegCity": "255characters",
-              "whoisRegState": "64characters",
-              "whoisPostalCode": "64characters",
-              "whoisCountry": "64characters",
-              "whoisPhone": "64characters",
-              "wohisFax": "64characters",
-              "whoisEmail": "255characters"
+              "whoisRegName": "Fred Smith",
+              "whoisRegOrg": "Bad Guys Ecomm",
+              "whoisRegStreet": "1234 First street",
+              "whoisRegCity": "Anytown",
+              "whoisRegState": "CA",
+              "whoisPostalCode": "12345",
+              "whoisCountry": "United States",
+              "whoisPhone": "777-555-1234",
+              "wohisFax": "777-555-6789",
+              "whoisEmail": "fsmith@google.com"
             }
           },
           {
@@ -1348,50 +1292,22 @@
                 "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
                 "ASSOCIATED_WITH_RISKY_DOMAIN"
               ],
-              "tags":[
+              "tags": [
                 {
-                  "value" : "RECONNAISSANCE_SCANNING",
-                  "category" : "RECONNAISSANCE",
-                  "categoryText" : "RECONNAISSANCE",
-                  "name" : "SCANNING",
-                  "nameText" : "Scanning",
-                  "description" : "Some description for this tag that is configured in the server."
+                  "value": "RECONNAISSANCE_SCANNING",
+                  "category": "RECONNAISSANCE",
+                  "categoryText": "RECONNAISSANCE",
+                  "name": "SCANNING",
+                  "nameText": "Scanning",
+                  "description": "Some description for this tag that is configured in the server."
                 },
                 {
-                  "value" : "RECONNAISSANCE_TOR",
-                  "category" : "RECONNAISSANCE",
-                  "categoryText" : "RECONNAISSANCE",
-                  "name" : "TOR",
-                  "nameText" : "Tor",
-                  "description" : "Some description for this tag that is configured in the server."
-                }
-              ],
-              "relatedDomains": [
-                {
-                  "id": "Thisdomainsmailidistooolongfortestingweareusingthisfoo.com",
-                  "risk": "UNSAFE",
-                  "countryCode": "US",
-                  "creationDate": 1475002318162,
-                  "expiredDate": 1475002318162,
-                  "registrantEmail": "bar@foo.com"
-                }
-              ],
-              "relatedFiles": [
-                {
-                  "id": "1a708f247cc6a7364b873c029bbdf459",
-                  "risk": "UNKNOWN",
-                  "unique": false,
-                  "fileName": "filename1",
-                  "importHashFunction": "c6a7364b873c029",
-                  "compiledTime": 1401972584000
-                },
-                {
-                  "id": "2a708f247cc6a7364b873c029bbdf459",
-                  "risk": "UNSAFE",
-                  "unique": true,
-                  "fileName": "filename2",
-                  "importHashFunction": "c6a7364b873c030",
-                  "compiledTime": 1401972584000
+                  "value": "RECONNAISSANCE_TOR",
+                  "category": "RECONNAISSANCE",
+                  "categoryText": "RECONNAISSANCE",
+                  "name": "TOR",
+                  "nameText": "Tor",
+                  "description": "Some description for this tag that is configured in the server."
                 }
               ],
               "customerPercentage": 34.24,

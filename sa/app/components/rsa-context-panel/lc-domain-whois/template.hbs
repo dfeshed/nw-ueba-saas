@@ -1,0 +1,54 @@
+{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.whois'}}{{/rsa-content-section-header}}
+<hbox>
+  <vbox>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisCreatedDate')}}
+      {{rsa-content-datetime timestamp=liveConnectData.whoisCreatedDate}}
+    </vbox>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisUpdatedDate')}}
+      {{rsa-content-datetime timestamp=liveConnectData.whoisUpdatedDate}}
+    </vbox>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisExpiredDate')}}
+      {{rsa-content-datetime timestamp=liveConnectData.whoisExpiredDate}}
+    </vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisRegType') value=liveConnectData.whoisRegType}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisRegName') value=liveConnectData.whoisRegName}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisRegOrg') value=liveConnectData.whoisRegOrg}}
+    </div>
+  </vbox>
+  <vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisRegStreet') value=liveConnectData.whoisRegStreet}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisRegCity') value=liveConnectData.whoisRegCity}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisRegState') value=liveConnectData.whoisRegState}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisPostalCode') value=liveConnectData.whoisPostalCode}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisCountry') value=liveConnectData.whoisCountry}}
+    </div>
+  </vbox>
+  <vbox>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisPhone') value=liveConnectData.whoisPhone}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.wohisFax') value=liveConnectData.wohisFax}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.whoisEmail') value=liveConnectData.whoisEmail}}
+    </div>
+  </vbox>
+</hbox>
