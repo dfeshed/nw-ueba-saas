@@ -19,6 +19,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils, mongo
 
 logger = logging.getLogger('step2')
+init_logging(logger)
 
 
 def positive_int_type(i):
@@ -156,7 +157,6 @@ def validate_not_running_same_period_twice(arguments):
 @step_runner_main(logger)
 def main():
     arguments = create_parser().parse_args()
-    init_logging(logger)
     if not are_tasks_running(logger=logger,
                              host=arguments.host,
                              task_names=['aggregation-events-streaming']):
