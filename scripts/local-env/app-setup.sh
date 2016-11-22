@@ -32,7 +32,7 @@ scriptDir="$(dirname $0)"
 info "Running install for common build utilities"
 cd $scriptDir/common
 yarn
-cd ../..
+cd $CWD
 
 # mock-server is just Yarn install
 cd $scriptDir/../mock-server
