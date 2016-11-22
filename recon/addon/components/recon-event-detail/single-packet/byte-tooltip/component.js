@@ -1,8 +1,11 @@
 import Ember from 'ember';
+import connect from 'ember-redux/components/connect';
+import computed, { alias, notEmpty } from 'ember-computed-decorators';
+
 import intToHex from 'recon/utils/int-to-hex';
 import hexToInt from 'recon/utils/hex-to-int';
 import layout from './template';
-import computed from 'ember-computed-decorators';
+
 const { Component, observer, run } = Ember;
 
 // Default data types for known fields in packet headers.
@@ -78,21 +81,30 @@ function valsToInt(arr) {
   return hexArrayToInt(valsToHexArray(arr));
 }
 
-export default Component.extend({
+const stateToComputed = ({ recon: { visuals } }) => ({
+  tooltipData: visuals.packetTooltipData
+});
+
+const ByteTooltipComponent = Component.extend({
   layout,
   tagName: 'section',
   classNames: 'rsa-byte-table-tooltip',
   classNameBindings: ['visible'],
-  label: '',
-  values: null,
-  type: null,
-  position: null,
+  tooltipData: null,
+
+  @alias('tooltipData.field.name') label: null,
+  @alias('tooltipData.field.type') type: null,
+  @alias('tooltipData.values') values: null,
+  @alias('tooltipData.position') position: null,
+
+  @notEmpty('tooltipData') visible: null,
 
   @computed('label', 'values', 'type')
   displayValue(label, values, type) {
     if (!values) {
       return '';
     }
+
     // Read the type from either `type` attr, or from list of defaults.
     switch (type || DEFAULT_TYPE_OF_FIELD[label]) {
       case 'ip':
@@ -128,15 +140,22 @@ export default Component.extend({
     run.schedule('afterRender', this, '_tunnel');
   },
 
+  // clean up DOM
+  willDestroyElement() {
+    this.element.remove();
+  },
+
   _tunnel() {
     document.body.appendChild(this.element);
   },
 
   _move() {
-    const { position, visible } = this.getProperties('position', 'visible');
-    if (visible && position) {
+    const position = this.get('position');
+    if (position) {
       this.element.style.left = `${position.x - 125}px`;
       this.element.style.top = `${position.y - 65}px`;
     }
   }
 });
+
+export default connect(stateToComputed)(ByteTooltipComponent);

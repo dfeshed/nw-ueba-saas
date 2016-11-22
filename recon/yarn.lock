@@ -2583,11 +2583,11 @@ ember-qunit@^0.4.18:
   dependencies:
     ember-test-helpers "^0.5.32"
 
-ember-redux@1.6.0:
-  version "1.6.0"
-  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-1.6.0.tgz#a3ffe7622b36743830c9e8e5f529bc3a2635f905"
+ember-redux@1.8.0:
+  version "1.8.0"
+  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-1.8.0.tgz#0b7618d98ad8cefe7709b040bccc72bf79baac25"
   dependencies:
-    ember-cli-babel "^5.1.5"
+    ember-cli-babel "^5.1.6"
 
 ember-resolver@^2.0.3:
   version "2.1.0"

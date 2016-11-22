@@ -1,11 +1,23 @@
 import Ember from 'ember';
-import Drag from 'recon/utils/drag';
-import layout from './template';
+import connect from 'ember-redux/components/connect';
 import { event, select } from 'd3-selection';
+
+import Drag from 'recon/utils/drag';
+import * as InteractionActions from 'recon/actions/interaction-creators';
+import layout from './template';
 
 const { $, Component, K, observer, run } = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ recon: { visuals } }) => ({
+  tooltipData: visuals.packetTooltipData
+});
+
+const dispatchToActions = (dispatch) => ({
+  tooltipOn: (tooltipData) => dispatch(InteractionActions.showPacketTooltip(tooltipData)),
+  tooltipOff: () => dispatch(InteractionActions.hidePacketTooltip())
+});
+
+const ByteTableComponent = Component.extend({
   layout,
   tagName: 'section',
   classNames: 'rsa-byte-table',
@@ -37,14 +49,6 @@ export default Component.extend({
    * @public
    */
   onselect: K,
-
-  /**
-   * Information that corresponds to the table cell that the user is currently hovering over, if any;
-   * null otherwise.
-   * @type {object}
-   * @public
-   */
-  hoverData: null,
 
   didInsertElement() {
     this._scheduleAfterRenderTasks();
@@ -88,15 +92,17 @@ export default Component.extend({
         if (byte.isHeader) {
           td.on('mouseenter', (d) => {
             const packetField = d && d.packetField;
-            this.set('hoverData', !packetField ? null : {
+            const tooltipData = !packetField ? null : {
               field: packetField.field,
               index: packetField.index,
               values: packetField.values,
-              position: { x: event.pageX, y: event.pageY }
-            });
+              position: { x: event.pageX, y: event.pageY },
+              packetId: this.get('packet.id')
+            };
+            this.send('tooltipOn', tooltipData);
           })
           .on('mouseleave', () => {
-            this.set('hoverData', null);
+            this.send('tooltipOff');
           });
         }
 
@@ -119,32 +125,36 @@ export default Component.extend({
   },
 
   /**
-   * Handles changes in `hoverData` by highlighting/unhighlighting the targeted field's bytes.
+   * Handles changes in `tooltipData` by highlighting/unhighlighting the targeted field's bytes.
    * @private
    */
-  hoverDataDidChange: observer('hoverData', function() {
-    const tds = this.$(`.${this.get('headerCellClass')}`);
+  tooltipDataDidChange: observer('tooltipData', function() {
+    const { packet: { id: packetId }, tooltipData, headerCellClass } = this.getProperties('packet', 'tooltipData', 'headerCellClass');
+    const tds = this.$(`.${headerCellClass}`);
     const toggleHover = function(isHover, position, length) {
       [].slice.apply(tds, [position, position + length])
-          .forEach((td) => {
-            td.setAttribute('data-is-hover', isHover);
-          });
+        .forEach((td) => {
+          td.setAttribute('data-is-hover', isHover);
+        });
     };
 
-    // Unhighlight the table cells corresponding to the last hover data, if any.
-    let d = this._lastHoverData;
+    // tooltip data has changed, so need to un-hover any
+    // previously highlighted tooltips
+    const d = this._lastTooltipData;
     if (d && d.field) {
       toggleHover(false, d.field.position, d.field.length);
     }
 
-    // Highlight the table cells corresponding to the current hover data, if any.
-    d = this.get('hoverData');
-    if (d && d.field) {
-      toggleHover(true, d.field.position, d.field.length);
-    }
+    // if tooltipData, and for this packet, need to light it up
+    if (tooltipData && packetId === tooltipData.packetId) {
+      // Highlight the table cells corresponding to the current hover data, if any.
+      if (tooltipData && tooltipData.field) {
+        toggleHover(true, tooltipData.field.position, tooltipData.field.length);
+      }
 
-    // Cache the current hover data for future reference (i.e., to unhighlight later).
-    this._lastHoverData = d;
+      // Cache the current hover data for future reference (i.e., to unhighlight later).
+      this._lastTooltipData = tooltipData;
+    }
   }),
 
   /**
@@ -259,3 +269,5 @@ export default Component.extend({
     this.get('onselect')(this.get('selection'));
   })
 });
+
+export default connect(stateToComputed, dispatchToActions)(ByteTableComponent);

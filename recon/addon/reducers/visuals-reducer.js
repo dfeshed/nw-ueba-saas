@@ -7,7 +7,8 @@ const visualsInitialState = {
   isResponseShown: true,
   isMetaShown: false,
   isReconExpanded: false,
-  isReconOpen: false
+  isReconOpen: false,
+  packetTooltipData: null
 };
 
 const visuals = reduxActions.handleActions({
@@ -58,7 +59,18 @@ const visuals = reduxActions.handleActions({
       isMetaShown,
       isReconExpanded
     };
-  }
+  },
+
+  [ACTION_TYPES.SHOW_PACKET_TOOLTIP]: (state, { payload }) => ({
+    ...state,
+    packetTooltipData: payload
+  }),
+
+  [ACTION_TYPES.HIDE_PACKET_TOOLTIP]: (state) => ({
+    ...state,
+    packetTooltipData: null
+  })
+
 }, visualsInitialState);
 
 export default visuals;
