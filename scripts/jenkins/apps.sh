@@ -78,7 +78,8 @@ function runEmberBuild {
 }
 
 # $1 = name of app
-# $2 = true if app needs mock server started
+# $2 = whether or not `ember build` is necessary
+# $3 = whether or not a mock server is needed
 function buildEmberApp {
   info "Beginning build for app: $1"
 
@@ -93,7 +94,7 @@ function buildEmberApp {
   runAppBowerInstall $1
 
   # 'ember test'
-  if [ "$2" = true ]
+  if [ "$3" = true ]
   then
     runEmberTestWithMockServer $1
   else
@@ -103,7 +104,11 @@ function buildEmberApp {
   # 'ember build' when running full build
   if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
   then
-    runEmberBuild $1
+    # do not build apps that do not need `ember build`` run
+    if [ "$2" = true ]
+    then
+      runEmberBuild $1
+    fi
   fi
 
   success "$1 is good!"
@@ -142,11 +147,11 @@ cd $CWD
 # fixes ecmderr with bower install
 git config --global url."https://".insteadOf git://
 
-buildEmberApp streaming-data true
+buildEmberApp streaming-data false true
 
-buildEmberApp component-lib
-buildEmberApp recon true
-buildEmberApp style-guide
+buildEmberApp component-lib false
+buildEmberApp recon false true
+buildEmberApp style-guide true
 
 #### Deploy style guide to host if running full build
 if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
@@ -157,7 +162,7 @@ then
   success "Hosted style guide has been updated"
 fi
 
-buildEmberApp sa
+buildEmberApp sa true
 
 unsetWebProxy
 
