@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import computed from 'ember-computed-decorators';
+import computed, { or } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
@@ -46,6 +46,16 @@ const TitlebarComponent = Component.extend({
     return code !== RECON_VIEW_TYPES_BY_NAME.PACKET.code &&
     code !== RECON_VIEW_TYPES_BY_NAME.TEXT.code;
   },
+
+  /**
+   * Determines if we should disable the request/response toggles
+   * @param {boolean} disablePacketIcons Whether icons are already disabled or not
+   * @param {boolean} isLog Whether the event is a log or not
+   * @returns {boolean} Whether icons should be disabled
+   * @public
+   */
+  @or('disablePacketIcons', 'isLog')
+  disableRequestResponseToggles: null,
 
   /**
    * Check if eventType is 'LOG'
@@ -97,7 +107,7 @@ const TitlebarComponent = Component.extend({
 
   actions: {
     // translates code to the recon view and sends action to update view
-    findNewReconstructionView([code]) {
+    findNewReconstructionView({ code }) {
       const newView = RECON_VIEW_TYPES.findBy('code', parseInt(code, 10));
       if (newView) {
         this.send('updateReconstructionView', newView);

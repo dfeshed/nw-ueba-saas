@@ -1,15 +1,12 @@
 <hbox class='heading'>
-  {{#rsa-form-select
-    multiple=false
-    prompt=displayTitle
-    alwaysUsePrompt=true
-    onchange=(action 'findNewReconstructionView')}}
-    {{#each reconViewsConfig as |item|}}
-      <option value={{item.code}} selected={{item.selected}} disabled={{item.disabled}}>
-        {{~item.label~}}
-      </option>
-    {{/each}}
-  {{/rsa-form-select}}
+  {{#power-select
+    triggerClass='recon-view-selector'
+    onchange=(action 'findNewReconstructionView')
+    options=reconViewsConfig
+    placeholder=displayTitle
+    searchEnabled=false as |option|}}
+    {{option.label}}
+  {{/power-select}}
 </hbox>
 
 {{rsa-icon
@@ -20,16 +17,16 @@
 
 {{rsa-icon
   active=isRequestShown
-  class='header-toggle'
+  class='toggle-request header-toggle'
   click=(action "toggleRequest")
-  disabled=disablePacketIcons
+  disabled=disableRequestResponseToggles
   name='arrow-circle-right-2'}}
 
 {{rsa-icon
   active=isResponseShown
-  class='header-toggle'
+  class='toggle-response header-toggle'
   click=(action "toggleResponse")
-  disabled=disablePacketIcons
+  disabled=disableRequestResponseToggles
   name='arrow-circle-left-2'}}
 
 {{rsa-icon
