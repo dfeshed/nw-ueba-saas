@@ -1,5 +1,7 @@
 package fortscale.streaming.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
@@ -20,11 +22,13 @@ import java.util.Map;
 public abstract class MessageCollectorGenericDecorator implements MessageCollector {
 
     protected MessageCollector messageCollector;
-
+    protected ObjectMapper objectMapper;
     protected Map<String, Object> additionalKeyValueMap = new HashMap<>();
 
     public MessageCollectorGenericDecorator(MessageCollector messageCollector) {
         this.messageCollector = messageCollector;
+
+        objectMapper = new ObjectMapper();
     }
 
     @Override
@@ -63,7 +67,16 @@ public abstract class MessageCollectorGenericDecorator implements MessageCollect
             jsonMessage.put(keyValueEntry.getKey(), keyValueEntry.getValue());
         }
 
-        OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, jsonMessage.toJSONString());
+        String messageString = null;
+
+        try {
+            messageString = objectMapper.writeValueAsString(jsonMessage);
+        } catch (JsonProcessingException e) {
+            String msg = String.format("error while mapping json=%s to string",jsonMessage.toJSONString());
+            throw new RuntimeException(msg,e);
+        }
+
+        OutgoingMessageEnvelope outgoingMessageEnvelope = new OutgoingMessageEnvelope(systemStream, partitionKey, messageString);
 
         messageCollector.send(outgoingMessageEnvelope);
     }
