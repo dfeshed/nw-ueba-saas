@@ -86,6 +86,10 @@ export default $.extend({}, BaseTranslations, {
       title: 'ja_Enter a query.'
     }
   },
+  config: {
+    title: 'ja_Configure',
+    details: 'ja_Config contents go here.'
+  },
   admin: {
     title: 'ja_Admin',
     details: 'ja_Admin contents go here.'

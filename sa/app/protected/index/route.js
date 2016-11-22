@@ -15,9 +15,19 @@ const {
 
 export default Route.extend({
 
-  landingPage: service('landing-page'),
+  landingPage: service(),
 
   beforeModel() {
-    this.transitionTo(this.get('landingPage.selected.key'));
+    const key = this.get('landingPage.selected.key');
+
+    if (key) {
+      const isRelativePath = key.indexOf('/') > -1;
+
+      if (isRelativePath) {
+        window.location.href = key;
+      } else {
+        this.transitionTo(key);
+      }
+    }
   }
 });

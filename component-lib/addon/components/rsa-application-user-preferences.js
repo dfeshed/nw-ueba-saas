@@ -9,7 +9,8 @@ const {
     service
   },
   run,
-  isNone
+  isNone,
+  Logger
  } = Ember;
 
 export default Component.extend({
@@ -19,6 +20,8 @@ export default Component.extend({
   classNames: ['user-preferences-panel'],
 
   tagName: 'section',
+
+  request: service(),
 
   eventBus: service(),
 
@@ -31,8 +34,6 @@ export default Component.extend({
   contextMenus: service('context-menus'),
 
   timeFormat: service('time-format'),
-
-  usernameFormat: service('username-format'),
 
   landingPage: service('landing-page'),
 
@@ -61,17 +62,6 @@ export default Component.extend({
       return locales.uniq();
     } else {
       return [];
-    }
-  },
-
-  @computed('usernameFormat.friendlyUsername')
-  selectedFriendlyName: {
-    get: (userName) => userName,
-
-    set(userName) {
-      this.set('withoutChanges', false);
-      this.set('pendingFriendlyName', userName);
-      return userName;
     }
   },
 
@@ -110,8 +100,21 @@ export default Component.extend({
 
   saveUserPreferences() {
     if (this.get('pendingLocale')) {
-      this.set('i18n.locale', this.get('pendingLocale'));
-      localStorage.setItem('rsa-i18n-default-locale', this.get('pendingLocale'));
+      const pendingLocale = this.get('pendingLocale');
+
+      this.set('i18n.locale', pendingLocale);
+
+      this.get('request').promiseRequest({
+        method: 'setPreference',
+        modelName: 'preferences',
+        query: {
+          userLocale: pendingLocale
+        }
+      }).then(() => {
+        localStorage.setItem('rsa-i18n-default-locale', pendingLocale);
+      }).catch(() => {
+        Logger.error('Error updating preferences');
+      });
     }
 
     if (this.get('pendingTimezone')) {
@@ -138,10 +141,6 @@ export default Component.extend({
       this.set('contextMenus.enabled', this.get('pendingContextMenus'));
     }
 
-    if (this.get('pendingFriendlyName') || this.get('pendingFriendlyName') === '') {
-      this.set('usernameFormat.username', this.get('pendingFriendlyName'));
-    }
-
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 
     run.next(this, function() {
@@ -164,9 +163,6 @@ export default Component.extend({
 
     this.set('selectedContextMenus', this.get('contextMenus.enabled'));
     this.set('pendingContextMenus', null);
-
-    this.set('selectedFriendlyName', this.get('usernameFormat.friendlyUsername'));
-    this.set('pendingFriendlyName', null);
 
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 

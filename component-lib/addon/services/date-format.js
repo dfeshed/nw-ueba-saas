@@ -5,14 +5,15 @@ const {
   inject: {
     service
   },
-  computed
+  computed,
+  Logger
 } = Ember;
 
 export default Service.extend({
 
-  moment: service(),
+  request: service(),
 
-  localStorageKey: 'rsa::securityAnalytics::dateFormatPreference',
+  moment: service(),
 
   options: [{
     key: 'MM/DD/YYYY',
@@ -25,37 +26,33 @@ export default Service.extend({
     label: 'userPreferences.dateFormat.yearFirst'
   }],
 
-  defaultSelection: 'MM/DD/YYYY',
-
-  init() {
-    const localStorageSpacing = localStorage[this.get('localStorageKey')];
-    const defaultSelection = this.get('defaultSelection');
-    let currentSelection = null;
-
-    if (localStorageSpacing) {
-      currentSelection = localStorageSpacing;
-    } else {
-      currentSelection = defaultSelection;
-    }
-
-    this.set('selected', this.get('options').findBy('key', currentSelection));
-    this.storeLocally(currentSelection);
-    this._super(arguments);
+  persist(value) {
+    this.get('request').promiseRequest({
+      method: 'setPreference',
+      modelName: 'preferences',
+      query: {
+        dateFormat: value
+      }
+    }).catch(() => {
+      Logger.error('Error updating preferences');
+    });
   },
 
-  storeLocally(value) {
-    localStorage[this.get('localStorageKey')] = value;
-  },
-
-  selected: computed('selected', {
+  selected: computed({
     get() {
       return this.get('_selected');
     },
 
     set(key, value) {
-      this.set('_selected', value);
-      this.storeLocally(value.key);
-      return value;
+      if (value.key) {
+        this.set('_selected', value);
+        this.persist(value.key);
+        return value;
+      } else {
+        this.set('_selected', this.get('options').findBy('key', value));
+        this.persist(value);
+        return this.get('_selected');
+      }
     }
   })
 

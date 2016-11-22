@@ -3,10 +3,6 @@ export default {
     en: 'English',
     ja: 'Japanese'
   },
-  themes: {
-    light: 'Light Theme',
-    dark: 'Dark Theme'
-  },
   forms: {
     cancel: 'Cancel',
     submit: 'Submit',
@@ -41,12 +37,8 @@ export default {
     preferencesFor: 'Preferences for {{user}}',
     username: 'Username',
     email: 'Email',
-    newPassword: 'New Password',
-    confirmPassword: 'Confirm Password',
-    passwordMismatchError: 'Password and confirmation do not match',
     language: 'Language',
     timeZone: 'Time Zone',
-    friendlyName: 'Friendly Username',
     dateFormat: {
       label: 'Date Format',
       dayFirst: 'DD/MM/YYYY',
@@ -62,18 +54,11 @@ export default {
       label: 'Default Landing Page',
       monitor: 'Monitor',
       investigate: 'Investigate',
+      investigateClassic: 'Investigate Classic',
+      dashboard: 'Dashboard',
+      live: 'Live',
       respond: 'Respond',
       admin: 'Admin'
-    },
-    theme: {
-      label: 'Theme',
-      light: 'Light',
-      dark: 'Dark'
-    },
-    spacing: {
-      label: 'Spacing',
-      tight: 'Tight',
-      loose: 'Loose'
     },
     notifications: 'Enable Notifications',
     contextMenus: 'Enable Context Menus'

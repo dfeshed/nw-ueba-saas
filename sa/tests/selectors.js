@@ -37,6 +37,19 @@ export default Ember$.extend({}, BaseSelectors, {
       'loginButton': 'div[class$=rsa-application-content] button[class*=rsa-form-button]',
       'errorMessage': 'rsa-login-error-message'
     },
+    'userPref': {
+      'friendlyUsernameInput': '#modalDestination .js-test-friendly-username input',
+      'defaultLandingPageTrigger': '#modalDestination .js-test-default-landing-page-select .ember-power-select-trigger',
+      'languageTrigger': '#modalDestination .js-test-language-select .ember-power-select-trigger',
+      'timeZoneTrigger': '#modalDestination .js-test-time-zone-select .ember-power-select-trigger',
+      'dateFormatTrigger': '#modalDestination .js-test-date-format-select .ember-power-select-trigger',
+      'timeFormatRadioGroupInput': '#modalDestination .time-format-radio-group .rsa-form-radio input',
+      'enableNotificationsInput': '#modalDestination .js-test-notifications-checkbox input',
+      'enableContextMenusInput': '#modalDestination .js-test-context-menus-checkbox input',
+      'resetButton': '#modalDestination .js-test-revert button',
+      'applyButton': '#modalDestination .js-test-apply button',
+      'userPrefDropDownListItem': '#ember-basic-dropdown-wormhole ul li'
+    },
     'respond': {
 
       'root': '.js-test-respond-root',

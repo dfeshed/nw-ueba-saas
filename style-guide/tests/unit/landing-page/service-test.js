@@ -11,24 +11,16 @@ test('it exists', function(assert) {
   assert.ok(service);
 });
 
-test('it uses the correct localStorageKey', function(assert) {
-  const service = this.subject();
-  assert.equal(service.get('localStorageKey'), 'rsa::securityAnalytics::landingPagePreference');
-});
-
 test('it provides the correct options', function(assert) {
   const service = this.subject();
-  assert.equal(service.get('options.length'), 4);
+  assert.equal(service.get('options.length'), 6);
   const options = service.get('options').map(function(option) {
     return option.key;
   });
   assert.ok(options.includes('protected.respond'));
-  assert.ok(options.includes('protected.monitor'));
-  assert.ok(options.includes('protected.admin'));
+  assert.ok(options.includes('/unified'));
+  assert.ok(options.includes('/investigate'));
+  assert.ok(options.includes('/admin'));
+  assert.ok(options.includes('/live'));
   assert.ok(options.includes('protected.investigate'));
-});
-
-test('it has the correct default', function(assert) {
-  const service = this.subject();
-  assert.equal(service.get('defaultSelection'), 'protected.respond');
 });

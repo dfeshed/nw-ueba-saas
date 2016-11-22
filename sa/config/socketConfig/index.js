@@ -1,6 +1,7 @@
 var investigateConfigGen = require('./investigate');
 var responseConfigGen = require('./response');
 var contextConfigGen = require('./context');
+var adminConfigGen = require('./administration');
 var testConfigGen = require('./test');
 var reconConfigGen = require('../../../recon').socketRouteGenerator;
 
@@ -10,7 +11,8 @@ var configGenerators = [
   investigateConfigGen,
   responseConfigGen,
   contextConfigGen,
-  reconConfigGen
+  reconConfigGen,
+  adminConfigGen
 ];
 
 var cache = null;

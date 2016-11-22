@@ -10,7 +10,6 @@ const { Route } = Ember;
 
 export default Route.extend({
   beforeModel() {
-
     // By default, try to redirect to the default sub-route under 'protected'.
     this.transitionTo('protected.index');
   }

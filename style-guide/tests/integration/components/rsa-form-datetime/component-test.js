@@ -87,13 +87,3 @@ test('it is disabled when isReadOnly', function(assert) {
   const disabledCount = this.$().find('input[disabled]').length === 1;
   assert.equal(disabledCount, 1);
 });
-
-test('MM/DD/YYYY should be the default format for the input', function(assert) {
-  this.render(hbs `{{rsa-form-datetime value="Mon Nov 14 2016 15:15:22 GMT-0500 (EST)"}}`);
-  assert.equal(this.$().find('input')[0].value, '11/14/2016');
-});
-
-test('format of the input is changeable', function(assert) {
-  this.render(hbs `{{rsa-form-datetime dateFormat='YYYY.DD.MM' value="Mon Nov 14 2016 15:15:22 GMT-0500 (EST)"}}`);
-  assert.equal(this.$().find('input')[0].value, '2016.14.11');
-});

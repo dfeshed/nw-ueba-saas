@@ -67,7 +67,8 @@
   },
   "ember-addon": {
     "paths": [
-      "../component-lib"
+      "../component-lib",
+      "../streaming-data"
     ]
   }
 }

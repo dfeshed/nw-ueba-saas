@@ -2,15 +2,6 @@
   {{#if session.isAuthenticated}}
     <hbox>
       <vbox xs="12">
-        {{rsa-form-input
-          value=selectedFriendlyName
-          label=(t 'userPreferences.friendlyName')
-          class="js-test-friendly-username"}}
-      </vbox>
-    </hbox>
-
-    <hbox>
-      <vbox xs="12">
         <label class="rsa-form-label power-select js-test-default-landing-page-select">
           <div class="label-text">
             {{t 'userPreferences.defaultLandingPage.label'}}

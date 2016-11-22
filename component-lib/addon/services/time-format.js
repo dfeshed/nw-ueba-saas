@@ -2,12 +2,16 @@ import Ember from 'ember';
 
 const {
   Service,
-  computed
+  computed,
+  inject: {
+    service
+  },
+  Logger
 } = Ember;
 
 export default Service.extend({
 
-  localStorageKey: 'rsa::securityAnalytics::timeFormatPreference',
+  request: service(),
 
   options: [{
     key: '12hr',
@@ -19,37 +23,26 @@ export default Service.extend({
     format: 'HH:mm'
   }],
 
-  defaultSelection: '24hr',
-
-  init() {
-    const localStorageKey = localStorage[this.get('localStorageKey')];
-    const defaultSelection = this.get('defaultSelection');
-    let currentSelection = null;
-
-    if (localStorageKey) {
-      currentSelection = localStorageKey;
-    } else {
-      currentSelection = defaultSelection;
-    }
-
-    this.set('selected', currentSelection);
-    this.storeLocally(currentSelection);
-    this._super(arguments);
-  },
-
-  storeLocally(value) {
-    localStorage[this.get('localStorageKey')] = value;
-  },
-
-  selected: computed('selected', {
+  selected: computed({
     get() {
       return this.get('_selected');
     },
 
     set(key, value) {
       const option = this.get('options').findBy('key', value);
-      this.set('_selected', option);
-      this.storeLocally(value);
+
+      this.get('request').promiseRequest({
+        method: 'setPreference',
+        modelName: 'preferences',
+        query: {
+          timeFormat: value
+        }
+      }).then(() => {
+        this.set('_selected', option);
+      }).catch(() => {
+        Logger.error('Error updating preferences');
+      });
+
       return option;
     }
   })

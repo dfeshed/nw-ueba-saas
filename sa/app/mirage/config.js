@@ -28,6 +28,7 @@ import categoryTags from 'sa/mirage/sockets/routes/category-tags';
 import journalEntry from 'sa/mirage/sockets/routes/journal-entry';
 import storyline from 'sa/mirage/sockets/routes/incident-storyline';
 import context from 'sa/mirage/sockets/routes/context';
+import preferences from 'sa/mirage/sockets/routes/preferences';
 
 /*
   Helper for collecting an array of all the unique `socketUrl`s found in the app's `config/environment.js` file.
@@ -86,6 +87,7 @@ export default function() {
     journalEntry(server);
     storyline(server);
     context(server);
+    preferences(server);
     server.mirageServer = this;
     return server;
   });

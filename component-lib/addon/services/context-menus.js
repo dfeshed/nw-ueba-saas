@@ -2,35 +2,16 @@ import Ember from 'ember';
 
 const {
   Service,
-  computed
+  computed,
+  inject: {
+    service
+  },
+  Logger
 } = Ember;
 
 export default Service.extend({
 
-  localStorageKey: 'rsa::securityAnalytics::contextMenuPreference',
-
-  defaultSelection: true,
-
-  storeLocally(value) {
-    localStorage.setItem(this.get('localStorageKey'), value);
-  },
-
-  init() {
-    const localStorageSpacing = localStorage.getItem(this.get('localStorageKey'));
-    let currentSelection = null;
-
-    if ((localStorageSpacing === 'true') || (localStorageSpacing === true)) {
-      currentSelection = true;
-    } else if ((localStorageSpacing === 'false') || (localStorageSpacing === false)) {
-      currentSelection = false;
-    } else {
-      currentSelection = this.get('defaultSelection');
-    }
-
-    this.set('enabled', currentSelection);
-    this.storeLocally(currentSelection);
-    this._super(arguments);
-  },
+  request: service(),
 
   enabled: computed({
     get() {
@@ -38,8 +19,18 @@ export default Service.extend({
     },
 
     set(key, value) {
-      this.set('_enabled', value);
-      this.storeLocally(value);
+      this.get('request').promiseRequest({
+        method: 'setPreference',
+        modelName: 'preferences',
+        query: {
+          contextMenuEnabled: value
+        }
+      }).then(() => {
+        this.set('_enabled', value);
+      }).catch(() => {
+        Logger.error('Error updating preferences');
+      });
+
       return value;
     }
   })

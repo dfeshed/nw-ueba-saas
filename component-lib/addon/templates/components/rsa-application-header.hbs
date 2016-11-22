@@ -20,8 +20,7 @@
 
   {{#rsa-application-modal
     eventId="userPreferences"
-    label=(if session.isAuthenticated (t 'userPreferences.preferencesFor'
-    user=usernameFormat.username) (t 'userPreferences.preferences'))}}
+    label=(t 'userPreferences.preferences')}}
     <span class="user-preferences-trigger js-test-user-preferences-modal modal-trigger">
       {{#rsa-form-button isIconOnly=true}}
         {{rsa-icon name='settings-2' style='lined'}}

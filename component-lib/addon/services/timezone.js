@@ -3,36 +3,18 @@ import moment from 'moment';
 
 const {
   Service,
-  computed
+  computed,
+  inject: {
+    service
+  },
+  Logger
 } = Ember;
 
 export default Service.extend({
 
-  localStorageKey: 'rsa::securityAnalytics::timeZonePreference',
+  request: service(),
 
   options: moment.tz.names(),
-
-  defaultSelection: 'America/New_York',
-
-  init() {
-    const localStorageSpacing = localStorage[this.get('localStorageKey')];
-    const defaultSelection = this.get('defaultSelection');
-    let currentSelection = null;
-
-    if (localStorageSpacing) {
-      currentSelection = localStorageSpacing;
-    } else {
-      currentSelection = defaultSelection;
-    }
-
-    this.set('selected', currentSelection);
-    this.storeLocally(currentSelection);
-    this._super(arguments);
-  },
-
-  storeLocally(value) {
-    localStorage.setItem(this.get('localStorageKey'), value);
-  },
 
   selected: computed({
     get() {
@@ -40,8 +22,19 @@ export default Service.extend({
     },
 
     set(key, value) {
-      this.set('_selected', value);
-      this.storeLocally(value);
+
+      this.get('request').promiseRequest({
+        method: 'setPreference',
+        modelName: 'preferences',
+        query: {
+          timeZone: value
+        }
+      }).then(() => {
+        this.set('_selected', value);
+      }).catch(() => {
+        Logger.error('Error updating preferences');
+      });
+
       return value;
     }
   })
