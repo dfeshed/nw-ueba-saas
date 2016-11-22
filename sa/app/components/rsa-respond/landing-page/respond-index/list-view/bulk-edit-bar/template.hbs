@@ -1,59 +1,63 @@
 {{#rsa-content-section-header}}
-  <div class="rsa-bulk-edit-button-group">
-    {{#rsa-content-help-trigger isDisabled=isStatusSelectorDisabled triggerEvent="click" tooltip='rsa-form-status-select'}}
-      {{#rsa-form-button class='rsa-form-status-select' isDisabled=isStatusSelectorDisabled allowToggleActive=true withDropdown=true}}
-        {{t 'incident.bulkEdit.statusSelectListLabel'}}
-      {{/rsa-form-button}}
-    {{/rsa-content-help-trigger}}
-    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='rsa-form-status-select'}}
-      <ul class="rsa-dropdown-action-list rsa-form-status-select">
-        {{#each statusList as |status|}}
-          <li value="{{status.id}}" class={{if status.selected 'selected-value'}} {{ action "updateSelectElement" status.id 'statusSort' statusList}}>{{t (concat 'incident.status.' status.id)}}</li>
-        {{/each}}
-      </ul>
-    {{/rsa-content-tooltip}}
+  <div class="rsa-bulk-edit-options-group">
 
-    {{#rsa-content-help-trigger isDisabled=isSelectAvailable triggerEvent="click" tooltip='rsa-form-assignee-select'}}
-      {{#rsa-form-button class='rsa-form-assignee-select' isDisabled=isSelectAvailable allowToggleActive=true withDropdown=true}}
-        {{t 'incident.bulkEdit.assigneeSelectListLabel'}}
-      {{/rsa-form-button}}
-    {{/rsa-content-help-trigger}}
-    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='rsa-form-assignee-select'}}
-      <ul class="rsa-dropdown-action-list rsa-form-assignee-select">
-        {{#each usersList as |user|}}
-          <li value="{{user.id}}" class={{if user.selected 'selected-value'}} {{ action "updateSelectElement" user 'assignee' usersList}}>
-            {{#if (eq user.id -1)}}
-              {{t 'incident.assignee.none'}}
-            {{else}}
-              {{user.firstName}}
-            {{/if}}
-          </li>
-        {{/each}}
-      </ul>
-    {{/rsa-content-tooltip}}
+    {{#power-select
+      class='rsa-form-status-select'
+      tagName='div'
+      options=statusList
+      selected=selected.statusSort
+      disabled=isStatusSelectorDisabled
+      placeholder=(t 'incident.bulkEdit.statusSelectListLabel')
+      allowClear=true
+      searchEnabled=false
+      onchange=(action 'selectElement' 'statusSort' statusList)
+      as |status|}}
+      {{t (concat 'incident.status.' status.id)}}
+    {{/power-select}}
 
-    {{#rsa-content-help-trigger isDisabled=isSelectAvailable triggerEvent="click" tooltip='rsa-form-priority-select'}}
-      {{#rsa-form-button class='rsa-form-priority-select' isDisabled=isSelectAvailable allowToggleActive=true withDropdown=true}}
-        {{t 'incident.bulkEdit.prioritySelectListLabel'}}
-      {{/rsa-form-button}}
-    {{/rsa-content-help-trigger}}
-    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId='rsa-form-priority-select'}}
-      <ul class="rsa-dropdown-action-list rsa-form-priority-select">
-        {{#each priorityList as |priority|}}
-          <li value="{{priority.id}}" class={{if priority.selected 'selected-value'}} {{ action "updateSelectElement" priority.id 'prioritySort' priorityList}}>{{t (concat 'incident.priority.' priority.id)}}</li>
-        {{/each}}
-      </ul>
-    {{/rsa-content-tooltip}}
+    {{#power-select
+      class='rsa-form-assignee-select'
+      tagName='div'
+      options=usersList
+      selected=selected.assignee
+      disabled=isSelectAvailable
+      placeholder=(t 'incident.bulkEdit.assigneeSelectListLabel')
+      searchField="firstName"
+      allowClear=true
+      searchEnabled=false
+      onchange=(action 'selectElement' 'assignee' usersList)
+      as |user|}}
+      {{#if (eq user.id -1)}}
+        {{t 'incident.assignee.none'}}
+      {{else}}
+        {{user.firstName}}
+      {{/if}}
+    {{/power-select}}
+
+    {{#power-select
+      class='rsa-form-priority-select'
+      tagName='div'
+      options=priorityList
+      selected=selected.prioritySort
+      disabled=isSelectAvailable
+      placeholder=(t 'incident.bulkEdit.prioritySelectListLabel')
+      allowClear=true
+      searchEnabled=false
+      onchange=(action 'selectElement' 'prioritySort' priorityList)
+      as |priority|}}
+      {{t (concat 'incident.priority.' priority.id)}}
+    {{/power-select}}
+
   </div>
 
   <div class="rsa-bulk-edit-button-group {{unless isBulkEditInProgress 'no-border'}}">
-    {{#rsa-form-button style='primary' class=(unless isBulkEditInProgress "is-hidden") defaultAction=(action 'validateBulkSave')}}
+    {{#rsa-form-button style='primary' class=(concat 'rsa-bulk-edit-button-group__save-btn' (unless isBulkEditInProgress " is-hidden")) defaultAction=(action 'validateBulkSave')}}
       {{t 'incident.bulkEdit.saveButton'}}
     {{/rsa-form-button}}
-    {{#rsa-form-button class=(unless isBulkEditInProgress "is-hidden") defaultAction=(action 'handleCancelButton')}}
+    {{#rsa-form-button class=(concat 'rsa-bulk-edit-button-group__cancel-btn' (unless isBulkEditInProgress " is-hidden")) defaultAction=(action 'cancelEdit')}}
       {{t 'incident.bulkEdit.cancelButton'}}
     {{/rsa-form-button}}
-    <span class="rsa-bulk-edit-update-message {{unless showSuccessMessage 'is-shown'}}">
+    <span class="rsa-bulk-edit-update-message {{if showSuccessMessage 'is-shown'}}">
       {{rsa-icon name='check-2'}}
       {{t 'incident.bulkEdit.successfulUpdateMessage' totalFields=totalFieldsUpdated count=totalFieldsUpdated }}
     </span>

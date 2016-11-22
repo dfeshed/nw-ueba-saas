@@ -3,85 +3,85 @@
     width: 100%;
     margin-top: 2px;
     background-color: rsa-color(black, null, $rsa-translucent);
-    padding: rsa-whitespace() 0 rsa-whitespace() rsa-whitespace();
+    padding: rsa-whitespace(base) 0 rsa-whitespace(base) rsa-whitespace();
 
-    .rsa-bulk-edit-button-group {
-      display: inline-block;
+    @include rsa-flex-direction(row);
+    @include rsa-flex-justify-content(flex-start);
+    @include rsa-flex-align-items(center);
 
-      .rsa-bulk-edit-update-message{
+    .rsa-bulk-edit-options-group {
+
+      .rsa-form-priority-select,
+      .rsa-form-status-select,
+      .rsa-form-assignee-select {
+
+        display: inline-block;
+        margin-right: rsa-whitespace(less);
+
+        .ember-power-select-trigger {
+
+          @include rsa-font();
+          border-color: $formButtonHoverBorderColor;
+          border: 1px solid $formButtonHoverBorderColor !important;
+          padding: 0 rsa-whitespace(less);
+          color: $formButtonTypeColor;
+
+          &[aria-disabled='true'] {
+            cursor: default;
+            border-color: $formButtonDisabledBorderColor !important;
+            background: none;
+
+            .ember-power-select-placeholder {
+              color: $formButtonDisabledTypeColor;
+            }
+          }
+          .ember-power-select-status-icon {
+            padding-right: rsa-whitespace(less);
+          }
+        }
+      }
+
+      .rsa-form-priority-select {
+        min-width: 150px;
+      }
+      .rsa-form-status-select,
+      .rsa-form-assignee-select {
+        min-width: 220px;
+      }
+    }
+
+    .rsa-bulk-edit-button-group  {
+      border-left: 1px solid rsa-color(gray, light);
+
+      .rsa-bulk-edit-update-message {
         transition: opacity 1s;
         margin-left: rsa-whitespace();
         display: inline-block;
         @include rsa-font(body, small);
-        opacity: $rsa-opaque;
+        opacity: $rsa-transparent;
 
         .rsa-icon {
           margin-right: rsa-whitespace(least);
           color: rsa-color(green);
         }
-      }
 
-      .rsa-form-priority-select,
-      .rsa-form-status-select,
-      .rsa-form-assignee-select {
-        margin-right: rsa-whitespace(less);
-      }
-
-      .rsa-form-status-select {
-        .rsa-form-button {
-          min-width: 186px;
+        &.is-shown {
+          transition: opacity 1s;
+          opacity: $rsa-opaque;
         }
       }
-
-      .rsa-form-assignee-select {
-        .rsa-form-button {
-          min-width: 114px;
-        }
-      }
-
-      .rsa-form-button-wrapper {
-        .rsa-form-button {
-          text-align: left;
-
-          .rsa-icon {
-            float: right;
-          }
-        }
-      }
-    }
-
-    .rsa-bulk-edit-button-group:nth-child(2) {
-      border-left: 1px solid rsa-color(gray, light);
 
       &.no-border {
         border-left-width: 0px;
       }
 
-      .is-hidden{
+      .is-hidden {
         display:none;
       }
 
-      .is-shown{
-        transition: opacity 1s;
-        opacity: $rsa-transparent;
+      &__save-btn {
+        margin: 0 rsa-whitespace();
       }
     }
-    .rsa-bulk-edit-button-group:nth-child(2) .rsa-form-button-wrapper:first-child {
-      margin: 0 rsa-whitespace();
-    }
-  }
-}
-
-.tooltip-content {
-  .rsa-form-status-select,
-  .rsa-form-assignee-select,
-  .rsa-form-priority-select {
-    li.selected-value {
-      background-color: rsa-color(blue, darker);
-    }
-  }
-
-  .rsa-form-priority-select {
-    min-width: 88px;
   }
 }

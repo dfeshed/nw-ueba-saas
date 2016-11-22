@@ -5,8 +5,10 @@ import computed from 'ember-computed-decorators';
 const {
   Component,
   run,
-  set,
-  typeOf
+  get,
+  typeOf,
+  isNone,
+  Object: EmberObject
 } = Ember;
 
 export default Component.extend({
@@ -19,11 +21,12 @@ export default Component.extend({
   // Boolean which determines whether or not the success message should show
   showSuccessMessage: false,
 
-  updateObject: {},
+  // power-select selected options
+  selected: {},
 
   init() {
     this._super(...arguments);
-    this.set('updateObject', {});
+    this.set('selected', {});
   },
 
   // available list of statuses
@@ -37,10 +40,10 @@ export default Component.extend({
    * @description Checks to see whether or not any values in the select lists have been chosen.
    * @public
    */
-  @computed('updateObject', 'updateObject.{statusSort,prioritySort,assignee}')
+  @computed('selected.{statusSort,prioritySort,assignee}')
   isBulkEditInProgress: {
-    get(updateObject) {
-      return Object.keys(updateObject).length > 0;
+    get(selectedStatus, selectedPriority, selectedAssignee) {
+      return !isNone(selectedStatus) || !isNone(selectedPriority) || !isNone(selectedAssignee);
     },
     set(value) {
       return value;
@@ -55,16 +58,15 @@ export default Component.extend({
    */
   @computed('users.[]')
   usersList(users) {
-    const unAssigneeUser = {
+    const unAssigneeUser = EmberObject.create({
       'id': -1
-    };
+    });
     const arrUsers = [ unAssigneeUser ];
 
     if (users) {
       arrUsers.addObjects(users);
     }
 
-    arrUsers.setEach('selected', false);
     return arrUsers;
   },
 
@@ -92,21 +94,6 @@ export default Component.extend({
         typeOf(foundFalsePositiveItem) !== 'undefined'
     );
 
-    if (selectionAvailableEvaluation) {
-      const selectedUsersListItem = this.get('usersList').findBy('selected', true);
-      const selectedPriorityListItem = this.get('priorityList').findBy('selected', true);
-
-      if (typeOf(selectedUsersListItem) !== 'undefined') {
-        set(selectedUsersListItem, 'selected', false);
-        this.set('updateObject.assignee', null);
-      }
-
-      if (typeOf(selectedPriorityListItem) !== 'undefined') {
-        set(selectedPriorityListItem, 'selected', false);
-        this.set('updateObject.prioritySort', null);
-      }
-    }
-
     return selectionAvailableEvaluation;
   },
 
@@ -127,61 +114,17 @@ export default Component.extend({
   },
 
   /**
-   * @name toggleEditSelection
-   * @description: Toggles the highlight in the selection on or off depending upon the choice made
-   * @param {String} selectedObject: The value or the object from the collection that is selected
-   * @param {Object} collection: The collection object
-   * @returns {Boolean} The new value of `selectedObject.selected`
-   * @private
-   */
-  toggleEditSelection(selectionValue, collection) {
-    let areTheSameSelection, newSelectedValue;
-
-    const selectedObject = (typeof selectionValue != 'object') ?
-      collection.findBy('id', selectionValue) :
-      collection.findBy('id', selectionValue.id);
-
-    const previousSelected = collection.findBy('selected', true);
-
-    if (previousSelected) {
-      areTheSameSelection = previousSelected.id === selectedObject.id;
-
-      if (!areTheSameSelection) {
-        set(previousSelected, 'selected', false);
-      }
-
-      newSelectedValue = !areTheSameSelection;
-    } else {
-      newSelectedValue = true;
-    }
-
-    set(selectedObject, 'selected', newSelectedValue);
-    return newSelectedValue;
-  },
-
-  /**
    * @name resetSelectionForm
    * @description: Resets the selection forms in the bulk edit.
    * @public
    */
   resetSelectionForm() {
-    const selectedStatusListItem = this.get('statusList').findBy('selected', true);
-    const selectedPriorityListItem = this.get('priorityList').findBy('selected', true);
-    const selectedUsersListItem = this.get('usersList').findBy('selected', true);
+    this.setProperties({
+      'selected.prioritySort': null,
+      'selected.statusSort': null,
+      'selected.assignee': null
+    });
 
-    if (typeOf(selectedStatusListItem) !== 'undefined') {
-      set(selectedStatusListItem, 'selected', false);
-    }
-
-    if (typeOf(selectedPriorityListItem) !== 'undefined') {
-      set(selectedPriorityListItem, 'selected', false);
-    }
-
-    if (typeOf(selectedUsersListItem) !== 'undefined') {
-      set(selectedUsersListItem, 'selected', false);
-    }
-
-    this.set('updateObject', {});
     this.get('incidents').setEach('checked', false);
   },
 
@@ -198,48 +141,31 @@ export default Component.extend({
 
   actions: {
     /**
-     * @name handleCancelButton
+     * @name cancelEdit
      * @description Callback event handler for the cancel button
      * @public
      */
-    handleCancelButton() {
+    cancelEdit() {
       this.resetSelectionForm();
     },
 
     /**
-     * @name updateSelectElement
-     * @description Updates the updateObject according to which select list was changed.
-     * If the value that is currently stored is the same as the new value selected,
-     * then the value is removed from the updateObject.
+     * @name selectElement
+     * @description Updates the select object according to which select list was changed.
      * @param {String} selectionValue: The value of the selected field
      * @param {String} fieldName: The name of the field to be updated
      * @param {Object} collection
      * @public
      */
-    updateSelectElement(selectionValue, fieldName, collection) {
-      let newSelectedValue;
-      const isEmberClass = typeof selectionValue.get === 'function';
+    selectElement(fieldName, collection, selectionValue) {
+      let selectedId = null;
+      let selectedObj = null;
 
-      switch (fieldName) {
-        case 'prioritySort':
-        case 'statusSort':
-          newSelectedValue = this.toggleEditSelection(selectionValue, collection);
-          this.set(`updateObject.${ fieldName }`, newSelectedValue ? selectionValue : null);
-          break;
-        case 'assignee':
-          selectionValue = {
-            'id': (isEmberClass) ? selectionValue.get('id') : selectionValue.id,
-            'firstName': (isEmberClass) ? selectionValue.get('firstName') : selectionValue.firstName,
-            'lastName': (isEmberClass) ? selectionValue.get('lastName') : selectionValue.lastName,
-            'email': (isEmberClass) ? selectionValue.get('email') : selectionValue.email
-          };
-
-          newSelectedValue = this.toggleEditSelection(selectionValue, this.get('usersList'));
-          this.set(`updateObject.${ fieldName }`, newSelectedValue ? selectionValue : null);
-          break;
-        default:
-          break;
+      if (!isNone(selectionValue)) {
+        selectedId = get(selectionValue, 'id');
+        selectedObj = collection.findBy('id', selectedId);
       }
+      this.set(`selected.${ fieldName }`, selectedObj);
     },
 
     /**
@@ -249,39 +175,27 @@ export default Component.extend({
      */
     validateBulkSave() {
       const checkedIncidents = this.get('incidents').filterBy('checked', true);
-      const arrayOfSelectedIncidentIDs = checkedIncidents.map(function(item) {
-        return item.id;
-      });
+      const arrayOfSelectedIncidentIDs = checkedIncidents.map((item) => item.id);
+      const updateObject = {};
 
-      // There are three potential permutations that this code needs to deal with:
-      // 1) this.get('updateObject').assignee.id === null AND this.get('updateObject').assignee.id is undefined, delete the paramter.
-      // 2) this.get('updateObject').assignee.id === -1, set its value to NULL.
-      // 3) this.get('updateObject').assignee.id is defined, do nothing.
-      if (this.get('updateObject.assignee')) {
-        this.get('updateObject.assignee.id') === -1 ? this.set('updateObject.assignee', null) : '';
-      } else {
-        delete this.get('updateObject').assignee;
+      const selectedValues = this.get('selected');
+      const priorityId = get(selectedValues, 'prioritySort.id');
+      const statusId = get(selectedValues, 'statusSort.id');
+      const assignee = get(selectedValues, 'assignee');
+
+      if (!isNone(priorityId)) {
+        updateObject.prioritySort = priorityId;
+      }
+      if (!isNone(statusId)) {
+        updateObject.statusSort = statusId;
+      }
+      if (!isNone(assignee)) {
+        updateObject.assignee = assignee.get('id') !== -1 ? selectedValues.assignee.getProperties('id', 'firstName', 'lastName', 'email') : {};
       }
 
-      // We cannot currently pass in a null value; we must remove the parameter altogether.
-      if (typeOf(this.get('updateObject').statusSort) !== 'undefined' &&
-        this.get('updateObject').statusSort === null
-      ) {
-        delete this.get('updateObject').statusSort;
-      }
-
-      // We cannot currently pass in a null value; we must remove the parameter altogether.
-      if (typeOf(this.get('updateObject').prioritySort) !== 'undefined' &&
-        this.get('updateObject').prioritySort === null
-      ) {
-        delete this.get('updateObject').prioritySort;
-      }
-
-      if (Object.keys(this.get('updateObject')).length > 0) {
-        this.sendAction('saveAction', this.get('updateObject'), arrayOfSelectedIncidentIDs);
-        this.toggleSuccessMessage(checkedIncidents.length);
-        this.resetSelectionForm();
-      }
+      this.sendAction('saveAction', updateObject, arrayOfSelectedIncidentIDs);
+      this.toggleSuccessMessage(checkedIncidents.length);
+      this.resetSelectionForm();
     }
   }
 });
