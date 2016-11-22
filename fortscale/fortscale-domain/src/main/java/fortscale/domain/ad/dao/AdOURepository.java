@@ -8,5 +8,5 @@ import java.util.List;
 public interface AdOURepository extends MongoRepository<AdOU, String>{
 	List<AdOU> findByLastModifiedExists(boolean exists);
 	long countByTimestampepoch(Long timestampepoch);
-	List<AdOU> findByOuStartingWithIgnoreCase(String startsWith);
+	List<AdOU> findByOuLikeIgnoreCase(String contains);
 }
