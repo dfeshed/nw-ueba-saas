@@ -160,7 +160,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
     @Override
     public List<AdOU> getOusByNameStartingWithIgnoreCase(String startsWith) {
-        return adOURepository.findByNameStartingWithIgnoreCase(startsWith);
+        return adOURepository.findByOuStartingWithIgnoreCase(startsWith);
     }
 
     @Override

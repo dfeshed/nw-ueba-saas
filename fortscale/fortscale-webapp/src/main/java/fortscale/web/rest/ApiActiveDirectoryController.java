@@ -3,6 +3,7 @@ package fortscale.web.rest;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdObject;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
@@ -41,26 +42,28 @@ public class ApiActiveDirectoryController implements InitializingBean {
 
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
-	private static final String AD_USERS = "User";
-	private static final String AD_GROUPS = "Group";
-	private static final String AD_OU = "OU";
-	private static final String AD_Devices = "Computer";
-	//private static final List<String> dataSources = new ArrayList<>(Arrays.asList(AD_USERS, AD_GROUPS, AD_OU, AD_Devices));
+	private static String LAST_AD_EXECUTION_COMPLETE_PREFIX="ad_exectuion.etl..last_complete_";
+
 
 	//private AtomicBoolean adTaskInProgress = new AtomicBoolean(false);
 	private static Map<String,Boolean> adTaskInProgress = new HashMap<>();
     private static final List<AdObject.AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObject.AdObjectType.values()));
     private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
+	//The last time that the executing all the AD fetcha and etl started
+	private Long lastExecutionStartTime;
+
 	//private AtomicInteger numAdTasksInProgress = new AtomicInteger(0);
-	public void afterPropertiesSet() throws Exception {
-		dataSources.forEach(dataSource -> adTaskInProgress.put(dataSource.toString(), Boolean.FALSE));
-	}
+
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
 	@Autowired
 	private SimpMessagingTemplate template;
+
+	@Autowired
+	private ApplicationConfigurationService applicationConfigurationService;
+
 
 	/**
 	 * Updates or creates config items.
@@ -140,7 +143,9 @@ public class ApiActiveDirectoryController implements InitializingBean {
 			});
 
 			try {
-				dataSources.forEach(dataSource -> executorService.execute(new FetchEtlTask(dataSource)));
+
+				dataSources.forEach(dataSource -> executorService.execute(new FetchEtlTask(dataSource,applicationConfigurationService)));
+				this.lastExecutionStartTime = System.currentTimeMillis();
 			} finally {
 				executorService.shutdown();
 			}
@@ -158,16 +163,44 @@ public class ApiActiveDirectoryController implements InitializingBean {
 
 	}
 
+	@RequestMapping("/stop_ad_fetch_etl" )
+	public ResponseEntity stopAdFetchAndEtlExecution() {
+		if (isAnyTaskRunning()){
+			initAdTaskInProgress();
+			this.lastExecutionStartTime=null;
+			return new ResponseEntity(HttpStatus.OK);
+		} else {
+			return new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
+		}
+
+
+	}
+
 	@RequestMapping(method = RequestMethod.GET,value = "/ad_etl_fetch_status")
 	@LogException
 	public List<JobStatus> getJobStatus() {
 		List<JobStatus> statuses = new ArrayList<>();
 		dataSources.forEach(dataSource -> {
-			statuses.add(new JobStatus(dataSource.toString(), new Date().getTime(),ApiActiveDirectoryController.adTaskInProgress.get(dataSource.toString())));
+			boolean isRunning = ApiActiveDirectoryController.adTaskInProgress.get(dataSource.toString());
+			lastExecutionStartTime = isRunning?this.lastExecutionStartTime : getLastExecutionTimeForDataSource(dataSource);
+			statuses.add(new JobStatus(dataSource.toString(), lastExecutionStartTime,isRunning));
 		});
 		return statuses;
 
 	}
+
+	private Long getLastExecutionTimeForDataSource(AdObject.AdObjectType dataSource){
+		return this.applicationConfigurationService.getApplicationConfigurationAsObject(LAST_AD_EXECUTION_COMPLETE_PREFIX+dataSource.toString(),Long.class);
+	}
+
+	public void afterPropertiesSet() throws Exception {
+		initAdTaskInProgress();
+	}
+
+	private void initAdTaskInProgress(){
+		dataSources.forEach(dataSource -> adTaskInProgress.put(dataSource.toString(), Boolean.FALSE));
+	}
+
 
 	private boolean isAnyTaskRunning(){
 
@@ -199,7 +232,7 @@ public class ApiActiveDirectoryController implements InitializingBean {
 		private long lastSuccessfullExecution;
 		private boolean isRunningNow;
 
-		public JobStatus(String dataSource, long lastSuccessfullExecution, boolean isRunningNow) {
+		public JobStatus(String dataSource, Long lastSuccessfullExecution, boolean isRunningNow) {
 			this.dataSource = dataSource;
 			this.lastSuccessfullExecution = lastSuccessfullExecution;
 			this.isRunningNow = isRunningNow;
@@ -209,7 +242,7 @@ public class ApiActiveDirectoryController implements InitializingBean {
 			return dataSource;
 		}
 
-		public long getLastSuccessfullExecution() {
+		public Long getLastSuccessfullExecution() {
 			return lastSuccessfullExecution;
 		}
 
@@ -226,12 +259,13 @@ public class ApiActiveDirectoryController implements InitializingBean {
 		private String dataSource;
 		private long lastSuccessfullExecution;
 		
-		public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource, long lastSuccessfullExecution) {
+		public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource) {
 			this.taskType = taskType;
 			this.success = success;
 			this.objectsCount = objectsCount;
 			this.dataSource = dataSource;
-			this.lastSuccessfullExecution = lastSuccessfullExecution;
+			this.lastSuccessfullExecution = 0;
+
 
 		}
 
@@ -255,6 +289,9 @@ public class ApiActiveDirectoryController implements InitializingBean {
 			return lastSuccessfullExecution;
 		}
 
+		public void setLastSuccessfullExecution(long lastSuccessfullExecution) {
+			this.lastSuccessfullExecution = lastSuccessfullExecution;
+		}
 	}
 
 	private class FetchEtlTask implements Runnable {
@@ -267,9 +304,11 @@ public class ApiActiveDirectoryController implements InitializingBean {
         public static final String AD_JOB_GROUP = "AD";
 
         private final AdObject.AdObjectType dataSource;
+		private ApplicationConfigurationService applicationConfigurationService;
 
-		public FetchEtlTask(AdObject.AdObjectType dataSource) {
+		public FetchEtlTask(AdObject.AdObjectType dataSource, ApplicationConfigurationService applicationConfigurationService) {
 			this.dataSource = dataSource;
+			this.applicationConfigurationService = applicationConfigurationService;
 		}
 
 		@Override
@@ -281,6 +320,10 @@ public class ApiActiveDirectoryController implements InitializingBean {
 			template.convertAndSend(RESPONSE_DESTINATION, fetchResponse);
 
 			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
+
+			long finishTime = System.currentTimeMillis();
+			this.applicationConfigurationService.insertConfigItemAsObject(ApiActiveDirectoryController.LAST_AD_EXECUTION_COMPLETE_PREFIX + dataSource.toString(), finishTime);
+			etlResponse.setLastSuccessfullExecution(finishTime);
 			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
 			//ApiActiveDirectoryController.adTaskInProgress.put(dataSource,Boolean.FALSE);
 		}
@@ -293,73 +336,80 @@ public class ApiActiveDirectoryController implements InitializingBean {
 		 * @return an AdTaskResponse representing the results of the task
 		 */
 		private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
-			Random r = new Random();
-			int waitSeconds= r.ints(0, (99 + 1)).findFirst().getAsInt();
+
+			//Mockdata:
+//			Random r = new Random();
+//			int waitSeconds= r.ints(0, (99 + 1)).findFirst().getAsInt();
+//			try {
+//				Thread.sleep(waitSeconds * 1000);
+//			} catch (InterruptedException e) {
+//				e.printStackTrace();
+//			}
+//
+//			Random r2 = new Random();
+//			int numberInstances= AdObject.AdObjectType.OU.equals(dataSource)? -1 :
+//					r2.ints(0, (99 + 1)).findFirst().getAsInt();
+//
+//			return new AdTaskResponse(adTaskType, Boolean.TRUE, numberInstances,dataSource.toString());
+
+			//End of mockdata
+
+            final String dataSourceName = dataSource.toString();
+			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
+			Process process;
+			UUID resultsFileId = UUID.randomUUID();
+			final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
 			try {
-				Thread.sleep(waitSeconds * 1000);
+				final String jobName = dataSource + "_" + adTaskType.toString();
+				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, "AD", "resultsFileId="+resultsFileId));
+				process = new ProcessBuilder(arguments).start();
+			} catch (IOException e) {
+				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
+				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+			}
+			int status;
+			try {
+				status = process.waitFor();
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				if (process.isAlive()) {
+					logger.error("Killing the process forcibly");
+					process.destroyForcibly();
+				}
+				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSource, e);
+				return new AdTaskResponse(adTaskType, false, -1, dataSource.toString());
 			}
 
-			Random r2 = new Random();
-			int numberInstances= AdObject.AdObjectType.OU.equals(dataSource)? -1 :
-					r2.ints(0, (99 + 1)).findFirst().getAsInt();
-			return new AdTaskResponse(adTaskType, Boolean.TRUE, numberInstances,dataSource.toString(), new Date().getTime());
-//
-//            final String dataSourceName = dataSource.toString();
-//			logger.debug("Executing task {} for data source {}", adTaskType, dataSource);
-//			Process process;
-//			UUID resultsFileId = UUID.randomUUID();
-//			final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
-//			try {
-//				final String jobName = dataSource + "_" + adTaskType.toString();
-//				final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, "AD", "resultsFileId="+resultsFileId));
-//				process = new ProcessBuilder(arguments).start();
-//			} catch (IOException e) {
-//				logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSource, e);
-//				return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-//			}
-//			int status;
-//			try {
-//				status = process.waitFor();
-//			} catch (InterruptedException e) {
-//				if (process.isAlive()) {
-//					logger.error("Killing the process forcibly");
-//					process.destroyForcibly();
-//				}
-//				logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSource, e);
-//				return new AdTaskResponse(adTaskType, false, -1, dataSource.toString(),new Date().getTime());
-//			}
-//
-//
-//
-//
-//            /* run task */
-//            if (!runTask(dataSourceName, adTaskType, resultsFileId)) {
-//                //numAdTasksInProgress.decrementAndGet();
-//                return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-//            }
-//
-//            /* get task results from file */
-//            final Map<String, String> taskResults = getTaskResults(dataSourceName, adTaskType, filePath);
-//            if (taskResults == null) {
-//               // numAdTasksInProgress.decrementAndGet();
-//                return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-//            }
-//
-//            /* process results and understand if task finished successfully */
-//			final String success = taskResults.get(KEY_SUCCESS);
-//			if (success == null) {
-//				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
-//			//	numAdTasksInProgress.decrementAndGet();
-//				return new AdTaskResponse(adTaskType, false, -1, dataSourceName, new Date().getTime());
-//			}
-//
-//			/* get objects count for this data source from mongo */
-//            final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
-//
-//			//numAdTasksInProgress.decrementAndGet();
-//			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName, new Date().getTime());
+
+
+
+            /* run task */
+            if (!runTask(dataSourceName, adTaskType, resultsFileId)) {
+                //numAdTasksInProgress.decrementAndGet();
+                return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+            }
+
+            /* get task results from file */
+            final Map<String, String> taskResults = getTaskResults(dataSourceName, adTaskType, filePath);
+            if (taskResults == null) {
+               // numAdTasksInProgress.decrementAndGet();
+                return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+            }
+
+            /* process results and understand if task finished successfully */
+			final String success = taskResults.get(KEY_SUCCESS);
+			if (success == null) {
+				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
+			//	numAdTasksInProgress.decrementAndGet();
+				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+			}
+
+			/* get objects count for this data source from mongo */
+            final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
+
+			//numAdTasksInProgress.decrementAndGet();
+			//If no error --> same last running time
+             this.applicationConfigurationService.insertConfigItemAsObject(ApiActiveDirectoryController.LAST_AD_EXECUTION_COMPLETE_PREFIX + dataSource.toString(), System.currentTimeMillis());
+			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
 		}
 
 
@@ -420,6 +470,7 @@ public class ApiActiveDirectoryController implements InitializingBean {
             }
 
             logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSourceName, status);
+
             return true;
         }
     }

@@ -35,7 +35,7 @@ public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdG
 		return mongoTemplate.find(query, AdGroup.class);
 	}
 
-	@Override
+
 	public List<AdGroup> getActiveDirectoryGroupsNameStartsWith(String startsWith) {
 		Query query = new Query(where(AdGroup.memberField).exists(true));
 		query.fields().include(AdGroup.memberField);
