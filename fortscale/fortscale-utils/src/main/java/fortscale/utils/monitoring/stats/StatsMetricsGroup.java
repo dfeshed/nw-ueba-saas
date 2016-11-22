@@ -61,17 +61,18 @@ public class StatsMetricsGroup {
             statsMetricsGroupAttributes = new StatsMetricsGroupAttributes();
         }
 
+        // Save the fields (some of them are accessed even if statsService is null at unregister() )
+        this.instrumentedClass           = instrumentedClass;
+        this.statsMetricsGroupAttributes = statsMetricsGroupAttributes;
+        this.statsService                = statsService;
+
+
         // If stats service is null, do nothing
         if (statsService == null) {
             logger.info("Not registering metric group {} with {} with attributes and instrumented class {} because stats service null",
                     this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
             return;
         }
-
-        // Save the fields
-        this.instrumentedClass           = instrumentedClass;
-        this.statsMetricsGroupAttributes = statsMetricsGroupAttributes;
-        this.statsService                = statsService;
 
         // Log it if enabled
         if (logger.isDebugEnabled()) {
@@ -141,6 +142,28 @@ public class StatsMetricsGroup {
     }
 
 
+    /**
+     *
+     * Unregister the metrics group from the stats service (if any)
+     *
+     */
+    public void unregister() {
+
+        // If stats service is null, do nothing
+        if (statsService == null) {
+            logger.info("Ignoring unregister metric group {} with {} with attributes and instrumented class {} because stats service null",
+                    this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
+            return;
+        }
+
+        // Unregister from stats service
+        logger.debug("Unregistering metric group {} with {} attributes. Instrumented class is {}",
+                this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
+
+        statsService.unregisterStatsMetricsGroup(this);
+
+    }
+
     // --- getters/setters ---
 
     public Class getInstrumentedClass() {
@@ -151,4 +174,7 @@ public class StatsMetricsGroup {
         return statsMetricsGroupAttributes;
     }
 
+    public StatsMetricsGroupHandler getStatsMetricsGroupHandler() {
+        return statsMetricsGroupHandler;
+    }
 }

@@ -46,13 +46,15 @@ public class ScoringTaskService {
     @Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
 
+    @Value("${fortscale.streaming.turbo.mode:true}")
+    private boolean isTurboMode;
+
     private String jobName;
 
     public ScoringTaskService(Config config, TaskContext context) throws Exception  {
-
         jobName = config.get("job.name");
         eventTopologyService.setSendingJobName(jobName);
-
+        logger.info("scoringTask job={} isTurboMode={}", isTurboMode);
         // The following initialization could also be done lazily
         scorersService.loadScorers();
     }

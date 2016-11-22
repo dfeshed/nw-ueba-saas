@@ -27,10 +27,14 @@
 					<key>targetTopic</key>
 					<value>${fortscale.model.build.control.input.topic}</value>
 				</entry>
+				<entry>
+					<key>fortscale.model.build.control.output.topic</key>
+					<value>${fortscale.model.build.control.output.topic}</value>
+				</entry>
 			</job-data-map>
 		</job>
 
-		<trigger>
+		<!--trigger>
 			<cron>
 				<name>daily_model_building_trigger</name>
 				<group>Model</group>
@@ -38,6 +42,6 @@
 				<job-group>Model</job-group>
 				<cron-expression>0 0 0 ? * SUN</cron-expression>
 			</cron>
-		</trigger>
+		</trigger-->
 	</schedule>
 </job-scheduling-data>

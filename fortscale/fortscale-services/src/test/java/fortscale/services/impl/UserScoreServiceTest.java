@@ -24,7 +24,6 @@ public class UserScoreServiceTest extends UserScoreServiceTestAbstract {
         double a1Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a1.getSeverity(), a1.getFeedback(),a1.getStartDate());
         Alert a2 =  getAlert(Severity.Critical,AlertFeedback.Approved,true);
         double a2Contribution = userScoreService.getUserScoreContributionForAlertSeverity(a2.getSeverity(), a2.getFeedback(),a2.getStartDate());
-
         Assert.assertEquals(HIGH_ALERT_INFLUANCE, a1Contribution,0);
         Assert.assertEquals(CRITICAL_ALERT_INFLUANCE, a2Contribution, 0);
     }

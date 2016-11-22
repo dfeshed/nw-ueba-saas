@@ -56,8 +56,8 @@ public class UsernameService implements InitializingBean, CachingService {
 	@Autowired
 	private CacheHandler<String, String> usernameToUserIdCache;
 
-    @Autowired
-    private CacheHandler<String, String> dNToUserName;
+	@Autowired
+	private CacheHandler<String, String> dNToUserName;
 
 	@Autowired
 	private SamAccountNameService samAccountNameService;
@@ -205,7 +205,7 @@ public class UsernameService implements InitializingBean, CachingService {
 
 		usernameToUserIdCache.clear();
 		samAccountNameService.clearCache();
-        dNToUserName.clear();
+		dNToUserName.clear();
 		for (int i = 0; i < numOfPages; i++) {
 			Pageable pageable = new PageRequest(i, usernameServicePageSize);
 			List<User> listOfUsers = userRepository.findAllUsers(pageable);
@@ -213,7 +213,7 @@ public class UsernameService implements InitializingBean, CachingService {
 			for (User user : listOfUsers) {
 				String username = user.getUsername();
 				String userId = user.getId();
-                String dn = user.getAdInfo().getDn();
+				String dn = user.getAdInfo().getDn();
 
 				if (username != null) {
 					usernameToUserIdCache.put(username, userId);
@@ -277,13 +277,13 @@ public class UsernameService implements InitializingBean, CachingService {
 			return dNToUserName.get(dn);
 		}
 
-        User user = userRepository.findByAdInfoDn(dn);
+		User user = userRepository.findByAdInfoDn(dn);
 
-        if (user != null)
-        {
-            String username = user.getUsername();
-            dNToUserName.put(dn,username);
-            updateUsernameInCache(user);
+		if (user != null)
+		{
+			String username = user.getUsername();
+			dNToUserName.put(dn,username);
+			updateUsernameInCache(user);
 
 			return username;
 		}
@@ -317,7 +317,7 @@ public class UsernameService implements InitializingBean, CachingService {
 			Cache<String,String> cache = builder.build();
 
 
-			username = userRepository.findByfield(aDFieldName,aDFieldValue,partOrFullFlag);
+			username = userRepository.findUserNameByfield(aDFieldName, aDFieldValue, partOrFullFlag);
 
 			if (!StringUtils.isEmpty(username))
 				cache.put(aDFieldValue,username);
@@ -336,7 +336,7 @@ public class UsernameService implements InitializingBean, CachingService {
 		username = (String) cache.getIfPresent(aDFieldValue);
 		if(username == null)
 		{
-			username = userRepository.findByfield(aDFieldName,aDFieldValue,partOrFullFlag);
+			username = userRepository.findUserNameByfield(aDFieldName, aDFieldValue, partOrFullFlag);
 
 			if(!StringUtils.isEmpty(username) ) {
 				cache.put(aDFieldValue, username);

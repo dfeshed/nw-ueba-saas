@@ -1,8 +1,9 @@
-package fortscale.ml.model.builder;
+package fortscale.ml.model.builder.gaussian;
 
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ContinuousDataModel;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.builder.IModelBuilder;
 import org.springframework.util.Assert;
 
 import java.util.Map;
@@ -17,27 +18,21 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
     @Override
     public Model build(Object modelBuilderData) {
         Map<String, Double> histogram = castModelBuilderData(modelBuilderData).getHistogramMap();
-
-        // Calculate mean
         double totalCount = 0;
         double sum = 0;
+        double squaredSum = 0;
+        double maxValue = 0;
         for (Map.Entry<String, Double> entry : histogram.entrySet()) {
             double count = entry.getValue();
             totalCount += count;
-            sum += convertToDouble(entry.getKey()) * count;
+            Double value = convertToDouble(entry.getKey());
+            sum += value * count;
+            squaredSum += value * value * count;
+            maxValue = Math.max(maxValue, value);
         }
         double mean = sum / totalCount;
-
-        // Calculate standard deviation
-        sum = 0;
-        for (Map.Entry<String, Double> entry : histogram.entrySet()) {
-            sum += Math.pow(convertToDouble(entry.getKey()) - mean, 2) * entry.getValue();
-        }
-        double sd = Math.sqrt(sum / totalCount);
-
-        ContinuousDataModel model = new ContinuousDataModel();
-        model.setParameters((long)totalCount, round(mean), round(sd));
-        return model;
+        double sd = Math.sqrt((squaredSum / totalCount) - mean * mean);
+        return new ContinuousDataModel().setParameters((long)totalCount, round(mean), round(sd), round(maxValue));
     }
 
     private GenericHistogram castModelBuilderData(Object modelBuilderData) {
@@ -47,6 +42,6 @@ public class ContinuousHistogramModelBuilder implements IModelBuilder {
     }
 
     private static double round(double value) {
-        return Math.round(value * 1000) / 1000d;
+        return Math.round(value * 1000000) / 1000000d;
     }
 }

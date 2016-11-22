@@ -122,6 +122,7 @@ public class ApiUserController extends BaseController{
 		fieldsRequired.add(User.getAdInfoField(UserAdInfo.departmentField));
 		fieldsRequired.add(User.tagsField);
 		fieldsRequired.add(User.sourceMachineCountField);
+		fieldsRequired.add(User.scoreField);
 
 		extendedSearchSortFields = String.format("%s, %s, %s, %s, %s, %s", User.getAdInfoField(UserAdInfo.firstnameField), User.getAdInfoField(UserAdInfo.lastnameField),
 				User.displayNameField, User.usernameField, User.getAdInfoField(UserAdInfo.positionField), User.getAdInfoField(UserAdInfo.departmentField));

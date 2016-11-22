@@ -9,7 +9,7 @@ from validation import validate_no_missing_events, validate_entities_synced, val
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
-from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models
+from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models_and_acm
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -123,7 +123,7 @@ class Manager(DontReloadModelsOverridingManager):
         return True
 
     def _cleanup_and_move_models_back_in_time(self):
-        return cleanup_everything_but_models(logger=logger,
+        return cleanup_everything_but_models_and_acm(logger=logger,
                                              host=self._host,
                                              clean_overrides_key='step3.cleanup',
                                              infer_start_and_end_from_collection_names_regex='^aggr_') and \

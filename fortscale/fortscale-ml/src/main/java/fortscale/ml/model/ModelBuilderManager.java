@@ -11,6 +11,7 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -158,7 +159,7 @@ public class ModelBuilderManager {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
             metrics.retrieverFailures++;
-            failureReason = e.toString();
+            failureReason = e.toString() + ": " + ExceptionUtils.getStackTrace(e);
             modelBuilderData = null;
         }
         if (modelBuilderData == null) {
@@ -171,7 +172,7 @@ public class ModelBuilderManager {
             model = modelBuilder.build(modelBuilderData);
         } catch (Exception e) {
             metrics.builderFailures++;
-            failureReason = e.toString();
+            failureReason = e.toString() + ": " + ExceptionUtils.getStackTrace(e);
             model = null;
         }
         if (model == null) {
@@ -187,7 +188,7 @@ public class ModelBuilderManager {
             modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
             metrics.storeFailures++;
-            logger.error("Failed to store model: " + e.toString());
+            logger.error("Failed to store model: " + e.toString() + ": " + ExceptionUtils.getStackTrace(e));
             return ModelBuildingStatus.STORE_FAILURE;
         }
 

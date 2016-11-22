@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import java.util.*;
 
 public interface UserRepositoryCustom {
+
 	User findByApplicationUserName(ApplicationUserDetails applicationUserDetails);
 
 	List<User> findByApplicationUserName(String applicationName, List<String> usernames);
@@ -122,7 +123,9 @@ public interface UserRepositoryCustom {
 	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
 	 * @return
 	 */
-	String findByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
+
+	String findUserNameByfield(String aDFieldName, String aDFieldValue, boolean partOrFullFlag);
+
 
 	List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter);
 
@@ -131,5 +134,6 @@ public interface UserRepositoryCustom {
     List getDistinctFieldValues(String fieldName);
 
 	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags);
+
 }
 

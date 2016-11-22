@@ -118,16 +118,20 @@ def main():
                convert_to_minutes_timeout=arguments.convert_to_minutes_timeout_in_minutes * 60,
                timeoutInSeconds=arguments.timeoutInSeconds,
                cleanup_first=arguments.cleanup_first,
+
                filtered_gap_in_seconds=arguments.filtered_gap_in_seconds,
                filtered_timeout_override_in_seconds=arguments.filtered_timeout_override_in_seconds,
+
                start=arguments.start,
                end=arguments.end) \
             .run():
         logger.info('finished successfully')
+
         return True
     else:
         logger.error('FAILED')
         return False
+
 
 
 if __name__ == '__main__':

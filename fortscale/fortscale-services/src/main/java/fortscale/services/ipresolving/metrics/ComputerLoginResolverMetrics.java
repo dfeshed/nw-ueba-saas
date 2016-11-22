@@ -6,7 +6,6 @@ package fortscale.services.ipresolving.metrics;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.monitoring.stats.annotations.StatsDateMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
@@ -57,8 +56,9 @@ public class ComputerLoginResolverMetrics extends StatsMetricsGroup {
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long computerLoginIpAddedToBlackList;
 
-	// Number of computer logins that weren't updated
+
+	// Number of computer logins that weren't updated because there is already the same resolving for the same hour on the cache
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long computerLoginNotUpdated;
+	public long computerLoginThatAlreadyAppeareInTheCache;
 }
 
