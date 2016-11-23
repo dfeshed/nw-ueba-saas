@@ -4,6 +4,11 @@
   margin-top: 1px;
   color: rsa-color(white);
 
+  .rsa-content-badge-score {
+    height: 100%;
+    max-height: 92px;
+  }
+
   .rsa-form-select {
     .rsa-form-label {
       @include rsa-font(header, small);
@@ -126,6 +131,12 @@
   &.small-size {
     .rsa-incident-tile-header {
       .rsa-incident-tile-header-info {
+
+        .rsa-content-badge-score {
+          height: 100%;
+          max-height: 60px;
+        }
+
         .rsa-incident-tile-name {
           @include rsa-font(body, small);
           line-height: 140%;

@@ -41,6 +41,8 @@
   }
 
   &.allow-multiple-rows {
+    @include rsa-row(center,top);
+
     .rsa-carousel {
       &__arrow {
         /*
