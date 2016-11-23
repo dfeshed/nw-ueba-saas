@@ -7,6 +7,7 @@ const {
   inject: {
     service
   },
+  isPresent,
   isNone,
   isEmpty,
   typeOf,
@@ -25,14 +26,106 @@ export default Component.extend({
   // list of meta keys that wont be displayed as part of the meta section title
   normalizedMetaHiddenKeys: ['enrichment'],
 
-  @alias('model.source.device') sourceDevice: null,
-  @alias('model.destination.device') destinationDevice: null,
-  @alias('model.enrichment.whois') whois: null,
+  @alias('event.source.device') sourceDevice: null,
+  @alias('event.destination.device') destinationDevice: null,
+  @alias('event.enrichment.whois') whois: null,
+  @alias('event.detector') detector: null,
 
-  @computed('model')
-  isModelLoaded: (model) => !isNone(model),
+  @computed('event')
+  isEventLoaded: (event) => !isNone(event),
 
-  @computed('model.enrichment')
+  /**
+   * @name serviceId
+   * @description: Required route query param for Investigation page. Service ID is retrieved by matching service's name
+   * that is known to the event (eg. Concetrator A) to a name in the services container that is backed by core-services.
+   * @private
+   */
+  @computed('services', 'event.event_source_id')
+  serviceId: (services, eventSourceId) => {
+    let serviceId = null;
+    if (isPresent(services) && isPresent(eventSourceId)) {
+      const service = services.find((service) => service.name === eventSourceId);
+      serviceId = isNone(service) ? null : service.id;
+    }
+    return serviceId;
+  },
+
+  /**
+   * @name isLinkable
+   * @description: Determine if it is possible to create a link to Investigate page.
+   * @private
+   */
+  @computed('serviceId', 'incident.created')
+  isLinkable: (serviceId, created) => isPresent(serviceId) && isPresent(created),
+
+  /**
+   * @name startTime
+   * @description: Required route query param for Investigation page. Value is set to 10 minutes before incident was
+   * created. Default value is 0.
+   * @private
+   */
+  @computed('isLinkable', 'incident.created')
+  startTime: (isLinkable, created) => isLinkable ? Math.max(Math.round(created / 1000 - 600), 0) : 0,
+
+  /**
+   * @name endTime
+   * @description: Required route query param for Investigation page. Value is set to 10 minutes after incident was
+   * created. Default value is 0.
+   * @private
+   */
+  @computed('isLinkable', 'incident.created')
+  endTime: (isLinkable, created) => isLinkable ? Math.max(Math.round(created / 1000 + 600), 0) : 0,
+
+  /**
+   * @name investigateRouteParams
+   * @description: Array composed of required route query params for Investigation page.
+   * @private
+   */
+  @computed('isLinkable', 'serviceId', 'startTime', 'endTime')
+  investigateRouteParams: (isLinkable, serviceId, startTime, endTime) =>
+    isLinkable ? [serviceId, startTime, endTime] : [],
+
+  /**
+   * @name sourceIpQuery
+   * @description: Route params to Investigate page to obtain information based on source IP.
+   * @public
+   */
+  @computed('investigateRouteParams', 'event.ip_source')
+  sourceIpQuery: (investigateRouteParams, ipSource) =>
+    (isPresent(investigateRouteParams) && isPresent(ipSource)) ?
+      investigateRouteParams.slice().addObject(`ip.src=${ipSource}`).join('/') : null,
+
+  /**
+   * @name destIpQuery
+   * @description: Route params to Investigate page to obtain information based on destination IP.
+   * @public
+   */
+  @computed('investigateRouteParams', 'event.ip_dst')
+  destIpQuery: (investigateRouteParams, ipDst) =>
+    (isPresent(investigateRouteParams) && isPresent(ipDst)) ?
+      investigateRouteParams.slice().addObject(`ip.dst=${ipDst}`).join('/') : null,
+
+  /**
+   * @name aliasHostQuery
+   * @description: Route params to Investigate page to obtain information based on alias host.
+   * @public
+   */
+  @computed('investigateRouteParams', 'event.alias_host')
+  aliasHostQuery: (investigateRouteParams, aliasHost) =>
+    (isPresent(investigateRouteParams) && isPresent(aliasHost)) ?
+      investigateRouteParams.slice().addObject(`alias.host=${aliasHost}`).join('/') : null,
+
+  /**
+   * @name detectorDeviceIpQuery
+   * @description: Route params to Investigate page to obtain information based on detector's device IP.
+   * @public
+   */
+  @computed('investigateRouteParams', 'event.detector.ip_address')
+  detectorDeviceIpQuery: (investigateRouteParams, detectorDeviceIpAddress) =>
+    (isPresent(investigateRouteParams) && isPresent(detectorDeviceIpAddress)) ?
+      investigateRouteParams.slice().addObject(`device.ip=${detectorDeviceIpAddress}`).join('/') : null,
+
+  @computed('event.enrichment')
   scoreBadges(enrichment) {
     const scoreBadges = [];
 
@@ -74,10 +167,10 @@ export default Component.extend({
     return score;
   },
 
-  @computed('model')
-  normalizedMeta(model) {
+  @computed('event')
+  normalizedMeta(event) {
     const rootNode = { title: '', key: 'meta', showHeader: false };
-    const normalizedMeta = this._normalizeMetaElement(model, rootNode, [ rootNode ]);
+    const normalizedMeta = this._normalizeMetaElement(event, rootNode, [ rootNode ]);
     return normalizedMeta;
   },
 

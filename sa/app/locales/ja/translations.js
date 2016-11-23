@@ -333,6 +333,10 @@ export default $.extend({}, BaseTranslations, {
         setvice: 'ja_service',
         type: 'ja_Type',
         domain: 'ja_domain',
+        detector: 'ja_detector',
+        detectorDeviceClass: 'ja_detector device class',
+        detectorDeviceIpAddress: 'ja_detector ip address',
+        detectorProductName: 'ja_detector product name',
         networkEvent: 'ja_Network Event',
         source: 'ja_source',
         destination: 'ja_destination',
@@ -348,6 +352,7 @@ export default $.extend({}, BaseTranslations, {
         domainRegistrar: 'ja_domain registrar',
         registrantName: 'ja_registrant name',
         notAvailable: 'ja_Not Available',
+        investigate: 'ja_Investigate',
         badges: {
           beaconBehavior: {
             label: 'ja_beacon behavior',

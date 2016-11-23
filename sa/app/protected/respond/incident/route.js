@@ -35,7 +35,7 @@ export default Route.extend({
 
   model(params) {
     this.set('incidentId', params.incident_id);
-    const details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [], 'events': [] };
+    const details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [], 'events': [], 'services': [] };
     this.request.streamRequest({
       method: 'stream',
       modelName: 'storyline',
@@ -73,6 +73,18 @@ export default Route.extend({
       },
       onError() {
         Logger.error('Error loading tags');
+      }
+    });
+
+    this.request.streamRequest({
+      method: 'findAll',
+      modelName: 'core-service',
+      query: {},
+      onResponse: ({ data }) => {
+        details.services.pushObjects(data);
+      },
+      onError() {
+        Logger.error('Error loading core-service');
       }
     });
 

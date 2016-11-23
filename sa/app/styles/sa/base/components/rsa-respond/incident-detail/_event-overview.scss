@@ -92,17 +92,35 @@
   &__source,
   &__destination,
   &__domain,
-  &__meta {
+  &__detector {
     background-color: rsa-color(black, null, $rsa-translucent);
 
     &__header {
       @include rsa-font(header, small);
+      @include rsa-flex-direction(row);
+      @include rsa-flex-justify-content(space-between);
+      @include rsa-flex-align-items(center);
+      @include rsa-vendor-prefix(flex-wrap, wrap);
+      @include rsa-vendor-prefix(align-content, center);
       background-color: rsa-color(black);
       padding: rsa-whitespace(less) rsa-whitespace();
 
       &__label {
-        color: rsa-color(blue, dark);
+        color: rsa-color(white, dark);
       }
+
+      &__link {
+        @include rsa-font(body, small);
+        text-transform: capitalize;
+        color: rsa-color(blue, dark);
+        text-decoration: none;
+
+        &__icon {
+          padding-top: 1px;
+        }
+
+      }
+
       &__ip-address,
       &__domain-value {
         color: rsa-color(gray, light);
@@ -148,7 +166,8 @@
 
   &__source,
   &__destination,
-  &__domain {
+  &__domain,
+  &__detector {
     &__header {
       &__label {
         &:after {
@@ -159,10 +178,28 @@
   }
 
   &__meta {
+    background-color: rsa-color(black, null, $rsa-translucent);
+
     &__header {
-      padding-top: rsa-whitespace(least);
+      @include rsa-font(header, small);
+      padding: rsa-whitespace(less) rsa-whitespace();
       padding-bottom: rsa-whitespace(least);
+      background-color: rsa-color(black);
+
+      &__label {
+        color: rsa-color(white, dark);
+      }
     }
+
+    &__info {
+      padding: rsa-whitespace();
+
+      .rsa-content-definition .value {
+        text-overflow: ellipsis;
+        overflow: hidden;
+      }
+    }
+
     &__header__toggle.rsa-form-button-wrapper {
       button.rsa-form-button {
         padding: 0 rsa-whitespace(less) 0 0;
@@ -198,7 +235,6 @@
         vertical-align: middle;
         text-overflow: ellipsis;
         overflow: hidden;
-        padding: rsa-whitespace(least) 0;
 
         &:after {
           content: ":";

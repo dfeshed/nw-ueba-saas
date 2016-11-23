@@ -352,6 +352,10 @@ export default $.extend({}, BaseTranslations, {
         source: 'source',
         destination: 'destination',
         domainInfo: 'domain information',
+        detector: 'detector',
+        detectorDeviceClass: 'detector device class',
+        detectorDeviceIpAddress: 'detector ip address',
+        detectorProductName: 'detector product name',
         meta: 'event meta',
         devicePort: 'device port',
         deviceMacAddress: 'device mac address',
@@ -363,6 +367,7 @@ export default $.extend({}, BaseTranslations, {
         domainRegistrar: 'domain registrar',
         registrantName: 'registrant name',
         notAvailable: 'Not Available',
+        investigate: 'Investigate',
         badges: {
           beaconBehavior: {
             label: 'beacon behavior',

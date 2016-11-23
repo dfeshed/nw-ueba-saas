@@ -37,6 +37,7 @@ export default Route.extend({
   sort: [{ field: 'risk_score', descending: true }],
 
   model(params, transition) {
+
     if (params.detail_id !== 'C2') {
       return null;
     }
@@ -74,9 +75,7 @@ export default Route.extend({
       this.set('layoutService.panelC', 'half');
       this.set('layoutService.panelD', 'half');
       this.set('layoutService.journalPanel', 'hidden');
-
       const parentModel = this.modelFor('protected.respond.incident');
-
       set(parentModel, 'events', []);
 
       this.request.streamRequest({
