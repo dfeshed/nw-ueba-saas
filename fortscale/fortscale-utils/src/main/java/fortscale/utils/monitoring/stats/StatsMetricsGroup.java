@@ -86,6 +86,73 @@ public class StatsMetricsGroup {
     }
 
     /**
+     * A special ctor for manual registration metrics group. Manual registration should be used only in special cases
+     * when the metrics group class has to be created before the stats service is available, like with
+     * statsServiceSelfMetrics class.
+     * The ctor initialize the class but it does not register the metrics group to the stats service. This should be
+     * done with manualRegister().
+     * The ctor is "protected" to ensure it will be used only via StatsMetricsGroupManualRegistration class.
+     *
+     * @param instrumentedClass           - The class being instrumented. This is typically the "service" class. It is
+     *                                      used for logging and debugging
+     * @param statsMetricsGroupAttributes - metrics group attributes (e.g. tag list). Might be null.
+     */
+    protected StatsMetricsGroup(Class instrumentedClass, StatsMetricsGroupAttributes statsMetricsGroupAttributes) {
+
+        // If we did not get attributes, build an empty attributes
+        if (statsMetricsGroupAttributes == null) {
+            statsMetricsGroupAttributes = new StatsMetricsGroupAttributes();
+        }
+
+        // Save the fields (some of them are accessed even if statsService is null at unregister() )
+        this.instrumentedClass = instrumentedClass;
+        this.statsMetricsGroupAttributes = statsMetricsGroupAttributes;
+
+    }
+
+    /**
+     * Registers a metrics group to stats service. It should be used only with the classes created with the special ctor
+     * for manual registration.
+     * Manual registration should be used only in special cases when the metrics group class has to be created before
+     * the stats service is available, like with statsServiceSelfMetrics class.
+     *
+     * The method is "protected" to ensure it will be used only via StatsMetricsGroupManualRegistration class.
+     *
+     *
+     * @param statsService - stats service to register to
+     */
+    protected void manualRegister(StatsService statsService) {
+
+        // Verify not already registered
+        if (this.statsService != null) {
+            String msg = String.format("Class %s is already registered", this.getClass());
+            logger.error(msg);
+            throw new IllegalStateException(msg);
+        }
+
+        // Save the stats service
+        this.statsService = statsService;
+
+        // If stats service is null, do nothing
+        if (statsService == null) {
+            logger.info("Not manually registering metric group {} with {} with attributes and instrumented class {} because stats service null",
+                    this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
+            return;
+        }
+
+        // Log it if enabled
+        if (logger.isDebugEnabled()) {
+            logger.debug("Manually registering metric group {} with {} attributes. Instrumented class is {}",
+                    this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
+        }
+
+        // Register the instance to the statsService and save the handler we get in return.
+        statsMetricsGroupHandler = statsService.registerStatsMetricsGroup(this);
+
+    }
+
+
+    /**
      *
      * Like manualUpdate(epochTime) except that time is the system time.
      *

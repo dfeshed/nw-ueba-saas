@@ -41,6 +41,10 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     // The stats service this instance is registered to.
     protected StatsServiceImpl statsService;
 
+
+    // Cache of stats service metrics
+    private StatsServiceSelfMetrics statsServiceMetrics;
+
     // metrics group cached fields
     StatsMetricsGroupAttributes metricsGroupAttributes;
     Class metricsGroupInstrumentedClass;
@@ -80,6 +84,13 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         this.metricsGroup = metricsGroup;
         this.statsService = statsServiceImpl;
 
+        // Cache stats service metrics
+        statsServiceMetrics = statsServiceImpl.getSelfMetrics();
+
+        // Count the construction of this metric group
+        statsServiceMetrics.metricsGroupCreated++;
+
+        // Create empty metrics list
         metricsValuesHandlers = new LinkedList<MetricValueHandler>();
 
         // Cache a few fields from the metricsGroup
@@ -88,6 +99,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // Save the manual update flag
         isManualUpdateMode = metricsGroupAttributes.isManualUpdateMode();
+        if (isManualUpdateMode) {
+            statsServiceMetrics.metricsGroupCreatedWithManualUpdate++;
+        }
 
         // Compile the metric groups to build the value handlers list
         // Note: it also update groupName
@@ -130,6 +144,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
     public void manualUpdate(long epochTime) {
 
         try {
+
+            statsServiceMetrics.metricsGroupManualUpdate++;
+
             // Ensure manual update mode is set
             if (isManualUpdateMode == false) {
 
@@ -147,6 +164,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
             writeToEngine(epochTime);
         }
         catch (Exception ex) {
+
+            statsServiceMetrics.metricsGroupManualUpdateError++;
+
             // Just log the exception
             String msg = String.format("manualUpdate() got an exception. epoch=%d metricsGroup.class=%s instrumentedClass=%s",
                                         epochTime, metricsGroup.getClass().getName(), metricsGroupInstrumentedClass.getName());
@@ -205,6 +225,7 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
 
         // No annotation -> NOP
         if (!metricsGroup.getClass().isAnnotationPresent(StatsMetricsGroupParams.class)) {
+            statsServiceMetrics.metricsGroupsWithoutAnnotations++;
             return;
         }
 
@@ -273,6 +294,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      */
     protected void processLongMetricsAnnotation(Field field, StatsLongMetricParams fieldAnno) {
 
+        statsServiceMetrics.metricsGroupLongFields++;
+
+
         // Calc metric name. If annotation has name, use it. If not, default to field name
         String valueName;
         if (!fieldAnno.name().isEmpty()) {
@@ -301,6 +325,8 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      * @param fieldAnno  - annotation object
      */
     protected void processDoubleMetricsAnnotation(Field field, StatsDoubleMetricParams fieldAnno) {
+
+        statsServiceMetrics.metricsGroupDoubleFields++;
 
         // Calc metric name. If annotation has name, use it. If not, default to field name
         String valueName;
@@ -333,6 +359,9 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      */
     protected void processDateMetricsAnnotation(Field field, StatsDateMetricParams fieldAnno) {
 
+        statsServiceMetrics.metricsGroupDateFields++;
+
+
         // Calc metric name. If annotation has name, use it. If not, default to field name
         String valueName;
         if (!fieldAnno.name().isEmpty()) {
@@ -360,6 +389,8 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      * @param fieldAnno  - annotation object
      */
     protected void processStringMetricsAnnotation(Field field, StatsStringMetricParams fieldAnno) {
+
+        statsServiceMetrics.metricsGroupStringFields++;
 
         // Calc metric name. If annotation has name, use it. If not, default to field name
         String valueName;
@@ -422,6 +453,8 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
      */
     protected void writeToEngine(long epochTime) {
 
+        statsServiceMetrics.metricsGroupWriteToEngine++;
+
         // Create an empty data engine object
         StatsEngineMetricsGroupData engineMetricsGroupData = new StatsEngineMetricsGroupData();
 
@@ -431,9 +464,12 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         // Get metric count and discard the object if there are no metric
         long metricCount = engineMetricsGroupData.getMetricCount();
         if (metricCount == 0) {
+            statsServiceMetrics.metricsGroupWriteToEngineNoMetrics++;
             logger.debug("Metrics group handler discards the metric because it has no metric\n{}", engineMetricsGroupData.toString());
             return;
         }
+
+        statsServiceMetrics.metricsGroupMetricsWriteToEngine++;
 
         // Log the results
         if (logger.isDebugEnabled()) {
