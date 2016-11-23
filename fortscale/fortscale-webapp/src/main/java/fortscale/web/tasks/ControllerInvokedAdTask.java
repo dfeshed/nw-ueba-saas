@@ -5,7 +5,6 @@ import fortscale.services.ActiveDirectoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,7 +16,6 @@ import java.util.stream.Stream;
 import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.ETL;
 import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.FETCH;
 
-@Component
 public class ControllerInvokedAdTask implements Runnable {
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
