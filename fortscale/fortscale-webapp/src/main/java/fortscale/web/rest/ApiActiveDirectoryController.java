@@ -1,14 +1,18 @@
 package fortscale.web.rest;
 
 import fortscale.domain.ad.AdConnection;
-import fortscale.domain.ad.AdObject;
+import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
+import fortscale.web.tasks.ControllerInvokedAdTask;
+import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
+import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,35 +25,44 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static fortscale.web.rest.ApiActiveDirectoryController.AdTaskType.ETL;
-import static fortscale.web.rest.ApiActiveDirectoryController.AdTaskType.FETCH;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
 
+	private static final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
+
+	private static final String DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX ="deployment_wizard_ad.last_execution_time";
+
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
+	private final List<AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObjectType.values()));
 
-    private static final List<AdObject.AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObject.AdObjectType.values()));
-    private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
+	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
 
-	private AtomicInteger numAdTasksInProgress = new AtomicInteger(0);
+	private Set<ControllerInvokedAdTask> activeThreads = ConcurrentHashMap.newKeySet(dataSources.size());
+
+	private Long lastAdFetchEtlExecutionTimeInMillis;
+
+	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
+
+	private ExecutorService executorService = initializeExecutorService();
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
+
 	@Autowired
-	private SimpMessagingTemplate template;
+	private ApplicationConfigurationService applicationConfigurationService;
+
+	@Autowired
+	private SimpMessagingTemplate simpMessagingTemplate;
+
 
 	/**
 	 * Updates or creates config items.
@@ -87,22 +100,22 @@ public class ApiActiveDirectoryController {
 	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
-	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
-			@RequestParam(required = true, value = "encrypted_password") Boolean encryptedPassword) {
+	public ResponseEntity<String> testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
+														@RequestParam(value = "encrypted_password") Boolean encryptedPassword) {
 		if (!encryptedPassword) {
 			try {
 				activeDirectoryDomain.setDomainPassword(EncryptionUtils.encrypt(activeDirectoryDomain.
 						getDomainPassword()));
 			} catch (Exception ex) {
 				logger.error("failed to encrypt password");
-				return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
 			}
 		}
 		String result = activeDirectoryService.canConnect(activeDirectoryDomain);
 		if (result.isEmpty()) {
-			return new ResponseEntity(HttpStatus.OK);
+			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
-			return new ResponseEntity(result, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -111,216 +124,141 @@ public class ApiActiveDirectoryController {
 	public List<AdConnection> getActiveDirectory() {
 		return activeDirectoryService.getAdConnectionsFromDatabase();
 	}
-	
+
 	@RequestMapping("/ad_fetch_etl" )
 	public ResponseEntity executeAdFetchAndEtl() {
+		if (isFetchEtlExecutionRequestInProgress.compareAndSet(false, true)) {
+			if (!activeThreads.isEmpty()) {
+				logger.warn("Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.");
+				isFetchEtlExecutionRequestInProgress.set(false);
+				return new ResponseEntity(HttpStatus.FORBIDDEN);
+			}
+			lastAdFetchEtlExecutionTimeInMillis = System.currentTimeMillis();
 
-		if (numAdTasksInProgress.compareAndSet(0, 1)) {
 			logger.debug("Starting Active Directory fetch and ETL");
 
-			final ExecutorService executorService = Executors.newFixedThreadPool(4, runnable -> {
-				Thread thread = new Thread(runnable);
-				thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-				return thread;
-			});
-
 			try {
-				dataSources.forEach(dataSource -> executorService.execute(new FetchEtlTask(dataSource)));
+				if (isFetchEtlExecutionRequestStopped.get()) {
+					logger.warn("Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.");
+					isFetchEtlExecutionRequestInProgress.set(false);
+					return new ResponseEntity(HttpStatus.LOCKED);
+				}
+				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, dataSource)));
 			} finally {
 				executorService.shutdown();
 			}
 
 			logger.debug("Finished Active Directory fetch and ETL");
 
-			numAdTasksInProgress.decrementAndGet();
+			isFetchEtlExecutionRequestInProgress.set(false);
 			return new ResponseEntity(HttpStatus.OK);
 		}
 		else {
 			logger.warn("Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.");
 			return new ResponseEntity(HttpStatus.LOCKED);
 		}
-
-
 	}
 
-	public enum AdTaskType {
-		FETCH("Fetch"), ETL("ETL");
-
-		private final String type;
-
-		AdTaskType(String type) {
-			this.type = type;
-		}
-
-		@Override
-		public String toString() {
-			return type;
-		}
-	}
-
-	public static class AdTaskResponse {
-		private AdTaskType taskType;
-		private boolean success;
-		private long objectsCount;
-		private String dataSource;
-
-		public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource) {
-			this.taskType = taskType;
-			this.success = success;
-			this.objectsCount = objectsCount;
-			this.dataSource = dataSource;
-		}
-
-		public AdTaskType getTaskType() {
-			return taskType;
-		}
-
-		public boolean isSuccess() {
-			return success;
-		}
-
-		public long getObjectsCount() {
-			return objectsCount;
-		}
-
-		public String getDataSource() {
-			return dataSource;
-		}
-
-	}
-
-	private class FetchEtlTask implements Runnable {
-
-		public static final String TASK_RESULTS_PATH = "/tmp";
-		public static final String DELIMITER = "=";
-		public static final String KEY_SUCCESS = "success";
-		public static final String COLLECTION_JAR_NAME = "${user.home.dir}/fortscale/fortscale-core/fortscale/fortscale-collection/target/fortscale-collection-1.1.0-SNAPSHOT.jar";
-		public static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
-        public static final String AD_JOB_GROUP = "AD";
-
-        private final AdObject.AdObjectType dataSource;
-
-		public FetchEtlTask(AdObject.AdObjectType dataSource) {
-			this.dataSource = dataSource;
-		}
-
-		@Override
-		public void run() {
-			numAdTasksInProgress.incrementAndGet();
-			Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
-
-			final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
-			template.convertAndSend(RESPONSE_DESTINATION, fetchResponse);
-
-			final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
-			template.convertAndSend(RESPONSE_DESTINATION, etlResponse);
-		}
-
-
-		/**
-		 * Runs a new process with the given arguments. This method is BLOCKING.
-		 * @param adTaskType the type of task to run
-		 * @param dataSource the data source
-		 * @return an AdTaskResponse representing the results of the task
-		 */
-		private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
-            final String dataSourceName = dataSource.toString();
-            logger.debug("Executing task {} for data source {}", adTaskType, dataSourceName);
-
-            UUID resultsFileId = UUID.randomUUID();
-            final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
-
-            /* run task */
-            if (!runTask(dataSourceName, adTaskType, resultsFileId)) {
-                numAdTasksInProgress.decrementAndGet();
-                return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
-            }
-
-            /* get task results from file */
-            final Map<String, String> taskResults = getTaskResults(dataSourceName, adTaskType, filePath);
-            if (taskResults == null) {
-                numAdTasksInProgress.decrementAndGet();
-                return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
-            }
-
-            /* process results and understand if task finished successfully */
-			final String success = taskResults.get(KEY_SUCCESS);
-			if (success == null) {
-				logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
-				numAdTasksInProgress.decrementAndGet();
-				return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+	@RequestMapping("/stop_ad_fetch_etl" )
+	public ResponseEntity<String> stopAdFetchAndEtlExecution() {
+		if (!activeThreads.isEmpty()) {
+			isFetchEtlExecutionRequestStopped.set(true);
+			logger.debug("Attempting to kill all running threads {}", activeThreads);
+			executorService.shutdownNow();
+			try {
+				executorService.awaitTermination(FETCH_AND_ETL_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
+				activeThreads = ConcurrentHashMap.newKeySet(dataSources.size());
+			} catch (InterruptedException e) {
+				final String msg = "Failed to await termination of running threads.";
+				logger.error(msg);
+				return new ResponseEntity<>(msg, HttpStatus.FORBIDDEN);
+			} finally {
+				executorService = initializeExecutorService();
 			}
 
-			/* get objects count for this data source from mongo */
-            final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
+			lastAdFetchEtlExecutionTimeInMillis = null;
+			return new ResponseEntity<>("AD fetch and ETL execution has stopped successfully", HttpStatus.OK);
+		} else {
+			final String msg = "Attempted to stop threads was made but there are no running tasks.";
+			logger.warn(msg);
+			return new ResponseEntity<>(msg, HttpStatus.NOT_ACCEPTABLE);
+		}
+	}
 
-			numAdTasksInProgress.decrementAndGet();
-			return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
+
+
+	@RequestMapping(method = RequestMethod.GET,value = "/ad_etl_fetch_status")
+	@LogException
+	public FetchEtlExecutionStatus getJobStatus() {
+		Set<Map<String, Object>> statuses = new HashSet<>();
+
+		/* fill all task-types+datasource combinations to be not running */
+		final List<AdTaskType> adTaskTypes = new ArrayList<>(Arrays.asList(AdTaskType.values()));
+		for (AdTaskType adTaskType : adTaskTypes) {
+			for (AdObjectType dataSource : dataSources) {
+				Map<String, Object> currTaskMap = new HashMap<>();
+				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_IS_RUNNING, Boolean.FALSE);
+				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_TASK_TYPE, adTaskType);
+				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_DATASOURCE_TYPE, dataSource);
+				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_LAST_EXECUTION_TIME, getLastExecutionTime(adTaskType, dataSource));
+				statuses.add(currTaskMap);
+			}
 		}
 
-
-
-
-
-
-
-        private Map<String, String> getTaskResults(Object dataSourceName, Object adTaskType, String filePath) {
-            Map<String, String> taskResults = new HashMap<>();
-            try {
-                try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
-                    final List<String> lines = stream.collect(Collectors.toList());
-                    for (String line : lines) {
-                        final String[] split = line.split(DELIMITER);
-                        if (split.length != 2) {
-                            logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSourceName);
-                            return null;
-                        }
-
-                        taskResults.put(split[0], split[1]);
-                    }
-                } catch (IOException e) {
-                    logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
-                    return null;
-                }
-            } finally {
-                try {
-                    Files.delete(Paths.get(filePath));
-                } catch (IOException e) {
-                    logger.warn("Failed to delete results file {}.", filePath);
-                }
+		/* mark running tasks to be running */
+		activeThreads.forEach(adTask -> statuses.forEach(map -> {
+            if (map.get(FetchEtlExecutionStatus.FIELD_NAME_TASK_TYPE).equals(adTask.getCurrentAdTaskType()) && map.get(FetchEtlExecutionStatus.FIELD_NAME_DATASOURCE_TYPE).equals(adTask.getDataSource())) {
+                map.put(FetchEtlExecutionStatus.FIELD_NAME_IS_RUNNING, Boolean.TRUE);
             }
+        }));
 
-            return taskResults;
-        }
+		return new FetchEtlExecutionStatus(lastAdFetchEtlExecutionTimeInMillis, statuses);
+	}
 
-        private boolean runTask(String dataSourceName, AdTaskType adTaskType, UUID resultsFileId) {
-            Process process;
-            try {
-                final String jobName = dataSourceName + "_" + adTaskType.toString();
-                final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsFileId="+resultsFileId));
-                process = new ProcessBuilder(arguments).start();
-            } catch (IOException e) {
-                logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
-                return false;
-            }
-            int status;
-            try {
-                status = process.waitFor();
-            } catch (InterruptedException e) {
-                if (process.isAlive()) {
-                    logger.error("Killing the process forcibly");
-                    process.destroyForcibly();
-                }
-                logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSourceName, e);
-                return false;
-            }
+	public Long getLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
+		return applicationConfigurationService.getApplicationConfigurationAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+	}
 
-            logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSourceName, status);
-            return true;
-        }
-    }
+	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
+		applicationConfigurationService.insertConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+	}
+
+	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {
+		simpMessagingTemplate.convertAndSend(responseDestination, fetchResponse);
+	}
+
+	private ExecutorService initializeExecutorService() {
+		return Executors.newFixedThreadPool(dataSources.size(), runnable -> {
+			Thread thread = new Thread(runnable);
+			thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
+			return thread;
+		});
+	}
+
+	public boolean addRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
+		logger.debug("Adding running task {}", controllerInvokedAdTask);
+		return activeThreads.add(controllerInvokedAdTask);
+	}
+
+	public boolean removeRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
+		logger.debug("Removing running task {}", controllerInvokedAdTask);
+		return activeThreads.remove(controllerInvokedAdTask);
+	}
 
 
+	private static class FetchEtlExecutionStatus {
 
+		public static final String FIELD_NAME_TASK_TYPE = "taskType";
+		public static final String FIELD_NAME_DATASOURCE_TYPE = "datasource";
+		public static final String FIELD_NAME_IS_RUNNING = "isRunning";
+		public static final String FIELD_NAME_LAST_EXECUTION_TIME = "lastExecutionTime";
 
+		public final Long lastAdFetchEtlExecutionTimeInMillis;
+		public final Set<Map<String, Object>> runningTasks;
+
+		public FetchEtlExecutionStatus(Long lastAdFetchEtlExecutionTimeInMillis, Set<Map<String, Object>> runningTasks) {
+			this.lastAdFetchEtlExecutionTimeInMillis = lastAdFetchEtlExecutionTimeInMillis;
+			this.runningTasks = runningTasks;
+		}
+	}
 }
