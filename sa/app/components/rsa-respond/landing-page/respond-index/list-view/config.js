@@ -72,7 +72,7 @@ export const availableColumnsConfig = [
     visible: true
   }),
   EmberObject.create({
-    field: 'assigneeFirstLastName',
+    field: 'assigneeName',
     title: 'incident.list.assignee',
     width: '80',
     class: 'rsa-respond-list-assignee',

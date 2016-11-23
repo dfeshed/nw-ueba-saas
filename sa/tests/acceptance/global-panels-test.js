@@ -1,3 +1,4 @@
+/* global server */
 import { test } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
 import teardownSockets from 'sa/tests/helpers/teardown-sockets';
@@ -23,6 +24,7 @@ moduleForAcceptance('Acceptance | global panels', {
 
 test('toggling incident queue panel', function(assert) {
   assert.expect(10);
+  server.createList('incidents', 3);
   visit('/do/monitor');
   click('.incident-queue-trigger');
 

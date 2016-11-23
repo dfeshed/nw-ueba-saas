@@ -272,15 +272,21 @@ export default Route.extend({
   },
 
   afterModel(resolvedModel) {
-    this.get('store').findAll('user').then((users) => {
-      if (this.get('respondMode.selected') === 'card') {
-        set(resolvedModel.newIncidents, 'users', users);
-        set(resolvedModel.inProgressIncidents, 'users', users);
-      } else {
-        set(resolvedModel.allIncidents, 'users', users);
+    this.request.streamRequest({
+      method: 'stream',
+      modelName: 'users',
+      query: {},
+      onResponse: ({ data: users }) => {
+        if (this.get('respondMode.selected') === 'card') {
+          resolvedModel.newIncidents.users.addObjects(users);
+          resolvedModel.inProgressIncidents.users.addObjects(users);
+        } else {
+          resolvedModel.allIncidents.users.addObjects(users);
+        }
+      },
+      onError() {
+        Logger.error('Error loading Users');
       }
-    }).catch(() => {
-      Logger.error('Error getting users');
     });
   },
 

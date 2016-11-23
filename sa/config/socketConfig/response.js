@@ -78,6 +78,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/alert/events',
         requestDestination: '/ws/response/alert/events'
       }
+    },
+    users: {
+      socketUrl,
+      stream: {
+        defaultStreamLimit: 1000,
+        subscriptionDestination: '/user/queue/users/all',
+        requestDestination: '/ws/response/users/all'
+      }
     }
   };
 };

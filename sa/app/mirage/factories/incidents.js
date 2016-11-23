@@ -37,7 +37,7 @@ export default Mirage.Factory.extend({
   created: 1472157480611,
   lastUpdated: 1472157480611,
   lastUpdatedByUser: null,
-  assignee: { 'id': 1, 'firstName': 'Ian', 'lastName': 'RSA', 'emailAddress': 'test@rsa.com' },
+  assignee: { 'id': 1, 'name': 'Ian', 'email': 'test@rsa.com' },
   sources(i) {
     return faker.list.random(['Event Stream Analysis'], ['Event Stream Analysis', 'ECAT'], ['ECAT'])(i);
   },

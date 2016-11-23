@@ -6,7 +6,7 @@
 
 export const newIncident = { '_class': 'com.rsa.smc.im.domain.bean.Incident',
   'id': 'INC-000', 'alertCount': 1,
-  'assignee': { 'email': 'admin@rsa.com', 'firstName': 'Blah', 'id': '4', 'lastName': 'Foo' },
+  'assignee': { 'id': '4', 'name': 'Sim Boyd','email': null,'description': 'person3@test.com' },
   'averageAlertRiskScore': 50,
   'breachExportStatus': 'NONE',
   'categories': [],
@@ -412,7 +412,7 @@ export const newIncident = { '_class': 'com.rsa.smc.im.domain.bean.Incident',
 
 export const assignedIncident = { '_class': 'com.rsa.smc.im.domain.bean.Incident',
   'id': 'INC-001', 'alertCount': 1,
-  'assignee': { 'email': 'admin@rsa.com', 'firstName': 'Blah', 'id': '4', 'lastName': 'Foo' },
+  'assignee': { 'id': '4', 'name': 'Sim Boyd','email': null,'description': 'person3@test.com' },
   'averageAlertRiskScore': 50,
   'breachExportStatus': 'NONE',
   'categories': [],
@@ -473,7 +473,7 @@ export const assignedIncident = { '_class': 'com.rsa.smc.im.domain.bean.Incident
 
 export const inProgressIncident = { '_class': 'com.rsa.smc.im.domain.bean.Incident',
   'id': 'INC-002', 'alertCount': 1,
-  'assignee': { 'email': 'admin@rsa.com', 'firstName': 'Blah', 'id': '4', 'lastName': 'Foo' },
+  'assignee': { 'id': '4', 'name': 'Sim Boyd','email': null,'description': 'person3@test.com' },
   'averageAlertRiskScore': 50,
   'breachExportStatus': 'NONE',
   'categories': [],

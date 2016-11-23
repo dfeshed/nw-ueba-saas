@@ -37,7 +37,7 @@
         values=selectedAssignee class=(concat 'rsa-respond-list__filter-panel__assignee-selector' (if assigneeFilterActive ' assignee-filter-active'))}}
         <option value=-1>{{t 'incident.assignee.none'}}</option>
         {{#each users as |user|}}
-          <option value={{user.id}}>{{user.firstName}}</option>
+          <option value={{user.id}}>{{user.name}}</option>
         {{/each}}
       {{/rsa-form-select}}
       <div class="rsa-respond-list__filter-panel__category">
@@ -109,8 +109,8 @@
                 {{t (concat 'incident.status.' (get item column.field))}}
               {{else if (eq column.field 'prioritySort')}}
                 {{t (concat 'incident.priority.' (get item column.field))}}
-              {{else if (eq column.field 'assigneeFirstLastName')}}
-                {{get item 'assignee.firstName'}}
+              {{else if (eq column.field 'assigneeName')}}
+                {{get item 'assignee.name'}}
               {{else if (eq column.field 'sources')}}
                 {{#each (get item column.field) as |source|}}
                   {{rsa-content-label label=(call-method this 'sourceShortName' source)}}

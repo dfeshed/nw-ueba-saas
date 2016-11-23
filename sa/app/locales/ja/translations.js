@@ -272,7 +272,7 @@ export default $.extend({}, BaseTranslations, {
     sortFields: {
       sortByLabel: 'ja_Sort By:',
       alertCount: 'ja_Alerts',
-      assigneeFirstLastName: 'ja_Assignee',
+      assigneeName: 'ja_Assignee',
       dateCreated: 'ja_Date Created',
       lastUpdated: 'ja_Date Updated',
       id: 'ja_Incident ID',

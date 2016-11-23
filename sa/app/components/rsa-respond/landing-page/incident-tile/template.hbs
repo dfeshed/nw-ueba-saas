@@ -54,9 +54,9 @@
 
     <vbox xs="6">
       {{#rsa-form-select multiple=false optionMaxVisible=3 label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
-        <option value=-1>{{t 'incident.assignee.none'}}</option>
+        <option value='-1'>{{t 'incident.assignee.none'}}</option>
         {{#each users as |user|}}
-          <option value= {{user.id}}>{{user.firstName}}</option>
+          <option value= {{user.id}}>{{user.name}}</option>
         {{/each}}
       {{/rsa-form-select}}
     </vbox>
@@ -80,7 +80,7 @@
     </vbox>
     <vbox xs="4">
       {{#rsa-content-definition class="rsa-incident-tile-assignee-block" label=(t "incident.fields.assignee")}}
-        <label class="rsa-incident-tile-assignee">{{unless (is-equal selectedAssignee -1) (t 'incident.assignee.none') selectedAssignee}}</label>
+        <label class="rsa-incident-tile-assignee">{{if (eq selectedAssignee '-1') (t 'incident.assignee.none') incident.assignee.name}}</label>
       {{/rsa-content-definition}}
     </vbox>
   </hbox>

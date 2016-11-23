@@ -30,10 +30,9 @@ export default Base.extend({
         return d.prioritySort || 0;
       }
     },
-    'assigneeFirstLastName': {
+    'assigneeName': {
       getter(d) {
-        // Concatenate first and last name to improve sort accuracy
-        return (d.assignee && (d.assignee.firstName + d.assignee.lastName) || '');
+        return (d.assignee && d.assignee.name || '');
       }
     },
     'assigneeId': {

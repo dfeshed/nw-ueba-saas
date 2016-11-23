@@ -197,9 +197,9 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  @computed('incident.assignee.id')
+  @computed('incident.assignee.id', 'users.[]')
   selectedAssignee: {
-    get: (assigneeId) => [assigneeId || -1],
+    get: (assigneeId) => [assigneeId || '-1'],
 
     set(assigneeIds) {
       this.set('pendingAssignee', assigneeIds.get('firstObject'));
@@ -289,15 +289,12 @@ export default Component.extend({
           });
         }
         if (!isNone(pendingAssignee)) {
-          if (pendingAssignee === '-1') {
-            this.set('incident.assignee', null);
-            merge(attributeChanged, { assignee: null });
-          } else {
-            const updatedAssigneeUser = this.get('users').findBy('id', pendingAssignee);
-            const assigneeAttributes = updatedAssigneeUser.getProperties('id', 'firstName', 'lastName', 'email');
-            this.set('incident.assignee', assigneeAttributes);
-            merge(attributeChanged, { assignee: assigneeAttributes });
+          let assignee = null;
+          if (pendingAssignee !== '-1') {
+            assignee = this.get('users').findBy('id', pendingAssignee);
           }
+          this.set('incident.assignee', assignee);
+          merge(attributeChanged, { assignee });
         }
 
         this.sendAction('saveIncidentAction', this.get('incident.id'), attributeChanged);

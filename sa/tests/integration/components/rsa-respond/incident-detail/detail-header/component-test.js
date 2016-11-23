@@ -7,7 +7,16 @@ import selectors from 'sa/tests/selectors';
 const { Object: EmberObject } = Ember;
 
 moduleForComponent('rsa-incident-detail-header', 'Integration | Component | rsa respond/incident detail/detail header', {
-  integration: true
+  integration: true,
+
+  beforeEach() {
+    const users = [
+      EmberObject.create({ id: '1', name: 'User 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: '2', name: 'User 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: '3', name: 'User 3', email: 'user3@rsa.com' })
+    ];
+    this.set('users', users);
+  }
 });
 
 test('The incident detail header component is rendered properly.', function(assert) {
@@ -30,14 +39,8 @@ test('The incident detail header component is rendered properly.', function(asse
     groupBySourceIp: ['1.1.1.1'],
     groupByDestinationIp: ['2.2.2.2']
   });
-  const users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
-  this.setProperties({
-    incident,
-    users
-  });
+  this.set('incident', incident);
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
@@ -91,16 +94,10 @@ test('The incident status, priority and assignee are saved', function(assert) {
     groupBySourceIp: ['1.1.1.1'],
     groupByDestinationIp: ['2.2.2.2']
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   incident.save = function() { };
 
-  this.setProperties({
-    incident,
-    users
-  });
+  this.set('incident', incident);
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
@@ -149,16 +146,10 @@ test('Manually changing the state of an incident to Closed disables editable fie
       id: '1'
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   incident.save = function() { };
 
-  this.setProperties({
-    incident,
-    users
-  });
+  this.set('incident', incident);
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
@@ -188,14 +179,8 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
       id: '1'
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
-  this.setProperties({
-    incident,
-    users
-  });
+  this.set('incident', incident);
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
 
@@ -225,16 +210,10 @@ test('Alert and event count missing test', function(assert) {
       id: '1'
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   incident.save = function() { };
 
-  this.setProperties({
-    incident,
-    users
-  });
+  this.set('incident', incident);
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
@@ -263,14 +242,8 @@ test('Testing source & destination IP values.', function(assert) {
     groupBySourceIp: ['1.1.1.1', '1.1.1.2'],
     groupByDestinationIp: ['2.2.2.2', '2.1.1.1']
   });
-  const users = [EmberObject.create({ id: 1, firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: 2, firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: 3, firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
-  this.setProperties({
-    incident,
-    users
-  });
+  this.set('incident', incident);
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 

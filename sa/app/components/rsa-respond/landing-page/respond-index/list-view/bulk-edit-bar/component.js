@@ -58,10 +58,10 @@ export default Component.extend({
    */
   @computed('users.[]')
   usersList(users) {
-    const unAssigneeUser = EmberObject.create({
+    const unassignedUser = EmberObject.create({
       'id': -1
     });
-    const arrUsers = [ unAssigneeUser ];
+    const arrUsers = [ unassignedUser ];
 
     if (users) {
       arrUsers.addObjects(users);
@@ -190,7 +190,7 @@ export default Component.extend({
         updateObject.statusSort = statusId;
       }
       if (!isNone(assignee)) {
-        updateObject.assignee = assignee.get('id') !== -1 ? selectedValues.assignee.getProperties('id', 'firstName', 'lastName', 'email') : {};
+        updateObject.assignee = get(assignee, 'id') !== -1 ? selectedValues.assignee : {};
       }
 
       this.sendAction('saveAction', updateObject, arrayOfSelectedIncidentIDs);

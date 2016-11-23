@@ -18,7 +18,7 @@ test('The New Incident sort options component is rendered properly.', function(a
 
   const allSortOptions = [
     'alertCount',
-    'assigneeFirstLastName',
+    'assigneeName',
     'dateCreated',
     'id',
     'priority',
@@ -31,7 +31,7 @@ test('The New Incident sort options component is rendered properly.', function(a
   // Define expected before invocation
   this.set('externalMockSortAction', () => { });
 
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/sort-options 
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/sort-options
     label=label
     defaultSortOption=defaultSortOption
     viewType=viewType

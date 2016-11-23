@@ -74,16 +74,16 @@ export default Component.extend({
     });
   },
 
-  loadQueue(method, subDestinationUrlParams) {
+  loadQueue(queryFilter) {
     this.set('loadingData', true);
 
     this.get('request').streamRequest({
-      method,
+      method: 'stream',
       modelName: 'incident',
       query: {
-        filter: [{ field: 'statusSort', values: incidentStatusIds }],
+        subDestinationUrlParams: 'new',
         sort: [{ field: 'riskScore', descending: true }],
-        subDestinationUrlParams
+        filter: queryFilter
       },
       onResponse: ({ data }) => {
         this.set('loadingData', false);
@@ -100,11 +100,12 @@ export default Component.extend({
 
   fetchModel() {
     const queue = this.get('activeTab');
+    const filters = [ { field: 'statusSort', values: incidentStatusIds }];
+
     if (queue === 'my') {
-      this.loadQueue('notify', this.get('username'));
-    } else {
-      this.loadQueue('stream', 'new');
+      filters.addObject({ field: 'assignee.id', value: this.get('username') });
     }
+    this.loadQueue(filters);
   },
 
   actions: {

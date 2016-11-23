@@ -19,7 +19,7 @@ export default Component.extend({
   // sort options for New Incidents section of card view
   newIncSortOrderList: [
     'alertCount',
-    'assigneeFirstLastName',
+    'assigneeName',
     'dateCreated',
     'id',
     'priority',

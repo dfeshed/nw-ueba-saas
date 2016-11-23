@@ -3,7 +3,6 @@
  * @public
  */
 import login from 'sa/mirage/data/login';
-import users from 'sa/mirage/data/users';
 import info from 'sa/mirage/data/info';
 import coreEvents from 'sa/mirage/data/core-events';
 import asyncFixtures from './async-fixtures';
@@ -13,7 +12,6 @@ export default function(server) {
   // Seed your development database using your factories. This
   // data will not be loaded in your tests.
   login(server);
-  users(server);
   info(server);
   coreEvents(server);
 

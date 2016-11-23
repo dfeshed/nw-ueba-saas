@@ -36,9 +36,9 @@
         </li>
         <li>
           {{#rsa-form-select multiple=false optionMaxVisible=users.length label=(t 'incident.fields.assignee') class='rsa-incident-detail-header__assignee' values=selectedAssignee isDisabled=incidentIsClosed}}
-            <option value=-1>{{t 'incident.assignee.none'}}</option>
+            <option value='-1'>{{t 'incident.assignee.none'}}</option>
             {{#each users as |user|}}
-              <option value={{user.id}}>{{user.firstName}}</option>
+              <option value={{user.id}}>{{user.name}}</option>
             {{/each}}
           {{/rsa-form-select}}
         </li>

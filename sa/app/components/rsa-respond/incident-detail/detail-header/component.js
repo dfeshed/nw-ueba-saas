@@ -120,21 +120,20 @@ export default Component.extend({
    * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
    * @public
    */
-  @computed('incident.assignee.id')
+  @computed('incident.assignee.id', 'users.[]')
   selectedAssignee: {
-    get: (assigneeId) => [assigneeId || -1],
+    get: (assigneeId) => [assigneeId || '-1'],
 
     set(assigneeIds) {
       const assigneeId = assigneeIds.get('firstObject');
       Logger.log(`Assignee change detected: ${ assigneeId }`);
       run.once(() => {
         // Incident has no assignee
-        if (assigneeId === '-1') {
-          this.set('incident.assignee', null);
-        } else {
-          const updatedAssigneeUser = this.get('users').findBy('id', assigneeId);
-          this.set('incident.assignee', updatedAssigneeUser.getProperties('id', 'firstName', 'lastName', 'email'));
+        let updatedAssignee = null;
+        if (assigneeId !== '-1') {
+          updatedAssignee = this.get('users').findBy('id', assigneeId);
         }
+        this.set('incident.assignee', updatedAssignee);
         this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'));
       });
       return assigneeIds;

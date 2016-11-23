@@ -7,7 +7,6 @@ import config from 'sa/config/environment';
 
 import passthrough from 'sa/mirage/routes/passthrough';
 import login from 'sa/mirage/routes/login';
-import users from 'sa/mirage/routes/users';
 import info from 'sa/mirage/routes/info';
 
 import MockServer from 'sa/mirage/sockets/mock-server';
@@ -30,6 +29,7 @@ import storyline from 'sa/mirage/sockets/routes/incident-storyline';
 import context from 'sa/mirage/sockets/routes/context';
 import preferences from 'sa/mirage/sockets/routes/preferences';
 import events from 'sa/mirage/sockets/routes/events';
+import users from 'sa/mirage/sockets/routes/users';
 
 /*
   Helper for collecting an array of all the unique `socketUrl`s found in the app's `config/environment.js` file.
@@ -59,7 +59,6 @@ export default function() {
   // initialize the list of all apis that doesn't need mirage
   passthrough(this);
   login(this);
-  users(this);
 
   this.namespace = '/api';
 
@@ -90,6 +89,7 @@ export default function() {
     events(server);
     context(server);
     preferences(server);
+    users(server);
     server.mirageServer = this;
     return server;
   });

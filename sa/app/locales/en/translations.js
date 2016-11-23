@@ -271,7 +271,7 @@ export default $.extend({}, BaseTranslations, {
     sortFields: {
       sortByLabel: 'Sort By:',
       alertCount: 'Alerts',
-      assigneeFirstLastName: 'Assignee',
+      assigneeName: 'Assignee',
       dateCreated: 'Date Created',
       lastUpdated: 'Date Updated',
       id: 'Incident ID',

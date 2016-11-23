@@ -118,10 +118,16 @@ export default Route.extend({
       }
     });
 
-    this.get('store').findAll('user').then((user) => {
-      set(resolvedModel, 'users', user);
-    }).catch(() => {
-      Logger.error('Error getting users');
+    this.request.streamRequest({
+      method: 'stream',
+      modelName: 'users',
+      query: {},
+      onResponse: ({ data: users }) => {
+        resolvedModel.users.addObjects(users);
+      },
+      onError() {
+        Logger.error('Error loading Users');
+      }
     });
   },
 

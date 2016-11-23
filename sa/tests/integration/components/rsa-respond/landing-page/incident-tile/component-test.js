@@ -6,7 +6,16 @@ import selectors from 'sa/tests/selectors';
 const { Object: EmberObject } = Ember;
 
 moduleForComponent('rsa-incident-tile', 'Integration | Component | rsa respond/landing page/incident tile', {
-  integration: true
+  integration: true,
+
+  beforeEach() {
+    const users = [
+      EmberObject.create({ id: '1', name: 'User 1', email: 'user1@rsa.com' }),
+      EmberObject.create({ id: '2', name: 'User 2', email: 'user2@rsa.com' }),
+      EmberObject.create({ id: '3', name: 'User 3', email: 'user3@rsa.com' })
+    ];
+    this.set('users', users);
+  }
 });
 
 test('The tile component is rendered properly.', function(assert) {
@@ -31,12 +40,7 @@ test('The tile component is rendered properly.', function(assert) {
     groupByDestinationIp: ['2.2.2.2']
   });
 
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', friendlyName: 'user2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', friendlyName: 'user3', email: 'user3@rsa.com' }) ];
-
   this.set('testInc', testInc);
-  this.set('users', users);
 
   this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
 
@@ -135,12 +139,7 @@ test('Edit button stays visible after click and the mouse leaves the component',
     }
   });
 
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
-
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident}}
@@ -170,12 +169,7 @@ test('Edit mode is disabled if starting to edit another tile', function(assert) 
     }
   });
 
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
-
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile id='tile1' incident=incident users=users}}{{rsa-respond/landing-page/incident-tile id='tile2' incident=incident users=users}}
@@ -216,10 +210,7 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
     }
   });
 
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
-
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}} <div class='.other-component'/>
@@ -257,10 +248,7 @@ test('Assignee field contains at least one option', function(assert) {
     }
   });
 
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' })];
-
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
@@ -272,7 +260,7 @@ test('Assignee field contains at least one option', function(assert) {
   this.$('.rsa-edit-tool').trigger('click');
 
   const selectorOptionCount = container.find('.rsa-incident-tile-assignee-selector option').length;
-  assert.notEqual(0, selectorOptionCount, 'Tile displays the current Incident status.');
+  assert.notEqual(0, selectorOptionCount, 'Tile displays assignee options.');
 
 });
 
@@ -292,13 +280,8 @@ test('Incident status changed after press save', function(assert) {
       id: '1'
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
-  // this.set({ incident: incident, users: users });
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
@@ -337,12 +320,8 @@ test('Incident priority changed after press save', function(assert) {
       id: '1'
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
@@ -381,12 +360,8 @@ test('Incident Assignee changed after press save', function(assert) {
       id: assigneeIdOne
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
@@ -420,10 +395,8 @@ test('The update indicator component is rendered properly when an asynchronous u
     'assignee': { 'id': '1' },
     'asyncUpdate': true
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
-  this.set('users', users);
 
   this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
 
@@ -441,10 +414,8 @@ test('The update indicator component is rendered properly when an asynchronous u
     'created': 1452485774539,
     'assignee': { 'id': '1' }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' }) ];
 
   this.set('testInc', testInc);
-  this.set('users', users);
 
   this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
 
@@ -459,10 +430,8 @@ test('If the alert count is missing, then the default value is "-".', function(a
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'eventCount': 5
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
 
   this.set('testInc', testInc);
-  this.set('users', users);
 
   this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
   assert.equal(this.$('.rsa-incident-tile-alert-count').length, 1, 'The .rsa-incident-tile-alert-count element was not found in the DOM.');
@@ -476,10 +445,8 @@ test('If the event count is missing, then the default value is "-".', function(a
     'name': 'Suspected command and control communication with www.media.gwu.edu',
     'alertCount': 5
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', friendlyName: 'user1', email: 'user1@rsa.com' })];
 
   this.set('testInc', testInc);
-  this.set('users', users);
 
   this.render(hbs`{{rsa-respond/landing-page/incident-tile incident=testInc users=users}}`);
   assert.equal(this.$('.rsa-incident-tile-event-count').length, 1, 'The .rsa-incident-tile-event-count element was not found in the DOM.');
@@ -501,12 +468,8 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
       id: '1'
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
@@ -541,12 +504,8 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
       id: '1'
     }
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
@@ -579,12 +538,8 @@ test('Incident Tile gets rendered in queue mode', function(assert) {
     sources: ['Event Stream Analysis'],
     assignee: {}
   });
-  const users = [EmberObject.create({ id: '1', firstName: 'User 1', lastName: 'LastName 1', email: 'user1@rsa.com' }),
-    EmberObject.create({ id: '2', firstName: 'User 2', lastName: 'LastName 2', email: 'user2@rsa.com' }),
-    EmberObject.create({ id: '3', firstName: 'User 3', lastName: 'LastName 3', email: 'user3@rsa.com' }) ];
 
   this.set('incident', incident);
-  this.set('users', users);
 
   this.render(hbs`
     {{rsa-respond/landing-page/incident-tile incident=incident users=users size='small' mode='queue'}}
