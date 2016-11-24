@@ -121,7 +121,7 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         /* get objects count for this data source from mongo */
-        final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
+        final long objectsCount = activeDirectoryService.getCount(dataSource);
 
         notifyTaskDone();
         return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
