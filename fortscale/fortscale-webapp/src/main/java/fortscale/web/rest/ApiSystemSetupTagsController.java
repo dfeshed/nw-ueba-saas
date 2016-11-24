@@ -119,18 +119,29 @@ public class ApiSystemSetupTagsController extends BaseController {
      */
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
-    public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameStartingWith(String startsWith) {
+
+
+    public ResponseEntity<DataBean<Map<String, List<? extends AdObject>>>> searchGroupsAndOusByNameStartingWith(String containedText) {
+        DataBean<Map<String, List<? extends AdObject>>> response = new DataBean<>();
+
+
         try {
-            logger.debug("Searching for groups and OUs stating with {}", startsWith);
-            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameContains(startsWith);
-            final List<AdOU> ous = activeDirectoryService.getOusByOuContains(startsWith);
+            logger.debug("Searching for groups and OUs contains {}", containedText);
+            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameContains(containedText);
+            final List<AdOU> ous = activeDirectoryService.getOusByOuContains(containedText);
             final HashMap<String, List<? extends AdObject>> resultsMap = new HashMap<>();
             resultsMap.put(KEY_GROUPS, groups);
             resultsMap.put(KEY_OUS, ous);
-            return new ResponseEntity<>(resultsMap, HttpStatus.OK);
+
+
+            response.setData(resultsMap);
+            response.setTotal(groups.size() + ous.size());
+
+            return new ResponseEntity<>(response, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Failed to search for groups and OUs", ex);
-            return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.INTERNAL_SERVER_ERROR);
+            response.setTotal(0);
+            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
