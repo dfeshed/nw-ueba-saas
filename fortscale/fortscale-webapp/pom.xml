@@ -293,6 +293,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-websocket-api</artifactId>
+			<version>7.0.73</version>
+			<scope>provided</scope> <!-- This is provided by tomcat. Required for tests -->
+		</dependency>
 	</dependencies>
 	<build>
 		<!-- <finalName>fortscale-webapp</finalName> -->
