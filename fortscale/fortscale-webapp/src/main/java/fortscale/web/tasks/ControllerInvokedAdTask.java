@@ -121,7 +121,7 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         /* get objects count for this data source from mongo */
-        final long objectsCount = activeDirectoryService.getRepository(dataSource).count();
+        final long objectsCount = activeDirectoryService.getCount(dataSource);
 
         notifyTaskDone();
         return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
@@ -231,6 +231,21 @@ public class ControllerInvokedAdTask implements Runnable {
             return dataSource;
         }
     }
+
+    public static class AdTaskStatus {
+        public final AdTaskType runningMode; //null for not running
+        public final AdObjectType datasource;
+        public final Long lastExecutionTime;
+        public final Long objectsCount;
+
+        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionTime, Long objectsCount) {
+            this.runningMode = runningMode;
+            this.datasource = datasource;
+            this.lastExecutionTime = lastExecutionTime;
+            this.objectsCount = objectsCount;
+        }
+    }
+
 
 
     public enum AdTaskType {
