@@ -13,7 +13,6 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -135,23 +134,20 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
 
     @Override
-    public Long getGroupsCount() {
-        return adGroupRepository.count();
-    }
+    public Long getCount(AdObject.AdObjectType  adObjectType) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.count();
+            case OU:
+                return adOURepository.count();
+            case USER:
+                return adUserRepository.count();
+            case COMPUTER:
+                return adComputerRepository.count();
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+        }
 
-    @Override
-    public Long getOusCount() {
-        return adOURepository.count();
-    }
-
-    @Override
-    public Long getUsersCount() {
-        return adUserRepository.count();
-    }
-
-    @Override
-    public Long getComputersCount() {
-        return adComputerRepository.count();
     }
 
     /**
@@ -175,23 +171,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     public List<AdOU> getOusByOuContains(String contains) {
         return adOURepository.findByOuLikeIgnoreCase(contains);
     }
-
-    @Override
-    public MongoRepository getRepository(AdObject.AdObjectType adObjectType) {
-        switch (adObjectType) {
-            case GROUP:
-                return adGroupRepository;
-            case OU:
-                return adOURepository;
-            case USER:
-                return adUserRepository;
-            case COMPUTER:
-                return adComputerRepository;
-            default:
-                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
-        }
-    }
-
 
     /**
      * This method gets all the AD domain controllers from the database

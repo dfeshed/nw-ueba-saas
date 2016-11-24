@@ -5,7 +5,6 @@ import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
 import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
-import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
@@ -23,9 +22,6 @@ public interface ActiveDirectoryService {
     String canConnect(AdConnection adConnection);
     List<AdGroup> getGroupsByNameContains(String contains);
     List<AdOU> getOusByOuContains(String contains);
-    Long getGroupsCount();
-    Long getOusCount();
-    Long getUsersCount();
-    Long getComputersCount();
-    MongoRepository getRepository(AdObject.AdObjectType adObjectType);
+    Long getCount(AdObject.AdObjectType adObjectType);
+
 }
