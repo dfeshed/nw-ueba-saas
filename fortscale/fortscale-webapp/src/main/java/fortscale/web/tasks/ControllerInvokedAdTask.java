@@ -232,6 +232,21 @@ public class ControllerInvokedAdTask implements Runnable {
         }
     }
 
+    public static class AdTaskStatus {
+        public final AdTaskType runningMode; //null for not running
+        public final AdObjectType datasource;
+        public final Long lastExecutionTime;
+        public final Long objectsCount;
+
+        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionTime, Long objectsCount) {
+            this.runningMode = runningMode;
+            this.datasource = datasource;
+            this.lastExecutionTime = lastExecutionTime;
+            this.objectsCount = objectsCount;
+        }
+    }
+
+
 
     public enum AdTaskType {
         FETCH("Fetch"), ETL("ETL");

@@ -32,6 +32,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
+
 @Controller
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
@@ -190,27 +192,21 @@ public class ApiActiveDirectoryController {
 	@RequestMapping(method = RequestMethod.GET,value = "/ad_etl_fetch_status")
 	@LogException
 	public FetchEtlExecutionStatus getJobStatus() {
-		Set<Map<String, Object>> statuses = new HashSet<>();
-
-		/* fill all task-types+datasource combinations to be not running */
-		final List<AdTaskType> adTaskTypes = new ArrayList<>(Arrays.asList(AdTaskType.values()));
-		for (AdTaskType adTaskType : adTaskTypes) {
-			for (AdObjectType dataSource : dataSources) {
-				Map<String, Object> currTaskMap = new HashMap<>();
-				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_IS_RUNNING, Boolean.FALSE);
-				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_TASK_TYPE, adTaskType);
-				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_DATASOURCE_TYPE, dataSource);
-				currTaskMap.put(FetchEtlExecutionStatus.FIELD_NAME_LAST_EXECUTION_TIME, getLastExecutionTime(adTaskType, dataSource));
-				statuses.add(currTaskMap);
+		Set<AdTaskStatus> statuses = new HashSet<>();
+		dataSources.forEach(datasource -> {
+			AdTaskType currTaskType = null;
+			for (ControllerInvokedAdTask activeThread : activeThreads) {
+				if (datasource.equals(activeThread.getDataSource())) {
+					currTaskType = activeThread.getCurrentAdTaskType();
+				}
 			}
-		}
-
-		/* mark running tasks to be running */
-		activeThreads.forEach(adTask -> statuses.forEach(map -> {
-            if (map.get(FetchEtlExecutionStatus.FIELD_NAME_TASK_TYPE).equals(adTask.getCurrentAdTaskType()) && map.get(FetchEtlExecutionStatus.FIELD_NAME_DATASOURCE_TYPE).equals(adTask.getDataSource())) {
-                map.put(FetchEtlExecutionStatus.FIELD_NAME_IS_RUNNING, Boolean.TRUE);
-            }
-        }));
+			final Long currLastExecutionTime = getLastExecutionTime(currTaskType, datasource);
+			Long currObjectsCount = 0L;
+			if (currLastExecutionTime != null) {
+				currObjectsCount = activeDirectoryService.getCount(datasource);
+			}
+			statuses.add(new AdTaskStatus(currTaskType, datasource, currLastExecutionTime, currObjectsCount));
+		});
 
 		return new FetchEtlExecutionStatus(lastAdFetchEtlExecutionTimeInMillis, statuses);
 	}
@@ -248,17 +244,12 @@ public class ApiActiveDirectoryController {
 
 	private static class FetchEtlExecutionStatus {
 
-		public static final String FIELD_NAME_TASK_TYPE = "taskType";
-		public static final String FIELD_NAME_DATASOURCE_TYPE = "datasource";
-		public static final String FIELD_NAME_IS_RUNNING = "isRunning";
-		public static final String FIELD_NAME_LAST_EXECUTION_TIME = "lastExecutionTime";
-
 		public final Long lastAdFetchEtlExecutionTimeInMillis;
-		public final Set<Map<String, Object>> runningTasks;
+		public final Set<AdTaskStatus> runningTasksStatuses;
 
-		public FetchEtlExecutionStatus(Long lastAdFetchEtlExecutionTimeInMillis, Set<Map<String, Object>> runningTasks) {
+		public FetchEtlExecutionStatus(Long lastAdFetchEtlExecutionTimeInMillis, Set<AdTaskStatus> runningTasksStatuses) {
 			this.lastAdFetchEtlExecutionTimeInMillis = lastAdFetchEtlExecutionTimeInMillis;
-			this.runningTasks = runningTasks;
+			this.runningTasksStatuses = runningTasksStatuses;
 		}
 	}
 }
