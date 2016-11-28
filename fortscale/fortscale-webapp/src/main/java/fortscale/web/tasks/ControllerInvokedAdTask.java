@@ -64,6 +64,11 @@ public class ControllerInvokedAdTask implements Runnable {
         controller.sendTemplateMessage(RESPONSE_DESTINATION, fetchResponse);
         controller.setLastExecutionTime(currentAdTaskType, dataSource);
 
+        if (!fetchResponse.isSuccess()) {
+            logger.warn("Fetch phase failed so not executing ETL.");
+            return;
+        }
+
         currentAdTaskType = ETL;
         final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
         controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
