@@ -4,7 +4,6 @@ import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -30,17 +29,14 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
     private final ApiActiveDirectoryController controller;
+    private ActiveDirectoryService activeDirectoryService;
     private final AdObjectType dataSource;
     private AdTaskType currentAdTaskType;
 
 
-
-    @Autowired
-    private ActiveDirectoryService activeDirectoryService;
-
-
-    public ControllerInvokedAdTask(ApiActiveDirectoryController apiActiveDirectoryController, AdObjectType dataSource) {
-        this.controller = apiActiveDirectoryController;
+    public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, AdObjectType dataSource) {
+        this.controller = controller;
+        this.activeDirectoryService = activeDirectoryService;
         this.dataSource = dataSource;
     }
 
