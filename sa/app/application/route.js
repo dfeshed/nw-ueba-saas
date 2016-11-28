@@ -11,6 +11,13 @@ const {
 export default Route.extend(ApplicationRouteMixin, {
   fatalErrors: service(),
 
+  _initialize: function() {
+    const session = this.get('session').get('session');
+    if (session) {
+      session.addObserver('content.authenticated', this, this._checkFully);
+    }
+  }.on('init'),
+
   actions: {
     error(message) {
       this.get('fatalErrors').logError(message);
@@ -22,19 +29,29 @@ export default Route.extend(ApplicationRouteMixin, {
     }
   },
 
-  sessionAuthenticated() {
+  _checkFully() {
+    const isRedirecting = localStorage.getItem('_redirecting');
     const query = window.location.search;
-    if (typeof query !== 'undefined' && query.indexOf('?next=') == 0) {
+    if (!this.get('session.isAuthenticated') && typeof query !== 'undefined' && query.indexOf('?next=') == 0 && isRedirecting == null) {
+      localStorage.setItem('_redirecting','true');
+    } else {
+      localStorage.removeItem('_redirecting');
+    }
+  },
+
+  sessionAuthenticated() {
+    const isRedirecting = localStorage.getItem('_redirecting');
+    if (typeof isRedirecting !== 'undefined') {
       // invoke redirect
+      localStorage.removeItem('_redirecting');
+      const query = window.location.search;
       window.location = query.substring(6);
     } else {
-      this.set('session.isFullyAuthenticated', true);
       this._super(...arguments);
     }
   },
 
   sessionInvalidated() {
-    this.set('session.isFullyAuthenticated', false);
     this._super(...arguments);
   }
 });

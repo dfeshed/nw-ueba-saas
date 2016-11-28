@@ -21,7 +21,7 @@ const {
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
-  session: service(),
+
   contextMenus: service(),
   notifications: service(),
 
@@ -88,16 +88,5 @@ export default Route.extend(AuthenticatedRouteMixin, {
         entityType: undefined
       });
     }
-  },
-
-  beforeModel() {
-    const query = window.location.search;
-    if (typeof query === 'undefined' || query.indexOf('?next=') != 0) {
-      if (this.get('session.isAuthenticated')) {
-        this.set('session.isFullyAuthenticated', true);
-      }
-    }
-
-    return this._super(...arguments);
   }
 });
