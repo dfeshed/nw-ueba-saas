@@ -9,7 +9,7 @@ import { uriEncodeEventQuery } from 'sa/protected/investigate/actions/helpers/qu
 import formatUtil from '../events-table-row/format-util';
 import { metaKeyAlias } from 'sa/helpers/meta-key-alias';
 
-const { $, Component, run } = Ember;
+const { $, Component, get, run, set } = Ember;
 
 export default Component.extend({
   tagName: 'nav',
@@ -55,8 +55,8 @@ export default Component.extend({
     return services.map((service) => {
       const clone = query.clone();
       clone.metaFilter.conditions.clear();
-      clone.set('serviceId', service.get('id'));
-      service.set('queryURI', uriEncodeEventQuery(clone));
+      clone.set('serviceId', get(service, 'id'));
+      set(service, 'queryURI', uriEncodeEventQuery(clone));
       return service;
     });
   },
