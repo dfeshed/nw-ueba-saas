@@ -1,11 +1,12 @@
 package fortscale.collection.jobs.model;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.ml.model.message.ModelBuildingCommandMessage;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.time.TimestampUtils;
-import net.minidev.json.JSONObject;
-import net.minidev.json.JSONStyle;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -21,13 +22,8 @@ public class ModelBuildingJob extends FortscaleJob {
 	private static final String MODELS_TO_BUILD_KEY_NAME = "modelsToBuild";
 	private static final String DELIMITER = ",";
 	private static final String TARGET_TOPIC_KEY_NAME = "targetTopic";
+	private static final String SELECT_HIGH_SCORE_CONTEXTS = "selectHighScoreContexts";
 
-	@Value("${fortscale.model.build.message.field.session.id}")
-	private String sessionIdJsonField;
-	@Value("${fortscale.model.build.message.field.model.conf.name}")
-	private String modelConfNameJsonField;
-	@Value("${fortscale.model.build.message.field.end.time.in.seconds}")
-	private String endTimeInSecondsJsonField;
 	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
@@ -35,6 +31,7 @@ public class ModelBuildingJob extends FortscaleJob {
 	private boolean buildAllModels;
 	private List<String> modelsToBuild;
 	private String targetTopic;
+	private boolean selectHighScoreContexts;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -59,6 +56,7 @@ public class ModelBuildingJob extends FortscaleJob {
 
 		targetTopic = jobDataMapExtension.getJobDataMapStringValue(jobDataMap, TARGET_TOPIC_KEY_NAME, null);
 		Assert.hasText(targetTopic, "Missing valid target topic name.");
+		selectHighScoreContexts = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, SELECT_HIGH_SCORE_CONTEXTS, false);
 	}
 
 	@Override
@@ -76,25 +74,34 @@ public class ModelBuildingJob extends FortscaleJob {
 		startNewStep("Send model building commands to Kafka topic");
 		KafkaEventsWriter kafkaEventsWriter = new KafkaEventsWriter(targetTopic);
 		int counter = 0;
-
-		JSONObject event = new JSONObject();
-		event.put(sessionIdJsonField, sessionId);
 		long currTimeSec = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		event.put(endTimeInSecondsJsonField, currTimeSec);
+		ObjectMapper mapper = new ObjectMapper();
 
 		if (buildAllModels) {
-			event.put(modelConfNameJsonField, allModelsConstantValue);
-			kafkaEventsWriter.send(sessionId, event.toJSONString(JSONStyle.NO_COMPRESS));
+			ModelBuildingCommandMessage commandMessage = new ModelBuildingCommandMessage(sessionId,allModelsConstantValue,currTimeSec, selectHighScoreContexts);
+			sendBuildCommand(kafkaEventsWriter, mapper, commandMessage);
 			counter++;
 		} else {
 			for (String modelToBuild : modelsToBuild) {
-				event.put(modelConfNameJsonField, modelToBuild);
-				kafkaEventsWriter.send(sessionId, event.toJSONString(JSONStyle.NO_COMPRESS));
+				ModelBuildingCommandMessage commandMessage = new ModelBuildingCommandMessage(sessionId,modelToBuild,currTimeSec, selectHighScoreContexts);
+				sendBuildCommand(kafkaEventsWriter,mapper,commandMessage);
 				counter++;
 			}
 		}
 
 		monitor.addDataReceived(getMonitorId(), new JobDataReceived("Model building commands", counter, "Command"));
 		finishStep();
+	}
+
+	/**
+	 * converts commandMessage to json-string and sends to kafka
+	 * @param kafkaEventsWriter
+	 * @param mapper
+	 * @param commandMessage
+	 * @throws JsonProcessingException
+     */
+	private void sendBuildCommand(KafkaEventsWriter kafkaEventsWriter, ObjectMapper mapper, ModelBuildingCommandMessage commandMessage) throws JsonProcessingException {
+		String commandMessageAsJsonString = mapper.writeValueAsString(commandMessage);
+		kafkaEventsWriter.send(sessionId, commandMessageAsJsonString);
 	}
 }

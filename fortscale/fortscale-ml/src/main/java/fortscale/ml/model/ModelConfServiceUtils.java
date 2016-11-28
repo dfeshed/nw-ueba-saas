@@ -3,10 +3,7 @@ package fortscale.ml.model;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.entity.event.EntityEventConfService;
-import fortscale.ml.model.retriever.AggregatedFeatureValueRetrieverConf;
-import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
-import fortscale.ml.model.retriever.EntityEventUnreducedScoreRetrieverConf;
-import fortscale.ml.model.retriever.EntityEventValueRetrieverConf;
+import fortscale.ml.model.retriever.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
@@ -56,6 +53,11 @@ public class ModelConfServiceUtils {
 						.getAggregatedFeatureEventConfName();
 				if (map.containsKey(aggrEventConfName)) map.get(aggrEventConfName).add(modelConf);
 			}
+			if (modelConf.getDataRetrieverConf() instanceof AccumulatedAggregatedFeatureValueRetrieverConf) {
+				String aggrEventConfName = ((AccumulatedAggregatedFeatureValueRetrieverConf)modelConf.getDataRetrieverConf())
+						.getAggregatedFeatureEventConfName();
+				if (map.containsKey(aggrEventConfName)) map.get(aggrEventConfName).add(modelConf);
+			}
 		});
 
 		return map;
@@ -76,6 +78,12 @@ public class ModelConfServiceUtils {
 			if (modelConf.getDataRetrieverConf() instanceof EntityEventUnreducedScoreRetrieverConf) {
 
 				String entityEventConfName = ((EntityEventUnreducedScoreRetrieverConf) modelConf.getDataRetrieverConf())
+						.getEntityEventConfName();
+				if (map.containsKey(entityEventConfName)) map.get(entityEventConfName).add(modelConf);
+			}
+			if (modelConf.getDataRetrieverConf() instanceof AccumulatedEntityEventValueRetrieverConf) {
+
+				String entityEventConfName = ((AccumulatedEntityEventValueRetrieverConf) modelConf.getDataRetrieverConf())
 						.getEntityEventConfName();
 				if (map.containsKey(entityEventConfName)) map.get(entityEventConfName).add(modelConf);
 			}

@@ -1,48 +1,32 @@
 package fortscale.entity.event;
 
 import fortscale.aggregation.feature.event.AggrEvent;
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 
 public class JokerAggrEventData {
-    String featureType;
-    String aggregatedFeatureName;
-    Double aggregatedFeatureValue;
-    String bucketConfName;
-    Double score;
+	private String fullAggregatedFeatureEventName;
+	private Double score;
 
-    public JokerAggrEventData(AggrEvent aggrEvent) {
-        this.featureType = aggrEvent.getFeatureType();
-        this.aggregatedFeatureName = aggrEvent.getAggregatedFeatureName();
-        this.aggregatedFeatureValue = aggrEvent.getAggregatedFeatureValue();
-        this.bucketConfName = aggrEvent.getBucketConfName();
-        this.score = aggrEvent.getScore();
-    }
+	public JokerAggrEventData(String fullAggregatedFeatureEventName, Double score) {
+		this.fullAggregatedFeatureEventName = fullAggregatedFeatureEventName;
+		this.score = score;
+	}
 
-    public String getFeatureType() {
-        return featureType;
-    }
+	public JokerAggrEventData(AggrEvent aggrFeatureEvent) {
+		this(
+				AggregatedFeatureEventsConfUtilService.buildFullAggregatedFeatureEventName(
+						aggrFeatureEvent.getBucketConfName(),
+						aggrFeatureEvent.getAggregatedFeatureName()
+				),
+				aggrFeatureEvent.isOfTypeF() ? aggrFeatureEvent.getScore() : aggrFeatureEvent.getAggregatedFeatureValue()
+		);
+	}
 
-    public String getAggregatedFeatureName() {
-        return aggregatedFeatureName;
-    }
+	public Double getScore() {
+		return score;
+	}
 
-    public Double getAggregatedFeatureValue() {
-        return aggregatedFeatureValue;
-    }
-
-    public String getBucketConfName() {
-        return bucketConfName;
-    }
-
-    public Double getScore() {
-        return score;
-    }
-
-    public boolean isOfTypeF() {
-        return AggrEvent.AGGREGATED_FEATURE_TYPE_F_VALUE.equals(getFeatureType());
-    }
-
-    public boolean isOfTypeP() {
-        return AggrEvent.AGGREGATED_FEATURE_TYPE_P_VALUE.equals(getFeatureType());
-    }
-
+	public String getFullAggregatedFeatureEventName() {
+		return fullAggregatedFeatureEventName;
+	}
 }

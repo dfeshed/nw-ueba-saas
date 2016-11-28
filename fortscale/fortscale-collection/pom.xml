@@ -94,7 +94,10 @@
 			<artifactId>hadoop-distcp</artifactId>
 			<version>${hadoop.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.fasterxml.jackson.datatype</groupId>
+			<artifactId>jackson-datatype-json-org</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.kafka</groupId>
 			<artifactId>kafka_${scala-kafka.version}</artifactId>
@@ -496,6 +499,11 @@
 			<groupId>org.igniterealtime.smack</groupId>
 			<artifactId>smack-tcp</artifactId>
 			<version>4.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.github.fakemongo</groupId>
+			<artifactId>fongo</artifactId>
+			<scope>test</scope>
 		</dependency>
 
 

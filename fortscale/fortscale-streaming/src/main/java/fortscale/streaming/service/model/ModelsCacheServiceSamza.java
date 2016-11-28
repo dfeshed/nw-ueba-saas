@@ -124,6 +124,11 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Override
 	public void close() {}
 
+	@Override
+	public void deleteFromCache(String modelConfName, String contextId) {
+		modelCacheManagers.get(modelConfName).deleteFromCache(modelConfName, contextId);
+	}
+
 	/**
 	 * TODO: Following functionality should be implemented in a dedicated service.
 	 * This function decides which type of model cache manager should be created.
@@ -141,9 +146,10 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 		modelCacheManagers = new HashMap<>();
 
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
+			String storeName = getStoreName();
 			ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
-					new DiscreteModelCacheManagerSamza(getStoreName(), modelConf) :
-					new LazyModelCacheManagerSamza(getStoreName(), modelConf);
+					new DiscreteTriggeredModelCacheManagerSamza(storeName, modelConf) :
+					new LazyTriggeredModelCacheManagerSamza(storeName, modelConf);
 			modelCacheManagers.put(modelConf.getName(), modelCacheManager);
 		}
 	}

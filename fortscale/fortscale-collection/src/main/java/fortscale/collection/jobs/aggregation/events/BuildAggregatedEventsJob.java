@@ -1,7 +1,9 @@
 package fortscale.collection.jobs.aggregation.events;
 
+import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.batch.AggrFeatureEventBatchService;
 import fortscale.collection.jobs.FortscaleJob;
+import fortscale.collection.jobs.model.AggregatedEventsModelBuildingSyncService;
 import fortscale.collection.jobs.model.ModelBuildingSyncService;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfServiceUtils;
@@ -14,11 +16,9 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
+import java.util.*;
+
+
 import java.util.stream.Collectors;
 
 import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC;
@@ -60,6 +60,9 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 	private ModelConfServiceUtils modelConfServiceUtils;
 	@Autowired
 	private ModelStore modelStore;
+
+	@Autowired
+	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 
 	private String sessionId;
 	private ModelBuildingSyncService modelBuildingSyncService;
@@ -111,8 +114,10 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
 		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
 		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
-		modelBuildingSyncService = new ModelBuildingSyncService(sessionId, modelConfNames,
-                secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic);
+
+		Set<String> featureNames = new HashSet<>(aggregatedFeatureEventsConfService.getFAggrFeatureEventNameList());
+		modelBuildingSyncService = new AggregatedEventsModelBuildingSyncService(sessionId, modelConfNames,
+                secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic, featureNames);
 
 
 		logger.info(String.format("Finish initializing BuildAggregatedEvents job: batchStartTime = %d, batchEndTime = %d, batchSize = %d, checkRetries = %d, secondsBetweenModelSyncs = %d, modelBuildingTimeoutInSeconds = %d, eventProcessingSyncTimeoutInSeconds = %d",
@@ -179,7 +184,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		// Check and build models if needed
 		try {
 			modelBuildingSyncService.buildModelsIfNeeded(endTimeLte);
-		} catch (TimeoutException e) {
+		} catch (Exception e) {
 			logger.error(e.getMessage());
 			throw e;
 		}

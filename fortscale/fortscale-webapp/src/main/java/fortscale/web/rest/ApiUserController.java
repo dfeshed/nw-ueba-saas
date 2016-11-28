@@ -118,6 +118,7 @@ public class ApiUserController extends BaseController{
 		fieldsRequired.add(User.getAdInfoField(UserAdInfo.departmentField));
 		fieldsRequired.add(User.tagsField);
 		fieldsRequired.add(User.sourceMachineCountField);
+		fieldsRequired.add(User.scoreField);
 	}
 
 

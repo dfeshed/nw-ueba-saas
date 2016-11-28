@@ -2,7 +2,7 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.ml.model.builder.ContinuousHistogramModelBuilderConf;
+import fortscale.ml.model.builder.gaussian.ContinuousHistogramModelBuilderConf;
 import fortscale.ml.model.retriever.ContextHistogramRetrieverConf;
 import fortscale.ml.model.selector.FeatureBucketContextSelectorConf;
 import net.minidev.json.JSONArray;

@@ -1,6 +1,6 @@
 package fortscale.common.metrics;
 
-import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
+import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -15,7 +15,7 @@ public class PersistenceTaskStoreMetrics extends StatsMetricsGroup {
      * @param collectionName the collection with CRUD ops to be monitored
      */
     public PersistenceTaskStoreMetrics(StatsService statsService, String collectionName) {
-        super(statsService, AggregatedFeatureEventsMongoStore.class, new StatsMetricsGroupAttributes() {{
+        super(statsService, MongoStoreUtils.class, new StatsMetricsGroupAttributes() {{
             addTag("collection", collectionName);
         }});
     }

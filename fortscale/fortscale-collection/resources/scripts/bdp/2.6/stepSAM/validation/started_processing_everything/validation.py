@@ -17,8 +17,8 @@ logger = logging.getLogger('stepSAM.validation')
 def validate_started_processing_everything(host,
                                            data_source,
                                            end_time_epoch,
-                                           filtered_gap_in_minutes,
-                                           filtered_timeout_in_minutes):
+                                           filtered_gap_in_seconds,
+                                           filtered_timeout_in_seconds):
     connection = impala_utils.connect(host=host)
     logger.info('validating that all events' +
                 ((' up until ' + time_utils.timestamp_to_str(end_time_epoch)) if end_time_epoch else '') +
@@ -31,12 +31,25 @@ def validate_started_processing_everything(host,
         logger.info('there are no enriched events in this data source')
         return True
 
-    time_entered_filtered_gap = None
     with read_metrics(logger,
                       host,
                       'aggregation-events-streaming-last-message-epochtime') as m:
+        last_processed_event_time = 0
+        last_progress_time = time.time()
         for metric, processed_event_time in m:
             logger.info('the event at ' + str(processed_event_time) + ' has been processed')
+            if last_processed_event_time != processed_event_time:
+                last_processed_event_time = processed_event_time
+                last_progress_time = time.time()
+            elif time.time() - last_progress_time >= filtered_timeout_in_seconds:
+                if processed_event_time >= last_event_time - filtered_gap_in_seconds:
+                    logger.info('some of the last events were not processed - maybe due to filtering')
+                    logger.info('DONE')
+                    return True
+                else:
+                    logger.info('too many events were not processed')
+                    logger.info('FAILED')
+                    return False
             if processed_event_time == last_event_time:
                 logger.info('DONE')
                 return True
@@ -44,10 +57,3 @@ def validate_started_processing_everything(host,
                 logger.error("FAILED: "
                              "validation can't be performed on data source whose enriched table is being filled")
                 return False
-            elif processed_event_time >= last_event_time - filtered_gap_in_minutes * 60:
-                if time_entered_filtered_gap is None:
-                    time_entered_filtered_gap = time.time()
-                if time.time() - time_entered_filtered_gap >= filtered_timeout_in_minutes * 60:
-                    logger.info('some of the last events were not processed - maybe due to filtering')
-                    logger.info('DONE')
-                    return True

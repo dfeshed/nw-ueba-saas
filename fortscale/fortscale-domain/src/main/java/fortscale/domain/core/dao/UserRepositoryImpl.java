@@ -39,7 +39,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
+
 	@Autowired
 	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
 
@@ -256,7 +256,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			return null;
 		}
 	}
-	
+
 	private List<User> findByFields(List<String> fields, List<?> vals, Pageable pageable){
 		Criteria criteria = where(fields.get(0)).is(vals.get(0));
 		for (int i = 1; i < fields.size(); i++) {
@@ -308,8 +308,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		final String TRACKED = "tracked";
 		//group by the user's tag field and count results
 		Aggregation agg = newAggregation(
-			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
-			project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
+				group(User.tagsField).count().as(TagCount.COUNT_FIELD),
+				project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
 		);
 		AggregationResults<TagCount> groupResults = mongoTemplate.aggregate(agg, User.class, TagCount.class);
 		List<TagCount> groups = groupResults.getMappedResults();
@@ -388,6 +388,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
+
 	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
 		Criteria criteria = Criteria.where(User.lastActivityField).gte(date);
 		Query query = new Query(criteria);
@@ -471,20 +472,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		// construct the update that adds and removes tags
 		if (tagsToAdd != null && !tagsToAdd.isEmpty()) {
-            EachAddToSetUpdate update = new EachAddToSetUpdate();
-            update.addToSetEach(User.tagsField, tagsToAdd);
+			EachAddToSetUpdate update = new EachAddToSetUpdate();
+			update.addToSetEach(User.tagsField, tagsToAdd);
 
-            // perform the update on mongodb
-            mongoTemplate.updateFirst(usernameCriteria, update, User.class);
-        }
+			// perform the update on mongodb
+			mongoTemplate.updateFirst(usernameCriteria, update, User.class);
+		}
 
 		if (tagsToRemove != null && !tagsToRemove.isEmpty()) {
-            EachAddToSetUpdate update = new EachAddToSetUpdate();
-            update.pullAll(User.tagsField, tagsToRemove.toArray());
+			EachAddToSetUpdate update = new EachAddToSetUpdate();
+			update.pullAll(User.tagsField, tagsToRemove.toArray());
 
-            // perform the update on mongodb
-            mongoTemplate.updateFirst(usernameCriteria, update, User.class);
-        }
+			// perform the update on mongodb
+			mongoTemplate.updateFirst(usernameCriteria, update, User.class);
+		}
 
 		return getUserTags(username);
 
@@ -505,21 +506,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Query query = new Query(where(User.usernameField).is(normalizedUsername));
 		query.fields().include(User.tagsField);
 		User user = mongoTemplate.findOne(query, User.class);
-		
+
 		return (user==null)? new HashSet<String>() : user.getTags();
 	}
-	
+
 	public boolean findIfUserExists(String username){
 		Query query = new Query(where(User.usernameField).is(username));
 		query.fields().include(User.ID_FIELD);
 		return !(mongoTemplate.find(query, UserIdWrapper.class, User.collectionName).isEmpty());
 	}
-	
+
 	public String getUserIdByNormalizedUsername(String username) {
 		Query query = new Query(where(User.usernameField).is(username));
 		query.fields().include(User.ID_FIELD);
- 		UserIdWrapper wrapper = mongoTemplate.findOne(query, UserIdWrapper.class, User.collectionName);
- 		return (wrapper==null)? null : wrapper.getId();
+		UserIdWrapper wrapper = mongoTemplate.findOne(query, UserIdWrapper.class, User.collectionName);
+		return (wrapper==null)? null : wrapper.getId();
 	}
 
 	private  List<Map<String, String>> getUsersByCriteria(Criteria criteria, Pageable pageable) {
@@ -567,14 +568,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	 * Get field name and field value and return username that match to those inputs
 	 * @param fieldName -  the AD field to be based on the search
 	 * @param fieldValue - the AD given field value
-	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false - part (contain) )
 	 * @return
 	 */
-	public String findByfield(String fieldName,String fieldValue,boolean partOrFullFlag){
+	public String findUserNameByfield(String fieldName, String fieldValue, boolean partOrFullFlag){
 
 		Query query = new Query();
 		query.fields().include(User.usernameField);
-        String result = "";
+		String result = "";
 
 		Criteria criteria;
 		if (partOrFullFlag)
@@ -590,7 +591,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		List<UsernameWrapper> usernameWrapper = mongoTemplate.find(query, UsernameWrapper.class, User.collectionName);
 
-        result = usernameWrapper != null && usernameWrapper.size()==1 ? usernameWrapper.get(0).getUsername() : result;
+		result = usernameWrapper != null && usernameWrapper.size()==1 ? usernameWrapper.get(0).getUsername() : result;
 
 
 		return  result;
@@ -722,20 +723,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Since spring data mongodb does not support each on the addToSet update 
 	 * operator we create a custom bson command that does that
 	 */
 	class EachAddToSetUpdate extends Update {
-		
+
 		public EachAddToSetUpdate addToSetEach(String key, List<String> values) {
 			// create a custom addToSet operator
 			this.addToSet(key, BasicDBObjectBuilder.start("$each", values).get());
 			return this;
 		}
 	}
-	
+
 	static class UsernameWrapper {
 		private String id;
 		private String username;
@@ -789,7 +790,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	static class UserIdWrapper{
 		private String id;
-		
+
 		public String getId(){
 			return id;
 		}
@@ -797,7 +798,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.id = id;
 		}
 	}
-	
+
 	static public class UserObjectGUIDWrapper {
 		private String objectGUID;
 
