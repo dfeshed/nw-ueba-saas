@@ -59,12 +59,11 @@ const _dispatchMeta = (dispatch, dataState) => {
 const _handleContentError = (dispatch, response, type) => {
   if (response.code !== 2) {
     Logger.error(`Could not retrieve ${type} recon data`, response);
-  } else {
-    dispatch({
-      type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
-      payload: response.code
-    });
   }
+  dispatch({
+    type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE,
+    payload: response.code
+  });
 };
 
 /**
