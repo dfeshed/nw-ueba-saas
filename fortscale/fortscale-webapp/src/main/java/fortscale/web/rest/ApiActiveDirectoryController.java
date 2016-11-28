@@ -54,7 +54,7 @@ public class ApiActiveDirectoryController {
 
 	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
-	private ExecutorService executorService = initializeExecutorService();
+	private ExecutorService executorService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -140,6 +140,7 @@ public class ApiActiveDirectoryController {
 			logger.debug("Starting Active Directory fetch and ETL");
 
 			try {
+				executorService = createExecutorService();
 				if (isFetchEtlExecutionRequestStopped.get()) {
 					logger.warn("Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.");
 					isFetchEtlExecutionRequestInProgress.set(false);
@@ -175,7 +176,7 @@ public class ApiActiveDirectoryController {
 				logger.error(msg);
 				return new ResponseEntity<>(msg, HttpStatus.FORBIDDEN);
 			} finally {
-				executorService = initializeExecutorService();
+				executorService = createExecutorService();
 			}
 
 			lastAdFetchEtlExecutionTimeInMillis = null;
@@ -223,7 +224,7 @@ public class ApiActiveDirectoryController {
 		simpMessagingTemplate.convertAndSend(responseDestination, fetchResponse);
 	}
 
-	private ExecutorService initializeExecutorService() {
+	private ExecutorService createExecutorService() {
 		return Executors.newFixedThreadPool(dataSources.size(), runnable -> {
 			Thread thread = new Thread(runnable);
 			thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
