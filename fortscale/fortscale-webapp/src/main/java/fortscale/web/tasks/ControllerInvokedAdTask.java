@@ -178,6 +178,11 @@ public class ControllerInvokedAdTask implements Runnable {
             return false;
         }
 
+        if (status != 0) {
+            logger.warn("Execution of task {} for step {} has finished with status {}. Execution failed", adTaskType, dataSourceName, status);
+            return false;
+        }
+
         logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSourceName, status);
         return true;
     }
