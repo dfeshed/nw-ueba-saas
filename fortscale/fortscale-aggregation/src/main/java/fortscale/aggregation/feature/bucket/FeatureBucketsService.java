@@ -76,6 +76,7 @@ public abstract class FeatureBucketsService {
 					// the feature bucket arrived after sync - this should not happened in the common data path scenario
 					// and would not happened after DPM-integration since a dependency would be defined in the data path
 					if (featureBucket.getId() != null) {
+						logger.warn("feature bucket={} arrived after sync",featureBucket);
 						// nothing to store/update here
 						continue;
 					}
