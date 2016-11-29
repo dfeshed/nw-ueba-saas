@@ -15,6 +15,7 @@ import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -37,6 +38,11 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 @Controller
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
+
+	@Value("${user.home.dir}")
+	public static String HOME_DIR;
+
+	public static final String COLLECTION_JAR_NAME = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target/fortscale-collection-1.1.0-SNAPSHOT.jar";
 
 	private static final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 

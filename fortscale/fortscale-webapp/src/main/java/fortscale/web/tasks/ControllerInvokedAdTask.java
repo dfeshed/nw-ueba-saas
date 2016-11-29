@@ -4,6 +4,7 @@ import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -17,12 +18,14 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.FETCH;
 
 public class ControllerInvokedAdTask implements Runnable {
 
+    @Value("${user.home.dir}")
+    public static String HOME_DIR;
+
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
 
     private static final String TASK_RESULTS_PATH = "/tmp";
     private static final String DELIMITER = "=";
     private static final String KEY_SUCCESS = "success";
-    private static final String COLLECTION_JAR_NAME = "${user.home.dir}/fortscale/fortscale-core/fortscale/fortscale-collection/target/fortscale-collection-1.1.0-SNAPSHOT.jar";
     private static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
     private static final String AD_JOB_GROUP = "AD";
     private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
@@ -161,7 +164,7 @@ public class ControllerInvokedAdTask implements Runnable {
         Process process;
         try {
             final String jobName = dataSourceName + "_" + adTaskType.toString();
-            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsFileId="+resultsFileId));
+            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", ApiActiveDirectoryController.COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsFileId="+resultsFileId));
             process = new ProcessBuilder(arguments).start();
         } catch (IOException e) {
             logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
