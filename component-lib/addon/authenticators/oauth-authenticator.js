@@ -61,6 +61,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       }
 
     } else {
+      session.get('session').set('isFullyAuthenticated',false);
       session.invalidate();
     }
   }
