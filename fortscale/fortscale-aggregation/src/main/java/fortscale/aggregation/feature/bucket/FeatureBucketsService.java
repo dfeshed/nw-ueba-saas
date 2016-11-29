@@ -10,6 +10,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 
 import java.util.*;
 
@@ -19,8 +20,10 @@ public abstract class FeatureBucketsService {
 
 	@Autowired
 	private StatsService statsService;
-
 	private Map<String, FeatureBucketsServiceMetrics> dataSourceToMetrics = new HashMap<>();
+
+	@Value("${fortscale.aggregation.sync.shouldUpdateFeatureBucketAfterSync}")
+	private boolean shouldUpdateFeatureBucketAfterSync;
 
 	private FeatureBucketsServiceMetrics getMetrics(String dataSource) {
 		if (!dataSourceToMetrics.containsKey(dataSource)) {
@@ -72,17 +75,23 @@ public abstract class FeatureBucketsService {
 							newFeatureBuckets.add(featureBucket);
 						}
 					}
-					// this is not a new feature bucket! it is already exists in both key-value store and MongoDb.
-					// the feature bucket arrived after sync - this should not happened in the common data path scenario
-					// and would not happened after DPM-integration since a dependency would be defined in the data path
-					if (featureBucket.getId() != null) {
-						logger.warn("feature bucket={} arrived after sync",featureBucket);
-						// nothing to store/update here
-						continue;
+
+					if(shouldUpdateFeatureBucketAfterSync) {
+						metrics.featureBucketUpdates++;
+						updateFeatureBucket(event, featureBucket, featureBucketConf);
+						storeFeatureBucket(featureBucket, featureBucketConf);
+					} else {
+						// this is not a new feature bucket! it is already exists in both key-value store and MongoDb.
+						// the feature bucket arrived after sync - this should not happened in the common data path scenario
+						// and would not happened after DPM-integration since a dependency would be defined in the data path
+
+						if (featureBucket.getId() != null) {
+							logger.warn("feature bucket={} arrived after sync", featureBucket);
+							// nothing to store/update here
+							continue;
+						}
+
 					}
-					metrics.featureBucketUpdates++;
-					updateFeatureBucket(event, featureBucket, featureBucketConf);
-					storeFeatureBucket(featureBucket, featureBucketConf);
 				}
 			} catch (Exception e) {
 				logger.error("Got an exception while updating buckets with new event", e);
