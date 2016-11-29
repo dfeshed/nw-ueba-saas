@@ -152,7 +152,7 @@ public class ApiActiveDirectoryController {
 					isFetchEtlExecutionRequestInProgress.set(false);
 					return new ResponseEntity(HttpStatus.LOCKED);
 				}
-				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, activeDirectoryService, dataSource)));
+				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource)));
 			} finally {
 				executorService.shutdown();
 			}

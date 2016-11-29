@@ -4,6 +4,7 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
  * Created by Amir Keren on 17/05/2015.
@@ -35,6 +29,12 @@ public class AdFetchJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
+
+	@Autowired
+	private ApplicationConfigurationService applicationConfigurationService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -47,15 +47,14 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 	private BufferedWriter fileWriter;
-	private String resultsFileId;
-	private String resultsFileName;
+	private String resultsKey;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 
 		final JobKey key = jobExecutionContext.getJobDetail().getKey();
-		resultsFileName = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase();
+
 
 		// get parameters values from the job data map
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
@@ -66,8 +65,7 @@ public class AdFetchJob extends FortscaleJob {
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		resultsFileId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsFileId");
-
+		resultsKey = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase() + "_" + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
 	}
 
 	@Override
@@ -86,9 +84,8 @@ public class AdFetchJob extends FortscaleJob {
 			return;
 		}
 
-		Path file = Paths.get("/tmp/"  + resultsFileName + "_" + resultsFileId);
-		List<String> lines = new ArrayList<>(Collections.singletonList("success=true"));
-		final Path write = Files.write(file, lines, Charset.forName("UTF-8"));
+		logger.debug("Inserting status to application configuration in key {}", resultsKey);
+		applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
 	}
 
 	private boolean prepareSinkFileStep() throws JobExecutionException {
