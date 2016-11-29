@@ -5,6 +5,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.domain.JobDataReceived;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
@@ -15,18 +16,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 @DisallowConcurrentExecution
 public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
+
+	@Autowired
+	private ApplicationConfigurationService applicationConfigurationService;
 
 	@Autowired
 	protected ImpalaClient impalaClient;
@@ -38,6 +35,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 	protected int linesPrintSkip;
 	@Value("${collection.lines.print.enabled}")
 	protected boolean linesPrintEnabled;
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
 
 
 	protected MorphlinesItemsProcessor morphline;
@@ -58,15 +58,13 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	String outputSeparator;
 
-	private String resultsFileId;
-	private String resultsFileName;
+	private String resultsKey;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 
 		final JobKey key = jobExecutionContext.getJobDetail().getKey();
-		resultsFileName = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase();
 
 		// get parameters values from the job data map
 		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
@@ -83,7 +81,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		resultsFileId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsFileId");
+		resultsKey = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase() + "_" + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
 	}
 
 	@Override
@@ -127,9 +125,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 		runFinalStep();
 
-		Path file = Paths.get("/tmp/"  + resultsFileName + "_" + resultsFileId);
-		List<String> lines = new ArrayList<>(Collections.singletonList("success=true"));
-		final Path write = Files.write(file, lines, Charset.forName("UTF-8"));
+		logger.debug("Inserting status to application configuration in key {}", resultsKey);
+		applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
 	}
 	
 	protected void runFinalStep() throws Exception{

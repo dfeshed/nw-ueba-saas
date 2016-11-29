@@ -2,28 +2,21 @@ package fortscale.web.tasks;
 
 import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.ETL;
 import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.FETCH;
 
 public class ControllerInvokedAdTask implements Runnable {
 
-    @Value("${user.home.dir}")
-    public static String HOME_DIR;
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
 
-    private static final String TASK_RESULTS_PATH = "/tmp";
     private static final String DELIMITER = "=";
     private static final String KEY_SUCCESS = "success";
     private static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
@@ -33,13 +26,14 @@ public class ControllerInvokedAdTask implements Runnable {
 
     private final ApiActiveDirectoryController controller;
     private ActiveDirectoryService activeDirectoryService;
+    private final ApplicationConfigurationService applicationConfigurationService;
     private final AdObjectType dataSource;
     private AdTaskType currentAdTaskType;
 
-
-    public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, AdObjectType dataSource) {
+    public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, ApplicationConfigurationService applicationConfigurationService, AdObjectType dataSource) {
         this.controller = controller;
         this.activeDirectoryService = activeDirectoryService;
+        this.applicationConfigurationService = applicationConfigurationService;
         this.dataSource = dataSource;
     }
 
@@ -98,25 +92,28 @@ public class ControllerInvokedAdTask implements Runnable {
      */
     private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObjectType dataSource) {
         final String dataSourceName = dataSource.toString();
-        logger.debug("Executing task {} for data source {}", adTaskType, dataSourceName);
 
-        UUID resultsFileId = UUID.randomUUID();
-        final String filePath = TASK_RESULTS_PATH + "/" + dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsFileId;
+        UUID resultsId = UUID.randomUUID();
+        final String resultsKey = dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsId;
 
-            /* run task */
-        if (!runTask(dataSourceName, adTaskType, resultsFileId)) {
+        /* run task */
+        final String jobName = dataSourceName + "_" + adTaskType.toString();
+        logger.debug("Running AD task {} with ID {}", jobName, resultsId);
+        if (!runTask(jobName, resultsId)) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
         }
 
-            /* get task results from file */
-        final Map<String, String> taskResults = getTaskResults(dataSourceName, adTaskType, filePath);
+
+        /* get task results from file */
+        logger.debug("Getting results for task {} with results key {}", jobName, resultsKey);
+        final Map<String, String> taskResults = getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
         }
 
-            /* process results and understand if task finished successfully */
+        /* process results and understand if task finished successfully */
         final String success = taskResults.get(KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
@@ -131,43 +128,24 @@ public class ControllerInvokedAdTask implements Runnable {
         return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
     }
 
-    private Map<String, String> getTaskResults(Object dataSourceName, Object adTaskType, String filePath) {
+    private Map<String, String> getTaskResults(String resultsKey) {
+        final String result = applicationConfigurationService.getApplicationConfiguration(resultsKey).getValue();
+        final String[] split = result.split(DELIMITER);
         Map<String, String> taskResults = new HashMap<>();
-        try {
-            try (Stream<String> stream = Files.lines(Paths.get(filePath))) {
-                final List<String> lines = stream.collect(Collectors.toList());
-                for (String line : lines) {
-                    final String[] split = line.split(DELIMITER);
-                    if (split.length != 2) {
-                        logger.error("Invalid output for task {} for data source {}. Task Failed", adTaskType, dataSourceName);
-                        return null;
-                    }
-
-                    taskResults.put(split[0], split[1]);
-                }
-            } catch (IOException e) {
-                logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
-                return null;
-            }
-        } finally {
-            try {
-                Files.delete(Paths.get(filePath));
-            } catch (IOException e) {
-                logger.warn("Failed to delete results file {}.", filePath);
-            }
-        }
-
+        final String key = split[0];
+        final String value = split[1];
+        taskResults.put(key, value);
+        applicationConfigurationService.deleteKey(key);
         return taskResults;
     }
 
-    private boolean runTask(String dataSourceName, AdTaskType adTaskType, UUID resultsFileId) {
+    private boolean runTask(String jobName, UUID resultsId) {
         Process process;
         try {
-            final String jobName = dataSourceName + "_" + adTaskType.toString();
-            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", ApiActiveDirectoryController.COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsFileId="+resultsFileId));
+            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", ApiActiveDirectoryController.COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             process = new ProcessBuilder(arguments).start();
         } catch (IOException e) {
-            logger.error("Execution of task {} for data source {} has failed.", adTaskType, dataSourceName, e);
+            logger.error("Execution of task {}  has failed.", jobName, e);
             return false;
         }
         int status;
@@ -178,16 +156,16 @@ public class ControllerInvokedAdTask implements Runnable {
                 logger.error("Killing the process forcibly");
                 process.destroyForcibly();
             }
-            logger.error("Execution of task {} for data source {} has failed. Task has been interrupted", adTaskType, dataSourceName, e);
+            logger.error("Execution of task {} has failed. Task has been interrupted", jobName, e);
             return false;
         }
 
         if (status != 0) {
-            logger.warn("Execution of task {} for step {} has finished with status {}. Execution failed", adTaskType, dataSourceName, status);
+            logger.warn("Execution of task {}  has finished with status {}. Execution failed", jobName, status);
             return false;
         }
 
-        logger.debug("Execution of task {} for step {} has finished with status {}", adTaskType, dataSourceName, status);
+        logger.debug("Execution of task {} has finished with status {}", jobName, status);
         return true;
     }
 
