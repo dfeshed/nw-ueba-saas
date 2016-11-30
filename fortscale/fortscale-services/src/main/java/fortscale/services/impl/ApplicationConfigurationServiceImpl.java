@@ -155,9 +155,8 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
     }
 
     @Override
-    public void deleteKey(String key) {
-        ApplicationConfiguration applicationConfigurationToDelete = new ApplicationConfiguration(key, "doesn't matter");
-        applicationConfigurationRepository.delete(applicationConfigurationToDelete);
+    public Long delete(String key) {
+        return applicationConfigurationRepository.deleteByKey(key);
     }
 
 }

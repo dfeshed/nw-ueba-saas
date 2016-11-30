@@ -81,7 +81,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		resultsKey = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase() + "_" + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+		resultsKey = key.getName().toLowerCase() + "_" + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
 	}
 
 	@Override

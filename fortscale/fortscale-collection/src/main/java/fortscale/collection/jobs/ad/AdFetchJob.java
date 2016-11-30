@@ -20,9 +20,6 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-/**
- * Created by Amir Keren on 17/05/2015.
- */
 @DisallowConcurrentExecution
 public class AdFetchJob extends FortscaleJob {
 
@@ -65,7 +62,7 @@ public class AdFetchJob extends FortscaleJob {
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		resultsKey = key.getName().toLowerCase() + "_" + key.getGroup().toLowerCase() + "_" + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+		resultsKey = key.getName().toLowerCase() + "_" + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
 	}
 
 	@Override

@@ -21,6 +21,6 @@ public interface ApplicationConfigurationService {
     Optional<String> getApplicationConfigurationAsString(String key);
     <T> List<T> getApplicationConfigurationAsObjects(String configurationKey, Class jsonObjectType);
     <T> T getApplicationConfigurationAsObject(String configurationKey, Class jsonObjectType);
-    void deleteKey(String key);
+    Long delete(String key);
 
 }

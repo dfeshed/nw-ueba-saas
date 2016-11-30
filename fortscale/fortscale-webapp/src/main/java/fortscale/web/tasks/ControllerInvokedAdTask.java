@@ -1,6 +1,7 @@
 package fortscale.web.tasks;
 
 import fortscale.domain.ad.AdObject.AdObjectType;
+import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
@@ -130,13 +131,23 @@ public class ControllerInvokedAdTask implements Runnable {
     }
 
     private Map<String, String> getTaskResults(String resultsKey) {
-        final String result = applicationConfigurationService.getApplicationConfiguration(resultsKey).getValue();
-        final String[] split = result.split(DELIMITER);
         Map<String, String> taskResults = new HashMap<>();
+        ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
+        if (queryResult == null) {
+            logger.error("No result found for result key {}. Task failed", resultsKey);
+            taskResults.put(KEY_SUCCESS, Boolean.FALSE.toString());
+            return taskResults;
+        }
+
+        final String taskExecutionResult = queryResult.getValue();
+        final String[] split = taskExecutionResult.split(DELIMITER);
         final String key = split[0];
         final String value = split[1];
         taskResults.put(key, value);
-        applicationConfigurationService.deleteKey(key);
+        if (applicationConfigurationService.delete(resultsKey) == 0) {
+            logger.warn("Failed to delete query result with key {}.", resultsKey);
+        }
+
         return taskResults;
     }
 
