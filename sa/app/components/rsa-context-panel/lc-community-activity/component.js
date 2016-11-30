@@ -23,7 +23,10 @@ export default Component.extend({
   @computed('liveConnectData.tags', 'allTags')
   riskIndicatorCategories: (riskIndicatorTags, allTags) => {
     // Collect tags to be highlighted
-    const tagsToHighlight = riskIndicatorTags ? riskIndicatorTags.map((tag) => tag.name) : [];
+    const tagsToHighlight = riskIndicatorTags.reduce((hash, tag) => {
+      hash[tag.value] = true;
+      return hash;
+    }, {});
 
     // Map all tags to respective fields identified by the category name
     const categories = {};
@@ -35,7 +38,7 @@ export default Component.extend({
             tags: [] // array to hold all tags belonging to this category
           };
         }
-        if (tagsToHighlight.indexOf(tag.name) > -1) {
+        if (tagsToHighlight[tag.value]) {
           tag.highlight = true; // set highlight flag for indicated tags
           categories[tag.category].tags.unshift(tag); // If highlighted, add to the start
         } else {

@@ -125,10 +125,10 @@
           <div>
             {{#each category.tags as |tag|}}
               {{#if tag.highlight}}
-                {{#rsa-content-help-trigger tooltip=tag.name}}
+                {{#rsa-content-help-trigger tooltip=tag.value}}
                   {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
                 {{/rsa-content-help-trigger}}
-                {{#rsa-content-tooltip position='top-left' tooltipId=tag.name}}
+                {{#rsa-content-tooltip position='top-left' tooltipId=tag.value}}
                   <section>{{tag.description}}</section>
                 {{/rsa-content-tooltip}}
               {{else}}
