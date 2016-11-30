@@ -76,11 +76,8 @@ public abstract class FeatureBucketsService {
 						}
 					}
 
-					if(shouldUpdateFeatureBucketAfterSync) {
-						metrics.featureBucketUpdates++;
-						updateFeatureBucket(event, featureBucket, featureBucketConf);
-						storeFeatureBucket(featureBucket, featureBucketConf);
-					} else {
+					if(!shouldUpdateFeatureBucketAfterSync)
+					{
 						// this is not a new feature bucket! it is already exists in both key-value store and MongoDb.
 						// the feature bucket arrived after sync - this should not happened in the common data path scenario
 						// and would not happened after DPM-integration since a dependency would be defined in the data path
@@ -90,8 +87,10 @@ public abstract class FeatureBucketsService {
 							// nothing to store/update here
 							continue;
 						}
-
 					}
+					metrics.featureBucketUpdates++;
+					updateFeatureBucket(event, featureBucket, featureBucketConf);
+					storeFeatureBucket(featureBucket, featureBucketConf);
 				}
 			} catch (Exception e) {
 				logger.error("Got an exception while updating buckets with new event", e);
@@ -123,10 +122,14 @@ public abstract class FeatureBucketsService {
 		return builder.toString();
 	}
 
-	private void updateFeatureBucket(Event event, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf){
+	private void updateFeatureBucket(Event event, FeatureBucket featureBucket, FeatureBucketConf featureBucketConf) throws Exception {
 		Map<String, Feature> featuresMap = getFeatureExtractService().extract(featureBucketConf.getAllFeatureNames(), event);
 		Map<String, Feature> aggrFeaturesMap = getAggrFeatureFunctionsService().updateAggrFeatures(event, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
 		featureBucket.setAggregatedFeatures(aggrFeaturesMap);
+		if(featureBucket.getContextId() != null)
+		{
+			getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
+		}
 	}
 	
 	
