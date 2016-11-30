@@ -25,6 +25,12 @@ $panel-background-color: rsa-color(gray, darker);
     left: 40%;
     top: 30%;
   }
+  &__empty-incident {
+    @include rsa-font();
+    padding-top: rsa-whitespace();
+    color: rsa-color(gray, lighter);
+    text-align: center;
+  }
 
   .rsa-incident-tile .rsa-incident-tile-header .rsa-incident-tile-header-info .rsa-incident-tile-name {
     padding: 0;
@@ -69,7 +75,5 @@ $panel-background-color: rsa-color(gray, darker);
         }
       }
     }
-
   }
-
 }

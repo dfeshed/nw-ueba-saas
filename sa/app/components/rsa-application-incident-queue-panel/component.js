@@ -75,7 +75,10 @@ export default Component.extend({
   },
 
   loadQueue(queryFilter) {
-    this.set('loadingData', true);
+    this.setProperties({
+      'loadingData': true,
+      'incidents': null
+    });
 
     this.get('request').streamRequest({
       method: 'stream',

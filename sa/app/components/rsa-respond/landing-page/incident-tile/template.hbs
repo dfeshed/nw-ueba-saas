@@ -80,7 +80,7 @@
     </vbox>
     <vbox xs="4">
       {{#rsa-content-definition class="rsa-incident-tile-assignee-block" label=(t "incident.fields.assignee")}}
-        <label class="rsa-incident-tile-assignee">{{if (eq selectedAssignee '-1') (t 'incident.assignee.none') incident.assignee.name}}</label>
+        <label class="rsa-incident-tile-assignee">{{if incident.assignee incident.assignee.name (t 'incident.assignee.none')}}</label>
       {{/rsa-content-definition}}
     </vbox>
   </hbox>

@@ -79,7 +79,7 @@
       .rsa-incident-tile-event-count, .rsa-incident-tile-alert-count, .rsa-incident-tile-priority {
         @include rsa-font(header, larger);
         color: rsa-color(gray, light);
-        line-height:1.9rem;
+        line-height: 1.9rem;
       }
 
       .rsa-content-label {
@@ -151,6 +151,16 @@
       .rsa-incident-tile-priority, .rsa-incident-tile-alert-count {
         @include rsa-font(body);
       }
+    }
+  }
+
+  &.is-queue {
+    .rsa-incident-tile-priority,
+    .rsa-incident-tile-assignee,
+    .rsa-incident-tile-status {
+      @include rsa-font(body);
+      color: rsa-color(gray, light);
+      line-height: initial;
     }
   }
 }
