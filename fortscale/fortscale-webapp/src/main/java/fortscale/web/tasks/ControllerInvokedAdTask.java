@@ -6,6 +6,7 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
@@ -99,7 +100,7 @@ public class ControllerInvokedAdTask implements Runnable {
         /* run task */
         final String jobName = dataSourceName + "_" + adTaskType.toString();
         logger.debug("Running AD task {} with ID {}", jobName, resultsId);
-        if (!runTask(jobName, resultsId)) {
+        if (!runCollectionJob(jobName, resultsId)) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
         }
@@ -139,11 +140,20 @@ public class ControllerInvokedAdTask implements Runnable {
         return taskResults;
     }
 
-    private boolean runTask(String jobName, UUID resultsId) {
+    /**
+     * This method creates a new PROCESS and runs the given collection job
+     * @param jobName the collection job name for the task (example User_Fetch AD)
+     * @param resultsId the random id that will be given to this job execution results in application configuration
+     * @return true if the execution finished successfully, false otherwise
+     */
+    private boolean runCollectionJob(String jobName, UUID resultsId) {
         Process process;
         try {
-            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", ApiActiveDirectoryController.COLLECTION_JAR_NAME, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
-            process = new ProcessBuilder(arguments).start();
+            final String collectionJarPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/" + ApiActiveDirectoryController.COLLECTION_JAR_NAME;
+            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", collectionJarPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
+            final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
+            processBuilder.directory(new File(ApiActiveDirectoryController.COLLECTION_TARGET_DIR));
+            process = processBuilder.start();
         } catch (IOException e) {
             logger.error("Execution of task {}  has failed.", jobName, e);
             return false;
@@ -189,6 +199,9 @@ public class ControllerInvokedAdTask implements Runnable {
                 '}';
     }
 
+    /**
+     * This class represents an ADTask response to the controller that executed it containing various information the controller needs to return the UI
+     */
     public static class AdTaskResponse {
         private AdTaskType taskType;
         private boolean success;

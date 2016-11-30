@@ -40,9 +40,11 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 public class ApiActiveDirectoryController {
 
 	@Value("${user.home.dir}")
-	public static String HOME_DIR;
+	private static String HOME_DIR;
 
-	public static final String COLLECTION_JAR_NAME = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target/fortscale-collection-1.1.0-SNAPSHOT.jar";
+	public static final String COLLECTION_TARGET_DIR = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+
+	public static final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
 
 	private static final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 
@@ -109,7 +111,7 @@ public class ApiActiveDirectoryController {
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
 	public ResponseEntity<String> testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
-														@RequestParam(value = "encrypted_password") Boolean encryptedPassword) {
+																@RequestParam(value = "encrypted_password") Boolean encryptedPassword) {
 		if (!encryptedPassword) {
 			try {
 				activeDirectoryDomain.setDomainPassword(EncryptionUtils.encrypt(activeDirectoryDomain.
