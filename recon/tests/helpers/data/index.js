@@ -23,7 +23,7 @@ const _generateHeaderItems = (items) => (
 
 // TODO: this is duplicated from client code
 const packetDataWithSide = packetData
-  .slice(0,10)
+  .slice(0, 10)
   .map((p) => {
     p.side = (p.side === 1) ? 'request' : 'response';
     return p;
