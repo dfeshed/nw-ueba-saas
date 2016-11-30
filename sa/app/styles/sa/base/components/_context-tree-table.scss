@@ -1,0 +1,60 @@
+.rsa-context-tree-table {
+  .rsa-content-accordion {
+
+    border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+    @include rsa-font(body,small);
+    color: rsa-color(gray, lighter);
+    .rsa-icon {
+      padding-right: rsa-whitespace(less);
+    }
+    .content {
+      @include rsa-font(default, small);
+      padding:0px !important
+    }
+    h3 {
+      text-transform: inherit;
+      border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+      span{
+        max-width: 100%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+    }
+
+  }
+
+  &__table_header{
+    padding: rsa-whitespace(less);
+    margin: 0.5rem 0;
+
+    @include rsa-font(header,small);
+    color: rsa-color(white);
+    padding-left:rsa-whitespace(more);
+    border-bottom: 1px solid rsa-color(black);
+  }
+
+  &__content-header,&__content-text {
+    white-space: nowrap;
+    width: 5em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  &__content-header {
+    @include rsa-font(default, smaller);
+    color: rsa-color(gray, base);
+  }
+
+  &__content-text {
+    padding-top: rsa-whitespace(least);
+    color: rsa-color(gray, lighter);
+  }
+  &__border {
+    padding-left: rsa-whitespace(base);
+    padding-top: rsa-whitespace(less);
+    padding-bottom: rsa-whitespace(less);
+    border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+  }
+
+}

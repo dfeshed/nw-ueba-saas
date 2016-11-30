@@ -4,7 +4,7 @@
     "queryId" : "f5714b1e-0cc0-4472-8acd-ffbc1e1ce537",
     "datasourceId" : null,
     "dataSourceName" : "list1",
-    "dataSourceDescription" : "List 1 ",
+    "dataSourceDescription" : "Blacklisted Ip ",
     "dataSourceType" : "LIST",
     "resultList" : [ {
       "id" : "030afa5c-ae5d-49a6-9dff-0b4f6ac1998a",
@@ -15,7 +15,16 @@
         "lastModifiedByUser" : null
       },
       "data" : {
-        "LIST" : "2.2.2.2"
+        "DestinationIP" : "23.99.221.178",
+        "Time" : 1478093501237,
+        "SourceIP" : "17.191.140.16",
+        "location":"Bangalore",
+        "email":"tony@emc.com",
+        "phone":"9879776682",
+        "createdTimeStamp" : 1475225722540,
+        "lastModifiedTimeStamp" : 1475225722540,
+        "createdByUser" : "Tony",
+        "lastModifiedByUser" : "Duke"
       }
     } ],
     "pagingEnabled" : false,

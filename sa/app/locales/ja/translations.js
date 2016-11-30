@@ -163,7 +163,8 @@ export default $.extend({}, BaseTranslations, {
       createdTimeStamp: 'ja_Created',
       lastModifiedTimeStamp: 'ja_Updated',
       dataSourceDescription: 'ja_Description',
-      dataSourceName: 'ja_Name'
+      dataSourceName: 'ja_Name',
+      data: 'ja_Data'
     },
     lc: {
       reviewStatus: 'ja_Review Status',

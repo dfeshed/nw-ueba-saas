@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import DatasourceList from 'sa/context/datasource-list';
+import MultiColumnList from 'sa/context/tree-table';
 import Ecat from 'sa/context/ecat';
 import LiveConnect from 'sa/context/live-connect';
 
@@ -23,6 +24,10 @@ export default Component.extend({
   contextData: null,
   columnHeader: {
     datasourceList: DatasourceList
+  },
+  multicolumn: {
+    multiColumnList: MultiColumnList
+
   },
 
   didReceiveAttrs() {
@@ -92,7 +97,14 @@ export default Component.extend({
 
   _populateContextsData(contextData) {
     switch (contextData.dataSourceType) {
-
+      case 'LIST': {
+        const { dataSourceType } = contextData;
+        const model = this.get('model');
+        const { contextData: allContextData } = model;
+        const allSourceTypeData = allContextData[dataSourceType] || [];
+        set(allContextData, dataSourceType, allSourceTypeData.concat(contextData));
+        break;
+      }
       case 'ECAT':
         {
           const ecatData = Ecat.create();

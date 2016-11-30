@@ -10,6 +10,7 @@ closePanel=(route-action 'closeContextPanel')
    {{#each columnHeader.datasourceList as |columns|}}
      {{rsa-context-data-table data=(get contextData columns.dataSourceType)   title=(t columns.title ) modulesColumnListConfig=columns.columns headerdata=columns.header footerdata=columns.footer}}
    {{/each}}
+   {{rsa-context-tree-table data=contextData.LIST title=(t multicolumn.multiColumnList.title ) columnsConfig=multicolumn.multiColumnList.columns}}
    {{#if (is-equal model.meta 'IP')}}
      {{rsa-context-panel/lc-community-activity
         liveConnectData=contextData.liveConnectData.IpReputation

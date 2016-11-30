@@ -162,7 +162,8 @@ export default $.extend({}, BaseTranslations, {
       createdTimeStamp: 'Created',
       lastModifiedTimeStamp: 'Updated',
       dataSourceDescription: 'Description',
-      dataSourceName: 'Name'
+      dataSourceName: 'Name',
+      data: 'Data'
     },
     lc: {
       reviewStatus: 'Review Status',
