@@ -1,13 +1,17 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-content-ip-connections';
+import computed from 'ember-computed-decorators';
 
 const {
+  String: {
+    htmlSafe
+  },
   Component,
-  computed,
   computed: {
     gt,
     equal
   },
+  isPresent,
   run
 } = Ember;
 
@@ -29,25 +33,44 @@ export default Component.extend({
 
   flow: 'vertical', // ['vertical', 'horizontal']
 
-  noIPs: computed('toIPs.length', 'fromIPs.length', function() {
-    return (this.get('toIPs.length') === 0) && (this.get('fromIPs.length') === 0);
-  }),
+  showPlaceHolder: false,
 
-  toIpsId: computed(function() {
-    const id = Math.random().toString();
-    const formattedId = id.slice(2, id.length);
-    return `toIps${formattedId}`;
-  }),
-
-  fromIpsId: computed(function() {
-    const id = Math.random().toString();
-    const formattedId = id.slice(2, id.length);
-    return `fromIps${formattedId}`;
-  }),
+  placeHolder: htmlSafe('&ndash;'),
 
   toIPs: [],
 
   fromIPs: [],
+
+  @computed('toIPs', 'showPlaceHolder')
+  showToIP: (toIPs, showPlaceHolder) => showPlaceHolder || isPresent(toIPs),
+
+  @computed('fromIPs', 'showPlaceHolder')
+  showFromIP: (fromIPs, showPlaceHolder) => showPlaceHolder || isPresent(fromIPs),
+
+  @computed('showToIP', 'showFromIP')
+  showArrow: (showToIP, showFromIP) => showToIP && showFromIP,
+
+  @computed()
+  toIpsId() {
+    return this._createId('toIps');
+  },
+
+  @computed()
+  fromIpsId() {
+    return this._createId('fromIps');
+  },
+
+  /**
+   * Generate unique numeric ID and concatenate with a given prefix.
+   * @param prefix
+   * @returns {string}
+   * @private
+   */
+  _createId(prefix) {
+    const id = Math.random().toString();
+    const formattedId = id.slice(2, id.length);
+    return `${prefix}${formattedId}`;
+  },
 
   didInsertElement() {
     run.schedule('afterRender', this, function() {

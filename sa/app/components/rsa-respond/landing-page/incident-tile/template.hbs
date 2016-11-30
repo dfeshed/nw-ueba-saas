@@ -107,7 +107,7 @@
       </div>
     </vbox>
     <vbox xs="6">
-      {{rsa-content-ip-connections fromIPs=incident.groupBySourceIp toIPs=incident.groupByDestinationIp}}
+      {{rsa-content-ip-connections showPlaceHolder=true fromIPs=incident.groupBySourceIp toIPs=incident.groupByDestinationIp}}
     </vbox>
   </hbox>
   {{#if isLargeSize}}

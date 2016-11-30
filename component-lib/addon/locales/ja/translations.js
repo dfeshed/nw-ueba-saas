@@ -65,7 +65,9 @@ export default {
   },
   ipConnections: {
     ipCount: '(ja_{{count}} IPs)',
-    clickToCopy: 'ja_Click to copy IP address'
+    clickToCopy: 'ja_Click to copy IP address',
+    sourceIp: 'ja_Source IP',
+    destinationIp: 'ja_Destination IP'
   },
   updateLabel: {
     'one': 'ja_update',

@@ -65,7 +65,9 @@ export default {
   },
   ipConnections: {
     ipCount: '({{count}} IPs)',
-    clickToCopy: 'Click to copy IP address'
+    clickToCopy: 'Click to copy IP address',
+    sourceIp: 'Source IP',
+    destinationIp: 'Destination IP'
   },
   list: {
     all: '(All)',

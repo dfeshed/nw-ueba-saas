@@ -29,7 +29,7 @@ test('it includes the proper classes when flow is set to horizontal', function(a
   assert.equal(component, 1);
 });
 
-test('it renders to and frim sections when IPs are present', function(assert) {
+test('it renders to and from sections when IPs are present', function(assert) {
   this.set('to', ['foo']);
   this.set('from', ['bar']);
 
@@ -40,12 +40,29 @@ test('it renders to and frim sections when IPs are present', function(assert) {
   assert.equal(from, 1);
 });
 
-test('it does not render to and frim sections when IPs are not present', function(assert) {
+test('it does not render to and from sections when IPs are not present', function(assert) {
+
   this.render(hbs `{{rsa-content-ip-connections}}`);
+
   const to = this.$().find('.to-ip').length;
   const from = this.$().find('.from-ip').length;
   assert.equal(to, 0);
   assert.equal(from, 0);
+});
+
+test('it renders placeHolder display properly when no IPs are present', function(assert) {
+  this.set('showPlaceHolder', true);
+  this.render(hbs `{{rsa-content-ip-connections showPlaceHolder=showPlaceHolder}}`);
+
+  const defaultIpText = '–';
+  const to = this.$().find('.to-ip');
+  const direction = this.$().find('.rsa-content-ip-connections .direction').length;
+  const from = this.$().find('.from-ip');
+  assert.equal(to.length, 1, 'to is present');
+  assert.equal(to.text().trim(), defaultIpText, 'source Ip contains correct default value');
+  assert.equal(direction, 1, 'direction indicator is present');
+  assert.equal(from.length, 1, 'from is present');
+  assert.equal(from.text().trim(), defaultIpText, 'destination Ip contains correct default value');
 });
 
 test('it renders the IP when one record is present', function(assert) {
@@ -100,7 +117,6 @@ test('it renders a button and dropdown with from IP records when there are multi
 
 test('it does not include the direction indicator or from-ip when only toIPS is passed', function(assert) {
   this.set('to', ['foo']);
-
   this.render(hbs `{{rsa-content-ip-connections toIPs=to}}`);
   const direction = this.$().find('.rsa-content-ip-connections .direction').length;
   const fromIps = this.$().find('.rsa-content-ip-connections .from-ip').length;
