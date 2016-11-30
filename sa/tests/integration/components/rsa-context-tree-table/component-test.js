@@ -28,7 +28,7 @@ test('it renders', function(assert) {
         'createdByUser': 'Tony',
         'lastModifiedByUser': 'Duke'
       }
-    },{
+    }, {
       'id': '030afa5c-ae5d-49a6-9dff-0b4f6ac1998a',
       'dataSourceEntryMeta': {
         'createdTimeStamp': 1475225722540,
@@ -71,7 +71,7 @@ test('it renders', function(assert) {
           'createdByUser': 'Tony',
           'lastModifiedByUser': 'Duke'
         }
-      },{
+      }, {
         'id': '030afa5c-ae5d-49a6-9dff-0b4f6ac1998a',
         'dataSourceEntryMeta': {
           'createdTimeStamp': 1475225722540,

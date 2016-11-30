@@ -72,7 +72,7 @@ export default Component.extend(HasTableParent, {
       return;
     }
     const [ x0, y0 ] = this._dragStartPos;
-    this._dragDelta = [ e.pageX - x0 , e.pageY - y0 ];
+    this._dragDelta = [ e.pageX - x0, e.pageY - y0 ];
     this._resizeMe();
   },
 

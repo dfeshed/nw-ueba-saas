@@ -70,7 +70,7 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
    * @public
    */
   start() {
-    this._notifyAll('onInit', [this.stop.bind(this),...arguments]);
+    this._notifyAll('onInit', [this.stop.bind(this), ...arguments]);
     this._super();
     return this;
   },

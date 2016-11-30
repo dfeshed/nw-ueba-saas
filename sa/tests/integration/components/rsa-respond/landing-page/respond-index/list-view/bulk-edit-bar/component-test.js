@@ -128,7 +128,7 @@ test('The rsa-bulk-edit-bar component renders with the proper elements.', functi
 });
 
 test('The rsa-bulk-edit button select lists are active when an incident is checked.', function(assert) {
-  const incFourNintyOne = this.get('incidents').findBy('id','INC-491');
+  const incFourNintyOne = this.get('incidents').findBy('id', 'INC-491');
 
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
@@ -151,7 +151,7 @@ test('The rsa-bulk-edit button select lists are active when an incident is check
 });
 
 test('Only the rsa-bulk-edit status select list is active when a closed incident is checked.', function(assert) {
-  const incFourNintyTwo = this.get('incidents').findBy('id','INC-492');
+  const incFourNintyTwo = this.get('incidents').findBy('id', 'INC-492');
 
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
@@ -176,7 +176,7 @@ test('Only the rsa-bulk-edit status select list is active when a closed incident
 
 test('The Save and Cancel buttons in the rsa-bulk-edit bar should appear when a value is chosen from a select list', function(assert) {
   const done = assert.async(2);
-  const incFourNintyOne = this.get('incidents').findBy('id','INC-491');
+  const incFourNintyOne = this.get('incidents').findBy('id', 'INC-491');
 
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
@@ -206,7 +206,7 @@ test('The Save and Cancel buttons in the rsa-bulk-edit bar should appear when a 
 
 test('Clicking the Save button after selecting values successfully saves the incident.', function(assert) {
   const done = assert.async(2);
-  const incFourNintyOne = this.get('incidents').findBy('id','INC-491');
+  const incFourNintyOne = this.get('incidents').findBy('id', 'INC-491');
 
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users

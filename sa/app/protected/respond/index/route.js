@@ -126,7 +126,7 @@ export default Route.extend({
     // If the user is in card view and the status is not in 'new', 'assigned' or 'in progress' remove it
     if (this.get('respondMode.selected') === 'card') {
       let incidentsToBeRemoved = [];
-      const cardViewStatuses = [incStatus.ASSIGNED,incStatus.IN_PROGRESS, incStatus.NEW ];
+      const cardViewStatuses = [incStatus.ASSIGNED, incStatus.IN_PROGRESS, incStatus.NEW ];
 
       incidentsToBeRemoved = incidents.filter((incident) => {
         return (cardViewStatuses.indexOf(incident.statusSort) < 0);

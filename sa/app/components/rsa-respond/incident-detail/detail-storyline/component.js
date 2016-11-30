@@ -35,7 +35,7 @@ export default Component.extend({
       if (signatures[signatureId]) {
         if (k > 0) {
           const currAlertTime = moment(alert.timestamp);
-          if (firstAlertTime.diff(currAlertTime,'days') <= 0) {
+          if (firstAlertTime.diff(currAlertTime, 'days') <= 0) {
             alert.hideDate = true;
           }
           firstAlertTime = moment(alert.timestamp);

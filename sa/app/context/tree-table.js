@@ -1,5 +1,5 @@
 export default{
-  header: ' ' ,
+  header: ' ',
   footer: '',
   title: 'context.list.title',
   columns: [

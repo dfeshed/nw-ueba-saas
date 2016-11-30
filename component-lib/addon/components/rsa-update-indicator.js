@@ -28,7 +28,7 @@ export default Component.extend({
     return isEmpty(this.get('model')) ? 0 : this.get('model').filterBy(this.get('updateKey'), true).length;
   }),
 
-  isHidden: computed('model.[]','updateKey', 'totalUpdated', 'isIconOnly', function() {
+  isHidden: computed('model.[]', 'updateKey', 'totalUpdated', 'isIconOnly', function() {
     if (isEmpty(this.get('model'))) {
       return true;
     }

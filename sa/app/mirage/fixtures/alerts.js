@@ -288,11 +288,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -303,7 +303,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',
@@ -333,11 +333,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -348,7 +348,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',
@@ -378,11 +378,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -393,7 +393,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',
@@ -423,11 +423,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -438,7 +438,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',
@@ -468,11 +468,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -483,7 +483,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',
@@ -513,11 +513,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -528,7 +528,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',
@@ -558,11 +558,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -573,7 +573,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',
@@ -603,11 +603,11 @@ export default [
       'severity': 40,
       'groupby_type': '',
       'related_links': [
-        { 'type': 'investigate_session','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
-        { 'type': 'investigate_device_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_src_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_dst_ip','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
-        { 'type': 'investigate_destination_domain','url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
+        { 'type': 'investigate_session', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/' },
+        { 'type': 'investigate_device_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/device.ip%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_src_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.src%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_dst_ip', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/ip.dst%3D%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' },
+        { 'type': 'investigate_destination_domain', 'url': '/investigation/DEV1-IM-Concentrator.grcrtp.local:50005/navigate/query/alias.host%3D%224554mb.ru%22%2Fdate%2F2016-09-17T05%3A42%3A39.853Z%2F2016-09-17T06%3A02%3A39.853Z' }
       ],
       'host_summary': '-,',
       'user_summary': [],
@@ -618,7 +618,7 @@ export default [
       'groupby_source_country': '',
       'groupby_destination_country': '',
       'relationships': [
-        ['','','4554mb.ru','192.168.1.1','2.2.2.2','']
+        ['', '', '4554mb.ru', '192.168.1.1', '2.2.2.2', '']
       ],
       'signature_id': 'Some rule',
       'groupby_filename': '',

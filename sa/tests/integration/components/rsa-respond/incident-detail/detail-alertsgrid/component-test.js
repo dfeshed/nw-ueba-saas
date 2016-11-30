@@ -19,10 +19,10 @@ test('it renders', function(assert) {
       'severity': 50,
       'events': [{
         'related_links': [{
-          'type': 'investigate_original_event','url': '/investigation/host/10.101.217.121: 56005/navigate/event/AUTO/21053778' },
-          { 'type': 'investigate_destination_domain','url': '/investigation/10.101.217.121: 56005/navigate/query/alias.host%3D%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A14%3A22.000Z' }
+          'type': 'investigate_original_event', 'url': '/investigation/host/10.101.217.121: 56005/navigate/event/AUTO/21053778' },
+          { 'type': 'investigate_destination_domain', 'url': '/investigation/10.101.217.121: 56005/navigate/query/alias.host%3D%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A14%3A22.000Z' }
         ],
-        'data': [{ 'filename': 'cotlow_awards.cfm','size': 23704 }],
+        'data': [{ 'filename': 'cotlow_awards.cfm', 'size': 23704 }],
         'description': '',
         'file': 'cotlow_awards.cfm',
         'size': 23704,

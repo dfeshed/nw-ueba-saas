@@ -41,7 +41,7 @@ const start = function({ subscriptionLocations, routes }, cb) {
   // eslint-disable-next-line new-cap
   const infoRoute = express.Router();
   infoRoute.get('/', function(req, res) {
-    res.json({ 'version': '10.6.0.0-SNAPSHOT','commit': 28,'changeset': 'f716b11','date': 1435711785000 });
+    res.json({ 'version': '10.6.0.0-SNAPSHOT', 'commit': 28, 'changeset': 'f716b11', 'date': 1435711785000 });
   });
   app.use('/socket/info', infoRoute);
 

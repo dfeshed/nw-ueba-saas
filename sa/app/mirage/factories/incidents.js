@@ -14,10 +14,10 @@ export default Mirage.Factory.extend({
     return faker.list.cycle('CRITICAL', 'HIGH', 'MEDIUM', 'LOW')(i);
   },
   prioritySort(i) {
-    return faker.list.cycle(3,2,1,0)(i);
+    return faker.list.cycle(3, 2, 1, 0)(i);
   },
   riskScore(i) {
-    return faker.list.random(30,70,90,88)(i);
+    return faker.list.random(30, 70, 90, 88)(i);
   },
   status(i) {
     return faker.list.cycle('NEW', 'CLOSED', 'IN_PROGRESS')(i);

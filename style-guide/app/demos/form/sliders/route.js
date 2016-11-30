@@ -14,7 +14,7 @@ export default Route.extend({
 
   model() {
     return {
-      'start': [ 25,75 ],
+      'start': [ 25, 75 ],
       'range': {
         'min': [ 0 ],
         'max': [ 100 ]

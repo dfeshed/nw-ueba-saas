@@ -6,7 +6,7 @@ moduleForComponent('rsa-form-slider', 'Integration | Component | rsa-form-slider
 });
 
 test('it renders', function(assert) {
-  this.set('start', [25,75]);
+  this.set('start', [25, 75]);
   this.set('range', {
     'min': [0],
     'max': [100]
@@ -17,7 +17,7 @@ test('it renders', function(assert) {
 });
 
 test('it includes proper classes', function(assert) {
-  this.set('start', [25,75]);
+  this.set('start', [25, 75]);
   this.set('range', {
     'min': [0],
     'max': [100]
@@ -31,7 +31,7 @@ test('it includes proper classes', function(assert) {
 });
 
 test('it includes the proper classes when isReadOnly is true', function(assert) {
-  this.set('start', [25,75]);
+  this.set('start', [25, 75]);
   this.set('range', {
     'min': [0],
     'max': [100]
@@ -46,7 +46,7 @@ test('it includes the proper classes when isReadOnly is true', function(assert) 
 });
 
 test('it includes the proper classes when isDisabled is true', function(assert) {
-  this.set('start', [25,75]);
+  this.set('start', [25, 75]);
   this.set('range', {
     'min': [0],
     'max': [100]
@@ -58,7 +58,7 @@ test('it includes the proper classes when isDisabled is true', function(assert) 
 });
 
 test('it includes the proper classes when isError is true', function(assert) {
-  this.set('start', [25,75]);
+  this.set('start', [25, 75]);
   this.set('range', {
     'min': [0],
     'max': [100]
@@ -70,7 +70,7 @@ test('it includes the proper classes when isError is true', function(assert) {
 });
 
 test('it sets the handle positions correctly based on default values in the start array', function(assert) {
-  this.set('start', [25,75]);
+  this.set('start', [25, 75]);
   this.set('range', {
     'min': [0],
     'max': [100]

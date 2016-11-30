@@ -5,7 +5,7 @@ moduleForComponent('rsa-form-tag-manager', 'Integration | Component | rsa form t
   integration: true,
 
   beforeEach() {
-    this.set('mockCategoriesPicked',[]);
+    this.set('mockCategoriesPicked', []);
     this.set('mockTagData', [
       {
         'name': 'parentCategory1',

@@ -36,10 +36,10 @@ test('it renders', function(assert) {
           'severity': 50,
           'events': [{
             'related_links': [{
-              'type': 'investigate_original_event','url': '/investigation/host/10.101.217.121: 56005/navigate/event/AUTO/21053778' },
-              { 'type': 'investigate_destination_domain','url': '/investigation/10.101.217.121: 56005/navigate/query/alias.host%3D%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A14%3A22.000Z' }
+              'type': 'investigate_original_event', 'url': '/investigation/host/10.101.217.121: 56005/navigate/event/AUTO/21053778' },
+              { 'type': 'investigate_destination_domain', 'url': '/investigation/10.101.217.121: 56005/navigate/query/alias.host%3D%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A14%3A22.000Z' }
             ],
-            'data': [{ 'filename': 'cotlow_awards.cfm','size': 23704 }],
+            'data': [{ 'filename': 'cotlow_awards.cfm', 'size': 23704 }],
             'destination': {
               'device': {
                 'compliance_rating': '',
@@ -51,7 +51,7 @@ test('it renders', function(assert) {
                 'ip_address': '161.253.149.52',
                 'facility': '',
                 'business_unit': '',
-                'geolocation': { 'country': 'United States','city': 'Washington','latitude': 38.93759918212891,'organization': 'The George Washington University','domain': 'gwu.edu','longitude': -77.0927963256836 }
+                'geolocation': { 'country': 'United States', 'city': 'Washington', 'latitude': 38.93759918212891, 'organization': 'The George Washington University', 'domain': 'gwu.edu', 'longitude': -77.0927963256836 }
               },
               'user': {
                 'email_address': '',
@@ -66,11 +66,11 @@ test('it renders', function(assert) {
                 'netbios_name': '',
                 'port': 35444,
                 'mac_address': '00: 13: c3: 3b: c7: 00',
-                'criticality': '','asset_type': '','ip_address': '66.249.67.67',
-                'facility': '','business_unit': '',
-                'geolocation': { 'country': 'United States','city': 'Mountain View','latitude': 37.4192008972168,'organization': 'Googlebot','domain': 'googlebot.com','longitude': -122.0574035644531 }
+                'criticality': '', 'asset_type': '', 'ip_address': '66.249.67.67',
+                'facility': '', 'business_unit': '',
+                'geolocation': { 'country': 'United States', 'city': 'Mountain View', 'latitude': 37.4192008972168, 'organization': 'Googlebot', 'domain': 'googlebot.com', 'longitude': -122.0574035644531 }
               },
-              'user': { 'email_address': '','ad_username': '','ad_domain': '','username': '' }
+              'user': { 'email_address': '', 'ad_username': '', 'ad_domain': '', 'username': '' }
             },
             'type': 'Network',
 
@@ -140,7 +140,7 @@ test('it renders', function(assert) {
                 'age_score': 99.39075237491708
               },
               'httpEventEnrichedRule': { 'flow_name': 'C2' },
-              'user_agent': { 'rare_num_events': 30,'rare_score': 27.25317930340126,'rare_cardinality': 27 },
+              'user_agent': { 'rare_num_events': 30, 'rare_score': 27.25317930340126, 'rare_cardinality': 27 },
               'smooth': { 'smooth_beaconing_score': 97.42054727927368 }
             },
             'file': 'cotlow_awards.cfm',
@@ -165,10 +165,10 @@ test('it renders', function(assert) {
           'type': ['Network'],
           'numEvents': 1,
           'related_links': [
-            { 'type': 'investigate_session','url': '/investigation/10.101.217.121: 56005/navigate/query/sessionid%3D21053778' },
-            { 'type': 'investigate_src_ip','url': '/investigation/10.101.217.121: 56005/navigate/query/ip.src%3D66.249.67.67%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A24%3A22.000Z' },
-            { 'type': 'investigate_dst_ip','url': '/investigation/10.101.217.121: 56005/navigate/query/ip.dst%3D161.253.149.52%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A24%3A22.000Z' },
-            { 'type': 'investigate_destination_domain','url': '/investigation/10.101.217.121: 56005/navigate/query/alias.host%3D%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A24%3A22.000Z' }
+            { 'type': 'investigate_session', 'url': '/investigation/10.101.217.121: 56005/navigate/query/sessionid%3D21053778' },
+            { 'type': 'investigate_src_ip', 'url': '/investigation/10.101.217.121: 56005/navigate/query/ip.src%3D66.249.67.67%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A24%3A22.000Z' },
+            { 'type': 'investigate_dst_ip', 'url': '/investigation/10.101.217.121: 56005/navigate/query/ip.dst%3D161.253.149.52%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A24%3A22.000Z' },
+            { 'type': 'investigate_destination_domain', 'url': '/investigation/10.101.217.121: 56005/navigate/query/alias.host%3D%2Fdate%2F2016-01-11T04%3A04%3A22.000Z%2F2016-01-11T04%3A24%3A22.000Z' }
           ],
           'groupby_domain': 'www.media.gwu.edu',
           'groupby_destination_ip': '161.253.149.52',

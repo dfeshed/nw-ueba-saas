@@ -33,7 +33,7 @@ test('The tile component is rendered properly.', function(assert) {
     'createdBy': 'Suspected Command & Control Communication By Domain',
     'alertCount': 1,
     'eventCount': 5,
-    'categories': [],'sources': ['Event Stream Analysis'],'lastUpdated': 1452485774539,
+    'categories': [], 'sources': ['Event Stream Analysis'], 'lastUpdated': 1452485774539,
     'ruleId': '5681b379e4b0947bc54e6c9d',
     'summary': 'SA detected communications with www.media.gwu.edu that may be malware command and control.\n\n1. Evaluate if the domain is legitimate (online radio, news feed, partner, automated testing, etc.).\n2. Review domain registration for suspect information (Registrant country, registrar, no registration data found, etc).\n3. If the domain is suspect, go to the Investigations module to locate other activity to/from it.',
     groupBySourceIp: ['1.1.1.1'],
@@ -389,7 +389,7 @@ test('The update indicator component is rendered properly when an asynchronous u
   const testInc = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
-    'riskScore': 96,'prioritySort': 0,
+    'riskScore': 96, 'prioritySort': 0,
     'statusSort': 1,
     'created': 1452485774539,
     'assignee': { 'id': '1' },
@@ -409,7 +409,7 @@ test('The update indicator component is rendered properly when an asynchronous u
   const testInc = EmberObject.create({
     'id': 'INC-490',
     'name': 'Suspected command and control communication with www.media.gwu.edu',
-    'riskScore': 96,'prioritySort': 0,
+    'riskScore': 96, 'prioritySort': 0,
     'statusSort': 1,
     'created': 1452485774539,
     'assignee': { 'id': '1' }

@@ -61,7 +61,7 @@ test('The New Incident sort options component is rendered properly.', function(a
   const directionButton = container.find('.rsa-form-button-wrapper .rsa-form-button');
   const directionIcon = directionButton.find('.rsa-icon');
   assert.ok(directionIcon.hasClass('rsa-icon-arrow-down-7'), 'Direction button icon shows arrow down.');
-  assert.notOk(directionIcon.hasClass('rsa-icon-arrow-up-7'),'Direction button icon does not show arrow up.');
+  assert.notOk(directionIcon.hasClass('rsa-icon-arrow-up-7'), 'Direction button icon does not show arrow up.');
 
   // Define expected action params
   this.set('externalMockSortAction', (field, direction, view) => {

@@ -59,7 +59,7 @@ test('The incident detail header component is rendered properly.', function(asse
   assert.equal(this.$('.rsa-incident-detail-header__created').length, 1, 'Testing rsa-incident-detail-header__created element exists');
   assert.equal(this.$('.rsa-incident-detail-header__last-updated').length, 1, 'Testing rsa-incident-detail-header__last-updated element exists');
 
-  assert.equal(this.$('.rsa-incident-detail-header__id').text().indexOf('INC-491') >= 0 , true, 'Testing correct incident ID is rendered');
+  assert.equal(this.$('.rsa-incident-detail-header__id').text().indexOf('INC-491') >= 0, true, 'Testing correct incident ID is rendered');
   assert.equal(this.$('.rsa-incident-detail-header__name input').val(), 'Suspected command and control communication with www.mozilla.com', 'Testing correct incident Name is rendered');
   assert.equal(this.$('.rsa-incident-detail-header__priority .prompt').text().trim(), 'Low', 'Testing correct incident Priority is rendered');
   assert.equal(this.$('.rsa-incident-detail-header__alerts label').text(), 10, 'Testing correct incident Alerts is rendered');

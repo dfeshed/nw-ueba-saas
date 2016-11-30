@@ -18,7 +18,7 @@ test('The carousel component properly renders with the correct number of expecte
 });
 
 test('The number of content cards and navigational dots appropriately changes to match the parent container of the carousel.', function(assert) {
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
   this.render(hbs`
     <div class="constraintContainer" style="width:1440px">
       {{#rsa-carousel class="rsa-incident-carousel" items=mock as |incident|}}
@@ -30,7 +30,7 @@ test('The number of content cards and navigational dots appropriately changes to
   assert.equal(this.$('.rsa-carousel__footer .dot.is-selected').length, 1, 'I should be showing one selected navigational dot.');
   assert.equal(this.$('.rsa-carousel__footer .dot').length, 4, 'Given a container width of 1440px and a card width of 350px, I should be showing four navigational dots.');
 
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
   this.render(hbs`
     <div class="constraintContainer" style="width:1000px">
       {{#rsa-carousel class="rsa-incident-carousel" items=mock as |incident|}}
@@ -44,7 +44,7 @@ test('The number of content cards and navigational dots appropriately changes to
 });
 
 test('Left arrow button appearance and behavior.', function(assert) {
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
   this.render(hbs`
     <div class="constraintContainer" style="width:1440px">
       {{#rsa-carousel class="rsa-incident-carousel" items=mock as |incident|}}
@@ -71,7 +71,7 @@ test('Left arrow button appearance and behavior.', function(assert) {
 });
 
 test('The navigational arrow buttons react properly to user clicks.', function(assert) {
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
   this.render(hbs`
     <div class="constraintContainer" style="width:1440px">
       {{#rsa-carousel class="rsa-incident-carousel" items=mock as |incident|}}
@@ -87,7 +87,7 @@ test('The navigational arrow buttons react properly to user clicks.', function(a
 });
 
 test('The navigational dots react properly to user clicks.', function(assert) {
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
   this.render(hbs`
     <div class="constraintContainer" style="width:1440px">
       {{#rsa-carousel class="rsa-incident-carousel" items=mock as |incident|}}
@@ -101,7 +101,7 @@ test('The navigational dots react properly to user clicks.', function(assert) {
 });
 
 test('The number of dots increases in accordance with the model receiving new elements.', function(assert) {
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']);
   this.render(hbs`
     <div class="constraintContainer" style="width:1440px">
       {{#rsa-carousel class="rsa-incident-carousel" items=mock as |incident|}}
@@ -110,12 +110,12 @@ test('The number of dots increases in accordance with the model receiving new el
     </div>
   `);
   assert.equal(this.$('.rsa-carousel__footer .dot').length, 4, 'On initial load, with 10 items in the model there should be 4 navigational dots.');
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
   assert.equal(this.$('.rsa-carousel__footer .dot').length, 7, 'After receiving 10 additional items, there should be 7 navigational dots.');
 });
 
 test('The carousel component can properly handle the multiple rows feature.', function(assert) {
-  this.set('mock', ['a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t']);
+  this.set('mock', ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't']);
   this.render(hbs`
     <div class="constraintContainer" style="width:1440px">
       {{#rsa-carousel class="rsa-incident-carousel" allowMultipleRows=true items=mock as |incident|}}

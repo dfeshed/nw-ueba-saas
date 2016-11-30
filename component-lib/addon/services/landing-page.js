@@ -15,7 +15,7 @@ export default Service.extend({
   options: [{
     key: '/unified',
     label: 'userPreferences.defaultLandingPage.dashboard'
-  },{
+  }, {
     key: 'protected.respond',
     label: 'userPreferences.defaultLandingPage.respond'
   }, {

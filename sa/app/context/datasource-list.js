@@ -2,8 +2,8 @@ export default[
 
   {
     dataSourceType: 'Alerts',
-    header: '' ,
-    footer: '10 Items | Displaying 1 of 5|LAST UPDATED:' ,
+    header: '',
+    footer: '10 Items | Displaying 1 of 5|LAST UPDATED:',
     title: 'context.alerts.title',
     columns: [
       {
@@ -50,7 +50,7 @@ export default[
   },
 
   { dataSourceType: 'Incidents',
-    header: ' ' ,
+    header: ' ',
     footer: '10 Items | Displaying 1 of 5|LAST UPDATED:',
     title: 'context.incident.title',
 
