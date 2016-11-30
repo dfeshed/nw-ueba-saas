@@ -65,7 +65,8 @@ export default $.extend({}, BaseTranslations, {
       description: 'An unexpected error occurred when attempting to fetch the data records.'
     },
     meta: {
-      title: 'Meta'
+      title: 'Meta',
+      clickToOpen: 'Click to open'
     },
     events: {
       title: 'Events',

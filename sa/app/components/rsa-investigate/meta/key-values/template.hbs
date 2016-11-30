@@ -1,14 +1,17 @@
 {{rsa-progress-bar percent=values.percent enabled=(is-equal values.status 'streaming')}}
-<header class="rsa-investigate-meta-key-values__header">
+<header class="rsa-investigate-meta-key-values__header js-toggle-open" {{action "safeCallback" toggleAction}}>
   <h2 class="rsa-investigate-meta-key-values__title">
-    <span class="toggle-icon js-toggle-open" {{action "safeCallback" toggleAction}}>&#9654;</span>
+    <span class="toggle-icon">&#9654;</span>
     {{#with (meta-key-alias groupKey.name language) as |names|}}
-      <span class="meta-name js-toggle-open" {{action "safeCallback" toggleAction}} title="{{names.bothNames}}">{{names.displayName}}</span>
+      <span class="meta-name" title="{{names.bothNames}}">{{names.displayName}}</span>
     {{/with}}
     <span class="meta-size">
       ({{values.data.length}}{{#if (is-equal values.data.length options.size)}}+{{/if}})
     </span>
   </h2>
+  {{#unless groupKey.isOpen}}
+    <p class="rsa-investigate-meta-key-values__instruct js-instruct">{{t 'investigate.meta.clickToOpen'}}</p>
+  {{/unless}}
 </header>
 <section class="rsa-investigate-meta-key-values__body">
   <p class="rsa-investigate-meta-key-values__description">{{resolvedDescription}}</p>

@@ -4,7 +4,12 @@
 <section class="rsa-investigate-meta__content {{if hideDom 'hidden'}}">
   <header class="rsa-investigate-meta__header">
     <nav class="rsa-investigate-meta__nav">
-      <h2>{{t "investigate.meta.title"}}</h2>
+      <h2>
+        <span class="title">{{t "investigate.meta.title"}}</span>
+        {{#if group.keys.length}}
+          <span class="size js-group-keys-count">({{group.keys.length}})</span>
+        {{/if}}
+      </h2>
     </nav>
     <span class="rsa-investigate-meta__tools">
       {{#if (is-equal size 'max')}}

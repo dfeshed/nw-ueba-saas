@@ -19,7 +19,7 @@ $investigateMetaKeyToggleWidth: 1rem;
     z-index: $investigateMetaKeyMaxZIndex;
   }
 
-  &__header {
+  &__header h2 {
     @include rsa-font(header, small);
     position: relative; /* enables absolute positioning for child .toggle-open */
     padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) rsa-whitespace(more);
@@ -28,6 +28,11 @@ $investigateMetaKeyToggleWidth: 1rem;
       margin-left: rsa-whitespace(less);
       display: none;
     }
+  }
+
+  &__instruct {
+    @include rsa-font(light, smaller);
+    padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
   }
 
   &__description {

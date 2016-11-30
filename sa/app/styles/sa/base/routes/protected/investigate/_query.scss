@@ -175,6 +175,17 @@
       }
     }
 
+    &-key-values {
+      &__instruct {
+        color: rsa-color(blue, lighter);
+      }
+      &:hover {
+        .rsa-investigate-meta-key-values__instruct {
+          color: rsa-color(white);
+        }
+      }
+    }
+
     &-key-values__value {
 
       &:hover {

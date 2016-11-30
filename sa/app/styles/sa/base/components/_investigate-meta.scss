@@ -79,6 +79,10 @@
     h2 {
       display: inline-block;
     }
+
+    .size {
+      padding-left: 0.25rem;
+    }
   }
   &__tools {
     @include rsa-vendor-prefix(flex-grow, 0);

@@ -57,3 +57,23 @@ test('it renders the meta values panel by default', function(assert) {
   this.render(hbs`{{rsa-investigate/meta size="default"}}`);
   assert.equal(this.$('.rsa-investigate-meta-values-panel').length, 1, 'Expected to find meta values panel embedded in DOM');
 });
+
+test('it renders the total count of meta keys in the group, but only if not zero', function(assert) {
+  const emptyGroup = {};
+  const nonEmptyGroup = {
+    keys: [{
+      name: 'foo'
+    }, {
+      name: 'bar'
+    }]
+  };
+  this.set('group', null);
+  this.render(hbs`{{rsa-investigate/meta size="default" group=group}}`);
+  assert.equal(this.$('.js-group-keys-count').length, 0, 'Expected keys count to be omitted from DOM for a null group');
+
+  this.set('group', emptyGroup);
+  assert.equal(this.$('.js-group-keys-count').length, 0, 'Expected keys count to be omitted from DOM for an empty group');
+
+  this.set('group', nonEmptyGroup);
+  assert.equal(this.$('.js-group-keys-count').text(), `(${nonEmptyGroup.keys.length})`, 'Expected to find count of keys in DOM');
+});
