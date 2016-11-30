@@ -9,7 +9,7 @@ moduleForComponent('rsa-context-data-table', 'Integration | Component | rsa cont
 
 test('it renders', function(assert) {
 
-  const columns = DatasourceList.pop();
+  const [columns] = DatasourceList.slice(-2);
 
 
   const incidents = [{ 'resultList': [

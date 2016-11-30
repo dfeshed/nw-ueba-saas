@@ -126,14 +126,15 @@ export default $.extend({}, BaseTranslations, {
       moduleName: 'Module Name',
       analyticsScore: 'Analytics Score',
       machineCount: 'Machine Count',
-      signature: 'Signature'
+      signature: 'Signature',
+      header: '(IIOC Score > 500)'
     },
     iiocs: {
       title: 'Machine IIOC Levels',
-      iiocLevel0: 'Iioc Level 0',
-      iiocLevel1: 'Iioc Level 1',
-      iiocLevel2: 'Iioc Level 2',
-      iiocLevel3: 'Iioc Level 3'
+      lastExecuted: 'LastExecuted',
+      description: 'Description',
+      iOCLevel: 'IOCLevel',
+      header: ''
     },
     incident: {
       title: 'Incidents',
@@ -144,7 +145,8 @@ export default $.extend({}, BaseTranslations, {
       status: 'Status',
       assignee: 'ASSIGNEE',
       alertCount: 'Alerts',
-      priority: 'Priority'
+      priority: 'Priority',
+      header: ''
     },
     alerts: {
       title: 'Alerts',
@@ -155,7 +157,8 @@ export default $.extend({}, BaseTranslations, {
       severity: 'Severity',
       created: 'Created',
       id: 'Incident ID',
-      timestamp: 'timestamp'
+      timestamp: 'timestamp',
+      header: ''
     },
     list: {
       title: 'list',

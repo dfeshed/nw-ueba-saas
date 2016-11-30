@@ -1,7 +1,6 @@
 import Ember from 'ember';
 import DatasourceList from 'sa/context/datasource-list';
 import MultiColumnList from 'sa/context/tree-table';
-import Ecat from 'sa/context/ecat';
 import LiveConnect from 'sa/context/live-connect';
 
 const {
@@ -97,6 +96,12 @@ export default Component.extend({
 
   _populateContextsData(contextData) {
     switch (contextData.dataSourceType) {
+      case 'Modules': {
+        set(this.get('model').contextData, 'additionalData', contextData.resultMeta);
+        set(this.get('model').contextData, contextData.dataSourceType, contextData.resultList);
+        break;
+      }
+
       case 'LIST': {
         const { dataSourceType } = contextData;
         const model = this.get('model');
@@ -105,34 +110,7 @@ export default Component.extend({
         set(allContextData, dataSourceType, allSourceTypeData.concat(contextData));
         break;
       }
-      case 'ECAT':
-        {
-          const ecatData = Ecat.create();
 
-          contextData.resultList.forEach((obj) => {
-            const { Machine, Iocs, Processes, Network } = obj.details;
-            // get details and push into the respective objects
-            if (Machine) {
-              set(ecatData, 'host', Machine);
-            } else if (Iocs) {
-              ecatData.get('iioc').pushObjects(Iocs);
-            } else if (Processes) {
-              ecatData.get('processes').pushObjects(Processes);
-            } else if (Network) {
-              ecatData.get('network').pushObjects(Network);
-            } else {
-              // module object details
-              ecatData.set('modulesCount', obj.total_modules_count);
-              ecatData.set('minIoc', obj.minimum_ioc);
-              if (obj.details.Items !== undefined) {
-                obj.details.Items.forEach((entry) => ecatData.get('modules').push(entry));
-              }
-            }
-          });
-
-          set(this.get('model').contextData, 'ecat', ecatData);
-          break;
-        }
       case 'LiveConnect-File':
       case 'LiveConnect-Ip':
       case 'LiveConnect-Domain':
@@ -145,13 +123,8 @@ export default Component.extend({
         });
         break;
       default:
-        {
-          const { dataSourceType } = contextData;
-          const model = this.get('model');
-          const { contextData: allContextData } = model;
-          const allSourceTypeData = allContextData[dataSourceType] || [];
-          set(allContextData, dataSourceType, allSourceTypeData.concat(contextData));
-        }
+        set(this.get('model').contextData, contextData.dataSourceType, contextData.resultList);
+
     }
   },
 

@@ -81,6 +81,7 @@ $font-fade-color: rsa-color(gray, light);
       margin: 0 rsa-whitespace(least) 0 rsa-whitespace(least);
 
       .rsa-data-table {
+        padding-left: rsa-whitespace(base);
         &-header-cell{
 
 
