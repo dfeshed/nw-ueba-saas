@@ -12,6 +12,11 @@ module.exports = {
   env: {
     'browser': true
   },
+  globals: {
+    waitForReduxStateChange: true,
+    waitForReduxStateToEqual: true,
+    dispatchReduxAction: true
+  },
   rules: {
     // BASIC ESLINT RULES
     //'array-bracket-spacing': ['error', 'never'], May enforce this in the future

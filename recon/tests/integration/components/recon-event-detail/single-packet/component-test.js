@@ -1,3 +1,4 @@
+import wait from 'ember-test-helpers/wait';
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -68,12 +69,9 @@ test('single packet functionality', function(assert) {
     packetFields=packetFields
   }}`);
 
-  const done = assert.async();
-
-  setTimeout(() => {
+  return wait().then(() => {
     assert.ok(this.$('.rsa-icon-arrow-circle-right-2').length === 1, 'Request arrow shown');
     assert.equal(this.$().text().trim().replace(/\s/g, '').substring(0, 200),
       'requestpacket1InvaliddateID575575SEQ39468474530bytes000000000010000020000030000040100d7f75c4c87056819a94dd080045000034bd5e400040065088c0a83a06321c0013ffaa0050eb401cdd21b4df14801010006c5700000101080a32');
-    done();
-  }, 1000);
+  });
 });

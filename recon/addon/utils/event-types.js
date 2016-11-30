@@ -35,8 +35,11 @@ function determineEventType(meta) {
   return EVENT_TYPES.findBy('medium', medium[1]);
 }
 
+const EVENT_TYPES_BY_NAME = {};
+EVENT_TYPES.forEach((t) => EVENT_TYPES_BY_NAME[t.name] = t);
 
 export {
   determineEventType,
-  EVENT_TYPES
+  EVENT_TYPES,
+  EVENT_TYPES_BY_NAME
 };

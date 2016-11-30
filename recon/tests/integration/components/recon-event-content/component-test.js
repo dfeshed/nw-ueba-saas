@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-import * as ACTION_TYPES from 'recon/actions/types';
-import DataActions from 'recon/actions/data-creators';
-
-const { run } = Ember;
+import DataHelper from '../../../helpers/data-helper';
 
 moduleForComponent('recon-event-content', 'Integration | Component | recon event content', {
   integration: true,
@@ -15,43 +12,39 @@ moduleForComponent('recon-event-content', 'Integration | Component | recon event
 });
 
 test('it renders child view', function(assert) {
-  const done = assert.async();
-  this.get('redux').dispatch(DataActions.initializeRecon({ eventId: 1, endpointId: 2, meta: [['medium', 1]] }));
+  new DataHelper(this.get('redux')).initializeData();
   this.render(hbs`{{recon-event-content}}`);
-  run.later(() => {
+  return wait().then(() => {
     assert.equal(this.$().find('.recon-event-detail-packets').length, 1);
-    done();
-  }, 400);
+  });
 });
 
 test('it renders content error', function(assert) {
-  const done = assert.async();
-  this.get('redux').dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_FAILURE, payload: 2 });
+  new DataHelper(this.get('redux')).contentRetrieveFailure(2);
   this.render(hbs`{{recon-event-content}}`);
-  run.later(() => {
+  return wait().then(() => {
     assert.equal(this.$().find('.recon-error').length, 1);
-    done();
-  }, 400);
+  });
 });
 
 test('it renders spinner', function(assert) {
-  const done = assert.async();
-  this.get('redux').dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
+  new DataHelper(this.get('redux')).contentRetrieveStarted();
   this.render(hbs`{{recon-event-content}}`);
-  run.later(() => {
+  return wait().then(() => {
     assert.equal(this.$().find('.recon-loader').length, 1);
-    done();
-  }, 400);
+  });
 });
 
 test('log events redirect to text view', function(assert) {
-  const done = assert.async();
-  this.get('redux').dispatch(DataActions.initializeRecon({ eventId: 1, endpointId: 2, meta: [['medium', 32]] }));
+  new DataHelper(this.get('redux'))
+    .initializeData({ eventId: 1, endpointId: 2, meta: [['medium', 32]] })
+    .setEventTypeToLog()
+    .setViewToText();
+
   this.render(hbs`{{recon-event-content}}`);
-  run.later(() => {
+  return wait().then(() => {
     assert.equal(this.$('.recon-event-detail-text').length, 1, 'On the Text View');
     assert.equal(this.$('.recon-event-detail-packets').length, 0, 'Not on the Packet View');
     assert.equal(this.$('.recon-event-detail-files').length, 0, 'Not on the File View');
-    done();
-  }, 400);
+  });
 });

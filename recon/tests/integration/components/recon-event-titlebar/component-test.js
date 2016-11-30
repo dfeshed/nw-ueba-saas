@@ -1,3 +1,4 @@
+import wait from 'ember-test-helpers/wait';
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -8,6 +9,8 @@ import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 import DataActions from 'recon/actions/data-creators';
 const { $ } = Ember;
+
+import DataHelper from '../../../helpers/data-helper';
 
 let dispatchSpy;
 
@@ -26,14 +29,6 @@ moduleForComponent('recon-event-titlebar', 'Integration | Component | recon even
 test('no index or total shows just label for recon type', function(assert) {
   this.render(hbs`{{recon-event-titlebar }}`);
   assert.equal(this.$('.ember-power-select-trigger').text().trim(), RECON_VIEW_TYPES_BY_NAME.PACKET.label);
-});
-
-test('title renders', function(assert) {
-  const total = 555;
-  const index = 25;
-  this.get('redux').dispatch(DataActions.initializeRecon({ total, index, meta: [['medium', 1]] }));
-  this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(this.$('.ember-power-select-trigger').text().trim(), `${RECON_VIEW_TYPES_BY_NAME.PACKET.label} (26 of 555)`);
 });
 
 test('clicking close executes action', function(assert) {
@@ -82,48 +77,59 @@ test('clicking meta toggle executes actions', function(assert) {
   actionSpy.reset();
 });
 
+const initializeData = { total: 555, index: 25, meta: [['medium', 1]] };
+
+test('title renders', function(assert) {
+  new DataHelper(this.get('redux')).initializeData(initializeData);
+  this.render(hbs`{{recon-event-titlebar}}`);
+  return wait().then(() => {
+    assert.equal(this.$('.ember-power-select-trigger').text().trim(), `${RECON_VIEW_TYPES_BY_NAME.PACKET.label} (26 of 555)`);
+  });
+});
+
+
 test('all views enabled for network sessions', function(assert) {
   assert.expect(3);
-
-  this.get('redux').dispatch(DataActions.initializeRecon({ meta: [['medium', 1]] }));
+  new DataHelper(this.get('redux')).initializeData({ meta: [['medium', 1]] });
   this.render(hbs`{{recon-event-titlebar}}`);
-
-  clickTrigger();
-
-  assert.ok($('.ember-power-select-option:contains("Packet View")').attr('aria-disabled') !== 'true', 'Packet View is enabled');
-  assert.ok($('.ember-power-select-option:contains("File View")').attr('aria-disabled') !== 'true', 'File View is enabled');
-  assert.ok($('.ember-power-select-option:contains("Text View")').attr('aria-disabled') !== 'true', 'Text View is enabled');
+  return wait().then(() => {
+    clickTrigger();
+    assert.ok($('.ember-power-select-option:contains("Packet View")').attr('aria-disabled') !== 'true', 'Packet View is enabled');
+    assert.ok($('.ember-power-select-option:contains("File View")').attr('aria-disabled') !== 'true', 'File View is enabled');
+    assert.ok($('.ember-power-select-option:contains("Text View")').attr('aria-disabled') !== 'true', 'Text View is enabled');
+  });
 });
 
 test('everything but text is disabled for logs', function(assert) {
   assert.expect(3);
-
-  this.get('redux').dispatch(DataActions.initializeRecon({ meta: [['medium', 32]] }));
+  new DataHelper(this.get('redux')).setEventTypeToLog();
   this.render(hbs`{{recon-event-titlebar}}`);
-
-  clickTrigger();
-
-  assert.ok($('.ember-power-select-option:contains("Packet View")').attr('aria-disabled') === 'true', 'Packet View is disabled');
-  assert.ok($('.ember-power-select-option:contains("File View")').attr('aria-disabled') === 'true', 'File View is disabled');
-  assert.ok($('.ember-power-select-option:contains("Text View")').attr('aria-disabled') !== 'true', 'Text View is enabled');
+  return wait().then(() => {
+    clickTrigger();
+    assert.ok($('.ember-power-select-option:contains("Packet View")').attr('aria-disabled') === 'true', 'Packet View is disabled');
+    assert.ok($('.ember-power-select-option:contains("File View")').attr('aria-disabled') === 'true', 'File View is disabled');
+    assert.ok($('.ember-power-select-option:contains("Text View")').attr('aria-disabled') !== 'true', 'Text View is enabled');
+  });
 });
 
 test('request/response toggles enabled for packets', function(assert) {
   assert.expect(2);
-
-  this.get('redux').dispatch(DataActions.initializeRecon({ meta: [['medium', 1]] }));
+  // set to packets by default
   this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(this.$('.toggle-request').hasClass('disabled'), false, 'Request toggle enabled for packets');
-  assert.equal(this.$('.toggle-response').hasClass('disabled'), false, 'Response toggle enabled for packets');
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-request').hasClass('disabled'), false, 'Request toggle enabled for packets');
+    assert.equal(this.$('.toggle-response').hasClass('disabled'), false, 'Response toggle enabled for packets');
+  });
 });
 
 test('request/response toggles disabled for logs', function(assert) {
   assert.expect(2);
-
-  this.get('redux').dispatch(DataActions.initializeRecon({ meta: [['medium', 32]] }));
+  new DataHelper(this.get('redux')).setEventTypeToLog();
   this.render(hbs`{{recon-event-titlebar}}`);
-  assert.equal(this.$('.toggle-request').hasClass('disabled'), true, 'Request toggle disabled for log');
-  assert.equal(this.$('.toggle-response').hasClass('disabled'), true, 'Response toggle disabled for log');
+  return wait().then(() => {
+    assert.equal(this.$('.toggle-request').hasClass('disabled'), true, 'Request toggle disabled for log');
+    assert.equal(this.$('.toggle-response').hasClass('disabled'), true, 'Response toggle disabled for log');
+  });
 });
 
 

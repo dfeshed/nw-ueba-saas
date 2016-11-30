@@ -1,11 +1,8 @@
-import Ember from 'ember';
+import wait from 'ember-test-helpers/wait';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 
-const { run } = Ember;
-
-import VisualActions from 'recon/actions/visual-creators';
-import DataActions from 'recon/actions/data-creators';
+import DataHelper from '../../../helpers/data-helper';
 
 moduleForComponent('recon-event-header', 'Integration | Component | recon event header', {
   integration: true,
@@ -15,32 +12,26 @@ moduleForComponent('recon-event-header', 'Integration | Component | recon event 
 });
 
 test('headerItems render correctly', function(assert) {
-  const done = assert.async();
-  this.get('redux').dispatch(DataActions.initializeRecon({ eventId: 1, endpointId: 2, meta: [['medium', 1]] }));
+  new DataHelper(this.get('redux')).initializeData();
   this.render(hbs`{{recon-event-header}}`);
-
-  run.later(() => {
+  return wait().then(() => {
     assert.equal(this.$('.header-item').length, 12);
     assert.equal(this.$('.header-item .name').first().text().trim(), 'device');
     assert.equal(this.$('.header-item .value').first().text().trim(), 'devicename');
-    done();
-  }, 200);
+  });
 });
 
 test('isHeaderOpen can toggle header visibility', function(assert) {
-  const done = assert.async();
+  const dataHelper = new DataHelper(this.get('redux'))
+    .initializeData()
+    .toggleHeader();
 
-  this.get('redux').dispatch(DataActions.initializeRecon({ eventId: 1, endpointId: 2, meta: [['medium', 1]] }));
-  this.get('redux').dispatch(VisualActions.toggleReconHeader());
-
-  this.render(hbs`{{recon-event-header }}`);
-
-  run.later(() => {
+  this.render(hbs`{{recon-event-header}}`);
+  return wait().then(() => {
     assert.equal(this.$('.header-item').length, 0);
-    this.get('redux').dispatch(VisualActions.toggleReconHeader());
-    run.later(() => {
+    dataHelper.toggleHeader();
+    return wait().then(() => {
       assert.equal(this.$('.header-item').length, 12);
-      done();
-    }, 200);
-  }, 200);
+    });
+  });
 });

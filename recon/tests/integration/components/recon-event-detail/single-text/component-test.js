@@ -1,3 +1,4 @@
+import wait from 'ember-test-helpers/wait';
 import Ember from 'ember';
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
@@ -69,13 +70,10 @@ test('packet text', function(assert) {
     shouldShowPacket=true
   }}`);
 
-  const done = assert.async();
-
-  setTimeout(() => {
+  return wait().then(() => {
     assert.ok(this.$('.rsa-icon-arrow-circle-left-2').length === 1, 'Response arrow shown');
     assert.equal(this.$().text().trim().replace(/\s/g, ''), 'responseTestingtext');
-    done();
-  }, 1000);
+  });
 });
 
 test('log text', function(assert) {
@@ -140,10 +138,7 @@ test('log text', function(assert) {
     shouldShowPacket=true
   }}`);
 
-  const done = assert.async();
-
-  setTimeout(() => {
+  return wait().then(() => {
     assert.equal(this.$().text().trim().replace(/\s/g, ''), 'Testinglogtext');
-    done();
-  }, 1000);
+  });
 });
