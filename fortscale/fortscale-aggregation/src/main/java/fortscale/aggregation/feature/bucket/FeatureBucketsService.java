@@ -126,7 +126,7 @@ public abstract class FeatureBucketsService {
 		Map<String, Feature> featuresMap = getFeatureExtractService().extract(featureBucketConf.getAllFeatureNames(), event);
 		Map<String, Feature> aggrFeaturesMap = getAggrFeatureFunctionsService().updateAggrFeatures(event, featureBucketConf.getAggrFeatureConfs(), featureBucket.getAggregatedFeatures(), featuresMap);
 		featureBucket.setAggregatedFeatures(aggrFeaturesMap);
-		if(featureBucket.getContextId() != null)
+		if(featureBucket.getId() != null)
 		{
 			getFeatureBucketsStore().storeFeatureBucket(featureBucketConf, featureBucket);
 		}
