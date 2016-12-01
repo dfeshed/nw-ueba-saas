@@ -37,9 +37,6 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
-
-	@Autowired
-	private FeatureBucketsMongoStore featureBucketsMongoStore;
 	
 	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.event.seconds}")
 	private long keyValueDbRetentionInEventSeconds;
@@ -187,7 +184,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		featureBucketStore.put(key, featureBucket);
 		if(featureBucket.getId() != null)
 		{
-			featureBucketsMongoStore.storeFeatureBucket(featureBucketConf,featureBucket);
+			super.storeFeatureBucket(featureBucketConf,featureBucket);
 		}
 	}
 	
