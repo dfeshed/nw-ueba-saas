@@ -12,7 +12,7 @@ from bdp_utils.manager import OnlineManager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 
-logger = logging.getLogger('step2')
+logger = logging.getLogger('step2_online')
 
 
 class Manager(OnlineManager):
