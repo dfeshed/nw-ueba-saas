@@ -11,7 +11,7 @@ from bdp_utils.run import step_runner_main
 from bdp_utils.samza import are_tasks_running
 from bdp_utils.log import init_logging
 
-logger = logging.getLogger('2.6-step4')
+logger = logging.getLogger('step4')
 init_logging(logger)
 
 

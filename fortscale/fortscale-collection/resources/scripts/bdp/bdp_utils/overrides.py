@@ -74,10 +74,10 @@ overrides = {
     'stepSAM.cleanup': [
         'cleanup_step = AfterEnriched'
     ],
-    '2.6-step4.scores': step4v26 + [
+    'step4.scores': step4v26 + [
         'secondsBetweenModelSyncs = ' + really_big_epochtime
     ],
-    '2.6-step4.build_models': step4v26 + [
+    'step4.build_models': step4v26 + [
         'buildModelsFirst = true'
     ]
 }

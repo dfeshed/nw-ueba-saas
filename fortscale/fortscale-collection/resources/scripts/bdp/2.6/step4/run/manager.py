@@ -14,7 +14,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils.mongo import update_models_time
 
 
-logger = logging.getLogger('2.6-step4')
+logger = logging.getLogger('step4')
 
 
 class Manager(DontReloadModelsOverridingManager):
@@ -24,11 +24,11 @@ class Manager(DontReloadModelsOverridingManager):
         super(Manager, self).__init__(logger=logger,
                                       host=host,
                                       scoring_task_name_that_should_not_reload_models=Manager._SCORING_TASK_NAME)
-        self._runner = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.scores',
+        self._runner = bdp_utils.run.Runner(name='BdpEntityEventsCreation.scores',
                                             logger=logger,
                                             host=host,
                                             block=False)
-        self._builder = bdp_utils.run.Runner(name='2.6-BdpEntityEventsCreation.build_models',
+        self._builder = bdp_utils.run.Runner(name='BdpEntityEventsCreation.build_models',
                                              logger=logger,
                                              host=host,
                                              block=True,
@@ -69,7 +69,7 @@ class Manager(DontReloadModelsOverridingManager):
                             task_name=Manager._SCORING_TASK_NAME)
 
     def _run_scores(self):
-        kill_process = self._runner.run(overrides_key='2.6-step4.scores')
+        kill_process = self._runner.run(overrides_key='step4.scores')
         is_valid = validate_no_missing_events(host=self._host,
                                               timeout=self._validation_timeout,
                                               polling=self._validation_polling,
@@ -80,7 +80,7 @@ class Manager(DontReloadModelsOverridingManager):
         return is_valid
 
     def _build_models(self):
-        self._builder.run(overrides_key='2.6-step4.build_models')
+        self._builder.run(overrides_key='step4.build_models')
         logger.info('DONE')
         return True
 

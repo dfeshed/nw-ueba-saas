@@ -4,7 +4,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
 from automatic_config.common.utils.mongo import iter_collections
 
-logger = logging.getLogger('2.6-step4')
+logger = logging.getLogger('step4')
 
 
 def remove_documents(host, collection_names_regex):
