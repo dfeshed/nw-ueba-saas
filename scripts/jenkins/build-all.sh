@@ -24,7 +24,7 @@ set +x
 #
 # For PR builds, it finds all files changed in every commit
 # that is a part of the PR branch.
-if [[ ("$GIT_BRANCH" == "master") ]]
+if [[ ("$GIT_BRANCH" == "origin/master") ]]
 then
   files=$(git diff --name-only $GIT_PREVIOUS_SUCCESSFUL_COMMIT $GIT_COMMIT)
 else
