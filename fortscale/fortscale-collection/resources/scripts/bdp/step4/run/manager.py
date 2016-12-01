@@ -4,13 +4,13 @@ import sys
 
 from mongo_stats import remove_documents
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from step4.validation.distribution.validation import validate_distribution
 from step4.validation.missing_events.validation import validate_no_missing_events
 import bdp_utils.run
 from bdp_utils.manager import DontReloadModelsOverridingManager
 from bdp_utils.samza import restart_task
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils.mongo import update_models_time
 
 
