@@ -5,7 +5,7 @@ import sys
 
 from validation import validate_started_processing_everything
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from bdp_utils import parsers, colorer
 
 

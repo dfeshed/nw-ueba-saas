@@ -5,7 +5,7 @@ import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models_and_acm
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
@@ -13,7 +13,7 @@ from bdp_utils.samza import restart_task
 from bdp_utils.kafka import send
 import bdp_utils.run
 from step2_online.validation.validation import block_until_everything_is_validated
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
 from automatic_config.common.utils.mongo import update_models_time, get_collections_size
 

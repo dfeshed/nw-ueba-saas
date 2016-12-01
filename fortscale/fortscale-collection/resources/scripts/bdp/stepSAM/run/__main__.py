@@ -5,7 +5,7 @@ import sys
 
 from manager import Manager
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
 from bdp_utils.run import step_runner_main
 from bdp_utils.samza import are_tasks_running
