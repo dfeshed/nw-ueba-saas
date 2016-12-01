@@ -165,6 +165,9 @@ def main():
     validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources] \
         if arguments.block_on_data_sources else None
+    if not arguments.is_online_mode:
+        logger.error('offline mode is deprecated (used only with older versions of the product)')
+        return False
     if Manager(host=arguments.host,
                is_online_mode=arguments.is_online_mode,
                start=arguments.start,
