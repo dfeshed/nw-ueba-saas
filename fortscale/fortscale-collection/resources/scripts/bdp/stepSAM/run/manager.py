@@ -223,7 +223,7 @@ class Manager(DontReloadModelsOverridingManager):
         send(logger=logger,
              host=self._host,
              topic='fortscale-aggregation-events-control',
-             message='{\\"date_time_unix\\": ' + str(end_time_epoch + 1) + '}')
+             message='{"date_time_unix": ' + str(end_time_epoch + 1) + '}')
 
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)
