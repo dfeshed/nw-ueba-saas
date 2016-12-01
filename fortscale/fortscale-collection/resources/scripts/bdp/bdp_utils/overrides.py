@@ -13,13 +13,13 @@ step3 = [
     'modelBuildingTimeoutInSeconds = ' + modelBuildingTimeoutInSeconds,
     'single_step = AggregatedEventsToEntityEvents',
     'cleanup_step = Cleanup',
-    'records_batch_size = 300000000',
+    'records_batch_size = 2000000',
     'secondsBetweenModelSyncs = ' + really_big_epochtime
 ]
 step4v4 = [
     'single_step = EntityEventsCreation',
     'cleanup_step = Cleanup',
-    'records_batch_size = 500000000',
+    'records_batch_size = 200000',
     'modelBuildingTimeoutInSeconds = ' + modelBuildingTimeoutInSeconds,
     'removeModelsFinally = false',
     'eventProcessingSyncTimeoutInSeconds = ' + eventProcessingSyncTimeoutInSeconds
@@ -58,7 +58,7 @@ overrides = {
     ],
     'step3.cleanup': [
         'cleanup_step = AggregatedEventsToEntityEvents',
-        'records_batch_size = 500000',
+        'records_batch_size = 2000000',
     ],
     'step5': [
         'single_step = NotificationsToIndicators',
