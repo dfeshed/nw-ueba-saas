@@ -29,7 +29,10 @@ def positive_int_type(i):
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
+    parser = argparse.ArgumentParser(parents=[parsers.host,
+                                              parsers.start,
+                                              parsers.online_manager],
+                                     formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='step2_online/run',
                                      description=
 '''Scoring to aggregation step
@@ -44,89 +47,65 @@ Step results:
     mongo collections (all those starting with "aggr_").
 
 Inner workings:
-    This step supports two operation modes:
-    1. Offline: all of the data (starting from the time specified by --start)
-       will be processed by batches (the size is determined by the --batch_size
-       argument) until there's no more data available in impala.
-       The processing is done by calling fortscale-collection-1.1.0-SNAPSHOT.jar
-       directly (without using BDP).
-       Once the script finishes successfully it's promised that all data
-       has been validated (read more about validations below).
-    2. Online: the data will be processed by batches the same way as in offline
-       mode, with the exception that once there's no more data available the
-       script will wait until there's more data in the tables specified by the
-       --block_on_data_sources argument (once these tables have the data, a new
-       batch will run on all of the data sources).
-       Because in online mode the script never finishes, and because we
-       don't want to validate every batch once it ends (because we don't
-       want the script to wait for the validations - we want to start the
-       next batch as soon as possible) - it's only promised that all the
-       data up until some delay has been validated. This delay is
-       controlled by the --validation_batches_delay argument.
-    In both modes the validations include making sure all events have
-    been processed.
+    This step supports running in online mode only. All of the data (starting
+    from the time specified by --start) will be processed by batches (the size
+    is determined by the --batch_size argument) until there's no more data
+    available in impala. The processing is done by calling
+    fortscale-collection-1.1.0-SNAPSHOT.jar directly (without using BDP).
+    Once there's no more data available the script will wait until there's
+    more data in the tables specified by the --block_on_data_sources argument
+    (once these tables have the data, a new batch will run on all of the data
+    sources). Because the script never finishes, and because we don't want to
+    validate every batch once it ends (because we don't want the script to wait
+    for the validations - we want to start the next batch as soon as possible),
+    it's only promised that all the data up until some delay has been validated.
+    This delay is controlled by the --validation_batches_delay argument.
+    The validations include making sure all events have been processed.
 
 Usage examples:
-    python step2_online/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 16
-    python step2_online/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
+    python step2_online/run --start "8 may 1987" --block_on_data_sources ssh ntlm --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 1 6
     ''')
-    more_args_parent = argparse.ArgumentParser(add_help=False)
-    more_args_parent.add_argument('--validation_batches_delay',
-                                  action='store',
-                                  dest='validation_batches_delay',
-                                  help="The delay (in batches) used when validating, i.e. - whenever the n'th batch was sent "
-                                       "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
-                                  type=positive_int_type,
-                                  default=1)
-    more_args_parent.add_argument('--batch_size',
-                                  action='store',
-                                  dest='batch_size',
-                                  help='The batch size (in hours) to pass to the step',
-                                  type=int,
-                                  required=True)
-    more_args_parent.add_argument('--block_on_data_sources',
-                                  nargs='+',
-                                  action='store',
-                                  dest='block_on_data_sources',
-                                  help='The data sources to wait for before starting to run a batch. If not specified, '
-                                       'the data sources which are active all the time (in every single hour) will be '
-                                       'used',
-                                  choices=set(data_source_to_score_tables.keys()))
-    more_args_parent.add_argument('--calc_block_on_tables_based_on_days',
-                                  action='store',
-                                  dest='calc_block_on_tables_based_on_days',
-                                  help='If --block_on_data_sources is not specified, you should specify how many days '
-                                       'back should be analyzed in order to find what tables to block on',
-                                  type=int)
-
-    models_scheduler_parent = argparse.ArgumentParser(add_help=False)
-    models_scheduler_parent.add_argument('--build_models_interval_in_hours',
-                                         action='store',
-                                         dest='build_models_interval_in_hours',
-                                         help='The logic time interval (in hours) for building models. '
-                                              'If not specified, no models will be built '
-                                              '(they can, however be built by an external entity).',
-                                         type=int)
-    models_scheduler_parent.add_argument('--build_entity_models_interval_in_hours',
-                                         action='store',
-                                         dest='build_entity_models_interval_in_hours',
-                                         help='The logic time interval (in hours) for building entity models. '
-                                              'If not specified, no entity models will be built '
-                                              '(they can, however be built by an external entity).',
-                                         type=int)
-
-    subparsers = parser.add_subparsers(help='commands')
-    common_parents = [more_args_parent,
-                      parsers.host,
-                      parsers.start]
-    online_parser = subparsers.add_parser('online',
-                                          help='Run the step in online mode',
-                                          parents=common_parents + [parsers.online_manager, models_scheduler_parent])
-    online_parser.set_defaults(is_online_mode=True)
-    offline_parser = subparsers.add_parser('offline',
-                                           help='Run the step in offline mode',
-                                           parents=common_parents + [parsers.validation_polling_interval, parsers.validation_timeout])
-    offline_parser.set_defaults(is_online_mode=False)
+    parser.add_argument('--validation_batches_delay',
+                        action='store',
+                        dest='validation_batches_delay',
+                        help="The delay (in batches) used when validating, i.e. - whenever the n'th batch was sent "
+                             "to aggregations, the (n - validation_batches_delay)'th batch is validated. Default is 1",
+                        type=positive_int_type,
+                        default=1)
+    parser.add_argument('--batch_size',
+                        action='store',
+                        dest='batch_size',
+                        help='The batch size (in hours) to pass to the step',
+                        type=int,
+                        required=True)
+    parser.add_argument('--block_on_data_sources',
+                        nargs='+',
+                        action='store',
+                        dest='block_on_data_sources',
+                        help='The data sources to wait for before starting to run a batch. If not specified, '
+                             'the data sources which are active all the time (in every single hour) will be '
+                             'used',
+                        choices=set(data_source_to_score_tables.keys()))
+    parser.add_argument('--calc_block_on_tables_based_on_days',
+                        action='store',
+                        dest='calc_block_on_tables_based_on_days',
+                        help='If --block_on_data_sources is not specified, you should specify how many days '
+                             'back should be analyzed in order to find what tables to block on',
+                        type=int)
+    parser.add_argument('--build_models_interval_in_hours',
+                        action='store',
+                        dest='build_models_interval_in_hours',
+                        help='The logic time interval (in hours) for building models. '
+                             'If not specified, no models will be built '
+                             '(they can, however be built by an external entity).',
+                        type=int)
+    parser.add_argument('--build_entity_models_interval_in_hours',
+                        action='store',
+                        dest='build_entity_models_interval_in_hours',
+                        help='The logic time interval (in hours) for building entity models. '
+                             'If not specified, no entity models will be built '
+                             '(they can, however be built by an external entity).',
+                        type=int)
     return parser
 
 
@@ -165,11 +144,8 @@ def main():
     validate_not_running_same_period_twice(arguments)
     block_on_tables = [data_source_to_score_tables[data_source] for data_source in arguments.block_on_data_sources] \
         if arguments.block_on_data_sources else None
-    if not arguments.is_online_mode:
-        logger.error('offline mode is deprecated (used only with older versions of the product)')
-        return False
     if Manager(host=arguments.host,
-               is_online_mode=arguments.is_online_mode,
+               is_online_mode=True,
                start=arguments.start,
                block_on_tables=block_on_tables,
                calc_block_on_tables_based_on_days=arguments.calc_block_on_tables_based_on_days,
