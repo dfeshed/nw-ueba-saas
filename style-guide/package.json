@@ -11,7 +11,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/common/fake-out-bower jquery nouislider"
+    "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
   },
   "repository": "",
   "engines": {

@@ -11,7 +11,7 @@
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
-    "postinstall": "node ../scripts/common/fake-out-bower jquery faker,Faker fake-xml-http-request,FakeXMLHttpRequest route-recognizer pretender nouislider"
+    "postinstall": "node ../scripts/node/fake-out-bower jquery faker,Faker fake-xml-http-request,FakeXMLHttpRequest route-recognizer pretender nouislider"
   },
   "repository": "",
   "engines": {

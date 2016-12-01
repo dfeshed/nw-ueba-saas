@@ -28,9 +28,9 @@ CWD=$(pwd)
 scriptDir="$(dirname $0)"
 . $scriptDir/_util.sh
 
-# run install on common build node utilities
-info "Running install for common build utilities"
-cd $scriptDir/common
+# run install on node build node utilities
+info "Running install for node build utilities"
+cd $scriptDir/node
 yarn
 cd $CWD
 

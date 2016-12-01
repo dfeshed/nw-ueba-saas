@@ -17,6 +17,33 @@
 # possibly comment this out to debug problematic build
 set +x
 
+# Determine the files that have changed for this build
+#
+# For master builds, it finds all files changed
+# since the last successful build
+#
+# For PR builds, it finds all files changed in every commit
+# that is a part of the PR branch.
+if [[ ("$GIT_BRANCH" == "master") ]]
+then
+  files=$(git diff --name-only $GIT_PREVIOUS_SUCCESSFUL_COMMIT $GIT_COMMIT)
+else
+  git config --add remote.origin.fetch +refs/pull/*/head:refs/remotes/origin/pull/*
+  git fetch origin
+  firstCommitInBranch=$(git log --no-merges origin/pull/$ghprbPullId --not origin/master --format=format:%H | tail -n 1)
+
+  # 1) Note the ~1. It is a diff, so we want the difference between the
+  # commit before the first commit in the branch and the current commit
+  # 2) only want names,
+  # 3) need to turn off rename detection which was enabled by default
+  # in git 2.9. If rename detection is on, the only file reported
+  # is the new destination not the old one.
+  files=$(git diff --name-only --no-renames $firstCommitInBranch~1 $ghprbActualCommit)
+fi
+echo "*** BEGIN FILES CHANGED"
+echo $files | tr " " "\n"
+echo "*** END FILES CHANGED"
+
 # bring in utilities and settings
 scriptDir="$(dirname "$0")"
 . $scriptDir/../_util.sh

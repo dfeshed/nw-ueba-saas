@@ -120,10 +120,10 @@ info "***********************"
 info "Building apps"
 
 # Run node script that will check bower versions for all projects
-node scripts/jenkins/check-bower-versions.js
+node scripts/node/check-bower-versions.js
 
-# install common scripts deps
-cd scripts/common
+# install node scripts deps
+cd scripts/node
 yarn
 cd $CWD
 
