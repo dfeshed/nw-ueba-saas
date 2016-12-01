@@ -18,7 +18,7 @@ from bdp_utils.log import init_logging
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, mongo
 
-logger = logging.getLogger('step2')
+logger = logging.getLogger('step2_online')
 init_logging(logger)
 
 
@@ -30,7 +30,7 @@ def positive_int_type(i):
 
 def create_parser():
     parser = argparse.ArgumentParser(formatter_class=argparse.RawDescriptionHelpFormatter,
-                                     prog='step2/run',
+                                     prog='step2_online/run',
                                      description=
 '''Scoring to aggregation step
 ---------------------------
@@ -67,8 +67,8 @@ Inner workings:
     been processed.
 
 Usage examples:
-    python step2/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 16
-    python step2/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
+    python step2_online/run online --start "8 may 1987" --block_on_data_sources ssh ntlm --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 16
+    python step2_online/run offline --start "8 may 1987" --block_on_data_sources ssh ntlm --timeout 5 --batch_size 24 --polling_interval 3
     ''')
     more_args_parent = argparse.ArgumentParser(add_help=False)
     more_args_parent.add_argument('--validation_batches_delay',

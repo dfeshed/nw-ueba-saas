@@ -7,7 +7,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from bdp_utils.data_sources import data_source_to_score_tables
 from bdp_utils.run import validate_bdp_flag
 
-logger = logging.getLogger('step2')
+logger = logging.getLogger('step2_online')
 
 
 def run(start_time_epoch, batch_size_in_hours, is_online_mode):
@@ -26,7 +26,7 @@ def run(start_time_epoch, batch_size_in_hours, is_online_mode):
                  'batchSize=500000000',
                  'startTime=' + str(int(start_time_epoch * 1000)),
                  'hoursToRun=' + str(batch_size_in_hours)]
-    output_file_name = 'step2-fortscale-collection-nohup.out'
+    output_file_name = 'step2_online-fortscale-collection-nohup.out'
     logger.info('running ' + ' '.join(call_args) + ' >> ' + output_file_name)
     with open(output_file_name, 'a') as f:
         call(call_args,
