@@ -14,6 +14,8 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils, io
 from automatic_config.common.utils.mongo import get_collections_time_boundary
 
+_IGNORE_COLLECTION_ARG = '--ignore_collection'
+
 
 class _Locker:
     _LOCK_FILE_PATH = os.path.dirname(os.path.abspath(__file__)) + '/step.lock'
@@ -38,9 +40,21 @@ class _Locker:
         os.remove(_Locker._LOCK_FILE_PATH)
 
 
+def _is_collection_running():
+    ps_p = subprocess.Popen(['ps', '-elf'], stdout=subprocess.PIPE)
+    grep_p = subprocess.Popen(['grep', '[f]ortscale-collection'], stdin=ps_p.stdout, stdout=subprocess.PIPE)
+    return len(grep_p.communicate()[0]) > 0
+
+
 def step_runner_main(logger):
     def wrapper(main):
         def run_main():
+            if _IGNORE_COLLECTION_ARG in sys.argv:
+                sys.argv.remove(_IGNORE_COLLECTION_ARG)
+            elif _is_collection_running():
+                logger.error('There is a fortscale-collection already running. '
+                             'Either kill it and then try again, or run the script with ' + _IGNORE_COLLECTION_ARG + '.')
+                sys.exit(1)
             locker = _Locker(logger)
             lock_name = locker.read()
             if lock_name not in [None, logger.name]:
