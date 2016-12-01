@@ -26,6 +26,7 @@ if __name__ == '__main__':
     if not validate_started_processing_everything(host=arguments.host,
                                                   data_source=arguments.data_source,
                                                   end_time_epoch=arguments.end,
-                                                  filtered_gap_in_seconds=0,
-                                                  filtered_timeout_in_seconds=0):
+                                                  allowed_gap_from_end_in_seconds=0,
+                                                  stuck_timeout_inside_allowed_gap_in_seconds=-1,
+                                                  stuck_timeout_outside_allowed_gap_in_seconds=-1):
         sys.exit(1)
