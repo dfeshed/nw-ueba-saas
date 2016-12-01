@@ -17,8 +17,9 @@ logger = logging.getLogger('stepSAM.validation')
 def validate_started_processing_everything(host,
                                            data_source,
                                            end_time_epoch,
-                                           filtered_gap_in_seconds,
-                                           filtered_timeout_in_seconds):
+                                           allowed_gap_from_end_in_seconds,
+                                           stuck_timeout_inside_allowed_gap_in_seconds,
+                                           stuck_timeout_outside_allowed_gap_in_seconds):
     connection = impala_utils.connect(host=host)
     logger.info('validating that all events' +
                 ((' up until ' + time_utils.timestamp_to_str(end_time_epoch)) if end_time_epoch else '') +
@@ -41,19 +42,21 @@ def validate_started_processing_everything(host,
             if last_processed_event_time != processed_event_time:
                 last_processed_event_time = processed_event_time
                 last_progress_time = time.time()
-            elif time.time() - last_progress_time >= filtered_timeout_in_seconds:
-                if processed_event_time >= last_event_time - filtered_gap_in_seconds:
+                if processed_event_time == last_event_time:
+                    logger.info('DONE')
+                    return True
+                elif processed_event_time > last_event_time:
+                    logger.error("FAILED: "
+                                 "validation can't be performed on data source whose enriched table is being filled")
+                    return False
+            else:
+                time_from_last_progress = time.time() - last_progress_time
+                is_inside_gap = processed_event_time >= last_event_time - allowed_gap_from_end_in_seconds
+                if is_inside_gap and time_from_last_progress > stuck_timeout_inside_allowed_gap_in_seconds and stuck_timeout_inside_allowed_gap_in_seconds >= 0:
                     logger.info('some of the last events were not processed - maybe due to filtering')
                     logger.info('DONE')
                     return True
-                else:
+                if not is_inside_gap and time_from_last_progress > stuck_timeout_outside_allowed_gap_in_seconds and stuck_timeout_outside_allowed_gap_in_seconds >= 0:
                     logger.info('too many events were not processed')
                     logger.info('FAILED')
                     return False
-            if processed_event_time == last_event_time:
-                logger.info('DONE')
-                return True
-            elif processed_event_time > last_event_time:
-                logger.error("FAILED: "
-                             "validation can't be performed on data source whose enriched table is being filled")
-                return False
