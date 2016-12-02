@@ -15,26 +15,24 @@
 
   &__col-details {
     @include rsa-flex-direction(row);
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    align-items: center;
+    @include rsa-flex-justify-content(space-between);
+    @include rsa-flex-align-items(center);
+    @include rsa-vendor-prefix(flex-wrap, nowrap);
     margin: 0;
     padding: 0 rsa-whitespace(less) rsa-whitespace(less) rsa-whitespace();
   }
 
   &__details {
-    flex-grow: 2;
+    @include rsa-vendor-prefix(flex-grow, 2);
     padding-right: rsa-whitespace();
 
     &__title {
       @include rsa-font(header, large);
       @include rsa-flex-direction(row);
-      justify-content: space-between;
-      align-items: baseline;
-
-      list-style-type: none;
+      @include rsa-flex-justify-content(space-between);
+      @include rsa-vendor-prefix(flex-wrap, wrap);
+      @include rsa-flex-align-items(baseline);
       width: 100%;
-      flex-wrap: wrap;
 
       .rsa-incident-detail-header__id {
         display: block;
@@ -43,19 +41,16 @@
       .rsa-incident-detail-header__name {
         display: block;
         text-transform: none;
-        flex-grow: 1;
+        @include rsa-vendor-prefix(flex-grow, 1);
       }
     }
 
     &__body {
       @include rsa-flex-direction(row);
-      justify-content: space-between;
-      align-items: stretch;
-
-      list-style-type: none;
+      @include rsa-flex-justify-content(space-between);
+      @include rsa-flex-align-items(stretch);
+      @include rsa-vendor-prefix(flex-wrap, nowrap);
       width: 100%;
-      flex-wrap: nowrap;
-      align-content: space-between;
       margin: rsa-whitespace() 0;
 
       li {
@@ -72,15 +67,6 @@
           }
         }
 
-        .rsa-form-select {
-          .rsa-form-label {
-            @include rsa-font(header, small);
-          }
-          .prompt {
-            color: rsa-color(gray, lighter);
-          }
-        }
-
         .rsa-incident-detail-header__status {
           min-width: 14rem;
         }
@@ -92,6 +78,21 @@
         .rsa-incident-detail-header__assignee {
           min-width: 8rem;
         }
+
+        .ember-power-select-trigger {
+          &[aria-disabled='true'] {
+            cursor: default;
+            border-color: $formButtonDisabledBorderColor !important;
+            background: none;
+
+            .ember-power-select-selected-item {
+              color: $formButtonDisabledTypeColor;
+            }
+          }
+          .ember-power-select-status-icon {
+            padding-right: rsa-whitespace(less);
+          }
+        }
       }
     }
 
@@ -102,11 +103,10 @@
       letter-spacing: 0.05rem;
     }
   }
-
 }
 
 .rsa-incident-detail-header__details__body {
-  justify-content: flex-start;
+  @include rsa-flex-justify-content(flex-start);
 
   li {
     margin: 0 rsa-whitespace(base);

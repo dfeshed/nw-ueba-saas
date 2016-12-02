@@ -191,7 +191,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'details': {
         'header': {
           'detailHeader': '.rsa-incident-detail-header',
-          'prioritySelectOption': '.rsa-incident-detail-header__priority select option'
+          'prioritySelectOption': '.ember-power-select-option'
         },
         'overview': {
           'accordion': '.rsa-respond-detail-overview__accordion',
@@ -263,8 +263,8 @@ export default Ember$.extend({}, BaseSelectors, {
       'scoreElm': '.score',
       'incLbl': '.rsa-incident-detail-header__id',
       'incTitleName': '.rsa-incident-detail-header__name input',
-      'priorityValueElm': 'div[class^=rsa-incident-detail-header__priority] div[class=prompt] div',
-      'assigneeValueElm': 'div[class^=rsa-incident-detail-header__assignee] div[class=prompt] div',
+      'priorityValueElm': 'div[class^=rsa-incident-detail-header__priority] .ember-power-select-selected-item',
+      'assigneeValueElm': 'div[class^=rsa-incident-detail-header__assignee] .ember-power-select-selected-item',
       'alertCountLbl': '.rsa-incident-detail-header__alerts label',
       'eventCountLbl': '.rsa-incident-detail-header__events label',
       'incidentTileSourcesElm': '.rsa-incident-tile-source',
@@ -281,13 +281,13 @@ export default Ember$.extend({}, BaseSelectors, {
       'categoryTagsElmDropdownNestedElms': '.rsa-content-tree__child-label',
       'taggedElm': '.rsa-form-tag-manager .rsa-content-label',
       'taggedElmDeleteIcon': '.rsa-form-tag-manager .rsa-icon-close',
-      'statusValue': '.rsa-incident-detail-header__status .prompt div',
-      'assigneeDropDown': '.rsa-incident-detail-header__assignee .rsa-icon',
-      'assigneeSelectOption': '.rsa-incident-detail-header__assignee select option',
-      'statusDropDown': '.rsa-incident-detail-header__status .rsa-icon',
-      'statusSelectOption': '.rsa-incident-detail-header__status select option',
-      'priorityDropDown': '.rsa-incident-detail-header__priority .rsa-icon',
-      'prtySelOpt': '.rsa-incident-detail-header__priority select option',
+      'statusValue': '.rsa-incident-detail-header__status .ember-power-select-selected-item',
+      'assigneeDropDown': '.rsa-incident-detail-header__assignee .ember-power-select-trigger',
+      'assigneeSelectOption': '.ember-power-select-option',
+      'statusDropDown': '.rsa-incident-detail-header__status .ember-power-select-trigger',
+      'statusSelectOption': '.ember-power-select-option',
+      'priorityDropDown': '.rsa-incident-detail-header__priority .ember-power-select-trigger',
+      'prtySelOpt': '.ember-power-select-option',
       'alertsGridIcon': '.main .rsa-icon-arrow-right-12',
       'alertsGridContentElm': '.main_row',
       'riskScoreElm': '.rsa-riskscore .score',

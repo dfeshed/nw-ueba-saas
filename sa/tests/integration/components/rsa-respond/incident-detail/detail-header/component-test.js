@@ -1,10 +1,14 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
-import { incStatus } from 'sa/incident/constants';
 import selectors from 'sa/tests/selectors';
+import { clickTrigger, nativeMouseUp } from '../../../../../helpers/ember-power-select';
+import wait from 'ember-test-helpers/wait';
 
-const { Object: EmberObject } = Ember;
+const {
+  Object: EmberObject,
+  $
+} = Ember;
 
 moduleForComponent('rsa-incident-detail-header', 'Integration | Component | rsa respond/incident detail/detail header', {
   integration: true,
@@ -20,6 +24,7 @@ moduleForComponent('rsa-incident-detail-header', 'Integration | Component | rsa 
 });
 
 test('The incident detail header component is rendered properly.', function(assert) {
+  const done = assert.async();
 
   const incident = EmberObject.create({
     riskScore: 1,
@@ -44,37 +49,40 @@ test('The incident detail header component is rendered properly.', function(asse
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
-  assert.equal(this.$('.rsa-incident-detail-header').length, 1, 'Testing rsa-incident-detail-header element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__id').length, 1, 'Testing rsa-incident-detail-header__id element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__name').length, 1, 'Testing rsa-incident-detail-header__name element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__priority').length, 1, 'Testing rsa-incident-detail-header__priority element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__alerts').length, 1, 'Testing rsa-incident-detail-header__alerts element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__events').length, 1, 'Testing rsa-incident-detail-header__events element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__sources').length, 1, 'Testing rsa-incident-detail-header__sources element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__assignee').length, 1, 'Testing rsa-incident-detail-header__assignee element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__status').length, 1, 'Testing rsa-incident-detail-header__status element exists');
+  wait().then(() => {
+    assert.equal(this.$('.rsa-incident-detail-header').length, 1, 'Testing rsa-incident-detail-header element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__id').length, 1, 'Testing rsa-incident-detail-header__id element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__name').length, 1, 'Testing rsa-incident-detail-header__name element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__priority').length, 1, 'Testing rsa-incident-detail-header__priority element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__alerts').length, 1, 'Testing rsa-incident-detail-header__alerts element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__events').length, 1, 'Testing rsa-incident-detail-header__events element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__sources').length, 1, 'Testing rsa-incident-detail-header__sources element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__assignee').length, 1, 'Testing rsa-incident-detail-header__assignee element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__status').length, 1, 'Testing rsa-incident-detail-header__status element exists');
 
-  assert.equal(this.$('.rsa-incident-detail-header__source-ip').length, 1, 'Testing rsa-incident-detail-header__source-ip element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__destination-ip').length, 1, 'Testing rsa-incident-detail-header__destination-ip element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__created').length, 1, 'Testing rsa-incident-detail-header__created element exists');
-  assert.equal(this.$('.rsa-incident-detail-header__last-updated').length, 1, 'Testing rsa-incident-detail-header__last-updated element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__source-ip').length, 1, 'Testing rsa-incident-detail-header__source-ip element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__destination-ip').length, 1, 'Testing rsa-incident-detail-header__destination-ip element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__created').length, 1, 'Testing rsa-incident-detail-header__created element exists');
+    assert.equal(this.$('.rsa-incident-detail-header__last-updated').length, 1, 'Testing rsa-incident-detail-header__last-updated element exists');
 
-  assert.equal(this.$('.rsa-incident-detail-header__id').text().indexOf('INC-491') >= 0, true, 'Testing correct incident ID is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__name input').val(), 'Suspected command and control communication with www.mozilla.com', 'Testing correct incident Name is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__priority .prompt').text().trim(), 'Low', 'Testing correct incident Priority is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__alerts label').text(), 10, 'Testing correct incident Alerts is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__events label').text(), 2, 'Testing correct incident Events is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__sources').length, 1, 'Testing correct number of incident Sources is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__sources .rsa-content-label').text().trim(), 'ESA', 'Testing correct incident Sources is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__assignee .prompt').text().trim(), 'User 1', 'Testing correct incident Assignee is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__status .prompt').text().trim(), 'New', 'Testing correct incident Status is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__id').text().indexOf('INC-491') >= 0, true, 'Testing correct incident ID is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__name input').val(), 'Suspected command and control communication with www.mozilla.com', 'Testing correct incident Name is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__priority .ember-power-select-selected-item').text().trim(), 'Low', 'Testing correct incident Priority is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__alerts label').text(), 10, 'Testing correct incident Alerts is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__events label').text(), 2, 'Testing correct incident Events is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__sources').length, 1, 'Testing correct number of incident Sources is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__sources .rsa-content-label').text().trim(), 'ESA', 'Testing correct incident Sources is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__assignee .ember-power-select-selected-item').text().trim(), 'User 1', 'Testing correct incident Assignee is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__status .ember-power-select-selected-item').text().trim(), 'New', 'Testing correct incident Status is rendered');
 
-  assert.equal(this.$('.rsa-incident-detail-header__source-ip label').text(), '1.1.1.1', 'Testing correct incident Source-IP is rendered');
-  assert.equal(this.$('.rsa-incident-detail-header__destination-ip label').text(), '2.2.2.2', 'Testing correct incident Destination-IP is rendered');
-
+    assert.equal(this.$('.rsa-incident-detail-header__source-ip label').text(), '1.1.1.1', 'Testing correct incident Source-IP is rendered');
+    assert.equal(this.$('.rsa-incident-detail-header__destination-ip label').text(), '2.2.2.2', 'Testing correct incident Destination-IP is rendered');
+    done();
+  });
 });
 
 test('The incident status, priority and assignee are saved', function(assert) {
+  const done = assert.async(4);
 
   const incident = EmberObject.create({
     riskScore: 1,
@@ -101,35 +109,49 @@ test('The incident status, priority and assignee are saved', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
-  const statusVal = this.$('.rsa-incident-detail-header__status select').val();
-  assert.equal(statusVal, 0, 'Tile displays the current Incident status.');
+  wait().then(() => {
+    const statusVal = this.$('.rsa-incident-detail-header__status .ember-power-select-selected-item').text().trim();
+    assert.equal(statusVal, 'New', 'Tile displays the current Incident status.');
 
-  this.$('.rsa-incident-detail-header__status .prompt').click();
-  this.$('.rsa-incident-detail-header__status select').val(1).trigger('change');
-  assert.equal(incident.statusSort, 1, 'After updating the Select, the incident status has the new value');
+    clickTrigger('.rsa-incident-detail-header__status');
+    nativeMouseUp('.ember-power-select-option:eq(1)'); // setting status to ASSIGNED
+    wait().then(() => {
+      assert.equal(incident.statusSort, 1, 'After updating the Select, the incident status has the new value');
+      done();
+    });
 
-  const priorityVal = this.$('.rsa-incident-detail-header__priority select').val();
-  assert.equal(priorityVal, 0, 'Tile displays the current Incident priority.');
+    const priorityVal = this.$('.rsa-incident-detail-header__priority .ember-power-select-selected-item').text().trim();
+    assert.equal(priorityVal, 'Low', 'Tile displays the current Incident priority.');
 
-  this.$('.rsa-incident-detail-header__priority .prompt').click();
-  this.$('.rsa-incident-detail-header__priority select').val(1).trigger('change');
-  assert.equal(incident.prioritySort, 1, 'After updating the Select, the incident priority has the new value');
+    clickTrigger('.rsa-incident-detail-header__priority');
+    nativeMouseUp('.ember-power-select-option:eq(1)'); // setting priority to HIGH
+    wait().then(() => {
+      assert.equal(incident.prioritySort, 2, 'After updating the Select, the incident priority has the new value');
+      done();
+    });
 
-  const assigneeVal = this.$('.rsa-incident-detail-header__assignee select').val();
-  assert.equal(assigneeVal, 1, 'Tile displays the current Incident priority.');
+    const assigneeVal = this.$('.rsa-incident-detail-header__assignee .ember-power-select-selected-item').text().trim();
+    assert.equal(assigneeVal, 'User 1', 'Tile displays the current Incident priority.');
 
-  this.$('.rsa-incident-detail-header__assignee .prompt').click();
-  this.$('.rsa-incident-detail-header__assignee select').val(2).trigger('change');
-  assert.equal(incident.assignee.id, 2, 'After updating the Select, the incident assignee has the new value');
+    clickTrigger('.rsa-incident-detail-header__assignee');
+    nativeMouseUp('.ember-power-select-option:eq(2)'); // 3rd element(index:2): {id: 2, name: User 2}
+    wait().then(() => {
+      assert.equal(incident.assignee.id, '2', 'After updating the Select, the incident assignee has the new value');
 
-  this.$('.rsa-incident-detail-header__assignee .prompt').click();
-  this.$('.rsa-incident-detail-header__assignee select').val(-1).trigger('change');
-  assert.equal(incident.assignee, undefined, 'After updating the Select, the incident assignee has been removed');
+      clickTrigger('.rsa-incident-detail-header__assignee');
+      nativeMouseUp('.ember-power-select-option:eq(0)'); // 1st element(index:0): unassigned.
+      wait().then(() => {
+        assert.notOk(incident.assignee, 'After updating the Select, the incident assignee is undefined');
+        done();
+      });
+      done();
+    });
+  });
 });
 
 
 test('Manually changing the state of an incident to Closed disables editable fields', function(assert) {
-
+  const done = assert.async();
   const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
@@ -153,14 +175,15 @@ test('Manually changing the state of an incident to Closed disables editable fie
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
 
-  this.$('.rsa-incident-detail-header__status .prompt').click();
-  this.$('.rsa-incident-detail-header__status select').val(incStatus.CLOSED).trigger('change');
-
-  assert.equal(this.$('.rsa-incident-detail-header__name').hasClass('is-read-only'), true, 'When Incident is in Closed state, Name input is disabled');
-  assert.equal(this.$('.rsa-incident-detail-header__priority').hasClass('is-disabled'), true, 'When Incident is in Closed state, Priority dropdown is disabled');
-  assert.equal(this.$('.rsa-incident-detail-header__assignee').hasClass('is-disabled'), true, 'When Incident is in Closed state, Assignee dropdown is disabled');
+  clickTrigger('.rsa-incident-detail-header__status');
+  nativeMouseUp('.ember-power-select-option:eq(5)');
+  wait().then(() => {
+    assert.ok(this.$('.rsa-incident-detail-header__name').hasClass('is-read-only'), 'When Incident is in Closed state, Name input is disabled');
+    assert.ok(this.$('.rsa-incident-detail-header__priority .ember-power-select-trigger').attr('aria-disabled'), 'When Incident is in Closed state, Priority dropdown is disabled');
+    assert.ok(this.$('.rsa-incident-detail-header__assignee .ember-power-select-trigger').attr('aria-disabled'), 'When Incident is in Closed state, Assignee dropdown is disabled');
+    done();
+  });
 });
-
 
 test('Incident priority order check (Critical -> Low)', function(assert) {
 
@@ -184,14 +207,12 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/detail-header model=incident users=users}}`);
 
-  const container = this.$(selectors.pages.respond.details.header.detailHeader);
-
-  const priorityOptionList = container.find(this.$(selectors.pages.respond.details.header.prioritySelectOption));
-
-  assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
-  assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
-  assert.equal(priorityOptionList[2].text, 'Medium', 'Third priority is Medium');
-  assert.equal(priorityOptionList[3].text, 'Low', 'Fourth priority is Low');
+  clickTrigger('.rsa-incident-detail-header__priority');
+  const priorityOptionList = $(selectors.pages.respond.details.header.prioritySelectOption);
+  assert.equal(priorityOptionList.eq(0).text().trim(), 'Critical', 'First priority is Critical');
+  assert.equal(priorityOptionList.eq(1).text().trim(), 'High', 'Second priority is High');
+  assert.equal(priorityOptionList.eq(2).text().trim(), 'Medium', 'Third priority is Medium');
+  assert.equal(priorityOptionList.eq(3).text().trim(), 'Low', 'Fourth priority is Low');
 });
 
 test('Alert and event count missing test', function(assert) {
@@ -219,7 +240,6 @@ test('Alert and event count missing test', function(assert) {
 
   assert.equal(this.$('.rsa-incident-detail-header__alerts label').text(), '-', 'Missing alert count is shown');
   assert.equal(this.$('.rsa-incident-detail-header__events label').text(), '-', 'Missing event count is shown');
-
 });
 
 test('Testing source & destination IP values.', function(assert) {

@@ -5,8 +5,9 @@ import IncidentHelper from 'sa/incident/helpers';
 
 const {
   Component,
-  Logger,
-  run
+  Object: EmberObject,
+  isEmpty,
+  get
 } = Ember;
 
 export default Component.extend({
@@ -32,18 +33,52 @@ export default Component.extend({
   /**
    * @name statusList
    * @desciption Returns a list of available status id.
-   * @type number[]
+   * Due to a power-select but, it's needed to convert the list of integer to a list of strings
+   * Tracking bug: https://github.com/cibernox/ember-power-select/issues/493
+   * @type string[]
    * @public
    */
-  statusList: IncidentConstants.incidentStatusIds,
+  statusList: IncidentConstants.incidentStatusIds.map((status) => `${status}`),
 
   /**
    * @name priorityList
    * @description Returns a list of available priorities id.
-   * @type number[]
+   * Due to a power-select but, it's needed to convert the list of integer to a list of strings
+   * Tracking bug: https://github.com/cibernox/ember-power-select/issues/493
+   * @type string[]
    * @public
    */
-  priorityList: IncidentConstants.incidentPriorityIds,
+  priorityList: IncidentConstants.incidentPriorityIds.map((priority) => `${priority}`),
+
+  /**
+   * @name selectedPrioritySort
+   * @description Converts the integer prioritySort to a string to match an elements in the `priorityList`
+   * Tracking bug: https://github.com/cibernox/ember-power-select/issues/493
+   * @type string
+   * @public
+   */
+  @computed('incident.prioritySort')
+  selectedPrioritySort: (incidentPriority) => `${incidentPriority}`,
+
+  /**
+   * @name selectedStatusSort
+   * @description Converts the integer statusSort to a string to match an elements in the `statusList`
+   * Tracking bug: https://github.com/cibernox/ember-power-select/issues/493
+   * @type string
+   * @public
+   */
+  @computed('incident.statusSort')
+  selectedStatusSort: (incidentStatus) => `${incidentStatus}`,
+
+  /**
+   * @name selectedAssignee
+   * @description returns a matching User based on the incident assignee. If the Incident has not assigne, it returns
+   * the `Unassigned` user
+   * @type Object
+   * @public
+   */
+  @computed('incident.assignee', 'usersList')
+  selectedAssignee: (assignee, usersList) => usersList.findBy('id', isEmpty(assignee) ? -1 : get(assignee, 'id')),
 
   /**
    * @name incidentSources
@@ -59,85 +94,23 @@ export default Component.extend({
   },
 
   /**
-   * @name selectedStatus
-   * @description Returns a list of one element with the current status id. This is consumed by rsa-form-select
+   * @name usersList
+   * @description Creates an array of the user object and adds the selected parameter to each with the value of false.
+   * @param {Object} users Current users object from the model
    * @public
    */
-  @computed('incident.statusSort')
-  selectedStatus: {
-    get: (statusSort) => [statusSort],
+  @computed('users.[]')
+  usersList(users) {
+    const unassignedUser = EmberObject.create({
+      'id': -1
+    });
+    const arrUsers = [ unassignedUser ];
 
-    set(statusSorts) {
-      const statusSort = statusSorts.get('firstObject');
-      Logger.log(`Status changed detected: ${ statusSort }`);
-      run.once(() => {
-        const statusVal = parseInt(statusSort, 10);
-        this.setProperties({
-          'incident.statusSort': statusVal,
-          'incident.status': IncidentConstants.incidentStatusString[ statusVal ]
-        });
-        const attributeChanged = {
-          status: this.get('incident.status'),
-          statusSort: this.get('incident.statusSort')
-        };
-        this.sendAction('saveIncidentAction', attributeChanged);
-      });
-      return statusSorts;
+    if (users) {
+      arrUsers.addObjects(users);
     }
-  },
 
-  /**
-   * @name selectedPriority
-   * @description Returns a list of one element with the current priority id. This is consumed by rsa-form-select
-   * @public
-   */
-  @computed('incident.prioritySort')
-  selectedPriority: {
-    get: (prioritySort) => [prioritySort],
-
-    set(prioritySorts) {
-      const prioritySort = prioritySorts.get('firstObject');
-      Logger.log(`Priority change detected: ${ prioritySort }`);
-
-      run.once(() => {
-        const priorityVal = parseInt(prioritySort, 10);
-        this.setProperties({
-          'incident.prioritySort': priorityVal,
-          'incident.priority': IncidentConstants.incidentPriorityString[ priorityVal ]
-        });
-        const attributeChanged = {
-          priority: this.get('incident.priority'),
-          prioritySort: this.get('incident.prioritySort')
-        };
-        this.sendAction('saveIncidentAction', attributeChanged);
-      });
-      return prioritySorts;
-    }
-  },
-
-  /**
-   * @name selectedAssignee
-   * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
-   * @public
-   */
-  @computed('incident.assignee.id', 'users.[]')
-  selectedAssignee: {
-    get: (assigneeId) => [assigneeId || '-1'],
-
-    set(assigneeIds) {
-      const assigneeId = assigneeIds.get('firstObject');
-      Logger.log(`Assignee change detected: ${ assigneeId }`);
-      run.once(() => {
-        // Incident has no assignee
-        let updatedAssignee = null;
-        if (assigneeId !== '-1') {
-          updatedAssignee = this.get('users').findBy('id', assigneeId);
-        }
-        this.set('incident.assignee', updatedAssignee);
-        this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'));
-      });
-      return assigneeIds;
-    }
+    return arrUsers;
   },
 
   /**
@@ -169,6 +142,54 @@ export default Component.extend({
      */
     nameLostFocus() {
       this.sendAction('saveIncidentAction', 'name', this.get('incident.name'));
+    },
+
+    /**
+     * @description Saves the new status
+     * @public
+     */
+    statusChanged(statusSort) {
+      const statusSortVal = parseInt(statusSort, 10);
+      this.setProperties({
+        'incident.statusSort': statusSortVal,
+        'incident.status': IncidentConstants.incidentStatusString[ statusSortVal ]
+      });
+      const attributeChanged = {
+        status: this.get('incident.status'),
+        statusSort: this.get('incident.statusSort')
+      };
+      this.sendAction('saveIncidentAction', attributeChanged);
+    },
+
+    /**
+     * @description Saves the new priority
+     * @public
+     */
+    priorityChanged(prioritySort) {
+      const prioritySortVal = parseInt(prioritySort, 10);
+      this.setProperties({
+        'incident.prioritySort': prioritySortVal,
+        'incident.priority': IncidentConstants.incidentPriorityString[ prioritySortVal ]
+      });
+      const attributeChanged = {
+        priority: this.get('incident.priority'),
+        prioritySort: this.get('incident.prioritySort')
+      };
+      this.sendAction('saveIncidentAction', attributeChanged);
+    },
+
+    /**
+     * @description Updates the incident's assignee
+     * @public
+     */
+    assigneeChanged(assignee) {
+      let updatedAssignee = null;
+      const assigneeId = get(assignee, 'id');
+      if (assigneeId !== -1) {
+        updatedAssignee = this.get('users').findBy('id', assigneeId);
+      }
+      this.set('incident.assignee', updatedAssignee);
+      this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'));
     }
   }
 });

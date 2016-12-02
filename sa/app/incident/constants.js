@@ -39,11 +39,11 @@ export const journalMilestones = {
   CLOSURE: 8
 };
 
-// returns : {0: 0, 1: 1, 2: 2, 3: 3}
+// returns : [0, 1, 2, 3]
 export const incidentPriorityIds =
   Object.keys(incPriority).map((k) => incPriority[k]);
 
-// returns : {0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 5: 5, 6: 6}
+// returns : [0, 1, 2, 3, 4, 5, 6]
 export const incidentStatusIds =
   Object.keys(incStatus).map((k) => incStatus[k]);
 

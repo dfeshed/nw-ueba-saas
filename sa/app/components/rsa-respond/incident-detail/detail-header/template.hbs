@@ -11,11 +11,20 @@
       </header>
       <ul class='rsa-incident-detail-header__details__body'>
         <li>
-          {{#rsa-form-select multiple=false label=(t 'incident.fields.priority') class='rsa-incident-detail-header__priority' values=selectedPriority isDisabled=incidentIsClosed}}
-            {{#each priorityList as |priority|}}
-              <option value="{{priority}}">{{t (concat 'incident.priority.' priority) }}</option>
-            {{/each}}
-          {{/rsa-form-select}}
+          {{#rsa-content-definition label=(t 'incident.fields.priority')}}
+            {{#power-select
+              class='rsa-incident-detail-header__priority'
+              tagName='div'
+              options=priorityList
+              selected=selectedPrioritySort
+              allowClear=false
+              searchEnabled=false
+              disabled=incidentIsClosed
+              onchange=(action 'priorityChanged')
+              as |priority|}}
+              {{t (concat 'incident.priority.' priority)}}
+            {{/power-select}}
+          {{/rsa-content-definition}}
         </li>
         <li>
           {{#rsa-content-definition label=(t 'incident.fields.alertCount') class='rsa-incident-detail-header__alerts'}}
@@ -35,19 +44,39 @@
           {{/rsa-content-definition}}
         </li>
         <li>
-          {{#rsa-form-select multiple=false optionMaxVisible=users.length label=(t 'incident.fields.assignee') class='rsa-incident-detail-header__assignee' values=selectedAssignee isDisabled=incidentIsClosed}}
-            <option value='-1'>{{t 'incident.assignee.none'}}</option>
-            {{#each users as |user|}}
-              <option value={{user.id}}>{{user.name}}</option>
-            {{/each}}
-          {{/rsa-form-select}}
+          {{#rsa-content-definition label=(t 'incident.fields.assignee')}}
+            {{#power-select
+              class='rsa-incident-detail-header__assignee'
+              tagName='div'
+              options=usersList
+              selected=selectedAssignee
+              allowClear=false
+              searchEnabled=false
+              disabled=incidentIsClosed
+              onchange=(action 'assigneeChanged')
+              as |user|}}
+              {{#if (eq user.id -1)}}
+                {{t 'incident.assignee.none'}}
+              {{else}}
+                {{user.name}}
+              {{/if}}
+            {{/power-select}}
+          {{/rsa-content-definition}}
         </li>
         <li>
-          {{#rsa-form-select multiple=false class='rsa-incident-detail-header__status' label=(t "incident.fields.status") values=selectedStatus}}
-            {{#each statusList as |status i|}}
-              <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
-            {{/each}}
-          {{/rsa-form-select}}
+          {{#rsa-content-definition label=(t 'incident.fields.status')}}
+            {{#power-select
+              class='rsa-incident-detail-header__status'
+              tagName='div'
+              options=statusList
+              selected=selectedStatusSort
+              allowClear=false
+              searchEnabled=false
+              onchange=(action 'statusChanged')
+              as |status|}}
+              {{t (concat 'incident.status.' status)}}
+            {{/power-select}}
+          {{/rsa-content-definition}}
         </li>
         <li>
           {{#rsa-content-definition label=(t 'incident.details.sourceIp') class='rsa-incident-detail-header__source-ip'}}
