@@ -4,9 +4,9 @@
       {{#rsa-form-button
         class="rsa-investigate-breadcrumb__crumb"
         allowToggleActive=true
-        title=serviceObject.name
+        title=serviceObject.displayName
         withDropdown=true}}
-        <span class="js-test-service">{{serviceObject.name}}</span>
+        <span class="js-test-service">{{serviceObject.displayName}}</span>
       {{/rsa-form-button}}
     {{/rsa-content-help-trigger}}
 
@@ -20,7 +20,7 @@
         {{#each servicesWithURI as |service|}}
           <li>
             {{#link-to "protected.investigate.query" service.queryURI class="goto"}}
-              {{service.name}}
+              {{service.displayName}}
             {{/link-to}}
           </li>
         {{/each}}

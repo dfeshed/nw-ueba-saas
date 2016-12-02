@@ -44,7 +44,7 @@ export default Component.extend({
   serviceId: (services, eventSourceId) => {
     let serviceId = null;
     if (isPresent(services) && isPresent(eventSourceId)) {
-      const service = services.find((service) => service.name === eventSourceId);
+      const service = services.findBy('displayName', eventSourceId);
       serviceId = isNone(service) ? null : service.id;
     }
     return serviceId;

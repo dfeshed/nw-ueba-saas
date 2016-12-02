@@ -7,12 +7,12 @@ import attr from 'ember-data/attr';
  * @public
  */
 export default Model.extend({
-  name: attr(),
+  displayName: attr(),
 
   /**
    * Type of Core service; e.g.,"BROKER", "CONCENTRATOR", etc.
    * @type {string}
    * @public
    */
-  type: attr()
+  name: attr()
 });

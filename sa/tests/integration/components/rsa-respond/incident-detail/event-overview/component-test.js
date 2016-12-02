@@ -139,7 +139,7 @@ moduleForComponent('rsa-respond/incident-detail/event-overview', 'Integration | 
       'assignee': null
     };
 
-    const services = [ { 'id': '555d9a6fe4b0d37c827d402d', 'name': 'loki-concentrator', 'type': 'CONCENTRATOR' } ];
+    const services = [ { id: '555d9a6fe4b0d37c827d402d', displayName: 'loki-concentrator', 'name': 'CONCENTRATOR' } ];
 
     this.setProperties({
       event,
@@ -209,7 +209,7 @@ test('Services data impacts links', function(assert) {
   assert.equal(this.$('.event-overview__detector a').length, 0, 'No URL for Detector IP query');
 
   // Service name not found
-  tmpServices = [ { 'id': '555d9a6fe4b0d37c827d402d', 'name': 'not-a-loki-concentrator', 'type': 'CONCENTRATOR' } ];
+  tmpServices = [ { id: '555d9a6fe4b0d37c827d402d', displayName: 'not-a-loki-concentrator', name: 'CONCENTRATOR' } ];
   this.set('tmpServices', tmpServices);
 
   assert.equal(this.$('.event-overview__source a').length, 0, 'No URL for Source IP query');
@@ -218,7 +218,7 @@ test('Services data impacts links', function(assert) {
   assert.equal(this.$('.event-overview__detector a').length, 0, 'No URL for Detector IP query');
 
   // Service name found
-  tmpServices = [ { 'id': '555d9a6fe4b0d37c827d402d', 'name': 'loki-concentrator', 'type': 'CONCENTRATOR' } ];
+  tmpServices = [ { id: '555d9a6fe4b0d37c827d402d', displayName: 'loki-concentrator', name: 'CONCENTRATOR' } ];
   this.set('tmpServices', tmpServices);
 
   assert.equal(this.$('.event-overview__source a').length, 1, 'URL for Source IP query');

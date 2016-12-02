@@ -13,10 +13,10 @@ test('it renders', function(assert) {
     }
   };
   const id = 'id1';
-  const name = 'Service Name';
+  const displayName = 'Service Name';
   const services = [{
     id,
-    name
+    displayName
   }];
   const metaName1 = 'foo';
   const displayName1 = 'fooDisplayName';
@@ -69,7 +69,7 @@ test('it renders', function(assert) {
 
   let $el = this.$('.rsa-investigate-breadcrumb');
   assert.equal($el.length, 1, 'Expected root DOM element.');
-  assert.equal($el.find('.js-test-service').text().trim(), name, 'Expected service name in DOM to match service data.');
+  assert.equal($el.find('.js-test-service').text().trim(), displayName, 'Expected service displayName in DOM to match service data.');
 
   $el = this.$('.js-test-value');
   assert.equal($el.text().trim(), metaValueAlias1, 'Expected to find meta key/value in DOM.');

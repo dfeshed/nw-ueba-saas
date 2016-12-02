@@ -5,10 +5,10 @@ moduleForComponent('rsa-investigate/query-bar', 'Integration | Component | rsa i
   integration: true
 });
 
-const broker = { id: 123, name: 'broker-1', type: 'BROKER' };
-const concentrator = { id: 456, name: 'concentrator-1', type: 'CONCENTRATOR' };
-const decoder = { id: 789, name: 'decoder-1', type: 'DECODER' };
-const timeRange = { id: 'LAST_24_HOURS', name: 'Last 24 Hours', seconds: 24 * 60 * 60 };
+const broker = { id: 123, displayName: 'broker-1', name: 'BROKER' };
+const concentrator = { id: 456, displayName: 'concentrator-1', name: 'CONCENTRATOR' };
+const decoder = { id: 789, displayName: 'decoder-1', name: 'DECODER' };
+const timeRange = { id: 'LAST_24_HOURS', displayName: 'Last 24 Hours', seconds: 24 * 60 * 60 };
 
 const submitSelector = '.js-test-investigate-query-bar__submit';
 

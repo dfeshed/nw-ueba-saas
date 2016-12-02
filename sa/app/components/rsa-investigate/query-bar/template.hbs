@@ -2,12 +2,12 @@
   class="rsa-investigate-query-bar__service"
   multiple=false
   label='Select a Service'
-  prompt=(if selectedService selectedService.name 'Select a Service')
+  prompt=(if selectedService selectedService.displayName 'Select a Service')
   alwaysUsePrompt=true
   onchange=(action 'updateService')
 }}
   {{#each services as |service|}}
-    <option value={{service.id}}>{{service.name}}</option>
+    <option value={{service.id}}>{{service.displayName}}</option>
   {{/each}}
 {{/rsa-form-select}}
 
