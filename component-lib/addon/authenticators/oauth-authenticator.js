@@ -22,6 +22,8 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
 
   clientId: 'nw_ui',
 
+  refreshAccessTokens: false,
+
   ajax: service(),
 
   session: service(),
@@ -61,7 +63,6 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       }
 
     } else {
-      session.get('session').set('isFullyAuthenticated', false);
       session.invalidate();
     }
   }

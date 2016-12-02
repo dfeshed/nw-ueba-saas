@@ -28,6 +28,8 @@ export default Route.extend({
       } else {
         this.transitionTo(key);
       }
+    } else {
+      this._super(...arguments);
     }
   }
 });
