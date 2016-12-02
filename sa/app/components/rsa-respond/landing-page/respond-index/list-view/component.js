@@ -3,7 +3,9 @@ import IncidentHelper from 'sa/incident/helpers';
 import { viewType } from 'sa/protected/respond/index/route';
 import IncidentConstants from 'sa/incident/constants';
 import computed from 'ember-computed-decorators';
-import ListViewConfig from './config';
+import { availableColumnsConfig, replayConfig, persistenceConfig, storageKey } from './config';
+import ReplayManager from 'sa/utils/replay-manager';
+import PersistenceManager from 'sa/utils/persistence-manager';
 
 const {
   inject: {
@@ -12,7 +14,8 @@ const {
   Component,
   run,
   computed: emberComputed,
-  set
+  set,
+  Object: EmberObject
 } = Ember;
 
 export default Component.extend({
@@ -41,17 +44,64 @@ export default Component.extend({
   // Array of selected statuses
   filteredStatuses: [],
 
+  // Array of selected assignees
+  filteredAssignees: [],
+
+  // Array of selected categories
+  filteredCategories: [],
+
+  // Array of selected sources
+  filteredSources: [],
+
   // Full list of available columns to display
-  availableColumnsConfig: ListViewConfig.availableColumnsConfig,
+  availableColumnsConfig,
+
+  // Replay Manager
+  replay: null,
+
+  // Persistence Manager
+  persistence: null,
 
   init() {
     this._super(...arguments);
     this.setProperties({
       'filteredPriorities': [],
-      'filteredStatuses': []
+      'filteredStatuses': [],
+      'filteredAssignees': [],
+      'filteredCategories': [],
+      'filteredSources': [],
+      'replay': ReplayManager.create(),
+      'persistence': PersistenceManager.create({ storageKey })
     });
 
     this.set('isBulkEditInProgress', false);
+
+    this.set('persistence.persistables', persistenceConfig.call(this));
+    this.set('replay.replayables', replayConfig.call(this));
+
+  },
+
+  didReceiveAttrs() {
+    this._super(...arguments);
+    if (this.get('persistence.state.isReplayable')) {
+      this.set('replay.restoredState', this.get('persistence.state.value'));
+      if (this.get('replay.isReady')) {
+        this.get('replay').replay();
+      }
+    } else {
+      this.get('persistence').persistInitialState();
+    }
+
+    this.get('persistence').destroyObservers();
+    this.get('persistence').createObservers();
+  },
+
+  /*
+  Removes persistence observers
+  */
+  willDestroyElement() {
+    this._super(...arguments);
+    this.get('persistence').destroyObservers();
   },
 
   @computed('categoryTags.[]')
@@ -94,7 +144,7 @@ export default Component.extend({
   @computed()
   statusList() {
     const statusArray = IncidentConstants.incidentStatusIds.map((statusId) => {
-      return {
+      return EmberObject.extend({
         id: statusId,
         value: emberComputed({
           get: () => this.get('filteredStatuses').includes(statusId),
@@ -102,14 +152,16 @@ export default Component.extend({
             const editInProgress = value && this.get('isBulkEditInProgress');
 
             if (!editInProgress) {
-              this.updateFilterValue('status', 'filteredStatuses', statusId, value);
+              run.once(() => {
+                this.updateFilterValue('status', 'filteredStatuses', statusId, value);
+              });
               return value;
             } else {
               this.openBulkEditModal();
             }
           }
         })
-      };
+      }).create();
     });
     return statusArray;
   },
@@ -124,7 +176,7 @@ export default Component.extend({
   @computed()
   priorityList() {
     const priorityArray = IncidentConstants.incidentPriorityIds.map((priorityId) => {
-      return {
+      return EmberObject.extend({
         id: priorityId,
         value: emberComputed({
           get: () => this.get('filteredPriorities').includes(priorityId),
@@ -132,14 +184,16 @@ export default Component.extend({
             const editInProgress = value && this.get('isBulkEditInProgress');
 
             if (!editInProgress) {
-              this.updateFilterValue('priority', 'filteredPriorities', priorityId, value);
+              run.once(() => {
+                this.updateFilterValue('priority', 'filteredPriorities', priorityId, value);
+              });
               return value;
             } else {
               this.openBulkEditModal();
             }
           }
         })
-      };
+      }).create();
     });
     return priorityArray;
   },
@@ -175,6 +229,7 @@ export default Component.extend({
 
       if (!editInProgress) {
         run.once(() => {
+          this.set('filteredAssignees', values);
           this.applyFilters('assigneeId', (values || []).slice());
         });
       } else {
@@ -205,6 +260,7 @@ export default Component.extend({
       const editInProgress = values.length > 0 && this.get('isBulkEditInProgress');
 
       if (!editInProgress) {
+        this.set('filteredSources', values);
         this.applyFilters('sources', filterFn);
       } else {
         this.openBulkEditModal();
@@ -224,28 +280,31 @@ export default Component.extend({
   selectedCategories: {
     get: () => [],
     set(values) {
-      // by default no filter is selected. Empty array resets any pre-existing filter
-      let filterValue = [];
-      if (values.length > 0) {
-        // if there are categories to apply filters, then we use a function to determinate if the incident has
-        // at least on of the selected categories
-        // filtering categories is performed by category id or both name and parent.
-        filterValue = (incidentCategories) => {
-          return values.any((category) => {
-            return incidentCategories.any((incidentCat) => {
-              return incidentCat.id === category.id || (incidentCat.parent === category.parent && incidentCat.name === category.name);
+      run.once(() => {
+        // by default no filter is selected. Empty array resets any pre-existing filter
+        let filterValue = [];
+        if (values.length > 0) {
+          // if there are categories to apply filters, then we use a function to determinate if the incident has
+          // at least on of the selected categories
+          // filtering categories is performed by category id or both name and parent.
+          filterValue = (incidentCategories) => {
+            return values.any((category) => {
+              return incidentCategories.any((incidentCat) => {
+                return incidentCat.id === category.id || (incidentCat.parent === category.parent && incidentCat.name === category.name);
+              });
             });
-          });
-        };
-      }
+          };
+        }
 
-      const editInProgress = values && values.length > 0 && this.get('isBulkEditInProgress');
+        const editInProgress = values && values.length > 0 && this.get('isBulkEditInProgress');
 
-      if (!editInProgress) {
-        this.applyFilters('categories', filterValue);
-      } else {
-        this.openBulkEditModal();
-      }
+        if (!editInProgress) {
+          this.set('filteredCategories', values);
+          this.applyFilters('categories', filterValue);
+        } else {
+          this.openBulkEditModal();
+        }
+      });
       return values;
     }
   },

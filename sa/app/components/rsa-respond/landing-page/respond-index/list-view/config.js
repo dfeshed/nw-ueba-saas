@@ -5,7 +5,13 @@
 import Ember from 'ember';
 
 const {
-  Object: EmberObject
+  Object: EmberObject,
+  computed,
+  run,
+  addObserver,
+  removeObserver,
+  isPresent,
+  isEmpty
 } = Ember;
 
 // full list of columns to be used in the list-view
@@ -120,3 +126,276 @@ export const availableColumnsConfig = [
     visible: false
   })
 ];
+
+/**
+Builds an array of Ember Objects for the replay manager @see sa/utils/replay-manager
+Component builds this array on init.
+Component context i.e. 'this' is assumed and expected when the function is executed.
+Each array element provides the 'path' on the restoredState from which persisted value will be read and a computed property ('value') on which restored value will be set.
+All values are computed properties.
+These computed properties perform validation, some pre-processing logic if required, before setting restored values on component attributes.
+value computed property is set by Replay Manager when replay method is invoked @see sa/utils/replay-manager replay
+@returns {Array} array of Ember Objects
+@public
+*/
+
+export function replayConfig() {
+
+  return [
+    EmberObject.extend({
+      path: 'flags.currentSort',
+      value: computed({
+        set: (key, value) => {
+          this.set('currentSort', value);
+        }
+      })
+    }).create(),
+    EmberObject.extend({
+      path: 'columns',
+      value: computed({
+        set: (key, values) => {
+          if (values) {
+            this.get('availableColumnsConfig').forEach((column) => {
+              const field = column.get('field');
+              if (isPresent(values[field].visible)) {
+                column.set('visible', values[field].visible);
+              }
+              if (isPresent(values[field].isDescending)) {
+                column.set('isDescending', values[field].isDescending);
+              }
+              if (isPresent(values[field].width)) {
+                column.set('width', values[field].width);
+              }
+            });
+          }
+        }
+      })
+    }).create(),
+    EmberObject.extend({
+      path: 'filters.priorities',
+      value: computed({
+        set: (key, values) => {
+          if (!isEmpty(values)) {
+            this.get('priorityList').forEach((filter) => {
+              if (values.includes(filter.get('id'))) {
+                filter.set('value', true);
+              }
+            });
+          }
+        }
+      })
+    }).create(),
+    EmberObject.extend({
+      path: 'filters.statuses',
+      value: computed({
+        set: (key, values) => {
+          if (!isEmpty(values)) {
+            this.get('statusList').forEach((filter) => {
+              if (values.includes(filter.get('id'))) {
+                filter.set('value', true);
+              }
+            });
+          }
+        }
+      })
+    }).create(),
+    EmberObject.extend({
+      path: 'filters.assignees',
+      value: computed({
+        set: (key, value) => {
+          if (!isEmpty(value)) {
+            this.set('selectedAssignee', value);
+          }
+        }
+      })
+    }).create(),
+    EmberObject.extend({
+      path: 'filters.categories',
+      value: computed({
+        set: (key, value) => {
+          if (!isEmpty(value)) {
+            this.set('selectedCategories', value);
+          }
+        }
+      })
+    }).create(),
+    EmberObject.extend({
+      path: 'filters.sources',
+      value: computed({
+        set: (key, value) => {
+          if (!isEmpty(value)) {
+            this.set('selectedSources', value);
+          }
+        }
+      })
+    }).create()
+  ];
+}
+
+/**
+Builds an array of POJO for the Persistence Manager @ see sa/utils/persistence-manager
+Component context i.e. 'this' is assumed and expected when the function is executed.
+Each element of the array can implement the following methods
+1) persistInitialState: if initial state of an attribute has to be persisted (for e.g. columns visible, width and sort order)
+2) createObserver: If implemented, it is expected this method will invoke Ember addObserver providing appropriate key, target and method i.e 'execute'
+3) removeObserver: If implemented, it is expected this method will invoke Ember removeObserver providing appropriate key, target and method i.e 'execute'
+4) execute: this method should provide the core logic of persistence.
+The above methods are executed by Persistence Manager as and when requested by the component.
+for e.g. persistInitialState, createObservers and removeObservers in didReceiveAttrs component hook.
+removeObservers in willDestroyElement component hook
+@returns {Array} array of POJO
+@public
+*/
+export function persistenceConfig() {
+
+  const component = this;
+  const configArray = [];
+
+  configArray.pushObject({
+    persistInitialState: () => {
+      if (isPresent(this.get('currentSort'))) {
+        this.get('persistence.state').persist('flags.currentSort', this.get('currentSort'));
+      }
+    }
+  });
+
+  this.get('availableColumnsConfig').forEach((column) => {
+
+    configArray.pushObject({
+      persistInitialState: () => {
+        this.get('persistence.state').persist(`columns.${column.get('field')}.visible`, column.get('visible'));
+      },
+      execute: () => {
+        run.once(() => {
+          this.get('persistence.state').persist(`columns.${column.get('field')}.visible`, column.get('visible'));
+        });
+      },
+      createObserver() {
+        addObserver(column, 'visible', this.execute);
+      },
+      destroyObserver() {
+        removeObserver(column, 'visible', this.execute);
+      }
+    });
+
+    configArray.pushObject({
+      persistInitialState: () => {
+        this.get('persistence.state').persist(`columns.${column.get('field')}.width`, column.get('width'));
+      },
+      execute: () => {
+        run.once(() => {
+          this.get('persistence.state').persist(`columns.${column.get('field')}.width`, column.get('width'));
+        });
+      },
+      createObserver() {
+        addObserver(column, 'width', this.execute);
+      },
+      destroyObserver() {
+        removeObserver(column, 'width', this.execute);
+      }
+    });
+
+    configArray.pushObject({
+      persistInitialState: () => {
+        if (isPresent(column.get('isDescending'))) {
+          this.get('persistence.state').persist(`columns.${column.get('field')}.isDescending`, column.get('isDescending'));
+        }
+      },
+      execute: () => {
+        run.once(() => {
+          if (this.get('persistence.state.value.flags.currentSort') !== this.get('currentSort')) {
+            const isRemoved = this.get('persistence.state').remove(`columns.${this.get('persistence.state.value.flags.currentSort')}.isDescending`, true);
+            if (isRemoved) {
+              this.get('persistence.state').persist('flags.currentSort', this.get('currentSort'));
+            }
+          }
+          this.get('persistence.state').persist(`columns.${column.get('field')}.isDescending`, column.get('isDescending'));
+        });
+      },
+      createObserver() {
+        addObserver(column, 'isDescending', this.execute);
+      },
+      destroyObserver() {
+        removeObserver(column, 'isDescending', this.execute);
+      }
+    });
+
+  });
+
+  configArray.pushObject({
+    execute: () => {
+      run.once(() => {
+        this.get('persistence.state').persist('filters.statuses', this.get('filteredStatuses'));
+      });
+    },
+    createObserver() {
+      addObserver(component, 'statusList.@each.value', this.execute);
+    },
+    destroyObserver() {
+      removeObserver(component, 'statusList.@each.value', this.execute);
+    }
+  });
+
+  configArray.pushObject({
+    execute: () => {
+      run.once(() => {
+        this.get('persistence.state').persist('filters.priorities', this.get('filteredPriorities'));
+      });
+    },
+    createObserver() {
+      addObserver(component, 'priorityList.@each.value', this.execute);
+    },
+    destroyObserver() {
+      removeObserver(component, 'priorityList.@each.value', this.execute);
+    }
+  });
+
+  configArray.pushObject({
+    execute: () => {
+      run.once(() => {
+        this.get('persistence.state').persist('filters.assignees', this.get('filteredAssignees'));
+      });
+    },
+    createObserver() {
+      addObserver(component, 'selectedAssignee', this.execute);
+    },
+    destroyObserver() {
+      removeObserver(component, 'selectedAssignee', this.execute);
+    }
+  });
+
+  configArray.pushObject({
+    execute: () => {
+      run.once(() => {
+        this.get('persistence.state').persist('filters.categories', this.get('filteredCategories'));
+      });
+    },
+    createObserver() {
+      addObserver(component, 'selectedCategories', this.execute);
+    },
+    destroyObserver() {
+      removeObserver(component, 'selectedCategories', this.execute);
+    }
+  });
+
+  configArray.pushObject({
+    execute: () => {
+      run.once(() => {
+        this.get('persistence.state').persist('filters.sources', this.get('filteredSources'));
+      });
+    },
+    createObserver() {
+      addObserver(component, 'selectedSources', this.execute);
+    },
+    destroyObserver() {
+      removeObserver(component, 'selectedSources', this.execute);
+    }
+  });
+
+  return configArray;
+}
+
+/*
+Storage key used for respond mode list view
+*/
+export const storageKey = 'rsa::securityAnalytics::respondModeList';

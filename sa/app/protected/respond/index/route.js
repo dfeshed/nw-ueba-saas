@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import { incidentStatusIds, incStatus } from 'sa/incident/constants';
 import IncidentsCube from 'sa/utils/cube/incidents';
+import PersistenceHelper from 'sa/components/rsa-respond/landing-page/respond-index/list-view/persistence-helper';
 
 const {
   Route,
@@ -26,6 +27,17 @@ export default Route.extend({
   respondMode: service(),
   listViewCube: null,
   cardViewCube: null,
+  persistenceHelper: PersistenceHelper.create(),
+
+  /*
+  gets the sort field and order required for making model available for the component.
+  Delegates the responsibility to Persistence Helper to provide persisted sort column information.
+  defaults to 'riskscore' if persisted sort field and sort order could not be obtained.
+  @private
+  */
+  _getDefaultListSort() {
+    return this.get('persistenceHelper').getSortedColumn() || { field: 'riskScore', descending: true };
+  },
 
   activate() {
     this.set('layoutService.main', 'panelB');
@@ -199,7 +211,6 @@ export default Route.extend({
    * @public
    */
   model() {
-
     let incidentModels;
 
     if (this.get('respondMode.selected') === 'card') {
@@ -237,6 +248,7 @@ export default Route.extend({
       };
       this.set('cardViewCube', incidentModels);
     } else {
+
       const incidentsCube = IncidentsCube.create({
         array: [],
         categoryTags: []
@@ -244,8 +256,9 @@ export default Route.extend({
       this.set('listViewCube', incidentsCube);
 
       // Kick off the initial page load data request.
+
       this._createStream([{ field: 'statusSort', values: incidentStatusIds }],
-        [{ field: 'prioritySort', descending: true }],
+        [ this._getDefaultListSort() ],
         'new',
         incidentsCube);
 

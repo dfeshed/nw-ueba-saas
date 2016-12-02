@@ -105,6 +105,8 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
       users,
       categoryTags
     });
+
+    localStorage.clear();
   }
 });
 

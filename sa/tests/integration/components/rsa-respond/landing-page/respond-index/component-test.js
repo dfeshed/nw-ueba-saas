@@ -100,6 +100,7 @@ moduleForComponent('rsa-respond-index', 'Integration | Component | rsa respond/l
       inProgressIncidents: inProgressCube,
       allIncidents: allCube
     });
+    localStorage.clear();
   }
 });
 
