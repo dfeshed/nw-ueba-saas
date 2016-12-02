@@ -20,3 +20,8 @@ rules:
     -
       include: true
   no-color-hex: 2
+  no-universal-selectors: 2
+  no-url-domains: 2
+  no-trailing-zero: 2
+  one-declaration-per-line: 2
+  pseudo-element: 2

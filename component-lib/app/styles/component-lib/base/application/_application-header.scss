@@ -24,7 +24,7 @@
     &.active {
       color: $applicationHeaderLinkActiveColor;
 
-      &:after {
+      &::after {
         content: '';
         display: block;
         position: absolute;

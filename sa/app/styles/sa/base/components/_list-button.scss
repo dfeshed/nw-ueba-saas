@@ -7,10 +7,10 @@
   text-overflow: ellipsis;
   list-style: none;
   cursor: pointer;
-  position: relative; /* enables absolute positioning for :after element */
+  position: relative; /* enables absolute positioning for ::after element */
 
   /* inserts a right disclosure arrow */
-  &:after {
+  &::after {
     content: '\f45f';
     font-family: 'Streamline-2-Line';
     font-size: 1em;

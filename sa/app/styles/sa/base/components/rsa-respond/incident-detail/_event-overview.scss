@@ -149,7 +149,7 @@
                 line-height: 12px;
                 vertical-align: middle;
 
-                &:after {
+                &::after {
                   content: ":";
                 }
               }
@@ -170,7 +170,7 @@
   &__detector {
     &__header {
       &__label {
-        &:after {
+        &::after {
           content: ":";
         }
       }
@@ -236,7 +236,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
 
-        &:after {
+        &::after {
           content: ":";
         }
       }

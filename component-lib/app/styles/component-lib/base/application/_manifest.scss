@@ -39,10 +39,10 @@ $applicationLoaderLabelColor: rsa-color(gray, lightest);
 
 // sass-lint:disable-block indentation
 $applicationBodyBackgroundImage:
-  radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
-  radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
-  radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%),
-  radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .10) 0, rsa-color(blue, darker, 0) 75%);
+  radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
+  radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
+  radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%),
+  radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue, darker, 0) 75%);
 
 $applicationBodyBackgroundColor: rsa-color(gray, dark);
 

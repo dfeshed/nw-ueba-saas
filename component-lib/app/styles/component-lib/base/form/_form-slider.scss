@@ -60,7 +60,7 @@
     }
   }
 
-  .noUi-handle:after, .noUi-handle:before {
+  .noUi-handle::after, .noUi-handle::before {
     display: none;
   }
 

@@ -116,7 +116,7 @@ $ember-power-select-line-height: 2rem;
     line-height: 1.75em;
     color: rsa-color(gray, light);
 
-    &:after {
+    &::after {
       font-size: .6rem;
       font-family: 'Streamline-2-Line';
       content: "\f436";
@@ -227,7 +227,7 @@ $ember-power-select-line-height: 2rem;
             height: 1.35rem;
           }
 
-          &:checked:after {
+          &:checked::after {
             height: calc(1.35rem + 1px);
             position: relative;
             top: -2rem;
@@ -411,7 +411,7 @@ $ember-power-select-line-height: 2rem;
       color: $formSelectErrorIconColor;
     }
 
-    select option:checked:after {
+    select option:checked::after {
       background: $formSelectErrorOptionSelectedBackgroundColor;
     }
 
@@ -423,7 +423,7 @@ $ember-power-select-line-height: 2rem;
   }
 
   &.is-inline {
-    &:after {
+    &::after {
       content: ".";
       visibility: hidden;
       display: block;

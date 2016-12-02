@@ -16,7 +16,7 @@
       color: rsa-color(white);
     }
 
-    &:before {
+    &::before {
       border: 1pt solid $dark-border-color-medium;
       background-color: $dark-bg-color;
     }
@@ -102,7 +102,7 @@
     background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
     .rsa-packet {
       &__header {
-        &:before {
+        &::before {
           transform: rotate(45deg);
         }
       }
@@ -113,7 +113,7 @@
     background-color: rsa-color(gray, darkest, $rsa-translucent);
     .rsa-packet {
       &__header {
-        &:before {
+        &::before {
           transform: rotate(225deg);
         }
       }

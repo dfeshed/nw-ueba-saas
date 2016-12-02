@@ -32,7 +32,7 @@ $packet-byte-border-width: 1px;
 
       &:nth-of-type(4n) {
         position: relative;
-        &:before {
+        &::before {
           content: '';
           position: absolute;
           top: 0;
@@ -43,12 +43,12 @@ $packet-byte-border-width: 1px;
       }
       &:nth-of-type(4),
       &:nth-of-type(12) {
-        &:before {
+        &::before {
           background-color: rgba(255, 255, 255, .1);
         }
       }
       &:nth-of-type(8) {
-        &:before {
+        &::before {
           background-color: rgba(255, 255, 255, .2);
         }
       }
@@ -126,7 +126,7 @@ $packet-byte-border-width: 1px;
     tr:hover {
       td:first-of-type {
         position: relative;
-        &:before {
+        &::before {
           background-color: rgba(255, 255, 255, .2);
           content: '';
           position: absolute;

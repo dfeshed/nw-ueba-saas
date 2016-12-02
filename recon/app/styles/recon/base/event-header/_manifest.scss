@@ -39,7 +39,7 @@
         font-weight: lighter;
         .ember-power-select-status-icon {
           width: 1rem;
-          &:after {
+          &::after {
             font-size: 1rem;
             line-height: 1rem;
           }

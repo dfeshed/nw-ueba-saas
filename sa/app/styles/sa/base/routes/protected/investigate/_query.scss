@@ -164,12 +164,12 @@
 
     .rsa-list-button {
       color: rsa-color(white,base, $rsa-nearly-opaque);
-      &:after {
+      &::after {
         color: rsa-color(white,base, $rsa-nearly-transparent);
       }
       &:hover {
         color: rsa-color(white,base, $rsa-opaque);
-        &:after {
+        &::after {
           color: rsa-color(white,base, $rsa-translucent);
         }
       }

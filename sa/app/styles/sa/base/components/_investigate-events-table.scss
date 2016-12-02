@@ -75,7 +75,7 @@
           color: rsa-color(white, base, $rsa-translucent);
           padding-right: rsa-whitespace();
 
-          &:after {
+          &::after {
             content: ':';
             color: rsa-color(white,base,$rsa-translucent);
           }

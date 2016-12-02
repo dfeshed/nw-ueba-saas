@@ -21,11 +21,11 @@
       list-style: none;
       padding: rsa-whitespace(least) rsa-whitespace(least) rsa-whitespace(least) 0;
 
-      &:after {
+      &::after {
         content: ',';
       }
 
-      &:last-of-type:after {
+      &:last-of-type::after {
         content: '';
       }
     }
