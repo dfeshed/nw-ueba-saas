@@ -36,7 +36,7 @@ export default Component.extend(ContextualHelp, {
             access_token: this.get('session').get('data.authenticated.access_token')
           }
         })
-          .done(() => {
+          .always(() => {
             this.get('session').invalidate();
             resolve();
           });
