@@ -176,40 +176,34 @@
     }
 
     &-key-values {
-      &__instruct {
-        color: rsa-color(blue, lighter);
-      }
-      &:hover {
-        .rsa-investigate-meta-key-values__instruct {
-          color: rsa-color(white);
-        }
-      }
-    }
+      border-bottom: 1px solid rsa-color(gray, base, $rsa-nearly-transparent);
+      color: rsa-color(white);
 
-    &-key-values__value {
+      .meta-size {
+        color: rsa-color(white, base, $rsa-somewhat-opaque);
+      }
 
-      &:hover {
-        .rsa-investigate-meta-key-values__value-label,
-        .rsa-investigate-meta-key-values__value-metric {
-          color: rsa-color(white);
+      &__header:hover {
+        color: rsa-color(blue);
+
+        .meta-size {
+          color: rsa-color(blue);
         }
       }
 
-      &-label {
-        color: rsa-color(blue, lighter);
-      }
 
-      &-metric {
-        color: rsa-color(green, lighter);
+      &__value {
+        border: 1px solid rsa-color(white, base, $rsa-nearly-transparent);
+        border-radius: 2px;
 
-        &:before {
-          content: '(';
-          color: rsa-color(gray);
+        &.selected,
+        &:hover {
+          background-color: rsa-color(blue);
+          border-color: rsa-color(blue);
         }
 
-        &:after {
-          content: ')';
-          color: rsa-color(gray);
+        &-metric {
+          color: rsa-color(white, base, $rsa-somewhat-opaque);
         }
       }
     }

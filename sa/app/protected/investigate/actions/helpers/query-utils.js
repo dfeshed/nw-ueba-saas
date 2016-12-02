@@ -302,6 +302,8 @@ function parseEventQueryUri(uri) {
  * a meta key identifier (e.g., `ip.src`, not a display name), and each `value#` string is a meta value (raw, not alias).
  * Assumes `key#` strings do not need URI decoding (they're just alphanumerics, plus dots maybe), but `value#` strings
  * will need URI decoding.
+ * If any duplicate conditions are found, the duplicates are discarded; i.e., only 1 instance of the condition is
+ * returned. This is done because the duplicate conditions don't have any net effect on the filter.
  * @param {string} uri
  * @returns {object[]} Array of condition objects. Each array item is an object with properties `key` & `value`, where:
  * (i) `key` is a meta key identifier (e.g., "ip.src", not a display name); and
@@ -315,6 +317,7 @@ function parseMetaFilterUri(uri) {
     return [];
   }
   return uri.split('/')
+    .uniq()
     .map((queryString) => {
       queryString = decodeURIComponent(queryString);
       const condition = { queryString };

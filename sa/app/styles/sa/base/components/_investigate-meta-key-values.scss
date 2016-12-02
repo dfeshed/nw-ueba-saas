@@ -20,7 +20,7 @@ $investigateMetaKeyToggleWidth: 1rem;
   }
 
   &__header h2 {
-    @include rsa-font(header, small);
+    @include rsa-font(body);
     position: relative; /* enables absolute positioning for child .toggle-open */
     padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) rsa-whitespace(more);
 
@@ -31,7 +31,7 @@ $investigateMetaKeyToggleWidth: 1rem;
   }
 
   &__instruct {
-    @include rsa-font(light, smaller);
+    @include rsa-font(light, small);
     padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
   }
 
@@ -51,7 +51,7 @@ $investigateMetaKeyToggleWidth: 1rem;
   }
 
   &__body {
-    padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
+    padding: 0 rsa-whitespace() rsa-whitespace(less) rsa-whitespace(more);
   }
 
   &:not(.is-open) {
@@ -65,13 +65,23 @@ $investigateMetaKeyToggleWidth: 1rem;
     list-style: none;
     white-space: normal;
     @include rsa-font(light, small);
-    padding: rsa-whitespace(least) 0;
+    padding: rsa-whitespace(least);
     margin: 0 rsa-whitespace(less) rsa-whitespace(least) 0;
-    line-height: 1.35rem;
-    cursor: pointer;
+    cursor: default;
+
+    &:not(.selected) {
+      cursor: pointer;
+    }
 
     &-metric {
-      margin-left: rsa-whitespace(least);
+      margin-left: rsa-whitespace(less);
+
+      &::before {
+        content: '(';
+      }
+      &::after {
+        content: ')';
+      }
     }
 
     &.is-context-lookup-enabled {

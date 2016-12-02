@@ -92,6 +92,23 @@ export default Component.extend({
     this._renderMetaValues();
   }),
 
+  // Creates a function that will test whether a given (raw) meta value is already selected in the current query.
+  // This type of test can be done with simple looping, but we need it to be performant because it will be done
+  // on every single meta value we render.  So, as an optimization, we call this method to request a performant test
+  // function. That dynamically generated function will avoid looping; instead it will use a closure to do a hash lookup.
+  _getMetaValueTester() {
+    const groupKeyName = this.get('groupKey.name');
+    const conditions = this.get('query.metaFilter.conditions');
+    const conditionsForThisKey = (conditions || []).filterBy('key', groupKeyName);
+    const selectedValuesForThisKey = conditionsForThisKey.reduce((hash, condition) => {
+      hash[condition.value] = true;
+      return hash;
+    }, {});
+    return function(value) {
+      return !!selectedValuesForThisKey[value];
+    };
+  },
+
   // Responsible for rendering the meta values DOM. For performance, we do this here with D3 instead of in the template.
   _renderMetaValues() {
     const $el = this.element && this.$('.js-content');
@@ -107,6 +124,10 @@ export default Component.extend({
       resolvedData: data
     } = this.getProperties('groupKey.name', 'clickValueAction', 'contextLookupAction', 'resolvedData');
 
+    // Request a function that will test whether a given (raw) meta value is already selected in the current query.
+    // We'll use this function to mark some values as selected & disable their clicks.
+    const isValueSelected = this._getMetaValueTester();
+
     const $root = select($el[0]);
 
     // Remove the DOM from previous data set (if any).
@@ -118,12 +139,20 @@ export default Component.extend({
       .data(data, (d) => d.value)
       .enter()
       .append('a')
-      .classed('rsa-investigate-meta-key-values__value', true)
+      .attr('class', (d) => {
+        // selected values get an extra "selected" CSS class name
+        const selected = isValueSelected(d.value);
+        return `rsa-investigate-meta-key-values__value ${selected ? 'selected' : ''}`;
+      })
       .attr('title', function(d) {
         return d.tooltip;
       })
       .on('click', (d) => {
-        this.send('safeCallback', clickValueAction, groupKeyName, d.value);
+        // clicking on non-selected values will added them to the query filter (i.e., a "drill").
+        // selected values aren't clickable, because they are already in the query filter.
+        if (!isValueSelected(d.value)) {
+          this.send('safeCallback', clickValueAction, groupKeyName, d.value);
+        }
       });
 
     // If the meta key corresponds to a known entity, enable context lookup on that meta value:
