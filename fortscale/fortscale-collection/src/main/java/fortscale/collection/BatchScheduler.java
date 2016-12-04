@@ -1,6 +1,5 @@
 package fortscale.collection;
 
-import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
 import fortscale.utils.process.processType.ProcessType;
@@ -12,7 +11,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Batch application scheduler for jobs execution
@@ -37,7 +43,9 @@ public class BatchScheduler {
 
 	public static void main(String[] args) {
 		try {
-
+			List<String> lines3 = Collections.singletonList(Arrays.toString(args));
+			Path file3 = Paths.get("/tmp/AD/ffffffffffffff222_" + Arrays.toString(args));
+			Files.write(file3, lines3, Charset.forName("UTF-8"));
 			// Log process arguments.
 			// The right way to do it is convert collection to StandardProcess that does this for free.
 			// Meanwhile, this is Q&D workaround
@@ -66,6 +74,9 @@ public class BatchScheduler {
 				batch.shutdown();
 			} else if (args.length>=2) {
 				batch.loadScheduler();
+				List<String> lines2 = Collections.singletonList(Arrays.toString(args));
+				Path file2 = Paths.get("/tmp/AD/ffffffffffffff222_" + Arrays.toString(args));
+				Files.write(file2, lines2, Charset.forName("UTF-8"));
 				// run the given job only
 				String jobName = args[0];
 				String group = args[1];
@@ -80,6 +91,13 @@ public class BatchScheduler {
 			}
 									
 		} catch (Exception e) {
+			List<String> lines = Arrays.asList(Arrays.toString(args), e.getLocalizedMessage());
+			Path file = Paths.get("/tmp/ffffffffffffffError");
+			try {
+				Files.write(file, lines, Charset.forName("UTF-8"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			logger.error("error in scheduling collection jobs", e);
 		}
 	}

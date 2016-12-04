@@ -16,7 +16,12 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -294,10 +299,24 @@ public class JobDataMapExtension implements ApplicationContextAware{
 	 */
 	public MorphlinesItemsProcessor getMorphlinesItemsProcessor(JobDataMap map, String key) throws JobExecutionException {
 		String filename = "";
+		Resource morphlineConf = getJobDataMapResourceValue(map, key);
+		List<String> lines31 = Collections.singletonList(morphlineConf.toString());
+		Path file31 = Paths.get("/tmp/AD/ffffffffffffffxzczxczxczxc");
 		try {
-			Resource morphlineConf = getJobDataMapResourceValue(map, key);
+			Files.write(file31, lines31, Charset.forName("UTF-8"));
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
 			return new MorphlinesItemsProcessor(morphlineConf);
 		} catch (IOException e) {
+			List<String> lines3 = Collections.singletonList(morphlineConf.toString());
+			Path file3 = Paths.get("/tmp/AD/ffffffffffffff222vvvvvvvvvvvvvvv_");
+			try {
+				Files.write(file3, lines3, Charset.forName("UTF-8"));
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
 			logger.error("error loading morphline processor for " + filename, e);
 			throw new JobExecutionException("error loading morphline processo for " + filename, e);
 		}

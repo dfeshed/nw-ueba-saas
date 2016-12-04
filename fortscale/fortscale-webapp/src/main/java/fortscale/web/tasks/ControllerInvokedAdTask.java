@@ -9,6 +9,10 @@ import fortscale.web.rest.ApiActiveDirectoryController;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.ETL;
@@ -65,9 +69,23 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         currentAdTaskType = ETL;
-        final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
-        controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
-        controller.setLastExecutionTime(currentAdTaskType, dataSource, fetchResponse.lastExecutionTime);
+        if (dataSource.equals(AdObjectType.GROUP)) {
+            Path file2 = Paths.get("/tmp/AD/noGROOOUUUPP");
+            List<String> lines3 = Collections.singletonList("gggg");
+            try {
+                Files.write(file2, lines3, Charset.forName("UTF-8"));
+                AdTaskResponse etlResponse = new AdTaskResponse(ETL, false, -1, AdObjectType.GROUP.toString(), -1L);
+                controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        else {
+
+            final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
+            controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
+            controller.setLastExecutionTime(currentAdTaskType, dataSource, fetchResponse.lastExecutionTime);
+        }
     }
 
     private void notifyTaskStart() {

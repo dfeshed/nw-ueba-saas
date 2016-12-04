@@ -15,7 +15,6 @@ import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -39,10 +38,11 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
 
-	@Value("${user.home.dir}")
-	private static String HOME_DIR;
+//	@Value("${user.home.dir}")
+//	private static String HOME_DIR;
 
-	public static final String COLLECTION_TARGET_DIR = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+//	public static final String COLLECTION_TARGET_DIR = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+	public static final String COLLECTION_TARGET_DIR ="/home/rafael/dev/git/fortscale-core/fortscale/fortscale-collection/target/";
 
 	public static final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
 
