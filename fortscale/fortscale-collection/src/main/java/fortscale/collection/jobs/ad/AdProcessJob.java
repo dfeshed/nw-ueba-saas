@@ -117,12 +117,19 @@ public abstract class AdProcessJob extends FortscaleJob {
 			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
 
 			// random generated ID for deployment wizard fetch and ETL results
-			resultsKey = key.getName().toLowerCase() + "." + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
 
 
 				Path file4 = Paths.get("/tmp/AD/ETL_BBB_" + resultsKey);
 				lines = Collections.singletonList("vv");
 				Files.write(file4, lines, Charset.forName("UTF-8"));
+			try {
+				final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+				if (resultsId != null) {
+                    resultsKey = key.getName().toLowerCase() + "." + resultsId;
+                }
+			} catch (JobExecutionException e) {
+				logger.info("No resultsId was given as param.");
+			}
 
 		} catch (JobExecutionException e) {
 			List<String> lines = Collections.singletonList("vv");
@@ -216,8 +223,10 @@ public abstract class AdProcessJob extends FortscaleJob {
 		Path file = Paths.get("/tmp/AD/EETTTLLLL.txt");
 		Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
 
-		logger.debug("Inserting status to application configuration in key {}", resultsKey);
-		applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		if (resultsKey != null) {
+			logger.debug("Inserting status to application configuration in key {}", resultsKey);
+			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		}
 	}
 	
 	protected void runFinalStep() throws Exception{

@@ -65,7 +65,14 @@ public class AdFetchJob extends FortscaleJob {
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		resultsKey = key.getName().toLowerCase() + "." + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+		try {
+			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+			if (resultsId != null) {
+				resultsKey = key.getName().toLowerCase() + "." + resultsId;
+			}
+		} catch (JobExecutionException e) {
+			logger.info("No resultsId was given as param.");
+		}
 	}
 
 	@Override
@@ -84,8 +91,10 @@ public class AdFetchJob extends FortscaleJob {
 			return;
 		}
 
-		logger.debug("Inserting status to application configuration in key {}", resultsKey);
-		applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		if (resultsKey != null) {
+			logger.debug("Inserting status to application configuration in key {}", resultsKey);
+			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		}
 	}
 
 	private boolean prepareSinkFileStep() throws JobExecutionException {
