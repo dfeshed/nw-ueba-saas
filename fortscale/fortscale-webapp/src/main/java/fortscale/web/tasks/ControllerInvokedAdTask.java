@@ -74,7 +74,7 @@ public class ControllerInvokedAdTask implements Runnable {
             List<String> lines3 = Collections.singletonList("gggg");
             try {
                 Files.write(file2, lines3, Charset.forName("UTF-8"));
-                AdTaskResponse etlResponse = new AdTaskResponse(ETL, false, -1, AdObjectType.GROUP.toString(), -1L);
+                AdTaskResponse etlResponse = new AdTaskResponse(ETL, false, -1, AdObjectType.GROUP, -1L);
                 controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
             } catch (IOException e) {
                 e.printStackTrace();
@@ -121,7 +121,7 @@ public class ControllerInvokedAdTask implements Runnable {
         logger.debug("Running AD task {} with ID {}", jobName, resultsId);
         if (!runCollectionJob(jobName, resultsId)) {
             notifyTaskDone();
-            return new AdTaskResponse(adTaskType, false, -1, dataSourceName, -1L);
+            return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
 
 
@@ -130,7 +130,7 @@ public class ControllerInvokedAdTask implements Runnable {
         final Map<String, String> taskResults = getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
-            return new AdTaskResponse(adTaskType, false, -1, dataSourceName, -1L);
+            return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
 
         /* process results and understand if task finished successfully */
@@ -138,7 +138,7 @@ public class ControllerInvokedAdTask implements Runnable {
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
             notifyTaskDone();
-            return new AdTaskResponse(adTaskType, false, -1, dataSourceName, -1L);
+            return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
 
         /* get objects count for this data source from mongo (if it's a Fetch job we don't care about the count)*/
@@ -147,7 +147,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
-        return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName, lastExecutionTime);
+        return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSource, lastExecutionTime);
     }
 
     private Map<String, String> getTaskResults(String resultsKey) {
@@ -237,10 +237,10 @@ public class ControllerInvokedAdTask implements Runnable {
         private AdTaskType taskType;
         private boolean success;
         private long objectsCount;
-        private String dataSource;
+        private AdObjectType dataSource;
         private Long lastExecutionTime;
 
-        public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource, Long lastExecutionTime) {
+        public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, AdObjectType dataSource, Long lastExecutionTime) {
             this.taskType = taskType;
             this.success = success;
             this.objectsCount = objectsCount;
@@ -272,11 +272,11 @@ public class ControllerInvokedAdTask implements Runnable {
             this.objectsCount = objectsCount;
         }
 
-        public String getDataSource() {
+        public AdObjectType getDataSource() {
             return dataSource;
         }
 
-        public void setDataSource(String dataSource) {
+        public void setDataSource(AdObjectType dataSource) {
             this.dataSource = dataSource;
         }
 
