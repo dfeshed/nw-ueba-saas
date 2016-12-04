@@ -601,23 +601,24 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter) {
 		// Create criteria list
 		List<Criteria> criteriaList = new ArrayList<>();
-		String startsWithRegex = "^"+userRestFilter.getSearchValue() + ".*i";
+		String startsWithRegex = "^"+userRestFilter.getSearchValue();
 
 		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
 
 			List<Criteria> searchCriterias = new ArrayList<>();
-			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.firstnameField)).regex(startsWithRegex));
-			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.lastnameField)).regex(startsWithRegex));
-			searchCriterias.add(new Criteria(User.displayNameField).regex(startsWithRegex));
-			searchCriterias.add(new Criteria(User.usernameField).regex(startsWithRegex));
+			String caseInsensitive = "i";
+			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.firstnameField)).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.lastnameField)).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.displayNameField).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.usernameField).regex(startsWithRegex, caseInsensitive));
 
 			// If the users are filtered by position don't check for the search value
 			if (CollectionUtils.isEmpty(userRestFilter.getPositions())) {
-				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.positionField)).regex(startsWithRegex));
+				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.positionField)).regex(startsWithRegex, caseInsensitive));
 			}
 			// If the users are filtered by department don't check for the search value
 			if (CollectionUtils.isEmpty(userRestFilter.getDepartments())) {
-				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).regex(startsWithRegex));
+				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).regex(startsWithRegex, caseInsensitive));
 			}
 
 			criteriaList.add(new Criteria().orOperator(searchCriterias.toArray(new Criteria[searchCriterias.size()])));
