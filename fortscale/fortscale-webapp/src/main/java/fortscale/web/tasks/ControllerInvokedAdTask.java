@@ -114,7 +114,7 @@ public class ControllerInvokedAdTask implements Runnable {
         final String dataSourceName = dataSource.toString();
 
         UUID resultsId = UUID.randomUUID();
-        final String resultsKey = dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "_" + resultsId;
+        final String resultsKey = dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "." + resultsId;
 
         /* run task */
         final String jobName = dataSourceName + "_" + adTaskType.toString();

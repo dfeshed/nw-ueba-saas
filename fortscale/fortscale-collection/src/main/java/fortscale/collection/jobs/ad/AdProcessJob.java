@@ -117,7 +117,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
 
 			// random generated ID for deployment wizard fetch and ETL results
-			resultsKey = key.getName().toLowerCase() + "_" + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+			resultsKey = key.getName().toLowerCase() + "." + jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
 
 
 				Path file4 = Paths.get("/tmp/AD/ETL_BBB_" + resultsKey);
