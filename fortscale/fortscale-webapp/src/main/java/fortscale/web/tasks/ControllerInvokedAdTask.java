@@ -57,9 +57,9 @@ public class ControllerInvokedAdTask implements Runnable {
 
         final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
         controller.sendTemplateMessage(RESPONSE_DESTINATION, fetchResponse);
-        controller.setLastExecutionTime(currentAdTaskType, dataSource);
+        controller.setLastExecutionTime(currentAdTaskType, dataSource , fetchResponse.lastExecutionTime);
 
-        if (!fetchResponse.isSuccess()) {
+        if (!fetchResponse.success) {
             logger.warn("Fetch phase failed so not executing ETL.");
             return;
         }
@@ -67,7 +67,7 @@ public class ControllerInvokedAdTask implements Runnable {
         currentAdTaskType = ETL;
         final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
         controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
-        controller.setLastExecutionTime(currentAdTaskType, dataSource);
+        controller.setLastExecutionTime(currentAdTaskType, dataSource, fetchResponse.lastExecutionTime);
     }
 
     private void notifyTaskStart() {
@@ -103,7 +103,7 @@ public class ControllerInvokedAdTask implements Runnable {
         logger.debug("Running AD task {} with ID {}", jobName, resultsId);
         if (!runCollectionJob(jobName, resultsId)) {
             notifyTaskDone();
-            return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+            return new AdTaskResponse(adTaskType, false, -1, dataSourceName, -1L);
         }
 
 
@@ -112,7 +112,7 @@ public class ControllerInvokedAdTask implements Runnable {
         final Map<String, String> taskResults = getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
-            return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+            return new AdTaskResponse(adTaskType, false, -1, dataSourceName, -1L);
         }
 
         /* process results and understand if task finished successfully */
@@ -120,7 +120,7 @@ public class ControllerInvokedAdTask implements Runnable {
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
             notifyTaskDone();
-            return new AdTaskResponse(adTaskType, false, -1, dataSourceName);
+            return new AdTaskResponse(adTaskType, false, -1, dataSourceName, -1L);
         }
 
         /* get objects count for this data source from mongo (if it's a Fetch job we don't care about the count)*/
@@ -128,7 +128,8 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
         notifyTaskDone();
-        return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName);
+        final long lastExecutionTime = System.currentTimeMillis();
+        return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSourceName, lastExecutionTime);
     }
 
     private Map<String, String> getTaskResults(String resultsKey) {
@@ -215,45 +216,33 @@ public class ControllerInvokedAdTask implements Runnable {
      * This class represents an ADTask response to the controller that executed it containing various information the controller needs to return the UI
      */
     public static class AdTaskResponse {
-        private AdTaskType taskType;
-        private boolean success;
-        private long objectsCount;
-        private String dataSource;
+        public AdTaskType taskType;
+        public boolean success;
+        public long objectsCount;
+        public String dataSource;
+        public Long lastExecutionTime;
 
-        public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource) {
+
+        public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource, Long lastExecutionTime) {
             this.taskType = taskType;
             this.success = success;
             this.objectsCount = objectsCount;
             this.dataSource = dataSource;
+            this.lastExecutionTime = lastExecutionTime;
         }
 
-        public AdTaskType getTaskType() {
-            return taskType;
-        }
-
-        public boolean isSuccess() {
-            return success;
-        }
-
-        public long getObjectsCount() {
-            return objectsCount;
-        }
-
-        public String getDataSource() {
-            return dataSource;
-        }
     }
 
     public static class AdTaskStatus {
         public final AdTaskType runningMode; //null for not running
         public final AdObjectType datasource;
-        public final Long lastExecutionTime;
+        public final Long lastExecutionFinishTime;
         public final Long objectsCount;
 
-        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionTime, Long objectsCount) {
+        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime, Long objectsCount) {
             this.runningMode = runningMode;
             this.datasource = datasource;
-            this.lastExecutionTime = lastExecutionTime;
+            this.lastExecutionFinishTime = lastExecutionFinishTime;
             this.objectsCount = objectsCount;
         }
     }

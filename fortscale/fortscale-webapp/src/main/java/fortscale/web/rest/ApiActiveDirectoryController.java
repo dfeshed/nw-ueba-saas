@@ -58,7 +58,7 @@ public class ApiActiveDirectoryController {
 
 	private Set<ControllerInvokedAdTask> activeThreads = ConcurrentHashMap.newKeySet(dataSources.size());
 
-	private Long lastAdFetchEtlExecutionTimeInMillis;
+	private Long lastAdFetchEtlExecutionStartTime;
 
 	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
@@ -143,7 +143,7 @@ public class ApiActiveDirectoryController {
 				isFetchEtlExecutionRequestInProgress.set(false);
 				return new ResponseEntity(HttpStatus.FORBIDDEN);
 			}
-			lastAdFetchEtlExecutionTimeInMillis = System.currentTimeMillis();
+			lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
 
 			logger.debug("Starting Active Directory fetch and ETL");
 
@@ -187,7 +187,7 @@ public class ApiActiveDirectoryController {
 				executorService = createExecutorService();
 			}
 
-			lastAdFetchEtlExecutionTimeInMillis = null;
+			lastAdFetchEtlExecutionStartTime = null;
 			return new ResponseEntity<>("AD fetch and ETL execution has stopped successfully", HttpStatus.OK);
 		} else {
 			final String msg = "Attempted to stop threads was made but there are no running tasks.";
@@ -209,23 +209,23 @@ public class ApiActiveDirectoryController {
 					currTaskType = activeThread.getCurrentAdTaskType();
 				}
 			}
-			final Long currLastExecutionTime = getLastExecutionTime(currTaskType, datasource);
+			final Long currLastExecutionFinishTime = getLastExecutionTime(currTaskType, datasource);
 			Long currObjectsCount = 0L;
-			if (currLastExecutionTime != null) {
+			if (currLastExecutionFinishTime != null) {
 				currObjectsCount = activeDirectoryService.getCount(datasource);
 			}
-			statuses.add(new AdTaskStatus(currTaskType, datasource, currLastExecutionTime, currObjectsCount));
+			statuses.add(new AdTaskStatus(currTaskType, datasource, currLastExecutionFinishTime, currObjectsCount));
 		});
 
-		return new FetchEtlExecutionStatus(lastAdFetchEtlExecutionTimeInMillis, statuses);
+		return new FetchEtlExecutionStatus(lastAdFetchEtlExecutionStartTime, statuses);
 	}
 
 	public Long getLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
 		return applicationConfigurationService.getApplicationConfigurationAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
 	}
 
-	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
-		applicationConfigurationService.insertConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource, Long lastExecutionTime) {
+		applicationConfigurationService.insertConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
 	}
 
 	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {
