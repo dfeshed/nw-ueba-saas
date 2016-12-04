@@ -234,12 +234,11 @@ public class ControllerInvokedAdTask implements Runnable {
      * This class represents an ADTask response to the controller that executed it containing various information the controller needs to return the UI
      */
     public static class AdTaskResponse {
-        public AdTaskType taskType;
-        public boolean success;
-        public long objectsCount;
-        public String dataSource;
-        public Long lastExecutionTime;
-
+        private AdTaskType taskType;
+        private boolean success;
+        private long objectsCount;
+        private String dataSource;
+        private Long lastExecutionTime;
 
         public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, String dataSource, Long lastExecutionTime) {
             this.taskType = taskType;
@@ -249,19 +248,74 @@ public class ControllerInvokedAdTask implements Runnable {
             this.lastExecutionTime = lastExecutionTime;
         }
 
+        public AdTaskType getTaskType() {
+            return taskType;
+        }
+
+        public void setTaskType(AdTaskType taskType) {
+            this.taskType = taskType;
+        }
+
+        public boolean isSuccess() {
+            return success;
+        }
+
+        public void setSuccess(boolean success) {
+            this.success = success;
+        }
+
+        public long getObjectsCount() {
+            return objectsCount;
+        }
+
+        public void setObjectsCount(long objectsCount) {
+            this.objectsCount = objectsCount;
+        }
+
+        public String getDataSource() {
+            return dataSource;
+        }
+
+        public void setDataSource(String dataSource) {
+            this.dataSource = dataSource;
+        }
+
+        public Long getLastExecutionTime() {
+            return lastExecutionTime;
+        }
+
+        public void setLastExecutionTime(Long lastExecutionTime) {
+            this.lastExecutionTime = lastExecutionTime;
+        }
     }
 
     public static class AdTaskStatus {
-        public final AdTaskType runningMode; //null for not running
-        public final AdObjectType datasource;
-        public final Long lastExecutionFinishTime;
-        public final Long objectsCount;
+        private final AdTaskType runningMode; //null for not running
+        private final AdObjectType datasource;
+        private final Long lastExecutionFinishTime;
+        private final Long objectsCount;
 
         public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime, Long objectsCount) {
             this.runningMode = runningMode;
             this.datasource = datasource;
             this.lastExecutionFinishTime = lastExecutionFinishTime;
             this.objectsCount = objectsCount;
+        }
+
+        public AdTaskType getRunningMode() {
+            return runningMode;
+        }
+
+        public AdObjectType getDatasource() {
+            return datasource;
+        }
+
+        public Long getLastExecutionFinishTime() {
+            return lastExecutionFinishTime;
+        }
+
+        public Long getObjectsCount() {
+            return objectsCount;
         }
     }
 
