@@ -91,12 +91,14 @@ public class MongoConverterConfigurerTest {
         Map<String, String> mapToConvert = foo.getMapToConvert();
         mapToConvert.put(".","value1");
         mapToConvert.put("$","value2");
+        mapToConvert.put("$$key$$","value3");
         mongoTemplate.insert(foo);
         Foo retrievedDocuments = mongoTemplate.findAll(Foo.class).get(0);
 
         Map<String, String> retrievedMap = retrievedDocuments.getMapToConvert();
         Assert.assertEquals(retrievedMap.get("."), "value1");
         Assert.assertEquals(retrievedMap.get("$"), "value2");
+        Assert.assertEquals(retrievedMap.get("$$key$$"),"value3");
 
     }
 }

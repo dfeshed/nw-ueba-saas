@@ -36,7 +36,12 @@ public class FSMappingMongoConverter extends MappingMongoConverter {
                             + "sure map keys don't contain dollars in the first place or configure an appropriate replacement!",
                     source));
         }
-        return result.replace("$",mapKeyDollarReplacement);
+        if(result.startsWith("$"))
+        {
+            StringBuilder sb = new StringBuilder();
+            result = sb.append(mapKeyDollarReplacement).append(result.substring(1,result.length())).toString();
+        }
+        return result;
     }
 
 
@@ -55,7 +60,12 @@ public class FSMappingMongoConverter extends MappingMongoConverter {
             return result;
         }
         else {
-            return result.replace(mapKeyDollarReplacement, "$");
+            if(source.startsWith(mapKeyDollarReplacement))
+            {
+                StringBuilder sb = new StringBuilder();
+                result = sb.append("$").append(result.substring(mapKeyDollarReplacement.length(),result.length())).toString();
+            }
+            return result;
         }
     }
 
