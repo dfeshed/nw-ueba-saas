@@ -158,12 +158,12 @@ public class AggregatorManager {
 		}
 	}
 
-	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	public void window(MessageCollector collector, TaskCoordinator coordinator, boolean forceSync) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
 		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
-		featureBucketsStore.cleanup();
+		featureBucketsStore.cleanup(forceSync);
 	}
 
 	public void advanceTime(long epochtime) {
