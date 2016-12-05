@@ -2,7 +2,6 @@ package fortscale.accumulator;
 
 import com.github.fakemongo.Fongo;
 import com.mongodb.Mongo;
-import fortscale.domain.MongoConverterConfigurer;
 import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -21,13 +20,17 @@ import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 @Profile("test")
 public class TestMongoConfig extends AbstractMongoConfiguration
 {
+    private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
+
     @Bean
     @Override
     public MappingMongoConverter mappingMongoConverter() throws Exception {
 
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory());
-        MappingMongoConverter converter = new FSMappingMongoConverter(dbRefResolver, mongoMappingContext());
+        FSMappingMongoConverter converter = new FSMappingMongoConverter(dbRefResolver, mongoMappingContext());
         converter.setCustomConversions(customConversions());
+        converter.setMapKeyDotReplacement("#dot#");
+        converter.setMapKeyDollarReplacement("#dlr#");
 
         return converter;
     }
@@ -35,18 +38,7 @@ public class TestMongoConfig extends AbstractMongoConfiguration
     @Autowired
     MappingMongoConverter mappingMongoConverter;
 
-    private static final String FORTSCALE_TEST_DB = "fortscaleTestDb";
 
-    @Bean
-    public MongoConverterConfigurer mongoConverterConfigurer()
-    {
-        MongoConverterConfigurer converter = new MongoConverterConfigurer();
-        converter.setMapKeyDotReplacement("#dot#");
-        converter.setMapKeyDollarReplacement("#dol#");
-        converter.setMongoConverter((FSMappingMongoConverter)mappingMongoConverter);
-        converter.init();
-        return converter;
-    }
 
     @Override
     protected String getDatabaseName() {

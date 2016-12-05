@@ -39,12 +39,20 @@ public class SpringMongoConfiguration extends AbstractMongoConfiguration {
     @Value("${mongo.db.password}")
     private String mongoPassword;
 
+    @Value("${mongo.map.dot.replacement}")
+    private String mapKeyDotReplacemant;
+
+    @Value("${mongo.map.dollar.replacement}")
+    private String mapKeyDollarReplacemant;
+
     @Bean
     @Override
     public MappingMongoConverter mappingMongoConverter() throws Exception {
 
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory());
-        MappingMongoConverter converter = new FSMappingMongoConverter(dbRefResolver, mongoMappingContext());
+        FSMappingMongoConverter converter = new FSMappingMongoConverter(dbRefResolver, mongoMappingContext());
+        converter.setMapKeyDotReplacement(mapKeyDotReplacemant);
+        converter.setMapKeyDollarReplacement(mapKeyDollarReplacemant);
         converter.setCustomConversions(customConversions());
 
         return converter;
