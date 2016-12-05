@@ -137,6 +137,7 @@ public class ApiActiveDirectoryController {
 
 	@RequestMapping("/ad_fetch_etl" )
 	public ResponseEntity executeAdFetchAndEtl() {
+		isFetchEtlExecutionRequestStopped.set(false);
 		if (isFetchEtlExecutionRequestInProgress.compareAndSet(false, true)) {
 			if (!activeThreads.isEmpty()) {
 				logger.warn("Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.");
