@@ -150,7 +150,7 @@ public class ApiActiveDirectoryController {
 
 			try {
 				executorService = createExecutorService();
-				if (isFetchEtlExecutionRequestStopped.get()) {
+				if (isFetchEtlExecutionRequestStopped.get()) { //check that not asked to stop between execution and now (actual execution)
 					logger.warn("Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.");
 					isFetchEtlExecutionRequestInProgress.set(false);
 					return new ResponseEntity(HttpStatus.LOCKED);
