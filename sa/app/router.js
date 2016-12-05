@@ -9,9 +9,13 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
+  this.route('not-found', { path: '*invalidunprotectedpath' });
   this.route('login');
+
   this.route('protected', { path: '/do' }, function() {
+    this.route('not-found', { path: '*invalidprotectedpath' });
     this.route('monitor');
+
     if (config.featureFlags['show-respond-route']) {
       this.route('respond', function() {
         this.route('incident', { path: '/incident/:incident_id' }, function() {
@@ -19,15 +23,14 @@ Router.map(function() {
         });
       });
     }
+
     if (config.featureFlags['show-investigate-route']) {
       this.route('investigate', function() {
         this.route('query', { path: '/query/*filter' });
         this.route('not-found', { path: '*invalidinvestigatepath' });
       });
     }
-    this.route('not-found', { path: '*invalidprotectedpath' });
   });
-  this.route('not-found');
 });
 
 export default Router;
