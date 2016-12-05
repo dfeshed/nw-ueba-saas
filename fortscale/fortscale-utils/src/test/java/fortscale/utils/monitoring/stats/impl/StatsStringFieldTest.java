@@ -38,6 +38,7 @@ public class StatsStringFieldTest {
         FlexString flexString;
         FlexString nullValueFlexString;
         FlexString nullFlexString;
+        StatsStringFlexMetric flexStringInterface;
 
     }
 
@@ -57,6 +58,8 @@ public class StatsStringFieldTest {
         stringFields.flexString           = new FlexString("Flex--string");
         stringFields.nullValueFlexString  = new FlexString(null);
         stringFields.nullFlexString       = null;
+        stringFields.flexStringInterface  = new FlexString("Flex--string--interface");
+
 
         Field field;
         StatsStringField statsStringField;
@@ -86,6 +89,11 @@ public class StatsStringFieldTest {
         field = stringFields.getClass().getDeclaredField("nullFlexString");
         statsStringField = StatsStringField.builder(field, stringFields);
         assertNull(statsStringField.getAsString());
+
+        // flex String interface
+        field = stringFields.getClass().getDeclaredField("flexStringInterface");
+        statsStringField = StatsStringField.builder(field, stringFields);
+        assertEquals(stringFields.flexStringInterface.getValue(), statsStringField.getAsString());
 
     }
 
