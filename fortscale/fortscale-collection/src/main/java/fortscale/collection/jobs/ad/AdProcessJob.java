@@ -11,22 +11,14 @@ import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.io.*;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.Date;
 
-
+@DisallowConcurrentExecution
 public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
@@ -70,86 +62,34 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		final JobKey key = jobExecutionContext.getJobDetail().getKey();
+
+		// get parameters values from the job data map
+		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
+		inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
+		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
+		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
+		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
+
+		// build record to items processor
+		outputFields = ImpalaParser.getTableFieldNamesAsArray(jobDataMapExtension.getJobDataMapStringValue(map, "outputFields"));
+		outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
+		recordToString = new RecordToStringItemsProcessor(outputSeparator, statsService, "AdProcessJob", outputFields);
+
+		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+
+		// random generated ID for deployment wizard fetch and ETL results
 		try {
-			Path file = Paths.get("/tmp/AD/ETL_JJPPPPrrr");
-			List<String> lines = Collections.singletonList("vv");
-			Files.write(file, lines, Charset.forName("UTF-8"));
-
-			JobDataMap map = jobExecutionContext.getMergedJobDataMap();
-
-			lines = Collections.singletonList("final JobKey key = jobExecutionContext.getJobDetail().getKey();");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-			final JobKey key = jobExecutionContext.getJobDetail().getKey();
-
-			// get parameters values from the job data map
-			ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
-			lines = Collections.singletonList("ldiftocsv");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-			inputPath = jobDataMapExtension.getJobDataMapStringValue(map, "inputPath");
-			lines = Collections.singletonList("inputPath");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-			finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
-			lines = Collections.singletonList("finishPath");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-			errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
-			lines = Collections.singletonList("errorPath");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-			filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
-			lines = Collections.singletonList("filesFilter");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-			// build record to items processor
-			outputFields = ImpalaParser.getTableFieldNamesAsArray(jobDataMapExtension.getJobDataMapStringValue(map, "outputFields"));
-			lines = Collections.singletonList("outputFields");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-			outputSeparator = jobDataMapExtension.getJobDataMapStringValue(map, "outputSeparator");
-			lines = Collections.singletonList("outputSeparator");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-			recordToString = new RecordToStringItemsProcessor(outputSeparator, statsService, "AdProcessJob", outputFields);
-			lines = Collections.singletonList("recordToString");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-			lines = Collections.singletonList(map.getWrappedMap().toString()); /**/
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND); /**/
-
-			morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
-			lines = Collections.singletonList("morphline =");
-			Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-			// random generated ID for deployment wizard fetch and ETL results
-
-
-				Path file4 = Paths.get("/tmp/AD/ETL_BBB_" + resultsKey);
-				lines = Collections.singletonList("vv");
-				Files.write(file4, lines, Charset.forName("UTF-8"));
-			try {
-				final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
-				if (resultsId != null) {
-                    resultsKey = key.getName().toLowerCase() + "." + resultsId;
-                }
-			} catch (JobExecutionException e) {
-				logger.info("No resultsId was given as param.");
+			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+			if (resultsId != null) {
+				resultsKey = key.getName().toLowerCase() + "." + resultsId;
 			}
-
 		} catch (JobExecutionException e) {
-			List<String> lines = Collections.singletonList("vv");
-			Path file = Paths.get("/tmp/AD/ETL_JJPPPP1111_error");
-			try {
-				Files.write(file, lines, Charset.forName("UTF-8"));
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		} catch (IllegalArgumentException e) {
-			List<String> lines = Collections.singletonList("vv");
-			Path file = Paths.get("/tmp/AD/ETL_JJPPPP2222_error");
-			try {
-				Files.write(file, lines, Charset.forName("UTF-8"));
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+			logger.info("No resultsId was given as param.");
 		}
+
 	}
 
 	@Override
@@ -159,69 +99,37 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	@Override
 	protected void runSteps() throws Exception {
-		try {
-			Path file = Paths.get("/tmp/AD/ETL_" + resultsKey);
-			Files.write(file, new ArrayList<>(Arrays.asList("starting etl")), Charset.forName("UTF-8"));
-			// list files in chronological order
-			startNewStep("List Files");
-			File[] files = listFiles(inputPath, filesFilter);
-			Files.write(file, new ArrayList<>(Arrays.asList("listed files")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
+		// list files in chronological order
+		startNewStep("List Files");
+		File[] files = listFiles(inputPath, filesFilter);
 
-			if (files.length == 0) {
-				Files.write(file, new ArrayList<>(Arrays.asList("files length = 0")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-				finishStep();
-                return;
-            }
-
-			if (files.length > 1) {
-				Files.write(file, new ArrayList<>(Arrays.asList("file length >1")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-				logger.warn("moving old files to {}", finishPath);
-                for (int i = 0; i < files.length - 1; i++) {
-                    moveFileToFolder(files[i], finishPath);
-                    logger.info("moving {} to {}", files[i], finishPath);
-                    monitor.warn(getMonitorId(), getStepName(), String.format("moving old file %s to %s", files[i], finishPath));
-                }
-            }
-			Files.write(file, new ArrayList<>(Arrays.asList("started finish step")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
+		if (files.length == 0) {
 			finishStep();
-
-			Files.write(file, new ArrayList<>(Arrays.asList("finished finish step")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-			startNewStep("create hadoop file writer");
-			// get hadoop file writer
-
-			finishStep();
-
-
-			try {
-				Files.write(file, new ArrayList<>(Arrays.asList("running final step11", Arrays.toString(files))), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-				processFile(files[files.length - 1]);
-				Files.write(file, new ArrayList<>(Arrays.asList("running final step333")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-			} finally{
-                morphline.close();
-            }
-
-			Files.write(file, new ArrayList<>(Arrays.asList("running final step22")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-			runFinalStep();
-			Files.write(file, new ArrayList<>(Arrays.asList("running final step332423")), Charset.forName("UTF-8"), StandardOpenOption.APPEND);
-
-		} catch (Exception e) {
-			List<String> lines = Collections.singletonList(e.getLocalizedMessage());
-			Path file = Paths.get("/tmp/AD/error_" + resultsKey);
-			Files.write(file, lines, Charset.forName("UTF-8"));
-
 			return;
 		}
 
-		List<String> lines = Collections.singletonList(String.format("Inserting status to application configuration in key %s", resultsKey));
-		Path file = Paths.get("/tmp/AD/EETTTLLLL.txt");
-		Files.write(file, lines, Charset.forName("UTF-8"), StandardOpenOption.APPEND);
+		if (files.length > 1) {
+			logger.warn("moving old files to {}", finishPath);
+			for (int i = 0; i < files.length - 1; i++) {
+				moveFileToFolder(files[i], finishPath);
+				logger.info("moving {} to {}", files[i], finishPath);
+				monitor.warn(getMonitorId(), getStepName(), String.format("moving old file %s to %s", files[i], finishPath));
+			}
+		}
+		finishStep();
+		
+		startNewStep("create hadoop file writer");
+		// get hadoop file writer
+		
+		finishStep();
+
+		
+		try {
+			processFile(files[files.length - 1]);
+		} finally{
+			morphline.close();
+		}
+
 
 		if (resultsKey != null) {
 			logger.debug("Inserting status to application configuration in key {}", resultsKey);
@@ -259,8 +167,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 		} catch (Exception e) {
 			moveFileToFolder(file, errorPath);
-			logger.error("error processing files {}", file.getAbsolutePath(),  e);
-			throw new JobExecutionException(String.format("error processing files %s", file.getAbsolutePath()), e);
+			logger.error("error processing files", e);
+			throw new JobExecutionException("error processing files", e);
 		} finally{
 			if(reader != null){
 				reader.close();

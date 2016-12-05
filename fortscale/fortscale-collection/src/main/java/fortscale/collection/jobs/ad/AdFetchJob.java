@@ -6,10 +6,7 @@ import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
-import org.quartz.JobKey;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.naming.NamingEnumeration;
@@ -23,7 +20,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-
+@DisallowConcurrentExecution
 public class AdFetchJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
