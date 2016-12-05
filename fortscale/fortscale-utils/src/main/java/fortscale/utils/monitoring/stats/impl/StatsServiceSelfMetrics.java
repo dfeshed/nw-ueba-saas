@@ -1,16 +1,20 @@
 package fortscale.utils.monitoring.stats.impl;
 
+import fortscale.utils.monitoring.stats.StatsLongFlexMetric;
+import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupManualRegistration;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsLongMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * Created by gaashh on 11/15/16.
  */
 
-@StatsMetricsGroupParams(name = "stats.service")
+@StatsMetricsGroupParams(name = "monitoring.stats.service")
 public class StatsServiceSelfMetrics extends StatsMetricsGroupManualRegistration {
 
     public StatsServiceSelfMetrics() {
@@ -23,27 +27,33 @@ public class StatsServiceSelfMetrics extends StatsMetricsGroupManualRegistration
                     }
                 }
         );
+
+        // Point some counters to counters that are actually counted at StatsMetricsGroup
+        metricsGroupRegisterWithNullStatsService = StatsMetricsGroup.getRegisterWithNullStatsServiceCounter();
+        metricsGroupManualUpdateWithNullStatsService = StatsMetricsGroup.getManualUpdateWithNullStatsServiceCounter();
     }
 
 
     // --- metrics group registration and un-registration counters
-    @StatsLongMetricParams  ( name = "registerStatsMetricsGroupCount" )
-    @StatsDoubleMetricParams( name = "registerStatsMetricsGroupRate", rateSeconds = 1)
-    public long registerStatsMetricsGroup;
+    @StatsLongMetricParams  ( name = "metricsGroupRegisterCount" )
+    @StatsDoubleMetricParams( name = "metricsGroupRegisterRate", rateSeconds = 1)
+    public long metricsGroupRegister;
 
-    @StatsLongMetricParams  ( name = "registerStatsMetricsGroupErrorCount" )
-    @StatsDoubleMetricParams( name = "registerStatsMetricsGroupErrorRate", rateSeconds = 1)
-    public long registerStatsMetricsGroupError;
+    @StatsLongMetricParams  ( name = "metricsGroupRegisterErrorCount" )
+    public long metricsGroupRegisterError;
 
-    @StatsLongMetricParams  ( name = "unregisterStatsMetricsGroupCount" )
-    @StatsDoubleMetricParams( name = "unregisterStatsMetricsGroupRate", rateSeconds = 1)
-    public long unregisterStatsMetricsGroup;
+    @StatsLongMetricParams  ( name = "metricsGroupUnregisterCount" )
+    @StatsDoubleMetricParams( name = "metricsGroupUnregisterRate", rateSeconds = 1)
+    public long metricsGroupUnregister;
 
-    @StatsLongMetricParams  ( name = "unregisterStatsMetricsGroupErrorCount" )
-    @StatsDoubleMetricParams( name = "unregisterStatsMetricsGroupErrorRate", rateSeconds = 1)
-    public long unregisterStatsMetricsGroupError;
+    @StatsLongMetricParams  ( name = "metricsGroupUnregisterErrorCount" )
+    public long metricsGroupUnregisterError;
 
+    @StatsLongMetricParams  ( name = "metricsGroupRegisterWithNullStatsServiceCount" )
+    public AtomicLong metricsGroupRegisterWithNullStatsService;
 
+    @StatsLongMetricParams  ( name = "metricsGroupManualUpdateWithNullStatsServiceCount" )
+    public AtomicLong metricsGroupManualUpdateWithNullStatsService;
 
     // --- Metrics groups creation counters
     @StatsLongMetricParams
@@ -51,6 +61,9 @@ public class StatsServiceSelfMetrics extends StatsMetricsGroupManualRegistration
 
     @StatsLongMetricParams
     public long metricsGroupsWithoutAnnotations;
+
+    @StatsLongMetricParams
+    public long metricsGroupCreatedWithManualUpdate;
 
     @StatsLongMetricParams
     public long metricsGroupLongFields;
@@ -65,7 +78,12 @@ public class StatsServiceSelfMetrics extends StatsMetricsGroupManualRegistration
     public long metricsGroupStringFields;
 
     @StatsLongMetricParams
-    public long metricsGroupCreatedWithManualUpdate;
+    private StatsLongFlexMetric metricsGroupFields = new StatsLongFlexMetric() {
+        @Override
+        public Long getValue() {
+            return metricsGroupLongFields + metricsGroupDoubleFields + metricsGroupDateFields + metricsGroupStringFields;
+        }
+    };
 
 
     // --- Write metrics groups to stats engine counters
@@ -79,10 +97,10 @@ public class StatsServiceSelfMetrics extends StatsMetricsGroupManualRegistration
     public long metricsGroupWriteToEngine;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long metricsGroupWriteToEngineNoMetrics;
+    public long metricsGroupWritesToEngineWithoutFields;
 
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public long metricsGroupMetricsWriteToEngine;  // In other words, number of fields written
+    public long metricsGroupFieldsWritesToEngine;  // In other words, number of fields written
 
 
 

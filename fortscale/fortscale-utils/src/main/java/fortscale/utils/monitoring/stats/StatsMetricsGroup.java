@@ -2,6 +2,8 @@ package fortscale.utils.monitoring.stats;
 
 import fortscale.utils.logging.Logger;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 /**
  * StatsMetrics group is heavily used by the application. To add metrics group the application shall extend this class,
  * provide the metrics fields.
@@ -43,6 +45,12 @@ public class StatsMetricsGroup {
     // Holds the groupHandler of the statsService. The handler leads to the statsService
     private StatsMetricsGroupHandler statsMetricsGroupHandler;
 
+    // Two (static) counters holding the metrics group registration and manual update with null stats service
+    // The counters are collected by StatsServiceSelfMetrics
+    private static AtomicLong registerWithNullStatsServiceCounter = new AtomicLong();
+    private static AtomicLong manualUpdateWithNullStatsServiceCounter = new AtomicLong();
+
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -69,6 +77,9 @@ public class StatsMetricsGroup {
 
         // If stats service is null, do nothing
         if (statsService == null) {
+
+            registerWithNullStatsServiceCounter.incrementAndGet();
+
             logger.info("Not registering metric group {} with {} with attributes and instrumented class {} because stats service null",
                     this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
             return;
@@ -135,8 +146,12 @@ public class StatsMetricsGroup {
 
         // If stats service is null, do nothing
         if (statsService == null) {
+
+            registerWithNullStatsServiceCounter.incrementAndGet();
+
             logger.info("Not manually registering metric group {} with {} with attributes and instrumented class {} because stats service null",
                     this.getClass().getName(), statsMetricsGroupAttributes.toString(), instrumentedClass.getName());
+
             return;
         }
 
@@ -180,6 +195,8 @@ public class StatsMetricsGroup {
 
         // If we don't have stats service, silently do nothing
         if (statsService == null) {
+            manualUpdateWithNullStatsServiceCounter.incrementAndGet();
+
             logger.debug("manualUpdate() called and ignored for class {} with epochTime={} because statsService is null",
                          this.getClass().getName(), epochTime );
             return;
@@ -243,5 +260,13 @@ public class StatsMetricsGroup {
 
     public StatsMetricsGroupHandler getStatsMetricsGroupHandler() {
         return statsMetricsGroupHandler;
+    }
+
+    public static AtomicLong getRegisterWithNullStatsServiceCounter() {
+        return registerWithNullStatsServiceCounter;
+    }
+
+    public static AtomicLong getManualUpdateWithNullStatsServiceCounter() {
+        return manualUpdateWithNullStatsServiceCounter;
     }
 }

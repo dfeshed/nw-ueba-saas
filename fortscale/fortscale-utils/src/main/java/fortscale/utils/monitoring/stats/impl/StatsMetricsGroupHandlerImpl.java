@@ -464,12 +464,12 @@ public class StatsMetricsGroupHandlerImpl implements StatsMetricsGroupHandler {
         // Get metric count and discard the object if there are no metric
         long metricCount = engineMetricsGroupData.getMetricCount();
         if (metricCount == 0) {
-            statsServiceMetrics.metricsGroupWriteToEngineNoMetrics++;
+            statsServiceMetrics.metricsGroupWritesToEngineWithoutFields++;
             logger.debug("Metrics group handler discards the metric because it has no metric\n{}", engineMetricsGroupData.toString());
             return;
         }
 
-        statsServiceMetrics.metricsGroupMetricsWriteToEngine++;
+        statsServiceMetrics.metricsGroupFieldsWritesToEngine += metricCount;
 
         // Log the results
         if (logger.isDebugEnabled()) {

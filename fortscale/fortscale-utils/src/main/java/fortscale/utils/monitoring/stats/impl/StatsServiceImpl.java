@@ -2,7 +2,6 @@ package fortscale.utils.monitoring.stats.impl;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupHandler;
-import fortscale.utils.monitoring.stats.StatsMetricsTag;
 import fortscale.utils.monitoring.stats.engine.StatsEngine;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -213,12 +212,12 @@ public class StatsServiceImpl implements StatsService {
                 metricsGroupHandlersList.add(groupHandler);
             }
 
-            selfMetrics.registerStatsMetricsGroup++;
+            selfMetrics.metricsGroupRegister++;
             return groupHandler;
 
         }
         catch (Exception ex){
-            selfMetrics.registerStatsMetricsGroupError++;
+            selfMetrics.metricsGroupRegisterError++;
             logger.error("A problem while registering metrics group {} had occurred. Instrumented class is {}",
                       metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
 
@@ -254,7 +253,7 @@ public class StatsServiceImpl implements StatsService {
 
             // Check no group handler
             if (groupHandler == null) {
-                selfMetrics.unregisterStatsMetricsGroupError++;
+                selfMetrics.metricsGroupUnregisterError++;
                 logger.warn("Failed to unregister StatsMetricsGroup class {} instrumented class{} - null group handler",
                         metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
                 return;
@@ -270,19 +269,19 @@ public class StatsServiceImpl implements StatsService {
 
             // Check attempt to remove non-existing group handler
             if (!found) {
-                selfMetrics.unregisterStatsMetricsGroupError++;
+                selfMetrics.metricsGroupUnregisterError++;
                 logger.warn("Failed to unregister StatsMetricsGroup class {} instrumented class{} - not registered",
                         metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
                 return;
             }
 
-            selfMetrics.unregisterStatsMetricsGroup++;
+            selfMetrics.metricsGroupUnregister++;
 
 
         }
         catch (Exception ex){
 
-            selfMetrics.unregisterStatsMetricsGroupError++;
+            selfMetrics.metricsGroupUnregisterError++;
 
             logger.error("A problem while unregistering metrics group {} had occurred. Instrumented class is {}",
                     metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
