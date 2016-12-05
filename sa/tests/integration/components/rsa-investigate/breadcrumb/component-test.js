@@ -19,9 +19,9 @@ test('it renders', function(assert) {
     displayName
   }];
   const metaName1 = 'foo';
-  const displayName1 = 'fooDisplayName';
+  const metaDisplayName1 = 'foo-display-name';
   const metaValue1 = 'foo-value';
-  const metaValueAlias1 = `${metaName1}=${metaValue1}`;
+  const metaValueAlias1 = 'foo-value-alias';
   const condition1 = {
     queryString: `${metaName1}=${metaValue1}`,
     isKeyValuePair: true,
@@ -29,19 +29,13 @@ test('it renders', function(assert) {
     value: metaValue1
   };
 
-  const metaName2 = 'bar';
-  const metaValue2 = 'bar-value';
-  const metaValueAlias2 = `${metaName2} = ${metaValue2}`;
   const condition2 = {
-    queryString: `${metaName2} = ${metaValue2}`,
-    isKeyValuePair: true,
-    key: metaName2,
-    value: metaValue2
+    queryString: 'a=b || c=d',
+    isKeyValuePair: false
   };
 
   const language = [
-    { metaName: metaName1, displayName: displayName1 },
-    { metaName: metaName2 }
+    { metaName: metaName1, displayName: metaDisplayName1 }
   ];
   const aliases = {};
   aliases[metaName1] = {};
@@ -72,16 +66,16 @@ test('it renders', function(assert) {
   assert.equal($el.find('.js-test-service').text().trim(), displayName, 'Expected service displayName in DOM to match service data.');
 
   $el = this.$('.js-test-value');
-  assert.equal($el.text().trim(), metaValueAlias1, 'Expected to find meta key/value in DOM.');
-  assert.equal($el.attr('title').trim(), `${displayName1} [${metaName1}]: ${metaValueAlias1} [${metaValue1}]`, 'Expected tooltip to include friendly and raw strings.');
+  assert.equal($el.text().trim(), `${metaDisplayName1} = ${metaValueAlias1}`, 'Expected to find aliased meta key + value in DOM.');
+  assert.equal($el.attr('title').trim(), `${metaDisplayName1} [${metaName1}]: ${metaValueAlias1} [${metaValue1}]`, 'Expected tooltip to include friendly and raw strings.');
 
   const query2 = query.clone();
   query2.set('metaFilter.conditions', [ condition2 ]);
   this.set('query', query2);
 
   $el = this.$('.js-test-value');
-  assert.equal($el.text().trim(), metaValueAlias2, 'Expected to find raw value in DOM.');
-  assert.equal($el.attr('title').trim(), `${metaName2}: ${metaValue2}`, 'Expected tooltip to have raw string.');
+  assert.equal($el.text().trim(), condition2.queryString, 'Expected to find raw queryString in DOM.');
+  assert.equal($el.attr('title').trim(), condition2.queryString, 'Expected tooltip to have raw queryString.');
 
   const query3 = query.clone();
   query3.set('metaFilter.conditions', [ condition1, condition2 ]);

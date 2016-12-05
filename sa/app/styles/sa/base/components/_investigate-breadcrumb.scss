@@ -6,8 +6,39 @@
 
   &__crumb {
     list-style: none;
-    .rsa-form-button {
+    position: relative; // enables positioning & z-indexing of children
+
+    .delete {
+      position: absolute;
+      top: 0;
+      left: 0;
+      margin: 1px;
+      padding: rsa-whitespace(less) rsa-whitespace();
+      z-index: 2;
+      background-color: rsa-color(black, base, $rsa-transparent);
+      color: $formButtonTypeColor;
+
+      &:hover {
+        color: rsa-color(blue);
+      }
+    }
+
+    button {
+      padding: rsa-whitespace(less) rsa-whitespace();
+      padding-left: rsa-whitespace(less) + rsa-whitespace(more);
       white-space: nowrap;
+      border: 1px solid $formButtonBorderColor;
+      color: $formButtonTypeColor;
+
+      &.has-dropdown:hover {
+        color: $formButtonHoverTypeColor;
+        border-color: $formButtonHoverBorderColor;
+        cursor: pointer;
+      }
+
+      .rsa-icon {
+        padding-left: rsa-whitespace(less);
+      }
     }
   }
 

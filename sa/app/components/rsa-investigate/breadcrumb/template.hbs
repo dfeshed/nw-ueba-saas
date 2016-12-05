@@ -35,7 +35,7 @@
       {{/rsa-form-button}}
     {{/rsa-content-help-trigger}}
 
-    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId=(concat 'breadCrumbTimeTooltip-' elementId)}}
+    {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTimeTooltip-' elementId)}}
       <ul class="rsa-dropdown-link-list">
         <li>
           {{#link-to "protected.investigate.query" baseUri class="goto"}}
@@ -51,43 +51,28 @@
   {{/if}}
 
   {{#each crumbs as |crumb index|}}
-    {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbTooltip-' elementId '-' index)}}
-      {{#rsa-form-button
-        allowToggleActive=true
-        withDropdown=true
-        class="rsa-investigate-breadcrumb__crumb"}}
-        {{#if crumb.isKeyValuePair}}
-          <span
-            class="js-test-value"
-            title={{concat crumb.keyFormat.bothNames ": " crumb.valueFormat.tooltip}}>
-            {{crumb.queryString}}
-          </span>
-        {{else}}
-          <span
-            class="js-test-value"
-            title={{crumb.queryString}}>
-            {{crumb.queryString}}
-          </span>
-        {{/if}}
-      {{/rsa-form-button}}
-    {{/rsa-content-help-trigger}}
+    <span class="rsa-investigate-breadcrumb__crumb">
+      {{#link-to "protected.investigate.query" crumb.deleteUri class="delete"}}{{rsa-icon name="close" size="small"}}{{/link-to}}
+      {{#if (is-equal crumb crumbs.lastObject)}}
+        <button class="js-test-value" title={{crumb.tooltip}}>{{crumb.text}}</button>
+      {{else}}
+        {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbTooltip-' elementId '-' index)}}
+          <button class="has-dropdown js-test-value" title={{crumb.tooltip}}>{{crumb.text}}{{rsa-icon name="arrow-down-12" size="small"}}</button>
+        {{/rsa-content-help-trigger}}
+      {{/if}}
+    </span>
 
-    {{#rsa-content-tooltip isPopover=true displayCloseButton=false position='bottom-right' tooltipId=(concat 'breadCrumbTooltip-' elementId '-' index)}}
-      <ul class="rsa-dropdown-link-list">
-        {{#unless (is-equal crumb crumbs.lastObject)}}
+    {{#unless (is-equal crumb crumbs.lastObject)}}
+      {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTooltip-' elementId '-' index)}}
+        <ul class="rsa-dropdown-link-list">
           <li>
             {{#link-to "protected.investigate.query" crumb.gotoUri class="goto"}}
               Navigate Here
             {{/link-to}}
           </li>
-        {{/unless}}
-        <li>
-          {{#link-to "protected.investigate.query" crumb.deleteUri class="delete"}}
-            Remove
-          {{/link-to}}
-        </li>
-      </ul>
-    {{/rsa-content-tooltip}}
+        </ul>
+      {{/rsa-content-tooltip}}
+    {{/unless}}
   {{/each}}
   {{#if isAddingMeta}}
     {{rsa-investigate/query-input class='rsa-investigate-breadcrumb__query-input' queryString=queryString placeholder='Enter Value'}}
