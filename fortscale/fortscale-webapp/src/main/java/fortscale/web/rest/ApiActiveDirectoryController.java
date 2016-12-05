@@ -41,7 +41,7 @@ public class ApiActiveDirectoryController {
 //	@Value("${user.home.dir}")
 //	private static String HOME_DIR;
 
-//	public static final String COLLECTION_TARGET_DIR = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+	//	public static final String COLLECTION_TARGET_DIR = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
 	public static final String COLLECTION_TARGET_DIR ="/home/rafael/dev/git/fortscale-core/fortscale/fortscale-collection/target/";
 
 	public static final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
@@ -203,21 +203,33 @@ public class ApiActiveDirectoryController {
 	public FetchEtlExecutionStatus getJobStatus() {
 		Set<AdTaskStatus> statuses = new HashSet<>();
 		dataSources.forEach(datasource -> {
-			AdTaskType currTaskType = null;
-			for (ControllerInvokedAdTask activeThread : activeThreads) {
-				if (datasource.equals(activeThread.getDataSource())) {
-					currTaskType = activeThread.getCurrentAdTaskType();
-				}
+			final AdTaskType runningMode = getRunningMode(datasource);
+			if (runningMode != null) { //running
+				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, -1L));
 			}
-			final Long currLastExecutionFinishTime = getLastExecutionTime(currTaskType, datasource);
-			Long currObjectsCount = 0L;
-			if (currLastExecutionFinishTime != null) {
-				currObjectsCount = activeDirectoryService.getCount(datasource);
+			else { //not running
+				final Long currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
+				final Long currObjectsCount = activeDirectoryService.getCount(datasource);
+				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount));
 			}
-			statuses.add(new AdTaskStatus(currTaskType, datasource, currLastExecutionFinishTime, currObjectsCount));
 		});
 
 		return new FetchEtlExecutionStatus(lastAdFetchEtlExecutionStartTime, statuses);
+	}
+
+	/**
+	 * this method returns the running mode (Fetch, ETL or null for not running) of the given {@code dataSource}
+	 * @param datasource the datasource whose running mode we want
+	 * @return Fetch, ETL or null for not running
+	 */
+	private AdTaskType getRunningMode(AdObjectType datasource) {
+		for (ControllerInvokedAdTask activeThread : activeThreads) {
+			if (datasource.equals(activeThread.getDataSource())) {
+				return activeThread.getCurrentAdTaskType();
+			}
+		}
+
+		return null;
 	}
 
 	public Long getLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
@@ -225,7 +237,7 @@ public class ApiActiveDirectoryController {
 	}
 
 	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource, Long lastExecutionTime) {
-		applicationConfigurationService.insertConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
+		applicationConfigurationService.updateConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
 	}
 
 	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {
@@ -253,11 +265,11 @@ public class ApiActiveDirectoryController {
 
 	private static class FetchEtlExecutionStatus {
 
-		public final Long lastAdFetchEtlExecutionTimeInMillis;
+		public final Long lastAdFetchEtlExecutionTime;
 		public final Set<AdTaskStatus> runningTasksStatuses;
 
-		public FetchEtlExecutionStatus(Long lastAdFetchEtlExecutionTimeInMillis, Set<AdTaskStatus> runningTasksStatuses) {
-			this.lastAdFetchEtlExecutionTimeInMillis = lastAdFetchEtlExecutionTimeInMillis;
+		public FetchEtlExecutionStatus(Long lastAdFetchEtlExecutionTime, Set<AdTaskStatus> runningTasksStatuses) {
+			this.lastAdFetchEtlExecutionTime = lastAdFetchEtlExecutionTime;
 			this.runningTasksStatuses = runningTasksStatuses;
 		}
 	}
