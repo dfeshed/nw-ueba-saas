@@ -72,7 +72,7 @@ public class StatsTopicServicePeriodicTest {
     StatsService statsService;
 
     @Test
-    //@Ignore
+    @Ignore
     public void testPeriodicUpdates() throws InterruptedException {
 
         final long pointCount = 100;
