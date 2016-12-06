@@ -9,6 +9,8 @@ import fortscale.web.rest.ApiActiveDirectoryController;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.ETL;
@@ -162,6 +164,10 @@ public class ControllerInvokedAdTask implements Runnable {
         Process process;
         try {
             final String collectionJarPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/" + ApiActiveDirectoryController.COLLECTION_JAR_NAME;
+            if(!Files.exists(Paths.get(collectionJarPath))) {
+                logger.error("Execution of task {} has failed. Collection jar file doesn't exist in {}", jobName, collectionJarPath);
+                return false;
+            }
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", collectionJarPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
             processBuilder.directory(new File(ApiActiveDirectoryController.COLLECTION_TARGET_DIR));
