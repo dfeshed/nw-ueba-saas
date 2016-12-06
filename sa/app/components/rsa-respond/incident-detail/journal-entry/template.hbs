@@ -8,7 +8,7 @@
       class="rsa-journal-entry__edit-milestone"
       label=(t 'journal.new.milestone' )
       values=newMilestoneSelect}}
-      {{#each milestoneOptions as |milestone i|}}
+      {{#each milestoneOptions as |milestone|}}
         <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
       {{/each}}
     {{/rsa-form-select}}
@@ -20,7 +20,7 @@
       class="rsa-journal-entry__edit-milestone"
       label=(t 'journal.new.milestone' )
       values=selectedMilestone}}
-      {{#each milestoneOptions as |milestone i|}}
+      {{#each milestoneOptions as |milestone|}}
         <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
       {{/each}}
     {{/rsa-form-select}}

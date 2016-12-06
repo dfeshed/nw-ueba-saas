@@ -3,6 +3,7 @@
 module.exports = {
   extends: 'recommended',
   rules: {
-    'bare-strings': false
+    'bare-strings': false,
+    'invalid-interactive': false
   }
 };

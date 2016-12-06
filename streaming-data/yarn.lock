@@ -656,6 +656,25 @@ broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3:
     symlink-or-copy "^1.0.0"
     walk-sync "^0.3.1"
 
+broccoli-funnel@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.1.0.tgz#dfb91a37c902456456de4a40a1881948d65b27d9"
+  dependencies:
+    array-equal "^1.0.0"
+    blank-object "^1.0.1"
+    broccoli-plugin "^1.3.0"
+    debug "^2.2.0"
+    exists-sync "0.0.4"
+    fast-ordered-set "^1.0.0"
+    fs-tree-diff "^0.5.3"
+    heimdalljs "^0.2.0"
+    minimatch "^3.0.0"
+    mkdirp "^0.5.0"
+    path-posix "^1.0.0"
+    rimraf "^2.4.3"
+    symlink-or-copy "^1.0.0"
+    walk-sync "^0.3.1"
+
 broccoli-kitchen-sink-helpers@^0.2.5:
   version "0.2.9"
   resolved "https://registry.npmjs.org/broccoli-kitchen-sink-helpers/-/broccoli-kitchen-sink-helpers-0.2.9.tgz#a5e0986ed8d76fb5984b68c3f0450d3a96e36ecc"
@@ -688,6 +707,19 @@ broccoli-merge-trees@^1.0.0, broccoli-merge-trees@^1.1.0, broccoli-merge-trees@^
     can-symlink "^1.0.0"
     fast-ordered-set "^1.0.2"
     fs-tree-diff "^0.5.2"
+    heimdalljs "^0.2.1"
+    heimdalljs-logger "^0.1.7"
+    rimraf "^2.4.3"
+    symlink-or-copy "^1.0.0"
+
+broccoli-merge-trees@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.npmjs.org/broccoli-merge-trees/-/broccoli-merge-trees-1.2.1.tgz#16a7494ed56dbe61611f6c2d4817cfbaad2a3055"
+  dependencies:
+    broccoli-plugin "^1.3.0"
+    can-symlink "^1.0.0"
+    fast-ordered-set "^1.0.2"
+    fs-tree-diff "^0.5.4"
     heimdalljs "^0.2.1"
     heimdalljs-logger "^0.1.7"
     rimraf "^2.4.3"
@@ -728,6 +760,15 @@ broccoli-plugin@^1.0.0, broccoli-plugin@^1.2.0, broccoli-plugin@^1.2.1:
     quick-temp "^0.1.3"
     rimraf "^2.3.4"
     symlink-or-copy "^1.0.1"
+
+broccoli-plugin@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.npmjs.org/broccoli-plugin/-/broccoli-plugin-1.3.0.tgz#bee704a8e42da08cb58e513aaa436efb7f0ef1ee"
+  dependencies:
+    promise-map-series "^0.2.1"
+    quick-temp "^0.1.3"
+    rimraf "^2.3.4"
+    symlink-or-copy "^1.1.8"
 
 broccoli-sane-watcher@^1.1.1:
   version "1.1.5"
@@ -1362,7 +1403,7 @@ ember-cli-app-version@^1.0.0:
     ember-cli-htmlbars "^1.0.0"
     git-repo-version "0.3.0"
 
-ember-cli-babel@^5.1.10, ember-cli-babel@^5.1.3, ember-cli-babel@^5.1.5, ember-cli-babel@^5.1.6:
+ember-cli-babel@^5.1.10, ember-cli-babel@^5.1.3, ember-cli-babel@^5.1.5, ember-cli-babel@^5.1.6, ember-cli-babel@^5.1.7:
   version "5.1.10"
   resolved "https://registry.npmjs.org/ember-cli-babel/-/ember-cli-babel-5.1.10.tgz#d403f178aab602e1337c403c5a58c0200a8969aa"
   dependencies:
@@ -1458,9 +1499,9 @@ ember-cli-lodash-subset@^1.0.1, ember-cli-lodash-subset@^1.0.7:
   version "1.0.11"
   resolved "https://registry.npmjs.org/ember-cli-lodash-subset/-/ember-cli-lodash-subset-1.0.11.tgz#0149eef9c0c3505ba44ed202f8d034ddbbfb2826"
 
-ember-cli-node-assets@0.1.4, ember-cli-node-assets@^0.1.1:
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/ember-cli-node-assets/-/ember-cli-node-assets-0.1.4.tgz#11db3d42f8e9cc35c7c52308691da1f04ff854b2"
+ember-cli-node-assets@0.1.6:
+  version "0.1.6"
+  resolved "https://registry.npmjs.org/ember-cli-node-assets/-/ember-cli-node-assets-0.1.6.tgz#6488a2949048c801ad6d9e33753c7bce32fc1146"
   dependencies:
     broccoli-funnel "^1.0.1"
     broccoli-merge-trees "^1.1.1"
@@ -1641,15 +1682,16 @@ ember-cli@2.8.0:
     walk-sync "^0.2.6"
     yam "0.0.21"
 
-ember-exam@0.5.0:
-  version "0.5.0"
-  resolved "https://registry.npmjs.org/ember-exam/-/ember-exam-0.5.0.tgz#29fcf089f53183c9aea0b76a0ff1e60332f096fb"
+ember-exam@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/ember-exam/-/ember-exam-0.6.0.tgz#665a5c14c80daeea0d85b1beb62b7f5c2e29d14f"
   dependencies:
     chalk "^1.1.3"
     cli-table2 "^0.2.0"
     debug "^2.2.0"
     ember-cli-babel "^5.1.6"
     fs-extra "^0.30.0"
+    rimraf "^2.5.4"
 
 ember-export-application-global@^1.0.5:
   version "1.1.1"
@@ -1657,9 +1699,9 @@ ember-export-application-global@^1.0.5:
   dependencies:
     ember-cli-babel "^5.1.10"
 
-ember-get-config@0.1.9:
-  version "0.1.9"
-  resolved "https://registry.npmjs.org/ember-get-config/-/ember-get-config-0.1.9.tgz#4f445c61c4db79419f15658af7a150795a535cb3"
+ember-get-config@0.1.11:
+  version "0.1.11"
+  resolved "https://registry.npmjs.org/ember-get-config/-/ember-get-config-0.1.11.tgz#d5c9833f83b5245bea9ad0782ece4d885ba7e21d"
   dependencies:
     ember-cli-babel "^5.1.6"
 
@@ -1686,13 +1728,14 @@ ember-router-generator@^1.0.0:
   dependencies:
     recast "^0.11.3"
 
-ember-sinon@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/ember-sinon/-/ember-sinon-0.5.1.tgz#9a284a329a8db64cb6fd808b2cff4638bfc28d39"
+ember-sinon@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.npmjs.org/ember-sinon/-/ember-sinon-0.6.0.tgz#516ed1da808c410e5117622d8b748bfe56114898"
   dependencies:
-    ember-cli-babel "^5.1.6"
-    ember-cli-node-assets "^0.1.1"
-    sinon "^1.17.4"
+    broccoli-funnel "^1.1.0"
+    broccoli-merge-trees "^1.2.1"
+    ember-cli-babel "^5.1.7"
+    sinon "^1.17.6"
 
 ember-test-helpers@^0.5.32:
   version "0.5.34"
@@ -1980,6 +2023,10 @@ exists-sync@0.0.3:
   version "0.0.3"
   resolved "https://registry.npmjs.org/exists-sync/-/exists-sync-0.0.3.tgz#b910000bedbb113b378b82f5f5a7638107622dcf"
 
+exists-sync@0.0.4:
+  version "0.0.4"
+  resolved "https://registry.npmjs.org/exists-sync/-/exists-sync-0.0.4.tgz#9744c2c428cc03b01060db454d4b12f0ef3c8879"
+
 exit-hook@^1.0.0:
   version "1.1.1"
   resolved "https://registry.npmjs.org/exit-hook/-/exit-hook-1.1.1.tgz#f05ca233b48c05d54fff07765df8507e95c02ff8"
@@ -2220,6 +2267,15 @@ fs-tree-diff@^0.5.0, fs-tree-diff@^0.5.2, fs-tree-diff@^0.5.3:
   dependencies:
     fast-ordered-set "^1.0.2"
     heimdalljs-logger "^0.1.7"
+
+fs-tree-diff@^0.5.4:
+  version "0.5.5"
+  resolved "https://registry.npmjs.org/fs-tree-diff/-/fs-tree-diff-0.5.5.tgz#7825b4db454225dd114e7abd58e8926fe068cbff"
+  dependencies:
+    heimdalljs-logger "^0.1.7"
+    object-assign "^4.1.0"
+    path-posix "^1.0.0"
+    symlink-or-copy "^1.1.8"
 
 fs-vacuum@~1.2.9:
   version "1.2.9"
@@ -4185,7 +4241,7 @@ right-align@^0.1.1:
   dependencies:
     align-text "^0.1.1"
 
-rimraf@2, rimraf@^2.2.8, rimraf@^2.3.2, rimraf@^2.3.4, rimraf@^2.4.3, rimraf@^2.4.4, rimraf@^2.5.2, rimraf@^2.5.3, rimraf@~2.5.2:
+rimraf@2, rimraf@^2.2.8, rimraf@^2.3.2, rimraf@^2.3.4, rimraf@^2.4.3, rimraf@^2.4.4, rimraf@^2.5.2, rimraf@^2.5.3, rimraf@^2.5.4, rimraf@~2.5.2:
   version "2.5.4"
   resolved "https://registry.npmjs.org/rimraf/-/rimraf-2.5.4.tgz#96800093cbf1a0c86bd95b4625467535c29dfa04"
   dependencies:
@@ -4327,7 +4383,7 @@ simple-is@~0.2.0:
   version "0.2.0"
   resolved "https://registry.npmjs.org/simple-is/-/simple-is-0.2.0.tgz#2abb75aade39deb5cc815ce10e6191164850baf0"
 
-sinon@^1.17.4:
+sinon@^1.17.6:
   version "1.17.6"
   resolved "https://registry.npmjs.org/sinon/-/sinon-1.17.6.tgz#a43116db59577c8296356afee13fafc2332e58e1"
   dependencies:
@@ -4591,6 +4647,10 @@ supports-color@^2.0.0:
 symlink-or-copy@^1.0.0, symlink-or-copy@^1.0.1:
   version "1.1.6"
   resolved "https://registry.npmjs.org/symlink-or-copy/-/symlink-or-copy-1.1.6.tgz#b5f6e8e00616210f64e6b3fa114ea0208e268f78"
+
+symlink-or-copy@^1.1.8:
+  version "1.1.8"
+  resolved "https://registry.npmjs.org/symlink-or-copy/-/symlink-or-copy-1.1.8.tgz#cabe61e0010c1c023c173b25ee5108b37f4b4aa3"
 
 sync-exec@^0.6.2:
   version "0.6.2"
