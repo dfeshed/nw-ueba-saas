@@ -6,6 +6,7 @@ const {
   inject: {
     service
   },
+  isNone,
   Logger
 } = Ember;
 
@@ -37,7 +38,9 @@ export default Service.extend({
       method: 'setPreference',
       modelName: 'preferences',
       query: {
-        defaultComponentUrl: value
+        data: {
+          defaultComponentUrl: value
+        }
       }
     }).catch(() => {
       Logger.error('Error updating preferences');
@@ -46,17 +49,25 @@ export default Service.extend({
 
   selected: computed({
     get() {
+      if (isNone(this.get('_selected'))) {
+        this.set('_selected', this.get('options').findBy('key', 'protected.respond'));
+      }
+
       return this.get('_selected');
     },
 
     set(key, value) {
       if (value.key) {
+        if (!isNone(this.get('_selected'))) {
+          this.persist(value.key);
+        }
         this.set('_selected', value);
-        this.persist(value.key);
         return value;
       } else {
+        if (!isNone(this.get('_selected'))) {
+          this.persist(value);
+        }
         this.set('_selected', this.get('options').findBy('key', value));
-        this.persist(value);
         return this.get('_selected');
       }
     }

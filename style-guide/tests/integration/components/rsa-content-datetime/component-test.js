@@ -13,7 +13,7 @@ const timeFormat = {
 
 const dateFormat = {
   selected: {
-    key: 'MM/DD/YYYY'
+    format: 'MM/DD/YYYY'
   }
 };
 

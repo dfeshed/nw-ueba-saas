@@ -1,6 +1,7 @@
 export default {
   languages: {
     en: 'ja_English',
+    'en-us': 'ja_English',
     ja: 'ja_Japanese'
   },
   forms: {
@@ -59,9 +60,7 @@ export default {
       live: 'ja_Live',
       respond: 'ja_Respond',
       admin: 'ja_Admin'
-    },
-    notifications: 'ja_Enable Notifications',
-    contextMenus: 'ja_Enable Context Menus'
+    }
   },
   ipConnections: {
     ipCount: '(ja_{{count}} IPs)',

@@ -82,22 +82,6 @@
     </vbox>
   </hbox>
 
-  {{#if session.isAuthenticated}}
-    <hbox>
-      <vbox xs="12">
-        {{rsa-form-checkbox
-          class="js-test-notifications-checkbox"
-          label=(t 'userPreferences.notifications')
-          value=selectedNotifications}}
-
-        {{rsa-form-checkbox
-          class="js-test-context-menus-checkbox"
-          label=(t 'userPreferences.contextMenus')
-          value=selectedContextMenus}}
-      </vbox>
-    </hbox>
-  {{/if}}
-
   <hbox>
     <vbox xs="6">
       {{#rsa-form-button

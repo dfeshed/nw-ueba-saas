@@ -19,4 +19,7 @@ export default function(config) {
 
   config.post('/user/logout', function() {
   });
+
+  config.post('/oauth/logout', function() {
+  });
 }

@@ -21,14 +21,13 @@ const {
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
-
-  contextMenus: service(),
-  notifications: service(),
+  session: service(),
 
   dateFormat: service(),
   landingPage: service(),
   timeFormat: service(),
   timezone: service(),
+  i18n: service(),
 
   queryParams: {
     /**
@@ -52,25 +51,25 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  model() {
+  activate() {
     // Fetch user preferences
-    return this.request.promiseRequest({
+    this.request.promiseRequest({
       method: 'getPreference',
       modelName: 'preferences',
       query: {}
     }).then((response) => {
       const {
-        contextMenuEnabled,
-        notificationEnabled,
+        userLocale,
         dateFormat,
         timeFormat,
         timeZone,
         defaultComponentUrl
       } = response.data;
 
+      localStorage.setItem('rsa-i18n-default-locale', userLocale.replace(/_/, '-').toLowerCase());
+
       this.setProperties({
-        'contextMenus.enabled': contextMenuEnabled,
-        'notifications.enabled': notificationEnabled,
+        'i18n.locale': userLocale.replace(/_/, '-').toLowerCase(),
         'dateFormat.selected': dateFormat,
         'timeFormat.selected': timeFormat,
         'timezone.selected': timeZone,

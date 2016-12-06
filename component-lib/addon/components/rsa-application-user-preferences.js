@@ -9,7 +9,6 @@ const {
     service
   },
   run,
-  isNone,
   Logger
  } = Ember;
 
@@ -28,10 +27,6 @@ export default Component.extend({
   moment: service(),
 
   timezone: service('timezone'),
-
-  notifications: service('notifications'),
-
-  contextMenus: service('context-menus'),
 
   timeFormat: service('time-format'),
 
@@ -56,14 +51,7 @@ export default Component.extend({
     });
   },
 
-  @computed('i18n.locales')
-  locales(locales) {
-    if (locales) {
-      return locales.uniq();
-    } else {
-      return [];
-    }
-  },
+  locales: ['en-us', 'ja'],
 
   @computed('timeFormat.selected')
   selectedTimeFormat: {
@@ -76,39 +64,18 @@ export default Component.extend({
     }
   },
 
-  @computed('notifications.enabled')
-  selectedNotifications: {
-    get: (selectedNotifications) => selectedNotifications,
-
-    set(selectedNotifications) {
-      this.set('withoutChanges', false);
-      this.set('pendingNotifications', selectedNotifications);
-      return selectedNotifications;
-    }
-  },
-
-  @computed('contextMenus.enabled')
-  selectedContextMenus: {
-    get: (selectedContextMenus) => selectedContextMenus,
-
-    set(selectedContextMenus) {
-      this.set('withoutChanges', false);
-      this.set('pendingContextMenus', selectedContextMenus);
-      return selectedContextMenus;
-    }
-  },
-
   saveUserPreferences() {
     if (this.get('pendingLocale')) {
       const pendingLocale = this.get('pendingLocale');
 
       this.set('i18n.locale', pendingLocale);
-
       this.get('request').promiseRequest({
         method: 'setPreference',
         modelName: 'preferences',
         query: {
-          userLocale: pendingLocale
+          data: {
+            userLocale: pendingLocale.replace(/en-us/, 'en_US')
+          }
         }
       }).then(() => {
         localStorage.setItem('rsa-i18n-default-locale', pendingLocale);
@@ -133,14 +100,6 @@ export default Component.extend({
       this.set('timeFormat.selected', this.get('pendingTimeFormat.key'));
     }
 
-    if (!isNone(this.get('pendingNotifications'))) {
-      this.set('notifications.enabled', this.get('pendingNotifications'));
-    }
-
-    if (!isNone(this.get('pendingContextMenus'))) {
-      this.set('contextMenus.enabled', this.get('pendingContextMenus'));
-    }
-
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 
     run.next(this, function() {
@@ -156,13 +115,6 @@ export default Component.extend({
 
     this.set('selectedTimeFormat', this.get('timeFormat.selected'));
     this.set('pendingTimeFormat', null);
-
-
-    this.set('selectedNotifications', this.get('notifications.enabled'));
-    this.set('pendingNotifications', null);
-
-    this.set('selectedContextMenus', this.get('contextMenus.enabled'));
-    this.set('pendingContextMenus', null);
 
     this.get('eventBus').trigger('rsa-application-modal-close-all');
 

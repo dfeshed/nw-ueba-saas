@@ -44,8 +44,6 @@ export default Ember$.extend({}, BaseSelectors, {
       'timeZoneTrigger': '#modalDestination .js-test-time-zone-select .ember-power-select-trigger',
       'dateFormatTrigger': '#modalDestination .js-test-date-format-select .ember-power-select-trigger',
       'timeFormatRadioGroupInput': '#modalDestination .time-format-radio-group .rsa-form-radio input',
-      'enableNotificationsInput': '#modalDestination .js-test-notifications-checkbox input',
-      'enableContextMenusInput': '#modalDestination .js-test-context-menus-checkbox input',
       'resetButton': '#modalDestination .js-test-revert button',
       'applyButton': '#modalDestination .js-test-apply button',
       'userPrefDropDownListItem': '#ember-basic-dropdown-wormhole ul li'

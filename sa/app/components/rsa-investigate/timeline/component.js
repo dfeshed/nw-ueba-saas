@@ -97,7 +97,7 @@ export default Component.extend({
   startDate: (date) => date * 1000,
 
   @computed('timeFormat.selected.key')
-  tickformat: (format) => (format === '24hr') ? multiDate24Format : multiDateFormat,
+  tickformat: (format) => (format === 'HR24') ? multiDate24Format : multiDateFormat,
 
   @computed('isExpanded')
   toggleIcon: (isExpanded) => isExpanded ? 'shrink-horizontal-2' : 'expand-vertical-4',

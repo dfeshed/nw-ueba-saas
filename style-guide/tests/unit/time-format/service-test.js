@@ -11,6 +11,6 @@ test('it provides the correct options', function(assert) {
   const options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.includes('12hr'));
-  assert.ok(options.includes('24hr'));
+  assert.ok(options.includes('HR12'));
+  assert.ok(options.includes('HR24'));
 });

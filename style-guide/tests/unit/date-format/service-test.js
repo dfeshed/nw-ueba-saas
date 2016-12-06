@@ -11,7 +11,7 @@ test('it provides the correct options', function(assert) {
   const options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.includes('MM/DD/YYYY'));
-  assert.ok(options.includes('DD/MM/YYYY'));
-  assert.ok(options.includes('YYYY/MM/DD'));
+  assert.ok(options.includes('MM/dd/yyyy'));
+  assert.ok(options.includes('dd/MM/yyyy'));
+  assert.ok(options.includes('yyyy/MM/dd'));
 });

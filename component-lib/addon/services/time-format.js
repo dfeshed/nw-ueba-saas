@@ -6,6 +6,7 @@ const {
   inject: {
     service
   },
+  isNone,
   Logger
 } = Ember;
 
@@ -14,34 +15,43 @@ export default Service.extend({
   request: service(),
 
   options: [{
-    key: '12hr',
+    key: 'HR12',
     label: 'userPreferences.timeFormat.twelveHour',
     format: 'hh:mma'
   }, {
-    key: '24hr',
+    key: 'HR24',
     label: 'userPreferences.timeFormat.twentyFourHour',
     format: 'HH:mm'
   }],
 
   selected: computed({
     get() {
+      if (isNone(this.get('_selected'))) {
+        this.set('_selected', this.get('options').findBy('key', 'HR24'));
+      }
       return this.get('_selected');
     },
 
     set(key, value) {
       const option = this.get('options').findBy('key', value);
 
-      this.get('request').promiseRequest({
-        method: 'setPreference',
-        modelName: 'preferences',
-        query: {
-          timeFormat: value
-        }
-      }).then(() => {
+      if (!isNone(this.get('_selected'))) {
+        this.get('request').promiseRequest({
+          method: 'setPreference',
+          modelName: 'preferences',
+          query: {
+            data: {
+              timeFormat: value
+            }
+          }
+        }).then(() => {
+          this.set('_selected', option);
+        }).catch(() => {
+          Logger.error('Error updating preferences');
+        });
+      } else {
         this.set('_selected', option);
-      }).catch(() => {
-        Logger.error('Error updating preferences');
-      });
+      }
 
       return option;
     }

@@ -53,11 +53,11 @@ export default Mixin.create({
   _defaultOptions() {
     const firstDay = this.get('firstDay');
     const prefDateFormat = this.get('dateFormatServ.selected.key') || 'YYYY-MM-DD';
-    const prefTimeKey = this.get('timeFormatServ.selected.key') || '24hr';
+    const prefTimeKey = this.get('timeFormatServ.selected.key') || 'HR24';
     const prefTimeFormat = this.get('timeFormatServ.selected.format') || 'HH:mm';
     const prefTimeZone = this.get('timeZoneServ.selected') || 'America/New_York';
     const st = this.get('showTime') || false;
-    const is24 = (prefTimeKey === '24hr') || false;
+    const is24 = (prefTimeKey === 'HR24') || false;
     const lc = localStorage[this.get('localeKey')] || 'en';
 
     // Set this locale for this instance of moment.

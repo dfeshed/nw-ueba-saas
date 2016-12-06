@@ -39,8 +39,8 @@ module.exports = function(environment) {
     socketRoutes: generateSocketConfiguration(environment),
     socketDebug: false,
     'i18n': {
-      defaultLocale: 'en',
-      includedLocales: ['en', 'ja']
+      defaultLocale: 'en-us',
+      includedLocales: ['en-us', 'ja']
     },
     contextLookup: contextLookup,
     APP: {

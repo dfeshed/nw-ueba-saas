@@ -24,8 +24,6 @@ test('it includes all fields when session is authenticated', function(assert) {
   assert.equal(this.$().find('.js-test-date-format-select').length, 1);
   assert.equal(this.$().find('.js-test-default-landing-page-select').length, 1);
   assert.equal(this.$().find('.time-format-radio-group').length, 1);
-  assert.equal(this.$().find('.js-test-notifications-checkbox').length, 1);
-  assert.equal(this.$().find('.js-test-context-menus-checkbox').length, 1);
 });
 
 test('it includes all fields when session is not authenticated', function(assert) {
@@ -37,8 +35,6 @@ test('it includes all fields when session is not authenticated', function(assert
   assert.equal(this.$().find('.js-test-date-format-select').length, 1);
   assert.equal(this.$().find('.js-test-default-landing-page-select').length, 0);
   assert.equal(this.$().find('.time-format-radio-group').length, 1);
-  assert.equal(this.$().find('.js-test-notifications-checkbox').length, 0);
-  assert.equal(this.$().find('.js-test-context-menus-checkbox').length, 0);
 });
 
 test('it toggles submit button disabled with changes', function(assert) {

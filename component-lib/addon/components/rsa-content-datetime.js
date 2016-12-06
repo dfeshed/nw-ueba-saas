@@ -33,12 +33,12 @@ export default Component.extend({
 
   dateFormat: service('date-format'),
 
-  outputFormat: computed('timeFormat.selected.format', 'dateFormat.selected.key', function() {
+  outputFormat: computed('timeFormat.selected.format', 'dateFormat.selected.format', function() {
     if (this.get('displayDate') && this.get('displayTime')) {
-      return `${this.get('dateFormat.selected.key')} ${this.get('timeFormat.selected.format')}`;
+      return `${this.get('dateFormat.selected.format')} ${this.get('timeFormat.selected.format')}`;
     } else {
       if (this.get('displayDate')) {
-        return this.get('dateFormat.selected.key');
+        return this.get('dateFormat.selected.format');
       } else if (this.get('displayTime')) {
         return this.get('timeFormat.selected.format');
       }
