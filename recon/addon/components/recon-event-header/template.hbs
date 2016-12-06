@@ -9,11 +9,13 @@
   {{else}}
     {{#if isHeaderOpen}}
       <div class="header-data">
-        <grid responsive>
-          {{#each headerItems as |item|}}
-            {{recon-event-header-item name=item.name value=item.value}}
-          {{/each}}
-        </grid>
+        {{#if headerItems}}
+          <grid responsive>
+            {{#each headerItems as |item|}}
+              {{recon-event-header-item name=item.name value=item.value}}
+            {{/each}}
+          </grid>
+        {{/if}}
       </div>
     {{/if}}
   {{/if}}

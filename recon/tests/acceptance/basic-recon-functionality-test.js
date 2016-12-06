@@ -49,8 +49,11 @@ test('change recon views', (assert) => {
 
 test('toggle request on/off', (assert) => {
   visit('/');
+
   waitForReduxStateChange('recon.data.packets');
-  click('.rsa-icon-arrow-circle-right-2');
+  andThen(() => {
+    click('.rsa-icon-arrow-circle-right-2');
+  });
   andThen(() => {
     assert.ok(find('.rsa-packet.request').first().height() < 5, 'Requests are hidden');
     click('.rsa-icon-arrow-circle-right-2');
@@ -68,9 +71,9 @@ test('toggle response on/off', (assert) => {
     // Height should be 0, as the response ones are hidden, but their containers are still there
     assert.ok(find('.rsa-packet.response').first().height() < 5, 'Responses are hidden');
     click('.rsa-icon-arrow-circle-left-2');
-  });
-  andThen(() => {
-    // Height should be > 0, as the responses are now shown
-    assert.ok(find('.rsa-packet.response').first().height() > 0, 'Responses are shown');
+    andThen(() => {
+      // Height should be > 0, as the responses are now shown
+      assert.ok(find('.rsa-packet.response').first().height() > 0, 'Responses are shown');
+    });
   });
 });

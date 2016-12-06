@@ -2513,6 +2513,12 @@ ember-export-application-global@^1.0.5:
   dependencies:
     ember-cli-babel "^5.1.10"
 
+ember-get-config@0.1.9:
+  version "0.1.9"
+  resolved "https://registry.npmjs.org/ember-get-config/-/ember-get-config-0.1.9.tgz#4f445c61c4db79419f15658af7a150795a535cb3"
+  dependencies:
+    ember-cli-babel "^5.1.6"
+
 ember-getowner-polyfill@1.0.1, ember-getowner-polyfill@^1.0.0, ember-getowner-polyfill@^1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/ember-getowner-polyfill/-/ember-getowner-polyfill-1.0.1.tgz#f60a31d25d642461dac4b4746184afaf7f5084ae"
@@ -2583,11 +2589,11 @@ ember-qunit@^0.4.18:
   dependencies:
     ember-test-helpers "^0.5.32"
 
-ember-redux@1.8.0:
-  version "1.8.0"
-  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-1.8.0.tgz#0b7618d98ad8cefe7709b040bccc72bf79baac25"
+ember-redux@1.9.2:
+  version "1.9.2"
+  resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-1.9.2.tgz#54322580b5a7fbe5a243889831f54da88cd890bc"
   dependencies:
-    ember-cli-babel "^5.1.6"
+    ember-cli-babel "^5.1.7"
 
 ember-resolver@^2.0.3:
   version "2.1.0"
