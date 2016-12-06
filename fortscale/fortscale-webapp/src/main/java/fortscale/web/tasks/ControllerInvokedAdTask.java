@@ -101,7 +101,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
         /* run task */
         final String jobName = dataSourceName + "_" + adTaskType.toString();
-        logger.debug("Running AD task {} with ID {}", jobName, resultsId);
+        logger.info("Running AD task {} with ID {}", jobName, resultsId);
         if (!runCollectionJob(jobName, resultsId)) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
@@ -109,7 +109,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
         /* get task results from file */
-        logger.debug("Getting results for task {} with results key {}", jobName, resultsKey);
+        logger.info("Getting results for task {} with results key {}", jobName, resultsKey);
         final Map<String, String> taskResults = getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
@@ -193,7 +193,7 @@ public class ControllerInvokedAdTask implements Runnable {
             return false;
         }
 
-        logger.debug("Execution of task {} has finished with status {}", jobName, status);
+        logger.info("Execution of task {} has finished with status {}", jobName, status);
         return true;
     }
 

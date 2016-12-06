@@ -146,7 +146,7 @@ public class ApiActiveDirectoryController {
 			}
 			lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
 
-			logger.debug("Starting Active Directory fetch and ETL");
+			logger.info("Starting Active Directory fetch and ETL");
 
 			try {
 				executorService = createExecutorService();
@@ -160,7 +160,7 @@ public class ApiActiveDirectoryController {
 				executorService.shutdown();
 			}
 
-			logger.debug("Finished Active Directory fetch and ETL");
+			logger.info("Finished Active Directory fetch and ETL");
 
 			isFetchEtlExecutionRequestInProgress.set(false);
 			return new ResponseEntity(HttpStatus.OK);
@@ -175,7 +175,7 @@ public class ApiActiveDirectoryController {
 	public ResponseEntity<String> stopAdFetchAndEtlExecution() {
 		if (!activeThreads.isEmpty()) {
 			isFetchEtlExecutionRequestStopped.set(true);
-			logger.debug("Attempting to kill all running threads {}", activeThreads);
+			logger.info("Attempting to kill all running threads {}", activeThreads);
 			executorService.shutdownNow();
 			try {
 				executorService.awaitTermination(FETCH_AND_ETL_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
@@ -254,12 +254,12 @@ public class ApiActiveDirectoryController {
 	}
 
 	public boolean addRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		logger.debug("Adding running task {}", controllerInvokedAdTask);
+		logger.info("Adding running task {}", controllerInvokedAdTask);
 		return activeThreads.add(controllerInvokedAdTask);
 	}
 
 	public boolean removeRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		logger.debug("Removing running task {}", controllerInvokedAdTask);
+		logger.info("Removing running task {}", controllerInvokedAdTask);
 		return activeThreads.remove(controllerInvokedAdTask);
 	}
 
