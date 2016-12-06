@@ -1,16 +1,15 @@
 package fortscale.domain.ad.dao;
 
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-
-import java.util.List;
-
+import fortscale.domain.ad.AdGroup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
-import fortscale.domain.ad.AdGroup;
+import java.util.List;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdGroupRepositoryCustom {
 	@Autowired
@@ -25,7 +24,6 @@ public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdG
 		return latest!=null ? latest : null;
 	}
 
-
 	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements) {
 		Query query = new Query(where(AdGroup.memberField).exists(true));
 		query.fields().include(AdGroup.memberField);
@@ -34,5 +32,4 @@ public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdG
 
 		return mongoTemplate.find(query, AdGroup.class);
 	}
-
 }

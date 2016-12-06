@@ -52,9 +52,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		boolean warmedUpCache = false;
 		for (Tag tag : tagService.getAllTags()) {
 			logger.info("processing tag - {}", tag.getName());
-			Map<String, Set<String>> tagsToAddToUsers = new HashMap();
-			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap();
-			Set<String> users = new HashSet();
+			Map<String, Set<String>> tagsToAddToUsers = new HashMap<>();
+			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap<>();
+			Set<String> users = new HashSet<>();
 			for (String rule : tag.getRules()) {
 				boolean removeFlag = rule.startsWith(deletionSymbol);
 				String searchTerm = removeFlag ? rule.substring(1) : rule;
@@ -66,13 +66,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						activeDirectoryGroupsHelper.warmUpCache();
 						warmedUpCache = true;
 					}
-					Set<String> groupsToTag = new HashSet(Arrays.asList(searchTerm));
+					Set<String> groupsToTag = new HashSet<>(Arrays.asList(searchTerm));
 					// Extend the group list
 					groupsToTag.addAll(updateGroupsList(groupsToTag));
 					Set<String> subset;
 					Pageable pageable = new PageRequest(0, pageSize);
 					do {
-						subset = userService.findNamesInGroup(new ArrayList(groupsToTag), pageable);
+						subset = userService.findNamesInGroup(new ArrayList<>(groupsToTag), pageable);
 						users.addAll(subset);
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
@@ -82,7 +82,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					Set<String> subset;
 					Pageable pageable = new PageRequest(0, pageSize);
 					do {
-						subset = userService.findNamesInOU(Arrays.asList(searchTerm), pageable);
+						subset = userService.findNamesInOU(Collections.singletonList(searchTerm), pageable);
 						users.addAll(subset);
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
@@ -125,9 +125,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	 */
 	private Set<String> updateGroupsList(Set<String> groupsToTag) {
 		// Set to hold the groups need to be add
-		Set<String> completeGroupList = new HashSet();
+		Set<String> completeGroupList = new HashSet<>();
 		// Set to hold the group to be checked
-		Queue<String> groupsToCheck = new LinkedList();
+		Queue<String> groupsToCheck = new LinkedList<>();
 		// Add all group to list to be checked
 		groupsToCheck.addAll(groupsToTag);
 		// Temp variable to hold the returned data from handler

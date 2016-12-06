@@ -1,7 +1,6 @@
 package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
@@ -13,19 +12,18 @@ import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.services.users.util.UserDeviceUtils;
+import fortscale.services.users.util.activity.UserActivityData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
-import fortscale.services.users.util.activity.UserActivityData;
 import javafx.util.Pair;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
@@ -36,11 +34,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 import java.io.OutputStreamWriter;
 import java.time.ZonedDateTime;
@@ -75,11 +70,6 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	private UserServiceFacade userServiceFacade;
 
-	@Autowired
-	private UserTagService userTagService;
-
-	@Autowired
-	private TagService tagService;
 
 	@Autowired
 	private UserService userService;
@@ -282,34 +272,7 @@ public class ApiUserController extends BaseController{
 		return usersDetails;
 	}
 
-	/**
-	 * API to update user tags
-	 * @param body
-	 * @return
-	 */
-	@RequestMapping(value="{id}", method = RequestMethod.POST)
-	@LogException
-	public Response addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
-		User user = userRepository.findOne(id);
-		JSONObject params = new JSONObject(body);
-		String tag;
-		boolean addTag;
-		if (params.has("add")) {
-			tag = params.getString("add");
-			addTag = true;
-		} else if (params.has("remove")) {
-			tag = params.getString("remove");
-			addTag = false;
-		} else {
-			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
-		}
-		try {
-			addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
-		} catch (Exception ex) {
-			return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
-		}
-		return Response.status(Response.Status.OK).build();
-	}
+
 
 	/**
 	 * API to update users tags by filter
@@ -369,49 +332,8 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-	@RequestMapping(value="/tagUsers", method=RequestMethod.GET)
-	@LogException
-	public ResponseEntity<Response> tagUsers() {
-		try {
-			//TODO - make this asynchronous
-			userTagService.update();
-		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.status(Response.Status.
-					INTERNAL_SERVER_ERROR).build());
-		}
-		return new ResponseEntity("{}", HttpStatus.OK);
-	}
 
-	@RequestMapping(value="/user_tags", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<Tag>> getAllTags() {
-		List<Tag> result = tagService.getAllTags();
-		DataBean<List<Tag>> ret = new DataBean();
-		ret.setData(result);
-		ret.setTotal(result.size());
-		return ret;
-	}
 
-	@RequestMapping(value="/user_tags", method=RequestMethod.POST)
-	@LogException
-	public ResponseEntity<String> updateTags(@RequestBody @Valid List<Tag> tags) {
-		for (Tag tag: tags) {
-			if (!tagService.updateTag(tag)) {
-				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
-			//if update was successful and tag is no longer active - remove that tag from all users
-			} else if (!tag.getActive()) {
-				String tagName = tag.getName();
-				Set<String> usernames = userService.findUsernamesByTags(new String[] { tagName });
-				if (CollectionUtils.isNotEmpty(usernames)) {
-					logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
-					for (String username : usernames) {
-						userTagService.removeUserTags(username, Arrays.asList(new String[] { tagName }));
-					}
-				}
-			}
-		}
-		return new ResponseEntity("{}", HttpStatus.ACCEPTED);	}
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
 	@ResponseBody
@@ -705,13 +627,6 @@ public class ApiUserController extends BaseController{
 		return sortUserDesc;
 	}
 
-	private void addTagToUser(User user, List<String> tags, boolean addTag) throws Exception {
-		if (addTag) {
-			userTagService.addUserTags(user.getUsername(), tags);
-		} else {
-			userTagService.removeUserTags(user.getUsername(), tags);
-		}
-	}
 
 	private DataBean<List<UserDetailsBean>> getUsersDetails(List<User> users) {
 		List<UserDetailsBean> detailsUsers = new ArrayList<>();
