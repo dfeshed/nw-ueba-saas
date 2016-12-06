@@ -15,7 +15,6 @@ import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType;
 import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -39,28 +38,25 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
 
-	@Value("${user.home.dir}")
-	private static String HOME_DIR;
-
-	public static final String COLLECTION_TARGET_DIR = HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
-
-	public static final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
-
-	private static final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
-
-	private static final String DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX ="deployment_wizard_ad.last_execution_time";
-
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
+
+	public final String COLLECTION_TARGET_DIR = System.getProperty("user.home") + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+
+	public final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
+
+	private final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
+
+	private final String DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX ="deployment_wizard_ad.last_execution_time";
 
 	private final List<AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObjectType.values()));
 
 	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
 
+	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
+
 	private Set<ControllerInvokedAdTask> activeThreads = ConcurrentHashMap.newKeySet(dataSources.size());
 
 	private Long lastAdFetchEtlExecutionStartTime;
-
-	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
 	private ExecutorService executorService;
 

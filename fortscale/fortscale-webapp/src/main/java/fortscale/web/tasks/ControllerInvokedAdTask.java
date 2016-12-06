@@ -163,14 +163,14 @@ public class ControllerInvokedAdTask implements Runnable {
     private boolean runCollectionJob(String jobName, UUID resultsId) {
         Process process;
         try {
-            final String collectionJarPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/" + ApiActiveDirectoryController.COLLECTION_JAR_NAME;
+            final String collectionJarPath = controller.COLLECTION_TARGET_DIR + "/" + controller.COLLECTION_JAR_NAME;
             if(!Files.exists(Paths.get(collectionJarPath))) {
                 logger.error("Execution of task {} has failed. Collection jar file doesn't exist in {}", jobName, collectionJarPath);
                 return false;
             }
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", collectionJarPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-            processBuilder.directory(new File(ApiActiveDirectoryController.COLLECTION_TARGET_DIR));
+            processBuilder.directory(new File(controller.COLLECTION_TARGET_DIR));
             process = processBuilder.start();
         } catch (IOException e) {
             logger.error("Execution of task {}  has failed.", jobName, e);
