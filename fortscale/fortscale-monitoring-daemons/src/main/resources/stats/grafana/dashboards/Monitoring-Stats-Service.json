@@ -1,10 +1,9 @@
 {
-  "id": 39,
-  "title": "Streaming - Models Cache",
-  "originalTitle": "Streaming - Models Cache",
+  "id": 4,
+  "title": "Monitoring - Stats Service",
+  "originalTitle": "Monitoring - Stats Service",
   "tags": [
-    "Streaming",
-    "Model"
+    "monitoring"
   ],
   "style": "dark",
   "timezone": "browser",
@@ -56,7 +55,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName",
+              "alias": "$tag_processGroup.$tag_process",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -67,7 +66,13 @@
                 },
                 {
                   "params": [
-                    "confName"
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
                   ],
                   "type": "tag"
                 },
@@ -78,7 +83,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.cache-service",
+              "measurement": "monitoring.stats.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -86,34 +91,40 @@
                 [
                   {
                     "params": [
-                      "getModel"
+                      "metricsGroupRegisterCount"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupRegisterCount"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
               "tags": [
                 {
-                  "key": "process",
+                  "key": "processGroup",
                   "operator": "=~",
-                  "value": "/^$process$/"
+                  "value": "/^$processGroup$/"
                 },
                 {
                   "condition": "AND",
-                  "key": "confName",
+                  "key": "process",
                   "operator": "=~",
-                  "value": "/^$confName$/"
+                  "value": "/^$process$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "get model requests",
+          "title": "metricsGroupRegisterCount (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -125,7 +136,7 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -141,7 +152,15 @@
               "show": true
             }
           ]
-        },
+        }
+      ],
+      "title": "metricsGroupRegisterCount"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
         {
           "aliasColors": {},
           "bars": false,
@@ -155,7 +174,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 11,
+          "id": 2,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -177,11 +196,11 @@
           "renderer": "flot",
           "seriesOverrides": [],
           "span": 12,
-          "stack": false,
+          "stack": true,
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName",
+              "alias": "$tag_processGroup.$tag_process",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -192,7 +211,13 @@
                 },
                 {
                   "params": [
-                    "confName"
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
                   ],
                   "type": "tag"
                 },
@@ -203,7 +228,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.cache-service",
+              "measurement": "monitoring.stats.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -211,34 +236,40 @@
                 [
                   {
                     "params": [
-                      "lastUsageTimeSet"
+                      "metricsGroupFields"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupFields"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
               "tags": [
                 {
-                  "key": "process",
+                  "key": "processGroup",
                   "operator": "=~",
-                  "value": "/^$process$/"
+                  "value": "/^$processGroup$/"
                 },
                 {
                   "condition": "AND",
-                  "key": "confName",
+                  "key": "process",
                   "operator": "=~",
-                  "value": "/^$confName$/"
+                  "value": "/^$process$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "last usage time is set",
+          "title": "metricsGroupFields (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -250,7 +281,7 @@
           },
           "yaxes": [
             {
-              "format": "iops",
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -268,8 +299,152 @@
           ]
         }
       ],
-      "showTitle": true,
-      "title": "model cache"
+      "title": "metricsGroupFields"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 15,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupFields"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "writeMetricsGroupsToEngine"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "writeMetricsGroupsToEngine (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "writeMetricsGroupsToEngine"
     },
     {
       "collapse": false,
@@ -304,7 +479,6 @@
           "lines": true,
           "linewidth": 2,
           "links": [],
-          "minSpan": 12,
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
@@ -316,7 +490,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName",
+              "alias": "$tag_processGroup.$tag_process",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -327,7 +501,13 @@
                 },
                 {
                   "params": [
-                    "confName"
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
                   ],
                   "type": "tag"
                 },
@@ -338,7 +518,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.cache-service",
+              "measurement": "monitoring.stats.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -346,34 +526,40 @@
                 [
                   {
                     "params": [
-                      "modelNotFoundInKeyValueStore"
+                      "metricsGroupFieldsWritesToEngine"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupFieldsWritesToEngine"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
               "tags": [
                 {
-                  "key": "process",
+                  "key": "processGroup",
                   "operator": "=~",
-                  "value": "/^$process$/"
+                  "value": "/^$processGroup$/"
                 },
                 {
                   "condition": "AND",
-                  "key": "confName",
+                  "key": "process",
                   "operator": "=~",
-                  "value": "/^$confName$/"
+                  "value": "/^$process$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "model not found in RocksDb",
+          "title": "metricsGroupFieldsWritesToEngine (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -385,7 +571,7 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "wps",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -401,133 +587,15 @@
               "show": true
             }
           ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 2,
-          "interval": ">60s",
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "minSpan": 12,
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_confName",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "confName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "streaming.model.cache-service",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "modelNotFoundForContextId"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "confName",
-                  "operator": "=~",
-                  "value": "/^$confName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "process",
-                  "operator": "=~",
-                  "value": "/^$process$/"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "model not found for context id",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "ops",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
+        }
+      ],
+      "title": "metricsGroupFieldsWritesToEngine"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
         {
           "aliasColors": {},
           "bars": false,
@@ -556,7 +624,6 @@
           "lines": true,
           "linewidth": 2,
           "links": [],
-          "minSpan": 12,
           "nullPointMode": "connected",
           "percentage": false,
           "pointradius": 5,
@@ -568,7 +635,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName",
+              "alias": "$tag_processGroup.$tag_process",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -579,7 +646,13 @@
                 },
                 {
                   "params": [
-                    "confName"
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
                   ],
                   "type": "tag"
                 },
@@ -590,7 +663,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.cache-service",
+              "measurement": "monitoring.stats.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -598,21 +671,27 @@
                 [
                   {
                     "params": [
-                      "modelNotFoundInTimePeriod"
+                      "metricsGroupRegisterCount"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupRegisterCount"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
               "tags": [
                 {
-                  "key": "confName",
+                  "key": "processGroup",
                   "operator": "=~",
-                  "value": "/^$confName$/"
+                  "value": "/^$processGroup$/"
                 },
                 {
                   "condition": "AND",
@@ -625,7 +704,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "model not found in time period",
+          "title": "metricsGroupRegisterCount (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -636,134 +715,8 @@
             "show": true
           },
           "yaxes": [
-            {
-              "format": "ops",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
             {
               "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 7,
-          "interval": ">60s",
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "minSpan": 12,
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_confName",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "confName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "streaming.model.cache-service",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "modelEndTimeExpired"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "confName",
-                  "operator": "=~",
-                  "value": "/^$confName$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "process",
-                  "operator": "=~",
-                  "value": "/^$process$/"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "model end time expired",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -781,269 +734,7 @@
           ]
         }
       ],
-      "showTitle": true,
-      "title": "model not found reasons"
-    },
-    {
-      "collapse": false,
-      "editable": true,
-      "height": "250px",
-      "panels": [
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 6,
-          "interval": ">60s",
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "minSpan": 12,
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_confName",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "confName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "streaming.model.cache-service",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "lazyCacheModelEndTimeOutDated"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "process",
-                  "operator": "=~",
-                  "value": "/^$process$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "confName",
-                  "operator": "=~",
-                  "value": "/^$confName$/"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "end time outdated",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "ops",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        },
-        {
-          "aliasColors": {},
-          "bars": false,
-          "datasource": null,
-          "editable": true,
-          "error": false,
-          "fill": 0,
-          "grid": {
-            "threshold1": null,
-            "threshold1Color": "rgba(216, 200, 27, 0.27)",
-            "threshold2": null,
-            "threshold2Color": "rgba(234, 112, 112, 0.22)"
-          },
-          "id": 8,
-          "interval": ">60s",
-          "isNew": true,
-          "legend": {
-            "avg": false,
-            "current": false,
-            "max": false,
-            "min": false,
-            "show": true,
-            "total": false,
-            "values": false
-          },
-          "lines": true,
-          "linewidth": 2,
-          "links": [],
-          "minSpan": 12,
-          "nullPointMode": "connected",
-          "percentage": false,
-          "pointradius": 5,
-          "points": false,
-          "renderer": "flot",
-          "seriesOverrides": [],
-          "span": 12,
-          "stack": true,
-          "steppedLine": true,
-          "targets": [
-            {
-              "alias": "$tag_confName",
-              "dsType": "influxdb",
-              "groupBy": [
-                {
-                  "params": [
-                    "$interval"
-                  ],
-                  "type": "time"
-                },
-                {
-                  "params": [
-                    "confName"
-                  ],
-                  "type": "tag"
-                },
-                {
-                  "params": [
-                    "null"
-                  ],
-                  "type": "fill"
-                }
-              ],
-              "measurement": "streaming.model.cache-service",
-              "policy": "default",
-              "refId": "A",
-              "resultFormat": "time_series",
-              "select": [
-                [
-                  {
-                    "params": [
-                      "lazyCacheCanNotLoadModelsCacheInfo"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  }
-                ]
-              ],
-              "tags": [
-                {
-                  "key": "process",
-                  "operator": "=~",
-                  "value": "/^$process$/"
-                },
-                {
-                  "condition": "AND",
-                  "key": "confName",
-                  "operator": "=~",
-                  "value": "/^$confName$/"
-                }
-              ]
-            }
-          ],
-          "timeFrom": null,
-          "timeShift": null,
-          "title": "can not load models cache info",
-          "tooltip": {
-            "msResolution": false,
-            "shared": true,
-            "value_type": "individual"
-          },
-          "type": "graph",
-          "xaxis": {
-            "show": true
-          },
-          "yaxes": [
-            {
-              "format": "ops",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            },
-            {
-              "format": "short",
-              "label": null,
-              "logBase": 1,
-              "max": null,
-              "min": null,
-              "show": true
-            }
-          ]
-        }
-      ],
-      "showTitle": true,
-      "title": "Lazy model cache"
+      "title": "metricsGroupRegisterCount"
     },
     {
       "collapse": false,
@@ -1089,7 +780,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName",
+              "alias": "$tag_processGroup.$tag_process",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -1100,7 +791,13 @@
                 },
                 {
                   "params": [
-                    "confName"
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
                   ],
                   "type": "tag"
                 },
@@ -1111,7 +808,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.cache-service",
+              "measurement": "monitoring.stats.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1119,34 +816,40 @@
                 [
                   {
                     "params": [
-                      "discreteCacheNullFeature"
+                      "metricsGroupRegisterErrorCount"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupRegisterErrorCount"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
               "tags": [
                 {
-                  "key": "process",
+                  "key": "processGroup",
                   "operator": "=~",
-                  "value": "/^$process$/"
+                  "value": "/^$processGroup$/"
                 },
                 {
                   "condition": "AND",
-                  "key": "confName",
+                  "key": "process",
                   "operator": "=~",
-                  "value": "/^$confName$/"
+                  "value": "/^$process$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "null feature",
+          "title": "metricsGroupRegisterErrorCount (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1158,7 +861,7 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1174,7 +877,450 @@
               "show": true
             }
           ]
-        },
+        }
+      ],
+      "title": "metricsGroupRegisterErrorCount"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 6,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupUnregisterCount"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupUnregisterCount"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupUnregisterCount (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupUnregisterCount"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 7,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupUnregisterErrorCount"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupUnregisterErrorCount"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupUnregisterErrorCount (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupUnregisterErrorCount"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 8,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupRegisterWithNullStatsServiceCount"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupRegisterWithNullStatsServiceCount"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupRegisterWithNullStatsServiceCount (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupRegisterWithNullStatsServiceCount"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
         {
           "aliasColors": {},
           "bars": false,
@@ -1214,7 +1360,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName",
+              "alias": "$tag_processGroup.$tag_process",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -1225,7 +1371,13 @@
                 },
                 {
                   "params": [
-                    "confName"
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
                   ],
                   "type": "tag"
                 },
@@ -1236,7 +1388,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.cache-service",
+              "measurement": "monitoring.stats.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1244,34 +1396,40 @@
                 [
                   {
                     "params": [
-                      "discreteCacheWrongFeatureValue"
+                      "metricsGroupCreated"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupCreated"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
               "tags": [
                 {
-                  "key": "process",
+                  "key": "processGroup",
                   "operator": "=~",
-                  "value": "/^$process$/"
+                  "value": "/^$processGroup$/"
                 },
                 {
                   "condition": "AND",
-                  "key": "confName",
+                  "key": "process",
                   "operator": "=~",
-                  "value": "/^$confName$/"
+                  "value": "/^$process$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "wrong feature value",
+          "title": "metricsGroupCreated (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1283,7 +1441,7 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1299,7 +1457,15 @@
               "show": true
             }
           ]
-        },
+        }
+      ],
+      "title": "metricsGroupCreated"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
         {
           "aliasColors": {},
           "bars": false,
@@ -1339,7 +1505,7 @@
           "steppedLine": true,
           "targets": [
             {
-              "alias": "$tag_confName",
+              "alias": "$tag_processGroup.$tag_process",
               "dsType": "influxdb",
               "groupBy": [
                 {
@@ -1350,7 +1516,13 @@
                 },
                 {
                   "params": [
-                    "confName"
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
                   ],
                   "type": "tag"
                 },
@@ -1361,7 +1533,7 @@
                   "type": "fill"
                 }
               ],
-              "measurement": "streaming.model.cache-service",
+              "measurement": "monitoring.stats.service",
               "policy": "default",
               "refId": "A",
               "resultFormat": "time_series",
@@ -1369,34 +1541,40 @@
                 [
                   {
                     "params": [
-                      "discreteCacheWrongModelType"
+                      "metricsGroupsWithoutAnnotations"
                     ],
                     "type": "field"
                   },
                   {
                     "params": [],
                     "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupsWithoutAnnotations"
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
               "tags": [
                 {
-                  "key": "process",
+                  "key": "processGroup",
                   "operator": "=~",
-                  "value": "/^$process$/"
+                  "value": "/^$processGroup$/"
                 },
                 {
                   "condition": "AND",
-                  "key": "confName",
+                  "key": "process",
                   "operator": "=~",
-                  "value": "/^$confName$/"
+                  "value": "/^$process$/"
                 }
               ]
             }
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "wrong model type",
+          "title": "metricsGroupsWithoutAnnotations (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1408,7 +1586,7 @@
           },
           "yaxes": [
             {
-              "format": "ops",
+              "format": "short",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1426,13 +1604,157 @@
           ]
         }
       ],
-      "showTitle": true,
-      "title": "Discrete model cache"
+      "title": "metricsGroupsWithoutAnnotations"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 11,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupCreatedWithManualUpdate"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupCreatedWithManualUpdate"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupCreatedWithManualUpdate (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupCreatedWithManualUpdate"
     }
   ],
   "time": {
-    "from": "now/d",
-    "to": "now/d"
+    "from": "now-7d",
+    "to": "now"
   },
   "timepicker": {
     "refresh_intervals": [
@@ -1462,38 +1784,7 @@
   "templating": {
     "list": [
       {
-        "current": {
-          "text": "raw-events-scoring-task",
-          "value": "raw-events-scoring-task"
-        },
-        "datasource": null,
-        "hide": 0,
-        "includeAll": false,
-        "label": "process",
-        "multi": false,
-        "name": "process",
-        "options": [
-          {
-            "text": "aggregated-feature-events-scoring-task",
-            "value": "aggregated-feature-events-scoring-task",
-            "selected": false
-          },
-          {
-            "text": "entity-events-scoring-task",
-            "value": "entity-events-scoring-task",
-            "selected": false
-          },
-          {
-            "text": "raw-events-scoring-task",
-            "value": "raw-events-scoring-task",
-            "selected": true
-          }
-        ],
-        "query": "SHOW TAG VALUES FROM \"streaming.model.cache-service\" WITH KEY = \"process\"",
-        "refresh": 1,
-        "type": "query"
-      },
-      {
+        "allFormat": "glob",
         "current": {
           "tags": [],
           "text": "All",
@@ -1504,8 +1795,9 @@
         "datasource": null,
         "hide": 0,
         "includeAll": true,
+        "label": "processGroup",
         "multi": true,
-        "name": "confName",
+        "name": "processGroup",
         "options": [
           {
             "text": "All",
@@ -1513,274 +1805,201 @@
             "selected": true
           },
           {
-            "text": "action_type.normalized_username.oracle",
-            "value": "action_type.normalized_username.oracle",
+            "text": "collection",
+            "value": "collection",
             "selected": false
           },
           {
-            "text": "action_type.normalized_username.wame",
-            "value": "action_type.normalized_username.wame",
+            "text": "external",
+            "value": "external",
             "selected": false
           },
           {
-            "text": "auth_method.normalized_username.ssh",
-            "value": "auth_method.normalized_username.ssh",
+            "text": "monitoring",
+            "value": "monitoring",
             "selected": false
           },
           {
-            "text": "country.normalized_username.crmsf",
-            "value": "country.normalized_username.crmsf",
-            "selected": false
-          },
-          {
-            "text": "country.normalized_username.vpn",
-            "value": "country.normalized_username.vpn",
-            "selected": false
-          },
-          {
-            "text": "country.normalized_username.vpn_session",
-            "value": "country.normalized_username.vpn_session",
-            "selected": false
-          },
-          {
-            "text": "databucket.normalized_username.vpn_session",
-            "value": "databucket.normalized_username.vpn_session",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.crmsf",
-            "value": "date_time_unix.normalized_username.crmsf",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.gwame",
-            "value": "date_time_unix.normalized_username.gwame",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.kerberos_logins",
-            "value": "date_time_unix.normalized_username.kerberos_logins",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.kerberos_tgt",
-            "value": "date_time_unix.normalized_username.kerberos_tgt",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.ntlm",
-            "value": "date_time_unix.normalized_username.ntlm",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.oracle",
-            "value": "date_time_unix.normalized_username.oracle",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.prnlog",
-            "value": "date_time_unix.normalized_username.prnlog",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.ssh",
-            "value": "date_time_unix.normalized_username.ssh",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.vpn",
-            "value": "date_time_unix.normalized_username.vpn",
-            "selected": false
-          },
-          {
-            "text": "date_time_unix.normalized_username.wame",
-            "value": "date_time_unix.normalized_username.wame",
-            "selected": false
-          },
-          {
-            "text": "db_object.normalized_username.oracle",
-            "value": "db_object.normalized_username.oracle",
-            "selected": false
-          },
-          {
-            "text": "db_username.normalized_username.oracle",
-            "value": "db_username.normalized_username.oracle",
-            "selected": false
-          },
-          {
-            "text": "failure_code.normalized_username.kerberos_logins",
-            "value": "failure_code.normalized_username.kerberos_logins",
-            "selected": false
-          },
-          {
-            "text": "failure_code.normalized_username.kerberos_tgt",
-            "value": "failure_code.normalized_username.kerberos_tgt",
-            "selected": false
-          },
-          {
-            "text": "failure_code.normalized_username.ntlm",
-            "value": "failure_code.normalized_username.ntlm",
-            "selected": false
-          },
-          {
-            "text": "file_size.normalized_username.prnlog",
-            "value": "file_size.normalized_username.prnlog",
-            "selected": false
-          },
-          {
-            "text": "hostname.normalized_username.vpn",
-            "value": "hostname.normalized_username.vpn",
-            "selected": false
-          },
-          {
-            "text": "hostname.normalized_username.vpn_session",
-            "value": "hostname.normalized_username.vpn_session",
-            "selected": false
-          },
-          {
-            "text": "normalized_dst_machine.normalized_username.kerberos_logins",
-            "value": "normalized_dst_machine.normalized_username.kerberos_logins",
-            "selected": false
-          },
-          {
-            "text": "normalized_dst_machine.normalized_username.oracle",
-            "value": "normalized_dst_machine.normalized_username.oracle",
-            "selected": false
-          },
-          {
-            "text": "normalized_dst_machine.normalized_username.ssh",
-            "value": "normalized_dst_machine.normalized_username.ssh",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine.normalized_username.kerberos_logins",
-            "value": "normalized_src_machine.normalized_username.kerberos_logins",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine.normalized_username.kerberos_tgt",
-            "value": "normalized_src_machine.normalized_username.kerberos_tgt",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine.normalized_username.ntlm",
-            "value": "normalized_src_machine.normalized_username.ntlm",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine.normalized_username.oracle",
-            "value": "normalized_src_machine.normalized_username.oracle",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine.normalized_username.prnlog",
-            "value": "normalized_src_machine.normalized_username.prnlog",
-            "selected": false
-          },
-          {
-            "text": "normalized_src_machine.normalized_username.ssh",
-            "value": "normalized_src_machine.normalized_username.ssh",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.city.crmsf",
-            "value": "normalized_username.city.crmsf",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.city.vpn",
-            "value": "normalized_username.city.vpn",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.city.vpn_session",
-            "value": "normalized_username.city.vpn_session",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.hostname.vpn",
-            "value": "normalized_username.hostname.vpn",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.hostname.vpn_session",
-            "value": "normalized_username.hostname.vpn_session",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_dst_machine.kerberos_logins",
-            "value": "normalized_username.normalized_dst_machine.kerberos_logins",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_dst_machine.oracle",
-            "value": "normalized_username.normalized_dst_machine.oracle",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_dst_machine.ssh",
-            "value": "normalized_username.normalized_dst_machine.ssh",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_src_machine.kerberos_logins",
-            "value": "normalized_username.normalized_src_machine.kerberos_logins",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_src_machine.kerberos_tgt",
-            "value": "normalized_username.normalized_src_machine.kerberos_tgt",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_src_machine.ntlm",
-            "value": "normalized_username.normalized_src_machine.ntlm",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_src_machine.oracle",
-            "value": "normalized_username.normalized_src_machine.oracle",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_src_machine.prnlog",
-            "value": "normalized_username.normalized_src_machine.prnlog",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.normalized_src_machine.ssh",
-            "value": "normalized_username.normalized_src_machine.ssh",
-            "selected": false
-          },
-          {
-            "text": "normalized_username.target_machine.prnlog",
-            "value": "normalized_username.target_machine.prnlog",
-            "selected": false
-          },
-          {
-            "text": "return_code.normalized_username.oracle",
-            "value": "return_code.normalized_username.oracle",
-            "selected": false
-          },
-          {
-            "text": "status.normalized_username.crmsf",
-            "value": "status.normalized_username.crmsf",
-            "selected": false
-          },
-          {
-            "text": "target_machine.normalized_username.prnlog",
-            "value": "target_machine.normalized_username.prnlog",
-            "selected": false
-          },
-          {
-            "text": "total_pages.normalized_username.prnlog",
-            "value": "total_pages.normalized_username.prnlog",
+            "text": "streaming",
+            "value": "streaming",
             "selected": false
           }
         ],
-        "query": "SHOW TAG VALUES FROM \"streaming.model.cache-service\" WITH KEY = \"confName\" WHERE \"process\" =~ /^$process$/",
+        "query": "SHOW TAG VALUES WITH KEY = \"processGroup\"",
         "refresh": 1,
         "type": "query"
+      },
+      {
+        "allFormat": "glob",
+        "current": {
+          "tags": [],
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "process",
+        "multi": true,
+        "name": "process",
+        "options": [
+          {
+            "text": "All",
+            "value": "$__all",
+            "selected": true
+          },
+          {
+            "text": "4769-events-filter",
+            "value": "4769-events-filter",
+            "selected": false
+          },
+          {
+            "text": "aggregated-feature-events-scoring-task",
+            "value": "aggregated-feature-events-scoring-task",
+            "selected": false
+          },
+          {
+            "text": "aggregation-events-streaming",
+            "value": "aggregation-events-streaming",
+            "selected": false
+          },
+          {
+            "text": "alert-generator-task",
+            "value": "alert-generator-task",
+            "selected": false
+          },
+          {
+            "text": "collection-daemon",
+            "value": "collection-daemon",
+            "selected": false
+          },
+          {
+            "text": "computer-tagging-normalization",
+            "value": "computer-tagging-normalization",
+            "selected": false
+          },
+          {
+            "text": "entity-events-model-building-streaming",
+            "value": "entity-events-model-building-streaming",
+            "selected": false
+          },
+          {
+            "text": "entity-events-scoring-task",
+            "value": "entity-events-scoring-task",
+            "selected": false
+          },
+          {
+            "text": "entity-events-streaming",
+            "value": "entity-events-streaming",
+            "selected": false
+          },
+          {
+            "text": "evidence-creation-task",
+            "value": "evidence-creation-task",
+            "selected": false
+          },
+          {
+            "text": "external-stats-collector",
+            "value": "external-stats-collector",
+            "selected": false
+          },
+          {
+            "text": "fortscale-event-scoring-persistency-task",
+            "value": "fortscale-event-scoring-persistency-task",
+            "selected": false
+          },
+          {
+            "text": "fsmonitor-master",
+            "value": "fsmonitor-master",
+            "selected": false
+          },
+          {
+            "text": "fsstreaming-master",
+            "value": "fsstreaming-master",
+            "selected": false
+          },
+          {
+            "text": "grafana-server",
+            "value": "grafana-server",
+            "selected": false
+          },
+          {
+            "text": "hdfs-events-writer-task",
+            "value": "hdfs-events-writer-task",
+            "selected": false
+          },
+          {
+            "text": "influxd",
+            "value": "influxd",
+            "selected": false
+          },
+          {
+            "text": "ip-resolving",
+            "value": "ip-resolving",
+            "selected": false
+          },
+          {
+            "text": "metric-adapter",
+            "value": "metric-adapter",
+            "selected": false
+          },
+          {
+            "text": "model-building-streaming",
+            "value": "model-building-streaming",
+            "selected": false
+          },
+          {
+            "text": "mongod",
+            "value": "mongod",
+            "selected": false
+          },
+          {
+            "text": "raw-events-scoring-task",
+            "value": "raw-events-scoring-task",
+            "selected": false
+          },
+          {
+            "text": "samza-metrics-collector",
+            "value": "samza-metrics-collector",
+            "selected": false
+          },
+          {
+            "text": "service-account-tagging",
+            "value": "service-account-tagging",
+            "selected": false
+          },
+          {
+            "text": "tomcat",
+            "value": "tomcat",
+            "selected": false
+          },
+          {
+            "text": "user-mongo-update-task",
+            "value": "user-mongo-update-task",
+            "selected": false
+          },
+          {
+            "text": "username-normalization-tagging-task",
+            "value": "username-normalization-tagging-task",
+            "selected": false
+          },
+          {
+            "text": "vpn-events-filter",
+            "value": "vpn-events-filter",
+            "selected": false
+          },
+          {
+            "text": "vpn-geolocation-session-update-task",
+            "value": "vpn-geolocation-session-update-task",
+            "selected": false
+          }
+        ],
+        "query": "SHOW TAG VALUES WITH KEY = \"process\"  WHERE \"processGroup\" =~ /^$processGroup$/",
+        "refresh": 1,
+        "type": "query",
+        "useTags": false
       }
     ]
   },
@@ -1789,6 +2008,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 3,
+  "version": 1,
   "links": []
 }

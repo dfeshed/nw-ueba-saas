@@ -203,22 +203,15 @@ abstract public class StatsNumericField {
         } else if (fieldType == AtomicInteger.class) {
             return new StatsAtomicIntegerField(field, object);
 
+        // Flex long interface
+        } else if ( StatsLongFlexMetric.class.isAssignableFrom(fieldType) ) {
+            return new StatsFlexLongMetricField(field,object);
+
+        // Flex double interface
+        } else if ( StatsDoubleFlexMetric.class.isAssignableFrom(fieldType) ) {
+            return new StatsFlexDoubleMetricField(field,object);
         }
 
-        // Check for classes that implements flex interfaces
-        Class[] interfaces = fieldType.getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-
-            // StatsLongFlexMetric
-            if (interfaces[i] == StatsLongFlexMetric.class) {
-                return new StatsFlexLongMetricField(field,object);
-
-            // StatsDoubleFlexMetric
-            } else if (interfaces[i] == StatsDoubleFlexMetric.class) {
-                return new StatsFlexDoubleMetricField(field,object);
-            }
-        }
-        
         // Oops, unsupported data type, exception pls.
 
         String msg = String.format("Unsupported numeric data type %s of field %s from %s",
