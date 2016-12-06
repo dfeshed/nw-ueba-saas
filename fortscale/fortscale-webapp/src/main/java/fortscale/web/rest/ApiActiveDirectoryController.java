@@ -9,6 +9,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
+import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
 import fortscale.web.tasks.ControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,9 +40,11 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
 
+
+
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
-	public final String COLLECTION_TARGET_DIR = System.getProperty("user.home") + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+	public String COLLECTION_TARGET_DIR;
 
 	public final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
 
@@ -68,6 +72,11 @@ public class ApiActiveDirectoryController {
 
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
+
+	@PostConstruct
+	private void getProperties() {
+		COLLECTION_TARGET_DIR =  SpringPropertiesUtil.getProperty("user.home.dir") + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+	}
 
 
 	/**
