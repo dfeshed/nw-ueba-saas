@@ -1,7 +1,7 @@
 {
-  "id": 4,
-  "title": "Monitoring - Stats Service",
-  "originalTitle": "Monitoring - Stats Service",
+  "id": 45,
+  "title": "Monitoring - Stats Service - part 2",
+  "originalTitle": "Monitoring - Stats Service - part 2",
   "tags": [
     "monitoring"
   ],
@@ -91,7 +91,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupRegisterCount"
+                      "metricsGroupRegisterRate"
                     ],
                     "type": "field"
                   },
@@ -101,7 +101,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupRegisterCount"
+                      "metricsGroupRegisterRate"
                     ],
                     "type": "alias"
                   }
@@ -124,7 +124,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupRegisterCount (cuml)",
+          "title": "metricsGroupRegisterRate (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -136,7 +136,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -154,7 +154,7 @@
           ]
         }
       ],
-      "title": "metricsGroupRegisterCount"
+      "title": "metricsGroupRegisterRate"
     },
     {
       "collapse": false,
@@ -175,6 +175,151 @@
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
           "id": 2,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupUnregisterRate"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupUnregisterRate"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupUnregisterRate (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupUnregisterRate"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 3,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -319,7 +464,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 15,
+          "id": 4,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -381,7 +526,587 @@
                 [
                   {
                     "params": [
-                      "metricsGroupFields"
+                      "metricsGroupLongFields"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupLongFields"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupLongFields (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupLongFields"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 5,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupDoubleFields"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupDoubleFields"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupDoubleFields (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupDoubleFields"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 6,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupDateFields"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupDateFields"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupDateFields (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupDateFields"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 7,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupStringFields"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupStringFields"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupStringFields (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupStringFields"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 8,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "writeMetricsGroupsToEngine"
                     ],
                     "type": "field"
                   },
@@ -464,7 +1189,442 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 3,
+          "id": 9,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "writeMetricsGroupsToEngineError"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "writeMetricsGroupsToEngineError"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "writeMetricsGroupsToEngineError (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "writeMetricsGroupsToEngineError"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 10,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupWriteToEngine"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupWriteToEngine"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupWriteToEngine (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupWriteToEngine"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 11,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "metricsGroupWritesToEngineWithoutFields"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "metricsGroupWritesToEngineWithoutFields"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "metricsGroupWritesToEngineWithoutFields (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "wps",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "metricsGroupWritesToEngineWithoutFields"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 12,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -609,7 +1769,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 4,
+          "id": 13,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -671,7 +1831,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupRegisterCount"
+                      "manualUpdatePush"
                     ],
                     "type": "field"
                   },
@@ -681,7 +1841,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupRegisterCount"
+                      "manualUpdatePush"
                     ],
                     "type": "alias"
                   }
@@ -704,7 +1864,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupRegisterCount (cuml)",
+          "title": "manualUpdatePush (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -716,7 +1876,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -734,7 +1894,7 @@
           ]
         }
       ],
-      "title": "metricsGroupRegisterCount"
+      "title": "manualUpdatePush"
     },
     {
       "collapse": false,
@@ -754,7 +1914,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 5,
+          "id": 14,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -816,7 +1976,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupRegisterErrorCount"
+                      "manualUpdatePushError "
                     ],
                     "type": "field"
                   },
@@ -826,7 +1986,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupRegisterErrorCount"
+                      "manualUpdatePushError "
                     ],
                     "type": "alias"
                   }
@@ -849,7 +2009,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupRegisterErrorCount (cuml)",
+          "title": "manualUpdatePushError  (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -861,7 +2021,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -879,7 +2039,7 @@
           ]
         }
       ],
-      "title": "metricsGroupRegisterErrorCount"
+      "title": "manualUpdatePushError "
     },
     {
       "collapse": false,
@@ -899,7 +2059,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 6,
+          "id": 15,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -961,7 +2121,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupUnregisterCount"
+                      "metricsGroupManualUpdate"
                     ],
                     "type": "field"
                   },
@@ -971,7 +2131,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupUnregisterCount"
+                      "metricsGroupManualUpdate"
                     ],
                     "type": "alias"
                   }
@@ -994,7 +2154,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupUnregisterCount (cuml)",
+          "title": "metricsGroupManualUpdate (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1006,7 +2166,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1024,7 +2184,7 @@
           ]
         }
       ],
-      "title": "metricsGroupUnregisterCount"
+      "title": "metricsGroupManualUpdate"
     },
     {
       "collapse": false,
@@ -1044,7 +2204,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 7,
+          "id": 16,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -1106,7 +2266,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupUnregisterErrorCount"
+                      "metricsGroupManualUpdateError"
                     ],
                     "type": "field"
                   },
@@ -1116,7 +2276,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupUnregisterErrorCount"
+                      "metricsGroupManualUpdateError"
                     ],
                     "type": "alias"
                   }
@@ -1139,7 +2299,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupUnregisterErrorCount (cuml)",
+          "title": "metricsGroupManualUpdateError (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1151,7 +2311,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1169,7 +2329,7 @@
           ]
         }
       ],
-      "title": "metricsGroupUnregisterErrorCount"
+      "title": "metricsGroupManualUpdateError"
     },
     {
       "collapse": false,
@@ -1189,7 +2349,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 8,
+          "id": 17,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -1251,7 +2411,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupRegisterWithNullStatsServiceCount"
+                      "metricsGroupManualUpdateWithNullStatsServiceCount"
                     ],
                     "type": "field"
                   },
@@ -1261,7 +2421,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupRegisterWithNullStatsServiceCount"
+                      "metricsGroupManualUpdateWithNullStatsServiceCount"
                     ],
                     "type": "alias"
                   }
@@ -1284,7 +2444,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupRegisterWithNullStatsServiceCount (cuml)",
+          "title": "metricsGroupManualUpdateWithNullStatsServiceCount (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1296,7 +2456,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1314,7 +2474,7 @@
           ]
         }
       ],
-      "title": "metricsGroupRegisterWithNullStatsServiceCount"
+      "title": "metricsGroupManualUpdateWithNullStatsServiceCount"
     },
     {
       "collapse": false,
@@ -1334,7 +2494,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 9,
+          "id": 18,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -1396,7 +2556,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupCreated"
+                      "tick"
                     ],
                     "type": "field"
                   },
@@ -1406,7 +2566,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupCreated"
+                      "tick"
                     ],
                     "type": "alias"
                   }
@@ -1429,7 +2589,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupCreated (cuml)",
+          "title": "tick (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1441,7 +2601,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1459,7 +2619,7 @@
           ]
         }
       ],
-      "title": "metricsGroupCreated"
+      "title": "tick"
     },
     {
       "collapse": false,
@@ -1479,7 +2639,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 10,
+          "id": 19,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -1541,7 +2701,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupsWithoutAnnotations"
+                      "tickError"
                     ],
                     "type": "field"
                   },
@@ -1551,7 +2711,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupsWithoutAnnotations"
+                      "tickError"
                     ],
                     "type": "alias"
                   }
@@ -1574,7 +2734,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupsWithoutAnnotations (cuml)",
+          "title": "tickError (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1586,7 +2746,7 @@
           },
           "yaxes": [
             {
-              "format": "short",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1604,7 +2764,7 @@
           ]
         }
       ],
-      "title": "metricsGroupsWithoutAnnotations"
+      "title": "tickError"
     },
     {
       "collapse": false,
@@ -1624,7 +2784,7 @@
             "threshold2": null,
             "threshold2Color": "rgba(234, 112, 112, 0.22)"
           },
-          "id": 11,
+          "id": 20,
           "interval": ">60s",
           "isNew": true,
           "legend": {
@@ -1686,7 +2846,7 @@
                 [
                   {
                     "params": [
-                      "metricsGroupCreatedWithManualUpdate"
+                      "tickMetricsUpdateSlips"
                     ],
                     "type": "field"
                   },
@@ -1696,7 +2856,7 @@
                   },
                   {
                     "params": [
-                      "metricsGroupCreatedWithManualUpdate"
+                      "tickMetricsUpdateSlips"
                     ],
                     "type": "alias"
                   }
@@ -1719,7 +2879,7 @@
           ],
           "timeFrom": null,
           "timeShift": null,
-          "title": "metricsGroupCreatedWithManualUpdate (cuml)",
+          "title": "tickMetricsUpdateSlips (cuml)",
           "tooltip": {
             "msResolution": false,
             "shared": true,
@@ -1731,7 +2891,7 @@
           },
           "yaxes": [
             {
-              "format": "wps",
+              "format": "ops",
               "label": null,
               "logBase": 1,
               "max": null,
@@ -1749,7 +2909,152 @@
           ]
         }
       ],
-      "title": "metricsGroupCreatedWithManualUpdate"
+      "title": "tickMetricsUpdateSlips"
+    },
+    {
+      "collapse": false,
+      "editable": true,
+      "height": "250px",
+      "panels": [
+        {
+          "aliasColors": {},
+          "bars": false,
+          "datasource": null,
+          "editable": true,
+          "error": false,
+          "fill": 0,
+          "grid": {
+            "threshold1": null,
+            "threshold1Color": "rgba(216, 200, 27, 0.27)",
+            "threshold2": null,
+            "threshold2Color": "rgba(234, 112, 112, 0.22)"
+          },
+          "id": 21,
+          "interval": ">60s",
+          "isNew": true,
+          "legend": {
+            "avg": false,
+            "current": false,
+            "max": false,
+            "min": false,
+            "show": true,
+            "total": false,
+            "values": false
+          },
+          "lines": true,
+          "linewidth": 2,
+          "links": [],
+          "nullPointMode": "connected",
+          "percentage": false,
+          "pointradius": 5,
+          "points": false,
+          "renderer": "flot",
+          "seriesOverrides": [],
+          "span": 12,
+          "stack": true,
+          "steppedLine": true,
+          "targets": [
+            {
+              "alias": "$tag_processGroup.$tag_process",
+              "dsType": "influxdb",
+              "groupBy": [
+                {
+                  "params": [
+                    "$interval"
+                  ],
+                  "type": "time"
+                },
+                {
+                  "params": [
+                    "processGroup"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "process"
+                  ],
+                  "type": "tag"
+                },
+                {
+                  "params": [
+                    "null"
+                  ],
+                  "type": "fill"
+                }
+              ],
+              "measurement": "monitoring.stats.service",
+              "policy": "default",
+              "refId": "A",
+              "resultFormat": "time_series",
+              "select": [
+                [
+                  {
+                    "params": [
+                      "tickEnginePushSlips"
+                    ],
+                    "type": "field"
+                  },
+                  {
+                    "params": [],
+                    "type": "mean"
+                  },
+                  {
+                    "params": [
+                      "tickEnginePushSlips"
+                    ],
+                    "type": "alias"
+                  }
+                ]
+              ],
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
+            }
+          ],
+          "timeFrom": null,
+          "timeShift": null,
+          "title": "tickEnginePushSlips (cuml)",
+          "tooltip": {
+            "msResolution": false,
+            "shared": true,
+            "value_type": "individual"
+          },
+          "type": "graph",
+          "xaxis": {
+            "show": true
+          },
+          "yaxes": [
+            {
+              "format": "ops",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            },
+            {
+              "format": "short",
+              "label": null,
+              "logBase": 1,
+              "max": null,
+              "min": null,
+              "show": true
+            }
+          ]
+        }
+      ],
+      "title": "tickEnginePushSlips"
     }
   ],
   "time": {
@@ -2008,6 +3313,6 @@
   },
   "refresh": false,
   "schemaVersion": 12,
-  "version": 1,
+  "version": 3,
   "links": []
 }
