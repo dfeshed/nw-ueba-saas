@@ -10,6 +10,15 @@ then
   exit 1
 fi
 
+function doTestApp {
+  local _need="false"
+  if [[ $submodulesToTest =~ "|$1|" ]]
+  then
+    _need="true"
+  fi
+  echo $_need
+}
+
 # Turn strings into arrays
 # cannot export arrays at command line
 IFS=', ' read -r -a TESTEM_PORTS_ARRAY <<< "$TESTEM_PORTS"
@@ -32,6 +41,8 @@ function runAppBowerInstall {
 function runEmberTestWithMockServer {
   local mockPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
+
+  yarn link mock-server
 
   info "Starting Express mock test server for $1"
 
@@ -81,87 +92,107 @@ function runEmberBuild {
 # $2 = whether or not `ember build` is necessary
 # $3 = whether or not a mock server is needed
 function buildEmberApp {
-  info "Beginning build for app: $1"
 
+  info "Installing $1 dependencies"
   cd $1
 
   # install Yarn/NPM deps
   runAppYarnInstall $1
 
-  yarn link mock-server
-
   # install Bower deps
   runAppBowerInstall $1
 
-  # 'ember test'
-  if [ "$3" = true ]
+  local shouldTestApp=$(doTestApp $1)
+  if [[ "$shouldTestApp" == "false" ]]
   then
-    runEmberTestWithMockServer $1
+    info "No reason to test $1, skipping it"
   else
-    runEmberTestNoMockServer $1
-  fi
 
-  # 'ember build' when running full build
-  if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
-  then
-    # do not build apps that do not need `ember build`` run
-    if [ "$2" = true ]
+    info "Running tests for app: $1"
+
+    # 'ember test'
+    if [ "$3" = true ]
     then
-      runEmberBuild $1
+      runEmberTestWithMockServer $1
+    else
+      runEmberTestNoMockServer $1
+    fi
+
+    # 'ember build' when running full build
+    if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+    then
+      # do not build apps that do not need `ember build`` run
+      if [ "$2" = true ]
+      then
+        runEmberBuild $1
+      fi
+    fi
+
+    success "$1 is good!"
+
+    if [[ "$1" == "style-guide" ]]
+    then
+      #### Deploy style guide to host if running full build
+      if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+      then
+        rm -rf /mnt/libhq-SA/SAStyle/production/*
+        # hosted here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/
+        cp -r style-guide/dist/* /mnt/libhq-SA/SAStyle/production/
+        success "Hosted style guide has been updated"
+      fi
     fi
   fi
 
-  success "$1 is good!"
+  cd $CWD
+}
 
+function buildMockServer {
+  info "Installing mock-server dependencies"
+  cd mock-server
+  runAppYarnInstall mock-server
+
+  # Yarn install and run eslint/tests on mock-server code
+  local shouldTestApp=$(doTestApp mock-server)
+  if [[ "$shouldTestApp" == "false" ]]
+  then
+    info "No reason to test mock-server, skipping it"
+  else
+    info "Running ESLint on mock-server"
+    yarn run eslint
+    checkError "ESLint failed for mock-server"
+    info "Running mock-server tests"
+    mockServerTestPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
+    MOCK_PORT=$mockServerTestPort yarn test
+    checkError "mock-server tests failed"
+    success "mock-server tests passed"
+  fi
+
+  yarn link
   cd $CWD
 }
 
 info "***********************"
 info "Building apps"
 
-# Run node script that will check bower versions for all projects
-node scripts/node/check-bower-versions.js
-
 # install node scripts deps
 cd scripts/node
 yarn
 cd $CWD
 
-setWebProxy
-
-# Yarn install and run eslint/tests on mock-server code
-cd mock-server
-runAppYarnInstall mock-server
-info "Running ESLint on mock-server"
-yarn run eslint
-checkError "ESLint failed for mock-server"
-info "Running mock-server tests"
-mockServerTestPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
-MOCK_PORT=$mockServerTestPort yarn test
-checkError "mock-server tests failed"
-success "mock-server tests passed"
-yarn link
-cd $CWD
+# Run node script that will check bower versions for all projects
+node scripts/node/check-bower-versions.js
 
 # http://stackoverflow.com/questions/21789683/how-to-fix-bower-ecmderr
 # fixes ecmderr with bower install
 git config --global url."https://".insteadOf git://
 
-buildEmberApp streaming-data false true
+setWebProxy
 
+buildMockServer
+buildEmberApp streaming-data false true
 buildEmberApp component-lib false
 buildEmberApp recon false true
 buildEmberApp style-guide true
-
-#### Deploy style guide to host if running full build
-if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
-then
-  rm -rf /mnt/libhq-SA/SAStyle/production/*
-  # hosted here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/
-  cp -r style-guide/dist/* /mnt/libhq-SA/SAStyle/production/
-  success "Hosted style guide has been updated"
-fi
-
 buildEmberApp sa true
 
 unsetWebProxy

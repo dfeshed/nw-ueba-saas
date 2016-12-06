@@ -9,8 +9,11 @@ const ALL_SUBMODULES = [
   'style-guide'
 ];
 
-// A configuration that indicates dependents
-// for each sa sub-module/directory
+// A configuration that indicates which submodules
+// depend on a submodule and therefore require testing
+//
+// i.e. if 'component-lib' has been updated, then
+// 'recon', 'sa' and 'style-guide' all need to be tested
 const saModuleDependents = {
   'component-lib': [
     'recon',
@@ -34,6 +37,37 @@ const saModuleDependents = {
   ],
   'style-guide': [] // style-guide is an end state app, nothing depends on it
 };
+
+// FUTURE
+// A configuration that indicates which submodules
+// are used by a submodule and therefore
+// require install of dependencies
+// i.e. In order to build/test recon, the dependencies
+// for component-lib must be installed
+// const saModuleDependencies = {
+//   'component-lib': [],
+//   docs: [], // lol
+//   'mock-server': [],
+//   recon: [
+//     'component-lib',
+//     'streaming-data',
+//     'mock-server'
+//   ],
+//   sa: [
+//     'component-lib',
+//     'streaming-data',
+//     'recon'
+//   ],
+//   scripts: ALL_SUBMODULES,
+//   'streaming-data': [
+//     'mock-server'
+//   ],
+//   'style-guide': [
+//     'component-lib',
+//     'streaming-data',
+//   ]
+// };
+
 
 const buildUniqueList = (things) => {
   return Object.keys(things.reduce((accum, thing) => {
@@ -78,4 +112,4 @@ const appsToBuildUnique = buildUniqueList(appsToBuild);
 
 // console.log it, this essentially passes it
 // to the bash script that called it
-console.log(appsToBuildUnique.join(' '));
+console.log('|' + appsToBuildUnique.join('|') + '|');
