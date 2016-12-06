@@ -44,6 +44,7 @@
     "ember-data": "^2.8.0",
     "ember-exam": "0.5.0",
     "ember-export-application-global": "^1.0.5",
+    "ember-get-config": "0.1.9",
     "ember-i18n": "4.3.2",
     "ember-load-initializers": "^0.5.1",
     "ember-math-helpers": "1.2.5",
