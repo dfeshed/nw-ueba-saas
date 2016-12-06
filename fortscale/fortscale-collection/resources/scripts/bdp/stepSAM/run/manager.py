@@ -5,15 +5,15 @@ import sys
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models_and_acm
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
 from bdp_utils.kafka import send
 import bdp_utils.run
-from step2.validation.validation import block_until_everything_is_validated
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..', '..']))
+from step2_online.validation.validation import block_until_everything_is_validated
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
 from automatic_config.common.utils.mongo import update_models_time, get_collections_size
 
@@ -38,8 +38,8 @@ class Manager(DontReloadModelsOverridingManager):
                  convert_to_minutes_timeout,
                  timeoutInSeconds,
                  cleanup_first,
-                 filtered_gap_in_seconds,
-                 filtered_timeout_override_in_seconds,
+                 allowed_gap_from_end_in_seconds,
+                 stuck_timeout_inside_allowed_gap_in_seconds,
                  start=None,
                  end=None):
         super(Manager, self).__init__(logger=logger,
@@ -48,11 +48,8 @@ class Manager(DontReloadModelsOverridingManager):
         self._host = host
         self._polling_interval = polling_interval
         self._timeoutInSeconds = timeoutInSeconds
-        self._filtered_gap_in_seconds = filtered_gap_in_seconds
-        self._filtered_timeout_in_seconds = timeoutInSeconds if filtered_timeout_override_in_seconds is None else filtered_timeout_override_in_seconds
-        if self._filtered_gap_in_seconds is not None and self._filtered_timeout_in_seconds is None:
-            raise Exception('filtered_timeout_in_seconds or timeoutInSeconds must '
-                            'be specified if filtered_gap_in_seconds is specified')
+        self._allowed_gap_from_end_in_seconds = allowed_gap_from_end_in_seconds
+        self._stuck_timeout_inside_allowed_gap_in_seconds = stuck_timeout_inside_allowed_gap_in_seconds
         self._start = time_utils.get_epochtime(start) if start is not None else None
         self._end = time_utils.get_epochtime(end) if end is not None else None
         self._cleanup_first = cleanup_first
@@ -204,8 +201,9 @@ class Manager(DontReloadModelsOverridingManager):
         if validate_started_processing_everything(host=self._host,
                                                   data_source=data_source,
                                                   end_time_epoch=end_time_epoch,
-                                                  filtered_gap_in_seconds=self._filtered_gap_in_seconds,
-                                                  filtered_timeout_in_seconds=self._filtered_timeout_in_seconds):
+                                                  allowed_gap_from_end_in_seconds=self._allowed_gap_from_end_in_seconds,
+                                                  stuck_timeout_inside_allowed_gap_in_seconds=self._stuck_timeout_inside_allowed_gap_in_seconds,
+                                                  stuck_timeout_outside_allowed_gap_in_seconds=self._timeoutInSeconds):
             self._send_dummy_event(end_time_epoch=end_time_epoch)
             return block_until_everything_is_validated(host=self._host,
                                                        start_time_epoch=start_time_epoch,
@@ -220,12 +218,12 @@ class Manager(DontReloadModelsOverridingManager):
             return False
 
     def _send_dummy_event(self, end_time_epoch):
-        # TODO: this code was copied from step2's manager.py - do a refactor
+        # TODO: this code was copied from step2_online's manager.py - do a refactor
         logger.info('sending dummy event (so the last partial batch will be closed)...')
         send(logger=logger,
              host=self._host,
              topic='fortscale-aggregation-events-control',
-             message='{\\"date_time_unix\\": ' + str(end_time_epoch + 1) + '}')
+             message='{"date_time_unix": ' + str(end_time_epoch + 1) + '}')
 
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)

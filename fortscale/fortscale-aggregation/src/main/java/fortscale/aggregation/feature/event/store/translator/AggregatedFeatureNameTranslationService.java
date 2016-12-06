@@ -7,8 +7,8 @@ import org.apache.commons.lang3.StringUtils;
  * Created by barak_schuster on 10/6/16.
  */
 public class AggregatedFeatureNameTranslationService {
-    private static final String COLLECTION_NAME_PREFIX = "scored_";
-    private static final String COLLECTION_NAME_SEPARATOR = "__";
+    public static final String COLLECTION_NAME_PREFIX = "scored_";
+	public static final String COLLECTION_NAME_SEPARATOR = "__";
 
     private String eventType;
 

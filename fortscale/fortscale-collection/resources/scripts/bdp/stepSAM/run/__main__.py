@@ -5,7 +5,7 @@ import sys
 
 from manager import Manager
 
-sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
+sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from bdp_utils import parsers
 from bdp_utils.run import step_runner_main
 from bdp_utils.samza import are_tasks_running
@@ -79,24 +79,29 @@ Usage example:
                         const=True,
                         help='pass this flag if you want to run a bdp cleanup before '
                              'starting to process the data sources')
-    parser.add_argument('--filtered_gap_in_seconds',
+    parser.add_argument('--allowed_gap_from_end_in_seconds',
                         action='store',
-                        dest='filtered_gap_in_seconds',
-                        help='streaming might filter events from enriched. If the last enriched events '
-                             'are filtered the python script will get stuck, since it will '
-                             'wait indefinitely. The solution is to allow gap in the end in which events '
-                             'can be filtered. Default is 3600',
+                        dest='allowed_gap_from_end_in_seconds',
+                        help="streaming might filter events from enriched. If the last enriched events "
+                             "are filtered we don't want the validation to fail (since the validation "
+                             "waits to encounter an event with a timestamp equals to the last enriched "
+                             "event's timestamp). This parameter specifies what's considered ok to be "
+                             "filtered. Default is 86400 (one day)",
                         type=int,
-                        default=3600)
-    parser.add_argument('--filtered_timeout_override_in_seconds',
+                        default=86400)
+    parser.add_argument('--stuck_timeout_inside_allowed_gap_in_seconds',
                         action='store',
-                        dest='filtered_timeout_override_in_seconds',
-                        help='if filtered_gap_in_minutes > 0 it means that a gap is allowed. Once the '
-                             'The waiting for the last enriched event to be processed will end once '
-                             'we get the last event, or once the timeout ends. The timeout defaults to what is '
-                             'specified in --timeoutInSeconds. If --filtered_timeout_override_in_seconds is '
-                             'specified, the timeout will be overridden.',
-                        type=int)
+                        dest='stuck_timeout_inside_allowed_gap_in_seconds',
+                        help="if we're inside the allowed_gap from end period (specified by "
+                             "--allowed_gap_from_end_in_seconds), and some events have been filtered, "
+                             "we'll know about it only after the timeout specified by --timeoutInSeconds. "
+                             "In order to save time in the gap period, the timeout specified here will be "
+                             "used instead. Note that too small timeout might be reached and the events "
+                             "processing job will be killed, while given a bigger timeout would habe been "
+                             "sufficient for the job to finish the processing. In most cases, we're ok with "
+                             "missing the last gap period, so the time boost is worth it. Default is 300",
+                        type=int,
+                        default=300)
     return parser
 
 
@@ -118,16 +123,18 @@ def main():
                convert_to_minutes_timeout=arguments.convert_to_minutes_timeout_in_minutes * 60,
                timeoutInSeconds=arguments.timeoutInSeconds,
                cleanup_first=arguments.cleanup_first,
-               filtered_gap_in_seconds=arguments.filtered_gap_in_seconds,
-               filtered_timeout_override_in_seconds=arguments.filtered_timeout_override_in_seconds,
+               allowed_gap_from_end_in_seconds=arguments.allowed_gap_from_end_in_seconds,
+               stuck_timeout_inside_allowed_gap_in_seconds=arguments.stuck_timeout_inside_allowed_gap_in_seconds,
                start=arguments.start,
                end=arguments.end) \
             .run():
         logger.info('finished successfully')
+
         return True
     else:
         logger.error('FAILED')
         return False
+
 
 
 if __name__ == '__main__':

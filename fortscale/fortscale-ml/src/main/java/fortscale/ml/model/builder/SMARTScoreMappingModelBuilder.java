@@ -30,7 +30,7 @@ public class SMARTScoreMappingModelBuilder implements IModelBuilder {
 		if (!scoresPerDay.isEmpty()) {
 			// EntityEventUnreducedScoreRetriever retrieves numOfDays * numOfAlertsPerDay + 1 entities per day.
 			// Solving for numOfAlertsPerDay:
-			double numOfAlertsPerDay = (scoresPerDay.get(0).size() - 1) / dateToHighestScores.size();
+			double numOfAlertsPerDay = ((double) (scoresPerDay.get(0).size() - 1)) / dateToHighestScores.size();
 			scoresPerDay.forEach(dailyScores -> dailyScores.sort(Comparator.reverseOrder()));
 			threshold = Math.max(config.getMinThreshold(), calcThreshold(scoresPerDay, numOfAlertsPerDay));
 			maximalScore = Math.max(config.getMinMaximalScore(), calcMaximalScore(scoresPerDay));

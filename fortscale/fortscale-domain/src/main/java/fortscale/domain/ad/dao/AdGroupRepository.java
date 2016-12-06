@@ -1,12 +1,12 @@
 package fortscale.domain.ad.dao;
 
+import fortscale.domain.ad.AdGroup;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
 import java.util.List;
 
-import org.springframework.data.repository.PagingAndSortingRepository;
-
-import fortscale.domain.ad.AdGroup;
-
-public interface AdGroupRepository  extends PagingAndSortingRepository<AdGroup,String>, AdGroupRepositoryCustom{
-	public List<AdGroup> findByLastModifiedExists(boolean exists);
-	public String findByName(String adName);
+public interface AdGroupRepository  extends MongoRepository<AdGroup,String>, AdGroupRepositoryCustom{
+	List<AdGroup> findByLastModifiedExists(boolean exists);
+	String findByName(String adName);
+	List<AdGroup> findByNameLikeIgnoreCase(String contains);
 }

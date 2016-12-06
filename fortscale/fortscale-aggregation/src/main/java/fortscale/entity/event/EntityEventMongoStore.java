@@ -6,14 +6,13 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.translator.EntityEventTranslationService;
+
 import fortscale.utils.logging.Logger;
-import fortscale.entity.event.translator.EntityEventTranslationService;
 import fortscale.utils.MongoStoreUtils;
+
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
-import fortscale.utils.time.TimestampUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.collections.ListUtils;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -35,6 +34,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	private static final int SECONDS_IN_DAY = 24 * 60 * 60;
 	private static final Logger logger = Logger.getLogger(EntityEventMongoStore.class);
 	private Map<String,PersistenceTaskStoreMetrics> collectionMetricsMap;
+
 
 	@Autowired
 	private StatsService statsService;
@@ -139,6 +139,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	}
 
 	public Map<Long, List<EntityEvent>> getDateToTopEntityEvents(String entityEventType, Date endTime, int numOfDays, int topK) {
+
 		return MongoStoreUtils.getDateToTopScoredEvents(
 				statsService,
 				mongoTemplate,
@@ -197,6 +198,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	}
 
 	/**
+
 	 * CRUD operations are kept at {@link this#collectionMetricsMap}.
 	 * before any crud is preformed in this class, this method should be called
 	 *
@@ -215,12 +217,15 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 		return metrics;
 	}
 
+
 	public List<EntityEvent> findEntityEventsByStartTimeRange(Instant from, Instant to, String featureName) {
 
 		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to.getEpochSecond());
 		Query query = new Query(startTimeCriteria);
 
+
 		return findEntityEvents(featureName,query);
+
 	}
 
 	/**

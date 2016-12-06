@@ -4,8 +4,8 @@ import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
 import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.JokerEntityEventData;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.map.HashedMap;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -13,12 +13,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @Configurable(preConstruction = true)
 public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventValueRetriever {
+	private static final Logger logger = Logger.getLogger(AccumulatedEntityEventValueRetriever.class);
+
 	@Autowired
 	private AccumulatedEntityEventStore store;
 
@@ -43,7 +43,16 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 			for (Integer activityTime : accumulatedEntityEvent.getActivityTime()) {
 				Map<String, Double> fullAggregatedFeatureEventNameToScore = new HashedMap();
 				for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedEntityEvent.getAggregated_feature_events_values_map().entrySet()) {
-					fullAggregatedFeatureEventNameToScore.put(aggrFeature.getKey(), aggrFeature.getValue().get(activityTime));
+					Double activityTimeScore = aggrFeature.getValue().get(activityTime);
+					String featureName = aggrFeature.getKey();
+					if (activityTimeScore == null) {
+						logger.debug("score does not exists for aggrFeature={} at activityTime={} setting to 0", featureName,activityTime);
+					}
+					else {
+						logger.debug("score={} for aggrFeature={} at activityTime={}", activityTimeScore, featureName, activityTime);
+						fullAggregatedFeatureEventNameToScore.put(featureName, activityTimeScore);
+					}
+
 				}
 				jokerEntityEventDataList.add(new JokerEntityEventData(accumulatedEntityEvent.getStart_time().getEpochSecond(), fullAggregatedFeatureEventNameToScore));
 			}

@@ -8,6 +8,7 @@ import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -24,8 +25,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterReader {
-	public static final String COLLECTION_NAME_PREFIX = "scored_";
-	public static final String COLLECTION_NAME_SEPARATOR = "__";
+
+
 	private static final Logger logger = Logger.getLogger(AggregatedFeatureEventsMongoStore.class);
 
 	@Autowired
@@ -40,6 +41,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
     @Value("#{'${fortscale.store.collection.backup.prefix}'.split(',')}")
     private List<String> backupCollectionNamesPrefixes;
+
 
 
 	private Map<String, String> aggregatedFeatureNameToExistingCollectionNameMap = new HashMap<>();
@@ -147,6 +149,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 			AggregatedFeatureEventConf aggregatedFeatureEventConf,
 			String contextId, Date startTime, Date endTime) {
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
+
 		String metricsCollectionName = getCollectionName(aggregatedFeatureName);
 		MongoStoreUtils.getCollectionMetrics(statsService, metricsCollectionName).reads++;
 		Query query = createTimeRangeQuery(startTime, endTime)
@@ -211,6 +214,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
 	private String getCollectionName(AggregatedFeatureEventConf aggregatedFeatureEventConf) {
 		return getCollectionName(aggregatedFeatureEventConf.getName());
+
 	}
 
 	private long getRetentionInSeconds(String aggregatedFeatureName) {
@@ -280,6 +284,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
 		return totalNumberOfEvents;
 	}
+
 
 	 /**
 	 * @param from greater than/equal of that date

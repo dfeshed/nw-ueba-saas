@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket;
 
 import com.mongodb.WriteResult;
 import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -25,18 +26,25 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	private static final Logger logger = Logger.getLogger(FeatureBucketsMongoStore.class);
 
 	private static final String COLLECTION_NAME_PREFIX = "aggr_";
+	private static final String COLLECTIONS_NAMES_DELIMTER =",";
+
 	private static final int EXPIRE_AFTER_SECONDS_DEFAULT = 90*24*3600;
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
+
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
+
 	@Autowired
 	private StatsService statsService;
 
 	//TODO: remove this after we test it and see that it works as we expected
 	@Value("${fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore.getFeatureBucketsWithSpecificFieldProjectionByContextIdAndTimeRange.use.projection:false}")
 	boolean useProjection;
+
+	@Value("${fortscale.store.collection.backup.prefix}")
+	private String collectionsBackupPrefixListAsString;
 
 	private Map<FeatureBucketConf, FeatureBucketsStoreMetrics> featureBucketConfToMetric = new HashMap<>();
 
@@ -76,32 +84,91 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 	@Override
 	public List<FeatureBucket> getFeatureBucketsByContextAndTimeRange(FeatureBucketConf featureBucketConf, String contextType, String ContextName, Long bucketStartTime, Long bucketEndTime) {
-		String collectionName = getCollectionName(featureBucketConf);
-		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
+		List<FeatureBucket> result = new ArrayList<>();
 
-		if (mongoTemplate.collectionExists(collectionName)) {
-			Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
 
-			Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
+		List<String> collectionNames = getCollectionNames(featureBucketConf);
 
-			Criteria contextCriteria = createContextCriteria(contextType, ContextName);
+		Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(bucketStartTime));
 
-			Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria,contextCriteria));
+		Criteria bucketEndTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(bucketEndTime));
 
-			List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-			metrics.retrieveFeatureBucketsCalls++;
-			metrics.retrievedFeatureBuckets += featureBuckets.size();
-			return featureBuckets;
-		}
-		else {
-			metrics.retrieveFeatureBucketsFailures++;
-			throw new RuntimeException("Could not fetch feature buckets from collection " + collectionName);
-		}
+		Criteria contextCriteria = createContextCriteria(contextType, ContextName);
+
+		Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria,contextCriteria));
+
+		//Get the data from the origin collection
+		result = readFromMongo(collectionNames,query,featureBucketConf);
+
+		return result;
+
+
+
 	}
 
-	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
-		String collectionName = getCollectionName(featureBucketConf);
+	private List<String> getCollectionNames(FeatureBucketConf featureBucketConf) {
+		List<String> collectionNames = new ArrayList<>();
+
+		//In case of backups collections - will create the backup prefix list
+		List<String> collectionsBackupPrefixList = ConversionUtils.convertStringToList(collectionsBackupPrefixListAsString, COLLECTIONS_NAMES_DELIMTER);
+
+
+		String coreName = String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
+		collectionNames.add(coreName);
+
+		collectionsBackupPrefixList.forEach(prefix->{
+			if(!org.apache.commons.lang.StringUtils.isEmpty(prefix))
+				collectionNames.add(prefix + coreName);
+		});
+
+		return collectionNames;
+
+	}
+
+	private List<FeatureBucket> readFromMongo (List<String> collectionNames,Query query,FeatureBucketConf featureBucketConf) {
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
+		List<FeatureBucket> featureBuckets = new ArrayList<>();
+
+
+			collectionNames.forEach(collection->{
+				try {
+					featureBuckets.addAll(mongoTemplate.find(query, FeatureBucket.class, collection));
+					metrics.retrieveFeatureBucketsCalls++;
+					metrics.retrievedFeatureBuckets += featureBuckets.size();
+				}
+				catch (Exception e) {
+					metrics.retrieveFeatureBucketsFailures++;
+					throw new RuntimeException("Could not fetch feature buckets from collection " + collection + " due to: " + e);
+				}
+			});
+
+			return featureBuckets;
+	}
+
+	private FeatureBucket readOneFromMongo(List<String> collectionNames, Query query, FeatureBucketConf featureBucketConf) {
+		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
+
+		for (String collection : collectionNames) {
+			try {
+				FeatureBucket featureBucket;
+				metrics.retrieveFeatureBucketsCalls++;
+				featureBucket = mongoTemplate.findOne(query, FeatureBucket.class, collection);
+				if (featureBucket != null) {
+					metrics.retrievedFeatureBuckets++;
+					return featureBucket;
+				}
+			} catch (Exception e) {
+				metrics.retrieveFeatureBucketsFailures++;
+				throw new RuntimeException("Could not fetch feature buckets from collection " + collection + " due to: " + e);
+			}
+		}
+
+		return null;
+	}
+
+
+	public List<FeatureBucket> getFeatureBucketsByEndTimeBetweenTimeRange(FeatureBucketConf featureBucketConf, Long bucketStartTime, Long bucketEndTime, Pageable pageable) {
+		List<FeatureBucket> result = new ArrayList<>();
 
 		Criteria bucketStartTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).gt(TimestampUtils.convertToSeconds(bucketStartTime));
 
@@ -109,15 +176,16 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 		Query query = new Query(bucketStartTimeCriteria.andOperator(bucketEndTimeCriteria));
 
+
 		if(pageable != null) {
 			query.with(pageable);
 		}
-		List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-		metrics.retrieveFeatureBucketsCalls++;
-		metrics.retrievedFeatureBuckets += featureBuckets.size();
 
+		List<String> collectionNames = getCollectionNames(featureBucketConf);
 
-		return featureBuckets;
+		result = readFromMongo(collectionNames,query,featureBucketConf);
+
+		return result;
 	}
 
 	private Criteria createContextCriteria(String contextType, String contextName) {
@@ -129,17 +197,15 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 	@Override
 	public FeatureBucket getFeatureBucket(FeatureBucketConf featureBucketConf,String bucketId) {
-		String collectionName = getCollectionName(featureBucketConf);
+
+
+		List<String> collectionNames = getCollectionNames(featureBucketConf);
 
 		Query query = new Query(Criteria.where(FeatureBucket.BUCKET_ID_FIELD).is(bucketId));
 
-		FeatureBucket res = mongoTemplate.findOne(query, FeatureBucket.class, collectionName);
-		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-		metrics.retrieveFeatureBucketsCalls++;
-		if (res != null) {
-			metrics.retrievedFeatureBuckets++;
-		}
-		return res;
+		FeatureBucket result = readOneFromMongo(collectionNames,query,featureBucketConf);
+
+		return result;
 
 	}
 	
@@ -234,7 +300,9 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 																								   String fieldName,
 																								   boolean fieldMustExist,
 																								   List<String> additionalFieldsToInclude) {
-		String collectionName = getCollectionName(featureBucketConf);
+		List<FeatureBucket> result = new ArrayList<>();
+
+		List<String> collectionNames = getCollectionNames(featureBucketConf);
 
 		Criteria contextIdCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).is(contextId);
 		Criteria startTimeInSecondsCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(startTimeInSeconds);
@@ -255,19 +323,11 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			}
 		}
 
-		List<FeatureBucket> res;
-		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-		try {
-			res = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-		} catch (Exception ex) {
-			metrics.readFeatureBucketFailers++;
-			logger.error(String.format("got an exception while running the following query on the %s collection: %s", collectionName, query), ex);
-			throw ex;
-		}
 
-		metrics.retrieveFeatureBucketsCalls++;
-		metrics.retrievedFeatureBuckets += res.size();
+		result = readFromMongo(collectionNames,query,featureBucketConf);
 
-		return res;
+
+
+		return result;
 	}
 }

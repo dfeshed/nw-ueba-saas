@@ -205,4 +205,14 @@ public class SMARTScoreMappingModelBuilderTest {
 
 		assertModel(5D, minMaximalScore, model);
 	}
+
+	@Test
+	public void shouldSupportFractionalNumOfAlertsPerDay() {
+		// 0.5 alert per day for 2 days
+		Double[] scores1 = {10D, 20D};
+		Double[] scores2 = {30D, 40D};
+		SMARTScoreMappingModel model = buildModel(0, 0, 0, 0, 0, 0, scores1, scores2);
+
+		assertModel(35D, 40D, model);
+	}
 }

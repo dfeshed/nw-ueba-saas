@@ -5,6 +5,18 @@ import sys
 
 import time_utils
 
+def singleton(cls):
+    instances = {}
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+    return getinstance
+
+@singleton
+class MongoInstance:
+    db = None
+    connected = False
 
 def singleton(cls):
     instances = {}
