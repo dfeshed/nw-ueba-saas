@@ -180,7 +180,7 @@ export default Ember$.extend({}, BaseSelectors, {
         'srcColInput': '.column-selection-sources input',
         'eventsColInput': '.column-selection-eventCount input',
         'priorityColInput': '.column-selection-prioritySort input',
-        'allColumnsElms': '.rsa-data-table-header-row .rsa-data-table-header-cell'
+        'allColumnsElms': '.panel-B .rsa-data-table-header-row .rsa-data-table-header-cell'
       },
       'list': {
         'table': 'div[class=rsa-respond-list]',
