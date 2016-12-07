@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import computed, { alias } from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
-import { computeExtent, multiDateFormat, multiDate24Format } from 'component-lib/utils/chart-utils';
+import { computeExtent, dateFormat } from 'component-lib/utils/chart-utils';
 import { format } from 'd3-format';
 import { scaleTime, scaleUtc } from 'd3-scale';
 
@@ -96,8 +96,8 @@ export default Component.extend({
   @computed('startTime')
   startDate: (date) => date * 1000,
 
-  @computed('timeFormat.selected.key')
-  tickformat: (format) => (format === 'HR24') ? multiDate24Format : multiDateFormat,
+  @computed('timeFormat.selected.key', 'timezone.selected')
+  tickformat: (format, zone) => dateFormat((format === 'HR24'), zone),
 
   @computed('isExpanded')
   toggleIcon: (isExpanded) => isExpanded ? 'shrink-horizontal-2' : 'expand-vertical-4',

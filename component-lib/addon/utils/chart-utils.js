@@ -1,26 +1,15 @@
 import { formatPrefix, formatSpecifier, precisionPrefix } from 'd3-format';
 import { max, min, tickStep } from 'd3-array';
-import { timeDay, timeHour, timeMinute, timeMonth, timeSecond, timeWeek, timeYear } from 'd3-time';
-import { timeFormat } from 'd3-time-format';
-
-const formatMillisecond = timeFormat('.%L'); // .123
-const formatSecond = timeFormat('%I:%M:%S'); // 01:15:05
-const formatSecond24 = timeFormat('%H:%M:%S'); // 13:15:05
-const formatMinute = timeFormat('%I:%M'); // 01:15
-const formatMinute24 = timeFormat('%H:%M'); // 13:15
-const formatHour = timeFormat('%I:%M %p'); // 01:00 PM
-const formatHour24 = timeFormat('%H:%M'); // 13:00
-const formatDay = timeFormat('%a %d'); // Tue 02
-const formatWeek = timeFormat('%b %d'); // Jan 02
-const formatMonth = timeFormat('%B'); // January
-const formatYear = timeFormat('%Y'); // 2016
+import { timeDay, timeHour, timeMinute, timeMonth, timeWeek, timeYear } from 'd3-time';
+import { timeFormat, utcFormat } from 'd3-time-format';
 
 /**
  * Will find the minimum value within an Array of Arrays.
  * @public
- * @param data An Array of Arrays i.e. [[], []]
- * @param accessorFn A function run against each Object in an Array to retrieve the property of interest
- * @return The mimimum value
+ * @param  {Array}    data       An Array of Arrays i.e. [[], []]
+ * @param  {Function} accessorFn A function run against each Object in an Array
+ *                               to retrieve the property of interest
+ * @return {Number}              The mimimum value
  */
 export function minimum(data, accessorFn = undefined) {
   return min(data.map((d) => min(d, accessorFn)));
@@ -29,21 +18,23 @@ export function minimum(data, accessorFn = undefined) {
 /**
  * Will find the maximum value within an Array of Arrays.
  * @public
- * @param data An Array of Arrays i.e. [[], []]
- * @param accessorFn A function run against each Object in an Array to retrieve the property of interest
- * @return The maximum value
+ * @param  {Array}    data       An Array of Arrays i.e. [[], []]
+ * @param  {Function} accessorFn A function run against each Object in an Array
+ *                               to retrieve the property of interest
+ * @return {Number}              The maximum value
  */
 export function maximum(data, accessorFn = undefined) {
   return max(data.map((d) => max(d, accessorFn)));
 }
 
 /**
- * Computes the minimum and maximum values of an Array of Arrays
+ * Computes the minimum and maximum values of an Array of Arrays.
  * @public
- * @param data An Array of Arrays i.e. [[], []]
- * @param accessorFn A function run against each Object in an Array to retrieve the property of interest
- * @param zeroed Boolean indicating if the extent should be zero-based. i.e. [0, N]
- * @return A 2 element Array with min/max values
+ * @param  {Array}    data       An Array of Arrays i.e. [[], []]
+ * @param  {Function} accessorFn A function run against each Object in an Array
+ *                               to retrieve the property of interest
+ * @param  {Boolean}  zeroed     Should the extent be zero-based. i.e. [0, N]
+ * @return {Array}               A 2 element Array with min/max values
  */
 export function computeExtent(data, accessorFn, zeroed) {
   return [zeroed ? 0 : minimum(data, accessorFn), maximum(data, accessorFn)];
@@ -53,95 +44,71 @@ export function computeExtent(data, accessorFn, zeroed) {
  * Creates a scale with the domain and range set. Values that fall out the
  * domain will be clamped to the domain min/max.
  * @public
- * @param scaleFn A scalaing function
- * @param domain The data extent
- * @param range The pixel range with which to map the domain
- * @return An instance of `scaleFn`
+ * @param  {Function} scaleFn A scalaing function
+ * @param  {Array}    domain  The data extent
+ * @param  {Array}    range   The pixel range with which to map the domain
+ * @return {Function}         An instance of `scaleFn`
  */
 export function createScale(scaleFn, domain, range) {
   return scaleFn().domain(domain).range(range).clamp(true);
 }
 
-// Calculates width minus left/right margin. Used for sizing the drawing
-// area within some margin for axes, legend, text, etc.
+/**
+ * Calculates width minus left/right margin. Used for sizing the drawing area
+ * within some margin for axes, legend, text, etc.
+ * @public
+ * @param  {Number} width       Width of graph
+ * @param  {Number} marginLeft  Left margin
+ * @param  {Number} marginRight Right margin
+ * @return {Number}             The graph width
+ */
 export function calcGraphWidth(width, marginLeft, marginRight) {
   return width - marginLeft - marginRight;
 }
 
-// Calculates height minus top/bottom margin. Used for sizing the drawing
-// area within some margin for axes, legend, text, etc.
+/**
+ * Calculates height minus top/bottom margin. Used for sizing the drawing area
+ * within some margin for axes, legend, text, etc.
+ * @public
+ * @param  {Number} height       Height of graph
+ * @param  {Number} marginTop    Top margin
+ * @param  {Number} marginBottom Bottom margin
+ * @return {Number}              The graph height
+ */
 export function calcGraphHeight(height, marginTop, marginBottom) {
   return height - marginTop - marginBottom;
 }
 
 /**
- * Generates a date format function that is a multi-scale tick format,
- * meaning that it formats times differently depending on the time.
- * For example, the start of February is formatted as "February",
- * while February second is formatted as "Feb 2". Has a minimum
- * precision of a minute.
+ * Generates a date format function for a given time format (24 vs 12 hour
+ * days), and timezone. Current implementation is limited to either UTC or
+ * the local timezone of the operating system.
  * @public
- * @param date The date to format
- * @return A format that most closely matches a date boundry
+ * @param  {Boolean} is24Hour Should the time portion reflect a 24-hour clock
+ * @param  {String}  timezone Timezone of date.
+ * @return {function}         A function for formatting dates.
  */
-export function multiDateFormat(date) {
-  return (timeMinute(date) < date ? formatSecond :
-    timeHour(date) < date ? formatMinute :
-    timeDay(date) < date ? formatHour :
-    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
-    timeYear(date) < date ? formatMonth :
-    formatYear)(date);
-}
-
-/**
- * Generates a 24 hour date format function that is a multi-scale tick format,
- * meaning that it formats times differently depending on the time.
- * For example, the start of February is formatted as "February",
- * while February second is formatted as "Feb 2". Has a minimum
- * precision of a minute.
- * @public
- * @param date The date to format
- * @return A format that most closely matches a date boundry
- */
-export function multiDate24Format(date) {
-  return (timeMinute(date) < date ? formatSecond24 :
-    timeHour(date) < date ? formatMinute24 :
-    timeDay(date) < date ? formatHour24 :
-    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
-    timeYear(date) < date ? formatMonth :
-    formatYear)(date);
-}
-
-/**
- * Same as `multiDateFormat`, but to millisecond precision.
- * @public
- * @param date The date to format
- * @return A format that most closely matches a date boundry
- */
-export function multiDateMsFormat(date) {
-  return (timeSecond(date) < date ? formatMillisecond :
-    timeMinute(date) < date ? formatSecond :
-    timeHour(date) < date ? formatMinute :
-    timeDay(date) < date ? formatHour :
-    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
-    timeYear(date) < date ? formatMonth :
-    formatYear)(date);
-}
-
-/**
- * Same as `multiDate24Format`, but to millisecond precision.
- * @public
- * @param date The date to format
- * @return A format that most closely matches a date boundry
- */
-export function multiDateMs24Format(date) {
-  return (timeSecond(date) < date ? formatMillisecond :
-    timeMinute(date) < date ? formatSecond24 :
-    timeHour(date) < date ? formatMinute24 :
-    timeDay(date) < date ? formatHour24 :
-    timeMonth(date) < date ? (timeWeek(date) < date ? formatDay : formatWeek) :
-    timeYear(date) < date ? formatMonth :
-    formatYear)(date);
+export function dateFormat(is24Hour, timezone) {
+  const localeFormatFn = _localeFormat(timezone);
+  if (is24Hour) {
+    return function(date) {
+      return (timeMinute(date) < date ? localeFormatFn('%H:%M:%S') : // 13:15:05
+        timeHour(date) < date ? localeFormatFn('%H:%M') : // 13:15
+        timeDay(date) < date ? localeFormatFn('%H:%M') : // 13:00
+        timeMonth(date) < date ? (timeWeek(date) < date ? localeFormatFn('%a %d') : localeFormatFn('%b %d')) : // Tue 02 or Jan 02
+        timeYear(date) < date ? localeFormatFn('%B') : // January
+        localeFormatFn('%Y'))(date); // 2016
+    };
+  } else {
+    return function(date) {
+      return (timeMinute(date) < date ? localeFormatFn('%I:%M:%S') : // 01:15:05
+        timeHour(date) < date ? localeFormatFn('%I:%M %p') : // 01:15 PM
+        timeDay(date) < date ? localeFormatFn('%I:%M %p') : // 01:00 PM
+        timeMonth(date) < date ? (timeWeek(date) < date ? localeFormatFn('%a %d') : localeFormatFn('%b %d')) : // Tue 02 or Jan 02
+        timeYear(date) < date ? localeFormatFn('%B') : // January
+        localeFormatFn('%Y'))(date); // 2016
+    };
+  }
 }
 
 /**
@@ -150,9 +117,10 @@ export function multiDateMs24Format(date) {
  * interval between tick values. The specified count should have the same
  * value as the count that is used to generate the tick values.
  * @public
- * @param domain An Array with min/max values for the scale
- * @param count The desired number of scale ticks
- * @return A SI-prefix format based on the largest value in the domain
+ * @param  {Array}  domain An Array with min/max values for the scale
+ * @param  {Number} count  The desired number of scale ticks
+ * @return {Function}      A SI-prefix format based on the largest value in the
+ *                         domain
  */
 export function siFormat(domain, count = 10) {
   const specifier = formatSpecifier('s');
@@ -163,4 +131,16 @@ export function siFormat(domain, count = 10) {
     specifier.precision = precision;
   }
   return formatPrefix(specifier, value);
+}
+
+/**
+ * Returns a function that will format a date to a given timezone. Eventually,
+ * this will support all timezones, but for now it only supports UTC and the
+ * local timezone.
+ * @private
+ * @param  {String} timezone Timezone of date to format
+ * @return {Function}        A function that formats to a given timezone
+ */
+function _localeFormat(timezone) {
+  return (timezone === 'UTC') ? utcFormat : timeFormat;
 }

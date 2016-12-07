@@ -1,13 +1,13 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import { axisBottom } from 'd3-axis';
-import { multiDateFormat } from '../utils/chart-utils';
+import { dateFormat } from '../utils/chart-utils';
 import { select } from 'd3-selection';
 
 const { Component } = Ember;
 
 /**
- * The x axis component.
+ * The x axis component. The default formatter is a 24-hour, UTC date format.
  * @example {{x-axis height=graphHeight xScale=xScale rotation=-25}}
  * @public
  */
@@ -21,7 +21,7 @@ export default Component.extend({
   rotation: 0,
   scale: null,
   tickCount: 10,
-  tickFormat: multiDateFormat,
+  tickFormat: dateFormat(true, 'UTC'),
 
   @computed('height')
   transform: (height) => `translate(0,${height})`,
