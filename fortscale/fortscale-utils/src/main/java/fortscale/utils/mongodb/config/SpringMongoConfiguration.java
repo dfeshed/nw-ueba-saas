@@ -2,15 +2,11 @@ package fortscale.utils.mongodb.config;
 
 import com.mongodb.*;
 import fortscale.utils.EncryptionUtils;
-import fortscale.utils.mongodb.converter.FSMappingMongoConverter;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
-import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.util.ArrayList;
@@ -39,24 +35,6 @@ public class SpringMongoConfiguration extends AbstractMongoConfiguration {
     @Value("${mongo.db.password}")
     private String mongoPassword;
 
-    @Value("${mongo.map.dot.replacement}")
-    private String mapKeyDotReplacemant;
-
-    @Value("${mongo.map.dollar.replacement}")
-    private String mapKeyDollarReplacemant;
-
-    @Bean
-    @Override
-    public MappingMongoConverter mappingMongoConverter() throws Exception {
-
-        DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoDbFactory());
-        FSMappingMongoConverter converter = new FSMappingMongoConverter(dbRefResolver, mongoMappingContext());
-        converter.setMapKeyDotReplacement(mapKeyDotReplacemant);
-        converter.setMapKeyDollarReplacement(mapKeyDollarReplacemant);
-        converter.setCustomConversions(customConversions());
-
-        return converter;
-    }
 
     @Override
     protected String getDatabaseName() {
