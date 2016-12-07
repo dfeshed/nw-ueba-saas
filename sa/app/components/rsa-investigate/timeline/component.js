@@ -50,7 +50,7 @@ export default Component.extend({
   xProp: 'value',
   yProp: 'count',
 
-  @alias('dateFormat.selected.key')
+  @alias('dateFormat.selected.format')
   dateFormatString: null,
 
   @computed('dateFormatString')
