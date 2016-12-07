@@ -35,12 +35,17 @@
       {{/rsa-form-button}}
     {{/rsa-content-help-trigger}}
 
-    {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTimeTooltip-' elementId)}}
-      <ul class="rsa-dropdown-link-list">
+    {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTimeTooltip-' elementId) as |hideTooltip|}}
+      <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
         <li>
           {{#link-to "protected.investigate.query" baseUri class="goto"}}
             Navigate Here
           {{/link-to}}
+        </li>
+        <li>
+          {{#rsa-link-to-win "protected.investigate.query" baseUri class="goto" target="_blank"}}
+            Navigate Here (New Tab)
+          {{/rsa-link-to-win}}
         </li>
       </ul>
     {{/rsa-content-tooltip}}
@@ -63,12 +68,17 @@
     </span>
 
     {{#unless (is-equal crumb crumbs.lastObject)}}
-      {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTooltip-' elementId '-' index)}}
-        <ul class="rsa-dropdown-link-list">
+      {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTooltip-' elementId '-' index) as |hideTooltip|}}
+        <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
           <li>
             {{#link-to "protected.investigate.query" crumb.gotoUri class="goto"}}
               Navigate Here
             {{/link-to}}
+          </li>
+          <li>
+            {{#rsa-link-to-win "protected.investigate.query" crumb.gotoUri class="goto" target="_blank"}}
+              Navigate Here (New Tab)
+            {{/rsa-link-to-win}}
           </li>
         </ul>
       {{/rsa-content-tooltip}}

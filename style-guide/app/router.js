@@ -63,6 +63,7 @@ Router.map(function() {
     this.route('nav', function() {
       this.route('linkList');
       this.route('tab');
+      this.route('linkToWin');
     });
 
     this.route('chart', function() {
