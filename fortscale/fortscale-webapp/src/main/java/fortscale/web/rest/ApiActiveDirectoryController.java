@@ -58,7 +58,7 @@ public class ApiActiveDirectoryController {
 
 	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
-	private Set<ControllerInvokedAdTask> activeThreads = ConcurrentHashMap.newKeySet(dataSources.size());
+	private Set<ControllerInvokedAdTask> activeTasks = ConcurrentHashMap.newKeySet(dataSources.size());
 
 	private Long lastAdFetchEtlExecutionStartTime;
 
@@ -147,7 +147,7 @@ public class ApiActiveDirectoryController {
 	public ResponseEntity executeAdFetchAndEtl() {
 		isFetchEtlExecutionRequestStopped.set(false);
 		if (isFetchEtlExecutionRequestInProgress.compareAndSet(false, true)) {
-			if (!activeThreads.isEmpty()) {
+			if (!activeTasks.isEmpty()) {
 				logger.warn("Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.");
 				isFetchEtlExecutionRequestInProgress.set(false);
 				return new ResponseEntity(HttpStatus.FORBIDDEN);
@@ -181,13 +181,13 @@ public class ApiActiveDirectoryController {
 
 	@RequestMapping("/stop_ad_fetch_etl" )
 	public ResponseEntity<String> stopAdFetchAndEtlExecution() {
-		if (!activeThreads.isEmpty()) {
+		if (!activeTasks.isEmpty()) {
 			isFetchEtlExecutionRequestStopped.set(true);
-			logger.info("Attempting to kill all running threads {}", activeThreads);
+			logger.info("Attempting to kill all running threads {}", activeTasks);
 			executorService.shutdownNow();
 			try {
 				executorService.awaitTermination(FETCH_AND_ETL_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
-				activeThreads = ConcurrentHashMap.newKeySet(dataSources.size());
+				activeTasks = ConcurrentHashMap.newKeySet(dataSources.size());
 			} catch (InterruptedException e) {
 				final String msg = "Failed to await termination of running threads.";
 				logger.error(msg);
@@ -232,7 +232,7 @@ public class ApiActiveDirectoryController {
 	 * @return Fetch, ETL or null for not running
 	 */
 	private AdTaskType getRunningMode(AdObjectType datasource) {
-		for (ControllerInvokedAdTask activeThread : activeThreads) {
+		for (ControllerInvokedAdTask activeThread : activeTasks) {
 			if (datasource.equals(activeThread.getDataSource())) {
 				return activeThread.getCurrentAdTaskType();
 			}
@@ -262,13 +262,11 @@ public class ApiActiveDirectoryController {
 	}
 
 	public boolean addRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		logger.info("Adding running task {}", controllerInvokedAdTask);
-		return activeThreads.add(controllerInvokedAdTask);
+		return activeTasks.add(controllerInvokedAdTask);
 	}
 
 	public boolean removeRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		logger.info("Removing running task {}", controllerInvokedAdTask);
-		return activeThreads.remove(controllerInvokedAdTask);
+		return activeTasks.remove(controllerInvokedAdTask);
 	}
 
 

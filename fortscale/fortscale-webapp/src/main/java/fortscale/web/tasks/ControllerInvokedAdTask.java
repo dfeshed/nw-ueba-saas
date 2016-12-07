@@ -75,12 +75,18 @@ public class ControllerInvokedAdTask implements Runnable {
         if (!controller.addRunningTask(this)) {
             logger.warn("Tried to add task but the task already exists. This may occur due to concurrency issues.");
         }
+        else {
+            logger.info("added running task {} to active tasks", this);
+        }
     }
 
 
     private void notifyTaskDone() {
         if (!controller.removeRunningTask(this)) {
             logger.warn("Tried to remove task but task doesn't exist. This may occur due to concurrency issues.");
+        }
+        else {
+            logger.info("Removed running task {} from active tasks", this);
         }
     }
 
