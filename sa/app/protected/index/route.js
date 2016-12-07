@@ -20,16 +20,23 @@ export default Route.extend({
   beforeModel() {
     const key = this.get('landingPage.selected.key');
 
-    if (key) {
-      const isRelativePath = key.indexOf('/') > -1;
+    const redirect = localStorage.getItem('rsa-post-auth-redirect');
 
-      if (isRelativePath) {
-        window.location.href = key;
-      } else {
-        this.transitionTo(key);
-      }
+    if (redirect) {
+      localStorage.removeItem('rsa-post-auth-redirect');
+      this.transitionTo(redirect);
     } else {
-      this._super(...arguments);
+      if (key) {
+        const isRelativePath = key.indexOf('/') > -1;
+
+        if (isRelativePath) {
+          window.location.href = key;
+        } else {
+          this.transitionTo(key);
+        }
+      } else {
+        this._super(...arguments);
+      }
     }
   }
 });

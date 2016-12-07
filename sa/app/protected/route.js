@@ -9,6 +9,7 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 const {
   Route,
   Logger,
+  isNone,
   inject: {
     service
   }
@@ -78,6 +79,14 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }).catch(() => {
       Logger.error('Error loading preferences');
     });
+  },
+
+  beforeModel(transition) {
+    if (isNone(localStorage.getItem('rsa-post-auth-redirect'))) {
+      localStorage.setItem('rsa-post-auth-redirect', transition.targetName);
+    }
+
+    this._super(...arguments);
   },
 
   actions: {
