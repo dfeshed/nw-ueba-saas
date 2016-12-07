@@ -87,6 +87,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 
 	private void syncAll(boolean forceSync) throws Exception{
 		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis() || forceSync){
+			logger.info("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
