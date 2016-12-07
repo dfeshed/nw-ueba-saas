@@ -40,11 +40,11 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
 
-
-
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
 	public String COLLECTION_TARGET_DIR;
+
+	public String COLLECTION_USER;
 
 	public final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
 
@@ -75,7 +75,10 @@ public class ApiActiveDirectoryController {
 
 	@PostConstruct
 	private void getProperties() {
-		COLLECTION_TARGET_DIR =  SpringPropertiesUtil.getProperty("user.home.dir") + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+		final String userHomeDir = SpringPropertiesUtil.getProperty("user.home.dir");
+		COLLECTION_TARGET_DIR =  userHomeDir!=null? userHomeDir + "/fortscale/fortscale-core/fortscale/fortscale-collection/target" : "/home/cloudera";
+		final String userName = SpringPropertiesUtil.getProperty("user.name");
+		COLLECTION_USER = userName!=null? userName : "cloudera";
 	}
 
 
