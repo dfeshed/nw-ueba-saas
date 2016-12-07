@@ -19,6 +19,15 @@ function doTestApp {
   echo $_need
 }
 
+function doInstallApp {
+  local _need="false"
+  if [[ $submodulesToInstall =~ "|$1|" ]]
+  then
+    _need="true"
+  fi
+  echo $_need
+}
+
 # Turn strings into arrays
 # cannot export arrays at command line
 IFS=', ' read -r -a TESTEM_PORTS_ARRAY <<< "$TESTEM_PORTS"
@@ -93,14 +102,22 @@ function runEmberBuild {
 # $3 = whether or not a mock server is needed
 function buildEmberApp {
 
-  info "Installing $1 dependencies"
   cd $1
 
-  # install Yarn/NPM deps
-  runAppYarnInstall $1
+  # Yarn/Bower install all app dependencies
+  local shouldInstallApp=$(doInstallApp $1)
+  if [[ "$shouldInstallApp" == "false" ]]
+  then
+    info "No reason to install $1, skipping it"
+  else
+    info "Installing $1 dependencies"
 
-  # install Bower deps
-  runAppBowerInstall $1
+    # install Yarn/NPM deps
+    runAppYarnInstall $1
+
+    # install Bower deps
+    runAppBowerInstall $1
+  fi
 
   local shouldTestApp=$(doTestApp $1)
   if [[ "$shouldTestApp" == "false" ]]
@@ -147,11 +164,20 @@ function buildEmberApp {
 }
 
 function buildMockServer {
-  info "Installing mock-server dependencies"
   cd mock-server
-  runAppYarnInstall mock-server
 
-  # Yarn install and run eslint/tests on mock-server code
+  # Yarn install all mock-server dependencies
+  local shouldInstallApp=$(doInstallApp mock-server)
+  if [[ "$shouldInstallApp" == "false" ]]
+  then
+    info "No reason to test mock-server, skipping it"
+  else
+    info "Installing mock-server dependencies"
+    runAppYarnInstall mock-server
+    yarn link
+  fi
+
+  # Run eslint/tests on mock-server code
   local shouldTestApp=$(doTestApp mock-server)
   if [[ "$shouldTestApp" == "false" ]]
   then
@@ -167,7 +193,6 @@ function buildMockServer {
     success "mock-server tests passed"
   fi
 
-  yarn link
   cd $CWD
 }
 

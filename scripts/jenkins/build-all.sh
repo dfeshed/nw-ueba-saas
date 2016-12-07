@@ -65,12 +65,20 @@ echo "*** BEGIN FILES CHANGED"
 echo $files | tr " " "\n"
 echo "*** END FILES CHANGED"
 
-submodulesToTest=$(node $scriptDir/../node/determine-apps-to-build.js $files)
+submodulesToTest=$(node $scriptDir/../node/determine-apps-to-test.js $files)
 checkError "Error occurred attempting to build list of submodules to test"
 
-echo "*** BEGIN SUBODULES TO TEST"
+submodulesToInstall=$(node $scriptDir/../node/determine-apps-to-install.js $files)
+checkError "Error occurred attempting to build list of submodules to install"
+
+echo "*** BEGIN SUBMODULES TO TEST"
 echo $submodulesToTest | tr " " "\n"
-echo "*** END SUBODULES TO TEST"
+echo "*** END SUBMODULES TO TEST"
+
+echo "*** BEGIN SUBMODULES TO INSTALL"
+echo $submodulesToInstall | tr " " "\n"
+echo "*** END SUBMODULES TO INSTALL"
+
 
 if [ -z ${EXTENT+x} ]
 then
