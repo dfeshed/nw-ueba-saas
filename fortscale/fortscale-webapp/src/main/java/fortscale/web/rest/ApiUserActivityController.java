@@ -18,6 +18,7 @@ import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,8 +39,9 @@ public class ApiUserActivityController extends DataQueryController {
 
     static final String DEFAULT_TIME_RANGE = "90";
     private static final String DEFAULT_RETURN_ENTRIES_LIMIT = "3";
-    private static final String DEFAULT_WORK_HOURS_THRESHOLD = "12";
 
+    @Value("${working.hours.default.threshold}" )
+    private  String DEFAULT_WORK_HOURS_THRESHOLD;
     private static final String LOCATIONS_ACTIVITY = "locations";
     public static final String SOURCE_DEVICES = "source-devices";
     public static final String TARGET_DEVICES = "target-devices";
