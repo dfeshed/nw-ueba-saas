@@ -23,13 +23,12 @@ import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBu
 import fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService;
 import fortscale.streaming.service.aggregation.feature.event.AggregationMetricsService;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +39,7 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
-	private static final Logger logger = LoggerFactory.getLogger(AggregatorManager.class);
+	private static final Logger logger = Logger.getLogger(AggregatorManager.class);
 	public static final String SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH = "fortscale.timestamp.field";
 
 
