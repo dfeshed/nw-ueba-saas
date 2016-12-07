@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	   xmlns:mongo="http://www.springframework.org/schema/data/mongo"
-	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mongo="http://www.springframework.org/schema/data/mongo"
+	xsi:schemaLocation="http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 		
 	<description>domain light context.</description>
 
 
 	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}" username="${mongo.db.user}" password="#{ T(fortscale.utils.EncryptionUtils).decrypt('${mongo.db.password}')}"/>
 
+	<bean id="dbRefResolver" class="org.springframework.data.mongodb.core.convert.DefaultDbRefResolver">
+		<constructor-arg ref="mongoDbFactory"/>
+	</bean>
 	<bean id="fsmongoConverter" class="fortscale.utils.mongodb.converter.FSMappingMongoConverter" >
+		<constructor-arg ref="dbRefResolver" />
+		<constructor-arg ref="mongoMappingContext" />
 		<property name="mapKeyDotReplacement" value="${mongo.map.dot.replacement}" />
 		<property name="mapKeyDollarReplacement" value="${mongo.map.dollar.replacement}" />
 	</bean>
