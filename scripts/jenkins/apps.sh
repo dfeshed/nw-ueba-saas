@@ -154,7 +154,7 @@ function buildEmberApp {
       then
         rm -rf /mnt/libhq-SA/SAStyle/production/*
         # hosted here: https://libhq-ro.rsa.lab.emc.com/SA/SAStyle/production/
-        cp -r style-guide/dist/* /mnt/libhq-SA/SAStyle/production/
+        cp -r dist/* /mnt/libhq-SA/SAStyle/production/
         success "Hosted style guide has been updated"
       fi
     fi
