@@ -74,4 +74,15 @@ export default [{
     type: 'sha1',
     value: '5a39b799a8f6399999999d4ee024715ed25e252a'
   }]
+}, {
+  type: 'link',
+  extension: 'zip',
+  fileName: '/151104-Case_Management.mp4.zip',
+  mimeType: 'application/zip',
+  id: null,
+  fileSize: 0,
+  hashes: [],
+  query: 'ip.dst=65.18.172.49&&tcp.dstport=57337&&ip.src=192.168.1.103',
+  start: '1224000352',
+  end: '1224000353'
 }];

@@ -79,7 +79,8 @@ export default {
       mimeType: 'ja_MIME Type',
       fileSize: 'ja_File Size',
       hashes: 'ja_Hashes',
-      noFiles: 'ja_There are no files available for this event.'
+      noFiles: 'ja_There are no files available for this event.',
+      linkFile: 'ja_This file is in another session.<br>Click the file link to view the related session in a new tab.'
     },
     error: {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.',

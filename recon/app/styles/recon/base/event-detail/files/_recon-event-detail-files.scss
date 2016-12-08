@@ -5,9 +5,16 @@
     text-transform: uppercase;
   }
 
+  .recon-file-link {
+    color: rsa-color(blue);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
   .rsa-form-checkbox {
     margin-top: .1rem
   }
 }
-
-

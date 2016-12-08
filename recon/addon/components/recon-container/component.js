@@ -44,6 +44,7 @@ const ReconContainer = Component.extend({
   closeAction: null,
   expandAction: null,
   shrinkAction: null,
+  linkToFileAction: null,
   // END Component inputs
 
   didInsertElement() {
@@ -92,7 +93,7 @@ const ReconContainer = Component.extend({
   }),
 
   didReceiveAttrs() {
-    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total');
+    const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total', 'linkToFileAction');
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
     this.send('initializeRecon', inputs);
   }

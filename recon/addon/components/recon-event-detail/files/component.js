@@ -1,15 +1,16 @@
 import Ember from 'ember';
-import computed, { empty, gt } from 'ember-computed-decorators';
+import computed, { empty, filterBy, gt } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import baseColumnsConfig from './columns-config';
 import * as InteractionActions from 'recon/actions/interaction-creators';
 
-const { Component } = Ember;
+const { $, Component } = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
-  files: data.files
+  files: data.files,
+  linkToFileAction: data.linkToFileAction
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -73,7 +74,9 @@ const FileReconComponent = Component.extend({
 
   @empty('files') noFiles: null,
 
-  @gt('files.length', 1) hasMultipleFiles: null,
+  @filterBy('files', 'type', 'session') sessionFiles: null,
+
+  @gt('sessionFiles.length', 1) hasMultipleSessionFiles: null,
 
   actions: {
     toggleAll(e) {
@@ -95,6 +98,13 @@ const FileReconComponent = Component.extend({
       // only want input
       if (e.target.tagName === 'INPUT') {
         this.send('fileSelectionToggled', id);
+      }
+    },
+
+    openLinkedFile(file) {
+      const callback = this.get('linkToFileAction');
+      if ($.isFunction(callback)) {
+        callback(file);
       }
     }
   }

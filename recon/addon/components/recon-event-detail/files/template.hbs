@@ -10,7 +10,7 @@
 
     {{#rsa-data-table/header as |column index|}}
       {{#if column.isCheckboxColumn}}
-        {{#if hasMultipleFiles}}
+        {{#if hasMultipleSessionFiles}}
           {{rsa-form-checkbox trackOwnValue=false value=allSelected click=(action "toggleAll")}}
         {{/if}}
       {{else}}
@@ -22,13 +22,29 @@
 
       {{#rsa-data-table/body-cell columnWidth=column.width}}
         {{#if column.isCheckboxColumn}}
-          {{rsa-form-checkbox trackOwnValue=false value=item.selected click=(action "toggleOne" item.id)}}
+          {{#unless (eq item.type "link")}}
+            {{rsa-form-checkbox trackOwnValue=false value=item.selected click=(action "toggleOne" item.id)}}
+          {{/unless}}
         {{else if (eq column.field "hashes")}}
-          {{#each item.hashes as |hash|}}
-            <span class="recon-file-hash">{{hash.type}}</span>: {{hash.value}} <br>
-          {{/each}}
+          {{#if (eq item.type "link")}}
+            {{t 'recon.files.linkFile'}}
+          {{else}}
+            {{#each item.hashes as |hash|}}
+              <span class="recon-file-hash">{{hash.type}}</span>: {{hash.value}} <br>
+            {{/each}}
+          {{/if}}
         {{else if (eq column.field "fileSize")}}
-          {{rsa-content-memsize size=(get item column.field)}}
+          {{#unless (eq item.type "link")}}
+            {{rsa-content-memsize size=(get item column.field)}}
+          {{/unless}}
+        {{else if (eq column.field "fileName")}}
+          {{#if (eq item.type "link")}}
+            <span class="recon-file-link" {{action "openLinkedFile" item}}>
+              {{get item column.field}}
+            </span>
+          {{else}}
+            {{get item column.field}}
+          {{/if}}
         {{else}}
           {{get item column.field}}
         {{/if}}

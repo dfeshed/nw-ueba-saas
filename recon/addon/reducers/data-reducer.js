@@ -37,6 +37,12 @@ const dataInitialState = {
 
   ...fileExtractInitialState,
 
+  // Linked files are not extracted like normal files.
+  // Rather, they are essentially shortcuts to another event query.
+  // When the user clicks on a linked file, recon invokes a configurable callback
+  // that is responsible for handling it (e.g., launching a new query).
+  linkToFileAction: null,
+
   // callback for stopping notifications
   // (obtained at run-time as a result from notifications initialization)
   stopNotifications: null,
@@ -54,7 +60,11 @@ const dataInitialState = {
 const allFilesSelection = (setTo) => {
   return (state) => ({
     ...state,
-    files: state.files.map((f) => ({ ...f, selected: setTo }))
+    files: state.files.map((f) => ({
+      ...f,
+      // linked files cannot be selected for extraction
+      selected: (f.type === 'link') ? false : setTo
+    }))
   });
 };
 

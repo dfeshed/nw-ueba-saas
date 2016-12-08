@@ -6,9 +6,12 @@
  */
 import Ember from 'ember';
 
-const { Mixin } = Ember;
+const { inject, Mixin } = Ember;
 
 export default Mixin.create({
+
+  _routing: inject.service('-routing'),
+
   actions: {
     /**
      * Updates state in order to reveal the Recon UI and feed it a server event record.
@@ -61,7 +64,28 @@ export default Mixin.create({
      */
     reconShrink() {
       this.set('state.recon.isExpanded', false);
-    }
+    },
 
+    /**
+     * Opens a query, in another tab, for the events associated with a given file.
+     * Used for drilling into the contents of a "linked" file discovered in Recon.
+     * @param {Object} file The file object.
+     * @param {String} file.query The Core service query string to be used for drilling.
+     * @param {Number} file.start The start date to be used with the Core query.
+     * @param {Number} file.end The end date to be used with the Core query.
+     * @public
+     */
+    reconLinkToFile(file = {}) {
+      const { query, start, end } = file;
+      if (query && start && end) {
+        const serviceId = this.get('state.queryNode.value.definition.serviceId');
+        const routing = this.get('_routing');
+        const url = routing.generateURL(
+          routing.get('currentRouteName'),
+          [ `${serviceId}/${start}/${end}/${query}` ]
+        );
+        window.open(url, '_blank');
+      }
+    }
   }
 });

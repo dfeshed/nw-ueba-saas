@@ -87,7 +87,8 @@ export default {
       mimeType: 'MIME Type',
       fileSize: 'File Size',
       hashes: 'Hashes',
-      noFiles: 'There are no files available for this event.'
+      noFiles: 'There are no files available for this event.',
+      linkFile: 'This file is in another session.<br>Click the file link to view the related session in a new tab.'
     },
     error: {
       generic: 'An unexpected error has occurred attempting to retrieve this data.',

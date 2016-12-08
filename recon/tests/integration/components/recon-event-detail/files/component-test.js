@@ -29,7 +29,7 @@ test('it renders an empty message when no files', function(assert) {
   });
 });
 
-test('with 4 rows of data, 5 checkboxes total, has one in header', function(assert) {
+test('with 4 non-linked files + 1 linked file, 5 checkboxes total, has one in header', function(assert) {
   new DataHelper(this.get('redux')).populateFiles();
   this.render(hbs`{{recon-event-detail/files}}`);
   return wait().then(() => {
@@ -50,7 +50,7 @@ test('clicking top checkbox clicks them all', function(assert) {
   });
 });
 
-test('with 1 rows of data, 1 checkboxes total, none in header', function(assert) {
+test('with 1 non-linked file only, 1 checkboxes total, none in header', function(assert) {
   const files = [{
     type: 'session',
     extension: 'docx',
@@ -72,5 +72,27 @@ test('with 1 rows of data, 1 checkboxes total, none in header', function(assert)
   return wait().then(() => {
     const numInputs = this.$('input').length;
     assert.equal(numInputs, 1);
+  });
+});
+
+test('with 1 linked file only, 0 checkboxes total, none in header', function(assert) {
+  const files = [{
+    type: 'link',
+    extension: 'zip',
+    fileName: 'a_file_name.zip',
+    mimeType: 'application/zip',
+    id: null,
+    fileSize: 0,
+    hashes: [],
+    query: 'a_query',
+    start: 'a_start',
+    end: 'an_end'
+  }];
+
+  new DataHelper(this.get('redux')).populateFiles(files);
+  this.render(hbs`{{recon-event-detail/files}}`);
+  return wait().then(() => {
+    const numInputs = this.$('input').length;
+    assert.equal(numInputs, 0);
   });
 });
