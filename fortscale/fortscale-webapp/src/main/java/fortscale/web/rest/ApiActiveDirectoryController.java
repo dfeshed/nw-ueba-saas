@@ -14,7 +14,6 @@ import fortscale.web.beans.request.ActiveDirectoryRequest;
 import fortscale.web.tasks.ControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType;
-import org.json.JSONException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -86,7 +85,6 @@ public class ApiActiveDirectoryController {
 	 * Updates or creates config items.
 	 *
 	 * @return ResponseEntity
-	 * @throws JSONException
 	 */
 	@RequestMapping(method = RequestMethod.POST)
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
@@ -113,7 +111,6 @@ public class ApiActiveDirectoryController {
 	 * Tests connection to Active Directory
 	 *
 	 * @return ResponseEntity
-	 * @throws JSONException
 	 */
 	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
@@ -144,13 +141,14 @@ public class ApiActiveDirectoryController {
 	}
 
 	@RequestMapping("/ad_fetch_etl" )
-	public ResponseEntity executeAdFetchAndEtl() {
+	public ResponseEntity<String> executeAdFetchAndEtl() {
 		isFetchEtlExecutionRequestStopped.set(false);
+		final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
 		if (isFetchEtlExecutionRequestInProgress.compareAndSet(false, true)) {
 			if (!activeTasks.isEmpty()) {
-				logger.warn("Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.");
+				logger.warn(inProgressMsg);
 				isFetchEtlExecutionRequestInProgress.set(false);
-				return new ResponseEntity(HttpStatus.FORBIDDEN);
+				return new ResponseEntity<>(inProgressMsg, HttpStatus.FORBIDDEN);
 			}
 			lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
 
@@ -159,23 +157,25 @@ public class ApiActiveDirectoryController {
 			try {
 				executorService = createExecutorService();
 				if (isFetchEtlExecutionRequestStopped.get()) { //check that not asked to stop between execution and now (actual execution)
-					logger.warn("Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.");
+					final String stopMessage = "Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.";
+					logger.warn(stopMessage);
 					isFetchEtlExecutionRequestInProgress.set(false);
-					return new ResponseEntity(HttpStatus.LOCKED);
+					return new ResponseEntity<>(stopMessage, HttpStatus.LOCKED);
 				}
 				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource)));
 			} finally {
 				executorService.shutdown();
 			}
 
-			logger.info("Finished Active Directory fetch and ETL");
+			final String finishedMsg = "Finished Active Directory fetch and ETL";
+			logger.info(finishedMsg);
 
 			isFetchEtlExecutionRequestInProgress.set(false);
-			return new ResponseEntity(HttpStatus.OK);
+			return new ResponseEntity<>(finishedMsg, HttpStatus.OK);
 		}
 		else {
-			logger.warn("Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.");
-			return new ResponseEntity(HttpStatus.LOCKED);
+			logger.warn(inProgressMsg);
+			return new ResponseEntity<>(inProgressMsg, HttpStatus.LOCKED);
 		}
 	}
 
