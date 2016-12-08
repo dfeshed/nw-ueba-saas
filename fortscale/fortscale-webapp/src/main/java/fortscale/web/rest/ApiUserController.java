@@ -1,7 +1,6 @@
 package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
-import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
@@ -13,19 +12,18 @@ import fortscale.services.*;
 import fortscale.services.types.PropertiesDistribution;
 import fortscale.services.types.PropertiesDistribution.PropertyEntry;
 import fortscale.services.users.util.UserDeviceUtils;
+import fortscale.services.users.util.activity.UserActivityData;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.*;
 import fortscale.web.rest.Utils.UserRelatedEntitiesUtils;
-import fortscale.services.users.util.activity.UserActivityData;
 import javafx.util.Pair;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
@@ -36,11 +34,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import javax.ws.rs.core.Response;
 import java.io.OutputStreamWriter;
 import java.time.ZonedDateTime;
@@ -75,11 +70,6 @@ public class ApiUserController extends BaseController{
 	@Autowired
 	private UserServiceFacade userServiceFacade;
 
-	@Autowired
-	private UserTagService userTagService;
-
-	@Autowired
-	private TagService tagService;
 
 	@Autowired
 	private UserService userService;
@@ -106,6 +96,10 @@ public class ApiUserController extends BaseController{
 	private UserWithAlertService userWithAlertService;
 
 	private static final String DEFAULT_SORT_FIELD = "username";
+	private final String extendedSearchSortFields;
+
+	private List<String> extendedSearchfieldsRequired;
+
 
 	public ApiUserController() {
 		fieldsRequired = new ArrayList<>();
@@ -119,19 +113,34 @@ public class ApiUserController extends BaseController{
 		fieldsRequired.add(User.tagsField);
 		fieldsRequired.add(User.sourceMachineCountField);
 		fieldsRequired.add(User.scoreField);
-	}
 
+		extendedSearchSortFields = String.format("%s, %s, %s, %s, %s, %s", User.getAdInfoField(UserAdInfo.firstnameField), User.getAdInfoField(UserAdInfo.lastnameField),
+				User.displayNameField, User.usernameField, User.getAdInfoField(UserAdInfo.positionField), User.getAdInfoField(UserAdInfo.departmentField));
+
+		extendedSearchfieldsRequired = new ArrayList<>();
+		extendedSearchfieldsRequired.add(User.ID_FIELD);
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.firstnameField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.lastnameField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.positionField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.departmentField));
+		extendedSearchfieldsRequired.add(User.getAdInfoField(UserAdInfo.objectGUIDField));
+		extendedSearchfieldsRequired.add(User.usernameField);
+		extendedSearchfieldsRequired.add(User.followedField);
+		extendedSearchfieldsRequired.add(User.displayNameField);
+		extendedSearchfieldsRequired.add(User.scoreField);
+	}
 
 	/**
 	 * The API to get all users. GET: /api/user
 	 */
 	@RequestMapping(method = RequestMethod.GET) @ResponseBody @LogException
 	public DataBean<List<UserDetailsBean>> getUsers(UserRestFilter userRestFilter) {
-		PageRequest pageRequest = createPaging(userRestFilter.getSize(), userRestFilter.getFromPage(),
-				userRestFilter.getSortField(), userRestFilter.getSortDirection());
+
+		PageRequest pageRequest = createPaging(userRestFilter);
 
 		List<User> users = getUsers(userRestFilter, pageRequest, null);
 
+		// Build the response
 		DataBean<List<UserDetailsBean>> usersList = getUsersDetails(users);
 		usersList.setOffset(pageRequest.getPageNumber() * pageRequest.getPageSize());
 		usersList.setTotal(userWithAlertService.countUsersByFilter(userRestFilter));
@@ -141,6 +150,7 @@ public class ApiUserController extends BaseController{
 		if (BooleanUtils.isTrue(userRestFilter.getAddAllWatched())) {
 			addAllWatched(usersList, userRestFilter);
 		}
+
 		return usersList;
 	}
 
@@ -209,9 +219,20 @@ public class ApiUserController extends BaseController{
 	@ResponseBody
 	@LogException
 	public DataBean<List<UserDetailsBean>> extendedSearch(UserRestFilter userRestFilter){
-		List<User> users = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
+		DataBean<List<UserDetailsBean>> result = new DataBean<>();
 
-		DataBean<List<UserDetailsBean>> result = getUsersDetails(users);
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())) {
+
+			Sort sorting = createSorting(extendedSearchSortFields, userRestFilter.getSortDirection());
+			PageRequest pageRequest = new PageRequest(0, Integer.MAX_VALUE, sorting);
+
+			List<User> users = userWithAlertService.findUsersWithSearchValue(userRestFilter, pageRequest, extendedSearchfieldsRequired);
+
+			// Add severity to the users
+			setSeverityOnUsersList(users);
+
+			result = getUsersDetails(users);
+		}
 
 		return result;
 	}
@@ -251,34 +272,7 @@ public class ApiUserController extends BaseController{
 		return usersDetails;
 	}
 
-	/**
-	 * API to update user tags
-	 * @param body
-	 * @return
-	 */
-	@RequestMapping(value="{id}", method = RequestMethod.POST)
-	@LogException
-	public Response addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
-		User user = userRepository.findOne(id);
-		JSONObject params = new JSONObject(body);
-		String tag;
-		boolean addTag;
-		if (params.has("add")) {
-			tag = params.getString("add");
-			addTag = true;
-		} else if (params.has("remove")) {
-			tag = params.getString("remove");
-			addTag = false;
-		} else {
-			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
-		}
-		try {
-			addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
-		} catch (Exception ex) {
-			return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
-		}
-		return Response.status(Response.Status.OK).build();
-	}
+
 
 	/**
 	 * API to update users tags by filter
@@ -338,49 +332,8 @@ public class ApiUserController extends BaseController{
 		return ret;
 	}
 
-	@RequestMapping(value="/tagUsers", method=RequestMethod.GET)
-	@LogException
-	public ResponseEntity<Response> tagUsers() {
-		try {
-			//TODO - make this asynchronous
-			userTagService.update();
-		} catch (Exception ex) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(Response.status(Response.Status.
-					INTERNAL_SERVER_ERROR).build());
-		}
-		return new ResponseEntity("{}", HttpStatus.OK);
-	}
 
-	@RequestMapping(value="/user_tags", method=RequestMethod.GET)
-	@ResponseBody
-	@LogException
-	public DataBean<List<Tag>> getAllTags() {
-		List<Tag> result = tagService.getAllTags();
-		DataBean<List<Tag>> ret = new DataBean();
-		ret.setData(result);
-		ret.setTotal(result.size());
-		return ret;
-	}
 
-	@RequestMapping(value="/user_tags", method=RequestMethod.POST)
-	@LogException
-	public ResponseEntity<String> updateTags(@RequestBody @Valid List<Tag> tags) {
-		for (Tag tag: tags) {
-			if (!tagService.updateTag(tag)) {
-				return new ResponseEntity("{failed to update tag}", HttpStatus.INTERNAL_SERVER_ERROR);
-			//if update was successful and tag is no longer active - remove that tag from all users
-			} else if (!tag.getActive()) {
-				String tagName = tag.getName();
-				Set<String> usernames = userService.findUsernamesByTags(new String[] { tagName });
-				if (CollectionUtils.isNotEmpty(usernames)) {
-					logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
-					for (String username : usernames) {
-						userTagService.removeUserTags(username, Arrays.asList(new String[] { tagName }));
-					}
-				}
-			}
-		}
-		return new ResponseEntity("{}", HttpStatus.ACCEPTED);	}
 
 	@RequestMapping(value="/followedUsersDetails", method=RequestMethod.GET)
 	@ResponseBody
@@ -580,27 +533,8 @@ public class ApiUserController extends BaseController{
 	 */
 	private List<User> getUsers(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired) {
 
-		List<User> users = new ArrayList<>();
-
-		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
-			// If search value requested get the list of user ids relevant to the search.
-			List<User> usersFromCache = userWithAlertService.findFromCacheUsersByFilter(userRestFilter);
-			List<String> userIds = new ArrayList<>();
-
-			if (CollectionUtils.isEmpty(usersFromCache)){
-				// No users matched the search value
-				return users;
-			}
-
-			usersFromCache.forEach(user -> {
-				userIds.add(user.getId());
-			});
-
-			userRestFilter.getUserIds().addAll(userIds);
-		}
-
 		// Get the relevant users by filter requested
-		users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
+		List<User> users = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, fieldsRequired);
 
 		// Add severity to the users
 		setSeverityOnUsersList(users);
@@ -656,18 +590,18 @@ public class ApiUserController extends BaseController{
 		return userSourceMachines;
 	}
 
-	private PageRequest createPaging(Integer size, Integer fromPage, String sortField, String sortDirection) {
+	private PageRequest createPaging(UserRestFilter userRestFilter) {
 
-		Sort sortUserDesc = createSorting(sortField, sortDirection);
+		Sort sortUserDesc = createSorting(userRestFilter.getSortField(), userRestFilter.getSortDirection());
 
 		// Create paging
 		Integer pageSize = 10;
-		if (size != null) {
-			pageSize = size;
+		if (userRestFilter.getSize() != null) {
+			pageSize = userRestFilter.getSize();
 		}
 		Integer pageNumber = 0;
-		if (fromPage != null) {
-			pageNumber = fromPage - 1;
+		if (userRestFilter.getFromPage() != null) {
+			pageNumber = userRestFilter.getFromPage() - 1;
 		}
 		return new PageRequest(pageNumber, pageSize, sortUserDesc);
 	}
@@ -693,13 +627,6 @@ public class ApiUserController extends BaseController{
 		return sortUserDesc;
 	}
 
-	private void addTagToUser(User user, List<String> tags, boolean addTag) throws Exception {
-		if (addTag) {
-			userTagService.addUserTags(user.getUsername(), tags);
-		} else {
-			userTagService.removeUserTags(user.getUsername(), tags);
-		}
-	}
 
 	private DataBean<List<UserDetailsBean>> getUsersDetails(List<User> users) {
 		List<UserDetailsBean> detailsUsers = new ArrayList<>();

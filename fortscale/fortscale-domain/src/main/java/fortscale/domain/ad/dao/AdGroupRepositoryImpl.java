@@ -24,7 +24,6 @@ public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdG
 		return latest!=null ? latest : null;
 	}
 
-
 	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements) {
 		Query query = new Query(where(AdGroup.memberField).exists(true));
 		query.fields().include(AdGroup.memberField);

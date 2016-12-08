@@ -8,6 +8,7 @@ import fortscale.domain.core.*;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -292,7 +293,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			query.addCriteria(criteria);
 		}
 
-		if (CollectionUtils.isNotEmpty(fieldsRequired)){
+ 		if (CollectionUtils.isNotEmpty(fieldsRequired)){
 			fieldsRequired.forEach(field -> {
 				query.fields().include(field);
 			});
@@ -600,6 +601,28 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter) {
 		// Create criteria list
 		List<Criteria> criteriaList = new ArrayList<>();
+		String startsWithRegex = "^"+userRestFilter.getSearchValue();
+
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+
+			List<Criteria> searchCriterias = new ArrayList<>();
+			String caseInsensitive = "i";
+			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.firstnameField)).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.lastnameField)).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.displayNameField).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.usernameField).regex(startsWithRegex, caseInsensitive));
+
+			// If the users are filtered by position don't check for the search value
+			if (CollectionUtils.isEmpty(userRestFilter.getPositions())) {
+				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.positionField)).regex(startsWithRegex, caseInsensitive));
+			}
+			// If the users are filtered by department don't check for the search value
+			if (CollectionUtils.isEmpty(userRestFilter.getDepartments())) {
+				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).regex(startsWithRegex, caseInsensitive));
+			}
+
+			criteriaList.add(new Criteria().orOperator(searchCriterias.toArray(new Criteria[searchCriterias.size()])));
+		}
 
 		if (userRestFilter.getDisabledSince() != null && !userRestFilter.getDisabledSince().isEmpty()) {
 			criteriaList.add(where("adInfo.disableAccountTime").gte(new Date(Long.parseLong(userRestFilter.getDisabledSince()))));

@@ -1,10 +1,11 @@
 import os
 import re
 import zipfile
-from .. import config
-from store import Store
+
 import alphas_and_betas
 import reducers
+from store import Store
+from .. import config
 from ..utils.io import print_verbose, backup, open_overrides_file, FileWriter
 
 
@@ -55,9 +56,14 @@ def update_configurations():
 
     if len(reducers_to_update) > 0 or fs_reducers is not None:
         if type(config.aggregated_feature_event_prevalance_stats_path) == dict:
-            zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' +
-                                 config.aggregated_feature_event_prevalance_stats_path['jar_name'], 'r')
-            for file_name in zf.namelist():
+            file_names = []
+            if os.path.isdir(config.aggregated_feature_event_prevalance_stats_path['overriding_path']):
+                file_names = os.listdir(config.aggregated_feature_event_prevalance_stats_path['overriding_path'])
+            if len(file_names) == 0:
+                zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' +
+                                     config.aggregated_feature_event_prevalance_stats_path['jar_name'], 'r')
+                file_names = zf.namelist()
+            for file_name in file_names:
                 match = re.match(config.aggregated_feature_event_prevalance_stats_path['path_in_jar'] + '/(.+)', file_name)
                 if match is not None:
                     conf_file_path = {

@@ -15,7 +15,7 @@ from bdp_utils.data_sources import data_source_to_score_tables
 
 
 import logging
-logger = logging.getLogger('step2.validation')
+logger = logging.getLogger('step2_online.validation')
 
 
 def _get_collection_name(context_type, data_source, is_daily):

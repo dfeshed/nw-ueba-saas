@@ -12,7 +12,7 @@ from bdp_utils.manager import OnlineManager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
 
-logger = logging.getLogger('step2')
+logger = logging.getLogger('step2_online')
 
 
 class Manager(OnlineManager):
@@ -99,7 +99,7 @@ class Manager(OnlineManager):
         send(logger=logger,
              host=self._host,
              topic='fortscale-aggregation-events-control',
-             message='{\\"date_time_unix\\": ' + str(validation_end_time + 1) + '}')
+             message='{"date_time_unix": ' + str(validation_end_time + 1) + '}')
         logger.info('validating last partial batch...')
         validation_start_time = \
             validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60

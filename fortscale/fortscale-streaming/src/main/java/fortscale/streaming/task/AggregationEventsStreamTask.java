@@ -50,7 +50,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 		if (epochtime != null) {
 			if (controlTopic.equals(topic)) {
 				aggregatorManager.advanceTime(epochtime);
-				aggregatorManager.window(collector, coordinator);
+				aggregatorManager.window(collector, coordinator, true);
 			} else {
 				processedMessageCount.inc();
 				taskMetrics.processedMessages++;
@@ -67,7 +67,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (aggregatorManager != null) {
-			aggregatorManager.window(collector, coordinator);
+			aggregatorManager.window(collector, coordinator, false);
 		}
 	}
 
