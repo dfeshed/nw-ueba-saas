@@ -17,7 +17,7 @@ public class UsernameNormalizer implements InitializingBean {
 	protected StatsService statsService;
 
 	public static final String DOMAIN_MARKER = "@";
-	@Value("${normalizedUser.only.verify.domainmarker:false}")
+	@Value("${normalizedUser.only.verify.domainmarker:true}")
 	protected boolean onlyValidateIfDomainMarkerExists;
 
     @Value("${normalizedUser.returnNullIfUserNotExists:false}")
@@ -60,7 +60,7 @@ public class UsernameNormalizer implements InitializingBean {
 		serviceMetrics.normalizeUsername++;
 		logger.debug("Normalizing user - {}", username);
 		//If the username already contain the domain marker,
-		//We need to verify only the username.
+		//We need to verify only the username. in case we found the username with the domain marker we know for sure this is the document that represent this user
 		if (onlyValidateIfDomainMarkerExists && username.contains(DOMAIN_MARKER)){
 			if (usernameService.isUsernameExist(username.toLowerCase())){
 				serviceMetrics.usernameAlreadyNormalized++;
@@ -70,14 +70,15 @@ public class UsernameNormalizer implements InitializingBean {
 		}
 
 		String ret;
-		//get the list of users matching the samaccountname
-		List<String> users = samAccountNameService.getUsersBysAMAccountName(username);
+		//get the list of users matching the SAMAccountname - For supporting multi domains
+		//In case that the username contain domain marker search based on the left string side of the domain marker (should be the SAMAccount name )
+		List<String> users = samAccountNameService.getUsersBysAMAccountName(username.contains(DOMAIN_MARKER) ? username.split(DOMAIN_MARKER)[0] : username );
 		//if only one such user was found - return the full username (including domain)
 		if(users.size() == 1) {
 			ret = users.get(0);
 			logger.debug("one user found - {}", ret);
 		} else if (users.size() > 1) {
-			logger.debug("More than one user found");
+			logger.debug("More than one user found - The same SAMAccount name to 2 different users");
 			serviceMetrics.moreThanOneSAMAccountFound++;
 			ret = postNormalize(username, fakeDomain, classifier, updateOnly);
 		} else {

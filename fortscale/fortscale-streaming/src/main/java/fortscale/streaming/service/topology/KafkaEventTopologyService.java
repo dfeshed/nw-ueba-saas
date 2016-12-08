@@ -3,7 +3,6 @@ package fortscale.streaming.service.topology;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.topology.EventTopologyService;
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.service.BDPService;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -14,6 +13,7 @@ import org.apache.samza.task.MessageCollector;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
+
 import java.io.FileReader;
 import java.util.List;
 import java.util.Map;
@@ -29,6 +29,8 @@ public class KafkaEventTopologyService implements EventTopologyService, Initiali
     private static final String ERROR_MSG_NO_OUTPUT_TOPIC = "Failed to send message. No mathcing output topic. The message: %s.";
     private static final String ERROR_MSG_NULL_JOB_NAME = "Job name is not set. The job name must be set prior to calling sendEvent() method.";
 
+    @Value("${fortscale.streaming.turbo.mode:true}")
+    private boolean isTurboMode;
     @Value("${fortscale.streaming.topology.event_topology_json:}")
     private String eventTopologyJsonFileName;
     @Value("${fortscale.bdp.run}")
@@ -108,12 +110,18 @@ public class KafkaEventTopologyService implements EventTopologyService, Initiali
 
     private void sendEvent(JSONObject event, String outputTopic) throws Exception {
         Assert.notNull(event);
-        Assert.notNull(messageCollector);
         Assert.hasText(outputTopic);
 
         try{
-            ObjectMapper mapper = new ObjectMapper();
-            messageCollector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), mapper.writeValueAsString(event)));
+            SystemStream systemStream = new SystemStream("kafka", outputTopic);
+            if(isTurboMode)
+            {
+                messageCollector.send(new OutgoingMessageEnvelope(systemStream, event));
+            }
+            else {
+                ObjectMapper mapper = new ObjectMapper();
+                messageCollector.send(new OutgoingMessageEnvelope(systemStream, mapper.writeValueAsString(event)));
+            }
         } catch(Exception e){
             throw new KafkaPublisherException(String.format(ERROR_MSG_FAILED_TO_SEND_EVENT, event.toString()), e);
         }

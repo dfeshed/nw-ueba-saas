@@ -16,6 +16,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,7 +59,17 @@ public class JobDataMapExtension implements ApplicationContextAware{
 		
 		return value;
 	}
-	
+
+	public Instant getJobDataMapInstantValue(JobDataMap map, String key, Instant defaultValue)
+	{
+		if (!map.containsKey(key))
+			return defaultValue;
+
+		String value = map.getString(key);
+
+		return Instant.parse(value);
+	}
+
 	/**
 	 * get all job data map keys that start with the given prefix.
 	 */

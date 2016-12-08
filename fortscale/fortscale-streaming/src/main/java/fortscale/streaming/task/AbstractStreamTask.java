@@ -10,7 +10,6 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
-import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -51,6 +50,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	private ExceptionHandler windowExceptionHandler;
 
 	protected FortscaleValueResolver res;
+	protected SpringService springService;
 	private SamzaContainerService samzaContainerService;
 
 	private Config config;
@@ -131,7 +131,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			springContext.refresh();
 		}
 
-		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
+		springService = SpringService.getInstance();
+
+		res = springService.resolve(FortscaleValueResolver.class);
 
 		// Init stats monitoring service
 		initStatsMonitoringService(context);
@@ -141,7 +143,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 		initTaskMonitoringHelper(config);
 
-		samzaContainerService = SpringService.getInstance().resolve(SamzaContainerService.class);
+		samzaContainerService = springService.resolve(SamzaContainerService.class);
 		samzaContainerService.init(config, context);
 
 		// call specific task init method
@@ -210,7 +212,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 	private void initTaskMonitoringHelper(Config config) {
-		taskMonitoringHelper = SpringService.getInstance().resolve(TaskMonitoringHelper.class);
+		taskMonitoringHelper = springService.resolve(TaskMonitoringHelper.class);
 
 		boolean isMonitoredTask = config.getBoolean("fortscale.monitoring.enable",false);
 		taskMonitoringHelper.setIsMonitoredTask(isMonitoredTask);
@@ -384,6 +386,14 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	}
 
+	/**
+	 * Get topic name out of incoming message envelope
+	 * @param envelope - message received in {@link #wrappedProcess(IncomingMessageEnvelope, MessageCollector, TaskCoordinator)}
+	 * @return topic name of incoming message
+     */
+	protected String getIncomingMessageTopicName(IncomingMessageEnvelope envelope) {
+		return envelope.getSystemStreamPartition().getSystemStream().getStream();
+	}
 
 	// --- getters/setters ---
 

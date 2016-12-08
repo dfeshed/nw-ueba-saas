@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 public class ModelService {
@@ -29,12 +30,11 @@ public class ModelService {
 
 	public void process(
 			IModelBuildingListener listener, String sessionId, String modelConfName,
-			Date previousEndTime, Date currentEndTime) {
-
+			Date previousEndTime, Date currentEndTime, boolean selectHighScoreContexts,
+			Set<String> specifiedContextIds) {
 		ModelBuilderManager modelBuilderManager = modelConfNameToManager.get(modelConfName);
-
 		if (modelBuilderManager != null) {
-			modelBuilderManager.process(listener, sessionId, previousEndTime, currentEndTime);
+			modelBuilderManager.process(listener, sessionId, previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
 		} else {
 			logger.error("Ignoring invalid model conf name {}.", modelConfName);
 		}

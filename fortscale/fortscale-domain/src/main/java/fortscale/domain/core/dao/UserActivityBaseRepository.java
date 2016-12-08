@@ -20,7 +20,6 @@ public abstract class UserActivityBaseRepository  {
 
 	protected  <T extends UserActivityDocument> List<T> getUserActivityEntries(@Nullable String username, int timeRangeInDays, String collectionName, Class<T> documentType) {
 		List<T> userActivityDocuments;
-		if (mongoTemplate.collectionExists(collectionName)) {
 			Criteria jointCriteria = Criteria.where(UserActivityLocationDocument.START_TIME_FIELD_NAME).gte(TimestampUtils.convertToSeconds(getStartTime(timeRangeInDays)));
 			if (username != null) {
 				Criteria idCriteria = Criteria.where(UserActivityLocationDocument.ENTITY_ID_FIELD_NAME).is(username);
@@ -31,12 +30,6 @@ public abstract class UserActivityBaseRepository  {
 			}
 			Query query = new Query(jointCriteria);
 			userActivityDocuments = mongoTemplate.find(query, documentType, collectionName);
-		}
-		else {
-			final String errorMessage = String.format("Could not find collection '%s' in database", collectionName);
-			getLogger().error(errorMessage);
-			throw new RuntimeException(errorMessage);
-		}
 
 		return userActivityDocuments;
 	}

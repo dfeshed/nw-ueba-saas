@@ -22,5 +22,5 @@ public interface UserActivityService {
 
     List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String id, int timeRangeInDays);
 
-    Set<String> getUserNamesByUserLocation(List<String> userLocations);
+    Set<String> getUserIdByUserLocation(List<String> userLocations);
 }

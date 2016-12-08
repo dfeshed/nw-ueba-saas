@@ -87,27 +87,20 @@
     <!-- username service cache that uses memory based implementation are injected here -->
     <bean id="usernameToUserIdCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:86400}" />
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 
     <!-- username service cache that uses memory based implementation are injected here -->
     <bean id="sAMAccountNameToUsernameCache" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
+        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:86400}" />
         <constructor-arg name="clazz" value="java.util.ArrayList"/>
     </bean>
 
     <bean id="sAMAccountNamethatBlackList" class="fortscale.services.cache.MemoryBasedCache">
         <constructor-arg name="maxSize" value="${samaccountname.service.blacklist.cache.max.items:30000}" />
         <constructor-arg name="timeToExpire" value="${samaccountname.service.blacklist.timeToExpireSec:21600}" />
-        <constructor-arg name="clazz" value="java.lang.String" />
-    </bean>
-
-    <!-- user service cache (only tags) that uses memory based implementation and send updates to kafka topics are injected here -->
-    <bean id="userTagsCache" class="fortscale.services.cache.MemoryBasedCache">
-        <constructor-arg name="maxSize" value="${username.service.cache.max.items:10000}" />
-        <constructor-arg name="timeToExpire" value="${username.service.cache.timeToExpireSec:0}" />
         <constructor-arg name="clazz" value="java.lang.String" />
     </bean>
 

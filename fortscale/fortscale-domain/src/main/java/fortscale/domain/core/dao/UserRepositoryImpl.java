@@ -4,20 +4,18 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
 import fortscale.domain.ad.AdUser;
-import fortscale.domain.core.ApplicationUserDetails;
-import fortscale.domain.core.EmailAddress;
-import fortscale.domain.core.User;
-import fortscale.domain.core.UserAdInfo;
+import fortscale.domain.core.*;
 import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.aggregation.Aggregation;
 import org.springframework.data.mongodb.core.aggregation.AggregationResults;
@@ -42,7 +40,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	@Autowired
 	private MongoTemplate mongoTemplate;
-	
+
 	@Autowired
 	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
 
@@ -113,6 +111,28 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override
 	public void updateFollowed(User user, boolean followed) {
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update(User.followedField, followed), User.class);
+	}
+
+	@Override
+	public int updateFollowed(List<Criteria> criteriaList, boolean watch) {
+		Query query = new Query();
+
+		criteriaList.forEach(criteria -> query.addCriteria(criteria));
+
+		Update update = new Update();
+		update.set(User.followedField, watch);
+
+		BulkOperations upsert = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+				.upsert(query, update);
+
+		return upsert.execute().getModifiedCount();
+
+	}
+
+	@Override
+	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
+		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(new ObjectId(userId))),
+				update(User.sourceMachineCountField, sourceMachineCount), User.class);
 	}
 
 	@Override
@@ -237,7 +257,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			return null;
 		}
 	}
-	
+
 	private List<User> findByFields(List<String> fields, List<?> vals, Pageable pageable){
 		Criteria criteria = where(fields.get(0)).is(vals.get(0));
 		for (int i = 1; i < fields.size(); i++) {
@@ -265,12 +285,18 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
-	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable) {
+	public List<User> findAllUsers(List<Criteria> criteriaList, Pageable pageable, List<String> fieldsRequired) {
 
 		Query query = new Query().with(pageable);
 
 		for (Criteria criteria : criteriaList) {
 			query.addCriteria(criteria);
+		}
+
+ 		if (CollectionUtils.isNotEmpty(fieldsRequired)){
+			fieldsRequired.forEach(field -> {
+				query.fields().include(field);
+			});
 		}
 
 		return mongoTemplate.find(query, User.class);
@@ -283,8 +309,8 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		final String TRACKED = "tracked";
 		//group by the user's tag field and count results
 		Aggregation agg = newAggregation(
-			group(User.tagsField).count().as(TagCount.COUNT_FIELD),
-			project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
+				group(User.tagsField).count().as(TagCount.COUNT_FIELD),
+				project(TagCount.COUNT_FIELD).and(User.tagsField).previousOperation()
 		);
 		AggregationResults<TagCount> groupResults = mongoTemplate.aggregate(agg, User.class, TagCount.class);
 		List<TagCount> groups = groupResults.getMappedResults();
@@ -363,6 +389,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	}
 
 	@Override
+
 	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
 		Criteria criteria = Criteria.where(User.lastActivityField).gte(date);
 		Query query = new Query(criteria);
@@ -446,20 +473,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		// construct the update that adds and removes tags
 		if (tagsToAdd != null && !tagsToAdd.isEmpty()) {
-            EachAddToSetUpdate update = new EachAddToSetUpdate();
-            update.addToSetEach(User.tagsField, tagsToAdd);
+			EachAddToSetUpdate update = new EachAddToSetUpdate();
+			update.addToSetEach(User.tagsField, tagsToAdd);
 
-            // perform the update on mongodb
-            mongoTemplate.updateFirst(usernameCriteria, update, User.class);
-        }
+			// perform the update on mongodb
+			mongoTemplate.updateFirst(usernameCriteria, update, User.class);
+		}
 
 		if (tagsToRemove != null && !tagsToRemove.isEmpty()) {
-            EachAddToSetUpdate update = new EachAddToSetUpdate();
-            update.pullAll(User.tagsField, tagsToRemove.toArray());
+			EachAddToSetUpdate update = new EachAddToSetUpdate();
+			update.pullAll(User.tagsField, tagsToRemove.toArray());
 
-            // perform the update on mongodb
-            mongoTemplate.updateFirst(usernameCriteria, update, User.class);
-        }
+			// perform the update on mongodb
+			mongoTemplate.updateFirst(usernameCriteria, update, User.class);
+		}
 
 		return getUserTags(username);
 
@@ -480,21 +507,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Query query = new Query(where(User.usernameField).is(normalizedUsername));
 		query.fields().include(User.tagsField);
 		User user = mongoTemplate.findOne(query, User.class);
-		
+
 		return (user==null)? new HashSet<String>() : user.getTags();
 	}
-	
+
 	public boolean findIfUserExists(String username){
 		Query query = new Query(where(User.usernameField).is(username));
 		query.fields().include(User.ID_FIELD);
 		return !(mongoTemplate.find(query, UserIdWrapper.class, User.collectionName).isEmpty());
 	}
-	
+
 	public String getUserIdByNormalizedUsername(String username) {
 		Query query = new Query(where(User.usernameField).is(username));
 		query.fields().include(User.ID_FIELD);
- 		UserIdWrapper wrapper = mongoTemplate.findOne(query, UserIdWrapper.class, User.collectionName);
- 		return (wrapper==null)? null : wrapper.getId();
+		UserIdWrapper wrapper = mongoTemplate.findOne(query, UserIdWrapper.class, User.collectionName);
+		return (wrapper==null)? null : wrapper.getId();
 	}
 
 	private  List<Map<String, String>> getUsersByCriteria(Criteria criteria, Pageable pageable) {
@@ -542,14 +569,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	 * Get field name and field value and return username that match to those inputs
 	 * @param fieldName -  the AD field to be based on the search
 	 * @param fieldValue - the AD given field value
-	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false -part (contain) )
+	 * @param partOrFullFlag -  will sign if to do part ore full equalisation ( true - full , false - part (contain) )
 	 * @return
 	 */
-	public String findByfield(String fieldName,String fieldValue,boolean partOrFullFlag){
+	public String findUserNameByfield(String fieldName, String fieldValue, boolean partOrFullFlag){
 
 		Query query = new Query();
 		query.fields().include(User.usernameField);
-        String result = "";
+		String result = "";
 
 		Criteria criteria;
 		if (partOrFullFlag)
@@ -565,7 +592,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		List<UsernameWrapper> usernameWrapper = mongoTemplate.find(query, UsernameWrapper.class, User.collectionName);
 
-        result = usernameWrapper != null && usernameWrapper.size()==1 ? usernameWrapper.get(0).getUsername() : result;
+		result = usernameWrapper != null && usernameWrapper.size()==1 ? usernameWrapper.get(0).getUsername() : result;
 
 
 		return  result;
@@ -574,6 +601,28 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	@Override public List<Criteria> getUsersCriteriaByFilters(UserRestFilter userRestFilter) {
 		// Create criteria list
 		List<Criteria> criteriaList = new ArrayList<>();
+		String startsWithRegex = "^"+userRestFilter.getSearchValue();
+
+		if (StringUtils.isNotEmpty(userRestFilter.getSearchValue())){
+
+			List<Criteria> searchCriterias = new ArrayList<>();
+			String caseInsensitive = "i";
+			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.firstnameField)).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.lastnameField)).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.displayNameField).regex(startsWithRegex, caseInsensitive));
+			searchCriterias.add(new Criteria(User.usernameField).regex(startsWithRegex, caseInsensitive));
+
+			// If the users are filtered by position don't check for the search value
+			if (CollectionUtils.isEmpty(userRestFilter.getPositions())) {
+				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.positionField)).regex(startsWithRegex, caseInsensitive));
+			}
+			// If the users are filtered by department don't check for the search value
+			if (CollectionUtils.isEmpty(userRestFilter.getDepartments())) {
+				searchCriterias.add(new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).regex(startsWithRegex, caseInsensitive));
+			}
+
+			criteriaList.add(new Criteria().orOperator(searchCriterias.toArray(new Criteria[searchCriterias.size()])));
+		}
 
 		if (userRestFilter.getDisabledSince() != null && !userRestFilter.getDisabledSince().isEmpty()) {
 			criteriaList.add(where("adInfo.disableAccountTime").gte(new Date(Long.parseLong(userRestFilter.getDisabledSince()))));
@@ -649,12 +698,32 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			criteriaList.add(new Criteria(User.scoreField).gt(userRestFilter.getMinScore()));
 		}
 
+		if (CollectionUtils.isNotEmpty(userRestFilter.getPositions())){
+			criteriaList.add(new Criteria(User.getAdInfoField(UserAdInfo.positionField)).in(userRestFilter.getPositions()));
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getDepartments())){
+			criteriaList.add(new Criteria(User.getAdInfoField(UserAdInfo.departmentField)).in(userRestFilter.getDepartments()));
+		}
+
 		return criteriaList;
 	}
 
-	@Override public Criteria getUserCriteriaByUserNames(Set<String> userNames) {
-		Criteria criteria = new Criteria().where(User.usernameField).in(userNames);
+	@Override
+	public Criteria getUserCriteriaByUserIds(Set<String> userIds) {
+
+		List<ObjectId> idList = new ArrayList<>();
+		userIds.forEach(s -> idList.add(new ObjectId(s)));
+
+		Criteria criteria = new Criteria().where(User.ID_FIELD).in(idList);
 		return criteria;
+	}
+
+	@Override
+	public List getDistinctFieldValues(String fieldName) {
+		Query query = new Query(new Criteria(fieldName).exists(true));
+
+		return mongoTemplate.getCollection(User.collectionName).distinct(fieldName, query.getQueryObject());
 	}
 
 	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
@@ -668,8 +737,6 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		return getUsersByCriteria(criteria, pageable);
 	}
 
-
-
 	public HashSet<String> getUsersGUID(){
 		Query query = new Query();
 		query.fields().include(User.getAdInfoField(AdUser.objectGUIDField)).exclude(User.ID_FIELD);
@@ -679,20 +746,20 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 		return res;
 	}
-	
+
 	/**
 	 * Since spring data mongodb does not support each on the addToSet update 
 	 * operator we create a custom bson command that does that
 	 */
 	class EachAddToSetUpdate extends Update {
-		
+
 		public EachAddToSetUpdate addToSetEach(String key, List<String> values) {
 			// create a custom addToSet operator
 			this.addToSet(key, BasicDBObjectBuilder.start("$each", values).get());
 			return this;
 		}
 	}
-	
+
 	static class UsernameWrapper {
 		private String id;
 		private String username;
@@ -746,7 +813,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 	static class UserIdWrapper{
 		private String id;
-		
+
 		public String getId(){
 			return id;
 		}
@@ -754,7 +821,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.id = id;
 		}
 	}
-	
+
 	static public class UserObjectGUIDWrapper {
 		private String objectGUID;
 
@@ -771,6 +838,57 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			this.objectGUID = objectGUID;
 		}
 	}
-	
+
+	@Override
+	public int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags) {
+
+		Update update = new Update();
+
+		int count = getCount(addTag, tagNames, criteriaList, filteredTags);
+
+		tagNames.forEach(tag -> {
+			Query query = new Query();
+			criteriaList.forEach(criteria -> query.addCriteria(criteria));
+
+			Update remove = new Update();
+			remove.pull(User.tagsField, tag);
+			mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+					.upsert(query, remove).execute();
+
+			if (addTag){
+				// Adding the tag
+				update.push(User.tagsField, tag);
+				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+						.upsert(query, update).execute();
+			}
+		});
+
+		return count;
+	}
+
+	private int getCount(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags) {
+		int count;
+		if (!addTag) {
+			List<Criteria> countCriteria = new ArrayList<>();
+			criteriaList.forEach(criteria -> {
+				if (filteredTags == null){
+					countCriteria.addAll(criteriaList);
+					countCriteria.add(new Criteria(User.tagsField).in(tagNames));
+				}else {
+					if (criteria.getKey().equals(User.tagsField)) {
+						Criteria newCriteria = new Criteria(User.tagsField);
+						newCriteria.in(CollectionUtils.union(tagNames, filteredTags));
+						countCriteria.add(newCriteria);
+					} else {
+						countCriteria.add(criteria);
+					}
+				}
+			});
+			count = countAllUsers(countCriteria);
+		}else{
+			count = countAllUsers(criteriaList);
+		}
+		return count;
+	}
 }
 

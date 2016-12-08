@@ -19,36 +19,38 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public interface UserService extends CachingService{
-	public void updateUserWithCurrentADInfo();
+public interface UserService {
+	void updateUserWithCurrentADInfo();
 	
-	public void updateUserWithADInfo(Long timestampepoch);
+	void updateUserWithADInfo(Long timestampepoch);
 	
-	public List<User> findBySearchFieldContaining(String prefix, int page, int size);
-	
-	public List<UserMachine> getUserMachines(String uid);
+	List<User> findBySearchFieldContaining(String prefix, int page, int size);
 
-	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
-		
-	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
-	
-	public List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
+	List<UserMachine> getUserMachines(String uid);
 
-	public String getUserThumbnail(User user);
+	List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
 
-	public void updateUserWithADInfo(AdUser adUser);
+	ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
 
-	public void updateUser(User user, Update update);
+	List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 
-	public boolean findIfUserExists(String username);
+	String getUserThumbnail(User user);
 
-	public String getUserId(String username);
+	void updateUserWithADInfo(AdUser adUser);
 
-	public User createUser(String userApplication, String username, String appUsername);
+	void updateUser(User user, Update update);
 
-	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave);
+	boolean findIfUserExists(String username);
 
-	public void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
+	Set<String> getUserTags(String username);
+
+	String getUserId(String username);
+
+	User createUser(String userApplication, String username, String appUsername);
+
+	boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave);
+
+	void updateOrCreateUserWithClassifierUsername(String classifierId, String normalizedUsername, String logUsername, boolean onlyUpdate, boolean updateAppUsername);
 
 	User saveUser(User user);
 
@@ -58,81 +60,88 @@ public interface UserService extends CachingService{
 	 * @param dataSourceUpdateOnlyFlagMap	Map: dupdateOnlyFlag - data source
 	 * @param userInfo Map: datasource - <lastActivity,logusername>
 	 */
-	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap);
-	
-	public void updateTags(String username, Map<String, Boolean> tagSettings);
-	
-	public boolean isUserTagged(String username, String tag);
-	
-	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
-	
-	public String findByNormalizedUserName(String normalizedUsername);
+	void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long, String>> userInfo, Map<String, Boolean> dataSourceUpdateOnlyFlagMap);
 
-	public Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable);
+	void updateTags(String username, Map<String, Boolean> tagSettings);
 
-	public Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
+	boolean isUserTagged(String username, String tag);
 
-	public Set<String> findByUsernameRegex(String usernameRegex);
+	PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
+
+	String findByNormalizedUserName(String normalizedUsername);
+
+	Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable);
+
+	Set<String> findNamesInOU(List<String> ousToTag, Pageable pageable);
+
+	Set<String> findByUsernameRegex(String usernameRegex);
 
 	Set<String> findNamesByTag(String tag);
 
-	public Map<String, Set<String>> findAllTaggedUsers();
+	Map<String, Set<String>> findAllTaggedUsers();
 
-	public String findAdMembers(String adName);
+	String findAdMembers(String adName);
 
-	public List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
+	List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
 
-	public void updateUserTag(String userTagEnumId, String username, boolean value);
+	void updateUserTag(String userTagEnumId, String username, boolean value);
 
-	public User getUserById(String id);
+	User getUserById(String id);
 
-	public Boolean isPasswordExpired(User user);
+	Boolean isPasswordExpired(User user);
 
-	public Boolean isNoPasswordRequiresValue(User user);
+	Boolean isNoPasswordRequiresValue(User user);
 
-	public Boolean isNormalUserAccountValue(User user);
+	Boolean isNormalUserAccountValue(User user);
 
-	public Boolean isPasswordNeverExpiresValue(User user);
+	Boolean isPasswordNeverExpiresValue(User user);
 
-	public String getOu(User user);
+	String getOu(User user);
 
-	public void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet);
+	void fillUserRelatedDns(User user, Set<String> userRelatedDnsSet);
 
-	public void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap);
+	void fillDnToUsersMap(Set<String> userRelatedDnsSet, Map<String, User> dnToUserMap);
 
-	public User getUserManager(User user, Map<String, User> dnToUserMap);
+	User getUserManager(User user, Map<String, User> dnToUserMap);
 
-	public List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
+	List<User> getUserDirectReports(User user, Map<String, User> dnToUserMap);
 
-	public User findByUsername(String username);
+	User findByUsername(String username);
 
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username);
+	void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove, String username);
 
-	public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
+	List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable);
 
-	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
+	List<Map<String, String>> getUsersByIds(String ids, Pageable pageable);
 
-	public Set<String> findIdsByTags(String[] tags, String entityIds);
+	Set<String> findIdsByTags(String[] tags, String entityIds);
 
-	public Set<String> findUsernamesByTags(String[] tags);
+	Set<String> findUsernamesByTags(String[] tags);
 
-	public Map<String, Long> groupByTags();
+	Map<String, Long> groupByTags();
 
 	/**
 	 * Count how many users exists in the USERS table with the same display name.
 	 * @param displayNames - Set of the display names to query
 	 * @return map of display names to users
 	 */
-	public Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
+	Map<String, Integer> countUsersByDisplayName(Set<String> displayNames);
 
-	public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserNames);
+	List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest, Set<String> relevantUserIds, List<String> fieldsRequired);
 
-	public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers);
+	int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers);
 
-	public void saveFavoriteFilter(UserFilter userFilter, String filterName);
+	void saveFavoriteFilter(UserFilter userFilter, String filterName);
 
-	public List<FavoriteUserFilter> getAllFavoriteFilters();
+	List<FavoriteUserFilter> getAllFavoriteFilters();
 
-	public long deleteFavoriteFilter(String filterName);
+	long deleteFavoriteFilter(String filterName);
 
+    List getDistinctValuesByFieldName(String fieldName);
+
+	void updateSourceMachineCount(String userId, int sourceMachineCount);
+
+	int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames, Set<String> relevantUsers);
+
+	int updateWatched(UserRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch);
 }

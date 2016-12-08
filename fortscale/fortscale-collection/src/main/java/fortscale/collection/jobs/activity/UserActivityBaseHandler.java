@@ -51,6 +51,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 	@Autowired
 	protected UsernameService usernameService;
 
+
 	@Value("${user.activity.mongo.batch.size:10000}")
 	private int mongoBatchSize;
 
@@ -157,6 +158,8 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
             currBucketEndTime = TimestampUtils.convertToSeconds(currDateTime.plusDays(2).minus(1).getMillis());
         }
 
+        postCalculation();
+
         long fullExecutionElapsedTime = System.nanoTime() - fullExecutionStartTime;
         logger.info("Full execution of Location Activity ({} active users) took {} seconds", totalNumberOfUsers,
 				durationInSecondsWithPrecision(fullExecutionElapsedTime));
@@ -206,6 +209,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         Map<String, List<String>> dataSourceToUserIds = new HashMap<>();
 		DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
 		List<User> users = userService.getUsersActiveSinceIncludingUsernameAndLogLastActivity(startDate);
+
         for (String dataSource : dataSources) {
 			//we don't have vpn_session in the log last activity
 			final String logDataSource = dataSource.toLowerCase().equals("vpn_session") ? "vpn" : dataSource;
@@ -342,7 +346,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return (newValue) -> newValue;
     };
 
-
+    public void postCalculation(){
+        // Runs all needs to be done after the calculation finished
+    }
 
     protected abstract GenericHistogram convertFeatureToHistogram(Object objectToConvert, String histogramFeatureName);
 

@@ -207,11 +207,13 @@ public class ComputerLoginResolver extends GeneralIpResolver<ComputerLoginEvent>
 				}
 				return true;
 			}
+			else{
+				if (metrics != null) {
+					metrics.computerLoginThatAlreadyAppeareInTheCache++;
+				}
+			}
 		}
 
-		if (metrics != null) {
-			metrics.computerLoginNotUpdated++;
-		}
 		return false;
 	}
 

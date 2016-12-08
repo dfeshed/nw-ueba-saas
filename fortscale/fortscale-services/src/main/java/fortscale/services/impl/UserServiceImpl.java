@@ -132,9 +132,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
-	@Autowired
-	private CacheHandler<String, List<String>> userTagsCache;
-
 	private UserServiceMetrics serviceMetrics;
 
 	public void setListOfBuiltInADUsers(String listOfBuiltInADUsers) {
@@ -176,7 +173,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				serviceMetrics.updatedUsers++;
 				updateUser(logUsername, updateAppUsername, logEventId, userApplicationId, userId);
 			}
-        } else{
+		} else{
 			createNewUser(classifierId, normalizedUsername, logUsername, logEventId, userApplicationId);
 		}
 	}
@@ -187,20 +184,20 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		usernameService.addLogUsername(user, logEventId, logUsername);
 		saveUser(user);
 		if(user == null || user.getId() == null){
-            logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
+			logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
 			serviceMetrics.failedToCreateUser++;
-        } else{
-            usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
-            usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
-        }
+		} else{
+			usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
+			usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
+		}
 	}
 
 	private void updateUser(String logUsername, boolean updateAppUsername, String logEventId, String userApplicationId, String userId) {
 		Update update = new Update();
 		usernameService.fillUpdateLogUsername(update, logUsername, logEventId);
 		if(updateAppUsername){
-            usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
-        }
+			usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
+		}
 
 		updateUserInMongo(userId, update);
 
@@ -211,10 +208,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public User saveUser(User user){
 		user = userRepository.save(user);
 		usernameService.updateUsernameInCache(user);
-		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-		if (user.getTags() != null && user.getTags().size() > 0){
-			userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-		}
 		return user;
 	}
 
@@ -222,17 +215,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		userRepository.save(users);
 		for (User user : users) {
 			usernameService.updateUsernameInCache(user);
-			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-			if (user.getTags() != null && user.getTags().size() > 0) {
-				userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-			}
 		}
 	}
 
 	@Override
 	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
-
-
 		// get user by username
 		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
 
@@ -251,7 +238,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			String classifierId = getFirstClassifierId(userInfo, dataSourceUpdateOnlyFlagMap);
 			String logUsernameValue = userInfo.get(classifierId).getValue();
 
-
 			// need to create the user at mongo
 			serviceMetrics.attemptToCreateUser++;
 			user = createUser(ClassifierHelper.getUserApplicationId(classifierId), username, logUsernameValue);
@@ -261,8 +247,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				serviceMetrics.failedToCreateUser++;
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, username, logUsernameValue);
 			}
-
-
 		}
 
 		DateTime userCurrLast = user.getLastActivity();
@@ -414,19 +398,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public void updateUserWithADInfo(AdUser adUser) {
-		if(adUser.getObjectGUID() == null) {
-			logger.warn("got ad user with no ObjectGUID name field.");
-			serviceMetrics.emptyGUID++;
-			return;
-		}
-		if(adUser.getDistinguishedName() == null) {
-			logger.warn("got ad user with no distinguished name field.");
-			serviceMetrics.emptyDN++;
-			return;
-		}
-
-
 		User user =  findUserByObjectGUID(adUser.getObjectGUID());
+
+		//When changed logic
 		Date whenChanged = null;
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
@@ -455,7 +429,78 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			}
 		}
 
-		final UserAdInfo userAdInfo = new UserAdInfo();
+		boolean isSaveUser = false;
+		if(user==null)
+		{
+			user = new User();
+			isSaveUser = true;
+		}
+
+		//create the Ad user info field
+		final UserAdInfo userAdInfo = createUserAdInfo(user,adUser,whenChanged,groups,directReports,isSaveUser);
+
+
+		String username = user.getUsername();
+		user.setAdInfo(userAdInfo);
+
+		final String searchField = createSearchField(userAdInfo, username);
+
+		String noDomainUsername = null;
+		if(!StringUtils.isEmpty(username)) {
+			noDomainUsername = StringUtils.split(username, '@')[0];
+		}
+
+		//New user that supposed to be saved
+		if(isSaveUser){
+			if(!StringUtils.isEmpty(username)) {
+				//user.setUsername(username);
+				user.setNoDomainUsername(noDomainUsername);
+				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
+
+				//check if there is another user with the same username (old record of user)
+				//in case of true move the old record into duplicatedUser collection and update the new record with old fortscale relevant information (i.e scores, last activity etc )
+				User oldUserRecord  = userRepository.findByUsername(username);
+
+
+				//In case that the oldUserRecord is not null (we have other record on User collection with the same username ) and also doesnt exist in the ad built in users (doesnt have principal name only SAMAccountName )
+				if (oldUserRecord != null && needToBeDeleted(oldUserRecord)) {
+					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
+					updateUserWithOldInfo(deletedUser,user);
+					try {
+						duplicatedUserRepository.save(deletedUser);
+					} catch (Exception ex) {
+						serviceMetrics.failedToCreateDeletedUser++;
+						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);
+					}
+					userRepository.delete(oldUserRecord);
+				}
+			}
+			user.setSearchField(searchField);
+			user.setWhenCreated(userAdInfo.getWhenCreated());
+
+
+			saveUser(user);
+		} else{
+			Update update = new Update();
+			update.set(User.adInfoField, userAdInfo);
+			update.set(User.whenCreatedField, userAdInfo.getWhenCreated());
+			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
+				update.set(User.usernameField, username);
+			}
+			if(!StringUtils.isEmpty(noDomainUsername) && (noDomainUsername!=null && !noDomainUsername.equals(user.getNoDomainUsername()))){
+				update.set(User.noDomainUsernameField, noDomainUsername);
+			}
+			if(!searchField.equals(user.getSearchField())){
+				update.set(User.searchFieldName, searchField);
+			}
+			updateUser(user, update);
+		}
+	}
+
+	public UserAdInfo createUserAdInfo(User user,AdUser adUser,Date whenChanged,Set<AdUserGroup> groups,Set<AdUserDirectReport> directReports,boolean isNewUser)
+	{
+		UserAdInfo userAdInfo = new UserAdInfo();
+
 		userAdInfo.setObjectGUID(adUser.getObjectGUID());
 		userAdInfo.setDn(adUser.getDistinguishedName());
 		userAdInfo.setFirstname(adUser.getGivenName());
@@ -519,9 +564,10 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		// update user's direct reports
 		userAdInfo.setAdDirectReports(directReports);
 
+		//calculate the disable Account Time
 		DateTime disableAccountTime = null;
 		if (userAdInfo.getIsAccountDisabled()){
-			if (user == null || !user.getAdInfo().getIsAccountDisabled()){
+			if (!user.getAdInfo().getIsAccountDisabled()){
 				disableAccountTime = new DateTime(whenChanged);
 			} else{
 				disableAccountTime = user.getAdInfo().getDisableAccountTime();
@@ -529,87 +575,33 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		userAdInfo.setDisableAccountTime(disableAccountTime);
 
-		boolean isSaveUser = false;
-		if(user == null){
-			user = new User();
-			isSaveUser = true;
-		}
 
-		String oldDisplayName = user.getAdInfo().getFirstname() + " " + user.getAdInfo().getLastname();
 
-		user.setAdInfo(userAdInfo);
+		String username="";
 
-		String username = adUser.getUserPrincipalName();
-		if(StringUtils.isEmpty(username)) {
-			username = adUser.getsAMAccountName();
-		}
+		//In case the user does not exist and we are going to create a new user we want that the username will be taken from the principal name or the SAMAccount name
+		//Other wise we will keep the existing username
+		if(isNewUser){
 
-		if(!StringUtils.isEmpty(username)) {
-			username = username.toLowerCase();
-		} else{
-			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
-			serviceMetrics.emptyUsername++;
-		}
+			username = adUser.getUserPrincipalName();
+			if(StringUtils.isEmpty(username)) {
+				username = adUser.getsAMAccountName();
+			}
 
-		String displayName = userAdInfo.getFirstname() + " " + userAdInfo.getLastname();
-
-		final String searchField = createSearchField(userAdInfo, username);
-
-		String noDomainUsername = null;
-		if(!StringUtils.isEmpty(username)) {
-			noDomainUsername = StringUtils.split(username, '@')[0];
-		}
-
-		//New user that supposed to be saved
-		if(isSaveUser){
 			if(!StringUtils.isEmpty(username)) {
-				user.setUsername(username);
-				user.setNoDomainUsername(noDomainUsername);
-				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
-
-				//check if there is another user with the same username (old record of user)
-				//in case of true move the old record into duplicatedUser collection and update thje new record with old fortscale relevant information (i.e scores, last activity etc )
-				User oldUserRecord  = userRepository.findByUsername(username);
-
-
-
-
-				//In case that the oldUserRecord is not null (we have other record on User collection with the same username ) and also doesnt exist in the ad built in users (doesnt have principal name only SAMAccountName )
-				if (oldUserRecord != null && needToBeDeleted(oldUserRecord)) {
-					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
-					updateUserWithOldInfo(deletedUser,user);
-					try {
-						deletedUser = duplicatedUserRepository.save(deletedUser);
-					} catch (Exception ex) {
-						serviceMetrics.failedToCreateDeletedUser++;
-						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);
-					}
-					userRepository.delete(oldUserRecord);
-				}
+				username = username.toLowerCase();
+			} else{
+				logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+				serviceMetrics.emptyUsername++;
 			}
-			user.setSearchField(searchField);
-			user.setWhenCreated(userAdInfo.getWhenCreated());
 
-
-			saveUser(user);
-		} else{
-			Update update = new Update();
-			update.set(User.adInfoField, userAdInfo);
-			update.set(User.whenCreatedField, userAdInfo.getWhenCreated());
-			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
-				update.set(User.usernameField, username);
-			}
-			if(!StringUtils.isEmpty(displayName) && !displayName.equals(oldDisplayName)){
-				update.set(User.displayNameField, displayName);
-			}
-			if(!StringUtils.isEmpty(noDomainUsername) && !noDomainUsername.equals(user.getNoDomainUsername())){
-				update.set(User.noDomainUsernameField, noDomainUsername);
-			}
-			if(!searchField.equals(user.getSearchField())){
-				update.set(User.searchFieldName, searchField);
-			}
-			updateUser(user, update);
 		}
+		else{
+			username = user.getUsername();
+		}
+
+		user.setUsername(username);
+		return userAdInfo;
 	}
 
 	public boolean needToBeDeleted(User oldUserRecord)
@@ -870,7 +862,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 
 	public void updateTags(String username, Map<String, Boolean> tagSettings) {
-
 		// construct lists of tags to remove and tags to add from the map
 		List<String> tagsToAdd = new LinkedList<String>();
 		List<String> tagsToRemove = new LinkedList<String>();
@@ -880,55 +871,22 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			else
 				tagsToRemove.add(tag);
 		}
-		updateTags(username, tagsToAdd, tagsToRemove);
-	}
-
-	private void updateTags(String username, List<String> tagsToAdd, List<String> tagsToRemove){
-		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		//also update the tags cache with the new updates
-		List<String> tags = userTagsCache.get(username);
-		Set<String> tagSet = new HashSet<String>();
-		if (tags!=null) {
-			tagSet = new HashSet<String>(tags);
-		}
-		if (tagsToAdd != null)
-			tagSet.addAll(tagsToAdd);
-		if (tagsToRemove != null)
-			tagSet.removeAll(tagsToRemove);
-
-
-		tags = new ArrayList<String>(tagSet);
-
-
-		userTagsCache.put(username, tags);
 	}
 
 
 	@Override
 	public boolean isUserTagged(String username, String tag) {
-		// check if the user tags are kept in cache
-		List<String> tags = userTagsCache.get(username);
-		if (tags==null) {
-			// get tags from mongodb and add to cache
-			Set<String> tagSet = userRepository.getUserTags(username);
-			serviceMetrics.findTags++;
-			if (tagSet != null) {
-				tags = new ArrayList<String>(tagSet);
-				userTagsCache.put(username, tags);
-			} else {
-				serviceMetrics.tagsNotFound++;
-			}
+		// get tags from mongodb
+		Set<String> tagSet = userRepository.getUserTags(username);
+
+		if (tagSet == null) {
+			serviceMetrics.tagsNotFound++;
+			return false;
 		}
-		return tags!=null && tags.contains(tag);
-	}
 
-	@Override public CacheHandler getCache() {
-		return userTagsCache;
-	}
-
-	@Override public void setCache(CacheHandler cache) {
-		userTagsCache = cache;
+		serviceMetrics.findTags++;
+		return tagSet.contains(tag);
 	}
 
 	@Override
@@ -1047,26 +1005,16 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username)
-	{
-		Set<String> tags = userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		userTagsCache.put(username, new ArrayList(tags));
-	}
-
-	@Override public void handleNewValue(String key, String value) throws Exception {
-		if(value == null){
-			getCache().remove(key);
-		}
-		else {
-			getCache().putFromString(key, value);
-		}
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username) {
+		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 	}
 
 	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		return userRepository.getUsersByPrefix(prefix, pageable);
 	}
 
-	@Override public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
+	@Override
+	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
 		return userRepository.getUsersByIds(ids, pageable);
 	}
 
@@ -1075,7 +1023,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userRepository.findOne(id);
 	}
 
-	@Override public Boolean isPasswordExpired(User user) {
+	@Override
+	public Boolean isPasswordExpired(User user) {
 		try{
 			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
@@ -1180,23 +1129,24 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
-			Set<String> relevantUserNames) {
+												  Set<String> relevantUserIds, List<String> fieldsRequired) {
 
-		List<Criteria> criteriaList = getCriteriaListByFilterAndUserNames(userRestFilter, relevantUserNames);
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUserIds);
 
-		return userRepository.findAllUsers(criteriaList, pageRequest);
+		return userRepository.findAllUsers(criteriaList, pageRequest, fieldsRequired);
 	}
 
-	private List<Criteria> getCriteriaListByFilterAndUserNames(UserRestFilter userRestFilter,
-			Set<String> relevantUserNames) {
+	private List<Criteria> getCriteriaListByFilterAndUserIds(UserRestFilter userRestFilter,
+															 Set<String> relevantUserNames) {
 		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
 
 		// If there was filter for alert type or anomaly type or locations
 		// we want to add criteria for getting data of specific users
 		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
 				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())
-				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())) {
-			criteriaList.add(userRepository.getUserCriteriaByUserNames(relevantUserNames));
+				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getUserIds())) {
+			criteriaList.add(userRepository.getUserCriteriaByUserIds(relevantUserNames));
 		}
 
 		return criteriaList;
@@ -1204,7 +1154,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
 
-		return userRepository.countAllUsers(getCriteriaListByFilterAndUserNames(userRestFilter, relevantUsers));
+		return userRepository.countAllUsers(getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers));
 	}
 
 	@Override public void saveFavoriteFilter(UserFilter userFilter, String filterName) {
@@ -1217,6 +1167,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override public long deleteFavoriteFilter(String filterName) {
 		return favoriteUserFilterRepository.deleteById(filterName);
+	}
+
+	@Override
+	public List getDistinctValuesByFieldName(String fieldName) {
+		return userRepository.getDistinctFieldValues(fieldName);
 	}
 
 	@Override public String getUserId(String username) {
@@ -1232,4 +1187,29 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		serviceMetrics = new UserServiceMetrics(statsService);
 	}
 
+
+	@Override
+	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
+		userRepository.updateSourceMachineCount(userId, sourceMachineCount);
+	}
+
+
+	@Override
+	public Set<String> getUserTags(String userName) {
+		return userRepository.getUserTags(userName);
+	}
+
+	@Override
+	public int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames, Set<String> relevantUsers) {
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
+
+		return userRepository.updateTagsByFilter(addTag, tagNames, criteriaList, userRestFilter.getUserTags());
+	}
+
+	@Override
+	public int updateWatched(UserRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch) {
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
+
+		return userRepository.updateFollowed(criteriaList, watch);
+	}
 }

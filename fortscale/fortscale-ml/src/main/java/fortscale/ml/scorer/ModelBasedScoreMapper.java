@@ -6,7 +6,6 @@ import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ScoreMappingModel;
 import fortscale.ml.model.cache.EventModelsCacheService;
 import fortscale.ml.scorer.config.IScorerConf;
-import fortscale.ml.scorer.factory.ScoreMapperFactory;
 import fortscale.utils.factory.FactoryService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +24,16 @@ public class ModelBasedScoreMapper extends AbstractScorer {
 				put(100D, 0D);
 			}});
 
-	private final Scorer baseScorer;
+	private Scorer baseScorer;
 	private String modelName;
 	private List<String> contextFieldNames;
 	private String featureName;
 
 	@Autowired
-	private ScoreMapperFactory scoreMapperFactory;
-
-	@Autowired
 	private EventModelsCacheService eventModelsCacheService;
 
 	@Autowired
-	protected FactoryService<Scorer> factoryService;
+	private FactoryService<Scorer> factoryService;
 
 	public ModelBasedScoreMapper(String scorerName,
 								 String modelName,

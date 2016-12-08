@@ -48,8 +48,8 @@ import static org.mockito.Mockito.when;
 		List<User> users = new ArrayList<>();
 		User user = new User();
 		users.add(user);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, null)).thenReturn(users);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, null, null)).thenReturn(users);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
 
 		Assert.assertEquals(1, result.size());
 	}
@@ -66,9 +66,9 @@ import static org.mockito.Mockito.when;
 		users.add(user);
 		Set<String> userNames = new HashSet<>();
 		userNames.add("user");
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, alertTypes)).thenReturn(users);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, alertTypes);
 
 		Assert.assertEquals(1, result.size());
 	}
@@ -84,9 +84,9 @@ import static org.mockito.Mockito.when;
 		User user = new User();
 		users.add(user);
 		Set<String> userNames = new HashSet<>();
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, alertTypes)).thenReturn(users);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, alertTypes);
 
 		Assert.assertEquals(0, result.size());
 	}
@@ -107,9 +107,9 @@ import static org.mockito.Mockito.when;
 
 		Set<String> userNames = new HashSet<>();
 		userNames.add("user");
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, null)).thenReturn(users);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
 
 		Assert.assertEquals(1, result.size());
 	}
@@ -129,9 +129,9 @@ import static org.mockito.Mockito.when;
 		users.add(user);
 
 		Set<String> userNames = new HashSet<>();
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, null)).thenReturn(users);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
 
 		Assert.assertEquals(0, result.size());
 	}
@@ -157,9 +157,9 @@ import static org.mockito.Mockito.when;
 
 		Set<String> userNames = new HashSet<>();
 		userNames.add("user");
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, alertTypes)).thenReturn(users);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, alertTypes);
 
 		Assert.assertEquals(1, result.size());
 	}
@@ -184,9 +184,9 @@ import static org.mockito.Mockito.when;
 		users.add(user);
 
 		Set<String> userNames = new HashSet<>();
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, alertTypes)).thenReturn(users);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, alertTypes);
 
 		Assert.assertEquals(0, result.size());
 	}
@@ -205,9 +205,9 @@ import static org.mockito.Mockito.when;
 
 		Set<String> userNames = new HashSet<>();
 		userNames.add("user");
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		when(userActivityService.getUserNamesByUserLocation(locations)).thenReturn(userNames);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, locations)).thenReturn(users);
+		when(userActivityService.getUserIdByUserLocation(locations)).thenReturn(userNames);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, locations);
 
 		Assert.assertEquals(1, result.size());
 	}
@@ -225,9 +225,9 @@ import static org.mockito.Mockito.when;
 		users.add(user);
 
 		Set<String> userNames = new HashSet<>();
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		when(userActivityService.getUserNamesByUserLocation(locations)).thenReturn(userNames);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, locations)).thenReturn(users);
+		when(userActivityService.getUserIdByUserLocation(locations)).thenReturn(userNames);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, locations);
 
 		Assert.assertEquals(0, result.size());
 	}
@@ -257,10 +257,10 @@ import static org.mockito.Mockito.when;
 
 		Set<String> userNames = new HashSet<>();
 		userNames.add("user");
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		when(userActivityService.getUserNamesByUserLocation(locations)).thenReturn(userNames);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, null)).thenReturn(users);
+		when(userActivityService.getUserIdByUserLocation(locations)).thenReturn(userNames);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
 
 		Assert.assertEquals(1, result.size());
 	}
@@ -289,10 +289,10 @@ import static org.mockito.Mockito.when;
 		users.add(user);
 
 		Set<String> userNames = new HashSet<>();
-		when(alertsService.getDistinctUserNamesByUserFilter(userRestFilter)).thenReturn(userNames);
-		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames)).thenReturn(users);
-		when(userActivityService.getUserNamesByUserLocation(locations)).thenReturn(userNames);
-		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest);
+		when(alertsService.getDistinctUserIdByUserFilter(userRestFilter)).thenReturn(userNames);
+		when(userService.findUsersByFilter(userRestFilter, pageRequest, userNames, null)).thenReturn(users);
+		when(userActivityService.getUserIdByUserLocation(locations)).thenReturn(userNames);
+		List<User> result = userWithAlertService.findUsersByFilter(userRestFilter, pageRequest, null);
 
 		Assert.assertEquals(0, result.size());
 	}

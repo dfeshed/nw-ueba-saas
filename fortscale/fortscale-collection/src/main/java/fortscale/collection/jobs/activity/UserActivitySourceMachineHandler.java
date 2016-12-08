@@ -5,9 +5,13 @@ import fortscale.collection.services.UserActivityDataSourceConfiguration;
 import fortscale.collection.services.UserActivitySourceMachineConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.domain.core.activities.UserActivityNetworkAuthenticationDocument;
+import fortscale.domain.core.User;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
-import fortscale.utils.logging.Logger;
+import fortscale.services.UserActivityService;
+import fortscale.services.users.util.UserAndOrganizationActivityHelper;
+import fortscale.services.users.util.UserDeviceUtils;
+import fortscale.services.users.util.activity.UserActivityData;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,6 +27,12 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 
 	@Autowired
 	private UserActivitySourceMachineConfigurationService userActivitySourceMachineConfigurationService;
+
+	@Autowired
+	private UserActivityService userActivityService;
+
+    @Autowired
+    public UserAndOrganizationActivityHelper userAndOrganizationActivityHelper;
 
 	@Override
 	protected List<String> getRelevantFields(String dataSource) throws IllegalArgumentException {
@@ -86,4 +96,31 @@ public class UserActivitySourceMachineHandler extends UserActivityBaseHandler {
 		return userActivitySourceMachineConfigurationService;
 	}
 
+    /**
+     * Update the User collection with the count of distinct source devices each user uses
+     */
+	@Override
+	public void postCalculation(){
+		// Get all the users
+        List<ObjectId> userIds = userService.getDistinctValuesByFieldName(User.ID_FIELD);
+
+		userIds.forEach(userId -> {
+
+            // Get all the source machines for each user
+            List<UserActivitySourceMachineDocument> userActivitySourceMachineEntries
+					= userActivityService.getUserActivitySourceMachineEntries(userId.toString(), Integer.MAX_VALUE);
+            Set<String> machines = new HashSet<>();
+
+            userActivitySourceMachineEntries.forEach(userActivitySourceMachineDocument ->{
+                machines.addAll(userActivitySourceMachineDocument.getMachines().getMachinesHistogram().keySet());
+            });
+
+            // Remove irrelevant values
+            machines.removeAll(userAndOrganizationActivityHelper.getDeviceValuesToFilter());
+            machines.remove(userAndOrganizationActivityHelper.OTHER_MACHINE_VALUE);
+
+            // Update the user document with the number
+            userService.updateSourceMachineCount(userId.toString(), machines.size());
+		});
+	}
 }

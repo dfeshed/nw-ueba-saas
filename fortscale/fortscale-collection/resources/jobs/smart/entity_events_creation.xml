@@ -22,6 +22,14 @@
 					<key>retries</key>
 					<value>10</value>
 				</entry>
+				<entry>
+					<key>fortscale.model.build.control.input.topic</key>
+					<value>${fortscale.model.build.entityEvents.control.input.topic}</value>
+				</entry>
+				<entry>
+					<key>fortscale.model.build.control.output.topic</key>
+					<value>${fortscale.model.build.entityEvents.control.output.topic}</value>
+				</entry>
 			</job-data-map>
 		</job>
 	</schedule>

@@ -127,5 +127,5 @@ public interface AlertsRepositoryCustom {
 
 	void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag );
 
-	public Set<String> getDistinctUserNamesByUserRestFilter(UserRestFilter userRestFilter);
+	Set<String> getDistinctUserIdByUserRestFilter(UserRestFilter userRestFilter);
 }

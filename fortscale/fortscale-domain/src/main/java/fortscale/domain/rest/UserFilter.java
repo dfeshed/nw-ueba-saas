@@ -5,6 +5,7 @@ import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.Severity;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class UserFilter extends RestFilter {
@@ -29,6 +30,8 @@ public class UserFilter extends RestFilter {
 	private Severity severity;
 	private Double minScore;
 	private Double maxScore;
+	private List<String> positions;
+	private List<String> departments;
 
 	public String getDisabledSince() {
 		return disabledSince;
@@ -174,6 +177,22 @@ public class UserFilter extends RestFilter {
 		this.maxScore = maxScore;
 	}
 
+	public List<String> getPositions() {
+		return positions;
+	}
+
+	public void setPositions(List<String> positions) {
+		this.positions = positions;
+	}
+
+	public List<String> getDepartments() {
+		return departments;
+	}
+
+	public void setDepartments(List<String> departments) {
+		this.departments = departments;
+	}
+
 	@JsonIgnore
 	public Set<DataSourceAnomalyTypePair> getAnomalyTypesAsSet() {
 		if (indicatorTypes == null){
@@ -191,4 +210,42 @@ public class UserFilter extends RestFilter {
 		this.addAllWatched = addAllWatched;
 	}
 
+	@Override
+	public boolean equals(Object o) {
+
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		UserFilter that = (UserFilter) o;
+
+		return (   Objects.equals(disabledSince, that.disabledSince)
+				|| Objects.equals(isDisabled, that.isDisabled)
+				|| Objects.equals(isDisabledWithActivity, that.isDisabledWithActivity)
+				|| Objects.equals(isTerminatedWithActivity, that.isTerminatedWithActivity)
+				|| Objects.equals(inactiveSince, that.inactiveSince)
+				|| Objects.equals(dataEntities, that.dataEntities)
+				|| Objects.equals(entityMinScore, that.entityMinScore)
+				|| Objects.equals(isServiceAccount, that.isServiceAccount)
+				|| Objects.equals(searchFieldContains, that.searchFieldContains)
+				|| Objects.equals(addAlertsAndDevices, that.addAlertsAndDevices)
+				|| Objects.equals(userTags, that.userTags)
+				|| Objects.equals(isWatched, that.isWatched)
+				|| Objects.equals(alertTypes, that.alertTypes)
+				|| Objects.equals(indicatorTypes, that.indicatorTypes)
+				|| Objects.equals(locations, that.locations)
+				|| Objects.equals(severity, that.severity)
+				|| Objects.equals(minScore, that.minScore)
+				|| Objects.equals(maxScore, that.maxScore)
+				|| Objects.equals(positions, that.positions)
+				|| Objects.equals(departments, that.departments)
+				);
+	}
+
+	@Override
+	public int hashCode() {
+
+		return Objects.hash(disabledSince, isDisabled, isDisabledWithActivity, isTerminatedWithActivity, inactiveSince,
+				dataEntities, entityMinScore, isServiceAccount, searchFieldContains,  userTags, isWatched, alertTypes,
+				indicatorTypes, locations, severity, minScore, maxScore, positions, departments);
+	}
 }

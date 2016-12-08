@@ -70,6 +70,25 @@ public class StatsNullServiceTest {
 
     }
 
+    @Test
+    public void testUnregister() {
+
+        // Make sure stats service is null
+        Assert.assertNull(statsService);
+
+        StatsServiceTestingTrigoService fastTrigoService =
+                new StatsServiceTestingTrigoService(statsService, "manual", "slow", FAST_DEGREE_RATE, true);
+
+        StatsServiceTestingTrigoService slowTrigoService =
+                new StatsServiceTestingTrigoService(statsService, "manual", "fast", SLOW_DEGREE_RATE, true);
+
+
+        fastTrigoService.unregister();
+        slowTrigoService.unregister();
+
+    }
+
+
 }
 
 

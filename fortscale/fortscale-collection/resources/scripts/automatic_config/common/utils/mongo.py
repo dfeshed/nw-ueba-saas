@@ -1,12 +1,54 @@
+import getpass
 import pymongo
 import re
 import sys
 
 import time_utils
 
+def singleton(cls):
+    instances = {}
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+    return getinstance
+
+@singleton
+class MongoInstance:
+    db = None
+    connected = False
+
+def singleton(cls):
+    instances = {}
+    def getinstance():
+        if cls not in instances:
+            instances[cls] = cls()
+        return instances[cls]
+    return getinstance
+
+@singleton
+class MongoInstance:
+    db = None
+    connected = False
 
 def get_db(host):
-    return pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
+    mongo_instance = MongoInstance()
+    if mongo_instance.connected:
+        return mongo_instance.db
+    mongo_instance.connected = True
+    mongo_instance.db = pymongo.MongoClient(host, 27017 if host != 'upload' else 37017).fortscale
+    try:
+        # check if an authentication is required
+        mongo_instance.db.collection_names()
+    except Exception:
+        if not sys.stdin.isatty():
+            user = sys.stdin.readline().strip()
+            password = sys.stdin.readline().strip()
+        else:
+            user = raw_input('Please enter mongo username: ')
+            password = getpass.getpass('Please enter mongo password: ')
+        mongo_instance.db.authenticate(user, password)
+    return mongo_instance.db
 
 
 def get_all_collection_names(mongo_db):
@@ -43,6 +85,8 @@ def get_collections_time_boundary(host, collection_names_regex, is_start):
     for collection_name in get_collection_names(host=host, collection_names_regex=collection_names_regex):
         collection = mongo_db[collection_name]
         sample = collection.find_one()
+        if sample is None:
+            continue
         field_name_options = ['startTime', 'start_time_unix'] if is_start else ['endTime', 'end_time_unix']
         for field_name in field_name_options:
             if field_name in sample:

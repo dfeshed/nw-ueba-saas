@@ -20,16 +20,15 @@ import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsServiceSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.FeatureBucketsStoreSamza;
 import fortscale.streaming.service.aggregation.feature.bucket.strategy.FeatureBucketStrategyServiceSamza;
-import fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService;
+import fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService;
 import fortscale.streaming.service.aggregation.feature.event.AggregationMetricsService;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -40,7 +39,7 @@ import java.util.Map;
 
 @Configurable(preConstruction = true)
 public class AggregatorManager {
-	private static final Logger logger = LoggerFactory.getLogger(AggregatorManager.class);
+	private static final Logger logger = Logger.getLogger(AggregatorManager.class);
 	public static final String SAMZA_TASK_FORTSCALE_TIMESTAMP_FIELD_CONFIG_PATH = "fortscale.timestamp.field";
 
 
@@ -61,7 +60,7 @@ public class AggregatorManager {
 	@Autowired
 	private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
 	@Autowired
-	private AggrInternalAndKafkaEventTopologyService aggrEventTopologyService;
+	private AggrKafkaEventTopologyService aggrEventTopologyService;
 
 	@Autowired
 	private DataEntitiesConfigWithBlackList dataEntitiesConfigWithBlackList;
@@ -115,8 +114,6 @@ public class AggregatorManager {
 			return;
 		}
 		aggrEventTopologyService.setMessageCollector(collector);
-		aggrEventTopologyService.setAggregatorManager(this);
-
 		processEvent(event);
 	}
 
@@ -160,14 +157,12 @@ public class AggregatorManager {
 		}
 	}
 
-	public void window(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	public void window(MessageCollector collector, TaskCoordinator coordinator, boolean forceSync) throws Exception {
 		aggrEventTopologyService.setMessageCollector(collector);
 		aggrEventTopologyService.setAggregationMetricsService(aggregationMetricsService);
-		aggrEventTopologyService.setAggregatorManager(this);
-		
 		featureEventService.sendEvents(dataSourcesSyncTimer.getLastEventEpochtime());
 		dataSourcesSyncTimer.timeCheck(System.currentTimeMillis());
-		featureBucketsStore.cleanup();
+		featureBucketsStore.cleanup(forceSync);
 	}
 
 	public void advanceTime(long epochtime) {

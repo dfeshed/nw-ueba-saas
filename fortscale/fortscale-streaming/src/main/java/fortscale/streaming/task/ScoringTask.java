@@ -1,8 +1,10 @@
 package fortscale.streaming.task;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
 import fortscale.common.event.Event;
 import fortscale.common.event.service.EventService;
-import fortscale.services.impl.SpringService;
+import fortscale.ml.model.message.ModelBuildingStatusMessage;
 import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
@@ -18,8 +20,10 @@ import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
+import org.springframework.util.Assert;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
+import static fortscale.streaming.task.ModelBuildingStreamTask.CONTROL_OUTPUT_TOPIC_KEY;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 
@@ -31,7 +35,8 @@ public class ScoringTask extends AbstractStreamTask {
     private String timestampField;
     private Counter processedMessageCount;
     private Counter lastTimestampCount;
-
+    private String modelBuildingControlOutputTopic;
+    private ObjectMapper objectMapper;
 
 
     @Override
@@ -46,15 +51,40 @@ public class ScoringTask extends AbstractStreamTask {
         wrappedCreateTaskMetrics();
 
         scoringTaskService = new ScoringTaskService(config, context);
-        eventService = SpringService.getInstance().resolve(EventService.class);
+
+        eventService = springService.resolve(EventService.class);
+
+        modelBuildingControlOutputTopic = resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY,res);
+        Assert.hasText(modelBuildingControlOutputTopic);
+
+        objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
     }
 
     @Override
     protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+        String topicName = getIncomingMessageTopicName(envelope);
+
         String messageText = (String)envelope.getMessage();
         JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
-        Long timestamp = extractTimeStamp(message, messageText);
-        taskMetrics.eventsTime = timestamp;
+
+        if(topicName.equals(modelBuildingControlOutputTopic))
+        {
+            taskMetrics.modelBuildingEvents++;
+            handleModelBuildingEvent(messageText, message);
+        }
+        else {
+            Long timestamp = extractTimeStamp(message, messageText);
+            taskMetrics.eventsTime = timestamp;
+            handleEventToScore(collector, message, timestamp);
+            // todo: this metric should we removed after DPM is part of ther project
+            processedMessageCount.inc();
+
+            lastTimestampCount.set(timestamp);
+        }
+
+    }
+
+    private void handleEventToScore(MessageCollector collector, JSONObject message, Long timestamp) throws Exception {
         Event event = eventService.createEvent(message);
         StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKey(message);
 
@@ -67,14 +97,32 @@ public class ScoringTask extends AbstractStreamTask {
             taskMetrics.filteredEvents++;
             throw e;
         }
-
         scoringTaskService.sendEventToOutputTopic(collector, message);
         taskMetrics.sentEvents++;
+    }
 
-        // todo: this metric should we removed after DPM is part of ther project
-        processedMessageCount.inc();
-
-        lastTimestampCount.set(timestamp);
+    /**
+     * refreshes model cache if relevant
+     *
+     * @param messageText
+     * @param message
+     * @throws java.io.IOException
+     */
+    private void handleModelBuildingEvent(String messageText, JSONObject message) throws java.io.IOException {
+        // Check that input message is a status message
+        if (message.containsKey(ModelBuildingStatusMessage.CONTEXT_ID_FIELD_NAME)) {
+            ModelBuildingStatusMessage modelBuildingStatusMessage =
+                    objectMapper.readValue(messageText, ModelBuildingStatusMessage.class);
+            if (modelBuildingStatusMessage.isSuccessful()) {
+                taskMetrics.refreshModelCache++;
+                scoringTaskService.refreshModelCache(modelBuildingStatusMessage);
+            } else {
+                logger.warn("received modelBuildingStatusMessage with failure status: {} , not updating model cache",
+                        modelBuildingStatusMessage);
+            }
+        } else {
+            logger.debug("received model building summary message={}", message);
+        }
     }
 
     @Override

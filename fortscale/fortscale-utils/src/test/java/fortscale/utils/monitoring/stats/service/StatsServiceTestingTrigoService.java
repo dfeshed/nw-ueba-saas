@@ -94,5 +94,9 @@ public class StatsServiceTestingTrigoService {
         metrics.manualUpdate(epoch);
     }
 
+    void unregister() {
+        metrics.unregister();
+    }
+
 }
 

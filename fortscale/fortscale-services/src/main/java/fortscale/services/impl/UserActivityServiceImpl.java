@@ -3,9 +3,6 @@ package fortscale.services.impl;
 import fortscale.domain.core.activities.*;
 import fortscale.domain.core.dao.UserActivityRepository;
 import fortscale.services.UserActivityService;
-import fortscale.services.UserService;
-import fortscale.services.cache.CacheHandler;
-import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,8 +50,8 @@ public class UserActivityServiceImpl implements UserActivityService {
         return userActivityRepository.getUserActivityDataUsageEntries(id, timeRangeInDays);
     }
 
-    @Override public Set<String> getUserNamesByUserLocation(List<String> userLocations) {
-        return userActivityRepository.getUserNamesByLocation(userLocations);
+    @Override public Set<String> getUserIdByUserLocation(List<String> userLocations) {
+        return userActivityRepository.getUserIdByLocation(userLocations);
     }
 
     public List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String id, int timeRangeInDays) {

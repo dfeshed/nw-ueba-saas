@@ -3,9 +3,10 @@ package fortscale.entity.event;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
+
 import java.util.*;
 
 @JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
@@ -63,13 +64,12 @@ public class JokerFunction {
 			for (String aggrFeatureEventName : entry.getValue()) {
 				JokerAggrEventData aggrFeatureEvent = aggrFeatureEventsMap.get(aggrFeatureEventName);
 				if (aggrFeatureEvent != null) {
-					if (!aggrFeatureEvent.isOfTypeF() || aggrFeatureEvent.getScore() == null) {
-						String errorMsg = String.format("Event %s must be of type F and contain a score field", aggrFeatureEventName);
+					if (aggrFeatureEvent.getScore() == null) {
+						String errorMsg = String.format("Event %s must contain a score field", aggrFeatureEventName);
 						logger.error(errorMsg);
 						throw new IllegalArgumentException(errorMsg);
-					} else {
-						aggrFeatureEvents.add(aggrFeatureEvent);
 					}
+					aggrFeatureEvents.add(aggrFeatureEvent);
 				}
 			}
 
@@ -107,44 +107,21 @@ public class JokerFunction {
 			Map<String, JokerAggrEventData> aggrFeatureEventsMap,
 			Map<String, Double> clusterNameToMaxScoreMap) {
 
-		double maxScoresSum = 0;
-		for (Map.Entry<String, Double> entry : clusterNameToMaxScoreMap.entrySet()) {
-			String clusterName = entry.getKey();
-			Double maxScore = entry.getValue();
-			if (maxScore != null) {
-				Double alpha = alphas.get(clusterName);
-				if (alpha == null) {
-					String errorMsg = String.format("Missing alpha for cluster %s", clusterName);
-					logger.error(errorMsg);
-					throw new IllegalArgumentException(errorMsg);
-				} else {
-					maxScoresSum += alpha * maxScore;
-				}
-			}
-		}
+		double maxScoresSum = clusterNameToMaxScoreMap.entrySet().stream()
+				// discard clusters which for which no F was found in the data
+				.filter(clusterNameAndMaxScore -> clusterNameAndMaxScore.getValue() != null)
+				// multiply each cluster's score with the corresponding alpha
+				.mapToDouble(clusterNameAndMaxScore -> alphas.get(clusterNameAndMaxScore.getKey()) * clusterNameAndMaxScore.getValue())
+				.sum();
 
-		double pValuesSum = 0;
-		for (Map.Entry<String, JokerAggrEventData> entry : aggrFeatureEventsMap.entrySet()) {
-			JokerAggrEventData aggrFeatureEvent = entry.getValue();
-			if (aggrFeatureEvent.isOfTypeP()) {
-				String pEventName = entry.getKey();
-				Double pValue = aggrFeatureEvent.getAggregatedFeatureValue();
-				if (pValue == null) {
-					String errorMsg = String.format("Event %s of type P must have a value field", pEventName);
-					logger.error(errorMsg);
-					throw new IllegalArgumentException(errorMsg);
-				} else {
-					Double beta = betas.get(pEventName);
-					if (beta == null) {
-						String errorMsg = String.format("Missing beta for P event %s", pEventName);
-						logger.error(errorMsg);
-						throw new IllegalArgumentException(errorMsg);
-					} else {
-						pValuesSum += beta * pValue;
-					}
-				}
-			}
-		}
+		double pValuesSum = betas.entrySet().stream()
+				// pair each P to its beta
+				.map(pNameAndBeta -> new ImmutablePair<>(aggrFeatureEventsMap.get(pNameAndBeta.getKey()), pNameAndBeta.getValue()))
+				// discard betas which don't have corresponding Ps
+				.filter(aggrFeatureEventAndBeta -> aggrFeatureEventAndBeta.getLeft() != null)
+				// multiply each P's value by the corresponding beta
+				.mapToDouble(aggrFeatureEventAndBeta -> aggrFeatureEventAndBeta.getLeft().getScore() * aggrFeatureEventAndBeta.getRight())
+				.sum();
 
 		return maxScoresSum + pValuesSum;
 	}

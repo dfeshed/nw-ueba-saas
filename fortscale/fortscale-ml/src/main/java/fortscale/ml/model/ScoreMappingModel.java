@@ -6,9 +6,11 @@ import fortscale.ml.scorer.ScoreMapping;
 
 import java.util.Map;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class ScoreMappingModel implements Model {
-	private ScoreMapping.ScoreMappingConf scoreMappingConf;
+	protected ScoreMapping.ScoreMappingConf scoreMappingConf;
 
 	public ScoreMappingModel() {
 		scoreMappingConf = new ScoreMapping.ScoreMappingConf();
@@ -25,5 +27,15 @@ public class ScoreMappingModel implements Model {
 	@Override
 	public long getNumOfSamples() {
 		return 0;
+	}
+
+	@Override
+	public String toString() {
+		String scoreMappingStr="null";
+		if(scoreMappingConf.getMapping()!=null)
+		{
+			scoreMappingStr = scoreMappingConf.getMapping().toString();
+		}
+		return String.format("<ScoreMappingModel: scoreMappingConf=%s>", scoreMappingStr);
 	}
 }
