@@ -6,7 +6,7 @@ import intToHex from 'recon/utils/int-to-hex';
 import hexToInt from 'recon/utils/hex-to-int';
 import layout from './template';
 
-const { Component, observer, run } = Ember;
+const { $, Component, observer, run } = Ember;
 
 // Default data types for known fields in packet headers.
 const DEFAULT_TYPE_OF_FIELD = {
@@ -142,7 +142,7 @@ const ByteTooltipComponent = Component.extend({
 
   // clean up DOM
   willDestroyElement() {
-    this.element.remove();
+    $(this.element).remove();
   },
 
   _tunnel() {

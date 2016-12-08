@@ -7,7 +7,8 @@ const {
   Component,
   isNone,
   isEmpty,
-  isArray
+  isArray,
+  run
 } = Ember;
 
 export default Component.extend({
@@ -70,9 +71,11 @@ export default Component.extend({
     const data = [];
     const nLength = allIndicators.length;
     const indicatorTimeFrame = allIndicators[ 0 ].indicator.alert.timestamp;
-    this.setProperties({
-      'firstIndicatorTime': indicatorTimeFrame,
-      'lastIndicatorTime': allIndicators[ nLength - 1 ].indicator.alert.timestamp
+    run.next(() => {
+      this.setProperties({
+        'firstIndicatorTime': indicatorTimeFrame,
+        'lastIndicatorTime': allIndicators[nLength - 1].indicator.alert.timestamp
+      });
     });
     let previousAlertTime = moment(indicatorTimeFrame);
 
