@@ -177,6 +177,7 @@ public class ControllerInvokedAdTask implements Runnable {
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", collectionJarPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
             processBuilder.directory(new File(controller.COLLECTION_TARGET_DIR));
+            processBuilder.environment().put("HOME", controller.USER_HOME_DIR);
             process = processBuilder.start();
         } catch (IOException e) {
             logger.error("Execution of task {}  has failed.", jobName, e);

@@ -45,7 +45,9 @@ public class ApiActiveDirectoryController {
 
 	public String COLLECTION_USER;
 
-	public final String COLLECTION_JAR_NAME = "fortscale-collection-1.1.0-SNAPSHOT.jar";
+	public String USER_HOME_DIR;
+
+	public String COLLECTION_JAR_NAME;
 
 	private final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 
@@ -68,14 +70,20 @@ public class ApiActiveDirectoryController {
 
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
-
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@PostConstruct
 	private void getProperties() {
-		final String userHomeDir = SpringPropertiesUtil.getProperty("user.home.dir");
-		COLLECTION_TARGET_DIR =  userHomeDir!=null? userHomeDir + "/fortscale/fortscale-core/fortscale/fortscale-collection/target" : "/home/cloudera";
+
+		final String jarProperty = SpringPropertiesUtil.getProperty("jar.name");
+		COLLECTION_JAR_NAME = jarProperty!=null? jarProperty : "fortscale-collection-1.1.0-SNAPSHOT.jar";
+
+		final String homeDirProperty = SpringPropertiesUtil.getProperty("user.home.dir");
+		USER_HOME_DIR = homeDirProperty != null ? homeDirProperty : "/home/cloudera";
+
+		COLLECTION_TARGET_DIR =  USER_HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
+
 		final String userName = SpringPropertiesUtil.getProperty("user.name");
 		COLLECTION_USER = userName!=null? userName : "cloudera";
 	}
