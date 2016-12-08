@@ -220,6 +220,7 @@ public class ControllerInvokedAdTask implements Runnable {
     public String toString() {
         return "ControllerInvokedAdTask{" +
                 "dataSource=" + dataSource +
+                ", currentAdTaskType=" + currentAdTaskType +
                 '}';
     }
 
