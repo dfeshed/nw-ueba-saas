@@ -2,6 +2,8 @@
   .rsa-form-radio-group-label {
     margin-bottom: rsa-whitespace(less);
     color: $formRadioGroupLabelColor;
+    @include rsa-font(header, small);
+    text-transform: uppercase;
   }
 
   .rsa-form-radio {
@@ -15,7 +17,7 @@
 
 .rsa-form-radio {
   line-height: 2rem;
-  
+
   .outer-wrapper {
     display: inline-block;
     border-radius: 10rem;

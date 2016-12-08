@@ -37,6 +37,8 @@ input:-webkit-autofill:active {
     vertical-align: text-top;
     margin-bottom: rsa-whitespace(least);
     color: $formInputLabelColor;
+    @include rsa-font(header, small);
+    text-transform: uppercase;
   }
 
   input, textarea {
