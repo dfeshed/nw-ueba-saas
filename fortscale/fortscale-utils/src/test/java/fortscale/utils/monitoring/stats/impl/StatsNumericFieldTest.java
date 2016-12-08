@@ -67,10 +67,13 @@ public class StatsNumericFieldTest {
         FlexLong flexLong;
         FlexLong nullValueFlexLong;
         FlexLong nullFlexLong;
+        StatsLongFlexMetric flexLongInterface;
 
         FlexDouble flexDouble;
         FlexDouble nullValueFlexDouble;
-        FlexDouble nullFlexDouble;        
+        FlexDouble nullFlexDouble;
+        StatsDoubleFlexMetric flexDoubleInterface;
+
     }
 
 
@@ -108,10 +111,13 @@ public class StatsNumericFieldTest {
         numericFields.flexLong             = new FlexLong(90L);
         numericFields.nullValueFlexLong    = new FlexLong(null);
         numericFields.nullFlexLong         = null;
+        numericFields.flexLongInterface    = new FlexLong(93L);
+
 
         numericFields.flexDouble           = new FlexDouble(100.3);
         numericFields.nullValueFlexDouble  = new FlexDouble(null);
         numericFields.nullFlexDouble       = null;
+        numericFields.flexDoubleInterface  = new FlexDouble(103.3);
 
         final double epsilon = 0.00001;
         Field field;
@@ -234,6 +240,12 @@ public class StatsNumericFieldTest {
         assertNull(statsNumericField.getAsLong());
         assertNull(statsNumericField.getAsDouble());
 
+        // flex Long interface
+        field = numericFields.getClass().getDeclaredField("flexLongInterface");
+        statsNumericField = StatsNumericField.builder(field, numericFields);
+        assertEquals(numericFields.flexLongInterface.getValue(), statsNumericField.getAsLong());
+        assertEquals(numericFields.flexLongInterface.getValue(), statsNumericField.getAsDouble(), epsilon);
+
         // flex Double
         field = numericFields.getClass().getDeclaredField("flexDouble");
         statsNumericField = StatsNumericField.builder(field, numericFields);
@@ -251,8 +263,13 @@ public class StatsNumericFieldTest {
         statsNumericField = StatsNumericField.builder(field, numericFields);
         assertNull(statsNumericField.getAsDouble());
         assertNull(statsNumericField.getAsDouble());
-        
-        
+
+        // flex Double interface
+        field = numericFields.getClass().getDeclaredField("flexDoubleInterface");
+        statsNumericField = StatsNumericField.builder(field, numericFields);
+        assertEquals(numericFields.flexDoubleInterface.getValue(), statsNumericField.getAsDouble());
+        assertEquals(numericFields.flexDoubleInterface.getValue(), statsNumericField.getAsDouble(), epsilon);
+
     }
 
     class UnsupportedType {
