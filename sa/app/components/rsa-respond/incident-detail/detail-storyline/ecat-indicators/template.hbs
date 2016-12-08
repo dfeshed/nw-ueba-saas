@@ -1,0 +1,26 @@
+<div class={{concat 'indicator' (unless isCatalyst ' non-catalyst')}}>
+  {{t 'incident.details.storyline.ecat.title'}}
+
+  {{#link-to (query-params entityType='FILE_NAME' entityId=filename)}}
+    {{filename}}
+  {{/link-to}}
+
+  {{rsa-icon size="small" name="arrow-right-7" class="direction"}}
+
+  {{#link-to (query-params entityType='HOST' entityId=shost)}}
+    {{shost}}
+  {{/link-to}}
+
+  <span class='risk-score'>{{t 'incident.details.storyline.ecat.riskScore' score=indicator.alert.machineScore}}</span>
+
+  <span class='divider'>|</span>
+  {{#each indicator.sourceTypes as |source|}}
+    <span class="indicator-source">
+      {{rsa-content-label style='neutral' isInverted=true class="rsa-incident-tile-source" label=source}}
+    </span>
+  {{/each}}
+
+  {{#link-to 'protected.respond.incident.details' 'Indicator' class='indicator__icon'}}
+    {{rsa-icon name="arrow-right-12" size="smaller"}}
+  {{/link-to}}
+</div>

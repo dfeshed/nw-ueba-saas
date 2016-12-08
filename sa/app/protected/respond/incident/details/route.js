@@ -38,7 +38,7 @@ export default Route.extend({
 
   model(params, transition) {
 
-    if (params.detail_id !== 'C2') {
+    if (params.detail_id !== 'c2') {
       return null;
     }
     const alerts = [];

@@ -50,6 +50,14 @@
     opacity: $rsa-translucent;
   }
 
+  &.is-neutral {
+    @include rsa-form-label-color(rsa-color(gray));
+
+    &.is-inverted {
+      @include rsa-form-label-color($contentLabelColor, rsa-color(gray), rsa-color(gray));
+    }
+  }
+
   &.is-low {
     @include rsa-form-label-color(rsa-color(green));
 

@@ -1,57 +1,69 @@
 {{#rsa-content-section-header}}
-  {{t 'incident.details.storyline.header'}} |
-  <span class="date">
-    {{rsa-content-datetime timestamp=indicators.firstObject.alert.timestamp}}
-    {{t 'incident.details.storyline.to'}}
-    {{rsa-content-datetime timestamp=indicators.lastObject.alert.timestamp}}
-  </span>
+  {{t 'incident.details.storyline.header'}}
+  {{#if firstIndicatorTime}}
+    <span class="date">
+      {{rsa-content-datetime timestamp=lastIndicatorTime}}
+      {{t 'incident.details.storyline.to'}}
+      {{rsa-content-datetime timestamp=firstIndicatorTime}}
+    </span>
+  {{/if}}
 {{/rsa-content-section-header}}
 
-<ul class='storyline'>
-  {{#each indicators as |indicator|}}
-    <li>
-      {{#unless indicator.alert.hideDate}}
-        <div class="date-section timeline">
-          {{rsa-content-datetime displayTime=false timestamp=indicator.alert.timestamp}}
+<div class='storyline-body'>
+  <div class='axis'></div>
+  <div class='storyline-scrollbox'>
+    <div class='tree'>
+      {{#each indicators as |indicator|}}
+        <div class='indicator-wrapper'>
+          {{#unless indicator.alert.hideDate}}
+            <div class={{concat 'date-bar' (unless indicator.catalyst ' non-catalyst')}}>
+              {{rsa-content-datetime displayTime=false timestamp=indicator.alert.timestamp}}
+            </div>
+          {{/unless}}
+          <div class='indicators-in-date'>
+            <div class='indicators'>
+              <div class='info'>
+                <div class={{concat 'time' (unless indicator.catalyst ' non-catalyst')}}>
+                  {{rsa-content-datetime displayDate=false timestamp=indicator.alert.timestamp}}
+                </div>
+                <div class='score'>
+                  {{#if indicator.catalyst}}
+                    <div class='score-circle'>{{indicator.alert.risk_score}}</div>
+                  {{else}}
+                    <div class='score-circle non-catalyst'>+5</div>
+                  {{/if}}
+                </div>
+                <div class='summary'>
+                  {{#if (eq indicator.sourceName 'ATD')}}
+                    {{rsa-respond/incident-detail/detail-storyline/esa-indicators indicatorType='c2' groupedIps=groupedIps indicator=indicator}}
+                  {{else if (eq indicator.sourceName 'UEBA')}}
+                    {{rsa-respond/incident-detail/detail-storyline/esa-indicators indicatorType='winauth' indicator=indicator}}
+                  {{else if (eq indicator.sourceName 'ENDPOINT')}}
+                    {{rsa-respond/incident-detail/detail-storyline/ecat-indicators indicator=indicator}}
+                  {{/if}}
+
+                  {{#each indicator.lookup as |index|}}
+                    <div class={{concat 'match-sub-indicator' (unless indicator.catalyst ' non-catalyst')}}>
+                      {{rsa-icon name="information-circle" style="lined" class="storyline-info"}}
+                      {{index.title}}
+
+                      {{#link-to (query-params entityType='HOST' entityId=index.source)}}
+                        {{index.source}}
+                      {{/link-to}}
+
+                      {{rsa-icon size="small" name="arrow-right-7" class="direction"}}
+
+                      {{#link-to (query-params entityType='IP' entityId=index.dest)}}
+                        {{index.dest}}
+                      {{/link-to}}
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="content"></div>
-      {{/unless}}
-    </li>
-    <li>
-      <div class="time-section timeline">
-        {{rsa-content-datetime displayDate=false timestamp=indicator.alert.timestamp}}
-      </div>
-      <div class='icon'>
-        {{#if (eq indicator.alert.clientSource 'C2')}}
-          {{rsa-icon name="link-2" size="small"}}
-        {{else if (eq indicator.alert.clientSource 'ECAT')}}
-          {{rsa-icon name="computer-imac-1" size="small"}}
-        {{else if (eq indicator.alert.clientSource 'UBA')}}
-          {{rsa-icon name="person-2" size="small"}}
-        {{else}}
-          {{rsa-icon name="flag-triangle-2" size="small"}}
-        {{/if}}
-      </div>
-      <div class="content main">
-        <div class="main_row">
-          <span class="source">{{indicator.originalHeaders.device_product}}</span> |
-          <span class="context">{{#link-to (query-params entityType='IP' entityId=indicator.alert.groupby_source_ip)}}{{indicator.alert.groupby_source_ip}}{{/link-to}}</span> |
-          {{indicator.originalHeaders.name}} |
-          <span class='score'>{{t 'incident.fields.riskScore'}}: {{indicator.alert.risk_score}}</span>
-        </div>
-        <div class="main__icon">
-          {{#if (eq indicator.alert.clientSource 'C2')}}
-            {{#link-to 'protected.respond.incident.details' 'C2'}}
-              {{rsa-icon name="arrow-right-12" size="smaller"}}
-            {{/link-to}}
-          {{else}}
-            {{#link-to 'protected.respond.incident.details' 'Indicator'}}
-              {{rsa-icon name="arrow-right-12" size="smaller"}}
-            {{/link-to}}
-          {{/if}}
-        </div>
-      </div>
-    </li>
-  {{/each}}
-</ul>
-<div class="overlay"></div>
+      {{/each}}
+    </div>
+  </div>
+</div>

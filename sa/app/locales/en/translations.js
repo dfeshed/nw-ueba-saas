@@ -345,7 +345,36 @@ export default $.extend({}, BaseTranslations, {
       },
       storyline: {
         header: 'Storyline',
-        to: 'to'
+        to: 'to',
+        lookup: {
+          ip2host: 'Host is related to source ip'
+        },
+        c2: {
+          title: 'Detected C&C communication',
+          titleScore: 'Domain risk score {{score}}',
+          beaconingScore: 'The time intervals between communication events are very uniform',
+          newDomain: 'Domain is relatively new to the environment',
+          whoisAgeScore: 'Domain is relatively new based on the registration date {{age}} days ago',
+          expiringDomain: 'The domain registration will expire relatively soon {{age}} days',
+          rareDomain: 'The domain is rare in this environment',
+          referrer: 'A high percentage of hosts connecting to the domain are not utilizing referrers',
+          userAgent: 'A high percentage of hosts connecting to the domain are using a rare or no user agent'
+        },
+        ecat: {
+          title: 'Risky process',
+          riskScore: 'Module Risk Score {{score}}'
+        },
+        winauth: {
+          title: 'Anomalous Windows authentication',
+          titleScore: 'User risk score {{score}}',
+          highServerScore: 'Abnormally high number of servers accessed today',
+          newDeviceScore: 'Accessed an abnormally high number of new devices this week',
+          newServerScore: 'Accessed an abnormally high number of new servers today',
+          passTheHash: 'Potential "pass the hash" attack indicated by a new device followed by a new server',
+          failedServerScore: 'Abnormally high number of servers with failed logins today',
+          logonType: 'Accessed using a WIndows logon type they have rarely used in the past',
+          aggregation: 'Accessed using a Windows logon type they have rarely used in the past'
+        }
       },
       eventOverview: {
         title: 'event overview',

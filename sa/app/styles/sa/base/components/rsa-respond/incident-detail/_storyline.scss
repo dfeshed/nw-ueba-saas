@@ -1,110 +1,199 @@
-.rsa-respond-storyline-wrapper {
-  background-color: rsa-color(black, null, $rsa-translucent);
-  .date {
-    @include rsa-font(header);
-    white-space: nowrap;
-    margin-top: rsa-whitespace(least);
-    display: inline-block;
+.rsa-application-layout-manager.panel-B-quarter {
+  .rsa-respond-storyline-wrapper {
+    .storyline-body {
+      top: 48px;
+    }
   }
 }
-
-ul.storyline{
-  li {
-    @include rsa-flex-direction(row);
+.rsa-respond-storyline-wrapper {
+  .storyline-body {
+    position: absolute;
+    top: 32px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rsa-color(black, null, $rsa-translucent);
+  }
+  .date {
+    color: rsa-color(gray);
+    @include rsa-font(header, medium);
+    margin-left: rsa-whitespace();
   }
 
-  li div.timeline {
-    text-align: center;
-    padding: rsa-whitespace();
-    @include rsa-font(header, small);
-    @include rsa-font(bold);
-    color: rsa-color(gray, lightest);
-    width: 9rem;
+  .axis {
+    z-index: 0;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 7.5rem;
+    border-right: 2px solid rsa-color(blue, dark);
+    background-color:  rsa-color(black, null, $rsa-nearly-transparent);
   }
 
-  li div.date-section {
-    padding: rsa-whitespace();
+  .date-bar{
+    padding: rsa-whitespace(less);
     color: rsa-color(blue, dark);
-    @include rsa-font(small, header);
-    @include rsa-font(bold);
-    width: 7rem;
-    background-color: rsa-color(black, null, $rsa-nearly-transparent);
+    @include rsa-font(navigation, medium);
+    width: 6.5rem;
+    background-color: rsa-color(black, null, $rsa-nearly-opaque);
+    text-align: center;
+    position: relative;
+    top: 0;
   }
 
-  li div.time-section {
-    margin-top: rsa-whitespace(least);
+  .storyline-scrollbox {
+    z-index: 1;
+    overflow: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
   }
 
-  li div.content {
-    flex: 1;
-  }
-  .main__icon {
-    flex: 0 0 auto;
-    padding-right: rsa-whitespace();
-  }
-
-  li div.main {
-    margin-top: rsa-whitespace(less);
-    color: rsa-color(white);
-    flex: 1;
-    background-color: rsa-color(black, null, $rsa-nearly-transparent);
-    @include rsa-flex-direction(row);
-    @include rsa-flex-align-items(center);
-  }
-
-  .main_row {
-    padding: rsa-whitespace() rsa-whitespace() rsa-whitespace(less) rsa-whitespace();
-    flex: 1;
-    .score {
-      color: rsa-color(red);
+  .rsa-content-ip-connections  {
+    display: inline;
+    padding-right: rsa-whitespace(least);
+    div {
+      display: inline;
     }
   }
 
-  .icon {
+  .divider{
+    margin:0 rsa-whitespace(least);
+    color: rsa-color(gray)
+  }
+
+  .indicator{
+    margin-left: 6.5rem;
+    color: rsa-color(white);
+    padding: rsa-whitespace(less) rsa-whitespace(more);
+    background-color: rsa-color(black, null, $rsa-nearly-opaque);
+  }
+
+  .indicator__icon {
     position: absolute;
-    color: rsa-color(blue, dark);
-    background: rsa-color(black);
-    margin-top: rsa-whitespace();
-    border-radius: 25px;
-    height: 10px;
-    padding: 7px;
-    width: 10px;
-    left: 8rem;
-    z-index: 2;
-    border: 2px solid rsa-color(blue, dark);
+    top: 13px;
+    left: 95%;
   }
 
-  .source {
-    color: rsa-color(blue, dark);
+  .time {
+    text-align: center;
+    @include rsa-font(navigation, small);
+    color: rsa-color(gray, lightest);
+    width: 7rem;
+    position: relative;
+    top: 15px;
   }
-  .context {
-    text-decoration: underline;
-  }
-}
-.rsa-application-layout-manager.panel-B-quarter {
-  .overlay{
-    top: 3.8rem;
-  }
-  .date {
-    margin-top: rsa-whitespace();
-  }
-  .main {
-    line-height: 1.4rem;
-  }
-}
-.rsa-application-layout-manager.panel-B-half {
-  .main {
-    line-height: 1.4rem;
-  }
-}
 
-.overlay {
-  width: 9rem;
-  border-right: 2px solid rsa-color(blue, dark);
-  height: 95%;
-  overflow: hidden;
-  background-color:  rsa-color(black, null, $rsa-nearly-transparent);
-  top: 2.5rem;
-  z-index: 1;
-  position: absolute;
+  @keyframes storyline-catalyst-animation {
+    0%   {
+      left:0px;
+      top:-1000px;
+    }
+    100% {
+      left:0px;
+      top:0px;
+    }
+  }
+
+  .indicator:not(.non-catalyst),
+  .sub-indicator:not(.non-catalyst),
+  .match-sub-indicator:not(.non-catalyst) {
+    position: relative;
+    @include rsa-vendor-prefix(animation-name, storyline-catalyst-animation);
+    @include rsa-vendor-prefix(animation-duration, 2s);
+  }
+
+  .summary {
+    position: relative;
+    width: calc(100% - 1.2rem);
+    top: -1.5rem;
+    left: 1.2rem;
+  }
+
+  .risk-score{
+    color: rsa-color(red);
+    margin-left: rsa-whitespace(less);
+  }
+  .score-circle {
+    padding: 3px;
+    color: rsa-color(white);
+    display: inline;
+    margin-left: 5.5rem;
+    background-color: rsa-color(red);
+    border: 2px solid rsa-color(white);
+    @include rsa-vendor-prefix(border-radius, 50%);
+
+    &.non-catalyst {
+      background-color: rsa-color(gray, darker);
+      border: 2px solid rsa-color(blue);
+    }
+  }
+  .score {
+    position: relative;
+    top: 0.5rem;
+    left: 1rem;
+    width: 1rem;
+    @include rsa-layer(base);
+  }
+  .sub-indicator,
+  .match-sub-indicator {
+    margin-left: 10rem;
+    color: rsa-color(white);
+    margin-top: 0.1rem;
+    background-color: rsa-color(black, null, $rsa-nearly-opaque);
+    padding: calc(#{rsa-whitespace()} - 0.2rem) rsa-whitespace(more);
+  }
+  .match-sub-indicator {
+    font-style: italic;
+    color: rsa-color(gray);
+  }
+  .storyline-info {
+    color: rsa-color(blue);
+  }
+
+
+  @-webkit-keyframes storyline-fadeIn {
+    from {
+      opacity: 0;
+      opacity: 1\9;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @-moz-keyframes storyline-fadeIn {
+    from {
+      opacity: 0;
+      opacity: 1\9;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes storyline-fadeIn {
+    from {
+      opacity: 0;
+      opacity: 1\9;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .non-catalyst {
+    opacity:0;
+    @include rsa-vendor-prefix(animation, storyline-fadeIn, ease-in, 1);
+    @include rsa-vendor-prefix(animation-fill-mode, forwards);
+    @include rsa-vendor-prefix(animation-duration, 2.5s);
+    @include rsa-vendor-prefix(animation-delay, 2.5s);
+
+    &.indicator,
+    &.sub-indicator,
+    &.match-sub-indicator{
+      background-color:  rsa-color(black, null, $rsa-nearly-transparent);
+    }
+  }
 }

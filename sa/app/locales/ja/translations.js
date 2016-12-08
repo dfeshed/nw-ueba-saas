@@ -329,8 +329,37 @@ export default $.extend({}, BaseTranslations, {
         source: 'ja_Source'
       },
       storyline: {
-        header: 'ja-Storyline',
-        to: 'ja-to'
+        header: 'ja_Storyline',
+        to: 'ja_to',
+        lookup: {
+          ip2host: 'ja_Host is related to source ip'
+        },
+        c2: {
+          title: 'ja_Detected C&C communication',
+          titleScore: 'ja_Domain risk score {{score}}',
+          beaconingScore: 'ja_The time intervals between communication events are very uniform',
+          newDomain: 'ja_Domain is relatively new to the environment',
+          whoisAgeScore: 'ja_Domain is relatively new based on the registration date {{age}} days ago',
+          expiringDomain: 'ja_The domain registration will expire relatively soon {{age}} days',
+          rareDomain: 'ja_The domain is rare in this environment',
+          referrer: 'ja_A high percentage of hosts connecting to the domain are not utilizing referrers',
+          userAgent: 'ja_A high percentage of hosts connecting to the domain are using a rare or no user agent'
+        },
+        ecat: {
+          title: 'ja_Risky process',
+          riskScore: 'ja_Module Risk Score {{score}}'
+        },
+        winauth: {
+          title: 'ja_Anomalous Windows authentication',
+          titleScore: 'ja_User risk score {{score}}',
+          highServerScore: 'ja_Abnormally high number of servers accessed today',
+          newDeviceScore: 'ja_Accessed an abnormally high number of new devices this week',
+          newServerScore: 'ja_Accessed an abnormally high number of new servers today',
+          passTheHash: 'ja_Potential "pass the hash" attack indicated by a new device followed by a new server',
+          failedServerScore: 'ja_Abnormally high number of servers with failed logins today',
+          logonType: 'ja_Accessed using a WIndows logon type they have rarely used in the past',
+          aggregation: 'ja_Accessed using a Windows logon type they have rarely used in the past'
+        }
       },
       eventOverview: {
         title: 'ja_Event Overview',

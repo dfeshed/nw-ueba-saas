@@ -31,6 +31,11 @@ export default Component.extend({
     }
   },
 
+  @computed('model.groupBySourceIp.[]')
+  groupedIps(ips) {
+    return ips;
+  },
+
   actions: {
     toggleFullWidthPanel(panel) {
       this.get('layoutService').toggleFullWidthPanel(panel);

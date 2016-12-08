@@ -1,6 +1,8 @@
 {{#if showFromIP}}
   <div class="from-ip">
-    <span class="circle" title={{t 'ipConnections.sourceIp'}}></span>
+    {{#if showToIP}}
+      <span class="circle" title={{t 'ipConnections.sourceIp'}}></span>
+    {{/if}}
     {{#if multipleFromIPs}}
       {{#rsa-content-help-trigger triggerEvent="click" tooltip=fromIpsId}}
         {{#rsa-form-button allowToggleActive=true withDropdown=true}}
@@ -30,7 +32,9 @@
 
 {{#if showToIP}}
   <div class="to-ip">
-    <span class="circle with-color" title={{t 'ipConnections.destinationIp'}}></span>
+    {{#if showFromIP}}
+      <span class="circle with-color" title={{t 'ipConnections.destinationIp'}}></span>
+    {{/if}}
     {{#if multipleToIPs}}
       {{#rsa-content-help-trigger triggerEvent="click" tooltip=toIpsId}}
         {{#rsa-form-button allowToggleActive=true withDropdown=true}}

@@ -60,3 +60,29 @@ export const incidentPriorityString =
     priority[ incPriority[key] ] = key;
     return priority;
   }, {});
+
+
+export const C2Enrichment = {
+  domainName: { key: 'rsa_analytics_http-${type}_c2_normalized_domain', isTitleScore: true },
+  titleScore: { key: 'rsa_analytics_http-${type}_c2_command_control_aggregate', isTitleScore: true },
+  beaconingScore: { key: 'rsa_analytics_http-${type}_c2_smooth_score' },
+  newDomain: { key: 'rsa_analytics_http-${type}_c2_newdomain_score' },
+  whoisAvailable: { key: 'rsa_analytics_http-${type}_c2_whois_domain_not_found_by_whois' },
+  whoisAgeScore: { key: 'rsa_analytics_http-${type}_c2_whois_age_score', displayCondition: true },
+  expiringDomain: { key: 'rsa_analytics_http-${type}_c2_whois_validity_score', displayCondition: true },
+  rareDomain: { key: 'rsa_analytics_http-${type}_c2_referer_score' },
+  referrer: { key: 'rsa_analytics_http-${type}_c2_referer_ratio_score' },
+  userAgent: { key: 'rsa_analytics_http-${type}_c2_ua_ratio_score' }
+};
+
+export const WinAuthEnrichment = {
+  eventComputer: { key: 'rsa_analytics_uba_winauth_normalized_hostname', isTitleScore: true },
+  titleScore: { key: 'rsa_analytics_uba_winauth_aggregation_aggregate', isTitleScore: true },
+  isDeviceExists: { key: 'rsa_analytics_uba_winauth_device_exists' },
+  newDeviceScore: { key: 'rsa_analytics_uba_winauth_newdevicescore_score', displayCondition: true },
+  highServerScore: { key: 'rsa_analytics_uba_winauth_highserverscore_score', displayCondition: false },
+  newServerScore: { key: 'rsa_analytics_uba_winauth_newserverscore_score', displayCondition: false },
+  passTheHash: { key: 'rsa_analytics_uba_winauth_newdeviceservice_score', displayCondition: false },
+  failedServerScore: { key: 'rsa_analytics_uba_winauth_failedserversscore_score', displayCondition: false },
+  logonType: { key: 'rsa_analytics_uba_winauth_logontypescore_score', displayCondition: false }
+};

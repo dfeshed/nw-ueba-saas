@@ -22,6 +22,7 @@ export default Component.extend({
     'isLow',
     'isMedium',
     'isHigh',
+    'isNeutral',
     'isDanger'
   ],
 
@@ -33,8 +34,9 @@ export default Component.extend({
   isMediumSize: equal('size', 'medium'),
   isLargeSize: equal('size', 'large'),
 
-  style: 'standard', // ['standard', 'low', 'medium', 'high', 'danger']
+  style: 'standard', // ['standard', 'neutral', 'low', 'medium', 'high', 'danger']
   isStandard: equal('style', 'standard'),
+  isNeutral: equal('style', 'neutral'),
   isLow: equal('style', 'low'),
   isMedium: equal('style', 'medium'),
   isHigh: equal('style', 'high'),

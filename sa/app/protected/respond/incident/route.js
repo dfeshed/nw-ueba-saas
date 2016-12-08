@@ -44,8 +44,9 @@ export default Route.extend({
         sort: [{ field: 'alert.timeStamp', descending: true }]
       },
       onResponse: ({ data }) => {
-        if (typeOf(data.relatedIndicators) !== 'undefined') {
-          details.indicators.pushObjects(data.relatedIndicators);
+        const { relatedIndicators } = data;
+        if (typeOf(relatedIndicators) !== 'undefined') {
+          details.indicators.pushObjects(relatedIndicators);
         }
       },
       onError() {
