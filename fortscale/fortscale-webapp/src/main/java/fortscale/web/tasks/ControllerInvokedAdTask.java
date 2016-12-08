@@ -83,7 +83,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
     private void notifyTaskDone() {
         if (!controller.removeRunningTask(this)) {
-            logger.warn("Tried to remove task but task doesn't exist. This may occur due to concurrency issues.");
+            logger.warn("Tried to remove task but task doesn't exist.");
         }
         else {
             logger.info("Removed running task {} from active tasks", this);
