@@ -64,8 +64,8 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		Assert.notNull(featureBucketStore);
 	}
 	
-	public void cleanup() throws Exception{
-		syncAll();
+	public void cleanup(boolean forceSync) throws Exception{
+		syncAll(forceSync);
 
 		keyValueDbCleanup();
 	}
@@ -85,8 +85,12 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		}
 	}
 
-	private void syncAll() throws Exception{
-		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis()){
+	private void syncAll(boolean forceSync) throws Exception{
+		long now = System.currentTimeMillis();
+		long nextSyncWindowMillis = lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds * 1000;
+		if(lastSyncSystemEpochTime == 0 || nextSyncWindowMillis < now || forceSync){
+			logger.info("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
+			lastSyncSystemEpochTime = now;
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
@@ -182,10 +186,6 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private void updateFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception {
 		String key = getBucketKey(featureBucket);
 		featureBucketStore.put(key, featureBucket);
-		if(featureBucket.getId() != null)
-		{
-			super.storeFeatureBucket(featureBucketConf,featureBucket);
-		}
 	}
 	
 	private void updateFeatureBucketAfterEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{

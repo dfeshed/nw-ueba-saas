@@ -4,6 +4,7 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.AggregatorManager;
 import fortscale.streaming.task.metrics.AggregationEventsStreamTaskMetrics;
 import fortscale.utils.ConversionUtils;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -11,7 +12,10 @@ import org.apache.samza.metrics.Counter;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
+
 public class AggregationEventsStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
+	private static final Logger logger = Logger.getLogger(AggregationEventsStreamTask.class);
+
 	private String controlTopic;
 	private AggregatorManager aggregatorManager;
 	private AggregationEventsStreamTaskMetrics taskMetrics;
@@ -49,8 +53,9 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 
 		if (epochtime != null) {
 			if (controlTopic.equals(topic)) {
+				logger.info("received message at controlTopic: {}",event.toJSONString());
 				aggregatorManager.advanceTime(epochtime);
-				aggregatorManager.window(collector, coordinator);
+				aggregatorManager.window(collector, coordinator, true);
 			} else {
 				processedMessageCount.inc();
 				taskMetrics.processedMessages++;
@@ -67,7 +72,7 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	@Override
 	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (aggregatorManager != null) {
-			aggregatorManager.window(collector, coordinator);
+			aggregatorManager.window(collector, coordinator, false);
 		}
 	}
 

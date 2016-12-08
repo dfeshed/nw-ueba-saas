@@ -97,16 +97,10 @@ abstract public class StatsStringField {
         // String
         if ( String.class.isAssignableFrom(fieldType) ) {
             return new StatsStringMetricField(field, object);
-        }
 
-        // Check for classes that implements flex interfaces
-        Class[] interfaces = fieldType.getInterfaces();
-        for (int i = 0; i < interfaces.length; i++) {
-
-            // StatsStringFlexMetric
-            if (interfaces[i] == StatsStringFlexMetric.class) {
-                return new StatsFlexStringMetricField(field,object);
-            }
+        // Flex String interface
+        } else if ( StatsStringFlexMetric.class.isAssignableFrom(fieldType) ) {
+            return new StatsFlexStringMetricField(field, object);
         }
 
         // Oops, unsupported data type, exception pls.
