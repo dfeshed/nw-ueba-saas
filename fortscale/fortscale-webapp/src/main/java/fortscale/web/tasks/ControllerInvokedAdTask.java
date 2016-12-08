@@ -54,7 +54,6 @@ public class ControllerInvokedAdTask implements Runnable {
     @Override
     public void run() {
         currentAdTaskType = FETCH;
-        notifyTaskStart();
         Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
 
         final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
@@ -73,7 +72,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
     private void notifyTaskStart() {
         if (!controller.addRunningTask(this)) {
-            logger.warn("Tried to add task but the task already exists. This may occur due to concurrency issues.");
+            logger.warn("Tried to add task {} but the task already exists.", this);
         }
         else {
             logger.info("added running task {} to active tasks", this);
@@ -83,7 +82,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
     private void notifyTaskDone() {
         if (!controller.removeRunningTask(this)) {
-            logger.warn("Tried to remove task but task doesn't exist.");
+            logger.warn("Tried to remove task {} but task doesn't exist.", this);
         }
         else {
             logger.info("Removed running task {} from active tasks", this);
@@ -100,6 +99,7 @@ public class ControllerInvokedAdTask implements Runnable {
      * @return an AdTaskResponse representing the results of the task
      */
     private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObjectType dataSource) {
+        notifyTaskStart();
         final String dataSourceName = dataSource.toString();
 
         UUID resultsId = UUID.randomUUID();
