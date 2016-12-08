@@ -1,9 +1,9 @@
-import { test } from 'qunit';
+import { skip } from 'qunit';
 import moduleForAcceptance from '../../tests/helpers/module-for-acceptance';
 
 moduleForAcceptance('Acceptance | basic recon functionality');
 
-test('show/hide header items', (assert) => {
+skip('show/hide header items', (assert) => {
   visit('/');
   waitForReduxStateChange('recon.data.headerItems');
   andThen(() => {
@@ -16,7 +16,7 @@ test('show/hide header items', (assert) => {
   });
 });
 
-test('show/hide meta', (assert) => {
+skip('show/hide meta', (assert) => {
   visit('/');
   waitForReduxStateChange('recon.data.headerItems');
   andThen(() => {
@@ -29,7 +29,7 @@ test('show/hide meta', (assert) => {
   });
 });
 
-test('change recon views', (assert) => {
+skip('change recon views', (assert) => {
   visit('/');
 
   waitForReduxStateChange('recon.data.packets');
@@ -47,7 +47,7 @@ test('change recon views', (assert) => {
   });
 });
 
-test('toggle request on/off', (assert) => {
+skip('toggle request on/off', (assert) => {
   visit('/');
 
   waitForReduxStateChange('recon.data.packets');
@@ -63,7 +63,7 @@ test('toggle request on/off', (assert) => {
   });
 });
 
-test('toggle response on/off', (assert) => {
+skip('toggle response on/off', (assert) => {
   visit('/');
   waitForReduxStateChange('recon.data.packets');
   click('.rsa-icon-arrow-circle-left-2');

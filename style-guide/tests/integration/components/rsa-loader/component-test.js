@@ -37,5 +37,5 @@ test('The Loader component properly renders a label given the label attribute.',
 test('The Loader component properly renders properly given empty attribute values.', function(assert) {
   this.render(hbs `{{rsa-loader size='' label=''}}`);
   assert.equal(this.$('.is-small').length, 1, 'Testing to see if the loader is rendered using the small class.');
-  assert.equal(this.$('.rsa-loader__text').html(), '<!---->', 'Testing to see if the label attribute is ignored.');
+  assert.equal(this.$('.rsa-loader__text').html(), '', 'Testing to see if the label attribute is ignored.');
 });

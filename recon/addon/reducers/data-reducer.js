@@ -1,7 +1,9 @@
+import Ember from 'ember';
 import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import { EVENT_TYPES } from '../utils/event-types';
 import * as ACTION_TYPES from '../actions/types';
 import reduxActions from 'npm:redux-actions';
+const { set } = Ember;
 
 // State of server jobs for downloading file(s)
 const fileExtractInitialState = {
@@ -147,7 +149,7 @@ const data = reduxActions.handleActions({
   [ACTION_TYPES.FILES_RETRIEVE_SUCCESS]: (state, { payload }) => ({
     ...state,
     files: payload.map((f) => {
-      f.selected = false;
+      set(f, 'selected', false);
       return f;
     }),
     contentLoading: false

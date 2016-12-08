@@ -4,16 +4,15 @@ import config from '../../config/environment';
 import registerPowerSelectHelpers from '../../tests/helpers/ember-power-select';
 import './redux-async-helpers';
 
-const { merge, run } = Ember;
+const { assign, run } = Ember;
 
 registerPowerSelectHelpers();
 
 export default function startApp(attrs) {
   let application;
 
-  let attributes = merge({}, config.APP);
-
-  attributes = merge(attributes, attrs); // use defaults, but you can override;
+  // use defaults, but you can override
+  const attributes = assign({}, config.APP, attrs);
 
   run(() => {
     application = Application.create(attributes);

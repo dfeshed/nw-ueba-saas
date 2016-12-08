@@ -25,7 +25,11 @@ export default Component.extend({
   model: null,
 
   totalUpdated: computed('updateKey', 'model.[]', function() {
-    return isEmpty(this.get('model')) ? 0 : this.get('model').filterBy(this.get('updateKey'), true).length;
+    if (isEmpty(this.get('model')) || isEmpty(this.get('updateKey'))) {
+      return 0;
+    }
+
+    return this.get('model').filterBy(this.get('updateKey'), true).length;
   }),
 
   isHidden: computed('model.[]', 'updateKey', 'totalUpdated', 'isIconOnly', function() {

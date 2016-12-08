@@ -196,7 +196,7 @@ export default Ember$.extend({}, BaseSelectors, {
           'textarea': '.rsa-respond-detail-overview textarea'
         }
       },
-      'toggleViewHeader': 'header[class$=rsa-respond-index-header]',
+      'toggleViewHeader': 'header[class^=rsa-respond-index-header]',
       'listViewBtn': 'div[class^=rsa-respond-index-header__list-btn]',
       'cardViewBtn': 'div[class^=rsa-respond-index-header__card-btn]',
       'incidentsPanel': {

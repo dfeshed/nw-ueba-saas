@@ -2,31 +2,41 @@
   "name": "streaming-data",
   "version": "0.0.0",
   "description": "An addon for sa-ui streaming-data.",
+  "keywords": [
+    "ember-addon"
+  ],
+  "license": "MIT",
+  "author": "",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
+  "repository": "",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
     "postinstall": "node ../scripts/node/fake-out-bower jquery"
   },
-  "repository": "",
-  "engines": {
-    "node": "6.3.1"
+  "dependencies": {
+    "@mind-trace/stompjs": "2.3.5",
+    "ember-cli-babel": "^5.1.7",
+    "ember-cli-htmlbars": "^1.0.10",
+    "ember-cli-node-assets": "0.1.6",
+    "ember-get-config": "0.1.11",
+    "jquery": "3.1.1",
+    "sockjs-client-web": "1.1.1"
   },
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^7.1.1",
-    "broccoli-asset-rev": "^2.4.2",
-    "ember-ajax": "^2.0.1",
-    "ember-cli": "2.8.0",
-    "ember-cli-app-version": "^1.0.0",
-    "ember-cli-dependency-checker": "^1.2.0",
+    "broccoli-asset-rev": "^2.4.5",
+    "ember-ajax": "^2.4.1",
+    "ember-cli": "2.10.0",
+    "ember-cli-app-version": "^2.0.0",
+    "ember-cli-dependency-checker": "^1.3.0",
     "ember-cli-eslint": "3.0.0",
-    "ember-cli-inject-live-reload": "^1.4.0",
+    "ember-cli-htmlbars-inline-precompile": "^0.3.3",
+    "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-qunit": "^2.1.0",
     "ember-cli-release": "^0.2.9",
     "ember-cli-sri": "^2.1.0",
@@ -38,19 +48,10 @@
     "ember-resolver": "^2.0.3",
     "ember-sinon": "0.6.0",
     "eslint-plugin-ember-suave": "^1.0.0",
-    "loader.js": "^4.0.1"
+    "loader.js": "^4.0.10"
   },
-  "keywords": [
-    "ember-addon"
-  ],
-  "dependencies": {
-    "@mind-trace/stompjs": "2.3.5",
-    "ember-cli-babel": "^5.1.6",
-    "ember-cli-htmlbars": "^1.0.3",
-    "ember-cli-node-assets": "0.1.6",
-    "ember-get-config": "0.1.11",
-    "jquery": "3.1.1",
-    "sockjs-client-web": "1.1.1"
+  "engines": {
+    "node": "6.3.1"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config"

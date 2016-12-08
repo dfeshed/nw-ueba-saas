@@ -10,7 +10,7 @@
 </hbox>
 
 {{#each data as |rows|}}
-  {{#rsa-tree-table/header isCollapsed=true label=(accordian-label rows columnsConfig) treeTable=true}}
+  {{#rsa-tree-table/header isCollapsed=true label=(accordion-label rows columnsConfig) treeTable=true}}
     <hbox>
       {{#each columnsConfig as |columns|}}
         {{#if (not columns.groupedColumn)}}

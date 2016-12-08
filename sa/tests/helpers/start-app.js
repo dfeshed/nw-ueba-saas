@@ -6,15 +6,15 @@ import config from '../../config/environment';
 import './authenticate-session';
 
 const {
-  merge,
+  assign,
   run
 } = Ember;
 
 export default function startApp(attrs) {
   let application;
 
-  let attributes = merge({}, config.APP);
-  attributes = merge(attributes, attrs); // use defaults, but you can override;
+  // use defaults, but you can override
+  const attributes = assign({}, config.APP, attrs);
 
   run(() => {
     application = Application.create(attributes);

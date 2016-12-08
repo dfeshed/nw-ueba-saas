@@ -3,7 +3,7 @@ import Ember from 'ember';
 /*
 
 This component is used to diaplay the data in tree-table format
-It internally uses rsa-content-accordian and is driven by the following JSON
+It internally uses rsa-content-accordion and is driven by the following JSON
 
  /*************************Table Driving JSON*********************************/
  /* {

@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* jshint node: true */
+
 module.exports = function(environment) {
   var ENV = {
     modulePrefix: 'dummy',
@@ -9,6 +10,10 @@ module.exports = function(environment) {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
         // e.g. 'with-controller': true
+      },
+      EXTEND_PROTOTYPES: {
+        // Prevent Ember Data from overriding Date.parse.
+        Date: false
       }
     },
 

@@ -5,14 +5,12 @@
  * @public
  */
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 
-const { computed, Component } = Ember;
+const { Component } = Ember;
 
-function computedMillisecFromSec(propName) {
-  return computed(propName, function() {
-    const time = this.get(propName);
-    return !time ? time : time * 1000;
-  });
+function computeMillisecFromSec(time) {
+  return !time ? time : time * 1000;
 }
 
 export default Component.extend({
@@ -33,8 +31,14 @@ export default Component.extend({
   endTime: undefined,
 
   // Computes query's `startTime` in millisec, so it can be formatted by moment js.
-  _startTimeMilli: computedMillisecFromSec('startTime'),
+  @computed('startTime')
+  _startTimeMilli(startTime) {
+    return computeMillisecFromSec(startTime);
+  },
 
   // Computes query's `startTime` in millisec, so it can be formatted by moment js.
-  _endTimeMilli: computedMillisecFromSec('endTime')
+  @computed('endTime')
+  _endTimeMilli(endTime) {
+    return computeMillisecFromSec(endTime);
+  }
 });

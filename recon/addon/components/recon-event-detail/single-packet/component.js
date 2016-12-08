@@ -5,7 +5,7 @@ import connect from 'ember-redux/components/connect';
 import layout from './template';
 import { not, readOnly } from 'ember-computed-decorators';
 import { SpanielObserver } from 'spaniel';
-const { Component, K, on, run, set } = Ember;
+const { Component, K, run, set } = Ember;
 
 const stateToComputed = ({ recon: { visuals } }) => ({
   isRequestShown: visuals.isRequestShown,
@@ -203,26 +203,10 @@ const SinglePacketComponent = Component.extend({
   },
 
   /**
-   * Searches `packetFields` for a field whose position & size include the given byte index.
-   * If found, returns the field and its index; otherwise returns `undefined`.
-   * @returns {{ field: object, index: number }}
-   * @public
-   */
-  findPacketFieldForByte(byteIndex) {
-    const field = (this.get('packetFields') || []).find((field) => {
-      return (byteIndex >= field.position) && (byteIndex < (field.position + field.length));
-    });
-
-    return !field ? undefined : {
-      field,
-      index: this.get('packetFields').indexOf(field)
-    };
-  },
- /**
    * Observe the component's this.element intersecting with the root element
    * @private
    */
-  setupIntersectionObserver: on('didInsertElement', function() {
+  didInsertElement() {
     const options = {
       rootMargin: '-2000px 0px -2000px 0px',
       threshold: [{
@@ -240,7 +224,24 @@ const SinglePacketComponent = Component.extend({
     observer.observe(this.element);
 
     this.set('observer', observer);
-  }),
+  },
+
+  /**
+   * Searches `packetFields` for a field whose position & size include the given byte index.
+   * If found, returns the field and its index; otherwise returns `undefined`.
+   * @returns {{ field: object, index: number }}
+   * @public
+   */
+  findPacketFieldForByte(byteIndex) {
+    const field = (this.get('packetFields') || []).find((field) => {
+      return (byteIndex >= field.position) && (byteIndex < (field.position + field.length));
+    });
+
+    return !field ? undefined : {
+      field,
+      index: this.get('packetFields').indexOf(field)
+    };
+  },
   willDestroyElement() {
     this.get('observer').disconnect();
   },

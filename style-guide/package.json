@@ -2,37 +2,33 @@
   "name": "style-guide",
   "version": "0.1.0",
   "description": "Small description for style-guide goes here",
-  "private": true,
+  "license": "MIT",
+  "author": "",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
+  "repository": "",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
     "test": "node ./scripts/test",
     "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
   },
-  "repository": "",
-  "engines": {
-    "node": "6.3.1"
-  },
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
     "babel-eslint": "^7.1.1",
-    "broccoli-asset-rev": "^2.4.2",
-    "ember-ajax": "^2.0.1",
-    "ember-cli": "2.8.0",
-    "ember-cli-app-version": "^1.0.0",
-    "ember-cli-babel": "^5.1.6",
+    "broccoli-asset-rev": "^2.4.5",
+    "ember-ajax": "^2.4.1",
+    "ember-cli": "2.10.0",
+    "ember-cli-app-version": "^2.0.0",
+    "ember-cli-babel": "^5.1.7",
     "ember-cli-content-security-policy": "0.5.0",
     "ember-cli-csp-style": "2.1.6",
-    "ember-cli-dependency-checker": "^1.2.0",
+    "ember-cli-dependency-checker": "^1.3.0",
     "ember-cli-eslint": "3.0.0",
-    "ember-cli-htmlbars": "^1.0.3",
-    "ember-cli-htmlbars-inline-precompile": "^0.3.1",
-    "ember-cli-inject-live-reload": "^1.4.0",
+    "ember-cli-htmlbars": "^1.0.10",
+    "ember-cli-htmlbars-inline-precompile": "^0.3.3",
+    "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-moment-shim": "3.0.0",
     "ember-cli-node-assets": "0.1.6",
     "ember-cli-qunit": "^2.1.0",
@@ -45,7 +41,7 @@
     "ember-code-snippet": "1.8.0",
     "ember-computed-decorators": "0.2.2",
     "ember-d3": "^0.3.0",
-    "ember-data": "^2.8.0",
+    "ember-data": "^2.10.0",
     "ember-exam": "0.6.0",
     "ember-export-application-global": "^1.0.5",
     "ember-get-config": "0.1.11",
@@ -61,9 +57,9 @@
     "ember-wormhole": "0.5.1",
     "eslint-plugin-ember-suave": "^1.0.0",
     "flexi": "1.2.0",
-    "jquery": "3.1.1",
     "highlightjs": "9.8.0",
-    "loader.js": "^4.0.1",
+    "jquery": "3.1.1",
+    "loader.js": "^4.0.10",
     "nouislider": "^8.0.1"
   },
   "ember-addon": {
@@ -71,5 +67,9 @@
       "../component-lib",
       "../streaming-data"
     ]
-  }
+  },
+  "engines": {
+    "node": "6.3.1"
+  },
+  "private": true
 }

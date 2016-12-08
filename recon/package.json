@@ -2,35 +2,41 @@
   "name": "recon",
   "version": "0.0.0",
   "description": "An addon for event reconstruction",
+  "keywords": [
+    "ember-addon"
+  ],
+  "license": "MIT",
+  "author": "",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
+  "repository": "",
   "scripts": {
     "build": "ember build",
     "start": "ember server",
     "test": "ember try:each",
     "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
   },
-  "repository": "",
-  "engines": {
-    "node": "6.3.1"
+  "dependencies": {
+    "ember-cli-babel": "^5.1.7",
+    "ember-cli-htmlbars": "^1.0.10",
+    "ember-cli-sass": "5.6.0",
+    "flexi": "1.2.0"
   },
-  "author": "",
-  "license": "MIT",
   "devDependencies": {
-    "babel-eslint": "^7.0.0",
-    "broccoli-asset-rev": "^2.4.2",
-    "ember-ajax": "^2.0.1",
+    "babel-eslint": "^7.1.1",
+    "broccoli-asset-rev": "^2.4.5",
+    "ember-ajax": "^2.4.1",
     "ember-browserify": "1.1.13",
-    "ember-cli": "2.8.0",
-    "ember-cli-app-version": "^1.0.0",
+    "ember-cli": "2.10.0",
+    "ember-cli-app-version": "^2.0.0",
     "ember-cli-code-coverage": "0.3.8",
     "ember-cli-csp-style": "2.1.6",
-    "ember-cli-dependency-checker": "^1.2.0",
+    "ember-cli-dependency-checker": "^1.3.0",
     "ember-cli-eslint": "3.0.0",
-    "ember-cli-htmlbars-inline-precompile": "^0.3.1",
-    "ember-cli-inject-live-reload": "^1.4.0",
+    "ember-cli-htmlbars-inline-precompile": "^0.3.3",
+    "ember-cli-inject-live-reload": "^1.4.1",
     "ember-cli-moment-shim": "3.0.0",
     "ember-cli-qunit": "^2.1.0",
     "ember-cli-release": "^0.2.9",
@@ -41,7 +47,7 @@
     "ember-cli-uglify": "^1.2.0",
     "ember-computed-decorators": "0.2.2",
     "ember-d3": "^0.3.0",
-    "ember-data": "^2.8.0",
+    "ember-data": "^2.10.0",
     "ember-exam": "0.6.0",
     "ember-export-application-global": "^1.0.5",
     "ember-get-config": "0.1.11",
@@ -58,20 +64,14 @@
     "eslint-plugin-ember-suave": "^1.0.0",
     "faker": "3.1.0",
     "jquery": "3.1.1",
-    "loader.js": "^4.0.1",
+    "loader.js": "^4.0.10",
     "nouislider": "^8.0.1",
     "redux": "3.6.0",
     "redux-actions": "0.12.0",
     "redux-thunk": "2.1.0"
   },
-  "keywords": [
-    "ember-addon"
-  ],
-  "dependencies": {
-    "ember-cli-babel": "^5.1.6",
-    "ember-cli-htmlbars": "^1.0.3",
-    "ember-cli-sass": "5.6.0",
-    "flexi": "1.2.0"
+  "engines": {
+    "node": "6.3.1"
   },
   "ember-addon": {
     "configPath": "tests/dummy/config",

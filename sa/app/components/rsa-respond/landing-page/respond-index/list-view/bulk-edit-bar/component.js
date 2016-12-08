@@ -15,18 +15,20 @@ export default Component.extend({
   tagName: 'hbox',
   classNames: ['bulk-edit-bar'],
 
-  // Value used to update the success message for the bulk edit
-  totalFieldsUpdated: 0,
-
   // Boolean which determines whether or not the success message should show
   showSuccessMessage: false,
 
-  // power-select selected options
-  selected: {},
+  // Value used to update the success message for the bulk edit
+  totalFieldsUpdated: 0,
 
   init() {
     this._super(...arguments);
-    this.set('selected', {});
+    // power-select selected options
+    this.selected = {
+      assignee: null,
+      prioritySort: null,
+      statusSort: null
+    };
   },
 
   // available list of statuses
