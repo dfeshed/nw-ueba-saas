@@ -28,61 +28,53 @@
     {{/rsa-content-tethered-panel}}
   {{/if}}
 
-  {{#if hasDrill}}
-    {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTimeTooltip-' elementId)}}
-      {{#rsa-form-button allowToggleActive=true withDropdown=true class="rsa-investigate-breadcrumb__crumb"}}
-        {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
-      {{/rsa-form-button}}
-    {{/rsa-content-tethered-panel-trigger}}
+  {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTimeTooltip-' elementId)}}
+    {{#rsa-form-button allowToggleActive=true withDropdown=true class="rsa-investigate-breadcrumb__crumb"}}
+      {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
+    {{/rsa-form-button}}
+  {{/rsa-content-tethered-panel-trigger}}
 
-    {{#rsa-content-tethered-panel isPopover=false displayCloseButton=false position='bottom' panelId=(concat 'breadCrumbTimeTooltip-' elementId) as |hideTooltip|}}
-      <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
+  {{#rsa-content-tethered-panel isPopover=false displayCloseButton=false position='bottom' panelId=(concat 'breadCrumbTimeTooltip-' elementId) as |hideTooltip|}}
+    <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
+      {{#if hasDrill}}
         <li>
           {{#link-to "protected.investigate.query" baseUri class="goto"}}
             Navigate Here
           {{/link-to}}
         </li>
-        <li>
-          {{#rsa-link-to-win "protected.investigate.query" baseUri class="goto" target="_blank"}}
-            Navigate Here (New Tab)
-          {{/rsa-link-to-win}}
-        </li>
-      </ul>
-    {{/rsa-content-tethered-panel}}
-  {{else}}
-    {{#rsa-form-button class="rsa-investigate-breadcrumb__crumb"}}
-      {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
-    {{/rsa-form-button}}
-  {{/if}}
+      {{/if}}
+      <li>
+        {{#rsa-link-to-win "protected.investigate.query" baseUri class="goto" target="_blank"}}
+          Navigate Here (New Tab)
+        {{/rsa-link-to-win}}
+      </li>
+    </ul>
+  {{/rsa-content-tethered-panel}}
 
   {{#each crumbs as |crumb index|}}
     <span class="rsa-investigate-breadcrumb__crumb">
       {{#link-to "protected.investigate.query" crumb.deleteUri class="delete"}}{{rsa-icon name="close" size="small"}}{{/link-to}}
-      {{#if (is-equal crumb crumbs.lastObject)}}
-        <button class="js-test-value" title={{crumb.tooltip}}>{{crumb.text}}</button>
-      {{else}}
-        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTooltip-' elementId '-' index)}}
-          <button class="has-dropdown js-test-value" title={{crumb.tooltip}}>{{crumb.text}}{{rsa-icon name="arrow-down-12" size="small"}}</button>
-        {{/rsa-content-tethered-panel-trigger}}
-      {{/if}}
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTooltip-' elementId '-' index)}}
+        <button class="has-dropdown js-test-value" title={{crumb.tooltip}}>{{crumb.text}}{{rsa-icon name="arrow-down-12" size="small"}}</button>
+      {{/rsa-content-tethered-panel-trigger}}
     </span>
 
-    {{#unless (is-equal crumb crumbs.lastObject)}}
-      {{#rsa-content-tethered-panel isPopover=false displayCloseButton=false position='bottom' panelId=(concat 'breadCrumbTooltip-' elementId '-' index) as |hideTooltip|}}
-        <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
+    {{#rsa-content-tethered-panel isPopover=false displayCloseButton=false position='bottom' panelId=(concat 'breadCrumbTooltip-' elementId '-' index) as |hideTooltip|}}
+      <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
+        {{#unless (is-equal crumb crumbs.lastObject)}}
           <li>
             {{#link-to "protected.investigate.query" crumb.gotoUri class="goto"}}
               Navigate Here
             {{/link-to}}
           </li>
-          <li>
-            {{#rsa-link-to-win "protected.investigate.query" crumb.gotoUri class="goto" target="_blank"}}
-              Navigate Here (New Tab)
-            {{/rsa-link-to-win}}
-          </li>
-        </ul>
-      {{/rsa-content-tethered-panel}}
-    {{/unless}}
+        {{/unless}}
+        <li>
+          {{#rsa-link-to-win "protected.investigate.query" crumb.gotoUri class="goto" target="_blank"}}
+            Navigate Here (New Tab)
+          {{/rsa-link-to-win}}
+        </li>
+      </ul>
+    {{/rsa-content-tethered-panel}}
   {{/each}}
   {{#if isAddingMeta}}
     {{rsa-investigate/query-input class='rsa-investigate-breadcrumb__query-input' queryString=queryString placeholder='Enter Value'}}
