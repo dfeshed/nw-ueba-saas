@@ -4,18 +4,18 @@
       <span class="circle" title={{t 'ipConnections.sourceIp'}}></span>
     {{/if}}
     {{#if multipleFromIPs}}
-      {{#rsa-content-help-trigger triggerEvent="click" tooltip=fromIpsId}}
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=fromIpsId}}
         {{#rsa-form-button allowToggleActive=true withDropdown=true}}
           <span class="ip-count">{{t 'ipConnections.ipCount' count=fromIPs.length}}</span>
         {{/rsa-form-button}}
-      {{/rsa-content-help-trigger}}
-      {{#rsa-content-tooltip displayCloseButton=false position='bottom' tooltipId=fromIpsId}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel displayCloseButton=false position='bottom' panelId=fromIpsId}}
         <ul title={{t 'ipConnections.clickToCopy'}} class="from-ip rsa-dropdown-action-list">
           {{#each fromIPs as |ip|}}
             <li class="js-clipboard-trigger" data-clipboard-text="{{ip}}">{{ip}}</li>
           {{/each}}
         </ul>
-      {{/rsa-content-tooltip}}
+      {{/rsa-content-tethered-panel}}
     {{else}}
       <span class="ip">{{if fromIPs.length fromIPs.firstObject placeHolder}}</span>
     {{/if}}
@@ -36,18 +36,18 @@
       <span class="circle with-color" title={{t 'ipConnections.destinationIp'}}></span>
     {{/if}}
     {{#if multipleToIPs}}
-      {{#rsa-content-help-trigger triggerEvent="click" tooltip=toIpsId}}
+      {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=toIpsId}}
         {{#rsa-form-button allowToggleActive=true withDropdown=true}}
           <span class="ip-count">{{t 'ipConnections.ipCount' count=toIPs.length}}</span>
         {{/rsa-form-button}}
-      {{/rsa-content-help-trigger}}
-      {{#rsa-content-tooltip displayCloseButton=false position='bottom' tooltipId=toIpsId}}
+      {{/rsa-content-tethered-panel-trigger}}
+      {{#rsa-content-tethered-panel displayCloseButton=false position='bottom' panelId=toIpsId}}
         <ul title={{t 'ipConnections.clickToCopy'}} class='to-ip rsa-dropdown-action-list'>
           {{#each toIPs as |ip|}}
             <li class="js-clipboard-trigger" data-clipboard-text="{{ip}}">{{ip}}</li>
           {{/each}}
         </ul>
-      {{/rsa-content-tooltip}}
+      {{/rsa-content-tethered-panel}}
     {{else}}
       <span class="ip">{{if toIPs.length toIPs.firstObject placeHolder}}</span>
     {{/if}}

@@ -16,30 +16,30 @@
     @include rsa-layer(panels);
     background-color: rsa-color(gray, darker);
   }
-  
+
   &.controls {
     @include rsa-layer(controls);
     background-color: rsa-color(gray, dark);
   }
-  
+
   &.overlay {
     @include rsa-layer(overlay);
     background-color: rsa-color(gray);
     color: rsa-color(black);
   }
-  
+
   &.modals {
     @include rsa-layer(modals);
     background-color: rsa-color(gray, light);
     color: rsa-color(black);
   }
-  
+
   &.tooltips {
     @include rsa-layer(tooltips);
     background-color: rsa-color(gray, lighter);
     color: rsa-color(black);
   }
-  
+
   &.above {
     @include rsa-layer(above);
     background-color: rsa-color(green);
@@ -47,4 +47,3 @@
   }
 
 }
-

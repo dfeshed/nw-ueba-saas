@@ -125,12 +125,12 @@
           <div>
             {{#each category.tags as |tag|}}
               {{#if tag.highlight}}
-                {{#rsa-content-help-trigger tooltip=tag.value}}
+                {{#rsa-content-tethered-panel-trigger panel=tag.value}}
                   {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
-                {{/rsa-content-help-trigger}}
-                {{#rsa-content-tooltip position='top-left' tooltipId=tag.value}}
+                {{/rsa-content-tethered-panel-trigger}}
+                {{#rsa-content-tethered-panel position='top-left' panelId=tag.value}}
                   <section>{{tag.description}}</section>
-                {{/rsa-content-tooltip}}
+                {{/rsa-content-tethered-panel}}
               {{else}}
                 {{rsa-content-label label=tag.nameText isDisabled=true class="js-test-risk-indicator-tag disabled"}}
               {{/if}}

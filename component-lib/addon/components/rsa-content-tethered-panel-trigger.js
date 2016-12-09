@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import layout from '../templates/components/rsa-content-help-trigger';
+import layout from '../templates/components/rsa-content-tethered-panel-trigger';
 
 const {
   Component,
@@ -22,13 +22,13 @@ export default Component.extend({
 
   layout,
 
-  classNames: ['rsa-content-help-trigger'],
+  classNames: ['rsa-content-tethered-panel-trigger'],
 
-  classNameBindings: ['tooltip'],
+  classNameBindings: ['panel'],
 
   eventBus: service(),
 
-  tooltip: null,
+  panel: null,
 
   displayDelay: 1000,
 
@@ -50,7 +50,7 @@ export default Component.extend({
         const displayEvent = later(()=> {
           const height = this.$().height();
           const width = this.$().width();
-          this.get('eventBus').trigger(`rsa-content-tooltip-display-${this.get('tooltip')}`, height, width, this.get('elementId'));
+          this.get('eventBus').trigger(`rsa-content-tethered-panel-display-${this.get('panel')}`, height, width, this.get('elementId'));
         }, this.get('displayDelay'));
         this.set('displayEvent', displayEvent);
       }
@@ -61,7 +61,7 @@ export default Component.extend({
     if (this.get('isHover')) {
       cancel(this.get('displayEvent'));
       later(()=> {
-        this.get('eventBus').trigger(`rsa-content-tooltip-hide-${this.get('tooltip')}`);
+        this.get('eventBus').trigger(`rsa-content-tethered-panel-hide-${this.get('panel')}`);
       }, this.get('hideDelay'));
     }
   },
@@ -71,7 +71,7 @@ export default Component.extend({
       if (this.get('isClick')) {
         const height = this.$().height();
         const width = this.$().width();
-        this.get('eventBus').trigger(`rsa-content-tooltip-toggle-${this.get('tooltip')}`, height, width, this.get('elementId'));
+        this.get('eventBus').trigger(`rsa-content-tethered-panel-toggle-${this.get('panel')}`, height, width, this.get('elementId'));
       }
     }
   }

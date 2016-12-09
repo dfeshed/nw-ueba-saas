@@ -38,15 +38,15 @@
     <div class='event-overview__summary'>
       <div class='event-overview__summary__indicators'>
         {{#each scoreBadges as |badge|}}
-          {{#rsa-content-tooltip position='top' tooltipId=(concat badge.key 'BadgeTooltip')}}
+          {{#rsa-content-tethered-panel position='top' panelId=(concat badge.key 'BadgeTooltip')}}
             <section>{{t (concat 'incident.details.eventOverview.badges.' badge.key '.description')}}</section>
-          {{/rsa-content-tooltip}}
-          {{#rsa-content-help-trigger tooltip=(concat badge.key 'BadgeTooltip') class='event-overview__summary__indicators__group'}}
+          {{/rsa-content-tethered-panel}}
+          {{#rsa-content-tethered-panel-trigger panel=(concat badge.key 'BadgeTooltip') class='event-overview__summary__indicators__group'}}
             {{rsa-content-badge-score size='small' invertColor=true score=badge.score style=(call-method this 'badgeStyle' badge.score)}}
             <span class='event-overview__summary__indicators__group__description'>
               {{t (concat 'incident.details.eventOverview.badges.' badge.key '.label')}}
             </span>
-          {{/rsa-content-help-trigger}}
+          {{/rsa-content-tethered-panel-trigger}}
         {{/each}}
       </div>
 

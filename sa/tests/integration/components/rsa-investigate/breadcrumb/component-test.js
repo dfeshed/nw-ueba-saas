@@ -67,7 +67,7 @@ test('it renders', function(assert) {
 
   $el = this.$('.js-test-value');
   assert.equal($el.text().trim(), `${metaDisplayName1} = ${metaValueAlias1}`, 'Expected to find aliased meta key + value in DOM.');
-  assert.equal($el.attr('title').trim(), `${metaDisplayName1} [${metaName1}]: ${metaValueAlias1} [${metaValue1}]`, 'Expected tooltip to include friendly and raw strings.');
+  assert.equal($el.attr('title').trim(), `${metaDisplayName1} [${metaName1}]: ${metaValueAlias1} [${metaValue1}]`, 'Expected panel to include friendly and raw strings.');
 
   const query2 = query.clone();
   query2.set('metaFilter.conditions', [ condition2 ]);
@@ -75,7 +75,7 @@ test('it renders', function(assert) {
 
   $el = this.$('.js-test-value');
   assert.equal($el.text().trim(), condition2.queryString, 'Expected to find raw queryString in DOM.');
-  assert.equal($el.attr('title').trim(), condition2.queryString, 'Expected tooltip to have raw queryString.');
+  assert.equal($el.attr('title').trim(), condition2.queryString, 'Expected panel to have raw queryString.');
 
   const query3 = query.clone();
   query3.set('metaFilter.conditions', [ condition1, condition2 ]);

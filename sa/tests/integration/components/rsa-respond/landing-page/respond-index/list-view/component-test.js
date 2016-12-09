@@ -460,15 +460,15 @@ test('An alert modal appears if filters are used during a bulk edit in progress'
     this.$('.rsa-form-row-checkbox:first .rsa-form-checkbox input').prop('checked', true).trigger('change');
   });
 
-  this.$('.rsa-content-help-trigger.rsa-form-status-select .rsa-form-button').click();
+  this.$('.rsa-content-tethered-panel-trigger.rsa-form-status-select .rsa-form-button').click();
   wait().then(() => {
     this.$('ul.rsa-form-status-select li[value="2"]').click();
 
-    this.$('.rsa-content-help-trigger.rsa-form-assignee-select .rsa-form-button').click();
+    this.$('.rsa-content-tethered-panel-trigger.rsa-form-assignee-select .rsa-form-button').click();
     wait().then(() => {
       this.$('ul.rsa-form-assignee-select li[value="2"]').click();
 
-      this.$('.rsa-content-help-trigger.rsa-form-priority-select .rsa-form-button').click();
+      this.$('.rsa-content-tethered-panel-trigger.rsa-form-priority-select .rsa-form-button').click();
       wait().then(() => {
         this.$('ul.rsa-form-priority-select li[value="2"]').click();
         this.$('.rsa-respond-list__filter-panel__priority .priority-1 input:first').prop('checked', true).trigger('change');

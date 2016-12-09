@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import layout from '../templates/components/rsa-content-tooltip';
+import layout from '../templates/components/rsa-content-tethered-panel';
 
 const {
   Component,
@@ -25,7 +25,7 @@ export default Component.extend({
 
   isPopover: false,
 
-  classNames: ['rsa-content-tooltip'],
+  classNames: ['rsa-content-tethered-panel'],
 
   style: 'standard', // ['standard', 'error', 'primary']
 
@@ -33,7 +33,7 @@ export default Component.extend({
 
   isDisplayed: false,
 
-  tooltipId: null,
+  panelId: null,
 
   target: null,
 
@@ -98,8 +98,8 @@ export default Component.extend({
     return htmlSafe(`${this.get('horizontalModifier')}; ${this.get('verticalModifier')};`);
   }),
 
-  targetClass: computed('tooltipId', function() {
-    return `.${this.get('tooltipId')}`;
+  targetClass: computed('panelId', function() {
+    return `.${this.get('panelId')}`;
   }),
 
   attachment: computed('position', function() {
@@ -206,7 +206,7 @@ export default Component.extend({
 
   didInsertElement() {
     run.schedule('afterRender', () => {
-      this.get('eventBus').on(`rsa-content-tooltip-display-${this.get('tooltipId')}`, (height, width, elId) => {
+      this.get('eventBus').on(`rsa-content-tethered-panel-display-${this.get('panelId')}`, (height, width, elId) => {
         run.next(() => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             if ($(this.get('targetClass')).length > 1) {
@@ -237,7 +237,7 @@ export default Component.extend({
         });
       });
 
-      this.get('eventBus').on(`rsa-content-tooltip-hide-${this.get('tooltipId')}`, () => {
+      this.get('eventBus').on(`rsa-content-tethered-panel-hide-${this.get('panelId')}`, () => {
         run.next(() => {
           if (!this.get('isHovering')) {
             if (!this.get('isDestroyed') && !this.get('isDestroying')) {
@@ -249,7 +249,7 @@ export default Component.extend({
         });
       });
 
-      this.get('eventBus').on(`rsa-content-tooltip-toggle-${this.get('tooltipId')}`, (height, width, elId) => {
+      this.get('eventBus').on(`rsa-content-tethered-panel-toggle-${this.get('panelId')}`, (height, width, elId) => {
         run.next(() => {
           if (!this.get('isDestroyed') && !this.get('isDestroying')) {
             if ($(this.get('targetClass')).length > 1) {
@@ -283,7 +283,7 @@ export default Component.extend({
   },
 
   actions: {
-    hideTooltip() {
+    hidepanel() {
       $(`.${this.get('elementId')}`).off('mouseenter');
       $(`.${this.get('elementId')}`).off('mouseleave');
       if (!this.get('isDestroyed') && !this.get('isDestroying')) {

@@ -3,8 +3,8 @@ import Query from 'sa/protected/investigate/state/query-definition';
 
 moduleForComponent('rsa-investigate/breadcrumb', 'Unit | Component | rsa investigate/breadcrumb', {
   needs: [
-    'component:rsa-content-help-trigger',
-    'component:rsa-content-tooltip',
+    'component:rsa-content-tethered-panel-trigger',
+    'component:rsa-content-tethered-panel',
     'component:rsa-form-button',
     'component:rsa-icon',
     'component:rsa-investigate/time-range'

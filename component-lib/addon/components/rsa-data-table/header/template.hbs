@@ -1,10 +1,10 @@
 {{#if enableColumnSelector}}
 
-  {{#rsa-content-help-trigger tooltip='columnSelectorTooltip' class='rsa-data-table-header__column-selector'}}
+  {{#rsa-content-tethered-panel-trigger panel='columnSelectorpanel' class='rsa-data-table-header__column-selector'}}
     {{rsa-icon name='cog' style='filled'}}
-  {{/rsa-content-help-trigger}}
+  {{/rsa-content-tethered-panel-trigger}}
 
-  {{#rsa-content-tooltip position='left-bottom' tooltipId='columnSelectorTooltip'}}
+  {{#rsa-content-tethered-panel position='left-bottom' panelId='columnSelectorpanel'}}
     <section>
       {{#each table.sortedColumns as |column|}}
         {{#if (not-eq column.dataType "checkbox")}}
@@ -15,7 +15,7 @@
         {{/if}}
       {{/each}}
     </section>
-  {{/rsa-content-tooltip}}
+  {{/rsa-content-tethered-panel}}
 
 {{/if}}
 

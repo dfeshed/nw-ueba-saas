@@ -1,6 +1,6 @@
 <section class="rsa-investigate-breadcrumb__crumbs rsa-button-group">
   {{#if serviceObject}}
-    {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbServiceTooltip-' elementId)}}
+    {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbServiceTooltip-' elementId)}}
       {{#rsa-form-button
         class="rsa-investigate-breadcrumb__crumb"
         allowToggleActive=true
@@ -8,13 +8,13 @@
         withDropdown=true}}
         <span class="js-test-service">{{serviceObject.displayName}}</span>
       {{/rsa-form-button}}
-    {{/rsa-content-help-trigger}}
+    {{/rsa-content-tethered-panel-trigger}}
 
-    {{#rsa-content-tooltip
+    {{#rsa-content-tethered-panel
       displayCloseButton=false
       isPopover=true
       position='bottom-right'
-      tooltipId=(concat 'breadCrumbServiceTooltip-' elementId)
+      panelId=(concat 'breadCrumbServiceTooltip-' elementId)
       as |hideTooltip|}}
       <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
         {{#each servicesWithURI as |service|}}
@@ -25,17 +25,17 @@
           </li>
         {{/each}}
       </ul>
-    {{/rsa-content-tooltip}}
+    {{/rsa-content-tethered-panel}}
   {{/if}}
 
   {{#if hasDrill}}
-    {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbTimeTooltip-' elementId)}}
+    {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTimeTooltip-' elementId)}}
       {{#rsa-form-button allowToggleActive=true withDropdown=true class="rsa-investigate-breadcrumb__crumb"}}
         {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
       {{/rsa-form-button}}
-    {{/rsa-content-help-trigger}}
+    {{/rsa-content-tethered-panel-trigger}}
 
-    {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTimeTooltip-' elementId) as |hideTooltip|}}
+    {{#rsa-content-tethered-panel isPopover=false displayCloseButton=false position='bottom' panelId=(concat 'breadCrumbTimeTooltip-' elementId) as |hideTooltip|}}
       <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
         <li>
           {{#link-to "protected.investigate.query" baseUri class="goto"}}
@@ -48,7 +48,7 @@
           {{/rsa-link-to-win}}
         </li>
       </ul>
-    {{/rsa-content-tooltip}}
+    {{/rsa-content-tethered-panel}}
   {{else}}
     {{#rsa-form-button class="rsa-investigate-breadcrumb__crumb"}}
       {{rsa-investigate/time-range startTime=query.startTime endTime=query.endTime}}
@@ -61,14 +61,14 @@
       {{#if (is-equal crumb crumbs.lastObject)}}
         <button class="js-test-value" title={{crumb.tooltip}}>{{crumb.text}}</button>
       {{else}}
-        {{#rsa-content-help-trigger triggerEvent="click" tooltip=(concat 'breadCrumbTooltip-' elementId '-' index)}}
+        {{#rsa-content-tethered-panel-trigger triggerEvent="click" panel=(concat 'breadCrumbTooltip-' elementId '-' index)}}
           <button class="has-dropdown js-test-value" title={{crumb.tooltip}}>{{crumb.text}}{{rsa-icon name="arrow-down-12" size="small"}}</button>
-        {{/rsa-content-help-trigger}}
+        {{/rsa-content-tethered-panel-trigger}}
       {{/if}}
     </span>
 
     {{#unless (is-equal crumb crumbs.lastObject)}}
-      {{#rsa-content-tooltip isPopover=false displayCloseButton=false position='bottom' tooltipId=(concat 'breadCrumbTooltip-' elementId '-' index) as |hideTooltip|}}
+      {{#rsa-content-tethered-panel isPopover=false displayCloseButton=false position='bottom' panelId=(concat 'breadCrumbTooltip-' elementId '-' index) as |hideTooltip|}}
         <ul class="rsa-dropdown-link-list" {{action hideTooltip}}>
           <li>
             {{#link-to "protected.investigate.query" crumb.gotoUri class="goto"}}
@@ -81,7 +81,7 @@
             {{/rsa-link-to-win}}
           </li>
         </ul>
-      {{/rsa-content-tooltip}}
+      {{/rsa-content-tethered-panel}}
     {{/unless}}
   {{/each}}
   {{#if isAddingMeta}}

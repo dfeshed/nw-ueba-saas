@@ -57,7 +57,7 @@ Router.map(function() {
       this.route('label');
       this.route('memorySize');
       this.route('ipConnections');
-      this.route('tooltip');
+      this.route('tetheredPanels');
     });
 
     this.route('nav', function() {

@@ -219,11 +219,11 @@ test('Column selector displays available columns', function(assert) {
 
   assert.equal(this.$('.rsa-data-table-header__column-selector').length, 1, 'Column selection is present');
 
-  this.get('eventBus').trigger('rsa-content-tooltip-display-columnSelectorTooltip');
+  this.get('eventBus').trigger('rsa-content-tethered-panel-display-columnSelectorpanel');
 
   return wait().then(() => {
-    assert.equal(this.$('.rsa-content-tooltip .tooltip-content .rsa-form-checkbox').length, 2, 'Displaying all available columns on column-selector');
-    assert.equal(this.$('.rsa-content-tooltip .tooltip-content .rsa-form-checkbox.is-selected').length, 1, 'Default visible columns are selected by default');
+    assert.equal(this.$('.rsa-content-tethered-panel .panel-content .rsa-form-checkbox').length, 2, 'Displaying all available columns on column-selector');
+    assert.equal(this.$('.rsa-content-tethered-panel .panel-content .rsa-form-checkbox.is-selected').length, 1, 'Default visible columns are selected by default');
   });
 });
 
@@ -253,7 +253,7 @@ test('Column selection affects visible columns on screen', function(assert) {
 
   assert.equal(this.$('.js-header-cell-column-b').length, 0, 'Column  B is not visible by default');
 
-  this.get('eventBus').trigger('rsa-content-tooltip-display-columnSelectorTooltip');
+  this.get('eventBus').trigger('rsa-content-tethered-panel-display-columnSelectorpanel');
 
   return wait().then(() => {
     this.$('.column-selection-fieldB input:first').prop('checked', true).trigger('change');

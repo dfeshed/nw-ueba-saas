@@ -3,11 +3,11 @@
   display: inline-block;
 }
 
-.rsa-content-tooltip {
+.rsa-content-tethered-panel {
   position: absolute;
 }
 
-.tooltip-content {
+.panel-content {
   background: rsa-color(gray, darker);
   color: rsa-color(gray, lighter);
   text-align: left;
