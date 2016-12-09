@@ -114,14 +114,22 @@ export default Component.extend({
       );
     },
 
-    updateService([ id ]) {
-      const obj = this.get('services').findBy('id', id);
-      this.set('selectedService', obj);
+    /**
+     * Updates the selected service, based on the one you click
+     * @param selectedService The service clicked in the power select
+     * @private
+     */
+    updateService(selectedService) {
+      this.set('selectedService', selectedService);
     },
 
-    updateRange([ id ]) {
-      const obj = this.get('timeRanges').findBy('id', id);
-      this.set('selectedTimeRange', obj);
+    /**
+     * Updates the selected time range, based on the one you click
+     * @param selectedTimeRange The time range clicked in the power select
+     * @private
+     */
+    updateRange(selectedTimeRange) {
+      this.set('selectedTimeRange', selectedTimeRange);
     }
   }
 });
