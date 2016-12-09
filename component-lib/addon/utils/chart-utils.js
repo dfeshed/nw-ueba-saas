@@ -1,7 +1,7 @@
 import { formatPrefix, formatSpecifier, precisionPrefix } from 'd3-format';
 import { max, min, tickStep } from 'd3-array';
 import { timeDay, timeHour, timeMinute, timeMonth, timeWeek, timeYear } from 'd3-time';
-import { timeFormat, utcFormat } from 'd3-time-format';
+import moment from 'moment';
 
 /**
  * Will find the minimum value within an Array of Arrays.
@@ -81,34 +81,38 @@ export function calcGraphHeight(height, marginTop, marginBottom) {
 
 /**
  * Generates a date format function for a given time format (24 vs 12 hour
- * days), and timezone. Current implementation is limited to either UTC or
- * the local timezone of the operating system.
+ * clock), and timezone.
  * @public
  * @param  {Boolean} is24Hour Should the time portion reflect a 24-hour clock
  * @param  {String}  timezone Timezone of date.
  * @return {function}         A function for formatting dates.
  */
-export function dateFormat(is24Hour, timezone) {
-  const localeFormatFn = _localeFormat(timezone);
-  if (is24Hour) {
-    return function(date) {
-      return (timeMinute(date) < date ? localeFormatFn('%H:%M:%S') : // 13:15:05
-        timeHour(date) < date ? localeFormatFn('%H:%M') : // 13:15
-        timeDay(date) < date ? localeFormatFn('%H:%M') : // 13:00
-        timeMonth(date) < date ? (timeWeek(date) < date ? localeFormatFn('%a %d') : localeFormatFn('%b %d')) : // Tue 02 or Jan 02
-        timeYear(date) < date ? localeFormatFn('%B') : // January
-        localeFormatFn('%Y'))(date); // 2016
-    };
-  } else {
-    return function(date) {
-      return (timeMinute(date) < date ? localeFormatFn('%I:%M:%S') : // 01:15:05
-        timeHour(date) < date ? localeFormatFn('%I:%M %p') : // 01:15 PM
-        timeDay(date) < date ? localeFormatFn('%I:%M %p') : // 01:00 PM
-        timeMonth(date) < date ? (timeWeek(date) < date ? localeFormatFn('%a %d') : localeFormatFn('%b %d')) : // Tue 02 or Jan 02
-        timeYear(date) < date ? localeFormatFn('%B') : // January
-        localeFormatFn('%Y'))(date); // 2016
-    };
-  }
+export function dateFormatter(is24Hour, timezone) {
+  // The following comment and code was taken from the pikaday mixin
+  // Could not find a service that gets this value, need to add a service to
+  // pull this from local storage.
+  const lc = localStorage['rsa-i18n-default-locale'] || 'en';
+  const tzFormatFn = _tzFormat(timezone);
+  const minuteFormat = is24Hour ? 'HH:mm:ss' : 'hh:mm:ss'; // 13:15:05 | 01:15:05
+  const hourFormat = is24Hour ? 'HH:mm' : 'hh:mm A'; // 13:15 | 01:15 PM
+  const dayFormat = is24Hour ? 'HH:mm' : 'hh:mm A'; // 13:00 | 01:00 PM
+  const weekFormat = 'ddd DD'; // Tue 02
+  const shortMonthFormat = 'MMM DD'; // Jan 02
+  const monthFormat = 'MMMM'; // January
+  const yearFormat = 'YYYY'; // 2016
+  // Set this locale for this instance of moment.
+  moment.locale(lc);
+  return function(date) {
+    // Evaluate the ternary operators which returns a tzFormatFn() with a
+    // formatting string to best format the given date value. That function is
+    // run against a date, and a nicely formatted date is returned.
+    return (timeMinute(date) < date ? tzFormatFn(minuteFormat) :
+            timeHour(date) < date ? tzFormatFn(hourFormat) :
+            timeDay(date) < date ? tzFormatFn(dayFormat) :
+            timeMonth(date) < date ? (timeWeek(date) < date ? tzFormatFn(weekFormat) : tzFormatFn(shortMonthFormat)) :
+            timeYear(date) < date ? tzFormatFn(monthFormat) :
+            tzFormatFn(yearFormat))(date);
+  };
 }
 
 /**
@@ -134,13 +138,14 @@ export function siFormat(domain, count = 10) {
 }
 
 /**
- * Returns a function that will format a date to a given timezone. Eventually,
- * this will support all timezones, but for now it only supports UTC and the
- * local timezone.
+ * Generates a date formatting function. The function returned takes a Moment
+ * date formatting string, and uses that string, plus the timezone, to format
+ * a date.
  * @private
  * @param  {String} timezone Timezone of date to format
- * @return {Function}        A function that formats to a given timezone
+ * @return {Function}        A function that formats to a given timezone and
+ *                           format string.
  */
-function _localeFormat(timezone) {
-  return (timezone === 'UTC') ? utcFormat : timeFormat;
+function _tzFormat(timezone) {
+  return (specifier) => (date) => moment(date).tz(timezone).format(specifier);
 }

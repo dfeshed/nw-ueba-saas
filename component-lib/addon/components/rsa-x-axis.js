@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import { axisBottom } from 'd3-axis';
-import { dateFormat } from '../utils/chart-utils';
+import { dateFormatter } from '../utils/chart-utils';
 import { select } from 'd3-selection';
 
 const { Component } = Ember;
@@ -21,7 +21,7 @@ export default Component.extend({
   rotation: 0,
   scale: null,
   tickCount: 10,
-  tickFormat: dateFormat(true, 'UTC'),
+  tickFormat: dateFormatter(true, 'UTC'),
 
   @computed('height')
   transform: (height) => `translate(0,${height})`,

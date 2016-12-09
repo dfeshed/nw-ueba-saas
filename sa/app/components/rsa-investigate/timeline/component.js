@@ -1,7 +1,7 @@
 import Ember from 'ember';
 import computed, { alias } from 'ember-computed-decorators';
 import safeCallback from 'component-lib/utils/safe-callback';
-import { computeExtent, dateFormat } from 'component-lib/utils/chart-utils';
+import { computeExtent, dateFormatter } from 'component-lib/utils/chart-utils';
 import { format } from 'd3-format';
 import { scaleTime, scaleUtc } from 'd3-scale';
 
@@ -53,8 +53,8 @@ export default Component.extend({
   @alias('dateFormat.selected.format')
   dateFormatString: null,
 
-  @computed('dateFormatString')
-  dateTimeFormatString: (dateFormat) => `${dateFormat} HH:mm`,
+  @alias('timeFormat.selected.format')
+  timeFormatString: null,
 
   /**
    * The chart data structure, to be passed down to child `rsa-chart` component.
@@ -97,7 +97,7 @@ export default Component.extend({
   startDate: (date) => date * 1000,
 
   @computed('timeFormat.selected.key', 'timezone.selected')
-  tickformat: (format, zone) => dateFormat((format === 'HR24'), zone),
+  tickformat: (format, zone) => dateFormatter((format === 'HR24'), zone),
 
   @computed('isExpanded')
   toggleIcon: (isExpanded) => isExpanded ? 'shrink-horizontal-2' : 'expand-vertical-4',

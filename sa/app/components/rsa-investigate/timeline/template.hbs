@@ -1,7 +1,7 @@
 <section class="rsa-investigate-timeline__body">
   <section class="timestamp">
     {{moment-format startDate dateFormatString locale=i18n.locale timeZone=timezone.selected}}
-    <span>{{moment-format startDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
+    <span>{{moment-format startDate timeFormatString locale=i18n.locale timeZone=timezone.selected}}</span>
     {{moment-format startDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
   </section>
   {{#rsa-chart class="master"
@@ -26,7 +26,7 @@
   {{/rsa-chart}}
   <section class="timestamp right">
     {{moment-format endDate dateFormatString locale=i18n.locale timeZone=timezone.selected}}
-    <span>{{moment-format endDate 'HH:mm' locale=i18n.locale timeZone=timezone.selected}}</span>
+    <span>{{moment-format endDate timeFormatString locale=i18n.locale timeZone=timezone.selected}}</span>
     {{moment-format endDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
   </section>
   {{rsa-icon size='large' name=toggleIcon click=(action 'toggleContent')}}
