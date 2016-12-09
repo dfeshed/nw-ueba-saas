@@ -18,9 +18,14 @@ const {
   Object: EmberObject
 } = Ember;
 
+const riskScoreFilterInitialValues = [0, 100];
+
 export default Component.extend({
   tagName: 'hbox',
   eventBus: service(),
+
+  // disables the persitance save and restore. Used in tests.
+  disablePersistence: false,
 
   // Number of buffered items to be rendered by data table
   // 0 is the default, but we override this in integration tests
@@ -53,6 +58,9 @@ export default Component.extend({
   // Array of selected sources
   filteredSources: [],
 
+  // Array of risk score values
+  filteredRiskScores: [],
+
   // Full list of available columns to display
   availableColumnsConfig,
 
@@ -70,30 +78,36 @@ export default Component.extend({
       'filteredAssignees': [],
       'filteredCategories': [],
       'filteredSources': [],
-      'replay': ReplayManager.create(),
-      'persistence': PersistenceManager.create({ storageKey })
+      'filteredRiskScores': riskScoreFilterInitialValues
     });
 
     this.set('isBulkEditInProgress', false);
 
-    this.set('persistence.persistables', persistenceConfig.call(this));
-    this.set('replay.replayables', replayConfig.call(this));
-
+    if (!this.get('disablePersistence')) {
+      this.setProperties({
+        'replay': ReplayManager.create(),
+        'persistence': PersistenceManager.create({ storageKey })
+      });
+      this.set('persistence.persistables', persistenceConfig.call(this));
+      this.set('replay.replayables', replayConfig.call(this));
+    }
   },
 
   didReceiveAttrs() {
     this._super(...arguments);
-    if (this.get('persistence.state.isReplayable')) {
-      this.set('replay.restoredState', this.get('persistence.state.value'));
-      if (this.get('replay.isReady')) {
-        this.get('replay').replay();
+    if (!this.get('disablePersistence')) {
+      if (this.get('persistence.state.isReplayable')) {
+        this.set('replay.restoredState', this.get('persistence.state.value'));
+        if (this.get('replay.isReady')) {
+          this.get('replay').replay();
+        }
+      } else {
+        this.get('persistence').persistInitialState();
       }
-    } else {
-      this.get('persistence').persistInitialState();
-    }
 
-    this.get('persistence').destroyObservers();
-    this.get('persistence').createObservers();
+      this.get('persistence').destroyObservers();
+      this.get('persistence').createObservers();
+    }
   },
 
   /*
@@ -101,8 +115,16 @@ export default Component.extend({
   */
   willDestroyElement() {
     this._super(...arguments);
-    this.get('persistence').destroyObservers();
+    if (!this.get('disablePersistence')) {
+      this.get('persistence').destroyObservers();
+    }
   },
+
+  // Initial risk score values
+  riskScoreStart: riskScoreFilterInitialValues,
+
+  // risk score filter value range
+  riskScoreFilterRange: { 'min': [0], 'max': [100] },
 
   @computed('categoryTags.[]')
   normalizedTreeData: (categoryTags) => IncidentHelper.normalizeCategoryTags(categoryTags),
@@ -335,6 +357,20 @@ export default Component.extend({
   },
 
   /**
+   * this method applies filter by risk score. It's used by the slider's callback method.
+   * Since it's called by a run.debounce method, it checks if the component is not destroyed.
+   * @private
+   */
+  _filterByRiskScore(values) {
+    if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+      this.set('filteredRiskScores', values);
+      // cube's range filter doesn't include the `to` value.
+      // eg: (val >= from && val < to);
+      this.applyFilters('riskScore', { from: values[0], to: (values[1] + 1) });
+    }
+  },
+
+  /**
    * @name availableSources
    * @description Obtain beautified (user-friendly) list of sources that can be used in filter selection
    * @public
@@ -411,7 +447,8 @@ export default Component.extend({
       this.setProperties({
         'selectedAssignee': [],
         'selectedSources': [],
-        'selectedCategories': []
+        'selectedCategories': [],
+        'riskScoreStart': riskScoreFilterInitialValues.slice()
       });
     },
 
@@ -458,6 +495,16 @@ export default Component.extend({
     closeBulkEditModal() {
       this.get('eventBus').trigger('rsa-application-modal-close-bulk-edit-changes');
       this.send('resetFilters');
+    },
+
+    /**
+     * Updates the filter based on the selected risk scores
+     * Because the callback is called many times (at least 2 - one per each handler) by the sliders, we are using `run.debouce`
+     * to only apply the filter once.
+     * @public
+     */
+    onRiskScoreFilterUpdate(values) {
+      run.debounce(this, this._filterByRiskScore, values, 200);
     }
   }
 });

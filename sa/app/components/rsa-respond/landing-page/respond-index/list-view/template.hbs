@@ -9,6 +9,15 @@
   {{/rsa-application-modal}}
   {{#rsa-application-layout-panel class="panel-A rsa-respond-list__panelA"}}
     <div class="rsa-respond-list__filter-panel">
+      <div class="rsa-respond-list__filter-panel__risk-score">
+        <div class="rsa-respond-list__filter-panel__title">{{t 'incident.fields.riskScore'}}</div>
+        {{rsa-form-slider
+          start=riskScoreStart
+          range=riskScoreFilterRange
+          step=1
+          isDisabled=isBulkEditInProgress
+          onUpdate=(action "onRiskScoreFilterUpdate")}}
+      </div>
       <div class="rsa-respond-list__filter-panel__priority">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.fields.priority'}}</div>
         {{#each priorityList as |priority|}}

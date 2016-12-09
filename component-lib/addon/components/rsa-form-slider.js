@@ -10,6 +10,16 @@ export default Component.extend({
       if (this.get('onChange')) {
         this.sendAction('onChange', value);
       }
+    },
+    onSliderHandleSet(value) {
+      if (this.get('onSet')) {
+        this.sendAction('onSet', value);
+      }
+    },
+    onSliderHandleUpdate(value) {
+      if (this.get('onUpdate')) {
+        this.sendAction('onUpdate', value);
+      }
     }
   },
   layout,

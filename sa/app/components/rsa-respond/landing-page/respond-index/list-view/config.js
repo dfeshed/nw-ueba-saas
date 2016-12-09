@@ -228,6 +228,16 @@ export function replayConfig() {
           }
         }
       })
+    }).create(),
+    EmberObject.extend({
+      path: 'filters.riskScores',
+      value: computed({
+        set: (key, value) => {
+          if (!isEmpty(value)) {
+            this.set('riskScoreStart', value);
+          }
+        }
+      })
     }).create()
   ];
 }
@@ -389,6 +399,20 @@ export function persistenceConfig() {
     },
     destroyObserver() {
       removeObserver(component, 'selectedSources', this.execute);
+    }
+  });
+
+  configArray.pushObject({
+    execute: () => {
+      run.once(() => {
+        this.get('persistence.state').persist('filters.riskScores', this.get('filteredRiskScores'));
+      });
+    },
+    createObserver() {
+      addObserver(component, 'filteredRiskScores', this.execute);
+    },
+    destroyObserver() {
+      removeObserver(component, 'filteredRiskScores', this.execute);
     }
   });
 

@@ -43,9 +43,12 @@
     background-color: rsa-color(black, null, $rsa-translucent);
   }
 
-  &__filter-panel__priority {
+  &__filter-panel__risk-score {
     .rsa-respond-list__filter-panel__title {
       padding-top: 0;
+    }
+    .rsa-form-slider {
+      padding: calc(#{rsa-whitespace(more)} + #{rsa-whitespace(less)}) rsa-whitespace() 0 0;
     }
   }
 
