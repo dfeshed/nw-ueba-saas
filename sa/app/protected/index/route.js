@@ -17,13 +17,13 @@ export default Route.extend({
 
   landingPage: service(),
 
-  beforeModel() {
+  beforeModel(transition) {
     const key = this.get('landingPage.selected.key');
-
     const redirect = localStorage.getItem('rsa-post-auth-redirect');
-
     if (redirect) {
       localStorage.removeItem('rsa-post-auth-redirect');
+    }
+    if (redirect != transition.targetName) {
       this.transitionTo(redirect);
     } else {
       if (key) {
