@@ -105,11 +105,100 @@ test('when error code is returned, reject is called', function(assert) {
     }).then(function(/* response */) {
       assert.ok(false, 'promise should reject, not resolve');
     }).catch(function(response) {
-      assert.ok(true, 'Socket response should not error out');
+      assert.ok(true, 'Socket response should error out');
       assert.ok(response.code === 456, 'Response should contain code from server');
     });
   });
 });
+
+test('when applyStreamParams set to true, stream properties should be added', function(assert) {
+  assert.expect(1);
+  visit('/');
+
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.promiseRequest({
+      method: 'promise/_5',
+      modelName: 'test',
+      query: {},
+      streamOptions: {
+        applyStreamParams: true
+      }
+    }).then(function(response) {
+      assert.ok(response.request.stream && response.request.stream.limit, 'returned request should contain stream and stream.limit');
+    }).catch(function(/* response */) {
+      assert.ok(false, 'Socket response should not error out');
+    });
+  });
+});
+
+test('when applyStreamParams set to false, no stream properties added', function(assert) {
+  assert.expect(1);
+  visit('/');
+
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.promiseRequest({
+      method: 'promise/_5',
+      modelName: 'test',
+      query: {},
+      streamOptions: {
+        applyStreamParams: false
+      }
+    }).then(function(response) {
+      assert.ok(response.request.stream === undefined, 'returned request should not contain stream');
+    }).catch(function(/* response */) {
+      assert.ok(false, 'Socket response should not error out');
+    });
+  });
+});
+
+test('when requireRequestId set to false, no requestId sent', function(assert) {
+  assert.expect(1);
+  visit('/');
+
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.promiseRequest({
+      method: 'promise/_5',
+      modelName: 'test',
+      query: {},
+      streamOptions: {
+        requireRequestId: false
+      }
+    }).then(function(response) {
+      assert.ok(response.request.id === undefined, 'returned request should not contain request.id');
+    }).catch(function(/* response */) {
+      assert.ok(false, 'Socket response should not error out');
+    });
+  });
+});
+
+test('when requireRequestId set to true, requestId is sent', function(assert) {
+  assert.expect(1);
+  visit('/');
+
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.promiseRequest({
+      method: 'promise/_5',
+      modelName: 'test',
+      query: {},
+      streamOptions: {
+        requireRequestId: true
+      }
+    }).then(function(response) {
+      assert.ok(response.request.id !== undefined, 'returned request should contain request.id');
+    }).catch(function(/* response */) {
+      assert.ok(false, 'Socket response should not error out');
+    });
+  });
+});
+
 
 // From old acceptance test, see if way to test in new addon
 //

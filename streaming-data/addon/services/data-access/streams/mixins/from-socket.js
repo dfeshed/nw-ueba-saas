@@ -72,6 +72,16 @@ export default Mixin.create({
   requireRequestId: true,
 
   /**
+   * If true, before the request goes out the `stream` and `stream.limit` params
+   * will be inspected, and if they are not there, default properties will be added.
+   * If false, no default stream properties will be added.
+   * @type {boolean}
+   * @default true
+   * @public
+   */
+  applyStreamParams: true,
+
+  /**
    * If true, indicates that data has been requested and the request has not yet completed.
    * Initially, before calling .start(), `isStreaming` is false. After calling .start(), `isStreaming` will change to
    * true and remain true until either all the requested data has arrived, or the request is cancelled.
@@ -117,9 +127,12 @@ export default Mixin.create({
       params.id = params.id || `req-${_requestCounter++}`;
     }
 
-    // Apply the default stream limit, if needed.
-    params.stream = params.stream || {};
-    params.stream.limit = params.stream.limit || cfg.defaultStreamLimit || DEFAULT_STREAM_LIMIT;
+    // Add stream params?
+    if (this.get('applyStreamParams')) {
+      // Apply the default stream limit, if needed.
+      params.stream = params.stream || {};
+      params.stream.limit = params.stream.limit || cfg.defaultStreamLimit || DEFAULT_STREAM_LIMIT;
+    }
     return params;
   }),
 

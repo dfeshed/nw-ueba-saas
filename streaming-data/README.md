@@ -147,7 +147,10 @@ Each API request takes a `streamOptions` object.
 
 ### Parameters
 * `requireRequestId`, `Boolean`, optional
-  * Defaults to `false`
+  * Defaults to `true`
+* `applyStreamParams`, `Boolean`, optional
+  * Defaults to `true`
+  * When set to `false` the `stream` property is not automatically added to the request
 * `keepAliveOnRouteChange`, `Boolean`, optional
   * Defaults to `false`
   * When set to `false`, will keep track of stream and clean up on route changes.
@@ -156,7 +159,6 @@ Each API request takes a `streamOptions` object.
   * Defaults to `false`
   * When set to `false` a parent route will not be kept alive when transitioning to a new child. So, if going to `/foo` to `/foo/bar`, all streams associated with `/foo` will be cleaned up.
   * When set to `true` a parent route will be kept alive when transitioning to a new child. So, if going to `/foo` to `/foo/bar`, all streams associated with `/foo` will be left alone.
-
 
 # Development
 

@@ -28,6 +28,10 @@ module.exports = function(environment, appConfig) {
           subscriptionDestination: '/test/subscription/promise/_4',
           requestDestination: '/test/request/promise/_4'
         },
+        'promise/_5': {
+          subscriptionDestination: '/test/subscription/promise/_5',
+          requestDestination: '/test/request/promise/_5'
+        },
         'stream/_1': {
           subscriptionDestination: '/test/subscription/stream/_1',
           requestDestination: '/test/request/stream/_1'
