@@ -76,7 +76,15 @@ export default Mixin.create({
      * @public
      */
     reconLinkToFile(file = {}) {
-      const { query, start, end } = file;
+      const { start, end } = file;
+      let { query = '' } = file;
+
+      // Remove surrounding quotes from query, if any
+      const hasSurroundingQuotes = query.match(/^"(.*)"$/);
+      if (hasSurroundingQuotes) {
+        query = hasSurroundingQuotes[1];
+      }
+
       if (query && start && end) {
         const serviceId = this.get('state.queryNode.value.definition.serviceId');
         const routing = this.get('_routing');
