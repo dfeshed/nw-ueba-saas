@@ -8,6 +8,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import org.apache.commons.io.IOUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -178,6 +179,7 @@ public class ControllerInvokedAdTask implements Runnable {
             final String scriptPath = controller.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
+            processBuilder.directory(new File(controller.COLLECTION_TARGET_DIR));
             logger.debug("Starting process with arguments {}", arguments);
             process = processBuilder.start();
         } catch (IOException e) {
