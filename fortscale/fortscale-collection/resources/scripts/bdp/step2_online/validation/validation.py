@@ -175,11 +175,15 @@ def _validate_everything(host, start_time_epoch, end_time_epoch, timeout, pollin
                                            start_time_epoch=None,
                                            end_time_epoch=end_time_epoch)
     if is_valid:
-        validate_no_missing_events(host=host,
-                                   start_time_epoch=start_time_epoch,
-                                   end_time_epoch=end_time_epoch,
-                                   data_sources=data_sources,
-                                   context_types=['normalized_username'],
-                                   timeout=timeout,
-                                   polling_interval=polling_interval)
+        if not validate_no_missing_events(host=host,
+                                          start_time_epoch=start_time_epoch,
+                                          end_time_epoch=end_time_epoch,
+                                          data_sources=data_sources,
+                                          context_types=['normalized_username'],
+                                          timeout=timeout,
+                                          polling_interval=polling_interval):
+            logger.info("although the validation failed, fear not! if we were to wait until all the events "
+                        "were processed we wouldn't be in time for dinner! If you really want to make sure "
+                        "everything's ok, you can wait a little bit (to give the events a chance to be processed) "
+                        "and then run the validation manually (by running python step2_online/validation)")
     return is_valid
