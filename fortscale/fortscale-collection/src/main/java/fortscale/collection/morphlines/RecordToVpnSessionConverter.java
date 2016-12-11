@@ -1,6 +1,5 @@
 package fortscale.collection.morphlines;
 
-import fortscale.collection.metrics.RecordToStringItemsProcessorMetric;
 import fortscale.collection.metrics.RecordToVpnSessionConverterMetric;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
@@ -12,6 +11,9 @@ import org.kitesdk.morphline.api.Record;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Component
 public class RecordToVpnSessionConverter {
 	
@@ -19,6 +21,8 @@ public class RecordToVpnSessionConverter {
 	private VpnEvents vpnEvents;
 
 	private RecordToVpnSessionConverterMetric metric;
+
+	static Map<String,RecordToVpnSessionConverterMetric> metricsMap = new HashMap<>();
 
 	public RecordToVpnSessionConverter() {};
 
@@ -82,7 +86,21 @@ public class RecordToVpnSessionConverter {
 		return vpnSession;
 	}
 
-	public void initMetricsClass(StatsService statsService, String name){
-		metric = new RecordToVpnSessionConverterMetric(statsService,name);
+	public synchronized void initMetricsClass(StatsService statsService, String name){
+
+		// Check if we already have the metrics for this name. If so, reuse it
+		RecordToVpnSessionConverterMetric tmpMetric = metricsMap.get(name);
+
+		if (tmpMetric != null) {
+			// Yes, use the existing metric
+			metric = tmpMetric;
+			return;
+		}
+
+		// No, create new metric and use it
+		tmpMetric = new RecordToVpnSessionConverterMetric(statsService, name);
+
+		metricsMap.put(name, tmpMetric);
+
 	}
 }
