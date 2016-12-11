@@ -6,8 +6,8 @@ import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
+import org.apache.commons.io.IOUtils;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,8 +21,8 @@ public class ControllerInvokedAdTask implements Runnable {
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
 
-    private static final String DELIMITER = "=";
-    private static final String KEY_SUCCESS = "success";
+    private static final String RESULTS_DELIMITER = "=";
+    private static final String RESULTS_KEY_SUCCESS = "success";
     private static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
     private static final String AD_JOB_GROUP = "AD";
     private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
@@ -123,7 +123,7 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(KEY_SUCCESS);
+        final String success = taskResults.get(RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
             notifyTaskDone();
@@ -144,12 +144,12 @@ public class ControllerInvokedAdTask implements Runnable {
         ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
         if (queryResult == null) {
             logger.error("No result found for result key {}. Task failed", resultsKey);
-            taskResults.put(KEY_SUCCESS, Boolean.FALSE.toString());
+            taskResults.put(RESULTS_KEY_SUCCESS, Boolean.FALSE.toString());
             return taskResults;
         }
 
         final String taskExecutionResult = queryResult.getValue();
-        final String[] split = taskExecutionResult.split(DELIMITER);
+        final String[] split = taskExecutionResult.split(RESULTS_DELIMITER);
         final String key = split[0];
         final String value = split[1];
         taskResults.put(key, value);
@@ -174,13 +174,13 @@ public class ControllerInvokedAdTask implements Runnable {
                 logger.error("Execution of task {} has failed. Collection jar file doesn't exist in {}", jobName, collectionJarPath);
                 return false;
             }
-            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", collectionJarPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
-            final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-            processBuilder.directory(new File(controller.COLLECTION_TARGET_DIR));
-            processBuilder.environment().put("HOME", controller.USER_HOME_DIR);
+            final String scriptPath = controller.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
+            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
+            final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
+            logger.info("Starting process with arguments {}", arguments);
             process = processBuilder.start();
         } catch (IOException e) {
-            logger.error("Execution of task {}  has failed.", jobName, e);
+            logger.error("Execution of task {} has failed.", jobName, e);
             return false;
         }
         int status;
@@ -196,7 +196,17 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         if (status != 0) {
-            logger.warn("Execution of task {}  has finished with status {}. Execution failed", jobName, status);
+            try {
+                String processOutput = IOUtils.toString(process.getInputStream());
+                final int length = processOutput.length();
+                if (length > 1000) {
+                    processOutput = processOutput.substring(length - 1000, length); // getting last 1000 chars to not overload the log file
+                }
+                logger.warn("Error stream for job {} = \n {}", jobName, processOutput);
+            } catch (IOException e) {
+                logger.warn("Failed to get error stream from process for job {}", jobName);
+            }
+            logger.warn("Execution of task {} has finished with status {}. Execution failed", jobName, status);
             return false;
         }
 
@@ -330,9 +340,6 @@ public class ControllerInvokedAdTask implements Runnable {
             return type;
         }
     }
-
-
-
 }
 
 
