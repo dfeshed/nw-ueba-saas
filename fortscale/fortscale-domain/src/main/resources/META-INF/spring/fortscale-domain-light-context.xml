@@ -8,20 +8,9 @@
 	<description>domain light context.</description>
 
 
-	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}" username="${mongo.db.user}" password="#{ T(fortscale.utils.EncryptionUtils).decrypt('${mongo.db.password}')}"/>
-	
-	<mongo:mapping-converter id="mongoConverter" base-package="fortscale.domain" mapping-context-ref="mongoMappingContext" >
-		<mongo:custom-converters base-package="fortscale.domain" />
-	</mongo:mapping-converter>
-	
-	<bean id="mongoConverterConfigurer" class="fortscale.domain.MongoConverterConfigurer" init-method="init" >
-		<property name="mongoConverter" ref="mongoConverter"/>
-		<property name="mapKeyDotReplacement" value="${mongo.map.dot.replacement}"/>
-	</bean>
-	
+
 	<mongo:auditing />
 
-	<mongo:template converter-ref="mongoConverter" db-factory-ref="mongoDbFactory" write-concern="SAFE"/>
 	<bean id="fsMongoConfiguration" class="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
 
 
