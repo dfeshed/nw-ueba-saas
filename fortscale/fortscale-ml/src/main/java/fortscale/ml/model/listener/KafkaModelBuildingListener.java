@@ -32,17 +32,14 @@ public class KafkaModelBuildingListener implements IModelBuildingListener {
 
 	@Override
 	public void modelBuildingStatus(String modelConfName, String sessionId, String contextId, Date endTime, ModelBuildingStatus status) {
-		boolean isSuccessful = status.equals(ModelBuildingStatus.SUCCESS);
-
-		ModelBuildingStatusMessage message =
-				new ModelBuildingStatusMessage(sessionId,modelConfName,
-						TimestampUtils.convertToSeconds(endTime),contextId,isSuccessful,status.getMessage());
+		ModelBuildingStatusMessage message = new ModelBuildingStatusMessage(
+				sessionId, modelConfName, TimestampUtils.convertToSeconds(endTime), contextId, !status.isFailure(), status.getMessage());
 
 		try {
 			String messageJsonString = mapper.writeValueAsString(message);
-			collector.send(new OutgoingMessageEnvelope(systemStream, messageJsonString ));
+			collector.send(new OutgoingMessageEnvelope(systemStream, messageJsonString));
 		} catch (JsonProcessingException e) {
-			logger.error("error while parsing message={} to json string",message,e);
+			logger.error("error while parsing message={} to json string", message, e);
 		}
 	}
 

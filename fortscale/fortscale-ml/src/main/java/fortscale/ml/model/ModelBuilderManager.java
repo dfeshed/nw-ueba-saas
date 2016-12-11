@@ -79,7 +79,7 @@ public class ModelBuilderManager {
             }
 
             // Update metrics
-            if (status.equals(ModelBuildingStatus.SUCCESS)) {
+            if (!status.isFailure()) {
                 metrics.successes++;
                 numOfSuccesses++;
             } else {
@@ -119,8 +119,8 @@ public class ModelBuilderManager {
             metrics.getContexts++;
         }
 
-		List<String> contextIds;
-		if (contextSelector != null) {
+        List<String> contextIds;
+        if (contextSelector != null) {
             if (previousEndTime == null) {
                 metrics.processWithNoPreviousEndTime++;
                 long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
@@ -152,19 +152,19 @@ public class ModelBuilderManager {
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
         Object modelBuilderData;
         Model model;
-        String failureReason = "got null";
 
         // Retriever
         try {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
             metrics.retrieverFailures++;
-            failureReason = e.toString() + ": " + ExceptionUtils.getStackTrace(e);
-            modelBuilderData = null;
+            logger.error("Failed to retrieve data for context ID {}. {}: {}.",
+                    contextId, e.toString(), ExceptionUtils.getStackTrace(e));
+            return ModelBuildingStatus.RETRIEVER_FAILURE;
         }
         if (modelBuilderData == null) {
-            logger.error("Failed to retrieve data: " + failureReason);
-            return ModelBuildingStatus.RETRIEVER_FAILURE;
+            logger.info("All data filtered out for context ID {}.", contextId);
+            return ModelBuildingStatus.DATA_FILTERED_OUT;
         }
 
         // Builder
@@ -172,11 +172,12 @@ public class ModelBuilderManager {
             model = modelBuilder.build(modelBuilderData);
         } catch (Exception e) {
             metrics.builderFailures++;
-            failureReason = e.toString() + ": " + ExceptionUtils.getStackTrace(e);
-            model = null;
+            logger.error("Failed to build model for context ID {}. {}: {}.",
+                    contextId, e.toString(), ExceptionUtils.getStackTrace(e));
+            return ModelBuildingStatus.BUILDER_FAILURE;
         }
         if (model == null) {
-            logger.error("Failed to build model: " + failureReason);
+            logger.error("Built model for context ID {} is null.", contextId);
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
 
@@ -188,7 +189,8 @@ public class ModelBuilderManager {
             modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
             metrics.storeFailures++;
-            logger.error("Failed to store model: " + e.toString() + ": " + ExceptionUtils.getStackTrace(e));
+            logger.error("Failed to store model for context ID {}. {}: {}.",
+                    contextId, e.toString(), ExceptionUtils.getStackTrace(e));
             return ModelBuildingStatus.STORE_FAILURE;
         }
 

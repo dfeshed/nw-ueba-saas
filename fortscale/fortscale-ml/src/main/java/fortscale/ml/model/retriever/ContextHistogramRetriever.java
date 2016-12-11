@@ -85,7 +85,15 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		}
 
 		List<FeatureBucket> featureBuckets = featureBucketsReaderService.getFeatureBucketsByContextIdAndTimeRange(
-				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds, fieldPath, fieldMustExist, additionalFieldsToInclude);
+				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds,
+				fieldPath, fieldMustExist, additionalFieldsToInclude);
+
+		if (featureBuckets.isEmpty()) {
+			throw new IllegalArgumentException(String.format(
+					"No feature buckets for context ID %s, end time %s, feature value %s.",
+					contextId, endTime.toString(), featureValue));
+		}
+
 		metrics.featureBuckets += featureBuckets.size();
 
 		GenericHistogram reductionHistogram = new GenericHistogram();
