@@ -3,6 +3,7 @@ package fortscale.collection.morphlines;
 import fortscale.collection.metrics.RecordToVpnSessionConverterMetric;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.schema.VpnEvents;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
@@ -16,7 +17,9 @@ import java.util.Map;
 
 @Component
 public class RecordToVpnSessionConverter {
-	
+
+	private static Logger logger = Logger.getLogger(RecordToVpnSessionConverter.class);
+
 	@Autowired
 	private VpnEvents vpnEvents;
 
@@ -94,13 +97,16 @@ public class RecordToVpnSessionConverter {
 		if (tmpMetric != null) {
 			// Yes, use the existing metric
 			metric = tmpMetric;
+
+			logger.info("TMP: initMetricsClass - reusing metric {} for {}", metric, name);
 			return;
 		}
 
-		// No, create new metric and use it
-		tmpMetric = new RecordToVpnSessionConverterMetric(statsService, name);
+		// No, create a new metric, save it and use it
+		metric = new RecordToVpnSessionConverterMetric(statsService, name);
+		logger.info("TMP: initMetricsClass - created metric {} for {}", metric, name);
 
-		metricsMap.put(name, tmpMetric);
+		metricsMap.put(name, metric);
 
 	}
 }
