@@ -66,4 +66,12 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
             eventScoringPersistencyTaskService.flush();
         }
     }
+
+    /**
+     * @return false, cause this class input messages does not contain dataSource field.
+     */
+    @Override protected boolean messageShouldContainDataSourceField()
+    {
+        return false;
+    }
 }

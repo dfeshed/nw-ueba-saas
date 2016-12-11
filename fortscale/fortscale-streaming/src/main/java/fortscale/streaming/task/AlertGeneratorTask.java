@@ -140,6 +140,14 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		}
 	}
 
+	/**
+	 * @return false, cause this class input messages does not contain dataSource field.
+     */
+	@Override protected boolean messageShouldContainDataSourceField()
+	{
+		return false;
+	}
+
 	/*
 	 *
 	 * Convert string input data into relevant class representation
