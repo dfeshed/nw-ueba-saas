@@ -185,13 +185,10 @@ class Manager(DontReloadModelsOverridingManager):
             .set_start(start) \
             .set_end(end) \
             .run(overrides_key='stepSAM', overrides=overrides)
-        if not self._validate_scores(data_source=data_source,
-                                     start_time_epoch=start,
-                                     end_time_epoch=end):
-            return False
+        is_valid = self._validate_scores(data_source=data_source, start_time_epoch=start, end_time_epoch=end)
         logger.info('making sure bdp process exits...')
         kill_process()
-        return self._restart_aggregation_task()
+        return is_valid and self._restart_aggregation_task()
 
     def _validate_scores(self, data_source, start_time_epoch, end_time_epoch):
         if start_time_epoch % (60 * 60) != 0:
