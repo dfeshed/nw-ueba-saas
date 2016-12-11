@@ -254,9 +254,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 	}
 
-	public String getLastMessageStr() {
-		return lastMessageStr;
-	}
 
 	public JSONObject getLastParsedMessage() throws ParseException {
 		if(lastParsedMessage == null)
@@ -438,6 +435,22 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return true;
 	}
 	// --- getters/setters ---
+
+	public String getLastMessageStr() {
+		return lastMessageStr;
+	}
+
+	public void setLastMessageStr(String lastMessageStr) {
+		this.lastMessageStr = lastMessageStr;
+	}
+
+	public void setLastParsedMessage(JSONObject lastParsedMessage) {
+		this.lastParsedMessage = lastParsedMessage;
+	}
+
+	public void setLastExtractedDataSourceConfigKey(StreamingTaskDataSourceConfigKey lastExtractedDataSourceConfigKey) {
+		this.lastExtractedDataSourceConfigKey = lastExtractedDataSourceConfigKey;
+	}
 
 	public StatsService getStatsService() {
 		return statsService;

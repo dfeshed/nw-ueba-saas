@@ -24,7 +24,6 @@ import org.mockito.Mockito;
 import org.springframework.test.context.ContextConfiguration;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -108,6 +107,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_2, "input1");
+		setTaskMessage(MESSAGE_2, task);
 		// run the process on the envelope
 		task.wrappedProcess(envelope, Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate no normalization for username (we already have it)
@@ -125,6 +125,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key", MESSAGE_1, "input1");
+		setTaskMessage(MESSAGE_1, task);
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
@@ -141,6 +142,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		message = (JSONObject) JSONValue.parseWithException(MESSAGE_3);
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_3, "input1");
+		setTaskMessage(MESSAGE_3, task);
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
@@ -156,6 +158,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 				.thenReturn("User 4");
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_4, "input1");
+		setTaskMessage(MESSAGE_4, task);
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate normalization for username
@@ -191,5 +194,11 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		Mockito.when(systemStream.getStream()).thenReturn(topic);
 
 		return envelope;
+	}
+
+	private void setTaskMessage(String msg, UsernameNormalizationAndTaggingTask task) {
+		task.setLastMessageStr(msg);
+		task.setLastParsedMessage(null);
+		task.setLastExtractedDataSourceConfigKey(null);
 	}
 }
