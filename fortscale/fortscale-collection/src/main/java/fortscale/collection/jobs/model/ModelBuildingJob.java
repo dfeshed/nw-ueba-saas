@@ -22,7 +22,6 @@ public class ModelBuildingJob extends FortscaleJob {
 	private static final String MODELS_TO_BUILD_KEY_NAME = "modelsToBuild";
 	private static final String DELIMITER = ",";
 	private static final String TARGET_TOPIC_KEY_NAME = "targetTopic";
-	private static final String SELECT_HIGH_SCORE_CONTEXTS = "selectHighScoreContexts";
 
 	@Value("${fortscale.model.build.message.field.select.high.score.contexts}")
 	private String selectHighScoreContextsJsonField;
@@ -58,7 +57,7 @@ public class ModelBuildingJob extends FortscaleJob {
 
 		targetTopic = jobDataMapExtension.getJobDataMapStringValue(jobDataMap, TARGET_TOPIC_KEY_NAME, null);
 		Assert.hasText(targetTopic, "Missing valid target topic name.");
-		selectHighScoreContexts = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, SELECT_HIGH_SCORE_CONTEXTS, false);
+		selectHighScoreContexts = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, selectHighScoreContextsJsonField, false);
 	}
 
 	@Override
