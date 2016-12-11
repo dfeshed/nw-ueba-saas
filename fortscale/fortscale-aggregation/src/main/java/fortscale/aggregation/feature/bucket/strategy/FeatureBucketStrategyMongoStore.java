@@ -43,12 +43,11 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	@Override
 	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
 		mongoTemplate.save(featureBucketStrategyData, COLLECTION_NAME);
-		metrics.saves++;
+		getMetrics().saves++;
 	}
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "mongo");
 		if (!mongoDbUtilService.collectionExists(COLLECTION_NAME)) {
 			mongoDbUtilService.createCollection(COLLECTION_NAME);
 			mongoTemplate.indexOps(COLLECTION_NAME).ensureIndex(new Index().on(FeatureBucketStrategyData.STRATEGY_EVENT_CONTEXT_ID_FIELD,Direction.DESC));
@@ -77,5 +76,13 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 		Sort sort = new Sort(Direction.DESC, FeatureBucketStrategyData.START_TIME_FIELD);
 		query.with(sort);
 		return mongoTemplate.find(query, FeatureBucketStrategyData.class, COLLECTION_NAME);
+	}
+
+	public FeatureBucketStrategyStoreMetrics getMetrics() {
+		if(metrics == null)
+		{
+			metrics = new FeatureBucketStrategyStoreMetrics(statsService, "mongo");
+		}
+		return metrics;
 	}
 }

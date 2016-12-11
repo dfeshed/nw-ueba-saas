@@ -2,14 +2,12 @@ package fortscale.aggregation.feature.bucket.strategy;
 
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@Configurable(preConstruction = true)
 public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategyStore {
 	@Autowired
 	private StatsService statsService;
@@ -18,7 +16,6 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 	private FeatureBucketStrategyStoreMetrics metrics;
 
 	public FeatureBucketStrategyInMemoryStore() {
-		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "inMemory");
 	}
 
 	@Override
@@ -65,7 +62,7 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 
 		// Write back to store the updated list
 		startegyEventContextIdToData.put(strategyContextId, strategyDataList);
-		metrics.saves++;
+		getMetrics().saves++;
 	}
 
 	@Override
@@ -100,4 +97,10 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 		return ret;
 	}
 
+	public FeatureBucketStrategyStoreMetrics getMetrics() {
+		if (metrics == null) {
+			metrics = new FeatureBucketStrategyStoreMetrics(statsService, "inMemory");
+		}
+		return metrics;
+	}
 }
