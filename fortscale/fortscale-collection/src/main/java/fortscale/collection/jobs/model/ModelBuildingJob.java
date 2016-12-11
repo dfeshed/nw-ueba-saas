@@ -13,10 +13,7 @@ import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class ModelBuildingJob extends FortscaleJob {
 	// Job XML constants
@@ -28,8 +25,6 @@ public class ModelBuildingJob extends FortscaleJob {
 
 	@Value("${fortscale.model.build.message.field.select.high.score.contexts}")
 	private String selectHighScoreContextsJsonField;
-	@Value("${fortscale.model.build.message.field.specified.context.ids}")
-	private String specifiedContextIdsJsonField;
 	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
@@ -38,7 +33,6 @@ public class ModelBuildingJob extends FortscaleJob {
 	private List<String> modelsToBuild;
 	private String targetTopic;
 	private boolean selectHighScoreContexts;
-	private Set<String> specifiedContextIds;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -64,11 +58,6 @@ public class ModelBuildingJob extends FortscaleJob {
 		targetTopic = jobDataMapExtension.getJobDataMapStringValue(jobDataMap, TARGET_TOPIC_KEY_NAME, null);
 		Assert.hasText(targetTopic, "Missing valid target topic name.");
 		selectHighScoreContexts = jobDataMapExtension.getJobDataMapBooleanValue(jobDataMap, selectHighScoreContextsJsonField, false);
-		if (jobDataMap.containsKey(specifiedContextIdsJsonField)) {
-			specifiedContextIds = new HashSet<>(jobDataMapExtension.getJobDataMapListOfStringsValue(jobDataMap, specifiedContextIdsJsonField, ","));
-		} else {
-			specifiedContextIds = Collections.emptySet();
-		}
 	}
 
 	@Override
@@ -90,12 +79,12 @@ public class ModelBuildingJob extends FortscaleJob {
 		ObjectMapper mapper = new ObjectMapper();
 
 		if (buildAllModels) {
-			ModelBuildingCommandMessage commandMessage = new ModelBuildingCommandMessage(sessionId, allModelsConstantValue, currTimeSec, selectHighScoreContexts, specifiedContextIds);
+			ModelBuildingCommandMessage commandMessage = new ModelBuildingCommandMessage(sessionId,allModelsConstantValue,currTimeSec, selectHighScoreContexts);
 			sendBuildCommand(kafkaEventsWriter, mapper, commandMessage);
 			counter++;
 		} else {
 			for (String modelToBuild : modelsToBuild) {
-				ModelBuildingCommandMessage commandMessage = new ModelBuildingCommandMessage(sessionId, modelToBuild, currTimeSec, selectHighScoreContexts, specifiedContextIds);
+				ModelBuildingCommandMessage commandMessage = new ModelBuildingCommandMessage(sessionId,modelToBuild,currTimeSec, selectHighScoreContexts);
 				sendBuildCommand(kafkaEventsWriter,mapper,commandMessage);
 				counter++;
 			}
