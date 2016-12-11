@@ -205,15 +205,15 @@ class Manager(DontReloadModelsOverridingManager):
                                                   stuck_timeout_inside_allowed_gap_in_seconds=self._stuck_timeout_inside_allowed_gap_in_seconds,
                                                   stuck_timeout_outside_allowed_gap_in_seconds=self._timeoutInSeconds):
             self._send_dummy_event(end_time_epoch=end_time_epoch)
-            return block_until_everything_is_validated(host=self._host,
+            return block_until_everything_is_validated(logger=logger,
+                                                       host=self._host,
                                                        start_time_epoch=start_time_epoch,
                                                        end_time_epoch=end_time_epoch,
                                                        wait_between_validations=self._polling_interval,
                                                        max_delay=-1,
                                                        timeout=0,
                                                        polling_interval=0,
-                                                       data_sources=[data_source],
-                                                       logger=logger)
+                                                       data_sources=[data_source])
         else:
             return False
 

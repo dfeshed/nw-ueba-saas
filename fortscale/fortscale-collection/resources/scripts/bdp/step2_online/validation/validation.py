@@ -14,10 +14,6 @@ from bdp_utils.log import log_and_send_mail
 from bdp_utils.data_sources import data_source_to_score_tables
 
 
-import logging
-logger = logging.getLogger('step2_online.validation')
-
-
 def _get_collection_name(context_type, data_source, is_daily):
     return 'aggr_%s_%s_%s' % (context_type, data_source if data_source != 'kerberos' else 'kerberos_logins', 'daily' if is_daily else 'hourly')
 
@@ -35,7 +31,7 @@ def _calc_dict_diff(first, second):
     return diff
 
 
-def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time=False):
+def validate_all_buckets_synced(logger, host, start_time_epoch, end_time_epoch, use_start_time=False):
     logger.info('validating that all buckets inside FeatureBucketMetadata have been synced...')
     is_synced = mongo_stats.all_buckets_synced(host=host,
                                                start_time_epoch=start_time_epoch,
@@ -45,7 +41,8 @@ def validate_all_buckets_synced(host, start_time_epoch, end_time_epoch, use_star
     return is_synced
 
 
-def validate_no_missing_events(host,
+def validate_no_missing_events(logger,
+                               host,
                                start_time_epoch,
                                end_time_epoch,
                                data_sources,
@@ -68,7 +65,8 @@ def validate_no_missing_events(host,
             logger.info('validating ' + _get_collection_name(context_type=context_type,
                                                              data_source=data_source,
                                                              is_daily=is_daily) + '...')
-            success &= _validate_no_missing_events(host=host,
+            success &= _validate_no_missing_events(logger=logger,
+                                                   host=host,
                                                    start_time_epoch=start_time_epoch,
                                                    end_time_epoch=end_time_epoch,
                                                    data_source=data_source,
@@ -83,7 +81,8 @@ def validate_no_missing_events(host,
     return success
 
 
-def _validate_no_missing_events(host,
+def _validate_no_missing_events(logger,
+                                host,
                                 start_time_epoch,
                                 end_time_epoch,
                                 data_source,
@@ -92,18 +91,20 @@ def _validate_no_missing_events(host,
                                 timeout,
                                 polling_interval):
     return validate_by_polling(logger=logger,
-                               progress_cb=lambda: _get_num_of_events_per_day(host=host,
+                               progress_cb=lambda: _get_num_of_events_per_day(logger=logger,
+                                                                              host=host,
                                                                               start_time_epoch=start_time_epoch,
                                                                               end_time_epoch=end_time_epoch,
                                                                               data_source=data_source,
                                                                               is_daily=is_daily,
                                                                               context_type=context_type),
-                               is_done_cb=_are_histograms_equal,
+                               is_done_cb=lambda histograms_diff: _are_histograms_equal(logger=logger, histograms_diff=histograms_diff),
                                no_progress_timeout=timeout,
                                polling=polling_interval)
 
 
-def _get_num_of_events_per_day(host,
+def _get_num_of_events_per_day(logger,
+                               host,
                                start_time_epoch,
                                end_time_epoch,
                                data_source,
@@ -129,7 +130,7 @@ def _get_num_of_events_per_day(host,
     return _calc_dict_diff(impala_sums, mongo_sums)
 
 
-def _are_histograms_equal(histograms_diff):
+def _are_histograms_equal(logger, histograms_diff):
     if len(histograms_diff) > 0:
         logger.error('FAILED')
         for time, (impala_sum, mongo_sum) in histograms_diff.iteritems():
@@ -141,25 +142,25 @@ def _are_histograms_equal(histograms_diff):
         return True
 
 
-def block_until_everything_is_validated(host,
+def block_until_everything_is_validated(logger,
+                                        host,
                                         start_time_epoch,
                                         end_time_epoch,
                                         wait_between_validations,
                                         max_delay,
                                         timeout,
                                         polling_interval,
-                                        data_sources=None,
-                                        logger=logger):
+                                        data_sources=None):
     last_validation_time = time.time()
     is_valid = False
     while not is_valid:
-        is_valid = _validate_everything(host=host,
+        is_valid = _validate_everything(logger=logger,
+                                        host=host,
                                         start_time_epoch=start_time_epoch,
                                         end_time_epoch=end_time_epoch,
                                         timeout=timeout,
                                         polling_interval=polling_interval,
-                                        data_sources=data_sources,
-                                        logger=logger)
+                                        data_sources=data_sources)
         if not is_valid:
             if 0 <= max_delay < time.time() - last_validation_time:
                 log_and_send_mail('validation failed for more than ' + str(int(max_delay / (60 * 60))) + ' hours')
@@ -169,13 +170,15 @@ def block_until_everything_is_validated(host,
     return is_valid
 
 
-def _validate_everything(host, start_time_epoch, end_time_epoch, timeout, polling_interval, data_sources, logger):
+def _validate_everything(logger, host, start_time_epoch, end_time_epoch, timeout, polling_interval, data_sources):
     logger.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
-    is_valid = validate_all_buckets_synced(host=host,
+    is_valid = validate_all_buckets_synced(logger=logger,
+                                           host=host,
                                            start_time_epoch=None,
                                            end_time_epoch=end_time_epoch)
     if is_valid:
-        if not validate_no_missing_events(host=host,
+        if not validate_no_missing_events(logger=logger,
+                                          host=host,
                                           start_time_epoch=start_time_epoch,
                                           end_time_epoch=end_time_epoch,
                                           data_sources=data_sources,
