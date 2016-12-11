@@ -68,6 +68,7 @@ public class ControllerInvokedAdTask implements Runnable {
         final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
         controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
         controller.setLastExecutionTime(currentAdTaskType, dataSource, fetchResponse.lastExecutionTime);
+        logger.info("Finished executing Fetch and ETL for datasource {}", dataSource);
     }
 
     private void notifyTaskStart() {
@@ -75,7 +76,7 @@ public class ControllerInvokedAdTask implements Runnable {
             logger.warn("Tried to add task {} but the task already exists.", this);
         }
         else {
-            logger.info("added running task {} to active tasks", this);
+            logger.debug("added running task {} to active tasks", this);
         }
     }
 
@@ -85,7 +86,7 @@ public class ControllerInvokedAdTask implements Runnable {
             logger.warn("Tried to remove task {} but task doesn't exist.", this);
         }
         else {
-            logger.info("Removed running task {} from active tasks", this);
+            logger.debug("Removed running task {} from active tasks", this);
         }
     }
 
@@ -177,7 +178,7 @@ public class ControllerInvokedAdTask implements Runnable {
             final String scriptPath = controller.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
-            logger.info("Starting process with arguments {}", arguments);
+            logger.debug("Starting process with arguments {}", arguments);
             process = processBuilder.start();
         } catch (IOException e) {
             logger.error("Execution of task {} has failed.", jobName, e);

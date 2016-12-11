@@ -176,10 +176,9 @@ public class ApiActiveDirectoryController {
 			}
 
 			final String finishedMsg = "Finished Active Directory fetch and ETL";
-			logger.info(finishedMsg);
 
 			isFetchEtlExecutionRequestInProgress.set(false);
-			return new ResponseEntity<>(finishedMsg, HttpStatus.OK);
+			return new ResponseEntity<>("Fetch and ETL is running.", HttpStatus.OK);
 		}
 		else {
 			logger.warn(inProgressMsg);
