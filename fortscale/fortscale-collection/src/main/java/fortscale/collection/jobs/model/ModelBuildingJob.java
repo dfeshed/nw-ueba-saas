@@ -24,6 +24,8 @@ public class ModelBuildingJob extends FortscaleJob {
 	private static final String TARGET_TOPIC_KEY_NAME = "targetTopic";
 	private static final String SELECT_HIGH_SCORE_CONTEXTS = "selectHighScoreContexts";
 
+	@Value("${fortscale.model.build.message.field.select.high.score.contexts}")
+	private String selectHighScoreContextsJsonField;
 	@Value("${fortscale.model.build.message.constant.all.models}")
 	private String allModelsConstantValue;
 
