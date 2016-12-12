@@ -211,16 +211,26 @@ export default Route.extend({
    * @public
    */
   model() {
-    let incidentModels;
+
+    const newCube = IncidentsCube.create({
+      array: []
+    });
+    const inProgressCube = IncidentsCube.create({
+      array: [],
+      sortField: 'lastUpdated'
+    });
+    const allIncidentsCube = IncidentsCube.create({
+      array: [],
+      categoryTags: []
+    });
+
+    const incidentModels = {
+      allIncidents: allIncidentsCube,
+      newIncidents: newCube,
+      inProgressIncidents: inProgressCube
+    };
 
     if (this.get('respondMode.selected') === 'card') {
-      const newCube = IncidentsCube.create({
-        array: []
-      });
-      const inProgressCube = IncidentsCube.create({
-        array: [],
-        sortField: 'lastUpdated'
-      });
 
       // Kick off the initial page load data request.
       this._createStream([{ field: 'statusSort', value: incStatus.NEW }],
@@ -241,44 +251,32 @@ export default Route.extend({
             return (incident.statusSort === incStatus.ASSIGNED) || (incident.statusSort === incStatus.IN_PROGRESS);
           })
         ]);
-
-      incidentModels = {
-        newIncidents: newCube,
-        inProgressIncidents: inProgressCube
-      };
       this.set('cardViewCube', incidentModels);
+
     } else {
 
-      const incidentsCube = IncidentsCube.create({
-        array: [],
-        categoryTags: []
-      });
-      this.set('listViewCube', incidentsCube);
+      this.set('listViewCube', allIncidentsCube);
 
       // Kick off the initial page load data request.
 
       this._createStream([{ field: 'statusSort', values: incidentStatusIds }],
         [ this._getDefaultListSort() ],
         'new',
-        incidentsCube);
+        allIncidentsCube);
 
       this.request.streamRequest({
         method: 'stream',
         modelName: 'category-tags',
         query: {},
         onResponse: ({ data }) => {
-          set(incidentsCube, 'categoryTags', data);
+          set(allIncidentsCube, 'categoryTags', data);
         },
         onError() {
           Logger.error('Error loading tags');
         }
       });
       // kick off both the async update stream
-      this._createNotify([incidentsCube], (incidents)=>[incidents]);
-
-      incidentModels = {
-        allIncidents: incidentsCube
-      };
+      this._createNotify([allIncidentsCube], (incidents)=>[incidents]);
     }
 
     return incidentModels;
