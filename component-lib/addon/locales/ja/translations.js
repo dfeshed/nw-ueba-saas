@@ -85,6 +85,17 @@ export default {
     error: {
       generic: 'ja_An unexpected error has occurred attempting to retrieve this data.',
       missingRecon: 'ja_This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'
+    },
+    toggles: {
+      header: 'ja_Show/Hide Header',
+      request: 'ja_Show/Hide Request',
+      response: 'ja_Show/Hide Response',
+      topBottom: 'ja_Top/Bottom View',
+      sideBySide: 'ja_Side by Side View',
+      meta: 'ja_Show/Hide Meta',
+      settings: 'ja_Settings',
+      expand: 'ja_Expand/Contract View',
+      close: 'ja_Close Reconstruction'
     }
   },
   memsize: {

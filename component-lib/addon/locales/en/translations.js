@@ -81,6 +81,10 @@ export default {
     'other': 'updates'
   },
   recon: {
+    error: {
+      generic: 'An unexpected error has occurred attempting to retrieve this data.',
+      missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'
+    },
     files: {
       fileName: 'File Name',
       extension: 'Extension',
@@ -90,9 +94,16 @@ export default {
       noFiles: 'There are no files available for this event.',
       linkFile: 'This file is in another session.<br>Click the file link to view the related session in a new tab.'
     },
-    error: {
-      generic: 'An unexpected error has occurred attempting to retrieve this data.',
-      missingRecon: 'This event (id = {{id}}) was not saved or has been rolled out of storage. No content to display.'
+    toggles: {
+      header: 'Show/Hide Header',
+      request: 'Show/Hide Request',
+      response: 'Show/Hide Response',
+      topBottom: 'Top/Bottom View',
+      sideBySide: 'Side by Side View',
+      meta: 'Show/Hide Meta',
+      settings: 'Settings',
+      expand: 'Expand/Contract View',
+      close: 'Close Reconstruction'
     }
   },
   memsize: {

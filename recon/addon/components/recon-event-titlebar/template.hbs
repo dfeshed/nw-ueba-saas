@@ -13,51 +13,61 @@
   active=isHeaderOpen
   class='toggle-header header-toggle'
   click=(action "toggleHeader")
-  name='layout-6'}}
+  name='layout-6'
+  title=(t 'recon.toggles.header')
+}}
 
 {{rsa-icon
   active=isRequestShown
   class='toggle-request header-toggle'
   click=(action "toggleRequest")
   disabled=disableRequestResponseToggles
-  name='arrow-circle-right-2'}}
+  name='arrow-circle-right-2'
+  title=(t 'recon.toggles.request')}}
 
 {{rsa-icon
   active=isResponseShown
   class='toggle-response header-toggle'
   click=(action "toggleResponse")
   disabled=disableRequestResponseToggles
-  name='arrow-circle-left-2'}}
+  name='arrow-circle-left-2'
+  title=(t 'recon.toggles.response')}}
 
 {{rsa-icon
   active=true
   class='header-toggle'
   disabled=disablePacketIcons
-  name='view-agenda'}}
+  name='view-agenda'
+  title=(t 'recon.toggles.topBottom')}}
 
 {{rsa-icon
   class='header-toggle'
   disabled=disablePacketIcons
-  name='layout-4'}}
+  name='layout-4'
+  title=(t 'recon.toggles.sideBySide')}}
 
 {{rsa-icon
   active=isMetaShown
   class='toggle-meta header-toggle'
   click=(action 'toggleMeta')
-  name='layout-2'}}
+  name='layout-2'
+  title=(t 'recon.toggles.meta')}}
 
 <div class="divider"></div>
 
 {{rsa-icon
   class='header-toggle'
-  name='cog'}}
+  name='cog'
+  title=(t 'recon.toggles.settings')}}
 
 {{rsa-icon
   class='header-toggle'
   click=(action 'toggleExpanded')
-  name=(concat 'arrow-' arrowDirection '-9')}}
+  name=(concat 'arrow-' arrowDirection '-9')
+  title=(t 'recon.toggles.expand')}}
 
 {{rsa-icon
   class='header-toggle'
   click=(action 'closeRecon')
-  name='close'}}
+  name='close'
+  title=(t 'recon.toggles.close')}}
