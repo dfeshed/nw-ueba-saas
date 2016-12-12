@@ -89,6 +89,7 @@ public class RecordToVpnSessionConverter {
 		return vpnSession;
 	}
 
+	// WARNING: it seems that this method is never called
 	public synchronized void initMetricsClass(StatsService statsService, String name){
 
 		// Check if we already have the metrics for this name. If so, reuse it
@@ -98,13 +99,13 @@ public class RecordToVpnSessionConverter {
 			// Yes, use the existing metric
 			metric = tmpMetric;
 
-			logger.info("TMP: initMetricsClass - reusing metric {} for {}", metric, name);
+			logger.debug("initMetricsClass() - reusing metric {} for {}", metric, name);
 			return;
 		}
 
 		// No, create a new metric, save it and use it
 		metric = new RecordToVpnSessionConverterMetric(statsService, name);
-		logger.info("TMP: initMetricsClass - created metric {} for {}", metric, name);
+		logger.debug("initMetricsClass() - created metric {} for {}", metric, name);
 
 		metricsMap.put(name, metric);
 
