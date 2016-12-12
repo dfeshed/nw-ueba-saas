@@ -11,7 +11,6 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -158,8 +157,7 @@ public class ModelBuilderManager {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
             metrics.retrieverFailures++;
-            logger.error("Failed to retrieve data for context ID {}. {}: {}.",
-                    contextId, e.toString(), ExceptionUtils.getStackTrace(e));
+            logger.error("Failed to retrieve data for context ID {}.", contextId, e);
             return ModelBuildingStatus.RETRIEVER_FAILURE;
         }
         if (modelBuilderData == null) {
@@ -172,8 +170,7 @@ public class ModelBuilderManager {
             model = modelBuilder.build(modelBuilderData);
         } catch (Exception e) {
             metrics.builderFailures++;
-            logger.error("Failed to build model for context ID {}. {}: {}.",
-                    contextId, e.toString(), ExceptionUtils.getStackTrace(e));
+            logger.error("Failed to build model for context ID {}.", contextId, e);
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
         if (model == null) {
@@ -189,8 +186,7 @@ public class ModelBuilderManager {
             modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
             metrics.storeFailures++;
-            logger.error("Failed to store model for context ID {}. {}: {}.",
-                    contextId, e.toString(), ExceptionUtils.getStackTrace(e));
+            logger.error("Failed to store model for context ID {}.", contextId, e);
             return ModelBuildingStatus.STORE_FAILURE;
         }
 
