@@ -90,51 +90,56 @@ export default Component.extend({
       }
       const { alert } = indicator;
       const sources = this.get('sources');
-      // get the sourceName and sourcetype from the config based on modelName
-      const { sourceName, sourceTypes } = sources[modelName];
-      indicator.modelName = modelName;
-      // group will be set to "0" for catalyst
-      indicator.catalyst = (indicators.group === '0');
-      indicator.sourceName = sourceName;
-      indicator.sourceTypes = sourceTypes;
+      const indicatorSources = sources[modelName];
 
-      if (sourceName) {
-        const currAlertTime = moment(alert.timestamp);
-        // show the date bar only if the current date is different
-        // from the previous indicator's date
-        if (k > 0) {
+      if (!isEmpty(indicatorSources)) {
+        // get the sourceName and sourcetype from the config based on modelName
+        const { sourceName, sourceTypes } = indicatorSources;
+        indicator.modelName = modelName;
+        // group will be set to "0" for catalyst
+        indicator.catalyst = (indicators.group === '0');
+        indicator.sourceName = sourceName;
+        indicator.sourceTypes = sourceTypes;
+
+        if (sourceName) {
           const currAlertTime = moment(alert.timestamp);
-          if (previousAlertTime.diff(currAlertTime, 'days') <= 0) {
-            alert.hideDate = true;
-          }
-        }
-        previousAlertTime = currAlertTime;
-        // indicator.matched is an ordered set, in this order
-        // [User, Host, Domain, Source ip, File hash]
-        const objMatched = {};
-        if (isArray(matched)) {
-          [objMatched.user, objMatched.host, objMatched.domain, objMatched.srcIp, objMatched.fileHash] = matched;
-        }
-        const objLookup = [];
-        const lookupforHost = (lookup && lookup[objMatched.host]);
-        // populate the lookup for all non-catalyst indicators
-        if (lookupforHost && indicator.catalyst === false) {
-          lookupforHost.forEach((item) => {
-            const [, value, lookupType] = item;
-            if (lookupType === 'ip2host') {
-              const lookupDetails = {
-                title: i18n.t('incident.details.storyline.lookup.ip2host'),
-                source: objMatched.host,
-                dest: value
-              };
-              objLookup.push(lookupDetails);
+          // show the date bar only if the current date is different
+          // from the previous indicator's date
+          if (k > 0) {
+            const currAlertTime = moment(alert.timestamp);
+            if (previousAlertTime.isSame(currAlertTime, 'day')) {
+              alert.hideDate = true;
             }
-          });
-          indicator.lookup = objLookup;
+          }
+          previousAlertTime = currAlertTime;
+          // indicator.matched is an ordered set, in this order
+          // [User, Host, Domain, Source ip, File hash]
+          const objMatched = {};
+          if (isArray(matched)) {
+            [objMatched.user, objMatched.host, objMatched.domain, objMatched.srcIp, objMatched.fileHash] = matched;
+          }
+          const objLookup = [];
+          const lookupforHost = (lookup && lookup[objMatched.host]);
+          // populate the lookup for all non-catalyst indicators
+          if (lookupforHost && indicator.catalyst === false) {
+            lookupforHost.forEach((item) => {
+              const [, value, lookupType] = item;
+              if (lookupType === 'ip2host') {
+                const lookupDetails = {
+                  title: i18n.t('incident.details.storyline.lookup.ip2host'),
+                  source: objMatched.host,
+                  dest: value
+                };
+                objLookup.push(lookupDetails);
+              }
+            });
+            indicator.lookup = objLookup;
+          }
+          data.push(indicator);
         }
-        data.push(indicator);
       }
     });
     return data;
   }
 });
+
