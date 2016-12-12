@@ -74,7 +74,7 @@ public abstract class FeatureBucketsService {
 
 
 
-					if (featureBucket.getId() != null) {
+					if (featureBucket.isFeatureBucketSynced()) {
 						// this is not a new feature bucket! it is already exists in both key-value store and MongoDb.
 						// the feature bucket arrived after sync - this should not happened in the common data path scenario
 						// and would not happened after DPM-integration since a dependency would be defined in the data path

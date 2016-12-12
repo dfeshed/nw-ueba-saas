@@ -109,7 +109,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 				String key = getBucketKey(featureBucketConfName, featureBucketMetadata.getBucketId());
 				FeatureBucket featureBucket = featureBucketStore.get(key);
 				if (featureBucket != null) {
-					if(featureBucket.getId() == null) {
+					if(!featureBucket.isFeatureBucketSynced()) {
 						featureBuckets.add(featureBucket);
 					}
 				} else {
@@ -190,7 +190,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	private void updateFeatureBucketAfterEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		super.storeFeatureBucket(featureBucketConf, featureBucket);
-		if(featureBucket.getId() == null){
+		if(!featureBucket.isFeatureBucketSynced()){
 			// At the first time the bucket is stored in mongo it gets an id, so we
 			// need to get the updated bucket with the id and store it in the level db so next time we will update the existing document and not insert new document.
 			featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());
