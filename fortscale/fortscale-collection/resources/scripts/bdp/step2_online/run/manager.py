@@ -61,7 +61,8 @@ class Manager(OnlineManager):
                 is_online_mode=self._is_online_mode)
         validation_start_time = \
             start_time_epoch - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
-        block_until_everything_is_validated(host=self._host,
+        block_until_everything_is_validated(logger=logger,
+                                            host=self._host,
                                             start_time_epoch=validation_start_time,
                                             end_time_epoch=validation_start_time + self._batch_size_in_hours * 60 * 60,
                                             wait_between_validations=self._polling_interval,
@@ -103,7 +104,8 @@ class Manager(OnlineManager):
         logger.info('validating last partial batch...')
         validation_start_time = \
             validation_end_time - self._validation_batches_delay * self._batch_size_in_hours * 60 * 60
-        block_until_everything_is_validated(host=self._host,
+        block_until_everything_is_validated(logger=logger,
+                                            host=self._host,
                                             start_time_epoch=validation_start_time,
                                             end_time_epoch=validation_end_time,
                                             wait_between_validations=self._polling_interval,
