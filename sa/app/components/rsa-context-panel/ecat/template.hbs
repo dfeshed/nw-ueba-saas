@@ -5,8 +5,8 @@
       {{rsa-content-badge-score
         label=(t 'context.hostSummary.riskScore')
         class="rsa-context-risk-score"
-        score=ecatAdditionalData.minimum_ioc
-        style=(context/risk-score-to-badge-level ecatAdditionalData.minimum_ioc)
+        score=data.IIOCScore
+        style=(context/risk-score-to-badge-level data.IIOCScore)
       }}
     </vbox>
 

@@ -1,8 +1,8 @@
 import Ember from 'ember';
 const { Helper: { helper } } = Ember;
-export function accordionLabel([list, data]) {
+export function accordionLabel([data, columns]) {
   const value = [];
-  list.forEach((obj) => {
+  columns.forEach((obj) => {
     value.push(data[obj.field]);
   });
   return value;

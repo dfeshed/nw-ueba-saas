@@ -54,23 +54,20 @@ export default[
         field: 'LastExecuted',
         title: 'context.iiocs.lastExecuted',
         width: '25%',
-        class: 'rsa-iioc-iiocLevel2',
-        dataType: 'text',
-        nested: ''
-      },
-      {
-        field: 'IOCLevel',
-        title: 'context.iiocs.description',
-        width: '25%',
-        class: 'rsa-iioc-iiocLevel1',
         dataType: 'text',
         nested: ''
       },
       {
         field: 'Description',
+        title: 'context.iiocs.description',
+        width: '25%',
+        dataType: 'text',
+        nested: ''
+      },
+      {
+        field: 'IOCLevel',
         title: 'context.iiocs.iOCLevel',
         width: '25%',
-        class: 'rsa-iioc-iiocLevel0',
         dataType: 'text',
         nested: ''
       }
@@ -92,7 +89,7 @@ export default[
         dataType: 'riskscore'
       },
       {
-        field: 'id',
+        field: '_id',
         title: 'context.incident._id',
         nested: '',
         width: '7%'
@@ -118,10 +115,10 @@ export default[
       },
 
       {
-        field: 'assignee',
+        field: 'name',
         title: 'context.incident.assignee',
         width: '9%',
-        nested: ''
+        nested: 'assignee'
       },
       {
         field: 'priority',
