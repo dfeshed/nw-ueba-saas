@@ -1,6 +1,8 @@
 package fortscale.collection.morphlines;
 
 import fortscale.collection.metrics.RecordToStringItemsProcessorMetric;
+import fortscale.collection.metrics.RecordToVpnSessionConverterMetric;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONStyle;
@@ -8,17 +10,25 @@ import net.minidev.json.JSONStyle;
 import org.kitesdk.morphline.api.Record;
 import org.springframework.util.Assert;
 
+import java.util.HashMap;
+import java.util.Map;
+
 
 /**
  * Converts morphline record into string line
  */
 public class RecordToStringItemsProcessor {
 
+	private static Logger logger = Logger.getLogger(RecordToStringItemsProcessor.class);
+
 	private String[] fields;
 	private String separator;
 
 	private RecordToStringItemsProcessorMetric metric;
-	
+
+	static Map<String,RecordToStringItemsProcessorMetric> metricsMap = new HashMap<>();
+
+
 	public RecordToStringItemsProcessor(String separator, StatsService statsService, String name, String... fields) throws IllegalArgumentException {
 		Assert.notNull(separator);
 		Assert.notNull(fields);
@@ -77,7 +87,26 @@ public class RecordToStringItemsProcessor {
 		return json.toJSONString(JSONStyle.NO_COMPRESS);
 	}
 
-	public void initMetricsClass(StatsService statsService, String name){
-		metric = new RecordToStringItemsProcessorMetric(statsService,name);
+
+	public synchronized void initMetricsClass(StatsService statsService, String name){
+
+		// Check if we already have the metrics for this name. If so, reuse it
+		RecordToStringItemsProcessorMetric tmpMetric = metricsMap.get(name);
+
+		if (tmpMetric != null) {
+			// Yes, use the existing metric
+			metric = tmpMetric;
+
+			logger.info("TMP - initMetricsClass() - reusing metric {} for {}", metric, name);
+			return;
+		}
+
+		// No, create a new metric, save it and use it
+		metric = new RecordToStringItemsProcessorMetric(statsService, name);
+		logger.info("TMP - initMetricsClass() - created metric {} for {}", metric, name);
+
+		metricsMap.put(name, metric);
+
 	}
+
 }
