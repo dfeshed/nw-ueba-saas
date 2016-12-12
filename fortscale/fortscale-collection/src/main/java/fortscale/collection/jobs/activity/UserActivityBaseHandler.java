@@ -229,8 +229,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
 		Query query = new Query();
 		query.addCriteria(where(FeatureBucket.CONTEXT_ID_FIELD).in(usersChunk));
-		query.addCriteria(where(FeatureBucket.START_TIME_FIELD).gte(convertToSeconds(startTime)));
-		query.addCriteria(where(FeatureBucket.END_TIME_FIELD).lte(convertToSeconds(endTime)));
+		query.addCriteria(where(FeatureBucket.START_TIME_FIELD)
+				.gte(convertToSeconds(startTime))
+				.lt(convertToSeconds(endTime)));
 		query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
 
 		try {
