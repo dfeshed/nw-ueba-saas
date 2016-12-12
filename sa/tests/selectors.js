@@ -338,7 +338,6 @@ export default Ember$.extend({}, BaseSelectors, {
       'metaInfoValue': '.event-overview__meta__info__key-value__value',
       'eventMetaDisplayIcon': '.rsa-icon-arrow-right-8'
     },
-    // Please alphabetize!
     'investigate': {
       'breadcrumbMoreButton': '.rsa-investigate-breadcrumb__more .rsa-form-button',
       'breadcrumbQueryButton': '.rsa-investigate-breadcrumb__submit .rsa-form-button',
