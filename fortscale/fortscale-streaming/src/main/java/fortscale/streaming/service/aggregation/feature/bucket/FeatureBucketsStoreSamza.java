@@ -49,6 +49,8 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.threshold.in.event.seconds}")
 	private long storeSyncThresholdInEventSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.store.sync.page.size}:100")
+	private long storeSyncPageSize;
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.window.in.system.seconds}")
 	private long storeSyncUpdateWindowInSystemSeconds;
 	
@@ -99,6 +101,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			boolean error = false;
 
 			// Creating collections of buckets to sync per FeatureBucketConf
+			// todo: move this code to new method, refactor it all to something more readable
 			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList) {
 				String featureBucketConfName = featureBucketMetadata.getFeatureBucketConfName();
 				Collection<FeatureBucket> featureBuckets = bucketConfNameToBucketCollectionMap.get(featureBucketConfName);
@@ -116,13 +119,20 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 					errorMsg += String.format("\nFailed to sync bucktConfName %s, bucketId %s", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
 					error = true;
 				}
+				if(featureBuckets.size() >= storeSyncPageSize)
+				{
+
+					FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+					insertFeatureBuckets(featureBucketConf, featureBuckets);
+					featureBuckets = null;
+					bucketConfNameToBucketCollectionMap.put(featureBucketConfName, featureBuckets);
+				}
 			}
 
-			// Bulk Insert Per Collection
+			// Bulk Insert Per Collection (whats left after paging)
 			for(Map.Entry<String, Collection<FeatureBucket>> entry: bucketConfNameToBucketCollectionMap.entrySet()) {
 				FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(entry.getKey());
 				Collection<FeatureBucket> featureBuckets = entry.getValue();
-
 				insertFeatureBuckets(featureBucketConf, featureBuckets);
 			}
 
