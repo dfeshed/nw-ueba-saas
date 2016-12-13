@@ -12,7 +12,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,13 +82,7 @@ public class ApiSystemSetupTagsController extends BaseController {
                 //if update was successful and tag is no longer active - remove that tag from all users
             } else if (!tag.getActive()) {
                 String tagName = tag.getName();
-                Set<String> usernames = userService.findUsernamesByTags(new String[] { tagName });
-                if (CollectionUtils.isNotEmpty(usernames)) {
-                    logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
-                    for (String username : usernames) {
-                        userTagService.removeUserTags(username, Collections.singletonList(tagName));
-                    }
-                }
+                userTagService.removeTagFromAllUsers(tagName);
             }
         }
         return new ResponseEntity<>(EMPTY_RESPONSE_STRING, HttpStatus.ACCEPTED);
@@ -113,14 +106,8 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
 
-    /**
-     * This method adds/removes tags to/from the users in the users collection
-     * @return the HTTP status of the request and a map of the groups and ous
-     */
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
-
-
     public ResponseEntity<DataBean<Map<String, List<? extends AdObject>>>> searchGroupsAndOusByNameStartingWith(String containedText) {
         DataBean<Map<String, List<? extends AdObject>>> response = new DataBean<>();
 

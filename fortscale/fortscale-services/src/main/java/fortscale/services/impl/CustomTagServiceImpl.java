@@ -172,4 +172,10 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		userService.updateUserTagList(null, tags, username);
 	}
 
+	@Override
+	public int removeTagFromAllUsers(String tagName) {
+		return userService.removeTagFromAllUsers(tagName);
+	}
+
+
 }
