@@ -10,8 +10,6 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.*;
 
 import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.ETL;
@@ -171,11 +169,6 @@ public class ControllerInvokedAdTask implements Runnable {
     private boolean runCollectionJob(String jobName, UUID resultsId) {
         Process process;
         try {
-            final String collectionJarPath = controller.COLLECTION_TARGET_DIR + "/" + controller.COLLECTION_JAR_NAME;
-            if(!Files.exists(Paths.get(collectionJarPath))) {
-                logger.error("Execution of task {} has failed. Collection jar file doesn't exist in {}", jobName, collectionJarPath);
-                return false;
-            }
             final String scriptPath = controller.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);

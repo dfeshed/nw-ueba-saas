@@ -48,8 +48,6 @@ public class ApiActiveDirectoryController {
 
 	public String USER_HOME_DIR;
 
-	public String COLLECTION_JAR_NAME;
-
 	private final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 
 	private final String DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX ="deployment_wizard_ad.last_execution_time";
@@ -71,15 +69,12 @@ public class ApiActiveDirectoryController {
 
 	@Autowired
 	private ApplicationConfigurationService applicationConfigurationService;
+
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
 
 	@PostConstruct
 	private void getProperties() {
-
-		final String jarProperty = SpringPropertiesUtil.getProperty("jar.name");
-		COLLECTION_JAR_NAME = jarProperty!=null? jarProperty : "fortscale-collection-1.1.0-SNAPSHOT.jar";
-
 		final String homeDirProperty = SpringPropertiesUtil.getProperty("user.home.dir");
 		USER_HOME_DIR = homeDirProperty != null ? homeDirProperty : "/home/cloudera";
 
