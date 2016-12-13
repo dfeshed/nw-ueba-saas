@@ -1,7 +1,6 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Tag;
-import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.services.UserTagService;
@@ -32,15 +31,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Value("${user.list.custom_tags.deletion_symbol:-}")
 	private String deletionSymbol;
 
-	private UserRepository userRepository;
 	private UserService userService;
 	private TagService tagService;
 	private ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper;
 
 	@Autowired
-	public CustomTagServiceImpl(UserRepository userRepository, UserService userService, TagService tagService,
+	public CustomTagServiceImpl(UserService userService, TagService tagService,
 			ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper) {
-		this.userRepository = userRepository;
 		this.userService = userService;
 		this.tagService = tagService;
 		this.activeDirectoryGroupsHelper = activeDirectoryGroupsHelper;
@@ -89,7 +86,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 				//if regex
 				} else {
 					logger.info("regex rule - {}", rule);
-					users.addAll(userRepository.findByUsernameRegex(searchTerm));
+					users.addAll(userService.findByUsernameRegex(searchTerm));
 				}
 				if (!users.isEmpty()) {
 					if (removeFlag) {
