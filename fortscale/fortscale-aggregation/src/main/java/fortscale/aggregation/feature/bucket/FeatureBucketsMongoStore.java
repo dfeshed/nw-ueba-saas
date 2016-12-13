@@ -48,7 +48,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 	private Map<FeatureBucketConf, FeatureBucketsStoreMetrics> featureBucketConfToMetric = new HashMap<>();
 
-	private FeatureBucketsStoreMetrics getMetrics(FeatureBucketConf featureBucketConf) {
+	public FeatureBucketsStoreMetrics getMetrics(FeatureBucketConf featureBucketConf) {
 		if (!featureBucketConfToMetric.containsKey(featureBucketConf)) {
 			featureBucketConfToMetric.put(featureBucketConf,
 					new FeatureBucketsStoreMetrics(statsService, "mongo", featureBucketConf));
@@ -230,7 +230,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		String collectionName = createCollectionIfNotExist(featureBucketConf, expireAfterSeconds);
 
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-		for (FeatureBucket featureBucket :featureBuckets) {
+		for (FeatureBucket featureBucket : featureBuckets) {
 			try {
 				mongoTemplate.insert(featureBucket, collectionName);
 				metrics.insertFeatureBucketsCalls++;
@@ -249,7 +249,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 	/**
 	 * mongo BSON size is limited. in case this limit is exceeded, write an error to log
-	 * and mark {@link FeatureBucket#setTooBigDocument(boolean)} as true
 	 * @see <a href="https://docs.mongodb.com/manual/reference/limits/#bson-documents">https://docs.mongodb.com/manual/reference/limits/#bson-documents</a>
 	 * @param collectionName collection we try to write into
 	 * @param featureBucket feature bucket to we tried to write
@@ -261,10 +260,6 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 		boolean tooLargeDocumentMongoException =
 				mongoDbUtilService.isTooLargeDocumentMongoException(collectionName, featureBucket, e, metrics.documentTooLarge);
-		if(tooLargeDocumentMongoException)
-		{
-			featureBucket.setTooBigDocument(true);
-		}
 		return tooLargeDocumentMongoException;
 	}
 

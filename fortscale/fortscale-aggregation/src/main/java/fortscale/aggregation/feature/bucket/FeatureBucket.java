@@ -6,7 +6,6 @@ import fortscale.common.feature.Feature;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.util.Date;
@@ -49,8 +48,6 @@ public class FeatureBucket {
 	private String contextId;
 	@Field(BUCKET_ID_FIELD)
 	private String bucketId;
-	@Transient
-	private boolean tooBigDocument;
 	
 	private Date createdAt;
 
@@ -152,21 +149,13 @@ public class FeatureBucket {
 		return id;
 	}
 
-	public boolean isTooBigDocument() {
-		return tooBigDocument;
-	}
-
-	public void setTooBigDocument(boolean tooBigDocument) {
-		this.tooBigDocument = tooBigDocument;
-	}
-
 	/**
-	 * featureBucket is considered as synced if id is filled or if it is marked as too big document
+	 * featureBucket is considered as synced if id is filled
 	 * @return true if synced, false otherwise
      */
 	public boolean isFeatureBucketSynced()
 	{
-		return tooBigDocument || id != null;
+		return id != null;
 	}
 
 	@Override

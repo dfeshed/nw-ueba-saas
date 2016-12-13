@@ -1,7 +1,6 @@
 package fortscale.aggregation.util;
 
 import com.mongodb.MongoInternalException;
-import fortscale.aggregation.feature.bucket.FeatureBucket;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +67,6 @@ public class MongoDbUtilService implements InitializingBean {
 
     /**
      * mongo BSON size is limited. in case this limit is exceeded, write an error to log
-     * and mark {@link FeatureBucket#setTooBigDocument(boolean)} as true
      * @see <a href="https://docs.mongodb.com/manual/reference/limits/#bson-documents">https://docs.mongodb.com/manual/reference/limits/#bson-documents</a>
      * @param collectionName collection we try to write into
      * @param object POJO we tried to write

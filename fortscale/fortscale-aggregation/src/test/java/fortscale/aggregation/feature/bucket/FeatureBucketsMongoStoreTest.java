@@ -74,8 +74,8 @@ public class FeatureBucketsMongoStoreTest {
         }
 
         featureBucketsMongoStore.insertFeatureBuckets(featureBucketConf,Collections.singletonList(featureBucket));
-        Assert.assertTrue(featureBucket.isTooBigDocument());
-        Assert.assertTrue(featureBucket.isFeatureBucketSynced());
+        FeatureBucketsStoreMetrics metrics = featureBucketsMongoStore.getMetrics(featureBucketConf);
+        Assert.assertTrue(metrics.documentTooLarge.longValue()>0);
     }
 
     /**
