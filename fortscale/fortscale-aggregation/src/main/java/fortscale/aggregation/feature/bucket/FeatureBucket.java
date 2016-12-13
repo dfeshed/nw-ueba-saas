@@ -1,19 +1,17 @@
 package fortscale.aggregation.feature.bucket;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import fortscale.common.feature.Feature;
+import fortscale.utils.time.TimeUtils;
+import fortscale.utils.time.TimestampUtils;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Field;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Field;
-
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
-import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
-
-import fortscale.common.feature.Feature;
-import fortscale.utils.time.TimeUtils;
-import fortscale.utils.time.TimestampUtils;
 
 @JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureBucket {
@@ -149,6 +147,15 @@ public class FeatureBucket {
 
 	public String getId() {
 		return id;
+	}
+
+	/**
+	 * featureBucket is considered as synced if id is filled
+	 * @return true if synced, false otherwise
+     */
+	public boolean isFeatureBucketSynced()
+	{
+		return id != null;
 	}
 
 	@Override

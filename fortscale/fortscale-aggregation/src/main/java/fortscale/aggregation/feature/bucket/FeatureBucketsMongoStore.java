@@ -48,7 +48,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 
 	private Map<FeatureBucketConf, FeatureBucketsStoreMetrics> featureBucketConfToMetric = new HashMap<>();
 
-	private FeatureBucketsStoreMetrics getMetrics(FeatureBucketConf featureBucketConf) {
+	public FeatureBucketsStoreMetrics getMetrics(FeatureBucketConf featureBucketConf) {
 		if (!featureBucketConfToMetric.containsKey(featureBucketConf)) {
 			featureBucketConfToMetric.put(featureBucketConf,
 					new FeatureBucketsStoreMetrics(statsService, "mongo", featureBucketConf));
@@ -218,7 +218,10 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 			mongoTemplate.save(featureBucket, collectionName);
 		} catch (Exception e) {
 			metrics.saveFeatureBucketsFailures++;
-			throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: "+featureBucket.toString(), e);
+			if(!isTooLargeDocumentMongoException(collectionName, featureBucket, e, metrics))
+			{
+				throw new Exception("Got exception while trying to save featureBucket to mongodb. featureBucket: " + featureBucket.toString(), e);
+			}
 		}
 	}
 	public void insertFeatureBuckets(FeatureBucketConf featureBucketConf, Collection<FeatureBucket> featureBuckets) throws Exception{
@@ -227,16 +230,38 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		String collectionName = createCollectionIfNotExist(featureBucketConf, expireAfterSeconds);
 
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
-		try {
-			mongoTemplate.insert(featureBuckets, collectionName);
-			metrics.insertFeatureBucketsCalls++;
-		} catch (Exception e) {
-			// TODO: 10/6/16 DPM client should be aware of this failure
-			metrics.insertFeatureBucketsFailures++;
-			throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = "+featureBuckets.toString(), e);
+		for (FeatureBucket featureBucket : featureBuckets) {
+			try {
+				mongoTemplate.insert(featureBucket, collectionName);
+				metrics.insertFeatureBucketsCalls++;
+			}
+			catch (Exception e)
+			{
+				if(!isTooLargeDocumentMongoException(collectionName, featureBucket, e, metrics))
+				{
+					// TODO: 10/6/16 DPM client should be aware of this failure
+					metrics.insertFeatureBucketsFailures++;
+					throw new Exception("Got exception while trying to save featureBuckets to mongodb. featureBuckets = " + featureBuckets.toString(), e);
+				}
+			}
 		}
 	}
 
+	/**
+	 * mongo BSON size is limited. in case this limit is exceeded, write an error to log
+	 * @see <a href="https://docs.mongodb.com/manual/reference/limits/#bson-documents">https://docs.mongodb.com/manual/reference/limits/#bson-documents</a>
+	 * @param collectionName collection we try to write into
+	 * @param featureBucket feature bucket to we tried to write
+	 * @param e exception raised to validated
+	 * @param metrics metrics to be updated in case of too large document
+     * @return true if it is exception cause by too large document
+     */
+	private boolean isTooLargeDocumentMongoException(String collectionName, FeatureBucket featureBucket, Exception e, FeatureBucketsStoreMetrics metrics) {
+
+		boolean tooLargeDocumentMongoException =
+				mongoDbUtilService.isTooLargeDocumentMongoException(collectionName, featureBucket, e, metrics.documentTooLarge);
+		return tooLargeDocumentMongoException;
+	}
 
 
 	private String createCollectionIfNotExist(FeatureBucketConf featureBucketConf, int expireAfterSeconds) {
@@ -289,7 +314,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		return res;
 	}
 
-	private String getCollectionName(FeatureBucketConf featureBucketConf) {
+	public String getCollectionName(FeatureBucketConf featureBucketConf) {
 		return String.format("%s%s", COLLECTION_NAME_PREFIX, featureBucketConf.getName());
 	}
 
