@@ -85,8 +85,6 @@ public class RecordToStringItemsProcessor {
 		return json.toJSONString(JSONStyle.NO_COMPRESS);
 	}
 
-	static synchronized void x() {}
-
 	public void initMetricsClass(StatsService statsService, String name) {
 
 		synchronized (metricsMap) {
