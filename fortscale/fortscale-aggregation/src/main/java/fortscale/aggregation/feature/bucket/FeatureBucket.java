@@ -13,7 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE, setterVisibility=Visibility.NONE)
+@JsonAutoDetect(fieldVisibility=Visibility.ANY, getterVisibility=Visibility.NONE,isGetterVisibility = Visibility.NONE, setterVisibility=Visibility.NONE)
 public class FeatureBucket {
 	public static final String START_TIME_FIELD = "startTime";
 	public static final String END_TIME_FIELD = "endTime";
