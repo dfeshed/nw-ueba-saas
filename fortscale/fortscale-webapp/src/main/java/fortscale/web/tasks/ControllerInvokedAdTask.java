@@ -173,6 +173,7 @@ public class ControllerInvokedAdTask implements Runnable {
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
             processBuilder.directory(new File(controller.COLLECTION_TARGET_DIR));
+            processBuilder.redirectErrorStream(true);
             logger.debug("Starting process with arguments {}", arguments);
             process = processBuilder.start();
         } catch (IOException e) {
