@@ -237,7 +237,10 @@ export default $.extend({}, BaseTranslations, {
       whoisCountry: 'ja_Country',
       whoisPhone: 'ja_Phone',
       wohisFax: 'ja_Fax',
-      whoisEmail: 'ja_Email'
+      whoisEmail: 'ja_Email',
+      domain: 'ja_Domain',
+      ipAddress: 'ja_IP Address',
+      error: 'ja_Error fetching Live Connect Data'
     }
   },
   about: {
