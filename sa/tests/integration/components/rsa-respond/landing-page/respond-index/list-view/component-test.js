@@ -450,7 +450,8 @@ test('All incients are checked and then unchecked when the header checkbox is to
 
 test('An alert modal appears if filters are used during a bulk edit in progress', function(assert) {
   const done = assert.async(5);
-  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view
+
+  this.render(hbs`<div id='modalDestination'></div>{{rsa-respond/landing-page/respond-index/list-view
     buffer=10
     allIncidents=allIncidents
     users=users
@@ -474,10 +475,10 @@ test('An alert modal appears if filters are used during a bulk edit in progress'
         this.$('.rsa-respond-list__filter-panel__priority .priority-1 input:first').prop('checked', true).trigger('change');
 
         wait().then(() => {
-          this.$('.rsa-bulk-edit-button-group:nth-child(2) .rsa-form-button-wrapper:first .rsa-form-button').click();
+          this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-button-group__save-btn .rsa-form-button').click();
 
           wait().then(() => {
-            assert.equal(this.$('.rsa-application-modal .modal-content p').text().trim(), 'You have unsaved changes. Please save incident changes before filtering.', 'The modal appears with the proper message.');
+            assert.equal(this.$('.rsa-application-modal .rsa-respond-bulk-edit-confirm p').text().trim(), 'You have unsaved changes. Please save incident changes before filtering.', 'The modal appears with the proper message.');
             done();
           });
           done();

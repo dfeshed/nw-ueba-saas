@@ -32,6 +32,10 @@ module.exports = function(environment) {
       updateRecord: {
         subscriptionDestination: '/queue/incidents/update',
         requestDestination: '/ws/response/incidents/update'
+      },
+      deleteRecord: {
+        subscriptionDestination: '/user/queue/incidents/delete',
+        requestDestination: '/ws/response/incidents/delete'
       }
     },
     storyline: {

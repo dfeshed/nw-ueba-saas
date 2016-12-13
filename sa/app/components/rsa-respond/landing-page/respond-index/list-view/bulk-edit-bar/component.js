@@ -3,6 +3,9 @@ import IncidentConstants from 'sa/incident/constants';
 import computed from 'ember-computed-decorators';
 
 const {
+  inject: {
+    service
+  },
   Component,
   run,
   get,
@@ -14,16 +17,15 @@ const {
 export default Component.extend({
   tagName: 'hbox',
   classNames: ['bulk-edit-bar'],
-
-  // Boolean which determines whether or not the success message should show
-  showSuccessMessage: false,
+  eventBus: service(),
 
   // Value used to update the success message for the bulk edit
-  totalFieldsUpdated: 0,
+  affectedIncidents: 0,
+
+  showMessage: null,
 
   init() {
     this._super(...arguments);
-    // power-select selected options
     this.selected = {
       assignee: null,
       prioritySort: null,
@@ -32,10 +34,10 @@ export default Component.extend({
   },
 
   // available list of statuses
-  statusList: IncidentConstants.incidentStatusIds.map((statusId) => ({ id: statusId, selected: false })),
+  statusList: IncidentConstants.incidentStatusIds.map((statusId) => ({ id: statusId })),
 
   // available list of priorities
-  priorityList: IncidentConstants.incidentPriorityIds.map((priorityId) => ({ id: priorityId, selected: false })),
+  priorityList: IncidentConstants.incidentPriorityIds.map((priorityId) => ({ id: priorityId })),
 
   /**
    * @name isBulkEditInProgress
@@ -100,6 +102,15 @@ export default Component.extend({
   },
 
   /**
+   * @name isDeleteVisible
+   * @description Determines whether or not the delete button should show.
+   * @param {Object} incidents:
+   * @public
+   */
+  @computed('incidents.@each.checked')
+  isDeleteDisabled: (incidents) => incidents.filterBy('checked', true).length === 0,
+
+  /**
    * @name isStatusSelectorDisabled
    * @description Checks to see whether or not the status select list is available based on whether or not any incidents have been selected.
    * @param {Object} incidents:
@@ -130,13 +141,20 @@ export default Component.extend({
     this.get('incidents').setEach('checked', false);
   },
 
-  toggleSuccessMessage(totalCheckedEvents) {
-    this.set('totalFieldsUpdated', totalCheckedEvents);
-    this.set('showSuccessMessage', true);
+  /**
+   * @name toggleConfirmationMessage
+   * @description Toggles the correct confirmation message from invisible to visible.
+   * @param {String} messageAttribute: The name of the boolean value to determine which message to show
+   * @param {Integer} totalCheckedEvents: The number of affected incidents
+   * @public
+   */
+  toggleConfirmationMessage(messageAttribute, totalCheckedEvents) {
+    this.set('affectedIncidents', totalCheckedEvents);
+    this.set('showMessage', messageAttribute);
 
     run.later(() => {
-      if (!this.isDestroyed) {
-        this.set('showSuccessMessage', false);
+      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
+        this.set('showMessage', null);
       }
     }, 15000);
   },
@@ -196,8 +214,43 @@ export default Component.extend({
       }
 
       this.sendAction('saveAction', updateObject, arrayOfSelectedIncidentIDs);
-      this.toggleSuccessMessage(checkedIncidents.length);
+      this.toggleConfirmationMessage('update', checkedIncidents.length);
       this.resetSelectionForm();
+    },
+
+    /**
+     * @name showBulkDeleteModal
+     * @description Shows the bulk delete modal with proper message pluralization
+     * @public
+     */
+    showBulkDeleteModal() {
+      const checkedIncidents = this.get('incidents').filterBy('checked', true);
+      this.set('totalIncidentsDeleted', checkedIncidents.length);
+      this.get('eventBus').trigger('rsa-application-modal-open-bulk-edit-delete');
+    },
+
+    /**
+     * @name confirmDelete
+     * @description Handle the action for deleting the incident/s that were checked
+     * @public
+     */
+    confirmDelete() {
+      const checkedIncidents = this.get('incidents').filterBy('checked', true);
+      const arrayOfSelectedIncidentIDs = checkedIncidents.map((item) => item.id);
+
+      this.sendAction('deleteAction', arrayOfSelectedIncidentIDs);
+      this.toggleConfirmationMessage('delete', checkedIncidents.length);
+      this.resetSelectionForm();
+      this.send('closeDeleteConfirmModal');
+    },
+
+    /**
+     * @name closeDeleteConfirmModal
+     * @description Close the delete confirm modal
+     * @public
+     */
+    closeDeleteConfirmModal() {
+      this.get('eventBus').trigger('rsa-application-modal-close-bulk-edit-delete');
     }
   }
 });

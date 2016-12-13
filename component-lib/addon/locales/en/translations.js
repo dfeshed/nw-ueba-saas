@@ -8,7 +8,9 @@ export default {
     cancel: 'Cancel',
     submit: 'Submit',
     reset: 'Reset',
-    apply: 'Apply'
+    apply: 'Apply',
+    ok: 'OK',
+    delete: 'Delete'
   },
   login: {
     username: 'Username',

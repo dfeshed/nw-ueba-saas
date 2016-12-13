@@ -64,8 +64,9 @@
       incidents=allIncidents.results
       users=users
       saveAction=bulkSaveAction
+      deleteAction=bulkDeleteAction
       isBulkEditInProgress=isBulkEditInProgress
-      showSuccessMessage=showBulkEditMessage
+      showMessage=showBulkEditMessage
     }}
 
     {{#rsa-data-table lazy=true items=allIncidents.results columnsConfig=availableColumnsConfig}}

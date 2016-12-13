@@ -52,13 +52,12 @@
 
     .rsa-bulk-edit-button-group  {
       border-left: 1px solid rsa-color(gray, light);
+      margin-left: rsa-whitespace(less);
 
-      .rsa-bulk-edit-update-message {
-        transition: opacity 1s;
+      .rsa-bulk-edit-message {
         margin-left: rsa-whitespace();
-        display: inline-block;
+        display: none;
         @include rsa-font(body, small);
-        opacity: $rsa-transparent;
 
         .rsa-icon {
           margin-right: rsa-whitespace(least);
@@ -66,8 +65,7 @@
         }
 
         &.is-shown {
-          transition: opacity 1s;
-          opacity: $rsa-opaque;
+          display: inline-block;
         }
       }
 
@@ -79,9 +77,30 @@
         display:none;
       }
 
-      &__save-btn {
+      .rsa-form-button-wrapper {
+        margin: 0 rsa-whitespace() 0 0;
+      }
+
+      .rsa-form-button-wrapper:first-child {
         margin: 0 rsa-whitespace();
       }
     }
+  }
+}
+
+.rsa-respond-bulk-edit-delete-confirm {
+  padding: rsa-whitespace();
+  max-width: 400px;
+
+  p {
+    @include rsa-font(paragraph);
+    margin-bottom: rsa-whitespace();
+  }
+
+  .rsa-form-button-wrapper {
+    width: 45%;
+    display: inline-block;
+    float: left;
+    margin: 10px;
   }
 }

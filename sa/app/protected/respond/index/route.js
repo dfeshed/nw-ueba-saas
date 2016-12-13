@@ -133,7 +133,10 @@ export default Route.extend({
    * @private
    */
   _updateCube(incidents, cubes, filterFunc, notificationCode) {
-    incidents.setEach('asyncUpdate', true);
+
+    if (notificationCode !== 2) {
+      incidents.setEach('asyncUpdate', true);
+    }
 
     // If the user is in card view and the status is not in 'new', 'assigned' or 'in progress' remove it
     if (this.get('respondMode.selected') === 'card') {
@@ -164,34 +167,45 @@ export default Route.extend({
       const recordsToAdd = [];
 
       // notificationCode 0 => incidents was added, 1 => incidents were edited, 2 => incidents were deleted
-      if (notificationCode === 0) {
-        records.pushObjects(incidents);
-      } else if (notificationCode === 1) {
-        incidents.forEach((incident) => {
-          // For each of the updated incident, check if the incident already exists in the cube.
-          // If so, edit with the latest value, else add it to the list of records
-          if (records.findBy('id', incident.id)) {
-            records.edit(incident.id, incident);
-          } else {
-            /*
-             add the incident to be pushed to cube to a temporary array. we don't want
-             to trigger cube's calculations for every single push.
-             we'll do a bulk push to trigger the cube calculations just once.
-             */
-            recordsToAdd.pushObject(incident);
-            // Remove the updated items from the other cube (for ex, when status is changed, we need to delete the incident from the
-            // older cube instance)
-            if (incident.statusSort === incStatus.NEW) {
-              inProgressCube.get('records').edit(incident.id, {}, true);
-            } else if (incident.statusSort === incStatus.IN_PROGRESS || incident.statusSort === incStatus.ASSIGNED) {
-              newIncidentsCube.get('records').edit(incident.id, {}, true);
+      switch (notificationCode) {
+        case 0:
+          records.pushObjects(incidents);
+          break;
+        case 1:
+          incidents.forEach((incident) => {
+            // For each of the updated incident, check if the incident already exists in the cube.
+            // If so, edit with the latest value, else add it to the list of records
+            if (records.findBy('id', incident.id)) {
+              records.edit(incident.id, incident);
+            } else {
+              /*
+               add the incident to be pushed to cube to a temporary array. we don't want
+               to trigger cube's calculations for every single push.
+               we'll do a bulk push to trigger the cube calculations just once.
+               */
+              recordsToAdd.pushObject(incident);
+              // Remove the updated items from the other cube (for ex, when status is changed, we need to delete the incident from the
+              // older cube instance)
+              if (incident.statusSort === incStatus.NEW) {
+                inProgressCube.get('records').edit(incident.id, {}, true);
+              } else if (incident.statusSort === incStatus.IN_PROGRESS || incident.statusSort === incStatus.ASSIGNED) {
+                newIncidentsCube.get('records').edit(incident.id, {}, true);
+              }
             }
-          }
-        });
-      }
+          });
 
-      if (recordsToAdd.length > 0) {
-        records.pushObjects(recordsToAdd);
+          if (recordsToAdd.length > 0) {
+            records.pushObjects(recordsToAdd);
+          }
+          break;
+        case 2:
+          cubes.forEach((cube) => {
+            incidents.forEach((incidentId) => {
+              const records = cube.get('records');
+              records.edit(incidentId, {}, true);
+            });
+          });
+          break;
       }
     });
   },
@@ -323,6 +337,35 @@ export default Route.extend({
         Logger.error(`Unable to save: ${ reason }`);
       });
     },
+
+    /**
+     * @name bulkDelete
+     * @description Deletes an incident or incidents from the database
+     * @param arrayOfIncidentIDs Contains a set of incident ID's as strings
+     * @public
+     */
+    bulkDelete(arrayOfIncidentIDs) {
+
+      this.request.promiseRequest({
+        method: 'deleteRecord',
+        modelName: 'incident',
+        query: {
+          sort: [{
+            field: '_id',
+            descending: true
+          }],
+          filter: [{
+            field: '_id',
+            values: arrayOfIncidentIDs
+          }]
+        }
+      }).then((response) => {
+        Logger.debug(`successfully deleted ${response}`);
+      }).catch((reason) => {
+        Logger.error(`unable to delete incidents: ${reason}`);
+      });
+    },
+
     /**
      * @description Action handler that gets invoked when the user sorts incidents.
      * @param field Describes how to sort the incidents. Example: A 'Risk Score' field will sort incidents by Risk Score.

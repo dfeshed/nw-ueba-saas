@@ -8,7 +8,9 @@ export default {
     cancel: 'ja_Cancel',
     submit: 'ja_Submit',
     reset: 'ja_Reset',
-    apply: 'ja_Apply'
+    apply: 'ja_Apply',
+    ok: 'ja_OK',
+    delete: 'ja_Delete'
   },
   login: {
     username: 'ja_Username',

@@ -485,7 +485,16 @@ export default $.extend({}, BaseTranslations, {
         'other': 'ja_{{totalFields}} records updated successfully'
       },
       unsavedChangesModalHeader: 'ja_Unsaved Changes',
-      unsavedChangesModalMessage: 'ja_You have unsaved changes. Please save incident changes before filtering.'
+      unsavedChangesModalMessage: 'ja_You have unsaved changes. Please save incident changes before filtering.',
+      deleteConfirmation: 'Are you sure?',
+      areYouSureConfirmation: {
+        'one': 'ja_Please confirm you want to delete this incident. Once this incident is deleted, it cannot be recovered.',
+        'other': 'ja_Please confirm you want to delete these incidents.  Once these incidents are deleted, they cannot be recovered.'
+      },
+      successfulDeleteMessage: {
+        'one': 'ja_{{totalFields}} incident successfully deleted',
+        'other': 'ja_{{totalFields}}  incidents successfully deleted'
+      }
     }
   },
   list: {
