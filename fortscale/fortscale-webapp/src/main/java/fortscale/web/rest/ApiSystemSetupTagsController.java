@@ -97,7 +97,6 @@ public class ApiSystemSetupTagsController extends BaseController {
     @LogException
     public ResponseEntity<String> tagUsers() {
         try {
-            //TODO - make this asynchronous
             userTagService.update();
         } catch (Exception ex) {
             return new ResponseEntity<>("{" + ex.getLocalizedMessage() + "}", HttpStatus.INTERNAL_SERVER_ERROR);
