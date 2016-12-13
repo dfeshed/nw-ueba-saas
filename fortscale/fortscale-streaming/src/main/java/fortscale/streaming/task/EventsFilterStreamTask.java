@@ -1,6 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.task.message.FSIncomingMessageEnvelope;
 import fortscale.streaming.task.metrics.EventsFilterStreamTaskMetrics;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -63,7 +64,13 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 		}
 
 		if (taskMonitoringHelper.isMonitoredTask()) {
-			handleUnfilteredEvent(message, extractDataSourceConfigKey(message));
+			if(envelope instanceof FSIncomingMessageEnvelope)
+			{
+				handleUnfilteredEvent(message,((FSIncomingMessageEnvelope) envelope).getStreamingTaskDataSourceConfigKey());
+			}
+			else {
+				handleUnfilteredEvent(message, extractDataSourceConfigKey(message));
+			}
 		}
 		++taskMetrics.unfilteredEvents;
 		processedNonFilterCount.inc(); //Count not filtered events total

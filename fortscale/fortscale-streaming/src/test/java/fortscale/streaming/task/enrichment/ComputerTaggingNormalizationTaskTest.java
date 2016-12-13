@@ -160,7 +160,6 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");
 
 		// run the process on the envelope
-		task.setLastMessageStr(MESSAGE);
 		task.wrappedProcess(envelope ,messageCollector, taskCoordinator);
 		// verify the enriched message send to output topic
 		ArgumentCaptor<OutgoingMessageEnvelope> argument = ArgumentCaptor.forClass(OutgoingMessageEnvelope.class);

@@ -61,7 +61,6 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_1, "vpn");
-		setTaskMessage(task, MESSAGE_1);
 		// run the process on the envelope
 		task.wrappedProcess(envelope, Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
@@ -74,7 +73,6 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_2, "ssh");
-		setTaskMessage(task, MESSAGE_2);
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
@@ -90,7 +88,6 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_3, "login");
-		setTaskMessage(task, MESSAGE_3);
 		// run the process on the envelope
 		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
@@ -104,11 +101,6 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 	}
 
-	private void setTaskMessage(UserMongoUpdateTask task, String msg) {
-		task.setLastMessageStr(msg);
-		task.setLastParsedMessage(null);
-		task.setLastExtractedDataSourceConfigKey(null);
-	}
 
 
 }

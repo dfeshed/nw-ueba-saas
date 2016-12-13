@@ -10,6 +10,7 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
+import fortscale.streaming.task.message.FSIncomingMessageEnvelope;
 import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -69,9 +70,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	// Streaming task common metrics. Note some fields are update by this class and some by the derived classes
 	protected StreamingTaskCommonMetrics streamingTaskCommonMetrics;
-	private String lastMessageStr;
-	private JSONObject lastParsedMessage;
-	private StreamingTaskDataSourceConfigKey lastExtractedDataSourceConfigKey;
 
 	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
@@ -225,23 +223,25 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
-			lastParsedMessage = null;
-			lastMessageStr = null;
-			lastExtractedDataSourceConfigKey = null;
 			streamingTaskCommonMetrics.processedMessages++;
 
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
 			samzaContainerService.setCoordinator(coordinator);
-			lastMessageStr = (String)envelope.getMessage();
-			countNewMessage();
+			JSONObject jsonMsg = parseJsonMessage(envelope);
+			StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey = extractDataSourceConfigKeySafe(jsonMsg);
+			countNewMessage(streamingTaskDataSourceConfigKey);
+
 			String streamingTaskMessageState = resolveOutputMessageState();
 
 			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
 			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
 			samzaContainerService.setCollector(messageCollectorStateDecorator);
+			FSIncomingMessageEnvelope fsEnvelope = new FSIncomingMessageEnvelope(envelope.getSystemStreamPartition(),envelope.getOffset(),envelope.getKey(),envelope.getMessage());
+			fsEnvelope.setJsonMsg(jsonMsg);
+			fsEnvelope.setStreamingTaskDataSourceConfigKey(streamingTaskDataSourceConfigKey);
 
-			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
+			wrappedProcess(fsEnvelope, messageCollectorStateDecorator, coordinator);
 
 			processExceptionHandler.clear();
 		} catch(Exception exception){
@@ -254,29 +254,18 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 	}
 
-
-	public JSONObject getLastParsedMessage() throws ParseException {
-		if(lastParsedMessage == null)
-		{
-			try {
-				streamingTaskCommonMetrics.parseMessageToJson++;
-				return (JSONObject) JSONValue.parseWithException(lastMessageStr);
-			} catch (ParseException e){
-				logger.error("could not convert message={} to json",lastMessageStr);
-				streamingTaskCommonMetrics.parseMessageToJsonExceptions++;
-				taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
-				throw e;
-			}
+	private void countNewMessage(IncomingMessageEnvelope envelope) {
+		try {
+			JSONObject message = parseJsonMessage(envelope);
+			taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
+		} catch (Exception e){
+			//Do nothing
 		}
-		return lastParsedMessage;
 	}
 
-	private void countNewMessage() {
+	private void countNewMessage(StreamingTaskDataSourceConfigKey dataSourceConfigKey) {
 		try {
-			JSONObject message = getLastParsedMessage();
-			if (messageShouldContainDataSourceField()) {
-				taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
-			}
+			taskMonitoringHelper.handleNewEvent(dataSourceConfigKey);
 		} catch (Exception e){
 			//Do nothing
 		}
@@ -342,20 +331,20 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
-		if(lastExtractedDataSourceConfigKey == null) {
-
+		if(messageShouldContainDataSourceField()) {
 			String dataSource = (String) message.get(DATA_SOURCE_FIELD_NAME);
 			String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
 
 			if (dataSource == null) {
 				streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
-				String errMsg = String.format("Message does not contain %s field: %s", DATA_SOURCE_FIELD_NAME, lastMessageStr);
-				logger.error(errMsg);
-				return null;
+				throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + message.toJSONString());
 			}
-			lastExtractedDataSourceConfigKey = new StreamingTaskDataSourceConfigKey(dataSource, lastState);
+			return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
 		}
-		return lastExtractedDataSourceConfigKey;
+
+		streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
+		throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + message.toJSONString());
+
 	}
 
 	//Get the data source and last state without exception, return  null if cannot extract
@@ -380,9 +369,13 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected JSONObject parseJsonMessage(IncomingMessageEnvelope envelope) throws ParseException {
 		try {
+			if(envelope instanceof FSIncomingMessageEnvelope)
+			{
+				return ((FSIncomingMessageEnvelope) envelope).getJsonMsg();
+			}
 			streamingTaskCommonMetrics.parseMessageToJson++;
-
-			return getLastParsedMessage();
+			String messageText = (String) envelope.getMessage();
+			return (JSONObject) JSONValue.parseWithException(messageText);
 		} catch (ParseException e){
 			streamingTaskCommonMetrics.parseMessageToJsonExceptions++;
 			taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
@@ -435,22 +428,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		return true;
 	}
 	// --- getters/setters ---
-
-	public String getLastMessageStr() {
-		return lastMessageStr;
-	}
-
-	public void setLastMessageStr(String lastMessageStr) {
-		this.lastMessageStr = lastMessageStr;
-	}
-
-	public void setLastParsedMessage(JSONObject lastParsedMessage) {
-		this.lastParsedMessage = lastParsedMessage;
-	}
-
-	public void setLastExtractedDataSourceConfigKey(StreamingTaskDataSourceConfigKey lastExtractedDataSourceConfigKey) {
-		this.lastExtractedDataSourceConfigKey = lastExtractedDataSourceConfigKey;
-	}
 
 	public StatsService getStatsService() {
 		return statsService;
