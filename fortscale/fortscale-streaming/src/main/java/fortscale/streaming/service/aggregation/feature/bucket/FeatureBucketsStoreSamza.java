@@ -17,10 +17,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -144,9 +141,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	 * @param featureBucketMetadataList
 	 * @return Map<FeatureBucketConfName,List<FeatureBucketMetadata>>
      */
-	private Map<String, List<FeatureBucketMetadata>> mapFeatureBucketMetaDatasToFeatureBucketConfName(List<FeatureBucketMetadata> featureBucketMetadataList) {
+	public Map<String, List<FeatureBucketMetadata>> mapFeatureBucketMetaDatasToFeatureBucketConfName(List<FeatureBucketMetadata> featureBucketMetadataList) {
 		return featureBucketMetadataList.stream()
-				.collect(Collectors.toMap(FeatureBucketMetadata::getFeatureBucketConfName, Collections::singletonList,
+				.collect(Collectors.toMap(FeatureBucketMetadata::getFeatureBucketConfName, Arrays::asList,
 						(featureBucketMetadatas, featureBucketMetadatas2) ->
 						{
 							featureBucketMetadatas.addAll(featureBucketMetadatas2);
