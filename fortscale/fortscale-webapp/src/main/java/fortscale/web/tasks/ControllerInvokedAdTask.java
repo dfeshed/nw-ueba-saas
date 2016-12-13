@@ -199,11 +199,11 @@ public class ControllerInvokedAdTask implements Runnable {
                 if (length > 1000) {
                     processOutput = processOutput.substring(length - 1000, length); // getting last 1000 chars to not overload the log file
                 }
-                logger.warn("Error stream for job {} = \n {}", jobName, processOutput);
+                logger.error("Error stream for job {} = \n{}", jobName, processOutput);
             } catch (IOException e) {
                 logger.warn("Failed to get error stream from process for job {}", jobName);
             }
-            logger.warn("Execution of task {} has finished with status {}. Execution failed", jobName, status);
+            logger.error("Execution of task {} has finished with status {}. Execution failed", jobName, status);
             return false;
         }
 
