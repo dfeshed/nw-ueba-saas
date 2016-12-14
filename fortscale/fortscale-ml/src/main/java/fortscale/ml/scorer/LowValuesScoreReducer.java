@@ -49,10 +49,21 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		if (feature == null || feature.getValue() == null) {
 			return score;
 		} else if (feature.getValue() instanceof FeatureNumericValue) {
-			double reducingFeature = ((FeatureNumericValue)feature.getValue()).getValue().doubleValue();
+			FeatureNumericValue value = (FeatureNumericValue)feature.getValue();
+			double reducingFeature = value.getValue().doubleValue();
 			return reduceScore(reducingFeature, score, reductionConfig);
 		} else if (feature.getValue() instanceof FeatureStringValue) {
-			double reducingFeature = Double.parseDouble(((FeatureStringValue)feature.getValue()).getValue());
+			FeatureStringValue value = (FeatureStringValue)feature.getValue();
+			double reducingFeature;
+
+			try {
+				reducingFeature = Double.parseDouble(value.getValue());
+			} catch (Exception e) {
+				logger.error("Extracted feature {} is a string that does not represent a number. Score isn't reduced.",
+						reductionConfig.getReducingFeatureName(), e);
+				return score;
+			}
+
 			return reduceScore(reducingFeature, score, reductionConfig);
 		} else {
 			logger.error("Extracted feature {} is of type {}, but should be a number or a string. Score isn't reduced.",
