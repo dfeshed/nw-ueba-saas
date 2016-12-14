@@ -7,6 +7,8 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
+import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketState;
+import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.logging.Logger;
 import org.apache.samza.config.Config;
@@ -51,6 +53,9 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private long storeSyncThresholdInEventSeconds;
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.window.in.system.seconds}")
 	private long storeSyncUpdateWindowInSystemSeconds;
+
+	@Autowired
+	private FeatureBucketStateService featureBucketStateService;
 	
 	private long lastSyncSystemEpochTime = 0;
 
@@ -91,6 +96,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		if(lastSyncSystemEpochTime == 0 || nextSyncWindowMillis < now || forceSync){
 			logger.info("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
 			lastSyncSystemEpochTime = now;
+
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
@@ -127,6 +133,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			}
 
 			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime);
+			featureBucketStateService.updateState(dataSourcesSyncTimer.getLastEventEpochtime(), FeatureBucketState.StateType.LAST_SYNC_DATE);
 
 			if(error){
 				logger.error(errorMsg);
@@ -192,7 +199,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		super.storeFeatureBucket(featureBucketConf, featureBucket);
 		if(featureBucket.getId() == null){
 			// At the first time the bucket is stored in mongo it gets an id, so we
-			// need to get the updated bucket with the id and store it in the level db so next time we will update the existing document and not insert new document.
+			// need to get the updated bucket with the id and store it in the level db so next time we will dosomeStuffupdateFeatureBucketState the existing document and not insert new document.
 			featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());
 		}
 		String key = getBucketKey(featureBucket);
