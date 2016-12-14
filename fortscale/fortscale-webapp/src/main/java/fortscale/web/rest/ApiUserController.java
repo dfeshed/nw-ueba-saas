@@ -1,6 +1,7 @@
 package fortscale.web.rest;
 
 import au.com.bytecode.opencsv.CSVWriter;
+import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
@@ -24,6 +25,7 @@ import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang.BooleanUtils;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.domain.PageRequest;
@@ -69,6 +71,9 @@ public class ApiUserController extends BaseController{
 
 	@Autowired
 	private UserServiceFacade userServiceFacade;
+
+	@Autowired
+	private UserTagService userTagService;
 
 
 	@Autowired
@@ -272,7 +277,34 @@ public class ApiUserController extends BaseController{
 		return usersDetails;
 	}
 
-
+	/**
+	 * API to update user tags
+	 * @param body
+	 * @return
+	 */
+	@RequestMapping(value="{id}", method = RequestMethod.POST)
+	@LogException
+	public Response addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
+		User user = userRepository.findOne(id);
+		JSONObject params = new JSONObject(body);
+		String tag;
+		boolean addTag;
+		if (params.has("add")) {
+			tag = params.getString("add");
+			addTag = true;
+		} else if (params.has("remove")) {
+			tag = params.getString("remove");
+			addTag = false;
+		} else {
+			throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
+		}
+		try {
+			addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
+		} catch (Exception ex) {
+			return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
+		}
+		return Response.status(Response.Status.OK).build();
+	}
 
 	/**
 	 * API to update users tags by filter
@@ -627,6 +659,13 @@ public class ApiUserController extends BaseController{
 		return sortUserDesc;
 	}
 
+	private void addTagToUser(User user, List<String> tags, boolean addTag) throws Exception {
+		if (addTag) {
+			userTagService.addUserTags(user.getUsername(), tags);
+		} else {
+			userTagService.removeUserTags(user.getUsername(), tags);
+		}
+	}
 
 	private DataBean<List<UserDetailsBean>> getUsersDetails(List<User> users) {
 		List<UserDetailsBean> detailsUsers = new ArrayList<>();
