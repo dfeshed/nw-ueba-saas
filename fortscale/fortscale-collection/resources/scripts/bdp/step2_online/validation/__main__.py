@@ -43,7 +43,8 @@ if __name__ == '__main__':
     start_time_epoch = time_utils.get_epochtime(arguments.start)
     end_time_epoch = time_utils.get_epochtime(arguments.end)
 
-    is_valid = validate_no_missing_events(host=arguments.host,
+    is_valid = validate_no_missing_events(logger=logger,
+                                          host=arguments.host,
                                           start_time_epoch=start_time_epoch,
                                           end_time_epoch=end_time_epoch,
                                           data_sources=arguments.data_sources,
