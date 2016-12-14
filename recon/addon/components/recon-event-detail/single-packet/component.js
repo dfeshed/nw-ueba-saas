@@ -1,18 +1,12 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
-import connect from 'ember-redux/components/connect';
 
 import layout from './template';
 import { not, readOnly } from 'ember-computed-decorators';
 import { SpanielObserver } from 'spaniel';
 const { Component, K, run, set } = Ember;
 
-const stateToComputed = ({ recon: { visuals } }) => ({
-  isRequestShown: visuals.isRequestShown,
-  isResponseShown: visuals.isResponseShown
-});
-
-const SinglePacketComponent = Component.extend({
+export default Component.extend({
   layout,
   tagName: 'section',
   classNames: 'rsa-packet',
@@ -22,6 +16,7 @@ const SinglePacketComponent = Component.extend({
   packetIsExpanded: true,
   index: null,
   selection: null,
+  tooltipData: null,
   viewportEntered: false,
   @readOnly @not('viewportEntered') viewportExited: null,
 
@@ -216,7 +211,7 @@ const SinglePacketComponent = Component.extend({
     };
 
     const observer = new SpanielObserver(([entry]) => {
-      run(() => {
+      run.join(() => {
         this.set('viewportEntered', entry.entering);
       });
     }, options);
@@ -251,5 +246,3 @@ const SinglePacketComponent = Component.extend({
     }
   }
 });
-
-export default connect(stateToComputed)(SinglePacketComponent);

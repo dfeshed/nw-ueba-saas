@@ -11,6 +11,8 @@ moduleForComponent('recon-event-detail/single-packet', 'Integration | Component 
 test('single packet functionality', function(assert) {
   assert.expect(2);
 
+  this.set('isResponseShown', true);
+  this.set('isRequestShown', true);
   this.set('index', 0);
   this.set('packet', EmberObject.create({
     bytes: 'EA1/dcTIcFaBmpTdCABFAAA0vV5AAEAGUIjAqDoGMhwAE/+qAFDrQBzdIbTfFIAQEABsVwAAAQEICjLkGBsFvHPr',
@@ -67,6 +69,8 @@ test('single packet functionality', function(assert) {
     index=index
     packet=packet
     packetFields=packetFields
+    isResponseShown=isResponseShown
+    isRequestShown=isRequestShown
   }}`);
 
   return wait().then(() => {

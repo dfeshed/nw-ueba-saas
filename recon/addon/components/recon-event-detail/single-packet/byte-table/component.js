@@ -8,10 +8,6 @@ import layout from './template';
 
 const { $, Component, K, observer, run } = Ember;
 
-const stateToComputed = ({ recon: { visuals } }) => ({
-  tooltipData: visuals.packetTooltipData
-});
-
 const dispatchToActions = (dispatch) => ({
   tooltipOn: (tooltipData) => dispatch(InteractionActions.showPacketTooltip(tooltipData)),
   tooltipOff: () => dispatch(InteractionActions.hidePacketTooltip())
@@ -270,4 +266,4 @@ const ByteTableComponent = Component.extend({
   })
 });
 
-export default connect(stateToComputed, dispatchToActions)(ByteTableComponent);
+export default connect(undefined, dispatchToActions)(ByteTableComponent);

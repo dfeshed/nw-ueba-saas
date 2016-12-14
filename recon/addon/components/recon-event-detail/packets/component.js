@@ -4,10 +4,13 @@ import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ recon: { data } }) => ({
+const stateToComputed = ({ recon: { data, visuals } }) => ({
   packetFields: data.packetFields,
   packets: data.packets,
-  pageSize: data.packetsPageSize
+  pageSize: data.packetsPageSize,
+  isRequestShown: visuals.isRequestShown,
+  isResponseShown: visuals.isResponseShown,
+  tooltipData: visuals.packetTooltipData
 });
 
 const PacketReconComponent = Component.extend({

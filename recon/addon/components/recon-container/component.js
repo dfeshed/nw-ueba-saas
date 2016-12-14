@@ -92,9 +92,16 @@ const ReconContainer = Component.extend({
     }
   }),
 
-  didReceiveAttrs() {
+  didReceiveAttrs({ newAttrs, oldAttrs = {} }) {
     const inputs = this.getProperties('endpointId', 'eventId', 'language', 'meta', 'aliases', 'index', 'total', 'linkToFileAction');
     assert('Cannot instantiate recon without endpointId and eventId.', inputs.endpointId && inputs.eventId);
+
+    // guard against re-running init on redux state change
+    // if same id, no need to do anything
+    if (oldAttrs.eventId && newAttrs.eventId.value === oldAttrs.eventId.value) {
+      return;
+    }
+
     this.send('initializeRecon', inputs);
   }
 });
