@@ -59,8 +59,8 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 				return null;
 			}
 		};
-		GenericHistogram hist = (GenericHistogram) retriever.retrieve(contextIdToRetrieve, new Date());
 
+		GenericHistogram hist = (GenericHistogram)retriever.retrieve(contextIdToRetrieve, new Date()).getData();
 		Assert.assertEquals(3, hist.getTotalCount(), 0.0000001);
 		Assert.assertEquals(2, hist.get(0.5), 0.0000001);
 		Assert.assertEquals(1, hist.get(0.6), 0.0000001);
@@ -110,8 +110,8 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 				return null;
 			}
 		};
-		GenericHistogram hist = (GenericHistogram) retriever.retrieve(null, new Date());
 
+		GenericHistogram hist = (GenericHistogram)retriever.retrieve(null, new Date()).getData();
 		Assert.assertEquals(3, hist.getTotalCount(), 0.0000001);
 		Assert.assertEquals(1, hist.get(0.6), 0.0000001);
 		Assert.assertEquals(2, hist.get(0.7), 0.0000001);

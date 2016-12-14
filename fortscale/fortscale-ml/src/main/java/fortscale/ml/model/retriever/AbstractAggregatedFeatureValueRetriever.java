@@ -7,6 +7,8 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.Code;
 import fortscale.ml.model.retriever.metrics.AggregatedFeatureValueRetrieverMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,25 +46,28 @@ public abstract class AbstractAggregatedFeatureValueRetriever extends AbstractDa
                                                                 Date endTime);
 
     @Override
-    public Object retrieve(String contextId, Date endTime) {
+    public ModelBuilderData retrieve(String contextId, Date endTime) {
         metrics.retrieve++;
         DoubleStream aggregatedFeatureValues = readAggregatedFeatureValues(
-                aggregatedFeatureEventConf,
-                contextId,
-                getStartTime(endTime),
-                endTime
-        );
+                aggregatedFeatureEventConf, contextId, getStartTime(endTime), endTime);
         GenericHistogram reductionHistogram = new GenericHistogram();
+
+        if (aggregatedFeatureValues.count() == 0) {
+            return new ModelBuilderData(reductionHistogram, Code.NO_DATA);
+        }
+
         aggregatedFeatureValues.forEach(aggregatedFeatureValue -> {
             metrics.aggregatedFeatureValues++;
             // TODO: Retriever functions should be iterated and executed here.
             reductionHistogram.add(aggregatedFeatureValue, 1d);
         });
-        return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+
+        Code code = reductionHistogram.getN() == 0 ? Code.DATA_FILTERED : Code.DATA_EXISTS;
+        return new ModelBuilderData(reductionHistogram, code);
     }
 
     @Override
-    public Object retrieve(String contextId, Date endTime, Feature feature) {
+    public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
         throw new UnsupportedOperationException(String.format(
                 "%s does not support retrieval of a single feature",
                 getClass().getSimpleName()));

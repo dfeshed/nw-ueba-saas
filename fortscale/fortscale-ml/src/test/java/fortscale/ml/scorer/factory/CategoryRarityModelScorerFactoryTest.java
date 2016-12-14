@@ -1,6 +1,8 @@
 package fortscale.ml.scorer.factory;
 
 import fortscale.common.feature.Feature;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.Code;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilderConf;
@@ -10,7 +12,6 @@ import fortscale.ml.model.selector.IContextSelectorConf;
 import fortscale.ml.scorer.CategoryRarityModelScorer;
 import fortscale.ml.scorer.config.CategoryRarityModelScorerConf;
 import fortscale.ml.scorer.config.ModelInfo;
-import fortscale.utils.factory.FactoryConfig;
 import fortscale.utils.factory.FactoryService;
 import net.minidev.json.JSONObject;
 import org.junit.Assert;
@@ -41,12 +42,7 @@ public class CategoryRarityModelScorerFactoryTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void confNotOfExpectedType() {
-        categoryRarityModelScorerFactory.getProduct(new FactoryConfig() {
-            @Override
-            public String getFactoryName() {
-                return null;
-            }
-        });
+        categoryRarityModelScorerFactory.getProduct(() -> null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -72,25 +68,25 @@ public class CategoryRarityModelScorerFactoryTest {
                 return "dummy-data-retriever-factory-name";
             }
         };
-		IContextSelectorConf contextSelectorConf = () -> "dummy-context-selector-factory-name";
+        IContextSelectorConf contextSelectorConf = () -> "dummy-context-selector-factory-name";
         IModelBuilderConf modelBuilderConf = () -> "dummy-model-factory-name";
-		ModelConf modelConf = new ModelConf("dummy-model-conf", dataRetrieverConf, contextSelectorConf, modelBuilderConf);
-        List<String> contextFieldNames = new ArrayList<String>();
+        ModelConf modelConf = new ModelConf("dummy-model-conf", dataRetrieverConf, contextSelectorConf, modelBuilderConf);
+        List<String> contextFieldNames = new ArrayList<>();
         contextFieldNames.add("context-field1");
-        Set<String> featureNamesSet = new HashSet<String>();
+        Set<String> featureNamesSet = new HashSet<>();
         featureNamesSet.add("feature1");
-
         when(modelConfService.getModelConf(any(String.class))).thenReturn(modelConf);
+
 		dataRetrieverFactoryService.register(modelConf.getDataRetrieverConf().getFactoryName(),
 				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
 					@Override
-					public Object retrieve(String contextId, Date endTime) {
-						return null;
+					public ModelBuilderData retrieve(String contextId, Date endTime) {
+						return new ModelBuilderData(null, Code.NO_DATA);
 					}
 
 					@Override
-					public Object retrieve(String contextId, Date endTime, Feature feature) {
-						return null;
+					public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
+						return new ModelBuilderData(null, Code.NO_DATA);
 					}
 
 					@Override

@@ -29,19 +29,9 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 	@Override
 	protected Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
 		List<AccumulatedEntityEvent> accumulatedEntityEvents = store.findAccumulatedEventsByContextIdAndStartTimeRange(
-				entityEventConf,
-				contextId,
-				getStartTime(endTime).toInstant(),
-				endTime.toInstant()
-		);
-
-		if (accumulatedEntityEvents.isEmpty()) {
-			throw new IllegalArgumentException(String.format(
-					"No accumulated entity events for entity event conf %s, context ID %s, start time %s, end time %s.",
-					entityEventConf.getName(), contextId, String.valueOf(startTime), String.valueOf(endTime)));
-		}
-
+				entityEventConf, contextId, getStartTime(endTime).toInstant(), endTime.toInstant());
 		List<JokerEntityEventData> jokerEntityEventDataList = new ArrayList<>();
+
 		for (AccumulatedEntityEvent accumulatedEntityEvent : accumulatedEntityEvents) {
 			for (Integer activityTime : accumulatedEntityEvent.getActivityTime()) {
 				Map<String, Double> fullAggregatedFeatureEventNameToScore = new HashMap<>();

@@ -3,6 +3,8 @@ package fortscale.ml.model.retriever;
 import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.Code;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
@@ -38,13 +40,13 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
     }
 
 	@Override
-	public Object retrieve(String contextId, Date endTime) {
+	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		metrics.retrieveAllFeatureValues++;
 		return doRetrieve(contextId, endTime, null);
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime, Feature feature) {
+	public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
 		metrics.retrieveSingleFeatureValue++;
 		return doRetrieve(contextId, endTime, feature.getValue().toString());
 	}
@@ -68,7 +70,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		return FeatureBucketUtils.buildContextId(context);
 	}
 
-	private GenericHistogram doRetrieve(String contextId, Date endTime, String featureValue) {
+	private ModelBuilderData doRetrieve(String contextId, Date endTime, String featureValue) {
 		long endTimeInSeconds = TimestampUtils.convertToSeconds(endTime.getTime());
 		long startTimeInSeconds = endTimeInSeconds - timeRangeInSeconds;
 
@@ -78,9 +80,9 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 		List<String> additionalFieldsToInclude = new ArrayList<>();
 		boolean fieldMustExist = false;
 
-		if(featureValue != null) {
+		if (featureValue != null) {
 			additionalFieldsToInclude.add(fieldPath + ".value._class");
-			fieldPath += ".value.histogram."+featureValue;
+			fieldPath += ".value.histogram." + featureValue;
 			fieldMustExist = true;
 		}
 
@@ -88,15 +90,9 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 				featureBucketConf, contextId, startTimeInSeconds, endTimeInSeconds,
 				fieldPath, fieldMustExist, additionalFieldsToInclude);
 
-		if (featureBuckets.isEmpty()) {
-			throw new IllegalArgumentException(String.format(
-					"No feature buckets for context ID %s, end time %s, feature value %s.",
-					contextId, endTime.toString(), featureValue));
-		}
-
 		metrics.featureBuckets += featureBuckets.size();
-
 		GenericHistogram reductionHistogram = new GenericHistogram();
+		if (featureBuckets.isEmpty()) return new ModelBuilderData(reductionHistogram, Code.NO_DATA);
 
 		for (FeatureBucket featureBucket : featureBuckets) {
 			Date dataTime = new Date(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
@@ -115,7 +111,8 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 			}
 		}
 
-		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+		Code code = reductionHistogram.getN() == 0 ? Code.DATA_FILTERED : Code.DATA_EXISTS;
+		return new ModelBuilderData(reductionHistogram, code);
 	}
 
 	private GenericHistogram doReplacePattern(GenericHistogram original) {

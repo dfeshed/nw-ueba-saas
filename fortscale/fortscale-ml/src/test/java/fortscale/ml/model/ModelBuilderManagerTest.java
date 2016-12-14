@@ -1,5 +1,6 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.ModelBuilderData.Code;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.listener.IModelBuildingListener;
@@ -210,7 +211,7 @@ public class ModelBuilderManagerTest {
 
     private void mockBuild(String id, Date startTime, Date endTime, Model model, boolean success) {
         Object data = mock(Object.class);
-        when(retriever.retrieve(eq(id), eq(endTime))).thenReturn(data);
+        when(retriever.retrieve(eq(id), eq(endTime))).thenReturn(new ModelBuilderData(data, Code.DATA_EXISTS));
         when(builder.build(eq(data))).thenReturn(model);
 
         if (!success) {

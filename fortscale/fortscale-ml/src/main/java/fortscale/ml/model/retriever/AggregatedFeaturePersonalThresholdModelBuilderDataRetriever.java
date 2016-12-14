@@ -6,6 +6,8 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.Code;
 import fortscale.ml.model.PersonalThresholdModelBuilderData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -38,30 +40,34 @@ public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends
 	}
 
 	@Override
-	public PersonalThresholdModelBuilderData retrieve(String contextId, Date endTime) {
+	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		Date startTime = getStartTime(endTime);
 		int numOfContexts = aggregatedFeatureEventsReaderService.findDistinctContextsByTimeRange(
-				aggregatedFeatureEventConfToCalibrate,
-				startTime,
-				endTime
-		).size();
+				aggregatedFeatureEventConfToCalibrate, startTime, endTime)
+				.size();
 		long numOfOrganizationScores = aggregatedFeatureEventsReaderService.findNumOfAggrEventsByTimeRange(
-				aggregatedFeatureEventConfToCalibrate,
-				startTime,
-				endTime
-		);
+				aggregatedFeatureEventConfToCalibrate, startTime, endTime);
 		List<FeatureScore> featureScores = aggregatedFeatureEventsReaderService.findAggrEventWithTopKScore(
-				aggregatedFeatureEventConfToCalibrate,
-				startTime,
-				endTime,
-				desiredNumberOfIndicators
-		).getFeatureScores();
+				aggregatedFeatureEventConfToCalibrate, startTime, endTime, desiredNumberOfIndicators)
+				.getFeatureScores();
 		double scoreToCalibrate = findScoreToCalibrate(featureScores, scoreNameToCalibrate);
 
-		return new PersonalThresholdModelBuilderData()
+		if (numOfContexts == 0) {
+			if (numOfOrganizationScores != 0 || !featureScores.isEmpty()) {
+				logger.error("Retrieved data for contextId {}, endTime {} is not consistent.",
+						contextId, endTime.toString());
+				logger.error("numOfContexts {}, numOfOrganizationScores {}, featureScores size {}.",
+						numOfContexts, numOfOrganizationScores, featureScores.size());
+			}
+
+			return new ModelBuilderData(new PersonalThresholdModelBuilderData(), Code.NO_DATA);
+		}
+
+		PersonalThresholdModelBuilderData data = new PersonalThresholdModelBuilderData()
 				.setNumOfContexts(numOfContexts)
 				.setNumOfOrganizationScores(numOfOrganizationScores)
 				.setOrganizationKTopProbOfHighScore(scoreToCalibrate);
+		return new ModelBuilderData(data, Code.DATA_EXISTS);
 	}
 
 	private Stream<FeatureScore> flattenFeatureScoresRecursively(List<FeatureScore> featureScores) {
@@ -85,7 +91,7 @@ public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime, Feature feature) {
+	public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
 		throw new UnsupportedOperationException(String.format(
 				"%s does not support retrieval of a single feature",
 				getClass().getSimpleName()));

@@ -1,5 +1,6 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.ModelBuilderData.Code;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
@@ -149,7 +150,7 @@ public class ModelBuilderManager {
     }
 
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
-        Object modelBuilderData;
+        ModelBuilderData modelBuilderData;
         Model model;
 
         // Retriever
@@ -160,14 +161,17 @@ public class ModelBuilderManager {
             logger.error("Failed to retrieve data for context ID {}.", contextId, e);
             return ModelBuildingStatus.RETRIEVER_FAILURE;
         }
-        if (modelBuilderData == null) {
+        if (modelBuilderData.getCode() == Code.NO_DATA) {
+            logger.error("No data in database for context ID {}. Retriever not consistent with selector.", contextId);
+            return ModelBuildingStatus.RETRIEVER_FAILURE;
+        } else if (modelBuilderData.getCode() == Code.DATA_FILTERED) {
             logger.info("All data filtered out for context ID {}.", contextId);
             return ModelBuildingStatus.DATA_FILTERED_OUT;
         }
 
         // Builder
         try {
-            model = modelBuilder.build(modelBuilderData);
+            model = modelBuilder.build(modelBuilderData.getData());
         } catch (Exception e) {
             metrics.builderFailures++;
             logger.error("Failed to build model for context ID {}.", contextId, e);
