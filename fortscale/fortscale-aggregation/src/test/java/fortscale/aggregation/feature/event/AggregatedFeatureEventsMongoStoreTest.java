@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.event;
 import com.github.fakemongo.Fongo;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
+import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationService;
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationServiceConfig;
 import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
@@ -156,10 +157,10 @@ public class AggregatedFeatureEventsMongoStoreTest {
 
     private String getCollectionName(String aggrFeatureName) {
         return String.format("%s%s%s%s%s",
-                AggregatedFeatureEventsMongoStore.COLLECTION_NAME_PREFIX,
-                AggregatedFeatureEventsMongoStore.COLLECTION_NAME_SEPARATOR,
+                AggregatedFeatureNameTranslationService.COLLECTION_NAME_PREFIX,
+				AggregatedFeatureNameTranslationService.COLLECTION_NAME_SEPARATOR,
                 AGGR_EVENT_TYPE,
-                AggregatedFeatureEventsMongoStore.COLLECTION_NAME_SEPARATOR,
+				AggregatedFeatureNameTranslationService.COLLECTION_NAME_SEPARATOR,
                 aggrFeatureName);
     }
 

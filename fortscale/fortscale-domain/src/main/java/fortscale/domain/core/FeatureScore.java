@@ -2,7 +2,6 @@ package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.springframework.data.annotation.Transient;
 
 import java.util.Collections;
 import java.util.List;

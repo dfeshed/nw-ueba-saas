@@ -30,6 +30,9 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static fortscale.utils.time.TimestampUtils.convertToSeconds;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+
 /**
  * Abstract class to provide basic functionality of user activity handlers
  *
@@ -39,7 +42,6 @@ import java.util.stream.Collectors;
 @Configurable(preConstruction = true)
 @Component
 public abstract class UserActivityBaseHandler implements UserActivityHandler {
-    protected static final String CONTEXT_ID_FIELD_NAME = "contextId";
     protected final static String CONTEXT_ID_USERNAME_PREFIX = "normalized_username###";
 
     protected final Logger logger = Logger.getLogger(this.getClass());
@@ -50,6 +52,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 	protected UserService userService;
 	@Autowired
 	protected UsernameService usernameService;
+
 
 	@Value("${user.activity.mongo.batch.size:10000}")
 	private int mongoBatchSize;
@@ -208,6 +211,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         Map<String, List<String>> dataSourceToUserIds = new HashMap<>();
 		DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
 		List<User> users = userService.getUsersActiveSinceIncludingUsernameAndLogLastActivity(startDate);
+
         for (String dataSource : dataSources) {
 			//we don't have vpn_session in the log last activity
 			final String logDataSource = dataSource.toLowerCase().equals("vpn_session") ? "vpn" : dataSource;
@@ -220,32 +224,31 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         return dataSourceToUserIds;
     }
 
-    protected List<FeatureBucket> retrieveBuckets(long startTime, long endTime, List<String> usersChunk, String dataSource, String collectionName) {
-        if (mongoTemplate.collectionExists(collectionName)) {
-            Criteria usersCriteria = Criteria.where(FeatureBucket.CONTEXT_ID_FIELD).in(usersChunk);
-            Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
-            Criteria endTimeCriteria = Criteria.where(FeatureBucket.END_TIME_FIELD).lte(TimestampUtils.convertToSeconds(endTime));
-            Query query = new Query(usersCriteria.andOperator(startTimeCriteria.andOperator(endTimeCriteria)));
-            query.fields().include(CONTEXT_ID_FIELD_NAME);
-            try {
-                final List<String> relevantFields = getRelevantFields(dataSource);
-                relevantFields.stream().forEach(field -> query.fields().include(field));
-            } catch (IllegalArgumentException e) {
-                logger.error("{}. Skipping query data source {}", e.getLocalizedMessage(), dataSource);
-                return Collections.emptyList();
-            }
+	protected List<FeatureBucket> retrieveBuckets(
+			long startTime, long endTime, List<String> usersChunk, String dataSource, String collectionName) {
 
-            long queryStartTime = System.nanoTime();
-            List<FeatureBucket> featureBucketsForDataSource = mongoTemplate.find(query, FeatureBucket.class, collectionName);
-            long queryElapsedTime = System.nanoTime() - queryStartTime;
-            logger.info("Query {} aggregation collection for {} users took {} seconds", dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
-            return featureBucketsForDataSource;
-        }
-        else {
-            logger.info("Skipping query data source {}, collection {} does not exist", dataSource, collectionName);
-            return Collections.emptyList();
-        }
-    }
+		Query query = new Query();
+		query.addCriteria(where(FeatureBucket.CONTEXT_ID_FIELD).in(usersChunk));
+		query.addCriteria(where(FeatureBucket.START_TIME_FIELD)
+				.gte(convertToSeconds(startTime))
+				.lt(convertToSeconds(endTime)));
+		query.fields().include(FeatureBucket.CONTEXT_ID_FIELD);
+
+		try {
+			final List<String> relevantFields = getRelevantFields(dataSource);
+			relevantFields.forEach(field -> query.fields().include(field));
+		} catch (IllegalArgumentException e) {
+			logger.error("{}. Skipping query data source {}", e.getLocalizedMessage(), dataSource);
+			return Collections.emptyList();
+		}
+
+		long queryStartTime = System.nanoTime();
+		List<FeatureBucket> featureBuckets = mongoTemplate.find(query, FeatureBucket.class, collectionName);
+		long queryElapsedTime = System.nanoTime() - queryStartTime;
+		logger.info("Query {} aggregation collection for {} users took {} seconds",
+				dataSource, usersChunk.size(), durationInSecondsWithPrecision(queryElapsedTime));
+		return featureBuckets;
+	}
 
 
 

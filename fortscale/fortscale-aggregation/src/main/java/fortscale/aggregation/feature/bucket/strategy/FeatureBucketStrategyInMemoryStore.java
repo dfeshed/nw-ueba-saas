@@ -16,7 +16,6 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 	private FeatureBucketStrategyStoreMetrics metrics;
 
 	public FeatureBucketStrategyInMemoryStore() {
-		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "inMemory");
 	}
 
 	@Override
@@ -63,7 +62,7 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 
 		// Write back to store the updated list
 		startegyEventContextIdToData.put(strategyContextId, strategyDataList);
-		metrics.saves++;
+		getMetrics().saves++;
 	}
 
 	@Override
@@ -98,4 +97,10 @@ public class FeatureBucketStrategyInMemoryStore implements FeatureBucketStrategy
 		return ret;
 	}
 
+	public FeatureBucketStrategyStoreMetrics getMetrics() {
+		if (metrics == null) {
+			metrics = new FeatureBucketStrategyStoreMetrics(statsService, "inMemory");
+		}
+		return metrics;
+	}
 }

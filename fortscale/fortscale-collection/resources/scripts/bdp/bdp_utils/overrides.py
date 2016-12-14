@@ -1,22 +1,30 @@
-import sys
 import os
+import sys
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 from automatic_config.common.utils import time_utils
 
-really_big_epochtime = time_utils.get_epochtime('29990101')
+really_big_epochtime = str(time_utils.get_epochtime('29990101'))
+eventProcessingSyncTimeoutInSeconds = str(60 * 60 * 24)
+modelBuildingTimeoutInSeconds = str(60 * 60 * 24)
 
-step4 = [
-    'single_step = EntityEventsCreation',
-    'cleanup_step = Cleanup',
-    'records_batch_size = 500000000'
-]
 step3 = [
-    'eventProcessingSyncTimeoutInSeconds = ' + str(60 * 60 * 24),
+    'eventProcessingSyncTimeoutInSeconds = ' + eventProcessingSyncTimeoutInSeconds,
+    'modelBuildingTimeoutInSeconds = ' + modelBuildingTimeoutInSeconds,
     'single_step = AggregatedEventsToEntityEvents',
     'cleanup_step = Cleanup',
-    'records_batch_size = 300000000',
-    'secondsBetweenModelSyncs = ' + str(really_big_epochtime)
+    'records_batch_size = 2000000',
+    'secondsBetweenModelSyncs = ' + really_big_epochtime
 ]
+step4v4 = [
+    'single_step = EntityEventsCreation',
+    'cleanup_step = Cleanup',
+    'records_batch_size = 200000',
+    'modelBuildingTimeoutInSeconds = ' + modelBuildingTimeoutInSeconds,
+    'removeModelsFinally = false',
+    'eventProcessingSyncTimeoutInSeconds = ' + eventProcessingSyncTimeoutInSeconds
+]
+
 overrides = {
     'common': [
         'validate_Fetch = false',
@@ -50,9 +58,8 @@ overrides = {
     ],
     'step3.cleanup': [
         'cleanup_step = AggregatedEventsToEntityEvents',
-        'records_batch_size = 500000',
+        'records_batch_size = 2000000',
     ],
-    'step4': step4,
     'step5': [
         'single_step = NotificationsToIndicators',
         'cleanup_step = Cleanup',
@@ -67,14 +74,10 @@ overrides = {
     'stepSAM.cleanup': [
         'cleanup_step = AfterEnriched'
     ],
-    '2.6-step4.scores': step4 + [
-        'secondsBetweenModelSyncs = ' + str(really_big_epochtime),
-        'eventProcessingSyncTimeoutInSeconds = 3600',
-        'removeModelsFinally = false'
+    'step4.scores': step4v4 + [
+        'secondsBetweenModelSyncs = ' + really_big_epochtime
     ],
-    '2.6-step4.build_models': step4 + [
-        'buildModelsFirst = true',
-        'removeModelsFinally = false',
-        'eventProcessingSyncTimeoutInSeconds = 3600'
+    'step4.build_models': step4v4 + [
+        'buildModelsFirst = true'
     ]
 }

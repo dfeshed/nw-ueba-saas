@@ -21,4 +21,6 @@ public interface UserWithAlertService{
     int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames) throws Exception;
 
 	int followUsersByFilter(UserRestFilter userRestFilter, Boolean watch);
+
+	List<User> findUsersWithSearchValue(UserRestFilter userRestFilter, PageRequest pageRequest, List<String> fieldsRequired);
 }

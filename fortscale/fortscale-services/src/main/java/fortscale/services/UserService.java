@@ -25,13 +25,13 @@ public interface UserService {
 	void updateUserWithADInfo(Long timestampepoch);
 	
 	List<User> findBySearchFieldContaining(String prefix, int page, int size);
-	
+
 	List<UserMachine> getUserMachines(String uid);
 
 	List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date);
-		
+
 	ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username);
-	
+
 	List<User> findByApplicationUserName(UserApplication userApplication, List<String> usernames);
 
 	String getUserThumbnail(User user);
@@ -61,13 +61,13 @@ public interface UserService {
 	 * @param userInfo Map: datasource - <lastActivity,logusername>
 	 */
 	void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long, String>> userInfo, Map<String, Boolean> dataSourceUpdateOnlyFlagMap);
-	
+
 	void updateTags(String username, Map<String, Boolean> tagSettings);
-	
+
 	boolean isUserTagged(String username, String tag);
-	
+
 	PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore);
-	
+
 	String findByNormalizedUserName(String normalizedUsername);
 
 	Set<String> findNamesInGroup(List<String> groupsToTag, Pageable pageable);

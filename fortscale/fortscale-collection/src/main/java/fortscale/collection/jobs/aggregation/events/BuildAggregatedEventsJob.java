@@ -17,6 +17,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 
 import java.util.*;
+
+
 import java.util.stream.Collectors;
 
 import static fortscale.collection.jobs.model.ModelBuildingSyncService.FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC;
@@ -112,6 +114,7 @@ public class BuildAggregatedEventsJob extends FortscaleJob {
 		Collection<String> modelConfNames = modelConfs.stream().map(ModelConf::getName).collect(Collectors.toList());
 		String controlInputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_INPUT_TOPIC);
 		String controlOutputTopic= jobDataMapExtension.getJobDataMapStringValue(map, FORTSCALE_MODEL_BUILD_CONTROL_OUTPUT_TOPIC);
+
 		Set<String> featureNames = new HashSet<>(aggregatedFeatureEventsConfService.getFAggrFeatureEventNameList());
 		modelBuildingSyncService = new AggregatedEventsModelBuildingSyncService(sessionId, modelConfNames,
                 secondsBetweenModelSyncs, modelBuildingTimeoutInSeconds,controlInputTopic,controlOutputTopic, featureNames);
