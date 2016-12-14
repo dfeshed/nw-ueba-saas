@@ -70,9 +70,9 @@ Usage example:
     parser.add_argument('--timeoutInSeconds',
                         action='store',
                         dest='timeoutInSeconds',
-                        help='this parameter will be passed directly to BDP. '
-                             'If not specified, the default specified by BDP will be used',
-                        type=int)
+                        help='this parameter will be passed directly to BDP',
+                        type=int,
+                        required=True)
     parser.add_argument('--cleanup_first',
                         action='store_const',
                         dest='cleanup_first',

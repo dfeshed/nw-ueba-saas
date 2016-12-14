@@ -6,6 +6,8 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 
 @StatsMetricsGroupParams(name = "aggregation.service.feature-buckets-store")
 public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
@@ -16,6 +18,7 @@ public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
             addTag("storeType", storeType);
             addTag("bucketName", featureBucketConf.getName());
         }});
+        documentTooLarge = new AtomicLong();
     }
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long bulkWritesNotAcknowledged;
@@ -55,6 +58,9 @@ public class FeatureBucketsStoreMetrics extends StatsMetricsGroup {
 
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long updateFeatureBucketsFailures;
+
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public AtomicLong documentTooLarge;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long readFeatureBucketFailers;

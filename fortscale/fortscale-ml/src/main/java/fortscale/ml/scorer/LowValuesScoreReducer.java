@@ -3,6 +3,7 @@ package fortscale.ml.scorer;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.FeatureNumericValue;
+import fortscale.common.feature.FeatureStringValue;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.scorer.config.ReductionConfiguration;
 import fortscale.utils.logging.Logger;
@@ -48,13 +49,25 @@ public class LowValuesScoreReducer extends AbstractScorer {
 		if (feature == null || feature.getValue() == null) {
 			return score;
 		} else if (feature.getValue() instanceof FeatureNumericValue) {
-			double reducingFeature = ((FeatureNumericValue)feature.getValue()).getValue().doubleValue();
+			FeatureNumericValue value = (FeatureNumericValue)feature.getValue();
+			double reducingFeature = value.getValue().doubleValue();
+			return reduceScore(reducingFeature, score, reductionConfig);
+		} else if (feature.getValue() instanceof FeatureStringValue) {
+			FeatureStringValue value = (FeatureStringValue)feature.getValue();
+			double reducingFeature;
+
+			try {
+				reducingFeature = Double.parseDouble(value.getValue());
+			} catch (Exception e) {
+				logger.error("Extracted feature {} is a string that does not represent a number. Score isn't reduced.",
+						reductionConfig.getReducingFeatureName(), e);
+				return score;
+			}
+
 			return reduceScore(reducingFeature, score, reductionConfig);
 		} else {
-			logger.error("Extracted feature {} is of type {}, but should be of type {}.",
-					reductionConfig.getReducingFeatureName(),
-					feature.getValue().getClass().getSimpleName(),
-					FeatureNumericValue.class.getSimpleName());
+			logger.error("Extracted feature {} is of type {}, but should be a number or a string. Score isn't reduced.",
+					reductionConfig.getReducingFeatureName(), feature.getValue().getClass().getSimpleName());
 			return score;
 		}
 	}
