@@ -20,6 +20,7 @@ module.exports = function(defaults) {
     },
     babel: {
       stage: 0,
+      optional: ['es6.spec.symbols'],
       includePolyfill: true
     },
     nodeAssets: {
