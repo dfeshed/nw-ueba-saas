@@ -87,6 +87,64 @@ export default $.extend({}, BaseTranslations, {
       title: 'Enter a query.'
     }
   },
+  live: {
+    title: 'Live Content',
+    home: 'Home',
+    details: 'Live content and general home for live goes here.',
+    deployed: {
+      title: 'Deployed'
+    },
+    jobs: {
+      title: 'Jobs'
+    },
+    updates: {
+      title: 'Updates'
+    },
+    custom: {
+      title: 'Custom'
+    },
+    search: {
+      title: 'Find',
+      details: 'Live Search content goes here.',
+      searchCriteria: 'Search Criteria',
+      matchingResources: 'Matching Resources',
+      resourceDetailsTitle: 'Resource Details',
+      advanced: 'Advanced',
+      dropdownPlaceholder: 'All',
+      deploy: 'Deploy',
+      export: 'Export',
+      import: 'Import',
+      deployModalHeader: 'Deploy Selected Resources',
+      exportModalHeader: 'Export Selected Resources',
+      showingResultsMessage: 'Showing results',
+      showingResultsMessageOf: 'of',
+      fields: {
+        categories: 'Categories',
+        keywords: 'Keywords',
+        resourceType: 'Resource Type',
+        medium: 'Medium',
+        createdDate: 'Created',
+        updatedDate: 'Updated',
+        requiredMetaKeys: 'Required Meta Keys',
+        generatedMetaValues: 'Generated Meta Values',
+        select: 'Select',
+        remove: 'Remove',
+        subscribed: 'Subscribed',
+        resourceName: 'Name',
+        description: 'Description',
+        nwVersion: 'NetWitness',
+        version: 'Version'
+      }
+    },
+    manage: {
+      title: 'Configure',
+      details: 'Live Manage Resource content goes here.'
+    },
+    feeds: {
+      title: 'Feeds',
+      details: 'Live Feeds content goes here.'
+    }
+  },
   config: {
     title: 'Configure',
     details: 'Config contents go here.'

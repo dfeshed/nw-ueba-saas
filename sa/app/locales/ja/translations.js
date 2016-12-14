@@ -87,6 +87,64 @@ export default $.extend({}, BaseTranslations, {
       title: 'ja_Enter a query.'
     }
   },
+  live: {
+    title: 'ja_Live Content',
+    home: 'ja_Home',
+    details: 'ja_Live content and general home for live goes here.',
+    deployed: {
+      title: 'ja_Deployed'
+    },
+    jobs: {
+      title: 'ja_Jobs'
+    },
+    updates: {
+      title: 'ja_Updates'
+    },
+    custom: {
+      title: 'ja_Custom'
+    },
+    search: {
+      title: 'ja_Find',
+      details: 'ja_Live Search content goes here.',
+      searchCriteria: 'ja_Search Criteria',
+      matchingResources: 'ja_Matching Resources',
+      resourceDetailsTitle: 'ja_Resource Details',
+      advanced: 'ja_Advanced',
+      dropdownPlaceholder: 'ja_All',
+      deploy: 'ja_Deploy',
+      export: 'ja_Export',
+      import: 'ja_Import',
+      deployModalHeader: 'ja_Deploy Selected Resources',
+      exportModalHeader: 'ja_Export Selected Resources',
+      showingResultsMessage: 'ja_Showing results',
+      showingResultsMessageOf: 'ja_of',
+      fields: {
+        categories: 'ja_Categories',
+        keywords: 'ja_Keywords',
+        resourceType: 'ja_Resource Type',
+        medium: 'ja_Medium',
+        createdDate: 'ja_Created',
+        updatedDate: 'ja_Updated',
+        requiredMetaKeys: 'ja_Required Meta Keys',
+        generatedMetaValues: 'ja_Generated Meta Values',
+        select: 'ja_Select',
+        remove: 'ja_Remove',
+        subscribed: 'ja_Subscribed',
+        resourceName: 'ja_Name',
+        description: 'ja_Description',
+        nwVersion: 'ja_NetWitness',
+        version: 'ja_Version'
+      }
+    },
+    manage: {
+      title: 'ja_Configure',
+      details: 'ja_Live Manage Resource content goes here.'
+    },
+    feeds: {
+      title: 'ja_Feeds',
+      details: 'ja_Live Feeds content goes here.'
+    }
+  },
   config: {
     title: 'ja_Configure',
     details: 'ja_Config contents go here.'

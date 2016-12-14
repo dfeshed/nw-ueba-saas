@@ -20,7 +20,11 @@
       {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}{{t "investigate.title"}}{{/link-to}}
     {{/if}}
     <a href="/unified/dashboard" class="rsa-header-nav-monitor js-test-nav-monitor-link">{{t "monitor.title"}}</a>
-    <a href="/live/search" class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
+    {{#if features.showLiveContentRoute}}
+      {{#link-to "protected.configure.live-content" class="rsa-header-nav-live js-test-nav-live-link"}}{{t "config.title"}}{{/link-to}}
+    {{else}}
+      <a href="/live/search" class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
+    {{/if}}
     <a href="/admin/appliances" class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
   {{/rsa-application-header}}
 

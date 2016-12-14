@@ -30,6 +30,19 @@ Router.map(function() {
         this.route('not-found', { path: '*invalidinvestigatepath' });
       });
     }
+
+    if (config.featureFlags['show-live-content-route']) {
+      this.route('configure', function() {
+        this.route('live-content', function() {
+          this.route('search');
+          this.route('jobs');
+          this.route('deployed');
+          this.route('updates');
+          this.route('feeds');
+          this.route('custom');
+        });
+      });
+    }
   });
 });
 
