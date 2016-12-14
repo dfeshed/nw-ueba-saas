@@ -220,7 +220,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		super.storeFeatureBucket(featureBucketConf, featureBucket);
 		if(!featureBucket.isFeatureBucketSynced()){
 			// At the first time the bucket is stored in mongo it gets an id, so we
-			// need to get the updated bucket with the id and store it in the level db so next time we will dosomeStuffupdateFeatureBucketState the existing document and not insert new document.
+			// need to get the updated bucket with the id and store it in the level db so next time we will update the existing document and not insert new document.
 			featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());
 		}
 		String key = getBucketKey(featureBucket);
