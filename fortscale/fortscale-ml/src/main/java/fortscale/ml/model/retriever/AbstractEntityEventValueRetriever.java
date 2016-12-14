@@ -69,19 +69,20 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		Stream<JokerEntityEventData> jokerEntityEventsData = readJokerEntityEventData(
 				entityEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
-
-		if (jokerEntityEventsData.count() == 0) {
-			return new ModelBuilderData(reductionHistogram, Code.NO_DATA);
-		}
+		final boolean[] noData = {true};
 
 		jokerEntityEventsData.forEach(jokerEntityEventData -> {
+			noData[0] = false;
 			Map<String, JokerAggrEventData> jokerAggrEventDataMap = getJokerAggrEventDataMap(jokerEntityEventData);
 			Double entityEventValue = jokerFunction.calculateEntityEventValue(jokerAggrEventDataMap);
 			// TODO: Retriever functions should be iterated and executed here.
 			reductionHistogram.add(entityEventValue, 1d);
 		});
 
-		Code code = reductionHistogram.getN() == 0 ? Code.DATA_FILTERED : Code.DATA_EXISTS;
+		Code code;
+		if (noData[0]) code = Code.NO_DATA;
+		else if (reductionHistogram.getN() == 0) code = Code.DATA_FILTERED;
+		else code = Code.DATA_EXISTS;
 		return new ModelBuilderData(reductionHistogram, code);
 	}
 
