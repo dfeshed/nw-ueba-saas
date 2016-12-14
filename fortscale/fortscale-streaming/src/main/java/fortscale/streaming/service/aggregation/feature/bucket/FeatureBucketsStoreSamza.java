@@ -18,7 +18,6 @@ import org.springframework.util.Assert;
 
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
@@ -98,7 +97,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
-			Map<String, List<FeatureBucketMetadata>> featureBucketConfNameToFeatureBucketMetaDataMap = mapFeatureBucketMetaDatasToFeatureBucketConfName(featureBucketMetadataList);
+			Map<String, List<FeatureBucketMetadata>> featureBucketConfNameToFeatureBucketMetaDataMap = mapFeatureBucketConfNameToFeatureBucketMetadataList(featureBucketMetadataList);
 
 			String errorMsg = "";
 			boolean error = false;
@@ -137,18 +136,24 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	}
 
 	/**
+	 * Create a map from a feature bucket conf name to all the
+	 * {@link FeatureBucketMetadata} objects contained in the given list.
 	 *
-	 * @param featureBucketMetadataList
-	 * @return Map<FeatureBucketConfName,List<FeatureBucketMetadata>>
-     */
-	public Map<String, List<FeatureBucketMetadata>> mapFeatureBucketMetaDatasToFeatureBucketConfName(List<FeatureBucketMetadata> featureBucketMetadataList) {
-		return featureBucketMetadataList.stream()
-				.collect(Collectors.toMap(FeatureBucketMetadata::getFeatureBucketConfName, Arrays::asList,
-						(featureBucketMetadatas, featureBucketMetadatas2) ->
-						{
-							featureBucketMetadatas.addAll(featureBucketMetadatas2);
-							return featureBucketMetadatas;
-						}));
+	 * @param featureBucketMetadataList the given list of {@link FeatureBucketMetadata} objects
+	 * @return {@code Map<String, List<FeatureBucketMetadata>>}
+	 */
+	public Map<String, List<FeatureBucketMetadata>> mapFeatureBucketConfNameToFeatureBucketMetadataList(
+			List<FeatureBucketMetadata> featureBucketMetadataList) {
+
+		Map<String, List<FeatureBucketMetadata>> featureBucketConfNameToMetadataList = new HashMap<>();
+		for (FeatureBucketMetadata metadata : featureBucketMetadataList) {
+			String featureBucketConfName = metadata.getFeatureBucketConfName();
+			if (!featureBucketConfNameToMetadataList.containsKey(featureBucketConfName)) {
+				featureBucketConfNameToMetadataList.put(featureBucketConfName, new LinkedList<>());
+			}
+			featureBucketConfNameToMetadataList.get(featureBucketConfName).add(metadata);
+		}
+		return featureBucketConfNameToMetadataList;
 	}
 
 	@Override
