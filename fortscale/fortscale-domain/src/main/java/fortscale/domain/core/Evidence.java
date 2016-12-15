@@ -396,6 +396,7 @@ public class Evidence extends AbstractDocument{
 				", startDate=" + startDate +
 				", endDate=" + endDate +
 				", anomalyTypeFieldName='" + anomalyTypeFieldName + '\'' +
+				", anomalyValue=" + anomalyValue +
 				'}';
 	}
 }
