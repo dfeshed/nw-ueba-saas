@@ -12,7 +12,6 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,13 +82,7 @@ public class ApiSystemSetupTagsController extends BaseController {
                 //if update was successful and tag is no longer active - remove that tag from all users
             } else if (!tag.getActive()) {
                 String tagName = tag.getName();
-                Set<String> usernames = userService.findUsernamesByTags(new String[] { tagName });
-                if (CollectionUtils.isNotEmpty(usernames)) {
-                    logger.info("tag {} became inactive, removing from {} users", tagName, usernames.size());
-                    for (String username : usernames) {
-                        userTagService.removeUserTags(username, Collections.singletonList(tagName));
-                    }
-                }
+                userTagService.removeTagFromAllUsers(tagName);
             }
         }
         return new ResponseEntity<>(EMPTY_RESPONSE_STRING, HttpStatus.ACCEPTED);
@@ -104,7 +97,6 @@ public class ApiSystemSetupTagsController extends BaseController {
     @LogException
     public ResponseEntity<String> tagUsers() {
         try {
-            //TODO - make this asynchronous
             userTagService.update();
         } catch (Exception ex) {
             return new ResponseEntity<>("{" + ex.getLocalizedMessage() + "}", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -113,10 +105,6 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
 
-    /**
-     * This method adds/removes tags to/from the users in the users collection
-     * @return the HTTP status of the request and a map of the groups and ous
-     */
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
     public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameStartingWith(String startsWith) {
@@ -188,44 +176,4 @@ public class ApiSystemSetupTagsController extends BaseController {
 
 }
 
-
-//
-//    /**
-//     * API to update user tags
-//     * @param body
-//     * @return
-//     */
-//    @RequestMapping(value="{id}", method = RequestMethod.POST)
-//    @LogException
-//    public Response addRemoveTag(@PathVariable String id, @RequestBody String body) throws JSONException {
-//        User user = userRepository.findOne(id);
-//        JSONObject params = new JSONObject(body);
-//        String tag;
-//        boolean addTag;
-//        if (params.has("add")) {
-//            tag = params.getString("add");
-//            addTag = true;
-//        } else if (params.has("remove")) {
-//            tag = params.getString("remove");
-//            addTag = false;
-//        } else {
-//            throw new InvalidValueException(String.format("param %s is invalid", params.toString()));
-//        }
-//        try {
-//            addTagToUser(user, Arrays.asList(new String[] { tag }), addTag);
-//        } catch (Exception ex) {
-//            return Response.status(Response.Status.BAD_REQUEST).entity(ex.getLocalizedMessage()).build();
-//        }
-//        return Response.status(Response.Status.OK).build();
-//    }
-//
-//
-//
-//    private void addTagToUser(User user, List<String> tags, boolean addTag) throws Exception {
-//        if (addTag) {
-//            userTagService.addUserTags(user.getUsername(), tags);
-//        } else {
-//            userTagService.removeUserTags(user.getUsername(), tags);
-//        }
-//    }
 

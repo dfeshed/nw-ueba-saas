@@ -28,13 +28,9 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	@Autowired
 	private MongoDbUtilService mongoDbUtilService;
 	@Autowired
-	StatsService statsService;
+	private	StatsService statsService;
 
 	private FeatureBucketStrategyStoreMetrics metrics;
-
-	public FeatureBucketStrategyMongoStore() {
-		metrics = new FeatureBucketStrategyStoreMetrics(statsService, "mongo");
-	}
 
 	@Override
 	public FeatureBucketStrategyData getLatestFeatureBucketStrategyData(String strategyEventContextId, long latestStartTime) {
@@ -47,7 +43,7 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 	@Override
 	public void storeFeatureBucketStrategyData(FeatureBucketStrategyData featureBucketStrategyData) {
 		mongoTemplate.save(featureBucketStrategyData, COLLECTION_NAME);
-		metrics.saves++;
+		getMetrics().saves++;
 	}
 
 	@Override
@@ -80,5 +76,13 @@ public class FeatureBucketStrategyMongoStore implements FeatureBucketStrategySto
 		Sort sort = new Sort(Direction.DESC, FeatureBucketStrategyData.START_TIME_FIELD);
 		query.with(sort);
 		return mongoTemplate.find(query, FeatureBucketStrategyData.class, COLLECTION_NAME);
+	}
+
+	public FeatureBucketStrategyStoreMetrics getMetrics() {
+		if(metrics == null)
+		{
+			metrics = new FeatureBucketStrategyStoreMetrics(statsService, "mongo");
+		}
+		return metrics;
 	}
 }

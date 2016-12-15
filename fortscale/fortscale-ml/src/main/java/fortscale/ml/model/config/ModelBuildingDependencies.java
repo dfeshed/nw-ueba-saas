@@ -11,7 +11,7 @@ import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsMongoStore;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.aggregation.feature.event.store.translator.AggregatedFeatureNameTranslationServiceConfig;
-import fortscale.aggregation.util.MongoDbUtilService;
+import fortscale.aggregation.util.MongoDbUtilServiceConfig;
 import fortscale.entity.event.*;
 import fortscale.entity.event.translator.EntityEventTranslationServiceConfig;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,9 @@ import org.springframework.context.annotation.Import;
 @Import({AggregatedFeatureNameTranslationServiceConfig.class,
 		EntityEventTranslationServiceConfig.class,
 		AccumulatedAggregatedFeatureEventStoreConfig.class,
-		AccumulatedEntityEventStoreConfig.class})
+		AccumulatedEntityEventStoreConfig.class,
+		MongoDbUtilServiceConfig.class
+})
 public class ModelBuildingDependencies {
 
 	@Bean
@@ -38,11 +40,6 @@ public class ModelBuildingDependencies {
 	@Bean
 	public FeatureBucketsMongoStore featureBucketsMongoStore() {
 		return new FeatureBucketsMongoStore();
-	}
-
-	@Bean
-	public MongoDbUtilService mongoDbUtilService() {
-		return new MongoDbUtilService();
 	}
 
 	@Bean

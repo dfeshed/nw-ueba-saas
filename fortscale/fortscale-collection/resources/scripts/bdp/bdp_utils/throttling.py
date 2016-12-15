@@ -59,8 +59,8 @@ class Throttler:
                             str(max_batch_size_in_minutes) +
                             '. If you wish to proceed, run the script with "--force_max_batch_size_in_minutes ' +
                             str(max_batch_size_in_minutes) + '"')
-        self._logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes')
-        self._logger.info('using gap size of ' + str(max_gap_in_seconds) + ' seconds')
+        self._logger.info('using batch size of ' + str(max_batch_size_in_minutes) + ' minutes for ' + self._data_source)
+        self._logger.info('using gap size of ' + str(max_gap_in_seconds) + ' seconds for ' + self._data_source)
 
     @staticmethod
     def _kabab_to_camel_case(s):

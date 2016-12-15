@@ -1,5 +1,6 @@
 package fortscale.aggregation.util;
 
+import com.mongodb.MongoInternalException;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +9,13 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicLong;
 
 
 public class MongoDbUtilService implements InitializingBean {
     private static final Logger logger = Logger.getLogger(MongoDbUtilService.class);
     public static final String COLLECTION_ALREADY_EXISTS_ERR_MSG = "collection already exists";
+    public static final String TOO_LARGE_OBJECT_MONGO_ERR_MSG = "is larger than MaxDocumentSize";
 
     @Autowired
     private MongoTemplate mongoTemplate;
@@ -60,6 +63,29 @@ public class MongoDbUtilService implements InitializingBean {
 
     public Set<String> getCollections(){
         return new HashSet<>(collectionNames);
+    }
+
+    /**
+     * mongo BSON size is limited. in case this limit is exceeded, write an error to log
+     * @see <a href="https://docs.mongodb.com/manual/reference/limits/#bson-documents">https://docs.mongodb.com/manual/reference/limits/#bson-documents</a>
+     * @param collectionName collection we try to write into
+     * @param object POJO we tried to write
+     * @param e exception raised to validated
+     * @param failureMetrics metrics to be updated in case of too large document
+     * @return true if it is exception cause by too large document
+     */
+    public boolean isTooLargeDocumentMongoException(String collectionName, Object object, Exception e, AtomicLong failureMetrics) {
+        Throwable cause = e.getCause();
+        if(cause!=null) {
+            if (cause instanceof MongoInternalException) {
+                if (cause.getMessage().contains(TOO_LARGE_OBJECT_MONGO_ERR_MSG)) {
+                    failureMetrics.incrementAndGet();
+                    logger.error("can't save object={} to collection={} cause it is too large", object, collectionName, e);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }
