@@ -4,6 +4,14 @@ import { parseEventQueryUri } from '../actions/helpers/query-utils';
 const { run, Route } = Ember;
 
 export default Route.extend({
+  queryParams: {
+    metaPanelSize: {
+      refreshModel: true, // execute route.model() when metaPanelSize changes
+      replace: true,      // prevents adding a new item to browser's history
+      scope: 'controller' // lives beyond model scope
+    }
+  },
+
   /**
    * Returns the app state model from the parent route. Is also responsible for parsing in the coming query params
    * and ensuring that the incoming query is included in the app state.
@@ -24,6 +32,9 @@ export default Route.extend({
     // our initial action would not know to use `transition` instead. So instead we use `run.next()` to wait until the
     // route has transitioned before calling any actions.
     run.next(() => {
+      // Apply the route URL queryParams to the state model.
+      this.send('metaPanelSizeReceived', params.metaPanelSize);
+
       this.send('navFindOrAdd', filterAttrs);
     });
     return state;
