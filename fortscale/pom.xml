@@ -128,6 +128,10 @@
 		<!-- eclipse plugins versions -->
 
 		<asm-commons.version>5.0.3</asm-commons.version>
+
+
+
+		<commons-codec.version>1.9</commons-codec.version>
 	</properties>
 
 	<dependencyManagement>

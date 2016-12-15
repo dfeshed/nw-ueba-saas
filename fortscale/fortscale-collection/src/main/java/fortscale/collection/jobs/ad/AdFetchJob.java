@@ -6,6 +6,7 @@ import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.codec.binary.Base64;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -192,6 +193,17 @@ public class AdFetchJob extends FortscaleJob {
 						} else if (key.equals("objectGUID") || key.equals("objectSid")) {
 							value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
 							fileWriter.append(key).append(": ").append(value);
+						} else if (key.equals("streetAddress")) {
+							value = (String) values.nextElement();
+							final boolean isPossibleBase64String = !value.isEmpty() && !value.contains(" ") && Base64.isBase64(value);
+							if (isPossibleBase64String) {
+								value = new String(java.util.Base64.getDecoder().decode(value));
+								fileWriter.append(key).append(": ").append(value);
+							}
+							else {
+								appendAllAttributeElements(fileWriter, key, values);
+							}
+
 						} else {
 							appendAllAttributeElements(fileWriter, key, values);
 						}
