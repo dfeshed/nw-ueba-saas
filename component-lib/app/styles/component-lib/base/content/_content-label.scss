@@ -30,6 +30,12 @@
     }
   }
 
+  &.is-disabled {
+    i.rsa-icon-close:hover {
+      cursor: default;
+    }
+  }
+
   &.is-inverted {
     @include rsa-form-label-color($contentLabelColor, $contentLabelInvertedColor, $contentLabelInvertedColor);
   }

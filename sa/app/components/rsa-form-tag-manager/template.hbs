@@ -1,5 +1,5 @@
 {{#each selectedTags as |tag|}}
-  {{rsa-content-label label=(concat tag.parent ':' tag.name) size='small' click=(action 'toggleTag' tag)}}
+  {{rsa-content-label label=(concat tag.parent ':' tag.name) size='small' isDisabled=isDisabled click=(action 'toggleTag' tag)}}
 {{/each}}
 
 {{#if contentTreeIsHidden}}
