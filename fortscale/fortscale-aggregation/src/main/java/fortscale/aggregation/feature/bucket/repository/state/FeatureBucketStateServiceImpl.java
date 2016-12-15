@@ -51,7 +51,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         }
 
         if (shouldSave){
-            featureBucketStateRepository.update(featureBucketState);
+            featureBucketStateRepository.save(featureBucketState);
         }
     }
 

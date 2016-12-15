@@ -15,11 +15,6 @@ public class FeatureBucketStateRepositoryImpl implements FeatureBucketStateRepos
     private MongoTemplate mongoTemplate;
 
     @Override
-    public void update(FeatureBucketState featureBucketState) {
-        mongoTemplate.save(featureBucketState);
-    }
-
-    @Override
     public FeatureBucketState getState() {
         List<FeatureBucketState> states = mongoTemplate.findAll(FeatureBucketState.class);
         if (CollectionUtils.isEmpty(states)){

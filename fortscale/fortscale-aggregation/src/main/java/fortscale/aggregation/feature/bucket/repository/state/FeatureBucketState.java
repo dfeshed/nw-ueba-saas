@@ -2,6 +2,7 @@ package fortscale.aggregation.feature.bucket.repository.state;
 
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.domain.core.AbstractDocument;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
@@ -18,6 +19,7 @@ public class FeatureBucketState extends AbstractDocument {
     @Field(DATE_FIELD)
     private Instant date;
 
+    @LastModifiedDate
     @Field(MODIFIED_AT_FIELD)
     private Instant modifiedAt;
 
@@ -26,7 +28,6 @@ public class FeatureBucketState extends AbstractDocument {
 
     public FeatureBucketState(Instant date) {
         this.date = date;
-        this.modifiedAt = Instant.now();
     }
 
     public Instant getDate() {
