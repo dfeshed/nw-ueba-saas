@@ -39,6 +39,10 @@ export default Mixin.create({
      * @public
      */
     reconClose(restoreMetaPanelSize = false) {
+      if (!this.get('state.recon.isOpen')) {
+        // Recon UI isn't open. Don't make any state changes, just exit.
+        return;
+      }
       this.get('state.recon').setProperties({
         isOpen: false,
         isExpanded: false,
