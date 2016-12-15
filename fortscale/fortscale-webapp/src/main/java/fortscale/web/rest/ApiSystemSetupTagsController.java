@@ -97,6 +97,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     @LogException
     public ResponseEntity<String> tagUsers() {
         try {
+            logger.info("Updating all user-tags");
             userTagService.update();
         } catch (Exception ex) {
             return new ResponseEntity<>("{" + ex.getLocalizedMessage() + "}", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -107,27 +108,18 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
-    public ResponseEntity<DataBean<Map<String, List<? extends AdObject>>>> searchGroupsAndOusByNameStartingWith(String containedText) {
-        DataBean<Map<String, List<? extends AdObject>>> response = new DataBean<>();
-
-
+    public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameStartingWith(String startsWith) {
         try {
-            logger.debug("Searching for groups and OUs contains {}", containedText);
-            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameContains(containedText);
-            final List<AdOU> ous = activeDirectoryService.getOusByOuContains(containedText);
+            logger.info("Searching for groups and OUs stating with {}", startsWith);
+            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameContains(startsWith);
+            final List<AdOU> ous = activeDirectoryService.getOusByOuContains(startsWith);
             final HashMap<String, List<? extends AdObject>> resultsMap = new HashMap<>();
             resultsMap.put(KEY_GROUPS, groups);
             resultsMap.put(KEY_OUS, ous);
-
-
-            response.setData(resultsMap);
-            response.setTotal(groups.size() + ous.size());
-
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            return new ResponseEntity<>(resultsMap, HttpStatus.OK);
         } catch (Exception ex) {
             logger.error("Failed to search for groups and OUs", ex);
-            response.setTotal(0);
-            return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -139,7 +131,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     @LogException
     public ResponseEntity<String> runTaggingTask() {
         if (taggingTaskInProgress.compareAndSet(false, true)) {
-            logger.debug("Starting Tagging task from deployment wizard");
+            logger.info("Starting Tagging task from deployment wizard");
             Process process;
             try {
                 final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", COLLECTION_JAR_NAME, "User", "Tagging"));
@@ -171,7 +163,7 @@ public class ApiSystemSetupTagsController extends BaseController {
                 return new ResponseEntity<>("{" + msg + "}", HttpStatus.BAD_REQUEST);
             }
             else {
-                logger.debug("Tagging task from deployment wizard has finished successfully");
+                logger.info("Tagging task from deployment wizard has finished successfully");
                 taggingTaskInProgress.set(false);
                 return new ResponseEntity<>(EMPTY_RESPONSE_STRING, HttpStatus.OK);
             }

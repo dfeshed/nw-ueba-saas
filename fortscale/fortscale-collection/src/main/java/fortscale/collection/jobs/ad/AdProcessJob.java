@@ -5,15 +5,13 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.domain.JobDataReceived;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -25,6 +23,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
+	private ApplicationConfigurationService applicationConfigurationService;
+
+	@Autowired
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
@@ -34,6 +35,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 	protected int linesPrintSkip;
 	@Value("${collection.lines.print.enabled}")
 	protected boolean linesPrintEnabled;
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
 
 
 	protected MorphlinesItemsProcessor morphline;
@@ -54,9 +58,13 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	String outputSeparator;
 
+	private String resultsKey;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		final JobKey key = jobExecutionContext.getJobDetail().getKey();
 
 		// get parameters values from the job data map
 		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
@@ -71,6 +79,16 @@ public abstract class AdProcessJob extends FortscaleJob {
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, statsService, "AdProcessJob", outputFields);
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
+
+		// random generated ID for deployment wizard fetch and ETL results
+		try {
+			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+			if (resultsId != null) {
+				resultsKey = key.getName().toLowerCase() + "." + resultsId;
+			}
+		} catch (JobExecutionException e) {
+			logger.info("No resultsId was given as param.");
+		}
 
 	}
 
@@ -112,9 +130,11 @@ public abstract class AdProcessJob extends FortscaleJob {
 			morphline.close();
 		}
 
-		
-		runFinalStep();
 
+		if (resultsKey != null) {
+			logger.debug("Inserting status to application configuration in key {}", resultsKey);
+			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		}
 	}
 	
 	protected void runFinalStep() throws Exception{

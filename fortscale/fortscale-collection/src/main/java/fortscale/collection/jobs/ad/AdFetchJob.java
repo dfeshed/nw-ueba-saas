@@ -4,11 +4,9 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.naming.NamingEnumeration;
@@ -22,15 +20,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-/**
- * Created by Amir Keren on 17/05/2015.
- */
 @DisallowConcurrentExecution
 public class AdFetchJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
+
+	@Autowired
+	private ApplicationConfigurationService applicationConfigurationService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -43,10 +44,15 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 	private BufferedWriter fileWriter;
+	private String resultsKey;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		final JobKey key = jobExecutionContext.getJobDetail().getKey();
+
+
 		// get parameters values from the job data map
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
@@ -54,6 +60,16 @@ public class AdFetchJob extends FortscaleJob {
 		filter = jobDataMapExtension.getJobDataMapStringValue(map, "filter");
 		//AD selected fields
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
+
+		// random generated ID for deployment wizard fetch and ETL results
+		try {
+			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+			if (resultsId != null) {
+				resultsKey = key.getName().toLowerCase() + "." + resultsId;
+			}
+		} catch (JobExecutionException e) {
+			logger.info("No resultsId was given as param.");
+		}
 	}
 
 	@Override
@@ -71,9 +87,14 @@ public class AdFetchJob extends FortscaleJob {
 		if (!isSucceeded) {
 			return;
 		}
+
+		if (resultsKey != null) {
+			logger.debug("Inserting status to application configuration in key {}", resultsKey);
+			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		}
 	}
 
-	private boolean prepareSinkFileStep() throws JobExecutionException{
+	private boolean prepareSinkFileStep() throws JobExecutionException {
 		startNewStep("Prepare sink file");
 		logger.debug("creating output file at {}", outputPath);
 		// ensure output path exists

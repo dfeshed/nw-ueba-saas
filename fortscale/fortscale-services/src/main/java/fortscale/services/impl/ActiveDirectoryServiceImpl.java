@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
+import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
@@ -85,6 +86,29 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
+    public List<String> getDomainControllers() {
+        List<String> domainControllers = new ArrayList<>();
+        try {
+            logger.info("Trying to retrieve Domain Controllers from DB");
+            domainControllers = getDomainControllersFromDatabase();
+            if (domainControllers.isEmpty()) {
+                logger.warn("No Domain Controllers were found in DB. Trying to retrieve DCs from Active Directory");
+                domainControllers = getDomainControllersFromActiveDirectory();
+                if (!domainControllers.isEmpty()) {
+                    logger.debug("Found domain controllers in Active Directory");
+                    saveDomainControllersInDatabase(domainControllers);
+                } else {
+                    logger.warn("No domain Controllers were found in Active Directory");
+                }
+            }
+        } catch (Exception e) {
+            logger.error("Failed to retrieve domain controllers");
+        }
+
+        return domainControllers;
+    }
+
+    @Override
     public void saveDomainControllersInDatabase(List<String> domainControllers) {
         logger.debug("Saving domain controllers in database");
         String value = String.join(",", domainControllers);
@@ -108,6 +132,24 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         return result;
     }
 
+
+    @Override
+    public Long getCount(AdObject.AdObjectType  adObjectType) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.count();
+            case OU:
+                return adOURepository.count();
+            case USER:
+                return adUserRepository.count();
+            case COMPUTER:
+                return adComputerRepository.count();
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+        }
+
+    }
+
     /**
      * This method queries the {@link AdGroup} collection and returns a list of {@link AdGroup}s whose 'name' field contains the given {@param contains}.
      * This method is case-insensitive
@@ -115,7 +157,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
      * @param contains the string that {@link AdGroup}'s 'name' field needs to contain
      * @return         a list of {@link AdGroup}s whose 'name' field contains the given {@param contains}
      */
-    @Override
     public List<AdGroup> getGroupsByNameContains(String contains) {
         return adGroupRepository.findByNameLikeIgnoreCase(contains);
     }
@@ -130,30 +171,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     public List<AdOU> getOusByOuContains(String contains) {
         return adOURepository.findByOuLikeIgnoreCase(contains);
     }
-
-    @Override
-    public List<String> getDomainControllers() {
-        List<String> domainControllers = new ArrayList<>();
-        try {
-            logger.info("Trying to retrieve Domain Controllers from DB");
-            domainControllers = getDomainControllersFromDatabase();
-            if (domainControllers.isEmpty()) {
-                logger.warn("No Domain Controllers were found in DB. Trying to retrieve DCs from Active Directory");
-                domainControllers = getDomainControllersFromActiveDirectory();
-                if (!domainControllers.isEmpty()) {
-                    logger.debug("Found domain controllers in Active Directory");
-                    saveDomainControllersInDatabase(domainControllers);
-                } else {
-                    logger.warn("No domain Controllers were found in Active Directory");
-                }
-            }
-        } catch (Exception e) {
-            logger.error("Failed to retrieve domain controllers");
-        }
-
-        return domainControllers;
-    }
-
 
     /**
      * This method gets all the AD domain controllers from the database
