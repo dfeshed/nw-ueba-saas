@@ -29,6 +29,11 @@ export default Mixin.create({
       const wasQueryNode = this.get('state.queryNode');
       const wasLastQueryNode = this.get('state.lastQueryNode');
       if (queryNode === wasQueryNode) {
+        // We are not navigating to another query node BUT we may have toggled a panel,
+        // so we may still need to fetch results for any newly-opened panels.
+        if (queryNode) {
+          this.send('resultsGet', queryNode, false);
+        }
         return;
       }
 

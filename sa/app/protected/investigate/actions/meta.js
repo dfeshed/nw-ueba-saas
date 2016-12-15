@@ -124,11 +124,28 @@ export default Mixin.create({
     },
 
     /**
-     * Updates the meta panel size state to a given value, then triggers the retrieval of data if needed.
+     * Requests a change in the size of the meta panel UI.
+     * Typically invoked in UI by clicking on buttons that open/close panel.
+     * Responds by updating the corresponding URL query param.
      * @param {string} size Either 'min', 'max' or 'default'.
      * @public
      */
-    metaPanelSize(size) {
+    metaPanelSize(size = 'default') {
+      const wasSize = this.get('state.meta.panelSize');
+      const sizeChanged = wasSize !== size;
+      if (!sizeChanged) {
+        return;
+      }
+      this.transitionTo({ queryParams: { metaPanelSize: size } });
+    },
+
+    /**
+     * Updates the state with a given value for the meta panel size.
+     * Typically invoked by route when its URL query params have changed.
+     * @param {string} size Either 'min', 'max' or 'default'.
+     * @public
+     */
+    metaPanelSizeReceived(size) {
       const wasSize = this.get('state.meta.panelSize');
       const sizeChanged = wasSize !== size;
       if (!sizeChanged) {
@@ -140,11 +157,6 @@ export default Mixin.create({
       }
 
       this.set('state.meta.panelSize', size);
-
-      // When opening meta panel or shrinking it from maximized, ensure results are fetched for all visible views.
-      if (wasSize === 'min' || wasSize === 'max') {
-        this.send('resultsGet', this.get('state.queryNode'));
-      }
     }
   },
 
