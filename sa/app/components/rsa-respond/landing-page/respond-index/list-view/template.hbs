@@ -1,12 +1,4 @@
 {{#rsa-application-layout-manager class="rsa-respond-index-layout-manager rsa-respond-list"}}
-  {{#rsa-application-modal eventId='bulk-edit-changes' label=(t "incident.bulkEdit.unsavedChangesModalHeader") }}
-    <div class='modal-content rsa-respond-bulk-edit-confirm'>
-      <p>{{ t "incident.bulkEdit.unsavedChangesModalMessage" }}</p>
-      {{#rsa-form-button isFullWidth=true defaultAction=(action 'closeBulkEditModal')}}
-        {{t 'incident.bulkEdit.modalOkButtonLabel'}}
-      {{/rsa-form-button}}
-    </div>
-  {{/rsa-application-modal}}
   {{#rsa-application-layout-panel class="panel-A rsa-respond-list__panelA"}}
     <div class="rsa-respond-list__filter-panel">
       <div class="rsa-respond-list__filter-panel__risk-score">
@@ -24,6 +16,7 @@
           {{rsa-form-checkbox
             class=(concat 'priority-' priority.id)
             value=priority.value
+            isDisabled=isBulkEditInProgress
             label=(t (concat 'incident.priority.' priority.id))}}
         {{/each}}
       </div>
@@ -33,17 +26,29 @@
           {{rsa-form-checkbox
             class=(concat 'status-' status.id)
             value=status.value
+            isDisabled=isBulkEditInProgress
             label=(t (concat 'incident.status.' status.id))}}
         {{/each}}
       </div>
-      {{#rsa-form-select label=(t 'incident.list.sources') prompt=(t 'incident.list.filters.sources') optionMaxVisible=availableSources.length
-        values=selectedSources class=(concat 'rsa-respond-list__filter-panel__source-selector' (if sourceFilterActive ' source-filter-active'))}}
+      {{#rsa-form-select
+        label=(t 'incident.list.sources')
+        prompt=(t 'incident.list.filters.sources')
+        optionMaxVisible=availableSources.length
+        values=selectedSources
+        isDisabled=isBulkEditInProgress
+        class=(concat 'rsa-respond-list__filter-panel__source-selector' (if sourceFilterActive ' source-filter-active'))
+      }}
         {{#each availableSources as |source|}}
           <option value={{source}}>{{source}}</option>
         {{/each}}
       {{/rsa-form-select}}
-      {{#rsa-form-select label=(t 'incident.list.assignee') prompt=(t 'incident.list.filters.assignees') optionMaxVisible=users.length
-        values=selectedAssignee class=(concat 'rsa-respond-list__filter-panel__assignee-selector' (if assigneeFilterActive ' assignee-filter-active'))}}
+      {{#rsa-form-select
+        label=(t 'incident.list.assignee')
+        prompt=(t 'incident.list.filters.assignees')
+        optionMaxVisible=users.length
+        values=selectedAssignee
+        isDisabled=isBulkEditInProgress
+        class=(concat 'rsa-respond-list__filter-panel__assignee-selector' (if assigneeFilterActive ' assignee-filter-active'))}}
         <option value=-1>{{t 'incident.assignee.none'}}</option>
         {{#each users as |user|}}
           <option value={{user.id}}>{{user.name}}</option>
@@ -51,9 +56,19 @@
       {{/rsa-form-select}}
       <div class="rsa-respond-list__filter-panel__category">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.details.overview.categoryTags'}}</div>
-        {{rsa-form-tag-manager selectedTags=selectedCategories availableTags=normalizedTreeData addTagsLabel=(t 'incident.details.overview.addCategoryTags')}}
+        {{rsa-form-tag-manager
+          selectedTags=selectedCategories
+          availableTags=normalizedTreeData
+          isDisabled=isBulkEditInProgress
+          addTagsLabel=(t 'incident.details.overview.addCategoryTags')
+        }}
       </div>
-      {{#rsa-form-button isFullWidth=true class="rsa-respond-list__filter-panel__reset-button" defaultAction=(action 'resetFilters')}}
+      {{#rsa-form-button
+        isFullWidth=true
+        class="rsa-respond-list__filter-panel__reset-button"
+        isDisabled=isBulkEditInProgress
+        defaultAction=(action 'resetFilters')
+      }}
         {{t 'incident.list.filters.reset'}}
       {{/rsa-form-button}}
     </div>

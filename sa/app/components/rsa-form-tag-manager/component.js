@@ -13,12 +13,14 @@ const {
 
 export default Component.extend({
   classNames: ['rsa-form-tag-manager'],
-  classNameBindings: ['contentTreeIsHidden'],
+  classNameBindings: ['contentTreeIsHidden', 'isDisabled'],
   contentTreeIsHidden: true,
   eventBus: service(),
 
   // sub set of availableTags selected by the user
   selectedTags: [],
+
+  isDisabled: false,
 
   didInsertElement() {
     this.get('eventBus').on('rsa-application-click', (targetEl) => {
@@ -58,7 +60,9 @@ export default Component.extend({
      * @public
      */
     toggleTreeVisibility() {
-      this.toggleProperty('contentTreeIsHidden');
+      if (!this.get('isDisabled')) {
+        this.toggleProperty('contentTreeIsHidden');
+      }
     },
 
     /**
@@ -67,33 +71,35 @@ export default Component.extend({
      * @public
      */
     toggleTag(tag) {
-      const selectedTags = this.get('selectedTags').slice(0);
-      const availableTags = this.get('availableTags');
-      let tagFromAvailableTags = null;
+      if (!this.get('isDisabled')) {
+        const selectedTags = this.get('selectedTags').slice();
+        const availableTags = this.get('availableTags');
+        let tagFromAvailableTags = null;
 
-      // searching the selected tag in the list of all tags.
-      // using for loop instead of forEach to be able to break it once we found the inner element.
-      const len = availableTags.length;
-      for (let i = 0; i < len; i++) {
-        const parent = availableTags.objectAt(i);
-        if (parent.name === tag.parent) {
-          tagFromAvailableTags = parent.children.find((child) => child.name === tag.name);
-          break;
+        // searching the selected tag in the list of all tags.
+        // using for loop instead of forEach to be able to break it once we found the inner element.
+        const len = availableTags.length;
+        for (let i = 0; i < len; i++) {
+          const parent = availableTags.objectAt(i);
+          if (parent.name === tag.parent) {
+            tagFromAvailableTags = parent.children.find((child) => child.name === tag.name);
+            break;
+          }
         }
-      }
 
-      const isSelected = get(tagFromAvailableTags, 'selected');
-      if (isSelected) {
-        const existingTag = this.get('selectedTags').find((item) => {
-          return item.parent === tag.parent && item.name === tag.name;
-        });
-        selectedTags.removeObject(existingTag);
-      } else {
-        selectedTags.pushObject(tag);
-      }
-      set(tagFromAvailableTags, 'selected', !isSelected);
+        const isSelected = get(tagFromAvailableTags, 'selected');
+        if (isSelected) {
+          const existingTag = this.get('selectedTags').find((item) => {
+            return item.parent === tag.parent && item.name === tag.name;
+          });
+          selectedTags.removeObject(existingTag);
+        } else {
+          selectedTags.pushObject(tag);
+        }
+        set(tagFromAvailableTags, 'selected', !isSelected);
 
-      this.set('selectedTags', selectedTags);
+        this.set('selectedTags', selectedTags);
+      }
     }
   }
 });

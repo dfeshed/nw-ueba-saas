@@ -8,9 +8,6 @@ import ReplayManager from 'sa/utils/replay-manager';
 import PersistenceManager from 'sa/utils/persistence-manager';
 
 const {
-  inject: {
-    service
-  },
   Component,
   run,
   computed: emberComputed,
@@ -22,7 +19,6 @@ const riskScoreFilterInitialValues = [0, 100];
 
 export default Component.extend({
   tagName: 'hbox',
-  eventBus: service(),
 
   // disables the persitance save and restore. Used in tests.
   disablePersistence: false,
@@ -171,16 +167,11 @@ export default Component.extend({
         value: emberComputed({
           get: () => this.get('filteredStatuses').includes(statusId),
           set: (key, value) => {
-            const editInProgress = value && this.get('isBulkEditInProgress');
 
-            if (!editInProgress) {
-              run.once(() => {
-                this.updateFilterValue('status', 'filteredStatuses', statusId, value);
-              });
-              return value;
-            } else {
-              this.openBulkEditModal();
-            }
+            run.once(() => {
+              this.updateFilterValue('status', 'filteredStatuses', statusId, value);
+            });
+            return value;
           }
         })
       }).create();
@@ -203,16 +194,10 @@ export default Component.extend({
         value: emberComputed({
           get: () => this.get('filteredPriorities').includes(priorityId),
           set: (key, value) => {
-            const editInProgress = value && this.get('isBulkEditInProgress');
-
-            if (!editInProgress) {
-              run.once(() => {
-                this.updateFilterValue('priority', 'filteredPriorities', priorityId, value);
-              });
-              return value;
-            } else {
-              this.openBulkEditModal();
-            }
+            run.once(() => {
+              this.updateFilterValue('priority', 'filteredPriorities', priorityId, value);
+            });
+            return value;
           }
         })
       }).create();
@@ -247,16 +232,10 @@ export default Component.extend({
   selectedAssignee: {
     get: () => [],
     set(values) {
-      const editInProgress = (values && values.length > 0 && this.get('isBulkEditInProgress'));
-
-      if (!editInProgress) {
-        run.once(() => {
-          this.set('filteredAssignees', values);
-          this.applyFilters('assigneeId', (values || []).slice());
-        });
-      } else {
-        this.openBulkEditModal();
-      }
+      run.once(() => {
+        this.set('filteredAssignees', values);
+        this.applyFilters('assigneeId', (values || []).slice());
+      });
       this.set('assigneeFilterActive', values.length > 0);
       return values;
     }
@@ -279,14 +258,8 @@ export default Component.extend({
         filterFn = (incidentSources) => incidentSources.any((source) => values.includes(source));
       }
 
-      const editInProgress = values.length > 0 && this.get('isBulkEditInProgress');
-
-      if (!editInProgress) {
-        this.set('filteredSources', values);
-        this.applyFilters('sources', filterFn);
-      } else {
-        this.openBulkEditModal();
-      }
+      this.set('filteredSources', values);
+      this.applyFilters('sources', filterFn);
       // Apply CSS style change
       this.set('sourceFilterActive', values.length > 0);
       return values;
@@ -318,14 +291,8 @@ export default Component.extend({
           };
         }
 
-        const editInProgress = values && values.length > 0 && this.get('isBulkEditInProgress');
-
-        if (!editInProgress) {
-          this.set('filteredCategories', values);
-          this.applyFilters('categories', filterValue);
-        } else {
-          this.openBulkEditModal();
-        }
+        this.set('filteredCategories', values);
+        this.applyFilters('categories', filterValue);
       });
       return values;
     }
@@ -418,15 +385,6 @@ export default Component.extend({
     allIncidents.setEach('checked', newValue);
   },
 
-  /**
-   * @name openBulkEditModal
-   * @description Opens the Unsaved Changes bulk edit modal
-   * @public
-   */
-  openBulkEditModal() {
-    this.get('eventBus').trigger('rsa-application-modal-open-bulk-edit-changes');
-  },
-
   actions: {
     // sets the current sorted column field name and the sort direction
     // and calls the, sortAction in the route to do the actual sort for list view
@@ -485,16 +443,6 @@ export default Component.extend({
         this.toggleAllCheckboxes(false);
         this.sendAction('gotoIncidentDetail', incidentObject);
       }
-    },
-
-    /**
-     * @name closeBulkEditModal
-     * @description Closes the Unsaved Changes bulk edit modal
-     * @public
-     */
-    closeBulkEditModal() {
-      this.get('eventBus').trigger('rsa-application-modal-close-bulk-edit-changes');
-      this.send('resetFilters');
     },
 
     /**

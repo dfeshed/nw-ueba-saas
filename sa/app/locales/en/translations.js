@@ -483,8 +483,6 @@ export default $.extend({}, BaseTranslations, {
         'one': '{{totalFields}} record updated successfully',
         'other': '{{totalFields}} records updated successfully'
       },
-      unsavedChangesModalHeader: 'Unsaved Changes',
-      unsavedChangesModalMessage: 'You have unsaved changes. Please save incident changes before filtering.',
       deleteConfirmation: 'Are you sure?',
       areYouSureConfirmation: {
         'one': 'Please confirm you want to delete this incident. Once this incident is deleted, it cannot be recovered.',

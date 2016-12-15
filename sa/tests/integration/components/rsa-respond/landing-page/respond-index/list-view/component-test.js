@@ -4,9 +4,9 @@ import Ember from 'ember';
 import IncidentsCube from 'sa/utils/cube/incidents';
 import wait from 'ember-test-helpers/wait';
 import { waitFor } from './helpers';
+import { clickTrigger, nativeMouseUp } from '../../../../../../helpers/ember-power-select';
 
 const {
-  run,
   Object: EmberObject
 } = Ember;
 
@@ -448,45 +448,37 @@ test('All incients are checked and then unchecked when the header checkbox is to
   assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.is-selected').length, 0, 'None of the checkboxes are currently selected.');
 });
 
-test('An alert modal appears if filters are used during a bulk edit in progress', function(assert) {
-  const done = assert.async(5);
-
-  this.render(hbs`<div id='modalDestination'></div>{{rsa-respond/landing-page/respond-index/list-view
+test('When a bulk edit is active, the filter controls are disabled.', function(assert) {
+  const done = assert.async(2);
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view
     buffer=10
     allIncidents=allIncidents
     users=users
     categoryTags=categoryTags}}`);
 
-  run(() => {
-    this.$('.rsa-form-row-checkbox:first .rsa-form-checkbox input').prop('checked', true).trigger('change');
-  });
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), false, 'The risk score filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority rsa-form-checkbox').hasClass('is-disabled'), false, 'The priority filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status rsa-form-checkbox').hasClass('is-disabled'), false, 'The status filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').hasClass('is-disabled'), false, 'The source selector filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee-selector').hasClass('is-disabled'), false, 'The assignee selector filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-tag-manager').hasClass('is-disabled'), false, 'The form tag manager component is not disabled.');
 
-  this.$('.rsa-content-tethered-panel-trigger.rsa-form-status-select .rsa-form-button').click();
+  this.$('.js-respond-listview-checkbox-header input').prop('checked', true).trigger('change');
+
   wait().then(() => {
-    this.$('ul.rsa-form-status-select li[value="2"]').click();
+    clickTrigger('.rsa-form-assignee-select');
+    nativeMouseUp('.ember-power-select-option:eq(0)');
 
-    this.$('.rsa-content-tethered-panel-trigger.rsa-form-assignee-select .rsa-form-button').click();
     wait().then(() => {
-      this.$('ul.rsa-form-assignee-select li[value="2"]').click();
-
-      this.$('.rsa-content-tethered-panel-trigger.rsa-form-priority-select .rsa-form-button').click();
-      wait().then(() => {
-        this.$('ul.rsa-form-priority-select li[value="2"]').click();
-        this.$('.rsa-respond-list__filter-panel__priority .priority-1 input:first').prop('checked', true).trigger('change');
-
-        wait().then(() => {
-          this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-button-group__save-btn .rsa-form-button').click();
-
-          wait().then(() => {
-            assert.equal(this.$('.rsa-application-modal .rsa-respond-bulk-edit-confirm p').text().trim(), 'You have unsaved changes. Please save incident changes before filtering.', 'The modal appears with the proper message.');
-            done();
-          });
-          done();
-        });
-        done();
-      });
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), true, 'The risk score filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority .rsa-form-checkbox').hasClass('is-disabled'), true, 'The priority filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status .rsa-form-checkbox').hasClass('is-disabled'), true, 'The status filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').hasClass('is-disabled'), true, 'The source selector filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee-selector').hasClass('is-disabled'), true, 'The assignee selector filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-tag-manager').hasClass('is-disabled'), true, 'The form tag manager component is disabled.');
       done();
     });
+
     done();
   });
 });
