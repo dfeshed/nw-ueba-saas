@@ -8,7 +8,7 @@ import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderSe
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -46,7 +46,7 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 				config.getNumOfIndicatorsPerDay());
 
 		if (dateToTopAggrEvents.isEmpty()) {
-			return new ModelBuilderData(new HashMap<Long, List<Double>>(), Code.NO_DATA);
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 		}
 
 		Map<Long, List<Double>> data = dateToTopAggrEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
@@ -54,7 +54,12 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 				.map(aggrEvent -> findScoreToCalibrate(aggrEvent.getFeatureScores(), config.getScoreNameToCalibrate()))
 				.filter(unreducedScore -> unreducedScore != null)
 				.collect(Collectors.toList())));
-		return new ModelBuilderData(data, data.isEmpty() ? Code.DATA_FILTERED : Code.DATA_EXISTS);
+
+		if (data.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(data);
+		}
 	}
 
 	private Stream<FeatureScore> flattenFeatureScoresRecursively(List<FeatureScore> featureScores) {

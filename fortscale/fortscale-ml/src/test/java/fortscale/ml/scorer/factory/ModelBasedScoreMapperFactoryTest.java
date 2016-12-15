@@ -5,7 +5,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ScoreMappingModel;
@@ -116,12 +116,12 @@ public class ModelBasedScoreMapperFactoryTest {
 				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
 					@Override
 					public ModelBuilderData retrieve(String contextId, Date endTime) {
-						return new ModelBuilderData(null, Code.NO_DATA);
+						return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 					}
 
 					@Override
 					public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
-						return new ModelBuilderData(null, Code.NO_DATA);
+						return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 					}
 
 					@Override

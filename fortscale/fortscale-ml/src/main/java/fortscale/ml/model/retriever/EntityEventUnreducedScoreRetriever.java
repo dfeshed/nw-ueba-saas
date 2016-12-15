@@ -5,7 +5,7 @@ import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.retriever.metrics.EntityEventUnreducedScoreRetrieverMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 				(int)(config.getNumOfDays() * config.getNumOfAlertsPerDay() + 1));
 
 		if (dateToTopEntityEvents.isEmpty()) {
-			return new ModelBuilderData(new HashMap<Long, List<Double>>(), Code.NO_DATA);
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 		}
 
 		metrics.dates += dateToTopEntityEvents.size();
@@ -56,7 +56,12 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 				.map(EntityEvent::getUnreduced_score)
 				.filter(unreducedScore -> unreducedScore != null)
 				.collect(Collectors.toList())));
-		return new ModelBuilderData(data, data.isEmpty() ? Code.DATA_FILTERED : Code.DATA_EXISTS);
+
+		if (data.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(data);
+		}
 	}
 
 	@Override

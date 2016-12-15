@@ -4,7 +4,7 @@ import fortscale.aggregation.feature.bucket.*;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidFeatureBucketConfNameException;
 import fortscale.ml.model.exceptions.InvalidFeatureNameException;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
@@ -92,7 +92,7 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 
 		metrics.featureBuckets += featureBuckets.size();
 		GenericHistogram reductionHistogram = new GenericHistogram();
-		if (featureBuckets.isEmpty()) return new ModelBuilderData(reductionHistogram, Code.NO_DATA);
+		if (featureBuckets.isEmpty()) return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 
 		for (FeatureBucket featureBucket : featureBuckets) {
 			Date dataTime = new Date(TimestampUtils.convertToMilliSeconds(featureBucket.getStartTime()));
@@ -111,8 +111,11 @@ public class ContextHistogramRetriever extends AbstractDataRetriever {
 			}
 		}
 
-		Code code = reductionHistogram.getN() == 0 ? Code.DATA_FILTERED : Code.DATA_EXISTS;
-		return new ModelBuilderData(reductionHistogram, code);
+		if (reductionHistogram.getN() == 0) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(reductionHistogram);
+		}
 	}
 
 	private GenericHistogram doReplacePattern(GenericHistogram original) {

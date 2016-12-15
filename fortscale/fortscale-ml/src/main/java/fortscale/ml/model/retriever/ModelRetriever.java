@@ -3,7 +3,7 @@ package fortscale.ml.model.retriever;
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.retriever.metrics.ModelRetrieverMetrics;
@@ -45,7 +45,12 @@ public class ModelRetriever extends AbstractDataRetriever {
 				.collect(Collectors.toList());
 		metrics.retrieveCalls++;
 		metrics.retrievedModels++;
-		return new ModelBuilderData(models, models.isEmpty() ? Code.NO_DATA : Code.DATA_EXISTS);
+
+		if (models.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+		} else {
+			return new ModelBuilderData(models);
+		}
 	}
 
 	@Override

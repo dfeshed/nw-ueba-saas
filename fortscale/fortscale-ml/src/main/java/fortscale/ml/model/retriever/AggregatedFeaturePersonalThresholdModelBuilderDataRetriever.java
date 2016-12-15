@@ -7,7 +7,7 @@ import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderSe
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.PersonalThresholdModelBuilderData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
@@ -60,14 +60,14 @@ public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends
 						numOfContexts, numOfOrganizationScores, featureScores.size());
 			}
 
-			return new ModelBuilderData(new PersonalThresholdModelBuilderData(), Code.NO_DATA);
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 		}
 
 		PersonalThresholdModelBuilderData data = new PersonalThresholdModelBuilderData()
 				.setNumOfContexts(numOfContexts)
 				.setNumOfOrganizationScores(numOfOrganizationScores)
 				.setOrganizationKTopProbOfHighScore(scoreToCalibrate);
-		return new ModelBuilderData(data, Code.DATA_EXISTS);
+		return new ModelBuilderData(data);
 	}
 
 	private Stream<FeatureScore> flattenFeatureScoresRecursively(List<FeatureScore> featureScores) {

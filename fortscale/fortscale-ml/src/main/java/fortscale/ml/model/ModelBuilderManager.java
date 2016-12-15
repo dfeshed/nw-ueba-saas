@@ -1,6 +1,6 @@
 package fortscale.ml.model;
 
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
@@ -161,12 +161,19 @@ public class ModelBuilderManager {
             logger.error("Failed to retrieve data for context ID {}.", contextId, e);
             return ModelBuildingStatus.RETRIEVER_FAILURE;
         }
-        if (modelBuilderData.getCode() == Code.NO_DATA) {
-            logger.error("No data in database for context ID {}. Retriever not consistent with selector.", contextId);
-            return ModelBuildingStatus.RETRIEVER_FAILURE;
-        } else if (modelBuilderData.getCode() == Code.DATA_FILTERED) {
-            logger.info("All data filtered out for context ID {}.", contextId);
-            return ModelBuildingStatus.DATA_FILTERED_OUT;
+
+        if (!modelBuilderData.dataExists()) {
+            switch (modelBuilderData.getNoDataReason()) {
+                case NO_DATA_IN_DATABASE:
+                    logger.error("No data in database for context ID {}.", contextId);
+                    return ModelBuildingStatus.RETRIEVER_FAILURE;
+                case ALL_DATA_FILTERED:
+                    logger.info("All data filtered out for context ID {}.", contextId);
+                    return ModelBuildingStatus.DATA_FILTERED_OUT;
+                default:
+                    throw new IllegalArgumentException(String.format("Unsupported %s %s.",
+                            NoDataReason.class.getSimpleName(), modelBuilderData.getNoDataReason()));
+            }
         }
 
         // Builder
@@ -177,6 +184,7 @@ public class ModelBuilderManager {
             logger.error("Failed to build model for context ID {}.", contextId, e);
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
+
         if (model == null) {
             logger.error("Built model for context ID {} is null.", contextId);
             return ModelBuildingStatus.BUILDER_FAILURE;

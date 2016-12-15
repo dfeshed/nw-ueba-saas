@@ -2,7 +2,7 @@ package fortscale.ml.scorer.factory;
 
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilderConf;
@@ -81,12 +81,12 @@ public class CategoryRarityModelScorerFactoryTest {
 				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
 					@Override
 					public ModelBuilderData retrieve(String contextId, Date endTime) {
-						return new ModelBuilderData(null, Code.NO_DATA);
+						return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 					}
 
 					@Override
 					public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
-						return new ModelBuilderData(null, Code.NO_DATA);
+						return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 					}
 
 					@Override

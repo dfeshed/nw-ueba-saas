@@ -6,7 +6,7 @@ import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
 import fortscale.ml.model.ModelBuilderData;
-import fortscale.ml.model.ModelBuilderData.Code;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
 import fortscale.ml.model.retriever.metrics.EntityEventValueRetrieverMetrics;
 import fortscale.ml.model.selector.EntityEventContextSelectorConf;
@@ -69,21 +69,25 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		Stream<JokerEntityEventData> jokerEntityEventsData = readJokerEntityEventData(
 				entityEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
-		final boolean[] noData = {true};
+		final boolean[] noDataInDatabase = {true};
 
 		jokerEntityEventsData.forEach(jokerEntityEventData -> {
-			noData[0] = false;
+			noDataInDatabase[0] = false;
 			Map<String, JokerAggrEventData> jokerAggrEventDataMap = getJokerAggrEventDataMap(jokerEntityEventData);
 			Double entityEventValue = jokerFunction.calculateEntityEventValue(jokerAggrEventDataMap);
 			// TODO: Retriever functions should be iterated and executed here.
 			reductionHistogram.add(entityEventValue, 1d);
 		});
 
-		Code code;
-		if (noData[0]) code = Code.NO_DATA;
-		else if (reductionHistogram.getN() == 0) code = Code.DATA_FILTERED;
-		else code = Code.DATA_EXISTS;
-		return new ModelBuilderData(reductionHistogram, code);
+		if (reductionHistogram.getN() == 0) {
+			if (noDataInDatabase[0]) {
+				return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+			} else {
+				return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+			}
+		} else {
+			return new ModelBuilderData(reductionHistogram);
+		}
 	}
 
 	protected abstract Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf,
@@ -102,7 +106,7 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 		GenericHistogram reductionHistogram = new GenericHistogram();
 
 		if (contextIds.isEmpty()) {
-			return new ModelBuilderData(reductionHistogram, Code.NO_DATA);
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 		}
 
 		for (String contextId : contextIds) {
@@ -118,8 +122,11 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 					});
 		}
 
-		Code code = reductionHistogram.getN() == 0 ? Code.DATA_FILTERED : Code.DATA_EXISTS;
-		return new ModelBuilderData(reductionHistogram, code);
+		if (reductionHistogram.getN() == 0) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(reductionHistogram);
+		}
 	}
 
 	@Override
