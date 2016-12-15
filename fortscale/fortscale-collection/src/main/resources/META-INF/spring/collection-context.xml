@@ -33,8 +33,6 @@
 
     <bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
 	<bean id="featureBucketStateRepository" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepositoryImpl" />
-	<bean id="featureBucketStateService" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateServiceImpl" >
-		<property name="featureBucketStateRepository" ref="featureBucketStateRepository"/>
-	</bean>
+	<bean id="featureBucketStateService" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateServiceImpl"/>
 </beans>
 

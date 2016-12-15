@@ -1,6 +1,7 @@
 package fortscale.aggregation.feature.bucket.repository.state;
 
 import fortscale.utils.logging.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -11,12 +12,16 @@ import java.time.temporal.ChronoUnit;
 public class FeatureBucketStateServiceImpl implements FeatureBucketStateService {
     private static final Logger logger = Logger.getLogger(FeatureBucketStateService.class);
 
+    @Autowired
     FeatureBucketStateRepository featureBucketStateRepository;
 
     private Instant date;
 
-    public FeatureBucketStateServiceImpl(FeatureBucketStateRepository featureBucketStateRepository) {
+    protected FeatureBucketStateServiceImpl(FeatureBucketStateRepository featureBucketStateRepository) {
         this.featureBucketStateRepository = featureBucketStateRepository;
+    }
+
+    public FeatureBucketStateServiceImpl() {
     }
 
     @Override
