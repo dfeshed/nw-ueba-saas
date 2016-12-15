@@ -53,13 +53,12 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time, FeatureBucketState.StateType.LAST_SYNC_DATE);
+        featureBucketStateService.updateState(time);
 
-        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState(FeatureBucketState.StateType.LAST_SYNC_DATE);
-        FeatureBucketState expected = new FeatureBucketState(Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS), FeatureBucketState.StateType.LAST_SYNC_DATE);
+        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
+        FeatureBucketState expected = new FeatureBucketState(Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS)) ;
         Assert.assertNotNull(actual);
-        Assert.assertNotNull(actual.getAggregationFeatureStateDate());
-        Assert.assertEquals(expected.getAggregationFeatureStateDate().getDate(), actual.getAggregationFeatureStateDate().getDate());
+        Assert.assertEquals(expected.getDate(), actual.getDate());
     }
 
     @Test
@@ -67,18 +66,17 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time, FeatureBucketState.StateType.LAST_SYNC_DATE);
+        featureBucketStateService.updateState(time);
         Instant date = Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS);
         date.plus(Duration.ofDays(1));
 
         // Updating with next date
-        featureBucketStateService.updateState(date.getEpochSecond(), FeatureBucketState.StateType.LAST_SYNC_DATE);
+        featureBucketStateService.updateState(date.getEpochSecond());
 
-        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState(FeatureBucketState.StateType.LAST_SYNC_DATE);
-        FeatureBucketState expected = new FeatureBucketState(date, FeatureBucketState.StateType.LAST_SYNC_DATE);
+        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
+        FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertNotNull(actual.getAggregationFeatureStateDate());
-        Assert.assertEquals(expected.getAggregationFeatureStateDate().getDate(), actual.getAggregationFeatureStateDate().getDate());
+        Assert.assertEquals(expected.getDate(), actual.getDate());
     }
 
     @Test
@@ -86,18 +84,17 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time, FeatureBucketState.StateType.LAST_SYNC_DATE);
+        featureBucketStateService.updateState(time);
         Instant date = Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS);
         Instant dayBefore = date.minus(Duration.ofDays(1));
 
         // Updating with next date
-        featureBucketStateService.updateState(dayBefore.getEpochSecond(), FeatureBucketState.StateType.LAST_SYNC_DATE);
+        featureBucketStateService.updateState(dayBefore.getEpochSecond());
 
-        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState(FeatureBucketState.StateType.LAST_SYNC_DATE);
-        FeatureBucketState expected = new FeatureBucketState(date, FeatureBucketState.StateType.LAST_SYNC_DATE);
+        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
+        FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertNotNull(actual.getAggregationFeatureStateDate());
-        Assert.assertEquals(expected.getAggregationFeatureStateDate().getDate(), actual.getAggregationFeatureStateDate().getDate());
+        Assert.assertEquals(expected.getDate(), actual.getDate());
     }
 
     @Test
@@ -105,18 +102,17 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time, FeatureBucketState.StateType.LAST_SYNC_DATE);
+        featureBucketStateService.updateState(time) ;
         Instant date = Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS);
-        FeatureBucketState firstUpdate = featureBucketStateService.getFeatureBucketState(FeatureBucketState.StateType.LAST_SYNC_DATE);
+        FeatureBucketState firstUpdate = featureBucketStateService.getFeatureBucketState();
 
         // Updating with next date
-        featureBucketStateService.updateState(date.getEpochSecond(), FeatureBucketState.StateType.LAST_SYNC_DATE);
+        featureBucketStateService.updateState(date.getEpochSecond());
 
-        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState(FeatureBucketState.StateType.LAST_SYNC_DATE);
-        FeatureBucketState expected = new FeatureBucketState(date, FeatureBucketState.StateType.LAST_SYNC_DATE);
+        FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
+        FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertNotNull(actual.getAggregationFeatureStateDate());
-        Assert.assertEquals(expected.getAggregationFeatureStateDate().getDate(), actual.getAggregationFeatureStateDate().getDate());
-        Assert.assertEquals(firstUpdate.getAggregationFeatureStateDate().getModifiedAt(), actual.getAggregationFeatureStateDate().getModifiedAt());
+        Assert.assertEquals(expected.getDate(), actual.getDate());
+        Assert.assertEquals(firstUpdate.getModifiedAt(), actual.getModifiedAt());
     }
 }

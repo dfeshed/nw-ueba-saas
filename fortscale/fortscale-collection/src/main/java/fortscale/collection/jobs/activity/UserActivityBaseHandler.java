@@ -64,9 +64,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
     public void calculate(int numOfLastDaysToCalculate) {
         // Getting the last day the aggregation process finished processing
-        FeatureBucketState featureBucketState = featureBucketStateService.getFeatureBucketState(FeatureBucketState.StateType.LAST_SYNC_DATE);
-        if (featureBucketState != null && featureBucketState.getAggregationFeatureStateDate() != null && featureBucketState.getAggregationFeatureStateDate().getDate() != null){
-            Long endTime = featureBucketState.getAggregationFeatureStateDate().getDate().toEpochMilli();
+        FeatureBucketState featureBucketState = featureBucketStateService.getFeatureBucketState();
+        if (featureBucketState != null  && featureBucketState.getDate() != null){
+            Long endTime = featureBucketState.getDate().toEpochMilli();
             long startingTime = TimestampUtils.toStartOfDay(TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate));
 
             logger.info("Going to handle {} Activity..", getActivityName());

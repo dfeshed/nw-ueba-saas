@@ -25,24 +25,24 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
     }
 
     @Override
-    public void updateState(long lastEventEpochtime, FeatureBucketState.StateType stateType) {
+    public void updateState(long lastEventEpochtime) {
         FeatureBucketState featureBucketState = null;
         boolean shouldSave = false;
         Instant newDate = Instant.ofEpochSecond(lastEventEpochtime).truncatedTo(ChronoUnit.DAYS);
 
         if (date == null){
-            featureBucketState = getFeatureBucketState(stateType);
+            featureBucketState = getFeatureBucketState();
             if (featureBucketState != null){
-                date = featureBucketState.getAggregationFeatureStateDate().getDate();
+                date = featureBucketState.getDate();
             }else{
-                featureBucketState = new FeatureBucketState(newDate, stateType);
+                featureBucketState = new FeatureBucketState(newDate);
                 shouldSave = true;
             }
         }
 
         if (!shouldSave) {
             if (date.isBefore(newDate)) {
-                featureBucketState.updateAggregationStateDate(newDate);
+                featureBucketState.setDate(newDate);
                 date = newDate;
                 shouldSave = true;
             } else {
@@ -51,12 +51,12 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         }
 
         if (shouldSave){
-            featureBucketStateRepository.dosomeStuffupdateFeatureBucketState(featureBucketState);
+            featureBucketStateRepository.update(featureBucketState);
         }
     }
 
     @Override
-    public FeatureBucketState getFeatureBucketState(FeatureBucketState.StateType stateType) {
-        return featureBucketStateRepository.findByStateType(stateType);
+    public FeatureBucketState getFeatureBucketState() {
+        return featureBucketStateRepository.getState();
     }
 }

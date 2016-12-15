@@ -133,7 +133,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			}
 
 			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime.getEpochSecond());
-			featureBucketStateService.updateState(dataSourcesSyncTimer.getLastEventEpochtime(), FeatureBucketState.StateType.LAST_SYNC_DATE);
+			featureBucketStateService.updateState(dataSourcesSyncTimer.getLastEventEpochtime());
 
 			if(error){
 				logger.error(errorMsg);

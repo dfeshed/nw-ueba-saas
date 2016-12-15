@@ -1,7 +1,10 @@
 package fortscale.aggregation.feature.bucket.repository.state;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
+
+import java.util.List;
 
 /**
  * Created by alexp on 13/12/16.
@@ -12,7 +15,16 @@ public class FeatureBucketStateRepositoryImpl implements FeatureBucketStateRepos
     private MongoTemplate mongoTemplate;
 
     @Override
-    public void dosomeStuffupdateFeatureBucketState(FeatureBucketState featureBucketState) {
+    public void update(FeatureBucketState featureBucketState) {
         mongoTemplate.save(featureBucketState);
+    }
+
+    @Override
+    public FeatureBucketState getState() {
+        List<FeatureBucketState> states = mongoTemplate.findAll(FeatureBucketState.class);
+        if (CollectionUtils.isEmpty(states)){
+            return null;
+        }
+        return states.get(0);
     }
 }
