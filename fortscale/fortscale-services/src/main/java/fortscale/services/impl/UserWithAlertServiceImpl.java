@@ -305,16 +305,18 @@ import java.util.Set;
 	public int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames) throws Exception {
 
 		// Create tag if needed
-		if (addTag) {
-			for (String tag : tagNames) {
-				//if there's no such tag in the system
-				if (tagService.getTag(tag) == null) {
-					//try to add the new tag
-					if (!tagService.addTag(new Tag(tag))) {
-						//if failed
-						throw new Exception("failed to add new tag - " + tag);
-					}
+		for (String tag : tagNames) {
+			Tag existingTag = tagService.getTag(tag);
+			//if there's no such tag in the system
+			if (existingTag == null) {
+				//try to add the new tag
+				if (addTag && !tagService.addTag(new Tag(tag))) {
+					//if failed
+					throw new Exception("failed to add new tag - " + tag);
 				}
+			}else if (!tag.equals(existingTag)){
+				tagNames.remove(tag);
+				tagNames.add(existingTag.getDisplayName());
 			}
 		}
 

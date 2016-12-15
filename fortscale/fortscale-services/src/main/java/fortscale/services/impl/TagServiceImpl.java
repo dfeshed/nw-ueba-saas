@@ -6,10 +6,8 @@ import fortscale.services.TagService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.List;
 
 @Service("tagService")
@@ -46,7 +44,7 @@ public class TagServiceImpl implements TagService {
 
 	@Override
 	public Tag getTag(String name) {
-		return tagRepository.findByName(name);
+		return tagRepository.findByNameIgnoreCase(name);
 	}
 
 	@Override
