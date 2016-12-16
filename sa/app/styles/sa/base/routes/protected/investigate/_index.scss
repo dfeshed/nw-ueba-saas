@@ -5,27 +5,21 @@
   &__body {
     margin: rsa-whitespace() rsa-whitespace(more);
 
-    &.resolved {
+    &.wait,
+    &.rejected {
+      text-align: center;
+    }
+
+    &.rejected {
       p {
-        display: inline-block;
-        margin-right: rsa-whitespace();
-        max-width: 80%;
+        max-width: 44rem;
+        text-align: left;
+        margin: 0 auto 1rem auto;
       }
     }
 
     .rsa-investigate-query-bar {
       width: 100%;
-    }
-
-    .rsa-loader {
-      &__wheel {
-        margin: 0;
-      }
-      &__text {
-        position: relative;
-        top: -2.8em;
-        right: -3em;
-      }
     }
   }
 }

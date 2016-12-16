@@ -5,7 +5,7 @@
         <p>{{t 'investigate.services.error.description'}}</p>
         {{#rsa-form-button style="danger"}}<span {{action (route-action "servicesGet" true)}}>{{t 'investigate.tryAgain'}}</span>{{/rsa-form-button}}
       {{else if (is-equal status 'wait')}}
-        {{rsa-investigate/query-bar services=model.services.data servicesStatus=model.services.status onSubmit=(route-action "submitQuery")}}
+        {{rsa-loader size="large" label=(t 'investigate.services.loading')}}
       {{else if (is-equal status 'resolved')}}
         {{#unless model.services.data.length}}
           <p>{{t 'investigate.services.empty.description'}}</p>
