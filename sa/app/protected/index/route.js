@@ -18,24 +18,25 @@ export default Route.extend({
   landingPage: service(),
 
   beforeModel(transition) {
-    const key = this.get('landingPage.selected.key');
     const redirect = localStorage.getItem('rsa-post-auth-redirect');
+    const key = this.get('landingPage.selected.key');
+
     if (redirect) {
       localStorage.removeItem('rsa-post-auth-redirect');
     }
-    if (redirect != transition.targetName) {
+
+    if (redirect && redirect != transition.targetName) {
       this.transitionTo(redirect);
     } else {
-      if (key) {
-        const isRelativePath = key.indexOf('/') > -1;
-
-        if (isRelativePath) {
-          window.location.href = key;
-        } else {
+      switch (key) {
+        case '/do/investigate':
           this.transitionTo(key);
-        }
-      } else {
-        this._super(...arguments);
+          break;
+        case '/do/respond':
+          this.transitionTo(key);
+          break;
+        default:
+          window.location.href = key;
       }
     }
   }

@@ -12,6 +12,14 @@ const {
   isNone,
   inject: {
     service
+  },
+  RSVP: {
+    Promise,
+    all
+  },
+  run: {
+    cancel,
+    later
   }
  } = Ember;
 
@@ -52,41 +60,91 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  activate() {
-    // Fetch user preferences
-    this.request.promiseRequest({
-      method: 'getPreference',
-      modelName: 'preferences',
-      query: {}
-    }).then((response) => {
-      const {
-        userLocale,
-        dateFormat,
-        timeFormat,
-        timeZone,
-        defaultComponentUrl
-      } = response.data;
-
-      localStorage.setItem('rsa-i18n-default-locale', userLocale.replace(/_/, '-').toLowerCase());
-
-      this.setProperties({
-        'i18n.locale': userLocale.replace(/_/, '-').toLowerCase(),
-        'dateFormat.selected': dateFormat,
-        'timeFormat.selected': timeFormat,
-        'timezone.selected': timeZone,
-        'landingPage.selected': defaultComponentUrl
-      });
-    }).catch(() => {
-      Logger.error('Error loading preferences');
-    });
-  },
-
   beforeModel(transition) {
-    if (isNone(localStorage.getItem('rsa-post-auth-redirect'))) {
+    if (!this.get('session.isAuthenticated') && isNone(localStorage.getItem('rsa-post-auth-redirect'))) {
       localStorage.setItem('rsa-post-auth-redirect', transition.targetName);
     }
 
     this._super(...arguments);
+  },
+
+  model() {
+    const timezonesPromise = new Promise((resolve, reject) => {
+      const forceResolve = later(() => {
+        this.set('timezone.options', [{
+          'displayLabel': 'UTC (GMT+00:00)',
+          'offset': 'GMT+00:00',
+          'zoneId': 'UTC'
+        }]);
+        resolve();
+      }, 3500);
+
+      this.request.promiseRequest({
+        method: 'getTimezones',
+        modelName: 'timezones',
+        query: {}
+      }).then((response) => {
+        this.set('timezone.options', response.data);
+        cancel(forceResolve);
+        resolve();
+      }).catch(() => {
+        Logger.error('Error loading timezones');
+
+        cancel(forceResolve);
+        reject();
+      });
+    });
+
+    const preferencesPromise = new Promise((resolve, reject) => {
+      const forceResolve = later(() => {
+        localStorage.setItem('rsa-i18n-default-locale', 'en-us');
+
+        this.setProperties({
+          'i18n.locale': 'en-us',
+          'dateFormat.selected': 'MM/dd/yyyy',
+          'timeFormat.selected': 'HR24',
+          'timezone.selected': 'UTC',
+          'landingPage.selected': '/do/respond'
+        });
+
+        resolve();
+      }, 3500);
+
+      // Fetch user preferences
+      this.request.promiseRequest({
+        method: 'getPreference',
+        modelName: 'preferences',
+        query: {}
+      }).then((response) => {
+        const {
+          userLocale,
+          dateFormat,
+          timeFormat,
+          timeZone,
+          defaultComponentUrl
+        } = response.data;
+
+        localStorage.setItem('rsa-i18n-default-locale', userLocale.replace(/_/, '-').toLowerCase());
+
+        this.setProperties({
+          'i18n.locale': userLocale.replace(/_/, '-').toLowerCase(),
+          'dateFormat.selected': dateFormat,
+          'timeFormat.selected': timeFormat,
+          'timezone.selected': timeZone,
+          'landingPage.selected': defaultComponentUrl
+        });
+
+        cancel(forceResolve);
+        resolve();
+      }).catch(() => {
+        Logger.error('Error loading preferences');
+
+        cancel(forceResolve);
+        reject();
+      });
+    });
+
+    return all([preferencesPromise, timezonesPromise]);
   },
 
   actions: {

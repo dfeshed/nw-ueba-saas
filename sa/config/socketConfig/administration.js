@@ -18,6 +18,14 @@ module.exports = function(environment) {
         subscriptionDestination: '/user/queue/administration/global/set/user/preferences',
         requestDestination: '/ws/administration/global/set/user/preferences'
       }
+    },
+    timezones: {
+      socketUrl,
+      getTimezones: {
+        subscriptionDestination: '/user/queue/administration/timezones/get',
+        requestDestination: '/ws/administration/timezones/get'
+      }
     }
+
   };
 };

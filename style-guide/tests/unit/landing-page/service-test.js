@@ -17,10 +17,10 @@ test('it provides the correct options', function(assert) {
   const options = service.get('options').map(function(option) {
     return option.key;
   });
-  assert.ok(options.includes('protected.respond'));
+  assert.ok(options.includes('/do/respond'));
   assert.ok(options.includes('/unified'));
-  assert.ok(options.includes('/investigate'));
+  assert.ok(options.includes('/investigation'));
   assert.ok(options.includes('/admin'));
   assert.ok(options.includes('/live'));
-  assert.ok(options.includes('protected.investigate'));
+  assert.ok(options.includes('/do/investigate'));
 });

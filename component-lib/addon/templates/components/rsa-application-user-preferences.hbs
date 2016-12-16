@@ -46,7 +46,7 @@
           options=timezone.options
           selected=(or pendingTimezone timezone.selected)
           onchange=(action 'setTimezone') as |option|}}
-          {{option}}
+          {{option.displayLabel}}
         {{/power-select}}
       </label>
     </vbox>

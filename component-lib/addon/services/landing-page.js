@@ -17,13 +17,13 @@ export default Service.extend({
     key: '/unified',
     label: 'userPreferences.defaultLandingPage.dashboard'
   }, {
-    key: 'protected.respond',
+    key: '/do/respond',
     label: 'userPreferences.defaultLandingPage.respond'
   }, {
-    key: 'protected.investigate',
+    key: '/do/investigate',
     label: 'userPreferences.defaultLandingPage.investigate'
   }, {
-    key: '/investigate',
+    key: '/investigation',
     label: 'userPreferences.defaultLandingPage.investigateClassic'
   }, {
     key: '/live',
@@ -49,10 +49,6 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      if (isNone(this.get('_selected'))) {
-        this.set('_selected', this.get('options').findBy('key', 'protected.respond'));
-      }
-
       return this.get('_selected');
     },
 

@@ -26,9 +26,6 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      if (isNone(this.get('_selected'))) {
-        this.set('_selected', this.get('options').findBy('key', 'HR24'));
-      }
       return this.get('_selected');
     },
 

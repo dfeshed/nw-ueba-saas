@@ -24,17 +24,12 @@ $ember-power-select-line-height: 2rem;
     }
   }
 
-  &.is-small {
-    .label-text {
-      @include rsa-font(body, small);
-    }
-  }
-
   span.label-text {
     position: relative;
-    top: calc(#{rsa-whitespace(less)} * -1);
-    vertical-align: text-top;
+    top: calc(#{rsa-whitespace(least)} - #{rsa-whitespace()});
     margin-right: rsa-whitespace();
+    margin-bottom: 0;
+    display: inline-block;
   }
 }
 

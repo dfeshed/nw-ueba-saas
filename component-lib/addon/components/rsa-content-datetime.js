@@ -27,11 +27,11 @@ export default Component.extend({
 
   displayTime: true,
 
-  timezone: service('timezone'),
+  timezone: service(),
 
-  timeFormat: service('time-format'),
+  timeFormat: service(),
 
-  dateFormat: service('date-format'),
+  dateFormat: service(),
 
   outputFormat: computed('timeFormat.selected.format', 'dateFormat.selected.format', function() {
     if (this.get('displayDate') && this.get('displayTime')) {

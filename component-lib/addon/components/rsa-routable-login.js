@@ -12,7 +12,10 @@ const {
   Component,
   computed,
   run,
-  typeOf
+  typeOf,
+  inject: {
+    service
+  }
 } = Ember;
 
 /**
@@ -28,6 +31,8 @@ const _STATUS = {
 };
 
 export default Component.extend({
+
+  session: service(),
 
   layout,
 

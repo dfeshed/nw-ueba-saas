@@ -13,12 +13,13 @@ export default Controller.extend({
 
   session: service(),
 
-  isFullyAuthenticated: computed('session.isAuthenticated', function() {
+  isFullyAuthenticated: computed('session.isAuthenticated', 'currentPath', function() {
     if (!this.get('session.isAuthenticated')) {
       return false;
     }
     const query = window.location.search;
     const isRedirecting = localStorage.getItem('_redirecting');
-    return !(typeof query !== 'undefined' && query.indexOf('?next=') == 0 && isRedirecting == null);
+    const path = this.get('currentPath');
+    return !(typeof query !== 'undefined' && query.indexOf('?next=') == 0 && isRedirecting == null && path !== 'login');
   })
 });

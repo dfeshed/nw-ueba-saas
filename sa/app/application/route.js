@@ -5,7 +5,8 @@ const {
   Route,
   inject: {
     service
-  }
+  },
+  testing
 } = Ember;
 
 export default Route.extend(ApplicationRouteMixin, {
@@ -52,6 +53,8 @@ export default Route.extend(ApplicationRouteMixin, {
   },
 
   sessionInvalidated() {
-    this._super(...arguments);
+    if (!testing) {
+      window.location.replace('/login');
+    }
   }
 });
