@@ -108,11 +108,11 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
-    public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameStartingWith(String startsWith) {
+    public ResponseEntity<Map<String, List<? extends AdObject>>> searchGroupsAndOusByNameContains(String containedText) {
         try {
-            logger.info("Searching for groups and OUs stating with {}", startsWith);
-            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameContains(startsWith);
-            final List<AdOU> ous = activeDirectoryService.getOusByOuContains(startsWith);
+            logger.info("Searching for AD Groups and OUs whose names contain {}", containedText);
+            final List<AdGroup> groups = activeDirectoryService.getGroupsByNameContains(containedText);
+            final List<AdOU> ous = activeDirectoryService.getOusByOuContains(containedText);
             final HashMap<String, List<? extends AdObject>> resultsMap = new HashMap<>();
             resultsMap.put(KEY_GROUPS, groups);
             resultsMap.put(KEY_OUS, ous);
