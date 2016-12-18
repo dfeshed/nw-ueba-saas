@@ -2,6 +2,7 @@ package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.api.client.repackaged.com.google.common.base.Strings;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -395,7 +396,7 @@ public class Evidence extends AbstractDocument{
 				", entityName='" + entityName + '\'' +
 				", startDate=" + startDate +
 				", endDate=" + endDate +
-				", anomalyTypeFieldName='" + anomalyTypeFieldName + '\'' +
+				", anomalyTypeFieldName='" + (Strings.isNullOrEmpty(name) ? anomalyTypeFieldName : name) + '\'' +
 				'}';
 	}
 }
