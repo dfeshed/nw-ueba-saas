@@ -35,7 +35,11 @@
 
 	<bean id="aggregationStreamingTaskInitializer" class="fortscale.streaming.service.aggregation.feature.AggregationStreamingTaskInitializer" />
 
-    <context:annotation-config />
+	<bean id="featureBucketStateRepository" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepositoryImpl" />
+	<bean id="featureBucketStateService" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateServiceImpl"/>
+
+
+	<context:annotation-config />
     <context:spring-configured />
     <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain,fortscale.common.dataentity,fortscale.common.feature.extraction,fortscale.aggregation" />
     <mongo:repositories base-package="fortscale.aggregation.feature.bucket.repository,fortscale.aggregation.domain.feature.event" />
