@@ -7,7 +7,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
-import java.util.Date;
 
 @Document(collection = FeatureBucketMetadata.COLLECTION_NAME)
 public class FeatureBucketState extends AbstractDocument {
@@ -17,7 +16,7 @@ public class FeatureBucketState extends AbstractDocument {
     private static final String MODIFIED_AT_FIELD = "modifiedAt";
 
     @Field(DATE_FIELD)
-    private Instant date;
+    private Instant lastSyncedDate;
 
     @LastModifiedDate
     @Field(MODIFIED_AT_FIELD)
@@ -26,16 +25,16 @@ public class FeatureBucketState extends AbstractDocument {
     public FeatureBucketState() {
     }
 
-    public FeatureBucketState(Instant date) {
-        this.date = date;
+    public FeatureBucketState(Instant lastSyncedDate) {
+        this.lastSyncedDate = lastSyncedDate;
     }
 
-    public Instant getDate() {
-        return date;
+    public Instant getLastSyncedDate() {
+        return lastSyncedDate;
     }
 
-    public void setDate(Instant date) {
-        this.date = date;
+    public void setLastSyncedDate(Instant lastSyncedDate) {
+        this.lastSyncedDate = lastSyncedDate;
     }
 
     public Instant getModifiedAt() {

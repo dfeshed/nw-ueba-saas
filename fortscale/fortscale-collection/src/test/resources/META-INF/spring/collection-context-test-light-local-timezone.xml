@@ -36,6 +36,9 @@
     <mockito:mock id="usernameService" class="fortscale.services.impl.UsernameService"/>
     <mockito:mock id="tagService" class="fortscale.services.impl.TagServiceImpl"/>
 
+    <mockito:mock id="featureBucketStateRepository" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepositoryImpl" />
+    <mockito:mock id="featureBucketStateService" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateServiceImpl"/>
+
     <bean id="globalConfiguration" class="fortscale.global.configuration.GlobalConfiguration"/>
 
 

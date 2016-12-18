@@ -58,7 +58,7 @@ public class FeatureBucketStateServiceTest {
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS)) ;
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getDate(), actual.getDate());
+        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
     }
 
     @Test
@@ -76,7 +76,7 @@ public class FeatureBucketStateServiceTest {
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getDate(), actual.getDate());
+        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
     }
 
     @Test
@@ -94,7 +94,7 @@ public class FeatureBucketStateServiceTest {
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getDate(), actual.getDate());
+        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
     }
 
     @Test
@@ -112,7 +112,7 @@ public class FeatureBucketStateServiceTest {
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getDate(), actual.getDate());
+        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
         Assert.assertEquals(firstUpdate.getModifiedAt(), actual.getModifiedAt());
     }
 }

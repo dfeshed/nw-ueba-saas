@@ -25,6 +25,9 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
     }
 
     @Override
+    /**
+     * Updating the last synced day
+     */
     public void updateState(long lastEventEpochtime) {
         FeatureBucketState featureBucketState = null;
         boolean shouldSave = false;
@@ -33,7 +36,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         if (date == null){
             featureBucketState = getFeatureBucketState();
             if (featureBucketState != null){
-                date = featureBucketState.getDate();
+                date = featureBucketState.getLastSyncedDate();
             }else{
                 featureBucketState = new FeatureBucketState(newDate);
                 shouldSave = true;
@@ -42,11 +45,13 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
 
         if (!shouldSave) {
             if (date.isBefore(newDate)) {
-                featureBucketState.setDate(newDate);
+                featureBucketState.setLastSyncedDate(newDate);
                 date = newDate;
                 shouldSave = true;
             } else {
-                logger.warn("Trying to update last daily aggregation date with smaller date");
+                logger.warn(
+                        String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
+                                date, newDate));
             }
         }
 
