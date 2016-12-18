@@ -314,7 +314,7 @@ import java.util.Set;
 					//if failed
 					throw new Exception("failed to add new tag - " + tag);
 				}
-			}else if (!tag.equals(existingTag)){
+			}else if (!tag.equals(existingTag.getDisplayName())){
 				tagNames.remove(tag);
 				tagNames.add(existingTag.getDisplayName());
 			}
