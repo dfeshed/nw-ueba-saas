@@ -5,11 +5,13 @@ import fortscale.domain.fetch.SIEMType;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.services.LogRepositoryService;
 import fortscale.utils.EncryptionUtils;
+import fortscale.utils.logging.Logger;
 import fortscale.utils.qradar.QRadarAPI;
 import fortscale.utils.splunk.SplunkApi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -17,6 +19,8 @@ import java.util.List;
  */
 @Service("LogRepositoryService")
 public class LogRepositoryServiceImpl implements LogRepositoryService {
+
+	private static final Logger logger = Logger.getLogger(LogRepositoryServiceImpl.class);
 
 	private final ApplicationConfigurationService applicationConfigurationService;
 
@@ -68,7 +72,11 @@ public class LogRepositoryServiceImpl implements LogRepositoryService {
 				}
 			}
 		} catch (Exception ex) {
-			return ex.getLocalizedMessage();
+			logger.debug("Tried to connect to log repository {} but connection failed.", ex);
+			if(ex instanceof UnknownHostException || ex.getCause() instanceof UnknownHostException) {
+				return "Invalid host.";
+			}
+			return ex.getMessage();
 		}
 		return "";
 	}

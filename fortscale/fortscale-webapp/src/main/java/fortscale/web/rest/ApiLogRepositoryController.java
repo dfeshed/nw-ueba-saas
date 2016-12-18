@@ -69,21 +69,21 @@ public class ApiLogRepositoryController {
 	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
-	public ResponseEntity testActiveDirectoryConnection(@Valid @RequestBody LogRepository logRepository,
+	public ResponseEntity<String> testActiveDirectoryConnection(@Valid @RequestBody LogRepository logRepository,
 			@RequestParam(required = true, value = "encrypted_password") Boolean encryptedPassword) {
 		if (!encryptedPassword) {
 			try {
 				logRepository.setPassword(EncryptionUtils.encrypt(logRepository.getPassword()).trim());
 			} catch (Exception ex) {
-				logger.error("failed to encrypt password");
-				return new ResponseEntity(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+				logger.error("failed to encrypt password", ex);
+				return new ResponseEntity<>("failed to encrypt password", HttpStatus.BAD_REQUEST);
 			}
 		}
 		String result = logRepositoryService.canConnect(logRepository);
 		if (result.isEmpty()) {
-			return new ResponseEntity(HttpStatus.OK);
+			return new ResponseEntity<>("Connected successfully", HttpStatus.OK);
 		} else {
-			return new ResponseEntity(result, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
 		}
 	}
 
