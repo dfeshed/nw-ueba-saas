@@ -6,7 +6,6 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.services.UserServiceFacade;
-import fortscale.services.UserTagService;
 import fortscale.services.impl.ParsingUsersMachinesFiltering;
 import fortscale.services.impl.UsernameService;
 import fortscale.services.impl.UsersMachinesFilterEnum;
@@ -160,7 +159,7 @@ public class AdUserProcessJob extends AdProcessJob {
 	}
 	
 	@Override
-	protected String getDataRecievedType() {
+	protected String getDataReceivedType() {
 		return "Users";
 	}
 	
