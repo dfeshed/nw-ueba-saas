@@ -83,9 +83,6 @@ import java.util.Map;
 
 		for (Alert alert : alerts) {
 
-            // Prettify alert name
-            alert.setName(localizationService.getAlertName(alert));
-
 			if (!filterByUserType(alert.getEntityName(), userTags)) {
 				String rawAlert = generateAlert(alert, forwardingTypeEnum);
 				if (sender.sendEvent(rawAlert)) {
