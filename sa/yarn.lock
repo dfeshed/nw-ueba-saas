@@ -2657,9 +2657,9 @@ ember-lodash@0.0.6:
     ember-cli-babel "^5.1.5"
     lodash-es "^3.10.0"
 
-ember-math-helpers@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.npmjs.org/ember-math-helpers/-/ember-math-helpers-2.0.0.tgz#d124575f819575ccb38a6ff5ec51a836e6841c1f"
+ember-math-helpers@2.0.2:
+  version "2.0.2"
+  resolved "https://registry.npmjs.org/ember-math-helpers/-/ember-math-helpers-2.0.2.tgz#3070b4b974900c1c8fe34eac66d377467a5c2ded"
   dependencies:
     ember-cli-babel "^5.1.7"
 
