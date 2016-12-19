@@ -25,10 +25,10 @@
     "ember-cli-nouislider": "0.10.0",
     "ember-i18n": "4.3.2",
     "ember-simple-auth": "1.1.0",
-    "ember-spaniel": "0.1.0",
-    "pikaday-time": "1.4.1",
+    "ember-spaniel": "0.1.1",
     "flexi": "1.2.0",
-    "nouislider": "^8.0.1"
+    "nouislider": "^8.0.1",
+    "pikaday-time": "1.4.1"
   },
   "devDependencies": {
     "babel-eslint": "^7.1.1",
@@ -59,7 +59,7 @@
     "ember-inflector": "1.9.6",
     "ember-load-initializers": "^0.5.1",
     "ember-moment": "7.0.3",
-    "ember-power-select": "1.0.0-beta.31",
+    "ember-power-select": "1.0.0",
     "ember-resolver": "^2.0.3",
     "ember-sortable": "1.9.1",
     "ember-tether": "0.3.1",

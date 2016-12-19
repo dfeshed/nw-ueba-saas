@@ -205,7 +205,7 @@ export default Component.extend({
     const options = {
       rootMargin: '-2000px 0px -2000px 0px',
       threshold: [{
-        ratio: 0.05,
+        ratio: 0.01,
         time: 0
       }]
     };

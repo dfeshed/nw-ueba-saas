@@ -4,9 +4,8 @@
     background-color: rsa-color(gray, dark, 0.5);
     border-color: $dark-border-color-medium;
     color: $dark-fg-color;
-    padding: 6px 12px 6px 0px;
+    padding: 6px rsa-whitespace();
     position: relative;
-    padding-left: rsa-whitespace();
 
     box {
       margin-left: rsa-whitespace(less);
@@ -65,6 +64,7 @@
     background-color: rsa-color(gray, dark, 0.5);
     color: $dark-fg-hover-color;
     font-size: 0.85rem;
+    padding: 0px rsa-whitespace() rsa-whitespace(least) 0px;
   }
 
   &__offsets {

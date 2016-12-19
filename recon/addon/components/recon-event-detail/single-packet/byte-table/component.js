@@ -4,7 +4,6 @@ import { event, select } from 'd3-selection';
 
 import Drag from 'recon/utils/drag';
 import * as InteractionActions from 'recon/actions/interaction-creators';
-import layout from './template';
 
 const { $, Component, K, observer, run } = Ember;
 
@@ -14,7 +13,6 @@ const dispatchToActions = (dispatch) => ({
 });
 
 const ByteTableComponent = Component.extend({
-  layout,
   tagName: 'section',
   classNames: 'rsa-byte-table',
   classNameBindings: ['byteFormat'],
