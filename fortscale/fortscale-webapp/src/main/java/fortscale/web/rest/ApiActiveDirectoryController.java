@@ -169,9 +169,9 @@ public class ApiActiveDirectoryController {
 				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource)));
 			} finally {
 				executorService.shutdown();
+				isFetchEtlExecutionRequestInProgress.set(false);
 			}
 
-			isFetchEtlExecutionRequestInProgress.set(false);
 			return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
 		}
 		else {
