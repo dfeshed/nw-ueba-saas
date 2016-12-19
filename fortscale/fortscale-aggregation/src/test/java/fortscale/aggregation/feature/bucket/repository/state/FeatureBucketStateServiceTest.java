@@ -1,11 +1,12 @@
 package fortscale.aggregation.feature.bucket.repository.state;
 
 import fortscale.accumulator.TestMongoConfig;
+import fortscale.aggregation.feature.bucket.repository.state.config.FeatureBucketStateServiceConfig;
+import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
@@ -29,20 +30,13 @@ import java.time.temporal.ChronoUnit;
 public class FeatureBucketStateServiceTest {
     @Configuration
     @Import({
-            TestMongoConfig.class
+            TestMongoConfig.class,
+            NullStatsServiceConfig.class,
+            FeatureBucketStateServiceConfig.class
     })
     @Profile("test")
     @EnableMongoRepositories(basePackageClasses = FeatureBucketStateRepository.class)
     public static class springConfig {
-
-        @Autowired
-        FeatureBucketStateRepository repository;
-
-        @Bean
-        public FeatureBucketStateService featureBucketStateService()
-        {
-            return new FeatureBucketStateServiceImpl(repository);
-        }
     }
 
     @Autowired
@@ -53,12 +47,12 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time);
+        featureBucketStateService.updateFeatureBucketState(time);
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS)) ;
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
+        Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
     }
 
     @Test
@@ -66,17 +60,17 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time);
+        featureBucketStateService.updateFeatureBucketState(time);
         Instant date = Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS);
         date.plus(Duration.ofDays(1));
 
         // Updating with next date
-        featureBucketStateService.updateState(date.getEpochSecond());
+        featureBucketStateService.updateFeatureBucketState(date.getEpochSecond());
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
+        Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
     }
 
     @Test
@@ -84,17 +78,17 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time);
+        featureBucketStateService.updateFeatureBucketState(time);
         Instant date = Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS);
         Instant dayBefore = date.minus(Duration.ofDays(1));
 
         // Updating with next date
-        featureBucketStateService.updateState(dayBefore.getEpochSecond());
+        featureBucketStateService.updateFeatureBucketState(dayBefore.getEpochSecond());
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
+        Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
     }
 
     @Test
@@ -102,17 +96,17 @@ public class FeatureBucketStateServiceTest {
         long time = System.currentTimeMillis()/1000;
 
         // Updating first time
-        featureBucketStateService.updateState(time) ;
+        featureBucketStateService.updateFeatureBucketState(time) ;
         Instant date = Instant.ofEpochSecond(time).truncatedTo(ChronoUnit.DAYS);
         FeatureBucketState firstUpdate = featureBucketStateService.getFeatureBucketState();
 
         // Updating with next date
-        featureBucketStateService.updateState(date.getEpochSecond());
+        featureBucketStateService.updateFeatureBucketState(date.getEpochSecond());
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
         FeatureBucketState expected = new FeatureBucketState(date);
         Assert.assertNotNull(actual);
-        Assert.assertEquals(expected.getLastSyncedDate(), actual.getLastSyncedDate());
+        Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
         Assert.assertEquals(firstUpdate.getModifiedAt(), actual.getModifiedAt());
     }
 }

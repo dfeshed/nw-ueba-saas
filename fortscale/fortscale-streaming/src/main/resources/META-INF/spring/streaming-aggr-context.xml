@@ -35,9 +35,7 @@
 
 	<bean id="aggregationStreamingTaskInitializer" class="fortscale.streaming.service.aggregation.feature.AggregationStreamingTaskInitializer" />
 
-	<bean id="featureBucketStateRepository" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepositoryImpl" />
-	<bean id="featureBucketStateService" class="fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateServiceImpl"/>
-
+	<bean id="featureBucketStateServiceConfig" class="fortscale.aggregation.feature.bucket.repository.state.config.FeatureBucketStateServiceConfig"/>
 
 	<context:annotation-config />
     <context:spring-configured />

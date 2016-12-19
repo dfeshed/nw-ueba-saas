@@ -12,11 +12,15 @@ import java.time.Instant;
 public class FeatureBucketState extends AbstractDocument {
     public static final String COLLECTION_NAME = "FeatureBucketState";
 
-    private static final String DATE_FIELD = "date";
+    private static final String LAST_CLOSED_DAILY_BUCKET_DATE_FIELD_NAME = "lastClosedDailyBucketDate";
+    private static final String LAST_SYNCED_EVENT_DATE_FIELD_NAME = "lastSyncedEventDate";
     private static final String MODIFIED_AT_FIELD = "modifiedAt";
 
-    @Field(DATE_FIELD)
-    private Instant lastSyncedDate;
+    @Field(LAST_CLOSED_DAILY_BUCKET_DATE_FIELD_NAME)
+    private Instant lastClosedDailyBucketDate;
+
+    @Field(LAST_SYNCED_EVENT_DATE_FIELD_NAME)
+    private Instant lastSyncedEventDate;
 
     @LastModifiedDate
     @Field(MODIFIED_AT_FIELD)
@@ -25,16 +29,24 @@ public class FeatureBucketState extends AbstractDocument {
     public FeatureBucketState() {
     }
 
-    public FeatureBucketState(Instant lastSyncedDate) {
-        this.lastSyncedDate = lastSyncedDate;
+    public FeatureBucketState(Instant lastClosedDailyBucketDate) {
+        this.lastClosedDailyBucketDate = lastClosedDailyBucketDate;
     }
 
-    public Instant getLastSyncedDate() {
-        return lastSyncedDate;
+    public Instant getLastSyncedEventDate() {
+        return lastSyncedEventDate;
     }
 
-    public void setLastSyncedDate(Instant lastSyncedDate) {
-        this.lastSyncedDate = lastSyncedDate;
+    public void setLastSyncedEventDate(Instant lastSyncedEventDate) {
+        this.lastSyncedEventDate = lastSyncedEventDate;
+    }
+
+    public Instant getLastClosedDailyBucketDate() {
+        return lastClosedDailyBucketDate;
+    }
+
+    public void setLastClosedDailyBucketDate(Instant lastClosedDailyBucketDate) {
+        this.lastClosedDailyBucketDate = lastClosedDailyBucketDate;
     }
 
     public Instant getModifiedAt() {

@@ -7,7 +7,6 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
-import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketState;
 import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.logging.Logger;
@@ -61,6 +60,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private FeatureBucketStateService featureBucketStateService;
 	
 	private Instant lastSyncSystemEpochTime = Instant.EPOCH;
+
 
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
@@ -133,7 +133,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			}
 
 			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime.getEpochSecond());
-			featureBucketStateService.updateState(dataSourcesSyncTimer.getLastEventEpochtime());
+			featureBucketStateService.updateFeatureBucketState(endTimeLt);
 
 			if(error){
 				logger.error(errorMsg);

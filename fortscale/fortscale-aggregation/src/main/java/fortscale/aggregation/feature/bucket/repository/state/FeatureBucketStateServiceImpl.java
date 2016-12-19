@@ -1,7 +1,7 @@
 package fortscale.aggregation.feature.bucket.repository.state;
 
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
+import fortscale.utils.monitoring.stats.StatsService;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -12,56 +12,92 @@ import java.time.temporal.ChronoUnit;
 public class FeatureBucketStateServiceImpl implements FeatureBucketStateService {
     private static final Logger logger = Logger.getLogger(FeatureBucketStateService.class);
 
-    @Autowired
-    FeatureBucketStateRepository featureBucketStateRepository;
+    private FeatureBucketStateRepository featureBucketStateRepository;
 
-    private Instant date;
+    private Instant lastClosedDailyBucketDate;
 
-    protected FeatureBucketStateServiceImpl(FeatureBucketStateRepository featureBucketStateRepository) {
+    private StatsService statsService;
+
+    private FeatureBucketStateServiceMetrics metrics;
+
+    public FeatureBucketStateServiceImpl(FeatureBucketStateRepository featureBucketStateRepository, StatsService statsService) {
         this.featureBucketStateRepository = featureBucketStateRepository;
-    }
-
-    public FeatureBucketStateServiceImpl() {
+        this.statsService = statsService;
+        recovery();
     }
 
     @Override
     /**
      * Updating the last synced day
+     * lastEventEpochtime - the time of the last event synced to mongo. In seconds
      */
-    public void updateState(long lastEventEpochtime) {
-        FeatureBucketState featureBucketState = null;
-        boolean shouldSave = false;
-        Instant newDate = Instant.ofEpochSecond(lastEventEpochtime).truncatedTo(ChronoUnit.DAYS);
+    public void updateFeatureBucketState(long lastEventEpochtime) {
 
-        if (date == null){
-            featureBucketState = getFeatureBucketState();
-            if (featureBucketState != null){
-                date = featureBucketState.getLastSyncedDate();
-            }else{
-                featureBucketState = new FeatureBucketState(newDate);
-                shouldSave = true;
-            }
+        FeatureBucketState featureBucketState = getFeatureBucketState();
+        Instant lastEventDate = Instant.ofEpochSecond(lastEventEpochtime);
+        Instant lastEventDay = lastEventDate.truncatedTo(ChronoUnit.DAYS);
+
+        // Creating new state object
+        if (lastClosedDailyBucketDate == null){
+            featureBucketState = new FeatureBucketState(lastEventDay);
+            lastClosedDailyBucketDate = lastEventDate;
+        // Updating the last synced date in case that the last event date is after the lst sync date
+        }else if (lastClosedDailyBucketDate.isBefore(lastEventDate)) {
+            featureBucketState.setLastClosedDailyBucketDate(lastEventDay);
+            lastClosedDailyBucketDate = lastEventDate;
+        // When the last event date is before the last synced date - shouldn't happen
+        } else {
+            logger.warn(
+                    String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
+                            lastClosedDailyBucketDate, lastEventDate));
         }
 
-        if (!shouldSave) {
-            if (date.isBefore(newDate)) {
-                featureBucketState.setLastSyncedDate(newDate);
-                date = newDate;
-                shouldSave = true;
-            } else {
-                logger.warn(
-                        String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
-                                date, newDate));
-            }
-        }
+        // Updating the lastSyncedEventDate
+        featureBucketState.setLastSyncedEventDate(lastEventDate);
 
-        if (shouldSave){
-            featureBucketStateRepository.save(featureBucketState);
+        // Save the last synced event date to mongo
+        FeatureBucketState savedState = featureBucketStateRepository.save(featureBucketState);
+
+        if (savedState != null){
+            getMetrics().updateFeatureBucketStateSuccess++;
+            getMetrics().lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
+            getMetrics().lastSyncedEventDate = savedState.getLastSyncedEventDate().toEpochMilli();
+
+        }else{
+            getMetrics().updateFeatureBucketStateFailure++;
+        }
+    }
+
+    /**
+     * Getting the lastClosedDailyBucketDate from mongo
+     */
+    private void recovery(){
+        logger.info("Starting the recovery process of FeatureBucketStateService");
+        FeatureBucketState featureBucketState = getFeatureBucketState();
+        if (featureBucketState != null){
+            // Getting the value of the last closed daily bucket
+            lastClosedDailyBucketDate = featureBucketState.getLastClosedDailyBucketDate();
+            logger.info("FeatureBucketStateService recovery finished, the lastClosedDailyBucketDate is ", lastClosedDailyBucketDate);
         }
     }
 
     @Override
     public FeatureBucketState getFeatureBucketState() {
-        return featureBucketStateRepository.getState();
+        FeatureBucketState featureBucketState = featureBucketStateRepository.getState();
+
+        if (featureBucketState != null){
+            getMetrics().getFeatureBucketStateSuccess++;
+        }else{
+            getMetrics().updateFeatureBucketStateFailure++;
+        }
+        return featureBucketState;
+    }
+
+    public FeatureBucketStateServiceMetrics getMetrics() {
+        if(metrics == null)
+        {
+            metrics = new FeatureBucketStateServiceMetrics(statsService);
+        }
+        return metrics;
     }
 }
