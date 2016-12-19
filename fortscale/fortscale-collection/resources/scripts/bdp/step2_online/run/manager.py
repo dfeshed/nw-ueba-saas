@@ -1,5 +1,6 @@
 import logging
 import os
+import pymongo
 import sys
 
 from job import run as run_job
@@ -11,6 +12,8 @@ from bdp_utils.kafka import send
 from bdp_utils.manager import OnlineManager
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils
+from automatic_config.common.utils.mongo import get_db
+
 
 logger = logging.getLogger('step2_online')
 
@@ -34,7 +37,7 @@ class Manager(OnlineManager):
         super(Manager, self).__init__(logger=logger,
                                       host=host,
                                       is_online_mode=is_online_mode,
-                                      start=start,
+                                      start=start if start is not None else self._infer_start_time(host),
                                       block_on_tables=block_on_tables,
                                       calc_block_on_tables_based_on_days=calc_block_on_tables_based_on_days,
                                       wait_between_batches=wait_between_batches,
@@ -54,6 +57,15 @@ class Manager(OnlineManager):
         self._build_entity_models_interval = build_entity_models_interval
         self._last_models_build_time = 0
         self._last_entity_models_build_time = 0
+
+    def _infer_start_time(self, host):
+        last_unsynced_bucket = list(get_db(host).FeatureBucketMetadata
+                                    .find({'isSynced': False}, ['endTime'])
+                                    .sort('endTime', pymongo.DESCENDING)
+                                    .limit(1))
+        if len(last_unsynced_bucket) == 0:
+            raise Exception('you must specify --start')
+        return last_unsynced_bucket[0]['endTime'] + 1
 
     def _run_batch(self, start_time_epoch):
         run_job(start_time_epoch=start_time_epoch,

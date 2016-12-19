@@ -30,7 +30,7 @@ def positive_int_type(i):
 
 def create_parser():
     parser = argparse.ArgumentParser(parents=[parsers.host,
-                                              parsers.start,
+                                              parsers.start_optional,
                                               parsers.online_manager],
                                      formatter_class=argparse.RawDescriptionHelpFormatter,
                                      prog='step2_online/run',
@@ -47,10 +47,9 @@ Step results:
     mongo collections (all those starting with "aggr_").
 
 Inner workings:
-    This step supports running in online mode only. All of the data (starting
-    from the time specified by --start) will be processed by batches (the size
-    is determined by the --batch_size argument) until there's no more data
-    available in impala. The processing is done by calling
+    This step supports running in online mode only. The data will be processed
+    by batches (the size is determined by the --batch_size argument) until
+    there's no more data available in impala. The processing is done by calling
     fortscale-collection-1.1.0-SNAPSHOT.jar directly (without using BDP).
     Once there's no more data available the script will wait until there's
     more data in the tables specified by the --block_on_data_sources argument
@@ -61,6 +60,14 @@ Inner workings:
     it's only promised that all the data up until some delay has been validated.
     This delay is controlled by the --validation_batches_delay argument.
     The validations include making sure all events have been processed.
+    If --start argument is not specified, it's assumed that step2_online has
+    been executed in the past, and the start time will be inferred from
+    FeatureBucketMetadata collection, i.e.: if it has already been executed
+    before, it must be that there are buckets that haven't been synced yet
+    (because they're synced only when an event from the next hour is processed,
+    but once this event is processed, a new bucket is opened). If, however,
+    this is not the case (there's no FeatureBucketMetadata that hasn't been
+    synced), the script will fail.
 
 Usage examples:
     python step2_online/run --start "8 may 1987" --block_on_data_sources ssh ntlm --batch_size 1 --polling_interval 3 --wait_between_batches 0 --min_free_memory_gb 1 6
@@ -110,6 +117,9 @@ Usage examples:
 
 
 def validate_not_running_same_period_twice(arguments):
+    if arguments.start is None:
+        return
+
     start = time_utils.get_epochtime(arguments.start)
     really_big_epochtime = time_utils.get_epochtime('29990101')
     if not validate_all_buckets_synced(logger=logger,
