@@ -1,8 +1,8 @@
 <section class="rsa-investigate-timeline__body">
   <section class="timestamp">
-    {{moment-format startDate dateFormatString locale=i18n.locale timeZone=timezone.selected}}
-    <span>{{moment-format startDate timeFormatString locale=i18n.locale timeZone=timezone.selected}}</span>
-    {{moment-format startDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
+    {{moment-format startDate dateFormatString locale=i18n.locale timeZone=timezone.selected.zoneId}}
+    <span>{{moment-format startDate timeFormatString locale=i18n.locale timeZone=timezone.selected.zoneId}}</span>
+    {{moment-format startDate 'Z' locale=i18n.locale timeZone=timezone.selected.zoneId}}
   </section>
   {{#rsa-chart class="master"
     data=chartData
@@ -25,9 +25,9 @@
     }}
   {{/rsa-chart}}
   <section class="timestamp right">
-    {{moment-format endDate dateFormatString locale=i18n.locale timeZone=timezone.selected}}
-    <span>{{moment-format endDate timeFormatString locale=i18n.locale timeZone=timezone.selected}}</span>
-    {{moment-format endDate 'Z' locale=i18n.locale timeZone=timezone.selected}}
+    {{moment-format endDate dateFormatString locale=i18n.locale timeZone=timezone.selected.zoneId}}
+    <span>{{moment-format endDate timeFormatString locale=i18n.locale timeZone=timezone.selected.zoneId}}</span>
+    {{moment-format endDate 'Z' locale=i18n.locale timeZone=timezone.selected.zoneId}}
   </section>
   {{rsa-icon size='large' name=toggleIcon click=(action 'toggleContent')}}
   {{#if isExpanded}}
@@ -39,7 +39,7 @@
           <span class="series-{{index}}">{{count}}&emsp;</span>
         {{/each}}
       {{/if}}
-    </section>  
+    </section>
     {{#rsa-chart class="detail"
       data=chartData
       hoverIndex=hoverIndex

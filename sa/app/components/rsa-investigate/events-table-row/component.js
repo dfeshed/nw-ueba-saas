@@ -48,7 +48,7 @@ export default Component.extend(RowMixin, {
     return {
       defaultWidth: DEFAULT_WIDTH,
       aliases: this.get('table.aliases.data'),
-      timeZone: this.get('timezone.selected'),
+      timeZone: this.get('timezone.selected.zoneId'),
       i18n: {
         size: {
           bytes: i18n.t('investigate.size.bytes'),
