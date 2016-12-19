@@ -43,7 +43,7 @@ public class DiscreteTriggeredModelCacheManagerSamza extends LazyTriggeredModelC
 
 		if (categoryRarityModel.getFeatureCount(featureValue) == null &&
 				categoryRarityModel.isModelLoadedWithNumberOfEntries()) {
-			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature);
+			Object data = retriever.retrieve(modelDao.getContextId(), modelDao.getEndTime(), feature).getData();
 			Double featureCounter = getFeatureCounter(data);
 
 			if (featureCounter != null) {
