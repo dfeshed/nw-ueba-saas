@@ -5,7 +5,7 @@
     width: 100%;
   }
   td {
-    font-family: Consolas, Monaco, Courier, monospace;
+    @include rsa-font-monospace();
     border: 0;
 
     span {

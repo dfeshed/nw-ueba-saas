@@ -128,6 +128,10 @@
           overflow: hidden;
           text-overflow: ellipsis;
         }
+
+        .log-data {
+          @include rsa-font-monospace();
+        }
       }
 
       /* For meta details column, arrange values in columns, top -> bottom, left -> right. */

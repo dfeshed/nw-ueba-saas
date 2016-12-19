@@ -156,8 +156,12 @@
   }
 }
 
-@mixin rsa-font-code() {
+@mixin rsa-font-monospace() {
   font-family: Consolas, Monaco, 'Andale Mono', monospace;
+}
+
+@mixin rsa-font-code() {
+  @include rsa-font-monospace();
   font-style: normal;
   font-size: 1rem;
   line-height: 1.5rem;

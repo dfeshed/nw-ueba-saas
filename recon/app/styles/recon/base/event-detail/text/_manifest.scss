@@ -5,6 +5,7 @@
       overflow-x: hidden;
       padding: 0.5rem rsa-whitespace(more);
       word-break: break-word;
+      @include rsa-font-monospace();
     }
   }
 }

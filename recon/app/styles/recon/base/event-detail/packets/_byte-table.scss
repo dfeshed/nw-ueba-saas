@@ -10,7 +10,7 @@ $packet-byte-border-width: 1px;
     position: relative;
 
     td {
-      font-family: Consolas, Monaco, Courier, monospace;
+      @include rsa-font-monospace();
       border: 0;
       text-align: center;
 
