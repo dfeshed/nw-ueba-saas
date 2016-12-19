@@ -16,6 +16,7 @@ module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
     babel: {
       stage: 0,
+      includePolyfill: true
     },
     nodeAssets: {
       'crossfilter': {
