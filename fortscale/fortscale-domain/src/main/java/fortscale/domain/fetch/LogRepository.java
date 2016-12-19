@@ -9,11 +9,10 @@ public class LogRepository {
 
 	public static final String LOG_REPOSITORY_KEY = "system.logRepository.settings";
 
-	@NotBlank
 	protected String id;
 
 	@NotBlank
-	protected String type;
+	protected String fetchSourceType;
 
 	@NotBlank
 	protected String host;
@@ -27,9 +26,9 @@ public class LogRepository {
 
 	public LogRepository() {}
 
-	public LogRepository(String id, String type, String host, String user, String password, Integer port) {
+	public LogRepository(String id, String fetchSourceType, String host, String user, String password, Integer port) {
 		this.id = id;
-		this.type = type;
+		this.fetchSourceType = fetchSourceType;
 		this.host = host;
 		this.user = user;
 		this.password = password;
@@ -44,12 +43,12 @@ public class LogRepository {
 		this.port = port;
 	}
 
-	public String getType() {
-		return type;
+	public String getFetchSourceType() {
+		return fetchSourceType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setFetchSourceType(String fetchSourceType) {
+		this.fetchSourceType = fetchSourceType;
 	}
 
 	public String getHost() {
