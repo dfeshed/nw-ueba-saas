@@ -7,6 +7,7 @@ import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.logging.Logger;
@@ -15,7 +16,6 @@ import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
@@ -130,18 +130,18 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 	/**
 	 * Process specific message
-	 * @param envelope	The message
+	 * @param contextualMessage    The message
 	 * @param collector collector in order to send the message to other topics - not used in this task
-	 * @param coordinator	coordinator
+	 * @param coordinator    coordinator
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,TaskCoordinator coordinator) throws Exception {
+	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		String messageText = contextualMessage.getMessageAsString();
+		net.minidev.json.JSONObject message = contextualMessage.getMessageAsJson();
+		StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 			return;

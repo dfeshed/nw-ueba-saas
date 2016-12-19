@@ -4,6 +4,8 @@ package fortscale.streaming.task.enrichment;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -61,8 +63,9 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_1, "vpn");
+		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope,true);
 		// run the process on the envelope
-		task.wrappedProcess(envelope, Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
+		task.wrappedProcess(contextualMessage, Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
 		UserInfoForUpdate userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
@@ -73,8 +76,9 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_2, "ssh");
+		contextualMessage = new SamzaProcessContextualMessage(envelope,true);
 		// run the process on the envelope
-		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
+		task.wrappedProcess(contextualMessage ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
@@ -88,8 +92,10 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE_3, "login");
+		contextualMessage = new SamzaProcessContextualMessage(envelope,true);
+
 		// run the process on the envelope
-		task.wrappedProcess(envelope ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
+		task.wrappedProcess(contextualMessage ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);

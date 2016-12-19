@@ -11,6 +11,9 @@ import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
 import fortscale.streaming.alert.statement.decorators.StatementDecorator;
 import fortscale.streaming.alert.subscribers.AbstractSubscriber;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
+import fortscale.streaming.task.message.UnsupportedMessageTypeException;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -89,13 +92,16 @@ public class AlertGeneratorTask extends AbstractStreamTask
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 	}
 
-	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	@Override protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
+											TaskCoordinator coordinator) throws Exception {
 		// parse the message into json
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
+		String inputTopic = contextualMessage.getTopicName();
+		if(!(contextualMessage instanceof SamzaProcessContextualMessage))
+		{
+			throw new UnsupportedMessageTypeException(contextualMessage);
+		}
 		if (inputTopicMapping.containsKey(inputTopic)) {
-			Object info = convertMessageToEsperRepresentationObject(envelope, inputTopic);
+			Object info = convertMessageToEsperRepresentationObject(((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope(), inputTopic);
 			if (info != null) {
 
 				createDynamicStatements(inputTopic, info);
@@ -108,7 +114,7 @@ public class AlertGeneratorTask extends AbstractStreamTask
 					keyValueStore.put(info.toString(), info);
 				}
 
-				String messageText = (String) envelope.getMessage();
+				String messageText = contextualMessage.getMessageAsString();
 				try {
 					if (inputTopicMapping.get(inputTopic).getTimeStampField()!=null) {
 						// parse the message into json

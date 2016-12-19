@@ -7,11 +7,10 @@ import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
-
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.machineNormalization.MachineNormalizationConfig;
 import fortscale.streaming.service.machineNormalization.MachineNormalizationFieldsConfig;
@@ -20,13 +19,14 @@ import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -131,26 +131,30 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 	/**
 	 * This is the process part of the Samza job
 	 * At this part we retrieve message from the needed topic and based on the input topic we start the needed service
-	 * @param envelope
+	 * @param contextualMessage
 	 * @param collector
 	 * @param coordinator
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
+	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
 								  TaskCoordinator coordinator) throws Exception {
 
 		// Get the input topic- only to resolve computer caching
-		String inputTopicComputerCache = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		String inputTopicComputerCache = contextualMessage.getTopicName();
 
 		if (topicToServiceMap.containsKey(inputTopicComputerCache)) {
-
+			if(!(contextualMessage instanceof SamzaProcessContextualMessage))
+			{
+				throw new UnsupportedOperationException(contextualMessage.getClass().getName() + "is currently not supported");
+			}
 			CachingService cachingService = topicToServiceMap.get(inputTopicComputerCache);
-			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
+			Object msgKey = ((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getKey();
+			cachingService.handleNewValue((String) msgKey, contextualMessage.getMessageAsString());
 		} else {
 			// parse the message into json
-			JSONObject message = parseJsonMessage(envelope);
-			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+			JSONObject message = contextualMessage.getMessageAsJson();
+			StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
 			if (configKey == null){
 				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 				return;

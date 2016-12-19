@@ -1,14 +1,13 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.utils.ResettableCountDownLatch;
 import fortscale.utils.logging.Logger;
 import org.apache.samza.config.Config;
 import org.apache.samza.container.TaskName;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
-import scala.collection.mutable.ArrayBuffer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,9 +38,9 @@ public interface TestTask {
 
     }
 
-    public default void processTest(IncomingMessageEnvelope envelope, MessageCollector collector,
+    public default void processTest(FSProcessContextualMessage message, MessageCollector collector,
                                     TaskCoordinator coordinator) {
-        String messageText = (String) envelope.getMessage();
+        String messageText = message.getMessageAsString();
         received.add(messageText);
         gotMessage.countDown();
         coordinator.commit(TaskCoordinator.RequestScope.ALL_TASKS_IN_CONTAINER);

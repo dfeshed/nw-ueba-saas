@@ -1,5 +1,8 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
+import fortscale.streaming.task.message.UnsupportedMessageTypeException;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -24,11 +27,11 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 
 	@Override
 	public void wrappedProcess(
-			IncomingMessageEnvelope envelope,
+			FSProcessContextualMessage contextualMessage,
 			MessageCollector collector,
 			TaskCoordinator coordinator) throws Exception {
 
-		JSONObject message = parseJsonMessage(envelope);
+		JSONObject message = contextualMessage.getMessageAsJson();
 		String status = message.getAsString(statusFieldName);
 
 		if (statusValueClosed.equals(status)) {
@@ -39,11 +42,16 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 			++taskMetrics.vpnNonCloseMessages;
 		}
 
+		if(!(contextualMessage instanceof SamzaProcessContextualMessage))
+		{
+			throw new UnsupportedMessageTypeException(contextualMessage);
+		}
 		IncomingMessageEnvelope newEnvelope = new IncomingMessageEnvelope(
-				envelope.getSystemStreamPartition(),
-				envelope.getOffset(),
-				envelope.getKey(),
+				((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getSystemStreamPartition(),
+				((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getOffset(),
+				((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getKey(),
 				message.toJSONString());
-		super.wrappedProcess(newEnvelope, collector, coordinator);
+		FSProcessContextualMessage newMessage = new SamzaProcessContextualMessage(newEnvelope,messageShouldContainDataSourceField());
+		super.wrappedProcess(newMessage, collector, coordinator);
 	}
 }

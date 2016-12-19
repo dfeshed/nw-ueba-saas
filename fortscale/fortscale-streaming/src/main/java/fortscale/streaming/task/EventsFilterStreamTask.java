@@ -1,13 +1,13 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.task.message.FSIncomingMessageEnvelope;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
 import fortscale.streaming.task.metrics.EventsFilterStreamTaskMetrics;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -41,12 +41,12 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 
 
 	/** Process incoming events and update the user models stats */
-	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	@Override public void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// parse the message into json
-		JSONObject message = parseJsonMessage(envelope);
+		JSONObject message = contextualMessage.getMessageAsJson();
 
 
-		if (!acceptMessage(message)) {
+		if (!acceptMessage(contextualMessage)) {
 			++taskMetrics.filteredEvents;
 			processedFilterCount.inc();
 			return;
@@ -59,17 +59,17 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 				++taskMetrics.sentMessages;
 			} catch(Exception exception){
 				++taskMetrics.sendMessageFailures;
-				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", (String)envelope.getMessage()), exception);
+				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", contextualMessage.getMessageAsString()), exception);
 			}
 		}
 
 		if (taskMonitoringHelper.isMonitoredTask()) {
-			if(envelope instanceof FSIncomingMessageEnvelope)
+			if(contextualMessage instanceof SamzaProcessContextualMessage)
 			{
-				handleUnfilteredEvent(message,((FSIncomingMessageEnvelope) envelope).getStreamingTaskDataSourceConfigKey());
+				handleUnfilteredEvent(message, contextualMessage.getStreamingTaskDataSourceConfigKey());
 			}
 			else {
-				handleUnfilteredEvent(message, extractDataSourceConfigKey(message));
+				handleUnfilteredEvent(message, contextualMessage.getStreamingTaskDataSourceConfigKey());
 			}
 		}
 		++taskMetrics.unfilteredEvents;
@@ -102,8 +102,9 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 
 	}
 
-	/** Auxiliary method to enable filtering messages on specific events types */
-	protected boolean acceptMessage(JSONObject message){ return true;}
+	/** Auxiliary method to enable filtering messages on specific events types
+	 * @param message*/
+	protected boolean acceptMessage(FSProcessContextualMessage message){ return true;}
 
 	/**
 	 * Abstract method to get the prefix of the job name, depnded on the class

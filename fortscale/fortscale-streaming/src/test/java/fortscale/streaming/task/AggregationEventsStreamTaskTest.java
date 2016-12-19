@@ -1,8 +1,8 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
@@ -29,12 +29,12 @@ public class AggregationEventsStreamTaskTest extends AbstractTaskTest{
             initTest(config, context);
         }
         @Override
-        protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
+        protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
                                       TaskCoordinator coordinator) throws Exception {
             //1. call the process function of the tested task
-            super.wrappedProcess(envelope, collector, coordinator);
+            super.wrappedProcess(contextualMessage, collector, coordinator);
             //2. run teh test process function
-            processTest(envelope, collector, coordinator);
+            processTest(contextualMessage, collector, coordinator);
         }
     }
 

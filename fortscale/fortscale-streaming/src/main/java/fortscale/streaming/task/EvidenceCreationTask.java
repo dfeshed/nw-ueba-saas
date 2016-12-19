@@ -11,13 +11,12 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -201,14 +200,12 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
+								  TaskCoordinator coordinator) throws Exception {
 
-		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		JSONObject message = contextualMessage.getMessageAsJson();
+		String inputTopic = contextualMessage.getTopicName();
+		StreamingTaskDataSourceConfigKey configKey =contextualMessage.getStreamingTaskDataSourceConfigKey();
 		DataSourceConfiguration dataSourceConfiguration = getDataSourceConfiguration(configKey, inputTopic);
 		if (dataSourceConfiguration == null)
 			return;

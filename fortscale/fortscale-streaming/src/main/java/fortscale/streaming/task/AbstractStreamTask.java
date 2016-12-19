@@ -10,7 +10,8 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
-import fortscale.streaming.task.message.FSIncomingMessageEnvelope;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
 import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -21,7 +22,6 @@ import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
 import fortscale.utils.process.processType.ProcessType;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -36,8 +36,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 
-	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
-	protected static final String LAST_STATE_FIELD_NAME = "last_state";
+	public static final String DATA_SOURCE_FIELD_NAME = "data_source";
+	public static final String LAST_STATE_FIELD_NAME = "last_state";
 	public static final String JOB_DATA_SOURCE = "Streaming";
 
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
@@ -71,7 +71,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	// Streaming task common metrics. Note some fields are update by this class and some by the derived classes
 	protected StreamingTaskCommonMetrics streamingTaskCommonMetrics;
 
-	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
+	protected abstract void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
 	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
 	protected abstract void wrappedClose() throws Exception;
@@ -228,20 +228,28 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
 			samzaContainerService.setCoordinator(coordinator);
-			JSONObject jsonMsg = parseJsonMessage(envelope);
-			StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey = extractDataSourceConfigKeySafe(jsonMsg);
-			countNewMessage(streamingTaskDataSourceConfigKey);
+			FSProcessContextualMessage contextualMessage;
+			try {
+				contextualMessage = new SamzaProcessContextualMessage(envelope,
+						messageShouldContainDataSourceField(), streamingTaskCommonMetrics.parseMessageToJson,
+						streamingTaskCommonMetrics.parseMessageToJsonExceptions,
+						streamingTaskCommonMetrics.messagesWithoutDataSourceName);
+			}
+			catch (ParseException pe)
+			{
+				taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
+				throw pe;
+			}
+
+			countNewMessage(contextualMessage.getStreamingTaskDataSourceConfigKey());
 
 			String streamingTaskMessageState = resolveOutputMessageState();
 
 			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
 			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
 			samzaContainerService.setCollector(messageCollectorStateDecorator);
-			FSIncomingMessageEnvelope fsEnvelope = new FSIncomingMessageEnvelope(envelope.getSystemStreamPartition(),envelope.getOffset(),envelope.getKey(),envelope.getMessage());
-			fsEnvelope.setJsonMsg(jsonMsg);
-			fsEnvelope.setStreamingTaskDataSourceConfigKey(streamingTaskDataSourceConfigKey);
 
-			wrappedProcess(fsEnvelope, messageCollectorStateDecorator, coordinator);
+			wrappedProcess(contextualMessage, messageCollectorStateDecorator, coordinator);
 
 			processExceptionHandler.clear();
 		} catch(Exception exception){
@@ -251,15 +259,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			logger.error(String.format("Got an exception while processing stream message. Message text = %s. Exception: %s", messageText, exception.getMessage()), exception);
 
 			processExceptionHandler.handleException(exception);
-		}
-	}
-
-	private void countNewMessage(IncomingMessageEnvelope envelope) {
-		try {
-			JSONObject message = parseJsonMessage(envelope);
-			taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
-		} catch (Exception e){
-			//Do nothing
 		}
 	}
 
@@ -330,35 +329,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
 	}
 
-	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
-		if(messageShouldContainDataSourceField()) {
-			String dataSource = (String) message.get(DATA_SOURCE_FIELD_NAME);
-			String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
-
-			if (dataSource == null) {
-				streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
-				throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + message.toJSONString());
-			}
-			return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
-		}
-
-		streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
-		throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + message.toJSONString());
-
-	}
-
-	//Get the data source and last state without exception, return  null if cannot extract
-	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKeySafe(JSONObject message) {
-		StreamingTaskDataSourceConfigKey configKey;
-		try {
-			configKey = extractDataSourceConfigKey(message);
-		} catch (Exception e){
-			return null;
-		}
-		return configKey;
-	}
-
-
 	public TaskMonitoringHelper getTaskMonitoringHelper() {
 		return taskMonitoringHelper;
 	}
@@ -367,21 +337,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		this.taskMonitoringHelper = taskMonitoringHelper;
 	}
 
-	protected JSONObject parseJsonMessage(IncomingMessageEnvelope envelope) throws ParseException {
-		try {
-			if(envelope instanceof FSIncomingMessageEnvelope)
-			{
-				return ((FSIncomingMessageEnvelope) envelope).getJsonMsg();
-			}
-			streamingTaskCommonMetrics.parseMessageToJson++;
-			String messageText = (String) envelope.getMessage();
-			return (JSONObject) JSONValue.parseWithException(messageText);
-		} catch (ParseException e){
-			streamingTaskCommonMetrics.parseMessageToJsonExceptions++;
-			taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
-			throw e;
-		}
-	}
 
 	/**
 	 * Create the task's metrics. This function should be overridden by the specific task
@@ -410,17 +365,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	}
 
 	/**
-	 * Get topic name out of incoming message envelope
-	 * @param envelope - message received in {@link #wrappedProcess(IncomingMessageEnvelope, MessageCollector, TaskCoordinator)}
-	 * @return topic name of incoming message
-     */
-	protected String getIncomingMessageTopicName(IncomingMessageEnvelope envelope) {
-		return envelope.getSystemStreamPartition().getSystemStream().getStream();
-	}
-
-	/**
 	 * Some tasks does not have data source in their message, and some do.
-	 * There is no point to call {@link #extractDataSourceConfigKey(JSONObject)}  } since there is no data source in the message
+	 * There is no point to call {@link SamzaProcessContextualMessage#extractDataSourceConfigKey()} }
+	 * since there is no data source in the message
 	 * @return
      */
 	protected boolean messageShouldContainDataSourceField()

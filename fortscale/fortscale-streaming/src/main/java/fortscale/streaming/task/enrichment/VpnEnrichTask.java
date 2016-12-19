@@ -6,14 +6,13 @@ import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.streaming.task.metrics.VpnEnrichTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -146,17 +145,16 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     }
 
     @Override
-    protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 
-        // parse the message into json
-        String messageText = (String) envelope.getMessage();
-        JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+        String messageText = contextualMessage.getMessageAsString();
+        JSONObject message = contextualMessage.getMessageAsJson();
 
 
 
 
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			++taskMetrics.filteredEvents;
 			++taskMetrics.badConfigs;

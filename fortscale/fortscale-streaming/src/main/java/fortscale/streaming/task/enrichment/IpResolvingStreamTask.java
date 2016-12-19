@@ -6,22 +6,24 @@ import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.IseEvent;
 import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.CachingService;
+import fortscale.services.impl.SpringService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.IpResolvingStreamTaskMetrics;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
+import fortscale.streaming.task.message.UnsupportedMessageTypeException;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -154,16 +156,16 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
     @Override
-    protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         //if the message came from one of the cache updates topics, if so than update the resolving cache
         // with the update message
-        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+        String topic = contextualMessage.getTopicName();
 
 		//in case of vpn ip update - (session was closed and the ip was related to this session , we need to mark all the resolving for that ip in the period time of the session )
 		if (topic.equals(vpnIpPoolUpdaterTopicName))
 		{
             taskMetrics.vpnIpPoolUpdatesMessages++;
-			JSONObject message = parseJsonMessage(envelope);
+			JSONObject message = contextualMessage.getMessageAsJson();
 			String ip = convertToString(message.get("ip"));
 			ipResolvingService.removeIpFromCache(ip);
 
@@ -173,14 +175,18 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             // get the concrete cache and pass it the update check  message that arrive
             taskMetrics.cacheUpdatesMessages++;
             CachingService cachingService = topicToCacheMap.get(topic);
-            cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
+            if(!(contextualMessage instanceof SamzaProcessContextualMessage))
+            {
+                throw new UnsupportedMessageTypeException(contextualMessage);
+            }
+            cachingService.handleNewValue((String) ((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getKey(), contextualMessage.getMessageAsString());
         } else {
 
             taskMetrics.eventMessages++;
 
-            JSONObject message = parseJsonMessage(envelope);
+            JSONObject message = contextualMessage.getMessageAsJson();
 
-            StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+            StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
             if (configKey == null){
                 // Note this event is counted at the common task metrics, hence no need to count it again
                 taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);

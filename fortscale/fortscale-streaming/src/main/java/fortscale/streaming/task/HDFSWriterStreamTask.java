@@ -13,6 +13,7 @@ import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskTableWriterMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
@@ -26,7 +27,6 @@ import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
@@ -164,14 +164,14 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	/** Write the incoming message fields to hdfs */
 	@Override
-	public void wrappedProcess(IncomingMessageEnvelope envelope,
-			MessageCollector collector, TaskCoordinator coordinator)
+	public void wrappedProcess(FSProcessContextualMessage contextualMessage,
+							   MessageCollector collector, TaskCoordinator coordinator)
 			throws Exception {
 		// parse the message into json
 
-		JSONObject message = parseJsonMessage(envelope);
+		JSONObject message = contextualMessage.getMessageAsJson();
 
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			taskMetrics.unknownDataSourceEventMessages++;
 			taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
@@ -201,7 +201,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				// messageText, timestampField);
                 writerConfiguration.tableWriterMetrics.invalidTimeFieldMessages++;
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
-				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
+				throw new StreamMessageNotContainFieldException(contextualMessage.getMessageAsString(), writerConfiguration.timestampField);
 			}
 
 			// get the username from the message
@@ -214,7 +214,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (writerConfiguration.barrier.isEventAfterBarrier(username, timestamp, message)) {
 
                 // filter messages if needed
-				if (filterMessage(message, writerConfiguration.filters)) {
+				if (filterMessage(contextualMessage, writerConfiguration.filters)) {
                     writerConfiguration.tableWriterMetrics.filterFilteredMessages++;
 					writerConfiguration.skippedMessageCount.inc();
 
@@ -272,11 +272,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	 * filter message method that can be used by overriding instances to control 
 	 * which messages are written
 	 */
-	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
+	private boolean filterMessage(FSProcessContextualMessage message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
-			if (filter.filter(message)) {
+			if (filter.filter(message.getMessageAsJson())) {
 				if (filter.monitorIfFiltered()) {
-					taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), MonitorMessaages.MessageFilter, filter.getName());
+					taskMonitoringHelper.countNewFilteredEvents(message.getStreamingTaskDataSourceConfigKey(), MonitorMessaages.MessageFilter, filter.getName());
 				}
 				return true;
 			}

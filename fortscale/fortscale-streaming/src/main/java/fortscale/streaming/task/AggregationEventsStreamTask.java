@@ -2,14 +2,13 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.AggregatorManager;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.streaming.task.metrics.AggregationEventsStreamTaskMetrics;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 
 
@@ -45,10 +44,10 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	}
 
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		String messageText = (String)envelope.getMessage();
-		JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
-		String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+		String messageText = contextualMessage.getMessageAsString();
+		JSONObject event = contextualMessage.getMessageAsJson();
+		String topic = contextualMessage.getTopicName();
 		Long epochtime = ConversionUtils.convertToLong(event.get(dateFieldName));
 
 		if (epochtime != null) {

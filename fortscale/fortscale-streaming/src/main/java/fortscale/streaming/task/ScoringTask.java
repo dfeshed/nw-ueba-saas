@@ -9,14 +9,13 @@ import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.streaming.task.metrics.ScoringStreamingTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
@@ -61,15 +60,15 @@ public class ScoringTask extends AbstractStreamTask {
     }
 
     @Override
-    protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-        String topicName = getIncomingMessageTopicName(envelope);
+    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+        String topicName = contextualMessage.getTopicName();
 
-        String messageText = (String)envelope.getMessage();
-        JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
-
+        JSONObject message = contextualMessage.getMessageAsJson();
+        String messageText = contextualMessage.getMessageAsString();
         if(topicName.equals(modelBuildingControlOutputTopic))
         {
             taskMetrics.modelBuildingEvents++;
+
             handleModelBuildingEvent(messageText, message);
         }
         else {
@@ -125,14 +124,13 @@ public class ScoringTask extends AbstractStreamTask {
         }
     }
 
-    @Override
     protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
         Event event = eventService.createEvent(message);
         String dataSource = event.getDataSource();
         String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
 
         if (dataSource == null) {
-            streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
+            streamingTaskCommonMetrics.messagesWithoutDataSourceName.incrementAndGet();
             throw new IllegalStateException("Message does not contain data source" + message.toJSONString());
         }
 

@@ -2,20 +2,17 @@ package fortscale.streaming.task;
 
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.Tag;
-import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.impl.SpringService;
-import fortscale.services.impl.UserServiceImpl;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.tagging.TagService;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -86,17 +83,15 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
 
     @Override
-    public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception
+    public void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception
     {
 
         ComputerUsageType sourceComputerType;
         ComputerUsageType destComputerType;
         boolean  isEventSuccess = false;
 
-
-        // parse the message into json
-        String messageText = (String)envelope.getMessage();
-        JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+        String messageText = contextualMessage.getMessageAsString();
+        JSONObject message = contextualMessage.getMessageAsJson();
 
         // get the failure code  and manipulate it for define the isEventSuccess flag
         String failureCode = convertToString(message.get(failureCodeField));

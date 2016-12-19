@@ -1,17 +1,15 @@
 package fortscale.streaming.task;
 
-import fortscale.entity.event.EntityEventDataStore;
 import fortscale.entity.event.EntityEventService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
 import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.util.Assert;
 
@@ -50,16 +48,15 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	}
 
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (entityEventService != null) {
 			// Get the input topic
-			String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+			String topic = contextualMessage.getTopicName();
 			if(TASK_CONTROL_TOPIC.equals(topic)){
 				store.sync();
 				return;
 			}
-			String messageText = (String)envelope.getMessage();
-			JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
+			JSONObject event = contextualMessage.getMessageAsJson();
 			receivedMessageCount.inc();
 			entityEventService.process(event);
 		}

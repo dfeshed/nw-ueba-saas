@@ -1,12 +1,11 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.service.task.EventScoringPersistencyTaskService;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
@@ -33,21 +32,20 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
     }
 
     @Override
-    protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         processedMessageCount.inc();
 
         // enables persist due to message in control topic
-        String topic = getIncomingMessageTopicName(envelope);
+        String topic = contextualMessage.getTopicName();
         if (topic.equals(EVENT_SCORING_PERSISTENCY_TASK_CONTROL_TOPIC))
         {
             logger.info("received message={} from controlTopic={}, {}", PERFORMING_FLUSH_LOG_MSG,
-                    envelope,topic);
+                    contextualMessage,topic);
             eventScoringPersistencyTaskService.flush();
             return;
         }
 
-        String messageText = (String)envelope.getMessage();
-        JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+        JSONObject event = contextualMessage.getMessageAsJson();
         eventScoringPersistencyTaskService.saveEvent(event);
     }
 

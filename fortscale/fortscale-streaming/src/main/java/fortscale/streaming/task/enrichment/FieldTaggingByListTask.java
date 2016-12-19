@@ -1,19 +1,18 @@
 package fortscale.streaming.task.enrichment;
 
 import fortscale.services.cache.CacheHandler;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -86,22 +85,19 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	/**
 	 * This is the process part of the Samza job
 	 * At this part we retrieve message from the needed topic and based on the input topic we start the needed service
-	 * @param envelope
+	 * @param contextualMessage
 	 * @param collector
 	 * @param coordinator
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,TaskCoordinator coordinator) throws Exception {
-
-		// get message
-		String messageText = (String) envelope.getMessage();
+	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 		// parse the message into json
-		JSONObject event = (JSONObject) JSONValue.parseWithException(messageText);
+		JSONObject event = contextualMessage.getMessageAsJson();
 
 
-		StreamingTaskDataSourceConfigKey key = this.extractDataSourceConfigKeySafe(event);
+		StreamingTaskDataSourceConfigKey key = contextualMessage.getStreamingTaskDataSourceConfigKey();
 
 		if (key != null && topicToServiceMap.containsKey(key)) {
 

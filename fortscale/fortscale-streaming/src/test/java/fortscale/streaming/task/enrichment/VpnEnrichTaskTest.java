@@ -5,6 +5,8 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.task.GeneralTaskTest;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -95,8 +97,9 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
 
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
         // run the process on the envelope
-        task.wrappedProcess(envelope , messageCollector, taskCoordinator);
+        task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
         task.wrappedClose();
         // validate the services were read
         verify(vpnEnrichService).processVpnEvent(any(JSONObject.class), eq(messageCollector));
@@ -134,9 +137,10 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
 
         // prepare envelope
         IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
         // run the process on the envelope
         task.wrappedCreateTaskMetrics();
-        task.wrappedProcess(envelope , messageCollector, taskCoordinator);
+        task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
         task.wrappedClose();
 
         //reset the mocks so it clears counters for the sake of next test

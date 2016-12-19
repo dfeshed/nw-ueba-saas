@@ -16,6 +16,8 @@ import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -103,8 +105,10 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		updateComputer.setName(HOST_NAME);
 
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(updateComputer) , "computerUpdatesTopic");
+		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
+
 		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
+		task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
 		// validate the computer was added to cache
 		// Need to check the name and can't use computer equals since the base class AbstractDocument uses in it's equals condition on id field not been null, and it's can't be set from outside (only by MongoDB)
 		assertEquals(updateComputer.getName(), ((Computer) computerService.getCache().get("key1")).getName());
@@ -114,8 +118,10 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 	public void wrappedProcess_should_add_sensitive_machine_to_sensitiveMachineService_cache() throws Exception {
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, HOST_NAME, mapper.writeValueAsString(HOST_NAME)  , "sensitiveMachineUpdatesTopic");
+		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
+
 		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
+		task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
 		// validate the sensitiveMachine was added to cache
 		assertEquals(HOST_NAME, sensitiveMachineService.getCache().get(HOST_NAME));
 	}
@@ -129,9 +135,10 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic");
+		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
 
 		// run the process on the envelope
-		task.wrappedProcess(envelope , messageCollector, taskCoordinator);
+		task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
 		// validate the sensitiveMachine is removed fom the cache
 		assertNull(sensitiveMachineService.getCache().get(HOST_NAME));
 	}
@@ -158,9 +165,10 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");
+		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
 
 		// run the process on the envelope
-		task.wrappedProcess(envelope ,messageCollector, taskCoordinator);
+		task.wrappedProcess(contextualMessage ,messageCollector, taskCoordinator);
 		// verify the enriched message send to output topic
 		ArgumentCaptor<OutgoingMessageEnvelope> argument = ArgumentCaptor.forClass(OutgoingMessageEnvelope.class);
 		verify(messageCollector).send(argument.capture());
