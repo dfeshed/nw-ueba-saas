@@ -124,6 +124,19 @@ export default EmberObject.extend(FromSocket, FromArray, ToArray, {
   },
 
   /**
+   * Invokes the onTimout callbacks (if any) of all observers.
+   * The timeout default wait time could be set using `streamOptions: {timeoutWait}`
+   * The callbacks will be passed whatever params are passed into this method.
+   * @returns {object} This instance, for chaining.
+   * @public
+   */
+  timeout() {
+    this._notifyAll('onTimeout', arguments);
+    this._super(...arguments);
+    return this;
+  },
+
+  /**
    * Invokes the given type of callbacks (if any) of all observers for this stream instance.
    * The callbacks will be passed whatever args array passed into this method, plus one additional
    * argument, which is a handle to this stream instance itself.

@@ -6,7 +6,8 @@ const {
   assert,
   Logger,
   RSVP,
-  run
+  run,
+  isNone
 } = Ember;
 
 
@@ -64,11 +65,14 @@ const streamRequest = ({
     onInit,
     onStopped,
     onCompleted,
-    onError
+    onError,
+    onTimeout
   }, routeName) => {
 
   _baseAsserts(method, modelName, query, 'streamRequest');
   assert('Cannot call streamRequest without onResponse', onResponse);
+
+  streamOptions.isTimeoutEnabled = !isNone(onTimeout);
 
   const stream = Socket.createStream(method, modelName, query, streamOptions);
   StreamCache.registerStream(stream, routeName, streamOptions);
@@ -83,7 +87,8 @@ const streamRequest = ({
         Logger.error(
           `Unhandled error in stream, method: ${method}, modelName: ${modelName}, code: ${response.code}`,
           response);
-      }
+      },
+      onTimeout
     });
 };
 
@@ -122,10 +127,13 @@ const promiseRequest = ({
     modelName,
     query,
     onInit,
-    streamOptions = {}
+    streamOptions = {},
+    onTimeout
   }, routeName) => {
   let stream;
   _baseAsserts(method, modelName, query, 'promiseRequest');
+
+  streamOptions.isTimeoutEnabled = !isNone(onTimeout);
 
   try {
     stream = Socket.createStream(method, modelName, query, streamOptions);
@@ -150,7 +158,8 @@ const promiseRequest = ({
         // cannot resolve promise twice, so call hangup
         run(hangup);
       },
-      onError: reject
+      onError: reject,
+      onTimeout
     });
   });
 };

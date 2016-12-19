@@ -181,3 +181,51 @@ test('will call onCompleted when server sends an indication that it is done', fu
     });
   });
 });
+
+test('when no response is received from server, timeout callback is triggered', function(assert) {
+  const done = assert.async();
+  assert.expect(1);
+  visit('/');
+
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.streamRequest({
+      method: 'stream/_6',
+      modelName: 'test',
+      query: {},
+      streamOptions: {
+        timeoutWait: 50
+      },
+      onResponse() {},
+      onTimeout() {
+        assert.ok(true, 'onTimeout is been called');
+        done();
+      }
+    });
+  });
+});
+
+test('when a response is received from server, timeout callback is Not triggered', function(assert) {
+  const done = assert.async();
+  assert.expect(1);
+  visit('/');
+
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.streamRequest({
+      method: 'stream/_6',
+      modelName: 'test',
+      query: {},
+      onResponse() {
+        assert.ok(true, 'onResponse was called');
+        done();
+      },
+      onTimeout() {
+        assert.ok(false, 'onTimeout is not been called');
+        done();
+      }
+    });
+  });
+});

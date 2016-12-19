@@ -107,6 +107,26 @@ export default Mixin.create({
   progress: 0,
 
   /**
+   * Time in milliseconds to wait until triggering a timeout
+   * @type number
+   * @public
+   */
+  timeoutWait: 10000,
+
+  /**
+   * If true, indicates that a message has been received.
+   * @type {boolean}
+   * @private
+   */
+  hasReceivedMessage: false,
+
+  /**
+   * When true, indicates that a timeout verification is required
+   * @type {boolean}
+   * @public
+   */
+  isTimeoutEnabled: false,
+  /**
    * Computes the resolved set of request parameters. This is computed by starting with any defaults (`defaultQueryParams`)
    * from the resolved `socketConfig`, then overwriting them with any given `socketRequestParams`, and then lastly
    * applying auto-generated params `id` and `stream.limit` if they are missing.
@@ -212,6 +232,7 @@ export default Mixin.create({
       count: 0,
       progress: 0,
       isStreaming: true,
+      hasReceivedMessage: false,
       page: params.page
     });
 
@@ -222,20 +243,27 @@ export default Mixin.create({
     }
 
     // Connect to socket server.
-    let me = this;
+    const timeoutWait = this.get('timeoutWait');
+    const isTimeoutEnabled = this.get('isTimeoutEnabled');
     const callback = run.bind(this, this._onmessage);
 
     this.get('fetchSocketClient')()
-      .then(function(websocketClient) {
-        me._websocketClient = websocketClient;
+      .then((websocketClient) => {
+        this._websocketClient = websocketClient;
+
+        if (isTimeoutEnabled && typeOf(timeoutWait) === 'number') {
+          run.later(() => {
+            if (!this.get('hasReceivedMessage')) {
+              this.timeout();
+            }
+          }, timeoutWait);
+        }
 
         // Subscribe to destination.
-        const sub = me._socketSubscription = websocketClient.subscribe(subscriptionDestination, callback, null);
+        const sub = this._socketSubscription = websocketClient.subscribe(subscriptionDestination, callback, null);
 
         // Send query message for the stream.
         sub.send({}, params, cfg.requestDestination);
-
-        me = null;
       })
       .catch(this.error.bind(this));
     return this;
@@ -274,6 +302,7 @@ export default Mixin.create({
    * @private
    */
   _onmessage(message) {
+    this.set('hasReceivedMessage', true);
     const response = message && message.body;
     const request = response && response.request;
 

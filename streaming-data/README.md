@@ -75,6 +75,8 @@ If you have a request that returns all of its data at once and then ends, `strea
   * An optional callback that is called when the server indicates that the stream has completed sending data. Nothing is passed to this function.
 * `onError`, `Function`, optional
    * An optional callback that is called if the stream errors out. The errored response is passed to this callback. If no `onError` is provided, the error will simply be logged.
+* `onTimeout`, `Function`, optional
+   * An optional callback that is called if there is no respond from server after certain time. The default timeout wait time can be overrided with [Stream Options](#streamoptions). Nothing is passed to this function.
 
 ### Example
 
@@ -128,6 +130,8 @@ You cannot use `promiseRequest` if you need to:
   * An optional callback that is executed when the stream first starts. This callback is passed as its first parameter a function that can be used to stop the stream and terminate the websocket. Since `promiseRequest`s stop themselves, this is to be used in case any long running requests need immediate cancelling.
 * `streamOptions`, `Object`, optional
   * see [Stream Options](#streamoptions)
+* `onTimeout`, `Function`, optional
+   * An optional callback that is called if there is no respond from server after certain time. The default timeout wait time can be overrided with [Stream Options](#streamoptions). Nothing is passed to this function.
 
 ### Example
 
@@ -159,6 +163,8 @@ Each API request takes a `streamOptions` object.
   * Defaults to `false`
   * When set to `false` a parent route will not be kept alive when transitioning to a new child. So, if going to `/foo` to `/foo/bar`, all streams associated with `/foo` will be cleaned up.
   * When set to `true` a parent route will be kept alive when transitioning to a new child. So, if going to `/foo` to `/foo/bar`, all streams associated with `/foo` will be left alone.
+* `timeoutWait`, `number`, optional
+  * Defaults to `1000`
 
 # Development
 
@@ -166,4 +172,4 @@ Each API request takes a `streamOptions` object.
 
 Run tests like any other Ember project (`ember test`), but first...
 
-* `node tests/server/start.js` to run mock server
+* `node tests/server/server.js` to run mock server

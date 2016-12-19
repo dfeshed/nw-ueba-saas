@@ -199,7 +199,51 @@ test('when requireRequestId set to true, requestId is sent', function(assert) {
   });
 });
 
+test('when no response is received from server, timeout callback is triggered', function(assert) {
+  const done = assert.async(2);
+  visit('/');
 
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.promiseRequest({
+      method: 'promise/_6',
+      modelName: 'test',
+      query: {},
+      streamOptions: {
+        timeoutWait: 50
+      },
+      onTimeout: () => {
+        assert.ok(true, 'onTimeout callback is expected');
+        done();
+      }
+    }).then(function() {
+      assert.ok(true, 'Socket response received');
+      done();
+    });
+  });
+});
+
+test('when a response is received from server before timeout-wait-time milliseconds, timeout callback is Not triggered', function(assert) {
+  const done = assert.async();
+  visit('/');
+
+  const request = this.application.__container__.lookup('service:request');
+
+  andThen(function() {
+    request.promiseRequest({
+      method: 'promise/_6',
+      modelName: 'test',
+      query: {},
+      onTimeout: () => {
+        assert.ok(false, 'onTimeout callback is NOT expected');
+      }
+    }).then(function() {
+      assert.ok(true, 'Socket response received');
+      done();
+    });
+  });
+});
 // From old acceptance test, see if way to test in new addon
 //
 // test('it will use the configuration value set in from-sockets.js file when no configuration override is found.', function(assert) {

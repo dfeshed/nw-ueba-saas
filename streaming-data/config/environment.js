@@ -32,6 +32,10 @@ module.exports = function(environment, appConfig) {
           subscriptionDestination: '/test/subscription/promise/_5',
           requestDestination: '/test/request/promise/_5'
         },
+        'promise/_6': {
+          subscriptionDestination: '/test/subscription/promise/_6',
+          requestDestination: '/test/request/promise/_6'
+        },
         'stream/_1': {
           subscriptionDestination: '/test/subscription/stream/_1',
           requestDestination: '/test/request/stream/_1'
@@ -51,6 +55,10 @@ module.exports = function(environment, appConfig) {
         'stream/_5': {
           subscriptionDestination: '/test/subscription/stream/_5',
           requestDestination: '/test/request/stream/_5'
+        },
+        'stream/_6': {
+          subscriptionDestination: '/test/subscription/stream/_6',
+          requestDestination: '/test/request/stream/_6'
         }
       }
     }
