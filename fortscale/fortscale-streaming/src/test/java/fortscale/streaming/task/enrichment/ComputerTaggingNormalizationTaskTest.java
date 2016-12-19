@@ -17,12 +17,10 @@ import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
 import fortscale.streaming.task.message.FSProcessContextualMessage;
-import fortscale.streaming.task.message.SamzaProcessContextualMessage;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
@@ -104,8 +102,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		Computer updateComputer = new Computer();
 		updateComputer.setName(HOST_NAME);
 
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(updateComputer) , "computerUpdatesTopic");
-		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
+		FSProcessContextualMessage contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(updateComputer) , "computerUpdatesTopic");
 
 		// run the process on the envelope
 		task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
@@ -117,8 +114,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 	@Test
 	public void wrappedProcess_should_add_sensitive_machine_to_sensitiveMachineService_cache() throws Exception {
 		// prepare envelope
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, HOST_NAME, mapper.writeValueAsString(HOST_NAME)  , "sensitiveMachineUpdatesTopic");
-		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
+		FSProcessContextualMessage contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, mapper.writeValueAsString(HOST_NAME)  , "sensitiveMachineUpdatesTopic");
 
 		// run the process on the envelope
 		task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
@@ -134,8 +130,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		assertEquals(HOST_NAME, sensitiveMachineService.getCache().get(HOST_NAME));
 
 		// prepare envelope
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic");
-		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
+		FSProcessContextualMessage contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic");
 
 		// run the process on the envelope
 		task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
@@ -164,8 +159,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		doAnswer(answer).when(task.machineNormalizationService).normalizeEvent(any(MachineNormalizationConfig.class),any(JSONObject.class));
 
 		// prepare envelope
-		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");
-		FSProcessContextualMessage contextualMessage = new SamzaProcessContextualMessage(envelope, true);
+		FSProcessContextualMessage contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");
 
 		// run the process on the envelope
 		task.wrappedProcess(contextualMessage ,messageCollector, taskCoordinator);

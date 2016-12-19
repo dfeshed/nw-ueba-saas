@@ -1,5 +1,8 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.SamzaProcessContextualMessage;
+import net.minidev.json.parser.ParseException;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
@@ -10,6 +13,10 @@ import org.mockito.Mockito;
  */
 public class GeneralTaskTest {
 
+	protected FSProcessContextualMessage getFSProcessContextualMessage(SystemStreamPartition systemStreamPartition,
+																	   SystemStream systemStream, String key, String message, String topic) throws ParseException {
+		return new SamzaProcessContextualMessage(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic),true);
+	}
 	protected IncomingMessageEnvelope getIncomingMessageEnvelope(SystemStreamPartition systemStreamPartition,
 			SystemStream systemStream, String key, String message, String topic) {
 
