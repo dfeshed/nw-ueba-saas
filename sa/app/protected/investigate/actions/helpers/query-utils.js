@@ -10,6 +10,13 @@ const {
   RSVP
 } = Ember;
 
+const _addMilliseconds = (dateInSeconds) => dateInSeconds * 1000;
+const _removeMilliseconds = (dateInMilliseconds) => dateInMilliseconds / 1000 | 0;
+const _floorMinute = (dateInMilliseconds) => new Date(dateInMilliseconds).setSeconds(0);
+const _ceilMinute = (dateInMilliseconds) => new Date(dateInMilliseconds).setSeconds(59);
+const _floorAtMinute = (dateInSeconds) => _removeMilliseconds(_floorMinute(_addMilliseconds(dateInSeconds)));
+const _ceilAtMinute = (dateInSeconds) => _removeMilliseconds(_ceilMinute(_addMilliseconds(dateInSeconds)));
+
 // Adds a session id filter to a given Core query filter.
 // Appends a condition for session id, but only if a session id is given.
 // @param {string} filter A Core filter condition (typically for meta keys other than 'sessionid').
@@ -277,8 +284,8 @@ function parseEventQueryUri(uri) {
   const parts = uri ? uri.split('/') : [];
   const [ serviceId ] = parts;
   let [ , startTime, endTime ] = parts;
-  startTime = Number(startTime);
-  endTime = Number(endTime);
+  startTime = _floorAtMinute(startTime);
+  endTime = _ceilAtMinute(endTime);
 
   const metaFilterUri = parts.slice(3, parts.length)
     .join('/');

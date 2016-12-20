@@ -98,13 +98,9 @@ export default Component.extend({
       const timeRangeId = this.get('selectedTimeRange.id');
       const timeRange = (this.get('timeRanges') || []).findBy('id', timeRangeId) || {};
       const seconds = get(timeRange, 'seconds');
-      const now = new Date();
-      now.setSeconds(59);
-      now.setMilliseconds(0);
-      const toDate = now / 1000;
-      now.setSeconds(0);
+      const toDate = +new Date() / 1000 | 0; // "/ 1000 | 0" removes milliseconds
       // If user selects "All Data", seconds is zero; submit a start time of zero.
-      const fromDate = seconds ? now / 1000 - seconds : 0;
+      const fromDate = seconds ? toDate - seconds : 0;
       const queryString = this.get('queryString');
       fn(
         serviceId,
