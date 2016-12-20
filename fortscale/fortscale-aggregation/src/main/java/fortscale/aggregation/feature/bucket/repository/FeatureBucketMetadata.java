@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @Document(collection = FeatureBucketMetadata.COLLECTION_NAME)
 @CompoundIndexes({
+		@CompoundIndex(name = "is_synced_start_time", def = "{'isSynced': -1, 'startTime': -1}"),
 		@CompoundIndex(name = "is_synced_end_time", def = "{'isSynced': -1, 'endTime': -1}"),
 		@CompoundIndex(name = "end_time_sync_time", def = "{'endTime': -1, 'syncTime': -1}"),
 })
