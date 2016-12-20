@@ -8,9 +8,6 @@ const { Component, K, run, set } = Ember;
 
 export default Component.extend({
   layout,
-  tagName: 'section',
-  classNames: 'rsa-packet',
-  classNameBindings: ['packet.side'],
   packet: null,
   packetFields: null,
   packetIsExpanded: true,
@@ -216,7 +213,7 @@ export default Component.extend({
       });
     }, options);
 
-    observer.observe(this.element);
+    observer.observe(this.$('.rsa-packet')[0]);
 
     this.set('observer', observer);
   },

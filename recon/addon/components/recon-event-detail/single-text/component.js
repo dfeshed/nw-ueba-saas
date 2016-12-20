@@ -12,9 +12,6 @@ const stateToComputed = ({ recon: { visuals } }) => ({
 
 const SingleTextComponent = Component.extend({
   layout,
-  tagName: 'section',
-  classNames: 'rsa-packet',
-  classNameBindings: ['packet.side'],
   packet: null,
   index: null,
 

@@ -3,7 +3,7 @@
 
   &__service,
   &__time-range {
-    @include rsa-vendor-prefix(flex-grow);
+    @include rsa-vendor-prefix(flex-grow, 0);
     margin-right: rsa-whitespace();
     /*
     @workaround The arrow icon in these dropdowns will not align properly if we
@@ -16,7 +16,7 @@
     }
   }
   &__submit {
-    @include rsa-vendor-prefix(flex-grow);
+    @include rsa-vendor-prefix(flex-grow, 0);
     margin-left: rsa-whitespace();
   }
   .rsa-investigate-query-input {
