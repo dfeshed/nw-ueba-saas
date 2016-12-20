@@ -1,11 +1,10 @@
 package fortscale.domain.ad;
 
-import java.util.Date;
-
+import fortscale.domain.core.AbstractDocument;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import fortscale.domain.core.AbstractDocument;
+import java.util.Date;
 
 public class AdObject extends AbstractDocument{
 	/**
@@ -100,6 +99,21 @@ public class AdObject extends AbstractDocument{
 	public void setRuntime(String runtime) {
 		this.runtime = runtime;
 	}
-	
+
+
+	public enum AdObjectType {
+		GROUP("Group"), OU("OU"), USER("User"), COMPUTER("Computer");
+
+		private final String displayName;
+
+		AdObjectType(String displayName) {
+			this.displayName = displayName;
+		}
+
+		@Override
+		public String toString() {
+			return displayName;
+		}
+	}
 	
 }

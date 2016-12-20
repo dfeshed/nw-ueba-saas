@@ -170,12 +170,25 @@
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-beans</artifactId>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+		</dependency>
+	<!--	<dependency>
+			<groupId>org.apache.tomcat.embed</groupId>
+			<artifactId>tomcat-embed-websocket</artifactId>
+			<version>7.0.52</version>
+		</dependency>-->
 		<dependency>
 	    	<groupId>org.springframework</groupId>
     		<artifactId>spring-test</artifactId>
     		<scope>test</scope>
 		</dependency>
+
 
 
 
@@ -280,6 +293,12 @@
 			<scope>test</scope>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.tomcat</groupId>
+			<artifactId>tomcat-websocket-api</artifactId>
+			<version>7.0.73</version>
+			<scope>provided</scope> <!-- This is provided by tomcat. Required for tests -->
+		</dependency>
 	</dependencies>
 	<build>
 		<!-- <finalName>fortscale-webapp</finalName> -->

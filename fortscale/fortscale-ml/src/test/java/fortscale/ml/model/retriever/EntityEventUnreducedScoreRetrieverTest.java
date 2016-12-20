@@ -51,7 +51,8 @@ public class EntityEventUnreducedScoreRetrieverTest {
 						config.getNumOfDays(),
 						(int) (config.getNumOfDays() * config.getNumOfAlertsPerDay() + 1))
 		).thenReturn(dateToTopEntityEvents);
-		Map<Long, List<Double>> data = retriever.retrieve(null, endTime);
+		@SuppressWarnings("unchecked")
+		Map<Long, List<Double>> data = (Map<Long, List<Double>>)retriever.retrieve(null, endTime).getData();
 		Assert.assertEquals(new HashMap<Long, List<Double>>() {{
 			put(yesterday, Collections.singletonList(unreducedScore));
 			put(twoDaysAgo, Collections.emptyList());

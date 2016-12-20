@@ -1,5 +1,5 @@
 package fortscale.domain.ad.dao;
 
 
-public class AdOURepositoryCustomImpl extends AdObjectRepositoryImpl implements AdOURepositoryCustom {
+public class AdOURepositoryCustomImpl extends AdObjectRepositoryImpl {
 }

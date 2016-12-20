@@ -36,7 +36,8 @@ class Manager:
                          'topics=' + ('fortscale-evidences' if collection_name == EVIDENCES else 'fortscale-entity-event-score-bdp'),
                          'collection=' + collection_name,
                          'datefield=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix'),
-                         'filters=' + ('' if collection_name == EVIDENCES else 'score:::gte:::50###') + 'end_time_unix:::gt:::' + str(start),
+                         'filters=' + ('evidenceType@@@Notification' if collection_name == EVIDENCES else 'score:::gte:::50') +
+                         '###end_time_unix:::gt:::' + str(start * (1000 if collection_name == EVIDENCES else 1)),
                          'sort=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix') + '###asc',
                          'jobmonitor=alert-generator-task',
                          'classmonitor=fortscale.streaming.task.AlertGeneratorTask',
