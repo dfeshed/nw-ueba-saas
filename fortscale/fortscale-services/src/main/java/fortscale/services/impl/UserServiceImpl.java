@@ -1212,4 +1212,15 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		return userRepository.updateFollowed(criteriaList, watch);
 	}
+
+
+	/**
+	 * removes tag with name {@code tagName} from field 'tags' of all users (if exists in tags array)
+	 * @param tagName the name of tag to remove
+	 * @return the amount of modified users
+	 */
+    @Override
+    public int removeTagFromAllUsers(String tagName) {
+		return userRepository.updateTagsByFilter(false, Collections.singletonList(tagName), Collections.singletonList(where(User.tagsField).in(tagName)), Collections.singletonList(tagName));
+	}
 }

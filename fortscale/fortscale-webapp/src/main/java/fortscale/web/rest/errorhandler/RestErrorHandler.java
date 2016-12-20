@@ -1,5 +1,6 @@
 package fortscale.web.rest.errorhandler;
 
+import fortscale.common.exceptions.UserAlreadyExistException;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 
 @ControllerAdvice
-public class RestErrorHandler {
+    public class RestErrorHandler {
 
     /**
      * BindException thrown when spring validation find that the request is not met with the validation condition
@@ -50,6 +51,17 @@ public class RestErrorHandler {
 
 
         return new ErrorMessagesCollection(errors);
+    }
+
+    @ExceptionHandler(UserAlreadyExistException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
+    @ResponseBody
+    public ErrorMessage  userAlreadyExistException(UserAlreadyExistException ex){
+        if (ex.getMessage()!=null){
+            return new ErrorMessage(null,ex.getMessage());
+        } else {
+            return new ErrorMessage(null,"User already exists");
+        }
     }
 
 }

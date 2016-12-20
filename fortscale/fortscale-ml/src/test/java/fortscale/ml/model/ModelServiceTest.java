@@ -202,7 +202,7 @@ public class ModelServiceTest {
 
 		@Override
 		public void modelBuildingStatus(String modelConfName, String sessionId, String contextId, Date endTime, ModelBuildingStatus status) {
-			statuses.add(buildStatus(modelConfName, contextId, endTime, status.equals(ModelBuildingStatus.SUCCESS)));
+			statuses.add(buildStatus(modelConfName, contextId, endTime, !status.isFailure()));
 		}
 
 		@Override

@@ -216,11 +216,12 @@ class Manager(DontReloadModelsOverridingManager):
 
     def _send_dummy_event(self, end_time_epoch):
         # TODO: this code was copied from step2_online's manager.py - do a refactor
-        logger.info('sending dummy event (so the last partial batch will be closed)...')
+        next_day_epoch = str(end_time_epoch + (-end_time_epoch) % (60*60*24) + 1)
+        logger.info('sending dummy event of ' + next_day_epoch + ' (so the hourly and daily buckets will be closed)...')
         send(logger=logger,
              host=self._host,
              topic='fortscale-aggregation-events-control',
-             message='{"date_time_unix": ' + str(end_time_epoch + 1) + '}')
+             message='{"date_time_unix": ' + next_day_epoch + '}')
 
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)

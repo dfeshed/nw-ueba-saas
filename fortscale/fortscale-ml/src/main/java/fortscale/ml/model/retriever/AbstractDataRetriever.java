@@ -2,6 +2,7 @@ package fortscale.ml.model.retriever;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.common.feature.Feature;
+import fortscale.ml.model.ModelBuilderData;
 import fortscale.ml.model.retriever.function.IDataRetrieverFunction;
 import fortscale.ml.model.retriever.pattern.replacement.PatternReplacement;
 import fortscale.utils.logging.Logger;
@@ -52,8 +53,8 @@ public abstract class AbstractDataRetriever {
 		return new Date(TimestampUtils.convertToMilliSeconds(startTimeInSeconds));
 	}
 
-	public abstract Object retrieve(String contextId, Date endTime);
-	public abstract Object retrieve(String contextId, Date endTime, Feature feature);
+	public abstract ModelBuilderData retrieve(String contextId, Date endTime);
+	public abstract ModelBuilderData retrieve(String contextId, Date endTime, Feature feature);
 
 	/**
 	 * @return the names of the features that should be scored by the model built by this retriever.

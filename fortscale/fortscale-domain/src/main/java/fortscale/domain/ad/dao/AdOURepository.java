@@ -5,8 +5,9 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface AdOURepository extends MongoRepository<AdOU, String>, AdOURepositoryCustom {
+public interface AdOURepository extends MongoRepository<AdOU, String> {
 	List<AdOU> findByLastModifiedExists(boolean exists);
 	long countByTimestampepoch(Long timestampepoch);
 	List<AdOU> findByOuLikeIgnoreCase(String contains);
+    AdOU findByObjectGUID(String objectGUID);
 }

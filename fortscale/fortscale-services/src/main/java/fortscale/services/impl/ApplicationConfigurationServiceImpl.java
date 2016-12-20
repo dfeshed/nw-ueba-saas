@@ -150,7 +150,13 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
 						jsonObjectType.getName(), configurationKey, ex);
             }
         }
+
         return readObject;
+    }
+
+    @Override
+    public Long delete(String key) {
+        return applicationConfigurationRepository.deleteByKey(key);
     }
 
 }

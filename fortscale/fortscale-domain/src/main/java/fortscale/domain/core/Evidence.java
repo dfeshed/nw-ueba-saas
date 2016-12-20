@@ -26,7 +26,9 @@ import java.util.UUID;
 		// index for getting all evidences for specific user
 	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
 		// index for making sure our evidence is unique
-	@CompoundIndex(name="new_unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1, '"+ Evidence.anomalyValueField +"': 1}", unique = true)
+	@CompoundIndex(name="new_unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1, '"+ Evidence.anomalyValueField +"': 1}", unique = true),
+		// index for python step6 (BDP) - for creating notifications in a fast manner
+	@CompoundIndex(name="endDate_and_evidenceType", def = "{'" + Evidence.endDateField + "': 1, '" + Evidence.evidenceTypeField +"': 1}", unique = false)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Evidence extends AbstractDocument{
