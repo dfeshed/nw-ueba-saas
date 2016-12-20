@@ -118,6 +118,14 @@ export default Component.extend(DomWatcher, {
   items: null,
 
   /**
+   * Index of `items` member which is currently selected, if any; -1 otherwise.
+   * @type {number}
+   * @default -1
+   * @public
+   */
+  selectedIndex: -1,
+
+  /**
    * Optional configuration that specifies which columns are to be displayed.
    * The following formats for `columns` are supported:
    * (1) A comma-delimited list of field names (e.g., `name,created,desc`). Each comma-delimited value should be

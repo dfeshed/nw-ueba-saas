@@ -53,6 +53,16 @@
 
     &-body-row {
       color: rsa-color(grey, lighter);
+      cursor: default;
+
+      &:hover {
+        background-color: rsa-color(black, base, $rsa-nearly-transparent);
+      }
+
+      &.is-selected,
+      &.is-selected:hover {
+        background-color: rsa-color(blue);
+      }
     }
 
     &-body-cell {
