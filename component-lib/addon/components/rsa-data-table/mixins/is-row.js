@@ -18,6 +18,7 @@ const {
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, CspStyleMixin, {
   classNames: 'rsa-data-table-body-row',
+  classNameBindings: ['isSelected'],
   styleBindings: ['top[px]'],
 
   /**
@@ -63,6 +64,15 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, CspStyleMi
    */
   index: computed('relativeIndex', 'relativeIndexOffset', function() {
     return this.get('relativeIndex') + this.get('relativeIndexOffset');
+  }),
+
+  /**
+   * Resolves to `true` if `index` matches the parent table's `selectedIndex`.
+   * @type {boolean}
+   * @private
+   */
+  isSelected: computed('index', 'table.selectedIndex', function() {
+    return this.get('index') === this.get('table.selectedIndex');
   }),
 
   /**
