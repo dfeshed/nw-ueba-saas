@@ -96,7 +96,7 @@ export default Component.extend({
   @computed('startTime')
   startDate: (date) => date * 1000,
 
-  @computed('timeFormat.selected.key', 'timezone.selected')
+  @computed('timeFormat.selected.key', 'timezone.selected.zoneId')
   tickformat: (format, zone) => dateFormatter((format === 'HR24'), zone),
 
   @computed('isExpanded')
@@ -113,7 +113,7 @@ export default Component.extend({
     return domain;
   },
 
-  @computed('timezone.selected')
+  @computed('timezone.selected.zoneId')
   xScaleFn: (zone) => (zone === 'UTC') ? scaleUtc : scaleTime,
 
   actions: {
