@@ -44,8 +44,13 @@ public class MachineNormalizationService extends StreamingTaskConfigurationServi
         // string host name to contain only machine name, i.e. : machine name: DOMAIN\MACHINE-NAME01 normalized: MACHINE-NAME01
         if(normalizedMachineName.contains("\\"))
         {
-            normalizedMachineName =
-                    normalizedMachineName.substring(normalizedMachineName.lastIndexOf("\\"),normalizedMachineName.length());
+            int lastBackslashIndex = normalizedMachineName.lastIndexOf("\\");
+            int normalizedMachineNameLength = normalizedMachineName.length();
+            if(lastBackslashIndex<normalizedMachineNameLength) {
+
+                normalizedMachineName =
+                        normalizedMachineName.substring(lastBackslashIndex+1, normalizedMachineNameLength);
+            }
         }
 
         normalizedMachineName = normalizedMachineName.toUpperCase();
