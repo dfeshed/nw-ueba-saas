@@ -1,6 +1,7 @@
 package fortscale.streaming.task.message;
 
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.parser.ParseException;
 import org.apache.samza.system.IncomingMessageEnvelope;
@@ -19,6 +20,8 @@ import static fortscale.streaming.task.message.FSProcessContextualMessageUtil.pa
  * Created by baraks on 12/12/2016.
  */
 public class SamzaProcessContextualMessage implements FSProcessContextualMessage {
+    private static Logger logger = Logger.getLogger(SamzaProcessContextualMessage.class);
+
     private String topicName;
     private JSONObject messageAsJson;
     private String messageAsString;
@@ -106,6 +109,10 @@ public class SamzaProcessContextualMessage implements FSProcessContextualMessage
      * extracts dataSource name from message json
      */
     protected void extractDataSourceConfigKey() {
+        if (messageAsJson==null)
+        {
+            return;
+        }
         String dataSource = messageAsJson.getAsString(DATA_SOURCE_FIELD_NAME);
         String lastState = messageAsJson.getAsString(LAST_STATE_FIELD_NAME);
 
@@ -113,7 +120,8 @@ public class SamzaProcessContextualMessage implements FSProcessContextualMessage
             if(messagesWithoutDataSourceNameCounter !=null) {
                 messagesWithoutDataSourceNameCounter.getAndIncrement();
             }
-            throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + messageAsString);
+            logger.warn("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + messageAsString);
+            return;
         }
         streamingTaskDataSourceConfigKey = new StreamingTaskDataSourceConfigKey(dataSource, lastState);
     }

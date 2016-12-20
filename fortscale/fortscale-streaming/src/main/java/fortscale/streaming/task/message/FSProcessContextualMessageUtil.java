@@ -13,20 +13,21 @@ import java.util.concurrent.atomic.AtomicLong;
 public class FSProcessContextualMessageUtil {
 
     public static JSONObject parseJsonMessage(String msg, AtomicLong parseToJsonCounter,AtomicLong parseToJsonExceptionCounter) throws ParseException {
+        JSONObject jsonObject = null;
         try {
             if(parseToJsonCounter!=null) {
                 parseToJsonCounter.incrementAndGet();
             }
-            return parseJsonMessage(msg);
-        } catch (ParseException e) {
+            jsonObject = parseJsonMessage(msg);
+        } catch (Exception e) {
             if(parseToJsonExceptionCounter!=null) {
                 parseToJsonExceptionCounter.incrementAndGet();
             }
-            throw e;
         }
+        return jsonObject;
     }
 
-    public static JSONObject parseJsonMessage(String msg) throws ParseException {
+    public static JSONObject parseJsonMessage(String msg) throws Exception {
         return (JSONObject) JSONValue.parseWithException(msg);
     }
 
