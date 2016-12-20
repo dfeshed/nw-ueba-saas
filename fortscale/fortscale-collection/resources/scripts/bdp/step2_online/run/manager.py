@@ -60,12 +60,12 @@ class Manager(OnlineManager):
 
     def _infer_start_time(self, host):
         last_unsynced_bucket = list(get_db(host).FeatureBucketMetadata
-                                    .find({'isSynced': False}, ['endTime'])
-                                    .sort('endTime', pymongo.DESCENDING)
+                                    .find({'isSynced': False}, ['startTime'])
+                                    .sort('startTime', pymongo.DESCENDING)
                                     .limit(1))
         if len(last_unsynced_bucket) == 0:
             raise Exception('you must specify --start')
-        return last_unsynced_bucket[0]['endTime'] + 1
+        return last_unsynced_bucket[0]['startTime'] + 60 * 60
 
     def _run_batch(self, start_time_epoch):
         run_job(start_time_epoch=start_time_epoch,
