@@ -58,6 +58,6 @@ export default Component.extend({
   // -1 otherwise.  This is passed along to the data table.
   @computed('selectedEventId', 'items.[]')
   selectedIndex(eventId, items) {
-    return isEmpty(eventId) ? -1: indexOfBy(items, 'sessionId', eventId);
+    return isEmpty(eventId) ? -1 : indexOfBy(items, 'sessionId', eventId);
   }
 });
