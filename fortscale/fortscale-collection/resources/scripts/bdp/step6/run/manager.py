@@ -26,6 +26,7 @@ class Manager:
         EVIDENCES = 'evidences'
         for collection_name in [EVIDENCES] + get_collection_names(host=self._host,
                                                                   collection_names_regex=scored_entity_collection_names_regex):
+            date_field = 'endDate' if collection_name == EVIDENCES else 'end_time_unix'
             call_args = ['nohup',
                          'java',
                          '-jar',
@@ -35,10 +36,10 @@ class Manager:
                          'Forwarding',
                          'topics=' + ('fortscale-evidences' if collection_name == EVIDENCES else 'fortscale-entity-event-score-bdp'),
                          'collection=' + collection_name,
-                         'datefield=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix'),
+                         'datefield=' + date_field,
                          'filters=' + ('evidenceType@@@Notification' if collection_name == EVIDENCES else 'score:::gte:::50') +
-                         '###end_time_unix:::gt:::' + str(start * (1000 if collection_name == EVIDENCES else 1)),
-                         'sort=' + ('endDate' if collection_name == EVIDENCES else 'end_time_unix') + '###asc',
+                         '###' + date_field + ':::gt:::' + str(start * (1000 if collection_name == EVIDENCES else 1)),
+                         'sort=' + date_field + '###asc',
                          'jobmonitor=alert-generator-task',
                          'classmonitor=fortscale.streaming.task.AlertGeneratorTask',
                          'batch=200000',
