@@ -362,4 +362,6 @@
 		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
 	</bean>
 
+	<!-- ServersListConfiguration is used in DcServiceFilter -->
+	<bean id="serversListConfiguration" class="fortscale.services.impl.ServersListConfigurationImpl"/>
 </beans>
