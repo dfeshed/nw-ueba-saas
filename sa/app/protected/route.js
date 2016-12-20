@@ -69,7 +69,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   model() {
-    const timezonesPromise = new Promise((resolve, reject) => {
+    const timezonesPromise = new Promise((resolve) => {
       const forceResolve = later(() => {
         this.set('timezone.options', [{
           'displayLabel': 'UTC (GMT+00:00)',
@@ -87,15 +87,12 @@ export default Route.extend(AuthenticatedRouteMixin, {
         this.set('timezone.options', response.data);
         cancel(forceResolve);
         resolve();
-      }).catch(() => {
-        Logger.error('Error loading timezones');
-
-        cancel(forceResolve);
-        reject();
+      }).catch((error) => {
+        Logger.error('Error loading timezones', error);
       });
     });
 
-    const preferencesPromise = new Promise((resolve, reject) => {
+    const preferencesPromise = new Promise((resolve) => {
       const forceResolve = later(() => {
         localStorage.setItem('rsa-i18n-default-locale', 'en-us');
 
@@ -136,11 +133,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
         cancel(forceResolve);
         resolve();
-      }).catch(() => {
-        Logger.error('Error loading preferences');
-
-        cancel(forceResolve);
-        reject();
+      }).catch((error) => {
+        Logger.error('Error loading preferences', error);
       });
     });
 
