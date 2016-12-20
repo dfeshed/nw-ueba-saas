@@ -1,7 +1,11 @@
 package fortscale.domain.ad.dao;
 
+import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
 
+import javax.naming.AuthenticationException;
+import javax.naming.CommunicationException;
+import javax.naming.NamingException;
 import java.util.List;
 
 public interface ActiveDirectoryDAO {
@@ -30,6 +34,6 @@ public interface ActiveDirectoryDAO {
 	 * @return				The result of the connection - empty for success or response error otherwise
 	 * @throws Exception
 	 */
-    String connectToAD(AdConnection adConnection) throws Exception;
+    boolean connectToAD(AdConnection adConnection) throws CommunicationException, AuthenticationException, NamingException, PasswordDecryptionException;
 
 }
