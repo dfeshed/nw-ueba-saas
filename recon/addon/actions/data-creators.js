@@ -32,23 +32,20 @@ const { Logger } = Ember;
  * @private
  */
 const _dispatchMeta = (dispatch, dataState) => {
-  dispatch({ type: ACTION_TYPES.META_RETRIEVE_STARTED });
-
-  fetchMeta(dataState)
-    .then(({ data }) => {
-      dispatch({
-        type: ACTION_TYPES.META_RETRIEVE_SUCCESS,
-        payload: data[0].metas
-      });
-
-      // have new meta, now need to possibly set to new recon view
-      // and fetch data for that view
-      _dispatchEvent(dispatch, dataState.currentReconView, data[0].metas);
-    })
-    .catch((response) => {
-      Logger.error('Could not retrieve event meta', response);
-      dispatch({ type: ACTION_TYPES.META_RETRIEVE_FAILURE });
-    });
+  dispatch({
+    type: ACTION_TYPES.META_RETRIEVE,
+    promise: fetchMeta(dataState),
+    meta: {
+      onSuccess(data) {
+        // have new meta, now need to possibly set to new recon view
+        // and fetch data for that view
+        _dispatchEvent(dispatch, dataState.currentReconView, data);
+      },
+      onFailure(response) {
+        Logger.error('Could not retrieve event meta', response);
+      }
+    }
+  });
 };
 
 /**
@@ -192,29 +189,23 @@ const initializeRecon = (reconInputs) => {
           });
       }
 
-      dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE_STARTED });
-
-      fetchReconSummary(reconInputs)
-        .then(([headerItems, packetFields]) => {
-          dispatch({
-            type: ACTION_TYPES.SUMMARY_RETRIEVE_SUCCESS,
-            payload: {
-              headerItems,
-              packetFields
-            }
-          });
-        })
-        .catch((response) => {
-          Logger.error('Could not retrieve recon event summary', response);
-          dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE_FAILURE });
-        });
+      dispatch({
+        type: ACTION_TYPES.SUMMARY_RETRIEVE,
+        promise: fetchReconSummary(reconInputs),
+        meta: {
+          onFailure(response) {
+            Logger.error('Could not retrieve event summary', response);
+          }
+        }
+      });
 
       // if meta not passed in then need to fetch it now
       // (even if its not being displayed) as we need to
       // use meta to determine which data to fetch and
       // which recon view to display
       if (!reconInputs.meta) {
-        _dispatchMeta(dispatch, dataState);
+        reconInputs.currentReconView = dataState.currentReconView;
+        _dispatchMeta(dispatch, reconInputs);
       } else {
         _dispatchEvent(dispatch, dataState.currentReconView, reconInputs.meta);
       }

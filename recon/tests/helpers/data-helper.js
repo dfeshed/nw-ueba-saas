@@ -9,12 +9,17 @@ import { files, packetDataWithSide, summaryData } from './data';
 
 const DEFAULT_INITIALIZE = { eventId: 1, endpointId: 2, meta: [['medium', 1]] };
 
-const { run } = Ember;
+const { run, RSVP } = Ember;
 
 const _dispatchInitializeData = (redux, inputs) => {
+
+  const summaryPromise = new RSVP.Promise(function(resolve) {
+    resolve(summaryData);
+  });
+
   run(() => {
     redux.dispatch({ type: ACTION_TYPES.INITIALIZE, payload: inputs });
-    redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE_SUCCESS, payload: summaryData });
+    redux.dispatch({ type: ACTION_TYPES.SUMMARY_RETRIEVE, promise: summaryPromise });
     redux.dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload: packetDataWithSide });
   });
 };

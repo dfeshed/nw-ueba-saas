@@ -24,7 +24,7 @@ const fetchReconSummary = ({ endpointId, eventId }) => {
         const headerItems = _generateHeaderItems(data.summaryAttributes);
         // eventually packetFields should be moved out of this request
         // but for now need to dig them out of response and expose them
-        resolve([headerItems, data.packetFields]);
+        resolve({ headerItems, packetFields: data.packetFields });
       }).catch((response) => {
         reject(response);
       });

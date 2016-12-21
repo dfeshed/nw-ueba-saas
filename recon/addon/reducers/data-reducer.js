@@ -3,6 +3,8 @@ import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import { EVENT_TYPES } from '../utils/event-types';
 import * as ACTION_TYPES from '../actions/types';
 import reduxActions from 'npm:redux-actions';
+import reduxPack from 'npm:redux-pack';
+
 const { set } = Ember;
 
 // State of server jobs for downloading file(s)
@@ -98,22 +100,14 @@ const data = reduxActions.handleActions({
   }),
 
   // Meta reducing
-  [ACTION_TYPES.META_RETRIEVE_STARTED]: (state) => ({
-    ...state,
-    metaError: null,
-    metaLoading: true
-  }),
-  [ACTION_TYPES.META_RETRIEVE_SUCCESS]: (state, { payload }) => ({
-    ...state,
-    meta: payload,
-    metaLoading: false
-  }),
-  [ACTION_TYPES.META_RETRIEVE_FAILURE]: (state) => ({
-    ...state,
-    metaError: true,
-    meta: null,
-    metaLoading: false
-  }),
+  [ACTION_TYPES.META_RETRIEVE]: (state, action) => {
+    return reduxPack.handle(state, action, {
+      start: (s) => ({ ...s, metaError: null, metaLoading: true }),
+      finish: (s) => ({ ...s, metaLoading: false }),
+      failure: (s) => ({ ...s, metaError: true, meta: null }),
+      success: (s) => ({ ...s, meta: action.payload })
+    });
+  },
 
   [ACTION_TYPES.SET_EVENT_TYPE]: (state, { payload: eventType }) => ({
     ...state,
@@ -121,24 +115,14 @@ const data = reduxActions.handleActions({
   }),
 
   // Summary Reducing
-  [ACTION_TYPES.SUMMARY_RETRIEVE_STARTED]: (state) => ({
-    ...state,
-    headerItems: null,
-    packetFields: null, // temporary until this data comes from packet retrieve
-    headerError: null,
-    headerLoading: true
-  }),
-  [ACTION_TYPES.SUMMARY_RETRIEVE_SUCCESS]: (state, { payload }) => ({
-    ...state,
-    headerItems: payload.headerItems,
-    packetFields: payload.packetFields,  // temporary until this data comes from packet retrieve
-    headerLoading: false
-  }),
-  [ACTION_TYPES.SUMMARY_RETRIEVE_FAILURE]: (state) => ({
-    ...state,
-    headerError: true,
-    headerLoading: false
-  }),
+  [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
+    return reduxPack.handle(state, action, {
+      start: (s) => ({ ...s, headerItems: null, packetFields: true, headerError: null, headerLoading: true }),
+      finish: (s) => ({ ...s, headerLoading: false }),
+      failure: (s) => ({ ...s, headerError: true }),
+      success: (s) => ({ ...s, headerItems: action.payload.headerItems, packetFields: action.payload.packetFields })
+    });
+  },
 
   // Content reducing
   [ACTION_TYPES.CONTENT_RETRIEVE_STARTED]: (state) => ({
@@ -187,21 +171,16 @@ const data = reduxActions.handleActions({
   },
   [ACTION_TYPES.FILES_DESELECT_ALL]: allFilesSelection(false),
   [ACTION_TYPES.FILES_SELECT_ALL]: allFilesSelection(true),
-  [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_STARTED]: (state) => ({
-    ...state,
-    ...fileExtractInitialState,
-    fileExtractStatus: 'init'
-  }),
-  [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_FAILURE]: (state, { payload }) => ({
-    ...state,
-    fileExtractStatus: 'error',
-    fileExtractError: payload
-  }),
-  [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_SUCCESS]: (state, { payload }) => ({
-    ...state,
-    fileExtractStatus: 'wait',
-    fileExtractJobId: payload.jobId
-  }),
+
+    // Summary Reducing
+  [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
+    return reduxPack.handle(state, action, {
+      start: (s) => ({ ...s, ...fileExtractInitialState, fileExtractStatus: 'init' }),
+      failure: (s) => ({ ...s, fileExtractStatus: 'error', fileExtractError: action.payload }),
+      success: (s) => ({ ...s, fileExtractStatus: 'wait', fileExtractJobId: action.payload.data.jobId })
+    });
+  },
+
   [ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS]: (state, { payload }) => ({
     ...state,
     fileExtractStatus: 'success',

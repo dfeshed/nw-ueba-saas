@@ -33,36 +33,15 @@ const downloadFiles = () => {
       .filterBy('selected', true)
       .map((file) => file.fileName);
 
-    // Dispatch the start of the job id retrieval.
     dispatch({
-      type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_STARTED
+      type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
+      promise: fetchFileExtractJobId(endpointId, eventId, selectedFileNames),
+      meta: {
+        onFailure(response) {
+          Logger.error('Error fetching job id for file extraction', { endpointId, eventId }, response);
+        }
+      }
     });
-
-
-    // Ask the server for a job id.
-    fetchFileExtractJobId(endpointId, eventId, selectedFileNames)
-      .catch((e) => {
-
-        // Unable to get a job id.
-        Logger.error('Error fetching job id for file extraction', { endpointId, eventId }, e);
-        dispatch({
-          type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_FAILURE,
-          payload: e,
-          error: true
-        });
-        return e;
-      })
-      .then((response) => {
-
-        // Got a job id successfully.
-        dispatch({
-          type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE_SUCCESS,
-          payload: {
-            jobId: response.data.jobId
-          }
-        });
-        return response;
-      });
   };
 };
 
