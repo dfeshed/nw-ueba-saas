@@ -454,3 +454,12 @@ $ember-power-select-line-height: 2rem;
     }
   }
 }
+
+#ember-basic-dropdown-wormhole {
+  .ember-power-select-option {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: auto;
+    padding-right:rsa-whitespace(less);
+  }
+}

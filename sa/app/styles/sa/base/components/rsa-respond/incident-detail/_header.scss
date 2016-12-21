@@ -65,6 +65,12 @@
           .rsa-content-label {
             margin-top: rsa-whitespace(less);
           }
+
+          .rsa-incident-detail-header__assignee {
+            .ember-power-select-trigger {
+              min-width: 125px;
+            }
+          }
         }
 
         .rsa-incident-detail-header__status {
