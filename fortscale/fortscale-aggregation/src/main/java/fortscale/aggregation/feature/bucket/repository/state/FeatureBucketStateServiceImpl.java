@@ -23,6 +23,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
     public FeatureBucketStateServiceImpl(FeatureBucketStateRepository featureBucketStateRepository, StatsService statsService) {
         this.featureBucketStateRepository = featureBucketStateRepository;
         this.statsService = statsService;
+        metrics = new FeatureBucketStateServiceMetrics(statsService);
         recovery();
     }
 
@@ -59,12 +60,12 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         FeatureBucketState savedState = featureBucketStateRepository.save(featureBucketState);
 
         if (savedState != null){
-            getMetrics().updateFeatureBucketStateSuccess++;
-            getMetrics().lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
-            getMetrics().lastSyncedEventDate = savedState.getLastSyncedEventDate().toEpochMilli();
+            metrics.updateFeatureBucketStateSuccess++;
+            metrics.lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
+            metrics.lastSyncedEventDate = savedState.getLastSyncedEventDate().toEpochMilli();
 
         }else{
-            getMetrics().updateFeatureBucketStateFailure++;
+            metrics.updateFeatureBucketStateFailure++;
         }
     }
 
@@ -77,7 +78,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         if (featureBucketState != null){
             // Getting the value of the last closed daily bucket
             lastClosedDailyBucketDate = featureBucketState.getLastClosedDailyBucketDate();
-            logger.info("FeatureBucketStateService recovery finished, the lastClosedDailyBucketDate is ", lastClosedDailyBucketDate);
+            logger.info("FeatureBucketStateService recovery finished, got ", featureBucketState.toString());
         }
     }
 
@@ -86,18 +87,10 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         FeatureBucketState featureBucketState = featureBucketStateRepository.getState();
 
         if (featureBucketState != null){
-            getMetrics().getFeatureBucketStateSuccess++;
+            metrics.getFeatureBucketStateSuccess++;
         }else{
-            getMetrics().updateFeatureBucketStateFailure++;
+            metrics.updateFeatureBucketStateFailure++;
         }
         return featureBucketState;
-    }
-
-    public FeatureBucketStateServiceMetrics getMetrics() {
-        if(metrics == null)
-        {
-            metrics = new FeatureBucketStateServiceMetrics(statsService);
-        }
-        return metrics;
     }
 }
