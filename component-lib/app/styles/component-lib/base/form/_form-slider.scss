@@ -45,9 +45,31 @@
     bottom: inherit;
   }
 
-  &:hover:not(.is-disabled):not(.is-read-only) {
+  &:hover:not(.is-disabled):not(.is-read-only):not(.is-error) {
     cursor: pointer;
 
+    .noUi-background {
+      background: $formSliderHoverBackgroundColor;
+    }
+    .noUi-handle {
+      cursor: pointer;
+      background: $formSliderHoverHandleColor ;
+    }
+    .noUi-connect {
+      background: $formSliderHoverConnectColor;
+    }
+  }
+
+  &.is-error:hover {
+    cursor: pointer;
+
+    .noUi-handle {
+      cursor: pointer;
+    }
+  }
+
+  .noUi-state-drag {
+    background: $formSliderHoverBackgroundColor;
     .noUi-background {
       background: $formSliderHoverBackgroundColor;
     }
@@ -113,6 +135,10 @@
 
     .noUi-connect {
       background: $formSliderErrorConnectColor;
+    }
+
+    .noUi-active {
+      border: 1.5px solid $formSliderErrorActiveColor;
     }
   }
 }
