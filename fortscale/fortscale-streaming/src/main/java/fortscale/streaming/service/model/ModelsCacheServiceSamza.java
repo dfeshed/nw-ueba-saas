@@ -18,8 +18,6 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -51,14 +49,6 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Value("${fortscale.model.sec.diff.between.cleaning.cache.checks}")
 	private long secDiffBetweenCleaningCacheChecks;
 
-	/**
-	 * Due to tasks synchronization issues (that will be handled in the future by DPM),
-	 * there might be newer models that have been created than the ones that are in the cache.
-	 * meaning: model have been built, but the scoring task still handles older events.
-	 * in that case, load the "future" models to cache
-	 */
-	@Value("#{ T(java.time.Duration).parse('${fortscale.model.cache.future.duration}')}")
-	private Duration modelFutureDuration;
 
 	private Map<String, ModelCacheManager> modelCacheManagers;
 	private long lastCleaningCacheEpochtime = convertToSeconds(System.currentTimeMillis());
@@ -75,14 +65,13 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	 * @param feature
 	 * @param modelConfName
 	 * @param context
-	 * @param eventEpochtime + {@link this#modelFutureDuration}, since model can be built at time that is future compared to the event time
+	 * @param eventEpochtime - in seconds
      * @return latest model from cache for given params
      */
 	@Override
 	public Model getModel(Feature feature, String modelConfName, Map<String, String> context, long eventEpochtime) {
 		if (getModelCacheManagers().containsKey(modelConfName)) {
-			long modelEndTimeLteEpochSeconds = Instant.ofEpochSecond(eventEpochtime).plus(modelFutureDuration).getEpochSecond();
-			return getModelCacheManagers().get(modelConfName).getModel(feature, context, modelEndTimeLteEpochSeconds);
+			return getModelCacheManagers().get(modelConfName).getModel(feature, context, eventEpochtime);
 		} else {
 			return null;
 		}
