@@ -33,7 +33,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
      * lastEventEpochtime - the time of the last event synced to mongo. In seconds
      */
     public void updateFeatureBucketState(long lastEventEpochtime) {
-
+        logger.debug("updateFeatureBucketState with lastEventEpochtime {}", lastEventEpochtime);
         FeatureBucketState featureBucketState = getFeatureBucketState();
         Instant lastEventDate = Instant.ofEpochSecond(lastEventEpochtime);
         Instant lastEventDay = lastEventDate.truncatedTo(ChronoUnit.DAYS);
@@ -56,15 +56,18 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         // Updating the lastSyncedEventDate
         featureBucketState.setLastSyncedEventDate(lastEventDate);
 
-        // Save the last synced event date to mongo
-        FeatureBucketState savedState = featureBucketStateRepository.save(featureBucketState);
+        try {
+            logger.debug("Before update FeatureBucketState with {}", featureBucketState);
+            // Save the last synced event date to mongo
+            FeatureBucketState savedState = featureBucketStateRepository.save(featureBucketState);
 
-        if (savedState != null){
+            logger.debug("Updated FeatureBucketState with {}", savedState);
+
             metrics.updateFeatureBucketStateSuccess++;
             metrics.lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
             metrics.lastSyncedEventDate = savedState.getLastSyncedEventDate().toEpochMilli();
-
-        }else{
+        } catch (Exception e){
+            logger.error("Error saving the feature bucket state to mongo. {}", featureBucketState, e);
             metrics.updateFeatureBucketStateFailure++;
         }
     }
