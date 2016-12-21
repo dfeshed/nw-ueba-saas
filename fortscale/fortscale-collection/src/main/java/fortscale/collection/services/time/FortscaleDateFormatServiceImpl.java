@@ -155,42 +155,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
         return dateFormat.endsWith("z") || dateFormat.endsWith("Z");
     }
 
-    @Override
-    public List<String> findDateTimestampPatternMatches(String dateTimestamp, String tzInput) {
-        TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
-
-        List<String> matchedInputFormats = new ArrayList<>();
-
-        for (String inputFormatStr : availableDateFormatsSorted) {
-            DateTime dateTime;
-            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, false);
-            if (isEpochTimeFormat(inputFormatStr)) {
-                try {
-                    dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
-                } catch (FortscaleDateFormatterException e) {
-                    continue;
-                }
-
-                if (dateTime != null) {
-                    matchedInputFormats.add(inputFormatStr);
-                }
-            }
-            else {
-                Date parsedDate;
-                try {
-                    parsedDate = inputFormat.parse(dateTimestamp);
-                } catch (ParseException e) {
-                    continue; // i.e. iterate to the next possible input format
-                }
-                if (parsedDate != null) {
-                    matchedInputFormats.add(inputFormatStr);
-                }
-            }
-        }
-
-        return matchedInputFormats;
-    }
-
     private String handleNumericTimestamp(String dateTimestamp, TimeZone inputTimezone, SimpleDateFormat outputFormat) throws FortscaleDateFormatterException {
         DateTime dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
 
