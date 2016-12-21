@@ -152,6 +152,42 @@
         END-SNIPPET --}}
         {{code-snippet name="selects4.hbs"}}
       {{/spec-member}}
+
+      {{#spec-member title="Multiple Selection"}}
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select-multiple
+          placeholder="Make selections"
+          options=groupedOptions
+          selected=selections
+          searchField='name'
+          searchPlaceholder="Type to filter options"
+          onchange=(action 'setSelections') as |option|}}
+            {{option.name}}
+          {{/power-select-multiple}}
+        </label>
+        {{!-- BEGIN-SNIPPET multiple-select
+        <label class="rsa-form-label power-select">
+          <div class="label-text">
+            Select Label
+          </div>
+
+          {{#power-select-multiple
+          placeholder="Make selections"
+          options=groupedOptions
+          selected=selections
+          searchField='name'
+          searchPlaceholder="Type to filter options"
+          onchange=(action 'setSelections') as |option|}}
+            {{option.name}}
+          {{/power-select-multiple}}
+        </label>
+        END-SNIPPET --}}
+        {{code-snippet name="multiple-select.hbs"}}
+      {{/spec-member}}
     {{/spec-category}}
 
     {{#spec-category title="Examples"}}

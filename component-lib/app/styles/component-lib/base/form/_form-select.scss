@@ -156,6 +156,12 @@ $ember-power-select-line-height: 2rem;
   }
 }
 
+.ember-power-select-multiple-option {
+  border: 1px solid rsa-color(gray, lightest);
+  background: transparent;
+  border-radius: 3px;
+  color: rsa-color(gray, lightest);
+}
 
 .rsa-form-select {
   position: relative;
