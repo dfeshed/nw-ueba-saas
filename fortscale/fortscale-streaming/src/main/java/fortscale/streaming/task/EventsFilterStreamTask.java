@@ -1,8 +1,8 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.KafkaPublisherException;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
-import fortscale.streaming.task.message.SamzaProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.metrics.EventsFilterStreamTaskMetrics;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
@@ -41,7 +41,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 
 
 	/** Process incoming events and update the user models stats */
-	@Override public void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	@Override public void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 		// parse the message into json
 		JSONObject message = contextualMessage.getMessageAsJson();
 
@@ -55,6 +55,8 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 		// publish the event with score to the subsequent topic in the topology
 		if (StringUtils.isNotEmpty(outputTopic)){
 			try{
+
+				MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
 				++taskMetrics.sentMessages;
 			} catch(Exception exception){
@@ -64,7 +66,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 		}
 
 		if (taskMonitoringHelper.isMonitoredTask()) {
-			if(contextualMessage instanceof SamzaProcessContextualMessage)
+			if(contextualMessage instanceof SamzaProcessMessageContext)
 			{
 				handleUnfilteredEvent(message, contextualMessage.getStreamingTaskDataSourceConfigKey());
 			}
@@ -104,7 +106,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 
 	/** Auxiliary method to enable filtering messages on specific events types
 	 * @param message*/
-	protected boolean acceptMessage(FSProcessContextualMessage message){ return true;}
+	protected boolean acceptMessage(ProcessMessageContext message){ return true;}
 
 	/**
 	 * Abstract method to get the prefix of the job name, depnded on the class

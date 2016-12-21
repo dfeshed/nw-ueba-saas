@@ -1,14 +1,11 @@
 package fortscale.streaming.task;
 
-import fortscale.streaming.task.message.FSProcessContextualMessage;
-import fortscale.streaming.task.message.SamzaProcessContextualMessage;
-import fortscale.streaming.task.message.UnsupportedMessageTypeException;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
 
 public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 	private String statusFieldName;
@@ -26,10 +23,7 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 	}
 
 	@Override
-	public void wrappedProcess(
-			FSProcessContextualMessage contextualMessage,
-			MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	public void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 
 		JSONObject message = contextualMessage.getMessageAsJson();
 		String status = message.getAsString(statusFieldName);
@@ -42,16 +36,15 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 			++taskMetrics.vpnNonCloseMessages;
 		}
 
-		if(!(contextualMessage instanceof SamzaProcessContextualMessage))
-		{
-			throw new UnsupportedMessageTypeException(contextualMessage);
-		}
+		SamzaProcessMessageContext processMessageContext = (SamzaProcessMessageContext) contextualMessage;
 		IncomingMessageEnvelope newEnvelope = new IncomingMessageEnvelope(
-				((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getSystemStreamPartition(),
-				((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getOffset(),
-				((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getKey(),
+				processMessageContext.getIncomingMessageEnvelope().getSystemStreamPartition(),
+				processMessageContext.getIncomingMessageEnvelope().getOffset(),
+				processMessageContext.getIncomingMessageEnvelope().getKey(),
 				message.toJSONString());
-		FSProcessContextualMessage newMessage = new SamzaProcessContextualMessage(newEnvelope,messageShouldContainDataSourceField());
-		super.wrappedProcess(newMessage, collector, coordinator);
+		ProcessMessageContext newMessage =
+				new SamzaProcessMessageContext(newEnvelope,messageShouldContainDataSourceField(),
+						processMessageContext.getCollector(), processMessageContext.getCoordinator());
+		super.ProcessMessage(newMessage);
 	}
 }

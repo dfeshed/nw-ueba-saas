@@ -9,7 +9,8 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -86,12 +87,10 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	 * This is the process part of the Samza job
 	 * At this part we retrieve message from the needed topic and based on the input topic we start the needed service
 	 * @param contextualMessage
-	 * @param collector
-	 * @param coordinator
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 
 		// parse the message into json
 		JSONObject event = contextualMessage.getMessageAsJson();
@@ -107,6 +106,8 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", fieldTaggingService.getOutPutTopic()), fieldTaggingService.getPartitionKey(event), event.toJSONString());
+				SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
+				MessageCollector collector = samzaProcessMessageContext.getCollector();
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from State %s to output topic %s after field tagging by list", key, fieldTaggingService.getOutPutTopic()), exception);

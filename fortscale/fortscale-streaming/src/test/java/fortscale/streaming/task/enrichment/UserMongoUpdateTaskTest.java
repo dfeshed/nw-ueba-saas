@@ -4,12 +4,10 @@ package fortscale.streaming.task.enrichment;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.GeneralTaskTest;
 import fortscale.streaming.task.KeyValueStoreMock;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
-import org.apache.samza.task.MessageCollector;
-import org.apache.samza.task.TaskCoordinator;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.springframework.test.context.ContextConfiguration;
@@ -60,10 +58,10 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// User1, VPN event with time 1
 
 		// prepare envelope
-		FSProcessContextualMessage contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE_1, "vpn");
+		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE_1, "vpn");
 
 		// run the process on the envelope
-		task.wrappedProcess(contextualMessage, Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
+		task.ProcessMessage(contextualMessage);
 		// validate the last-activity map
 		UserInfoForUpdate userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
@@ -75,7 +73,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// prepare envelope
 		contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE_2, "ssh");
 		// run the process on the envelope
-		task.wrappedProcess(contextualMessage ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
+		task.ProcessMessage(contextualMessage);
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
@@ -91,7 +89,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE_3, "login");
 
 		// run the process on the envelope
-		task.wrappedProcess(contextualMessage ,Mockito.mock(MessageCollector.class), Mockito.mock(TaskCoordinator.class));
+		task.ProcessMessage(contextualMessage);
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);

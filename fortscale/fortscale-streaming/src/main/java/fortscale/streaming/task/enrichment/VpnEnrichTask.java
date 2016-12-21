@@ -6,7 +6,8 @@ import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.metrics.VpnEnrichTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
@@ -145,7 +146,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     }
 
     @Override
-    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 
 
         String messageText = contextualMessage.getMessageAsString();
@@ -166,6 +167,8 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 		final String timeStampFieldName = vpnEnrichService.getTimeStampFieldName();
 		long timestamp = message.getAsNumber(timeStampFieldName).longValue();
 		taskMetrics.timestampEpoch = TimestampUtils.normalizeTimestamp(timestamp);
+		SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
+		MessageCollector collector = samzaProcessMessageContext.getCollector();
 
         message = vpnEnrichService.processVpnEvent(message, collector);
 
@@ -180,6 +183,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
         }
         try {
             OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", vpnEnrichService.getOutputTopic()), vpnEnrichService.getPartitionKey(message), message.toJSONString());
+
             collector.send(output);
 			handleUnfilteredEvent(message, configKey);
 			++taskMetrics.unfilteredEvents;

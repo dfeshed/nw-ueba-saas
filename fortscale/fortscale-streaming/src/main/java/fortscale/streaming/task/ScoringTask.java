@@ -9,7 +9,8 @@ import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.metrics.ScoringStreamingTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
@@ -60,7 +61,7 @@ public class ScoringTask extends AbstractStreamTask {
     }
 
     @Override
-    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
         String topicName = contextualMessage.getTopicName();
 
         JSONObject message = contextualMessage.getMessageAsJson();
@@ -74,6 +75,7 @@ public class ScoringTask extends AbstractStreamTask {
         else {
             Long timestamp = extractTimeStamp(message, messageText);
             taskMetrics.eventsTime = timestamp;
+            MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
             handleEventToScore(collector, message, timestamp);
             // todo: this metric should we removed after DPM is part of ther project
             processedMessageCount.inc();

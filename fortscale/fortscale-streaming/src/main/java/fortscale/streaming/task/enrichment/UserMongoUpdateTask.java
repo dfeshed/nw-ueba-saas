@@ -7,7 +7,7 @@ import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.logging.Logger;
@@ -131,12 +131,10 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	/**
 	 * Process specific message
 	 * @param contextualMessage    The message
-	 * @param collector collector in order to send the message to other topics - not used in this task
-	 * @param coordinator    coordinator
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 
 		// parse the message into json
 		String messageText = contextualMessage.getMessageAsString();

@@ -16,9 +16,8 @@ import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.IpResolvingStreamTaskMetrics;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
-import fortscale.streaming.task.message.SamzaProcessContextualMessage;
-import fortscale.streaming.task.message.UnsupportedMessageTypeException;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -156,11 +155,12 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
     @Override
-    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
         //if the message came from one of the cache updates topics, if so than update the resolving cache
         // with the update message
         String topic = contextualMessage.getTopicName();
 
+        SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
 		//in case of vpn ip update - (session was closed and the ip was related to this session , we need to mark all the resolving for that ip in the period time of the session )
 		if (topic.equals(vpnIpPoolUpdaterTopicName))
 		{
@@ -175,11 +175,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             // get the concrete cache and pass it the update check  message that arrive
             taskMetrics.cacheUpdatesMessages++;
             CachingService cachingService = topicToCacheMap.get(topic);
-            if(!(contextualMessage instanceof SamzaProcessContextualMessage))
-            {
-                throw new UnsupportedMessageTypeException(contextualMessage);
-            }
-            cachingService.handleNewValue((String) ((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getKey(), contextualMessage.getMessageAsString());
+
+            cachingService.handleNewValue((String) samzaProcessMessageContext.getIncomingMessageEnvelope().getKey(), contextualMessage.getMessageAsString());
         } else {
 
             taskMetrics.eventMessages++;
@@ -220,7 +217,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                             ipResolvingService.getPartitionKey(configKey, message),
                             message.toJSONString());
                     handleUnfilteredEvent(message,configKey);
-                    collector.send(output);
+
+                    samzaProcessMessageContext.getCollector().send(output);
                     taskMetrics.sentEventMessages++;
                     eventResolvingConfig.getMetrics().sentEventMessages++;
 

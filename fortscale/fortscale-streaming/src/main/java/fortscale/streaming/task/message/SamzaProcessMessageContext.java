@@ -12,16 +12,17 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import static fortscale.streaming.task.AbstractStreamTask.DATA_SOURCE_FIELD_NAME;
 import static fortscale.streaming.task.AbstractStreamTask.LAST_STATE_FIELD_NAME;
-import static fortscale.streaming.task.message.FSProcessContextualMessageUtil.parseJsonMessage;
+import static fortscale.streaming.task.message.ProcessMessageContextUtil.parseJsonMessage;
 
 /**
  * this class contains the original Samza message, and some useful meta data such as the message as json, its topic etc...
  *
  * Created by baraks on 12/12/2016.
  */
-public class SamzaProcessContextualMessage implements FSProcessContextualMessage {
-    private static Logger logger = Logger.getLogger(SamzaProcessContextualMessage.class);
-
+public class SamzaProcessMessageContext implements ProcessMessageContext {
+    private static Logger logger = Logger.getLogger(SamzaProcessMessageContext.class);
+    private TaskCoordinator coordinator;
+    private MessageCollector collector;
     private String topicName;
     private JSONObject messageAsJson;
     private String messageAsString;
@@ -37,14 +38,18 @@ public class SamzaProcessContextualMessage implements FSProcessContextualMessage
      * @param parseToJsonCounter by reference counter that will be updated(+1) when parsing message to json
      * @param parseToJsonExceptionCounter by reference counter that will be updated(+1) when parsing message to json fails
      * @param messagesWithoutDataSourceNameCounter by reference counter that will be updated(+1) get datasource from message fails
+     * @param collector
+     * @param coordinator
      * @throws ParseException in case the message cannot be parsed into jsonObject
      */
-    public SamzaProcessContextualMessage(IncomingMessageEnvelope incomingMessageEnvelope, boolean messageShouldContainDataSourceField, AtomicLong parseToJsonCounter, AtomicLong parseToJsonExceptionCounter, AtomicLong messagesWithoutDataSourceNameCounter) throws ParseException {
+    public SamzaProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, boolean messageShouldContainDataSourceField, AtomicLong parseToJsonCounter, AtomicLong parseToJsonExceptionCounter, AtomicLong messagesWithoutDataSourceNameCounter, MessageCollector collector, TaskCoordinator coordinator) throws ParseException {
         this.incomingMessageEnvelope = incomingMessageEnvelope;
         this.messageAsString = (String) incomingMessageEnvelope.getMessage();
         this.topicName = getIncomingMessageTopicName(incomingMessageEnvelope);
         this.messageAsJson = parseJsonMessage(messageAsString, parseToJsonCounter, parseToJsonExceptionCounter);
         this.messagesWithoutDataSourceNameCounter = messagesWithoutDataSourceNameCounter;
+        this.collector = collector;
+        this.coordinator = coordinator;
         if(messageShouldContainDataSourceField) {
             extractDataSourceConfigKey();
         }
@@ -53,14 +58,15 @@ public class SamzaProcessContextualMessage implements FSProcessContextualMessage
     /**
      * syntactic sugar, no counters will be updated
      * @param incomingMessageEnvelope
+     * @param collector
+     * @param coordinator
      * @throws ParseException
      */
-    public SamzaProcessContextualMessage(IncomingMessageEnvelope incomingMessageEnvelope,boolean messageShouldContainDataSourceField) throws ParseException {
-        this(incomingMessageEnvelope, messageShouldContainDataSourceField, null,null,null);
+    public SamzaProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, boolean messageShouldContainDataSourceField, MessageCollector collector, TaskCoordinator coordinator) throws ParseException {
+        this(incomingMessageEnvelope, messageShouldContainDataSourceField, null,null,null,collector , coordinator);
     }
 
     /**
-     *
      * @return from which kafka topic did the message arrive
      */
     @Override
@@ -68,11 +74,17 @@ public class SamzaProcessContextualMessage implements FSProcessContextualMessage
         return topicName;
     }
 
+    /**
+     * @return string representation of the message
+     */
     @Override
     public String getMessageAsString() {
         return messageAsString;
     }
 
+    /**
+     * @return json representation of the message
+     */
     @Override
     public JSONObject getMessageAsJson() {
         return messageAsJson;
@@ -98,7 +110,7 @@ public class SamzaProcessContextualMessage implements FSProcessContextualMessage
     /**
      * Get topic name out of incoming message envelope
      *
-     * @param envelope - message received in {@link fortscale.streaming.task.AbstractStreamTask#wrappedProcess(FSProcessContextualMessage, MessageCollector, TaskCoordinator)}
+     * @param envelope - message received in {@link fortscale.streaming.task.AbstractStreamTask#ProcessMessage(ProcessMessageContext)}
      * @return topic name of incoming message
      */
     private String getIncomingMessageTopicName(IncomingMessageEnvelope envelope) {
@@ -124,5 +136,13 @@ public class SamzaProcessContextualMessage implements FSProcessContextualMessage
             return;
         }
         streamingTaskDataSourceConfigKey = new StreamingTaskDataSourceConfigKey(dataSource, lastState);
+    }
+
+    public MessageCollector getCollector() {
+        return collector;
+    }
+
+    public TaskCoordinator getCoordinator() {
+        return coordinator;
     }
 }

@@ -7,10 +7,10 @@ import net.minidev.json.parser.ParseException;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- * helper class that should be used when initiating {@link FSProcessContextualMessage}
+ * helper class that should be used when initiating {@link ProcessMessageContext}
  * Created by baraks on 12/19/2016.
  */
-public class FSProcessContextualMessageUtil {
+public class ProcessMessageContextUtil {
 
     public static JSONObject parseJsonMessage(String msg, AtomicLong parseToJsonCounter,AtomicLong parseToJsonExceptionCounter) throws ParseException {
         JSONObject jsonObject = null;

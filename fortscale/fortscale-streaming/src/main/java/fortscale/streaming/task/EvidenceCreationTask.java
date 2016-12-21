@@ -11,7 +11,8 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -200,8 +201,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
-								  TaskCoordinator coordinator) throws Exception {
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 
 		JSONObject message = contextualMessage.getMessageAsJson();
 		String inputTopic = contextualMessage.getTopicName();
@@ -225,6 +225,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		} else if (dataSourceConfiguration.dataEntitiesIdsField != null) {
 			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField,true);
 		}
+		SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
+		MessageCollector collector = samzaProcessMessageContext.getCollector();
 		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntitiesIds.get(0));
 		if (dataSourceConfiguration.anomalyFields != null) {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {

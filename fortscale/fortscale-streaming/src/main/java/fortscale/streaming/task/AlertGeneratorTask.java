@@ -11,9 +11,8 @@ import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
 import fortscale.streaming.alert.statement.decorators.StatementDecorator;
 import fortscale.streaming.alert.subscribers.AbstractSubscriber;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
-import fortscale.streaming.task.message.SamzaProcessContextualMessage;
-import fortscale.streaming.task.message.UnsupportedMessageTypeException;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
@@ -92,16 +91,12 @@ public class AlertGeneratorTask extends AbstractStreamTask
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 	}
 
-	@Override protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
-											TaskCoordinator coordinator) throws Exception {
+	@Override protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 		// parse the message into json
 		String inputTopic = contextualMessage.getTopicName();
-		if(!(contextualMessage instanceof SamzaProcessContextualMessage))
-		{
-			throw new UnsupportedMessageTypeException(contextualMessage);
-		}
+
 		if (inputTopicMapping.containsKey(inputTopic)) {
-			Object info = convertMessageToEsperRepresentationObject(((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope(), inputTopic);
+			Object info = convertMessageToEsperRepresentationObject(((SamzaProcessMessageContext) contextualMessage).getIncomingMessageEnvelope(), inputTopic);
 			if (info != null) {
 
 				createDynamicStatements(inputTopic, info);

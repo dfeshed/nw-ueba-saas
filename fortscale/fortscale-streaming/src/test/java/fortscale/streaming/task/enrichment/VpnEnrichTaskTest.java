@@ -5,7 +5,7 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.task.GeneralTaskTest;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import org.apache.samza.system.OutgoingMessageEnvelope;
@@ -94,9 +94,9 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         when(vpnEnrichService.getTimeStampFieldName()).thenReturn("date_time_unix");
 
         // prepare envelope
-        FSProcessContextualMessage contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
-        task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
+        task.ProcessMessage(contextualMessage);
         task.wrappedClose();
         // validate the services were read
         verify(vpnEnrichService).processVpnEvent(any(JSONObject.class), eq(messageCollector));
@@ -133,10 +133,10 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
         // prepare envelope
-        FSProcessContextualMessage contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
         // run the process on the envelope
         task.wrappedCreateTaskMetrics();
-        task.wrappedProcess(contextualMessage , messageCollector, taskCoordinator);
+        task.ProcessMessage(contextualMessage);
         task.wrappedClose();
 
         //reset the mocks so it clears counters for the sake of next test

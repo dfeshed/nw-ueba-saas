@@ -1,7 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.service.task.EventScoringPersistencyTaskService;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
@@ -32,7 +32,7 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
     }
 
     @Override
-    protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
         processedMessageCount.inc();
 
         // enables persist due to message in control topic

@@ -6,7 +6,7 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
 import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
@@ -48,7 +48,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	}
 
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 		if (entityEventService != null) {
 			// Get the input topic
 			String topic = contextualMessage.getTopicName();

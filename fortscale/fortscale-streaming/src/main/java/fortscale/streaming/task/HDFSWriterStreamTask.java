@@ -13,7 +13,8 @@ import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskTableWriterMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
@@ -164,8 +165,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	/** Write the incoming message fields to hdfs */
 	@Override
-	public void wrappedProcess(FSProcessContextualMessage contextualMessage,
-							   MessageCollector collector, TaskCoordinator coordinator)
+	public void ProcessMessage(ProcessMessageContext contextualMessage)
 			throws Exception {
 		// parse the message into json
 
@@ -242,6 +242,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 							try {
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
+								SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
+								MessageCollector collector = samzaProcessMessageContext.getCollector();
 								collector.send(output);
                                 writerConfiguration.tableWriterMetrics.writeToOutputTopicMessages++;
 							} catch (Exception exception) {
@@ -272,7 +274,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	 * filter message method that can be used by overriding instances to control 
 	 * which messages are written
 	 */
-	private boolean filterMessage(FSProcessContextualMessage message, List<MessageFilter> filters) {
+	private boolean filterMessage(ProcessMessageContext message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
 			if (filter.filter(message.getMessageAsJson())) {
 				if (filter.monitorIfFiltered()) {

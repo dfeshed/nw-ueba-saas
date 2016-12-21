@@ -7,7 +7,7 @@ import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.tagging.TagService;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -83,7 +83,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
 
     @Override
-    public void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception
+    public void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception
     {
 
         ComputerUsageType sourceComputerType;

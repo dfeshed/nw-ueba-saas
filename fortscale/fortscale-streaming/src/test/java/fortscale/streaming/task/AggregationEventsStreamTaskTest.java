@@ -1,11 +1,10 @@
 package fortscale.streaming.task;
 
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
 import org.json.JSONException;
 import org.junit.*;
 
@@ -29,12 +28,12 @@ public class AggregationEventsStreamTaskTest extends AbstractTaskTest{
             initTest(config, context);
         }
         @Override
-        protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
-                                      TaskCoordinator coordinator) throws Exception {
+        protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
             //1. call the process function of the tested task
-            super.wrappedProcess(contextualMessage, collector, coordinator);
+            super.ProcessMessage(contextualMessage);
             //2. run teh test process function
-            processTest(contextualMessage, collector, coordinator);
+            SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
+            processTest(contextualMessage, samzaProcessMessageContext.getCollector(), samzaProcessMessageContext.getCoordinator());
         }
     }
 

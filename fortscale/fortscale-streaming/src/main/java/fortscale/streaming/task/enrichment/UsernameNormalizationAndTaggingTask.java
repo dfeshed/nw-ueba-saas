@@ -12,9 +12,8 @@ import fortscale.streaming.service.usernameNormalization.UsernameNormalizationCo
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.UsernameNormalizationAndTaggingTaskMetrics;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
-import fortscale.streaming.task.message.SamzaProcessContextualMessage;
-import fortscale.streaming.task.message.UnsupportedMessageTypeException;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -134,18 +133,15 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 		// Get the input topic
 		String inputTopic = contextualMessage.getTopicName();
 
 		String messageAsString = contextualMessage.getMessageAsString();
 		if (topicToServiceMap.containsKey(inputTopic)) {
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
-			if(!(contextualMessage instanceof SamzaProcessContextualMessage))
-			{
-				throw new UnsupportedMessageTypeException(contextualMessage);
-			}
-			cachingService.handleNewValue((String) ((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getKey(), messageAsString);
+
+			cachingService.handleNewValue((String) ((SamzaProcessMessageContext) contextualMessage).getIncomingMessageEnvelope().getKey(), messageAsString);
 		} else {
 			JSONObject message = contextualMessage.getMessageAsJson();
 			taskMetrics.parsedToJSONMessages++;
@@ -209,6 +205,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// send the event to the output topic
 			String outputTopic = usernameNormalizationConfig.getOutputTopic();
 			try {
+				MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(usernameNormalizationConfig.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
 				taskMetrics.failedToForwardMessage++;

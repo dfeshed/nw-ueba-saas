@@ -1,6 +1,6 @@
 package fortscale.streaming.task;
 
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.utils.ResettableCountDownLatch;
 import fortscale.utils.logging.Logger;
 import org.apache.samza.config.Config;
@@ -38,7 +38,7 @@ public interface TestTask {
 
     }
 
-    public default void processTest(FSProcessContextualMessage message, MessageCollector collector,
+    public default void processTest(ProcessMessageContext message, MessageCollector collector,
                                     TaskCoordinator coordinator) {
         String messageText = message.getMessageAsString();
         received.add(messageText);

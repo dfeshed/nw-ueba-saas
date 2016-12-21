@@ -19,8 +19,8 @@ import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.AbstractStreamTask;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
-import fortscale.streaming.task.message.SamzaProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
@@ -132,24 +132,21 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 	 * This is the process part of the Samza job
 	 * At this part we retrieve message from the needed topic and based on the input topic we start the needed service
 	 * @param contextualMessage
-	 * @param collector
-	 * @param coordinator
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector,
-								  TaskCoordinator coordinator) throws Exception {
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 
 		// Get the input topic- only to resolve computer caching
 		String inputTopicComputerCache = contextualMessage.getTopicName();
 
 		if (topicToServiceMap.containsKey(inputTopicComputerCache)) {
-			if(!(contextualMessage instanceof SamzaProcessContextualMessage))
+			if(!(contextualMessage instanceof SamzaProcessMessageContext))
 			{
 				throw new UnsupportedOperationException(contextualMessage.getClass().getName() + "is currently not supported");
 			}
 			CachingService cachingService = topicToServiceMap.get(inputTopicComputerCache);
-			Object msgKey = ((SamzaProcessContextualMessage) contextualMessage).getIncomingMessageEnvelope().getKey();
+			Object msgKey = ((SamzaProcessMessageContext) contextualMessage).getIncomingMessageEnvelope().getKey();
 			cachingService.handleNewValue((String) msgKey, contextualMessage.getMessageAsString());
 		} else {
 			// parse the message into json
@@ -186,6 +183,8 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(configKey)), computerTaggingService.getPartitionKey(configKey  , message), message.toJSONString());
 				handleUnfilteredEvent(message, configKey);
+				MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
+
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and normalization", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);

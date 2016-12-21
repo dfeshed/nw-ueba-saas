@@ -6,7 +6,8 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.model.ModelBuildingRegistrationService;
 import fortscale.streaming.service.model.ModelBuildingSamzaStore;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.*;
@@ -34,10 +35,11 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	}
 
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
 		JSONObject event = contextualMessage.getMessageAsJson();
 
 		if (modelBuildingListener != null) {
+			MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
 			modelBuildingListener.setMessageCollector(collector);
 		}
 

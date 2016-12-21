@@ -4,7 +4,7 @@ import fortscale.services.ServersListConfiguration;
 import fortscale.services.impl.ServersListConfigurationImpl;
 import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +54,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask {
 	}
 	
 	@Override
-	protected boolean acceptMessage(FSProcessContextualMessage contextualMessage) {
+	protected boolean acceptMessage(ProcessMessageContext contextualMessage) {
 
 		JSONObject message = contextualMessage.getMessageAsJson();
 		StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();

@@ -2,7 +2,8 @@ package fortscale.streaming.task;
 
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.aggregation.AggregatorManager;
-import fortscale.streaming.task.message.FSProcessContextualMessage;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.SamzaProcessMessageContext;
 import fortscale.streaming.task.metrics.AggregationEventsStreamTaskMetrics;
 import fortscale.utils.ConversionUtils;
 import fortscale.utils.logging.Logger;
@@ -44,12 +45,14 @@ public class AggregationEventsStreamTask extends AbstractStreamTask implements I
 	}
 
 	@Override
-	protected void wrappedProcess(FSProcessContextualMessage contextualMessage, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		String messageText = contextualMessage.getMessageAsString();
+	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+
 		JSONObject event = contextualMessage.getMessageAsJson();
 		String topic = contextualMessage.getTopicName();
 		Long epochtime = ConversionUtils.convertToLong(event.get(dateFieldName));
-
+		SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
+		MessageCollector collector = samzaProcessMessageContext.getCollector();
+		TaskCoordinator coordinator = samzaProcessMessageContext.getCoordinator();
 		if (epochtime != null) {
 			if (controlTopic.equals(topic)) {
 				logger.info("received message at controlTopic: {}",event.toJSONString());
