@@ -459,7 +459,7 @@ $ember-power-select-line-height: 2rem;
   .ember-power-select-option {
     white-space: nowrap;
     text-overflow: ellipsis;
-    overflow: auto;
+    overflow: hidden;
     padding-right:rsa-whitespace(less);
   }
 }
