@@ -1,6 +1,5 @@
 package fortscale.aggregation.feature.bucket.repository.state;
 
-import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -9,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
 
-@Document(collection = FeatureBucketMetadata.COLLECTION_NAME)
+@Document(collection = FeatureBucketState.COLLECTION_NAME)
 public class FeatureBucketState extends AbstractDocument {
     public static final String COLLECTION_NAME = "FeatureBucketState";
 

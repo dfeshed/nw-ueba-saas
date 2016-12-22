@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
@@ -41,6 +42,17 @@ public class FeatureBucketStateServiceTest {
 
     @Autowired
     FeatureBucketStateService featureBucketStateService;
+
+    @Autowired
+    MongoTemplate mongoTemplate;
+
+    @Test
+    public void testCollectionExists(){
+        long time = System.currentTimeMillis()/1000;
+        featureBucketStateService.updateFeatureBucketState(time);
+
+        Assert.assertTrue(mongoTemplate.getCollectionNames().contains(FeatureBucketState.COLLECTION_NAME));
+    }
 
     @Test
     public void testUpdateState_NoExistingValue(){
