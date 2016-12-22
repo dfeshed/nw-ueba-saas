@@ -130,7 +130,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		assertEquals(HOST_NAME, sensitiveMachineService.getCache().get(HOST_NAME));
 
 		// prepare envelope
-		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic");
+		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic",messageCollector,taskCoordinator);
 
 		// run the process on the envelope
 		task.ProcessMessage(contextualMessage);

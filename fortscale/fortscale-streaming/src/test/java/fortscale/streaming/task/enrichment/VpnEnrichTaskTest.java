@@ -94,7 +94,8 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         when(vpnEnrichService.getTimeStampFieldName()).thenReturn("date_time_unix");
 
         // prepare envelope
-        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream,
+                null ,MESSAGE  , INPUT_TOPIC, messageCollector, taskCoordinator);
         // run the process on the envelope
         task.ProcessMessage(contextualMessage);
         task.wrappedClose();
@@ -133,7 +134,7 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
         // prepare envelope
-        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE , INPUT_TOPIC, messageCollector, taskCoordinator);
         // run the process on the envelope
         task.wrappedCreateTaskMetrics();
         task.ProcessMessage(contextualMessage);

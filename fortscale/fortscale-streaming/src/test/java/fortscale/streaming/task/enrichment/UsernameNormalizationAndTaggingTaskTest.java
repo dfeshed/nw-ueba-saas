@@ -182,7 +182,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// prepare envelope
 		String username = "USER_NAME";
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(username) , "usernameUpdatesTopic");
-		ProcessMessageContext contextualMessage = new SamzaProcessMessageContext(envelope, true, null , null );
+		ProcessMessageContext contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector, taskCoordinator);
 
 		// run the process on the envelope
 		task.ProcessMessage(contextualMessage);
