@@ -159,7 +159,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		doAnswer(answer).when(task.machineNormalizationService).normalizeEvent(any(MachineNormalizationConfig.class),any(JSONObject.class));
 
 		// prepare envelope
-		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic");
+		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic",messageCollector,taskCoordinator);
 
 		// run the process on the envelope
 		task.ProcessMessage(contextualMessage);

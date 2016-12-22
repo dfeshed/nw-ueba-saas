@@ -109,7 +109,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_2, "input1");
-		ProcessMessageContext contextualMessage = new SamzaProcessMessageContext(envelope, true, null , null );
+		ProcessMessageContext contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector , taskCoordinator );
 		// run the process on the envelope
 		task.ProcessMessage(contextualMessage);
 
@@ -128,7 +128,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key", MESSAGE_1, "input1");
-		contextualMessage = new SamzaProcessMessageContext(envelope, true,  null , null );
+		contextualMessage = new SamzaProcessMessageContext(envelope, true,  messageCollector , taskCoordinator);
 
 		// run the process on the envelope
 		task.ProcessMessage(contextualMessage);
@@ -146,7 +146,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		message = (JSONObject) JSONValue.parseWithException(MESSAGE_3);
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_3, "input1");
-		contextualMessage = new SamzaProcessMessageContext(envelope, true, null , null );
+		contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector , taskCoordinator );
 		// run the process on the envelope
 		task.ProcessMessage(contextualMessage);
 		// validate normalization for username
@@ -162,7 +162,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 				.thenReturn("User 4");
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_4, "input1");
-		contextualMessage = new SamzaProcessMessageContext(envelope, true, null , null );
+		contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector , taskCoordinator );
 		// run the process on the envelope
 		task.ProcessMessage(contextualMessage);
 		// validate normalization for username
