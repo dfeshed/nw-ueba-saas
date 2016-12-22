@@ -73,14 +73,16 @@ public class NTLMTest {
 								"\"2015-12-10T05:40:05.000+0200\",,\"splunk-ldap\",0x0,\"FS-DC-01\",\"Fs-DC-01.Fortscale.dom\"",
                                 //To lower case test:
                                 "\"2015-12-10T05:43:11.000+0200\",esm,0X6,MCAFEE,\"Fs-DC-01.Fortscale.dom\"",
-								"2016-05-15T11:00:00.000+0000,TEST@test.com,0x0,\\\\TEST-PRD-03,TEST-TYO1-C1-6.test.com"
+								"2016-05-15T11:00:00.000+0000,TEST@test.com,0x0,\\\\TEST-PRD-03,TEST-TYO1-C1-6.test.com",
+								"\"2015-12-10T05:43:11.000+0200\",esm,0x0,MCAFEE,\"192.168.1.26\""
 						),
 						$(
 								(String)null,
 								"2015-12-10 03:43:11,1449718991,esm,0x0,MCAFEE,Fs-DC-01.Fortscale.dom",
 								(String)null,
                                 "2015-12-10 03:43:11,1449718991,esm,0x6,MCAFEE,Fs-DC-01.Fortscale.dom",
-								"2016-05-15 11:00:00,1463310000,TEST@test.com,0x0,TEST-PRD-03,TEST-TYO1-C1-6.test.com"
+								"2016-05-15 11:00:00,1463310000,TEST@test.com,0x0,TEST-PRD-03,TEST-TYO1-C1-6.test.com",
+								"\"2015-12-10T05:43:11.000+0200\",esm,0x0,MCAFEE,\"192.168.1.26\""
 						)
 				)
 
