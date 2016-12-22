@@ -64,7 +64,7 @@ public class AdFetchJob extends FortscaleJob {
 
 		// random generated ID for deployment wizard fetch and ETL results
 		try {
-			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 			if (resultsId != null) {
 				resultsKey = key.getName().toLowerCase() + "." + resultsId;
 			}
