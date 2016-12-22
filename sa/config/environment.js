@@ -14,6 +14,13 @@ module.exports = function(environment) {
     environment: environment,
     rootURL: '/',
     locationType: 'auto',
+    flashMessageDefaults: {
+      timeout: 5000,
+      iconSize: 'larger',
+      iconStyle: 'lined',
+      type: 'info',
+      types: ['info', 'success', 'warning', 'error']
+    },
     moment: {
       includeLocales: ['en', 'ja'],
       includeTimezone: '2010-2020'

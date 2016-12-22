@@ -1,0 +1,56 @@
+.rsa-flash-messages {
+  @include rsa-layer(above);
+  position: absolute;
+  top: rsa-whitespace();
+  left: 33%;
+  right: 33%;
+
+  .alert {
+    position: relative;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: rsa-whitespace() rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
+    margin-bottom: rsa-whitespace();
+
+    &.alert-info {
+      border: 1px solid rsa-color(blue);
+      background-color: rsa-color(blue, base, $rsa-nearly-opaque);
+    }
+
+    &.alert-success {
+      border: 1px solid rsa-color(green);
+      background-color: rsa-color(green, dark, $rsa-nearly-opaque);
+    }
+
+    &.alert-warning {
+      border: 1px solid rsa-color(amber);
+      background-color: rsa-color(amber, dark, $rsa-nearly-opaque);
+    }
+
+    &.alert-error {
+      border: 1px solid rsa-color(red);
+      background-color: rsa-color(red, base, $rsa-nearly-opaque);
+    }
+
+    .rsa-icon-close {
+      position: absolute;
+      right: rsa-whitespace();
+      top: rsa-whitespace(more);
+    }
+
+    p {
+      @include rsa-font(paragraph);
+      color: rsa-color(gray, lightest);
+      display: inline-block;
+      position: relative;
+      top: -11px;
+    }
+
+    .rsa-icon {
+      color: rsa-color(gray, lightest);
+      display: inline-block;
+      margin-right: rsa-whitespace(less);
+    }
+  }
+}

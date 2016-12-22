@@ -1,15 +1,12 @@
-<div id="modalDestination"></div>
-{{#rsa-application-modal
-  label="Critical Error"
-  style='error'
-  eventId='fatalError'
-  modalDidClose='clearFatalErrorQueue'}}
-  <div class='modal-content'>
-    {{#each fatalErrors.queue as |error|}}
-      <p>{{error}}</p>
-    {{/each}}
-  </div>
-{{/rsa-application-modal}}
+<ul class="rsa-flash-messages">
+  {{#each flashMessages.queue as |flash|}}
+    {{#flash-message tagName="li" flash=flash as |component flash|}}
+      {{rsa-icon name="close"}}
+      {{rsa-icon name=flash.iconName style=flash.iconStyle size=flash.iconSize}}
+      <p>{{flash.message}}</p>
+    {{/flash-message}}
+  {{/each}}
+</ul>
 
 {{#if isFullyAuthenticated}}
   {{#rsa-application-header version=version title=title}}
@@ -40,3 +37,16 @@
 {{else}}
   {{outlet}}
 {{/if}}
+
+<div id="modalDestination"></div>
+{{#rsa-application-modal
+  label="Critical Error"
+  style='error'
+  eventId='fatalError'
+  modalDidClose='clearFatalErrorQueue'}}
+  <div class='modal-content'>
+    {{#each fatalErrors.queue as |error|}}
+      <p>{{error}}</p>
+    {{/each}}
+  </div>
+{{/rsa-application-modal}}

@@ -2218,6 +2218,14 @@ ember-cli-eslint@3.0.0:
     rsvp "^3.2.1"
     walk-sync "^0.3.0"
 
+ember-cli-flash@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/ember-cli-flash/-/ember-cli-flash-1.4.0.tgz#0a831b406e98a0f62027e2706cbe581a1bf4f608"
+  dependencies:
+    ember-cli-babel "^5.1.6"
+    ember-cli-htmlbars "^1.0.3"
+    ember-runtime-enumerable-includes-polyfill "^1.0.1"
+
 ember-cli-get-component-path-option@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/ember-cli-get-component-path-option/-/ember-cli-get-component-path-option-1.0.0.tgz#0d7b595559e2f9050abed804f1d8eff1b08bc771"
@@ -2741,7 +2749,7 @@ ember-router-generator@^1.0.0:
   dependencies:
     recast "^0.11.3"
 
-ember-runtime-enumerable-includes-polyfill@^1.0.0:
+ember-runtime-enumerable-includes-polyfill@^1.0.0, ember-runtime-enumerable-includes-polyfill@^1.0.1:
   version "1.0.2"
   resolved "https://registry.npmjs.org/ember-runtime-enumerable-includes-polyfill/-/ember-runtime-enumerable-includes-polyfill-1.0.2.tgz#90f557b09a38e75fda0355b3f95adc6d77ffb756"
   dependencies:
@@ -4106,13 +4114,7 @@ interpret@^1.0.0:
   version "1.0.1"
   resolved "https://registry.npmjs.org/interpret/-/interpret-1.0.1.tgz#d579fb7f693b858004947af39fa0db49f795602c"
 
-invariant@^2.2.0:
-  version "2.2.1"
-  resolved "https://registry.npmjs.org/invariant/-/invariant-2.2.1.tgz#b097010547668c7e337028ebe816ebe36c8a8d54"
-  dependencies:
-    loose-envify "^1.0.0"
-
-invariant@^2.2.2:
+invariant@^2.2.0, invariant@^2.2.2:
   version "2.2.2"
   resolved "https://registry.npmjs.org/invariant/-/invariant-2.2.2.tgz#9e1f56ac0acdb6bf303306f338be3b204ae60360"
   dependencies:

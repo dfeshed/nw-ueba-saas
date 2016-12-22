@@ -116,6 +116,7 @@ body {
 @import 'routable-login';
 @import 'user-preferences-panel';
 @import 'application-notifications-panel';
+@import 'application-flash-messages';
 
 page, screen {
   min-height: calc(100vh - #{$applicationHeaderHeight});
