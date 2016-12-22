@@ -41,7 +41,7 @@ test('Iteration: verify all options are available in components', function(asser
     andThen(() => {
       assert.deepEqual(find('.ember-power-select-dropdown .ember-power-select-option')
           .map(trimText).get(),
-          ['Dashboard', 'Respond', 'Investigate', 'Investigate Classic', 'Live', 'Admin'], 'Default Landing Page');
+          ['Respond', 'Investigate', 'Investigate Classic', 'Monitor', 'Configure', 'Admin'], 'Default Landing Page');
     });
 
     // iterate time format options.

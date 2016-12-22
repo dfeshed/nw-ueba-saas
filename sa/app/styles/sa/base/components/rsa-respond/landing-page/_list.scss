@@ -47,9 +47,6 @@
     .rsa-respond-list__filter-panel__title {
       padding-top: 0;
     }
-    .rsa-form-slider {
-      padding: calc(#{rsa-whitespace(more)} + #{rsa-whitespace(less)}) rsa-whitespace() 0 0;
-    }
   }
 
   .rsa-content-badge-score {
@@ -138,6 +135,7 @@
 
     .rsa-data-table-header, .rsa-data-table-body-row {
       padding-left: rsa-whitespace(less);
+      box-sizing: border-box;
     }
   }
 }

@@ -58,8 +58,8 @@ export default {
       monitor: 'ja_Monitor',
       investigate: 'ja_Investigate',
       investigateClassic: 'ja_Investigate Classic',
-      dashboard: 'ja_Dashboard',
-      live: 'ja_Live',
+      dashboard: 'ja_Monitor',
+      live: 'ja_Configure',
       respond: 'ja_Respond',
       admin: 'ja_Admin'
     }

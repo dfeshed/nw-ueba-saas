@@ -56,7 +56,6 @@ body, html {
   height: 100%;
   width: 100%;
   overflow: hidden;
-  -ms-overflow-style: none;
 }
 
 body {
@@ -67,6 +66,10 @@ body {
   background-position: center center;
   background-attachment: fixed;
   background-size: 100% 100%;
+
+  scrollbar-base-color: rsa-color(gray);
+  scrollbar-track-color:  rsa-color(gray, darker);
+  scrollbar-arrow-color:  rsa-color(gray);
 
   &.rsa-application-loading {
     .rsa-loader{
@@ -89,11 +92,21 @@ body {
   }
 }
 
-&::scrollbar,
-&::scrollbar-thumb,
-&::scrollbar-track {
-  width: 0;
+::-webkit-scrollbar {
+  background: transparent;
+  width: rsa-whitespace();
 }
+
+::-webkit-scrollbar-thumb {
+  background: rsa-color(gray);
+  border-radius: rsa-whitespace(most);
+  border: 1px solid rsa-color(gray, dark);
+}
+
+::-webkit-scrollbar-track {
+  background: rsa-color(gray, darkest, $rsa-translucent);
+}
+
 
 @import 'application-header';
 @import 'application-content';

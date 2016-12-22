@@ -14,9 +14,6 @@ export default Service.extend({
   request: service(),
 
   options: [{
-    key: '/unified',
-    label: 'userPreferences.defaultLandingPage.dashboard'
-  }, {
     key: '/do/respond',
     label: 'userPreferences.defaultLandingPage.respond'
   }, {
@@ -25,6 +22,9 @@ export default Service.extend({
   }, {
     key: '/investigation',
     label: 'userPreferences.defaultLandingPage.investigateClassic'
+  }, {
+    key: '/unified',
+    label: 'userPreferences.defaultLandingPage.dashboard'
   }, {
     key: '/live',
     label: 'userPreferences.defaultLandingPage.live'

@@ -58,8 +58,8 @@ export default {
       monitor: 'Monitor',
       investigate: 'Investigate',
       investigateClassic: 'Investigate Classic',
-      dashboard: 'Dashboard',
-      live: 'Live',
+      dashboard: 'Monitor',
+      live: 'Configure',
       respond: 'Respond',
       admin: 'Admin'
     }

@@ -5,7 +5,7 @@
   left: $applicationActionBarWidth;
   right: 0;
   bottom: 0;
-  overflow-y: scroll;
+  overflow: hidden;
 
   &.is-full-page {
     top: 0;
