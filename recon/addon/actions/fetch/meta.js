@@ -27,7 +27,11 @@ const fetchMeta = ({ endpointId, eventId }) => {
           // call to events returns array of events
           // but this just has single event, yank that out
           // and pass along
-          resolve([data[0].sessionId, data[0].time, ...data[0].metas]);
+          resolve([
+            ['sessionId', data[0].sessionId],
+            ['time', data[0].time],
+            ...data[0].metas
+          ]);
         }
       }
     });
