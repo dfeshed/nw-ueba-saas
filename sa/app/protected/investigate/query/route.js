@@ -37,7 +37,6 @@ export default Route.extend({
 
       this.send('navFindOrAdd', filterAttrs);
     });
-
     return state;
   },
 
