@@ -6,9 +6,7 @@ moduleForComponent('rsa-investigate/query-bar', 'Integration | Component | rsa i
 });
 
 const broker = { id: 123, displayName: 'broker-1', name: 'BROKER' };
-const concentrator = { id: 456, displayName: 'concentrator-1', name: 'CONCENTRATOR' };
-const decoder = { id: 789, displayName: 'decoder-1', name: 'DECODER' };
-const timeRange = { id: 'LAST_24_HOURS', displayName: 'Last 24 Hours', seconds: 24 * 60 * 60 };
+const timeRange = { id: 'LAST_24_HOURS', name: 'Last 24 Hours', seconds: 24 * 60 * 60 };
 
 const submitSelector = '.js-test-investigate-query-bar__submit';
 
@@ -17,32 +15,54 @@ test('it renders', function(assert) {
   assert.equal(this.$('.rsa-investigate-query-bar').length, 1, 'Expected root DOM element.');
 });
 
-test('it invokes the onSubmit callback', function(assert) {
-  assert.expect(2);
+test('it invokes the onSubmit callback with required input', function(assert) {
+  assert.expect(1);
   this.set('myCallback', function() {
     assert.ok(true, 'onSubmit was invoked');
   });
+  this.set('selectedService', broker);
+  this.set('selectedTimeRange', timeRange);
 
-  this.set('services', [ decoder, concentrator, broker ]);
-  this.render(hbs`{{rsa-investigate/query-bar services=services onSubmit=myCallback}}`);
-
-  assert.equal(this.$(submitSelector).length, 1, 'Expected submit button DOM element.');
+  this.render(hbs`{{rsa-investigate/query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange onSubmit=myCallback}}`);
   this.$(submitSelector).trigger('click');
 });
 
-test('it disables the submit button if no service is selected', function(assert) {
-  this.set('services', []);
-  this.render(hbs`{{rsa-investigate/query-bar services=services onSubmit=myCallback}}`);
+test('it does not invoke the onSubmit callback when missing required input', function(assert) {
+  assert.expect(0);
+  this.set('myCallback', function() {
+    assert.ok(true, 'onSubmit was invoked');
+  });
+  this.set('selectedService', null);
+  this.set('selectedTimeRange', null);
+
+  this.render(hbs`{{rsa-investigate/query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange onSubmit=myCallback}}`);
+  this.$(submitSelector).trigger('click');
+
+  this.set('selectedService', broker);
+  this.set('selectedTimeRange', null);
+  this.$(submitSelector).trigger('click');
+
+  this.set('selectedService', null);
+  this.set('selectedTimeRange', timeRange);
+  this.$(submitSelector).trigger('click');
+});
+
+test('it disables(CSS) the submit button if required inputs are not selected', function(assert) {
+  assert.expect(1);
+  this.set('selectedService', null);
+  this.set('selectedTimeRange', null);
+  this.render(hbs`{{rsa-investigate/query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange}}`);
   assert.ok(
     this.$('.rsa-investigate-query-bar__submit').hasClass('is-disabled'),
     'Expected is-disabled CSS class on the submit button.'
   );
 });
 
-test('it enables the submit button if a service and timerange are selected', function(assert) {
+test('it enables(CSS) the submit button if required inputs are selected', function(assert) {
+  assert.expect(1);
   this.set('selectedService', broker);
   this.set('selectedTimeRange', timeRange);
-  this.render(hbs`{{rsa-investigate/query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange onSubmit=myCallback}}`);
+  this.render(hbs`{{rsa-investigate/query-bar selectedService=selectedService selectedTimeRange=selectedTimeRange}}`);
   assert.notOk(
     this.$('.rsa-investigate-query-bar__submit').hasClass('is-disabled'),
     'Did not expect is-disabled CSS class on the submit button.'

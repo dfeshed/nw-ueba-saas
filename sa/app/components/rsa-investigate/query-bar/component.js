@@ -89,25 +89,28 @@ export default Component.extend({
     // For now, submits hard-coded values to illustrate the workflow.
     // In an upcoming PR we will fill out this component with dynamic content and submit dynamic values.
     submit() {
-      const fn = this.get('onSubmit');
-      Logger.assert(
-        $.isFunction(fn),
-        'Invalid onSubmit action defined for rsa-query-bar. Action aborted.'
-      );
-      const serviceId = this.get('selectedService.id');
-      const timeRangeId = this.get('selectedTimeRange.id');
-      const timeRange = (this.get('timeRanges') || []).findBy('id', timeRangeId) || {};
-      const seconds = get(timeRange, 'seconds');
-      const toDate = +new Date() / 1000 | 0; // "/ 1000 | 0" removes milliseconds
-      // If user selects "All Data", seconds is zero; submit a start time of zero.
-      const fromDate = seconds ? toDate - seconds : 0;
-      const queryString = this.get('queryString');
-      fn(
-        serviceId,
-        fromDate,
-        toDate,
-        queryString
-      );
+      const submitEnabled = !this.get('submitDisabled');
+      if (submitEnabled) {
+        const fn = this.get('onSubmit');
+        Logger.assert(
+          $.isFunction(fn),
+          'Invalid onSubmit action defined for rsa-query-bar. Action aborted.'
+        );
+        const serviceId = this.get('selectedService.id');
+        const timeRangeId = this.get('selectedTimeRange.id');
+        const timeRange = (this.get('timeRanges') || []).findBy('id', timeRangeId) || {};
+        const seconds = get(timeRange, 'seconds');
+        const toDate = +new Date() / 1000 | 0; // "/ 1000 | 0" removes milliseconds
+        // If user selects "All Data", seconds is zero; submit a start time of zero.
+        const fromDate = seconds ? toDate - seconds : 0;
+        const queryString = this.get('queryString');
+        fn(
+          serviceId,
+          fromDate,
+          toDate,
+          queryString
+        );
+      }
     },
 
     /**
