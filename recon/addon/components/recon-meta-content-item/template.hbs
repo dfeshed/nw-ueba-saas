@@ -2,5 +2,9 @@
   {{name}}
 </hbox>
 <hbox xs="7" class="meta-value">
-  {{value}}
+  {{#if (eq name 'time')}}
+    {{rsa-content-datetime timestamp=value}}
+  {{else}}
+    {{value}}
+  {{/if}}
 </hbox>

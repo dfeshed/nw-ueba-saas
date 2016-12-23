@@ -22,6 +22,13 @@ export default Mixin.create({
      */
     reconOpen(endpointId, item, index) {
       const total = this.get('state.queryNode.value.results.eventCount.data');
+      if (item && item.metas) {
+        item.metas = [
+          ['sessionId', item.sessionId],
+          ['time', item.time],
+          ...item.metas
+        ];
+      }
       this.get('state.recon').setProperties({
         isOpen: true,
         item,

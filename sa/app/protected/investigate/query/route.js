@@ -37,13 +37,7 @@ export default Route.extend({
 
       this.send('navFindOrAdd', filterAttrs);
     });
-    if (state && state.recon && state.recon.item && state.recon.item.metas) {
-      state.recon.item.metas = [
-        ['sessionId', state.recon.item.sessionId],
-        ['time', state.recon.item.time],
-        ...state.recon.item.metas
-      ];
-    }
+
     return state;
   },
 
