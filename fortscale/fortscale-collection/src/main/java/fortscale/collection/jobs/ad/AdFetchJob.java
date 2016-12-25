@@ -151,7 +151,7 @@ public class AdFetchJob extends FortscaleJob {
 
 	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values)
 			throws IOException {
-		Boolean first = true;
+		boolean first = true;
 		while (values.hasMoreElements()) {
 			String value = (String)values.nextElement();
 			appendSingleAttributeElement(fileWriter, key, first, value);
