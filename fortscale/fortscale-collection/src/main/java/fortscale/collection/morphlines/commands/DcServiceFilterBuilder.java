@@ -12,6 +12,7 @@ import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -26,6 +27,7 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  *
  * @author Lior Govrin
  */
+@Configurable(preConstruction = true)
 public class DcServiceFilterBuilder implements CommandBuilder {
 	@Autowired
 	private ServersListConfiguration serversListConfiguration;
