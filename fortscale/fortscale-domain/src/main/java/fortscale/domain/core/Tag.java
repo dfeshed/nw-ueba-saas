@@ -69,7 +69,7 @@ public class Tag extends AbstractDocument{
 	@NotNull
 	private Boolean isAssignable;
 
-	boolean isPredefined;
+	private boolean isPredefined;
 
 	@NotNull
 	private List<String> rules;
