@@ -79,7 +79,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		task.topicToServiceMap.put("sensitiveMachineUpdatesTopic", sensitiveMachineService);
 		task.computerTaggingConfigs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new ComputerTaggingConfig("dataSource","lastState","outputTopic", "partitionField",new ArrayList<ComputerTaggingFieldsConfig>()));
 		List<MachineNormalizationFieldsConfig> machineNormalizationFieldsConfigs = new ArrayList<>();
-		machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig("hostname","normalized_src_machine"));
+		machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig("hostname","normalized_src_machine", true));
 		task.machineNormalizationConfigs.put(new StreamingTaskDataSourceConfigKey("dataSource","lastState"),new MachineNormalizationConfig("dataSource","lastState","outputTopic", "partitionField",machineNormalizationFieldsConfigs));
 
 		// Mocks
