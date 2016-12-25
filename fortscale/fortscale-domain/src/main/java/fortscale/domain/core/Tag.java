@@ -26,7 +26,7 @@ public class Tag extends AbstractDocument{
 	public static final String rulesField = "rules";
 	public static final String activeField = "active";
 	public static final String isAssignableField = "isAssignable";
-	public static final String isPreDefinedField = "isPreDefined";
+	public static final String isPredefinedField = "isPredefined";
 
 	public static final String ADMIN_TAG = "admin";
 	public static final String EXECUTIVE_TAG = "executive";
@@ -41,17 +41,17 @@ public class Tag extends AbstractDocument{
 		rules = new ArrayList<>();
 		active = true;
 		isAssignable = true;
-		isPreDefined = false;
+		isPredefined = false;
 	}
 
-	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean isAssignable, boolean isPreDefined) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean isAssignable, boolean isPredefined) {
 		this.name = name;
 		this.displayName = displayName;
 		this.isAssignable = isAssignable;
-		createsIndicator = setCreatesIndicator ? true : false;
+		createsIndicator = setCreatesIndicator;
 		rules = new ArrayList<>();
 		active = true;
-		this.isPreDefined = isPreDefined;
+		this.isPredefined = isPredefined;
 	}
 
 	@NotBlank
@@ -69,7 +69,7 @@ public class Tag extends AbstractDocument{
 	@NotNull
 	private Boolean isAssignable;
 
-	boolean isPreDefined;
+	boolean isPredefined;
 
 	@NotNull
 	private List<String> rules;
@@ -122,12 +122,12 @@ public class Tag extends AbstractDocument{
 		this.isAssignable = isAssignable;
 	}
 
-	public boolean isPreDefined() {
-		return isPreDefined;
+	public boolean isPredefined() {
+		return isPredefined;
 	}
 
-	public void setPreDefined(boolean preDefined) {
-		isPreDefined = preDefined;
+	public void setPredefined(boolean predefined) {
+		isPredefined = predefined;
 	}
 
 	@Override
