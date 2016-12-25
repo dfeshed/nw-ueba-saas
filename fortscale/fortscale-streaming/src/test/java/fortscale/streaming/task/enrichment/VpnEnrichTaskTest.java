@@ -116,7 +116,8 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     @Test(expected = KafkaPublisherException.class)
     public void wrappedProcess_kafkaException() throws Exception {
 
-
+        // Create the task metrics (because init() is not called)
+        task.createTaskMetrics();
 
         //stub
         Map map = new HashMap();

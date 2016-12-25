@@ -78,7 +78,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		taskMonitoringHelper = mock(TaskMonitoringHelper.class);
 		task.setTaskMonitoringHelper(taskMonitoringHelper);
 		//Mockito.when(taskMonitoringHelper.handleUnFilteredEvents(Any)).thenReturn();
-
+		task.createTaskMetrics();
 		task.dataSourceToConfigurationMap = new HashMap<>();
 	}
 
@@ -182,6 +182,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// prepare envelope
 		String username = "USER_NAME";
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(username) , "usernameUpdatesTopic");
+
 		ProcessMessageContext contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector, taskCoordinator ,task);
 
 		// run the process on the envelope
