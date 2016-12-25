@@ -17,7 +17,7 @@ import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.IpResolvingStreamTaskMetrics;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.mutable.MutableBoolean;
@@ -63,7 +63,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     protected IpResolvingStreamTaskMetrics taskMetrics;
 
     @Override
-    protected void wrappedInit(Config config, TaskContext context) throws Exception {
+    protected void processInit(Config config, TaskContext context) throws Exception {
 
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
@@ -155,17 +155,17 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
     @Override
-    protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+    protected void processMessage(ProcessMessageContext messageContext) throws Exception {
         //if the message came from one of the cache updates topics, if so than update the resolving cache
         // with the update message
-        String topic = contextualMessage.getTopicName();
+        String topic = messageContext.getTopicName();
 
-        SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
+        StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
 		//in case of vpn ip update - (session was closed and the ip was related to this session , we need to mark all the resolving for that ip in the period time of the session )
 		if (topic.equals(vpnIpPoolUpdaterTopicName))
 		{
             taskMetrics.vpnIpPoolUpdatesMessages++;
-			JSONObject message = contextualMessage.getMessageAsJson();
+			JSONObject message = messageContext.getMessageAsJson();
 			String ip = convertToString(message.get("ip"));
 			ipResolvingService.removeIpFromCache(ip);
 
@@ -176,14 +176,14 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             taskMetrics.cacheUpdatesMessages++;
             CachingService cachingService = topicToCacheMap.get(topic);
 
-            cachingService.handleNewValue((String) samzaProcessMessageContext.getIncomingMessageEnvelope().getKey(), contextualMessage.getMessageAsString());
+            cachingService.handleNewValue((String) streamingProcessMessageContext.getIncomingMessageEnvelope().getKey(), messageContext.getMessageAsString());
         } else {
 
             taskMetrics.eventMessages++;
 
-            JSONObject message = contextualMessage.getMessageAsJson();
+            JSONObject message = messageContext.getMessageAsJson();
 
-            StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
+            StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
             if (configKey == null){
                 // Note this event is counted at the common task metrics, hence no need to count it again
                 taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
@@ -218,7 +218,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                             message.toJSONString());
                     handleUnfilteredEvent(message,configKey);
 
-                    samzaProcessMessageContext.getCollector().send(output);
+                    streamingProcessMessageContext.getCollector().send(output);
                     taskMetrics.sentEventMessages++;
                     eventResolvingConfig.getMetrics().sentEventMessages++;
 
@@ -237,10 +237,10 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
     @Override
-    protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {}
+    protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {}
 
     @Override
-    protected void wrappedClose() throws Exception {
+    protected void processClose() throws Exception {
         // close all leveldb resolving caches
         for(CachingService cachingService: topicToCacheMap.values()) {
             cachingService.getCache().close();

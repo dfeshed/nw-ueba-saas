@@ -10,7 +10,7 @@ import fortscale.streaming.service.tagging.FieldTaggingService;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingConfig;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
@@ -47,7 +47,7 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
@@ -86,17 +86,17 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	/**
 	 * This is the process part of the Samza job
 	 * At this part we retrieve message from the needed topic and based on the input topic we start the needed service
-	 * @param contextualMessage
+	 * @param messageContext
 	 * @throws Exception
 	 */
 	@Override
-	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 
 		// parse the message into json
-		JSONObject event = contextualMessage.getMessageAsJson();
+		JSONObject event = messageContext.getMessageAsJson();
 
 
-		StreamingTaskDataSourceConfigKey key = contextualMessage.getStreamingTaskDataSourceConfigKey();
+		StreamingTaskDataSourceConfigKey key = messageContext.getStreamingTaskDataSourceConfigKey();
 
 		if (key != null && topicToServiceMap.containsKey(key)) {
 
@@ -106,8 +106,8 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 			// construct outgoing message
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", fieldTaggingService.getOutPutTopic()), fieldTaggingService.getPartitionKey(event), event.toJSONString());
-				SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
-				MessageCollector collector = samzaProcessMessageContext.getCollector();
+				StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
+				MessageCollector collector = streamingProcessMessageContext.getCollector();
 				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from State %s to output topic %s after field tagging by list", key, fieldTaggingService.getOutPutTopic()), exception);
@@ -117,12 +117,12 @@ public class FieldTaggingByListTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 	}
 
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		for(FieldTaggingService fieldTaggingService: topicToServiceMap.values()) {
 			fieldTaggingService.close();
 		}

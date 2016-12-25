@@ -1,26 +1,28 @@
 package fortscale.streaming.task.message;
 
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
+import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
 import org.apache.samza.system.IncomingMessageEnvelope;
+import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 import static fortscale.streaming.task.AbstractStreamTask.DATA_SOURCE_FIELD_NAME;
 import static fortscale.streaming.task.AbstractStreamTask.LAST_STATE_FIELD_NAME;
-import static fortscale.streaming.task.message.ProcessMessageContextUtil.parseJsonMessage;
 
 /**
  * this class contains the original Samza message, and some useful meta data such as the message as json, its topic etc...
  *
  * Created by baraks on 12/12/2016.
  */
-public class SamzaProcessMessageContext implements ProcessMessageContext {
-    private static Logger logger = Logger.getLogger(SamzaProcessMessageContext.class);
+public class StreamingProcessMessageContext implements ProcessMessageContext {
+    private final static Logger logger = Logger.getLogger(StreamingProcessMessageContext.class);
+    private final AbstractStreamTask streamTask;
     private TaskCoordinator coordinator;
     private MessageCollector collector;
     private String topicName;
@@ -28,31 +30,28 @@ public class SamzaProcessMessageContext implements ProcessMessageContext {
     private String messageAsString;
     private IncomingMessageEnvelope incomingMessageEnvelope;
     private StreamingTaskDataSourceConfigKey streamingTaskDataSourceConfigKey;
-    private AtomicLong messagesWithoutDataSourceNameCounter;
+    private StreamingTaskCommonMetrics streamingTaskCommonMetrics;
 
 
     /**
      *
      * @param incomingMessageEnvelope the original message
-     * @param messageShouldContainDataSourceField true if message-json should contain a dataSource field
-     * @param parseToJsonCounter by reference counter that will be updated(+1) when parsing message to json
-     * @param parseToJsonExceptionCounter by reference counter that will be updated(+1) when parsing message to json fails
-     * @param messagesWithoutDataSourceNameCounter by reference counter that will be updated(+1) get datasource from message fails
      * @param collector
      * @param coordinator
+     * @param streamTask
      * @throws ParseException in case the message cannot be parsed into jsonObject
      */
-    public SamzaProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, boolean messageShouldContainDataSourceField, AtomicLong parseToJsonCounter, AtomicLong parseToJsonExceptionCounter, AtomicLong messagesWithoutDataSourceNameCounter, MessageCollector collector, TaskCoordinator coordinator) throws ParseException {
+    public StreamingProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, MessageCollector collector, TaskCoordinator coordinator, AbstractStreamTask streamTask) throws ParseException {
+        this.streamTask = streamTask;
         this.incomingMessageEnvelope = incomingMessageEnvelope;
         this.messageAsString = (String) incomingMessageEnvelope.getMessage();
         this.topicName = getIncomingMessageTopicName(incomingMessageEnvelope);
-        this.messageAsJson = parseJsonMessage(messageAsString, parseToJsonCounter, parseToJsonExceptionCounter);
-        this.messagesWithoutDataSourceNameCounter = messagesWithoutDataSourceNameCounter;
+        this.messageAsJson = parseJsonMessage(messageAsString);
         this.collector = collector;
         this.coordinator = coordinator;
-        if(messageShouldContainDataSourceField) {
-            extractDataSourceConfigKey();
-        }
+        this.streamingTaskCommonMetrics = streamTask.getStreamingTaskCommonMetrics();
+        extractDataSourceConfigKey();
+        this.streamTask.countNewMessage(streamingTaskDataSourceConfigKey);
     }
 
     /**
@@ -62,8 +61,16 @@ public class SamzaProcessMessageContext implements ProcessMessageContext {
      * @param coordinator
      * @throws ParseException
      */
-    public SamzaProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, boolean messageShouldContainDataSourceField, MessageCollector collector, TaskCoordinator coordinator) throws ParseException {
-        this(incomingMessageEnvelope, messageShouldContainDataSourceField, null,null,null,collector , coordinator);
+    public StreamingProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, MessageCollector collector, TaskCoordinator coordinator) throws ParseException {
+        this(incomingMessageEnvelope, collector , coordinator, null);
+    }
+
+    /**
+     * @return message key indicates the partition
+     */
+    @Override
+    public String getKey() {
+        return (String) incomingMessageEnvelope.getKey();
     }
 
     /**
@@ -101,6 +108,15 @@ public class SamzaProcessMessageContext implements ProcessMessageContext {
 
     /**
      *
+     * @param outgoingMessage must be of type: {@link OutgoingMessageEnvelope}
+     */
+    @Override
+    public void send(Object outgoingMessage) {
+        collector.send((OutgoingMessageEnvelope) outgoingMessage);
+    }
+
+    /**
+     *
      * @return the original Samza message
      */
     public IncomingMessageEnvelope getIncomingMessageEnvelope() {
@@ -110,7 +126,7 @@ public class SamzaProcessMessageContext implements ProcessMessageContext {
     /**
      * Get topic name out of incoming message envelope
      *
-     * @param envelope - message received in {@link fortscale.streaming.task.AbstractStreamTask#ProcessMessage(ProcessMessageContext)}
+     * @param envelope - message received in {@link fortscale.streaming.task.AbstractStreamTask#processMessage(ProcessMessageContext)}
      * @return topic name of incoming message
      */
     private String getIncomingMessageTopicName(IncomingMessageEnvelope envelope) {
@@ -129,9 +145,8 @@ public class SamzaProcessMessageContext implements ProcessMessageContext {
         String lastState = messageAsJson.getAsString(LAST_STATE_FIELD_NAME);
 
         if (dataSource == null) {
-            if(messagesWithoutDataSourceNameCounter !=null) {
-                messagesWithoutDataSourceNameCounter.getAndIncrement();
-            }
+
+            streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
             logger.warn("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + messageAsString);
             return;
         }
@@ -144,5 +159,25 @@ public class SamzaProcessMessageContext implements ProcessMessageContext {
 
     public TaskCoordinator getCoordinator() {
         return coordinator;
+    }
+
+    /**
+     * @return toString you know...
+     */
+    @Override
+    public String toString()
+    {
+        return String.format("message=%s topic=%s key=%s",messageAsString,topicName,getKey());
+    }
+
+    public JSONObject parseJsonMessage(String msg) throws ParseException {
+        JSONObject jsonObject = null;
+        try {
+            streamingTaskCommonMetrics.parseMessageToJson++;
+            jsonObject = (JSONObject) JSONValue.parseWithException(msg);
+        } catch (Exception e) {
+            streamingTaskCommonMetrics.parseMessageToJsonExceptions++;
+        }
+        return jsonObject;
     }
 }

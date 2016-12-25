@@ -26,7 +26,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	private Counter receivedMessageCount;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 		// Create the entity event service
 		store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
 		entityEventService = new EntityEventService(store);
@@ -48,22 +48,22 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	}
 
 	@Override
-	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 		if (entityEventService != null) {
 			// Get the input topic
-			String topic = contextualMessage.getTopicName();
+			String topic = messageContext.getTopicName();
 			if(TASK_CONTROL_TOPIC.equals(topic)){
 				store.sync();
 				return;
 			}
-			JSONObject event = contextualMessage.getMessageAsJson();
+			JSONObject event = messageContext.getMessageAsJson();
 			receivedMessageCount.inc();
 			entityEventService.process(event);
 		}
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (entityEventService != null) {
 			KafkaEntityEventSender sender = new KafkaEntityEventSender(outputTopicName, collector);
 			entityEventService.sendNewEntityEventsAndUpdateStore(System.currentTimeMillis(), sender);
@@ -71,7 +71,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	}
 
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		entityEventService = null;
 	}
 }

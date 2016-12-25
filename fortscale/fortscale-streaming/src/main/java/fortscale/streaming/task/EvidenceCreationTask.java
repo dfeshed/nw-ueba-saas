@@ -12,7 +12,7 @@ import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
@@ -82,7 +82,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private Counter lastTimestampCount;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 
 		// Get the user service (for Mongo) from spring
 		evidencesService = SpringService.getInstance().resolve(EvidencesService.class);
@@ -201,11 +201,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 
-		JSONObject message = contextualMessage.getMessageAsJson();
-		String inputTopic = contextualMessage.getTopicName();
-		StreamingTaskDataSourceConfigKey configKey =contextualMessage.getStreamingTaskDataSourceConfigKey();
+		JSONObject message = messageContext.getMessageAsJson();
+		String inputTopic = messageContext.getTopicName();
+		StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 		DataSourceConfiguration dataSourceConfiguration = getDataSourceConfiguration(configKey, inputTopic);
 		if (dataSourceConfiguration == null)
 			return;
@@ -225,8 +225,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		} else if (dataSourceConfiguration.dataEntitiesIdsField != null) {
 			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField,true);
 		}
-		SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
-		MessageCollector collector = samzaProcessMessageContext.getCollector();
+		StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
+		MessageCollector collector = streamingProcessMessageContext.getCollector();
 		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntitiesIds.get(0));
 		if (dataSourceConfiguration.anomalyFields != null) {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {
@@ -444,7 +444,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// nothing
 	}
 
@@ -453,7 +453,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		// nothing
 	}
 

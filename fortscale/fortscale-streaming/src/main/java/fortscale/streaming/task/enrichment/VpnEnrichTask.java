@@ -7,7 +7,7 @@ import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.*;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.metrics.VpnEnrichTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
@@ -49,7 +49,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 	}
 
     @Override
-    protected void wrappedInit(Config config, TaskContext context) throws Exception {
+    protected void processInit(Config config, TaskContext context) throws Exception {
         // init geolocation service:
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
@@ -146,16 +146,11 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     }
 
     @Override
-    protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+    protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 
+        JSONObject message = messageContext.getMessageAsJson();
 
-        String messageText = contextualMessage.getMessageAsString();
-        JSONObject message = contextualMessage.getMessageAsJson();
-
-
-
-
-		StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
+		StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			++taskMetrics.filteredEvents;
 			++taskMetrics.badConfigs;
@@ -167,8 +162,8 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 		final String timeStampFieldName = vpnEnrichService.getTimeStampFieldName();
 		long timestamp = message.getAsNumber(timeStampFieldName).longValue();
 		taskMetrics.timestampEpoch = TimestampUtils.normalizeTimestamp(timestamp);
-		SamzaProcessMessageContext samzaProcessMessageContext = (SamzaProcessMessageContext) contextualMessage;
-		MessageCollector collector = samzaProcessMessageContext.getCollector();
+		StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
+		MessageCollector collector = streamingProcessMessageContext.getCollector();
 
         message = vpnEnrichService.processVpnEvent(message, collector);
 
@@ -178,7 +173,7 @@ public class VpnEnrichTask extends AbstractStreamTask  {
 			++taskMetrics.filteredEvents;
 			++taskMetrics.messageUserNameExtractionFailures;
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
-            logger.error("No username field in event {}. Dropping Record", messageText);
+            logger.error("No username field in event {}. Dropping Record", messageContext);
             return;
         }
         try {
@@ -196,12 +191,12 @@ public class VpnEnrichTask extends AbstractStreamTask  {
     }
 
     @Override
-    protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
     }
 
     @Override
-    protected void wrappedClose() throws Exception {
+    protected void processClose() throws Exception {
 
     }
 

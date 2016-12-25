@@ -20,7 +20,7 @@ import fortscale.streaming.service.tagging.computer.ComputerTaggingFieldsConfig;
 import fortscale.streaming.service.tagging.computer.ComputerTaggingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.StringPredicates;
 import net.minidev.json.JSONObject;
@@ -69,7 +69,7 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 	 * @param context
 	 * @throws Exception
 	 */
-	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	@Override protected void processInit(Config config, TaskContext context) throws Exception {
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		// initialize the computer tagging service only once for all streaming task instances. Since we can
@@ -131,27 +131,23 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 	/**
 	 * This is the process part of the Samza job
 	 * At this part we retrieve message from the needed topic and based on the input topic we start the needed service
-	 * @param contextualMessage
+	 * @param messageContext
 	 * @throws Exception
 	 */
 	@Override
-	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 
 		// Get the input topic- only to resolve computer caching
-		String inputTopicComputerCache = contextualMessage.getTopicName();
+		String inputTopicComputerCache = messageContext.getTopicName();
 
 		if (topicToServiceMap.containsKey(inputTopicComputerCache)) {
-			if(!(contextualMessage instanceof SamzaProcessMessageContext))
-			{
-				throw new UnsupportedOperationException(contextualMessage.getClass().getName() + "is currently not supported");
-			}
 			CachingService cachingService = topicToServiceMap.get(inputTopicComputerCache);
-			Object msgKey = ((SamzaProcessMessageContext) contextualMessage).getIncomingMessageEnvelope().getKey();
-			cachingService.handleNewValue((String) msgKey, contextualMessage.getMessageAsString());
+			Object msgKey = ((StreamingProcessMessageContext) messageContext).getIncomingMessageEnvelope().getKey();
+			cachingService.handleNewValue((String) msgKey, messageContext.getMessageAsString());
 		} else {
 			// parse the message into json
-			JSONObject message = contextualMessage.getMessageAsJson();
-			StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
+			JSONObject message = messageContext.getMessageAsJson();
+			StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 			if (configKey == null){
 				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 				return;
@@ -183,9 +179,8 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(configKey)), computerTaggingService.getPartitionKey(configKey  , message), message.toJSONString());
 				handleUnfilteredEvent(message, configKey);
-				MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
+				messageContext.send(output);
 
-				collector.send(output);
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and normalization", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);
 			}
@@ -195,7 +190,7 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 	}
 
@@ -205,7 +200,7 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		for(CachingService cachingService: topicToServiceMap.values()) {
 			cachingService.getCache().close();
 		}

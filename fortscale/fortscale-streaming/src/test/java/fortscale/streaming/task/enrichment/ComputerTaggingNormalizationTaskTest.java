@@ -105,7 +105,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(updateComputer) , "computerUpdatesTopic");
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate the computer was added to cache
 		// Need to check the name and can't use computer equals since the base class AbstractDocument uses in it's equals condition on id field not been null, and it's can't be set from outside (only by MongoDB)
 		assertEquals(updateComputer.getName(), ((Computer) computerService.getCache().get("key1")).getName());
@@ -117,7 +117,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, mapper.writeValueAsString(HOST_NAME)  , "sensitiveMachineUpdatesTopic");
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate the sensitiveMachine was added to cache
 		assertEquals(HOST_NAME, sensitiveMachineService.getCache().get(HOST_NAME));
 	}
@@ -133,7 +133,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic",messageCollector,taskCoordinator);
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate the sensitiveMachine is removed fom the cache
 		assertNull(sensitiveMachineService.getCache().get(HOST_NAME));
 	}
@@ -162,7 +162,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic",messageCollector,taskCoordinator);
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// verify the enriched message send to output topic
 		ArgumentCaptor<OutgoingMessageEnvelope> argument = ArgumentCaptor.forClass(OutgoingMessageEnvelope.class);
 		verify(messageCollector).send(argument.capture());

@@ -1,7 +1,7 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import net.minidev.json.parser.ParseException;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
@@ -17,13 +17,13 @@ public class GeneralTaskTest {
 
 	protected ProcessMessageContext getFSProcessContextualMessage(SystemStreamPartition systemStreamPartition,
 																  SystemStream systemStream, String key, String message, String topic) throws ParseException {
-		return new SamzaProcessMessageContext(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic),true, null , null );
+		return new StreamingProcessMessageContext(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic), null , null );
 	}
 	protected ProcessMessageContext getFSProcessContextualMessage(SystemStreamPartition systemStreamPartition,
 																  SystemStream systemStream, String key, String message,
 																  String topic, MessageCollector collector,
 																  TaskCoordinator coordinator) throws ParseException {
-		return new SamzaProcessMessageContext(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic),true, collector , coordinator);
+		return new StreamingProcessMessageContext(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic), collector , coordinator);
 	}
 	protected IncomingMessageEnvelope getIncomingMessageEnvelope(SystemStreamPartition systemStreamPartition,
 			SystemStream systemStream, String key, String message, String topic) {

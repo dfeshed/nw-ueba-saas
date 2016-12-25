@@ -54,10 +54,10 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask {
 	}
 	
 	@Override
-	protected boolean acceptMessage(ProcessMessageContext contextualMessage) {
+	protected boolean acceptMessage(ProcessMessageContext messageContext) {
 
-		JSONObject message = contextualMessage.getMessageAsJson();
-		StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
+		JSONObject message = messageContext.getMessageAsJson();
+		StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			++taskMetrics.cantExtractStateMessage;
@@ -115,7 +115,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask {
 		}
 
 
-        super.acceptMessage(contextualMessage);
+        super.acceptMessage(messageContext);
 		
 		return true;
 	}

@@ -13,7 +13,7 @@ import fortscale.streaming.service.usernameNormalization.UsernameNormalizationSe
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.UsernameNormalizationAndTaggingTaskMetrics;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
@@ -77,7 +77,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
@@ -133,20 +133,20 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 
 	@Override
-	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 		// Get the input topic
-		String inputTopic = contextualMessage.getTopicName();
+		String inputTopic = messageContext.getTopicName();
 
-		String messageAsString = contextualMessage.getMessageAsString();
+		String messageAsString = messageContext.getMessageAsString();
 		if (topicToServiceMap.containsKey(inputTopic)) {
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
 
-			cachingService.handleNewValue((String) ((SamzaProcessMessageContext) contextualMessage).getIncomingMessageEnvelope().getKey(), messageAsString);
+			cachingService.handleNewValue((String) ((StreamingProcessMessageContext) messageContext).getIncomingMessageEnvelope().getKey(), messageAsString);
 		} else {
-			JSONObject message = contextualMessage.getMessageAsJson();
+			JSONObject message = messageContext.getMessageAsJson();
 			taskMetrics.parsedToJSONMessages++;
 
-			StreamingTaskDataSourceConfigKey configKey = contextualMessage.getStreamingTaskDataSourceConfigKey();
+			StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 			if (configKey == null){
 				taskMetrics.unknownConfigurationKeyMessages++;
 				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
@@ -205,7 +205,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// send the event to the output topic
 			String outputTopic = usernameNormalizationConfig.getOutputTopic();
 			try {
-				MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
+				MessageCollector collector = ((StreamingProcessMessageContext) messageContext).getCollector();
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(usernameNormalizationConfig.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
 				taskMetrics.failedToForwardMessage++;
@@ -217,7 +217,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 
 	@Override
-	protected void wrappedClose() throws Exception {}
+	protected void processClose() throws Exception {}
 
 	@Override
 	protected String getJobLabel() {
@@ -225,7 +225,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// Do nothing
 	}
 

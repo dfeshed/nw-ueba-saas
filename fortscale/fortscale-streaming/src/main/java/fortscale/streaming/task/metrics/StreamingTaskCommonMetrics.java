@@ -7,8 +7,6 @@ import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.annotations.StatsDoubleMetricParams;
 import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 /**
  * Created by gaashh on 5/25/16.
  */
@@ -43,16 +41,16 @@ public class StreamingTaskCommonMetrics extends StatsMetricsGroup {
 
     // Number of message parsed to JSON
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public AtomicLong parseMessageToJson;
+    public long parseMessageToJson;
 
 
     // Number of exceptions thrown while parsing a message to JSON
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public AtomicLong parseMessageToJsonExceptions;
+    public long parseMessageToJsonExceptions;
 
     // Number of message without data source name in their JSON object
     @StatsDoubleMetricParams(rateSeconds = 1)
-    public AtomicLong messagesWithoutDataSourceName;
+    public long messagesWithoutDataSourceName;
 
     // Number of windows() task function calls
     @StatsDoubleMetricParams(rateSeconds = 1)

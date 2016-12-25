@@ -10,7 +10,7 @@ import fortscale.streaming.service.usernameNormalization.UsernameNormalizationCo
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.KeyValueStoreMock;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -109,9 +109,9 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// prepare envelope
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_2, "input1");
-		ProcessMessageContext contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector , taskCoordinator );
+		ProcessMessageContext contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator ,task);
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 
 		// validate no normalization for username (we already have it)
 		Mockito.verify(usernameNormalizationService, never()).normalizeUsername(eq(anyString()), anyString(), null);
@@ -128,10 +128,10 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key", MESSAGE_1, "input1");
-		contextualMessage = new SamzaProcessMessageContext(envelope, true,  messageCollector , taskCoordinator);
+		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator);
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate normalization for username
 		//Mockito.verify(usernameNormalizationService).normalizeUsername("user1", "domain", message);
 		// validate tagging
@@ -146,9 +146,9 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		message = (JSONObject) JSONValue.parseWithException(MESSAGE_3);
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_3, "input1");
-		contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector , taskCoordinator );
+		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator );
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate normalization for username
 		//Mockito.verify(usernameNormalizationService).normalizeUsername("user3", "domain", message, null, false);
 
@@ -162,9 +162,9 @@ public class UsernameNormalizationAndTaggingTaskTest {
 				.thenReturn("User 4");
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_4, "input1");
-		contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector , taskCoordinator );
+		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator );
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate normalization for username
 		//Mockito.verify(usernameNormalizationService).normalizeUsername("user4", "domain", message);
 		//Mockito.verify(usernameNormalizationService).getUsernameAsNormalizedUsername(eq("user4"), eq(any(JSONObject
@@ -182,10 +182,10 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// prepare envelope
 		String username = "USER_NAME";
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(username) , "usernameUpdatesTopic");
-		ProcessMessageContext contextualMessage = new SamzaProcessMessageContext(envelope, true, messageCollector, taskCoordinator);
+		ProcessMessageContext contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector, taskCoordinator);
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate the tag was added to cache
 		assertEquals(username,(String) usernameService.getCache().get("key1"));
 	}

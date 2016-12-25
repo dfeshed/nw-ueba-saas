@@ -12,9 +12,8 @@ import fortscale.streaming.alert.statement.decorators.DummyDecorator;
 import fortscale.streaming.alert.statement.decorators.StatementDecorator;
 import fortscale.streaming.alert.subscribers.AbstractSubscriber;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.MapConfig;
 import org.apache.samza.metrics.Counter;
@@ -62,7 +61,7 @@ public class AlertGeneratorTask extends AbstractStreamTask
 
 	private Counter lastTimestampCount;
 
-	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception{
+	@Override protected void processInit(Config config, TaskContext context) throws Exception{
 
 		// creating the esper configuration
 		Configuration esperConfig = new Configuration();
@@ -91,12 +90,12 @@ public class AlertGeneratorTask extends AbstractStreamTask
 				String.format("%s-last-message-epochtime", config.get("job.name")));
 	}
 
-	@Override protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+	@Override protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 		// parse the message into json
-		String inputTopic = contextualMessage.getTopicName();
+		String inputTopic = messageContext.getTopicName();
 
 		if (inputTopicMapping.containsKey(inputTopic)) {
-			Object info = convertMessageToEsperRepresentationObject(((SamzaProcessMessageContext) contextualMessage).getIncomingMessageEnvelope(), inputTopic);
+			Object info = convertMessageToEsperRepresentationObject(((StreamingProcessMessageContext) messageContext).getIncomingMessageEnvelope(), inputTopic);
 			if (info != null) {
 
 				createDynamicStatements(inputTopic, info);
@@ -109,16 +108,15 @@ public class AlertGeneratorTask extends AbstractStreamTask
 					keyValueStore.put(info.toString(), info);
 				}
 
-				String messageText = contextualMessage.getMessageAsString();
 				try {
 					if (inputTopicMapping.get(inputTopic).getTimeStampField()!=null) {
 						// parse the message into json
-						JSONObject message = (JSONObject) JSONValue.parse(messageText);
+						JSONObject message = messageContext.getMessageAsJson();
 						Long endTimestampSeconds = convertToLong(message.get(inputTopicMapping.get(inputTopic).getTimeStampField()));
 						lastTimestampCount.set(endTimestampSeconds);
                     }
 				} catch (Exception ex) {
-					logger.error("Failed to extract timestamp from message - {}, error is - {}", messageText, ex);
+					logger.error("Failed to extract timestamp from message - {}, error is - {}", messageContext, ex);
 				}
 			}
 		}
@@ -127,10 +125,10 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		}
 	}
 
-	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	@Override protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 	}
 
-	@Override protected void wrappedClose() throws Exception {
+	@Override protected void processClose() throws Exception {
 		for (EPStatement esperEventStatement : epsStatements) {
 			try {
 				esperEventStatement.destroy();
@@ -141,13 +139,6 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		}
 	}
 
-	/**
-	 * @return false, cause this class input messages does not contain dataSource field.
-     */
-	@Override protected boolean messageShouldContainDataSourceField()
-	{
-		return false;
-	}
 
 	/*
 	 *

@@ -97,8 +97,8 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream,
                 null ,MESSAGE  , INPUT_TOPIC, messageCollector, taskCoordinator);
         // run the process on the envelope
-        task.ProcessMessage(contextualMessage);
-        task.wrappedClose();
+        task.processMessage(contextualMessage);
+        task.processClose();
         // validate the services were read
         verify(vpnEnrichService).processVpnEvent(any(JSONObject.class), eq(messageCollector));
         verify(vpnEnrichService).getPartitionKey(any(JSONObject.class));
@@ -137,8 +137,8 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE , INPUT_TOPIC, messageCollector, taskCoordinator);
         // run the process on the envelope
         task.wrappedCreateTaskMetrics();
-        task.ProcessMessage(contextualMessage);
-        task.wrappedClose();
+        task.processMessage(contextualMessage);
+        task.processClose();
 
         //reset the mocks so it clears counters for the sake of next test
         reset(vpnEnrichService);

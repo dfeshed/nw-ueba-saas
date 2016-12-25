@@ -61,7 +61,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE_1, "vpn");
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate the last-activity map
 		UserInfoForUpdate userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
@@ -73,7 +73,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		// prepare envelope
 		contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE_2, "ssh");
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - VPN event", userInfo1);
@@ -89,7 +89,7 @@ public class UserMongoUpdateTaskTest extends GeneralTaskTest {
 		contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE_3, "login");
 
 		// run the process on the envelope
-		task.ProcessMessage(contextualMessage);
+		task.processMessage(contextualMessage);
 		// validate the last-activity map
 		userInfo1 = task.store.get("user1");
 		assertNotNull("User1 - SSH event", userInfo1);

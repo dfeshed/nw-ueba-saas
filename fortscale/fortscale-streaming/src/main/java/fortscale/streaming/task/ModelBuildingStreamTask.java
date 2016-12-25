@@ -7,7 +7,7 @@ import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.model.ModelBuildingRegistrationService;
 import fortscale.streaming.service.model.ModelBuildingSamzaStore;
 import fortscale.streaming.task.message.ProcessMessageContext;
-import fortscale.streaming.task.message.SamzaProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.task.*;
@@ -23,7 +23,7 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	private String allModelFilterRegex;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 		FortscaleValueResolver resolver = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		String controlOutputTopic = resolver.resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY);
 		Assert.hasText(controlOutputTopic);
@@ -35,11 +35,11 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	}
 
 	@Override
-	protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
-		JSONObject event = contextualMessage.getMessageAsJson();
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
+		JSONObject event = messageContext.getMessageAsJson();
 
 		if (modelBuildingListener != null) {
-			MessageCollector collector = ((SamzaProcessMessageContext) contextualMessage).getCollector();
+			MessageCollector collector = ((StreamingProcessMessageContext) messageContext).getCollector();
 			modelBuildingListener.setMessageCollector(collector);
 		}
 
@@ -49,7 +49,7 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (modelBuildingListener != null) {
 			modelBuildingListener.setMessageCollector(collector);
 		}
@@ -60,7 +60,7 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	}
 
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		modelBuildingListener = null;
 		modelBuildingRegistrationService = null;
 	}

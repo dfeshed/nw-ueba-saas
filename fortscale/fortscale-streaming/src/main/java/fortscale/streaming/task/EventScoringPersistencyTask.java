@@ -26,50 +26,43 @@ public class EventScoringPersistencyTask extends AbstractStreamTask{
     private static final String EVENT_SCORING_PERSISTENCY_TASK_CONTROL_TOPIC = "fortscale-event-scoring-persistency-stream-control";
 
     @Override
-    protected void wrappedInit(Config config, TaskContext context) throws Exception {
+    protected void processInit(Config config, TaskContext context) throws Exception {
         eventScoringPersistencyTaskService = new EventScoringPersistencyTaskService();
         processedMessageCount = context.getMetricsRegistry().newCounter(getClass().getName(), "event-scoring-persistency-message-count");
     }
 
     @Override
-    protected void ProcessMessage(ProcessMessageContext contextualMessage) throws Exception {
+    protected void processMessage(ProcessMessageContext messageContext) throws Exception {
         processedMessageCount.inc();
 
         // enables persist due to message in control topic
-        String topic = contextualMessage.getTopicName();
+        String topic = messageContext.getTopicName();
         if (topic.equals(EVENT_SCORING_PERSISTENCY_TASK_CONTROL_TOPIC))
         {
             logger.info("received message={} from controlTopic={}, {}", PERFORMING_FLUSH_LOG_MSG,
-                    contextualMessage,topic);
+                    messageContext,topic);
             eventScoringPersistencyTaskService.flush();
             return;
         }
 
-        JSONObject event = contextualMessage.getMessageAsJson();
+        JSONObject event = messageContext.getMessageAsJson();
         eventScoringPersistencyTaskService.saveEvent(event);
     }
 
     @Override
-    protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-        logger.info("wrappedWindow: {}",PERFORMING_FLUSH_LOG_MSG);
+    protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+        logger.info("processWindow: {}",PERFORMING_FLUSH_LOG_MSG);
         eventScoringPersistencyTaskService.flush();
     }
 
 
 
     @Override
-    protected void wrappedClose() throws Exception {
+    protected void processClose() throws Exception {
         if(eventScoringPersistencyTaskService != null){
-            logger.info("wrappedClose: {}" ,PERFORMING_FLUSH_LOG_MSG);
+            logger.info("processClose: {}" ,PERFORMING_FLUSH_LOG_MSG);
             eventScoringPersistencyTaskService.flush();
         }
     }
 
-    /**
-     * @return false, cause this class input messages does not contain dataSource field.
-     */
-    @Override protected boolean messageShouldContainDataSourceField()
-    {
-        return false;
-    }
 }
