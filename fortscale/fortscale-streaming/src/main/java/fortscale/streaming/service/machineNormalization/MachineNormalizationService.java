@@ -22,17 +22,18 @@ public class MachineNormalizationService extends StreamingTaskConfigurationServi
             String hostnameField = machineNormalizationFieldsConfig.getHostnameField();
             String hostname = convertToString(event.get(hostnameField));
             checkNotNull(hostname, String.format("event doesn't contain hostnameField: %s, event: %s", hostnameField, event));
-            normalizeMachine(hostname,event,machineNormalizationFieldsConfig);
+            boolean shouldTrimTillLastBackslashField = machineNormalizationFieldsConfig.isShouldTrimTillLastBackslashField();
+            normalizeMachine(hostname,event,machineNormalizationFieldsConfig, shouldTrimTillLastBackslashField);
         }
         return event;
     }
 
-    public void normalizeMachine(String hostname, JSONObject event,MachineNormalizationFieldsConfig machineNormalizationFieldsConfig)
+    public void normalizeMachine(String hostname, JSONObject event, MachineNormalizationFieldsConfig machineNormalizationFieldsConfig, boolean shouldTrimTillLastBackslashField)
     {
-        String normalizedMachineName=getNormalizedMachineName(hostname);
+        String normalizedMachineName=getNormalizedMachineName(hostname, shouldTrimTillLastBackslashField);
         event.put(machineNormalizationFieldsConfig.getNormalizationField(),normalizedMachineName);
     }
-    public String getNormalizedMachineName(String machineName)
+    public String getNormalizedMachineName(String machineName, boolean shouldTrimTillLastBackslashField)
     {
         checkNotNull(machineName);
         logger.debug("normalizing machine name: {}",machineName);
@@ -42,14 +43,15 @@ public class MachineNormalizationService extends StreamingTaskConfigurationServi
             normalizedMachineName = normalizedMachineName.substring(0, machineName.indexOf("."));
         }
         // string host name to contain only machine name, i.e. : machine name: DOMAIN\MACHINE-NAME01 normalized: MACHINE-NAME01
-        if(normalizedMachineName.contains("\\"))
-        {
-            int lastBackslashIndex = normalizedMachineName.lastIndexOf("\\");
-            int normalizedMachineNameLength = normalizedMachineName.length();
-            if(lastBackslashIndex<normalizedMachineNameLength) {
+        if(shouldTrimTillLastBackslashField) {
+            if (normalizedMachineName.contains("\\")) {
+                int lastBackslashIndex = normalizedMachineName.lastIndexOf("\\");
+                int normalizedMachineNameLength = normalizedMachineName.length();
+                if (lastBackslashIndex < normalizedMachineNameLength) {
 
-                normalizedMachineName =
-                        normalizedMachineName.substring(lastBackslashIndex+1, normalizedMachineNameLength);
+                    normalizedMachineName =
+                            normalizedMachineName.substring(lastBackslashIndex + 1, normalizedMachineNameLength);
+                }
             }
         }
 

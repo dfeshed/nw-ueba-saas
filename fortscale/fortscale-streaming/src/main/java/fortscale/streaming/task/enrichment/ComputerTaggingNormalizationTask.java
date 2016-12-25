@@ -7,11 +7,10 @@ import fortscale.services.ComputerService;
 import fortscale.services.computer.SensitiveMachineService;
 import fortscale.services.computer.SensitiveMachineServiceImpl;
 import fortscale.services.impl.ComputerServiceImpl;
-
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.machineNormalization.MachineNormalizationConfig;
 import fortscale.streaming.service.machineNormalization.MachineNormalizationFieldsConfig;
@@ -114,9 +113,14 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 					if (isConfigContainKey(config, isSensitiveMachineFieldKey)) {
 						isSensitiveMachineField = resolveStringValue(config, isSensitiveMachineFieldKey, res);
 					}
+					boolean shouldTrimTillLastBackslashField = false;
+					String shouldTrimTillLastBackslashFieldKey = String.format("fortscale.events.entry.%s.%s.should-trim-till-last-backslash.field", configKey, tagType);
+					if (isConfigContainKey(config, shouldTrimTillLastBackslashFieldKey)) {
+						shouldTrimTillLastBackslashField = resolveBooleanValue(config, shouldTrimTillLastBackslashFieldKey, res);
+					}
 					boolean createNewComputerInstances = config.getBoolean(String.format("fortscale.events.entry.%s.%s.create-new-computer-instances", configKey, tagType));
 					computerTaggingFieldsConfigs.add(new ComputerTaggingFieldsConfig(tagType, hostnameField, classificationField, isSensitiveMachineField, createNewComputerInstances));
-					machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig(hostnameField,normalizationField));
+					machineNormalizationFieldsConfigs.add(new MachineNormalizationFieldsConfig(hostnameField,normalizationField, shouldTrimTillLastBackslashField));
 				}
 				machineNormalizationConfigs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState),new MachineNormalizationConfig(dataSource,lastState,outputTopic, partitionField, machineNormalizationFieldsConfigs));
 				computerTaggingConfigs.put(new StreamingTaskDataSourceConfigKey(dataSource,lastState), new ComputerTaggingConfig(dataSource,lastState,outputTopic, partitionField, computerTaggingFieldsConfigs));

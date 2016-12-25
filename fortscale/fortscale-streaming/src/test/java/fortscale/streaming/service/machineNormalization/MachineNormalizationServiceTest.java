@@ -17,8 +17,8 @@ public class MachineNormalizationServiceTest {
     public void normalizeEventTest()
     {
         List<MachineNormalizationFieldsConfig> machineNormalizationFieldsConfigList = new ArrayList();
-        machineNormalizationFieldsConfigList.add(new MachineNormalizationFieldsConfig("source-hostname","normalized_src_machine"));
-        machineNormalizationFieldsConfigList.add(new MachineNormalizationFieldsConfig("dest-hostname","normalized_dst_machine"));
+        machineNormalizationFieldsConfigList.add(new MachineNormalizationFieldsConfig("source-hostname","normalized_src_machine",true ));
+        machineNormalizationFieldsConfigList.add(new MachineNormalizationFieldsConfig("dest-hostname","normalized_dst_machine", true));
         MachineNormalizationConfig machineNormalizationConfig = new MachineNormalizationConfig("datasource","laststate","outputtopic","partitionField",machineNormalizationFieldsConfigList);
         Map<StreamingTaskDataSourceConfigKey, MachineNormalizationConfig> machineNormalizationConfigs = new HashMap();
         machineNormalizationConfigs.put(new StreamingTaskDataSourceConfigKey("datasource","laststate"),machineNormalizationConfig);
