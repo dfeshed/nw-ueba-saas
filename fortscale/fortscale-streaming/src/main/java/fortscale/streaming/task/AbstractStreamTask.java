@@ -10,6 +10,8 @@ import fortscale.streaming.exceptions.TaskCoordinatorException;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.state.MessageCollectorStateDecorator;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
@@ -20,7 +22,6 @@ import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
 import fortscale.utils.process.processType.ProcessType;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
@@ -35,8 +36,8 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	private static Logger logger = Logger.getLogger(AbstractStreamTask.class);
 
-	private static final String DATA_SOURCE_FIELD_NAME = "data_source";
-	protected static final String LAST_STATE_FIELD_NAME = "last_state";
+	public static final String DATA_SOURCE_FIELD_NAME = "data_source";
+	public static final String LAST_STATE_FIELD_NAME = "last_state";
 	public static final String JOB_DATA_SOURCE = "Streaming";
 
 	public static final StreamingTaskDataSourceConfigKey UNKNOW_CONFIG_KEY =
@@ -70,10 +71,10 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	// Streaming task common metrics. Note some fields are update by this class and some by the derived classes
 	protected StreamingTaskCommonMetrics streamingTaskCommonMetrics;
 
-	protected abstract void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception;
-	protected abstract void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
-	protected abstract void wrappedInit(Config config, TaskContext context) throws Exception;
-	protected abstract void wrappedClose() throws Exception;
+	protected abstract void processMessage(ProcessMessageContext messageContext) throws Exception;
+	protected abstract void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception;
+	protected abstract void processInit(Config config, TaskContext context) throws Exception;
+	protected abstract void processClose() throws Exception;
 
 	protected String resolveStringValue(Config config, String string, FortscaleValueResolver resolver) {
 		return resolver.resolveStringValue(getConfigString(config, string));
@@ -147,7 +148,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		samzaContainerService.init(config, context);
 
 		// call specific task init method
-		wrappedInit(config, context);
+		processInit(config, context);
 
 		logger.info("Task init finished");
 	}
@@ -222,20 +223,29 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 	@Override
 	public void process(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		try{
-
 			streamingTaskCommonMetrics.processedMessages++;
 
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
 			samzaContainerService.setCoordinator(coordinator);
-			countNewMessage(envelope);
+			ProcessMessageContext contextualMessage;
+			try {
+				contextualMessage = new StreamingProcessMessageContext(envelope,
+						collector, coordinator, this);
+			}
+			catch (ParseException pe)
+			{
+				taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
+				throw pe;
+			}
+
 			String streamingTaskMessageState = resolveOutputMessageState();
 
 			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
 			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
 			samzaContainerService.setCollector(messageCollectorStateDecorator);
 
-			wrappedProcess(envelope, messageCollectorStateDecorator, coordinator);
+			processMessage(contextualMessage);
 
 			processExceptionHandler.clear();
 		} catch(Exception exception){
@@ -248,10 +258,12 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 	}
 
-	private void countNewMessage(IncomingMessageEnvelope envelope) {
+	public void countNewMessage(StreamingTaskDataSourceConfigKey dataSourceConfigKey) {
 		try {
-			JSONObject message = parseJsonMessage(envelope);
-			taskMonitoringHelper.handleNewEvent(extractDataSourceConfigKey(message));
+			if(dataSourceConfigKey!=null)
+			{
+				taskMonitoringHelper.handleNewEvent(dataSourceConfigKey);
+			}
 		} catch (Exception e){
 			//Do nothing
 		}
@@ -268,7 +280,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			samzaContainerService.setCoordinator(coordinator);
 			samzaContainerService.setCollector(collector);
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true, JOB_DATA_SOURCE);
-			wrappedWindow(collector, coordinator);
+			processWindow(collector, coordinator);
 			windowExceptionHandler.clear();
 		} catch(Exception exception){
 			streamingTaskCommonMetrics.windowsExceptions++;
@@ -285,7 +297,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			samzaContainerService.setConfig(config);
 			samzaContainerService.setContext(context);
 			taskMonitoringHelper.saveJobStatusReport(getJobLabel(),true,JOB_DATA_SOURCE);
-			wrappedClose();
+			processClose();
 		} finally {
 			SpringService.shutdown();
 		}
@@ -316,30 +328,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		taskMonitoringHelper.handleUnFilteredEvents(key, eventTime);
 	}
 
-	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
-		String dataSource = (String) message.get(DATA_SOURCE_FIELD_NAME);
-		String lastState = (String) message.get(LAST_STATE_FIELD_NAME);
-
-		if (dataSource == null) {
-			streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
-			throw new IllegalStateException("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + message.toJSONString());
-		}
-
-		return new StreamingTaskDataSourceConfigKey(dataSource, lastState);
-	}
-
-	//Get the data source and last state without exception, return  null if cannot extract
-	protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKeySafe(JSONObject message) {
-		StreamingTaskDataSourceConfigKey configKey;
-		try {
-			configKey = extractDataSourceConfigKey(message);
-		} catch (Exception e){
-			return null;
-		}
-		return configKey;
-	}
-
-
 	public TaskMonitoringHelper getTaskMonitoringHelper() {
 		return taskMonitoringHelper;
 	}
@@ -348,17 +336,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		this.taskMonitoringHelper = taskMonitoringHelper;
 	}
 
-	protected JSONObject parseJsonMessage(IncomingMessageEnvelope envelope) throws ParseException {
-		try {
-			streamingTaskCommonMetrics.parseMessageToJson++;
-			String messageText = (String) envelope.getMessage();
-			return (JSONObject) JSONValue.parseWithException(messageText);
-		} catch (ParseException e){
-			streamingTaskCommonMetrics.parseMessageToJsonExceptions++;
-			taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
-			throw e;
-		}
-	}
 
 	/**
 	 * Create the task's metrics. This function should be overridden by the specific task
@@ -386,15 +363,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	}
 
-	/**
-	 * Get topic name out of incoming message envelope
-	 * @param envelope - message received in {@link #wrappedProcess(IncomingMessageEnvelope, MessageCollector, TaskCoordinator)}
-	 * @return topic name of incoming message
-     */
-	protected String getIncomingMessageTopicName(IncomingMessageEnvelope envelope) {
-		return envelope.getSystemStreamPartition().getSystemStream().getStream();
-	}
-
 	// --- getters/setters ---
 
 	public StatsService getStatsService() {
@@ -403,5 +371,9 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	public String getJobName() {
 		return jobName;
+	}
+
+	public StreamingTaskCommonMetrics getStreamingTaskCommonMetrics() {
+		return streamingTaskCommonMetrics;
 	}
 }
