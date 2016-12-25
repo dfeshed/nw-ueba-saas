@@ -12,7 +12,6 @@ import org.kitesdk.morphline.api.MorphlineContext;
 import org.kitesdk.morphline.api.Record;
 import org.kitesdk.morphline.base.AbstractCommand;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +27,9 @@ import static org.apache.commons.lang3.StringUtils.isNotBlank;
  * @author Lior Govrin
  */
 public class DcServiceFilterBuilder implements CommandBuilder {
+	@Autowired
+	private ServersListConfiguration serversListConfiguration;
+
 	@Override
 	public Collection<String> getNames() {
 		return Collections.singletonList(DcServiceFilter.class.getSimpleName());
@@ -35,16 +37,12 @@ public class DcServiceFilterBuilder implements CommandBuilder {
 
 	@Override
 	public Command build(Config config, Command parent, Command child, MorphlineContext context) {
-		return new DcServiceFilter(this, config, parent, child, context);
+		return new DcServiceFilter(this, config, parent, child, context, serversListConfiguration);
 	}
 
-	@Configurable(preConstruction = true)
 	public static final class DcServiceFilter extends AbstractCommand {
 		private static final Logger logger = Logger.getLogger(DcServiceFilter.class);
 		private static final String FIELD_NAME_KEY = "fieldName";
-
-		@Autowired
-		private ServersListConfiguration serversListConfiguration;
 
 		private final Pattern dcRegex;
 		private final MorphlineCommandMonitoringHelper morphlineCommandMonitoringHelper;
@@ -52,7 +50,8 @@ public class DcServiceFilterBuilder implements CommandBuilder {
 		private final String renderedConfig;
 
 		public DcServiceFilter(
-				CommandBuilder builder, Config config, Command parent, Command child, MorphlineContext context) {
+				CommandBuilder builder, Config config, Command parent, Command child,
+				MorphlineContext context, ServersListConfiguration serversListConfiguration) {
 
 			super(builder, config, parent, child, context);
 			String loginServiceRegex = serversListConfiguration.getLoginServiceRegex();
