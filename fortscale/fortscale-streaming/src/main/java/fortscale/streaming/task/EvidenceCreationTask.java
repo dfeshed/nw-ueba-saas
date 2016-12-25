@@ -11,13 +11,13 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -82,7 +82,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	private Counter lastTimestampCount;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 
 		// Get the user service (for Mongo) from spring
 		evidencesService = SpringService.getInstance().resolve(EvidencesService.class);
@@ -201,14 +201,11 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 
-		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		JSONObject message = messageContext.getMessageAsJson();
+		String inputTopic = messageContext.getTopicName();
+		StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 		DataSourceConfiguration dataSourceConfiguration = getDataSourceConfiguration(configKey, inputTopic);
 		if (dataSourceConfiguration == null)
 			return;
@@ -228,6 +225,8 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 		} else if (dataSourceConfiguration.dataEntitiesIdsField != null) {
 			dataEntitiesIds = (List) validateFieldExistsAndGetValue(message, dataSourceConfiguration.dataEntitiesIdsField,true);
 		}
+		StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
+		MessageCollector collector = streamingProcessMessageContext.getCollector();
 		DataEntity dataEntity = dataEntitiesConfig.getEntityFromOverAllCache(dataEntitiesIds.get(0));
 		if (dataSourceConfiguration.anomalyFields != null) {
 			for (String anomalyField : dataSourceConfiguration.anomalyFields) {
@@ -445,7 +444,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// nothing
 	}
 
@@ -454,7 +453,7 @@ public class EvidenceCreationTask extends AbstractStreamTask {
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		// nothing
 	}
 

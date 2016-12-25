@@ -4,6 +4,7 @@ import fortscale.services.ServersListConfiguration;
 import fortscale.services.impl.ServersListConfigurationImpl;
 import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
@@ -53,9 +54,10 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask {
 	}
 	
 	@Override
-	protected boolean acceptMessage(JSONObject message) {
+	protected boolean acceptMessage(ProcessMessageContext messageContext) {
 
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		JSONObject message = messageContext.getMessageAsJson();
+		StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
 			++taskMetrics.cantExtractStateMessage;
@@ -113,7 +115,7 @@ public class Sec4769EventsFilterStreamTask extends EventsFilterStreamTask {
 		}
 
 
-        super.acceptMessage(message);
+        super.acceptMessage(messageContext);
 		
 		return true;
 	}

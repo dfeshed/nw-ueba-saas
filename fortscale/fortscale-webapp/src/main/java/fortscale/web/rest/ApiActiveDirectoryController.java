@@ -157,7 +157,7 @@ public class ApiActiveDirectoryController {
 
 		}
 
-		return  new AuthenticationTestResult(false,"");
+		return  new AuthenticationTestResult(true,"");
 
 	}
 
