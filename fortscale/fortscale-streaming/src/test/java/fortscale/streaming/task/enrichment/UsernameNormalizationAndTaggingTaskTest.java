@@ -128,7 +128,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key", MESSAGE_1, "input1");
-		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator);
+		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator,task);
 
 		// run the process on the envelope
 		task.processMessage(contextualMessage);
@@ -146,7 +146,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		message = (JSONObject) JSONValue.parseWithException(MESSAGE_3);
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_3, "input1");
-		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator );
+		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator ,task);
 		// run the process on the envelope
 		task.processMessage(contextualMessage);
 		// validate normalization for username
@@ -162,7 +162,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 				.thenReturn("User 4");
 		// prepare envelope
 		envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream,"key", MESSAGE_4, "input1");
-		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator );
+		contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector , taskCoordinator ,task);
 		// run the process on the envelope
 		task.processMessage(contextualMessage);
 		// validate normalization for username
@@ -182,7 +182,7 @@ public class UsernameNormalizationAndTaggingTaskTest {
 		// prepare envelope
 		String username = "USER_NAME";
 		IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(username) , "usernameUpdatesTopic");
-		ProcessMessageContext contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector, taskCoordinator);
+		ProcessMessageContext contextualMessage = new StreamingProcessMessageContext(envelope, messageCollector, taskCoordinator ,task);
 
 		// run the process on the envelope
 		task.processMessage(contextualMessage);

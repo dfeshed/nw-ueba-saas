@@ -16,14 +16,10 @@ import org.mockito.Mockito;
 public class GeneralTaskTest {
 
 	protected ProcessMessageContext getFSProcessContextualMessage(SystemStreamPartition systemStreamPartition,
-																  SystemStream systemStream, String key, String message, String topic) throws ParseException {
-		return new StreamingProcessMessageContext(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic), null , null );
-	}
-	protected ProcessMessageContext getFSProcessContextualMessage(SystemStreamPartition systemStreamPartition,
 																  SystemStream systemStream, String key, String message,
 																  String topic, MessageCollector collector,
-																  TaskCoordinator coordinator) throws ParseException {
-		return new StreamingProcessMessageContext(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic), collector , coordinator);
+																  TaskCoordinator coordinator, AbstractStreamTask streamTask) throws ParseException {
+		return new StreamingProcessMessageContext(getIncomingMessageEnvelope(systemStreamPartition,systemStream,key,message,topic), collector , coordinator,streamTask);
 	}
 	protected IncomingMessageEnvelope getIncomingMessageEnvelope(SystemStreamPartition systemStreamPartition,
 			SystemStream systemStream, String key, String message, String topic) {

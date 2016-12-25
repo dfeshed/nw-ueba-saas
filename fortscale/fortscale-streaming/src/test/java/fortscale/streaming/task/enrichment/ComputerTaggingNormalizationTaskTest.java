@@ -102,7 +102,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		Computer updateComputer = new Computer();
 		updateComputer.setName(HOST_NAME);
 
-		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(updateComputer) , "computerUpdatesTopic");
+		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, "key1", mapper.writeValueAsString(updateComputer) , "computerUpdatesTopic",messageCollector,taskCoordinator,task);
 
 		// run the process on the envelope
 		task.processMessage(contextualMessage);
@@ -114,7 +114,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 	@Test
 	public void wrappedProcess_should_add_sensitive_machine_to_sensitiveMachineService_cache() throws Exception {
 		// prepare envelope
-		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, mapper.writeValueAsString(HOST_NAME)  , "sensitiveMachineUpdatesTopic");
+		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, mapper.writeValueAsString(HOST_NAME)  , "sensitiveMachineUpdatesTopic",messageCollector,taskCoordinator,task);
 
 		// run the process on the envelope
 		task.processMessage(contextualMessage);
@@ -130,7 +130,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		assertEquals(HOST_NAME, sensitiveMachineService.getCache().get(HOST_NAME));
 
 		// prepare envelope
-		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic",messageCollector,taskCoordinator);
+		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, HOST_NAME, null, "sensitiveMachineUpdatesTopic",messageCollector,taskCoordinator,task);
 
 		// run the process on the envelope
 		task.processMessage(contextualMessage);
@@ -159,7 +159,7 @@ public class ComputerTaggingNormalizationTaskTest extends GeneralTaskTest {
 		doAnswer(answer).when(task.machineNormalizationService).normalizeEvent(any(MachineNormalizationConfig.class),any(JSONObject.class));
 
 		// prepare envelope
-		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic",messageCollector,taskCoordinator);
+		ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null, MESSAGE  , "sshInputTopic",messageCollector,taskCoordinator, task);
 
 		// run the process on the envelope
 		task.processMessage(contextualMessage);

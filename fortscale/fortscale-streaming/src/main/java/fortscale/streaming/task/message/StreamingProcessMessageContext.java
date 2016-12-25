@@ -43,27 +43,17 @@ public class StreamingProcessMessageContext implements ProcessMessageContext {
      */
     public StreamingProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, MessageCollector collector, TaskCoordinator coordinator, AbstractStreamTask streamTask) throws ParseException {
         this.streamTask = streamTask;
+        this.streamingTaskCommonMetrics = streamTask.getStreamingTaskCommonMetrics();
         this.incomingMessageEnvelope = incomingMessageEnvelope;
         this.messageAsString = (String) incomingMessageEnvelope.getMessage();
         this.topicName = getIncomingMessageTopicName(incomingMessageEnvelope);
         this.messageAsJson = parseJsonMessage(messageAsString);
         this.collector = collector;
         this.coordinator = coordinator;
-        this.streamingTaskCommonMetrics = streamTask.getStreamingTaskCommonMetrics();
         extractDataSourceConfigKey();
         this.streamTask.countNewMessage(streamingTaskDataSourceConfigKey);
     }
 
-    /**
-     * syntactic sugar, no counters will be updated
-     * @param incomingMessageEnvelope
-     * @param collector
-     * @param coordinator
-     * @throws ParseException
-     */
-    public StreamingProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, MessageCollector collector, TaskCoordinator coordinator) throws ParseException {
-        this(incomingMessageEnvelope, collector , coordinator, null);
-    }
 
     /**
      * @return message key indicates the partition
