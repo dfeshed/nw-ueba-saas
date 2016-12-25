@@ -22,25 +22,42 @@ public class MachineNormalizationService extends StreamingTaskConfigurationServi
             String hostnameField = machineNormalizationFieldsConfig.getHostnameField();
             String hostname = convertToString(event.get(hostnameField));
             checkNotNull(hostname, String.format("event doesn't contain hostnameField: %s, event: %s", hostnameField, event));
-            normalizeMachine(hostname,event,machineNormalizationFieldsConfig);
+            boolean shouldTrimTillLastBackslashField = machineNormalizationFieldsConfig.isShouldTrimTillLastBackslashField();
+            normalizeMachine(hostname,event,machineNormalizationFieldsConfig, shouldTrimTillLastBackslashField);
         }
         return event;
     }
 
-    public void normalizeMachine(String hostname, JSONObject event,MachineNormalizationFieldsConfig machineNormalizationFieldsConfig)
+    public void normalizeMachine(String hostname, JSONObject event, MachineNormalizationFieldsConfig machineNormalizationFieldsConfig, boolean shouldTrimTillLastBackslashField)
     {
-        String normalizedMachineName=getNormalizedMachineName(hostname);
+        String normalizedMachineName=getNormalizedMachineName(hostname, shouldTrimTillLastBackslashField);
         event.put(machineNormalizationFieldsConfig.getNormalizationField(),normalizedMachineName);
     }
-    public String getNormalizedMachineName(String machineName)
+    public String getNormalizedMachineName(String machineName, boolean shouldTrimTillLastBackslashField)
     {
         checkNotNull(machineName);
-
+        logger.debug("normalizing machine name: {}",machineName);
+        String normalizedMachineName = new String(machineName);
         // strip the hostname up to the first .
-        if (machineName.contains("."))
-            machineName = machineName.substring(0, machineName.indexOf("."));
+        if (normalizedMachineName.contains(".")) {
+            normalizedMachineName = normalizedMachineName.substring(0, machineName.indexOf("."));
+        }
+        // string host name to contain only machine name, i.e. : machine name: DOMAIN\MACHINE-NAME01 normalized: MACHINE-NAME01
+        if(shouldTrimTillLastBackslashField) {
+            if (normalizedMachineName.contains("\\")) {
+                int lastBackslashIndex = normalizedMachineName.lastIndexOf("\\");
+                int normalizedMachineNameLength = normalizedMachineName.length();
+                if (lastBackslashIndex < normalizedMachineNameLength) {
 
-        return machineName.toUpperCase();
+                    normalizedMachineName =
+                            normalizedMachineName.substring(lastBackslashIndex + 1, normalizedMachineNameLength);
+                }
+            }
+        }
+
+        normalizedMachineName = normalizedMachineName.toUpperCase();
+        logger.debug("original machine name: {} normalized machine name: {}",machineName,normalizedMachineName);
+        return normalizedMachineName;
     }
 
 }
