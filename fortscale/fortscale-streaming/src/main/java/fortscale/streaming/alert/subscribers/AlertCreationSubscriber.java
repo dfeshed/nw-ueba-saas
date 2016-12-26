@@ -6,7 +6,6 @@ import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertFilterApplicableEvidencesService;
 import fortscale.streaming.alert.subscribers.evidence.applicable.AlertTypesHisotryCache;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertDeciderServiceImpl;
-import fortscale.streaming.exceptions.AlertCreationException;
 import fortscale.streaming.service.alert.EvidencesForAlertResolverService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
@@ -144,47 +143,29 @@ public class AlertCreationSubscriber extends AbstractSubscriber {
 						logger.info("Attaching {} tag indicators to Alert: {}", attachedTags.size(), attachedTags);
 
 						List<Evidence> finalIndicatorsListForAlert = new ArrayList<>();
-
 						finalIndicatorsListForAlert.addAll(attachedNotifications);
 						finalIndicatorsListForAlert.addAll(attachedEntityEventIndicators);
-                        //Validate indicators list before adding tag indicators.
-                        validatePreTagIndicatorsListForAlert(finalIndicatorsListForAlert);
 
-                        //Add tag indicators
-						finalIndicatorsListForAlert.addAll(attachedTags);
-
-                        double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
-                        Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert,
-                                finalIndicatorsListForAlert.size(), roundScore, severity, AlertStatus.Open, AlertFeedback.None, entityId, timeframe,alertUserScoreContribution, alertUserScoreContribution>0);
-
-                        logger.info("Saving alert in DB: {}", alert);
-                        alertsService.saveAlertInRepository(alert);
-                        logger.info("Alert was saved successfully");
-
-                        alertTypesHisotryCache.updateCache(alert);
-
-
-						forwardingService.forwardNewAlert(alert);
+						if (finalIndicatorsListForAlert.isEmpty()) {
+							logger.info("Alert is not created, since there aren't any notifications nor indicators. Event value = {}", eventStreamByUserAndTimeframe);
+						} else {
+							// Add tag indicators
+							finalIndicatorsListForAlert.addAll(attachedTags);
+							double alertUserScoreContribution = userScoreService.getUserScoreContributionForAlertSeverity(severity, AlertFeedback.None, startDate);
+							Alert alert = new Alert(title, startDate, endDate, entityType, entityName, finalIndicatorsListForAlert, finalIndicatorsListForAlert.size(),
+									roundScore, severity, AlertStatus.Open, AlertFeedback.None, entityId, timeframe, alertUserScoreContribution, alertUserScoreContribution > 0);
+							logger.info("Saving alert in DB: {}", alert);
+							alertsService.saveAlertInRepository(alert);
+							logger.info("Alert was saved successfully");
+							alertTypesHisotryCache.updateCache(alert);
+							forwardingService.forwardNewAlert(alert);
+						}
 					}
-				} catch(AlertCreationException e){
-                    logger.error("Exception while creating alert. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
-                } catch(Exception e) {
+				} catch (Exception e) {
 					logger.error("Exception while handling stream event. Event value = {}. Exception:", eventStreamByUserAndTimeframe, e);
 				}
 		}
 	}
-
-    /**
-     * Validate indicators list before adding tag indicators.
-     * @param finalIndicatorsListForAlert
-     * @throws AlertCreationException
-     */
-    void validatePreTagIndicatorsListForAlert(List<Evidence> finalIndicatorsListForAlert) throws AlertCreationException{
-        if (finalIndicatorsListForAlert == null || finalIndicatorsListForAlert.size() == 0){
-            throw new AlertCreationException("No indicators for the alert");
-        }
-    }
-
 
 	private Severity getSeverity(String entityName, Integer roundScore, Set<String> userTags) {
 		Severity severity;
