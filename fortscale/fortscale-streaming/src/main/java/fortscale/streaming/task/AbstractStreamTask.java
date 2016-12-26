@@ -229,21 +229,20 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 			samzaContainerService.setContext(context);
 			samzaContainerService.setCoordinator(coordinator);
 			ProcessMessageContext contextualMessage;
+			String streamingTaskMessageState = resolveOutputMessageState();
+
+			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
+			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
+			samzaContainerService.setCollector(messageCollectorStateDecorator);
 			try {
 				contextualMessage = new StreamingProcessMessageContext(envelope,
-						collector, coordinator, this);
+						messageCollectorStateDecorator, coordinator, this);
 			}
 			catch (ParseException pe)
 			{
 				taskMonitoringHelper.countNewFilteredEvents(null, MonitorMessaages.CANNOT_PARSE_MESSAGE_LABEL);
 				throw pe;
 			}
-
-			String streamingTaskMessageState = resolveOutputMessageState();
-
-			MessageCollectorStateDecorator messageCollectorStateDecorator = new MessageCollectorStateDecorator(collector);
-			messageCollectorStateDecorator.setStreamingTaskMessageState(streamingTaskMessageState);
-			samzaContainerService.setCollector(messageCollectorStateDecorator);
 
 			processMessage(contextualMessage);
 
