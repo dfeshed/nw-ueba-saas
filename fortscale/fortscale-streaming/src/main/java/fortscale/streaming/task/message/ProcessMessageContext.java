@@ -12,5 +12,4 @@ public interface ProcessMessageContext {
     String getMessageAsString();
     JSONObject getMessageAsJson();
     StreamingTaskDataSourceConfigKey getStreamingTaskDataSourceConfigKey();
-    void send(Object outgoingMessage);
 }

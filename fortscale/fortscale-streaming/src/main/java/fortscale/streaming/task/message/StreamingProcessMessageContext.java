@@ -8,7 +8,6 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskCoordinator;
 
@@ -96,14 +95,6 @@ public class StreamingProcessMessageContext implements ProcessMessageContext {
         return streamingTaskDataSourceConfigKey;
     }
 
-    /**
-     *
-     * @param outgoingMessage must be of type: {@link OutgoingMessageEnvelope}
-     */
-    @Override
-    public void send(Object outgoingMessage) {
-        collector.send((OutgoingMessageEnvelope) outgoingMessage);
-    }
 
     /**
      *

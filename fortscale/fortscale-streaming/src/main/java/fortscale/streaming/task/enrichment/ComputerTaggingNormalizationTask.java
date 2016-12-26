@@ -184,7 +184,7 @@ public class ComputerTaggingNormalizationTask extends AbstractStreamTask {
 			try {
 				OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka", computerTaggingService.getOutputTopic(configKey)), computerTaggingService.getPartitionKey(configKey  , message), message.toJSONString());
 				handleUnfilteredEvent(message, configKey);
-				messageContext.send(output);
+				((StreamingProcessMessageContext)messageContext).getCollector().send(output);
 
 			} catch (Exception exception) {
 				throw new KafkaPublisherException(String.format("failed to send event from input topic %s to output topic %s after computer tagging and normalization", inputTopicComputerCache, computerTaggingService.getOutputTopic(configKey)), exception);
