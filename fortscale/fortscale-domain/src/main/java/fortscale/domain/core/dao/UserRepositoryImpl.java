@@ -663,7 +663,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 
 		if (userRestFilter.getSearchFieldContains() != null) {
-			criteriaList.add(where("sf").regex(userRestFilter.getSearchFieldContains()));
+			criteriaList.add(where("sf").regex(userRestFilter.getSearchFieldContains(),"i"));
 		}
 
 		if (userRestFilter.getDataEntities() != null) {
