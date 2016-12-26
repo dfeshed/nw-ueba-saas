@@ -890,5 +890,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 		return count;
 	}
+
+    @Override
+    public int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score) {
+		BulkOperations bulkOperations = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, User.collectionName)
+				.updateMulti(Query.query(Criteria.where(User.ID_FIELD).nin(userIds)), Update.update(User.scoreField, score));
+		return bulkOperations.execute().getModifiedCount();
+    }
 }
 

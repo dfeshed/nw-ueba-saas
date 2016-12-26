@@ -1223,4 +1223,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
     public int removeTagFromAllUsers(String tagName) {
 		return userRepository.updateTagsByFilter(false, Collections.singletonList(tagName), Collections.singletonList(where(User.tagsField).in(tagName)), Collections.singletonList(tagName));
 	}
+
+	@Override
+	public int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score) {
+		return userRepository.updateUserScoreForUsersNotInIdList(userIds, score);
+	}
 }

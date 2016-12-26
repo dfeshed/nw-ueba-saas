@@ -146,4 +146,6 @@ public interface UserService {
 	int updateWatched(UserRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch);
 
 	int removeTagFromAllUsers(String tagName);
+
+    int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score);
 }

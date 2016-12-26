@@ -308,8 +308,6 @@ public class UserScoreServiceImpl implements UserScoreService {
                 userScorePercentilesRepository.save(previous);
             }
         }
-
-
     }
 
     /**
@@ -339,6 +337,9 @@ public class UserScoreServiceImpl implements UserScoreService {
 
             userWithAlertService.recalculateNumberOfUserAlertsByUserId(userId);
         }
+        logger.info("Changing all the other users score to 0");
+        int usersCount = userService.updateUserScoreForUsersNotInIdList(userIds, 0d);
+        logger.info("Finish updating {} users score to 0", usersCount);
         logger.info("Finish updating user score");
 
         //Convert the atomic map to list of pairs
@@ -443,5 +444,4 @@ public class UserScoreServiceImpl implements UserScoreService {
     public void setUserScoreConfiguration(UserScoreConfiguration userScoreConfiguration) {
         this.userScoreConfiguration = userScoreConfiguration;
     }
-
 }
