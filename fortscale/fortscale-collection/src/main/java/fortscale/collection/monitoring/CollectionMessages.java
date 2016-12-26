@@ -21,7 +21,8 @@ public enum CollectionMessages {
     ACCOUNT_NAME_IS_NOT_COMPUTER,
     FILTERED_ON_FIELD_NOT_MATCHED,
     TIME_FIELD_EMPTY,
-    TIME_FIELD_IS_NOT_VALID;
+    TIME_FIELD_IS_NOT_VALID,
+    SERVICE_NAME_MATCHES_DC_REGEX;
 
     public String getMessageId(){
         return "fortscale.message."+ this.name();

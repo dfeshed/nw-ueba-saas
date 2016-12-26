@@ -16,6 +16,8 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Fortscale Date Format Service implementation
@@ -41,6 +43,7 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
     private static final SimpleDateFormat UNIX_TIME_IN_SECONDS_DATE_FORMAT = new SimpleDateFormat("'unixTimeInSeconds'");
 
     private static final Date DEFAULT_TWO_DIGIT_YEAR_START;
+    private Lock availableDateFormatsLock = new ReentrantLock();
 
     private List<String> availableDateFormatsSorted = new LinkedList<>();
 
@@ -124,17 +127,16 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
             return;
         }
 
-        synchronized (this) {
-            try {
-                int nonTimezoneDateFormatIndex = findFirstNonTimezoneDateFormatIndex(availableDateFormatsSorted);
+        availableDateFormatsLock.lock();
+        try {
+            int nonTimezoneDateFormatIndex = findFirstNonTimezoneDateFormatIndex(availableDateFormatsSorted);
 
-                availableDateFormatsSorted.remove(matchedPattern);
-                availableDateFormatsSorted.add(nonTimezoneDateFormatIndex + 1, matchedPattern);
-            }
-            catch (Exception e) {
-                logger.error("Exception while trying to re-order date format patterns list", e);
-            }
+            availableDateFormatsSorted.remove(matchedPattern);
+            availableDateFormatsSorted.add(nonTimezoneDateFormatIndex + 1, matchedPattern);
+        } catch (Exception e) {
+            logger.error("Exception while trying to re-order date format patterns list", e);
         }
+        availableDateFormatsLock.unlock();
     }
 
     private int findFirstNonTimezoneDateFormatIndex(List<String> availableDateFormatsSorted) {
@@ -151,42 +153,6 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     private boolean isTimezoneDateFormat(String dateFormat) {
         return dateFormat.endsWith("z") || dateFormat.endsWith("Z");
-    }
-
-    @Override
-    public List<String> findDateTimestampPatternMatches(String dateTimestamp, String tzInput) {
-        TimeZone inputTimezone = getTimeZone(tzInput == null ? UTC_TIME_ZONE : tzInput);
-
-        List<String> matchedInputFormats = new ArrayList<>();
-
-        for (String inputFormatStr : availableDateFormatsSorted) {
-            DateTime dateTime;
-            SimpleDateFormat inputFormat = createDateFormat(inputFormatStr, inputTimezone, false);
-            if (isEpochTimeFormat(inputFormatStr)) {
-                try {
-                    dateTime = parseEpochTime(dateTimestamp, DateTimeZone.forTimeZone(inputTimezone));
-                } catch (FortscaleDateFormatterException e) {
-                    continue;
-                }
-
-                if (dateTime != null) {
-                    matchedInputFormats.add(inputFormatStr);
-                }
-            }
-            else {
-                Date parsedDate;
-                try {
-                    parsedDate = inputFormat.parse(dateTimestamp);
-                } catch (ParseException e) {
-                    continue; // i.e. iterate to the next possible input format
-                }
-                if (parsedDate != null) {
-                    matchedInputFormats.add(inputFormatStr);
-                }
-            }
-        }
-
-        return matchedInputFormats;
     }
 
     private String handleNumericTimestamp(String dateTimestamp, TimeZone inputTimezone, SimpleDateFormat outputFormat) throws FortscaleDateFormatterException {
@@ -220,7 +186,10 @@ public class FortscaleDateFormatServiceImpl implements FortscaleDateFormatServic
 
     @Override
     public String formatDateTimestamp(String dateTimestamp, String tzInput, String outputFormatStr, String tzOutput) throws FortscaleDateFormatterException {
-        return formatDateTimestamp(dateTimestamp, new ArrayList<>(availableDateFormatsSorted), tzInput, outputFormatStr, tzOutput, true);
+        availableDateFormatsLock.lock();
+        ArrayList<String> optionalInputFormats = new ArrayList<>(availableDateFormatsSorted);
+        availableDateFormatsLock.unlock();
+        return formatDateTimestamp(dateTimestamp, optionalInputFormats, tzInput, outputFormatStr, tzOutput, true);
     }
 
     private String formatDate(DateTime date, SimpleDateFormat outputFormat) {

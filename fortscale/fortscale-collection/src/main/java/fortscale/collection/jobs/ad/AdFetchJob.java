@@ -64,7 +64,7 @@ public class AdFetchJob extends FortscaleJob {
 
 		// random generated ID for deployment wizard fetch and ETL results
 		try {
-			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
+			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 			if (resultsId != null) {
 				resultsKey = key.getName().toLowerCase() + "." + resultsId;
 			}
@@ -154,16 +154,20 @@ public class AdFetchJob extends FortscaleJob {
 		boolean first = true;
 		while (values.hasMoreElements()) {
 			String value = (String)values.nextElement();
-			if (value.contains("\n") || value.contains("\r")) {
-				value = DatatypeConverter.printBase64Binary(value.getBytes());
-			}
-			if (first) {
-				first = false;
-			} else {
-				fileWriter.append("\n");
-			}
-			fileWriter.append(key).append(": ").append(value);
+			appendSingleAttributeElement(fileWriter, key, first, value);
+			first = false;
 		}
+	}
+
+	private void appendSingleAttributeElement(BufferedWriter fileWriter, String key, boolean first, String value) throws IOException {
+		if (value.contains("\n") || value.contains("\r")) {
+            value = DatatypeConverter.printBase64Binary(value.getBytes());
+        }
+		if (!first) {
+			fileWriter.append("\n");
+        }
+		fileWriter.append(key).append(": ").append(value);
+
 	}
 
 	private class AdFetchJobHandler implements ActiveDirectoryResultHandler {
@@ -201,7 +205,7 @@ public class AdFetchJob extends FortscaleJob {
 								fileWriter.append(key).append(": ").append(value);
 							}
 							else {
-								appendAllAttributeElements(fileWriter, key, values);
+								appendSingleAttributeElement(fileWriter, key, true, value);
 							}
 
 						} else {

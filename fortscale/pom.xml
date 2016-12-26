@@ -82,6 +82,7 @@
 		<spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
 		<spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
+		<fongo.version>1.6.8</fongo.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
 		<jackson.version>2.2.3</jackson.version>
@@ -195,8 +196,7 @@
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
-			<version>1.6.8</version>
-			<scope>test</scope>
+			<version>${fongo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>

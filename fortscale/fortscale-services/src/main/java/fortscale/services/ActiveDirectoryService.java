@@ -1,11 +1,15 @@
 package fortscale.services;
 
+import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
 import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 
+import javax.naming.AuthenticationException;
+import javax.naming.CommunicationException;
+import javax.naming.NamingException;
 import java.util.List;
 
 /**
@@ -19,7 +23,7 @@ public interface ActiveDirectoryService {
     List<String> getDomainControllers();
     void saveDomainControllersInDatabase(List<String> domainControllers);
 	void saveAdConnectionsInDatabase(List<AdConnection> adConnections);
-    String canConnect(AdConnection adConnection);
+    boolean canConnect(AdConnection adConnection) throws CommunicationException, AuthenticationException, NamingException, PasswordDecryptionException;
     List<AdGroup> getGroupsByNameContains(String contains);
     List<AdOU> getOusByOuContains(String contains);
     Long getCount(AdObject.AdObjectType adObjectType);

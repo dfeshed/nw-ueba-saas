@@ -37,12 +37,21 @@
         <include>*</include>
       </includes>
     </fileSet>
+      <fileSet>
+          <outputDirectory>resources</outputDirectory>
+          <directory>${basedir}/src/main/resources</directory>
+          <includes>
+              <include>log4j.xml</include>
+              <include>logback.xml</include>
+          </includes>
+      </fileSet>
     <fileSet>
   		<outputDirectory>lib</outputDirectory>
   		<directory>${basedir}/src/main/resources</directory>
   		<includes>
   			<include>log4j.xml</include>
-  		</includes>
+            <include>logback.xml</include>
+        </includes>
   	</fileSet>
   	<fileSet>
   		<outputDirectory>data/geoip</outputDirectory>

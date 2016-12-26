@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.services.ActiveDirectoryService;
@@ -10,6 +11,7 @@ import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.utils.spring.SpringPropertiesUtil;
+import fortscale.web.beans.AuthenticationTestResult;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
 import fortscale.web.tasks.ControllerInvokedAdTask;
@@ -26,6 +28,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.annotation.PostConstruct;
+import javax.naming.AuthenticationException;
+import javax.naming.CommunicationException;
+import javax.naming.NamingException;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -40,6 +45,8 @@ import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
 
+	public static final String SERVER_URL_ERROR = "Server URL is not available. Update the server URL and try again.";
+	public static final String WRONG_CREDENTIALS_ERROR = "Wrong Credentials, please update and try again.";
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
 	public String COLLECTION_TARGET_DIR;
@@ -119,23 +126,39 @@ public class ApiActiveDirectoryController {
 	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
-	public ResponseEntity<String> testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
-																@RequestParam(value = "encrypted_password") Boolean encryptedPassword) {
+	public AuthenticationTestResult testActiveDirectoryConnection(@Valid @RequestBody AdConnection activeDirectoryDomain,
+																  @RequestParam(value = "encrypted_password") Boolean encryptedPassword) {
 		if (!encryptedPassword) {
 			try {
 				activeDirectoryDomain.setDomainPassword(EncryptionUtils.encrypt(activeDirectoryDomain.
 						getDomainPassword()));
 			} catch (Exception ex) {
 				logger.error("failed to encrypt password");
-				return new ResponseEntity<>(ex.getLocalizedMessage(), HttpStatus.BAD_REQUEST);
+				return new AuthenticationTestResult(false, "Wrong Credentials, please update and try again.");
 			}
 		}
-		String result = activeDirectoryService.canConnect(activeDirectoryDomain);
-		if (result.isEmpty()) {
-			return new ResponseEntity<>(HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(result, HttpStatus.BAD_REQUEST);
+		boolean connectSuccess;
+		try {
+			connectSuccess = activeDirectoryService.canConnect(activeDirectoryDomain);
+		} catch (CommunicationException e) {
+			logger.warn("Server is not available");
+			return new AuthenticationTestResult(false, SERVER_URL_ERROR);
+
+		} catch (AuthenticationException e) {
+			logger.warn("Wrong user or password");
+			return new AuthenticationTestResult(false, WRONG_CREDENTIALS_ERROR);
+		} catch (NamingException e) {
+			logger.warn("Unknown error while trying to connect to server");
+
+			return new AuthenticationTestResult(false, e.getExplanation());
+		} catch (PasswordDecryptionException e) {
+			logger.warn("failed to encrypt password");
+			return new AuthenticationTestResult(false, WRONG_CREDENTIALS_ERROR);
+
 		}
+
+		return  new AuthenticationTestResult(true,"");
+
 	}
 
 	@RequestMapping(method = RequestMethod.GET)
@@ -169,9 +192,9 @@ public class ApiActiveDirectoryController {
 				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource)));
 			} finally {
 				executorService.shutdown();
+				isFetchEtlExecutionRequestInProgress.set(false);
 			}
 
-			isFetchEtlExecutionRequestInProgress.set(false);
 			return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
 		}
 		else {

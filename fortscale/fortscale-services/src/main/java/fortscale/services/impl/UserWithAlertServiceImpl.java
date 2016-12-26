@@ -83,23 +83,25 @@ import java.util.Set;
 			List<User> positionResults = new ArrayList<>();
 			List<User> departmentResults = new ArrayList<>();
 
+			final String searchValueLowerCase = searchValue.toLowerCase();
+
 			users.forEach(user -> {
 				if (StringUtils.isNotEmpty(user.getAdInfo().getFirstname())
-						&& (user.getAdInfo().getFirstname().toLowerCase().startsWith(searchValue))){
+						&& (user.getAdInfo().getFirstname().toLowerCase().startsWith(searchValueLowerCase))){
 					firstNameResults.add(user);
 				} else if (StringUtils.isNotEmpty(user.getAdInfo().getLastname())
-						&& (user.getAdInfo().getLastname().toLowerCase().startsWith(searchValue))){
+						&& (user.getAdInfo().getLastname().toLowerCase().startsWith(searchValueLowerCase))){
 					lastNameResults.add(user);
-				} else if (StringUtils.isNotEmpty(user.getDisplayName()) && (user.getDisplayName().toLowerCase().startsWith(searchValue))){
+				} else if (StringUtils.isNotEmpty(user.getDisplayName()) && (user.getDisplayName().toLowerCase().startsWith(searchValueLowerCase))){
 					displayNameResults.add(user);
 				} else if (StringUtils.isNotEmpty(user.getUsername())
-						&& (user.getUsername().toLowerCase().startsWith(searchValue))){
+						&& (user.getUsername().toLowerCase().startsWith(searchValueLowerCase))){
 					usernameResults.add(user);
 				} else if (StringUtils.isNotEmpty(user.getAdInfo().getPosition())
-						&& (user.getAdInfo().getPosition().toLowerCase().startsWith(searchValue))){
+						&& (user.getAdInfo().getPosition().toLowerCase().startsWith(searchValueLowerCase))){
 					positionResults.add(user);
 				} else if(StringUtils.isNotEmpty(user.getAdInfo().getDepartment())
-						&& (user.getAdInfo().getDepartment().toLowerCase().startsWith(searchValue))){
+						&& (user.getAdInfo().getDepartment().toLowerCase().startsWith(searchValueLowerCase))){
 					departmentResults.add(user);
 				}
 			});
@@ -314,9 +316,9 @@ import java.util.Set;
 					//if failed
 					throw new Exception("failed to add new tag - " + tag);
 				}
-			}else if (!tag.equals(existingTag.getDisplayName())){
+			}else if (!tag.equals(existingTag.getName())){
 				tagNames.remove(tag);
-				tagNames.add(existingTag.getDisplayName());
+				tagNames.add(existingTag.getName());
 			}
 		}
 

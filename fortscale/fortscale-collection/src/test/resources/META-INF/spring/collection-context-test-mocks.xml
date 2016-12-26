@@ -73,5 +73,7 @@
 
     <bean id="UtilsLegacyComponentScanConfigExclude1" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfigExclude1" />
 
-
+    <!-- DcServiceFilter related beans -->
+    <bean id="serversListConfiguration" class="fortscale.services.impl.ServersListConfigurationImpl"/>
+    <mockito:mock id="activeDirectoryService" class="fortscale.services.ActiveDirectoryService"/>
 </beans>

@@ -13,6 +13,8 @@ import fortscale.streaming.service.BDPService;
 import fortscale.streaming.service.BarrierService;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskMetrics;
 import fortscale.streaming.task.metrics.HDFSWriterStreamingTaskTableWriterMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
@@ -26,7 +28,6 @@ import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.*;
@@ -69,7 +70,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
     /** reads task configuration from job config and initialize hdfs appender */
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 
 
 		long windowDuration = config.getLong("task.window.ms");
@@ -162,16 +163,16 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 		return resolver.resolveStringValue(config.get(string, def));
 	}
 
-	/** Write the incoming message fields to hdfs */
+	/** Write the incoming message fields to hdfs
+	 * @param messageContext*/
 	@Override
-	public void wrappedProcess(IncomingMessageEnvelope envelope,
-			MessageCollector collector, TaskCoordinator coordinator)
+	public void processMessage(ProcessMessageContext messageContext)
 			throws Exception {
 		// parse the message into json
 
-		JSONObject message = parseJsonMessage(envelope);
+		JSONObject message = messageContext.getMessageAsJson();
 
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			taskMetrics.unknownDataSourceEventMessages++;
 			taskMonitoringHelper.countNewFilteredEvents(AbstractStreamTask.UNKNOW_CONFIG_KEY, MonitorMessaages.CANNOT_EXTRACT_STATE_MESSAGE);
@@ -201,7 +202,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 				// messageText, timestampField);
                 writerConfiguration.tableWriterMetrics.invalidTimeFieldMessages++;
 				taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_TIMESTAMP_FIELD_IN_MESSAGE_label);
-				throw new StreamMessageNotContainFieldException((String) envelope.getMessage(), writerConfiguration.timestampField);
+				throw new StreamMessageNotContainFieldException(messageContext, writerConfiguration.timestampField);
 			}
 
 			// get the username from the message
@@ -214,7 +215,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 			if (writerConfiguration.barrier.isEventAfterBarrier(username, timestamp, message)) {
 
                 // filter messages if needed
-				if (filterMessage(message, writerConfiguration.filters)) {
+				if (filterMessage(messageContext, writerConfiguration.filters)) {
                     writerConfiguration.tableWriterMetrics.filterFilteredMessages++;
 					writerConfiguration.skippedMessageCount.inc();
 
@@ -242,6 +243,8 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 							try {
 								OutgoingMessageEnvelope output = new OutgoingMessageEnvelope(new SystemStream("kafka",
 									   outputTopic), message.toJSONString());
+								StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
+								MessageCollector collector = streamingProcessMessageContext.getCollector();
 								collector.send(output);
                                 writerConfiguration.tableWriterMetrics.writeToOutputTopicMessages++;
 							} catch (Exception exception) {
@@ -272,11 +275,11 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 	 * filter message method that can be used by overriding instances to control 
 	 * which messages are written
 	 */
-	private boolean filterMessage(JSONObject message, List<MessageFilter> filters) {
+	private boolean filterMessage(ProcessMessageContext message, List<MessageFilter> filters) {
 		for (MessageFilter filter : filters) {
-			if (filter.filter(message)) {
+			if (filter.filter(message.getMessageAsJson())) {
 				if (filter.monitorIfFiltered()) {
-					taskMonitoringHelper.countNewFilteredEvents(extractDataSourceConfigKey(message), MonitorMessaages.MessageFilter, filter.getName());
+					taskMonitoringHelper.countNewFilteredEvents(message.getStreamingTaskDataSourceConfigKey(), MonitorMessaages.MessageFilter, filter.getName());
 				}
 				return true;
 			}
@@ -303,7 +306,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	/** Periodically flush data to hdfs */
 	@Override
-	public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	public void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 		logger.info("Flushing HDFS data..");
 		// flush all writers
@@ -336,7 +339,7 @@ public class HDFSWriterStreamTask extends AbstractStreamTask implements Initable
 
 	/** Close the hdfs writer when job shuts down */
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 
 		for (List<WriterConfiguration> writerConfigurations : dataSourceToConfigsMap.values()) {
 			for (WriterConfiguration writerConfiguration : writerConfigurations) {
