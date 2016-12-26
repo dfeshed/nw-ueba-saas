@@ -848,18 +848,28 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		tagNames.forEach(tag -> {
 			Query query = new Query();
-			criteriaList.forEach(criteria -> query.addCriteria(criteria));
-
-			Update remove = new Update();
-			remove.pull(User.tagsField, tag);
-			mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-					.upsert(query, remove).execute();
+			criteriaList.forEach(criteria -> {
+				if (criteria.getKey().equals(User.tagsField)){
+					Criteria andCr = new Criteria();
+					List<String> tags = new ArrayList<>();
+					tags.add(tag);
+					andCr.andOperator(new Criteria(User.tagsField).not().in(tags), criteria);
+					query.addCriteria(andCr);
+				}else {
+					query.addCriteria(criteria);
+				}
+			});
 
 			if (addTag){
 				// Adding the tag
 				update.push(User.tagsField, tag);
 				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
 						.upsert(query, update).execute();
+			}else{
+				Update remove = new Update();
+				remove.pull(User.tagsField, tag);
+				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+						.upsert(query, remove).execute();
 			}
 		});
 
