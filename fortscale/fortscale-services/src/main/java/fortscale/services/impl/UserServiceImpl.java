@@ -1226,6 +1226,12 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score) {
-		return userRepository.updateUserScoreForUsersNotInIdList(userIds, score);
+		int updateCount = 0;
+		try {
+			updateCount = userRepository.updateUserScoreForUsersNotInIdList(userIds, score);
+		}catch (Exception e){
+			logger.error("Error updating user score for {} users not in id list to score {}", userIds.size(), score, e);
+		}
+		return updateCount;
 	}
 }
