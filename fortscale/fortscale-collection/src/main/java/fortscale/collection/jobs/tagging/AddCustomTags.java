@@ -55,7 +55,7 @@ public class AddCustomTags extends FortscaleJob{
 				String displayName = line.split(CSV_DELIMITER)[1];
 				boolean createsIndicator = Boolean.parseBoolean(line.split(CSV_DELIMITER)[2]);
 				String rules = line.split(CSV_DELIMITER)[3];
-				Tag tag = new Tag(name, displayName, createsIndicator, true);
+				Tag tag = new Tag(name, displayName, createsIndicator, true,false);
 				tag.setRules(Arrays.asList(rules.split(RULES_DELIMITER)));
 				if (tagService.addTag(tag)) {
 					logger.info("adding tag {}", line);

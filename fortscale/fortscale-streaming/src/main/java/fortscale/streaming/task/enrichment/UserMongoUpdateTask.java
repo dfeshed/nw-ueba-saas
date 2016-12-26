@@ -7,6 +7,7 @@ import fortscale.services.impl.SpringService;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.logging.Logger;
@@ -15,7 +16,6 @@ import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.Entry;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
@@ -94,7 +94,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 
 		// Get the levelDB store
 		store = (KeyValueStore<String, UserInfoForUpdate>) context.getStore(storeName);
@@ -130,18 +130,15 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 
 	/**
 	 * Process specific message
-	 * @param envelope	The message
-	 * @param collector collector in order to send the message to other topics - not used in this task
-	 * @param coordinator	coordinator
+	 * @param messageContext    The message
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,TaskCoordinator coordinator) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 
 		// parse the message into json
-		String messageText = (String) envelope.getMessage();
-		net.minidev.json.JSONObject message = (net.minidev.json.JSONObject) parseJsonMessage(envelope);
-		StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+		net.minidev.json.JSONObject message = messageContext.getMessageAsJson();
+		StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 		if (configKey == null){
 			taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
 			return;
@@ -150,8 +147,8 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		Long timestampSeconds = convertToLong(message.get(timestampField));
 		if (timestampSeconds == null) {
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.MESSAGE_DOES_NOT_CONTAINS_TIMESTAMP_IN_FIELD);
-			logger.error("message {} does not contains timestamp in field {}", messageText, timestampField);
-			throw new StreamMessageNotContainFieldException(messageText, timestampField);
+			logger.error("message {} does not contains timestamp in field {}", messageContext, timestampField);
+			throw new StreamMessageNotContainFieldException(messageContext, timestampField);
 		}
 		Long timestamp = TimestampUtils.convertToMilliSeconds(timestampSeconds);
 
@@ -159,8 +156,8 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		String normalizedUsername = convertToString(message.get(usernameField));
 		if (normalizedUsername == null) {
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.CANNOT_EXTRACT_USER_NAME_MESSAGE);
-			logger.error("message {} does not contains username in field {}", messageText, usernameField);
-			throw new StreamMessageNotContainFieldException(messageText, usernameField);
+			logger.error("message {} does not contains username in field {}", messageContext, usernameField);
+			throw new StreamMessageNotContainFieldException(messageContext, usernameField);
 		}
 
 
@@ -178,7 +175,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 		String logUserNameFromEvent = convertToString(message.get(dataSourceConfiguration.getLogUserNameField()));
 		if (logUserNameFromEvent == null) {
 			taskMonitoringHelper.countNewFilteredEvents(configKey, MonitorMessaages.NO_LOG_USERNAME_IN_MESSAGE_LABEL);
-			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageText, dataSourceConfiguration.getLogUserNameField());
+			logger.error("message {} does not contains field {} that will needed for marking the logusername ", messageContext, dataSourceConfiguration.getLogUserNameField());
 			return;
 		}
 
@@ -252,7 +249,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 
 		// copy level DB to mongo DB
 		if (userService !=null) {
@@ -266,7 +263,7 @@ public class UserMongoUpdateTask extends AbstractStreamTask {
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 
 		// copy level DB to mongo DB
 		if (userService != null) {
