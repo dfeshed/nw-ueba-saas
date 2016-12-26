@@ -158,7 +158,10 @@ public class UserScoreServiceImpl implements UserScoreService {
                 alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
 
-            userScore += alert.getUserScoreContribution();
+            // The alert shouldn't contribute to the score any more  - relevant to the day when we decide the alert isn't relevant any more
+            if (userScoreContributionFlag) {
+                userScore += alert.getUserScoreContribution();
+            }
         }
 
         user.setScore(userScore);
