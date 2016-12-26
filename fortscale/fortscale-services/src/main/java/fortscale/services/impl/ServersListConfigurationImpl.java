@@ -1,6 +1,5 @@
 package fortscale.services.impl;
 
-import fortscale.domain.system.dao.SystemConfigurationRepository;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ServersListConfiguration;
 import org.apache.commons.lang.StringUtils;
@@ -10,11 +9,6 @@ import org.springframework.stereotype.Service;
 
 @Service("ServersListConfiguration")
 public class ServersListConfigurationImpl implements ServersListConfiguration {
-
-
-	@Autowired
-	private SystemConfigurationRepository systemConfigurationRepository;
-
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
 
@@ -23,8 +17,6 @@ public class ServersListConfigurationImpl implements ServersListConfiguration {
 
 	@Value("${login.account.name.regex:}")
 	private String loginAccountNameRegex;
-
-
 
 
 	@Override

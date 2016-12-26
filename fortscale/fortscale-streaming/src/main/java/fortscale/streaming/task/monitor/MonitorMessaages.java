@@ -20,7 +20,6 @@ public class MonitorMessaages {
     public static final String EVENT_OLDER_THEN_NEWEST_EVENT_LABEL = "fortscale.message.event_older_then_newest_event_label";
     //Labels for monitoring
     public static final String ACCOUNT_NAME_MATCH_TO_REGEX = "fortscale.message.account_name_match_to_regex";
-    public static final String SERVICE_NAME_MATCH_TO_REGEX = "fortscale.message.service_name_match_to_regex";
     public static final String SERVICE_NAME_MATCH_COMPUTER_NAME = "fortscale.message.service_name_match_computer_name";
     public static final String NO_LOG_USERNAME_IN_MESSAGE_LABEL = "fortscale.message.no_log_username_in_message_label";
 }
