@@ -357,15 +357,11 @@ public class ApiEvidenceController extends DataQueryController {
 	 */
 	private Set<String> getSupportingInformationCountries(HistoricalDataRestFilter historicalDataRestFilter, Evidence evidence) {
 		Set<String> supportingInformationCountries = new HashSet<>();
-
-
 		EntitySupportingInformation supportingInformation = evidence.getSupportingInformation();
 		if (supportingInformation instanceof VpnGeoHoppingSupportingInformation &&
 				historicalDataRestFilter.getFeature().equals(COUNTRY_FEATURE)) {
 			supportingInformationCountries = ((VpnGeoHoppingSupportingInformation) supportingInformation).fetchCountriesNames();
 		}
-
-
 		return supportingInformationCountries;
 	}
 
