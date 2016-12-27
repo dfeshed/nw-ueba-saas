@@ -29,6 +29,7 @@ import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -49,6 +50,8 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String OTHERS_COLUMN = "Others";
 	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
 	private static final String TIME_STAMP = "ts";
+	public static final String COUNTRY_FEATURE = "country";
+
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 
@@ -337,8 +340,42 @@ public class ApiEvidenceController extends DataQueryController {
 			addTimeGranularityInformation(supportingInformationBean, evidenceSupportingInformationData);
 		}
 
+		//Add countries list for supported information if needed
+		Set<String> supportingInformationCountries = getSupportingInformationCountries(historicalDataRestFilter, evidence);
+		if (!supportingInformationCountries.isEmpty()) {
+			supportingInformationBean.setInfo("countries", supportingInformationCountries);
+		}
+
 		supportingInformationBean.setData(rearrangedEntries);
+
 		return supportingInformationBean;
+	}
+
+	/**
+	 * Check if the supporting information is VpnSession and return unique list of the countries
+	 * @param historicalDataRestFilter
+	 * @param evidence
+	 * @return
+	 */
+	private Set<String> getSupportingInformationCountries(HistoricalDataRestFilter historicalDataRestFilter, Evidence evidence) {
+		Set<String> supportingInformationCountries = new HashSet<>();
+
+		List<VpnSession> vpnSessions = null;
+		if (evidence.getSupportingInformation() !=null && evidence.getSupportingInformation() instanceof VpnGeoHoppingSupportingInformation) {
+			vpnSessions = ((VpnGeoHoppingSupportingInformation) evidence.getSupportingInformation()).getRawEvents();
+		}
+
+		if ( CollectionUtils.isNotEmpty(vpnSessions) && historicalDataRestFilter.getFeature().equals(COUNTRY_FEATURE)){
+
+
+			for (VpnSession vpnSession : vpnSessions){
+				supportingInformationCountries.add(vpnSession.getCountry());
+
+			}
+
+		}
+
+		return supportingInformationCountries;
 	}
 
 	/**
