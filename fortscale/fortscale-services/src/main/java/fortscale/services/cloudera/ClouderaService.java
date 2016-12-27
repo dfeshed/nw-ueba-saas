@@ -9,8 +9,10 @@ import com.cloudera.api.DataView;
 import com.cloudera.api.model.*;
 import com.cloudera.api.v10.RootResourceV10;
 import com.cloudera.api.v10.ServicesResourceV10;
+import fortscale.utils.kafka.KafkaEventsWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -21,6 +23,9 @@ public class ClouderaService {
     private static final int DEFAULT_TIMEOUT = 30;
     private static RootResourceV10 apiRoot;
     private static ServicesResourceV10 servicesRes;
+
+    @Autowired
+    private KafkaEventsWriter kafkaEventsWriter;
 
     static class ClouderaManagerClientBuilderFactoryHelper {
         ClouderaManagerClientBuilder makeClouderaManagerClientBuilder(){
@@ -54,6 +59,9 @@ public class ClouderaService {
      * @return
      */
     public boolean startOrStopService(String serviceName, boolean isStop) {
+        // we don't mind the producer to be left open at process shutdown
+        kafkaEventsWriter.setShouldCloseProducer(false);
+
         ApiRoleState desiredRoleState;
         ApiRoleNameList rolesFullNames = new ApiRoleNameList();
         for (ApiRole currRole : servicesRes.getRolesResource(serviceName.toLowerCase()).readRoles()) {
