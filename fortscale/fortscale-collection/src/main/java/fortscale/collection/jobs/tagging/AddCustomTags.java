@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Value;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.regex.Pattern;
 
 public class AddCustomTags extends FortscaleJob{
 
@@ -56,14 +57,16 @@ public class AddCustomTags extends FortscaleJob{
 		//read the custom tag list and update the possible tags to add in the system
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			for (String line : FileUtils.readLines(tagsFile)) {
-				final String[] splitLine = line.split(CSV_DELIMITER);
+				final String[] splitLine = line.split(Pattern.quote(CSV_DELIMITER)); //because "|" has a special meaning in a regex
 				String name = splitLine[INDEX_NAME];
 				String displayName = splitLine[INDEX_DISPLAY_NAME];
 				boolean createsIndicator = Boolean.parseBoolean(splitLine[INDEX_INDICATOR]);
 				Tag tag = new Tag(name, displayName, createsIndicator, true,false);
 
-				String rules = splitLine[INDEX_RULES];
-				tag.setRules(Arrays.asList(rules.split(RULES_DELIMITER)));
+				if (splitLine.length > INDEX_RULES) { //rules isn't mandatory so we check if we have something in the relevant index
+					String rules = splitLine[INDEX_RULES];
+					tag.setRules(Arrays.asList(rules.split(RULES_DELIMITER)));
+				}
 
 				if (tagService.addTag(tag)) {
 					logger.info("adding tag {}", tag);
