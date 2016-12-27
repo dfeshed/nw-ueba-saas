@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
+import ContextHelper from 'sa/context/helpers';
 
 const { Component, set } = Ember;
 
@@ -9,20 +10,20 @@ export default Component.extend({
   fixedYDomain: [0, 100], // This is to show 0-100 on the Y-axes, irrespective of max y-value in the data.
 
   @computed('liveConnectData.customerPercentageTrend')
-  trendingCommunityActivity: (seenTrend) => [seenTrend],
+  trendingCommunityActivity: (seenTrend) => [ContextHelper.filterLast30Days(seenTrend)],
 
   @computed('liveConnectData')
   trendingSubmissionActivity: (lcData) => ([
-    lcData.customerHighRiskFeedbackPercentageTrend,
-    lcData.customerRiskyFeedbackPercentageTrend,
-    lcData.customerSuspiciousFeedbackPercentageTrend
+    ContextHelper.filterLast30Days(lcData.customerHighRiskFeedbackPercentageTrend),
+    ContextHelper.filterLast30Days(lcData.customerRiskyFeedbackPercentageTrend),
+    ContextHelper.filterLast30Days(lcData.customerSuspiciousFeedbackPercentageTrend)
   ]),
 
   @computed('liveConnectData.tags', 'allTags')
   riskIndicatorCategories: (riskIndicatorTags, allTags) => {
     // Collect tags to be highlighted
     const tagsToHighlight = riskIndicatorTags.reduce((hash, tag) => {
-      hash[tag.value] = true;
+      hash[tag] = true;
       return hash;
     }, {});
 

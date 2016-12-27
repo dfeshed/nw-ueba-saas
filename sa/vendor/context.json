@@ -652,54 +652,37 @@
                 "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
                 "ASSOCIATED_WITH_RISKY_DOMAIN"
               ],
-              "tags":[
-                {
-                  "value" : "RECONNAISSANCE_SCANNING",
-                  "category" : "RECONNAISSANCE",
-                  "categoryText" : "RECONNAISSANCE",
-                  "name" : "SCANNING",
-                  "nameText" : "Scanning",
-                  "description" : "Some description for this tag that is configured in the server."
-                },
-                {
-                  "value" : "RECONNAISSANCE_TOR",
-                  "category" : "RECONNAISSANCE",
-                  "categoryText" : "RECONNAISSANCE",
-                  "name" : "TOR",
-                  "nameText" : "Tor",
-                  "description" : "Some description for this tag that is configured in the server."
-                }
-              ],
+              "tags":[ "RECONNAISSANCE_SCANNING", "RECONNAISSANCE_TOR"],
               "customerPercentage": 34.24,
               "customerPercentageTrend": [
                 {
-                  "time": 1401926400000,
+                  "time": 1481704642668,
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
               "customerRiskyFeedbackPercentage": 100.0,
               "customerRiskyFeedbackPercentageTrend": [
                 {
-                  "time": 1401926400000,
+                  "time": 1481805642668,
                   "percentage": 55.5
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 45.5
                 }
               ],
               "customerNotRiskyFeedbackPercentage": 0.0,
               "customerNotRiskyFeedbackPercentageTrend": [
                 {
-                  "time": 1401926400000,
+                  "time": 1481805642668,
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
@@ -713,33 +696,33 @@
               "customerUnknownFeedbackPercentage": 0.0,
               "customerUnknownFeedbackPercentageTrend": [
                 {
-                  "time": 1401926400000,
+                  "time": 1481805642668,
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
               "customerSuspiciousFeedbackPercentage": 0.0,
               "customerSuspiciousFeedbackPercentageTrend": [
                 {
-                  "time": 1401926400000,
+                  "time": 1481805642668,
                   "percentage": 20.5
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
               "customerHighRiskFeedbackPercentage": 0.0,
               "customerHighRiskFeedbackPercentageTrend": [
                 {
-                  "time": 1401926400000,
+                  "time": 1481805642668,
                   "percentage": 75.5
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 64.5
                 }
               ]
@@ -882,32 +865,15 @@
                 "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
                 "ASSOCIATED_WITH_RISKY_DOMAIN"
               ],
-              "tags":[
-                {
-                  "value" : "RECONNAISSANCE_SCANNING",
-                  "category" : "RECONNAISSANCE",
-                  "categoryText" : "RECONNAISSANCE",
-                  "name" : "SCANNING",
-                  "nameText" : "Scanning",
-                  "description" : "Some description for this tag that is configured in the server."
-                },
-                {
-                  "value" : "RECONNAISSANCE_TOR",
-                  "category" : "RECONNAISSANCE",
-                  "categoryText" : "RECONNAISSANCE",
-                  "name" : "TOR",
-                  "nameText" : "Tor",
-                  "description" : "Some description for this tag that is configured in the server."
-                }
-              ],
+              "tags":["RECONNAISSANCE_SCANNING", "RECONNAISSANCE_TOR"],
               "customerPercentage": 34.24,
               "customerPercentageTrend": [
                 {
-                  "time": 1401926400000,
+                  "time": 1481805642668,
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
@@ -918,7 +884,7 @@
                   "percentage": 55.5
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 45.5
                 }
               ],
@@ -929,7 +895,7 @@
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
@@ -947,7 +913,7 @@
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
@@ -958,7 +924,7 @@
                   "percentage": 20.5
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
@@ -969,7 +935,7 @@
                   "percentage": 75.5
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 64.5
                 }
               ]
@@ -1112,24 +1078,7 @@
                 "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
                 "ASSOCIATED_WITH_RISKY_DOMAIN"
               ],
-              "tags": [
-                {
-                  "value": "RECONNAISSANCE_SCANNING",
-                  "category": "RECONNAISSANCE",
-                  "categoryText": "RECONNAISSANCE",
-                  "name": "SCANNING",
-                  "nameText": "Scanning",
-                  "description": "Some description for this tag that is configured in the server."
-                },
-                {
-                  "value": "RECONNAISSANCE_TOR",
-                  "category": "RECONNAISSANCE",
-                  "categoryText": "RECONNAISSANCE",
-                  "name": "TOR",
-                  "nameText": "Tor",
-                  "description": "Some description for this tag that is configured in the server."
-                }
-              ],
+              "tags": ["RECONNAISSANCE_SCANNING", "RECONNAISSANCE_TOR"],
               "customerPercentage": 34.24,
               "customerPercentageTrend": [
                 {
@@ -1137,7 +1086,7 @@
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
@@ -1148,7 +1097,7 @@
                   "percentage": 55.5
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 45.5
                 }
               ],
@@ -1159,7 +1108,7 @@
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
@@ -1177,7 +1126,7 @@
                   "percentage": 9.45
                 },
                 {
-                  "time": 1445731200000,
+                  "time": 1481806642668,
                   "percentage": 34.24
                 }
               ],
