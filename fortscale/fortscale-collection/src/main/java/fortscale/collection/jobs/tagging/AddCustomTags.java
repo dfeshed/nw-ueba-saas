@@ -17,6 +17,10 @@ import java.util.Arrays;
 
 public class AddCustomTags extends FortscaleJob{
 
+	public static final int INDEX_NAME = 0;
+	public static final int INDEX_DISPLAY_NAME = 1;
+	public static final int INDEX_INDICATOR = 2;
+	public static final int INDEX_RULES = 3;
 	private static Logger logger = LoggerFactory.getLogger(AddCustomTags.class);
 
 	private static final String CSV_DELIMITER = "|";
@@ -44,24 +48,27 @@ public class AddCustomTags extends FortscaleJob{
 	@Override
 	protected void runSteps() throws Exception {
 		if (StringUtils.isEmpty(tagFilePath)) {
-			logger.error("No tag file found");
+			logger.error("Job failed. Empty tagFilePath.");
 			return;
 		}
 		File tagsFile = new File(tagFilePath);
-		//read the custom tag list and update the possible tags to add in the system
 
+		//read the custom tag list and update the possible tags to add in the system
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			for (String line : FileUtils.readLines(tagsFile)) {
-				String name = line.split(CSV_DELIMITER)[0];
-				String displayName = line.split(CSV_DELIMITER)[1];
-				boolean createsIndicator = Boolean.parseBoolean(line.split(CSV_DELIMITER)[2]);
-				String rules = line.split(CSV_DELIMITER)[3];
+				final String[] splitLine = line.split(CSV_DELIMITER);
+				String name = splitLine[INDEX_NAME];
+				String displayName = splitLine[INDEX_DISPLAY_NAME];
+				boolean createsIndicator = Boolean.parseBoolean(splitLine[INDEX_INDICATOR]);
 				Tag tag = new Tag(name, displayName, createsIndicator, true,false);
+
+				String rules = splitLine[INDEX_RULES];
 				tag.setRules(Arrays.asList(rules.split(RULES_DELIMITER)));
+
 				if (tagService.addTag(tag)) {
-					logger.info("adding tag {}", line);
+					logger.info("adding tag {}", tag);
 				} else {
-					logger.warn("fail to add tag tag {}", line);
+					logger.warn("fail to add tag {}", tag);
 				}
 			}
 			logger.info("tags loaded");
