@@ -48,6 +48,7 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
 	private static final String TIME_STAMP = "ts";
 	public static final String COUNTRY_FEATURE = "country";
+	public static final String COUNTRIES_INFO_ATTRIBUTE = "countries";
 
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
@@ -340,7 +341,7 @@ public class ApiEvidenceController extends DataQueryController {
 		//Add countries list for supported information if needed
 		Set<String> supportingInformationCountries = getSupportingInformationCountries(historicalDataRestFilter, evidence);
 		if (!supportingInformationCountries.isEmpty()) {
-			supportingInformationBean.addInfo("countries", supportingInformationCountries);
+			supportingInformationBean.addInfo(COUNTRIES_INFO_ATTRIBUTE, supportingInformationCountries);
 		}
 
 		supportingInformationBean.setData(rearrangedEntries);
