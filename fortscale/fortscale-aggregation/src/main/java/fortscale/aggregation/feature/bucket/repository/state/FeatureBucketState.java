@@ -29,8 +29,9 @@ public class FeatureBucketState extends AbstractDocument {
     public FeatureBucketState() {
     }
 
-    public FeatureBucketState(Instant lastClosedDailyBucketDate) {
+    public FeatureBucketState(Instant lastClosedDailyBucketDate, Instant lastSyncedEventDate) {
         this.lastClosedDailyBucketDate = lastClosedDailyBucketDate;
+        this.lastSyncedEventDate = lastSyncedEventDate;
     }
 
     public Instant getLastSyncedEventDate() {

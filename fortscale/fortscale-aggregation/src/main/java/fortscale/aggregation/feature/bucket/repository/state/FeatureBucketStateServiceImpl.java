@@ -40,21 +40,19 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
 
         // Creating new state object
         if (lastClosedDailyBucketDate == null){
-            featureBucketState = new FeatureBucketState(lastEventDay);
-            lastClosedDailyBucketDate = lastEventDate;
+            featureBucketState = new FeatureBucketState(lastEventDay, lastEventDate);
         // Updating the last synced date in case that the last event date is after the lst sync date
         }else if (lastClosedDailyBucketDate.isBefore(lastEventDate)) {
             featureBucketState.setLastClosedDailyBucketDate(lastEventDay);
             lastClosedDailyBucketDate = lastEventDate;
+            // Updating the lastSyncedEventDate
+            featureBucketState.setLastSyncedEventDate(lastEventDate);
         // When the last event date is before the last synced date - shouldn't happen
         } else {
             logger.warn(
                     String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
                             lastClosedDailyBucketDate, lastEventDate));
         }
-
-        // Updating the lastSyncedEventDate
-        featureBucketState.setLastSyncedEventDate(lastEventDate);
 
         try {
             logger.debug("Before update FeatureBucketState with {}", featureBucketState);
