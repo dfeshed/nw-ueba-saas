@@ -3,6 +3,7 @@ package fortscale.aggregation.feature.services.historicaldata;
 import fortscale.aggregation.feature.services.historicaldata.populators.SupportingInformationDataPopulator;
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
+import fortscale.domain.rest.HistoricalDataRestFilter;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
@@ -27,20 +28,20 @@ public class SupportingInformationServiceImpl implements SupportingInformationSe
     private SupportingInformationPopulatorFactory supportingInformationPopulatorFactory;
 
     @Override
-    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, String contextType, String contextValue, String featureName, Integer timePeriodInDays, String aggregationFunction) {
+    public SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, HistoricalDataRestFilter historicalDataRestFilter) {
         EvidenceType evidenceType = evidence.getEvidenceType();
         List<String> dataEntities = evidence.getDataEntitiesIds();
 
         long evidenceEndTime = TimestampUtils.convertToMilliSeconds(evidence.getEndDate());
 
         logger.info("Going to calculate Evidence Supporting Information. Evidence Type = {} # Context type = {} # Context value = {} # Data entity = {} " +
-                "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", evidenceType, contextType, contextValue, dataEntities.get(0), featureName, TimeUtils.getFormattedTime(evidenceEndTime), aggregationFunction, timePeriodInDays);
+                "# Feature name = {} # Evidence end time = {} # Aggregation function = {} # Time period = {} days..", evidenceType, historicalDataRestFilter.getContextType(), historicalDataRestFilter.getContextValue(), dataEntities.get(0), historicalDataRestFilter.getFeature(), TimeUtils.getFormattedTime(evidenceEndTime), historicalDataRestFilter.getFunction(), historicalDataRestFilter.getTimeRange());
 
-        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, contextType, dataEntities.get(0), featureName, aggregationFunction);
+        SupportingInformationDataPopulator supportingInformationPopulator = supportingInformationPopulatorFactory.createSupportingInformationPopulator(evidenceType, historicalDataRestFilter.getContextType(), dataEntities.get(0), historicalDataRestFilter.getFeature(), historicalDataRestFilter.getFunction());
 
         long startTime = System.nanoTime();
 
-        SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(evidence, contextValue, evidenceEndTime, timePeriodInDays);
+        SupportingInformationData supportingInformationData = supportingInformationPopulator.createSupportingInformationData(evidence, historicalDataRestFilter.getContextValue(), evidenceEndTime, historicalDataRestFilter.getTimeRange());
 
         long elapsedTime = System.nanoTime() - startTime;
 

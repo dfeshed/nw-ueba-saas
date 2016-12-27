@@ -51,6 +51,10 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 		return rawEvents;
 	}
 
+	/**
+	 *
+	 * @return Set of all countries which take part in this supporting information
+	 */
 	public Set<String> fetchCountriesNames(){
 		Set<String> supportingInformationCountries = new HashSet<>();
 
@@ -59,7 +63,6 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 				supportingInformationCountries.add(vpnSession.getCountry());
 
 			}
-
 		}
 
 		return supportingInformationCountries;

@@ -20,7 +20,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
-import fortscale.web.beans.request.HistoricalDataRestFilter;
+import fortscale.domain.rest.HistoricalDataRestFilter;
 import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
@@ -320,10 +320,8 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new ResourceNotFoundException("Can't get evidence of id: " + evidenceId);
 		}
 
-		//Todo - pass the entire HistoricalDataRestFilter to supportingInformationService.getEvidenceSupportingInformationData
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence,
-				historicalDataRestFilter.getContextType(), historicalDataRestFilter.getContextValue(), historicalDataRestFilter.getFeature(),
-				historicalDataRestFilter.getTimeRange(), historicalDataRestFilter.getFunction());
+				historicalDataRestFilter);
 
 		boolean isSupportingInformationAnomalyValueExists = isSupportingInformationAnomalyValueExists(evidenceSupportingInformationData);
 
