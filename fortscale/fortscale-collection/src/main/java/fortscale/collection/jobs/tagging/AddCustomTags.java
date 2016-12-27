@@ -58,8 +58,16 @@ public class AddCustomTags extends FortscaleJob{
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			for (String line : FileUtils.readLines(tagsFile)) {
 				final String[] splitLine = line.split(Pattern.quote(CSV_DELIMITER)); //because "|" has a special meaning in a regex
-				String name = splitLine[INDEX_NAME];
-				String displayName = splitLine[INDEX_DISPLAY_NAME];
+				String name = null;
+				String displayName = null;
+				try {
+					name = splitLine[INDEX_NAME];
+					displayName = splitLine[INDEX_DISPLAY_NAME];
+				} catch (Exception e) {
+					final String errorMessage = String.format("File %s format is invalid.", tagFilePath);
+					logger.error(errorMessage);
+					throw new JobExecutionException(errorMessage, e);
+				}
 				boolean createsIndicator = Boolean.parseBoolean(splitLine[INDEX_INDICATOR]);
 				Tag tag = new Tag(name, displayName, createsIndicator, true,false);
 
