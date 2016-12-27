@@ -25,6 +25,7 @@ import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -340,7 +341,7 @@ public class ApiEvidenceController extends DataQueryController {
 
 		//Add countries list for supported information if needed
 		Set<String> supportingInformationCountries = getSupportingInformationCountries(historicalDataRestFilter, evidence);
-		if (!supportingInformationCountries.isEmpty()) {
+		if (CollectionUtils.isNotEmpty(supportingInformationCountries)) {
 			supportingInformationBean.addInfo(COUNTRIES_INFO_ATTRIBUTE, supportingInformationCountries);
 		}
 
