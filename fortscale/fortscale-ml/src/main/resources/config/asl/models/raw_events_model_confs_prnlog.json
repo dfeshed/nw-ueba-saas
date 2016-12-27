@@ -44,7 +44,7 @@
       }
     },
     {
-      "name": "target_machine.normalized_username.prnlog",
+      "name": "normalized_dst_machine.normalized_username.prnlog",
       "selector": {
         "type": "feature_bucket_context_selector",
         "featureBucketConfName": "normalized_username_prnlog_daily"
@@ -54,7 +54,7 @@
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "featureBucketConfName": "normalized_username_prnlog_daily",
-        "featureName": "target_machine_histogram",
+        "featureName": "normalized_dst_machine_histogram",
         "patternReplacementConf": {
           "pattern": "[0-9]",
           "replacement": "",
@@ -85,16 +85,16 @@
       }
     },
     {
-      "name": "normalized_username.target_machine.prnlog",
+      "name": "normalized_username.normalized_dst_machine.prnlog",
       "selector": {
         "type": "feature_bucket_context_selector",
-        "featureBucketConfName": "target_machine_prnlog_daily"
+        "featureBucketConfName": "normalized_dst_machine_prnlog_daily"
       },
       "retriever": {
         "type": "context_histogram_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
-        "featureBucketConfName": "target_machine_prnlog_daily",
+        "featureBucketConfName": "normalized_dst_machine_prnlog_daily",
         "featureName": "normalized_username_histogram"
       },
       "builder": {

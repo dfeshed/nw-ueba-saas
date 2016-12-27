@@ -36,7 +36,7 @@
     "prnlog-event-scorer": "eventscore",
     "prnlog-event-scorer#date_time_unix.normalized_username.prnlog.scorer": "date_time_score",
     "prnlog-event-scorer#normalized_src_machine.normalized_username.prnlog.scorer": "normalized_src_machine_score",
-    "prnlog-event-scorer#target_machine.normalized_username.prnlog.scorer": "destination_machine_score",
+    "prnlog-event-scorer#normalized_dst_machine.normalized_username.prnlog.scorer": "normalized_dst_machine_score",
 
     "ssh-event-scorer": "${impala.score.ssh.table.field.EventScore}",
     "ssh-event-scorer#date_time_unix.normalized_username.ssh.scorer": "${impala.score.ssh.table.fields.date_time_score}",

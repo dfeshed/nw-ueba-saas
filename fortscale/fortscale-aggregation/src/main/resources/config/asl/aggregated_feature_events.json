@@ -2277,7 +2277,7 @@
       }
     },
     {
-      "name": "sum_of_highest_scores_over_target_machines_prnlog_daily",
+      "name": "sum_of_highest_scores_over_normalized_dst_machines_prnlog_daily",
       "type": "P",
       "bucketConfName": "normalized_username_prnlog_daily",
       "numberOfBuckets": 1,
@@ -2287,7 +2287,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "target_machine_to_highest_score_map"
+          "normalized_dst_machine_to_highest_score_map"
         ]
       },
       "aggregatedFeatureEventFunction": {
@@ -2300,7 +2300,7 @@
       }
     },
     {
-      "name": "sum_of_highest_scores_over_target_machines_prnlog_hourly",
+      "name": "sum_of_highest_scores_over_normalized_dst_machines_prnlog_hourly",
       "type": "P",
       "bucketConfName": "normalized_username_prnlog_hourly",
       "numberOfBuckets": 1,
@@ -2310,7 +2310,7 @@
       "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
       "aggregatedFeatureNamesMap": {
         "pick": [
-          "target_machine_to_highest_score_map"
+          "normalized_dst_machine_to_highest_score_map"
         ]
       },
       "aggregatedFeatureEventFunction": {

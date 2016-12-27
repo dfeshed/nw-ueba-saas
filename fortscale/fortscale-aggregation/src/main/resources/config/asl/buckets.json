@@ -2374,10 +2374,10 @@
           }
         },
         {
-          "name": "target_machine_histogram",
+          "name": "normalized_dst_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
-              "target_machine"
+              "normalized_dst_machine"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -2385,13 +2385,13 @@
           }
         },
         {
-          "name": "target_machine_to_highest_score_map",
+          "name": "normalized_dst_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "target_machine"
+              "normalized_dst_machine"
             ],
             "maximize": [
-              "destination_machine_score"
+              "normalized_dst_machine_score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -2477,13 +2477,13 @@
           }
         },
         {
-          "name": "target_machine_to_highest_score_map",
+          "name": "normalized_dst_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "target_machine"
+              "normalized_dst_machine"
             ],
             "maximize": [
-              "destination_machine_score"
+              "normalized_dst_machine_score"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -2528,10 +2528,10 @@
       ]
     },
     {
-      "name": "target_machine_prnlog_daily",
+      "name": "normalized_dst_machine_prnlog_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "target_machine"
+        "normalized_dst_machine"
       ],
       "dataSources": [
         "prnlog"
