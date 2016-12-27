@@ -55,7 +55,7 @@ export default Mixin.create({
     const prefDateFormat = this.get('dateFormatServ.selected.key') || 'YYYY-MM-DD';
     const prefTimeKey = this.get('timeFormatServ.selected.key') || 'HR24';
     const prefTimeFormat = this.get('timeFormatServ.selected.format') || 'HH:mm';
-    const prefTimeZone = this.get('timeZoneServ.selected') || 'America/New_York';
+    const prefTimeZone = this.get('timezone.selected.zoneId') || 'America/New_York';
     const st = this.get('showTime') || false;
     const is24 = (prefTimeKey === 'HR24') || false;
     const lc = localStorage[this.get('localeKey')] || 'en';
@@ -142,7 +142,6 @@ export default Mixin.create({
       this.get('pikaday').setDate(value, true);
     } else {
       const date = this.get('useUTC') ? moment(moment.utc(value).format(format), format).toDate() : value;
-
       this.get('pikaday').setDate(date, true);
     }
   },
@@ -178,7 +177,6 @@ export default Mixin.create({
 
   userSelectedDate() {
     let selectedDate = this.get('pikaday').getDate();
-
     if (this.get('useUTC')) {
       selectedDate = moment.utc([selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate()]).toDate();
     }

@@ -43,7 +43,62 @@
     background-color: rsa-color(black, null, $rsa-translucent);
   }
 
+  &__filter-panel__time {
+
+    .date-time-label {
+      @include rsa-font(header, small);
+      color: rsa-color(gray, light);
+      margin-bottom: rsa-whitespace(less);
+    }
+
+    .date-time-options {
+      @include rsa-font(body, small);
+
+      &.disabled {
+        color: $formButtonDisabledTypeColor;
+        padding-top: rsa-whitespace(less);
+        padding-left: rsa-whitespace(least);
+      }
+    }
+
+    .custom-date-start,
+    .custom-date-end {
+      padding-top: 2px;
+      margin-bottom: rsa-whitespace(least);
+
+      &.hide{
+        display: none;
+      }
+
+      input {
+        @include rsa-input-placeholder(gray);
+        @include rsa-font(body, small);
+        font-style: italic;
+        padding: 4px 0 4px 4px;
+      }
+
+      .active {
+        input {
+          @include rsa-font(body, small);
+          color: inherit;
+          font-style: normal;
+        }
+      }
+
+      .error-icon,
+      .datetime-picker-icon {
+        line-height: 0px;
+        font-size: 1em;
+        top: 1rem;
+      }
+
+    }
+
+  }
+
   &__filter-panel__risk-score {
+    margin-top: rsa-whitespace(more);
+
     .rsa-respond-list__filter-panel__title {
       padding-top: 0;
     }

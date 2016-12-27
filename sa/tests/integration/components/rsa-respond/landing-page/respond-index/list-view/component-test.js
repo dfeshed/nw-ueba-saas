@@ -1,9 +1,9 @@
-import { moduleForComponent, test } from 'ember-qunit';
+import { moduleForComponent, test, skip } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import IncidentsCube from 'sa/utils/cube/incidents';
 import wait from 'ember-test-helpers/wait';
-import { waitFor } from './helpers';
+import { waitFor, createIncident } from './helpers';
 import { clickTrigger, nativeMouseUp } from '../../../../../../helpers/ember-power-select';
 
 const {
@@ -25,7 +25,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
         id: 'INC-491',
         name: 'Suspected command and control communication with www.mozilla.com',
         createdBy: 'User X',
-        created: '2015-10-10',
+        created: new Date().getTime(), // Current time in milliseconds
         lastUpdated: '2015-10-10',
         statusSort: 0, // Status: New
         prioritySort: 0, // Priority: Low
@@ -42,7 +42,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
         id: 'INC-492',
         name: 'Suspected command and control communication with www.mozilla.com',
         createdBy: 'User X',
-        created: '2015-10-10',
+        created: new Date().getTime(), // Current time in milliseconds
         lastUpdated: '2015-10-10',
         statusSort: 1, // Status: Assigned
         prioritySort: 1, // Priority: Medium
@@ -67,7 +67,7 @@ moduleForComponent('rsa-respond/landing-page/respond-index/list-view', 'Integrat
         id: 'INC-493',
         name: 'Suspected command and control communication with www.mozilla.com',
         createdBy: 'User X',
-        created: '2015-10-10',
+        created: new Date().getTime(), // Current time in milliseconds
         lastUpdated: '2015-10-10',
         statusSort: 2, // Status: In-Progress
         prioritySort: 2, // Priority: High
@@ -143,6 +143,11 @@ test('Lazy rendering', function(assert) {
 test('Filter panel renders', function(assert) {
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
 
+  assert.ok(this.$('.rsa-respond-list__filter-panel__time'), 'Date/Time filter section is present');
+  assert.ok(this.$('.rsa-respond-list__filter-panel__time .date-time-options').length === 1, 'Date/Time filter is present');
+  const defaultDateTimeFilter = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+  assert.equal(defaultDateTimeFilter.text().trim(), 'All Data', 'Default Date/Time filter is All Data');
+
   assert.ok(this.$('.rsa-respond-list__filter-panel__risk-score'), 'Risk Score filter is present');
   assert.ok(this.$('.rsa-respond-list__filter-panel__risk-score .rsa-form-slider').length === 1, 'Risk Score slider is present');
 
@@ -160,6 +165,228 @@ test('Filter panel renders', function(assert) {
   assert.ok(this.$('.rsa-respond-list__filter-panel__category .rsa-form-tag-manager'), 'Category options are present');
 
   assert.ok(this.$('.rsa-respond-list__filter-panel__reset-button'), 'Filter button is present');
+});
+
+test('Date/Time filter affects the number of incidents on screen. Selected: Today', function(assert) {
+  const done = assert.async(2);
+
+  // Add record that was created 24hrs ago for purpose of checking that filter works.
+  const twentyFourHoursInMilliseconds = 86400000;
+  const created = new Date().getTime() - twentyFourHoursInMilliseconds;
+  const incident = createIncident({ id: 'INC-1', created });
+
+  const allIncidents = this.get('allIncidents').get('records');
+  allIncidents.pushObjects([
+    incident
+  ]);
+
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'All data rendered.');
+
+  clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+  nativeMouseUp('.ember-power-select-option:eq(0)'); // setting status to Today
+  wait().then(() => {
+    const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+    assert.equal(selected.text().trim(), 'Today', 'Selected Today Date/Time option');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Date/Time filter works');
+    done();
+
+    clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+    nativeMouseUp('.ember-power-select-option:eq(5)'); // setting status to All Data
+    wait().then(() => {
+      const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+      assert.equal(selected.text().trim(), 'All Data', 'Selected All Data Date/Time option');
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'Date/Time filter works');
+      done();
+    });
+  });
+
+});
+
+test('Date/Time filter affects the number of incidents on screen. Selected: Last Hour', function(assert) {
+  const done = assert.async(2);
+
+  // Add record that was created an hour ago + 1 millisecond for purpose of checking that filter works.
+  const hourInMilliseconds = 3600000;
+  const created = new Date().getTime() - (hourInMilliseconds + 1);
+  const incident = createIncident({ id: 'INC-1', created });
+
+  const allIncidents = this.get('allIncidents').get('records');
+  allIncidents.pushObjects([
+    incident
+  ]);
+
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'All data rendered.');
+
+  clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+  nativeMouseUp('.ember-power-select-option:eq(1)'); // setting status to Last Hour
+  wait().then(() => {
+    const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+    assert.equal(selected.text().trim(), 'Last Hour', 'Selected Last Hour Date/Time option');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Date/Time filter works');
+    done();
+
+    clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+    nativeMouseUp('.ember-power-select-option:eq(5)'); // setting status to All Data
+    wait().then(() => {
+      const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+      assert.equal(selected.text().trim(), 'All Data', 'Selected All Data Date/Time option');
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'Date/Time filter works');
+      done();
+    });
+  });
+
+});
+
+test('Date/Time filter affects the number of incidents on screen. Selected: Last 12 Hours', function(assert) {
+  const done = assert.async(2);
+
+  // Add record that was created 12 hours ago + 1 millisecond for purpose of checking that filter works.
+  const twelveHoursInMilliseconds = 43200000;
+  const created = new Date().getTime() - (twelveHoursInMilliseconds + 1);
+  const incident = createIncident({ id: 'INC-1', created });
+
+  const allIncidents = this.get('allIncidents').get('records');
+  allIncidents.pushObjects([
+    incident
+  ]);
+
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'All data rendered.');
+
+  clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+  nativeMouseUp('.ember-power-select-option:eq(2)'); // setting status to Last 12 Hours
+  wait().then(() => {
+    const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+    assert.equal(selected.text().trim(), 'Last 12 Hours', 'Selected Last 12 Hours Date/Time option');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Date/Time filter works');
+    done();
+
+    clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+    nativeMouseUp('.ember-power-select-option:eq(5)'); // setting status to All Data
+    wait().then(() => {
+      const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+      assert.equal(selected.text().trim(), 'All Data', 'Selected All Data Date/Time option');
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'Date/Time filter works');
+      done();
+    });
+  });
+
+});
+
+test('Date/Time filter affects the number of incidents on screen. Selected: Last 24 Hours', function(assert) {
+  const done = assert.async(2);
+
+  // Add record that was created 24 hours ago + 1 millisecond for purpose of checking that filter works.
+  const twentyFourHoursInMilliseconds = 86400000;
+  const created = new Date().getTime() - (twentyFourHoursInMilliseconds + 1);
+  const incident = createIncident({ id: 'INC-1', created });
+
+  const allIncidents = this.get('allIncidents').get('records');
+  allIncidents.pushObjects([
+    incident
+  ]);
+
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'All data rendered.');
+
+  clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+  nativeMouseUp('.ember-power-select-option:eq(3)'); // setting status to Last 24 Hours
+  wait().then(() => {
+    const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+    assert.equal(selected.text().trim(), 'Last 24 Hours', 'Selected Last 24 Hours Date/Time option');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Date/Time filter works');
+    done();
+
+    clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+    nativeMouseUp('.ember-power-select-option:eq(5)'); // setting status to All Data
+    wait().then(() => {
+      const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+      assert.equal(selected.text().trim(), 'All Data', 'Selected All Data Date/Time option');
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'Date/Time filter works');
+      done();
+    });
+  });
+
+});
+
+test('Date/Time filter affects the number of incidents on screen. Selected: Last 7 Days', function(assert) {
+  const done = assert.async(2);
+
+  // Add record that was created 7 days ago + 1 millisecond for purpose of checking that filter works.
+  const sevenDaysInMilliseconds = 604800000;
+  const created = new Date().getTime() - (sevenDaysInMilliseconds + 1);
+  const incident = createIncident({ id: 'INC-1', created });
+
+  const allIncidents = this.get('allIncidents').get('records');
+  allIncidents.pushObjects([
+    incident
+  ]);
+
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'All data rendered.');
+
+  clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+  nativeMouseUp('.ember-power-select-option:eq(4)'); // setting status to Last 7 Days
+  wait().then(() => {
+    const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+    assert.equal(selected.text().trim(), 'Last 7 Days', 'Selected Last 7 Days Date/Time option');
+    assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Date/Time filter works');
+    done();
+
+    clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+    nativeMouseUp('.ember-power-select-option:eq(5)'); // setting status to All Data
+    wait().then(() => {
+      const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+      assert.equal(selected.text().trim(), 'All Data', 'Selected All Data Date/Time option');
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 4, 'Date/Time filter works');
+      done();
+    });
+  });
+
+});
+
+// Note: This test is disabled until rsa-form-datetime component's bugs are addressed.
+skip('Date/Time filter affects the number of incidents on screen. Selected: Custom', function(assert) {
+  const done = assert.async(2);
+
+  this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view buffer=10 allIncidents=allIncidents users=users categoryTags=categoryTags}}`);
+
+  assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All data rendered.');
+
+  clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+  nativeMouseUp('.ember-power-select-option:eq(6)'); // setting status to Custom
+  wait().then(() => {
+    const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+    assert.equal(selected.text().trim(), 'Custom', 'Selected Custom Date/Time option');
+
+    assert.equal(this.$('.custom-date-start').length, 1, 'Date/Time filter shows Custom Start Date picker.');
+    assert.equal(this.$('.custom-date-end').length, 1, 'Date/Time filter shows Custom End Date picker.');
+
+    const startDatePlaceholder = this.$('.custom-date-start .rsa-form-input').find('input')[0].placeholder;
+    assert.equal(startDatePlaceholder, 'Start Date', 'Start Date placeholder shown correctly.');
+
+    const endDatePlaceholder = this.$('.custom-date-end .rsa-form-input').find('input')[0].placeholder;
+    assert.equal(endDatePlaceholder, 'End Date', 'End Date placeholder shown correctly.');
+
+    done();
+
+    clickTrigger('.rsa-respond-list__filter-panel__time .date-time-options');
+    nativeMouseUp('.ember-power-select-option:eq(5)'); // setting status to All Data
+    wait().then(() => {
+      const selected = this.$('.rsa-respond-list__filter-panel__time .date-time-options .ember-power-select-selected-item');
+      assert.equal(selected.text().trim(), 'All Data', 'Selected All Data Date/Time option');
+      assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Date/Time filter works');
+      done();
+    });
+  });
+
 });
 
 test('Risk score filter affects the number of incidents on screen', function(assert) {

@@ -1,6 +1,51 @@
 {{#rsa-application-layout-manager class="rsa-respond-index-layout-manager rsa-respond-list"}}
   {{#rsa-application-layout-panel class="panel-A rsa-respond-list__panelA"}}
     <div class="rsa-respond-list__filter-panel">
+      <div class='rsa-respond-list__filter-panel__time'>
+        <div class='date-time-label'>{{t 'incident.list.filters.dateTimeFilterPrompt'}}</div>
+        {{#if isBulkEditInProgress}}
+          <div class='date-time-options disabled'>
+            {{t (concat 'incident.list.filters.dateTimeOptions.' selectedDateFilterOption)}}
+          </div>
+        {{else}}
+          {{#power-select
+            tagName=div
+            class='date-time-options'
+            options=dateTimeFilterOptions
+            selected=selectedDateFilterOption
+            searchEnabled=false
+            onchange=(action 'onDateTimeOptionSelected')
+            as |option| }}
+            {{t (concat 'incident.list.filters.dateTimeOptions.' option) }}
+          {{/power-select}}
+        {{/if}}
+        <div class='custom-date-start {{unless showCustomDateTime 'hide'}}'>
+          {{rsa-form-datetime
+            class=(if startDate.startDateValue 'active')
+            placeholder=(t 'incident.list.filters.dateTimeFilterStartDate')
+            showTime=true
+            showSeconds=true
+            use24hour=use24hour
+            isDisabled=isBulkEditInProgress
+            isError=startDate.isError
+            errorMessage=startDate.errorMsg
+            onCloseAction=(action "onCustomStartDateSelected")
+            value=startDate.startDateValue }}
+        </div>
+        <div class='custom-date-end {{unless showCustomDateTime 'hide'}}'>
+          {{rsa-form-datetime
+            class=(if endDate.endDateValue 'active')
+            placeholder=(t 'incident.list.filters.dateTimeFilterEndDate')
+            showTime=true
+            showSeconds=true
+            use24hour=use24hour
+            isDisabled=isBulkEditInProgress
+            isError=endDate.isError
+            errorMessage=endDate.errorMsg
+            onCloseAction=(action "onCustomEndDateSelected")
+            value=endDate.endDateValue }}
+        </div>
+      </div>
       <div class="rsa-respond-list__filter-panel__risk-score">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.fields.riskScore'}}</div>
         {{rsa-form-slider

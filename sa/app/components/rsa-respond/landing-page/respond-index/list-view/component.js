@@ -2,16 +2,22 @@ import Ember from 'ember';
 import IncidentHelper from 'sa/incident/helpers';
 import { viewType } from 'sa/protected/respond/index/route';
 import IncidentConstants from 'sa/incident/constants';
-import computed from 'ember-computed-decorators';
+import computed, { equal } from 'ember-computed-decorators';
 import { availableColumnsConfig, replayConfig, persistenceConfig, storageKey } from './config';
 import ReplayManager from 'sa/utils/replay-manager';
 import PersistenceManager from 'sa/utils/persistence-manager';
 
 const {
+  Logger,
+  isPresent,
+  isNone,
   Component,
+  inject: {
+    service
+  },
   run,
-  computed: emberComputed,
   set,
+  computed: emberComputed,
   Object: EmberObject
 } = Ember;
 
@@ -19,6 +25,8 @@ const riskScoreFilterInitialValues = [0, 100];
 
 export default Component.extend({
   tagName: 'hbox',
+
+  timeFormat: service(),
 
   // disables the persitance save and restore. Used in tests.
   disablePersistence: false,
@@ -66,9 +74,30 @@ export default Component.extend({
   // Persistence Manager
   persistence: null,
 
+  // All Date/Time filter options
+  dateTimeFilterOptions: IncidentConstants.dateTimeFilterOptions,
+
+  // Boolean flag used to show or hide calender for date/time filtering
+  showCustomDateTime: false,
+
+  // Object consumed by the template to reflect date/time calender state
+  startDate: {
+    isError: false,
+    startDateValue: null,
+    errorMsg: null
+  },
+
+  // Object consumed by the template to reflect date/time calender state
+  endDate: {
+    isError: false,
+    endDateValue: null,
+    errorMsg: null
+  },
+
   init() {
     this._super(...arguments);
     this.setProperties({
+      'filteredTime': {},
       'filteredPriorities': [],
       'filteredStatuses': [],
       'filteredAssignees': [],
@@ -78,7 +107,6 @@ export default Component.extend({
     });
 
     this.set('isBulkEditInProgress', false);
-
     if (!this.get('disablePersistence')) {
       this.setProperties({
         'replay': ReplayManager.create(),
@@ -267,6 +295,15 @@ export default Component.extend({
   },
 
   /**
+   * @name use24hour
+   * @description boolean flag to be consumed by the template for custom date/time display
+   * @param key
+   * @public
+   */
+  @equal('timeFormat.selected.key', 'HR24')
+  use24hour: null,
+
+  /**
    * @name selectedCategories
    * @description List of selected categories used to filter Incidents. This is consumed by rsa-tag-manager
    * @public
@@ -385,7 +422,267 @@ export default Component.extend({
     allIncidents.setEach('checked', newValue);
   },
 
+  /**
+   * @name selectedDateFilterOption
+   * @description Computed property that handles time filtering
+   * @param filter Object containing information about time filter options selected by the user
+   * @returns {string}
+   * @public
+   */
+  @computed('filteredTime')
+  selectedDateFilterOption(filter) {
+    // Set default option
+    let option = IncidentConstants.dateTimeOptions.ALL_DATA;
+    if (isNone(filter.option)) {
+      filter = { option };
+    } else {
+      option = filter.option;
+    }
+
+    this._filterByDateTime(filter);
+    return option;
+  },
+
+  /**
+   * @name _filterByDateTime
+   * @description Filter by time based on selected option
+   * Note: Custom option is removed (see IncidentConstants) until rsa-form-datetime component's bug fixes are addressed.
+   * @param filter Object containing information about custom start and end time
+   * @private
+   */
+  _filterByDateTime(filter) {
+
+    const { option } = filter;
+
+    // Update Date/Time filter view
+    this.set('showCustomDateTime', option === IncidentConstants.dateTimeOptions.CUSTOM);
+
+    // Reset custom time filter when custom filter is not selected
+    if (option !== IncidentConstants.dateTimeOptions.CUSTOM) {
+      this.setProperties({
+        'startDate.startDateValue': null,
+        'startDate.isError': false,
+        'endDate.endDateValue': null,
+        'endDate.isError': false
+      });
+    }
+
+    // Filter by selection using UTC time in milliseconds since 1 January 1970
+    let endTime = Date.now();
+
+    // Compute startTime based on selected option
+    let startTime = null;
+
+    switch (option) {
+      case IncidentConstants.dateTimeOptions.CUSTOM:
+
+        // Display current selection inside date-time component
+        if (isPresent(filter.startDateValue)) {
+          this.set('startDate.startDateValue', filter.startDateValue);
+        }
+        if (isPresent(filter.endDateValue)) {
+          this.set('endDate.endDateValue', filter.endDateValue);
+        }
+
+        // Apply filter if selected start and end times are valid
+        if (!this.get('startDate.isError') && !this.get('endDate.isError')) {
+          endTime = filter.endTime;
+          startTime = filter.startTime;
+        }
+        break;
+      case IncidentConstants.dateTimeOptions.TODAY: {
+        const currentDate = new Date();
+        const year = currentDate.getFullYear();
+        const month = currentDate.getUTCMonth();
+        const day = currentDate.getUTCDate();
+        startTime = Date.UTC(year, month, day, 0, 0, 0, 0);
+        break;
+      }
+      case IncidentConstants.dateTimeOptions.LAST_HOUR: {
+        startTime = endTime - 3600000;
+        break;
+      }
+      case IncidentConstants.dateTimeOptions.LAST_12_HOURS: {
+        startTime = endTime - 43200000;
+        break;
+      }
+      case IncidentConstants.dateTimeOptions.LAST_24_HOURS: {
+        startTime = endTime - 86400000;
+        break;
+      }
+      case IncidentConstants.dateTimeOptions.LAST_7_DAYS: {
+        startTime = endTime - 604800000;
+        break;
+      }
+      case IncidentConstants.dateTimeOptions.ALL_DATA: {
+        startTime = null;
+        break;
+      }
+      default: {
+        Logger.logger(`Unexpected option selected. option: ${option}`);
+        startTime = null;
+      }
+    }
+
+    run.once(() => {
+      if (startTime && endTime) {
+        this.applyFilters('dateCreated', { from: startTime, to: endTime });
+      } else if (option !== IncidentConstants.dateTimeOptions.CUSTOM) {
+        this.applyFilters('dateCreated', null);
+      }
+    });
+  },
+
+  /**
+   * @name _validateCustomTimeFilter
+   * @description Evaluate selected custom start and end time.
+   * Validity checks:
+   * 1. Start and end time cannot be set in the future (ie. greater than current time).
+   * 2. Start time must be less than end time.
+   * 3. End time must be greater than start time.
+   * @param updatedFilter
+   * @private
+   */
+  _validateCustomTimeFilter(updatedFilter) {
+
+    const { endTime, startTime } = updatedFilter;
+    const currentTime = Date.now();
+
+    let isValidStartTime = true;
+    let isValidEndTime = true;
+
+    // Do not allow future date selection.
+    if (startTime > currentTime) {
+      this._showStartTimeError(this.get('i18n').t('incident.list.filters.dateTimeFilterError'));
+      isValidStartTime = false;
+    }
+
+    if (endTime > currentTime) {
+      this._showEndTimeError(this.get('i18n').t('incident.list.filters.dateTimeFilterError'));
+      isValidEndTime = false;
+    }
+
+    if (isValidStartTime && isValidEndTime) {
+
+      // Start date cannot be greater than end date.
+      if (startTime > endTime) {
+        this._showStartTimeError(this.get('i18n').t('incident.list.filters.dateTimeFilterStartError'));
+        isValidStartTime = false;
+      }
+
+      // End date cannot be less than start date.
+      if (endTime < startTime) {
+        this._showEndTimeError(this.get('i18n').t('incident.list.filters.dateTimeFilterEndError'));
+        isValidEndTime = false;
+      }
+
+    }
+
+    // Clear Start time error state
+    if (isValidStartTime) {
+      this.set('startDate.isError', false);
+    }
+
+    // Clear Start time error state
+    if (isValidEndTime) {
+      this.set('endDate.isError', false);
+    }
+
+    // Setting 'filteredTime' property triggers computed property that applies time filter
+    this.set('filteredTime', updatedFilter);
+  },
+
+  /**
+   * @name _showStartTimeError
+   * @description update startDate object which is consumed by the template to update the view.
+   * @param msg
+   * @private
+   */
+  _showStartTimeError(msg) {
+    this.setProperties({
+      'startDate.isError': true,
+      'startDate.errorMsg': msg
+    });
+  },
+
+  /**
+   * @name _showEndTimeError
+   * @description update endDate object which is consumed by the template to update the view.
+   * @param msg
+   * @private
+   */
+  _showEndTimeError(msg) {
+    this.setProperties({
+      'endDate.isError': true,
+      'endDate.errorMsg': msg
+    });
+  },
+
+
   actions: {
+
+    /**
+     * @name onCustomStartDateSelected
+     * @description Process user's selection of custom start date
+     * @param date
+     * @public
+     */
+    onCustomStartDateSelected(date) {
+      // Date must be selected (date-time component could return null)
+      if (isNone(date)) {
+        return;
+      }
+
+      const selectedStartTime = date.getTime();
+      const filteredTime = this.get('filteredTime');
+      const updatedFilter = {
+        option: filteredTime.option,
+        startTime: selectedStartTime,
+        startDateValue: this.get('startDate.startDateValue'),
+        endTime: filteredTime.endTime,
+        endDateValue: filteredTime.endDateValue
+      };
+
+      this._validateCustomTimeFilter(updatedFilter);
+
+    },
+
+    /**
+     * @name onCustomEndDateSelected
+     * @description Process user's selection of custom end date
+     * @param date
+     * @public
+     */
+    onCustomEndDateSelected(date) {
+      // Date must be selected (date-time component could return null)
+      if (isNone(date)) {
+        return;
+      }
+
+      const selectedEndTime = date.getTime();
+      const filteredTime = this.get('filteredTime');
+      const updatedFilter = {
+        option: filteredTime.option,
+        startTime: filteredTime.startTime,
+        startDateValue: filteredTime.startDateValue,
+        endTime: selectedEndTime,
+        endDateValue: this.get('endDate.endDateValue')
+      };
+
+      this._validateCustomTimeFilter(updatedFilter);
+
+    },
+
+    /**
+     * @name onDateTimeOptionSelected
+     * @description Set new value for filteredTime based on selected option.
+     * @public
+     */
+    onDateTimeOptionSelected(option) {
+      // Setting 'filteredTime' property triggers computed property that applies time filter
+      this.set('filteredTime', { option });
+    },
+
     // sets the current sorted column field name and the sort direction
     // and calls the, sortAction in the route to do the actual sort for list view
     sortListView(column, direction) {
@@ -408,6 +705,9 @@ export default Component.extend({
         'selectedCategories': [],
         'riskScoreStart': riskScoreFilterInitialValues.slice()
       });
+      // Setting 'filteredTime' property triggers computed property that applies time filter
+      this.set('filteredTime', { option: IncidentConstants.dateTimeOptions.ALL_DATA });
+
     },
 
     /**

@@ -4,6 +4,20 @@
  * @public
  */
 
+/**
+ * @type {{TODAY: string, LAST_HOUR: string, LAST_12_HOURS: string, LAST_24_HOURS: string, LAST_7_DAYS: string, ALL_DATA: string}}
+ * @public
+ */
+export const dateTimeOptions = {
+  TODAY: '0',
+  LAST_HOUR: '1',
+  LAST_12_HOURS: '2',
+  LAST_24_HOURS: '3',
+  LAST_7_DAYS: '4',
+  ALL_DATA: '5',
+  CUSTOM: '6'
+};
+
 export const incPriority = {
   CRITICAL: 3,
   HIGH: 2,
@@ -38,6 +52,10 @@ export const journalMilestones = {
   ERADICATION: 7,
   CLOSURE: 8
 };
+
+// Note: Custom option is removed until rsa-form-datetime component's bug fixes are addressed.
+export const dateTimeFilterOptions =
+  Object.keys(dateTimeOptions).filter((k) => k !== 'CUSTOM').map((k) => dateTimeOptions[k]);
 
 // returns : [0, 1, 2, 3]
 export const incidentPriorityIds =

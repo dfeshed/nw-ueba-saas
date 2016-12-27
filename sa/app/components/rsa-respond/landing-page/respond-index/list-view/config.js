@@ -238,6 +238,16 @@ export function replayConfig() {
           }
         }
       })
+    }).create(),
+    EmberObject.extend({
+      path: 'filters.time',
+      value: computed({
+        set: (key, value) => {
+          if (!isEmpty(value)) {
+            this.set('filteredTime', value);
+          }
+        }
+      })
     }).create()
   ];
 }
@@ -401,7 +411,6 @@ export function persistenceConfig() {
       removeObserver(component, 'selectedSources', this.execute);
     }
   });
-
   configArray.pushObject({
     execute: () => {
       run.once(() => {
@@ -413,6 +422,20 @@ export function persistenceConfig() {
     },
     destroyObserver() {
       removeObserver(component, 'filteredRiskScores', this.execute);
+    }
+  });
+
+  configArray.pushObject({
+    execute: () => {
+      run.once(() => {
+        this.get('persistence.state').persist('filters.time', this.get('filteredTime'));
+      });
+    },
+    createObserver() {
+      addObserver(component, 'filteredTime', this.execute);
+    },
+    destroyObserver() {
+      removeObserver(component, 'filteredTime', this.execute);
     }
   });
 

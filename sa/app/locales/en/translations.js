@@ -379,7 +379,22 @@ export default $.extend({}, BaseTranslations, {
       filters: {
         reset: 'Reset Filters',
         sources: 'Select sources to filter by',
-        assignees: 'Select assignees to filter by'
+        assignees: 'Select assignees to filter by',
+        dateTimeOptions: {
+          0: 'Today',
+          1: 'Last Hour',
+          2: 'Last 12 Hours',
+          3: 'Last 24 Hours',
+          4: 'Last 7 Days',
+          5: 'All Data',
+          6: 'Custom'
+        },
+        dateTimeFilterError: 'Selected time cannot be greater than current time',
+        dateTimeFilterStartError: 'Start Time cannot be greater than End Time',
+        dateTimeFilterEndError: 'End Time cannot be less than Start Time',
+        dateTimeFilterStartDate: 'Start Date',
+        dateTimeFilterEndDate: 'End Date',
+        dateTimeFilterPrompt: 'Date & Time Range'
       }
     },
     queue: {

@@ -4,7 +4,9 @@ const {
   RSVP: {
     Promise
   },
-  run
+  merge,
+  run,
+  Object: EmberObject
 } = Ember;
 
 /**
@@ -36,3 +38,35 @@ function _testCondition(resolve, test, msec, count, maxCount) {
     resolve(testResult);
   }
 }
+
+/**
+ * @name createIncident
+ * @description Helper function for generation of incidents
+ * @param params Attributes to be merged or to override default properties of Incident object.
+ * @returns EmberObject representing an Incident with default values
+ * @private
+ */
+export function createIncident(params) {
+
+  const attr = {
+    id: 'INC-1',
+    riskScore: 10,
+    name: 'Suspected command and control communication with www.mozilla.com',
+    createdBy: 'User X',
+    created: new Date().getTime(), // Current time in milliseconds
+    lastUpdated: '2015-10-10',
+    statusSort: 0, // Status: New
+    prioritySort: 0, // Priority: Low
+    alertCount: 10,
+    eventCount: 2,
+    sources: ['Event Stream Analysis'],
+    assignee: {
+      id: '1'
+    },
+    categories: []
+  };
+
+  return EmberObject.create(merge(attr, params));
+}
+
+
