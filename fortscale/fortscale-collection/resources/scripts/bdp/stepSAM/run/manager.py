@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models_and_acm
+from bdp_utils.manager import ModelsCacheOverridingManager, cleanup_everything_but_models_and_acm
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -15,13 +15,13 @@ import bdp_utils.run
 from step2_online.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
-from automatic_config.common.utils.mongo import update_models_time, get_collections_size
+from automatic_config.common.utils.mongo import get_collections_size
 
 
 logger = logging.getLogger('stepSAM')
 
 
-class Manager(DontReloadModelsOverridingManager):
+class Manager(ModelsCacheOverridingManager):
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
     _JAR_NAME = 'fortscale-ml-1.1.0-SNAPSHOT.jar'
@@ -232,11 +232,6 @@ class Manager(DontReloadModelsOverridingManager):
             .set_start(end) \
             .set_end(end) \
             .run(overrides_key='stepSAM', overrides=overrides)
-        if not update_models_time(logger=logger,
-                                  host=self._host,
-                                  collection_names_regex='^model_',
-                                  time=start):
-            return False
         return True
 
     def _cleanup(self, data_source=None, fail_if_no_models=True):
