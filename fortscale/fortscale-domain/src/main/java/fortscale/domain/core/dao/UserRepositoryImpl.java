@@ -3,6 +3,7 @@ package fortscale.domain.core.dao;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.*;
 import fortscale.domain.rest.UserRestFilter;
@@ -890,5 +891,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 		return count;
 	}
+
+    @Override
+    public int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score) {
+        Query query = new Query();
+        query.addCriteria(where(User.ID_FIELD).nin(userIds));
+
+        WriteResult writeResult = mongoTemplate.updateMulti(query, Update.update(User.scoreField, score), User.collectionName);
+        return writeResult.getN();
+    }
 }
 
