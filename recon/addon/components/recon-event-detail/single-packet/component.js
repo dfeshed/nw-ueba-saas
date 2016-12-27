@@ -200,7 +200,7 @@ export default Component.extend({
    */
   didInsertElement() {
     const options = {
-      rootMargin: '-2000px 0px -2000px 0px',
+      rootMargin: '-1000px 0px -1000px 0px',
       threshold: [{
         ratio: 0.01,
         time: 0

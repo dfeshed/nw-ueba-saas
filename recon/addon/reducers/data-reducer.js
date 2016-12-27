@@ -37,7 +37,7 @@ const dataInitialState = {
   files: null,
   packetFields: null,
   packets: null,
-  packetsPageSize: 500,
+  packetsPageSize: 100,
 
   ...fileExtractInitialState,
 
