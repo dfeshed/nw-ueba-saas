@@ -4,7 +4,6 @@ import fortscale.aggregation.feature.services.historicaldata.populators.Supporti
 import fortscale.domain.core.Evidence;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.rest.HistoricalDataRestFilter;
-import fortscale.domain.rest.historicalDataRequest;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.time.TimeUtils;
 import fortscale.utils.time.TimestampUtils;
