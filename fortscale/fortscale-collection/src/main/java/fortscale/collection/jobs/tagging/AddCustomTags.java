@@ -43,12 +43,13 @@ public class AddCustomTags extends FortscaleJob{
 
 	@Override
 	protected void runSteps() throws Exception {
-		File tagsFile = new File(tagFilePath);
-		//read the custom tag list and update the possible tags to add in the system
 		if (StringUtils.isEmpty(tagFilePath)) {
 			logger.error("No tag file found");
 			return;
 		}
+		File tagsFile = new File(tagFilePath);
+		//read the custom tag list and update the possible tags to add in the system
+
 		if (tagsFile.exists() && tagsFile.isFile() && tagsFile.canRead()) {
 			for (String line : FileUtils.readLines(tagsFile)) {
 				String name = line.split(CSV_DELIMITER)[0];
