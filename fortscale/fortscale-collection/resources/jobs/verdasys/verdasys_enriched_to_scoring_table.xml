@@ -7,20 +7,20 @@
 
     <schedule>
         <job>
-            <name>EnrichedToScoringAggregationModeling</name>
+            <name>EnrichedToScoring</name>
             <group>VERDASYS</group>
-            <description>Running enriched verdasys to scoring, aggregation and modeling</description>
-            <job-class>fortscale.collection.jobs.ScoreAggregateModelRawEvents</job-class>
+            <description>Running VERDASYS Scoring</description>
+            <job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>
                 <entry>
                     <key>impalaTableName</key>
-                    <value>${impala.enricheddata.verdasys.table.name}</value>
+                    <value>verdenriched</value>
                 </entry>
                 <entry>
                     <key>epochtimeField</key>
-                    <value>${impala.enricheddata.verdasys.table.field.date_time_unix}</value>
+                    <value>${impala.data.table.fields.epochtime}</value>
                 </entry>
                 <entry>
                     <key>streamingTopic</key>
@@ -28,7 +28,7 @@
                 </entry>
                 <entry>
                     <key>streamingTopicPartitionKey</key>
-                    <value>${impala.enricheddata.verdasys.table.field.normalized_username}</value>
+                    <value>normalized_username</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields</key>
@@ -58,27 +58,23 @@
                     <key>lastState</key>
                     <value>HDFSWriterStreamTask</value>
                 </entry>
-                <entry>
-                    <key>secondsBetweenSyncs</key>
-                    <value>86400</value>
-                </entry>
-                <entry>
-                    <key>maxSyncGapInSeconds</key>
-                    <value>172800</value>
-                </entry>
-                <entry>
-                    <key>timeoutInSeconds</key>
-                    <value>300</value>
-                </entry>
-                <entry>
-                    <key>fortscale.model.build.control.input.topic</key>
-                    <value>${fortscale.model.build.control.input.topic}</value>
-                </entry>
-                <entry>
-                    <key>fortscale.model.build.control.output.topic</key>
-                    <value>${fortscale.model.build.control.output.topic}</value>
-                </entry>
             </job-data-map>
+
         </job>
+
+        <!-- need to comment out when working in multi collector mode
+        <trigger>
+            <cron>
+                <name>VERDASYSEX_send_to_streaming_hourly_trigger</name>
+
+                <group>VERDASYSEX</group>
+                <job-name>Scoring</job-name>
+                <job-group>VERDASYSEX</job-group>
+                <cron-expression>0 30 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+        -->
     </schedule>
+
+
 </job-scheduling-data>
