@@ -13,9 +13,9 @@ public interface SupportingInformationService {
     /**
      *
      * @param evidence the evidence
-     * @param historicalDataRequsest the parameters which required to fetch the supporting infromation
+     * @param historicalDataRequest the parameters which required to fetch the supporting infromation
      *
      * @return supporting information data representation
      */
-    SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, HistoricalDataRestFilter historicalDataRequsest);
+    SupportingInformationData getEvidenceSupportingInformationData(Evidence evidence, HistoricalDataRestFilter historicalDataRequest);
 }
