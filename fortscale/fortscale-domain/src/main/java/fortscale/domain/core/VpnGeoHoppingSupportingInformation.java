@@ -6,11 +6,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import fortscale.domain.events.VpnSession;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by galiar on 22/10/2015.
@@ -50,6 +49,21 @@ public class VpnGeoHoppingSupportingInformation extends NotificationSupportingIn
 
 	public List<VpnSession> getRawEvents() {
 		return rawEvents;
+	}
+
+	public Set<String> fetchCountriesNames(){
+		Set<String> supportingInformationCountries = new HashSet<>();
+
+		if ( this.rawEvents != null){
+			for (VpnSession vpnSession : rawEvents){
+				supportingInformationCountries.add(vpnSession.getCountry());
+
+			}
+
+		}
+
+		return supportingInformationCountries;
+
 	}
 
 	public void setRawEvents(List<VpnSession> rawEvents) {

@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
-import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.core.*;
@@ -12,7 +11,6 @@ import fortscale.domain.dto.DateRange;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
-import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.LocalizationService;
 import fortscale.utils.CustomedFilter;
@@ -29,7 +27,6 @@ import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.apache.commons.collections.CollectionUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Controller;
@@ -343,7 +340,7 @@ public class ApiEvidenceController extends DataQueryController {
 		//Add countries list for supported information if needed
 		Set<String> supportingInformationCountries = getSupportingInformationCountries(historicalDataRestFilter, evidence);
 		if (!supportingInformationCountries.isEmpty()) {
-			supportingInformationBean.setInfo("countries", supportingInformationCountries);
+			supportingInformationBean.addInfo("countries", supportingInformationCountries);
 		}
 
 		supportingInformationBean.setData(rearrangedEntries);
@@ -360,20 +357,13 @@ public class ApiEvidenceController extends DataQueryController {
 	private Set<String> getSupportingInformationCountries(HistoricalDataRestFilter historicalDataRestFilter, Evidence evidence) {
 		Set<String> supportingInformationCountries = new HashSet<>();
 
-		List<VpnSession> vpnSessions = null;
-		if (evidence.getSupportingInformation() !=null && evidence.getSupportingInformation() instanceof VpnGeoHoppingSupportingInformation) {
-			vpnSessions = ((VpnGeoHoppingSupportingInformation) evidence.getSupportingInformation()).getRawEvents();
+
+		EntitySupportingInformation supportingInformation = evidence.getSupportingInformation();
+		if (supportingInformation instanceof VpnGeoHoppingSupportingInformation &&
+				historicalDataRestFilter.getFeature().equals(COUNTRY_FEATURE)) {
+			supportingInformationCountries = ((VpnGeoHoppingSupportingInformation) supportingInformation).fetchCountriesNames();
 		}
 
-		if ( CollectionUtils.isNotEmpty(vpnSessions) && historicalDataRestFilter.getFeature().equals(COUNTRY_FEATURE)){
-
-
-			for (VpnSession vpnSession : vpnSessions){
-				supportingInformationCountries.add(vpnSession.getCountry());
-
-			}
-
-		}
 
 		return supportingInformationCountries;
 	}

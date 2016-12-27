@@ -1,5 +1,7 @@
 package fortscale.web.beans;
 
+import org.apache.commons.collections.map.HashedMap;
+
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
@@ -43,9 +45,12 @@ public class DataBean<T> {
 		this.info = info;
 	}
 
-	public void setInfo(String infoKey, Object infoValue) {
+	public void addInfo(String infoKey, Object infoValue) {
 
-		this.info = new HashMap();
+		if (this.info == null){
+			this.info = new HashedMap();
+		}
+
 		this.info.put(infoKey, infoValue);
 
 	}
