@@ -34,11 +34,14 @@ public class KafkaEventsWriter implements Closeable {
 
 	private volatile Producer<String, String> producer;
 
+	private boolean shouldCloseProducer;
+
 	private String topic;
 
 	public KafkaEventsWriter(String topic) {
 		checkNotNull(topic);
 		this.topic = topic;
+		this.shouldCloseProducer = true;
 	}
 
 	/**
@@ -84,9 +87,19 @@ public class KafkaEventsWriter implements Closeable {
 		// using thread-safe manner, similarly to getProducer initialization method
 		if (producer != null) {
 			synchronized (this) {
-				if (producer != null)
+				if (producer != null && shouldCloseProducer)
 					producer.close();
 			}
 		}
+	}
+
+	/**
+	 * it seems that shutting down kafka while writing events causes {@link Producer#close()} to freeze
+	 * in some cases, we do not mind to lose events written to kafka. i.e. at {@link fortscale.services.cloudera.ClouderaService}
+	 * and we are "OK" with the process shutting down without closing the kafka producer in a proper way
+	 * @param shouldCloseProducer false - if we don't mind the producer to be close at process shutdown
+     */
+	public void setShouldCloseProducer(boolean shouldCloseProducer) {
+		this.shouldCloseProducer = shouldCloseProducer;
 	}
 }
