@@ -123,10 +123,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Update update = new Update();
 		update.set(User.followedField, watch);
 
-		BulkOperations upsert = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-				.upsert(query, update);
+		BulkOperations operations = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+				.updateMulti(query, update);
 
-		return upsert.execute().getModifiedCount();
+		return operations.execute().getModifiedCount();
 
 	}
 
