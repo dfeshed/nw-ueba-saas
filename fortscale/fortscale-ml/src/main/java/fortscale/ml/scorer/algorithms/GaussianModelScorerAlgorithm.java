@@ -7,6 +7,9 @@ import org.springframework.util.Assert;
 
 import java.util.stream.IntStream;
 
+/**
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
+ */
 public class GaussianModelScorerAlgorithm {
 	private int globalInfluence;
 

@@ -7,6 +7,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import org.springframework.util.Assert;
 
+/**
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
+ */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	public static final String GAUSSIAN_PRIOR_MODEL_BUILDER = "gaussian_prior_model_builder";

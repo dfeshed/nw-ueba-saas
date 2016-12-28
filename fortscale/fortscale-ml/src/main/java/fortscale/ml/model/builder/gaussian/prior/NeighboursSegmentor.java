@@ -14,6 +14,7 @@ import java.util.stream.IntStream;
  * a segment is created using the center's neighborhood.
  * A neighborhood is defined to be the ContinuousDataModels whose means are the closest.
  * If the neighborhood spreads too far, the segment is discarded.
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
  */
 public class NeighboursSegmentor implements Segmentor {
 	private int numberOfNeighbours;
