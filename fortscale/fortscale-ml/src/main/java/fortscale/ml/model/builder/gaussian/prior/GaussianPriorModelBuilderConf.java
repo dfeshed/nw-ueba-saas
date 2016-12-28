@@ -13,7 +13,6 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 
 	private static final int NUMBER_OF_NEIGHBOURS_DEFAULT_VALUE = 10;
 	private static final double MAX_RATIO_BETWEEN_SEGMENT_SIZE_TO_CENTER_DEFAULT_VALUE = 0.1;
-	private static final double MAX_SEGMENT_WIDTH_TO_NOT_DISCARD_BECAUSE_OF_BAD_RATIO_DEFAULT_VALUE = 10;
 	private static final double PADDING_DEFAULT_VALUE = 1;
 	private static final double QUANTILE_DEFAULT_VALUE = 0.99;
 	private static final int MIN_QUANTILE_COMPLEMENT_DEFAULT_VALUE = 30;
@@ -33,7 +32,7 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 	public GaussianPriorModelBuilderConf(@JsonProperty("distanceBetweenSegmentCenters") double distanceBetweenSegmentCenters,
 										 @JsonProperty("numberOfNeighbours") Integer numberOfNeighbours,
 										 @JsonProperty("maxRatioBetweenSegmentSizeToCenter") Double maxRatioBetweenSegmentSizeToCenter,
-										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") Double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
+										 @JsonProperty("maxSegmentWidthToNotDiscardBecauseOfBadRatio") double maxSegmentWidthToNotDiscardBecauseOfBadRatio,
 										 @JsonProperty("padding") Double padding,
 										 @JsonProperty("minNumOfSamplesToLearnFrom") int minNumOfSamplesToLearnFrom,
 										 @JsonProperty("quantile") Double quantile,
@@ -76,11 +75,8 @@ public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
 		this.maxRatioBetweenSegmentSizeToCenter = maxRatioBetweenSegmentSizeToCenter;
 	}
 
-	private void setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(Double maxSegmentWidthToNotDiscardBecauseOfBadRatio) {
-		if (maxSegmentWidthToNotDiscardBecauseOfBadRatio == null) {
-			maxSegmentWidthToNotDiscardBecauseOfBadRatio = MAX_SEGMENT_WIDTH_TO_NOT_DISCARD_BECAUSE_OF_BAD_RATIO_DEFAULT_VALUE;
-		}
-		Assert.isTrue(maxSegmentWidthToNotDiscardBecauseOfBadRatio >= 0, "maxSegmentWidthToNotDiscardBecauseOfBadRatio must be a non-negative double.");
+	private void setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(double maxSegmentWidthToNotDiscardBecauseOfBadRatio) {
+		Assert.isTrue(maxSegmentWidthToNotDiscardBecauseOfBadRatio >= 0, "maxSegmentWidthToNotDiscardBecauseOfBadRatio is mandatory and must be a non-negative double.");
 		this.maxSegmentWidthToNotDiscardBecauseOfBadRatio = maxSegmentWidthToNotDiscardBecauseOfBadRatio;
 	}
 
