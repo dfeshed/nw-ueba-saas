@@ -32,6 +32,6 @@
 	</context:component-scan>
 
     <bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
-	<bean id="featureBucketStateServiceConfig" class="fortscale.aggregation.feature.bucket.repository.state.config.FeatureBucketStateServiceConfig"/>
+	<bean id="featureBucketStateServiceConfig" class="fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServiceConfig"/>
 </beans>
 

@@ -7,7 +7,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
-import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateService;
+import fortscale.aggregation.feature.bucket.state.FeatureBucketStateService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.logging.Logger;
 import org.apache.samza.config.Config;

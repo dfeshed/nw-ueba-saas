@@ -1,8 +1,8 @@
 package fortscale.collection.jobs.activity;
 
 import fortscale.aggregation.feature.bucket.FeatureBucket;
-import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketState;
-import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateService;
+import fortscale.aggregation.feature.bucket.state.FeatureBucketState;
+import fortscale.aggregation.feature.bucket.state.FeatureBucketStateService;
 import fortscale.aggregation.feature.functions.AggGenericNAFeatureValues;
 import fortscale.collection.services.UserActivityConfiguration;
 import fortscale.collection.services.UserActivityConfigurationService;

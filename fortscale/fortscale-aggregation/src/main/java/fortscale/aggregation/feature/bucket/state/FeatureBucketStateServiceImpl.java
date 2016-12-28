@@ -1,5 +1,6 @@
-package fortscale.aggregation.feature.bucket.repository.state;
+package fortscale.aggregation.feature.bucket.state;
 
+import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepository;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 

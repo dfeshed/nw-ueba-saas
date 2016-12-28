@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.bucket.repository.state;
+package fortscale.aggregation.feature.bucket.state;
 
 import fortscale.domain.core.AbstractDocument;
 import org.apache.commons.lang.builder.ToStringBuilder;

@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.bucket.repository.state;
+package fortscale.aggregation.feature.bucket.state;
 
 /**
  * Created by alexp on 11/12/16.

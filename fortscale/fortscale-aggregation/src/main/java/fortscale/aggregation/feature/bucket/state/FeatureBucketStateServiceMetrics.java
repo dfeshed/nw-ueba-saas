@@ -1,4 +1,4 @@
-package fortscale.aggregation.feature.bucket.repository.state;
+package fortscale.aggregation.feature.bucket.state;
 
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupAttributes;

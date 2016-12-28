@@ -1,7 +1,8 @@
-package fortscale.aggregation.feature.bucket.repository.state;
+package fortscale.aggregation.feature.bucket.state;
 
 import fortscale.accumulator.TestMongoConfig;
-import fortscale.aggregation.feature.bucket.repository.state.config.FeatureBucketStateServiceConfig;
+import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepository;
+import fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServiceConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import org.junit.Assert;
 import org.junit.Test;
