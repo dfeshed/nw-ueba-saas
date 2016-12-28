@@ -871,13 +871,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				// Adding the tag
 				update.push(User.tagsField, tag);
 				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-						.upsert(query, update).execute();
+						.updateMulti(query, update).execute();
 			}else{
 				// Removing the tag
 				Update remove = new Update();
 				remove.pull(User.tagsField, tag);
-				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-						.upsert(query, remove).execute();
+				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName).updateMulti(query, remove).execute();
 			}
 		});
 
