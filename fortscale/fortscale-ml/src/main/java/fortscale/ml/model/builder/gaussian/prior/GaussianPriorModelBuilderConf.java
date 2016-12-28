@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 /**
  * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
+ * Specifically, the "Configuration" section describes the various configuration's parameters.
  */
 @JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.ANY, setterVisibility = Visibility.ANY)
 public class GaussianPriorModelBuilderConf implements IModelBuilderConf {
