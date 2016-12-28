@@ -14,6 +14,7 @@ import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRun
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.*;
+import fortscale.domain.rest.HistoricalDataRestFilter;
 import fortscale.utils.time.TimestampUtils;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -85,6 +86,14 @@ public class SupportingInformationServiceTest {
         String contextType = "normalized_username";
         String contextValue = "mosheb@somebigcompany.com";
         String evidenceAnomalyValue = "SERVER_5";
+        int timePeriodInDays = 90;
+
+        HistoricalDataRestFilter restFilter = new HistoricalDataRestFilter();
+        restFilter.setContextType(contextType);
+        restFilter.setContextValue(contextValue);
+        restFilter.setFeature(featureName);
+        restFilter.setFunction(aggregationFunc);
+        restFilter.setTimeRange(timePeriodInDays);
 
 
 
@@ -97,7 +106,7 @@ public class SupportingInformationServiceTest {
 		}
 
 
-        int timePeriodInDays = 90;
+
 
         when(mockEvidence.getEntityType()).thenReturn(EntityType.User);
         when(mockEvidence.getEvidenceType()).thenReturn(EvidenceType.AnomalySingleEvent);
@@ -117,7 +126,7 @@ public class SupportingInformationServiceTest {
 
         when(featureBucketsStore.getFeatureBucketsByContextAndTimeRange(any(FeatureBucketConf.class), anyString(), anyString(), anyLong(), anyLong())).thenReturn(featureBuckets);
 
-        SupportingInformationData evidenceSupportingInformationHistogramData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, contextType, contextValue, featureName, timePeriodInDays, aggregationFunc);
+        SupportingInformationData evidenceSupportingInformationHistogramData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, restFilter);
 
         Assert.assertTrue(!evidenceSupportingInformationHistogramData.getData().isEmpty() && evidenceSupportingInformationHistogramData.getAnomalyValue() != null);
     }
@@ -190,11 +199,21 @@ public class SupportingInformationServiceTest {
         String aggregationFunc = "timeIntervals";
         String contextType = "normalized_username";
         String contextValue = "mosheb@somebigcompany.com";
+        int numOfEvents = 5;
+
+        HistoricalDataRestFilter restFilter = new HistoricalDataRestFilter();
+        restFilter.setContextType(contextType);
+        restFilter.setContextValue(contextValue);
+        restFilter.setFeature(featureName);
+        restFilter.setFunction(aggregationFunc);
+        restFilter.setNumColumns(numOfEvents);
+
+
 
         ArrayList<String> dataSources = new ArrayList<>();
         dataSources.add("vpn");
 
-        int numOfEvents = 5;
+
 
         VpnOverlappingSupportingInformation vpnOverlappingSupportingInformation = createVpnOverlappingSupportingInformationOfEvidence(numOfEvents);
 
@@ -204,7 +223,7 @@ public class SupportingInformationServiceTest {
         when(mockEvidence.getDataEntitiesIds()).thenReturn(dataSources);
         when(mockEvidence.getSupportingInformation()).thenReturn(vpnOverlappingSupportingInformation);
 
-        SupportingInformationData evidenceSupportingInformationHistogramData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, contextType, contextValue, featureName, null, aggregationFunc);
+        SupportingInformationData evidenceSupportingInformationHistogramData = supportingInformationService.getEvidenceSupportingInformationData(mockEvidence, restFilter);
 
         Assert.assertTrue(evidenceSupportingInformationHistogramData.getData().size() == numOfEvents);
 
