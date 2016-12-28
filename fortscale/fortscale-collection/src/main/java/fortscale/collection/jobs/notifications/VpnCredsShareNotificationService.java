@@ -16,6 +16,7 @@ import org.springframework.context.ApplicationContextAware;
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 
 /**
@@ -38,12 +39,14 @@ import java.util.*;
  *
  * Created by galiar on 01/03/2016.
  */
-public class VpnCredsShareNotificationService extends   NotificationGeneratorServiceAbstract implements ApplicationContextAware{
+public class VpnCredsShareNotificationService extends NotificationGeneratorServiceAbstract implements ApplicationContextAware{
 
+    private static final String SERVICE_NAME = "VpnCredsShareNotifications";
 
     private static final String APP_CONF_PREFIX = "creds_share_notification";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
 
+    private static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = 10 * 60;
 
     private  ApplicationContext applicationContext;
 
@@ -67,20 +70,41 @@ public class VpnCredsShareNotificationService extends   NotificationGeneratorSer
 
         List<Map<String, Object>> credsShareEvents = new ArrayList<>();
 
-        while(latestTimestamp <= currentTimestamp) {
+        logger.info("Generating notification of {}. latest time: {} ({}) current time: {} ({})", SERVICE_NAME,
+                Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
+                Instant.ofEpochSecond(currentTimestamp), currentTimestamp);
 
-            long upperLimit = latestTimestamp + DAY_IN_SECONDS; //one day a time
+        // Process events occurred until now.
+        // Do not process periods shorter than MINIMAL_PROCESSING_PERIOD_IN_SEC. Protects from periodic execution jitter
+        while(latestTimestamp <= currentTimestamp - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
+
+            // Calc the processing end time: process up to one day. Never process post the current time because the
+            // those event simply does not exist yet
+
+            long upperLimit = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
+
+            logger.info("Processing {} from {} ({}) to {} ({})", SERVICE_NAME,
+                    Instant.ofEpochSecond(currentTimestamp), currentTimestamp,
+                    Instant.ofEpochSecond(upperLimit), upperLimit);
+
             credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimit));
 
             latestTimestamp = upperLimit;
         }
-        //save current timestamp in mongo application_configuration
+
+        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
+        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
+
+        // Save latest processed timestamp in mongo application_configuration.
+        // Do that at the end in case there is an error before
         Map<String, String> updateLastTimestamp = new HashMap<>();
         updateLastTimestamp.put(APP_CONF_PREFIX+"."+LASTEST_TS,String.valueOf(latestTimestamp));
         applicationConfigurationService.updateConfigItems(updateLastTimestamp);
 
-        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
-        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
+        logger.info("Processing of {} done. {} events, {} notifications.Latest process time {} ({})", SERVICE_NAME,
+                credsShareEvents.size(), credsShareNotifications.size(),
+                Instant.ofEpochSecond(latestTimestamp), latestTimestamp);
+
         return  credsShareNotifications;
     }
 

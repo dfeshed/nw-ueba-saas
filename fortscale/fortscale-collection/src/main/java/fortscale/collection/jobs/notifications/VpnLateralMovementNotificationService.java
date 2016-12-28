@@ -24,6 +24,7 @@ import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -36,6 +37,9 @@ import java.util.stream.Collectors;
  * Created by Amir Keren on 06/20/2016.
  */
 public class VpnLateralMovementNotificationService extends NotificationGeneratorServiceAbstract {
+
+    private static final String SERVICE_NAME = "VpnLateralMovementNotification";
+
 
     private static final String APP_CONF_PREFIX = "lateral_movement_notification";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
@@ -58,7 +62,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
     private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
 
-	@Autowired
+    private static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = 10 * 60;
+
+
+    @Autowired
 	private UserService userService;
 
     @Value("${impala.table.fields.source_ip}")
@@ -70,19 +77,47 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 	protected List<JSONObject> generateNotificationInternal() throws Exception {
         Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
-        while (latestTimestamp <= currentTimestamp) {
-            long date = latestTimestamp + DAY_IN_SECONDS; //one day a time
-            getLateralMovementEventsFromHDFS(lateralMovementEvents, date);
-            latestTimestamp = date;
+
+
+        logger.info("Generating notification of {}. latest time: {} ({}) current time: {} ({})", SERVICE_NAME,
+                Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
+                Instant.ofEpochSecond(currentTimestamp), currentTimestamp);
+
+        // Process events occurred until now.
+        // Do not process periods shorter than MINIMAL_PROCESSING_PERIOD_IN_SEC. Protects from periodic execution jitter
+        while(latestTimestamp <= currentTimestamp - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
+
+            // Calc the processing end time: process up to one day. Never process post the current time because the
+            // those event simply does not exist yet
+
+            long upperLimit = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
+
+            logger.info("Processing {} from {} ({}) to {} ({})", SERVICE_NAME,
+                    Instant.ofEpochSecond(currentTimestamp), currentTimestamp,
+                    Instant.ofEpochSecond(upperLimit), upperLimit);
+
+
+            getLateralMovementEventsFromHDFS(lateralMovementEvents, upperLimit);
+
+            latestTimestamp = upperLimit;
         }
-        //save current timestamp in mongo application_configuration
-        Map<String, String> updateLastTimestamp = new HashMap<>();
-        updateLastTimestamp.put(APP_CONF_PREFIX + "." + LASTEST_TS, String.valueOf(latestTimestamp));
-        applicationConfigurationService.updateConfigItems(updateLastTimestamp);
+
+
         List<JSONObject> lateralMovementNotifications =
 				createLateralMovementsNotificationsFromImpalaRawEvents(lateralMovementEvents);
         lateralMovementNotifications = addRawEventsToLateralMovement(lateralMovementNotifications,
                 lateralMovementEvents);
+
+        // Save latest processed timestamp in mongo application_configuration.
+        // Do that at the end in case there is an error before
+        Map<String, String> updateLastTimestamp = new HashMap<>();
+        updateLastTimestamp.put(APP_CONF_PREFIX + "." + LASTEST_TS, String.valueOf(latestTimestamp));
+        applicationConfigurationService.updateConfigItems(updateLastTimestamp);
+
+        logger.info("Processing of {} done. {} events, {} notifications, latest process time {} ({})", SERVICE_NAME,
+                lateralMovementEvents.size(), lateralMovementNotifications.size(),
+                Instant.ofEpochSecond(latestTimestamp), latestTimestamp);
+
         return lateralMovementNotifications;
     }
 
