@@ -844,15 +844,21 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		Update update = new Update();
 
+		// Count all the users that will be affected by the change
 		int count = getCount(addTag, tagNames, criteriaList, filteredTags);
 
 		tagNames.forEach(tag -> {
 			Query query = new Query();
+
+			// Adding the criterias to the query
 			criteriaList.forEach(criteria -> {
-				if (criteria.getKey().equals(User.tagsField)){
+				// If we have filter by tags we will want to create one single criteria for the tags field in case
+				// we want to add new tags
+				if (criteria.getKey().equals(User.tagsField) && addTag){
 					Criteria andCr = new Criteria();
 					List<String> tags = new ArrayList<>();
 					tags.add(tag);
+					// The query: oldTagCriteria && (tags not in current tag)
 					andCr.andOperator(new Criteria(User.tagsField).not().in(tags), criteria);
 					query.addCriteria(andCr);
 				}else {
@@ -866,6 +872,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
 						.upsert(query, update).execute();
 			}else{
+				// Removing the tag
 				Update remove = new Update();
 				remove.pull(User.tagsField, tag);
 				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
