@@ -37,6 +37,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         FeatureBucketState featureBucketState = getFeatureBucketState();
         Instant lastEventDate = Instant.ofEpochSecond(lastEventEpochtime);
         Instant lastEventDay = lastEventDate.truncatedTo(ChronoUnit.DAYS);
+        boolean shouldSave = true;
 
         // Creating new state object
         if (lastClosedDailyBucketDate == null){
@@ -52,18 +53,21 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
             logger.warn(
                     String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
                             lastClosedDailyBucketDate, lastEventDate));
+            shouldSave = false;
         }
 
         try {
-            logger.debug("Before update FeatureBucketState with {}", featureBucketState);
-            // Save the last synced event date to mongo
-            FeatureBucketState savedState = featureBucketStateRepository.save(featureBucketState);
+            if (shouldSave) {
+                logger.debug("Before update FeatureBucketState with {}", featureBucketState);
+                // Save the last synced event date to mongo
+                FeatureBucketState savedState = featureBucketStateRepository.save(featureBucketState);
 
-            logger.debug("Updated FeatureBucketState with {}", savedState);
+                logger.debug("Updated FeatureBucketState with {}", savedState);
 
-            metrics.updateFeatureBucketStateSuccess++;
-            metrics.lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
-            metrics.lastSyncedEventDate = savedState.getLastSyncedEventDate().toEpochMilli();
+                metrics.updateFeatureBucketStateSuccess++;
+                metrics.lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
+                metrics.lastSyncedEventDate = savedState.getLastSyncedEventDate().toEpochMilli();
+            }
         } catch (Exception e){
             logger.error("Error saving the feature bucket state to mongo. {}", featureBucketState, e);
             metrics.updateFeatureBucketStateFailure++;
