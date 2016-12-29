@@ -3,7 +3,7 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
-import fortscale.domain.ad.dao.AdUserThumbnailRepository;
+import fortscale.domain.ad.dao.AdUserThumbnailService;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.utils.logging.Logger;
@@ -30,7 +30,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdUserThumbnailProcessJob.class);
 		
 	@Autowired
-	private AdUserThumbnailRepository adUserThumbnailRepository;
+	private AdUserThumbnailService adUserThumbnailservice;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -77,8 +77,6 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		flushAdUserThumbnailBuffer();
 
 		finishStep();
-
-
 	}
 
 
@@ -107,9 +105,11 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		if(lineSplit.length != 2){
 			return;
 		}
-		AdUserThumbnail adUserThumbnail = new AdUserThumbnail();
-		adUserThumbnail.setThumbnailPhoto(lineSplit[0]);
-		adUserThumbnail.setObjectGUID(lineSplit[1]);
+
+		final String objectGUID = lineSplit[1];
+		AdUserThumbnail adUserThumbnail = new AdUserThumbnail(objectGUID);
+		final String thumbnailPhoto = lineSplit[0];
+		adUserThumbnail.setThumbnailPhoto(thumbnailPhoto);
 
 		adUserThumbnails.add(adUserThumbnail);
 
@@ -119,8 +119,8 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	}
 
 	private void flushAdUserThumbnailBuffer(){
-		if(!adUserThumbnails.isEmpty()){
-			adUserThumbnailRepository.save(adUserThumbnails);
+		if(!adUserThumbnails.isEmpty()) {
+			adUserThumbnailservice.save(adUserThumbnails);
 			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
 			adUserThumbnails.clear();
 		}

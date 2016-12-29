@@ -4,7 +4,7 @@ import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.ad.dao.AdUserThumbnailRepository;
+import fortscale.domain.ad.dao.AdUserThumbnailService;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private AdUserRepository adUserRepository;
 
 	@Autowired
-	private AdUserThumbnailRepository adUserThumbnailRepository;
+	private AdUserThumbnailService adUserThumbnailService;
 
 	@Autowired
 	private AdGroupRepository adGroupRepository;
@@ -359,8 +359,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.CREATED_AT_FIELD_NAME);
-		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailRepository.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
+		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.MODIFIED_AT_FIELD_NAME);
+		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailService.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
 		if(adUserThumbnails.size() > 0){
 			ret = adUserThumbnails.get(0).getThumbnailPhoto();
 		} else {

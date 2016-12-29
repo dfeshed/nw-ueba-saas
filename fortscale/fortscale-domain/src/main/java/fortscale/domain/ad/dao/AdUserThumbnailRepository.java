@@ -1,13 +1,14 @@
 package fortscale.domain.ad.dao;
 
+import fortscale.domain.ad.AdUserThumbnail;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.repository.MongoRepository;
+
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.PagingAndSortingRepository;
+public interface AdUserThumbnailRepository extends MongoRepository<AdUserThumbnail, String> {
 
-import fortscale.domain.ad.AdUserThumbnail;
+	List<AdUserThumbnail> findByObjectGUID(String objectGUID, Pageable pageable);
 
-public interface AdUserThumbnailRepository extends PagingAndSortingRepository<AdUserThumbnail, String>{
-
-	public List<AdUserThumbnail> findByObjectGUID(String objectGUID, Pageable pageable);
+	List<AdUserThumbnail> save(List<AdUserThumbnail> adUserThumbnails);
 }
