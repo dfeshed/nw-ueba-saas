@@ -13,6 +13,6 @@ public interface ForwardingService {
 	void forwardLatestAlerts(Frequency frequency);
 
 	int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags, String[] alertSeverity,
-			long startTime, long endTime);
+								 long startTime, long endTime, String messageFormat);
 
 }

@@ -29,6 +29,7 @@ import java.util.List;
 	private final static String ALERT_SEVERITY = "alert_severities";
 	private final static String START_TIME = "start_time";
 	private final static String END_TIME = "end_time";
+	private static final String MESSAGE_FORMAT = "message_format";
 
 	/**
 	 * Alert forwarding service (for forwarding new alerts)
@@ -46,8 +47,9 @@ import java.util.List;
 			String[] alertSeverity = jsonArrayToStringArray(params.getJSONArray(ALERT_SEVERITY));
 			long startTime = params.getLong(START_TIME);
 			long endTime = params.getLong(END_TIME);
+			String messageFormat = params.getString(MESSAGE_FORMAT);
 			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(ip, port, forwardingType,
-					userTags, alertSeverity, startTime, endTime);
+					userTags, alertSeverity, startTime, endTime, messageFormat);
 			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " + numberOfForwardedAlerts + " Alerts\"}");
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("{ \"message\": \"" + "Error forwarding alerts.  " + e.getMessage() + " \"}");

@@ -1,5 +1,6 @@
 package fortscale.utils.syslog;
 
+import com.cloudbees.syslog.MessageFormat;
 import com.cloudbees.syslog.sender.AbstractSyslogMessageSender;
 import com.cloudbees.syslog.sender.TcpSyslogMessageSender;
 import com.cloudbees.syslog.sender.UdpSyslogMessageSender;
@@ -18,12 +19,12 @@ public class SyslogSender {
 
 	AbstractSyslogMessageSender messageSender;
 
-	public SyslogSender(String ip, int port, String protocol) {
-		messageSender = createMessageSender(ip, port, protocol);
+	public SyslogSender(String ip, int port, String protocol, MessageFormat messageFormat) {
+		messageSender = createMessageSender(ip, port, protocol, messageFormat);
 	}
 
-	public SyslogSender(String ip, int port) {
-		this(ip, port, "tcp");
+	public SyslogSender(String ip, int port, MessageFormat messageFormat) {
+		this(ip, port, "tcp", messageFormat);
 	}
 
 	/**
@@ -52,9 +53,10 @@ public class SyslogSender {
 	 * @param ip
 	 * @param port
 	 * @param protocol
+	 * @param messageFormat
 	 * @return
 	 */
-	private AbstractSyslogMessageSender createMessageSender(String ip, int port, String protocol) {
+	private AbstractSyslogMessageSender createMessageSender(String ip, int port, String protocol, MessageFormat messageFormat) {
 		AbstractSyslogMessageSender messageSender = null;
 		if (protocol.equalsIgnoreCase(TCP_PROTOCOL)) {
 			messageSender = new TcpSyslogMessageSender();
@@ -67,6 +69,7 @@ public class SyslogSender {
 			((UdpSyslogMessageSender) messageSender).setSyslogServerHostname(ip);
 			((UdpSyslogMessageSender) messageSender).setSyslogServerPort(port);
 		}
+		messageSender.setMessageFormat(messageFormat);
 
 		return messageSender;
 	}

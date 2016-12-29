@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import com.cloudbees.syslog.MessageFormat;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
@@ -8,6 +9,7 @@ import fortscale.services.*;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.syslog.SyslogSender;
 import org.apache.commons.configuration.ConfigurationException;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,6 +39,8 @@ import java.util.Map;
 	public static final String USER_TYPES_KEY = CONFIGURATION_NAMESPACE + ".usertypes";
 	public static final String ALERT_SEVERITY_KEY = CONFIGURATION_NAMESPACE + ".alertseverity";
 	public static final String FORWARDING_TYPE_KEY = CONFIGURATION_NAMESPACE + ".forwardingtype";
+	public static final String MESSAGE_FORMAT = CONFIGURATION_NAMESPACE + ".messageformat";
+	private static final MessageFormat DEFAULT_MESSAGE_FORMAT = MessageFormat.RFC_3164;
 
 	@Autowired private AlertsService alertsService;
 	@Autowired private ApplicationConfigurationService applicationConfigurationService;
@@ -49,6 +53,7 @@ import java.util.Map;
 	private String baseUrl;
 	private SyslogSender syslogSender;
 	private ForwardingType forwardingType;
+	private MessageFormat messageFormat;
 
 	@Override public void afterPropertiesSet() throws Exception {
 		loadConfiguration();
@@ -70,11 +75,17 @@ import java.util.Map;
 	}
 
 	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
-			String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
+												  String[] alertSeverity, long startTime, long endTime, String messageFormatString) throws RuntimeException {
 
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(new DateRange(startTime,endTime), Arrays.asList(alertSeverity));
 
-		SyslogSender sender = new SyslogSender(ip, port, "tcp");
+		// Getting the message format
+		MessageFormat messageFormat = DEFAULT_MESSAGE_FORMAT;
+		if (StringUtils.isNotEmpty(messageFormatString)){
+			messageFormat = MessageFormat.valueOf(messageFormatString);
+		}
+
+		SyslogSender sender = new SyslogSender(ip, port, "tcp", messageFormat);
 
 		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
 		int counter = 0;
@@ -133,7 +144,15 @@ import java.util.Map;
 			}
 			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
 
-			syslogSender = new SyslogSender(ip, port, "tcp");
+			// Getting the message format
+			String messageFormatString = applicationConfiguration.get(MESSAGE_FORMAT);
+			if (StringUtils.isEmpty(messageFormatString)){
+				messageFormat = DEFAULT_MESSAGE_FORMAT;
+			}else{
+				messageFormat = MessageFormat.valueOf(messageFormatString);
+			}
+
+			syslogSender = new SyslogSender(ip, port, "tcp", messageFormat);
 
 			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/user/";
 		} catch (Exception e) {
