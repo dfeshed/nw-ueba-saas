@@ -1,17 +1,15 @@
 package fortscale.streaming.task;
 
-import fortscale.entity.event.EntityEventDataStore;
 import fortscale.entity.event.EntityEventService;
+import fortscale.services.impl.SpringService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.entity.event.EntityEventDataStoreSamza;
 import fortscale.streaming.service.entity.event.KafkaEntityEventSender;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.util.Assert;
 
@@ -28,7 +26,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	private Counter receivedMessageCount;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 		// Create the entity event service
 		store = new EntityEventDataStoreSamza(new ExtendedSamzaTaskContext(context, config));
 		entityEventService = new EntityEventService(store);
@@ -50,23 +48,22 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	}
 
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 		if (entityEventService != null) {
 			// Get the input topic
-			String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+			String topic = messageContext.getTopicName();
 			if(TASK_CONTROL_TOPIC.equals(topic)){
 				store.sync();
 				return;
 			}
-			String messageText = (String)envelope.getMessage();
-			JSONObject event = (JSONObject)JSONValue.parseWithException(messageText);
+			JSONObject event = messageContext.getMessageAsJson();
 			receivedMessageCount.inc();
 			entityEventService.process(event);
 		}
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (entityEventService != null) {
 			KafkaEntityEventSender sender = new KafkaEntityEventSender(outputTopicName, collector);
 			entityEventService.sendNewEntityEventsAndUpdateStore(System.currentTimeMillis(), sender);
@@ -74,7 +71,7 @@ public class EntityEventsStreamTask extends AbstractStreamTask implements Initab
 	}
 
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		entityEventService = null;
 	}
 }

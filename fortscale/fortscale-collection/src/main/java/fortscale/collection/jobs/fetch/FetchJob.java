@@ -327,7 +327,7 @@ public abstract class FetchJob {
 		}
 		savedQuery = jobDataMapExtension.getJobDataMapStringValue(map, "savedQuery");
 		if (savedQuery.startsWith("{") && savedQuery.endsWith("}")) {
-			savedQuery = SpringPropertiesUtil.getProperty(logRepository.getType().toLowerCase() + "." +
+			savedQuery = SpringPropertiesUtil.getProperty(logRepository.getFetchSourceType().toLowerCase() + "." +
 					savedQuery.substring(1, savedQuery.length() - 1) + ".savedQuery");
 			if (savedQuery == null) {
 				throw new JobExecutionException("Could not find savedQuery configuration");
@@ -335,7 +335,7 @@ public abstract class FetchJob {
 		}
 		returnKeys = jobDataMapExtension.getJobDataMapStringValue(map, "returnKeys");
 		if (returnKeys.startsWith("{") && returnKeys.endsWith("}")) {
-			returnKeys = SpringPropertiesUtil.getProperty(logRepository.getType().toLowerCase() + "." +
+			returnKeys = SpringPropertiesUtil.getProperty(logRepository.getFetchSourceType().toLowerCase() + "." +
 					returnKeys.substring(1, returnKeys.length() - 1) + ".returnKeys");
 			if (returnKeys == null) {
 				throw new JobExecutionException("Could not find returnKeys configuration");

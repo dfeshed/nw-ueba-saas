@@ -12,14 +12,14 @@ import fortscale.streaming.service.usernameNormalization.UsernameNormalizationCo
 import fortscale.streaming.service.usernameNormalization.UsernameNormalizationService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.UsernameNormalizationAndTaggingTaskMetrics;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.InitableTask;
@@ -29,10 +29,8 @@ import org.apache.samza.task.TaskCoordinator;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 import static com.google.common.base.Preconditions.checkNotNull;
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -79,7 +77,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	 * @throws Exception
 	 */
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 
@@ -135,18 +133,20 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 		// Get the input topic
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+		String inputTopic = messageContext.getTopicName();
 
+		String messageAsString = messageContext.getMessageAsString();
 		if (topicToServiceMap.containsKey(inputTopic)) {
 			CachingService cachingService = topicToServiceMap.get(inputTopic);
-			cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
+
+			cachingService.handleNewValue((String) ((StreamingProcessMessageContext) messageContext).getIncomingMessageEnvelope().getKey(), messageAsString);
 		} else {
-			JSONObject message = parseJsonMessage(envelope);
+			JSONObject message = messageContext.getMessageAsJson();
 			taskMetrics.parsedToJSONMessages++;
 
-			StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+			StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
 			if (configKey == null){
 				taskMetrics.unknownConfigurationKeyMessages++;
 				taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
@@ -164,7 +164,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			String normalizedUsername = convertToString(message.get(usernameNormalizationConfig.getNormalizedUsernameField()));
 			if (StringUtils.isEmpty(normalizedUsername)) {
 				taskMetrics.emptyNormalizedUsernameMessages++;
-				String messageText = (String)envelope.getMessage();
+				String messageText = messageAsString;
 				// get username
 				String normalizationBasedField = convertToString(message.get(usernameNormalizationConfig.getNormalizationBasedField()));
 				if (StringUtils.isEmpty(normalizationBasedField)) {
@@ -205,6 +205,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 			// send the event to the output topic
 			String outputTopic = usernameNormalizationConfig.getOutputTopic();
 			try {
+				MessageCollector collector = ((StreamingProcessMessageContext) messageContext).getCollector();
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), getPartitionKey(usernameNormalizationConfig.getPartitionField(), message), message.toJSONString()));
 			} catch (Exception exception) {
 				taskMetrics.failedToForwardMessage++;
@@ -216,7 +217,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 
 
 	@Override
-	protected void wrappedClose() throws Exception {}
+	protected void processClose() throws Exception {}
 
 	@Override
 	protected String getJobLabel() {
@@ -224,7 +225,7 @@ public class UsernameNormalizationAndTaggingTask extends AbstractStreamTask impl
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		// Do nothing
 	}
 

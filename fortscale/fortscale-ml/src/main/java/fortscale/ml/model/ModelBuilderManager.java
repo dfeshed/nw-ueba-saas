@@ -1,5 +1,6 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
@@ -11,7 +12,6 @@ import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
-import org.apache.commons.lang.exception.ExceptionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
@@ -79,7 +79,7 @@ public class ModelBuilderManager {
             }
 
             // Update metrics
-            if (status.equals(ModelBuildingStatus.SUCCESS)) {
+            if (!status.isFailure()) {
                 metrics.successes++;
                 numOfSuccesses++;
             } else {
@@ -119,8 +119,8 @@ public class ModelBuilderManager {
             metrics.getContexts++;
         }
 
-		List<String> contextIds;
-		if (contextSelector != null) {
+        List<String> contextIds;
+        if (contextSelector != null) {
             if (previousEndTime == null) {
                 metrics.processWithNoPreviousEndTime++;
                 long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
@@ -150,33 +150,43 @@ public class ModelBuilderManager {
     }
 
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
-        Object modelBuilderData;
+        ModelBuilderData modelBuilderData;
         Model model;
-        String failureReason = "got null";
 
         // Retriever
         try {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
             metrics.retrieverFailures++;
-            failureReason = e.toString() + ": " + ExceptionUtils.getStackTrace(e);
-            modelBuilderData = null;
-        }
-        if (modelBuilderData == null) {
-            logger.error("Failed to retrieve data: " + failureReason);
+            logger.error("Failed to retrieve data for context ID {}.", contextId, e);
             return ModelBuildingStatus.RETRIEVER_FAILURE;
+        }
+
+        if (!modelBuilderData.dataExists()) {
+            switch (modelBuilderData.getNoDataReason()) {
+                case NO_DATA_IN_DATABASE:
+                    logger.error("No data in database for context ID {}.", contextId);
+                    return ModelBuildingStatus.RETRIEVER_FAILURE;
+                case ALL_DATA_FILTERED:
+                    logger.info("All data filtered out for context ID {}.", contextId);
+                    return ModelBuildingStatus.DATA_FILTERED_OUT;
+                default:
+                    throw new IllegalArgumentException(String.format("Unsupported %s %s.",
+                            NoDataReason.class.getSimpleName(), modelBuilderData.getNoDataReason()));
+            }
         }
 
         // Builder
         try {
-            model = modelBuilder.build(modelBuilderData);
+            model = modelBuilder.build(modelBuilderData.getData());
         } catch (Exception e) {
             metrics.builderFailures++;
-            failureReason = e.toString() + ": " + ExceptionUtils.getStackTrace(e);
-            model = null;
+            logger.error("Failed to build model for context ID {}.", contextId, e);
+            return ModelBuildingStatus.BUILDER_FAILURE;
         }
+
         if (model == null) {
-            logger.error("Failed to build model: " + failureReason);
+            logger.error("Built model for context ID {} is null.", contextId);
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
 
@@ -188,7 +198,7 @@ public class ModelBuilderManager {
             modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
             metrics.storeFailures++;
-            logger.error("Failed to store model: " + e.toString() + ": " + ExceptionUtils.getStackTrace(e));
+            logger.error("Failed to store model for context ID {}.", contextId, e);
             return ModelBuildingStatus.STORE_FAILURE;
         }
 

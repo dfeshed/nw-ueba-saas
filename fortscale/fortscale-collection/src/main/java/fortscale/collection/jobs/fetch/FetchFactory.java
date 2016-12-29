@@ -55,7 +55,7 @@ public class FetchFactory extends FortscaleJob {
 				throw new JobExecutionException("No log repository configuration found");
 			}
 		}
-		String configuredSIEM = logRepository.getType();
+		String configuredSIEM = logRepository.getFetchSourceType();
 		SIEMType type;
 		try {
 			type = SIEMType.valueOf(configuredSIEM.toUpperCase());

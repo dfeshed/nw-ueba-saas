@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
  * is specified in the ctor), and decides that this value V shall be a reasonable value to encounter, i.e. Pr(V) = 0.95.
  * This way, it can ensure that models with not enough data (such that the prior will dictate the score) will get low
  * scores for values up until V.
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
  */
 public class PriorBuilderMaxAllowedValue implements PriorBuilder {
 	private double quantile;

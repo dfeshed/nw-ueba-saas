@@ -8,16 +8,15 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from step4.validation.distribution.validation import validate_distribution
 from step4.validation.missing_events.validation import validate_no_missing_events
 import bdp_utils.run
-from bdp_utils.manager import DontReloadModelsOverridingManager
+from bdp_utils.manager import ModelsCacheOverridingManager
 from bdp_utils.samza import restart_task
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
-from automatic_config.common.utils.mongo import update_models_time
 
 
 logger = logging.getLogger('step4')
 
 
-class Manager(DontReloadModelsOverridingManager):
+class Manager(ModelsCacheOverridingManager):
     _SCORING_TASK_NAME = 'ENTITY_EVENTS_SCORING'
 
     def __init__(self, host, validation_timeout, validation_polling):
@@ -47,7 +46,6 @@ class Manager(DontReloadModelsOverridingManager):
         self._builder.set_start(end_rounded).set_end(end_rounded)
         for sub_step_name, sub_step in [('run scores', self._run_scores),
                                         ('build models', self._build_models),
-                                        ('move models back in time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
                                         ('remove scored entities collections', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex)),
                                         ('restart scoring task (so models will be loaded from mongo)', self._restart_scoring_task),
                                         ('run scores after entity event models and global entity event models have been built', self._run_scores),
@@ -84,13 +82,6 @@ class Manager(DontReloadModelsOverridingManager):
         logger.info('DONE')
         return True
 
-    def _move_models_back_in_time(self, collection_names_regex):
-        is_success = update_models_time(logger=logger,
-                                        host=self._host,
-                                        collection_names_regex=collection_names_regex,
-                                        time=self._runner.get_start())
-        logger.info('DONE')
-        return is_success
 
     def _clean_collections(self, collection_names_regex):
         is_success = remove_documents(host=self._host,

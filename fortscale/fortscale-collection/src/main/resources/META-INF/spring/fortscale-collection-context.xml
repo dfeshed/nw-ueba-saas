@@ -362,4 +362,9 @@
 		<constructor-arg name="clazz" value="fortscale.domain.core.Computer" />
 	</bean>
 
+	<!-- DcServiceFilter related beans -->
+	<bean id="serversListConfiguration" class="fortscale.services.impl.ServersListConfigurationImpl"/>
+	<bean id="activeDirectoryService" class="fortscale.services.impl.ActiveDirectoryServiceImpl"/>
+	<bean id="activeDirectoryDAO" class="fortscale.domain.ad.dao.impl.ActiveDirectoryDAOImpl"/>
+	<bean id="applicationConfigurationService" class="fortscale.services.impl.ApplicationConfigurationServiceImpl"/>
 </beans>

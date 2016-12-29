@@ -2,6 +2,8 @@ package fortscale.ml.model.retriever;
 
 import fortscale.common.feature.Feature;
 import fortscale.ml.model.Model;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.retriever.metrics.ModelRetrieverMetrics;
@@ -36,19 +38,25 @@ public class ModelRetriever extends AbstractDataRetriever {
 	}
 
 	@Override
-	public List<Model> retrieve(String contextId, Date endTime) {
+	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		Assert.isNull(contextId, String.format("%s can't be used with a context", getClass().getSimpleName()));
 		List<Model> models = modelStore.getAllContextsModelDaosWithLatestEndTimeLte(modelConf, endTime.getTime() / 1000).stream()
 				.map(ModelDAO::getModel)
 				.collect(Collectors.toList());
 		metrics.retrieveCalls++;
 		metrics.retrievedModels++;
-		return models;
+
+		if (models.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+		} else {
+			return new ModelBuilderData(models);
+		}
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime, Feature feature) {
-		throw new UnsupportedOperationException(String.format("%s does not support retrieval of a single feature",
+	public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
+		throw new UnsupportedOperationException(String.format(
+				"%s does not support retrieval of a single feature",
 				getClass().getSimpleName()));
 	}
 

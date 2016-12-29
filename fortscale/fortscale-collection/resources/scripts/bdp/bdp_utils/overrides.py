@@ -16,7 +16,7 @@ step3 = [
     'records_batch_size = 2000000',
     'secondsBetweenModelSyncs = ' + really_big_epochtime
 ]
-step4v4 = [
+step4 = [
     'single_step = EntityEventsCreation',
     'cleanup_step = Cleanup',
     'records_batch_size = 200000',
@@ -74,10 +74,10 @@ overrides = {
     'stepSAM.cleanup': [
         'cleanup_step = AfterEnriched'
     ],
-    'step4.scores': step4v4 + [
+    'step4.scores': step4 + [
         'secondsBetweenModelSyncs = ' + really_big_epochtime
     ],
-    'step4.build_models': step4v4 + [
+    'step4.build_models': step4 + [
         'buildModelsFirst = true'
     ]
 }

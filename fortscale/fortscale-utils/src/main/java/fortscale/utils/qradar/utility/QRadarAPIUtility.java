@@ -166,7 +166,7 @@ public class QRadarAPIUtility {
 		java.net.URL url = new URL(QRadarAPIUtility.PROTOCOL, hostname, urlString);
 		//Open connection to the constrtuced URL
 		HttpsURLConnection urlConn = (HttpsURLConnection) url.openConnection();
-		logger.info("sending request...");
+		logger.debug("sending request...");
 		//Set Method -POST,GET OR DELETE
 		String method = null;
 		switch (request.getRequestType()) {
@@ -194,8 +194,8 @@ public class QRadarAPIUtility {
 		urlConn.setRequestProperty("sec", token);
 		//Get Response Code and Message
 		int rspCode = urlConn.getResponseCode();
-		logger.info("Response Code = " + rspCode);
-		logger.info("Response Message : " + urlConn.getResponseMessage());
+		logger.debug("Response Code = " + rspCode);
+		logger.debug("Response Message : " + urlConn.getResponseMessage());
 		StringBuilder sb = new StringBuilder();
 		//Check if response received is RESPONSE_SUCCESS
 		if (rspCode == RESPONSE_SUCCESS || rspCode == RESPONSE_CREATED) {

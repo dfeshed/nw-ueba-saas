@@ -9,4 +9,5 @@ public interface AdGroupRepository  extends MongoRepository<AdGroup,String>, AdG
 	List<AdGroup> findByLastModifiedExists(boolean exists);
 	String findByName(String adName);
 	List<AdGroup> findByNameLikeIgnoreCase(String contains);
+	AdGroup findByObjectGUID(String objectGUID);
 }
