@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
+ */
 public class GaussianPriorModelBuilder implements IModelBuilder {
 	private static final String NULL_MODEL_BUILDER_DATA_ERROR_MSG = "Model builder data cannot be null.";
 	private static final String MODEL_BUILDER_DATA_TYPE_ERROR_MSG = String.format(

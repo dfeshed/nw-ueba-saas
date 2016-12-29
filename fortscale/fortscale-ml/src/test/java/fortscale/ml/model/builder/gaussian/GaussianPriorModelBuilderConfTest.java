@@ -81,6 +81,7 @@ public class GaussianPriorModelBuilderConfTest {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(0)
 				.setMinNumOfSamplesToLearnFrom(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -90,6 +91,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setNumberOfNeighbours(0)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -99,6 +101,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setMaxRatioBetweenSegmentSizeToCenter(0)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -117,6 +120,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setPadding(-1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -125,6 +129,7 @@ public class GaussianPriorModelBuilderConfTest {
 		new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(-1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -134,6 +139,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setQuantile(-1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -143,6 +149,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setQuantile(1.1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -152,6 +159,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setMinQuantileComplementSize(-1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -161,6 +169,7 @@ public class GaussianPriorModelBuilderConfTest {
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
 				.setMinAllowedDistFromMean(-1.0)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 	}
 
@@ -204,11 +213,11 @@ public class GaussianPriorModelBuilderConfTest {
 		GaussianPriorModelBuilderConf conf = new GaussianPriorModelBuilderConfBuilder()
 				.setDistanceBetweenSegmentCenters(1)
 				.setMinNumOfSamplesToLearnFrom(1)
+				.setMaxSegmentWidthToNotDiscardBecauseOfBadRatio(10)
 				.build();
 
 		Assert.assertEquals(10, conf.getNumberOfNeighbours());
 		Assert.assertEquals(0.1, conf.getMaxRatioBetweenSegmentSizeToCenter(), 0.00001);
-		Assert.assertEquals(10, conf.getMaxSegmentWidthToNotDiscardBecauseOfBadRatio(), 0.00001);
 		Assert.assertEquals(1, conf.getPadding(), 0.00001);
 		Assert.assertEquals(0.99, conf.getQuantile(), 0.00001);
 		Assert.assertEquals(30, conf.getMinQuantileComplementSize());
