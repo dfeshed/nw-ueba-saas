@@ -40,20 +40,20 @@ public class AdUserThumbnail implements Serializable {
 
 	/**
 	 *
-	 * @param objectGUID the GUID of the active directory user whose thumbnail we are constructing. NOTICE - This is going to be the _id of the document!
+	 * @param id the GUID of the active directory user whose thumbnail we are constructing. NOTICE - This is going to be the _id of the document!
 	 */
-	public AdUserThumbnail(String objectGUID) {
-		Assert.notNull(objectGUID);
-		Assert.isTrue(Pattern.matches(GUID_REGEX, objectGUID), String.format("Given objectId %s is not a valid GUID (according to regex %s)", objectGUID, GUID_REGEX));
-		this.id = objectGUID;
+	public AdUserThumbnail(String id) {
+		Assert.notNull(id);
+		Assert.isTrue(Pattern.matches(GUID_REGEX, id), String.format("Given objectId %s is not a valid GUID (according to regex %s)", id, GUID_REGEX));
+		this.id = id;
 	}
 
 	public String getIdD() {
 		return id;
 	}
 
-	public void setId(String objectGUID) {
-		this.id = objectGUID;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Instant getModifiedAt() {
