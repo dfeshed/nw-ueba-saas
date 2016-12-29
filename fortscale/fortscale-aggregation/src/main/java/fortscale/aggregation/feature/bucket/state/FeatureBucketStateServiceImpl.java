@@ -43,6 +43,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         // Creating new state object
         if (lastClosedDailyBucketDate == null){
             featureBucketState = new FeatureBucketState(lastEventDay, lastEventDate);
+            lastClosedDailyBucketDate = featureBucketState.getLastClosedDailyBucketDate();
         // Updating the last synced date in case that the last event date is after the lst sync date
         }else if (lastClosedDailyBucketDate.isBefore(lastEventDate)) {
             featureBucketState.setLastClosedDailyBucketDate(lastEventDay);
