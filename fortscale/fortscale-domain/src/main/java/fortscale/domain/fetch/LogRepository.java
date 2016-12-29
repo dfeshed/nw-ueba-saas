@@ -24,15 +24,18 @@ public class LogRepository {
 
 	protected Integer port;
 
+	protected String alias;
+
 	public LogRepository() {}
 
-	public LogRepository(String id, String fetchSourceType, String host, String user, String password, Integer port) {
+	public LogRepository(String id, String fetchSourceType, String host, String user, String password, Integer port, String alias) {
 		this.id = id;
 		this.fetchSourceType = fetchSourceType;
 		this.host = host;
 		this.user = user;
 		this.password = password;
 		this.port = port;
+		this.alias = alias;
 	}
 
 	public Integer getPort() {
@@ -83,4 +86,11 @@ public class LogRepository {
 		this.id = id;
 	}
 
+	public String getAlias() {
+		return alias;
+	}
+
+	public void setAlias(String alias) {
+		this.alias = alias;
+	}
 }

@@ -6,6 +6,9 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import java.util.List;
 
+/**
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
+ */
 public interface Segmentor {
 	class Segment {
 		public double leftMean;

@@ -158,7 +158,10 @@ public class UserScoreServiceImpl implements UserScoreService {
                 alertsRepository.updateUserContribution(alert.getId(), alert.getUserScoreContribution(), alert.isUserScoreContributionFlag());
             }
 
-            userScore += alert.getUserScoreContribution();
+            // The alert shouldn't contribute to the score any more  - relevant to the day when we decide the alert isn't relevant any more
+            if (userScoreContributionFlag) {
+                userScore += alert.getUserScoreContribution();
+            }
         }
 
         user.setScore(userScore);
@@ -305,8 +308,6 @@ public class UserScoreServiceImpl implements UserScoreService {
                 userScorePercentilesRepository.save(previous);
             }
         }
-
-
     }
 
     /**
@@ -336,6 +337,9 @@ public class UserScoreServiceImpl implements UserScoreService {
 
             userWithAlertService.recalculateNumberOfUserAlertsByUserId(userId);
         }
+        logger.info("Changing all the other users score to 0");
+        int usersCount = userService.updateUserScoreForUsersNotInIdList(userIds, 0d);
+        logger.info("Finish updating {} users score to 0", usersCount);
         logger.info("Finish updating user score");
 
         //Convert the atomic map to list of pairs
@@ -440,5 +444,4 @@ public class UserScoreServiceImpl implements UserScoreService {
     public void setUserScoreConfiguration(UserScoreConfiguration userScoreConfiguration) {
         this.userScoreConfiguration = userScoreConfiguration;
     }
-
 }
