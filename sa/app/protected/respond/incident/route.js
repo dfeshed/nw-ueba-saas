@@ -17,6 +17,9 @@ export default Route.extend({
 
   layoutService: service('layout'),
 
+  // Service to retrieve information from local storage
+  respondMode: service(),
+
   activate() {
     this.set('layoutService.actionConfig', 'incident');
     this.set('layoutService.displayJournal', true);
@@ -196,7 +199,22 @@ export default Route.extend({
       });
     },
 
+    /**
+     * Use respond-mode service to update local storage based on view changes
+     * @param alertId String ID of last viewed alert
+     * @param showPanel boolean indicating if event overview panel should be shown
+     * @param showFullPanel boolean indicating if event overview panel should be expanded or collapsed
+     * @public
+     */
+    saveEventOverviewPanelState(alertId = null, showPanel = false, showFullPanel = true) {
+      this.set('respondMode.selectedEventOverviewOptions', { alertId, showPanel, showFullPanel });
+    },
+
     closeEventOverviewPanel() {
+
+      // Update localStorage by resetting eventOverView panel information
+      this.send('saveEventOverviewPanelState');
+
       this.set('layoutService.main', 'panelC');
       this.set('layoutService.panelB', 'half');
       this.set('layoutService.panelC', 'half');
@@ -204,6 +222,11 @@ export default Route.extend({
     },
 
     expandCollapseEventOverviewPanel(expandPanel) {
+
+      // Update localStorage
+      const { alertId } = this.get('respondMode.selectedEventOverviewOptions');
+      this.send('saveEventOverviewPanelState', alertId, true, expandPanel);
+
       if (expandPanel) {
         this.set('layoutService.journalPanel', 'hidden');
         this.set('layoutService.panelA', 'hidden');
@@ -213,6 +236,7 @@ export default Route.extend({
         this.set('layoutService.panelC', 'half');
         this.set('layoutService.panelD', 'half');
       } else {
+
         this.set('layoutService.main', 'panelC');
         this.set('layoutService.panelB', 'quarter');
         this.set('layoutService.panelC', 'half');

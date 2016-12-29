@@ -1,8 +1,8 @@
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 
 const {
   Service,
-  computed,
   run
 } = Ember;
 
@@ -13,6 +13,37 @@ export default Service.extend({
   options: ['card', 'list'],
 
   defaultSelection: 'card',
+
+  localStorageEventOverviewKey: 'rsa::securityAnalytics::respondModePreference::eventOverview',
+
+  // Default options that reflect view state
+  defaultEventOverviewModeSelection: {
+    alertId: null,
+    showPanel: false,
+    showFullPanel: true
+  },
+
+  @computed
+  selectedEventOverviewOptions: {
+    get() {
+      let value;
+      const localStorageEventOverviewModeSelection = localStorage[this.get('localStorageEventOverviewKey')];
+
+      localStorageEventOverviewModeSelection ?
+        value = JSON.parse(localStorageEventOverviewModeSelection) :
+        value = this.get('defaultEventOverviewModeSelection');
+
+      return value;
+    },
+    set(value) {
+      const stringValue = JSON.stringify(value);
+      const _this = this;
+      run.once(function() {
+        localStorage[_this.get('localStorageEventOverviewKey')] = stringValue;
+      });
+      return value;
+    }
+  },
 
   init() {
     const localStorageRespondMode = localStorage[this.get('localStorageKey')];
@@ -29,17 +60,18 @@ export default Service.extend({
     this._super(arguments);
   },
 
-  selected: computed({
+  @computed
+  selected: {
     get() {
       return localStorage[this.get('localStorageKey')];
     },
-    set(key, value) {
+    set(value) {
       const _this = this;
       run.once(function() {
         localStorage[_this.get('localStorageKey')] = value;
       });
       return value;
     }
-  })
+  }
 
 });

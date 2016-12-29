@@ -12,6 +12,9 @@ const {
 export default Route.extend({
   layoutService: service('layout'),
 
+  // Service to retrieve information from local storage
+  respondMode: service(),
+
   activate() {
     this.set('layoutService.journalPanel', 'hidden');
     this.set('layoutService.main', 'panelB');
@@ -53,12 +56,43 @@ export default Route.extend({
       },
       onResponse: ({ data }) => {
         alerts.pushObjects(data);
+        this._restoreEventOverviewPanelState(alerts);
       },
       onError(response) {
         Logger.error('Error processing notify call for alerts model', response);
       }
     });
     return alerts;
+  },
+
+  /**
+   * Re-create event overview panel view by obtaining view state from respond-mode service which
+   * works with local storage to obtain last saved state of this panel.
+   * @param alerts
+   * @private
+   */
+  _restoreEventOverviewPanelState(alerts) {
+
+    // Retrieve view state
+    const { alertId, showPanel, showFullPanel } = this.get('respondMode.selectedEventOverviewOptions');
+
+    if (alerts && showPanel) {
+
+      // Retrieve alert by alert's ID. This alert contains an event that should be displayed to the user.
+      const alert = alerts.findBy('id', alertId);
+
+      // Display even overview panel
+      if (alert) {
+        this.send('displayEvents', alert);
+
+        if (!showFullPanel) {
+          this.send('expandCollapseEventOverviewPanel', showFullPanel);
+        }
+      } else {
+        // Miss-match. Reset local storage data
+        this.send('saveEventOverviewPanelState');
+      }
+    }
   },
 
   actions: {
@@ -68,7 +102,19 @@ export default Route.extend({
       this.refresh();
     },
 
+    willTransition(transition) {
+      // Handle back button click.
+      if (transition.targetName === 'protected.respond.incident.index') {
+        // Event overview panel is removed. Update local storage state.
+        this.send('saveEventOverviewPanelState');
+      }
+    },
+
     displayEvents(alert) {
+
+      // Update local storage event overview panel state
+      this.send('saveEventOverviewPanelState', alert.id, true, true);
+
       this.set('layoutService.main', 'panelD');
       this.set('layoutService.panelA', 'hidden');
       this.set('layoutService.panelB', 'hidden');
