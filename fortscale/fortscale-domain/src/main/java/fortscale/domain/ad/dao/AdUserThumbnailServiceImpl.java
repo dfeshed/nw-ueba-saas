@@ -15,7 +15,7 @@ public class AdUserThumbnailServiceImpl implements AdUserThumbnailService {
 
     @Override
     public List<AdUserThumbnail> findByObjectGUID(String objectGUID, Pageable pageable) {
-        return adUserThumbnailRepository.findByObjectGUID(objectGUID, pageable);
+        return adUserThumbnailRepository.findById(objectGUID, pageable);
     }
 
     @Override
