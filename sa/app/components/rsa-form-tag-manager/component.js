@@ -73,7 +73,7 @@ export default Component.extend({
     toggleTag(tag) {
       if (!this.get('isDisabled')) {
         const selectedTags = this.get('selectedTags').slice();
-        const availableTags = this.get('availableTags');
+        const availableTags = this.get('tags');
         let tagFromAvailableTags = null;
 
         // searching the selected tag in the list of all tags.
