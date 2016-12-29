@@ -174,11 +174,22 @@ public class ApiEvidenceController extends DataQueryController {
 		return ret;
 	}
 
+	/**
+	 *
+	 * @param id - The evidence ID
+	 * @param request_total - If we need to extract the total of rows that match to the filter (not only currey filter, and not limit to 200)
+	 * @param use_cache - If we want to use 15 minutes cache
+	 * @param page - page number
+	 * @param size  - page size
+	 * @param sort_field - sore field
+	 * @param sort_direction - sort direction
+	 * @return
+	 */
 	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
-															 @RequestParam(defaultValue = "false") boolean request_total,
+															 @RequestParam(defaultValue = "true") boolean request_total,
 															 @RequestParam(defaultValue = "true") boolean use_cache,
 															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
 															 @RequestParam(defaultValue = "20") Integer size,
