@@ -5,14 +5,10 @@ import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.JokerEntityEventData;
 import fortscale.utils.logging.Logger;
-import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 @Configurable(preConstruction = true)
@@ -33,15 +29,12 @@ public class AccumulatedEntityEventValueRetriever extends AbstractEntityEventVal
 	@Override
 	protected Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf, String contextId, Date startTime, Date endTime) {
 		List<AccumulatedEntityEvent> accumulatedEntityEvents = store.findAccumulatedEventsByContextIdAndStartTimeRange(
-				entityEventConf,
-				contextId,
-				getStartTime(endTime).toInstant(),
-				endTime.toInstant()
-		);
+				entityEventConf, contextId, getStartTime(endTime).toInstant(), endTime.toInstant());
 		List<JokerEntityEventData> jokerEntityEventDataList = new ArrayList<>();
+
 		for (AccumulatedEntityEvent accumulatedEntityEvent : accumulatedEntityEvents) {
 			for (Integer activityTime : accumulatedEntityEvent.getActivityTime()) {
-				Map<String, Double> fullAggregatedFeatureEventNameToScore = new HashedMap();
+				Map<String, Double> fullAggregatedFeatureEventNameToScore = new HashMap<>();
 				for (Map.Entry<String, Map<Integer, Double>> aggrFeature : accumulatedEntityEvent.getAggregated_feature_events_values_map().entrySet()) {
 					Double activityTimeScore = aggrFeature.getValue().get(activityTime);
 					String featureName = aggrFeature.getKey();

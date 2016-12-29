@@ -4,6 +4,8 @@ import fortscale.common.feature.Feature;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventMongoStore;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.retriever.metrics.EntityEventUnreducedScoreRetrieverMetrics;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,27 +35,37 @@ public class EntityEventUnreducedScoreRetriever extends AbstractDataRetriever {
 	}
 
 	@Override
-	public Map<Long, List<Double>> retrieve(String contextId, Date endTime) {
+	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		metrics.retrieve++;
 		Assert.isNull(contextId, String.format("%s can't be used with a context", this.getClass().getSimpleName()));
 		Map<Long, List<EntityEvent>> dateToTopEntityEvents = entityEventMongoStore.getDateToTopEntityEvents(
 				config.getEntityEventConfName(),
 				endTime,
 				config.getNumOfDays(),
-				(int) (config.getNumOfDays() * config.getNumOfAlertsPerDay() + 1));
+				(int)(config.getNumOfDays() * config.getNumOfAlertsPerDay() + 1));
+
+		if (dateToTopEntityEvents.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+		}
 
 		metrics.dates += dateToTopEntityEvents.size();
 		dateToTopEntityEvents.values().forEach(list -> metrics.topEntityEvents += list.size());
 
-		return dateToTopEntityEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
+		Map<Long, List<Double>> data = dateToTopEntityEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
 				.stream()
 				.map(EntityEvent::getUnreduced_score)
 				.filter(unreducedScore -> unreducedScore != null)
 				.collect(Collectors.toList())));
+
+		if (data.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(data);
+		}
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime, Feature feature) {
+	public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
 		throw new UnsupportedOperationException(String.format(
 				"%s does not support retrieval of a single feature",
 				getClass().getSimpleName()));

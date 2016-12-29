@@ -2,6 +2,7 @@ package fortscale.services.impl;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
@@ -15,6 +16,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
+import javax.naming.CommunicationException;
+import javax.naming.NamingException;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -121,15 +125,15 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public String canConnect(AdConnection adConnection) {
-        String result;
+    public boolean canConnect(AdConnection adConnection) throws CommunicationException, AuthenticationException, NamingException, PasswordDecryptionException{
+        boolean success;
         try {
-            result = activeDirectoryDAO.connectToAD(adConnection);
-        } catch (Exception ex) {
+            success = activeDirectoryDAO.connectToAD(adConnection);
+        } catch (NamingException | PasswordDecryptionException ex) {
             logger.error("failed to connect to ad - {}", ex);
-            result = ex.getLocalizedMessage();
+            throw ex;
         }
-        return result;
+        return success;
     }
 
 

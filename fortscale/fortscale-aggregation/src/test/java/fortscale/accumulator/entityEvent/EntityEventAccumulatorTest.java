@@ -1,6 +1,5 @@
 package fortscale.accumulator.entityEvent;
 
-import fortscale.accumulator.TestMongoConfig;
 import fortscale.accumulator.accumulator.AccumulationParams;
 import fortscale.accumulator.entityEvent.config.EntityEventAccumulatorConfig;
 import fortscale.accumulator.entityEvent.event.AccumulatedEntityEvent;
@@ -10,6 +9,7 @@ import fortscale.entity.event.EntityEventMongoStore;
 import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
@@ -20,11 +20,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -40,7 +38,6 @@ import java.util.Properties;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
 
-@ActiveProfiles("test")
 public class EntityEventAccumulatorTest {
 
     private static final int HOUR_IN_SECONDS = 3600;
@@ -49,11 +46,10 @@ public class EntityEventAccumulatorTest {
     @Import({
             NullStatsServiceConfig.class,
             EntityEventAccumulatorConfig.class,
-            TestMongoConfig.class
+            MongodbTestConfig.class
     })
     @EnableSpringConfigured
     @EnableAnnotationConfiguration
-    @Profile("test")
     public static class springConfig {
         @Autowired
         private StatsService statsService;

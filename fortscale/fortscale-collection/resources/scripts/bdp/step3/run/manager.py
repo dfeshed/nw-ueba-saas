@@ -9,7 +9,7 @@ from validation import validate_no_missing_events, validate_entities_synced, val
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
-from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models_and_acm
+from bdp_utils.manager import ModelsCacheOverridingManager, cleanup_everything_but_models_and_acm
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
@@ -19,13 +19,12 @@ from automatic_config.common.results.committer import update_configurations
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
 from automatic_config.alphas_and_betas import main as weights_main
-from automatic_config.common.utils.mongo import update_models_time
 
 
 logger = logging.getLogger('step3')
 
 
-class Manager(DontReloadModelsOverridingManager):
+class Manager(ModelsCacheOverridingManager):
     _SUB_STEP_RUN_SCORES = 'run_scores'
     _SUB_STEP_BUILD_MODELS = 'build_models'
     _SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME = 'cleanup_and_move_models_back_in_time'
@@ -126,11 +125,8 @@ class Manager(DontReloadModelsOverridingManager):
         return cleanup_everything_but_models_and_acm(logger=logger,
                                              host=self._host,
                                              clean_overrides_key='step3.cleanup',
-                                             infer_start_and_end_from_collection_names_regex='^aggr_') and \
-               update_models_time(logger=logger,
-                                  host=self._host,
-                                  collection_names_regex='^model_',
-                                  infer_start_from_collection_names_regex='^aggr_')
+                                             infer_start_and_end_from_collection_names_regex='^aggr_')
+
 
     def _calc_reducers_and_alphas_and_betas(self):
         if os.path.exists(config.interim_results_path):

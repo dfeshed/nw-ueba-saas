@@ -1,6 +1,5 @@
 package fortscale.collection;
 
-import fortscale.utils.monitoring.stats.StatsService;
 import fortscale.utils.process.processInfo.ProcessInfoService;
 import fortscale.utils.process.processInfo.ProcessInfoServiceImpl;
 import fortscale.utils.process.processType.ProcessType;
@@ -25,7 +24,7 @@ public class BatchScheduler {
 
 
 	private static Logger logger = LoggerFactory.getLogger(BatchScheduler.class);
-	
+
 	private Scheduler scheduler;
 	private ClassPathXmlApplicationContext context;
 
@@ -69,7 +68,7 @@ public class BatchScheduler {
 				// run the given job only
 				String jobName = args[0];
 				String group = args[1];
-				
+
 				batch.startSchedulerWithOneJob(jobName, group, Arrays.copyOfRange(args, 2, args.length));
 				batch.shutdown();
 			} else {
@@ -78,13 +77,13 @@ public class BatchScheduler {
 				System.out.println(" <jobName> <group> - start only the given job");
 				System.out.println(" <no args> - start the scheduler and all jobs");
 			}
-									
+
 		} catch (Exception e) {
 			logger.error("error in scheduling collection jobs", e);
 		}
 	}
 
-	
+
 	public void loadScheduler() throws Exception {
 		// Grab schedule instance from the factory
 		// use the quartz.conf instance for jobs and triggers configuration
@@ -109,8 +108,8 @@ public class BatchScheduler {
 
 		// point quartz configuration to external file resource
 		System.setProperty("org.quartz.properties", "resources/jobs/quartz.properties");
-			
-		// loading spring application context, we do not close this context as the application continue to 
+
+		// loading spring application context, we do not close this context as the application continue to
 		// run in background threads
 		// Create the spring context but do not refresh it for now
 		boolean isRefresh = false;
@@ -126,33 +125,33 @@ public class BatchScheduler {
 		scheduler = (Scheduler) context.getBean("jobScheduler");
 		scheduler.getListenerManager().addSchedulerListener(new SchedulerShutdownListener(scheduler, context));
 	}
-	
-	
+
+
 	public void startAll() throws Exception {
 		if (scheduler==null)
 			loadScheduler();
-		
+
 		// build job chaining listener
 		JobChainingListener listener = new JobChainingListener("resources/jobs/job_chains.xml");
 		scheduler.getListenerManager().addJobListener(listener);
-		
+
 		// start of the scheduler, the application will not terminate
 		// until a call to scheduler.shutdown() is made, because there are
 		// active threads
 		logger.info("starting batch scheduler execution");
 		scheduler.start();
 	}
-	
+
 	public void startSchedulerWithOneJob(String jobName, String group, String... params) throws Exception {
 		startSchedulerAndPauseAllJobs();
 
 		startJob(jobName, group, params);
 	}
-	
+
 	private void startSchedulerAndPauseAllJobs() throws Exception{
 		if (scheduler==null)
 			loadScheduler();
-		
+
 		scheduler.start();
 		scheduler.pauseAll();
 	}
@@ -160,22 +159,22 @@ public class BatchScheduler {
 	public void runFullCycle(String... params) throws Exception{
 		startSchedulerAndPauseAllJobs();
 
-		startJob("Custom", "Tagging", params);
-		startJob("Computer_Fetch", "AD", params);
-		startJob("Computer_ETL", "AD", params);
+		//startJob("Custom", "Tagging", params);
+//		startJob("Computer_Fetch", "AD", params);
+//		startJob("Computer_ETL", "AD", params);
 		startJob("Computer", "Tagging", params);
 		startJob("Classify_Computers", "AD", params);
-		startJob("OU_Fetch", "AD", params);
-		startJob("OU_ETL", "AD", params);
-		startJob("Group_Fetch", "AD", params);
-		startJob("Group_ETL", "AD", params);
-		startJob("User_Fetch", "AD", params);
-		startJob("User_ETL", "AD", params);
-		startJob("User", "Tagging", params);
+//		startJob("OU_Fetch", "AD", params);
+//		startJob("OU_ETL", "AD", params);
+//		startJob("Group_Fetch", "AD", params);
+//		startJob("Group_ETL", "AD", params);
+//		startJob("User_Fetch", "AD", params);
+//		startJob("User_ETL", "AD", params);
+//		startJob("User", "Tagging", params);
 		startJob("User_Thumbnail_ETL", "AD", params);
 		startJob("ETL", "DHCP", params);
 		startJob("ETL", "ISE", params);
-        startJob("Comp4624_ETL", "SecurityEvents", params);
+		startJob("Comp4624_ETL", "SecurityEvents", params);
 		startJob("Route_ETL", "SecurityEvents", params);
 		startJob("Comp_ETL", "SecurityEvents", params);
 		String etlParams[] = Arrays.copyOf(params, params.length + 1);
@@ -184,19 +183,19 @@ public class BatchScheduler {
 		startJob("ETL", "VPN", params);
 		startJob("ETL", "SSH", params);
 
-        startJob("ETL", "CRMSF", params);
-        startJob("ETL", "WAME", params);
-        startJob("ETL", "GWAME", params);
-        startJob("ETL", "NTLM", params);
-        startJob("ETL", "PRNLOG", params);
-        startJob("ETL", "ORACLE", params);
+		startJob("ETL", "CRMSF", params);
+		startJob("ETL", "WAME", params);
+		startJob("ETL", "GWAME", params);
+		startJob("ETL", "NTLM", params);
+		startJob("ETL", "PRNLOG", params);
+		startJob("ETL", "ORACLE", params);
 
 	}
-	
+
 	private void startJob(String jobName, String group, String... params) throws Exception {
-		
+
 		JobKey jobKey = new JobKey(jobName, group);
-		
+
 		// register job listener to close the scheduler after job completion
 		NotifyJobFinishListener.FinishSignal monitor = NotifyJobFinishListener.waitOnJob(scheduler, jobKey);
 
@@ -207,6 +206,10 @@ public class BatchScheduler {
 			JobDataMap dataMap = new JobDataMap();
 			if (params != null && params.length > 0) {
 				for (String param : params) {
+					if (!param.contains("=")) {
+						final String errorMessage = String.format("Invalid input. All job parameters should be of format key=value. Job name is: %s. Job Group is: %s. All Job parameters are: %s. Execution failed.", jobName, group, Arrays.toString(params));
+						throw new IllegalArgumentException(errorMessage);
+					}
 					String[] entry = param.split("=", 2);
 					dataMap.put(entry[0], entry[1]);
 				}
@@ -217,18 +220,18 @@ public class BatchScheduler {
 				scheduler.triggerJob(jobKey, dataMap);
 			} else
 				scheduler.triggerJob(jobKey);
-			
+
 			// wait for job completion
-			monitor.doWait();		
+			monitor.doWait();
 		} else {
 			System.out.println(String.format("job %s %s does not exist", jobName, group));
 		}
 	}
-	
+
 	public void shutdown() throws SchedulerException {
 		scheduler.shutdown();
 		context.close();
 
 	}
-	
+
 }

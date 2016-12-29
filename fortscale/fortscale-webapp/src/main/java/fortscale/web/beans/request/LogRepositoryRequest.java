@@ -10,7 +10,7 @@ public class LogRepositoryRequest extends LogRepository {
 	private boolean encryptedPassword;
 
 	public LogRepository getLogRepository() {
-		return new LogRepository(id, type, host, user, password, port);
+		return new LogRepository(id, fetchSourceType, host, user, password, port,alias);
 	}
 
 	public boolean isEncryptedPassword() {

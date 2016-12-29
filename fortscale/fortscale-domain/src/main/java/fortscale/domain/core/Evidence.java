@@ -3,6 +3,7 @@ package fortscale.domain.core;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -195,7 +196,7 @@ public class Evidence extends AbstractDocument{
 		this.retentionDate = new Date(startDate);
 
 		// We must create ID for the evidence so the alert can have reference to it
-		this.setId(UUID.randomUUID().toString());
+		this.setId(ObjectId.get().toString());
 	}
 
 	// used to create references to evidences within alerts (see BasicAlertSubscriber)

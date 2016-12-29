@@ -6,7 +6,7 @@ import sys
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
 from validation.started_processing_everything.validation import validate_started_processing_everything
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
-from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models_and_acm
+from bdp_utils.manager import ModelsCacheOverridingManager, cleanup_everything_but_models_and_acm
 from bdp_utils.data_sources import data_source_to_enriched_tables
 from bdp_utils.throttling import Throttler
 from bdp_utils.samza import restart_task
@@ -15,13 +15,13 @@ import bdp_utils.run
 from step2_online.validation.validation import block_until_everything_is_validated
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common.utils import time_utils, impala_utils, io
-from automatic_config.common.utils.mongo import update_models_time, get_collections_size
+from automatic_config.common.utils.mongo import get_collections_size
 
 
 logger = logging.getLogger('stepSAM')
 
 
-class Manager(DontReloadModelsOverridingManager):
+class Manager(ModelsCacheOverridingManager):
     _MODEL_CONFS_OVERRIDING_PATH = '/home/cloudera/fortscale/config/asl/models/overriding'
     _MODEL_CONFS_ADDITIONAL_PATH = '/home/cloudera/fortscale/config/asl/models/additional'
     _JAR_NAME = 'fortscale-ml-1.1.0-SNAPSHOT.jar'
@@ -216,11 +216,12 @@ class Manager(DontReloadModelsOverridingManager):
 
     def _send_dummy_event(self, end_time_epoch):
         # TODO: this code was copied from step2_online's manager.py - do a refactor
-        logger.info('sending dummy event (so the last partial batch will be closed)...')
+        next_day_epoch = str(end_time_epoch + (-end_time_epoch) % (60*60*24) + 1)
+        logger.info('sending dummy event of ' + next_day_epoch + ' (so the hourly and daily buckets will be closed)...')
         send(logger=logger,
              host=self._host,
              topic='fortscale-aggregation-events-control',
-             message='{"date_time_unix": ' + str(end_time_epoch + 1) + '}')
+             message='{"date_time_unix": ' + next_day_epoch + '}')
 
     def _build_models(self, data_source):
         start = self._get_start(data_source=data_source)
@@ -231,11 +232,6 @@ class Manager(DontReloadModelsOverridingManager):
             .set_start(end) \
             .set_end(end) \
             .run(overrides_key='stepSAM', overrides=overrides)
-        if not update_models_time(logger=logger,
-                                  host=self._host,
-                                  collection_names_regex='^model_',
-                                  time=start):
-            return False
         return True
 
     def _cleanup(self, data_source=None, fail_if_no_models=True):

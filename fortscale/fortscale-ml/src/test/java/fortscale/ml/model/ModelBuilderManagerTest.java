@@ -210,7 +210,7 @@ public class ModelBuilderManagerTest {
 
     private void mockBuild(String id, Date startTime, Date endTime, Model model, boolean success) {
         Object data = mock(Object.class);
-        when(retriever.retrieve(eq(id), eq(endTime))).thenReturn(data);
+        when(retriever.retrieve(eq(id), eq(endTime))).thenReturn(new ModelBuilderData(data));
         when(builder.build(eq(data))).thenReturn(model);
 
         if (!success) {

@@ -5,9 +5,9 @@ import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.vpn.VpnEnrichService;
 import fortscale.streaming.task.GeneralTaskTest;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import fortscale.streaming.task.monitor.TaskMonitoringHelper;
 import net.minidev.json.JSONObject;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.system.SystemStreamPartition;
@@ -94,10 +94,11 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         when(vpnEnrichService.getTimeStampFieldName()).thenReturn("date_time_unix");
 
         // prepare envelope
-        IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream,
+                null ,MESSAGE  , INPUT_TOPIC, messageCollector, taskCoordinator, task);
         // run the process on the envelope
-        task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-        task.wrappedClose();
+        task.processMessage(contextualMessage);
+        task.processClose();
         // validate the services were read
         verify(vpnEnrichService).processVpnEvent(any(JSONObject.class), eq(messageCollector));
         verify(vpnEnrichService).getPartitionKey(any(JSONObject.class));
@@ -115,7 +116,8 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
     @Test(expected = KafkaPublisherException.class)
     public void wrappedProcess_kafkaException() throws Exception {
 
-
+        // Create the task metrics (because init() is not called)
+        task.createTaskMetrics();
 
         //stub
         Map map = new HashMap();
@@ -133,11 +135,11 @@ public class VpnEnrichTaskTest extends GeneralTaskTest {
         doThrow(new RuntimeException()).when(messageCollector).send(any(OutgoingMessageEnvelope.class));
 
         // prepare envelope
-        IncomingMessageEnvelope envelope = getIncomingMessageEnvelope(systemStreamPartition, systemStream, null,MESSAGE  , INPUT_TOPIC);
+        ProcessMessageContext contextualMessage = getFSProcessContextualMessage(systemStreamPartition, systemStream, null,MESSAGE , INPUT_TOPIC, messageCollector, taskCoordinator, task);
         // run the process on the envelope
         task.wrappedCreateTaskMetrics();
-        task.wrappedProcess(envelope , messageCollector, taskCoordinator);
-        task.wrappedClose();
+        task.processMessage(contextualMessage);
+        task.processClose();
 
         //reset the mocks so it clears counters for the sake of next test
         reset(vpnEnrichService);

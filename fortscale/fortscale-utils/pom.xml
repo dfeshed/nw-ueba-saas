@@ -693,6 +693,11 @@
 			<artifactId>cglib</artifactId>
 			<version>${cglib.version}</version>
 		</dependency>
+		<!--fongo is a fake mongo, in memory test util-->
+		<dependency>
+			<groupId>com.github.fakemongo</groupId>
+			<artifactId>fongo</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

@@ -147,9 +147,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//add default tags to system
-		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true, true));
-		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true, true));
-		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true, true));
+		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true, true,true));
+		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true, true,true));
+		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true, true,true));
 	}
 
 	@Override
@@ -165,6 +165,14 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			}
 		}
 		userService.updateUserTagList(tags, null, username);
+	}
+
+	@Override
+	public void addUserTagsRegex(String usernameRegex, List<String> tags) throws Exception {
+		final Set<String> usernames = userService.findByUsernameRegex(usernameRegex);
+		for (String username : usernames) {
+			addUserTags(username, tags);
+		}
 	}
 
 	@Override

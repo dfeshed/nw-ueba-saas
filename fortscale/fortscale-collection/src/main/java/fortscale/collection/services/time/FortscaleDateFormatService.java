@@ -36,13 +36,4 @@ public interface FortscaleDateFormatService {
      */
     String formatDateTimestamp(String dateTimestamp, List<String> optionalInputFormats, String inputTimezone, String outputFormatStr, String outputTimezone) throws FortscaleDateFormatterException;
 
-    /**
-     * Find all date patterns matching to the input date timestamp
-     *
-     * @param dateTimestamp the date timestamp
-     * @param tzInput the time zone input
-     *
-     * @return list of date patterns which matches the date timestamp input
-     */
-    List<String> findDateTimestampPatternMatches(String dateTimestamp, String tzInput);
 }

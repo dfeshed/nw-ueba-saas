@@ -2,6 +2,7 @@ package fortscale.web.beans;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 public class DataBean<T> {
 	private T data;
@@ -40,6 +41,16 @@ public class DataBean<T> {
 
 	public void setInfo(Map<String, Object> info) {
 		this.info = info;
+	}
+
+	public void addInfo(String infoKey, Object infoValue) {
+
+		if (this.info == null){
+			this.info = new HashMap<>();
+		}
+
+		this.info.put(infoKey, infoValue);
+
 	}
 
 	public WarningMessage getWarning() {

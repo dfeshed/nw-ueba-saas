@@ -7,6 +7,8 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
 import fortscale.common.feature.Feature;
 import fortscale.domain.core.FeatureScore;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
@@ -35,7 +37,7 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 	}
 
 	@Override
-	public Map<Long, List<Double>> retrieve(String contextId, Date endTime) {
+	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		Assert.isNull(contextId, String.format("%s can't be used with a context", this.getClass().getSimpleName()));
 		Map<Long, List<AggrEvent>> dateToTopAggrEvents = aggregatedFeatureEventsReaderService.getDateToTopAggrEvents(
 				aggregatedFeatureEventToCalibrateConf,
@@ -43,11 +45,21 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 				config.getNumOfDays(),
 				config.getNumOfIndicatorsPerDay());
 
-		return dateToTopAggrEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
+		if (dateToTopAggrEvents.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+		}
+
+		Map<Long, List<Double>> data = dateToTopAggrEvents.entrySet().stream().collect(Collectors.toMap(Map.Entry::getKey, e -> e.getValue()
 				.stream()
 				.map(aggrEvent -> findScoreToCalibrate(aggrEvent.getFeatureScores(), config.getScoreNameToCalibrate()))
 				.filter(unreducedScore -> unreducedScore != null)
 				.collect(Collectors.toList())));
+
+		if (data.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(data);
+		}
 	}
 
 	private Stream<FeatureScore> flattenFeatureScoresRecursively(List<FeatureScore> featureScores) {
@@ -71,7 +83,7 @@ public class AggregatedFeatureEventUnreducedScoreRetriever extends AbstractDataR
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime, Feature feature) {
+	public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
 		throw new UnsupportedOperationException(String.format(
 				"%s does not support retrieval of a single feature",
 				getClass().getSimpleName()));

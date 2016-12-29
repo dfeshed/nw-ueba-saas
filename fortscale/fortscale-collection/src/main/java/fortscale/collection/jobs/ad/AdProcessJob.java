@@ -81,14 +81,11 @@ public abstract class AdProcessJob extends FortscaleJob {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		try {
-			final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId");
-			if (resultsId != null) {
-				resultsKey = key.getName().toLowerCase() + "." + resultsId;
-			}
-		} catch (JobExecutionException e) {
-			logger.info("No resultsId was given as param.");
+		final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
+		if (resultsId != null) {
+			resultsKey = key.getName().toLowerCase() + "." + resultsId;
 		}
+
 
 	}
 
@@ -218,7 +215,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			}
 		}
 		
-		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataRecievedType(), new Integer(counter), ""));
+		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataReceivedType(), new Integer(counter), ""));
 		if (reader.HasErrors()) {
 			monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			return false;
@@ -229,8 +226,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 			return true;
 		}
 	}
-	
-	protected abstract String getDataRecievedType();
+
+	protected abstract String getDataReceivedType();
 	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
 	protected abstract boolean updateDb(Record record) throws Exception;
 	
