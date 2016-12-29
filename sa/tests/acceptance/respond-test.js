@@ -1,5 +1,6 @@
 /* global server */
 /* global withFeature */
+/* global selectChoose */
 
 import { test, skip } from 'qunit';
 import moduleForAcceptance from 'sa/tests/helpers/module-for-acceptance';
@@ -126,7 +127,7 @@ test('Selectors should be visible on click', function(assert) {
   });
 });
 
-test('User should be able to setStatus, Assignee and Priority', function(assert) {
+test('User should be able to set Status, Assignee and Priority', function(assert) {
   visit('/do/respond');
   andThen(() => {
     const editBtn = find(selectors.pages.respond.card.incTile.editButton).first();
@@ -137,15 +138,11 @@ test('User should be able to setStatus, Assignee and Priority', function(assert)
         click(editBtn);
         andThen(() => {
 
-          Logger.debug('Setting the Status');
-          click(find(selectors.pages.respond.card.incTile.statusLabel).first());
-          find(selectors.pages.respond.card.incTile.statusSelect).first().val(2);
-          triggerEvent(find(selectors.pages.respond.card.incTile.statusSelect).first(), 'change');
+          Logger.debug('Changing the Status');
+          selectChoose(selectors.pages.respond.card.incTile.statusSelect, 'In Progress');
 
-          Logger.debug('Setting the Priority');
-          click(find(selectors.pages.respond.card.incTile.priorityLabel).first());
-          find(selectors.pages.respond.card.incTile.prioritySelect).first().val(1);
-          triggerEvent(find(selectors.pages.respond.card.incTile.prioritySelect).first(), 'change');
+          Logger.debug('Changing the Priority');
+          selectChoose(selectors.pages.respond.card.incTile.prioritySelect, 'Medium');
 
           andThen(()=> {
 

@@ -15,10 +15,12 @@ const {
     service
   },
   Logger,
-  isNone,
   merge,
   run,
-  $
+  $,
+  Object: EmberObject,
+  isEmpty,
+  get
 } = Ember;
 
 export default Component.extend({
@@ -112,13 +114,12 @@ export default Component.extend({
    */
   didInsertElement() {
     this._super(...arguments);
-    const _this = this;
 
-    this.get('eventBus').on('rsa-application-click', function(targetEl) {
-      if (_this.$()) {
-        if (_this.get('editModeActive') === true && _this.$().has(targetEl).length === 0) {
-          _this.set('editModeActive', false);
-          _this.revertIncidentTileSelections();
+    this.get('eventBus').on('rsa-application-click', (targetEl) => {
+      if (this.$()) {
+        if (this.get('editModeActive') === true && this.$().has(targetEl).length === 0) {
+          this.set('editModeActive', false);
+          this.revertIncidentTileSelections();
         }
       }
     });
@@ -131,12 +132,9 @@ export default Component.extend({
    */
   revertIncidentTileSelections() {
     this.setProperties({
-      'selectedStatus': [this.get('incident.statusSort')],
-      'pendingStatus': null,
-      'selectedPriority': [this.get('incident.prioritySort')],
-      'pendingPriority': null,
-      'selectedAssignee': [this.get('incident.assignee.id') || '-1'],
-      'pendingAssignee': null
+      'selectedStatus': `${ this.get('incident.statusSort') }`,
+      'selectedPriority': `${ this.get('incident.prioritySort') }`,
+      'selectedAssignee': this.get('currentAssignee')
     });
   },
 
@@ -161,67 +159,74 @@ export default Component.extend({
 
   /**
    * @name selectedStatus
-   * @description Returns a list of one element with the current status id. This is consumed by rsa-form-select
-   * @type number[]
+   * @description returns the incident status, or any status set by the user.
+   * @type string
    * @public
    */
   @computed('incident.statusSort')
-  selectedStatus: {
-    get: (statusSort) => [statusSort],
-
-    set(statusSorts) {
-      this.set('pendingStatus', statusSorts.get('firstObject'));
-      return statusSorts;
-    }
-  },
+  selectedStatus: (incidentStatus) => `${incidentStatus}`,
 
   /**
    * @name selectedPriority
-   * @description Returns a list of one element with the current priority id. This is consumed by rsa-form-select
-   * @type number[]
+   * @description returns the priority, or any priority set by the user.
+   * @type string
    * @public
    */
   @computed('incident.prioritySort')
-  selectedPriority: {
-    get: (prioritySort) => [prioritySort],
+  selectedPriority: (prioritySort) => `${ prioritySort }`,
 
-    set(prioritySorts) {
-      this.set('pendingPriority', prioritySorts.get('firstObject'));
-      return prioritySorts;
+  /**
+   * @name usersList
+   * @description Creates an array of the user object and adds the selected parameter to each with the value of false.
+   * @param {Object} users Current users object from the model
+   * @public
+   */
+  @computed('users.[]')
+  usersList(users) {
+    const unassignedUser = EmberObject.create({
+      'id': -1
+    });
+    const arrUsers = [ unassignedUser ];
+
+    if (users) {
+      arrUsers.addObjects(users);
     }
+
+    return arrUsers;
   },
 
   /**
    * @name selectedAssignee
-   * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
-   * @type number[]
+   * @description returns the current assignee for the incident, or any assignee set by the user.
+   * @type Object
    * @public
    */
-  @computed('incident.assignee.id', 'users.[]')
-  selectedAssignee: {
-    get: (assigneeId) => [assigneeId || '-1'],
+  @computed('currentAssignee')
+  selectedAssignee: (currentAssignee) => currentAssignee,
 
-    set(assigneeIds) {
-      this.set('pendingAssignee', assigneeIds.get('firstObject'));
-      return assigneeIds;
-    }
-  },
+  /**
+   * @description Returns the current assignee user. If the Incident has not assigne, it returns the `Unassigned` user.
+   * @type Object
+   * @private
+   */
+  @computed('incident.assignee', 'usersList')
+  currentAssignee: (assignee, usersList) => usersList.findBy('id', isEmpty(assignee) ? -1 : get(assignee, 'id')),
 
   /**
    * @name statusList
-   * @desciption Returns a list of available status.
-   * @type number[]
+   * @description Returns a list of available status.
+   * @type string[]
    * @public
    */
-  statusList: IncidentConstants.incidentStatusIds,
+  statusList: IncidentConstants.incidentStatusIds.map((status) => `${status}`),
 
   /**
    * @name priorityList
    * @description Returns a list of available priorities.
-   * @type number[]
+   * @type string[]
    * @public
    */
-  priorityList: IncidentConstants.incidentPriorityIds,
+  priorityList: IncidentConstants.incidentPriorityIds.map((priority) => `${priority}`),
 
 
   /**
@@ -262,48 +267,51 @@ export default Component.extend({
       if (!this.get('editModeActive')) {
         Logger.log('Updating Incident and calling saveIncidentAction action to save it');
 
-        const pendingPriority = this.get('pendingPriority');
-        const pendingStatus = this.get('pendingStatus');
-        const pendingAssignee = this.get('pendingAssignee');
+        let selectedAssignee = this.get('selectedAssignee');
+        const selectedPriority = this.get('selectedPriority');
+        const selectedPriorityInt = parseInt(selectedPriority, 10);
+        const selectedStatus = this.get('selectedStatus');
+        const selectedStatusInt = parseInt(selectedStatus, 10);
 
         const attributeChanged = {};
 
-        if (!isNone(pendingPriority)) {
+        // evaluating change of priority
+        if (selectedPriorityInt !== this.get('incident.prioritySort')) {
           this.setProperties({
-            'incident.prioritySort': parseInt(pendingPriority, 10),
-            'incident.priority': IncidentConstants.incidentPriorityString[pendingPriority]
+            'incident.prioritySort': selectedPriorityInt,
+            'incident.priority': IncidentConstants.incidentPriorityString[selectedPriority]
           });
           merge(attributeChanged, {
-            priority: IncidentConstants.incidentPriorityString[ pendingPriority],
-            prioritySort: parseInt(pendingPriority, 10)
+            prioritySort: selectedPriorityInt,
+            priority: IncidentConstants.incidentPriorityString[ selectedPriority]
           });
         }
-        if (!isNone(pendingStatus)) {
+
+        // evaluating change of status
+        if (selectedStatusInt !== this.get('incident.statusSort')) {
           this.setProperties({
-            'incident.statusSort': parseInt(pendingStatus, 10),
-            'incident.status': IncidentConstants.incidentStatusString[ pendingStatus ]
+            'incident.statusSort': selectedStatusInt,
+            'incident.status': IncidentConstants.incidentStatusString[ selectedStatus ]
           });
           merge(attributeChanged, {
-            status: IncidentConstants.incidentStatusString[ pendingStatus ],
-            statusSort: parseInt(pendingStatus, 10)
+            statusSort: selectedStatusInt,
+            status: IncidentConstants.incidentStatusString[ selectedStatus ]
           });
         }
-        if (!isNone(pendingAssignee)) {
-          let assignee = null;
-          if (pendingAssignee !== '-1') {
-            assignee = this.get('users').findBy('id', pendingAssignee);
+
+        // evaluating if the assignee has been changed.
+        if (get(selectedAssignee, 'id') != this.get('currentAssignee.id')) {
+          if (get(selectedAssignee, 'id') === -1) {
+            selectedAssignee = null;
           }
-          this.set('incident.assignee', assignee);
-          merge(attributeChanged, { assignee });
+          this.set('incident.assignee', selectedAssignee);
+          merge(attributeChanged, { assignee: selectedAssignee });
         }
 
-        this.sendAction('saveIncidentAction', this.get('incident.id'), attributeChanged);
-
-        this.setProperties({
-          'pendingPriority': null,
-          'pendingStatus': null,
-          'pendingAssignee': null
-        });
+        // submit the save request if there are pending changes
+        if (Object.keys(attributeChanged).length !== 0) {
+          this.sendAction('saveIncidentAction', this.get('incident.id'), attributeChanged);
+        }
       }
 
       event.stopPropagation();

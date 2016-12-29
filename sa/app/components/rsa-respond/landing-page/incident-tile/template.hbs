@@ -15,12 +15,25 @@
         <li class="rsa-incident-tile-name" title={{if isNameCropped incident.name}}>
           {{incidentName}}
         </li>
-        <li class="rsa-incident-tile-status">
-          {{#rsa-form-select multiple=false isInline=true class="rsa-incident-tile-status-selector" label=(t "incident.fields.status") values=selectedStatus isReadOnly=(if editModeActive false true)}}
-            {{#each statusList as |status i|}}
-              <option value="{{i}}">{{t (concat 'incident.status.' i) }}</option>
-            {{/each}}
-          {{/rsa-form-select}}
+        <li class={{concat 'rsa-incident-tile-status' (unless editModeActive ' read-only')}}>
+          <span class="label-text">
+            {{t 'incident.fields.status'}}
+          </span>
+          {{#unless editModeActive}}
+            <span class='rsa-incident-tile-status-selector'>{{t (concat 'incident.status.' selectedStatus) }}</span>
+          {{else}}
+            {{#power-select
+              class='rsa-incident-tile-status-selector'
+              tagName='span'
+              options=statusList
+              selected=selectedStatus
+              allowClear=false
+              searchEnabled=false
+              onchange=(action (mut selectedStatus))
+              as |status|}}
+              {{t (concat 'incident.status.' status) }}
+            {{/power-select}}
+          {{/unless}}
         </li>
       </ul>
     </vbox>
@@ -45,20 +58,53 @@
 {{#if isLargeSize}}
   <hbox class="rsa-incident-tile-section">
     <vbox xs="6">
-      {{#rsa-form-select multiple=false optionMaxVisible=3 label=(t "incident.fields.priority") values=selectedPriority class="rsa-incident-tile-priority-selector" isReadOnly=(if editModeActive false true)}}
-        {{#each priorityList as |priority|}}
-          <option value="{{priority}}">{{t (concat 'incident.priority.' priority) }}</option>
-        {{/each}}
-      {{/rsa-form-select}}
+      {{#rsa-content-definition class='rsa-incident-tile-priority' label=(t 'incident.fields.priority')}}
+        {{#unless editModeActive}}
+          <span class='rsa-incident-tile-priority-selector'>{{t (concat 'incident.priority.' selectedPriority) }}</span>
+        {{else}}
+          {{#power-select
+            class="rsa-incident-tile-priority-selector"
+            tagName='div'
+            options=priorityList
+            selected=selectedPriority
+            allowClear=false
+            searchEnabled=false
+            onchange=(action (mut selectedPriority))
+            as |priority|}}
+            {{t (concat 'incident.priority.' priority) }}
+          {{/power-select}}
+        {{/unless}}
+      {{/rsa-content-definition}}
     </vbox>
 
     <vbox xs="6">
-      {{#rsa-form-select multiple=false optionMaxVisible=3 label=(t "incident.fields.assignee") values=selectedAssignee class="rsa-incident-tile-assignee-selector" isReadOnly=(if editModeActive false true)}}
-        <option value='-1'>{{t 'incident.assignee.none'}}</option>
-        {{#each users as |user|}}
-          <option value= {{user.id}}>{{user.name}}</option>
-        {{/each}}
-      {{/rsa-form-select}}
+      {{#rsa-content-definition class='rsa-incident-tile-assignee' label=(t 'incident.fields.assignee')}}
+        {{#unless editModeActive}}
+          <span class='rsa-incident-tile-assignee-selector'>
+            {{#if (eq selectedAssignee.id -1)}}
+              {{t 'incident.assignee.none'}}
+            {{else}}
+              {{selectedAssignee.name}}
+            {{/if}}
+          </span>
+        {{else}}
+          {{#power-select
+            class='rsa-incident-tile-assignee-selector'
+            tagName='div'
+            options=usersList
+            selected=selectedAssignee
+            allowClear=false
+            searchEnabled=false
+            onchange=(action (mut selectedAssignee))
+            as |user|}}
+            {{#if (eq user.id -1)}}
+              {{t 'incident.assignee.none'}}
+            {{else}}
+              {{user.name}}
+            {{/if}}
+          {{/power-select}}
+        {{/unless}}
+      {{/rsa-content-definition}}
     </vbox>
   </hbox>
 {{/if}}

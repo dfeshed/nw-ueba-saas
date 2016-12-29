@@ -2,8 +2,12 @@ import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import Ember from 'ember';
 import selectors from 'sa/tests/selectors';
+import { clickTrigger, nativeMouseUp } from '../../../../../helpers/ember-power-select';
 
-const { Object: EmberObject } = Ember;
+const {
+  Object: EmberObject,
+  $
+} = Ember;
 
 moduleForComponent('rsa-incident-tile', 'Integration | Component | rsa respond/landing page/incident tile', {
   integration: true,
@@ -221,10 +225,12 @@ test('Clicking off a card in edit mode exits edit mode without saving any field 
 
   this.$('.rsa-edit-tool').trigger('click');
 
-  const tileStatusVal = container.find('.rsa-incident-tile-status-selector').val();
-  assert.equal(incident.statusSort, tileStatusVal, 'Tile displays the current Incident status.');
+  const tileStatus = container.find('.rsa-incident-tile-status-selector .ember-power-select-selected-item').text().trim();
+  assert.equal('New', tileStatus, 'Tile displays the current Incident status.');
 
-  container.find('.rsa-incident-tile-status-selector').val(newStatusValue);
+  clickTrigger('.rsa-incident-tile-status-selector');
+  nativeMouseUp('.ember-power-select-option:eq(1)'); // setting status to ASSIGNED
+
   assert.equal(incident.statusSort, preStatusValue, 'After updating the Select, the incident status has its prev value before saving the model');
   this.$('.other-component').trigger('click');
 
@@ -259,7 +265,8 @@ test('Assignee field contains at least one option', function(assert) {
 
   this.$('.rsa-edit-tool').trigger('click');
 
-  const selectorOptionCount = container.find('.rsa-incident-tile-assignee-selector option').length;
+  clickTrigger('.rsa-incident-tile-status-selector');
+  const selectorOptionCount = $('.ember-power-select-option').length;
   assert.notEqual(0, selectorOptionCount, 'Tile displays assignee options.');
 
 });
@@ -292,21 +299,22 @@ test('Incident status changed after press save', function(assert) {
 
   this.$('.rsa-edit-tool').trigger('click');
 
-  const tileStatusVal = container.find('.rsa-incident-tile-status-selector select').val();
-  assert.equal(incident.statusSort, tileStatusVal, 'Tile displays the current Incident status.');
+  const tileStatus = container.find('.rsa-incident-tile-status-selector .ember-power-select-selected-item').text().trim();
+  assert.equal('New', tileStatus, 'Tile displays the current Incident status.');
 
-  container.find('.rsa-incident-tile-status-selector .prompt').click();
-  container.find('.rsa-incident-tile-status-selector select').val(newStatusValue).trigger('change');
+  clickTrigger('.rsa-incident-tile-status-selector');
+  nativeMouseUp('.ember-power-select-option:eq(1)'); // setting status to ASSIGNED
   assert.equal(incident.statusSort, preStatusValue, 'After updating the Select, the incident status has its prev value before saving the model');
 
   container.find('.rsa-edit-tool').trigger('click');
   assert.equal(incident.status, 'ASSIGNED', 'After clicking Save, Incident status has changed to its new value');
+  assert.equal(incident.statusSort, newStatusValue, 'After clicking Save, Incident statusSort has changed to its new value');
 
 });
 
 test('Incident priority changed after press save', function(assert) {
   const prePriorityValue = 0;
-  const newPriorityValue = 1;
+  const newPriorityValue = 2;
   const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
@@ -332,21 +340,22 @@ test('Incident priority changed after press save', function(assert) {
 
   this.$('.rsa-edit-tool').trigger('click'); // switching to edit mode
 
-  const tilePriorityVal = container.find('.rsa-incident-tile-priority-selector select').val();
-  assert.equal(incident.prioritySort, tilePriorityVal, 'Tile displays the current Incident priority.');
+  const tilePriority = container.find('.rsa-incident-tile-priority-selector .ember-power-select-selected-item').text().trim();
+  assert.equal('Low', tilePriority, 'Tile displays the current Incident priority.');
 
-  container.find('.rsa-incident-tile-priority-selector .prompt').click();
-  container.find('.rsa-incident-tile-priority-selector select').val(newPriorityValue).trigger('change');
+  clickTrigger('.rsa-incident-tile-priority-selector');
+  nativeMouseUp('.ember-power-select-option:eq(1)'); // setting priority to HIGH (index 1)
   assert.equal(incident.prioritySort, prePriorityValue, 'After updating the Select, the incident model priority has its prev value before saving the model');
 
   container.find('.rsa-edit-tool').trigger('click');
-  assert.equal(incident.priority, 'MEDIUM', 'After clicking Save, Incident priority has changed to its new value');
+  assert.equal(incident.priority, 'HIGH', 'After clicking Save, Incident priority has changed to its new value');
+  assert.equal(incident.prioritySort, newPriorityValue, 'After clicking Save, Incident prioritySort has changed to its new value');
 
 });
 
 test('Incident Assignee changed after press save', function(assert) {
-  const assigneeIdOne = 1;
-  const assigneeIdTwo = 2;
+  const assigneeIdOne = '1';
+  const assigneeIdTwo = '2';
   const incident = EmberObject.create({
     riskScore: 1,
     id: 'INC-491',
@@ -372,11 +381,11 @@ test('Incident Assignee changed after press save', function(assert) {
 
   this.$('.rsa-edit-tool').trigger('click'); // switching to edit mode
 
-  const tileAssigneeVal = container.find('.rsa-incident-tile-assignee-selector select').val();
-  assert.equal(incident.assignee.id, tileAssigneeVal, 'Tile displays the current Incident assignee.');
+  const tileAssigneeVal = container.find('.rsa-incident-tile-assignee-selector .ember-power-select-selected-item').text().trim();
+  assert.equal('User 1', tileAssigneeVal, 'Tile displays the current Incident assignee.');
 
-  container.find('.rsa-incident-tile-assignee-selector .prompt').click();
-  container.find('.rsa-incident-tile-assignee-selector select').val(assigneeIdTwo).trigger('change');
+  clickTrigger('.rsa-incident-tile-assignee-selector');
+  nativeMouseUp('.ember-power-select-option:eq(2)'); // setting assigne to 3rd option [0:unassigned, 1:user1, 2:user2...]
   assert.equal(incident.assignee.id, assigneeIdOne, 'After updating the Select, the incident model assignee has its prev value before saving the model');
 
   container.find('.rsa-edit-tool').trigger('click');
@@ -480,51 +489,15 @@ test('Incident priority order check (Critical -> Low)', function(assert) {
 
   this.$(selectors.pages.respond.card.incTile.editButton).trigger('click');
 
-  const priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOpt));
+  clickTrigger('.rsa-incident-tile-priority-selector');
+  const priorityOptionList = $('.ember-power-select-option');
 
-  assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
-  assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
-  assert.equal(priorityOptionList[2].text, 'Medium', 'Third priority is Medium');
-  assert.equal(priorityOptionList[3].text, 'Low', 'Fourth priority is Low');
-
-});
-
-test('Incident priority order check (Critical -> Low)', function(assert) {
-
-  const incident = EmberObject.create({
-    riskScore: 1,
-    id: 'INC-491',
-    createdBy: 'User X',
-    created: '2015-10-10',
-    statusSort: 0,
-    prioritySort: 0,
-    alertCount: 10,
-    sources: ['Event Stream Analysis'],
-    assignee: {
-      id: '1'
-    }
-  });
-
-  this.set('incident', incident);
-
-  this.render(hbs`
-    {{rsa-respond/landing-page/incident-tile incident=incident users=users}}
-  `);
-
-  const container = this.$(selectors.pages.respond.card.incTile.incidentTile);
-  container.trigger('mouseenter');
-
-  this.$(selectors.pages.respond.card.incTile.editButton).trigger('click');
-
-  const priorityOptionList = container.find(this.$(selectors.pages.respond.card.incTile.prioritySelectOpt));
-
-  assert.equal(priorityOptionList[0].text, 'Critical', 'First priority is Critical');
-  assert.equal(priorityOptionList[1].text, 'High', 'Second priority is High');
-  assert.equal(priorityOptionList[2].text, 'Medium', 'Third priority is Medium');
-  assert.equal(priorityOptionList[3].text, 'Low', 'Fourth priority is Low');
+  assert.equal(priorityOptionList.eq(0).text().trim(), 'Critical', 'First priority is Critical');
+  assert.equal(priorityOptionList.eq(1).text().trim(), 'High', 'Second priority is High');
+  assert.equal(priorityOptionList.eq(2).text().trim(), 'Medium', 'Third priority is Medium');
+  assert.equal(priorityOptionList.eq(3).text().trim(), 'Low', 'Fourth priority is Low');
 
 });
-
 
 test('Incident Tile gets rendered in queue mode', function(assert) {
   const incident = EmberObject.create({

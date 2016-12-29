@@ -19,6 +19,16 @@
     outline: 1px solid rsa-color(blue, dark);
   }
 
+  &:not(.clicked) {
+    .rsa-incident-tile-status-selector,
+    .rsa-incident-tile-priority-selector,
+    .rsa-incident-tile-assignee-selector {
+      @include rsa-font(body);
+      color: $formSelectPromptTypeColor;
+      line-height: 29px;
+    }
+  }
+
   &:hover {
     &:not(.clicked):not(.edit-mode-active) {
       @include tile-hover();
@@ -86,6 +96,11 @@
         display: inline-block;
         margin-top: rsa-whitespace(least);
       }
+    }
+
+    .rsa-incident-tile-assignee,
+    .rsa-incident-tile-priority {
+      margin-right: 0;
     }
 
     .rsa-incident-tile-created-col {
@@ -161,6 +176,30 @@
       @include rsa-font(body);
       color: rsa-color(gray, light);
       line-height: initial;
+    }
+  }
+
+  .rsa-incident-tile-status {
+    @include rsa-flex-direction(row);
+    @include rsa-flex-justify-content(flex-start);
+    @include rsa-flex-align-items(center);
+    @include rsa-vendor-prefix(align-content, center);
+    @include rsa-vendor-prefix(flex-wrap, nowrap);
+
+    &.read-only {
+      @include rsa-flex-align-items(baseline);
+    }
+
+    .label-text {
+      @include rsa-vendor-prefix(flex-grow, 0);
+      @include rsa-font(header, small);
+      color: $contentDefinitionLabelColor;
+      text-transform: uppercase;
+      display: block;
+    }
+    .rsa-incident-tile-status-selector {
+      padding-left: rsa-whitespace(less);
+      @include rsa-vendor-prefix(flex-grow, 1);
     }
   }
 }
