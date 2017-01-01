@@ -84,7 +84,7 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
             long upperLimit = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
 
             logger.info("Processing {} from {} ({}) to {} ({})", SERVICE_NAME,
-                    Instant.ofEpochSecond(currentTimestamp), currentTimestamp,
+                    Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
                     Instant.ofEpochSecond(upperLimit), upperLimit);
 
             credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimit));

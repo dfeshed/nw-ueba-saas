@@ -12,7 +12,6 @@ import fortscale.domain.core.User;
 import fortscale.domain.core.VpnLateralMovementSupportingInformation;
 import fortscale.services.UserService;
 import fortscale.utils.CustomedFilter;
-import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -93,7 +92,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
             long upperLimit = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
 
             logger.info("Processing {} from {} ({}) to {} ({})", SERVICE_NAME,
-                    Instant.ofEpochSecond(currentTimestamp), currentTimestamp,
+                    Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
                     Instant.ofEpochSecond(upperLimit), upperLimit);
 
 
@@ -291,20 +290,21 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     }
 
     private void getLateralMovementEventsFromHDFS(Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents,
-                                                  long date) {
-        String dateStr = df.format(new Date(TimestampUtils.normalizeTimestamp(date)));
-		for (Map.Entry<String, Pair<String, String>> entry: tableToEntityIdAndIPField.entrySet()) {
+                                                  long upperLimit) {
+        for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
             String tableName = entry.getKey();
             String ipField = entry.getValue().getRight();
             String query = String.format("select distinct unix_timestamp(seconds_sub(t1.date_time,t1.duration)) %s, " +
                     "t1.date_time_unix %s, t1.normalized_username %s, t2.normalized_username %s, " +
                     "t1.source_ip vpn_source_ip, t2.%s %s, t1.hostname as hostname, '%s' as %s from " +
-                    "vpnsessiondatares t1 inner join %s t2 on t1.yearmonthday = %s and t2.yearmonthday = %s " +
-                    "and t1.local_ip != \"\" and t1.local_ip = t2.%s and t2.date_time_unix between " +
+					"vpnsessiondatares t1 inner join %s t2 on " +
+					"t1.date_time_unix >= %d and t1.date_time_unix < %d and " +
+					"t2.date_time_unix >= %d and t2.date_time_unix < %d and " +
+					"t1.local_ip != \"\" and t1.local_ip = t2.%s and t2.date_time_unix between " +
 					"t1.date_time_unix - t1.duration and t1.date_time_unix and t1.normalized_username != " +
 					"t2.normalized_username", VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField,
 					DATASOURCE_IP, tableName, TABLE_NAME,
-					tableName, dateStr, dateStr, ipField);
+					tableName, latestTimestamp, upperLimit, latestTimestamp, upperLimit, ipField);
             List<Map<String, Object>> rows = queryRunner.executeQuery(query);
             if (!CollectionUtils.isEmpty(rows)) {
                 for (Map<String, Object> row : rows) {
