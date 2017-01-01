@@ -1,12 +1,13 @@
 package fortscale.domain.ad;
 
 import fortscale.domain.core.AbstractDocument;
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
+
+import java.time.Instant;
 
 
 @Document(collection=AdUserThumbnail.COLLECTION_NAME)
@@ -19,7 +20,7 @@ public class AdUserThumbnail extends AbstractDocument {
 	public static final String FIELD_MODIFIED_AT = "modifiedAt";
 	public static final String FIELD_CREATED_AT = "createdAt";
 
-	// Contains the users's objectGUID in Base64 format
+
 	@Indexed
 	@Field(FIELD_OBJECT_GUID)
 	private String objectGUID;
@@ -27,12 +28,12 @@ public class AdUserThumbnail extends AbstractDocument {
 	@LastModifiedDate
     @Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*2)
-    private DateTime modifiedAt;
+    private Instant modifiedAt;
 
 	@CreatedDate
 	@Field(FIELD_CREATED_AT)
 	@Indexed(unique = false)
-	private DateTime createdAt;
+	private Instant createdAt;
 	
 	// Contains the users's photo in Base64 format 
 	@Field(FIELD_THUMBNAIL_PHOTO)
@@ -46,19 +47,19 @@ public class AdUserThumbnail extends AbstractDocument {
 		this.objectGUID = objectGUID;
 	}
 
-	public DateTime getModifiedAt() {
+	public Instant getModifiedAt() {
 		return modifiedAt;
 	}
 
-	public void setModifiedAt(DateTime modifiedAt) {
+	public void setModifiedAt(Instant modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
 
-	public DateTime getCreatedAt() {
+	public Instant getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(DateTime createdAt) {
+	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
 	}
 
