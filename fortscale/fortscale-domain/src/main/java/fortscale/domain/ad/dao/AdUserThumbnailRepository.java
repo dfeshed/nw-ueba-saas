@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface AdUserThumbnailRepository extends MongoRepository<AdUserThumbnail, String> {
 
-	List<AdUserThumbnail> findByObjectGUID(String objectGUID, Pageable pageable);
+	List<AdUserThumbnail> findById(String objectGUID, Pageable pageable);
 
 	List<AdUserThumbnail> save(List<AdUserThumbnail> adUserThumbnails);
 }

@@ -20,7 +20,6 @@ public class AdUserThumbnail implements Serializable {
 
 	private static final long serialVersionUID = -4984590283062489036L;
 	public static final String COLLECTION_NAME = "ad_user_thumb";
-	public static final String FIELD_OBJECTGUID = "objectGUID";
 	public static final String FIELD_THUMBNAIL_PHOTO = "thumbnailPhoto";
 	public static final String MODIFIED_AT_FIELD_NAME = "modifiedAt";
 	public static final String GUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
@@ -37,6 +36,7 @@ public class AdUserThumbnail implements Serializable {
 	@Field(FIELD_THUMBNAIL_PHOTO)
 	private String thumbnailPhoto;
 
+	private AdUserThumbnail() {/*for spring*/}
 
 	/**
 	 *
