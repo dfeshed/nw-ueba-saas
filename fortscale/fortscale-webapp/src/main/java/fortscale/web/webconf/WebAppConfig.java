@@ -82,6 +82,14 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .setCachePeriod(cachePeriodConf)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
+
+        //All old JSON files
+        registry
+                .addResourceHandler("/data/**")
+                .addResourceLocations("/resources/data/")
+                .setCachePeriod(cachePeriodConf)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
     }
 
     /**
