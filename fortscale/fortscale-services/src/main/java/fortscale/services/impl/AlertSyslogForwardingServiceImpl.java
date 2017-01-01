@@ -21,165 +21,186 @@ import java.util.Map;
 /**
  * Created by tomerd on 21/02/2016.
  */
-@Service("alertSyslogForwardingService") public class AlertSyslogForwardingServiceImpl
-		implements AlertSyslogForwardingService, InitializingBean {
+@Service("alertSyslogForwardingService")
+public class AlertSyslogForwardingServiceImpl
+        implements AlertSyslogForwardingService, InitializingBean {
 
-	private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
+    private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
 
-	public static final String SPILTER = ",";
+    public static final String SPILTER = ",";
 
-	public static final String CONFIGURATION_NAMESPACE = "system.syslogforwarding";
+    public static final String CONFIGURATION_NAMESPACE = "system.syslogforwarding";
 
-	public final static String ALERT_FORWARDING_KEY = CONFIGURATION_NAMESPACE + ".enabled";
+    public final static String ALERT_FORWARDING_KEY = CONFIGURATION_NAMESPACE + ".enabled";
 
-	public static final String IP_KEY = CONFIGURATION_NAMESPACE + ".ip";
-	public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
-	public static final String USER_TYPES_KEY = CONFIGURATION_NAMESPACE + ".usertypes";
-	public static final String ALERT_SEVERITY_KEY = CONFIGURATION_NAMESPACE + ".alertseverity";
-	public static final String FORWARDING_TYPE_KEY = CONFIGURATION_NAMESPACE + ".forwardingtype";
+    public static final String IP_KEY = CONFIGURATION_NAMESPACE + ".ip";
+    public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
+    public static final String USER_TYPES_KEY = CONFIGURATION_NAMESPACE + ".usertypes";
+    public static final String ALERT_SEVERITY_KEY = CONFIGURATION_NAMESPACE + ".alertseverity";
+    public static final String FORWARDING_TYPE_KEY = CONFIGURATION_NAMESPACE + ".forwardingtype";
 
-	@Autowired private AlertsService alertsService;
-	@Autowired private ApplicationConfigurationService applicationConfigurationService;
-	@Autowired private UserService userService;
+    @Autowired
+    private AlertsService alertsService;
+    @Autowired
+    private ApplicationConfigurationService applicationConfigurationService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private LocalizationService localizationService;
 
-	private String ip;
-	private int port;
-	private String[] alertSeverity;
-	private String[] userTags;
-	private String baseUrl;
-	private SyslogSender syslogSender;
-	private ForwardingType forwardingType;
+    private String ip;
+    private int port;
+    private String[] alertSeverity;
+    private String[] userTags;
+    private String baseUrl;
+    private SyslogSender syslogSender;
+    private ForwardingType forwardingType;
 
-	@Override public void afterPropertiesSet() throws Exception {
-		loadConfiguration();
-	}
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        loadConfiguration();
+    }
 
-	@Override public boolean forwardNewAlert(Alert alert) {
-		try {
-			loadConfiguration();
-		} catch (Exception e) {
-			return false;
-		}
+    @Override
+    public boolean forwardNewAlert(Alert alert) {
+        try {
+            loadConfiguration();
+        } catch (Exception e) {
+            return false;
+        }
 
-		if (syslogSender != null && !filterAlert(alert)) {
-			String rawAlert = generateAlert(alert, forwardingType);
-			return syslogSender.sendEvent(rawAlert);
-		}
 
-		return false;
-	}
+        if (syslogSender != null && !filterAlert(alert)) {
+            String rawAlert = generateAlert(alert, forwardingType);
+            return syslogSender.sendEvent(rawAlert);
+        }
 
-	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
-			String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
+        return false;
+    }
 
-		List<Alert> alerts = alertsService.getAlertsByTimeRange(new DateRange(startTime,endTime), Arrays.asList(alertSeverity));
+    @Override
+    public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
+                                        String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
 
-		SyslogSender sender = new SyslogSender(ip, port, "tcp");
+        List<Alert> alerts = alertsService.getAlertsByTimeRange(new DateRange(startTime, endTime), Arrays.asList(alertSeverity));
 
-		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
-		int counter = 0;
+        SyslogSender sender = new SyslogSender(ip, port, "tcp");
 
-		for (Alert alert : alerts) {
-			if (!filterByUserType(alert.getEntityName(), userTags)) {
-				String rawAlert = generateAlert(alert, forwardingTypeEnum);
-				if (sender.sendEvent(rawAlert)) {
-					counter++;
-				} else {
-					throw new RuntimeException("Possibly unreachable destination");
-				}
-			}
-		}
+        ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
+        int counter = 0;
 
-		return counter;
-	}
+        for (Alert alert : alerts) {
 
-	private String generateAlert(Alert alert, ForwardingType forwardingType) {
-		String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
-		switch (forwardingType) {
-		case ALERT:
-			rawAlert += alert.toString(false);
-			return rawAlert;
-		case ALERT_AND_INDICATORS:
-			rawAlert += alert.toString(true);
-			return rawAlert;
-		default:
-			return "";
-		}
-	}
+            if (!filterByUserType(alert.getEntityName(), userTags)) {
+                String rawAlert = generateAlert(alert, forwardingTypeEnum);
+                if (sender.sendEvent(rawAlert)) {
+                    counter++;
+                } else {
+                    throw new RuntimeException("Possibly unreachable destination");
+                }
+            }
+        }
 
-	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
-		Map<String, String> applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
+        return counter;
+    }
 
-		String isEnabled = applicationConfiguration.get(ALERT_FORWARDING_KEY);
-		if (isEnabled == null || isEnabled.equals("false")) {
-			return;
-		}
 
-		try {
-			ip = applicationConfiguration.get(IP_KEY);
-			port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
-			String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
-			applicationConfiguration.get(USER_TYPES_KEY);
-			if (userTagsValue == null) {
-				userTags = new String[] {};
-			} else {
-				userTags = userTagsValue.split(SPILTER);
-			}
-			String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
-			if (alertSeverityValue == null) {
-				alertSeverity = new String[] {};
-			} else {
-				alertSeverity = alertSeverityValue.split(SPILTER);
-			}
-			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
+    private String generateAlert(Alert alert, ForwardingType forwardingType) {
 
-			syslogSender = new SyslogSender(ip, port, "tcp");
+        prettifyAlert(alert);
 
-			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/user/";
-		} catch (Exception e) {
-			throw new ConfigurationException("Error creating syslog forwarder - Configuration error. Error: " + e);
-		}
-	}
+        String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
+        switch (forwardingType) {
+            case ALERT:
+                rawAlert += alert.toString(false);
+                return rawAlert;
+            case ALERT_AND_INDICATORS:
+                rawAlert += alert.toString(true);
+                return rawAlert;
+            default:
+                return "";
+        }
+    }
 
-	private boolean filterAlert(Alert alert) {
-		if (filterBySeverity(alert.getSeverity())) {
-			return true;
-		}
-		if (filterByUserType(alert.getEntityName(), userTags)) {
-			return true;
-		}
+    private void loadConfiguration() throws ConfigurationException, UnknownHostException {
+        Map<String, String> applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
 
-		return false;
-	}
+        String isEnabled = applicationConfiguration.get(ALERT_FORWARDING_KEY);
+        if (isEnabled == null || isEnabled.equals("false")) {
+            return;
+        }
 
-	private boolean filterBySeverity(Severity severity) {
+        try {
+            ip = applicationConfiguration.get(IP_KEY);
+            port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
+            String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
+            applicationConfiguration.get(USER_TYPES_KEY);
+            if (userTagsValue == null) {
+                userTags = new String[]{};
+            } else {
+                userTags = userTagsValue.split(SPILTER);
+            }
+            String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
+            if (alertSeverityValue == null) {
+                alertSeverity = new String[]{};
+            } else {
+                alertSeverity = alertSeverityValue.split(SPILTER);
+            }
+            forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
 
-		// If alert severity is not present, do not filter
-		if (alertSeverity.length == 0) {
-			return false;
-		}
-		return (!Arrays.asList(alertSeverity).contains(severity.name()));
-	}
+            syslogSender = new SyslogSender(ip, port, "tcp");
 
-	private boolean filterByUserType(String entityName, String[] tags) {
+            baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/user/";
+        } catch (Exception e) {
+            throw new ConfigurationException("Error creating syslog forwarder - Configuration error. Error: " + e);
+        }
+    }
 
-		// If userTags is not present, do not filter
-		if (tags.length == 0) {
-			return false;
-		}
+    private boolean filterAlert(Alert alert) {
+        if (filterBySeverity(alert.getSeverity())) {
+            return true;
+        }
+        if (filterByUserType(alert.getEntityName(), userTags)) {
+            return true;
+        }
 
-		User user = userService.findByUsername(entityName);
+        return false;
+    }
 
-		for (String tag : tags) {
-			if (user.hasTag(tag)) {
-				return false;
-			}
-		}
+    private boolean filterBySeverity(Severity severity) {
 
-		return true;
-	}
+        // If alert severity is not present, do not filter
+        if (alertSeverity.length == 0) {
+            return false;
+        }
+        return (!Arrays.asList(alertSeverity).contains(severity.name()));
+    }
 
-	private String generateAlertPath(Alert alert) {
-		return baseUrl + alert.getEntityId() + "/alert/" + alert.getId();
-	}
+    private boolean filterByUserType(String entityName, String[] tags) {
+
+        // If userTags is not present, do not filter
+        if (tags.length == 0) {
+            return false;
+        }
+
+        User user = userService.findByUsername(entityName);
+
+        for (String tag : tags) {
+            if (user.hasTag(tag)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private String generateAlertPath(Alert alert) {
+        return baseUrl + alert.getEntityId() + "/alert/" + alert.getId();
+    }
+
+    private void prettifyAlert(Alert alert) {
+        alert.setName(localizationService.getAlertName(alert));
+        alert.getEvidences().forEach(evidence -> evidence.setName(localizationService.getIndicatorName(evidence)));
+    }
+
 }
