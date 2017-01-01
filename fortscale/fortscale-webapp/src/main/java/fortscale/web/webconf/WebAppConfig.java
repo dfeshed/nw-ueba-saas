@@ -1,6 +1,8 @@
 package fortscale.web.webconf;
 
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.utils.logging.Logger;
+import fortscale.web.rest.ApiActiveDirectoryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -12,7 +14,7 @@ import org.springframework.web.servlet.resource.PathResourceResolver;
  * Created by shays on 01/01/2017.
  *
  * Java Configuration that replacing parts of webapp-config.xml
- * //Todo: should move all configurations webapp-config.xml and remove the file when done
+ * Todo: should move all configurations webapp-config.xml and remove the file when done (opened Jira https://fortscale.atlassian.net/browse/FV-13388)
  */
 @Configuration
 @EnableWebMvc
@@ -24,7 +26,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     public static final int DEFAULT_CACHE_PERIOD_SECONDS = 3600 * 24; //Default time to keep resource in seconds
     public static final String CACHE_PERIOD_KEY= "webapp.configurations.cache_time_period";
 
-
+    private static Logger logger = Logger.getLogger(WebAppConfig.class);
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
@@ -36,6 +38,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
      */
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         int cachePeriodConf  = initCachePeriodValue();
+        logger.info("Control-Cache/Max-Age for static resource set to {}",cachePeriodConf);
 
         registry
                 .addResourceHandler("/**")
