@@ -48,7 +48,6 @@
 
 	<!-- Handles HTTP GET requests for /resources/** by efficiently serving 
 		up static resources -->
-<!--	<mvc:resources mapping="/**" location="/resources/" />-->
 	
 <!-- 	<bean id="jacksonHttpMessageConverter" class="fortscale.web.http.converter.DefaultJacksonHttpMessageConverter"> -->
 <!--         <property name="prettyPrint" value="true"/> -->
