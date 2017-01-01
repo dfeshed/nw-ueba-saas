@@ -5,6 +5,9 @@ import fortscale.ml.model.ContinuousDataModel;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
+ */
 public interface SegmentCenters {
 	Iterator<Double> iterate(List<ContinuousDataModel> models);
 }
