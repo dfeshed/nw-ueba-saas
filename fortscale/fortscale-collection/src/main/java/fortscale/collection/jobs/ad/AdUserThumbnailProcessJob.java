@@ -107,7 +107,8 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		}
 
 		final String objectGUID = lineSplit[1];
-		AdUserThumbnail adUserThumbnail = new AdUserThumbnail(objectGUID);
+		AdUserThumbnail adUserThumbnail = new AdUserThumbnail();
+		adUserThumbnail.setObjectGUID(objectGUID);
 		final String thumbnailPhoto = lineSplit[0];
 		adUserThumbnail.setThumbnailPhoto(thumbnailPhoto);
 
@@ -120,7 +121,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 	private void flushAdUserThumbnailBuffer(){
 		if(!adUserThumbnails.isEmpty()) {
-			adUserThumbnailservice.save(adUserThumbnails);
+			adUserThumbnailservice.upsertBulk(adUserThumbnails);
 			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
 			adUserThumbnails.clear();
 		}

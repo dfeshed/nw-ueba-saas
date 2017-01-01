@@ -1,5 +1,6 @@
 package fortscale.domain.ad.dao;
 
+import com.mongodb.BulkWriteResult;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.core.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,7 @@ public class AdUserThumbnailRepositoryImpl implements AdUserThumbnailRepositoryC
     private MongoTemplate mongoTemplate;
 
     @Override
-    public BulkOperations upsertBulk(List<AdUserThumbnail> adUserThumbnails) {
+    public BulkWriteResult upsertBulk(List<AdUserThumbnail> adUserThumbnails) {
 
         List<Pair<Query, Update>> updates = new ArrayList<>();
         for (AdUserThumbnail adUserThumbnail : adUserThumbnails) {
@@ -29,7 +30,7 @@ public class AdUserThumbnailRepositoryImpl implements AdUserThumbnailRepositoryC
         }
 
         return mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-                .upsert(updates);
+                .upsert(updates).execute();
 
     }
 }

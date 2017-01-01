@@ -1,9 +1,9 @@
 package fortscale.domain.ad.dao;
 
 
+import com.mongodb.BulkWriteResult;
 import fortscale.domain.ad.AdUserThumbnail;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.mongodb.core.BulkOperations;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ public interface AdUserThumbnailService {
 
     List<AdUserThumbnail> findByObjectGUID(String objectGUID, Pageable pageable);
 
-    BulkOperations upsertBulk(List<AdUserThumbnail> adUserThumbnails);
+    BulkWriteResult upsertBulk(List<AdUserThumbnail> adUserThumbnails);
 }
