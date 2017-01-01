@@ -359,7 +359,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.FIELD_MODIFIED_AT);
+		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.FIELD_CREATED_AT);
 		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailService.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
 		if(adUserThumbnails.size() > 0){
 			ret = adUserThumbnails.get(0).getThumbnailPhoto();

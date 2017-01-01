@@ -2,6 +2,7 @@ package fortscale.domain.ad;
 
 import fortscale.domain.core.AbstractDocument;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -17,16 +18,22 @@ public class AdUserThumbnail extends AbstractDocument {
 	public static final String FIELD_OBJECT_GUID = "objectGUID";
 	public static final String FIELD_THUMBNAIL_PHOTO = "thumbnailPhoto";
 	public static final String FIELD_MODIFIED_AT = "modifiedAt";
-	
-	
+	public static final String FIELD_CREATED_AT = "createdAt";
+
+
 	@Indexed
 	@Field(FIELD_OBJECT_GUID)
 	private String objectGUID;
 	
-	@CreatedDate
+	@LastModifiedDate
     @Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*2)
     private Instant modifiedAt;
+
+	@CreatedDate
+	@Field(FIELD_CREATED_AT)
+	@Indexed(unique = false)
+	private Instant createdAt;
 	
 	// Contains the users's photo in Base64 format 
 	@Field(FIELD_THUMBNAIL_PHOTO)
