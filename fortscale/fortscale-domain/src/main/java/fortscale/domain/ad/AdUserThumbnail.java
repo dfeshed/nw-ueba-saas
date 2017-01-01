@@ -51,6 +51,18 @@ public class AdUserThumbnail extends AbstractDocument {
 		return modifiedAt;
 	}
 
+	public void setModifiedAt(Instant modifiedAt) {
+		this.modifiedAt = modifiedAt;
+	}
+
+	public Instant getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Instant createdAt) {
+		this.createdAt = createdAt;
+	}
+
 	public String getThumbnailPhoto() {
 		return thumbnailPhoto;
 	}
