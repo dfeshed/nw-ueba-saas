@@ -6,9 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface AdUserThumbnailRepository extends MongoRepository<AdUserThumbnail, String> {
+public interface AdUserThumbnailRepository extends MongoRepository<AdUserThumbnail, String>, AdUserThumbnailRepositoryCustom {
 
 	List<AdUserThumbnail> findByObjectGUID(String objectGUID, Pageable pageable);
-
-	List<AdUserThumbnail> save(List<AdUserThumbnail> adUserThumbnails);
 }
