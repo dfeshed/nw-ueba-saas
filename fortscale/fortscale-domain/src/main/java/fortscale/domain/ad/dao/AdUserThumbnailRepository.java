@@ -3,7 +3,11 @@ package fortscale.domain.ad.dao;
 import fortscale.domain.ad.AdUserThumbnail;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface AdUserThumbnailRepository extends MongoRepository<AdUserThumbnail, String>, AdUserThumbnailRepositoryCustom {
+import java.util.List;
 
-	AdUserThumbnail findByObjectGUID(String objectGUID);
+public interface AdUserThumbnailRepository extends MongoRepository<AdUserThumbnail, String> {
+
+	AdUserThumbnail findById(String objectGUID);
+
+	List<AdUserThumbnail> save(List<AdUserThumbnail> adUserThumbnails);
 }

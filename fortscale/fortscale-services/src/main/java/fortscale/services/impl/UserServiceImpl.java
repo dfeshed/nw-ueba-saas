@@ -358,7 +358,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		final AdUserThumbnail adUserThumbnail = adUserThumbnailService.findByObjectGUID(user.getAdInfo().getObjectGUID());
+		final AdUserThumbnail adUserThumbnail = adUserThumbnailService.findById(user.getAdInfo().getObjectGUID());
 		if(adUserThumbnail != null){
 			ret = adUserThumbnail.getThumbnailPhoto();
 		} else {
