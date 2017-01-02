@@ -1,7 +1,6 @@
 package fortscale.utils.test.impala;
 
 import fortscale.utils.impala.ImpalaClient;
-import fortscale.utils.impala.test.ImpalaTestClient;
 import fortscale.utils.spring.TestPropertiesPlaceholderConfigurer;
 import fortscale.utils.test.EmbeddedDb.EmbededDataSourceConfig;
 import org.springframework.beans.factory.annotation.Autowired;

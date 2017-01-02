@@ -1,4 +1,4 @@
-package fortscale.utils.impala.test;
+package fortscale.utils.test.impala;
 
 import fortscale.utils.impala.ImpalaClient;
 import org.springframework.util.Assert;
