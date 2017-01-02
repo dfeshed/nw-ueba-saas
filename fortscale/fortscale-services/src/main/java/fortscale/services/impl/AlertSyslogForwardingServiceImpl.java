@@ -54,9 +54,9 @@ import java.util.Map;
 	private String baseUrl;
 	private SyslogSender syslogSender;
 	private ForwardingType forwardingType;
-	private MessageFormat messageFormat;
+    private MessageFormat messageFormat;
 
-	@Override public void afterPropertiesSet() throws Exception {
+    @Override public void afterPropertiesSet() throws Exception {
 		loadConfiguration();
 	}
 
@@ -76,17 +76,11 @@ import java.util.Map;
 	}
 
 	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
-												  String[] alertSeverity, long startTime, long endTime, String messageFormatString) throws RuntimeException {
+                                                  String[] alertSeverity, long startTime, long endTime, MessageFormat syslogMessageFormat) throws RuntimeException {
 
 		List<Alert> alerts = alertsService.getAlertsByTimeRange(new DateRange(startTime,endTime), Arrays.asList(alertSeverity));
 
-		// Getting the message format
-		MessageFormat messageFormat = DEFAULT_MESSAGE_FORMAT;
-		if (StringUtils.isNotEmpty(messageFormatString)){
-			messageFormat = MessageFormat.valueOf(messageFormatString);
-		}
-
-		SyslogSender sender = new SyslogSender(ip, port, "tcp", messageFormat);
+		SyslogSender sender = new SyslogSender(ip, port, "tcp", syslogMessageFormat);
 
 		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
 		int counter = 0;
