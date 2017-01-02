@@ -31,9 +31,9 @@ public class AdUserThumbnailRepositoryImpl implements AdUserThumbnailRepositoryC
             updates.add(Pair.of(matchObjectGuid, updateThumbnailPhoto));
             updates.add(Pair.of(matchObjectGuid, updateModifiedAt));
 
-            final Query createdAtExists = Query.query(Criteria.where(AdUserThumbnail.FIELD_CREATED_AT).exists(false));
-            final Update updateCreatedAt = Update.update(AdUserThumbnail.FIELD_CREATED_AT, Instant.now());
-            updates.add(Pair.of(createdAtExists, updateCreatedAt));
+//            final Query createdAtExists = Query.query(Criteria.where(AdUserThumbnail.FIELD_CREATED_AT).exists(false));
+//            final Update updateCreatedAt = Update.update(AdUserThumbnail.FIELD_CREATED_AT, Instant.now());
+//            updates.add(Pair.of(createdAtExists, updateCreatedAt));
 
         }
 

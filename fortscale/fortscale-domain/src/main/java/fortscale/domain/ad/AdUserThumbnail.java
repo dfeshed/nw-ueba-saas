@@ -24,9 +24,9 @@ public class AdUserThumbnail extends AbstractDocument {
 	private String objectGUID; // Contains the users's objectGUID in Base64 format
 
 
-	@Field(FIELD_CREATED_AT)
-	@Indexed(unique = false)
-	private Instant createdAt;
+//	@Field(FIELD_CREATED_AT)
+//	@Indexed(unique = false)
+//	private Instant createdAt;
 
     @Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*2)
@@ -43,13 +43,13 @@ public class AdUserThumbnail extends AbstractDocument {
 		this.objectGUID = objectGUID;
 	}
 
-	public Instant getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
-	}
+//	public Instant getCreatedAt() {
+//		return createdAt;
+//	}
+//
+//	public void setCreatedAt(Instant createdAt) {
+//		this.createdAt = createdAt;
+//	}
 
 	public Instant getModifiedAt() {
 		return modifiedAt;
