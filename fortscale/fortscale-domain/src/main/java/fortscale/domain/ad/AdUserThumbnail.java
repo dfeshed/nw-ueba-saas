@@ -23,21 +23,21 @@ public class AdUserThumbnail extends AbstractDocument {
 
 	@Indexed
 	@Field(FIELD_OBJECT_GUID)
-	private String objectGUID;
+	private String objectGUID; // Contains the users's objectGUID in Base64 format
 	
-	@LastModifiedDate
     @Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*2)
+	@LastModifiedDate
     private Instant modifiedAt;
 
-	@CreatedDate
 	@Field(FIELD_CREATED_AT)
 	@Indexed(unique = false)
+	@CreatedDate
 	private Instant createdAt;
-	
-	// Contains the users's photo in Base64 format 
+
+
 	@Field(FIELD_THUMBNAIL_PHOTO)
-	private String thumbnailPhoto;
+	private String thumbnailPhoto; // Contains the users's photo in Base64 format
 
 	public String getObjectGUID() {
 		return objectGUID;
