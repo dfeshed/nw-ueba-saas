@@ -107,7 +107,8 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		}
 
 		final String objectGUID = lineSplit[1];
-		AdUserThumbnail adUserThumbnail = new AdUserThumbnail(objectGUID);
+		AdUserThumbnail adUserThumbnail = new AdUserThumbnail();
+		adUserThumbnail.setId(objectGUID);
 		final String thumbnailPhoto = lineSplit[0];
 		adUserThumbnail.setThumbnailPhoto(thumbnailPhoto);
 
