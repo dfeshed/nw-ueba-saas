@@ -37,7 +37,7 @@ public class AdUserThumbnailRepositoryImpl implements AdUserThumbnailRepositoryC
 
         }
 
-        return mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AdUserThumbnail.COLLECTION_NAME)
+        return mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, AdUserThumbnail.COLLECTION_NAME)
                 .upsert(updates).execute();
 
     }
