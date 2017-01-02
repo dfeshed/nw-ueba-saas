@@ -36,7 +36,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -359,10 +358,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.FIELD_CREATED_AT);
-		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailService.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
-		if(adUserThumbnails.size() > 0){
-			ret = adUserThumbnails.get(0).getThumbnailPhoto();
+		final AdUserThumbnail adUserThumbnail = adUserThumbnailService.findByObjectGUID(user.getAdInfo().getObjectGUID());
+		if(adUserThumbnail != null){
+			ret = adUserThumbnail.getThumbnailPhoto();
 		} else {
 			serviceMetrics.thumbnailNotFound++;
 		}

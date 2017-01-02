@@ -4,7 +4,6 @@ import com.mongodb.BulkWriteResult;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,8 +17,8 @@ public class AdUserThumbnailServiceImpl implements AdUserThumbnailService {
     private AdUserThumbnailRepository adUserThumbnailRepository;
 
     @Override
-    public List<AdUserThumbnail> findByObjectGUID(String objectGUID, Pageable pageable) {
-        return adUserThumbnailRepository.findByObjectGUID(objectGUID, pageable);
+    public AdUserThumbnail findByObjectGUID(String objectGUID) {
+        return adUserThumbnailRepository.findByObjectGUID(objectGUID);
     }
 
     @Override
