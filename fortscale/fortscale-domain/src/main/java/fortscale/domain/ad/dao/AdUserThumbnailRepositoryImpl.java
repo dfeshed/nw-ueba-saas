@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.util.Pair;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class AdUserThumbnailRepositoryImpl implements AdUserThumbnailRepositoryC
         List<Pair<Query, Update>> updates = new ArrayList<>();
         for (AdUserThumbnail adUserThumbnail : adUserThumbnails) {
             final Query query = Query.query(Criteria.where(AdUserThumbnail.FIELD_OBJECT_GUID).is(adUserThumbnail.getObjectGUID()));
-            updates.add(Pair.of(query, Update.update(AdUserThumbnail.FIELD_THUMBNAIL_PHOTO, adUserThumbnail.getThumbnailPhoto())));
+            updates.add(Pair.of(query, Update.update(AdUserThumbnail.FIELD_MODIFIED_AT, Instant.now())));
         }
 
         return mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AdUserThumbnail.COLLECTION_NAME)
