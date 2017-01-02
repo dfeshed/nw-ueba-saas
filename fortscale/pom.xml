@@ -133,6 +133,7 @@
 
 
 		<commons-codec.version>1.9</commons-codec.version>
+		<h2.version>1.4.193</h2.version>
 	</properties>
 
 	<dependencyManagement>
