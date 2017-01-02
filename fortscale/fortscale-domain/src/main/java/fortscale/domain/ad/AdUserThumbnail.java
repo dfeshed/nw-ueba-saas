@@ -1,6 +1,8 @@
 package fortscale.domain.ad;
 
 import fortscale.domain.core.AbstractDocument;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -25,10 +27,12 @@ public class AdUserThumbnail extends AbstractDocument {
 
 	@Field(FIELD_CREATED_AT)
 	@Indexed(unique = false)
+	@CreatedDate
 	private Instant createdAt;
 
     @Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*2)
+	@LastModifiedDate
     private Instant modifiedAt;
 
 
