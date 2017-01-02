@@ -45,6 +45,7 @@ import java.util.Map;
 	@Autowired private AlertsService alertsService;
 	@Autowired private ApplicationConfigurationService applicationConfigurationService;
 	@Autowired private UserService userService;
+    @Autowired private LocalizationService localizationService;
 
 	private String ip;
 	private int port;
@@ -105,6 +106,7 @@ import java.util.Map;
 	}
 
 	private String generateAlert(Alert alert, ForwardingType forwardingType) {
+        prettifyAlert(alert);
 		String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
 		switch (forwardingType) {
 		case ALERT:
@@ -201,4 +203,9 @@ import java.util.Map;
 	private String generateAlertPath(Alert alert) {
 		return baseUrl + alert.getEntityId() + "/alert/" + alert.getId();
 	}
+
+    private void prettifyAlert(Alert alert) {
+        alert.setName(localizationService.getAlertName(alert));
+        alert.getEvidences().forEach(evidence -> evidence.setName(localizationService.getIndicatorName(evidence)));
+    }
 }
