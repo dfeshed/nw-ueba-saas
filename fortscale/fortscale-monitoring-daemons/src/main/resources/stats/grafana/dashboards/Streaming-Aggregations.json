@@ -2160,78 +2160,90 @@
               "select": [
                 [
                   {
+                    "type": "field",
                     "params": [
                       "getFeatureBucketStateSuccess"
-                    ],
-                    "type": "field"
+                    ]
                   },
                   {
-                    "params": [],
-                    "type": "mean"
+                    "type": "sum",
+                    "params": []
                   },
                   {
+                    "type": "alias",
                     "params": [
                       "getStateSuccess"
-                    ],
-                    "type": "alias"
+                    ]
                   }
                 ],
                 [
                   {
+                    "type": "field",
                     "params": [
-                      "getFeatureBucketStateFailure"
-                    ],
-                    "type": "field"
+                      "getFeatureBucketStateReturnedNull"
+                    ]
                   },
                   {
-                    "params": [],
-                    "type": "mean"
+                    "type": "sum",
+                    "params": []
                   },
                   {
+                    "type": "alias",
                     "params": [
-                      "getStateFail"
-                    ],
-                    "type": "alias"
+                      "getStateReturnedNull"
+                    ]
                   }
                 ],
                 [
                   {
+                    "type": "field",
                     "params": [
                       "updateFeatureBucketStateSuccess"
-                    ],
-                    "type": "field"
+                    ]
                   },
                   {
-                    "params": [],
-                    "type": "mean"
+                    "type": "sum",
+                    "params": []
                   },
                   {
+                    "type": "alias",
                     "params": [
                       "updateStateSuccess"
-                    ],
-                    "type": "alias"
+                    ]
                   }
                 ],
                 [
                   {
+                    "type": "field",
                     "params": [
                       "updateFeatureBucketStateFailure"
-                    ],
-                    "type": "field"
+                    ]
                   },
                   {
-                    "params": [],
-                    "type": "mean"
+                    "type": "sum",
+                    "params": []
                   },
                   {
+                    "type": "alias",
                     "params": [
                       "updateStateFail"
-                    ],
-                    "type": "alias"
+                    ]
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -2314,10 +2326,10 @@
                   "type": "time"
                 },
                 {
-                  "type": "tag",
                   "params": [
                     "host"
-                  ]
+                  ],
+                  "type": "tag"
                 }
               ],
               "measurement": "aggregation.service.feature-bucket-state-service",
@@ -2327,42 +2339,54 @@
               "select": [
                 [
                   {
-                    "type": "field",
                     "params": [
                       "lastSyncedEventDate"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "mean",
-                    "params": []
+                    "params": [],
+                    "type": "mean"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "lastSyncedEventDate"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ],
                 [
                   {
-                    "type": "field",
                     "params": [
                       "lastClosedDailyBucketDate"
-                    ]
+                    ],
+                    "type": "field"
                   },
                   {
-                    "type": "mean",
-                    "params": []
+                    "params": [],
+                    "type": "mean"
                   },
                   {
-                    "type": "alias",
                     "params": [
                       "lastClosedDailyBucket"
-                    ]
+                    ],
+                    "type": "alias"
                   }
                 ]
               ],
-              "tags": []
+              "tags": [
+                {
+                  "key": "processGroup",
+                  "operator": "=~",
+                  "value": "/^$processGroup$/"
+                },
+                {
+                  "condition": "AND",
+                  "key": "process",
+                  "operator": "=~",
+                  "value": "/^$process$/"
+                }
+              ]
             }
           ],
           "timeFrom": null,
@@ -3305,6 +3329,50 @@
         "query": "show tag values from \"aggregation.service.aggr-feature-events.bucket-conf\" with key=\"confName\"",
         "refresh": 0,
         "type": "query"
+      },
+      {
+        "type": "custom",
+        "datasource": null,
+        "refresh": 0,
+        "name": "process",
+        "hide": 0,
+        "options": [
+          {
+            "text": "aggregation-events-streaming",
+            "value": "aggregation-events-streaming",
+            "selected": true
+          }
+        ],
+        "includeAll": false,
+        "multi": false,
+        "label": "process",
+        "query": "aggregation-events-streaming",
+        "current": {
+          "text": "aggregation-events-streaming",
+          "value": "aggregation-events-streaming"
+        }
+      },
+      {
+        "type": "custom",
+        "datasource": null,
+        "refresh": 0,
+        "name": "processGroup",
+        "hide": 0,
+        "options": [
+          {
+            "text": "streaming",
+            "value": "streaming",
+            "selected": true
+          }
+        ],
+        "includeAll": false,
+        "multi": false,
+        "label": "processGroup",
+        "query": "streaming",
+        "current": {
+          "text": "streaming",
+          "value": "streaming"
+        }
       }
     ]
   },

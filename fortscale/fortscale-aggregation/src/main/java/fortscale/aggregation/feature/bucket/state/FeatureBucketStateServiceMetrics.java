@@ -23,27 +23,11 @@ public class FeatureBucketStateServiceMetrics extends StatsMetricsGroup {
     public long getFeatureBucketStateSuccess;
 
     @StatsLongMetricParams
-    public long getFeatureBucketStateFailure;
+    public long getFeatureBucketStateReturnedNull;
 
     @StatsDateMetricParams(name="lastSyncedEventDate")
-    private long lastSyncedEventDate;
+    public long lastSyncedEventDate;
 
     @StatsDateMetricParams(name="lastClosedDailyBucketDate")
-    private long lastClosedDailyBucketDate;
-
-    public long getLastSyncedEventDate() {
-        return lastSyncedEventDate;
-    }
-
-    public void setLastSyncedEventDate(long lastSyncedEventDate) {
-        this.lastSyncedEventDate = lastSyncedEventDate;
-    }
-
-    public long getLastClosedDailyBucketDate() {
-        return lastClosedDailyBucketDate;
-    }
-
-    public void setLastClosedDailyBucketDate(long lastClosedDailyBucketDate) {
-        this.lastClosedDailyBucketDate = lastClosedDailyBucketDate;
-    }
+    public long lastClosedDailyBucketDate;
 }
