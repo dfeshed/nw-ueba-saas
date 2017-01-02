@@ -13,16 +13,16 @@ public class FeatureBucketStateServiceMetrics extends StatsMetricsGroup {
     public FeatureBucketStateServiceMetrics(StatsService statsService) {
         super(statsService, FeatureBucketStateServiceMetrics.class, new StatsMetricsGroupAttributes());
     }
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsLongMetricParams
     public long updateFeatureBucketStateSuccess;
 
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsLongMetricParams
     public long updateFeatureBucketStateFailure;
 
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsLongMetricParams
     public long getFeatureBucketStateSuccess;
 
-    @StatsLongMetricParams(rateSeconds = 1)
+    @StatsLongMetricParams
     public long getFeatureBucketStateFailure;
 
     @StatsDateMetricParams(name="lastSyncedEventDate")

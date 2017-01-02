@@ -22,6 +22,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
     private FeatureBucketStateServiceMetrics metrics;
 
     public FeatureBucketStateServiceImpl(FeatureBucketStateRepository featureBucketStateRepository, StatsService statsService) {
+        logger.info("C'tor");
         this.featureBucketStateRepository = featureBucketStateRepository;
         this.statsService = statsService;
         metrics = new FeatureBucketStateServiceMetrics(statsService);
@@ -34,7 +35,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
      * lastEventEpochtime - the time of the last event synced to mongo. In seconds
      */
     public void updateFeatureBucketState(long lastEventEpochtime) {
-        logger.debug("updateFeatureBucketState with lastEventEpochtime {}", lastEventEpochtime);
+        logger.info("updateFeatureBucketState with lastEventEpochtime {}", lastEventEpochtime);
         FeatureBucketState featureBucketState = getFeatureBucketState();
         Instant lastEventDate = Instant.ofEpochSecond(lastEventEpochtime);
         Instant lastEventDay = lastEventDate.truncatedTo(ChronoUnit.DAYS);
@@ -64,7 +65,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
                 // Save the last synced event date to mongo
                 FeatureBucketState savedState = featureBucketStateRepository.save(featureBucketState);
 
-                logger.debug("Updated FeatureBucketState with {}", savedState);
+                logger.info("Updated FeatureBucketState with {}", savedState);
 
                 metrics.updateFeatureBucketStateSuccess++;
                 metrics.lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
@@ -91,11 +92,14 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
 
     @Override
     public FeatureBucketState getFeatureBucketState() {
+        logger.info("Getting feature bucket state");
         FeatureBucketState featureBucketState = featureBucketStateRepository.getState();
 
         if (featureBucketState != null){
+            logger.info("Got feature bucket state - {}", featureBucketState);
             metrics.getFeatureBucketStateSuccess++;
         }else{
+            logger.info("Got feature bucket state null");
             metrics.updateFeatureBucketStateFailure++;
         }
         return featureBucketState;
