@@ -1,9 +1,7 @@
 package fortscale.domain.ad.dao;
 
-
 import com.mongodb.BulkWriteResult;
 import fortscale.domain.ad.AdUserThumbnail;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -12,6 +10,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.data.util.Pair;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,7 +26,7 @@ public class AdUserThumbnailRepositoryImpl implements AdUserThumbnailRepositoryC
         List<Pair<Query, Update>> updates = new ArrayList<>();
         for (AdUserThumbnail adUserThumbnail : adUserThumbnails) {
             final Query query = Query.query(Criteria.where(AdUserThumbnail.FIELD_OBJECT_GUID).is(adUserThumbnail.getObjectGUID()));
-            updates.add(Pair.of(query, Update.update(AdUserThumbnail.FIELD_MODIFIED_AT, DateTime.now())));
+            updates.add(Pair.of(query, Update.update(AdUserThumbnail.FIELD_MODIFIED_AT, Instant.now())));
         }
 
         return mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, AdUserThumbnail.COLLECTION_NAME)
