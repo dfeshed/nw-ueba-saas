@@ -9,6 +9,7 @@ import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * This class represents a Document that represents a an active directory user's thumbnail photo.
@@ -18,6 +19,7 @@ import java.time.Instant;
 public class AdUserThumbnail implements Serializable {
 
 	private static final long serialVersionUID = -4984590283062489036L;
+	public static final String ID_FIELD = "_id";
 	public static final String COLLECTION_NAME = "ad_user_thumb";
 	public static final String FIELD_THUMBNAIL_PHOTO = "thumbnailPhoto";
 	public static final String MODIFIED_AT_FIELD_NAME = "modifiedAt";
@@ -35,7 +37,7 @@ public class AdUserThumbnail implements Serializable {
 	@Field(FIELD_THUMBNAIL_PHOTO)
 	private String thumbnailPhoto;
 
-	private AdUserThumbnail() {/*for spring*/}
+	public AdUserThumbnail() {/*for spring*/}
 
 	/**
 	 *
@@ -72,5 +74,17 @@ public class AdUserThumbnail implements Serializable {
 	}
 
 
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		AdUserThumbnail that = (AdUserThumbnail) o;
+		return Objects.equals(id, that.id) &&
+				Objects.equals(thumbnailPhoto, that.thumbnailPhoto);
+	}
 
+	@Override
+	public int hashCode() {
+		return Objects.hash(id, thumbnailPhoto);
+	}
 }
