@@ -156,7 +156,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 				try {
 					processLine(line.toString());
 				} catch (Exception e) {
-					logger.warn("Process line Fail - {}", e.getMessage());
+					logger.warn("Process line Fail", e);
 
 
 				}
