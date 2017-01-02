@@ -1,11 +1,10 @@
 package fortscale.domain.ad;
 
 import fortscale.domain.core.AbstractDocument;
+import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.time.Instant;
 
 
 @Document(collection=AdUserThumbnail.COLLECTION_NAME)
@@ -24,13 +23,9 @@ public class AdUserThumbnail extends AbstractDocument {
 	private String objectGUID; // Contains the users's objectGUID in Base64 format
 
 
-	@Field(FIELD_CREATED_AT)
-	@Indexed(unique = false)
-	private Instant createdAt;
-
     @Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*2)
-    private Instant modifiedAt;
+    private DateTime modifiedAt;
 
 	@Field(FIELD_THUMBNAIL_PHOTO)
 	private String thumbnailPhoto; // Contains the users's photo in Base64 format
@@ -43,19 +38,11 @@ public class AdUserThumbnail extends AbstractDocument {
 		this.objectGUID = objectGUID;
 	}
 
-	public Instant getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
-	}
-
-	public Instant getModifiedAt() {
+	public DateTime getModifiedAt() {
 		return modifiedAt;
 	}
 
-	public void setModifiedAt(Instant modifiedAt) {
+	public void setModifiedAt(DateTime modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
 
