@@ -1,5 +1,6 @@
 package fortscale.domain.ad;
 
+import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -8,7 +9,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -31,12 +31,12 @@ public class AdUserThumbnail implements Serializable {
 	@LastModifiedDate
 	@Field(MODIFIED_AT_FIELD_NAME)
 	@Indexed(unique = false, expireAfterSeconds=7*60*60*24*2) // retention = 1 week
-	private Instant modifiedAt;
+	private DateTime modifiedAt;
 
 	@CreatedDate
 	@Field(CREATED_AT_FIELD_NAME)
 	@Indexed(unique = false)
-	private Instant createdAt;
+	private DateTime createdAt;
 
 	// Contains the users's photo in Base64 format
 	@Field(FIELD_THUMBNAIL_PHOTO)
@@ -50,11 +50,11 @@ public class AdUserThumbnail implements Serializable {
 		this.id = objectGuidAsId;
 	}
 
-	public Instant getModifiedAt() {
+	public DateTime getModifiedAt() {
 		return modifiedAt;
 	}
 
-	public void setModifiedAt(Instant modifiedAt) {
+	public void setModifiedAt(DateTime modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
 
