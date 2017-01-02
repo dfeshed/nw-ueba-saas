@@ -2,10 +2,10 @@ package fortscale.domain.ad;
 
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -23,38 +23,31 @@ public class AdUserThumbnail implements Serializable {
 	public static final String COLLECTION_NAME = "ad_user_thumb";
 	public static final String FIELD_THUMBNAIL_PHOTO = "thumbnailPhoto";
 	public static final String MODIFIED_AT_FIELD_NAME = "modifiedAt";
-//	public static final String GUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
+	public static final String CREATED_AT_FIELD_NAME = "createdAt";
 
 	@Id
 	private String id; //the GUID of the active directory user whose thumbnail we are representing
 
-	@CreatedDate
+	@LastModifiedDate
 	@Field(MODIFIED_AT_FIELD_NAME)
 	@Indexed(unique = false, expireAfterSeconds=7*60*60*24*2) // retention = 1 week
 	private Instant modifiedAt;
+
+	@CreatedDate
+	@Field(CREATED_AT_FIELD_NAME)
+	@Indexed(unique = false)
+	private Instant createdAt;
 
 	// Contains the users's photo in Base64 format
 	@Field(FIELD_THUMBNAIL_PHOTO)
 	private String thumbnailPhoto;
 
-	public AdUserThumbnail() {/*for spring*/}
-
-	/**
-	 *
-	 * @param id the GUID of the active directory user whose thumbnail we are constructing. NOTICE - This is going to be the _id of the document!
-	 */
-	public AdUserThumbnail(String id) {
-		Assert.notNull(id);
-//		Assert.isTrue(Pattern.matches(GUID_REGEX, id), String.format("Given objectId %s is not a valid GUID (according to regex %s)", id, GUID_REGEX));
-		this.id = id;
-	}
-
 	public String getId() {
 		return id;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setId(String objectGuidAsId) {
+		this.id = objectGuidAsId;
 	}
 
 	public Instant getModifiedAt() {
