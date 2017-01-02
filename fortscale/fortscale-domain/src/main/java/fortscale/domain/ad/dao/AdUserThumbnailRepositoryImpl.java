@@ -28,12 +28,12 @@ public class AdUserThumbnailRepositoryImpl implements AdUserThumbnailRepositoryC
             final Query matchObjectGuid = Query.query(Criteria.where(AdUserThumbnail.FIELD_OBJECT_GUID).is(adUserThumbnail.getObjectGUID()));
             final Update updateThumbnailPhoto = Update.update(AdUserThumbnail.FIELD_THUMBNAIL_PHOTO, adUserThumbnail.getThumbnailPhoto());
             final Update updateModifiedAt = Update.update(AdUserThumbnail.FIELD_MODIFIED_AT, Instant.now());
-            updates.add(Pair.of(matchObjectGuid, updateThumbnailPhoto));
+//            updates.add(Pair.of(matchObjectGuid, updateThumbnailPhoto));
             updates.add(Pair.of(matchObjectGuid, updateModifiedAt));
 
-            final Query createdAtNotExists = Query.query(Criteria.where(AdUserThumbnail.FIELD_CREATED_AT).exists(false));
-            final Update updateCreatedAt = Update.update(AdUserThumbnail.FIELD_CREATED_AT, Instant.now());
-            updates.add(Pair.of(createdAtNotExists, updateCreatedAt));
+//            final Query createdAtNotExists = Query.query(Criteria.where(AdUserThumbnail.FIELD_CREATED_AT).exists(false));
+//            final Update updateCreatedAt = Update.update(AdUserThumbnail.FIELD_CREATED_AT, Instant.now());
+//            updates.add(Pair.of(createdAtNotExists, updateCreatedAt));
         }
 
         return mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, AdUserThumbnail.COLLECTION_NAME)
