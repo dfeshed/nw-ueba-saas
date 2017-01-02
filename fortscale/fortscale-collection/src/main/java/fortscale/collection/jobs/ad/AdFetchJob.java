@@ -181,9 +181,9 @@ public class AdFetchJob extends FortscaleJob {
 					NamingEnumeration<?> values = atr.getAll();
 
 					//handle range 0-1499 member attribute (in case that AD group contain mor then 1500 members)
-					if (key.equals("member;"))
+					if (key.contains("member;"))
 						key = "member";
-					
+
 					if (key.equals("member")) {
 						appendAllAttributeElements(fileWriter, key, values);
 					} else if (values.hasMoreElements()) {
