@@ -49,7 +49,7 @@ public class AdUserThumbnail implements Serializable {
 		this.id = id;
 	}
 
-	public String getIdD() {
+	public String getId() {
 		return id;
 	}
 
