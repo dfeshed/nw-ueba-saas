@@ -31,6 +31,10 @@
 
     <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
 
+    <bean id="serversListConfiguration" class="fortscale.services.impl.ServersListConfigurationImpl"/>
+
+    <mockito:mock id="activeDirectoryService" class="fortscale.services.ActiveDirectoryService"/>
+
     <mockito:mock id="filterMachinesService" class="fortscale.services.computer.filtering.impl.FilterMachinesServiceImpl"/>
 
     <mockito:mock id="collectionPropertiesResolver" class = "fortscale.collection.configuration.CollectionPropertiesResolver"/>

@@ -159,18 +159,18 @@ public class BatchScheduler {
 	public void runFullCycle(String... params) throws Exception{
 		startSchedulerAndPauseAllJobs();
 
-		startJob("Custom", "Tagging", params);
-		startJob("Computer_Fetch", "AD", params);
-		startJob("Computer_ETL", "AD", params);
+		//startJob("Custom", "Tagging", params);
+//		startJob("Computer_Fetch", "AD", params);
+//		startJob("Computer_ETL", "AD", params);
 		startJob("Computer", "Tagging", params);
 		startJob("Classify_Computers", "AD", params);
-		startJob("OU_Fetch", "AD", params);
-		startJob("OU_ETL", "AD", params);
-		startJob("Group_Fetch", "AD", params);
-		startJob("Group_ETL", "AD", params);
-		startJob("User_Fetch", "AD", params);
-		startJob("User_ETL", "AD", params);
-		startJob("User", "Tagging", params);
+//		startJob("OU_Fetch", "AD", params);
+//		startJob("OU_ETL", "AD", params);
+//		startJob("Group_Fetch", "AD", params);
+//		startJob("Group_ETL", "AD", params);
+//		startJob("User_Fetch", "AD", params);
+//		startJob("User_ETL", "AD", params);
+//		startJob("User", "Tagging", params);
 		startJob("User_Thumbnail_ETL", "AD", params);
 		startJob("ETL", "DHCP", params);
 		startJob("ETL", "ISE", params);

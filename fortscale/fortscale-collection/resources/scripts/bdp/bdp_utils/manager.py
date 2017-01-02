@@ -103,29 +103,31 @@ class OverridingManager(object):
         raise NotImplementedException()
 
 
-class DontReloadModelsOverridingManager(OverridingManager):
+class ModelsCacheOverridingManager(OverridingManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
 
     def __init__(self, logger, host, scoring_task_name_that_should_not_reload_models):
-        super(DontReloadModelsOverridingManager, self).__init__(logger=logger)
+        super(ModelsCacheOverridingManager, self).__init__(logger=logger)
         self._host = host
         self._scoring_task_name_that_should_not_reload_models = scoring_task_name_that_should_not_reload_models
 
     def _backup_and_override(self):
         self._logger.info('updating fortscale-overriding-streaming.properties...')
         original_to_backup = {
-            DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH: io.backup(path=DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH) \
-                if os.path.isfile(DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH) \
+            ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH: io.backup(path=ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH) \
+                if os.path.isfile(ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH) \
                 else None
         }
         really_big_epochtime = time_utils.get_epochtime('29990101')
+        really_big_epochtime_str = str(really_big_epochtime)
         configuration = [
             '',
-            'fortscale.model.wait.sec.between.loads=' + str(really_big_epochtime),
-            'fortscale.model.max.sec.diff.before.outdated=' + str(really_big_epochtime)
+            'fortscale.model.wait.sec.between.loads=' + really_big_epochtime_str,
+            'fortscale.model.max.sec.diff.before.outdated=' + really_big_epochtime_str,
+            'fortscale.model.max.sec.futureDiffBetweenModelAndEvent=' + really_big_epochtime_str
         ]
         self._logger.info('overriding the following:' + '\n\t'.join(configuration))
-        with open(DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
+        with open(ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join(configuration))
         return original_to_backup
 

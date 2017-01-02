@@ -1,5 +1,10 @@
-import sys
+'''
+Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Calculating+F+low+values+score+reducer+configurations
+'''
+
 import os
+import sys
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 
 from common import utils
@@ -104,12 +109,14 @@ def calc_reducer_gain(f, hists, reducer):
         reduced_count_sum[tf_type] = 0
         for value, count in hists[tf_type].iteritems():
             score_dummy = 50.
+            # the reducing factor multiplied by a score S equals to the result of applying the reducer on S.
+            # The following uses this equation in order to get the reducing factor:
             reducing_factor = utils.score.get_indicator_score({
                 'value': value,
                 'score': score_dummy
             }, name = f._collection.name, reducer = reducer) / score_dummy
             reduced_count_sum[tf_type] += count * reducing_factor
-    # use Bayesian approach of bernoulli distribution (with Beta conjugate prior).
+    # use Bayesian approach of Bernoulli distribution (with Beta conjugate prior).
     # the reason we add a prior is to handle the case where we have few samples - in this case
     # we're more prone to get a drastic reducer (maximal slope) as the final result, because
     # it might be really worthwhile to cut the low values completely as a result of fluctuations

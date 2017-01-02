@@ -168,6 +168,14 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	}
 
 	@Override
+	public void addUserTagsRegex(String usernameRegex, List<String> tags) throws Exception {
+		final Set<String> usernames = userService.findByUsernameRegex(usernameRegex);
+		for (String username : usernames) {
+			addUserTags(username, tags);
+		}
+	}
+
+	@Override
 	public void removeUserTags(String username, List<String> tags) {
 		userService.updateUserTagList(null, tags, username);
 	}

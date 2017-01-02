@@ -86,7 +86,7 @@ public class JobDataMapExtension implements ApplicationContextAware{
 
 			}
 			else {
-				logger.warn("JobDataMap does not contain non-mandatory key {}.", key);
+				logger.info("JobDataMap does not contain non-mandatory key {}.", key);
 				return null;
 			}
 		}

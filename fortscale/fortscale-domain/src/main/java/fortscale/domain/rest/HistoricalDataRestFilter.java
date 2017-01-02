@@ -1,4 +1,4 @@
-package fortscale.web.beans.request;
+package fortscale.domain.rest;
 
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.domain.Sort;
