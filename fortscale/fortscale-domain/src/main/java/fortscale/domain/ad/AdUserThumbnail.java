@@ -1,13 +1,12 @@
 package fortscale.domain.ad;
 
 import fortscale.domain.core.AbstractDocument;
+import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-
-import java.time.Instant;
 
 
 @Document(collection=AdUserThumbnail.COLLECTION_NAME)
@@ -28,12 +27,12 @@ public class AdUserThumbnail extends AbstractDocument {
 	@Field(FIELD_CREATED_AT)
 	@Indexed(unique = false)
 	@CreatedDate
-	private Instant createdAt;
+	private DateTime createdAt;
 
     @Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=60*60*24*2)
 	@LastModifiedDate
-    private Instant modifiedAt;
+    private DateTime modifiedAt;
 
 
 	@Field(FIELD_THUMBNAIL_PHOTO)
@@ -47,20 +46,20 @@ public class AdUserThumbnail extends AbstractDocument {
 		this.objectGUID = objectGUID;
 	}
 
-	public Instant getModifiedAt() {
-		return modifiedAt;
-	}
-
-	public void setModifiedAt(Instant modifiedAt) {
-		this.modifiedAt = modifiedAt;
-	}
-
-	public Instant getCreatedAt() {
+	public DateTime getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(Instant createdAt) {
+	public void setCreatedAt(DateTime createdAt) {
 		this.createdAt = createdAt;
+	}
+
+	public DateTime getModifiedAt() {
+		return modifiedAt;
+	}
+
+	public void setModifiedAt(DateTime modifiedAt) {
+		this.modifiedAt = modifiedAt;
 	}
 
 	public String getThumbnailPhoto() {
