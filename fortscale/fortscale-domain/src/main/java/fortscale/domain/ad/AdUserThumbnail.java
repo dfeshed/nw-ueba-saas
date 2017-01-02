@@ -1,6 +1,5 @@
 package fortscale.domain.ad;
 
-import org.bson.types.ObjectId;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -27,7 +26,7 @@ public class AdUserThumbnail implements Serializable {
 //	public static final String GUID_REGEX = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
 
 	@Id
-	private ObjectId id; //the GUID of the active directory user whose thumbnail we are representing
+	private String id; //the GUID of the active directory user whose thumbnail we are representing
 
 	@CreatedDate
 	@Field(MODIFIED_AT_FIELD_NAME)
@@ -42,20 +41,20 @@ public class AdUserThumbnail implements Serializable {
 
 	/**
 	 *
-	 * @param objectGuid the GUID of the active directory user whose thumbnail we are constructing. NOTICE - This is going to be the _id of the document!
+	 * @param id the GUID of the active directory user whose thumbnail we are constructing. NOTICE - This is going to be the _id of the document!
 	 */
-	public AdUserThumbnail(String objectGuid) {
-		Assert.notNull(objectGuid);
-//		Assert.isTrue(Pattern.matches(GUID_REGEX, objectGuid), String.format("Given objectId %s is not a valid GUID (according to regex %s)", objectGuid, GUID_REGEX));
-		this.id = new ObjectId(objectGuid);
+	public AdUserThumbnail(String id) {
+		Assert.notNull(id);
+//		Assert.isTrue(Pattern.matches(GUID_REGEX, id), String.format("Given objectId %s is not a valid GUID (according to regex %s)", id, GUID_REGEX));
+		this.id = id;
 	}
 
-	public ObjectId getId() {
+	public String getId() {
 		return id;
 	}
 
 	public void setId(String id) {
-		this.id = new ObjectId(id);
+		this.id = id;
 	}
 
 	public Instant getModifiedAt() {
