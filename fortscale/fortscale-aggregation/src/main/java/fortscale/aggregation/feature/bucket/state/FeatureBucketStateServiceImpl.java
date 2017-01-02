@@ -68,8 +68,8 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
                 logger.info("Updated FeatureBucketState with {}", savedState);
 
                 metrics.updateFeatureBucketStateSuccess++;
-                metrics.lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().toEpochMilli();
-                metrics.lastSyncedEventDate = savedState.getLastSyncedEventDate().toEpochMilli();
+                metrics.setLastClosedDailyBucketDate(savedState.getLastClosedDailyBucketDate().getEpochSecond());
+                metrics.setLastSyncedEventDate(savedState.getLastSyncedEventDate().getEpochSecond());
             }
         } catch (Exception e){
             logger.error("Error saving the feature bucket state to mongo. {}", featureBucketState, e);
