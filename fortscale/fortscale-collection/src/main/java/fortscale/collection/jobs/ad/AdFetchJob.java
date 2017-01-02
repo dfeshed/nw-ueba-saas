@@ -188,13 +188,13 @@ public class AdFetchJob extends FortscaleJob {
 					Attribute atr = index.next();
 					String key = atr.getID();
 					NamingEnumeration<?> values = atr.getAll();
-					boolean needToAppendNewLine = false;
+					boolean elementWritten = false;
 
 					//handle range 0-1499 member attribute (in case that AD group contain mor then 1500 members)
 					if (key.contains("member;"))
 						key = "member";
 					if (key.equals("member")) {
-						needToAppendNewLine = appendAllAttributeElements(fileWriter, key, values);
+						elementWritten = appendAllAttributeElements(fileWriter, key, values);
 					} else if (values.hasMoreElements()) {
 						String value;
 						if (key.equals("distinguishedName")) {
@@ -216,15 +216,15 @@ public class AdFetchJob extends FortscaleJob {
 								fileWriter.append(key).append(": ").append(value);
 							}
 							else {
-								needToAppendNewLine = appendSingleAttributeElement(fileWriter, key, value);
+								elementWritten = appendSingleAttributeElement(fileWriter, key, value);
 							}
 
 						} else {
-							needToAppendNewLine = appendAllAttributeElements(fileWriter, key, values);
+							elementWritten = appendAllAttributeElements(fileWriter, key, values);
 						}
 
 					}
-					if (needToAppendNewLine)
+					if (elementWritten)
 						fileWriter.append("\n");
 				}
 			}
