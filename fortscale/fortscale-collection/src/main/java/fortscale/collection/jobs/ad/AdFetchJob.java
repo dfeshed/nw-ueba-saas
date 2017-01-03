@@ -205,15 +205,18 @@ public class AdFetchJob extends FortscaleJob {
 							fileWriter.append("dn: ").append(value);
 							fileWriter.append("\n");
 							fileWriter.append(key).append(": ").append(value);
+							elementWritten=true;
 						} else if (key.equals("objectGUID") || key.equals("objectSid")) {
 							value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
 							fileWriter.append(key).append(": ").append(value);
+							elementWritten=true;
 						} else if (key.equals("streetAddress")) {
 							value = (String) values.nextElement();
 							final boolean isPossibleBase64String = !value.isEmpty() && !value.contains(" ") && Base64.isBase64(value);
 							if (isPossibleBase64String) {
 								value = new String(java.util.Base64.getDecoder().decode(value));
 								fileWriter.append(key).append(": ").append(value);
+								elementWritten=true;
 							}
 							else {
 								elementWritten = appendSingleAttributeElement(fileWriter, key, value);
