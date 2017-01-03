@@ -2,13 +2,21 @@ package fortscale.web.webconf;
 
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
+import fortscale.web.extensions.RenamingProcessor;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.http.MediaType;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+import org.springframework.web.servlet.view.InternalResourceView;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+import org.springframework.web.servlet.view.xml.MappingJackson2XmlView;
+
+import java.util.List;
 
 /**
  * Created by shays on 01/01/2017.
@@ -42,9 +50,9 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
         registry
                 .addResourceHandler("/**")
-                .addResourceLocations("/resources/")
-                .resourceChain(true)
-                .addResolver(new PathResourceResolver());
+                .addResourceLocations("/resources/");
+//                .resourceChain(true)
+//                .addResolver(new PathResourceResolver());
 
         //All CSS & JS
         registry
@@ -95,6 +103,37 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .addResolver(new PathResourceResolver());
     }
 
+//    @Override
+//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+//        argumentResolvers.add(resolver());
+//    }
+//
+//
+//    public  RenamingProcessor resolver(){
+//        return new RenamingProcessor(true);
+//    }
+
+//    @Override
+//    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
+//        configurer.enable();
+//    }
+
+
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.ignoreUnknownPathExtensions(false).defaultContentType(MediaType.TEXT_HTML);
+
+
+    }
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
+        jsonView.setPrettyPrint(true);
+
+
+        registry.enableContentNegotiation(jsonView);
+
+    }
     /**
      * Check if the cache period defined on mongo, is so use it, if not set the devault value to mongo and return it
      * @return
