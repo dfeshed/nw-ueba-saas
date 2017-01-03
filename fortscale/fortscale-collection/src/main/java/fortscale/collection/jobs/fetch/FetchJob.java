@@ -96,6 +96,7 @@ public abstract class FetchJob {
 			return;
 		}
 		do {
+			boolean fetchSucceded = true;
 			// preparer fetch page params
 			if  (fetchIntervalInSeconds != -1 ) {
 				preparerFetchPageParams();
@@ -108,6 +109,7 @@ public abstract class FetchJob {
 				fetch(filename, tempfilename, outputDir, returnKeys, delimiter, encloseQuotes, earliest, latest,
 						savedQuery);
 			} catch (Exception ex) {
+				fetchSucceded = false;
 				logger.error("failed to fetch - {}", ex);
 			}
 			if (sortShellScript != null) {
@@ -118,7 +120,7 @@ public abstract class FetchJob {
 				renameOrDeleteOutput();
 			}
 			// update mongo with current fetch progress
-			updateMongoWithCurrentFetchProgress();
+			updateMongoWithCurrentFetchProgress(fetchSucceded);
 		} while (keepFetching);
 		logger.info("fetch job finished");
 	}
@@ -271,23 +273,26 @@ public abstract class FetchJob {
 	 *
 	 * This method updates Mongo with the latest time fetched
 	 *
+	 * @param fetchSucceeded
 	 */
-	private void updateMongoWithCurrentFetchProgress() {
-		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
-		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
-		if (fetchConfiguration == null) {
-			fetchConfiguration = new FetchConfiguration(type, latest);
-		} else {
-			fetchConfiguration.setLastFetchTime(latest);
-		}
-		try {
-			fetchConfigurationRepository.save(fetchConfiguration);
-		} catch (OptimisticLockingFailureException ex) {
-			logger.warn("failed to save fetch configuration - {}", ex);
-		}
-		if (earliestDate != null && latestDate != null) {
-			if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
-				keepFetching = false;
+	private void updateMongoWithCurrentFetchProgress(boolean fetchSucceeded) {
+		if (fetchSucceeded) {
+			FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
+			latest = TimestampUtils.convertSplunkTimeToUnix(latest);
+			if (fetchConfiguration == null) {
+				fetchConfiguration = new FetchConfiguration(type, latest);
+			} else {
+				fetchConfiguration.setLastFetchTime(latest);
+			}
+			try {
+				fetchConfigurationRepository.save(fetchConfiguration);
+			} catch (OptimisticLockingFailureException ex) {
+				logger.warn("failed to save fetch configuration - {}", ex);
+			}
+			if (earliestDate != null && latestDate != null) {
+				if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
+					keepFetching = false;
+				}
 			}
 		}
 	}
