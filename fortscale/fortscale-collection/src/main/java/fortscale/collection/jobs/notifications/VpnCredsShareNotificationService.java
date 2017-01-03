@@ -46,9 +46,7 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
     private static final String APP_CONF_PREFIX = "creds_share_notification";
     private static final String MIN_DATE_TIME_FIELD = "min_ts";
 
-    private static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = 10 * 60;
-
-    private  ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
 
     private String fieldManipulatorBeanName;
@@ -80,16 +78,9 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
 
             // Calc the processing end time: process up to one day. Never process post the current time because the
             // those event simply does not exist yet
-
-            long upperLimit = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
-
-            logger.info("Processing {} from {} ({}) to {} ({})", SERVICE_NAME,
-                    Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
-                    Instant.ofEpochSecond(upperLimit), upperLimit);
-
-            credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimit));
-
-            latestTimestamp = upperLimit;
+            long upperLimitExcluded = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
+            credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimitExcluded - 1));
+            latestTimestamp = upperLimitExcluded;
         }
 
         List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
@@ -168,24 +159,69 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
     }
 
 
-    private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimit) {
-        //create ConditionTerm for the hostname condition
-
-		//TODO  - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
-        //create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
+    private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimitIncluded) {
+        // create ConditionTerm for the hostname condition
+        // TODO - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
+        // create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
         // some features of the query aren't supported in dataQuery: e.g. CASE WHEN , or SQL functions: lpad, instr
-        String query = "select" +
-                " username ,normalized_username,id, "+ hostnameField+", count(*) as sessions_count ,min(start_session_time) as start_time ,max(end_session_time) as end_time" +
-                " from" +
-                " (select t1.username,t1.normalized_username,t1.hostname, u.id, unix_timestamp(seconds_sub(t1.date_time, t1.duration)) as start_session_time ,unix_timestamp(t1.date_time)" +
-                " as end_session_time  " +
-                "from "+tableName+" t1 inner join "+tableName+" t2 " +
-                "on t1.username = t2.username and t1.source_ip!=t2.source_ip  and  seconds_sub(t2.date_time,t2.duration) between seconds_sub(t1.date_time,t1.duration) and t1.date_time  " +
-                "inner join users u on t1.normalized_username = u.username where t1.source_ip !='' and t2.source_ip !='' and t1.country = 'Reserved Range' and t2.country='Reserved Range'" +
-                " and "+hostnameCondition+" and t1.date_time_unix >= "+latestTimestamp+" and t1.date_time_unix < "+upperLimit+" " +
-                "group by t1.username,t1.normalized_username,t1."+hostnameField+",t1.source_ip ,seconds_sub(t1.date_time, t1.duration) ,t1.date_time,u.id " +
-                "having count(t2.source_ip) >= "+numberOfConcurrentSessions+"  )" +
-                " t group by username,normalized_username,"+hostnameField+",id";
+
+        Instant lowerLimitInstInc = Instant.ofEpochSecond(latestTimestamp);
+        Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluded);
+        logger.info("Processing {} from {} ({}) to {} ({})",
+                SERVICE_NAME, lowerLimitInstInc, latestTimestamp, upperLimitInstInc, upperLimitIncluded);
+
+        String t1Query = String.format(
+                "select * from %s " +
+                "where yearmonthday between %s and %s " +
+                "and date_time_unix between %d and %d " +
+                "and source_ip != '' " +
+                "and country = 'Reserved Range'",
+                tableName,
+                yearMonthDayFormatter.format(lowerLimitInstInc), yearMonthDayFormatter.format(upperLimitInstInc),
+                latestTimestamp, upperLimitIncluded);
+
+        String t2Query = String.format(
+                "select * from %s " +
+                "where source_ip != '' " +
+                "and country = 'Reserved Range'",
+                tableName);
+
+        String subSelect = String.format(
+                "select " +
+                // Columns start
+                "t1.username, " +
+                "t1.normalized_username, " +
+                "t1.hostname, " +
+                "u.id, " +
+                "unix_timestamp(seconds_sub(t1.date_time, t1.duration)) as start_session_time, " +
+                "unix_timestamp(t1.date_time) as end_session_time " +
+                // Columns end
+                "from (%s) t1 " +
+                "inner join (%s) t2 " +
+                "on t1.username = t2.username and t1.source_ip != t2.source_ip and seconds_sub(t2.date_time, t2.duration) between seconds_sub(t1.date_time, t1.duration) and t1.date_time " +
+                "inner join users u " +
+                "on t1.normalized_username = u.username " +
+                "where %s " +
+                "group by t1.username, t1.normalized_username, t1.%s, t1.source_ip, seconds_sub(t1.date_time, t1.duration), t1.date_time, u.id " +
+                "having count(t2.source_ip) >= %d",
+                t1Query,
+                t2Query,
+                hostnameCondition,
+                hostnameField,
+                numberOfConcurrentSessions);
+
+        String query = String.format(
+                "select " +
+                "username, " +
+                "normalized_username, " +
+                "id, " +
+                "%s, " +
+                "count(*) as sessions_count, " +
+                "min(start_session_time) as start_time, " +
+                "max(end_session_time) as end_time " +
+                "from (%s) t " +
+                "group by username, normalized_username, %s, id",
+                hostnameField, subSelect, hostnameField);
 
         //run the query
         return  queryRunner.executeQuery(query);

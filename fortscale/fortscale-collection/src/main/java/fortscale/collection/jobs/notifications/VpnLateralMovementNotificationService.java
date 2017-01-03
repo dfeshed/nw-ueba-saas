@@ -21,8 +21,6 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
 import java.sql.Timestamp;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -59,11 +57,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     public static final String ENTITY_ID = "entity_id";
     public static final String SOURCE_IP_COLUMN = "source_ip";
 
-    private final DateFormat df = new SimpleDateFormat("yyyyMMdd");
-
-    private static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = 10 * 60;
-
-
     @Autowired
 	private UserService userService;
 
@@ -88,17 +81,9 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
             // Calc the processing end time: process up to one day. Never process post the current time because the
             // those event simply does not exist yet
-
-            long upperLimit = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
-
-            logger.info("Processing {} from {} ({}) to {} ({})", SERVICE_NAME,
-                    Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
-                    Instant.ofEpochSecond(upperLimit), upperLimit);
-
-
-            getLateralMovementEventsFromHDFS(lateralMovementEvents, upperLimit);
-
-            latestTimestamp = upperLimit;
+            long upperLimitExcluding = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
+            getLateralMovementEventsFromHDFS(lateralMovementEvents, upperLimitExcluding - 1);
+            latestTimestamp = upperLimitExcluding;
         }
 
 
@@ -289,22 +274,53 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         return dataQueryRunner.executeQuery(rawEventsQuery);
     }
 
-    private void getLateralMovementEventsFromHDFS(Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents,
-                                                  long upperLimit) {
-        for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
-            String tableName = entry.getKey();
-            String ipField = entry.getValue().getRight();
-            String query = String.format("select distinct unix_timestamp(seconds_sub(t1.date_time,t1.duration)) %s, " +
-                    "t1.date_time_unix %s, t1.normalized_username %s, t2.normalized_username %s, " +
-                    "t1.source_ip vpn_source_ip, t2.%s %s, t1.hostname as hostname, '%s' as %s from " +
-					"vpnsessiondatares t1 inner join %s t2 on " +
-					"t1.date_time_unix >= %d and t1.date_time_unix < %d and " +
-					"t2.date_time_unix >= %d and t2.date_time_unix < %d and " +
-					"t1.local_ip != \"\" and t1.local_ip = t2.%s and t2.date_time_unix between " +
-					"t1.date_time_unix - t1.duration and t1.date_time_unix and t1.normalized_username != " +
-					"t2.normalized_username", VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME, ipField,
-					DATASOURCE_IP, tableName, TABLE_NAME,
-					tableName, latestTimestamp, upperLimit, latestTimestamp, upperLimit, ipField);
+	private void getLateralMovementEventsFromHDFS(
+			Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents, long upperLimitIncluding) {
+
+		Instant lowerLimitInstInc = Instant.ofEpochSecond(latestTimestamp);
+		Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluding);
+		logger.info("Processing {} from {} ({}) to {} ({})",
+				SERVICE_NAME, lowerLimitInstInc, latestTimestamp, upperLimitInstInc, upperLimitIncluding);
+
+		for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
+			String tableName = entry.getKey();
+			String ipField = entry.getValue().getRight();
+
+			String t1Query = String.format(
+					"select date_time, date_time_unix, normalized_username, hostname, source_ip, local_ip, duration " +
+					"from vpnsessiondatares where yearmonthday between %s and %s " +
+					"and date_time_unix between %d and %d and local_ip != \"\"",
+					yearMonthDayFormatter.format(lowerLimitInstInc), yearMonthDayFormatter.format(upperLimitInstInc),
+					latestTimestamp, upperLimitIncluding);
+
+			String t2Query = String.format(
+					"select date_time_unix, normalized_username, %s from %s " +
+					"where yearmonthday between %s and %s " +
+					"and date_time_unix between %d and %d",
+					ipField, tableName,
+					yearMonthDayFormatter.format(lowerLimitInstInc), yearMonthDayFormatter.format(upperLimitInstInc),
+					latestTimestamp, upperLimitIncluding);
+
+			String query = String.format(
+					"select distinct " +
+					// Columns start
+					"unix_timestamp(seconds_sub(t1.date_time, t1.duration)) %s, " +
+					"t1.date_time_unix %s, " +
+					"t1.normalized_username %s, " +
+					"t2.normalized_username %s, " +
+					"t1.source_ip vpn_source_ip, " +
+					"t2.%s %s, " +
+					"t1.hostname as hostname, " +
+					"'%s' as %s " +
+					// Columns end
+					"from (%s) t1 inner join (%s) t2 " +
+					"on t1.local_ip = t2.%s " +
+					"and t2.date_time_unix between t1.date_time_unix - t1.duration and t1.date_time_unix " +
+					"and t1.normalized_username != t2.normalized_username",
+					VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME,
+					ipField, DATASOURCE_IP, tableName, TABLE_NAME,
+					t1Query, t2Query, ipField);
+
             List<Map<String, Object>> rows = queryRunner.executeQuery(query);
             if (!CollectionUtils.isEmpty(rows)) {
                 for (Map<String, Object> row : rows) {

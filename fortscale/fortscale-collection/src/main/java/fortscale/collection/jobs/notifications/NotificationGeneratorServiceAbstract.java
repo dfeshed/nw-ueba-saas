@@ -20,9 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Created by shays on 14/03/2016.
@@ -35,6 +37,8 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 	protected static final int DAY_IN_SECONDS = 86400;
 	protected static final String LASTEST_TS = "latest_ts";
 	protected static final String TS_PARAM = "latestTimestamp";
+	protected static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	protected static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10);
 
 	@Autowired
 	protected ApplicationConfigurationService applicationConfigurationService;
