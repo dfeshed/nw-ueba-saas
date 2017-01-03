@@ -15,20 +15,20 @@
 		annotation. -->
 	<!--<context:property-placeholder location="classpath*:META-INF/*.properties" />-->
 	<!--<context:property-placeholder location="classpath*:META-INF/spring/*.properties" />-->
-	<bean class="fortscale.global.configuration.GlobalConfiguration" id="globalConfiguration"/>
-	<context:component-scan base-package="fortscale"
-		use-default-filters="false">
-		<context:include-filter expression="org.springframework.stereotype.Controller"
-			type="annotation" />
-	</context:component-scan>
+	<!--<bean class="fortscale.global.configuration.GlobalConfiguration" id="globalConfiguration"/>-->
+	<!--<context:component-scan base-package="fortscale"-->
+		<!--use-default-filters="false">-->
+		<!--<context:include-filter expression="org.springframework.stereotype.Controller"-->
+			<!--type="annotation" />-->
+	<!--</context:component-scan>-->
 
-    <mvc:annotation-driven>
-        <mvc:argument-resolvers>
-            <bean class="fortscale.web.extensions.RenamingProcessor">
-                <constructor-arg name="annotationNotRequired" value="true"/>
-            </bean>
-        </mvc:argument-resolvers>
-    </mvc:annotation-driven>
+    <!--<mvc:annotation-driven>-->
+        <!--<mvc:argument-resolvers>-->
+            <!--<bean class="fortscale.web.extensions.RenamingProcessor">-->
+                <!--<constructor-arg name="annotationNotRequired" value="true"/>-->
+            <!--</bean>-->
+        <!--</mvc:argument-resolvers>-->
+    <!--</mvc:annotation-driven>-->
 
 
 </beans>

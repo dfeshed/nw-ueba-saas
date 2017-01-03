@@ -19,18 +19,20 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class RenamingProcessor  extends ServletModelAttributeMethodProcessor {
 
-    @Autowired
-    private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
-    @Autowired
+    private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
     private  FortscaleCustomEditorService fortscaleCustomEditorService;
 
     //Rename cache
     private final Map<Class<?>, Map<String, String>> replaceMap = new ConcurrentHashMap<Class<?>, Map<String, String>>();
 
-    public RenamingProcessor(boolean annotationNotRequired) {
+    public RenamingProcessor(RequestMappingHandlerAdapter requestMappingHandlerAdapter, FortscaleCustomEditorService fortscaleCustomEditorService, boolean annotationNotRequired) {
         super(annotationNotRequired);
+        this.requestMappingHandlerAdapter = requestMappingHandlerAdapter;
+        this.fortscaleCustomEditorService = fortscaleCustomEditorService;
     }
+
+
 
     @Override
     protected void bindRequestParameters(WebDataBinder binder, NativeWebRequest nativeWebRequest) {

@@ -4,22 +4,26 @@ import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 
-import fortscale.utils.spring.SpringPropertiesUtil;
+
 import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
 import fortscale.web.exceptions.handlers.RestExceptionHandler;
+import fortscale.web.extensions.FortscaleCustomEditorService;
 import fortscale.web.extensions.RenamingProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import org.springframework.context.annotation.*;
-import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+
+
+import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.http.MediaType;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
@@ -37,11 +41,17 @@ import java.util.*;
 
 
 @Configuration
+@EnableSpringConfigured
+@EnableAnnotationConfiguration
 @EnableWebMvc
-@ImportResource("classpath*:META-INF/spring/fortscale-logging-context.xml")
+@ComponentScan(basePackages = "fortscale", useDefaultFilters = false,
+        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
+)
+@ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
 @Import(GlobalConfiguration.class)
 @PropertySource({"classpath:META-INF/application-config.properties","classpath:META-INF/entities-overriding.properties","classpath:META-INF/evidence.events.filtering.properties"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
+
 
 
 
@@ -54,8 +64,15 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
+    @Autowired
+    private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
+    @Autowired
+    private FortscaleCustomEditorService fortscaleCustomEditorService;
 
+    /**
+     *
+     */
     /**
      * tells the browser to save the resource for X seconds by define cache-ontrol header with max-age
      *
@@ -67,8 +84,21 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         logger.info("Control-Cache/Max-Age for static resource set to {}",cachePeriodConf);
 
         registry
+                //.addResourceHandler("/*.html")
                 .addResourceHandler("/**")
-                .addResourceLocations("/resources/");
+                .addResourceLocations("/resources/")
+                .setCachePeriod(cachePeriodConf);
+               // .resourceChain(true);
+                //.addResolver(new PathResourceResolver());
+
+        //All CSS & JS
+        registry
+                .addResourceHandler("/assets/**")
+                .addResourceLocations("/resources/assets/")
+                .setCachePeriod(cachePeriodConf)
+                .resourceChain(true)
+                .addResolver(new PathResourceResolver());
+
 
         //All CSS & JS
         registry
@@ -119,19 +149,26 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .addResolver(new PathResourceResolver());
     }
 
-//    @Override
-//    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-//        argumentResolvers.add(resolver());
-//    }
-//
-//
-//    public RenamingProcessor resolver(){
-//        return new RenamingProcessor(true);
-//    }
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(renamingProcessor());
+    }
+
+    @Bean
+    public RenamingProcessor renamingProcessor(){
+        return new RenamingProcessor(requestMappingHandlerAdapter,fortscaleCustomEditorService, true);
+    }
 
 //    @Override
 //    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
 //        configurer.enable();
+//    }
+
+//    @Override
+//    public void addInterceptors(InterceptorRegistry registry) {
+//        registry.addInterceptor(new MyCustomInterceptor())
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/foo/**");
 //    }
 
 
@@ -171,24 +208,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
 
 
-//    @Bean
-//    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurerWebApp() throws IOException {
-//        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
-//        List<Resource> resources = new ArrayList<>();
-//
-//        resources.addAll(Arrays.asList(new PathMatchingResourcePatternResolver().getResources("classpath*:META-INF/*.properties")));
-//        resources.addAll(Arrays.asList(new PathMatchingResourcePatternResolver().getResources("classpath*:META-INF/spring/*.properties")));
-//
-//
-//        configurer.setLocations(resources.toArray(new Resource[0]));
-//        configurer.setIgnoreUnresolvablePlaceholders(true);
-//
-//
-//        return configurer;
-//
-//
-//    }
-//
 
     @Bean(name = "exceptionHandlerExceptionResolver")
     public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver(){
@@ -226,4 +245,19 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         this.applicationConfigurationService = applicationConfigurationService;
     }
 
+    public RequestMappingHandlerAdapter getRequestMappingHandlerAdapter() {
+        return requestMappingHandlerAdapter;
+    }
+
+    public void setRequestMappingHandlerAdapter(RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
+        this.requestMappingHandlerAdapter = requestMappingHandlerAdapter;
+    }
+
+    public FortscaleCustomEditorService getFortscaleCustomEditorService() {
+        return fortscaleCustomEditorService;
+    }
+
+    public void setFortscaleCustomEditorService(FortscaleCustomEditorService fortscaleCustomEditorService) {
+        this.fortscaleCustomEditorService = fortscaleCustomEditorService;
+    }
 }
