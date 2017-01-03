@@ -276,6 +276,8 @@ public abstract class FetchJob {
 	 * @param fetchSucceeded
 	 */
 	private void updateMongoWithCurrentFetchProgress(boolean fetchSucceeded) {
+
+        // Only if the fetch succeeded we want to save the last fetch time
 		if (fetchSucceeded) {
             FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
             latest = TimestampUtils.convertSplunkTimeToUnix(latest);
