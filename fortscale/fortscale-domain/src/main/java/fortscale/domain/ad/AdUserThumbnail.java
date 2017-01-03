@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
@@ -16,6 +17,7 @@ import java.util.Objects;
  * PLEASE NOTICE - the _id of the documents should be the GUID of the active directory user
  */
 @Document(collection=AdUserThumbnail.COLLECTION_NAME)
+@EnableMongoAuditing
 public class AdUserThumbnail implements Serializable {
 
 	private static final long serialVersionUID = -4984590283062489036L;
