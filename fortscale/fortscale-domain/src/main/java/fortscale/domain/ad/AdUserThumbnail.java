@@ -1,15 +1,16 @@
 package fortscale.domain.ad;
 
-import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Objects;
 
 /**
@@ -24,20 +25,25 @@ public class AdUserThumbnail implements Serializable {
 	public static final String ID_FIELD = "_id";
 	public static final String COLLECTION_NAME = "ad_user_thumb";
 	public static final String FIELD_THUMBNAIL_PHOTO = "thumbnailPhoto";
-	public static final String MODIFIED_AT_FIELD_NAME = "modifiedAt";
-	public static final String CREATED_AT_FIELD_NAME = "createdAt";
+	public static final String FIELD_MODIFIED_AT = "modifiedAt";
+	public static final String FIELD_CREATED_AT = "createdAt";
+	public static final String FIELD_VERSION_FIELD = "version";
 
 	@Id
 	private String id; //the GUID of the active directory user whose thumbnail we are representing
 
 	@LastModifiedDate
-	@Field(MODIFIED_AT_FIELD_NAME)
+	@Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=7*60*60*24*2) // retention = 1 week
-	private DateTime modifiedAt;
+	private Instant modifiedAt;
 
 	@CreatedDate
-	@Field(CREATED_AT_FIELD_NAME)
-	private DateTime createdAt;
+	@Field(FIELD_CREATED_AT)
+	private Instant createdAt;
+
+	@Version
+	@Field(FIELD_VERSION_FIELD)
+	private Long version;
 
 	// Contains the users's photo in Base64 format
 	@Field(FIELD_THUMBNAIL_PHOTO)
@@ -51,19 +57,19 @@ public class AdUserThumbnail implements Serializable {
 		this.id = objectGuidAsId;
 	}
 
-	public DateTime getModifiedAt() {
+	public Instant getModifiedAt() {
 		return modifiedAt;
 	}
 
-	public void setModifiedAt(DateTime modifiedAt) {
+	public void setModifiedAt(Instant modifiedAt) {
 		this.modifiedAt = modifiedAt;
 	}
 
-	public DateTime getCreatedAt() {
+	public Instant getCreatedAt() {
 		return createdAt;
 	}
 
-	public void setCreatedAt(DateTime createdAt) {
+	public void setCreatedAt(Instant createdAt) {
 		this.createdAt = createdAt;
 	}
 
