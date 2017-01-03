@@ -1,7 +1,5 @@
 package fortscale.domain.ad;
 
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import fortscale.utils.json.JodaDateSerializer;
 import org.joda.time.DateTime;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
@@ -39,7 +37,6 @@ public class AdUserThumbnail implements Serializable {
 
 	@CreatedDate
 	@Field(CREATED_AT_FIELD_NAME)
-	@JsonSerialize(using = JodaDateSerializer.class)
 	private DateTime createdAt;
 
 	// Contains the users's photo in Base64 format
@@ -60,6 +57,14 @@ public class AdUserThumbnail implements Serializable {
 
 	public void setModifiedAt(DateTime modifiedAt) {
 		this.modifiedAt = modifiedAt;
+	}
+
+	public DateTime getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(DateTime createdAt) {
+		this.createdAt = createdAt;
 	}
 
 	public String getThumbnailPhoto() {
