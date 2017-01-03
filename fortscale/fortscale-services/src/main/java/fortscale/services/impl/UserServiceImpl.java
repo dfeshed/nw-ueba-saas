@@ -4,7 +4,7 @@ import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.ad.dao.AdUserThumbnailRepository;
+import fortscale.domain.ad.dao.AdUserThumbnailService;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
@@ -36,7 +36,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -66,7 +65,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private AdUserRepository adUserRepository;
 
 	@Autowired
-	private AdUserThumbnailRepository adUserThumbnailRepository;
+	private AdUserThumbnailService adUserThumbnailService;
 
 	@Autowired
 	private AdGroupRepository adGroupRepository;
@@ -359,10 +358,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.CREATED_AT_FIELD_NAME);
-		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailRepository.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
-		if(adUserThumbnails.size() > 0){
-			ret = adUserThumbnails.get(0).getThumbnailPhoto();
+		final AdUserThumbnail adUserThumbnail = adUserThumbnailService.findById(user.getAdInfo().getObjectGUID());
+		if(adUserThumbnail != null){
+			ret = adUserThumbnail.getThumbnailPhoto();
 		} else {
 			serviceMetrics.thumbnailNotFound++;
 		}
