@@ -225,7 +225,7 @@ public class ModelBuilderManagerTest {
         when(modelConf.getContextSelectorConf()).thenReturn(selectorConf);
         when(factoryService.getProduct(eq(selectorConf))).thenReturn(selector);
 		when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
-		when(selector.getHighScoreContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Arrays.asList(ids));
+		when(selector.getHighScoreContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(new HashSet<>(Arrays.asList(ids)));
 		for (int i = 0; i < ids.length; i++) {
 			mockBuild(ids[i], currentStartTime, currentEndTime, models[i], successes[i]);
 		}
