@@ -277,24 +277,24 @@ public abstract class FetchJob {
 	 */
 	private void updateMongoWithCurrentFetchProgress(boolean fetchSucceeded) {
 		if (fetchSucceeded) {
-			FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
-			latest = TimestampUtils.convertSplunkTimeToUnix(latest);
-			if (fetchConfiguration == null) {
-				fetchConfiguration = new FetchConfiguration(type, latest);
-			} else {
-				fetchConfiguration.setLastFetchTime(latest);
-			}
-			try {
-				fetchConfigurationRepository.save(fetchConfiguration);
-			} catch (OptimisticLockingFailureException ex) {
-				logger.warn("failed to save fetch configuration - {}", ex);
-			}
-			if (earliestDate != null && latestDate != null) {
-				if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
-					keepFetching = false;
-				}
-			}
-		}
+            FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
+            latest = TimestampUtils.convertSplunkTimeToUnix(latest);
+            if (fetchConfiguration == null) {
+                fetchConfiguration = new FetchConfiguration(type, latest);
+            } else {
+                fetchConfiguration.setLastFetchTime(latest);
+            }
+            try {
+                fetchConfigurationRepository.save(fetchConfiguration);
+            } catch (OptimisticLockingFailureException ex) {
+                logger.warn("failed to save fetch configuration - {}", ex);
+            }
+        }
+        if (earliestDate != null && latestDate != null) {
+            if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
+                keepFetching = false;
+            }
+        }
 	}
 
 	/**
