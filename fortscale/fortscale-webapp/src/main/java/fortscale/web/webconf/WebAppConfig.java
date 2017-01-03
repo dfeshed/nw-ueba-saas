@@ -29,7 +29,6 @@ import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -44,11 +43,13 @@ import java.util.*;
 @EnableSpringConfigured
 @EnableAnnotationConfiguration
 @EnableWebMvc
+//Scan and init all controllers
 @ComponentScan(basePackages = "fortscale", useDefaultFilters = false,
         includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
 )
 @ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
 @Import(GlobalConfiguration.class)
+//Load properties files:
 @PropertySource({"classpath:META-INF/application-config.properties","classpath:META-INF/entities-overriding.properties","classpath:META-INF/evidence.events.filtering.properties"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
@@ -149,6 +150,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .addResolver(new PathResourceResolver());
     }
 
+    /**
+     * Adding naming processor as argument resolver
+     * The naming processor init and register FortscaleCustomEditorService
+     */
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(renamingProcessor());
@@ -159,17 +164,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         return new RenamingProcessor(requestMappingHandlerAdapter,fortscaleCustomEditorService, true);
     }
 
-//    @Override
-//    public void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-//        configurer.enable();
-//    }
-
-//    @Override
-//    public void addInterceptors(InterceptorRegistry registry) {
-//        registry.addInterceptor(new MyCustomInterceptor())
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/foo/**");
-//    }
 
 
     @Override
@@ -178,37 +172,11 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
 
     }
-    @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
-        jsonView.setPrettyPrint(true);
 
-
-        registry.enableContentNegotiation(jsonView);
-
-
-
-    }
     /**
-     * Check if the cache period defined on mongo, is so use it, if not set the devault value to mongo and return it
+     * Init spring execption resolver
      * @return
      */
-    private int initCachePeriodValue() {
-        Integer cachePeriodConf = applicationConfigurationService.getApplicationConfigurationAsObject(CACHE_PERIOD_KEY, Integer.class);
-        if (cachePeriodConf == null){
-
-            applicationConfigurationService.insertConfigItemAsObject(CACHE_PERIOD_KEY, DEFAULT_CACHE_PERIOD_SECONDS);
-            return DEFAULT_CACHE_PERIOD_SECONDS;
-        } else {
-
-            return cachePeriodConf;
-        }
-    }
-
-
-
-
-
     @Bean(name = "exceptionHandlerExceptionResolver")
     public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver(){
         ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver = new ExceptionHandlerExceptionResolver();
@@ -216,6 +184,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         return  exceptionHandlerExceptionResolver;
     }
 
+    /**
+     * Init fortscale error resolver for rest not found exceptions
+     * @return
+     */
     @Bean(name="restExceptionResolver")
     RestExceptionHandler restExceptionResolver(){
         LocaleResolver localeResolver =  new org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver();
@@ -236,6 +208,32 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         handler.setErrorResolver(resolver);
         return handler;
     }
+
+    //Use JSON view resolver as the only viewer
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
+        jsonView.setPrettyPrint(true);
+
+
+        registry.enableContentNegotiation(jsonView);
+    }
+    /**
+     * Check if the cache period defined on mongo, is so use it, if not set the devault value to mongo and return it
+     * @return
+     */
+    private int initCachePeriodValue() {
+        Integer cachePeriodConf = applicationConfigurationService.getApplicationConfigurationAsObject(CACHE_PERIOD_KEY, Integer.class);
+        if (cachePeriodConf == null){
+
+            applicationConfigurationService.insertConfigItemAsObject(CACHE_PERIOD_KEY, DEFAULT_CACHE_PERIOD_SECONDS);
+            return DEFAULT_CACHE_PERIOD_SECONDS;
+        } else {
+
+            return cachePeriodConf;
+        }
+    }
+
 
     public ApplicationConfigurationService getApplicationConfigurationService() {
         return applicationConfigurationService;
