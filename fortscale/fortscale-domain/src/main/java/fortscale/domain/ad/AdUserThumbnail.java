@@ -28,21 +28,28 @@ public class AdUserThumbnail implements Serializable {
 	public static final String FIELD_VERSION_FIELD = "version";
 
 	@Id
-	private String id; //the GUID of the active directory user whose thumbnail we are representing
+	private String id; //the GUID (in base64) of the active directory user whose thumbnail we are representing
+
+	// Contains the users's photo in Base64 format
+	@Field(FIELD_THUMBNAIL_PHOTO)
+	private String thumbnailPhoto;
+
 
 	@LastModifiedDate
 	@Field(FIELD_MODIFIED_AT)
 	@Indexed(unique = false, expireAfterSeconds=7*60*60*24*2) // retention = 1 week
 	private Instant modifiedAt;
 
-	// Contains the users's photo in Base64 format
-	@Field(FIELD_THUMBNAIL_PHOTO)
-	private String thumbnailPhoto;
 
 	public String getId() {
 		return id;
 	}
 
+
+	/**
+	 * sets the the GUID (in base64) of the active directory user whose thumbnail we are representing as id
+	 * @param objectGuidAsId
+	 */
 	public void setId(String objectGuidAsId) {
 		this.id = objectGuidAsId;
 	}
@@ -76,5 +83,14 @@ public class AdUserThumbnail implements Serializable {
 	@Override
 	public int hashCode() {
 		return Objects.hash(id, thumbnailPhoto);
+	}
+
+	@Override
+	public String toString() {
+		return "AdUserThumbnail{" +
+				"id='" + id + '\'' +
+				", thumbnailPhoto='" + thumbnailPhoto + '\'' +
+				", modifiedAt=" + modifiedAt +
+				'}';
 	}
 }
