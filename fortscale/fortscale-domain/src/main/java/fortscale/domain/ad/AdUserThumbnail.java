@@ -1,9 +1,7 @@
 package fortscale.domain.ad;
 
-import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.data.annotation.Version;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -37,14 +35,6 @@ public class AdUserThumbnail implements Serializable {
 	@Indexed(unique = false, expireAfterSeconds=7*60*60*24*2) // retention = 1 week
 	private Instant modifiedAt;
 
-	@CreatedDate
-	@Field(FIELD_CREATED_AT)
-	private Instant createdAt;
-
-	@Version
-	@Field(FIELD_VERSION_FIELD)
-	private Long version;
-
 	// Contains the users's photo in Base64 format
 	@Field(FIELD_THUMBNAIL_PHOTO)
 	private String thumbnailPhoto;
@@ -63,14 +53,6 @@ public class AdUserThumbnail implements Serializable {
 
 	public void setModifiedAt(Instant modifiedAt) {
 		this.modifiedAt = modifiedAt;
-	}
-
-	public Instant getCreatedAt() {
-		return createdAt;
-	}
-
-	public void setCreatedAt(Instant createdAt) {
-		this.createdAt = createdAt;
 	}
 
 	public String getThumbnailPhoto() {
