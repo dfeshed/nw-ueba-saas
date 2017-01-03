@@ -95,7 +95,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         // Save latest processed timestamp in mongo application_configuration.
         // Do that at the end in case there is an error before
         Map<String, String> updateLastTimestamp = new HashMap<>();
-        updateLastTimestamp.put(APP_CONF_PREFIX + "." + LASTEST_TS, String.valueOf(latestTimestamp));
+        updateLastTimestamp.put(APP_CONF_PREFIX + "." + LATEST_TS, String.valueOf(latestTimestamp));
         applicationConfigurationService.updateConfigItems(updateLastTimestamp);
 
         logger.info("Processing of {} done. {} events, {} notifications, latest process time {} ({})", SERVICE_NAME,
@@ -107,7 +107,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 	/**
 	 * This method responsible on the fetching of the earliest event that this notification based on
-	 * @return
 	 * @throws InvalidQueryException
 	 */
 	protected long fetchEarliestEvent() throws InvalidQueryException {
@@ -135,8 +134,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     public void init() throws Exception {
 		tableToEntityIdAndIPField = new HashMap<>();
 		Map<String, DataEntity> entities;
-		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(new ImmutablePair(LASTEST_TS,
-				TS_PARAM)));
+		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Collections.singletonList(new ImmutablePair<>(LATEST_TS, TS_PARAM)));
 		try {
 			entities = dataEntitiesConfig.getAllLeafeEntities();
 		} catch (Exception ex) {
@@ -179,7 +177,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     }
 
     private void addUserActivity(JSONObject lateralMovement, String tableName, String username, String ip) {
-        //select * from tableName where username='#{username}' and ipfield = ip and date_time_unix>=#{start_time}
+        //select * from tableName where username='#{username}' and ipField = ip and date_time_unix>=#{start_time}
         // and date_time_unix<=#{end_time}
         try {
             String entityId = tableToEntityIdAndIPField.get(tableName).getLeft();
@@ -249,6 +247,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
         DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(dataEntity, "*", conditions, new ArrayList<>(), -1,
 				DataQueryDTOImpl.class);
 		List<Map<String, Object>> results = runQuery(dataQueryDTO);
+		if (results == null) {
+			logger.debug("runQuery returned null. Changing results to empty list.");
+			results = Collections.emptyList();
+		}
 		User user = userService.findByUsername(lateralMovement.getAsString(normalizedUsernameField));
 		for (Map<String, Object> result: results) {
 			if (user != null) {
@@ -357,8 +359,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
     /**
      * creates a lateral movement notification object from raw event returned from impala lateral movement query.
      * lateral movement notification object - a json object to send to evidence creation task as notification.
-     * @param lateralMovementEvent
-     * @return
      */
     private JSONObject createLateralMovementNotificationFromLateralMovementQueryEvent(
             VPNSessionEvent lateralMovementEvent) {
@@ -390,17 +390,11 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
                 return false;
             }
             final VPNSessionEvent other = (VPNSessionEvent)obj;
-            if (!this.normalizedUsername.equals(other.normalizedUsername)) {
-                return false;
-            }
-            if (!this.startTime.equals(other.startTime)) {
-                return false;
-            }
-            if (!this.endTime.equals(other.endTime)) {
-                return false;
-            }
-            return true;
-        }
+			return
+					this.normalizedUsername.equals(other.normalizedUsername) &&
+					this.startTime.equals(other.startTime) &&
+					this.endTime.equals(other.endTime);
+		}
 
         @Override
         public int hashCode() {

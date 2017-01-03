@@ -55,7 +55,6 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
 
     private String hostnameField;
     private String hostnameDomainMarkersString;
-    private Set<String> hostnameDomainMarkers;
 
     private String tableName;
 
@@ -89,7 +88,7 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
         // Save latest processed timestamp in mongo application_configuration.
         // Do that at the end in case there is an error before
         Map<String, String> updateLastTimestamp = new HashMap<>();
-        updateLastTimestamp.put(APP_CONF_PREFIX+"."+LASTEST_TS,String.valueOf(latestTimestamp));
+        updateLastTimestamp.put(APP_CONF_PREFIX+"."+ LATEST_TS,String.valueOf(latestTimestamp));
         applicationConfigurationService.updateConfigItems(updateLastTimestamp);
 
         logger.info("Processing of {} done. {} events, {} notifications.Latest process time {} ({})", SERVICE_NAME,
@@ -106,25 +105,23 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
         initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(
-				new ImmutablePair(LASTEST_TS, TS_PARAM),
-                new ImmutablePair("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
-                new ImmutablePair("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
-                new ImmutablePair("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
+				new ImmutablePair<>(LATEST_TS, TS_PARAM),
+                new ImmutablePair<>("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
+                new ImmutablePair<>("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
+                new ImmutablePair<>("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
 
-        this.hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
+        Set<String> hostnameDomainMarkers = new HashSet<>(Arrays.asList(this.hostnameDomainMarkersString.split(",")));
         this.tableName = dataEntitiesConfig.getEntityTable(dataEntity);
         //Init from bean name after fetch from configuration
-        FieldManipulator fielManipulator = applicationContext.getBean(fieldManipulatorBeanName,FieldManipulator.class);
-        this.hostnameCondition = fielManipulator.getManipulatedFieldCondition(hostnameField,hostnameDomainMarkers);
+        FieldManipulator fieldManipulator = applicationContext.getBean(fieldManipulatorBeanName,FieldManipulator.class);
+        this.hostnameCondition = fieldManipulator.getManipulatedFieldCondition(hostnameField,hostnameDomainMarkers);
 
 
     }
 
     private List<JSONObject> addRawEventsToCredsShare( List<JSONObject> credsShareNotifications ) {
 
-        for (JSONObject credsShare: credsShareNotifications){
-            addRawEvents(credsShare);
-        }
+        credsShareNotifications.forEach(this::addRawEvents);
         return credsShareNotifications;
     }
 
@@ -144,16 +141,15 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
             rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
             logger.info("Running the query: {}", rawEventsQuery);
         } catch (InvalidQueryException e) {
-            logger.debug("bad supporting information query: ",e.getMessage());
+            logger.debug("Bad supporting information query. Not adding raw events.", e);
         }
         // execute Query
-        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(rawEventsQuery);
+        List<Map<String, Object>> queryList = dataQueryRunner == null ? Collections.emptyList() : dataQueryRunner.executeQuery(rawEventsQuery);
 
         //extract the supporting information
         List<VpnSessionOverlap> rawEvents = new ArrayList<>();
-        for (Map<String, Object> rawEvent : queryList) { // each map is a single event, each pair is column and value
-            rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent));
-        }
+        // each map is a single event, each pair is column and value
+        queryList.forEach(rawEvent -> rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent)));
         credsShare.put(notificationSupportingInformationField, rawEvents);
         credsShare.put(notificationNumOfEventsField, rawEvents.size());
     }
@@ -255,8 +251,6 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
     /**
      * creates a creds share notification object from raw event returned from impala creds share query.
      * creds share notification object - a json object to send to evidence creation task as notification.
-     * @param credsShareEvent
-     * @return
      */
     private JSONObject createCredsShareNotificationFromCredsShareQueryEvent(Map<String, Object> credsShareEvent) {
 
@@ -274,8 +268,6 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
 
     /**
      * creates supporting information single event for creds share - a vpnSessionOverlap object.
-     * @param impalaEvent
-     * @return
      */
     private VpnSessionOverlap createVpnSessionOverlapFromImpalaRow(Map<String, Object> impalaEvent){
 
@@ -304,13 +296,7 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
         this.hostnameField = hostnameField;
     }
 
-    public String getHostnameDomainMarkersString() {
-        return hostnameDomainMarkersString;
-    }
 
-    public void setHostnameDomainMarkersString(String hostnameDomainMarkersString) {
-        this.hostnameDomainMarkersString = hostnameDomainMarkersString;
-    }
 
     public String getTableName() {
         return tableName;
@@ -329,25 +315,12 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
     }
 
 
-    public int getNumberOfConcurrentSessions() {
-        return numberOfConcurrentSessions;
-    }
 
-    public void setNumberOfConcurrentSessions(int numberOfConcurrentSessions) {
-        this.numberOfConcurrentSessions = numberOfConcurrentSessions;
-    }
-
-    public String getFieldManipulatorBeanName() {
-        return fieldManipulatorBeanName;
-    }
-
-    public void setFieldManipulatorBeanName(String fieldManipulatorBeanName) {
-        this.fieldManipulatorBeanName = fieldManipulatorBeanName;
-    }
 
     /**
-	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for cred sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic from the first event time
-	 * @return
+	 * This method responsible on the fetching of the earliest event that this notification based on i.e - for cred
+     * sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic
+     * from the first event time.
 	 * @throws InvalidQueryException
 	 */
     protected long fetchEarliestEvent() throws  InvalidQueryException{
@@ -374,4 +347,35 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
         this.applicationContext = applicationContext;
     }
 
+    /** Unused getters and setters. */
+
+    @SuppressWarnings("unused")
+    public String getHostnameDomainMarkersString() {
+        return hostnameDomainMarkersString;
+    }
+
+    @SuppressWarnings("unused")
+    public void setHostnameDomainMarkersString(String hostnameDomainMarkersString) {
+        this.hostnameDomainMarkersString = hostnameDomainMarkersString;
+    }
+
+    @SuppressWarnings("unused")
+    public int getNumberOfConcurrentSessions() {
+        return numberOfConcurrentSessions;
+    }
+
+    @SuppressWarnings("unused")
+    public void setNumberOfConcurrentSessions(int numberOfConcurrentSessions) {
+        this.numberOfConcurrentSessions = numberOfConcurrentSessions;
+    }
+
+    @SuppressWarnings("unused")
+    public String getFieldManipulatorBeanName() {
+        return fieldManipulatorBeanName;
+    }
+
+    @SuppressWarnings("unused")
+    public void setFieldManipulatorBeanName(String fieldManipulatorBeanName) {
+        this.fieldManipulatorBeanName = fieldManipulatorBeanName;
+    }
 }

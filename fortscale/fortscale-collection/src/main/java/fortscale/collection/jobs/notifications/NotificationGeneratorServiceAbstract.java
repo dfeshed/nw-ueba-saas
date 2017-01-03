@@ -26,16 +26,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by shays on 14/03/2016.
- */
 public abstract class NotificationGeneratorServiceAbstract implements  NotificationGeneratorService {
 
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	protected static final int WEEK_IN_SECONDS = 604800;
 	protected static final int DAY_IN_SECONDS = 86400;
-	protected static final String LASTEST_TS = "latest_ts";
+	protected static final String LATEST_TS = "latest_ts";
 	protected static final String TS_PARAM = "latestTimestamp";
 	protected static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 	protected static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10);
@@ -84,7 +81,7 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 	protected abstract long fetchEarliestEvent() throws InvalidQueryException;
 
     /**
-     * @return boolean, true is completed successfuly, or false if some error took place
+     * @return boolean, true is completed successfully, or false if some error took place
      * @throws Exception
      */
     public boolean generateNotification() throws Exception {
@@ -103,7 +100,6 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 
     /**
      * Once new notification created, send it to kafka
-     * @param notifications
      */
     private void sendNotificationsToKafka(List<JSONObject> notifications) {
         logger.info("Create writer to topic evidence ");
@@ -123,7 +119,6 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 
     /**
      * check if there is new data to process, newest data then last execution
-     * @return
      * @throws InvalidQueryException
      */
     protected void figureLatestRunTime() throws InvalidQueryException {
@@ -141,15 +136,14 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
                                                                  List<Pair<String, String>> list)
 			throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         List<Pair<String, String>> parameters = new ArrayList<>();
-        parameters.add(new ImmutablePair("notificationScoreField", "notificationScoreField"));
-        parameters.add(new ImmutablePair("notificationTypeField", "notificationTypeField"));
-        parameters.add(new ImmutablePair("notificationValueField", "notificationValueField"));
-        parameters.add(new ImmutablePair("notificationStartTimestampField", "notificationStartTimestampField"));
-        parameters.add(new ImmutablePair("normalizedUsernameField", "normalizedUsernameField"));
-        parameters.add(new ImmutablePair("notificationSupportingInformationField",
-                "notificationSupportingInformationField"));
-        parameters.add(new ImmutablePair("notificationDataSourceField", "notificationDataSourceField"));
-        parameters.add(new ImmutablePair("notificationFixedScore", "notificationFixedScore"));
+        parameters.add(new ImmutablePair<>("notificationScoreField", "notificationScoreField"));
+        parameters.add(new ImmutablePair<>("notificationTypeField", "notificationTypeField"));
+        parameters.add(new ImmutablePair<>("notificationValueField", "notificationValueField"));
+        parameters.add(new ImmutablePair<>("notificationStartTimestampField", "notificationStartTimestampField"));
+        parameters.add(new ImmutablePair<>("normalizedUsernameField", "normalizedUsernameField"));
+        parameters.add(new ImmutablePair<>("notificationSupportingInformationField", "notificationSupportingInformationField"));
+        parameters.add(new ImmutablePair<>("notificationDataSourceField", "notificationDataSourceField"));
+        parameters.add(new ImmutablePair<>("notificationFixedScore", "notificationFixedScore"));
         parameters.addAll(list);
 		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, parameters);
 	}
@@ -190,84 +184,12 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 		return 0L;
 	}
 
-    public long getLatestTimestamp() {
-        return latestTimestamp;
-    }
-
-    public void setLatestTimestamp(long latestTimestamp) {
-        this.latestTimestamp = latestTimestamp;
-    }
-
-    public String getNotificationScoreField() {
-        return notificationScoreField;
-    }
-
-    public void setNotificationScoreField(String notificationScoreField) {
-        this.notificationScoreField = notificationScoreField;
-    }
-
-    public String getNotificationValueField() {
-        return notificationValueField;
-    }
-
-    public void setNotificationValueField(String notificationValueField) {
-        this.notificationValueField = notificationValueField;
-    }
-
     public String getNormalizedUsernameField() {
         return normalizedUsernameField;
     }
 
     public void setNormalizedUsernameField(String normalizedUsernameField) {
         this.normalizedUsernameField = normalizedUsernameField;
-    }
-
-    public String getNotificationDataSourceField() {
-        return notificationDataSourceField;
-    }
-
-    public void setNotificationDataSourceField(String notificationDataSourceField) {
-        this.notificationDataSourceField = notificationDataSourceField;
-    }
-
-    public String getNotificationStartTimestampField() {
-        return notificationStartTimestampField;
-    }
-
-    public void setNotificationStartTimestampField(String notificationStartTimestampField) {
-        this.notificationStartTimestampField = notificationStartTimestampField;
-    }
-
-    public String getNotificationEndTimestampField() {
-        return notificationEndTimestampField;
-    }
-
-    public void setNotificationEndTimestampField(String notificationEndTimestampField) {
-        this.notificationEndTimestampField = notificationEndTimestampField;
-    }
-
-    public String getNotificationTypeField() {
-        return notificationTypeField;
-    }
-
-    public void setNotificationTypeField(String notificationTypeField) {
-        this.notificationTypeField = notificationTypeField;
-    }
-
-    public String getNotificationSupportingInformationField() {
-        return notificationSupportingInformationField;
-    }
-
-    public void setNotificationSupportingInformationField(String notificationSupportingInformationField) {
-        this.notificationSupportingInformationField = notificationSupportingInformationField;
-    }
-
-    public void setNotificationFixedScore(double notificationFixedScore) {
-        this.notificationFixedScore = notificationFixedScore;
-    }
-
-    public double getNotificationFixedScore() {
-        return notificationFixedScore;
     }
 
 	public void setDataEntity(String dataEntity) {
@@ -278,4 +200,95 @@ public abstract class NotificationGeneratorServiceAbstract implements  Notificat
 		return dataEntity;
 	}
 
+	/** Unused getters and setters. */
+	
+	@SuppressWarnings("unused")
+	public long getLatestTimestamp() {
+		return latestTimestamp;
+	}
+
+	@SuppressWarnings("unused")
+	public void setLatestTimestamp(long latestTimestamp) {
+		this.latestTimestamp = latestTimestamp;
+	}
+
+	@SuppressWarnings("unused")
+	public String getNotificationScoreField() {
+		return notificationScoreField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationScoreField(String notificationScoreField) {
+		this.notificationScoreField = notificationScoreField;
+	}
+
+	@SuppressWarnings("unused")
+	public String getNotificationValueField() {
+		return notificationValueField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationValueField(String notificationValueField) {
+		this.notificationValueField = notificationValueField;
+	}
+
+	@SuppressWarnings("unused")
+	public String getNotificationDataSourceField() {
+		return notificationDataSourceField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationDataSourceField(String notificationDataSourceField) {
+		this.notificationDataSourceField = notificationDataSourceField;
+	}
+
+	@SuppressWarnings("unused")
+	public String getNotificationStartTimestampField() {
+		return notificationStartTimestampField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationStartTimestampField(String notificationStartTimestampField) {
+		this.notificationStartTimestampField = notificationStartTimestampField;
+	}
+
+	@SuppressWarnings("unused")
+	public String getNotificationEndTimestampField() {
+		return notificationEndTimestampField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationEndTimestampField(String notificationEndTimestampField) {
+		this.notificationEndTimestampField = notificationEndTimestampField;
+	}
+
+	@SuppressWarnings("unused")
+	public String getNotificationTypeField() {
+		return notificationTypeField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationTypeField(String notificationTypeField) {
+		this.notificationTypeField = notificationTypeField;
+	}
+
+	@SuppressWarnings("unused")
+	public String getNotificationSupportingInformationField() {
+		return notificationSupportingInformationField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationSupportingInformationField(String notificationSupportingInformationField) {
+		this.notificationSupportingInformationField = notificationSupportingInformationField;
+	}
+
+	@SuppressWarnings("unused")
+	public void setNotificationFixedScore(double notificationFixedScore) {
+		this.notificationFixedScore = notificationFixedScore;
+	}
+
+	@SuppressWarnings("unused")
+	public double getNotificationFixedScore() {
+		return notificationFixedScore;
+	}
 }
