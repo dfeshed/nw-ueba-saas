@@ -20,6 +20,7 @@ import org.springframework.http.MediaType;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
@@ -33,9 +34,7 @@ import java.util.*;
 
 /**
  * Created by shays on 01/01/2017.
- *
- * Java Configuration that replacing parts of webapp-config.xml
- * Todo: should move all configurations webapp-config.xml and remove the file when done (opened Jira https://fortscale.atlassian.net/browse/FV-13388)
+ * Load webapp spring context
  */
 
 
@@ -54,9 +53,6 @@ import java.util.*;
 public class WebAppConfig extends WebMvcConfigurerAdapter {
 
 
-
-
-
     public static final int DEFAULT_CACHE_PERIOD_SECONDS = 3600 * 24; //Default time to keep resource in seconds
     public static final String CACHE_PERIOD_KEY= "webapp.configurations.cache_time_period";
 
@@ -65,15 +61,8 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
-    @Autowired
-    private RequestMappingHandlerAdapter requestMappingHandlerAdapter;
 
-    @Autowired
-    private FortscaleCustomEditorService fortscaleCustomEditorService;
 
-    /**
-     *
-     */
     /**
      * tells the browser to save the resource for X seconds by define cache-ontrol header with max-age
      *
@@ -81,6 +70,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
      */
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
         int cachePeriodConf  = initCachePeriodValue();
         logger.info("Control-Cache/Max-Age for static resource set to {}",cachePeriodConf);
 
@@ -157,11 +147,18 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
         argumentResolvers.add(renamingProcessor());
+
+    }
+
+
+    @Bean
+    FortscaleCustomEditorService fortscaleCustomEditorService(){
+        return new FortscaleCustomEditorService();
     }
 
     @Bean
     public RenamingProcessor renamingProcessor(){
-        return new RenamingProcessor(requestMappingHandlerAdapter,fortscaleCustomEditorService, true);
+        return new RenamingProcessor(true);
     }
 
 
@@ -173,12 +170,21 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     }
 
+
+    @Override
+    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        super.configureHandlerExceptionResolvers(exceptionResolvers);
+        exceptionResolvers.add(exceptionHandlerExceptionResolver());
+        exceptionResolvers.add(restExceptionResolver());
+    }
+
     /**
      * Init spring execption resolver
      * @return
      */
-    @Bean(name = "exceptionHandlerExceptionResolver")
+    //@Bean(name = "exceptionHandlerExceptionResolver")
     public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver(){
+
         ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver = new ExceptionHandlerExceptionResolver();
         exceptionHandlerExceptionResolver.setOrder(0);
         return  exceptionHandlerExceptionResolver;
@@ -188,7 +194,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
      * Init fortscale error resolver for rest not found exceptions
      * @return
      */
-    @Bean(name="restExceptionResolver")
+    //@Bean(name="restExceptionResolver")
     RestExceptionHandler restExceptionResolver(){
         LocaleResolver localeResolver =  new org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver();
 
@@ -234,28 +240,4 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         }
     }
 
-
-    public ApplicationConfigurationService getApplicationConfigurationService() {
-        return applicationConfigurationService;
-    }
-
-    public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
-        this.applicationConfigurationService = applicationConfigurationService;
-    }
-
-    public RequestMappingHandlerAdapter getRequestMappingHandlerAdapter() {
-        return requestMappingHandlerAdapter;
-    }
-
-    public void setRequestMappingHandlerAdapter(RequestMappingHandlerAdapter requestMappingHandlerAdapter) {
-        this.requestMappingHandlerAdapter = requestMappingHandlerAdapter;
-    }
-
-    public FortscaleCustomEditorService getFortscaleCustomEditorService() {
-        return fortscaleCustomEditorService;
-    }
-
-    public void setFortscaleCustomEditorService(FortscaleCustomEditorService fortscaleCustomEditorService) {
-        this.fortscaleCustomEditorService = fortscaleCustomEditorService;
-    }
 }
