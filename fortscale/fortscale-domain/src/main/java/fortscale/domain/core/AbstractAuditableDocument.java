@@ -21,15 +21,15 @@ public class AbstractAuditableDocument extends AbstractDocument {
 
 	@Version
 	@Field(VERSION_FIELD_NAME)
-    private Long version;
+    protected Long version;
 	
     @CreatedDate
     @Field(CREATED_AT_FIELD_NAME)
-    private DateTime createdAt;
+	protected DateTime createdAt;
     
 	@LastModifiedDate
 	@Field(LAST_MODIFIED_FIELD_NAME)
-    private DateTime lastModified;
+	protected DateTime lastModified;
 
 	@Override
 	public String toString() {
