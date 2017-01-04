@@ -40,7 +40,8 @@ public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
 	@EnableAnnotationConfiguration
-	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder",excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = "fortscale.ml.model.selector.AlertTriggeringHighScoreContextSelectorTest"))
+	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder",
+			excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = "fortscale.ml.model.selector.AlertTriggeringHighScoreContextSelectorTest*"))
 	@Import(NullStatsServiceConfig.class)
 	static class ContextConfiguration {
 		@Mock private FeatureBucketsReaderService featureBucketsReaderService;

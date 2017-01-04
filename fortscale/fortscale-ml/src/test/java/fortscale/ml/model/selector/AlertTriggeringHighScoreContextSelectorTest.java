@@ -6,15 +6,15 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.Profile;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -24,33 +24,25 @@ import java.util.Set;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@ActiveProfiles("test")
 public class AlertTriggeringHighScoreContextSelectorTest {
 
     @Configuration
+    @Profile("test")
     @Import({AlertTriggeringHighScoreContextSelectorTestConfig.class})
     public static class springConfigTest
     {
         @Bean
-        public AlertTriggeringHighScoreContextSelector alertTriggeringHighScoreContextSelector ()
+        public AlertTriggeringHighScoreContextTestSelector alertTriggeringHighScoreContextTestSelector ()
         {
-            return new SomeSelector();
+            return new AlertTriggeringHighScoreContextTestSelector();
         }
-
-        @Configurable(preConstruction = true)
-        public class SomeSelector extends AlertTriggeringHighScoreContextSelector
-        {
-            @Override
-            public List<String> getContexts(Date startTime, Date endTime) {
-                return Arrays.asList("user1","user2","user3");
-            }
-        }
-
     }
 
     @Autowired
     private AlertsRepository alertsRepository;
     @Autowired
-    private AlertTriggeringHighScoreContextSelector selector;
+    private AlertTriggeringHighScoreContextTestSelector selector;
 
     @Test
     public void selectorShouldPerformContextsIntersection()

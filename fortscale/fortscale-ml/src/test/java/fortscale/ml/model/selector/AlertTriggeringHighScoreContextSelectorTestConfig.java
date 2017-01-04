@@ -10,6 +10,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
  * Created by baraks on 1/4/2017.
  */
 @Configuration
+@Profile("test")
 @Import(MongodbTestConfig.class)
 @EnableMongoRepositories(basePackageClasses = AlertsRepository.class,
         includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes= AlertsRepository.class))
