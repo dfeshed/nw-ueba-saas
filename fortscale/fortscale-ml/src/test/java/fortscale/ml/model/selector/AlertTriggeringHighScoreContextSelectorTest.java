@@ -74,7 +74,7 @@ public class AlertTriggeringHighScoreContextSelectorTest {
         Date startDate = Date.from(startDateInstant);
         Date endDate = Date.from(endDateInstant);
         Set<String> highScoreContexts = selector.getHighScoreContexts(startDate, endDate);
-        Assert.assertEquals(highScoreContexts.size(),1);
+        Assert.assertEquals(1,highScoreContexts.size());
         Assert.assertTrue(highScoreContexts.contains(entityId));
 
 

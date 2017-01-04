@@ -26,8 +26,8 @@ public abstract class AlertTriggeringHighScoreContextSelector implements IContex
 
 		// model contexts will contain the intersection between contexts that are relevant to the model and those that have alert
 		if (modelContexts != null && !modelContexts.isEmpty() ) {
-			modelContexts.retainAll(alertContexts);
+			alertContexts.retainAll(modelContexts);
 		}
-		return modelContexts;
+		return alertContexts;
 	}
 }
