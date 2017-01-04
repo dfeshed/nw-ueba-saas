@@ -1621,13 +1621,13 @@
             "selected": false
           },
           {
-            "text": "aggr_normalized_db_object_oracle_daily",
-            "value": "aggr_normalized_db_object_oracle_daily",
+            "text": "aggr_db_object_oracle_daily",
+            "value": "aggr_db_object_oracle_daily",
             "selected": false
           },
           {
-            "text": "aggr_normalized_db_usernames_oracle_daily",
-            "value": "aggr_normalized_db_usernames_oracle_daily",
+            "text": "aggr_db_usernames_oracle_daily",
+            "value": "aggr_db_usernames_oracle_daily",
             "selected": false
           },
           {
@@ -1748,16 +1748,6 @@
           {
             "text": "aggr_target_machine_prnlog_daily",
             "value": "aggr_target_machine_prnlog_daily",
-            "selected": false
-          },
-          {
-            "text": "aggr_normalized_db_object_oracle_hourly",
-            "value": "aggr_normalized_db_object_oracle_hourly",
-            "selected": false
-          },
-          {
-            "text": "aggr_normalized_db_username_oracle_hourly",
-            "value": "aggr_normalized_db_username_oracle_hourly",
             "selected": false
           },
           {
