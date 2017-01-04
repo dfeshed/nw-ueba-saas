@@ -148,8 +148,10 @@ public class ModelBasedScoreMapperFactoryTest {
 						}
 
 						@Override
-						public List<String> getHighScoreContexts(Date startTime, Date endTime) {
-							return Collections.singletonList("some_user_context");
+						public Set<String> getHighScoreContexts(Date startTime, Date endTime) {
+							HashSet<String> result = new HashSet<>();
+							result.add("some_user_context");
+							return result;
 						}
 					});
 		}
