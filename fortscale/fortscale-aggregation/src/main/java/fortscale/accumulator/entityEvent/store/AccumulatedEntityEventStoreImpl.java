@@ -121,6 +121,23 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
         return accumulatedEntityEvents;
     }
 
+    @Override
+    public List<String> findDistinctContextsByTimeRange(EntityEventConf entityEventConf, Instant startTime, Instant endTime) {
+        String entityEventConfName = entityEventConf.getName();
+        logger.debug("finding distinct contexts by entityEventConfName={} startTime={} endTime={} ",
+                entityEventConfName, startTime, endTime);
+
+        String collectionName = translator.toAcmCollectionName(entityEventConfName);
+        getMetrics(collectionName).selectorCalls++;
+        Query query = new Query();
+        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME).gte(startTime));
+        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_END_TIME).lte(endTime));
+        List <String> distinctContexts = mongoTemplate.getCollection(collectionName).distinct(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID, query.getQueryObject());
+        logger.debug("found distinct contexts: {}",Arrays.toString(distinctContexts.toArray()));
+        return distinctContexts;
+
+    }
+
     /**
      * creates metrics for feature if none exists and returns it
      *

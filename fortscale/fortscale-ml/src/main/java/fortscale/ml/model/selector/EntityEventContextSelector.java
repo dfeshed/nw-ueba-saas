@@ -30,7 +30,7 @@ public class EntityEventContextSelector extends AlertTriggeringHighScoreContextS
 	}
 	@Override
 	public List<String> getContexts(Date startTime, Date endTime) {
-		return entityEventDataReaderService.findDistinctContextsByTimeRange(
+		return entityEventDataReaderService.findDistinctAcmContextsByTimeRange(
 				entityEventConf, startTime, endTime);
 	}
 }

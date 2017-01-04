@@ -1,5 +1,6 @@
 package fortscale.aggregation.feature.event.store;
 
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
 import fortscale.aggregation.feature.event.AggrEvent;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,11 +12,19 @@ import java.util.Map;
 public class AggregatedFeatureEventsReaderService {
 	@Autowired
 	private AggregatedFeatureEventsMongoStore aggregatedFeatureEventsMongoStore;
+	@Autowired
+	private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
 
 	public List<String> findDistinctContextsByTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
 
 		return aggregatedFeatureEventsMongoStore.findDistinctContextsByTimeRange(
+				aggregatedFeatureEventConf, startTime, endTime);
+	}
+	public List<String> findDistinctAcmContextsByTimeRange(
+			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
+
+		return accumulatedAggregatedFeatureEventStore.findDistinctContextsByTimeRange(
 				aggregatedFeatureEventConf, startTime, endTime);
 	}
 

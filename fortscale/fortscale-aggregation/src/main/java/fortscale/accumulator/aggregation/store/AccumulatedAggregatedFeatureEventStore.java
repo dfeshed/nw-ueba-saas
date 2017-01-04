@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 
 import java.time.Instant;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -20,4 +21,6 @@ public interface AccumulatedAggregatedFeatureEventStore {
 			String contextId,
 			Instant startTime,
 			Instant endTime);
+
+	List<String> findDistinctContextsByTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime);
 }
