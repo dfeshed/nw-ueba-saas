@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 @Configurable(preConstruction = true)
 public abstract class AlertTriggeringHighScoreContextSelector implements IContextSelector {
 	@Autowired
-	private AlertsRepository alertsRepository;
+	protected AlertsRepository alertsRepository;
 
 	@Override
 	public Set<String> getHighScoreContexts(Date startTime, Date endTime) {

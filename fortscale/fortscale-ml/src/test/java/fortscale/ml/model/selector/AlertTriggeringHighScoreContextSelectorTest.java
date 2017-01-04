@@ -2,16 +2,14 @@ package fortscale.ml.model.selector;
 
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.MongoDbRepositoryUtil;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
-import org.springframework.context.annotation.*;
-import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-import org.springframework.test.context.ActiveProfiles;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -26,23 +24,12 @@ import java.util.Set;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
-@ActiveProfiles("test")
 public class AlertTriggeringHighScoreContextSelectorTest {
 
-
-    @Profile("test")
     @Configuration
-    @Import({MongodbTestConfig.class})
-    @EnableMongoRepositories(basePackageClasses = AlertsRepository.class,
-            includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes= AlertsRepository.class))
+    @Import({AlertTriggeringHighScoreContextSelectorTestConfig.class})
     public static class springConfigTest
     {
-        @Bean
-        public MongoDbRepositoryUtil mongoDbRepositoryUtil()
-        {
-            return new MongoDbRepositoryUtil();
-        }
-
         @Bean
         public AlertTriggeringHighScoreContextSelector alertTriggeringHighScoreContextSelector ()
         {
@@ -50,7 +37,7 @@ public class AlertTriggeringHighScoreContextSelectorTest {
         }
 
         @Configurable(preConstruction = true)
-        private class SomeSelector extends AlertTriggeringHighScoreContextSelector
+        public class SomeSelector extends AlertTriggeringHighScoreContextSelector
         {
             @Override
             public List<String> getContexts(Date startTime, Date endTime) {
