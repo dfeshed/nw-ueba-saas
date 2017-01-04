@@ -34,7 +34,7 @@ public class AlertTriggeringHighScoreContextSelectorTest {
     @Configuration
     @Import({MongodbTestConfig.class})
     @EnableMongoRepositories(basePackageClasses = AlertsRepository.class,
-            includeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.domain.core.dao.AlertsRepository"))
+            includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes= AlertsRepository.class))
     public static class springConfigTest
     {
         @Bean
