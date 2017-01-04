@@ -10,7 +10,10 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Component
 public class ImpalaClient {
@@ -121,9 +124,14 @@ public class ImpalaClient {
 		List<Map<String, Object>> result = impalaJdbcTemplate.queryForList(sql);
 		Set<String> tableNames = new HashSet();
 		for (Map<String, Object> entry: result) {
-			tableNames.add((String)entry.get("name"));
+			tableNames.add((String)entry.get(tableNameColumn()));
 		}
 		return tableNames;
+	}
+
+
+	protected String tableNameColumn() {
+		return "name";
 	}
 
 	public boolean isTableExists(String tableViewName) {

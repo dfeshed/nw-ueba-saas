@@ -3,7 +3,10 @@ package fortscale.services.impl;
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.domain.core.*;
+import fortscale.domain.email.AlertSummary;
+import fortscale.domain.email.EmailGroup;
 import fortscale.domain.email.Frequency;
+import fortscale.domain.email.NewAlert;
 import fortscale.services.AlertsService;
 import fortscale.services.LocalizationService;
 import fortscale.services.UserService;
@@ -71,12 +74,14 @@ public class AlertEmailServiceTest {
 		emailConfig.put(EmailServiceImpl.USERNAME_KEY, "");
 		emailConfig.put(EmailServiceImpl.PASSWORD_KEY, "");
 		emailConfig.put(EmailServiceImpl.PORT_KEY, "25");
-		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp-relay-not-exists.gmail.com");
-		emailConfig.put(EmailServiceImpl.AUTH_KEY, "none");
+		emailConfig.put(EmailServiceImpl.HOST_KEY, "smtp.gmail.com");
+		emailConfig.put(EmailServiceImpl.AUTH_KEY, "tsl");
 		String emailGroups = "[{\"users\":[\"amirk@fortscale.com\"],\"summary\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"],\"frequencies\":[\"Daily\",\"Weekly\",\"Monthly\"]},\"newAlert\":{\"severities\":[\"Critical\",\"High\",\"Medium\",\"Low\"]}}]";
 
 		ApplicationConfiguration applicationConfiguration = new ApplicationConfiguration();
 		applicationConfiguration.setValue(emailGroups);
+
+
 		ApplicationConfiguration languageConfiguration = new ApplicationConfiguration();
 		languageConfiguration.setValue("en");
 		ApplicationConfiguration messageConfiguration = new ApplicationConfiguration();
@@ -109,6 +114,13 @@ public class AlertEmailServiceTest {
 		doNothing().when(emailServiceImpl).loadEmailConfiguration();
 		when(applicationConfigurationService.getApplicationConfiguration(AlertEmailServiceImpl.CONFIGURATION_KEY)).
 				thenReturn(applicationConfiguration);
+
+		EmailGroup emailGroup1 = getEmailGroup();
+		when(applicationConfigurationService.getApplicationConfigurationAsObjects(AlertEmailServiceImpl.CONFIGURATION_KEY, EmailGroup.class)).thenReturn(Arrays.asList(emailGroup1));
+
+
+
+
 		when(localizationService.getIndicatorName(any(Evidence.class))).thenReturn("Failure Code Anomaly");
 		when(applicationConfigurationService.getApplicationConfiguration("messages.en.evidence.failure_code")).
 				thenReturn(messageConfiguration);
@@ -129,6 +141,22 @@ public class AlertEmailServiceTest {
 			}
 		});
 
+	}
+
+	private EmailGroup getEmailGroup() {
+		AlertSummary summary = new AlertSummary();
+		summary.setFrequencies(Arrays.asList(Frequency.Daily, Frequency.Weekly, Frequency.Monthly));
+		summary.setSeverities(Arrays.asList(Severity.Critical.name(), Severity.High.name(), Severity.Medium.name(), Severity.Low.name()));
+
+
+		EmailGroup emailGroup1=new EmailGroup();
+		emailGroup1.setUsers(new String[]{"fortscaleuser@gmail.com"});
+		emailGroup1.setSummary(summary);
+
+		NewAlert alert = new NewAlert();
+		alert.setSeverities(Arrays.asList(Severity.Critical.name(), Severity.High.name(), Severity.Medium.name(), Severity.Low.name()));
+		emailGroup1.setNewAlert(alert);
+		return emailGroup1;
 	}
 
 	@Test

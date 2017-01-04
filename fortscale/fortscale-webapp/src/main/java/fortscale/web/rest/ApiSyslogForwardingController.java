@@ -1,5 +1,6 @@
 package fortscale.web.rest;
 
+import com.cloudbees.syslog.MessageFormat;
 import fortscale.services.ForwardingService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
@@ -29,6 +30,7 @@ import java.util.List;
 	private final static String ALERT_SEVERITY = "alert_severities";
 	private final static String START_TIME = "start_time";
 	private final static String END_TIME = "end_time";
+	private static final String MESSAGE_FORMAT = "message_format";
 
 	/**
 	 * Alert forwarding service (for forwarding new alerts)
@@ -46,8 +48,13 @@ import java.util.List;
 			String[] alertSeverity = jsonArrayToStringArray(params.getJSONArray(ALERT_SEVERITY));
 			long startTime = params.getLong(START_TIME);
 			long endTime = params.getLong(END_TIME);
+			MessageFormat messageFormat = (MessageFormat) params.get(MESSAGE_FORMAT);
+			if (messageFormat == null){
+				messageFormat = MessageFormat.RFC_3164;
+				logger.debug("Received no message format, using default format - {}", messageFormat);
+			}
 			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(ip, port, forwardingType,
-					userTags, alertSeverity, startTime, endTime);
+					userTags, alertSeverity, startTime, endTime, messageFormat);
 			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " + numberOfForwardedAlerts + " Alerts\"}");
 		} catch (Exception e) {
 			return ResponseEntity.badRequest().body("{ \"message\": \"" + "Error forwarding alerts.  " + e.getMessage() + " \"}");

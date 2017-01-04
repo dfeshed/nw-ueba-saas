@@ -146,24 +146,33 @@ public class AdFetchJob extends FortscaleJob {
 		return true;
 	}
 
-	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values)
+	private boolean appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values)
 			throws IOException {
+		boolean appendNewLineResult = false;
 		boolean first = true;
 		while (values.hasMoreElements()) {
 			String value = (String)values.nextElement();
-			appendSingleAttributeElement(fileWriter, key, first, value);
+			if (!first) {
+				fileWriter.append("\n");
+			}
+			appendSingleAttributeElement(fileWriter, key, value);
 			first = false;
+			appendNewLineResult=true;
 		}
+
+		return appendNewLineResult;
 	}
 
-	private void appendSingleAttributeElement(BufferedWriter fileWriter, String key, boolean first, String value) throws IOException {
+	private boolean appendSingleAttributeElement(BufferedWriter fileWriter, String key, String value) throws IOException {
+
+		if (value == null)
+			return false;
+
 		if (value.contains("\n") || value.contains("\r")) {
             value = DatatypeConverter.printBase64Binary(value.getBytes());
         }
-		if (!first) {
-			fileWriter.append("\n");
-        }
 		fileWriter.append(key).append(": ").append(value);
+		return true;
 
 	}
 
@@ -179,8 +188,13 @@ public class AdFetchJob extends FortscaleJob {
 					Attribute atr = index.next();
 					String key = atr.getID();
 					NamingEnumeration<?> values = atr.getAll();
+					boolean elementWritten = false;
+
+					//handle range 0-1499 member attribute (in case that AD group contain mor then 1500 members)
+					if (key.contains("member;"))
+						key = "member";
 					if (key.equals("member")) {
-						appendAllAttributeElements(fileWriter, key, values);
+						elementWritten = appendAllAttributeElements(fileWriter, key, values);
 					} else if (values.hasMoreElements()) {
 						String value;
 						if (key.equals("distinguishedName")) {
@@ -191,26 +205,30 @@ public class AdFetchJob extends FortscaleJob {
 							fileWriter.append("dn: ").append(value);
 							fileWriter.append("\n");
 							fileWriter.append(key).append(": ").append(value);
+							elementWritten=true;
 						} else if (key.equals("objectGUID") || key.equals("objectSid")) {
 							value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
 							fileWriter.append(key).append(": ").append(value);
+							elementWritten=true;
 						} else if (key.equals("streetAddress")) {
 							value = (String) values.nextElement();
 							final boolean isPossibleBase64String = !value.isEmpty() && !value.contains(" ") && Base64.isBase64(value);
 							if (isPossibleBase64String) {
 								value = new String(java.util.Base64.getDecoder().decode(value));
 								fileWriter.append(key).append(": ").append(value);
+								elementWritten=true;
 							}
 							else {
-								appendSingleAttributeElement(fileWriter, key, true, value);
+								elementWritten = appendSingleAttributeElement(fileWriter, key, value);
 							}
 
 						} else {
-							appendAllAttributeElements(fileWriter, key, values);
+							elementWritten = appendAllAttributeElements(fileWriter, key, values);
 						}
 
 					}
-					fileWriter.append("\n");
+					if (elementWritten)
+						fileWriter.append("\n");
 				}
 			}
 			fileWriter.append("\n");

@@ -1621,6 +1621,16 @@
             "selected": false
           },
           {
+            "text": "aggr_db_object_oracle_daily",
+            "value": "aggr_db_object_oracle_daily",
+            "selected": false
+          },
+          {
+            "text": "aggr_db_usernames_oracle_daily",
+            "value": "aggr_db_usernames_oracle_daily",
+            "selected": false
+          },
+          {
             "text": "aggr_normalized_src_machine_vpn_session_daily",
             "value": "aggr_normalized_src_machine_vpn_session_daily",
             "selected": false
