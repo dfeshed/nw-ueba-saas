@@ -112,6 +112,7 @@ public class ModelBuilderManagerTest {
 		if (specifiedContextIds.isEmpty()) {
 			if (selectHighScoreContexts) {
 				verify(selector).getHighScoreContexts(eq(previousEndTime), eq(currentEndTime));
+				verify(selector).getContexts(eq(previousEndTime), eq(currentEndTime));
 			} else {
 				verify(selector).getContexts(eq(previousEndTime), eq(currentEndTime));
 			}
