@@ -23,16 +23,10 @@ $investigateMetaKeyToggleWidth: 1rem;
     @include rsa-font(body);
     position: relative; /* enables absolute positioning for child .toggle-open */
     padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace(less) rsa-whitespace(more);
-
     .meta-size {
       margin-left: rsa-whitespace(less);
       display: none;
     }
-  }
-
-  &__instruct {
-    @include rsa-font(light, small);
-    padding: 0 rsa-whitespace() rsa-whitespace() rsa-whitespace(more);
   }
 
   &__description {
@@ -74,8 +68,8 @@ $investigateMetaKeyToggleWidth: 1rem;
     }
 
     &-metric {
+      @include rsa-font(light, small);
       margin-left: rsa-whitespace(less);
-
       &::before {
         content: '(';
       }

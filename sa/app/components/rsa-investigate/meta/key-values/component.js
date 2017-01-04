@@ -82,6 +82,8 @@ export default Component.extend({
         return 'Stopped';
       case 'complete':
         return '';
+      case 'error':
+        return 'Error';
       default:
         return 'Queued';
     }

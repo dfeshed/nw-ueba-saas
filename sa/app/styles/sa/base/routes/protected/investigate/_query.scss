@@ -177,33 +177,20 @@
 
     &-key-values {
       border-bottom: 1px solid rsa-color(gray, base, $rsa-nearly-transparent);
-      color: rsa-color(white);
-
-      .meta-size {
-        color: rsa-color(white, base, $rsa-somewhat-opaque);
-      }
-
-      &__header:hover {
-        color: rsa-color(blue);
-
+      color: rsa-color(grey,lightest);
+      &:last-child {
+        h2,
         .meta-size {
-          color: rsa-color(blue);
+          color: rsa-color(gray,light);
         }
       }
-
-
       &__value {
         border: 1px solid rsa-color(white, base, $rsa-nearly-transparent);
         border-radius: 2px;
-
         &.selected,
         &:hover {
           background-color: rsa-color(blue);
           border-color: rsa-color(blue);
-        }
-
-        &-metric {
-          color: rsa-color(white, base, $rsa-somewhat-opaque);
         }
       }
     }

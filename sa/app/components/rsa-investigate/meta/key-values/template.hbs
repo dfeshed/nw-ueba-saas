@@ -9,9 +9,6 @@
       ({{values.data.length}}{{#if (is-equal values.data.length options.size)}}+{{/if}})
     </span>
   </h2>
-  {{#unless groupKey.isOpen}}
-    <p class="rsa-investigate-meta-key-values__instruct js-instruct">{{t 'investigate.meta.clickToOpen'}}</p>
-  {{/unless}}
 </header>
 <section class="rsa-investigate-meta-key-values__body">
   <p class="rsa-investigate-meta-key-values__description">{{resolvedDescription}}</p>
