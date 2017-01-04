@@ -72,7 +72,7 @@
 		</job>
 			
 		<!-- trigger the job every 15 minutes -->
-		<trigger>
+		<!--trigger>
 			<cron>
 				<name>pxGrid_fetch_every_15min_trigger</name>
 				<group>PXGRID</group>
@@ -80,7 +80,7 @@
 				<job-group>PXGRID</job-group>
  				<cron-expression>0 1/15 * * * ?</cron-expression>
 			</cron>
-		</trigger>
+		</trigger-->
 
 	</schedule>
 	
