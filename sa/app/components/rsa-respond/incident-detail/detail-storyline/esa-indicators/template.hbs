@@ -11,7 +11,9 @@
     {{/link-to}}
   {{/if}}
 
-  {{rsa-icon size="small" name="arrow-right-7" class="direction"}}
+  {{#unless (eq indicatorType 'vpn')}}
+    {{rsa-icon size="small" name="arrow-right-7" class="direction"}}
+  {{/unless}}
 
   {{#if (eq indicatorType 'c2')}}
     {{#link-to (query-params entityType='DOMAIN' entityId=domain)}}
