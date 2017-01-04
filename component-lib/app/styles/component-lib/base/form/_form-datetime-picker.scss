@@ -16,7 +16,7 @@
   .pika-label {
     background-color: $formDateTimeBg;
   }
-  
+
   .pika-select-hour {
     -webkit-appearance: none;
     background: $formDateTimeBg;
@@ -109,5 +109,9 @@
     color: $formDateTimeHover !important;
     background: $formDateTimeHoverBg !important;
     border-radius: 0;
+  }
+  
+  select::-ms-expand {
+    display: none;
   }
 }

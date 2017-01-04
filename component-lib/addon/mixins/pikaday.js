@@ -50,13 +50,16 @@ export default Mixin.create({
   // pull this from local storage.
   localeKey: 'rsa-i18n-default-locale',
 
+  dateFormat: service(),
+
+  timeFormat: service(),
+
+  timezone: service(),
+
   _defaultOptions() {
     const firstDay = this.get('firstDay');
-    const prefDateFormat = this.get('dateFormatServ.selected.key') || 'YYYY-MM-DD';
-    const prefTimeKey = this.get('timeFormatServ.selected.key') || 'HR24';
-    const prefTimeFormat = this.get('timeFormatServ.selected.format') || 'HH:mm';
+    const prefTimeKey = this.get('timeFormat.selected.key') || 'HR24';
     const prefTimeZone = this.get('timezone.selected.zoneId') || 'America/New_York';
-    const st = this.get('showTime') || false;
     const is24 = (prefTimeKey === 'HR24') || false;
     const lc = localStorage[this.get('localeKey')] || 'en';
 
@@ -75,12 +78,12 @@ export default Mixin.create({
       onSelect: run.bind(this, this.onPikadaySelect),
       onDraw: run.bind(this, this.onPikadayRedraw),
       firstDay: (typeof firstDay !== 'undefined') ? parseInt(firstDay, 10) : 1,
-      format: this.dateTimeFormat(this.get('format'), prefDateFormat, prefTimeFormat, st),
+      format: this.get('outputDateTimeFormat'),
       yearRange: this.determineYearRange(),
       minDate: this.get('minDate') || null,
       maxDate: this.get('maxDate') || null,
       theme: (!isEmpty(this.get('theme')) && typeof(this.get('theme')) === 'string') ? this.get('theme') : 'dark-theme',
-      showTime: st,
+      showTime: this.get('showTime'),
       showSeconds: this.get('showSeconds') || false,
       use24hour: this.get('use24hour') || is24,
       incrementHourBy: this.get('incrementHourBy') || 1,
@@ -90,21 +93,15 @@ export default Mixin.create({
     };
   },
 
-  dateTimeFormat(userFormat, prefDateFormat, prefTimeFormat, showTime) {
-    if (!isEmpty(userFormat)) {
-      return userFormat;
-    } else if (isEmpty(userFormat) && showTime) {
-      return `${prefDateFormat} ${prefTimeFormat}`;
+  outputDateTimeFormat: computed('dateFormat.selected.format', 'timeFormat.selected.format', function() {
+    if (!isEmpty(this.get('format'))) {
+      return this.get('format');
+    } else if (isEmpty(this.get('format')) && this.get('showTime')) {
+      return `${this.get('dateFormat.selected.format') || 'MM/DD/YYYY'} ${this.get('timeFormat.selected.format') || 'HH:mm'}`;
     } else {
-      return prefDateFormat;
+      return this.get('dateFormat.selected.format') || 'MM/DD/YYYY';
     }
-  },
-
-  dateFormatServ: service('date-format'),
-
-  timeFormatServ: service('time-format'),
-
-  timeZoneServ: service('timezone'),
+  }),
 
   didUpdateAttrs({ newAttrs }) {
     this._super(...arguments);
@@ -137,7 +134,6 @@ export default Mixin.create({
   setPikadayDate() {
     const format = 'YYYY-MM-DD';
     const value = this.get('value');
-
     if (!value) {
       this.get('pikaday').setDate(value, true);
     } else {
