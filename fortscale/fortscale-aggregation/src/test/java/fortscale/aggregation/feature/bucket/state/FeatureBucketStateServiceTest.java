@@ -1,9 +1,9 @@
 package fortscale.aggregation.feature.bucket.state;
 
-import fortscale.accumulator.TestMongoConfig;
 import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateRepository;
 import fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServiceConfig;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
+import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,7 +32,7 @@ import java.time.temporal.ChronoUnit;
 public class FeatureBucketStateServiceTest {
     @Configuration
     @Import({
-            TestMongoConfig.class,
+            MongodbTestConfig.class,
             NullStatsServiceConfig.class,
             FeatureBucketStateServiceConfig.class
     })
