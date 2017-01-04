@@ -59,6 +59,8 @@ public class ApiActiveDirectoryController {
 
 	private final String DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX ="deployment_wizard_ad.last_execution_time";
 
+	private final String DEPLOYMENT_WIZARD_AD_EXECUTION_START_TIME_PREFIX ="deployment_wizard_ad.execution_start__time";
+
 	private final List<AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObjectType.values()));
 
 	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
@@ -248,13 +250,14 @@ public class ApiActiveDirectoryController {
 		Set<AdTaskStatus> statuses = new HashSet<>();
 		dataSources.forEach(datasource -> {
 			final AdTaskType runningMode = getRunningMode(datasource);
+			final Long currExecutionStartTime = getLastExecutionTime(runningMode, datasource);
 			if (runningMode != null) { //running
-				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, -1L));
+				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, -1L, currExecutionStartTime));
 			}
 			else { //not running
 				final Long currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
 				final Long currObjectsCount = activeDirectoryService.getCount(datasource);
-				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount));
+				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount, currExecutionStartTime));
 			}
 		});
 
@@ -282,6 +285,14 @@ public class ApiActiveDirectoryController {
 
 	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource, Long lastExecutionTime) {
 		applicationConfigurationService.updateConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
+	}
+
+	public Long getExecutionStartTime(AdTaskType adTaskType, AdObjectType dataSource) {
+		return applicationConfigurationService.getApplicationConfigurationAsObject(DEPLOYMENT_WIZARD_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+	}
+
+	public void setExecutionStartTime(AdTaskType adTaskType, AdObjectType dataSource, Long executionStartTime) {
+		applicationConfigurationService.updateConfigItemAsObject(DEPLOYMENT_WIZARD_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), executionStartTime);
 	}
 
 	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {

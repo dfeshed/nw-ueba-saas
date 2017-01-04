@@ -122,6 +122,7 @@ public class ControllerInvokedAdTask implements Runnable {
      * @return an AdTaskResponse representing the results of the task
      */
     private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObjectType dataSource) {
+        controller.setExecutionStartTime(adTaskType, dataSource, System.currentTimeMillis());
         notifyTaskStart();
         final String dataSourceName = dataSource.toString();
 
@@ -320,12 +321,14 @@ public class ControllerInvokedAdTask implements Runnable {
         private final AdTaskType runningMode; //null for not running
         private final AdObjectType datasource;
         private final Long lastExecutionFinishTime;
+        private final Long executionStartTime;
         private final Long objectsCount;
 
-        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime, Long objectsCount) {
+        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime, Long executionStartTime, Long objectsCount) {
             this.runningMode = runningMode;
             this.datasource = datasource;
             this.lastExecutionFinishTime = lastExecutionFinishTime;
+            this.executionStartTime = executionStartTime;
             this.objectsCount = objectsCount;
         }
 
@@ -339,6 +342,10 @@ public class ControllerInvokedAdTask implements Runnable {
 
         public Long getLastExecutionFinishTime() {
             return lastExecutionFinishTime;
+        }
+
+        public Long getExecutionStartTime() {
+            return executionStartTime;
         }
 
         public Long getObjectsCount() {
