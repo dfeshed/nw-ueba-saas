@@ -182,16 +182,16 @@ public class ApiActiveDirectoryController {
 			logger.info("Starting Active Directory fetch and ETL");
 
 			try {
-				executorService = createExecutorService();
-				if (isFetchEtlExecutionRequestStopped.get()) { //check that not asked to stop between execution and now (actual execution)
+				initExecutorService();
+				if (isFetchEtlExecutionRequestStopped.get()) { //check that there wasn't any request to stop between execution and now (actual execution)
 					final String stopMessage = "Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.";
 					logger.warn(stopMessage);
 					isFetchEtlExecutionRequestInProgress.set(false);
 					return new ResponseEntity<>(new ResponseEntityMessage(stopMessage), HttpStatus.LOCKED);
 				}
-				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource)));
+				final List<ControllerInvokedAdTask> adTasks = createAdTasks();
+				dataSources.forEach(dataSource -> executeTasks(adTasks));
 			} finally {
-				executorService.shutdown();
 				isFetchEtlExecutionRequestInProgress.set(false);
 			}
 
@@ -201,6 +201,19 @@ public class ApiActiveDirectoryController {
 			logger.warn(inProgressMsg);
 			return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.LOCKED);
 		}
+	}
+
+	private List<ControllerInvokedAdTask> createAdTasks() {
+		final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
+		for (AdObjectType dataSource : dataSources) {
+			final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource);
+			if (dataSource == AdObjectType.USER) {
+				currTask.addFollowingTask(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, AdObjectType.USER_THUMBNAIL));
+			}
+			tasks.add(currTask);
+		}
+
+		return tasks;
 	}
 
 	@RequestMapping("/stop_ad_fetch_etl" )
@@ -216,8 +229,6 @@ public class ApiActiveDirectoryController {
 				final String msg = "Failed to await termination of running threads.";
 				logger.error(msg);
 				return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.FORBIDDEN);
-			} finally {
-				executorService = createExecutorService();
 			}
 
 			lastAdFetchEtlExecutionStartTime = null;
@@ -277,19 +288,36 @@ public class ApiActiveDirectoryController {
 		simpMessagingTemplate.convertAndSend(responseDestination, fetchResponse);
 	}
 
-	private ExecutorService createExecutorService() {
-		return Executors.newFixedThreadPool(dataSources.size(), runnable -> {
-			Thread thread = new Thread(runnable);
-			thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-			return thread;
-		});
+	private void initExecutorService() {
+		if (!executorService.isShutdown()) {
+			return;
+		}
+		else {
+			executorService = Executors.newFixedThreadPool(dataSources.size(), runnable -> {
+				Thread thread = new Thread(runnable);
+				thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
+				return thread;
+			});
+		}
 	}
 
-	public boolean addRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
+	public void executeTasks(List<ControllerInvokedAdTask> tasksToExecute) {
+		for (ControllerInvokedAdTask controllerInvokedAdTask : tasksToExecute) {
+			executeTask(controllerInvokedAdTask);
+		}
+	}
+
+	private void executeTask(ControllerInvokedAdTask taskToExecute) {
+		logger.info("Executing task {}.", taskToExecute);
+		executorService.execute(taskToExecute);
+	}
+
+
+	public boolean addActiveTask(ControllerInvokedAdTask controllerInvokedAdTask) {
 		return activeTasks.add(controllerInvokedAdTask);
 	}
 
-	public boolean removeRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
+	public boolean removeActiveTask(ControllerInvokedAdTask controllerInvokedAdTask) {
 		return activeTasks.remove(controllerInvokedAdTask);
 	}
 

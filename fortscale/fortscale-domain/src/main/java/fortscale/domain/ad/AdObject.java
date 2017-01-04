@@ -102,7 +102,7 @@ public class AdObject extends AbstractDocument{
 
 
 	public enum AdObjectType {
-		GROUP("Group"), OU("OU"), USER("User"), COMPUTER("Computer");
+		GROUP("Group"), OU("OU"), USER("User"), COMPUTER("Computer"), USER_THUMBNAIL(USER.displayName + "_" + "Thumbnail");
 
 		private final String displayName;
 

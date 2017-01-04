@@ -20,18 +20,20 @@ public class ControllerInvokedAdTask implements Runnable {
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
 
+    protected static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
+
     private static final String RESULTS_DELIMITER = "=";
     private static final String RESULTS_KEY_SUCCESS = "success";
-    private static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
     private static final String AD_JOB_GROUP = "AD";
     private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
 
-    private final ApiActiveDirectoryController controller;
+    protected final ApiActiveDirectoryController controller;
     private ActiveDirectoryService activeDirectoryService;
     private final ApplicationConfigurationService applicationConfigurationService;
-    private final AdObjectType dataSource;
-    private AdTaskType currentAdTaskType;
+    protected final AdObjectType dataSource;
+    protected AdTaskType currentAdTaskType;
+    protected List<ControllerInvokedAdTask> followingTasks = new ArrayList<>();
 
     public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, ApplicationConfigurationService applicationConfigurationService, AdObjectType dataSource) {
         this.controller = controller;
@@ -48,30 +50,48 @@ public class ControllerInvokedAdTask implements Runnable {
         return currentAdTaskType;
     }
 
+    public List<ControllerInvokedAdTask> getFollowingTasks() {
+        return Collections.unmodifiableList(followingTasks); //defensive copy
+    }
 
+    public void addFollowingTask(ControllerInvokedAdTask taskToAdd) {
+        followingTasks.add(taskToAdd);
+    }
 
     @Override
     public void run() {
-        currentAdTaskType = FETCH;
         Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
 
-        final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
-        controller.sendTemplateMessage(RESPONSE_DESTINATION, fetchResponse);
-
-        if (!fetchResponse.success) {
-            logger.warn("Fetch phase failed so not executing ETL.");
+        currentAdTaskType = FETCH;
+        final boolean fetchTaskSucceeded = handleAdTask(currentAdTaskType);
+        if (!fetchTaskSucceeded) {
+            logger.error("ETL phase for data source {} has been cancelled since Fetch phase has failed.", dataSource);
             return;
         }
 
         currentAdTaskType = ETL;
-        final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
-        controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
-        controller.setLastExecutionTime(currentAdTaskType, dataSource, fetchResponse.lastExecutionTime);
+        handleAdTask(currentAdTaskType);
         logger.info("Finished executing Fetch and ETL for datasource {}", dataSource);
+
+        if (!followingTasks.isEmpty()) {
+            logger.info("Running task {}'s following tasks {}", this, followingTasks);
+            controller.executeTasks(followingTasks);
+        }
+    }
+
+    protected boolean handleAdTask(AdTaskType adTaskType) {
+        final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
+        controller.sendTemplateMessage(RESPONSE_DESTINATION, response);
+        controller.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
+        if (!response.success) {
+            logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
+        }
+
+        return response.success;
     }
 
     private void notifyTaskStart() {
-        if (!controller.addRunningTask(this)) {
+        if (!controller.addActiveTask(this)) {
             logger.warn("Tried to add task {} but the task already exists.", this);
         }
         else {
@@ -81,15 +101,13 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
     private void notifyTaskDone() {
-        if (!controller.removeRunningTask(this)) {
+        if (!controller.removeActiveTask(this)) {
             logger.warn("Tried to remove task {} but task doesn't exist.", this);
         }
         else {
             logger.debug("Removed running task {} from active tasks", this);
         }
     }
-
-
 
 
     /**
@@ -232,6 +250,8 @@ public class ControllerInvokedAdTask implements Runnable {
                 '}';
     }
 
+
+
     /**
      * This class represents an ADTask response to the controller that executed it containing various information the controller needs to return the UI
      */
@@ -324,12 +344,16 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
     public enum AdTaskType {
-        FETCH("Fetch"), ETL("ETL");
+        FETCH("Fetch"), ETL("ETL"), FETCH_ETL(FETCH.getType() + "_" + ETL.getType());
 
         private final String type;
 
         AdTaskType(String type) {
             this.type = type;
+        }
+
+        public String getType() {
+            return type;
         }
 
         @Override

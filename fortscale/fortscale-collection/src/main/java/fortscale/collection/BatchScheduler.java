@@ -171,7 +171,7 @@ public class BatchScheduler {
 //		startJob("User_Fetch", "AD", params);
 //		startJob("User_ETL", "AD", params);
 //		startJob("User", "Tagging", params);
-		startJob("User_Thumbnail_ETL", "AD", params);
+		startJob("User_Thumbnail_Fetch_ETL", "AD", params);
 		startJob("ETL", "DHCP", params);
 		startJob("ETL", "ISE", params);
 		startJob("Comp4624_ETL", "SecurityEvents", params);
