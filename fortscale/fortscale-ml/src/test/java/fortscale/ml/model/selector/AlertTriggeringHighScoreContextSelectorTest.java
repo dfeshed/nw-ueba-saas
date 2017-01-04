@@ -8,6 +8,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.context.annotation.*;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
@@ -48,6 +49,7 @@ public class AlertTriggeringHighScoreContextSelectorTest {
             return new SomeSelector();
         }
 
+        @Configurable(preConstruction = true)
         private class SomeSelector extends AlertTriggeringHighScoreContextSelector
         {
             @Override
