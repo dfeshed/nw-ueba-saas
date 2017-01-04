@@ -6,10 +6,10 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
-import org.springframework.context.annotation.Profile;
+import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -29,9 +29,15 @@ public class AlertTriggeringHighScoreContextSelectorTest {
 
     @Configuration
     @Profile("test")
+    @EnableSpringConfigured
+    @EnableAnnotationConfiguration
     @Import({AlertTriggeringHighScoreContextSelectorTestConfig.class})
-    public static class springConfigTest
+    @EnableMongoRepositories(basePackageClasses = AlertsRepository.class,
+            includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes= AlertsRepository.class))
+    public static class springConfig
     {
+        @Autowired
+        AlertsRepository alertsRepository;
         @Bean
         public AlertTriggeringHighScoreContextTestSelector alertTriggeringHighScoreContextTestSelector ()
         {
