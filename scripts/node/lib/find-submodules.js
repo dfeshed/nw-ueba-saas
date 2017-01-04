@@ -13,6 +13,11 @@ const submodulesAffected = (submoduleList) => {
   // Get all files passed in
   const files = process.argv.splice(2);
 
+  // If no files changed, just do a vanilla sa build
+  if (files.length === 0) {
+    return submoduleList.sa.concat('sa');
+  }
+
   // Any files that are at the root of the project?
   const rootFiles = files.filter((file) => file.indexOf(path.sep) === -1);
 
