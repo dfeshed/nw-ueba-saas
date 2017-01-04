@@ -145,7 +145,8 @@ public class ModelServiceTest {
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
 		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", currentEndTime, true);
 		List<JSONObject> expectedStatuses = Arrays.asList(expectedStatusForId1, expectedStatusForId2);
-		Assert.assertEquals(expectedStatuses, listener.getStatuses());
+		expectedStatuses.forEach(status -> Assert.assertTrue(listener.getStatuses().contains(status)));
+
 
 		// Assert built models
 		Query expectedId1Query = new Query();
@@ -168,15 +169,13 @@ public class ModelServiceTest {
 		ContinuousDataModel expectedId1Model = new ContinuousDataModel().setParameters(96, 316.666667, 81.223286, 400);
 		ContinuousDataModel expectedId2Model = new ContinuousDataModel().setParameters(75, 7.319200, 6.539804, 17);
 
-		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().get(0);
+		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id1")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
-		Assert.assertEquals("id1", actualModelDao.getContextId());
 		Assert.assertEquals(expectedId1Model, actualModelDao.getModel());
 		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
 
-		actualModelDao = modelDaoArgCaptor.getAllValues().get(1);
+		actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id2")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
-		Assert.assertEquals("id2", actualModelDao.getContextId());
 		Assert.assertEquals(expectedId2Model, actualModelDao.getModel());
 		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
 	}

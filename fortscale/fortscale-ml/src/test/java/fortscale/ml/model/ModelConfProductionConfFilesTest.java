@@ -25,10 +25,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
@@ -43,7 +40,7 @@ public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
 	@EnableAnnotationConfiguration
-	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
+	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder",excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = "fortscale.ml.model.selector.AlertTriggeringHighScoreContextSelectorTest"))
 	@Import(NullStatsServiceConfig.class)
 	static class ContextConfiguration {
 		@Mock private FeatureBucketsReaderService featureBucketsReaderService;

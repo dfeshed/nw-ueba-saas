@@ -10,6 +10,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -24,9 +25,10 @@ import java.util.Set;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@ActiveProfiles("test")
 public class AlertTriggeringHighScoreContextSelectorTest {
 
-    public static class SomeSelector extends AlertTriggeringHighScoreContextSelector
+    private static class SomeSelector extends AlertTriggeringHighScoreContextSelector
     {
         @Override
         public List<String> getContexts(Date startTime, Date endTime) {
@@ -34,6 +36,7 @@ public class AlertTriggeringHighScoreContextSelectorTest {
         }
     }
 
+    @Profile("test")
     @Configuration
     @Import({MongodbTestConfig.class})
     @EnableMongoRepositories(basePackageClasses = AlertsRepository.class,
