@@ -206,6 +206,12 @@ cd $CWD
 
 # Run node script that will check bower versions for all projects
 node scripts/node/check-bower-versions.js
+checkError "Bower version mismatch"
+
+# Run node script that will check translation files to ensure
+# translations are all matching and up to date
+node scripts/node/check-translations.js sa/app/locales component-lib/addon/locales style-guide/app/locales
+checkError "Translations do not sync up between languages"
 
 # http://stackoverflow.com/questions/21789683/how-to-fix-bower-ecmderr
 # fixes ecmderr with bower install

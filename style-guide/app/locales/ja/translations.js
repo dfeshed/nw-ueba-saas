@@ -1,12 +1,7 @@
 import Ember from 'ember';
-import BaseTranslations from 'component-lib/locales/ja/translations';
+import BaseTranslations from 'component-lib/locales/ja/trans-data';
+import SGTranslations from './trans-data';
 
 const { $ } = Ember;
 
-export default $.extend({}, BaseTranslations, {
-  application: {
-    title: 'ja_Style Guide',
-    version: 'ja_v1.0',
-    copyright: '&copy;ja_2015 RSA Security LLC. All rights reserved.'
-  }
-});
+export default $.extend({}, BaseTranslations, SGTranslations);
