@@ -70,12 +70,17 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         currentAdTaskType = ETL;
-        handleAdTask(currentAdTaskType);
+        final boolean etlTaskSucceeded = handleAdTask(currentAdTaskType);
         logger.info("Finished executing Fetch and ETL for datasource {}", dataSource);
 
         if (!followingTasks.isEmpty()) {
-            logger.info("Running task {}'s following tasks {}", this, followingTasks);
-            controller.executeTasks(followingTasks);
+            if (!etlTaskSucceeded) {
+                logger.warn("There are following task {}, but task didn't succeed so they will not be executed");
+            }
+            else {
+                logger.info("Running task {}'s following tasks {}", this, followingTasks);
+                controller.executeTasks(followingTasks);
+            }
         }
     }
 

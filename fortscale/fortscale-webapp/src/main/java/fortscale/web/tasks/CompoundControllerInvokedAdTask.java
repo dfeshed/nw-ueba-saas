@@ -20,12 +20,17 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
         Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
 
         currentAdTaskType = AdTaskType.FETCH_ETL;
-        handleAdTask(currentAdTaskType);
+        final boolean succeeded = handleAdTask(currentAdTaskType);
         logger.info("Finished executing Fetch and ETL for datasource {}", dataSource);
 
         if (!followingTasks.isEmpty()) {
-            logger.info("Running task {}'s following tasks {}", this, followingTasks);
-            controller.executeTasks(followingTasks);
+            if (!succeeded) {
+                logger.warn("There are following task {}, but task didn't succeed so they will not be executed");
+            }
+            else {
+                logger.info("Running task {}'s following tasks {}", this, followingTasks);
+                controller.executeTasks(followingTasks);
+            }
         }
     }
 
