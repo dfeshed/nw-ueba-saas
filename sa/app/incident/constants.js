@@ -104,3 +104,12 @@ export const WinAuthEnrichment = {
   failedServerScore: { key: 'rsa_analytics_uba_winauth_failedserversscore_score', displayCondition: false },
   logonType: { key: 'rsa_analytics_uba_winauth_logontypescore_score', displayCondition: false }
 };
+
+export const VPNEnrichment = {
+  titleScore: { key: 'rsa_analytics_uba-cisco_vpn_aggregation_aggregate', isTitleScore: true },
+  manyLoginFailures: { key: 'rsa_analytics_uba-cisco_vpn_smoothloginfiluresscore_score' },
+  rareDevice: { key: 'rsa_analytics_uba-cisco_vpn_smoothrarehostscore_score' },
+  rareLocation: { key: 'rsa_analytics_uba-cisco_vpn_smoothrarelocationscore_score' },
+  rareServiceProvider: { key: 'rsa_analytics_uba-cisco_vpn_smoothrareispscore_score' },
+  newServiceProvider: { key: 'rsa_analytics_uba-cisco_vpn_smoothnewispscore_score' }
+};

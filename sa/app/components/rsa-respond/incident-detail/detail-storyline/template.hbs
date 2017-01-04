@@ -38,8 +38,25 @@
                     {{rsa-respond/incident-detail/detail-storyline/esa-indicators indicatorType='c2' groupedIps=groupedIps indicator=indicator}}
                   {{else if (eq indicator.sourceName 'UEBA')}}
                     {{rsa-respond/incident-detail/detail-storyline/esa-indicators indicatorType='winauth' indicator=indicator}}
+                  {{else if (eq indicator.sourceName 'UEBA-VPN')}}
+                    {{rsa-respond/incident-detail/detail-storyline/esa-indicators indicatorType='vpn' indicator=indicator}}
                   {{else if (eq indicator.sourceName 'ENDPOINT')}}
                     {{rsa-respond/incident-detail/detail-storyline/ecat-indicators indicator=indicator}}
+                  {{else}}
+                    <div class={{concat 'indicator' (unless indicator.catalyst ' non-catalyst')}}>
+                      {{#if indicator.isESA}}
+                        {{indicator.name}}
+                      {{else}}
+                        {{indicator.signatureId}}
+                      {{/if}}
+                      <span class='divider'>|</span>
+                      <span class="indicator-source">
+                        {{rsa-content-label style='neutral' isInverted=true class="rsa-incident-tile-source" label=indicator.sourceTypes.firstObject}}
+                      </span>
+                      {{#link-to 'protected.respond.incident.details' indicator.id class='indicator__icon'}}
+                        {{rsa-icon name="arrow-right-12" size="smaller"}}
+                      {{/link-to}}
+                    </div> 
                   {{/if}}
 
                   {{#each indicator.lookup as |index|}}

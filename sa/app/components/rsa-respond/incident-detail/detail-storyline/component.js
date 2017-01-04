@@ -24,14 +24,18 @@ export default Component.extend({
   sources: {
     'C2-Packet': {
       sourceName: 'ATD',
-      sourceTypes: ['UEBA', 'Packet']
+      sourceTypes: ['UEBA']
     },
     'C2-Log': {
       sourceName: 'ATD',
-      sourceTypes: ['UEBA', 'Log']
+      sourceTypes: ['UEBA']
     },
     'UBA-WinAuth': {
       sourceName: 'UEBA',
+      sourceTypes: ['UEBA']
+    },
+    'UbaCisco': {
+      sourceName: 'UEBA-VPN',
       sourceTypes: ['UEBA']
     },
     'ESA': {
@@ -41,6 +45,10 @@ export default Component.extend({
     'ModuleIOC': {
       sourceName: 'ENDPOINT',
       sourceTypes: ['ENDPOINT']
+    },
+    'Generic': {
+      sourceName: '',
+      sourceTypes: ['NW']
     }
   },
 
@@ -83,61 +91,61 @@ export default Component.extend({
       // destructure indicator, matched and lookup
       const { indicator, matched, lookup } = indicators;
       // destructure signature_id and model_name
-      const { signature_id: signatureId } = indicator.originalHeaders;
+      const { signature_id: signatureId, device_product: deviceProduct, name } = indicator.originalHeaders;
       let { model_name: modelName } = indicator.originalHeaders;
       if (isNone(modelName)) {
         modelName = signatureId;
       }
       const { alert } = indicator;
+
       const sources = this.get('sources');
-      const indicatorSources = sources[modelName];
+      const indicatorSources = sources[modelName] || sources.Generic;
 
-      if (!isEmpty(indicatorSources)) {
-        // get the sourceName and sourcetype from the config based on modelName
-        const { sourceName, sourceTypes } = indicatorSources;
-        indicator.modelName = modelName;
-        // group will be set to "0" for catalyst
-        indicator.catalyst = (indicators.group === '0');
-        indicator.sourceName = sourceName;
-        indicator.sourceTypes = sourceTypes;
+      // get the sourceName and sourcetype from the config based on modelName
+      const { sourceName, sourceTypes } = indicatorSources;
+      indicator.modelName = modelName;
+      // group will be set to "0" for catalyst
+      indicator.catalyst = (indicators.group === '0');
+      indicator.sourceName = sourceName;
+      indicator.sourceTypes = sourceTypes;
+      indicator.isESA = (deviceProduct === 'Event Stream Analysis');
+      indicator.name = name;
+      indicator.signatureId = signatureId;
 
-        if (sourceName) {
-          const currAlertTime = moment(alert.timestamp);
-          // show the date bar only if the current date is different
-          // from the previous indicator's date
-          if (k > 0) {
-            const currAlertTime = moment(alert.timestamp);
-            if (previousAlertTime.isSame(currAlertTime, 'day')) {
-              alert.hideDate = true;
-            }
-          }
-          previousAlertTime = currAlertTime;
-          // indicator.matched is an ordered set, in this order
-          // [User, Host, Domain, Source ip, File hash]
-          const objMatched = {};
-          if (isArray(matched)) {
-            [objMatched.user, objMatched.host, objMatched.domain, objMatched.srcIp, objMatched.fileHash] = matched;
-          }
-          const objLookup = [];
-          const lookupforHost = (lookup && lookup[objMatched.host]);
-          // populate the lookup for all non-catalyst indicators
-          if (lookupforHost && indicator.catalyst === false) {
-            lookupforHost.forEach((item) => {
-              const [, value, lookupType] = item;
-              if (lookupType === 'ip2host') {
-                const lookupDetails = {
-                  title: i18n.t('incident.details.storyline.lookup.ip2host'),
-                  source: objMatched.host,
-                  dest: value
-                };
-                objLookup.push(lookupDetails);
-              }
-            });
-            indicator.lookup = objLookup;
-          }
-          data.push(indicator);
+      const currAlertTime = moment(alert.timestamp);
+      // show the date bar only if the current date is different
+      // from the previous indicator's date
+      if (k > 0) {
+        const currAlertTime = moment(alert.timestamp);
+        if (previousAlertTime.isSame(currAlertTime, 'day')) {
+          alert.hideDate = true;
         }
       }
+      previousAlertTime = currAlertTime;
+      // indicator.matched is an ordered set, in this order
+      // [User, Host, Domain, Source ip, File hash]
+      const objMatched = {};
+      if (isArray(matched)) {
+        [objMatched.user, objMatched.host, objMatched.domain, objMatched.srcIp, objMatched.fileHash] = matched;
+      }
+      const objLookup = [];
+      const lookupforHost = (lookup && lookup[objMatched.host]);
+      // populate the lookup for all non-catalyst indicators
+      if (lookupforHost && indicator.catalyst === false) {
+        lookupforHost.forEach((item) => {
+          const [, value, lookupType] = item;
+          if (lookupType === 'ip2host') {
+            const lookupDetails = {
+              title: i18n.t('incident.details.storyline.lookup.ip2host'),
+              source: objMatched.host,
+              dest: value
+            };
+            objLookup.push(lookupDetails);
+          }
+        });
+        indicator.lookup = objLookup;
+      }
+      data.push(indicator);
     });
     return data;
   }

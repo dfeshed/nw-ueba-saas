@@ -450,6 +450,19 @@ export default $.extend({}, BaseTranslations, {
           failedServerScore: 'Abnormally high number of servers with failed logins today',
           logonType: 'Accessed using a WIndows logon type they have rarely used in the past',
           aggregation: 'Accessed using a Windows logon type they have rarely used in the past'
+        },
+        vpn: {
+          title: 'Anomalous VPN authentication',
+          titleScore: 'User risk score {{score}}',
+          manyLoginFailures: 'High number of VPN login failures',
+          rareDevice: 'Authenticated from a rare device',
+          rareLocation: 'Accessed from a rare location',
+          rareServiceProvider: 'Accessed using a rare service provider',
+          newServiceProvider: 'Accessed using a new service provider'
+        },
+        generic: {
+          title: 'Related Indicator',
+          titleScore: 'Risk score {{score}}'
         }
       },
       eventOverview: {
@@ -502,6 +515,50 @@ export default $.extend({}, BaseTranslations, {
           rareUserAgent: {
             label: 'rare user agent',
             description: 'A high score indicates that the domain has a high percentage of IPs using a rare user agent.'
+          },
+          manyServers: {
+            label: 'many servers',
+            description: 'This user has abnormally high number of servers accessed today'
+          },
+          manyNewServers: {
+            label: 'many new servers',
+            description: 'This user has accessed an abnormally high number of new servers today'
+          },
+          manyNewDevices: {
+            label: 'many new devices',
+            description: 'This user has authenticated to more new devices this week as compared to weekly average'
+          },
+          passTheHash: {
+            label: 'pass the hash',
+            description: 'This user has been involved in a potential "pass the hash” attack indicated by a new device followed by a new server'
+          },
+          manyFailedLogins: {
+            label: 'many failed logins',
+            description: 'This user had an abnormally high number of servers with failed logins today'
+          },
+          rareLogonType: {
+            label: 'rare logon type',
+            description: 'This user has accessed using a WIndows logon type they have rarely used in the past'
+          },
+          manyLoginFailures: {
+            label: 'many login failures',
+            description: 'This user has had an abnormally high number of VPN login failures today, compared with their daily average'
+          },
+          rareDevice: {
+            label: 'rare device',
+            description: 'This user authenticated from a device they have rarely used in the past'
+          },
+          rareLocation: {
+            label: 'rare location',
+            description: 'This user has accessed from a location they have rarely used in the past'
+          },
+          rareServiceProvider: {
+            label: 'rare service provider',
+            description: 'This user has accessed using a service provider they have rarely used in the past'
+          },
+          newServiceProvider: {
+            label: 'new service provider',
+            description: 'This user has accessed using a new service provider'
           }
         },
         relatedLinks: 'related links',

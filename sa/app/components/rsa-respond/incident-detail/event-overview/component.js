@@ -137,7 +137,18 @@ export default Component.extend({
         { badgeName: 'expiringDomain', metaKeys: ['whois.validity_score', 'rsa_analytics_http-packet_c2_whois_validity_score', 'rsa_analytics_http-log_c2_whois_validity_score'] },
         { badgeName: 'noReferrers', metaKeys: ['domain.referer_ratio_score', 'rsa_analytics_http-packet_c2_referer_ratio_score', 'rsa_analytics_http-log_c2_referer_ratio_score'] },
         { badgeName: 'rareUserAgent', metaKeys: ['domain.ua_ratio_score', 'rsa_analytics_http-packet_c2_ua_ratio_score', 'rsa_analytics_http-log_c2_ua_ratio_score'] },
-        { badgeName: 'rareDomain', metaKeys: ['domain.referer_score', 'rsa_analytics_http-packet_c2_referer_score', 'rsa_analytics_http-log_c2_referer_score'] }
+        { badgeName: 'rareDomain', metaKeys: ['domain.referer_score', 'rsa_analytics_http-packet_c2_referer_score', 'rsa_analytics_http-log_c2_referer_score'] },
+        { badgeName: 'manyServers', metaKeys: ['rsa_analytics_uba_winauth_highserverscore_score'] },
+        { badgeName: 'manyNewServers', metaKeys: ['rsa_analytics_uba_winauth_newserverscore_score'] },
+        { badgeName: 'manyNewDevices', metaKeys: ['rsa_analytics_uba_winauth_newdevicescore_score'] },
+        { badgeName: 'passTheHash', metaKeys: ['rsa_analytics_uba_winauth_newdeviceservice_score'] },
+        { badgeName: 'manyFailedLogins', metaKeys: ['rsa_analytics_uba_winauth_failedserversscore_score'] },
+        { badgeName: 'rareLogonType', metaKeys: ['rsa_analytics_uba_winauth_logontypescore_score'] },
+        { badgeName: 'manyLoginFailures', metaKeys: ['rsa_analytics_uba-cisco_vpn_smoothloginfiluresscore_score'] },
+        { badgeName: 'rareDevice', metaKeys: ['rsa_analytics_uba-cisco_vpn_smoothrarehostscore_score'] },
+        { badgeName: 'rareLocation', metaKeys: ['rsa_analytics_uba-cisco_vpn_smoothrarelocationscore_score'] },
+        { badgeName: 'rareServiceProvider', metaKeys: ['rsa_analytics_uba-cisco_vpn_smoothrareispscore_score'] },
+        { badgeName: 'newServiceProvider', metaKeys: ['rsa_analytics_uba-cisco_vpn_smoothnewispscore_score'] }
       ];
 
       badgeScoreConfig.forEach((config) => {

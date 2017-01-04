@@ -6,7 +6,9 @@ const {
   inject: {
     service
   },
-  set
+  set,
+  isEmpty,
+  typeOf
 } = Ember;
 
 export default Route.extend({
@@ -40,28 +42,57 @@ export default Route.extend({
   sort: [{ field: 'risk_score', descending: true }],
 
   model(params, transition) {
-
-    if (params.detail_id !== 'c2') {
-      return null;
-    }
     const alerts = [];
-    const sort = this.get('sort');
-
-    this.request.streamRequest({
-      method: 'stream',
-      modelName: 'alerts',
-      query: {
-        filter: [{ field: 'incidentId', value: transition.params['protected.respond.incident'].incident_id }],
-        sort
-      },
-      onResponse: ({ data }) => {
-        alerts.pushObjects(data);
-        this._restoreEventOverviewPanelState(alerts);
-      },
-      onError(response) {
-        Logger.error('Error processing notify call for alerts model', response);
+    if (params.detail_id !== 'catalyst') {
+      const incidentModel = this.modelFor('protected.respond.incident');
+      if (!isEmpty(incidentModel.indicators)) {
+        const allIndicators = incidentModel ? incidentModel.indicators : [];
+        const indicator = allIndicators.findBy('indicator.id', params.detail_id);
+        if (indicator) {
+          alerts.pushObjects([indicator.indicator]);
+          this._restoreEventOverviewPanelState(alerts);
+        }
+      } else {
+        this.request.streamRequest({
+          method: 'stream',
+          modelName: 'storyline',
+          query: {
+            filter: [{ field: '_id', value: transition.params['protected.respond.incident'].incident_id }],
+            sort: [{ field: 'alert.timeStamp', descending: true }]
+          },
+          onResponse: ({ data }) => {
+            const { relatedIndicators } = data;
+            if (typeOf(relatedIndicators) !== 'undefined') {
+              const indicator = relatedIndicators.findBy('indicator.id', params.detail_id);
+              if (indicator) {
+                alerts.pushObjects([indicator.indicator]);
+                this._restoreEventOverviewPanelState(alerts);
+              }
+            }
+          },
+          onError() {
+            Logger.error('Error loading storyline');
+          }
+        });
       }
-    });
+    } else {
+      const sort = this.get('sort');
+      this.request.streamRequest({
+        method: 'stream',
+        modelName: 'alerts',
+        query: {
+          filter: [{ field: 'incidentId', value: transition.params['protected.respond.incident'].incident_id }],
+          sort
+        },
+        onResponse: ({ data }) => {
+          alerts.pushObjects(data);
+          this._restoreEventOverviewPanelState(alerts);
+        },
+        onError(response) {
+          Logger.error('Error processing notify call for alerts model', response);
+        }
+      });
+    }
     return alerts;
   },
 
@@ -123,7 +154,6 @@ export default Route.extend({
       this.set('layoutService.journalPanel', 'hidden');
       const parentModel = this.modelFor('protected.respond.incident');
       set(parentModel, 'events', []);
-
       this.request.streamRequest({
         method: 'stream',
         modelName: 'events',

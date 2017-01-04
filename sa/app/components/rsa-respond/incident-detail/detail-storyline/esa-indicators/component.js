@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import computed, { alias } from 'ember-computed-decorators';
-import { C2Enrichment, WinAuthEnrichment } from 'sa/incident/constants';
+import { C2Enrichment, WinAuthEnrichment, VPNEnrichment } from 'sa/incident/constants';
 
 const {
   Component,
@@ -135,7 +135,10 @@ export default Component.extend({
       // populate 'newDeviceScore' and just this sub indicator will be displayed.
       // Else the rest of the enrichments will be displayed
       conditionKey = 'isDeviceExists';
+    } else if (indicatorType === 'vpn') {
+      typeOfEnrichments = VPNEnrichment;
     }
+
     let displayInfoBasedOnCondition = false;
     for (index in typeOfEnrichments) {
       const scoreKey = typeOfEnrichments[ index ];
@@ -186,6 +189,8 @@ export default Component.extend({
             } else if (!displayInfoBasedOnCondition && index !== 'newDeviceScore') {
               pushEnrichment = true;
             }
+          } else if (indicatorType === 'vpn') {
+            pushEnrichment = true;
           }
           if (pushEnrichment === true) {
             badgeScoreConfig[enrichmentText] = enrichmentValue;

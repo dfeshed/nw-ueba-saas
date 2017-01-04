@@ -5,7 +5,7 @@
     {{#link-to (query-params entityType='IP' entityId=groupedIps)}}
       {{rsa-content-ip-connections fromIPs=groupedIps flow=horizontal}}
     {{/link-to}}
-  {{else if (eq indicatorType 'winauth')}}
+  {{else}}
     {{#link-to (query-params entityType='USER' entityId=indicator.alert.events.firstObject.user_dst)}}
       {{indicator.alert.events.firstObject.user_dst}}
     {{/link-to}}
@@ -36,9 +36,15 @@
     </span>
   {{/each}}
 
-  {{#link-to 'protected.respond.incident.details' indicatorType class='indicator__icon'}}
-    {{rsa-icon name="arrow-right-12" size="smaller"}}
-  {{/link-to}}
+  {{#if isCatalyst}}
+    {{#link-to 'protected.respond.incident.details' 'catalyst' class='indicator__icon'}}
+      {{rsa-icon name="arrow-right-12" size="smaller"}}
+    {{/link-to}}
+  {{else}}
+    {{#link-to 'protected.respond.incident.details' indicator.id class='indicator__icon'}}
+      {{rsa-icon name="arrow-right-12" size="smaller"}}
+    {{/link-to}}
+  {{/if}}
 </div>
 
 {{#each-in badgeScoreConfig as |index value|}}
