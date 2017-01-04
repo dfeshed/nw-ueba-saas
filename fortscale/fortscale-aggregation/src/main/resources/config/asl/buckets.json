@@ -1877,7 +1877,7 @@
       ]
     },
     {
-      "name": "normalized_db_usernames_oracle_daily",
+      "name": "db_username_oracle_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "db_username"
@@ -1901,7 +1901,7 @@
       ]
     },
     {
-      "name": "normalized_db_object_oracle_daily",
+      "name": "db_object_oracle_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
         "db_object"
