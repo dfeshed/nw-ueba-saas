@@ -3,6 +3,7 @@ package fortscale.domain.core.dao;
 import com.mongodb.BasicDBObject;
 import com.mongodb.BasicDBObjectBuilder;
 import com.mongodb.DBObject;
+import com.mongodb.WriteResult;
 import fortscale.domain.ad.AdUser;
 import fortscale.domain.core.*;
 import fortscale.domain.rest.UserRestFilter;
@@ -122,10 +123,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Update update = new Update();
 		update.set(User.followedField, watch);
 
-		BulkOperations upsert = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-				.upsert(query, update);
+		BulkOperations operations = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+				.updateMulti(query, update);
 
-		return upsert.execute().getModifiedCount();
+		return operations.execute().getModifiedCount();
 
 	}
 
@@ -663,7 +664,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 
 		if (userRestFilter.getSearchFieldContains() != null) {
-			criteriaList.add(where("sf").regex(userRestFilter.getSearchFieldContains()));
+			criteriaList.add(where("sf").regex(userRestFilter.getSearchFieldContains(),"i"));
 		}
 
 		if (userRestFilter.getDataEntities() != null) {
@@ -844,22 +845,38 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 
 		Update update = new Update();
 
+		// Count all the users that will be affected by the change
 		int count = getCount(addTag, tagNames, criteriaList, filteredTags);
 
 		tagNames.forEach(tag -> {
 			Query query = new Query();
-			criteriaList.forEach(criteria -> query.addCriteria(criteria));
 
-			Update remove = new Update();
-			remove.pull(User.tagsField, tag);
-			mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-					.upsert(query, remove).execute();
+			// Adding the criterias to the query
+			criteriaList.forEach(criteria -> {
+				// If we have filter by tags we will want to create one single criteria for the tags field in case
+				// we want to add new tags
+				if (criteria.getKey().equals(User.tagsField) && addTag){
+					Criteria andCr = new Criteria();
+					List<String> tags = new ArrayList<>();
+					tags.add(tag);
+					// The query: oldTagCriteria && (tags not in current tag)
+					andCr.andOperator(new Criteria(User.tagsField).not().in(tags), criteria);
+					query.addCriteria(andCr);
+				}else {
+					query.addCriteria(criteria);
+				}
+			});
 
 			if (addTag){
 				// Adding the tag
 				update.push(User.tagsField, tag);
 				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-						.upsert(query, update).execute();
+						.updateMulti(query, update).execute();
+			}else{
+				// Removing the tag
+				Update remove = new Update();
+				remove.pull(User.tagsField, tag);
+				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName).updateMulti(query, remove).execute();
 			}
 		});
 
@@ -890,5 +907,14 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		}
 		return count;
 	}
+
+    @Override
+    public int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score) {
+        Query query = new Query();
+        query.addCriteria(where(User.ID_FIELD).nin(userIds));
+
+        WriteResult writeResult = mongoTemplate.updateMulti(query, Update.update(User.scoreField, score), User.collectionName);
+        return writeResult.getN();
+    }
 }
 

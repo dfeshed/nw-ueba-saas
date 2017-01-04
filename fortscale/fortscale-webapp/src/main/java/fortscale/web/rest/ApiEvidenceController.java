@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationAggrFunc;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationData;
 import fortscale.aggregation.feature.services.historicaldata.SupportingInformationService;
-import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.*;
 import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.core.*;
@@ -12,7 +11,6 @@ import fortscale.domain.dto.DateRange;
 import fortscale.domain.events.VpnSession;
 import fortscale.domain.historical.data.SupportingInformationKey;
 import fortscale.domain.historical.data.SupportingInformationSingleKey;
-import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.LocalizationService;
 import fortscale.utils.CustomedFilter;
@@ -22,11 +20,12 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.time.TimestampUtils;
 import fortscale.web.DataQueryController;
 import fortscale.web.beans.DataBean;
-import fortscale.web.beans.request.HistoricalDataRestFilter;
+import fortscale.domain.rest.HistoricalDataRestFilter;
 import fortscale.web.rest.Utils.ApiUtils;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.entities.IndicatorStatisticsEntity;
 import fortscale.web.rest.entities.SupportingInformationEntry;
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -49,6 +48,9 @@ public class ApiEvidenceController extends DataQueryController {
 	private static final String OTHERS_COLUMN = "Others";
 	private static final String TIME_GRANULARITY_PROPERTY = "timeGranularity";
 	private static final String TIME_STAMP = "ts";
+	public static final String COUNTRY_FEATURE = "country";
+	public static final String COUNTRIES_INFO_ATTRIBUTE = "countries";
+
 
 	private static Logger logger = Logger.getLogger(ApiEvidenceController.class);
 
@@ -172,11 +174,22 @@ public class ApiEvidenceController extends DataQueryController {
 		return ret;
 	}
 
+	/**
+	 *
+	 * @param id - The evidence ID
+	 * @param request_total - If we need to extract the total of rows that match to the filter (not only currey filter, and not limit to 200)
+	 * @param use_cache - If we want to use 15 minutes cache
+	 * @param page - page number
+	 * @param size  - page size
+	 * @param sort_field - sore field
+	 * @param sort_direction - sort direction
+	 * @return
+	 */
 	@RequestMapping(value = "/{id}/events", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
 	public DataBean<List<Map<String, Object>>> getEvents(@PathVariable String id,
-															 @RequestParam(defaultValue = "false") boolean request_total,
+															 @RequestParam(defaultValue = "true") boolean request_total,
 															 @RequestParam(defaultValue = "true") boolean use_cache,
 															 @RequestParam(defaultValue = "1") Integer page, // starting from page 1
 															 @RequestParam(defaultValue = "20") Integer size,
@@ -318,10 +331,8 @@ public class ApiEvidenceController extends DataQueryController {
 			throw new ResourceNotFoundException("Can't get evidence of id: " + evidenceId);
 		}
 
-		//Todo - pass the entire HistoricalDataRestFilter to supportingInformationService.getEvidenceSupportingInformationData
 		SupportingInformationData evidenceSupportingInformationData = supportingInformationService.getEvidenceSupportingInformationData(evidence,
-				historicalDataRestFilter.getContextType(), historicalDataRestFilter.getContextValue(), historicalDataRestFilter.getFeature(),
-				historicalDataRestFilter.getTimeRange(), historicalDataRestFilter.getFunction());
+				historicalDataRestFilter);
 
 		boolean isSupportingInformationAnomalyValueExists = isSupportingInformationAnomalyValueExists(evidenceSupportingInformationData);
 
@@ -337,8 +348,31 @@ public class ApiEvidenceController extends DataQueryController {
 			addTimeGranularityInformation(supportingInformationBean, evidenceSupportingInformationData);
 		}
 
+		//Add countries list for supported information if needed
+		Set<String> supportingInformationCountries = getSupportingInformationCountries(historicalDataRestFilter, evidence);
+		if (CollectionUtils.isNotEmpty(supportingInformationCountries)) {
+			supportingInformationBean.addInfo(COUNTRIES_INFO_ATTRIBUTE, supportingInformationCountries);
+		}
+
 		supportingInformationBean.setData(rearrangedEntries);
+
 		return supportingInformationBean;
+	}
+
+	/**
+	 * Check if the supporting information is VpnSession and return unique list of the countries
+	 * @param historicalDataRestFilter
+	 * @param evidence
+	 * @return
+	 */
+	private Set<String> getSupportingInformationCountries(HistoricalDataRestFilter historicalDataRestFilter, Evidence evidence) {
+		Set<String> supportingInformationCountries = new HashSet<>();
+		EntitySupportingInformation supportingInformation = evidence.getSupportingInformation();
+		if (supportingInformation instanceof VpnGeoHoppingSupportingInformation &&
+				historicalDataRestFilter.getFeature().equals(COUNTRY_FEATURE)) {
+			supportingInformationCountries = ((VpnGeoHoppingSupportingInformation) supportingInformation).fetchCountriesNames();
+		}
+		return supportingInformationCountries;
 	}
 
 	/**

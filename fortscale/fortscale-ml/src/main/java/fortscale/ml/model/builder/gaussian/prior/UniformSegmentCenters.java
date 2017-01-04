@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * Generate candidates for segment centers uniformly from 0 to the maximal ContinuousDataModel mean available.
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
  */
 public class UniformSegmentCenters implements SegmentCenters {
 	private double distanceBetweenSegmentCenters;

@@ -54,9 +54,6 @@ public class EventsFilterStreamTaskMetrics extends StatsMetricsGroup {
 	public long accountNameMatchesLoginAccountRegex;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long serviceNameMatchesLoginServiceRegex;
-
-	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long serviceNameMatchesComputerName;
 }
 

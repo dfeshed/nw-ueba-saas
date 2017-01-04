@@ -31,10 +31,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
     private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
 
-    @Value("${ad.connections}")
-    private String adConnectionsFile;
-
-
 
     private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
@@ -201,24 +197,24 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
     @Override
     public void afterPropertiesSet() throws Exception {
-        if (!applicationConfigurationService.isApplicationConfigurationExists(AdConnection.ACTIVE_DIRECTORY_KEY)) {
-            //initialize with default test values if no configuration key exists
-            logger.warn("Active Directory configuration not found, trying to load configuration from file");
-            List<AdConnection> adConnections;
-            ObjectMapper mapper = new ObjectMapper();
-            File jsonFile = new File(adConnectionsFile);
-            if (!jsonFile.exists()) {
-                logger.error("AdConnections json file does not exist");
-                return;
-            }
-            try {
-                adConnections = mapper.readValue(jsonFile, new TypeReference<List<AdConnection>>(){});
-            } catch (Exception ex) {
-                logger.error("Error - Bad Active Directory Json connection file");
-                throw new Exception(ex);
-            }
-            applicationConfigurationService.insertConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY, adConnections);
-        }
+//        if (!applicationConfigurationService.isApplicationConfigurationExists(AdConnection.ACTIVE_DIRECTORY_KEY)) {
+//            //initialize with default test values if no configuration key exists
+//            logger.warn("Active Directory configuration not found, trying to load configuration from file");
+//            List<AdConnection> adConnections;
+//            ObjectMapper mapper = new ObjectMapper();
+//            File jsonFile = new File(adConnectionsFile);
+//            if (!jsonFile.exists()) {
+//                logger.error("AdConnections json file does not exist");
+//                return;
+//            }
+//            try {
+//                adConnections = mapper.readValue(jsonFile, new TypeReference<List<AdConnection>>(){});
+//            } catch (Exception ex) {
+//                logger.error("Error - Bad Active Directory Json connection file");
+//                throw new Exception(ex);
+//            }
+//            applicationConfigurationService.insertConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY, adConnections);
+//        }
     }
 
 }

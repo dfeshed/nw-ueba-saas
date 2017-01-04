@@ -6,22 +6,23 @@ import fortscale.domain.events.DhcpEvent;
 import fortscale.domain.events.IseEvent;
 import fortscale.domain.events.PxGridIPEvent;
 import fortscale.services.CachingService;
+import fortscale.services.impl.SpringService;
 import fortscale.services.ipresolving.IpToHostnameResolver;
 import fortscale.streaming.cache.KeyValueDbBasedCache;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.FortscaleValueResolver;
-import fortscale.services.impl.SpringService;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.ipresolving.EventResolvingConfig;
 import fortscale.streaming.service.ipresolving.EventsIpResolvingService;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.enrichment.metrics.IpResolvingStreamTaskMetrics;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.samza.config.Config;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -62,7 +63,7 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
     protected IpResolvingStreamTaskMetrics taskMetrics;
 
     @Override
-    protected void wrappedInit(Config config, TaskContext context) throws Exception {
+    protected void processInit(Config config, TaskContext context) throws Exception {
 
 
 		res = SpringService.getInstance().resolve(FortscaleValueResolver.class);
@@ -154,16 +155,17 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
     @Override
-    protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void processMessage(ProcessMessageContext messageContext) throws Exception {
         //if the message came from one of the cache updates topics, if so than update the resolving cache
         // with the update message
-        String topic = envelope.getSystemStreamPartition().getSystemStream().getStream();
+        String topic = messageContext.getTopicName();
 
+        StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
 		//in case of vpn ip update - (session was closed and the ip was related to this session , we need to mark all the resolving for that ip in the period time of the session )
 		if (topic.equals(vpnIpPoolUpdaterTopicName))
 		{
             taskMetrics.vpnIpPoolUpdatesMessages++;
-			JSONObject message = parseJsonMessage(envelope);
+			JSONObject message = messageContext.getMessageAsJson();
 			String ip = convertToString(message.get("ip"));
 			ipResolvingService.removeIpFromCache(ip);
 
@@ -173,14 +175,15 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
             // get the concrete cache and pass it the update check  message that arrive
             taskMetrics.cacheUpdatesMessages++;
             CachingService cachingService = topicToCacheMap.get(topic);
-            cachingService.handleNewValue((String) envelope.getKey(), (String) envelope.getMessage());
+
+            cachingService.handleNewValue((String) streamingProcessMessageContext.getIncomingMessageEnvelope().getKey(), messageContext.getMessageAsString());
         } else {
 
             taskMetrics.eventMessages++;
 
-            JSONObject message = parseJsonMessage(envelope);
+            JSONObject message = messageContext.getMessageAsJson();
 
-            StreamingTaskDataSourceConfigKey configKey = extractDataSourceConfigKeySafe(message);
+            StreamingTaskDataSourceConfigKey configKey = messageContext.getStreamingTaskDataSourceConfigKey();
             if (configKey == null){
                 // Note this event is counted at the common task metrics, hence no need to count it again
                 taskMonitoringHelper.countNewFilteredEvents(super.UNKNOW_CONFIG_KEY, MonitorMessaages.BAD_CONFIG_KEY);
@@ -214,7 +217,8 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
                             ipResolvingService.getPartitionKey(configKey, message),
                             message.toJSONString());
                     handleUnfilteredEvent(message,configKey);
-                    collector.send(output);
+
+                    streamingProcessMessageContext.getCollector().send(output);
                     taskMetrics.sentEventMessages++;
                     eventResolvingConfig.getMetrics().sentEventMessages++;
 
@@ -233,10 +237,10 @@ public class IpResolvingStreamTask extends AbstractStreamTask {
 
 
     @Override
-    protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {}
+    protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {}
 
     @Override
-    protected void wrappedClose() throws Exception {
+    protected void processClose() throws Exception {
         // close all leveldb resolving caches
         for(CachingService cachingService: topicToCacheMap.values()) {
             cachingService.getCache().close();

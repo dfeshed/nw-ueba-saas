@@ -80,7 +80,7 @@ public class SpringMongoConfiguration extends AbstractMongoConfiguration {
             ServerAddress address = new ServerAddress(mongoHostName, mongoHostPort);
             List<MongoCredential> credentials = new ArrayList<>();
             credentials.add(
-                    MongoCredential.createMongoCRCredential(
+                    MongoCredential.createCredential(
                             mongoUserName,
                             mongoDBName,
                             EncryptionUtils.decrypt(mongoPassword).toCharArray()
