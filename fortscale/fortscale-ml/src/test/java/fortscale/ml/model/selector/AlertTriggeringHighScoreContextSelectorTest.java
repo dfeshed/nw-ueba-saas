@@ -28,13 +28,6 @@ import java.util.Set;
 @ActiveProfiles("test")
 public class AlertTriggeringHighScoreContextSelectorTest {
 
-    private static class SomeSelector extends AlertTriggeringHighScoreContextSelector
-    {
-        @Override
-        public List<String> getContexts(Date startTime, Date endTime) {
-            return Arrays.asList("user1","user2","user3");
-        }
-    }
 
     @Profile("test")
     @Configuration
@@ -48,17 +41,27 @@ public class AlertTriggeringHighScoreContextSelectorTest {
         {
             return new MongoDbRepositoryUtil();
         }
+
         @Bean
         public AlertTriggeringHighScoreContextSelector alertTriggeringHighScoreContextSelector ()
         {
             return new SomeSelector();
         }
+
+        private class SomeSelector extends AlertTriggeringHighScoreContextSelector
+        {
+            @Override
+            public List<String> getContexts(Date startTime, Date endTime) {
+                return Arrays.asList("user1","user2","user3");
+            }
+        }
+
     }
 
     @Autowired
     private AlertsRepository alertsRepository;
     @Autowired
-    private SomeSelector selector;
+    private AlertTriggeringHighScoreContextSelector selector;
 
     @Test
     public void selectorShouldPerformContextsIntersection()
