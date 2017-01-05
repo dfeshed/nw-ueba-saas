@@ -39,11 +39,7 @@
       searchEnabled=false
       onchange=(action 'selectElement' 'assignee' usersList)
       as |user|}}
-      {{#if (eq user.id -1)}}
-        {{t 'incident.assignee.none'}}
-      {{else}}
-        {{user.name}}
-      {{/if}}
+      {{userName user}}
     {{/power-select}}
 
     {{#power-select

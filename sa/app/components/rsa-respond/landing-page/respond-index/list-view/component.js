@@ -50,14 +50,8 @@ export default Component.extend({
   // Array of selected statuses
   filteredStatuses: [],
 
-  // Array of selected assignees
-  filteredAssignees: [],
-
   // Array of selected categories
   filteredCategories: [],
-
-  // Array of selected sources
-  filteredSources: [],
 
   // Array of risk score values
   filteredRiskScores: [],
@@ -97,9 +91,7 @@ export default Component.extend({
       'filteredTime': {},
       'filteredPriorities': [],
       'filteredStatuses': [],
-      'filteredAssignees': [],
       'filteredCategories': [],
-      'filteredSources': [],
       'filteredRiskScores': riskScoreFilterInitialValues
     });
 
@@ -149,6 +141,26 @@ export default Component.extend({
 
   @computed('categoryTags.[]')
   normalizedTreeData: (categoryTags) => IncidentHelper.normalizeCategoryTags(categoryTags),
+
+  /**
+   * @name usersList
+   * @description Creates an array of the user object and adds the selected parameter to each with the value of false.
+   * @param {Object} users Current users object from the model
+   * @public
+   */
+  @computed('users.[]')
+  usersList(users) {
+    const unassignedUser = EmberObject.create({
+      'id': -1
+    });
+    const arrUsers = [ unassignedUser ];
+
+    if (users) {
+      arrUsers.addObjects(users);
+    }
+
+    return arrUsers;
+  },
 
   /**
    * @name headerCheckbox
@@ -248,19 +260,18 @@ export default Component.extend({
   },
 
   /**
-   * @name selectedAssignee
+   * @name selectedAssignees
    * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
    * @public
    */
   @computed
-  selectedAssignee: {
+  selectedAssignees: {
     get: () => [],
     set(values) {
+      const assigneeIds = values.map((assignee) => assignee.id);
       run.once(() => {
-        this.set('filteredAssignees', values);
-        this.applyFilters('assigneeId', (values || []).slice());
+        this.applyFilters('assigneeId', assigneeIds.slice());
       });
-      this.set('assigneeFilterActive', values.length > 0);
       return values;
     }
   },
@@ -281,11 +292,9 @@ export default Component.extend({
         // has at least one of the selected sources
         filterFn = (incidentSources) => incidentSources.any((source) => values.includes(source));
       }
-
-      this.set('filteredSources', values);
-      this.applyFilters('sources', filterFn);
-      // Apply CSS style change
-      this.set('sourceFilterActive', values.length > 0);
+      run.once(() => {
+        this.applyFilters('sources', filterFn);
+      });
       return values;
     }
   },
@@ -371,11 +380,11 @@ export default Component.extend({
   },
 
   /**
-   * @name availableSources
+   * @name sourcesList
    * @description Obtain beautified (user-friendly) list of sources that can be used in filter selection
    * @public
    */
-  availableSources: IncidentHelper.sourceLongNames(),
+  sourcesList: IncidentHelper.sourceLongNames(),
 
   /**
    * @name badgeStyle
@@ -696,7 +705,7 @@ export default Component.extend({
       this.get('statusList').setEach('value', false);
       this.get('priorityList').setEach('value', false);
       this.setProperties({
-        'selectedAssignee': [],
+        'selectedAssignees': [],
         'selectedSources': [],
         'selectedCategories': [],
         'riskScoreStart': riskScoreFilterInitialValues.slice()

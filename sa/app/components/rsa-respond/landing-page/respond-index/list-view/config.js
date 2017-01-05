@@ -202,9 +202,13 @@ export function replayConfig() {
     EmberObject.extend({
       path: 'filters.assignees',
       value: computed({
-        set: (key, value) => {
-          if (!isEmpty(value)) {
-            this.set('selectedAssignee', value);
+        set: (key, assigneeIds) => {
+          if (!isEmpty(assigneeIds)) {
+            const allUsers = this.get('usersList');
+            if (!isEmpty(allUsers)) {
+              const assignees = allUsers.filter((user) => assigneeIds.any((assigneeId) => user.id === assigneeId));
+              this.set('selectedAssignees', assignees);
+            }
           }
         }
       })
@@ -373,14 +377,16 @@ export function persistenceConfig() {
   configArray.pushObject({
     execute: () => {
       run.once(() => {
-        this.get('persistence.state').persist('filters.assignees', this.get('filteredAssignees'));
+        const assignees = this.get('selectedAssignees');
+        const assigneeIds = assignees.map((assignee) => assignee.id);
+        this.get('persistence.state').persist('filters.assignees', assigneeIds);
       });
     },
     createObserver() {
-      addObserver(component, 'selectedAssignee', this.execute);
+      addObserver(component, 'selectedAssignees', this.execute);
     },
     destroyObserver() {
-      removeObserver(component, 'selectedAssignee', this.execute);
+      removeObserver(component, 'selectedAssignees', this.execute);
     }
   });
 
@@ -401,7 +407,7 @@ export function persistenceConfig() {
   configArray.pushObject({
     execute: () => {
       run.once(() => {
-        this.get('persistence.state').persist('filters.sources', this.get('filteredSources'));
+        this.get('persistence.state').persist('filters.sources', this.get('selectedSources'));
       });
     },
     createObserver() {

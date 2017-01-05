@@ -512,8 +512,8 @@ test('Single-Select Source filter affects the number of incidents on the screen'
   ).then(() => {
     assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'Reset-button resets selected Source filters');
     // Do single-select to check that filtering by source works
-    this.$('.rsa-respond-list__filter-panel__source-selector .prompt').click();
-    this.$('.rsa-respond-list__filter-panel__source-selector select').val('Event Stream Analysis').trigger('change');
+    clickTrigger('.rsa-respond-list__filter-panel__source-selector');
+    nativeMouseUp('.ember-power-select-option:eq(0)'); // setting source to Event Stream Analysis
 
     waitFor(
       () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 1
@@ -553,8 +553,10 @@ test('Multi-Select Source filter affects the number of incidents on the screen',
     assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
 
     // Do multi-source filter select
-    this.$('.rsa-respond-list__filter-panel__source-selector .prompt').click();
-    this.$('.rsa-respond-list__filter-panel__source-selector select').val(['Event Stream Analysis', 'ECAT']).trigger('change');
+    clickTrigger('.rsa-respond-list__filter-panel__source-selector');
+    nativeMouseUp('.ember-power-select-option:eq(0)'); // setting source to Event Stream Analysis
+    clickTrigger('.rsa-respond-list__filter-panel__source-selector');
+    nativeMouseUp('.ember-power-select-option:eq(2)'); // setting source to ECAT
 
     waitFor(
       () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 2
@@ -590,9 +592,9 @@ test('Assignee filter affects the number of incidents on screen', function(asser
     () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 3
   ).then(() => {
     assert.equal(this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length, 3, 'All rows are displayed by default');
-    // selecting assingee 1
-    this.$('.rsa-respond-list__filter-panel__assignee-selector .prompt').click();
-    this.$('.rsa-respond-list__filter-panel__assignee-selector select').val('1').trigger('change');
+
+    clickTrigger('.rsa-respond-list__filter-panel__assignee-selector');
+    nativeMouseUp('.ember-power-select-option:eq(1)'); // Selecting User-1
 
     waitFor(
       () => this.$('.rsa-data-table .rsa-data-table-body .rsa-data-table-body-rows .rsa-data-table-body-row').length === 1
@@ -686,8 +688,8 @@ test('When a bulk edit is active, the filter controls are disabled.', function(a
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), false, 'The risk score filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority rsa-form-checkbox').hasClass('is-disabled'), false, 'The priority filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status rsa-form-checkbox').hasClass('is-disabled'), false, 'The status filter component is not disabled.');
-  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').hasClass('is-disabled'), false, 'The source selector filter component is not disabled.');
-  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee-selector').hasClass('is-disabled'), false, 'The assignee selector filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').length, 1, 'The source selector filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee-selector').length, 1, 'The assignee selector filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-tag-manager').hasClass('is-disabled'), false, 'The form tag manager component is not disabled.');
 
   this.$('.js-respond-listview-checkbox-header input').prop('checked', true).trigger('change');
@@ -700,8 +702,10 @@ test('When a bulk edit is active, the filter controls are disabled.', function(a
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), true, 'The risk score filter component is disabled.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority .rsa-form-checkbox').hasClass('is-disabled'), true, 'The priority filter component is disabled.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status .rsa-form-checkbox').hasClass('is-disabled'), true, 'The status filter component is disabled.');
-      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').hasClass('is-disabled'), true, 'The source selector filter component is disabled.');
-      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee-selector').hasClass('is-disabled'), true, 'The assignee selector filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__sources .empty-selection').length, 1, 'The source selector placeholder is present.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').length, 0, 'The source selector is not present.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee .empty-selection').length, 1, 'The assignee selector placeholder is present.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee-selector').length, 0, 'The assignee selector is not present.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-tag-manager').hasClass('is-disabled'), true, 'The form tag manager component is disabled.');
       done();
     });

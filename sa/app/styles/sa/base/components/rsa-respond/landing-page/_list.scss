@@ -9,6 +9,13 @@
 }
 
 .rsa-respond-list {
+
+  @mixin empty-selection() {
+    @include rsa-font(body, small);
+    color: rsa-color(gray);
+    font-style: italic;
+  }
+
   .panel-B {
     .rsa-hide-webkit-scrollbar {
       margin-left: 2px;
@@ -91,16 +98,6 @@
         font-size: 1em;
         top: 1rem;
       }
-
-    }
-
-  }
-
-  &__filter-panel__risk-score {
-    margin-top: rsa-whitespace(more);
-
-    .rsa-respond-list__filter-panel__title {
-      padding-top: 0;
     }
   }
 
@@ -118,31 +115,17 @@
       padding-top: rsa-whitespace(more);
     }
 
-    .rsa-form-select {
-      margin-top: rsa-whitespace(more);
-      .rsa-form-label {
-        @include rsa-font(header, small);
+    &__assignee-selector,
+    &__source-selector {
+      input {
+        @include empty-selection();
       }
-
-      .prompt {
-        @include rsa-font(body, small);
-        padding-left: 2px;
-        color: rsa-color(gray);
-        font-style: italic;
-      }
-
     }
 
-    .assignee-filter-active,
-    .source-filter-active {
-      &.rsa-form-select {
-        .prompt {
-          @include rsa-font(body, small);
-          color: inherit;
-          padding-left: 0px;
-          font-style: normal;
-        }
-      }
+    .empty-selection {
+      @include empty-selection();
+      border-bottom: 1px solid rsa-color(gray, light);
+      padding: rsa-whitespace(less) 0;
     }
 
     &__reset-button {

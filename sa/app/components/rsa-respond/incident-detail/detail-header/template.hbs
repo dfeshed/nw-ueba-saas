@@ -55,11 +55,7 @@
               disabled=incidentIsClosed
               onchange=(action 'assigneeChanged')
               as |user|}}
-              {{#if (eq user.id -1)}}
-                {{t 'incident.assignee.none'}}
-              {{else}}
-                {{user.name}}
-              {{/if}}
+              {{userName user}}
             {{/power-select}}
           {{/rsa-content-definition}}
         </li>

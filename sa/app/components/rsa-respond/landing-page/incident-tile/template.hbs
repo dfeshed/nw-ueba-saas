@@ -81,11 +81,7 @@
       {{#rsa-content-definition class='rsa-incident-tile-assignee' label=(t 'incident.fields.assignee')}}
         {{#unless editModeActive}}
           <span class='rsa-incident-tile-assignee-selector'>
-            {{#if (eq selectedAssignee.id -1)}}
-              {{t 'incident.assignee.none'}}
-            {{else}}
-              {{selectedAssignee.name}}
-            {{/if}}
+            {{userName selectedAssignee}}
           </span>
         {{else}}
           {{#power-select
@@ -97,11 +93,7 @@
             searchEnabled=false
             onchange=(action (mut selectedAssignee))
             as |user|}}
-            {{#if (eq user.id -1)}}
-              {{t 'incident.assignee.none'}}
-            {{else}}
-              {{user.name}}
-            {{/if}}
+            {{userName user}}
           {{/power-select}}
         {{/unless}}
       {{/rsa-content-definition}}
@@ -126,7 +118,7 @@
     </vbox>
     <vbox xs="4">
       {{#rsa-content-definition class="rsa-incident-tile-assignee-block" label=(t "incident.fields.assignee")}}
-        <label class="rsa-incident-tile-assignee">{{if incident.assignee incident.assignee.name (t 'incident.assignee.none')}}</label>
+        <label class="rsa-incident-tile-assignee">{{user-name incident.assignee}}</label>
       {{/rsa-content-definition}}
     </vbox>
   </hbox>
