@@ -17,10 +17,13 @@ public class AdObject implements Serializable {
 	public static final String timestampepochField = "timestampepoch";
 	public static final String lastModifiedField = "lastModified";
 	public static final String runTimeField = "runtime";
-	
+
 	@Indexed
 	@Field(objectGUIDField)
 	@Id
+	/**
+	 * The GuId field is the id for the collection - in mongo saved as "_id" field
+	 */
 	private String objectGUID;
 	
 	private String objectSid;
