@@ -137,7 +137,7 @@ public class ModelBuilderManager {
             if (selectHighScoreContexts) {
                 contextIds = contextSelector.getHighScoreContexts(previousEndTime, currentEndTime);
             } else {
-                contextIds = contextSelector.getContextsSet(previousEndTime, currentEndTime);
+                contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
             }
         } else {
             contextIds = new HashSet<>();

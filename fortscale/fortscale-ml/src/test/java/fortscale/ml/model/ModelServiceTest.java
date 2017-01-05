@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.python.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -94,7 +95,7 @@ public class ModelServiceTest {
 		long currentEndTimeInSeconds = 1420070410;
 		long currentEndTimeInMillis = TimestampUtils.convertToMilliSeconds(currentEndTimeInSeconds);
 
-		List<String> contextIds = Arrays.asList("id1", "id2");
+		Set<String> contextIds = Sets.newHashSet("id1", "id2");
 		when(featureBucketsReaderService.findDistinctContextByTimeRange(
 				selectorFeatureBucketConf, previousEndTimeInMillis, currentEndTimeInMillis)).thenReturn(contextIds);
 

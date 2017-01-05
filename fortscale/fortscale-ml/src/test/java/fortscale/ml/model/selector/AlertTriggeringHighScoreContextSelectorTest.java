@@ -37,7 +37,7 @@ public class AlertTriggeringHighScoreContextSelectorTest {
     public static class springConfig
     {
         @Autowired
-        AlertsRepository alertsRepository;
+        private AlertsRepository alertsRepository;
         @Bean
         public AlertTriggeringHighScoreContextTestSelector alertTriggeringHighScoreContextTestSelector ()
         {

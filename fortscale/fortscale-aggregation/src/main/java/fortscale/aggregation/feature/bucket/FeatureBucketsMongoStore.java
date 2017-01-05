@@ -20,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 
 public class FeatureBucketsMongoStore implements FeatureBucketsStore{
@@ -301,7 +302,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
+	public Set<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
 		Criteria startTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).gte(TimestampUtils.convertToSeconds(startTime));
 
 		Criteria endTimeCriteria = Criteria.where(FeatureBucket.START_TIME_FIELD).lt(TimestampUtils.convertToSeconds(endTime));
@@ -311,7 +312,7 @@ public class FeatureBucketsMongoStore implements FeatureBucketsStore{
 		FeatureBucketsStoreMetrics metrics = getMetrics(featureBucketConf);
 		metrics.retrieveContextsCalls++;
 		metrics.retrievedContexts += res.size();
-		return res;
+		return (Set<String>) res.stream().collect(Collectors.toSet());
 	}
 
 	public String getCollectionName(FeatureBucketConf featureBucketConf) {

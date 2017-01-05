@@ -17,7 +17,7 @@ public abstract class AlertTriggeringHighScoreContextSelector implements IContex
 
 	@Override
 	public Set<String> getHighScoreContexts(Date startTime, Date endTime) {
-		Set<String> modelContexts = getContextsSet(startTime, endTime);
+		Set<String> modelContexts = getContexts(startTime, endTime);
 		Set<String> alertContexts = alertsRepository.getAlertsByTimeRange(new DateRange(startTime.getTime(), endTime.getTime()), null, true)
 				.stream()
 				.map(Alert::getEntityName)
