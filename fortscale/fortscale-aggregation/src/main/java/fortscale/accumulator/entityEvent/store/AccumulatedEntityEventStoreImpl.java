@@ -131,12 +131,14 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
         String collectionName = translator.toAcmCollectionName(entityEventConfName);
         getMetrics(collectionName).selectorCalls++;
         Query query = new Query();
-        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME).gte(startTime));
-        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_END_TIME).lte(endTime));
-        Set <String> distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName).distinct(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID, query.getQueryObject()).stream().collect(Collectors.toSet());
+        // todo: remove Date.from when https://jira.spring.io/browse/DATAMONGO-1580 is fixed
+        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME).gte(Date.from(startTime)));
+        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_END_TIME).lte(Date.from(endTime)));
+        Set <String> distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName)
+                .distinct(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID, query.getQueryObject())
+                .stream().collect(Collectors.toSet());
         logger.debug("found distinct contexts: {}",Arrays.toString(distinctContexts.toArray()));
         return distinctContexts;
-
     }
 
     /**
