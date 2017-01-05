@@ -19,9 +19,9 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
 
     @Override
     public void run() {
-        Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
-
         currentAdTaskType = AdTaskType.FETCH_ETL;
+        Thread.currentThread().setName(THREAD_NAME + "_" + currentAdTaskType + "_" + dataSource);
+
         final boolean succeeded = handleAdTask(currentAdTaskType);
         logger.info("Finished executing Fetch and ETL for datasource {}", dataSource);
 

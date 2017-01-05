@@ -60,9 +60,9 @@ public class ControllerInvokedAdTask implements Runnable {
 
     @Override
     public void run() {
-        Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
-
         currentAdTaskType = FETCH;
+        Thread.currentThread().setName(THREAD_NAME + "_" + currentAdTaskType + "_" + dataSource);
+
         final boolean fetchTaskSucceeded = handleAdTask(currentAdTaskType);
         if (!fetchTaskSucceeded) {
             logger.error("ETL phase for data source {} has been cancelled since Fetch phase has failed.", dataSource);
@@ -70,6 +70,7 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         currentAdTaskType = ETL;
+        Thread.currentThread().setName(THREAD_NAME + "_" + currentAdTaskType + "_" + dataSource);
         final boolean etlTaskSucceeded = handleAdTask(currentAdTaskType);
         logger.info("Finished executing Fetch and ETL for datasource {}", dataSource);
 
