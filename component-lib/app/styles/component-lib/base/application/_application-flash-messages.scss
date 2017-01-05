@@ -10,7 +10,7 @@
     display: block;
     width: 100%;
     box-sizing: border-box;
-    padding: rsa-whitespace() rsa-whitespace(most) rsa-whitespace() rsa-whitespace();
+    padding: rsa-whitespace() 0;
     margin-bottom: rsa-whitespace();
 
     &.alert-info {
@@ -33,24 +33,14 @@
       background-color: rsa-color(red, base, $rsa-nearly-opaque);
     }
 
-    .rsa-icon-close {
-      position: absolute;
-      right: rsa-whitespace();
-      top: rsa-whitespace(more);
-    }
-
-    p {
+    .message {
       @include rsa-font(paragraph);
       color: rsa-color(gray, lightest);
-      display: inline-block;
-      position: relative;
-      top: -11px;
     }
 
     .rsa-icon {
       color: rsa-color(gray, lightest);
       display: inline-block;
-      margin-right: rsa-whitespace(less);
     }
   }
 }
