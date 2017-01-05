@@ -43,7 +43,7 @@ import java.util.*;
 @EnableAnnotationConfiguration
 @EnableWebMvc
 //Scan and init all controllers
-@ComponentScan(basePackages = "fortscale", useDefaultFilters = false,
+@ComponentScan(basePackages = "fortscale.web", useDefaultFilters = false,
         includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
 )
 @ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
