@@ -29,7 +29,6 @@ import org.apache.samza.metrics.Gauge;
 import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.core.env.ConfigurableEnvironment;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
 
@@ -53,7 +52,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected FortscaleValueResolver res;
 	protected SpringService springService;
-	protected ConfigurableEnvironment environment;
 
 	private SamzaContainerService samzaContainerService;
 
@@ -136,7 +134,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 
 		springService = SpringService.getInstance();
-		environment = springService.getContext().getEnvironment();
 		res = springService.resolve(FortscaleValueResolver.class);
 
 		// Init stats monitoring service

@@ -2,7 +2,6 @@ package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
-import com.google.common.collect.Sets;
 import fortscale.common.event.Event;
 import fortscale.common.event.service.EventService;
 import fortscale.ml.model.message.ModelBuildingStatusMessage;
@@ -55,9 +54,8 @@ public class ScoringTask extends AbstractStreamTask {
 
         eventService = springService.resolve(EventService.class);
 
+        modelOutputControlTopics = res.resolveStringValueToSet("${fortscale.model.build.control.output.topics}",",");
 
-        modelOutputControlTopics =
-                Sets.newHashSet(environment.getProperty("fortscale.model.build.control.output.topics", String[].class));
         Assert.notEmpty(modelOutputControlTopics);
 
         objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
