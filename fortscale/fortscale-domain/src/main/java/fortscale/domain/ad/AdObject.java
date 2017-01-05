@@ -1,16 +1,15 @@
 package fortscale.domain.ad;
 
-import fortscale.domain.core.AbstractDocument;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.io.Serializable;
 import java.util.Date;
 
-public class AdObject extends AbstractDocument{
-	/**
-	 * 
-	 */
+public class AdObject implements Serializable {
 	private static final long serialVersionUID = 4373713742111586501L;
+
 	public static final String dnField = "distinguishedName";
 	public static final String memberField = "member";
 	public static final String nameField = "name";
@@ -21,6 +20,7 @@ public class AdObject extends AbstractDocument{
 	
 	@Indexed
 	@Field(objectGUIDField)
+	@Id
 	private String objectGUID;
 	
 	private String objectSid;
@@ -28,24 +28,19 @@ public class AdObject extends AbstractDocument{
 	@Indexed
 	@Field(dnField)
 	private String distinguishedName;
+
 	@Indexed()
 	@Field(timestampepochField)
 	private Long timestampepoch;
 
 
-    //The ttl for each document is 48 hours
-	@Indexed(unique = false, expireAfterSeconds=60*60*48)
+	@Indexed(unique = false)
 	@Field(lastModifiedField)
 	private Date lastModified;
 	
 	@Field(runTimeField)
 	private String runtime;
-	
-//	public AdObject(String distinguishedName){
-//		Assert.hasText(distinguishedName);
-//		this.distinguishedName = distinguishedName;
-//	}
-	
+
 	public String getObjectGUID() {
 		return objectGUID;
 	}
