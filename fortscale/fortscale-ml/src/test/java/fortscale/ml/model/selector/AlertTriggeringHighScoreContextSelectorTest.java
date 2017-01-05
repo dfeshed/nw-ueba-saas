@@ -2,19 +2,19 @@ package fortscale.ml.model.selector;
 
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.AlertsRepository;
-import fortscale.domain.core.dao.MongoDbRepositoryUtil;
-import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.time.Instant;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -24,38 +24,31 @@ import java.util.Set;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
+@ActiveProfiles("test")
 public class AlertTriggeringHighScoreContextSelectorTest {
 
-    public static class SomeSelector extends AlertTriggeringHighScoreContextSelector
-    {
-        @Override
-        public List<String> getContexts(Date startTime, Date endTime) {
-            return Arrays.asList("user1","user2","user3");
-        }
-    }
-
     @Configuration
-    @Import({MongodbTestConfig.class})
+    @Profile("test")
+    @EnableSpringConfigured
+    @EnableAnnotationConfiguration
+    @Import({AlertTriggeringHighScoreContextSelectorTestConfig.class})
     @EnableMongoRepositories(basePackageClasses = AlertsRepository.class,
-            includeFilters = @ComponentScan.Filter(type = FilterType.REGEX, pattern = "fortscale.domain.core.dao.AlertsRepository*"))
+            includeFilters = @ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,classes= AlertsRepository.class))
     public static class springConfig
     {
+        @Autowired
+        private AlertsRepository alertsRepository;
         @Bean
-        public MongoDbRepositoryUtil mongoDbRepositoryUtil()
+        public AlertTriggeringHighScoreContextTestSelector alertTriggeringHighScoreContextTestSelector ()
         {
-            return new MongoDbRepositoryUtil();
-        }
-        @Bean
-        public AlertTriggeringHighScoreContextSelector alertTriggeringHighScoreContextSelector ()
-        {
-            return new SomeSelector();
+            return new AlertTriggeringHighScoreContextTestSelector();
         }
     }
 
     @Autowired
     private AlertsRepository alertsRepository;
     @Autowired
-    private SomeSelector selector;
+    private AlertTriggeringHighScoreContextTestSelector selector;
 
     @Test
     public void selectorShouldPerformContextsIntersection()
@@ -81,7 +74,7 @@ public class AlertTriggeringHighScoreContextSelectorTest {
         Date startDate = Date.from(startDateInstant);
         Date endDate = Date.from(endDateInstant);
         Set<String> highScoreContexts = selector.getHighScoreContexts(startDate, endDate);
-        Assert.assertEquals(highScoreContexts.size(),1);
+        Assert.assertEquals(1,highScoreContexts.size());
         Assert.assertTrue(highScoreContexts.contains(entityId));
 
 

@@ -114,7 +114,7 @@ public class ModelBuilderManagerTest {
 			if (selectHighScoreContexts) {
 				verify(selector).getHighScoreContexts(eq(previousEndTime), eq(currentEndTime));
 			} else {
-				verify(selector).getContextsSet(eq(previousEndTime), eq(currentEndTime));
+				verify(selector).getContexts(eq(previousEndTime), eq(currentEndTime));
 			}
 		}
 		verify(builder, times(ids.length)).build(any());
@@ -225,7 +225,7 @@ public class ModelBuilderManagerTest {
         IContextSelectorConf selectorConf = mock(IContextSelectorConf.class);
         when(modelConf.getContextSelectorConf()).thenReturn(selectorConf);
         when(factoryService.getProduct(eq(selectorConf))).thenReturn(selector);
-		when(selector.getContextsSet(eq(previousEndTime), eq(currentEndTime))).thenReturn(Sets.newHashSet(ids));
+		when(selector.getContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(Sets.newHashSet(ids));
 		when(selector.getHighScoreContexts(eq(previousEndTime), eq(currentEndTime))).thenReturn(new HashSet<>(Arrays.asList(ids)));
 		for (int i = 0; i < ids.length; i++) {
 			mockBuild(ids[i], currentStartTime, currentEndTime, models[i], successes[i]);

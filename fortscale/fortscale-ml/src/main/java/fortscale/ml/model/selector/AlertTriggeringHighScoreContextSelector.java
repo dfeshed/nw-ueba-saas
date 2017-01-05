@@ -13,11 +13,11 @@ import java.util.stream.Collectors;
 @Configurable(preConstruction = true)
 public abstract class AlertTriggeringHighScoreContextSelector implements IContextSelector {
 	@Autowired
-	private AlertsRepository alertsRepository;
+	protected AlertsRepository alertsRepository;
 
 	@Override
 	public Set<String> getHighScoreContexts(Date startTime, Date endTime) {
-		Set<String> modelContexts = getContextsSet(startTime, endTime);
+		Set<String> modelContexts = getContexts(startTime, endTime);
 		Set<String> alertContexts = alertsRepository.getAlertsByTimeRange(new DateRange(startTime.getTime(), endTime.getTime()), null, true)
 				.stream()
 				.map(Alert::getEntityName)
@@ -26,8 +26,8 @@ public abstract class AlertTriggeringHighScoreContextSelector implements IContex
 
 		// model contexts will contain the intersection between contexts that are relevant to the model and those that have alert
 		if (modelContexts != null && !modelContexts.isEmpty() ) {
-			modelContexts.retainAll(alertContexts);
+			alertContexts.retainAll(modelContexts);
 		}
-		return modelContexts;
+		return alertContexts;
 	}
 }

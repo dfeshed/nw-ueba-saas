@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class AggregatedFeatureEventsReaderService {
 	@Autowired
@@ -15,7 +16,7 @@ public class AggregatedFeatureEventsReaderService {
 	@Autowired
 	private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
 
-	public List<String> findDistinctContextsByTimeRange(
+	public Set<String> findDistinctContextsByTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
 
 		return aggregatedFeatureEventsMongoStore.findDistinctContextsByTimeRange(

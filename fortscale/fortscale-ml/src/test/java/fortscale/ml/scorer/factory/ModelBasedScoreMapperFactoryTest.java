@@ -1,5 +1,6 @@
 package fortscale.ml.scorer.factory;
 
+import com.google.common.collect.Sets;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
@@ -143,8 +144,8 @@ public class ModelBasedScoreMapperFactoryTest {
 			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(), factoryConfig ->
 					new IContextSelector() {
 						@Override
-						public List<String> getContexts(Date startTime, Date endTime) {
-							return Collections.singletonList("some_user_context");
+						public Set<String> getContexts(Date startTime, Date endTime) {
+							return Sets.newHashSet("some_user_context");
 						}
 
 						@Override

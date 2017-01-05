@@ -29,7 +29,7 @@ public class EntityEventContextSelector extends AlertTriggeringHighScoreContextS
 			throw new InvalidEntityEventConfNameException( config.getEntityEventConfName());
 	}
 	@Override
-	public List<String> getContexts(Date startTime, Date endTime) {
+	public Set<String> getContexts(Date startTime, Date endTime) {
 		return entityEventDataReaderService.findDistinctAcmContextsByTimeRange(
 				entityEventConf, startTime, endTime);
 	}

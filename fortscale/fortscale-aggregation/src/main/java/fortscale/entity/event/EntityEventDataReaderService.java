@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class EntityEventDataReaderService {
 	@Autowired
@@ -14,7 +15,7 @@ public class EntityEventDataReaderService {
 	@Autowired
 	private AccumulatedEntityEventStore accumulatedEntityEventStore;
 
-	public List<String> findDistinctContextsByTimeRange(
+	public Set<String> findDistinctContextsByTimeRange(
 			EntityEventConf entityEventConf, Date startTime, Date endTime) {
 
 		return entityEventDataMongoStore.findDistinctContextsByTimeRange(

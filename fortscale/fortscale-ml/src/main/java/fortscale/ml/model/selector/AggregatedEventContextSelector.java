@@ -32,8 +32,8 @@ public class AggregatedEventContextSelector extends AlertTriggeringHighScoreCont
     }
 
     @Override
-    public List<String> getContexts(Date startTime, Date endTime) {
-        return aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
+    public Set<String> getContexts(Date startTime, Date endTime) {
+        return aggregatedFeatureEventsReaderService.findDistinctContextsByTimeRange(
                 aggregatedFeatureEventConf, startTime, endTime);
     }
 }
