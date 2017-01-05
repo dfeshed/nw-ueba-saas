@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Configurable(preConstruction = true)
 public class AggregatedEventContextSelector extends AlertTriggeringHighScoreContextSelector {
@@ -33,7 +33,7 @@ public class AggregatedEventContextSelector extends AlertTriggeringHighScoreCont
 
     @Override
     public Set<String> getContexts(Date startTime, Date endTime) {
-        return aggregatedFeatureEventsReaderService.findDistinctContextsByTimeRange(
+        return aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
                 aggregatedFeatureEventConf, startTime, endTime);
     }
 }

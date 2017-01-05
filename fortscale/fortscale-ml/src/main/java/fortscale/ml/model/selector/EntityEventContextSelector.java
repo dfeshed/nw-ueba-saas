@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Configurable(preConstruction = true)
 public class EntityEventContextSelector extends AlertTriggeringHighScoreContextSelector {

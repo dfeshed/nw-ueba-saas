@@ -22,7 +22,7 @@ public class AggregatedFeatureEventsReaderService {
 		return aggregatedFeatureEventsMongoStore.findDistinctContextsByTimeRange(
 				aggregatedFeatureEventConf, startTime, endTime);
 	}
-	public List<String> findDistinctAcmContextsByTimeRange(
+	public Set<String> findDistinctAcmContextsByTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
 
 		return accumulatedAggregatedFeatureEventStore.findDistinctContextsByTimeRange(

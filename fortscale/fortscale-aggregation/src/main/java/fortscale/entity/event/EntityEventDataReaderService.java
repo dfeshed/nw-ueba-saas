@@ -40,7 +40,7 @@ public class EntityEventDataReaderService {
 		return jokerEntityEventDatas;
 	}
 
-	public List<String> findDistinctAcmContextsByTimeRange(EntityEventConf entityEventConf, Date startTime, Date endTime) {
+	public Set<String> findDistinctAcmContextsByTimeRange(EntityEventConf entityEventConf, Date startTime, Date endTime) {
 
 		return accumulatedEntityEventStore.findDistinctContextsByTimeRange(
 				entityEventConf, startTime, endTime);

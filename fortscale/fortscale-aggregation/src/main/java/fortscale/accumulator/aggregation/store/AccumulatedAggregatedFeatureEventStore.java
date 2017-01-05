@@ -7,6 +7,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by barak_schuster on 10/6/16.
@@ -22,5 +23,5 @@ public interface AccumulatedAggregatedFeatureEventStore {
 			Instant startTime,
 			Instant endTime);
 
-	List<String> findDistinctContextsByTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime);
+	Set<String> findDistinctContextsByTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime);
 }
