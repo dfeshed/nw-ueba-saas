@@ -65,21 +65,6 @@ echo "*** BEGIN FILES CHANGED"
 echo $files | tr " " "\n"
 echo "*** END FILES CHANGED"
 
-submodulesToTest=$(node $scriptDir/../node/determine-apps-to-test.js $files)
-checkError "Error occurred attempting to build list of submodules to test"
-
-submodulesToInstall=$(node $scriptDir/../node/determine-apps-to-install.js $files)
-checkError "Error occurred attempting to build list of submodules to install"
-
-echo "*** BEGIN SUBMODULES TO TEST"
-echo $submodulesToTest | tr " " "\n"
-echo "*** END SUBMODULES TO TEST"
-
-echo "*** BEGIN SUBMODULES TO INSTALL"
-echo $submodulesToInstall | tr " " "\n"
-echo "*** END SUBMODULES TO INSTALL"
-
-
 if [ -z ${EXTENT+x} ]
 then
   fail "Please export EXTENT variable:"
@@ -94,19 +79,38 @@ fi
 #### Setup environment ####
 . $scriptDir/environment.sh
 
+submodulesToTest=$(node $scriptDir/../node/determine-apps-to-test.js $files)
+checkError "Error occurred attempting to build list of submodules to test"
+
+submodulesToInstall=$(node $scriptDir/../node/determine-apps-to-install.js $files)
+checkError "Error occurred attempting to build list of submodules to install"
+
+echo "*** BEGIN SUBMODULES TO TEST"
+echo $submodulesToTest | tr " " "\n"
+echo "*** END SUBMODULES TO TEST"
+
+echo "*** BEGIN SUBMODULES TO INSTALL"
+echo $submodulesToInstall | tr " " "\n"
+echo "*** END SUBMODULES TO INSTALL"
+
 #### Build Apps ####
 . $scriptDir/apps.sh
 
-if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+if [[ $submodulesToTest =~ "|sa|" ]]
 then
-  #### Build RPM if running full or rpm build
-  . $scriptDir/rpm.sh
-fi
+  if [[ "$EXTENT" == "FULL" || "$EXTENT" == "RPM" ]]
+  then
+    #### Build RPM if running full or rpm build
+    . $scriptDir/rpm.sh
+  fi
 
-if [ "$EXTENT" == "FULL" ]
-then
-  #### Moving RPM to Yum directory if running full build
-  . $scriptDir/yum.sh
+  if [ "$EXTENT" == "FULL" ]
+  then
+    #### Moving RPM to Yum directory if running full build
+    . $scriptDir/yum.sh
+  fi
+else
+  echo "sa not updated, not building RPM"
 fi
 
 #### Victory, poppin bottles
