@@ -1,33 +1,19 @@
 .sort-options {
+  @include rsa-flex-direction(row);
+  @include rsa-flex-justify-content(space-between);
+  @include rsa-flex-align-items(flex-start);
+  @include rsa-vendor-prefix(flex-wrap, nowrap);
 
-  &__selection {
-    float: left;
-
-    &.rsa-form-select {
-
-      .rsa-form-label {
-        @include rsa-font(header, small);
-        color: rsa-color(gray, lighter);
-        white-space: nowrap;
-        margin-right: rsa-whitespace(less);
-        margin-top: 5px;
-      }
-
-      .prompt {
-        width: auto;
-        min-width: 106px;
-        margin-top: 3px;
-        border: none;
-      }
-
-      .rsa-icon {
-        font-size: .6rem;
-      }
+  .rsa-form-label.power-select {
+    .label-text {
+      margin-right: 0;
+    }
+    .ember-power-select-trigger {
+      border: 0;
+      min-width: 106px;
+    }
+    .ember-power-select-selected-item {
+      @include rsa-font(body);
     }
   }
-
-  &__direction {
-    float: right;
-  }
-
 }

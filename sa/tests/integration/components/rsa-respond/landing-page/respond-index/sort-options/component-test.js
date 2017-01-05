@@ -1,7 +1,13 @@
 import { moduleForComponent, test } from 'ember-qunit';
+import Ember from 'ember';
 import hbs from 'htmlbars-inline-precompile';
+import { clickTrigger, nativeMouseUp } from '../../../../../../helpers/ember-power-select';
 
-moduleForComponent('rsa-respond/landing-page/respond-index/sort-options', 'Integration | Component | Respond | Landing Page | sort-options', {
+const {
+  $
+} = Ember;
+
+moduleForComponent('sort-options', 'Integration | Component | rsa respond/landing page/respond index/sort options', {
   integration: true
 });
 
@@ -41,22 +47,23 @@ test('The New Incident sort options component is rendered properly.', function(a
 
   const container = this.$('.sort-options');
 
-  const label = container.find('.rsa-form-select .rsa-form-label');
-  assert.equal(label.text(), mockLabel, 'Label Text');
+  const label = container.find('.rsa-form-label.power-select .label-text');
+  assert.equal(label.text().trim(), mockLabel, 'Label Text');
 
-  const sortSelectForm = container.find('.rsa-form-select');
-  const prompt = sortSelectForm.find('.prompt');
-  assert.equal(prompt.text().trim(), 'Risk Score', 'Default selected sort option');
+  const sortSelectForm = container.find('.ember-power-select-trigger');
+  const selectedOption = sortSelectForm.find('.ember-power-select-selected-item');
+  assert.equal(selectedOption.text().trim(), 'Risk Score', 'Default selected sort option');
 
-  const sortMenuOptions = sortSelectForm.find('select option');
+  clickTrigger();
+  const sortMenuOptions = $('.ember-power-select-option');
 
-  assert.equal(sortMenuOptions[0].innerText, 'Alerts', 'First priority is Alerts');
-  assert.equal(sortMenuOptions[1].innerText, 'Assignee', 'Second priority is Assignee');
-  assert.equal(sortMenuOptions[2].innerText, 'Date Created', 'Third priority is Date Created');
-  assert.equal(sortMenuOptions[3].innerText, 'Incident ID', 'Fourth priority is Incident ID');
-  assert.equal(sortMenuOptions[4].innerText, 'Priority', 'Fourth priority is Priority');
-  assert.equal(sortMenuOptions[5].innerText, 'Risk Score', 'Fourth priority is Risk Score');
-  assert.equal(sortMenuOptions[6].innerText, 'Date Updated', 'Fifth priority is Date Updated');
+  assert.equal(sortMenuOptions.eq(0).text().trim(), 'Alerts', 'First priority is Alerts');
+  assert.equal(sortMenuOptions.eq(1).text().trim(), 'Assignee', 'Second priority is Assignee');
+  assert.equal(sortMenuOptions.eq(2).text().trim(), 'Date Created', 'Third priority is Date Created');
+  assert.equal(sortMenuOptions.eq(3).text().trim(), 'Incident ID', 'Fourth priority is Incident ID');
+  assert.equal(sortMenuOptions.eq(4).text().trim(), 'Priority', 'Fourth priority is Priority');
+  assert.equal(sortMenuOptions.eq(5).text().trim(), 'Risk Score', 'Fourth priority is Risk Score');
+  assert.equal(sortMenuOptions.eq(6).text().trim(), 'Date Updated', 'Fifth priority is Date Updated');
 
   const directionButton = container.find('.rsa-form-button-wrapper .rsa-form-button');
   const directionIcon = directionButton.find('.rsa-icon');
@@ -74,8 +81,7 @@ test('The New Incident sort options component is rendered properly.', function(a
   });
 
   // Mock user's action: 'User selected sort by Alerts'
-  prompt.click();
-  sortSelectForm.find('select').val('alertCount').trigger('change');
+  nativeMouseUp('.ember-power-select-option:eq(0)'); // setting order to alertCount
 
   // Define expected action params
   this.set('externalMockSortAction', (field, direction, view) => {

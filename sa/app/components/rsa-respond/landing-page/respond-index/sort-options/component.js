@@ -31,11 +31,11 @@ export default Component.extend({
    */
   @computed('defaultSortOption')
   selectedSortOption: {
-    get: (defaultSortOption) => [defaultSortOption],
+    get: (defaultSortOption) => defaultSortOption,
 
-    set(sortOptions) {
-      this.sendAction('sortAction', sortOptions[0], this.get('direction'), this.get('viewType'));
-      return sortOptions;
+    set(sortOption) {
+      this.sendAction('sortAction', sortOption, this.get('direction'), this.get('viewType'));
+      return sortOption;
     }
   },
 
@@ -46,8 +46,8 @@ export default Component.extend({
      */
     toggleSortDir() {
       this.toggleProperty('isDesc');
-      const options = this.get('selectedSortOption');
-      this.sendAction('sortAction', options[0], this.get('direction'), this.get('viewType'));
+      const option = this.get('selectedSortOption');
+      this.sendAction('sortAction', option, this.get('direction'), this.get('viewType'));
     }
 
   }
