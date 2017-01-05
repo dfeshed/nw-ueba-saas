@@ -89,7 +89,7 @@ public class ModelCacheManagerSamza implements ModelCacheManager {
 	public void deleteFromCache(String modelConfName, String contextId) {
 		getMetrics().deleteFromCache++;
 		String storeKey = getStoreKey(modelConfName,contextId);
-		logger.info("deleting key={} from store={}", storeKey, levelDbStoreName);
+		logger.debug("deleting key={} from store={}", storeKey, levelDbStoreName);
 		getStore().delete(storeKey);
 	}
 

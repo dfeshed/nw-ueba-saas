@@ -2,6 +2,7 @@ package fortscale.streaming.task;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsonorg.JsonOrgModule;
+import com.google.common.collect.Sets;
 import fortscale.common.event.Event;
 import fortscale.common.event.service.EventService;
 import fortscale.ml.model.message.ModelBuildingStatusMessage;
@@ -22,8 +23,9 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.springframework.util.Assert;
 
+import java.util.Set;
+
 import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.task.ModelBuildingStreamTask.CONTROL_OUTPUT_TOPIC_KEY;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 
@@ -35,9 +37,8 @@ public class ScoringTask extends AbstractStreamTask {
     private String timestampField;
     private Counter processedMessageCount;
     private Counter lastTimestampCount;
-    private String modelBuildingControlOutputTopic;
     private ObjectMapper objectMapper;
-
+    private Set<String> modelOutputControlTopics;
 
     @Override
     protected void processInit(Config config, TaskContext context) throws Exception {
@@ -54,8 +55,10 @@ public class ScoringTask extends AbstractStreamTask {
 
         eventService = springService.resolve(EventService.class);
 
-        modelBuildingControlOutputTopic = resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY,res);
-        Assert.hasText(modelBuildingControlOutputTopic);
+
+        modelOutputControlTopics =
+                Sets.newHashSet(environment.getProperty("fortscale.model.build.control.output.topics", String[].class));
+        Assert.notEmpty(modelOutputControlTopics);
 
         objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
     }
@@ -66,7 +69,7 @@ public class ScoringTask extends AbstractStreamTask {
 
         JSONObject message = messageContext.getMessageAsJson();
         String messageText = messageContext.getMessageAsString();
-        if(topicName.equals(modelBuildingControlOutputTopic))
+        if(modelOutputControlTopics.contains(topicName))
         {
             taskMetrics.modelBuildingEvents++;
 
