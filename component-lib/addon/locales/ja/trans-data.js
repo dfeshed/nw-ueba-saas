@@ -10,7 +10,8 @@ export default {
     reset: 'ja_Reset',
     apply: 'ja_Apply',
     ok: 'ja_OK',
-    delete: 'ja_Delete'
+    delete: 'ja_Delete',
+    save: 'ja_Save'
   },
   login: {
     username: 'ja_Username',

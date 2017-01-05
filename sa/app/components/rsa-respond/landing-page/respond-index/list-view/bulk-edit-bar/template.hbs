@@ -1,12 +1,11 @@
-{{#rsa-application-modal eventId='bulk-edit-delete' label=(t "incident.bulkEdit.deleteConfirmation") }}
+{{#rsa-application-modal eventId='bulk-edit-delete' label=(t "incident.edit.delete.confirmationTitle") }}
   <div class='modal-content rsa-respond-bulk-edit-delete-confirm'>
-    <p>{{ t "incident.bulkEdit.areYouSureConfirmation" count=totalIncidentsDeleted }}</p>
-    {{#rsa-form-button isFullWidth=true style='danger' defaultAction=(action 'confirmDelete')}}
-      {{t 'forms.delete'}}
-    {{/rsa-form-button}}
-
+    <p>{{ t "incident.edit.delete.confirmationBody" count=totalIncidentsDeleted}}</p>
     {{#rsa-form-button isFullWidth=true defaultAction=(action 'closeDeleteConfirmModal')}}
       {{t 'forms.cancel'}}
+    {{/rsa-form-button}}
+    {{#rsa-form-button isFullWidth=true style='danger' defaultAction=(action 'confirmDelete')}}
+      {{t 'forms.delete'}}
     {{/rsa-form-button}}
   </div>
 {{/rsa-application-modal}}
@@ -20,7 +19,7 @@
       options=statusList
       selected=selected.statusSort
       disabled=isStatusSelectorDisabled
-      placeholder=(t 'incident.bulkEdit.statusSelectListLabel')
+      placeholder=(t 'incident.fields.status')
       allowClear=true
       searchEnabled=false
       onchange=(action 'selectElement' 'statusSort' statusList)
@@ -34,7 +33,7 @@
       options=usersList
       selected=selected.assignee
       disabled=isSelectAvailable
-      placeholder=(t 'incident.bulkEdit.assigneeSelectListLabel')
+      placeholder=(t 'incident.fields.assignee')
       searchField="firstName"
       allowClear=true
       searchEnabled=false
@@ -53,7 +52,7 @@
       options=priorityList
       selected=selected.prioritySort
       disabled=isSelectAvailable
-      placeholder=(t 'incident.bulkEdit.prioritySelectListLabel')
+      placeholder=(t 'incident.fields.priority')
       allowClear=true
       searchEnabled=false
       onchange=(action 'selectElement' 'prioritySort' priorityList)
@@ -69,17 +68,12 @@
     {{/rsa-form-button}}
 
     {{#rsa-form-button class=(concat 'rsa-bulk-edit-button-group__cancel-btn' (unless isBulkEditInProgress " is-hidden")) defaultAction=(action 'cancelEdit')}}
-      {{t 'incident.bulkEdit.cancelButton'}}
+      {{t 'forms.cancel'}}
     {{/rsa-form-button}}
 
     {{#rsa-form-button style='primary' class=(concat 'rsa-bulk-edit-button-group__save-btn' (unless isBulkEditInProgress " is-hidden")) defaultAction=(action 'validateBulkSave')}}
-      {{t 'incident.bulkEdit.saveButton'}}
+      {{t 'forms.save'}}
     {{/rsa-form-button}}
-
-    <span class="rsa-bulk-edit-message {{if showMessage 'is-shown'}}">
-      {{rsa-icon name='check-2'}}
-      {{t (if (eq showMessage 'delete') 'incident.bulkEdit.successfulDeleteMessage' 'incident.bulkEdit.successfulUpdateMessage') totalFields=affectedIncidents count=affectedIncidents }}
-    </span>
 
   </div>
 

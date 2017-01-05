@@ -15,11 +15,15 @@ const {
   inject: {
     service
   },
-  Logger
+  Logger,
+  String: {
+    htmlSafe
+  }
 } = Ember;
 
 export default Component.extend({
   eventBus: service('event-bus'),
+  fatalErrors: service(),
 
   layoutService: service('layout'),
 
@@ -94,9 +98,15 @@ export default Component.extend({
           this.set('incidents', data);
         }
       },
-      onError: () => {
-        Logger.error('Error processing stream call for incident queue');
+      onError: (error) => {
         this.set('loadingData', false);
+        Logger.error(`Error loading incidents. Error: ${error}`);
+        this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('respond.errors.unexpected')));
+      },
+      onTimeout: () => {
+        this.set('loadingData', false);
+        Logger.warn('Timeout loading incidents.');
+        this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('respond.errors.timeout')));
       }
     });
   },

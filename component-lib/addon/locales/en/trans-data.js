@@ -10,7 +10,8 @@ export default {
     reset: 'Reset',
     apply: 'Apply',
     ok: 'OK',
-    delete: 'Delete'
+    delete: 'Delete',
+    save: 'Save'
   },
   login: {
     username: 'Username',

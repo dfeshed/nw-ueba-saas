@@ -99,8 +99,6 @@ test('The rsa-bulk-edit-bar component renders with the proper elements.', functi
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
     incidents=incidents
-    saveAction=bulkSaveAction
-    deleteAction=bulkDeleteAction
     isBulkEditInProgress=isBulkEditInProgress
     showMessage=showBulkEditMessage}}`);
 
@@ -125,8 +123,6 @@ test('The rsa-bulk-edit-bar component renders with the proper elements.', functi
   assert.equal(this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-button-group__save-btn').text().trim(), 'Save', 'The save button exists and has the proper "Save" label.');
   assert.equal(this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-button-group__cancel-btn').text().trim(), 'Cancel', 'The cancel button exists and has the proper "Cancel" label.');
   assert.equal(this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-button-group__delete-btn').text().trim(), 'Delete', 'The delete button exists and has the proper "Delete" label.');
-  assert.equal(this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-message').length, 1, 'The update message element was found.');
-  assert.notOk(this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-message').hasClass('is-shown'), 'The update message is not visible');
 });
 
 test('The rsa-bulk-edit button select lists are active when an incident is checked.', function(assert) {
@@ -135,8 +131,6 @@ test('The rsa-bulk-edit button select lists are active when an incident is check
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
     incidents=incidents
-    saveAction=bulkSaveAction
-    deleteAction=bulkDeleteAction
     isBulkEditInProgress=isBulkEditInProgress
     showMessage=showBulkEditMessage}}`);
 
@@ -159,8 +153,6 @@ test('Only the rsa-bulk-edit status select list is active when a closed incident
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
     incidents=incidents
-    saveAction=bulkSaveAction
-    deleteAction=bulkDeleteAction
     isBulkEditInProgress=isBulkEditInProgress
     showMessage=showBulkEditMessage}}`);
 
@@ -185,8 +177,6 @@ test('The Save and Cancel buttons in the rsa-bulk-edit bar should appear when a 
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
     incidents=incidents
-    saveAction=bulkSaveAction
-    deleteAction=bulkDeleteAction
     isBulkEditInProgress=isBulkEditInProgress
     showMessage=showBulkEditMessage}}`);
 
@@ -213,11 +203,17 @@ test('Clicking the Save button after selecting values successfully saves the inc
   const done = assert.async(2);
   const incFourNintyOne = this.get('incidents').findBy('id', 'INC-491');
 
+  this.set('bulkSaveAction', (updateObject, arrayOfSelectedIncidentIDs) => {
+    assert.equal(arrayOfSelectedIncidentIDs.length, 1, 'One incident is updated');
+    assert.equal(updateObject.prioritySort, 3, 'Priority has changed');
+    assert.equal(updateObject.statusSort, 1, 'Status has changed');
+    assert.equal(updateObject.assignee.id, '2', 'Assignee has changed');
+  });
+
   this.render(hbs`{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
     incidents=incidents
-    saveAction=bulkSaveAction
-    deleteAction=bulkDeleteAction
+    saveAction=(action bulkSaveAction)
     isBulkEditInProgress=isBulkEditInProgress
     showMessage=showBulkEditMessage}}`);
 
@@ -228,33 +224,34 @@ test('Clicking the Save button after selecting values successfully saves the inc
 
   // chaging the status
   clickTrigger('.rsa-form-status-select');
-  nativeMouseUp('.ember-power-select-option:eq(0)');
+  nativeMouseUp('.ember-power-select-option:eq(1)'); // status Assigneed
 
   // chaging the assignee
   clickTrigger('.rsa-form-assignee-select');
-  nativeMouseUp('.ember-power-select-option:eq(0)');
+  nativeMouseUp('.ember-power-select-option:eq(2)'); // user 1
 
   // chaging the priority
   clickTrigger('.rsa-form-priority-select');
-  nativeMouseUp('.ember-power-select-option:eq(0)');
+  nativeMouseUp('.ember-power-select-option:eq(0)'); // priority Critical (reverse order)
 
   wait().then(() => {
     this.$('.rsa-bulk-edit-button-group .rsa-bulk-edit-button-group__save-btn .rsa-form-button').click();
-    assert.ok(this.$('.rsa-bulk-edit-message').hasClass('is-shown'), 'The bulk edit message is visible');
-    assert.equal(this.$('.rsa-bulk-edit-message').text().trim(), '1 record updated successfully', 'The bulk edit message shows one item updated.');
     done();
   });
 });
 
-test('Selecting an incident and clicking the delete button will display the "Incident deleted" message.', function(assert) {
+test('Selecting an incident and clicking the delete button requests a delete action.', function(assert) {
   const done = assert.async(3);
   const incFourNintyOne = this.get('incidents').findBy('id', 'INC-491');
+
+  this.set('bulkDeleteAction', (arrayOfSelectedIncidentIDs) => {
+    assert.equal(arrayOfSelectedIncidentIDs.length, 1, 'One incident is deleted');
+  });
 
   this.render(hbs`<div id='modalDestination'></div>{{rsa-respond/landing-page/respond-index/list-view/bulk-edit-bar
     users=users
     incidents=incidents
-    saveAction=bulkSaveAction
-    deleteAction=bulkDeleteAction
+    deleteAction=(action bulkDeleteAction)
     isBulkEditInProgress=isBulkEditInProgress
     showMessage=showBulkEditMessage}}`);
 
@@ -273,12 +270,10 @@ test('Selecting an incident and clicking the delete button will display the "Inc
     wait().then(() => {
       assert.equal(this.$('.rsa-respond-bulk-edit-delete-confirm:first').length, 1, 'The delete confirmation modal has appeared.');
       assert.equal(this.$('.rsa-respond-bulk-edit-delete-confirm:first p').text().trim(), 'Please confirm you want to delete this incident. Once this incident is deleted, it cannot be recovered.', 'The proper messaging is displayed.');
-      assert.equal(this.$('.rsa-respond-bulk-edit-delete-confirm:first .rsa-form-button-wrapper:first .rsa-form-button').text().trim(), 'Delete', 'The delete button appears with the proper label.');
-      assert.equal(this.$('.rsa-respond-bulk-edit-delete-confirm:first .rsa-form-button-wrapper:last-child .rsa-form-button').text().trim(), 'Cancel', 'The cancel button appears with the proper label.');
+      assert.equal(this.$('.rsa-respond-bulk-edit-delete-confirm:first .rsa-form-button-wrapper:first .rsa-form-button').text().trim(), 'Cancel', 'The cancel button appears with the proper label.');
+      assert.equal(this.$('.rsa-respond-bulk-edit-delete-confirm:first .rsa-form-button-wrapper:last-child .rsa-form-button').text().trim(), 'Delete', 'The delete button appears with the proper label.');
 
       this.$('.rsa-respond-bulk-edit-delete-confirm:first .rsa-form-button-wrapper:first .rsa-form-button').click();
-
-      assert.equal(this.$('.rsa-bulk-edit-message').text().trim(), '1 incident successfully deleted', 'The proper success message is shown.');
       done();
     });
     done();

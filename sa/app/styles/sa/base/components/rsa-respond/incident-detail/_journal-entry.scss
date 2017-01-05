@@ -22,9 +22,6 @@
     padding: rsa-whitespace(less) 0;
     &__file {
       padding: rsa-whitespace(least) 0;
-      &__icon {
-
-      }
       &__name {
         padding-left: rsa-whitespace(least);
       }
@@ -130,13 +127,18 @@
 
   &__delete-dialog {
     padding: rsa-whitespace();
+    max-width: 400px;
 
     &__prompt {
-      @include rsa-font(body, large);
+      @include rsa-font(paragraph);
+      margin-bottom: rsa-whitespace();
     }
     &__actions {
-      float: right;
-      padding: rsa-whitespace(base) 0;
+      .rsa-form-button-wrapper {
+        width: 45%;
+        display: inline-block;
+        margin: 0 rsa-whitespace(less);
+      }
     }
   }
 }

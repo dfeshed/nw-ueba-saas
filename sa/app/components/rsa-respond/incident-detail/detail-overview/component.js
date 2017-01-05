@@ -23,7 +23,7 @@ export default Component.extend({
   actions: {
     // invoked when the summary text area loses focus. saves the updates in the model
     saveSummary() {
-      this.sendAction('saveAction', 'summary', this.get('incidentSummary'));
+      this.sendAction('saveAction', 'summary', this.get('incidentSummary'), { attributeName: 'respond.incidentDetails.summary' });
     }
   }
 });

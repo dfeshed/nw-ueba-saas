@@ -4,7 +4,10 @@ import { waitFor } from 'sa/tests/integration/components/rsa-respond/landing-pag
 import selectors from 'sa/tests/selectors';
 
 moduleForComponent('rsa-incidents-tab', 'Integration | Component | rsa-application-incident-queue-panel', {
-  integration: true
+  integration: true,
+  beforeEach() {
+    this.set('i18n', this.container.lookup('service:i18n'));
+  }
 });
 
 test('it renders', function(assert) {
@@ -31,7 +34,7 @@ test('it renders', function(assert) {
 test('Change tabs', function(assert) {
   const done = assert.async(1);
 
-  this.render(hbs`{{rsa-application-incident-queue-panel}}`);
+  this.render(hbs`{{rsa-application-incident-queue-panel i18n=i18n}}`);
 
   // Note: This will trigger data retrieval via call to backend that must complete
   this.$(selectors.pages.incident.allIncidentsBtn).click();

@@ -32,6 +32,21 @@ export default {
       journal: 'ja_Incident Journal',
       by: 'ja_by',
       remediationTasks: 'ja_Remediation Tasks'
+    },
+    errors: {
+      timeout: 'ja_Connection Timeout: Unable to connect to the Respond service.<br><br>Check your network connectivity. Contact your Administrator if the error persists.',
+      unexpected: 'ja_Server Error: The Respond service cannot complete your request.<br><br>Contact your Administrator if the error persists.',
+      unableToLoadData: 'ja_Unable to load data. Check your network connections.',
+      unableToLoadModel: 'ja_Unable to load {{model}}. Check your network connections.'
+    },
+    models: {
+      users: 'ja_users',
+      events: 'ja_events',
+      alerts: 'ja_alerts',
+      categoryTags: 'ja_category tags',
+      storyline: 'ja_storyline',
+      coreService: 'ja_Core Services',
+      incident: 'ja_the incident'
     }
   },
   investigate: {
@@ -192,7 +207,6 @@ export default {
       iOCLevel: 'ja_IOCLevel',
       header: ''
     },
-
     incident: {
       title: 'ja_Incidents',
       averageAlertRiskScore: 'ja_Risk Score',
@@ -324,6 +338,7 @@ export default {
       addNote: 'ja_Add Note'
     },
     delete: {
+      title: 'ja_Delete Journal Entry',
       dialog: 'ja_Are you sure you want to delete the journal entry?'
     },
     sort: {
@@ -364,6 +379,37 @@ export default {
       updatedTimestamp: 'ja_updated ',
       groupBySourceIp: 'ja_Source IP',
       groupByDestinationIp: 'ja_Dest IP'
+    },
+    list: {
+      id: 'ja_ID',
+      name: 'ja_Name',
+      createdDate: 'ja_Date created',
+      status: 'ja_Status',
+      priority: 'ja_Priority',
+      riskScore: 'ja_Risk Score',
+      assignee: 'ja_Assignee',
+      alertCount: 'ja_Alerts',
+      sources: 'ja_Source',
+      filters: {
+        reset: 'ja_Reset Filters',
+        sources: 'ja_Select sources to filter by',
+        assignees: 'ja_Select assignees to filter by',
+        dateTimeOptions: {
+          0: 'ja_Today',
+          1: 'ja_Last Hour',
+          2: 'ja_Last 12 Hours',
+          3: 'ja_Last 24 Hours',
+          4: 'ja_Last 7 Days',
+          5: 'ja_All Data',
+          6: 'ja_Custom'
+        },
+        dateTimeFilterError: 'ja_Selected time cannot be greater than current time',
+        dateTimeFilterStartError: 'ja_Start Time cannot be greater than End Time',
+        dateTimeFilterEndError: 'ja_End Time cannot be less than Start Time',
+        dateTimeFilterStartDate: 'ja_Start Date',
+        dateTimeFilterEndDate: 'ja_End Date',
+        dateTimeFilterPrompt: 'ja_Date & Time Range'
+      }
     },
     queue: {
       myQueue: 'ja_My Incidents',
@@ -546,37 +592,6 @@ export default {
         addCategoryTags: 'ja_Click to add category tags'
       }
     },
-    list: {
-      id: 'ja_ID',
-      name: 'ja_Name',
-      createdDate: 'ja_Date created',
-      status: 'ja_Status',
-      priority: 'ja_Priority',
-      riskScore: 'ja_Risk Score',
-      assignee: 'ja_Assignee',
-      alertCount: 'ja_Alerts',
-      sources: 'ja_Source',
-      filters: {
-        reset: 'ja_Reset Filters',
-        sources: 'ja_Select sources to filter by',
-        assignees: 'ja_Select assignees to filter by',
-        dateTimeOptions: {
-          0: 'ja_Today',
-          1: 'ja_Last Hour',
-          2: 'ja_Last 12 Hours',
-          3: 'ja_Last 24 Hours',
-          4: 'ja_Last 7 Days',
-          5: 'ja_All Data',
-          6: 'ja_Custom'
-        },
-        dateTimeFilterError: 'ja_Selected time cannot be greater than current time',
-        dateTimeFilterStartError: 'ja_Start Time cannot be greater than End Time',
-        dateTimeFilterEndError: 'ja_End Time cannot be less than Start Time',
-        dateTimeFilterStartDate: 'ja_Start Date',
-        dateTimeFilterEndDate: 'ja_End Date',
-        dateTimeFilterPrompt: 'ja_Date & Time Range'
-      }
-    },
     status: {
       0: 'ja_New',
       1: 'ja_Assigned',
@@ -601,26 +616,33 @@ export default {
     emptyNewMessage: 'ja_No new incidents',
     emptyMessage: 'ja_No incidents',
     emptyInProgressMessage: 'ja_No incidents being worked on',
-    bulkEdit: {
-      statusSelectListLabel: 'ja_Status',
-      assigneeSelectListLabel: 'ja_Assignee',
-      prioritySelectListLabel: 'ja_Priority',
-      saveButton: 'ja_Save',
-      cancelButton: 'ja_Cancel',
-      modalOkButtonLabel: 'ja_OK',
-      successfulUpdateMessage: {
-        'one': 'ja_{{totalFields}} record updated successfully',
-        'other': 'ja_{{totalFields}} records updated successfully'
+    edit: {
+      update: {
+        bulkSuccessfulMessage: {
+          one: 'ja_Update was successful. 1 incident was updated.',
+          other: 'ja_Update was successful. {{count}} incidents were updated.'
+        },
+        singleSuccessfulMessage: 'ja_Incident was successfully updated.',
+        errorMessage: 'ja_Unable to save changes. Check your network connections.'
       },
-      deleteConfirmation: 'Are you sure?',
-      areYouSureConfirmation: {
-        'one': 'ja_Please confirm you want to delete this incident. Once this incident is deleted, it cannot be recovered.',
-        'other': 'ja_Please confirm you want to delete these incidents.  Once these incidents are deleted, they cannot be recovered.'
+      delete: {
+        confirmationTitle: 'ja_Are you sure?',
+        confirmationBody: {
+          one: 'ja_Please confirm you want to delete this incident. Once this incident is deleted, it cannot be recovered.',
+          other: 'ja_Please confirm you want to delete these incidents.  Once these incidents are deleted, they cannot be recovered.'
+        },
+        bulkSuccessfulMessage: {
+          one: 'ja_Delete was successful. 1 incident was deleted.',
+          other: 'ja_Delete was successful. {{count}} incidents were deleted.'
+        },
+        errorMessage: 'ja_Unable to delete. Check your network connections.'
       },
-      successfulDeleteMessage: {
-        'one': 'ja_{{totalFields}} incident successfully deleted',
-        'other': 'ja_{{totalFields}}  incidents successfully deleted'
-      }
+      actions: {
+        createRecord: 'ja_added',
+        updateRecord: 'ja_updated',
+        deleteRecord: 'ja_deleted'
+      },
+      attributeActionSuccessfulMessage: 'ja_{{attribute}} was successfully {{action}}.'
     }
   },
   sort: {

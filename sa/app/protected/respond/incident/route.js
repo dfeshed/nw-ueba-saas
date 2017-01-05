@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
 
 const {
   Route,
@@ -10,7 +11,7 @@ const {
   typeOf
 } = Ember;
 
-export default Route.extend({
+export default Route.extend(NotificationHelper, {
 
   // the id of the current incident
   incidentId: null,
@@ -52,10 +53,16 @@ export default Route.extend({
           details.indicators.pushObjects(relatedIndicators);
         }
       },
-      onError() {
-        Logger.error('Error loading storyline');
+      onError: (error) => {
+        Logger.error(`Error loading storyline. Error: ${error}`);
+        this.displayFlashErrorLoadingModel('storyline', false);
+      },
+      onTimeout: () => {
+        Logger.error('Timeout loading storyline.');
+        this.displayFlashErrorLoadingModel('storyline', false);
       }
     });
+
     this.request.streamRequest({
       method: 'queryRecord',
       modelName: 'incident',
@@ -65,6 +72,11 @@ export default Route.extend({
       },
       onError() {
         Logger.error('Error loading incident');
+        this.displayFlashErrorLoadingModel('incident', false);
+      },
+      onTimeout: () => {
+        Logger.error('Timeout loading incident.');
+        this.displayFlashErrorLoadingModel('incident', false);
       }
     });
 
@@ -75,8 +87,13 @@ export default Route.extend({
       onResponse: ({ data }) => {
         details.categoryTags.pushObjects(data);
       },
-      onError() {
-        Logger.error('Error loading tags');
+      onError: (error) => {
+        Logger.warn(`Error loading categoryTags. Error: ${error}`);
+        this.displayFlashErrorLoadingModel('categoryTags');
+      },
+      onTimeout: () => {
+        Logger.warn('Timeout loading categoryTags.');
+        this.displayFlashErrorLoadingModel('categoryTags');
       }
     });
 
@@ -87,8 +104,13 @@ export default Route.extend({
       onResponse: ({ data }) => {
         details.services.pushObjects(data);
       },
-      onError() {
-        Logger.error('Error loading core-service');
+      onError: (error) => {
+        Logger.warn(`Error loading core-service. Error: ${error}`);
+        this.displayFlashErrorLoadingModel('coreService');
+      },
+      onTimeout: () => {
+        Logger.warn('Timeout loading core-service.');
+        this.displayFlashErrorLoadingModel('coreService');
       }
     });
 
@@ -129,13 +151,24 @@ export default Route.extend({
       onResponse: ({ data: users }) => {
         resolvedModel.users.addObjects(users);
       },
-      onError() {
-        Logger.error('Error loading Users');
+      onError(error) {
+        Logger.warn(`Error loading Users. Error: ${error}`);
+        this.displayFlashErrorLoadingModel('users');
+      },
+      onTimeout: () => {
+        Logger.warn('Timeout loading Users.');
+        this.displayFlashErrorLoadingModel('users');
       }
     });
   },
 
-  _updateRecord(incident, updatedField, updatedValue) {
+  /**
+   * @name _updateRecord
+   * @description Saves the model and presents a flash notification
+   * @private
+   */
+  _updateRecord(incident, updatedField, updatedValue = null, options = {}) {
+
     if (typeOf(updatedField) === 'object') {
       incident.setProperties(updatedField);
     } else {
@@ -143,8 +176,10 @@ export default Route.extend({
     }
     incident.save().then(() => {
       Logger.debug('Incident was saved');
+      this.displayEditFieldSuccessMessage(options);
     }).catch(() => {
       Logger.error('Error saving incident.');
+      this.displayErrorFlashMessage('incident.edit.update.errorMessage');
     });
   },
 
@@ -153,18 +188,23 @@ export default Route.extend({
     /**
      * @name saveAction
      * @description updates the incident with the updated values
-     * @param updatedField - field name to be updated or the hash of keys and values to set
-     * @param updatedValue - new value to be saved
+     * @param {string} updatedField - field name to be updated or the hash of keys and values to set
+     * @param {string} updatedValue - new value to be saved or null when `updatedField` is a hash of key-values
+     * @param {Object} options - flash notification options to diplay "AttributeName was successfully ActionName".
+     * When not present, a generic "Incident was updated" message is used instead.
+     *  - actionName: updateRecord / deleteRecord / createRecord
+     *  - attributeName: user friendly i18n-key attribute name
+     *  - enableNotification: when false, no notification is displayed
      * @public
      */
-    saveAction(updatedField, updatedValue) {
+    saveAction(updatedField, updatedValue, options) {
       Logger.debug(`Updating incident ${ this.get('incidentId') }`);
       const incident = this.store.peekRecord('incident', this.get('incidentId'));
       if (incident) {
-        this._updateRecord(incident, updatedField, updatedValue);
+        this._updateRecord(incident, updatedField, updatedValue, options);
       } else {
         this.store.queryRecord('incident', { incidentId: this.get('incidentId') }).then((incident) => {
-          this._updateRecord(incident, updatedField, updatedValue);
+          this._updateRecord(incident, updatedField, updatedValue, options);
         });
       }
     },
@@ -188,14 +228,21 @@ export default Route.extend({
           milestone: jsonNote.milestone
         };
       }
+
+      // flash message attributes
+      const attributeName = 'incident.fields.journal';
+      const actionName = `incident.edit.actions.${mode}`;
+
       this.request.promiseRequest({
         method: mode,
         modelName: 'journal-entry',
         query
       }).then(() => {
         Logger.debug('Journal saved');
+        this.displayEditFieldSuccessMessage({ attributeName, actionName });
       }).catch(() => {
         Logger.error('Journal was not saved.');
+        this.displayErrorFlashMessage('incident.edit.update.errorMessage');
       });
     },
 

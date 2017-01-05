@@ -44,9 +44,6 @@ export default Component.extend({
   // Boolean which determines whether or not a bulk edit is in progress
   isBulkEditInProgress: false,
 
-  // Boolean used hide the bulk edit success message
-  showBulkEditMessage: null,
-
   // Array of selected priorities
   filteredPriorities: [],
 
@@ -173,7 +170,6 @@ export default Component.extend({
       return isHeaderSelected;
     },
     set(value) {
-      this.set('showBulkEditMessage', null);
       this.toggleAllCheckboxes(value);
       return value;
     }
@@ -728,7 +724,6 @@ export default Component.extend({
     toggleCheckBox(itemID) {
       const specificIncident = this.get('allIncidents.results').findBy('id', itemID);
       set(specificIncident, 'checked', !specificIncident.checked);
-      this.set('showBulkEditMessage', null);
     },
 
     /**

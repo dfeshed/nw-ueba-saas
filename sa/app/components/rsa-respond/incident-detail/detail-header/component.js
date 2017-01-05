@@ -141,7 +141,7 @@ export default Component.extend({
      * @public
      */
     nameLostFocus() {
-      this.sendAction('saveIncidentAction', 'name', this.get('incident.name'));
+      this.sendAction('saveIncidentAction', 'name', this.get('incident.name'), { attributeName: 'incident.fields.name' });
     },
 
     /**
@@ -158,7 +158,7 @@ export default Component.extend({
         status: this.get('incident.status'),
         statusSort: this.get('incident.statusSort')
       };
-      this.sendAction('saveIncidentAction', attributeChanged);
+      this.sendAction('saveIncidentAction', attributeChanged, null, { attributeName: 'incident.fields.status' });
     },
 
     /**
@@ -175,7 +175,7 @@ export default Component.extend({
         priority: this.get('incident.priority'),
         prioritySort: this.get('incident.prioritySort')
       };
-      this.sendAction('saveIncidentAction', attributeChanged);
+      this.sendAction('saveIncidentAction', attributeChanged, null, { attributeName: 'incident.fields.priority' });
     },
 
     /**
@@ -189,7 +189,7 @@ export default Component.extend({
         updatedAssignee = this.get('users').findBy('id', assigneeId);
       }
       this.set('incident.assignee', updatedAssignee);
-      this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'));
+      this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'), { attributeName: 'incident.fields.assignee' });
     }
   }
 });

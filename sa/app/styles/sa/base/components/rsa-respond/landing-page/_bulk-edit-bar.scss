@@ -54,21 +54,6 @@
       border-left: 1px solid rsa-color(gray, light);
       margin-left: rsa-whitespace(less);
 
-      .rsa-bulk-edit-message {
-        margin-left: rsa-whitespace();
-        display: none;
-        @include rsa-font(body, small);
-
-        .rsa-icon {
-          margin-right: rsa-whitespace(least);
-          color: rsa-color(green);
-        }
-
-        &.is-shown {
-          display: inline-block;
-        }
-      }
-
       &.no-border {
         border-left-width: 0px;
       }

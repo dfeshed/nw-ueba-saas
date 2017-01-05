@@ -7,7 +7,6 @@ const {
     service
   },
   Component,
-  run,
   get,
   typeOf,
   isNone,
@@ -18,11 +17,6 @@ export default Component.extend({
   tagName: 'hbox',
   classNames: ['bulk-edit-bar'],
   eventBus: service(),
-
-  // Value used to update the success message for the bulk edit
-  affectedIncidents: 0,
-
-  showMessage: null,
 
   init() {
     this._super(...arguments);
@@ -141,24 +135,6 @@ export default Component.extend({
     this.get('incidents').setEach('checked', false);
   },
 
-  /**
-   * @name toggleConfirmationMessage
-   * @description Toggles the correct confirmation message from invisible to visible.
-   * @param {String} messageAttribute: The name of the boolean value to determine which message to show
-   * @param {Integer} totalCheckedEvents: The number of affected incidents
-   * @public
-   */
-  toggleConfirmationMessage(messageAttribute, totalCheckedEvents) {
-    this.set('affectedIncidents', totalCheckedEvents);
-    this.set('showMessage', messageAttribute);
-
-    run.later(() => {
-      if (!this.get('isDestroyed') && !this.get('isDestroying')) {
-        this.set('showMessage', null);
-      }
-    }, 15000);
-  },
-
   actions: {
     /**
      * @name cancelEdit
@@ -214,7 +190,6 @@ export default Component.extend({
       }
 
       this.sendAction('saveAction', updateObject, arrayOfSelectedIncidentIDs);
-      this.toggleConfirmationMessage('update', checkedIncidents.length);
       this.resetSelectionForm();
     },
 
@@ -239,7 +214,6 @@ export default Component.extend({
       const arrayOfSelectedIncidentIDs = checkedIncidents.map((item) => item.id);
 
       this.sendAction('deleteAction', arrayOfSelectedIncidentIDs);
-      this.toggleConfirmationMessage('delete', checkedIncidents.length);
       this.resetSelectionForm();
       this.send('closeDeleteConfirmModal');
     },

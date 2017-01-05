@@ -47,16 +47,22 @@
     {{rsa-icon size='small' style='lined' name='pencil-1'}}
   {{/rsa-form-button}}
   {{#rsa-application-modal
-    label="Delete Journal Entry"
+    label=(t 'journal.delete.title')
     eventId="deleteJournalEntry"}}
     <span class="rsa-journal-entry__delete-journal modal-trigger">
       {{rsa-icon size='small' style='lined' name='bin-1'}}
     </span>
-    <div class="modal-content rsa-journal-entry__delete-dialog">
-      <div class="rsa-journal-entry__delete-dialog__prompt">{{t 'journal.delete.dialog'}}</div>
-      <div class="rsa-journal-entry__delete-dialog__actions">
-        {{#rsa-form-button class="rsa-journal-entry__delete-dialog__actions__cancel" click=(action 'cancelDelete')}}{{t 'forms.cancel'}}{{/rsa-form-button}}
-        {{#rsa-form-button class="rsa-journal-entry__delete-dialog__actions__confirm" click=(action 'confirmDelete') style='primary'}}{{t 'forms.submit'}}{{/rsa-form-button}}
+    <div class='modal-content rsa-journal-entry__delete-dialog'>
+      <p class='rsa-journal-entry__delete-dialog__prompt'>
+        {{t 'journal.delete.dialog'}}
+      </p>
+      <div class='rsa-journal-entry__delete-dialog__actions'>
+        {{#rsa-form-button class='rsa-journal-entry__delete-dialog__actions__cancel' isFullWidth=true defaultAction=(action 'cancelDelete')}}
+          {{t 'forms.cancel'}}
+        {{/rsa-form-button}}
+        {{#rsa-form-button class='rsa-journal-entry__delete-dialog__actions__confirm' isFullWidth=true style='danger' defaultAction=(action 'confirmDelete')}}
+          {{t 'forms.delete'}}
+        {{/rsa-form-button}}
       </div>
     </div>
   {{/rsa-application-modal}}

@@ -2,6 +2,7 @@ import Ember from 'ember';
 import { incidentStatusIds, incStatus } from 'sa/incident/constants';
 import IncidentsCube from 'sa/utils/cube/incidents';
 import PersistenceHelper from 'sa/components/rsa-respond/landing-page/respond-index/list-view/persistence-helper';
+import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
 
 const {
   Route,
@@ -20,7 +21,7 @@ export const viewType = {
   IN_PROG_INC_CARD_VIEW: 'inProgIncCardView'
 };
 
-export default Route.extend({
+export default Route.extend(NotificationHelper, {
   session: service(),
   contextualHelp: service(),
   layoutService: service('layout'),
@@ -78,8 +79,13 @@ export default Route.extend({
         }
         cube.set('status', 'streaming');
       },
-      onError(response) {
-        Logger.error('Error processing stream call for incident model', response);
+      onError: (error) => {
+        Logger.error(`Unexpected error. method: stream, model: incident, subDestinationUrlParams: ${ subDestinationUrlParams }. Error: ${error}`);
+        this.displayFatalUnexpectedError();
+      },
+      onTimeout: () => {
+        Logger.error(`Timeout. method: stream, model: incident, subDestinationUrlParams: ${ subDestinationUrlParams }`);
+        this.displayFatalTimeoutError();
       }
     });
   },
@@ -119,12 +125,12 @@ export default Route.extend({
         onResponse: ({ data, notificationCode }) => {
           this._updateCube(data, cubes, filterFunc, notificationCode);
         },
-        onError(response) {
-          Logger.error('Error processing notify call for incident model', response);
+        onError: (error) => {
+          Logger.error(`Unexpected error. method: notify, model: incident, subDestinationUrlParams: ${ subDestinationUrlParams }. Error: ${error}`);
+          this.displayFatalUnexpectedError();
         }
       });
     });
-
   },
 
   /*
@@ -285,8 +291,13 @@ export default Route.extend({
         onResponse: ({ data }) => {
           set(allIncidentsCube, 'categoryTags', data);
         },
-        onError() {
-          Logger.error('Error loading tags');
+        onError: (error) => {
+          Logger.warn(`Error loading categoryTags. Error: ${error}`);
+          this.displayFlashErrorLoadingModel('categoryTags');
+        },
+        onTimeout: () => {
+          Logger.warn('Timeout loading categoryTags.');
+          this.displayFlashErrorLoadingModel('categoryTags');
         }
       });
       // kick off both the async update stream
@@ -309,8 +320,13 @@ export default Route.extend({
           resolvedModel.allIncidents.users.addObjects(users);
         }
       },
-      onError() {
-        Logger.error('Error loading Users');
+      onError: (error) => {
+        Logger.warn(`Error loading users. Error: ${error}`);
+        this.displayFlashErrorLoadingModel('users');
+      },
+      onTimeout: () => {
+        Logger.warn('Timeout loading users.');
+        this.displayFlashErrorLoadingModel('users');
       }
     });
   },
@@ -333,8 +349,10 @@ export default Route.extend({
         }
       }).then((response) => {
         Logger.debug(`Successfully saved: ${ response }`);
+        this.displaySuccessFlashMessage('incident.edit.update.bulkSuccessfulMessage', { count: arrayOfIncidentIDs.length });
       }).catch((reason) => {
         Logger.error(`Unable to save: ${ reason }`);
+        this.displayErrorFlashMessage('incident.edit.update.errorMessage');
       });
     },
 
@@ -361,8 +379,10 @@ export default Route.extend({
         }
       }).then((response) => {
         Logger.debug(`successfully deleted ${response}`);
+        this.displaySuccessFlashMessage('incident.edit.delete.bulkSuccessfulMessage', { count: arrayOfIncidentIDs.length });
       }).catch((reason) => {
         Logger.error(`unable to delete incidents: ${reason}`);
+        this.displayErrorFlashMessage('incident.edit.delete.errorMessage');
       });
     },
 
@@ -409,25 +429,25 @@ export default Route.extend({
     /**
      * @description Action handler that gets invoked when the user updates an incident.
      * @param incId IncidentID
-     * @param attributeChanged The hash of keys and values to set
+     * @param attributesChanged The hash of keys and values to set
      * @public
      */
-    saveIncident(incId, attributeChanged) {
+    saveIncident(incId, attributesChanged) {
       Logger.debug(`Updating incident ${ incId }`);
 
       this.store.queryRecord('incident', { incidentId: incId })
-        .then(function(model) {
+        .then((model) => {
           if (model) {
             Logger.log(`incident ${ model.id } found`);
+            model.setProperties(attributesChanged);
 
-            model.setProperties(attributeChanged);
-
-            Logger.log(`Saving incident model ${ model.get('id') }`);
             model.save().then(() => {
-              Logger.debug('Incident was saved');
+              this.displaySuccessFlashMessage('incident.edit.update.singleSuccessfulMessage');
             }).catch((reason) => {
               Logger.error(`Error saving incident. Reason: ${ reason }`);
+              this.displayErrorFlashMessage('incident.edit.update.errorMessage');
             });
+
           } else {
             Logger.warn('Incident model not found');
           }

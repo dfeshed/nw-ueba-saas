@@ -140,4 +140,22 @@ export default function(server) {
       request: frame.body
     });
   });
+
+  server.route('incident', 'deleteRecord', function(message, frames, server) {
+    const frame = (frames && frames[0]) || {};
+    const db = server.mirageServer.db.incidents;
+
+    frame.body.filter[0].values.forEach((incidentId) => {
+      db.remove(incidentId);
+    });
+
+    server.sendFrame('MESSAGE', {
+      subscription: (frame.headers || {}).id || '',
+      'content-type': 'application/json'
+    }, {
+      code: 0,
+      data: frame.body.filter[0].values,
+      request: frame.body
+    });
+  });
 }

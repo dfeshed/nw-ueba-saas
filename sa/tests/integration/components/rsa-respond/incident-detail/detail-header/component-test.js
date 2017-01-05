@@ -14,6 +14,8 @@ moduleForComponent('rsa-incident-detail-header', 'Integration | Component | rsa 
   integration: true,
 
   beforeEach() {
+    this.set('i18n', this.container.lookup('service:i18n'));
+
     const users = [
       EmberObject.create({ id: '1', name: 'User 1', email: 'user1@rsa.com' }),
       EmberObject.create({ id: '2', name: 'User 2', email: 'user2@rsa.com' }),
@@ -107,7 +109,7 @@ test('The incident status, priority and assignee are saved', function(assert) {
 
   this.set('incident', incident);
 
-  this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-header i18n=i18n incident=incident users=users}}`);
 
   wait().then(() => {
     const statusVal = this.$('.rsa-incident-detail-header__status .ember-power-select-selected-item').text().trim();
@@ -173,7 +175,7 @@ test('Manually changing the state of an incident to Closed disables editable fie
 
   this.set('incident', incident);
 
-  this.render(hbs`{{rsa-respond/incident-detail/detail-header incident=incident users=users}}`);
+  this.render(hbs`{{rsa-respond/incident-detail/detail-header i18n=i18n incident=incident users=users}}`);
 
   clickTrigger('.rsa-incident-detail-header__status');
   nativeMouseUp('.ember-power-select-option:eq(5)');

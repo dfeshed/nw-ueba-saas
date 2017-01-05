@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
 
 const {
   Route,
@@ -11,7 +12,7 @@ const {
   typeOf
 } = Ember;
 
-export default Route.extend({
+export default Route.extend(NotificationHelper, {
   layoutService: service('layout'),
 
   // Service to retrieve information from local storage
@@ -70,8 +71,13 @@ export default Route.extend({
               }
             }
           },
-          onError() {
-            Logger.error('Error loading storyline');
+          onError: (error) => {
+            Logger.error(`Error loading storyline. Error: ${error}`);
+            this.displayFlashErrorLoadingModel('storyline');
+          },
+          onTimeout: () => {
+            Logger.warn('Timeout loading storyline.');
+            this.displayFlashErrorLoadingModel('storyline');
           }
         });
       }
@@ -88,8 +94,13 @@ export default Route.extend({
           alerts.pushObjects(data);
           this._restoreEventOverviewPanelState(alerts);
         },
-        onError(response) {
-          Logger.error('Error processing notify call for alerts model', response);
+        onError: (error) => {
+          Logger.error(`Error processing notify call for alerts model. Error: ${error}`);
+          this.displayFlashErrorLoadingModel('alerts');
+        },
+        onTimeout: () => {
+          Logger.warn('Timeout loading alerts.');
+          this.displayFlashErrorLoadingModel('alerts');
         }
       });
     }
@@ -163,8 +174,13 @@ export default Route.extend({
         onResponse: ({ data }) => {
           set(parentModel, 'events', data);
         },
-        onError(response) {
-          Logger.error('Error processing notify call for events model', response);
+        onError: (error) => {
+          Logger.error(`Error loading events. Error: ${error}`);
+          this.displayFlashErrorLoadingModel('events');
+        },
+        onTimeout: () => {
+          Logger.error('Timeout loading events.');
+          this.displayFlashErrorLoadingModel('events');
         }
       });
     }

@@ -32,6 +32,21 @@ export default {
       journal: 'Incident Journal',
       by: 'by',
       remediationTasks: 'Remediation Tasks'
+    },
+    errors: {
+      timeout: 'Connection Timeout: Unable to connect to the Respond service.<br><br>Check your network connectivity. Contact your Administrator if the error persists.',
+      unexpected: 'Server Error: The Respond service cannot complete your request.<br><br>Contact your Administrator if the error persists.',
+      unableToLoadData: 'Unable to load data. Check your network connections.',
+      unableToLoadModel: 'Unable to load {{model}}. Check your network connections.'
+    },
+    models: {
+      users: 'users',
+      events: 'events',
+      alerts: 'alerts',
+      categoryTags: 'category tags',
+      storyline: 'storyline',
+      coreService: 'Core Services',
+      incident: 'the incident'
     }
   },
   investigate: {
@@ -323,6 +338,7 @@ export default {
       addNote: 'Add Note'
     },
     delete: {
+      title: 'Delete Journal Entry',
       dialog: 'Are you sure you want to delete the journal entry?'
     },
     sort: {
@@ -357,7 +373,7 @@ export default {
       alertCount: 'Alerts',
       sources: 'Sources',
       categories: 'Categories',
-      journal: 'Journal',
+      journal: 'Note',
       events: 'Events',
       createdTimestamp: 'created ',
       updatedTimestamp: 'updated ',
@@ -600,26 +616,33 @@ export default {
     emptyNewMessage: 'No new incidents',
     emptyMessage: 'No incidents',
     emptyInProgressMessage: 'No incidents being worked on',
-    bulkEdit: {
-      statusSelectListLabel: 'Status',
-      assigneeSelectListLabel: 'Assignee',
-      prioritySelectListLabel: 'Priority',
-      saveButton: 'Save',
-      cancelButton: 'Cancel',
-      modalOkButtonLabel: 'OK',
-      successfulUpdateMessage: {
-        'one': '{{totalFields}} record updated successfully',
-        'other': '{{totalFields}} records updated successfully'
+    edit: {
+      update: {
+        bulkSuccessfulMessage: {
+          one: 'Update was successful. 1 incident was updated.',
+          other: 'Update was successful. {{count}} incidents were updated.'
+        },
+        singleSuccessfulMessage: 'Incident was successfully updated.',
+        errorMessage: 'Unable to save changes. Check your network connections.'
       },
-      deleteConfirmation: 'Are you sure?',
-      areYouSureConfirmation: {
-        'one': 'Please confirm you want to delete this incident. Once this incident is deleted, it cannot be recovered.',
-        'other': 'Please confirm you want to delete these incidents.  Once these incidents are deleted, they cannot be recovered.'
+      delete: {
+        confirmationTitle: 'Are you sure?',
+        confirmationBody: {
+          one: 'Please confirm you want to delete this incident. Once this incident is deleted, it cannot be recovered.',
+          other: 'Please confirm you want to delete these incidents.  Once these incidents are deleted, they cannot be recovered.'
+        },
+        bulkSuccessfulMessage: {
+          one: 'Delete was successful. 1 incident was deleted.',
+          other: 'Delete was successful. {{count}} incidents were deleted.'
+        },
+        errorMessage: 'Unable to delete. Check your network connections.'
       },
-      successfulDeleteMessage: {
-        'one': '{{totalFields}} incident successfully deleted',
-        'other': '{{totalFields}}  incidents successfully deleted'
-      }
+      actions: {
+        createRecord: 'added',
+        updateRecord: 'updated',
+        deleteRecord: 'deleted'
+      },
+      attributeActionSuccessfulMessage: '{{attribute}} was successfully {{action}}.'
     }
   },
   sort: {

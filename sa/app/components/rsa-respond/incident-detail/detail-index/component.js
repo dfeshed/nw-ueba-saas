@@ -26,7 +26,7 @@ export default Component.extend({
     get: (categories) => (categories),
 
     set(value) {
-      this.sendAction('saveAction', 'categories', value);
+      this.sendAction('saveAction', 'categories', value, { enableNotification: false });
       return value;
     }
   },
