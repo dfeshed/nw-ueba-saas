@@ -287,18 +287,12 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 			String t1Query = String.format(
 					"select date_time, date_time_unix, normalized_username, hostname, source_ip, local_ip, duration " +
-					"from vpnsessiondatares where yearmonthday between %s and %s " +
-					"and date_time_unix between %d and %d and local_ip != \"\"",
-					yearMonthDayFormatter.format(lowerLimitInstInc), yearMonthDayFormatter.format(upperLimitInstInc),
-					latestTimestamp, upperLimitIncluding);
+					"from vpnsessiondatares where %s and local_ip != ''",
+					getEpochtimeBetweenCondition("vpnsessiondatares", lowerLimitInstInc, upperLimitInstInc));
 
 			String t2Query = String.format(
-					"select date_time_unix, normalized_username, %s from %s " +
-					"where yearmonthday between %s and %s " +
-					"and date_time_unix between %d and %d",
-					ipField, tableName,
-					yearMonthDayFormatter.format(lowerLimitInstInc), yearMonthDayFormatter.format(upperLimitInstInc),
-					latestTimestamp, upperLimitIncluding);
+					"select date_time_unix, normalized_username, %s from %s where %s",
+					ipField, tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInstInc, upperLimitInstInc));
 
 			String query = String.format(
 					"select distinct " +

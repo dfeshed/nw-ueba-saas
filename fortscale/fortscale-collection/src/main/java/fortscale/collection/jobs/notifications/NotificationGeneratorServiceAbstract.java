@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.lang.reflect.InvocationTargetException;
+import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +30,11 @@ import java.util.concurrent.TimeUnit;
 public abstract class NotificationGeneratorServiceAbstract implements NotificationGeneratorService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	protected static final int WEEK_IN_SECONDS = 604800;
-	protected static final int DAY_IN_SECONDS = 86400;
 	protected static final String LATEST_TS = "latest_ts";
 	protected static final String TS_PARAM = "latestTimestamp";
-	protected static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	protected static final long DAY_IN_SECONDS = TimeUnit.DAYS.toSeconds(1);
 	protected static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10);
+	private static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
 	@Autowired
 	protected ApplicationConfigurationService applicationConfigurationService;
@@ -126,9 +126,8 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 		currentTimestamp = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 		if (latestTimestamp == 0L) {
 			//create query to find the earliest event
-			long earliestEventTimestamp = fetchEarliestEvent();
-			latestTimestamp = Math.min(earliestEventTimestamp, currentTimestamp - WEEK_IN_SECONDS);
-			logger.info("latest run time was empty - setting latest timestamp to {}", latestTimestamp);
+			latestTimestamp = fetchEarliestEvent();
+			logger.info("Latest run time was empty. Latest timestamp was set to {}.", latestTimestamp);
 		}
 	}
 
@@ -181,6 +180,52 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 			return Long.parseLong(impalaEvent.get(field).toString());
 		}
 		return 0L;
+	}
+
+	/**
+	 * Create and retrieve the following SQL condition phrase:
+	 * "[partition field name] between [partition of lowerLimitIncluding] and [partition of upperLimitIncluding]
+	 * and [epochtime field name] between [epochtime of lowerLimitIncluding] and [epochtime of upperLimitIncluding]".
+	 * The partition and epochtime field names are deduced from tableName, and the method calculates the limit
+	 * partitions according to lowerLimitIncluding and upperLimitIncluding. The idea is to add a condition on the
+	 * epochtime field, but only query the relevant partitions for good performance.
+	 * ================================================================================================================
+	 * TODO: The method assumes that the partition is "yearmonthday", and that the epochtime field is "date_time_unix".
+	 * ================================================================================================================
+	 *
+	 * @param tableName           the name of the table that should be queried
+	 * @param lowerLimitIncluding an {@link Instant} of the lower limit (epochtime should be gte to it)
+	 * @param upperLimitIncluding an {@link Instant} of the upper limit (epochtime should be lte to it)
+	 * @return the corresponding SQL condition phrase
+	 */
+	protected String getEpochtimeBetweenCondition(
+			String tableName, Instant lowerLimitIncluding, Instant upperLimitIncluding) {
+
+		// Note that the formatter is specific to the "yearmonthday" partition
+		return String.format("yearmonthday between %s and %s and date_time_unix between %d and %d",
+				yearMonthDayFormatter.format(lowerLimitIncluding), yearMonthDayFormatter.format(upperLimitIncluding),
+				lowerLimitIncluding.getEpochSecond(), upperLimitIncluding.getEpochSecond());
+	}
+
+	/**
+	 * Create and retrieve the following SQL condition phrase:
+	 * "[partition field name] >= [partition of lowerLimitIncluding]
+	 * and [epochtime field name] >= [epochtime of lowerLimitIncluding]".
+	 * The partition and epochtime field names are deduced from tableName, and the method calculates the lower limit
+	 * partition according to lowerLimitIncluding. The idea is to add a condition on the epochtime field, but only
+	 * query the relevant partitions for good performance.
+	 * ================================================================================================================
+	 * TODO: The method assumes that the partition is "yearmonthday", and that the epochtime field is "date_time_unix".
+	 * ================================================================================================================
+	 *
+	 * @param tableName           the name of the table that should be queried
+	 * @param lowerLimitIncluding an {@link Instant} of the lower limit (epochtime should be gte to it)
+	 * @return the corresponding SQL condition phrase
+	 */
+	protected String getEpochtimeGteCondition(String tableName, Instant lowerLimitIncluding) {
+		// Note that the formatter is specific to the "yearmonthday" partition
+		return String.format("yearmonthday >= %s and date_time_unix >= %d",
+				yearMonthDayFormatter.format(lowerLimitIncluding), lowerLimitIncluding.getEpochSecond());
 	}
 
 	public String getNormalizedUsernameField() {

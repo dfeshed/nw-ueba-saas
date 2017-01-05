@@ -150,20 +150,14 @@ public class VpnCredsShareNotificationService
                 SERVICE_NAME, lowerLimitInstInc, latestTimestamp, upperLimitInstInc, upperLimitIncluded);
 
         String t1Query = String.format(
-                "select * from %s " +
-                "where yearmonthday between %s and %s " +
-                "and date_time_unix between %d and %d " +
-                "and source_ip != '' " +
-                "and country = 'Reserved Range'",
-                tableName,
-                yearMonthDayFormatter.format(lowerLimitInstInc), yearMonthDayFormatter.format(upperLimitInstInc),
-                latestTimestamp, upperLimitIncluded);
+                "select * from %s where %s and source_ip != '' and country = 'Reserved Range'",
+                tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInstInc, upperLimitInstInc));
 
+        Instant t2LowerLimitInc = getT2LowerLimitInc(lowerLimitInstInc, upperLimitInstInc);
+        if (t2LowerLimitInc == null) return Collections.emptyList();
         String t2Query = String.format(
-                "select * from %s " +
-                "where source_ip != '' " +
-                "and country = 'Reserved Range'",
-                tableName);
+                "select * from %s where %s and source_ip != '' and country = 'Reserved Range'",
+                tableName, getEpochtimeGteCondition(tableName, t2LowerLimitInc));
 
         String subSelect = String.format(
                 "select " +
@@ -204,6 +198,32 @@ public class VpnCredsShareNotificationService
 
         //run the query
         return queryRunner.executeQuery(query);
+    }
+
+    private Instant getT2LowerLimitInc(Instant t1LowerLimitInc, Instant t1UpperLimitInc) {
+        String query = String.format(
+                "select min(unix_timestamp(seconds_sub(date_time, duration))) as min " +
+                "from %s where %s and source_ip != '' and country = 'Reserved Range'",
+                tableName, getEpochtimeBetweenCondition(tableName, t1LowerLimitInc, t1UpperLimitInc));
+        List<Map<String, Object>> queryResults = queryRunner.executeQuery(query);
+
+        if (queryResults == null) {
+            logger.error("getT2LowerLimitInc - query returned null.");
+            return null;
+        } else if (queryResults.size() != 1) {
+            logger.error("getT2LowerLimitInc - unexpected number of query results. queryResults = {}.", queryResults);
+            return null;
+        }
+
+        Map<String, Object> queryResult = queryResults.get(0);
+
+        try {
+            long t2LowerLimitInc = getLongValueFromEvent(queryResult, "min");
+            return Instant.ofEpochSecond(t2LowerLimitInc);
+        } catch (Exception e) {
+            logger.error("getT2LowerLimitInc - parsing to Instant exception. queryResult = {}.", queryResult, e);
+            return null;
+        }
     }
 
     private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
