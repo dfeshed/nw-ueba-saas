@@ -36,15 +36,13 @@ Router.map(function() {
       this.route('flash-messages');
     });
 
-    this.route('form', function() {
-      this.route('buttons');
-      this.route('selects');
-      this.route('radios');
-      this.route('checkboxes');
-      this.route('textareas');
-      this.route('inputs');
-      this.route('sliders');
-      this.route('datetime');
+    this.route('chart', function() {
+      this.route('chart');
+      this.route('xAxis');
+      this.route('yAxis');
+      this.route('lineSeries');
+      this.route('areaSeries');
+      this.route('grids');
     });
 
     this.route('content', function() {
@@ -61,20 +59,24 @@ Router.map(function() {
       this.route('tetheredPanels');
     });
 
+    this.route('form', function() {
+      this.route('buttons');
+      this.route('selects');
+      this.route('radios');
+      this.route('checkboxes');
+      this.route('textareas');
+      this.route('inputs');
+      this.route('sliders');
+      this.route('datetime');
+    });
+
     this.route('nav', function() {
       this.route('linkList');
       this.route('tab');
       this.route('linkToWin');
     });
 
-    this.route('chart', function() {
-      this.route('chart');
-      this.route('xAxis');
-      this.route('yAxis');
-      this.route('lineSeries');
-      this.route('areaSeries');
-      this.route('grids');
-    });
+    this.route('table');
   });
 });
 
