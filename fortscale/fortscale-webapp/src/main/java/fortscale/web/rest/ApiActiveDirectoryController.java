@@ -300,8 +300,8 @@ public class ApiActiveDirectoryController {
 	}
 
 	private void initExecutorService() {
-		if (!executorService.isShutdown()) {
-			return;
+		if (executorService != null && !executorService.isShutdown()) {
+			return; // use the already working executor service
 		}
 		else {
 			executorService = Executors.newFixedThreadPool(dataSources.size(), runnable -> {
