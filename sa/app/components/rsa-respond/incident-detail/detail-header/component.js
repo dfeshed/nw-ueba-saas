@@ -32,7 +32,7 @@ export default Component.extend({
 
   /**
    * @name statusList
-   * @desciption Returns a list of available status id.
+   * @description Returns a list of available status id.
    * Due to a power-select but, it's needed to convert the list of integer to a list of strings
    * Tracking bug: https://github.com/cibernox/ember-power-select/issues/493
    * @type string[]
@@ -134,6 +134,14 @@ export default Component.extend({
   @computed('incident.groupByDestinationIp')
   incidentDestinationIp: IncidentHelper.groupByIp,
 
+  /**
+   * @description invokes the action to update a single attribute
+   * @private
+   */
+  saveIncident(attributeName, value) {
+    this.sendAction('saveIncidentAction', attributeName, value, { attributeName: `incident.fields.${attributeName}` });
+  },
+
   actions: {
     /**
      * @name nameLostFocus
@@ -141,7 +149,7 @@ export default Component.extend({
      * @public
      */
     nameLostFocus() {
-      this.sendAction('saveIncidentAction', 'name', this.get('incident.name'), { attributeName: 'incident.fields.name' });
+      this.saveIncident('name', this.get('incident.name'));
     },
 
     /**
@@ -154,11 +162,7 @@ export default Component.extend({
         'incident.statusSort': statusSortVal,
         'incident.status': IncidentConstants.incidentStatusString[ statusSortVal ]
       });
-      const attributeChanged = {
-        status: this.get('incident.status'),
-        statusSort: this.get('incident.statusSort')
-      };
-      this.sendAction('saveIncidentAction', attributeChanged, null, { attributeName: 'incident.fields.status' });
+      this.saveIncident('status', IncidentConstants.incidentStatusString[ statusSortVal ]);
     },
 
     /**
@@ -171,11 +175,7 @@ export default Component.extend({
         'incident.prioritySort': prioritySortVal,
         'incident.priority': IncidentConstants.incidentPriorityString[ prioritySortVal ]
       });
-      const attributeChanged = {
-        priority: this.get('incident.priority'),
-        prioritySort: this.get('incident.prioritySort')
-      };
-      this.sendAction('saveIncidentAction', attributeChanged, null, { attributeName: 'incident.fields.priority' });
+      this.saveIncident('priority', IncidentConstants.incidentPriorityString[ prioritySortVal ]);
     },
 
     /**
@@ -183,13 +183,11 @@ export default Component.extend({
      * @public
      */
     assigneeChanged(assignee) {
-      let updatedAssignee = null;
       const assigneeId = get(assignee, 'id');
-      if (assigneeId !== -1) {
-        updatedAssignee = this.get('users').findBy('id', assigneeId);
-      }
+      const updatedAssignee = assigneeId !== -1 ? this.get('users').findBy('id', assigneeId) : null;
+
       this.set('incident.assignee', updatedAssignee);
-      this.sendAction('saveIncidentAction', 'assignee', this.get('incident.assignee'), { attributeName: 'incident.fields.assignee' });
+      this.saveIncident('assignee', updatedAssignee);
     }
   }
 });

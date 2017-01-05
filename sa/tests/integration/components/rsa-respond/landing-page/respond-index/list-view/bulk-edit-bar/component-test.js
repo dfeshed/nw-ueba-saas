@@ -205,8 +205,8 @@ test('Clicking the Save button after selecting values successfully saves the inc
 
   this.set('bulkSaveAction', (updateObject, arrayOfSelectedIncidentIDs) => {
     assert.equal(arrayOfSelectedIncidentIDs.length, 1, 'One incident is updated');
-    assert.equal(updateObject.prioritySort, 3, 'Priority has changed');
-    assert.equal(updateObject.statusSort, 1, 'Status has changed');
+    assert.equal(updateObject.priority, 'CRITICAL', 'Priority has changed');
+    assert.equal(updateObject.status, 'ASSIGNED', 'Status has changed');
     assert.equal(updateObject.assignee.id, '2', 'Assignee has changed');
   });
 

@@ -180,13 +180,13 @@ export default Component.extend({
       const assignee = get(selectedValues, 'assignee');
 
       if (!isNone(priorityId)) {
-        updateObject.prioritySort = priorityId;
+        updateObject.priority = IncidentConstants.incidentPriorityString[ priorityId ];
       }
       if (!isNone(statusId)) {
-        updateObject.statusSort = statusId;
+        updateObject.status = IncidentConstants.incidentStatusString[ statusId ];
       }
       if (!isNone(assignee)) {
-        updateObject.assignee = get(assignee, 'id') !== -1 ? selectedValues.assignee : {};
+        updateObject.assignee = get(assignee, 'id') !== -1 ? selectedValues.assignee : null;
       }
 
       this.sendAction('saveAction', updateObject, arrayOfSelectedIncidentIDs);

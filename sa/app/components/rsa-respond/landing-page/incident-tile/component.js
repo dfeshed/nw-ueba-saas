@@ -282,8 +282,7 @@ export default Component.extend({
             'incident.priority': IncidentConstants.incidentPriorityString[selectedPriority]
           });
           merge(attributeChanged, {
-            prioritySort: selectedPriorityInt,
-            priority: IncidentConstants.incidentPriorityString[ selectedPriority]
+            priority: IncidentConstants.incidentPriorityString[ selectedPriorityInt ]
           });
         }
 
@@ -294,8 +293,7 @@ export default Component.extend({
             'incident.status': IncidentConstants.incidentStatusString[ selectedStatus ]
           });
           merge(attributeChanged, {
-            statusSort: selectedStatusInt,
-            status: IncidentConstants.incidentStatusString[ selectedStatus ]
+            status: IncidentConstants.incidentStatusString[ selectedStatusInt ]
           });
         }
 
