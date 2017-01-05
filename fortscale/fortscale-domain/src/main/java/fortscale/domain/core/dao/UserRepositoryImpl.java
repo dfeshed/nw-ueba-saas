@@ -123,10 +123,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 		Update update = new Update();
 		update.set(User.followedField, watch);
 
-		BulkOperations upsert = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-				.upsert(query, update);
+		BulkOperations operations = mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
+				.updateMulti(query, update);
 
-		return upsert.execute().getModifiedCount();
+		return operations.execute().getModifiedCount();
 
 	}
 
@@ -871,13 +871,12 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 				// Adding the tag
 				update.push(User.tagsField, tag);
 				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-						.upsert(query, update).execute();
+						.updateMulti(query, update).execute();
 			}else{
 				// Removing the tag
 				Update remove = new Update();
 				remove.pull(User.tagsField, tag);
-				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName)
-						.upsert(query, remove).execute();
+				mongoTemplate.bulkOps(BulkOperations.BulkMode.UNORDERED, User.collectionName).updateMulti(query, remove).execute();
 			}
 		});
 

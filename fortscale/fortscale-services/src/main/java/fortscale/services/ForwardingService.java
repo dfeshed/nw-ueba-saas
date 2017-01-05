@@ -1,5 +1,6 @@
 package fortscale.services;
 
+import com.cloudbees.syslog.MessageFormat;
 import fortscale.domain.core.Alert;
 import fortscale.domain.email.Frequency;
 
@@ -13,6 +14,6 @@ public interface ForwardingService {
 	void forwardLatestAlerts(Frequency frequency);
 
 	int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags, String[] alertSeverity,
-			long startTime, long endTime);
+                                 long startTime, long endTime, MessageFormat messageFormat);
 
 }

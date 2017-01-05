@@ -40,7 +40,6 @@ import org.springframework.context.annotation.FilterType;
         "fortscale.utils.servlet",
         "fortscale.utils.splunk",
         "fortscale.utils.syslog",
-        "fortscale.utils.test",
         "fortscale.utils.time" },
 
         excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,
