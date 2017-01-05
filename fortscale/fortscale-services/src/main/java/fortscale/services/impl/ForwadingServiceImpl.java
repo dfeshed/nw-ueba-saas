@@ -1,5 +1,6 @@
 package fortscale.services.impl;
 
+import com.cloudbees.syslog.MessageFormat;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.email.Frequency;
@@ -43,8 +44,8 @@ public class ForwadingServiceImpl implements ForwardingService {
 	}
 
 	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
-			String[] alertSeverity, long startTime, long endTime) throws RuntimeException {
-		return alertSyslogForwardingService.forwardAlertsByTimeRange(ip, port, forwardingType, userTags, alertSeverity, startTime, endTime);
+                                                  String[] alertSeverity, long startTime, long endTime, MessageFormat messageFormat) throws RuntimeException {
+		return alertSyslogForwardingService.forwardAlertsByTimeRange(ip, port, forwardingType, userTags, alertSeverity, startTime, endTime, messageFormat);
 	}
 
 	private Boolean readBooleanFromConfigurationService(String key) {

@@ -4,9 +4,11 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
-import fortscale.domain.core.*;
+import fortscale.domain.core.ApplicationUserDetails;
+import fortscale.domain.core.Computer;
+import fortscale.domain.core.User;
+import fortscale.domain.core.UserAdInfo;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
@@ -24,7 +26,10 @@ import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
@@ -37,9 +42,6 @@ public class UserServiceTest {
 
 	@Mock
 	private AdUserRepository adUserRepository;
-
-	@Mock
-	private AdUserThumbnailRepository adUserThumbnailRepository;
 
 	@Mock
 	private AdGroupRepository adGroupRepository;
