@@ -179,19 +179,18 @@ public class ApiActiveDirectoryController {
 				isFetchEtlExecutionRequestInProgress.set(false);
 				return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.FORBIDDEN);
 			}
-			lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
-
-			logger.info("Starting Active Directory fetch and ETL");
 
 			try {
+				lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
+				logger.info("Starting Active Directory fetch and ETL");
 				initExecutorService();
-				if (isFetchEtlExecutionRequestStopped.get()) { //check that there wasn't any request to stop between execution and now (actual execution)
+				final List<ControllerInvokedAdTask> adTasks = createAdTasks();
+				if (isFetchEtlExecutionRequestStopped.get()) { //check that there weren't any requests to stop between execution and now (actual execution)
 					final String stopMessage = "Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.";
 					logger.warn(stopMessage);
 					isFetchEtlExecutionRequestInProgress.set(false);
 					return new ResponseEntity<>(new ResponseEntityMessage(stopMessage), HttpStatus.LOCKED);
 				}
-				final List<ControllerInvokedAdTask> adTasks = createAdTasks();
 				dataSources.forEach(dataSource -> executeTasks(adTasks));
 			} finally {
 				isFetchEtlExecutionRequestInProgress.set(false);
