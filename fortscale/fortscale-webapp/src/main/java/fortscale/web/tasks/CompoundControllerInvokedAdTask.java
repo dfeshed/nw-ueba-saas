@@ -6,7 +6,9 @@ import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
 
-
+/**
+ * this class represents ControllerInvokedAdTask that do compound work like Fetch+ETL (example task is user_thumbnail_fetch_etl)
+ */
 public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
 
     private static final Logger logger = Logger.getLogger(CompoundControllerInvokedAdTask.class);
