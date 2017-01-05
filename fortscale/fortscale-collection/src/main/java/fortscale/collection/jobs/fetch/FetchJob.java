@@ -95,34 +95,43 @@ public abstract class FetchJob {
 			logger.error("failed to connect to repository");
 			return;
 		}
-		do {
-			boolean fetchSucceded = true;
-			// preparer fetch page params
-			if  (fetchIntervalInSeconds != -1 ) {
-				preparerFetchPageParams();
-			}
-			// try to create output file
-			createOutputFile(outputDir);
-			File outputTempFile = new File(outputDir, tempfilename);
-			logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
-			try {
+		try {
+			do {
+				// preparer fetch page params
+				if (fetchIntervalInSeconds != -1) {
+					preparerFetchPageParams();
+				}
+				// try to create output file
+				createOutputFile(outputDir);
+				File outputTempFile = new File(outputDir, tempfilename);
+				logger.debug("created output file at {}", outputTempFile.getAbsolutePath());
+
 				fetch(filename, tempfilename, outputDir, returnKeys, delimiter, encloseQuotes, earliest, latest,
 						savedQuery);
-			} catch (Exception ex) {
-				fetchSucceded = false;
-				logger.error("failed to fetch - {}", ex);
-			}
-			if (sortShellScript != null) {
-				// sort the output
-				sortOrDeleteOutput();
-			} else {
-				// rename output file once get from siem finished
-				renameOrDeleteOutput();
-			}
-			// update mongo with current fetch progress
-			updateMongoWithCurrentFetchProgress(fetchSucceded);
-		} while (keepFetching);
+
+				if (sortShellScript != null) {
+					// sort the output
+					sortOrDeleteOutput();
+				} else {
+					// rename output file once get from siem finished
+					renameOrDeleteOutput();
+				}
+				// update mongo with current fetch progress
+				updateMongoWithCurrentFetchProgress();
+			} while (keepFetching);
+		}catch (Exception ex) {
+			logger.error("failed to fetch - {}", ex);
+			deleteTmpFile();
+		}
 		logger.info("fetch job finished");
+	}
+
+	private void deleteTmpFile() {
+		File tmpFile = new File(tempfilename);
+		if (tmpFile.exists()) {
+			logger.info("Deleting tmp file {}", tempfilename);
+			tmpFile.delete();
+		}
 	}
 
 	/**
@@ -273,30 +282,21 @@ public abstract class FetchJob {
 	 *
 	 * This method updates Mongo with the latest time fetched
 	 *
-	 * @param fetchSucceeded
 	 */
-	private void updateMongoWithCurrentFetchProgress(boolean fetchSucceeded) {
+	private void updateMongoWithCurrentFetchProgress() {
 
-        // Only if the fetch succeeded we want to save the last fetch time
-		if (fetchSucceeded) {
-            FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
-            latest = TimestampUtils.convertSplunkTimeToUnix(latest);
-            if (fetchConfiguration == null) {
-                fetchConfiguration = new FetchConfiguration(type, latest);
-            } else {
-                fetchConfiguration.setLastFetchTime(latest);
-            }
-            try {
-                fetchConfigurationRepository.save(fetchConfiguration);
-            } catch (OptimisticLockingFailureException ex) {
-                logger.warn("failed to save fetch configuration - {}", ex);
-            }
-        }
-        if (earliestDate != null && latestDate != null) {
-            if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
-                keepFetching = false;
-            }
-        }
+		FetchConfiguration fetchConfiguration = fetchConfigurationRepository.findByType(type);
+		latest = TimestampUtils.convertSplunkTimeToUnix(latest);
+		if (fetchConfiguration == null) {
+			fetchConfiguration = new FetchConfiguration(type, latest);
+		} else {
+			fetchConfiguration.setLastFetchTime(latest);
+		}
+		try {
+			fetchConfigurationRepository.save(fetchConfiguration);
+		} catch (OptimisticLockingFailureException ex) {
+			logger.warn("failed to save fetch configuration - {}", ex);
+		}
 	}
 
 	/**
