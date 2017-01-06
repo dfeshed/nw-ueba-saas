@@ -12,6 +12,9 @@ scriptDir="$(dirname "$0")"
 source $scriptDir/versions
 source $scriptDir/_util.sh
 
+# Setting up git hook
+ln -s -f ../../scripts/hooks/pre-commit $scriptDir/../.git/hooks/pre-commit
+
 echo -e "\nInstalling the following libraries:\nnode.js: $NODE_VERSION\nYarn: $YARN_VERSION\nember-cli: $EMBER_CLI_VERSION\nbower: $BOWER_VERSION\nphantomjs-prebuilt: $PHANTOMJS_VERSION\n"
 
 function hasVersion {
