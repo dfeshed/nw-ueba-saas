@@ -82,12 +82,18 @@
 
   &__edit-milestone {
     display: none;
-    .rsa-form-label {
+    .label-text {
       @include rsa-font(header, small);
-      margin: 0 0 rsa-whitespace(less) 0;
+      color: $formSelectLabelColor;
+      width: 30%;
+      display: inline-block;
+      vertical-align: bottom;
+      line-height: 10px;
     }
-    select {
-      z-index: 1;
+    &__selector {
+      width: 65%;
+      display: inline-block;
+      vertical-align: middle;
     }
   }
 

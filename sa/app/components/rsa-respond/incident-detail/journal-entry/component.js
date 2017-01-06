@@ -73,32 +73,6 @@ export default Component.extend({
   milestoneOptions: Object.keys(IncidentConstants.journalMilestones),
 
   /**
-   * @description selected milestone option
-   * @public
-   */
-  @computed('journal.milestone')
-  selectedMilestone: {
-    get: (milestone) => (milestone ? [ milestone ] : []),
-    set(value) {
-      this.set('journal.milestone', value.get('firstObject'));
-      return value;
-    }
-  },
-
-  /**
-   * @description selected milestone option when adding a new Journal
-   * @public
-   */
-  @computed('newMilestone')
-  newMilestoneSelect: {
-    get: () => [],
-    set(value) {
-      this.set('newMilestone', value.get('firstObject'));
-      return value;
-    }
-  },
-
-  /**
    * @description Set to edit-mode when user clicks on the component for 'as-new' entries
    * @public
    */
@@ -133,8 +107,7 @@ export default Component.extend({
         // reset new-journey values
         this.setProperties({
           newNote: null,
-          newMilestone: null,
-          newMilestoneSelect: []
+          newMilestone: null
         });
       }
 
@@ -166,8 +139,7 @@ export default Component.extend({
         // clear editable fields
         this.setProperties({
           newNote: null,
-          newMilestone: null,
-          newMilestoneSelect: []
+          newMilestone: null
         });
       } else {
         // Edit existing JournalEntry

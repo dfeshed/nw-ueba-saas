@@ -2,28 +2,40 @@
   {{! rsa-form-textarea class="rsa-journal-entry__edit-note" value=(if asNew newNote journal.notes) placeholder=(t 'journal.new.notePlaceholder' )}}
   {{#if addMode}}
     {{rsa-form-textarea class="rsa-journal-entry__edit-note" value=newNote placeholder=(t 'journal.new.notePlaceholder' )}}
-    {{#rsa-form-select
-      multiple=false
-      isInline=true
-      class="rsa-journal-entry__edit-milestone"
-      label=(t 'journal.new.milestone' )
-      values=newMilestoneSelect}}
-      {{#each milestoneOptions as |milestone|}}
-        <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
-      {{/each}}
-    {{/rsa-form-select}}
+    <div class='rsa-journal-entry__edit-milestone'>
+      <span class="label-text">
+        {{t 'journal.new.milestone'}}
+      </span>
+      {{#power-select
+        class='rsa-journal-entry__edit-milestone__selector'
+        tagName='span'
+        options=milestoneOptions
+        selected=newMilestone
+        allowClear=true
+        searchEnabled=false
+        onchange=(action (mut newMilestone))
+        as |milestone|}}
+        {{t (concat 'journal.milestones.' milestone)}}
+      {{/power-select}}
+    </div>
   {{else}}
     {{rsa-form-textarea class="rsa-journal-entry__edit-note" value=journal.notes placeholder=(t 'journal.new.notePlaceholder' )}}
-    {{#rsa-form-select
-      multiple=false
-      isInline=true
-      class="rsa-journal-entry__edit-milestone"
-      label=(t 'journal.new.milestone' )
-      values=selectedMilestone}}
-      {{#each milestoneOptions as |milestone|}}
-        <option value={{milestone}}>{{t (concat 'journal.milestones.' milestone) }}</option>
-      {{/each}}
-    {{/rsa-form-select}}
+    <div class='rsa-journal-entry__edit-milestone'>
+      <span class="label-text">
+        {{t 'journal.new.milestone'}}
+      </span>
+      {{#power-select
+        class='rsa-journal-entry__edit-milestone__selector'
+        tagName='span'
+        options=milestoneOptions
+        selected=journal.milestone
+        allowClear=true
+        searchEnabled=false
+        onchange=(action (mut journal.milestone))
+        as |milestone|}}
+        {{t (concat 'journal.milestones.' milestone)}}
+      {{/power-select}}
+    </div>
   {{/if}}
   <div class="rsa-journal-entry__actions">
     {{#rsa-form-button class="rsa-journal-entry__actions__cancel" click=(action 'cancelEdit')}}{{t 'forms.cancel'}}{{/rsa-form-button}}
