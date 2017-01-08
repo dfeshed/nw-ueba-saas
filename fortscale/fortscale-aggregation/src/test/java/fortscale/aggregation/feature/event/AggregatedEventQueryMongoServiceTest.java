@@ -68,7 +68,7 @@ public class AggregatedEventQueryMongoServiceTest {
 
 		originResult.addAll(backupResult);
 		List<AggrEvent> expectedResult = originResult;
-		List<AggrEvent> actualResult = aggregatedEventQueryMongoService.getAggregatedEventsByContextAndTimeRange(collectionName,"","",0l,0l);
+		List<AggrEvent> actualResult = aggregatedEventQueryMongoService.getAggregatedEventsByContextIdAndTimeRange(collectionName,"","",0l,0l);
 
 		assertTrue("Expected 'actualResult' and 'expectedResult' to be equal." +
 				"\n  'actualResult'        = " + actualResult +
