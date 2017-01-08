@@ -3,7 +3,6 @@ package fortscale.collection.jobs.notifications;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataqueries.querydto.DataQueryDTO;
 import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
-import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,7 +34,6 @@ import java.util.stream.Collectors;
 public class VpnLateralMovementNotificationService extends NotificationGeneratorServiceAbstract {
 	private static final String SERVICE_NAME = "VpnLateralMovementNotification";
 	private static final String APP_CONF_PREFIX = "lateral_movement_notification";
-	private static final String MIN_DATE_TIME_FIELD = "min_ts";
 	private static final String SOURCE_IP_FIELD = "source_ip";
 	private static final String VPN_START_TIME = "vpn_session_start";
 	private static final String VPN_END_TIME = "vpn_session_end";
@@ -95,29 +92,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				lateralMovementEvents.size(), lateralMovementNotifications.size(),
 				Instant.ofEpochSecond(latestTimestamp), latestTimestamp);
 		return lateralMovementNotifications;
-	}
-
-	/**
-	 * This method responsible on the fetching of the earliest event that this notification based on
-	 *
-	 * @throws InvalidQueryException
-	 */
-	protected long fetchEarliestEvent() throws InvalidQueryException {
-		DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
-				dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-		DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
-		dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
-		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-		String query = dataQueryRunner.generateQuery(dataQueryDTO);
-		logger.info("Running the query: {}", query);
-		// execute Query
-		List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
-		if (CollectionUtils.isEmpty(queryList)) {
-			//no data in table
-			logger.info("Table is empty. Quit...");
-			return Long.MAX_VALUE;
-		}
-		return extractEarliestEventFromDataQueryResult(queryList);
 	}
 
 	/**
@@ -330,16 +304,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				}
 			}
 		}
-	}
-
-	private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
-		for (Map<String, Object> resultPair : queryList) {
-			if (resultPair.get(MIN_DATE_TIME_FIELD) != null) {
-				Timestamp timeToUnix = (Timestamp)resultPair.get(MIN_DATE_TIME_FIELD);
-				return timeToUnix.getTime();
-			}
-		}
-		return 0;
 	}
 
 	private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(

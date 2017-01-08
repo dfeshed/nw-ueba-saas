@@ -299,22 +299,38 @@ public class DataQueryHelper {
     }
 
     /**
-     * creates min function on a field: min(field) as alias
-     * @param field
-     * @param alias
-     * @return
+     * Create a minimum function on a field: "min(field) as alias".
+     *
+     * @param field the field
+     * @param alias the alias
+     * @return a {@link DataQueryField}
      */
-    public DataQueryField createMinFieldFunc(String field, String alias){
+    public DataQueryField createMinFieldFunc(String field, String alias) {
         DataQueryField minField = new DataQueryField();
         minField.setId(field);
         minField.setAlias(alias);
         FieldFunction minFunction = new FieldFunction();
         minFunction.setName(QueryFieldFunction.min);
         minField.setFunc(minFunction);
-
         return minField;
     }
 
+    /**
+     * Create a maximum function on a field: "max(field) as alias".
+     *
+     * @param field the field
+     * @param alias the alias
+     * @return a {@link DataQueryField}
+     */
+    public DataQueryField createMaxFieldFunc(String field, String alias) {
+        DataQueryField maxField = new DataQueryField();
+        maxField.setId(field);
+        maxField.setAlias(alias);
+        FieldFunction maxFunction = new FieldFunction();
+        maxFunction.setName(QueryFieldFunction.max);
+        maxField.setFunc(maxFunction);
+        return maxField;
+    }
 
 	/**
 	 * This method will set group by clause to a given data query DTO

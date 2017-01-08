@@ -2,7 +2,6 @@ package fortscale.collection.jobs.notifications;
 
 import fortscale.common.dataqueries.querydto.DataQueryDTO;
 import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
-import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -15,7 +14,6 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 
@@ -44,7 +42,6 @@ public class VpnCredsShareNotificationService
 
     private static final String SERVICE_NAME = "VpnCredsShareNotifications";
     private static final String APP_CONF_PREFIX = "creds_share_notification";
-    private static final String MIN_DATE_TIME_FIELD = "min_ts";
 
     private ApplicationContext applicationContext;
     private String fieldManipulatorBeanName;
@@ -226,16 +223,6 @@ public class VpnCredsShareNotificationService
         }
     }
 
-    private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
-        for (Map<String, Object> resultPair : queryList) {
-            if (resultPair.get(MIN_DATE_TIME_FIELD) != null) {
-                Timestamp timeToUnix = (Timestamp)resultPair.get(MIN_DATE_TIME_FIELD);
-                return timeToUnix.getTime();
-            }
-        }
-        return 0;
-    }
-
     private List<JSONObject> createCredsShareNotificationsFromImpalaRawEvents(
             List<Map<String, Object>> credsShareEvents) {
 
@@ -302,31 +289,6 @@ public class VpnCredsShareNotificationService
 
     public void setDataEntity(String dataEntity) {
         this.dataEntity = dataEntity;
-    }
-
-    /**
-     * This method responsible on the fetching of the earliest event that this notification based on i.e - for cred
-     * sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic
-     * from the first event time.
-     *
-     * @throws InvalidQueryException
-     */
-    protected long fetchEarliestEvent() throws InvalidQueryException {
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
-                dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-        DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
-        dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
-        DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-        String query = dataQueryRunner.generateQuery(dataQueryDTO);
-        logger.info("Running the query: {}", query);
-        // execute Query
-        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
-        if (queryList.isEmpty()) {
-            //no data in table
-            logger.info("Table is empty. Quit...");
-            return Long.MAX_VALUE;
-        }
-        return extractEarliestEventFromDataQueryResult(queryList);
     }
 
     @Override

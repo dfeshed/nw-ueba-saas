@@ -1,7 +1,10 @@
 package fortscale.collection.jobs.notifications;
 
 import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
 import fortscale.common.dataqueries.querydto.DataQueryHelper;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
@@ -20,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -77,24 +81,63 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	protected String dataEntity;
 
 	protected abstract List<JSONObject> generateNotificationInternal() throws Exception;
-	protected abstract long fetchEarliestEvent() throws InvalidQueryException;
 
 	/**
-	 * @return boolean, true is completed successfully, or false if some error took place
+	 * @return true if completed successfully, false if an error occurred
 	 * @throws Exception
 	 */
 	public boolean generateNotification() throws Exception {
-		figureLatestRunTime();
-		if (latestTimestamp == 0L) {
-			//No relevant data. Step out.
-			logger.info("No data for notification creation. Exit");
+		if (latestTimestamp == 0) {
+			latestTimestamp = getEarliestEpochtime();
+			logger.info("Epochtime of next event to process was 0, so it was set to the earliest epochtime.");
+		}
+
+		currentTimestamp = getLatestEpochtime();
+		logger.info("Next event to process epochtime = {}, latest epochtime = {}.", latestTimestamp, currentTimestamp);
+
+		if (latestTimestamp == 0) {
+			logger.info("No data to create notifications. Exiting.");
 			return true;
 		}
+
 		List<JSONObject> notifications = generateNotificationInternal();
-		if (CollectionUtils.isNotEmpty(notifications)) {
-			sendNotificationsToKafka(notifications);
-		}
+		if (CollectionUtils.isNotEmpty(notifications)) sendNotificationsToKafka(notifications);
 		return true;
+	}
+
+	private Long getEpochtime(DataQueryDTO dataQueryDto, String key) throws InvalidQueryException {
+		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDto);
+		String query = dataQueryRunner.generateQuery(dataQueryDto);
+		logger.info("Running the query {}.", query);
+		List<Map<String, Object>> queryResults = dataQueryRunner.executeQuery(query);
+
+		if (CollectionUtils.isEmpty(queryResults)) {
+			logger.info("The table is empty. Quitting.");
+			return null;
+		}
+
+		for (Map<String, Object> queryResult : queryResults) {
+			Object timestamp = queryResult.get(key);
+			if (timestamp instanceof Timestamp) return TimestampUtils.convertToSeconds((Timestamp)timestamp);
+		}
+
+		return null;
+	}
+
+	private long getEarliestEpochtime() throws InvalidQueryException {
+		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(
+				dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
+		dataQueryHelper.setFuncFieldToQuery(dataQueryHelper.createMinFieldFunc("end_time", "min_ts"), dataQueryDto);
+		Long earliest = getEpochtime(dataQueryDto, "min_ts");
+		return earliest == null ? 0 : earliest; // TODO: What if there wasn't a result (null)?
+	}
+
+	private long getLatestEpochtime() throws InvalidQueryException {
+		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(
+				dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
+		dataQueryHelper.setFuncFieldToQuery(dataQueryHelper.createMaxFieldFunc("end_time", "max_ts"), dataQueryDto);
+		Long latest = getEpochtime(dataQueryDto, "max_ts");
+		return latest == null ? 0 : latest; // TODO: What if there wasn't a result (null)?
 	}
 
 	/**
@@ -114,21 +157,6 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 		String messageToWrite = credsShare.toJSONString(JSONStyle.NO_COMPRESS);
 		logger.info("Writing to topic evidence - {}", messageToWrite);
 		streamWriter.send("VPN_user_creds_share", messageToWrite);
-	}
-
-	/**
-	 * check if there is new data to process, newest data then last execution
-	 *
-	 * @throws InvalidQueryException
-	 */
-	protected void figureLatestRunTime() throws InvalidQueryException {
-		//read latestTimestamp from mongo collection application_configuration
-		currentTimestamp = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		if (latestTimestamp == 0L) {
-			//create query to find the earliest event
-			latestTimestamp = fetchEarliestEvent();
-			logger.info("Latest run time was empty. Latest timestamp was set to {}.", latestTimestamp);
-		}
 	}
 
 	protected void initConfigurationFromApplicationConfiguration(String configurationPrefix, List<Pair<String, String>> list)
