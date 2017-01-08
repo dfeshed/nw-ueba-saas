@@ -124,7 +124,6 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.timeframe = timeframe;
 
         this.dataSourceAnomalyTypePair = buildDataSourceAnomalyTypePairs(this.evidences);
-		this.setId(UUID.randomUUID().toString());
         this.userScoreContribution = userScoreContribution;
         this.userScoreContributionFlag = userScoreContributionFlag;
 	}

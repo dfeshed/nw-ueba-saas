@@ -45,6 +45,8 @@ import java.util.stream.StreamSupport;
  *             all of the models inside s2
  *              will be used for learning
  *                 a GaussianPriorModel
+ *
+ * Full documentation can be found here: https://fortscale.atlassian.net/wiki/display/FSC/Gaussian+model
  */
 public class LearningSegments implements Iterable<LearningSegments.Segment> {
 	public static class Segment {

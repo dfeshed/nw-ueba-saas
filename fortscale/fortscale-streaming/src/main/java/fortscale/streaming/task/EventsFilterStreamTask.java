@@ -1,12 +1,13 @@
 package fortscale.streaming.task;
 
 import fortscale.streaming.exceptions.KafkaPublisherException;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.metrics.EventsFilterStreamTaskMetrics;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.system.OutgoingMessageEnvelope;
 import org.apache.samza.system.SystemStream;
 import org.apache.samza.task.MessageCollector;
@@ -28,7 +29,7 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 
 	
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 		outputTopic = config.get("fortscale.output.topic", "");
 		String dataSource = getConfigString(config, "fortscale.data.source");
 		// create counter metric for processed messages
@@ -39,13 +40,14 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 
 
 
-	/** Process incoming events and update the user models stats */
-	@Override public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	/** Process incoming events and update the user models stats
+	 * @param messageContext*/
+	@Override public void processMessage(ProcessMessageContext messageContext) throws Exception {
 		// parse the message into json
-		JSONObject message = parseJsonMessage(envelope);
+		JSONObject message = messageContext.getMessageAsJson();
 
 
-		if (!acceptMessage(message)) {
+		if (!acceptMessage(messageContext)) {
 			++taskMetrics.filteredEvents;
 			processedFilterCount.inc();
 			return;
@@ -54,16 +56,18 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 		// publish the event with score to the subsequent topic in the topology
 		if (StringUtils.isNotEmpty(outputTopic)){
 			try{
+
+				MessageCollector collector = ((StreamingProcessMessageContext) messageContext).getCollector();
 				collector.send(new OutgoingMessageEnvelope(new SystemStream("kafka", outputTopic), message.toJSONString()));
 				++taskMetrics.sentMessages;
 			} catch(Exception exception){
 				++taskMetrics.sendMessageFailures;
-				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", (String)envelope.getMessage()), exception);
+				throw new KafkaPublisherException(String.format("failed to send scoring message after processing the message %s.", messageContext.toString()), exception);
 			}
 		}
 
 		if (taskMonitoringHelper.isMonitoredTask()) {
-			handleUnfilteredEvent(message, extractDataSourceConfigKey(message));
+			handleUnfilteredEvent(message, messageContext.getStreamingTaskDataSourceConfigKey());
 		}
 		++taskMetrics.unfilteredEvents;
 		processedNonFilterCount.inc(); //Count not filtered events total
@@ -85,18 +89,19 @@ public class EventsFilterStreamTask extends AbstractStreamTask {
 	
 	
 	/** periodically save the state to mongodb as a secondary backing store */
-	@Override public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) {
+	@Override public void processWindow(MessageCollector collector, TaskCoordinator coordinator) {
 
 	}
 
 
 	/** save the state to mongodb when the job shutsdown */
-	@Override protected void wrappedClose() throws Exception {
+	@Override protected void processClose() throws Exception {
 
 	}
 
-	/** Auxiliary method to enable filtering messages on specific events types */
-	protected boolean acceptMessage(JSONObject message){ return true;}
+	/** Auxiliary method to enable filtering messages on specific events types
+	 * @param messageContext*/
+	protected boolean acceptMessage(ProcessMessageContext messageContext){ return true;}
 
 	/**
 	 * Abstract method to get the prefix of the job name, depnded on the class

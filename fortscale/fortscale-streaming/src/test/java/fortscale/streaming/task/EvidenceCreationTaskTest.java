@@ -1,11 +1,9 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import org.apache.samza.config.Config;
-import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.*;
@@ -24,21 +22,21 @@ public class EvidenceCreationTaskTest extends AbstractTaskTest{
     //Inner class that extends the class of the task to be tested
     public static class EvidenceCreationTaskSubclass extends EvidenceCreationTask implements TestTask{
         @Override
-        protected void wrappedInit(Config config, TaskContext context) throws Exception {
+        protected void processInit(Config config, TaskContext context) throws Exception {
             //1. call the init function of the tested task
-            super.wrappedInit(config, context);
+            super.processInit(config, context);
             //2. Optional: retrieve the keyValueStore to be tested later
             //keyValueStore = (KeyValueStore<String, String>)context.getStore(KEY_VALUE_STORE_TABLE_NAME);
             //3. init the test to register the task
             initTest(config, context);
         }
         @Override
-        protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
-                                      TaskCoordinator coordinator) throws Exception {
+        protected void processMessage(ProcessMessageContext messageContext) throws Exception {
             //1. call the process function of the tested task
-            super.wrappedProcess(envelope, collector, coordinator);
+            super.processMessage(messageContext);
+            StreamingProcessMessageContext streamingProcessMessageContext = (StreamingProcessMessageContext) messageContext;
             //2. run teh test process function
-            processTest(envelope, collector, coordinator);
+            processTest(messageContext, streamingProcessMessageContext.getCollector(), streamingProcessMessageContext.getCoordinator());
         }
     }
     //define constants

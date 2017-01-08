@@ -2,20 +2,17 @@ package fortscale.streaming.task;
 
 import fortscale.domain.core.ComputerUsageType;
 import fortscale.domain.core.Tag;
-import fortscale.services.EvidencesService;
 import fortscale.services.UserService;
 import fortscale.services.impl.SpringService;
-import fortscale.services.impl.UserServiceImpl;
 import fortscale.streaming.exceptions.StreamMessageNotContainFieldException;
 import fortscale.streaming.model.tagging.AccountMachineAccess;
 import fortscale.streaming.service.tagging.TagService;
+import fortscale.streaming.task.message.ProcessMessageContext;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.commons.lang.StringUtils;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
 import org.apache.samza.storage.kv.KeyValueStore;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,7 +48,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void wrappedInit(Config config, TaskContext context) throws Exception {
+    protected void processInit(Config config, TaskContext context) throws Exception {
 
         usernameField = getConfigString(config, "fortscale.username.field");
         timestampField = getConfigString(config, "fortscale.timestamp.field");
@@ -86,17 +83,14 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 
 
     @Override
-    public void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception
+    public void processMessage(ProcessMessageContext messageContext) throws Exception
     {
 
         ComputerUsageType sourceComputerType;
         ComputerUsageType destComputerType;
         boolean  isEventSuccess = false;
 
-
-        // parse the message into json
-        String messageText = (String)envelope.getMessage();
-        JSONObject message = (JSONObject) JSONValue.parseWithException(messageText);
+        JSONObject message = messageContext.getMessageAsJson();
 
         // get the failure code  and manipulate it for define the isEventSuccess flag
         String failureCode = convertToString(message.get(failureCodeField));
@@ -114,7 +108,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
             String userName = convertToString(message.get(usernameField));
             if (StringUtils.isEmpty(userName)) {
                 //logger.error("message {} does not contains username in field {}", messageText, usernameField);
-                throw new StreamMessageNotContainFieldException(messageText, usernameField);
+                throw new StreamMessageNotContainFieldException(messageContext, usernameField);
             }
 
 			// get the is service account flag
@@ -127,7 +121,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 				Long timeStamp = convertToLong(message.get(timestampField));
 				if (timeStamp == null) {
 					//logger.error("message {} does not contains timeStamp in field {}", messageText, timestampField);
-					throw new StreamMessageNotContainFieldException(messageText, timestampField);
+					throw new StreamMessageNotContainFieldException(messageContext, timestampField);
 				}
 
 				// get the source host name
@@ -138,7 +132,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 					String srcClassValue = convertToString(message.get(sourceComputerTypeField));
 					sourceComputerType = StringUtils.isEmpty(srcClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(srcClassValue);
 				} catch (IllegalArgumentException ex) {
-					throw new StreamMessageNotContainFieldException(messageText, sourceComputerTypeField);
+					throw new StreamMessageNotContainFieldException(messageContext, sourceComputerTypeField);
 				}
 
 				// get the destination host name
@@ -149,7 +143,7 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
 					String destClassValue = convertToString(message.get(destComputerTypeField));
 					destComputerType = StringUtils.isEmpty(destClassValue) ? ComputerUsageType.Unknown : ComputerUsageType.valueOf(destClassValue);
 				} catch (IllegalArgumentException ex) {
-					throw new StreamMessageNotContainFieldException(messageText, destComputerTypeField);
+					throw new StreamMessageNotContainFieldException(messageContext, destComputerTypeField);
 				}
 
 				// get the isSensetiveMachine  flag
@@ -167,14 +161,14 @@ public class AccountTaggingTask extends AbstractStreamTask implements InitableTa
     }
 
     @Override
-    public void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
+    public void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception{
         if(this.taggingService!=null)
             this.taggingService.exportTags();
 
     }
 
     @Override
-    protected void wrappedClose() throws Exception {
+    protected void processClose() throws Exception {
         if(this.taggingService!=null) {
             this.taggingService.exportTags();
         }

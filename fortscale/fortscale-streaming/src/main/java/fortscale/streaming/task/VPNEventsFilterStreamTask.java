@@ -1,11 +1,11 @@
 package fortscale.streaming.task;
 
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import net.minidev.json.JSONObject;
 import org.apache.samza.config.Config;
 import org.apache.samza.system.IncomingMessageEnvelope;
-import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
-import org.apache.samza.task.TaskCoordinator;
 
 public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 	private String statusFieldName;
@@ -14,8 +14,8 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 	private String dataSourceValueVpnSession;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
-		super.wrappedInit(config, context);
+	protected void processInit(Config config, TaskContext context) throws Exception {
+		super.processInit(config, context);
 		statusFieldName = resolveStringValue(config, "fortscale.vpn.field.name.status", res);
 		statusValueClosed = resolveStringValue(config, "fortscale.vpn.status.value.closed", res);
 		dataSourceFieldName = resolveStringValue(config, "fortscale.vpn.field.name.data_source", res);
@@ -23,12 +23,9 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 	}
 
 	@Override
-	public void wrappedProcess(
-			IncomingMessageEnvelope envelope,
-			MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	public void processMessage(ProcessMessageContext messageContext) throws Exception {
 
-		JSONObject message = parseJsonMessage(envelope);
+		JSONObject message = messageContext.getMessageAsJson();
 		String status = message.getAsString(statusFieldName);
 
 		if (statusValueClosed.equals(status)) {
@@ -39,11 +36,15 @@ public class VPNEventsFilterStreamTask extends EventsFilterStreamTask {
 			++taskMetrics.vpnNonCloseMessages;
 		}
 
+		StreamingProcessMessageContext processMessageContext = (StreamingProcessMessageContext) messageContext;
 		IncomingMessageEnvelope newEnvelope = new IncomingMessageEnvelope(
-				envelope.getSystemStreamPartition(),
-				envelope.getOffset(),
-				envelope.getKey(),
+				processMessageContext.getIncomingMessageEnvelope().getSystemStreamPartition(),
+				processMessageContext.getIncomingMessageEnvelope().getOffset(),
+				processMessageContext.getIncomingMessageEnvelope().getKey(),
 				message.toJSONString());
-		super.wrappedProcess(newEnvelope, collector, coordinator);
+		ProcessMessageContext newMessage =
+				new StreamingProcessMessageContext(newEnvelope,
+						processMessageContext.getCollector(), processMessageContext.getCoordinator(),this);
+		super.processMessage(newMessage);
 	}
 }

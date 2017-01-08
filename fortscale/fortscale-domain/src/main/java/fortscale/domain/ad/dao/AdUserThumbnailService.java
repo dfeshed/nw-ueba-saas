@@ -1,0 +1,13 @@
+package fortscale.domain.ad.dao;
+
+
+import fortscale.domain.ad.AdUserThumbnail;
+
+import java.util.List;
+
+public interface AdUserThumbnailService {
+
+    AdUserThumbnail findById(String objectGUID);
+
+    List<AdUserThumbnail> save(List<AdUserThumbnail> adUserThumbnails);
+}

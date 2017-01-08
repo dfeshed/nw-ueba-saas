@@ -9,14 +9,14 @@ import fortscale.streaming.exceptions.FilteredEventException;
 import fortscale.streaming.exceptions.KafkaPublisherException;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.service.scorer.ScoringTaskService;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import fortscale.streaming.task.metrics.ScoringStreamingTaskMetrics;
 import fortscale.streaming.task.monitor.MonitorMessaages;
 import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.metrics.Counter;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.MessageCollector;
 import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
@@ -40,7 +40,7 @@ public class ScoringTask extends AbstractStreamTask {
 
 
     @Override
-    protected void wrappedInit(Config config, TaskContext context) throws Exception {
+    protected void processInit(Config config, TaskContext context) throws Exception {
         // get task configuration parameters
         timestampField = getConfigString(config, "fortscale.timestamp.field");
         // create counter metric for processed messages
@@ -61,20 +61,21 @@ public class ScoringTask extends AbstractStreamTask {
     }
 
     @Override
-    protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-        String topicName = getIncomingMessageTopicName(envelope);
+    protected void processMessage(ProcessMessageContext messageContext) throws Exception {
+        String topicName = messageContext.getTopicName();
 
-        String messageText = (String)envelope.getMessage();
-        JSONObject message = (JSONObject)JSONValue.parseWithException(messageText);
-
+        JSONObject message = messageContext.getMessageAsJson();
+        String messageText = messageContext.getMessageAsString();
         if(topicName.equals(modelBuildingControlOutputTopic))
         {
             taskMetrics.modelBuildingEvents++;
+
             handleModelBuildingEvent(messageText, message);
         }
         else {
             Long timestamp = extractTimeStamp(message, messageText);
             taskMetrics.eventsTime = timestamp;
+            MessageCollector collector = ((StreamingProcessMessageContext) messageContext).getCollector();
             handleEventToScore(collector, message, timestamp);
             // todo: this metric should we removed after DPM is part of ther project
             processedMessageCount.inc();
@@ -125,7 +126,6 @@ public class ScoringTask extends AbstractStreamTask {
         }
     }
 
-    @Override
     protected StreamingTaskDataSourceConfigKey extractDataSourceConfigKey(JSONObject message) {
         Event event = eventService.createEvent(message);
         String dataSource = event.getDataSource();
@@ -152,13 +152,13 @@ public class ScoringTask extends AbstractStreamTask {
 
 
     @Override
-    protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+    protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
         scoringTaskService.window(collector, coordinator);
     }
 
 
     @Override
-    protected void wrappedClose() throws Exception {
+    protected void processClose() throws Exception {
         scoringTaskService.close();
     }
 

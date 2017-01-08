@@ -26,6 +26,7 @@ public class Tag extends AbstractDocument{
 	public static final String rulesField = "rules";
 	public static final String activeField = "active";
 	public static final String isAssignableField = "isAssignable";
+	public static final String isPredefinedField = "isPredefined";
 
 	public static final String ADMIN_TAG = "admin";
 	public static final String EXECUTIVE_TAG = "executive";
@@ -40,15 +41,17 @@ public class Tag extends AbstractDocument{
 		rules = new ArrayList<>();
 		active = true;
 		isAssignable = true;
+		isPredefined = false;
 	}
 
-	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean isAssignable) {
+	public Tag(String name, String displayName, boolean setCreatesIndicator, boolean isAssignable, boolean isPredefined) {
 		this.name = name;
 		this.displayName = displayName;
 		this.isAssignable = isAssignable;
-		createsIndicator = setCreatesIndicator ? true : false;
+		createsIndicator = setCreatesIndicator;
 		rules = new ArrayList<>();
 		active = true;
+		this.isPredefined = isPredefined;
 	}
 
 	@NotBlank
@@ -65,6 +68,8 @@ public class Tag extends AbstractDocument{
 
 	@NotNull
 	private Boolean isAssignable;
+
+	private boolean isPredefined;
 
 	@NotNull
 	private List<String> rules;
@@ -115,6 +120,14 @@ public class Tag extends AbstractDocument{
 
 	public void setIsAssignable(Boolean isAssignable) {
 		this.isAssignable = isAssignable;
+	}
+
+	public boolean isPredefined() {
+		return isPredefined;
+	}
+
+	public void setPredefined(boolean predefined) {
+		isPredefined = predefined;
 	}
 
 	@Override

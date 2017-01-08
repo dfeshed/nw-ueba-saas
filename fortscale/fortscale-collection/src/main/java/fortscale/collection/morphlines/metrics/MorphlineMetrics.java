@@ -194,4 +194,8 @@ public class MorphlineMetrics extends StatsMetricsGroup {
 	//Number of records that sent notification
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long sendNotification;
+
+	// Number of records that were filtered out because their service name matched the Domain Controller regex
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long dcRegexMatches;
 }
