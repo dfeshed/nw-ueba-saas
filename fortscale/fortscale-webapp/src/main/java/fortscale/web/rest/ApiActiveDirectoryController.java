@@ -321,7 +321,7 @@ public class ApiActiveDirectoryController {
 	}
 
 	private void executeTask(ControllerInvokedAdTask taskToExecute) {
-		logger.info("Executing task {}.", taskToExecute);
+		logger.info("Executing task for data source {}.", taskToExecute.getDataSource());
 		executorService.execute(taskToExecute);
 	}
 

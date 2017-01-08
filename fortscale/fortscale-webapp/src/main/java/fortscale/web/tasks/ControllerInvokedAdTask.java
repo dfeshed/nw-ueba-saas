@@ -140,7 +140,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
         /* get task results from file */
-        logger.info("Getting results for task {} with results key {}", jobName, resultsKey);
+        logger.debug("Getting results for task {} with results key {}", jobName, resultsKey);
         final Map<String, String> taskResults = getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
