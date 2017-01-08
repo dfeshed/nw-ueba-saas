@@ -42,7 +42,7 @@ public class AggregatedFeaturePersonalThresholdModelBuilderDataRetriever extends
 	@Override
 	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		Date startTime = getStartTime(endTime);
-		int numOfContexts = aggregatedFeatureEventsReaderService.findDistinctContextsByTimeRange(
+		int numOfContexts = aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
 				aggregatedFeatureEventConfToCalibrate, startTime, endTime)
 				.size();
 		long numOfOrganizationScores = aggregatedFeatureEventsReaderService.findNumOfAggrEventsByTimeRange(

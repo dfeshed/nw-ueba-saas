@@ -74,7 +74,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> findDistinctContextsByTimeRange(
+	public Set<String> findDistinctContextsByTimeRange(
 			EntityEventConf entityEventConf, Date startTime, Date endTime) {
 
 		String entityEventConfName = entityEventConf.getName();
@@ -86,7 +86,7 @@ public class EntityEventDataMongoStore implements EntityEventDataStore {
 		Query query = new Query();
 		query.addCriteria(where(EntityEventData.START_TIME_FIELD).gte(startTimeSeconds));
 		query.addCriteria(where(EntityEventData.END_TIME_FIELD).lte(endTimeSeconds));
-		return mongoTemplate.getCollection(collectionName).distinct(EntityEventData.CONTEXT_ID_FIELD, query.getQueryObject());
+		return (Set<String>) mongoTemplate.getCollection(collectionName).distinct(EntityEventData.CONTEXT_ID_FIELD, query.getQueryObject()).stream().collect(Collectors.toSet());
 	}
 
 	private String getCollectionName(String entityEventName) {
