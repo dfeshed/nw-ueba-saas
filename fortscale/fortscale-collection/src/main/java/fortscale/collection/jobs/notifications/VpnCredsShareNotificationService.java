@@ -53,32 +53,32 @@ public class VpnCredsShareNotificationService
 
     protected List<JSONObject> generateNotificationInternal() throws Exception {
         List<Map<String, Object>> credsShareEvents = new ArrayList<>();
-        logger.info("Generating notification of {}. latest time: {} ({}) current time: {} ({})", SERVICE_NAME,
-                Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
-                Instant.ofEpochSecond(currentTimestamp), currentTimestamp);
+        logger.info("Generating notifications of {}. Next time: {} ({}), Last time: {} ({}).", SERVICE_NAME,
+                Instant.ofEpochSecond(nextEpochtime), nextEpochtime,
+                Instant.ofEpochSecond(lastEpochtime), lastEpochtime);
 
-        // Process events occurred until now. Do not process periods shorter than
-        // MINIMAL_PROCESSING_PERIOD_IN_SEC. Protects from periodic execution jitter
-        while (latestTimestamp <= currentTimestamp - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
-            // Calc the processing end time: process up to one day. Never process
-            // post the current time because those event simply does not exist yet
-            long upperLimitExcluded = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
+        // Process events that occurred from "next time" until "last time" in the table
+        // Don't process periods shorter than MINIMAL_PROCESSING_PERIOD_IN_SEC - Protects from periodic execution jitter
+        while (nextEpochtime <= lastEpochtime - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
+            // Calculate the processing end time - Process up to one day
+            // Never process after the "last time", because those events simply do not exist yet
+            long upperLimitExcluded = Math.min(nextEpochtime + DAY_IN_SECONDS, lastEpochtime + 1);
             credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimitExcluded - 1));
-            latestTimestamp = upperLimitExcluded;
+            nextEpochtime = upperLimitExcluded;
         }
 
         List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
         credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
 
-        // Save latest processed timestamp in mongo application_configuration.
-        // Do that at the end in case there is an error before
-        Map<String, String> updateLastTimestamp = new HashMap<>();
-        updateLastTimestamp.put(APP_CONF_PREFIX + "." + LATEST_TS, String.valueOf(latestTimestamp));
-        applicationConfigurationService.updateConfigItems(updateLastTimestamp);
+        // Save next epochtime to process in Mongo application_configuration
+        // Do that in the end, in case there is an error before
+        Map<String, String> updateNextTimestamp = new HashMap<>();
+        updateNextTimestamp.put(APP_CONF_PREFIX + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
+        applicationConfigurationService.updateConfigItems(updateNextTimestamp);
 
-        logger.info("Processing of {} done. {} events, {} notifications.Latest process time {} ({})", SERVICE_NAME,
+        logger.info("Processing of {} done. {} events, {} notifications. Next process time {} ({}).", SERVICE_NAME,
                 credsShareEvents.size(), credsShareNotifications.size(),
-                Instant.ofEpochSecond(latestTimestamp), latestTimestamp);
+                Instant.ofEpochSecond(nextEpochtime), nextEpochtime);
         return credsShareNotifications;
     }
 
@@ -88,7 +88,7 @@ public class VpnCredsShareNotificationService
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(
-                new ImmutablePair<>(LATEST_TS, TS_PARAM),
+                new ImmutablePair<>(NEXT_EPOCHTIME_KEY, NEXT_EPOCHTIME_VALUE),
                 new ImmutablePair<>("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
                 new ImmutablePair<>("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
                 new ImmutablePair<>("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
@@ -141,10 +141,10 @@ public class VpnCredsShareNotificationService
         // create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
         // some features of the query aren't supported in dataQuery: e.g. CASE WHEN , or SQL functions: lpad, instr
 
-        Instant lowerLimitInstInc = Instant.ofEpochSecond(latestTimestamp);
+        Instant lowerLimitInstInc = Instant.ofEpochSecond(nextEpochtime);
         Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluded);
         logger.info("Processing {} from {} ({}) to {} ({})",
-                SERVICE_NAME, lowerLimitInstInc, latestTimestamp, upperLimitInstInc, upperLimitIncluded);
+                SERVICE_NAME, lowerLimitInstInc, nextEpochtime, upperLimitInstInc, upperLimitIncluded);
 
         String t1Query = String.format(
                 "select * from %s where %s and source_ip != '' and country = 'Reserved Range'",

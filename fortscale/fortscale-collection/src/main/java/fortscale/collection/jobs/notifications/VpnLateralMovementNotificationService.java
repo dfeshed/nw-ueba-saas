@@ -63,18 +63,18 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 	protected List<JSONObject> generateNotificationInternal() throws Exception {
 		Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
-		logger.info("Generating notification of {}. latest time: {} ({}) current time: {} ({})", SERVICE_NAME,
-				Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
-				Instant.ofEpochSecond(currentTimestamp), currentTimestamp);
+		logger.info("Generating notifications of {}. Next time: {} ({}), Last time: {} ({}).", SERVICE_NAME,
+				Instant.ofEpochSecond(nextEpochtime), nextEpochtime,
+				Instant.ofEpochSecond(lastEpochtime), lastEpochtime);
 
-		// Process events occurred until now. Do not process periods shorter than
-		// MINIMAL_PROCESSING_PERIOD_IN_SEC. Protects from periodic execution jitter
-		while (latestTimestamp <= currentTimestamp - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
-			// Calc the processing end time: process up to one day. Never process
-			// post the current time because those event simply does not exist yet
-			long upperLimitExcluding = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
+		// Process events that occurred from "next time" until "last time" in the table
+		// Don't process periods shorter than MINIMAL_PROCESSING_PERIOD_IN_SEC - Protects from periodic execution jitter
+		while (nextEpochtime <= lastEpochtime - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
+			// Calculate the processing end time - Process up to one day
+			// Never process after the "last time", because those events simply do not exist yet
+			long upperLimitExcluding = Math.min(nextEpochtime + DAY_IN_SECONDS, lastEpochtime + 1);
 			getLateralMovementEventsFromHDFS(lateralMovementEvents, upperLimitExcluding - 1);
-			latestTimestamp = upperLimitExcluding;
+			nextEpochtime = upperLimitExcluding;
 		}
 
 		List<JSONObject> lateralMovementNotifications =
@@ -82,15 +82,15 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		lateralMovementNotifications =
 				addRawEventsToLateralMovement(lateralMovementNotifications, lateralMovementEvents);
 
-		// Save latest processed timestamp in mongo application_configuration.
-		// Do that at the end in case there is an error before
-		Map<String, String> updateLastTimestamp = new HashMap<>();
-		updateLastTimestamp.put(APP_CONF_PREFIX + "." + LATEST_TS, String.valueOf(latestTimestamp));
-		applicationConfigurationService.updateConfigItems(updateLastTimestamp);
+		// Save next epochtime to process in Mongo application_configuration
+		// Do that in the end, in case there is an error before
+		Map<String, String> updateNextTimestamp = new HashMap<>();
+		updateNextTimestamp.put(APP_CONF_PREFIX + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
+		applicationConfigurationService.updateConfigItems(updateNextTimestamp);
 
-		logger.info("Processing of {} done. {} events, {} notifications, latest process time {} ({})", SERVICE_NAME,
+		logger.info("Processing of {} done. {} events, {} notifications. Next process time {} ({}).", SERVICE_NAME,
 				lateralMovementEvents.size(), lateralMovementNotifications.size(),
-				Instant.ofEpochSecond(latestTimestamp), latestTimestamp);
+				Instant.ofEpochSecond(nextEpochtime), nextEpochtime);
 		return lateralMovementNotifications;
 	}
 
@@ -102,7 +102,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		tableToEntityIdAndIPField = new HashMap<>();
 		Map<String, DataEntity> entities;
 		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX,
-				Collections.singletonList(new ImmutablePair<>(LATEST_TS, TS_PARAM)));
+				Collections.singletonList(new ImmutablePair<>(NEXT_EPOCHTIME_KEY, NEXT_EPOCHTIME_VALUE)));
 		try {
 			entities = dataEntitiesConfig.getAllLeafeEntities();
 		} catch (Exception ex) {
@@ -250,10 +250,10 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	private void getLateralMovementEventsFromHDFS(
 			Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents, long upperLimitIncluding) {
 
-		Instant lowerLimitInstInc = Instant.ofEpochSecond(latestTimestamp);
+		Instant lowerLimitInstInc = Instant.ofEpochSecond(nextEpochtime);
 		Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluding);
 		logger.info("Processing {} from {} ({}) to {} ({})",
-				SERVICE_NAME, lowerLimitInstInc, latestTimestamp, upperLimitInstInc, upperLimitIncluding);
+				SERVICE_NAME, lowerLimitInstInc, nextEpochtime, upperLimitInstInc, upperLimitIncluding);
 
 		for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
 			String tableName = entry.getKey();

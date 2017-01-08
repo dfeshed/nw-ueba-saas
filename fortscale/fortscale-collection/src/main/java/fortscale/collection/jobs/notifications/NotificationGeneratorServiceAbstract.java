@@ -34,8 +34,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class NotificationGeneratorServiceAbstract implements NotificationGeneratorService {
 	protected Logger logger = LoggerFactory.getLogger(this.getClass());
 
-	protected static final String LATEST_TS = "latest_ts";
-	protected static final String TS_PARAM = "latestTimestamp";
+	protected static final String NEXT_EPOCHTIME_KEY = "next_epochtime";
+	protected static final String NEXT_EPOCHTIME_VALUE = "nextEpochtime";
 	protected static final long DAY_IN_SECONDS = TimeUnit.DAYS.toSeconds(1);
 	protected static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10);
 	private static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
@@ -76,8 +76,8 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	@Value("${collection.evidence.notification.score}")
 	protected double notificationFixedScore;
 
-	protected long latestTimestamp = 0L;
-	protected long currentTimestamp = 0L;
+	protected long nextEpochtime = 0L;
+	protected long lastEpochtime = 0L;
 	protected String dataEntity;
 
 	protected abstract List<JSONObject> generateNotificationInternal() throws Exception;
@@ -87,15 +87,15 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	 * @throws Exception
 	 */
 	public boolean generateNotification() throws Exception {
-		if (latestTimestamp == 0) {
-			latestTimestamp = getEarliestEpochtime();
+		if (nextEpochtime == 0) {
+			nextEpochtime = getEarliestEpochtime();
 			logger.info("Epochtime of next event to process was 0, so it was set to the earliest epochtime.");
 		}
 
-		currentTimestamp = getLatestEpochtime();
-		logger.info("Next event to process epochtime = {}, latest epochtime = {}.", latestTimestamp, currentTimestamp);
+		lastEpochtime = getLatestEpochtime();
+		logger.info("Next event to process epochtime = {}, latest epochtime = {}.", nextEpochtime, lastEpochtime);
 
-		if (latestTimestamp == 0) {
+		if (nextEpochtime == 0) {
 			logger.info("No data to create notifications. Exiting.");
 			return true;
 		}
@@ -277,13 +277,13 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	 */
 
 	@SuppressWarnings("unused")
-	public long getLatestTimestamp() {
-		return latestTimestamp;
+	public long getNextEpochtime() {
+		return nextEpochtime;
 	}
 
 	@SuppressWarnings("unused")
-	public void setLatestTimestamp(long latestTimestamp) {
-		this.latestTimestamp = latestTimestamp;
+	public void setNextEpochtime(long nextEpochtime) {
+		this.nextEpochtime = nextEpochtime;
 	}
 
 	@SuppressWarnings("unused")
