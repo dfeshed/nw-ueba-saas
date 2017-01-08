@@ -14,6 +14,7 @@ import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.beans.AuthenticationTestResult;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
+import fortscale.web.tasks.CompoundControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType;
@@ -194,7 +195,7 @@ public class ApiActiveDirectoryController {
 					isFetchEtlExecutionRequestInProgress.set(false);
 					return new ResponseEntity<>(new ResponseEntityMessage(stopMessage), HttpStatus.LOCKED);
 				}
-				dataSources.forEach(dataSource -> executeTasks(adTasks));
+				executeTasks(adTasks);
 			} finally {
 				isFetchEtlExecutionRequestInProgress.set(false);
 			}
@@ -207,18 +208,6 @@ public class ApiActiveDirectoryController {
 		}
 	}
 
-	private List<ControllerInvokedAdTask> createAdTasks() {
-		final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
-		for (AdObjectType dataSource : dataSources) {
-			final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource);
-			if (dataSource == AdObjectType.USER) {
-				currTask.addFollowingTask(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, AdObjectType.USER_THUMBNAIL));
-			}
-			tasks.add(currTask);
-		}
-
-		return tasks;
-	}
 
 	@RequestMapping("/stop_ad_fetch_etl" )
 	public ResponseEntity<ResponseEntityMessage> stopAdFetchAndEtlExecution() {
@@ -264,6 +253,19 @@ public class ApiActiveDirectoryController {
 		});
 
 		return new FetchEtlExecutionStatus(lastAdFetchEtlExecutionStartTime, statuses);
+	}
+
+	private List<ControllerInvokedAdTask> createAdTasks() {
+		final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
+		for (AdObjectType dataSource : dataSources) {
+			final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource);
+			if (currTask.getDataSource() == AdObjectType.USER) {
+				currTask.addFollowingTask(new CompoundControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, AdObjectType.USER_THUMBNAIL));
+			}
+			tasks.add(currTask);
+		}
+
+		return tasks;
 	}
 
 	/**
