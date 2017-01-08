@@ -32,7 +32,10 @@ import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
 import javax.naming.NamingException;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,7 +64,7 @@ public class ApiActiveDirectoryController {
 
 	private final String DEPLOYMENT_WIZARD_AD_EXECUTION_START_TIME_PREFIX ="deployment_wizard_ad.execution_start__time";
 
-	private final List<AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObjectType.values()));
+	private final Set<AdObjectType> dataSources = AdObjectType.getIndependentTypes();
 
 	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
 
