@@ -39,8 +39,49 @@
     }
   }
 
-  &.is-compact {
+  &.is-left-aligned-primary {
+    flex-grow: 0;
+    padding: rsa-whitespace() 0.3rem;
+    margin: rsa-whitespace();
+
+    .imagery {
+      font-size: 1rem;
+      &::before {
+        content:"(";
+      }
+      &::after {
+        content:")";
+      }
+    }
+
+    .label {
+      text-transform: capitalize;
+      font-weight: 400;
+      font-size: 1.28rem;
+      letter-spacing: 0.05rem;
+    }
+  }
+
+  &.is-center-aligned-secondary {
     padding: 0;
+    text-align: center;
+    line-height: 3rem;
+
+    .imagery {
+      display: none;
+    }
+
+    .label {
+      @include rsa-font(navigation);
+      display: inline-block;
+      margin: 0;
+    }
+  }
+
+  &.is-left-aligned-secondary {
+    padding: 0 0.3rem;
+    margin: rsa-whitespace();
+    flex-grow: 0;
     text-align: center;
     line-height: 3rem;
 
