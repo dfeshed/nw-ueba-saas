@@ -4,7 +4,7 @@
  * @public
  */
 import Ember from 'ember';
-import computed, { bool } from 'ember-computed-decorators';
+import computed, { bool, empty } from 'ember-computed-decorators';
 import { uriEncodeEventQuery } from 'sa/protected/investigate/actions/helpers/query-utils';
 import formatUtil from '../events-table-row/format-util';
 import { metaKeyAlias } from 'sa/helpers/meta-key-alias';
@@ -49,6 +49,9 @@ export default Component.extend({
    * @public
    */
   services: undefined,
+
+  @empty('queryString')
+  isInvalidQuery: false,
 
   @computed('services.[]', 'query')
   servicesWithURI(services, query) {

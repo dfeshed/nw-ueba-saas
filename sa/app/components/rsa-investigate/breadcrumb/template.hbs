@@ -78,7 +78,11 @@
   {{/each}}
   {{#if isAddingMeta}}
     {{rsa-investigate/query-input class='rsa-investigate-breadcrumb__query-input' queryString=queryString placeholder='Enter Value'}}
-    {{#rsa-form-button class='rsa-investigate-breadcrumb__submit' style='primary' click=(action 'submit' queryString)}}
+    {{#rsa-form-button
+      class='rsa-investigate-breadcrumb__submit'
+      style='primary'
+      isDisabled=isInvalidQuery
+      click=(action 'submit' queryString)}}
       Query Events
     {{/rsa-form-button}}
   {{else}}
