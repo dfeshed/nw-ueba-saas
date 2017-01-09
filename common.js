@@ -1,5 +1,7 @@
  /* eslint-disable */
 
+const developedAddons = [];
+
  /**
   * Allows live-reloading when this addon changes even when being served by another projects `ember serve`.
   *
@@ -20,6 +22,11 @@
 const isDevelopingAddon = function(projectName) {
   return function() {
 
+    // If already processed, return false
+    if (developedAddons.indexOf(projectName) > -1) {
+      return false;
+    }
+
     // This is set to the project ember is running
     // which could be THIS project, or it could be
     // something using this addon
@@ -32,6 +39,10 @@ const isDevelopingAddon = function(projectName) {
     // we are NOT running 'ember test' OR
     // when the project being run is THIS project
     var isDevAddon = env !== 'test'|| projName === projectName;
+
+    if (isDevAddon) {
+      developedAddons.push(projectName);
+    }
 
     return isDevAddon;
   }

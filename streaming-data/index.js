@@ -24,10 +24,6 @@ module.exports = {
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName),
 
-  included: function(app) {
-    this._super.included.apply(this, arguments);
-  },
-
   init: function() {
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
