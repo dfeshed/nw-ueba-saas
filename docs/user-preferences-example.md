@@ -102,5 +102,5 @@ saveUserPreferences() {
   ..
 }
 ```
-Also see [Common UI User Preferences](https://github.rsa.lab.emc.com/raw/asoc/common-ui/master/modules/admin/docs/user-preferences.md)
+Also see [Common UI User Preferences](https://github.rsa.lab.emc.com/asoc/common-ui/blob/master/modules/admin/docs/user-preferences.md)
 
