@@ -94,12 +94,18 @@ public class AdObject extends AbstractDocument {
 	}
 
 	public enum AdObjectType {
-		GROUP("Group"), OU("OU"), USER("User"), COMPUTER("Computer");
+		GROUP("Group", AdGroup.COLLECTION_NAME), OU("OU", AdOU.COLLECTION_NAME), USER("User", AdUser.COLLECTION_NAME), COMPUTER("Computer", AdComputer.COLLECTION_NAME);
 
 		private final String displayName;
+		private final String collectionName;
 
-		AdObjectType(String displayName) {
+		AdObjectType(String displayName, String collectionName) {
 			this.displayName = displayName;
+			this.collectionName = collectionName;
+		}
+
+		public String getCollectionName() {
+			return collectionName;
 		}
 
 		@Override

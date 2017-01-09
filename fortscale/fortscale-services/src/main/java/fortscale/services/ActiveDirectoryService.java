@@ -27,5 +27,6 @@ public interface ActiveDirectoryService {
     List<AdGroup> getGroupsByNameContains(String contains);
     List<AdOU> getOusByOuContains(String contains);
     Long getCount(AdObject.AdObjectType adObjectType);
-
+    Long getLatestRuntime(AdObject.AdObjectType adObjectType);
+    Long countByTimestampepoch(AdObject.AdObjectType adObjectType, Long latestRuntime);
 }
