@@ -41,12 +41,6 @@
         {{/rsa-form-select}}
       </div>
     </vbox>
-    <vbox class="rsa-context-panel__liveconnect__reviewstatus__col-4">
-      <div class="rsa-context-panel__liveconnect__field">
-        {{#rsa-form-select label=(t 'context.lc.sectionOrInd')}}
-        {{/rsa-form-select}}
-      </div>
-    </vbox>
     <vbox class="rsa-context-panel__liveconnect__reviewstatus__col-5">
       <div class="rsa-context-panel__liveconnect__field">
         {{#rsa-form-button style='primary'}}{{t 'context.lc.submit'}}{{/rsa-form-button}}
@@ -54,6 +48,17 @@
     </vbox>
   </grid>
 
+  {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskAssessment'}}{{/rsa-content-section-header}}
+  <hbox>
+    <div class="rsa-context-panel__liveconnect__risk-badge">{{rsa-content-badge-score class=riskBadgeStyle score=liveConnectData.risk size='small'}}</div>
+    <vbox>
+      <div class="rsa-context-panel__liveconnect__risk-description">{{t riskDescription}}</div>
+      <div class="rsa-context-panel__liveconnect__field">{{rsa-content-definition label=(t 'context.lc.riskReason')}}</div>
+      {{#each riskReasonList as |reason|}}
+        <div class="rsa-context-panel__liveconnect__risk-reason">{{reason}}</div>
+      {{/each}}
+    </vbox>
+  </hbox>
   {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.commActivity'}}{{/rsa-content-section-header}}
 
   <div class="rsa-context-panel__liveconnect__comm-activity">
@@ -140,7 +145,6 @@
       </vbox>
     {{/each}}
   </hbox>
-
 {{else}}
   {{#rsa-content-section-header label='Section Heading'}}No data from Live Connect{{/rsa-content-section-header}}
 {{/if}}

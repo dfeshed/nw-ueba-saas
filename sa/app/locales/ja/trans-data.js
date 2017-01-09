@@ -310,7 +310,14 @@ export default {
       whoisEmail: 'ja_Email',
       domain: 'ja_Domain',
       ipAddress: 'ja_IP Address',
-      error: 'ja_Error fetching Live Connect Data'
+      error: 'ja_Error fetching Live Connect Data',
+      riskAssessment: 'ja_Live Connect Risk Assessment',
+      riskReason: 'ja_Risk Reasons',
+      highRiskDesc: 'ja_Indicator seen as high risk and deserves focused attention',
+      safeRiskDesc: 'ja_Research and analysis shows indicators to be trusted resources',
+      unsafeRiskDesc: 'ja_Research and analysis shows resource to be untrusted',
+      unknownRiskDesc: 'ja_Inconclusive results from any available information, research, and analysis',
+      suspiciousRiskDesc: 'ja_Research and analysis indicates potentially threatening activity'
     }
   },
   about: {

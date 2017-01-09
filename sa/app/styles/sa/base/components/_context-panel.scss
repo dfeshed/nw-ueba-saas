@@ -250,8 +250,56 @@ $font-fade-color: rsa-color(gray, light);
         padding-bottom: rsa-whitespace();
       }
     }
-    &__prefix .value {
-      color: rsa-color(blue);
+    &__risk-badge {
+      max-width: 180px;
+      &__unsafe {
+        svg circle {
+          stroke: rsa-color(orange);
+        }
+        .details .score {
+          color: rsa-color(orange);
+        }
+      }
+      &__safe {
+        svg circle {
+          stroke: rsa-color(green);
+        }
+        .details .score {
+          color: rsa-color(green);
+        }
+      }
+      &__suspicious {
+        svg circle {
+          stroke: rsa-color(amber)
+        }
+        .details .score {
+          color: rsa-color(amber)
+        }
+      }
+      &__high-risk {
+        svg circle {
+          stroke: rsa-color(red);
+        }
+        .details .score {
+          color: rsa-color(red);
+        }
+      }
+      &__unknown {
+        svg circle {
+          stroke: rsa-color(gray, lightest);
+        }
+        .details .score {
+          color: rsa-color(gray, lightest);
+        }
+      }
+    }
+    &__risk-description {
+      @include rsa-font(header, large);
+      padding: rsa-whitespace();
+    }
+    &__risk-reason {
+      padding-bottom: rsa-whitespace(base);
+      padding-left: rsa-whitespace();
     }
     &__block {
       margin-top: rsa-whitespace();

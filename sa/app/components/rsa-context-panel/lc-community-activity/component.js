@@ -3,7 +3,28 @@ import computed from 'ember-computed-decorators';
 import ContextHelper from 'sa/context/helpers';
 
 const { Component, set } = Ember;
-
+const riskTemplate = {
+  'HIGH RISK': {
+    desc: 'context.lc.highRiskDesc',
+    style: 'rsa-context-panel__liveconnect__risk-badge__high-risk'
+  },
+  UNSAFE: {
+    desc: 'context.lc.unsafeRiskDesc',
+    style: 'rsa-context-panel__liveconnect__risk-badge__unsafe'
+  },
+  SUSPICIOUS: {
+    desc: 'context.lc.suspiciousRiskDesc',
+    style: 'rsa-context-panel__liveconnect__risk-badge__suspicious'
+  },
+  SAFE: {
+    desc: 'context.lc.safeRiskDesc',
+    style: 'rsa-context-panel__liveconnect__risk-badge__safe'
+  },
+  UNKNOWN: {
+    desc: 'context.lc.unknownRiskDesc',
+    style: 'rsa-context-panel__liveconnect__risk-badge__unknown'
+  }
+};
 export default Component.extend({
   classNames: 'rsa-context-panel__liveconnect',
 
@@ -48,5 +69,28 @@ export default Component.extend({
 
     // Finally return all values as array
     return Object.keys(categories).map((key) => categories[key]);
+  },
+
+  @computed('liveConnectData.riskReasonTypeList', 'allReasons')
+  riskReasonList: (riskReasons, allReasons) => {
+    const riskReasonMap = allReasons.reduce((hash, reason) => {
+      hash[reason.value] = reason.description;
+      return hash;
+    }, {});
+
+    const reasonsToDisplay = (riskReasons || []).map((reason) => {
+      return riskReasonMap[reason];
+    });
+    return reasonsToDisplay;
+  },
+
+  @computed('liveConnectData.risk')
+  riskDescription: (risk) => {
+    return riskTemplate[risk].desc;
+  },
+
+  @computed('liveConnectData.risk')
+  riskBadgeStyle: (risk) => {
+    return riskTemplate[risk].style;
   }
 });

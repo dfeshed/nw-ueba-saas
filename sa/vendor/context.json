@@ -649,8 +649,10 @@
                 "dateMarked": 1477388194946
               },
               "riskReasonTypeList": [
-                "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
-                "ASSOCIATED_WITH_RISKY_DOMAIN"
+                "SOURCE_OF_UNSAFE_MODULE",
+                "KNOWN_BY_IP_BLACKLIST_VENDOR",
+                "COMMUNICATED_BY_UNSAFE_MODULE",
+                "GRAYLISTED_BY_ONE_OR_MORE_CUSTOMERS"
               ],
               "tags":[ "RECONNAISSANCE_SCANNING", "RECONNAISSANCE_TOR"],
               "customerPercentage": 34.24,
@@ -730,6 +732,92 @@
           },
           {
             "LiveConnectApi" : {
+              "riskReasonTypes": [
+                {
+                  "value": "SOURCE_OF_UNSAFE_MODULE",
+                  "description": "Source of unsafe module"
+                },
+                {
+                  "value": "KNOWN_BY_IP_BLACKLIST_VENDOR",
+                  "description": "IP is blacklisted by a vendor"
+                },
+                {
+                  "value": "COMMUNICATED_BY_UNSAFE_MODULE",
+                  "description": "Communicated by unsafe module"
+                },
+                {
+                  "value": "MARKED_AS_RISKY",
+                  "description": "Marked as risky"
+                },
+                {
+                  "value": "MARKED_AS_NOT_RISKY",
+                  "description": "Marked as not risky"
+                },
+                {
+                  "value": "FILE_BLACKLISTED",
+                  "description": "File is blacklisted"
+                },
+                {
+                  "value": "FILE_GRAYLISTED",
+                  "description": "File is graylisted"
+                },
+                {
+                  "value": "VIRUS_VENDOR_REPUTATION",
+                  "description": "Known by anti-virus vendor(s)"
+                },
+                {
+                  "value": "AVERAGE_ANALYTICS_SCORE",
+                  "description": "Average analytics score"
+                },
+                {
+                  "value": "ASSOCIATED_WITH_RISKY_DOMAIN",
+                  "description": "Associated with a risky domain"
+                },
+                {
+                  "value": "IP_REP_UNSAFE",
+                  "description": "IP reputation is known to be unsafe"
+                },
+                {
+                  "value": "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
+                  "description": "Blacklisted by one or more customers"
+                },
+                {
+                  "value": "GRAYLISTED_BY_ONE_OR_MORE_CUSTOMERS",
+                  "description": "Graylisted by one or more customers"
+                },
+                {
+                  "value": "REPORTED_UNSAFE_BY_VIRUS_VENDOR",
+                  "description": "Reported by anti-virus vendor(s) as unsafe"
+                },
+                {
+                  "value": "HIGH_RISK_SCORE",
+                  "description": "High risk score"
+                },
+                {
+                  "value": "COMMUNICATION_TO_UNSAFE_IP",
+                  "description": "Known to have communicated to an unsafe IP"
+                },
+                {
+                  "value": "DOWNLOADED_FROM_UNSAFE_IP",
+                  "description": "Downloaded from a known unsafe IP"
+                },
+                {
+                  "value": "COMMUNICATION_TO_UNSAFE_DOMAIN",
+                  "description": "Known to have communicated to an unsafe domain"
+                },
+                {
+                  "value": "DOWNLOADED_FROM_UNSAFE_DOMAIN",
+                  "description": "Downloaded from an unsafe domain"
+                },
+                {
+                  "value": "SUSPICIOUS_BEHAVIOR",
+                  "description": "Suspicious behavior"
+                },
+                {
+                  "value": "STATIC_ANALYSIS",
+                  "description": "Static analysis"
+                }
+              ],
               "riskTagTypes": [
                 {
                   "value" : "RECONNAISSANCE_SCANNING",
@@ -862,8 +950,10 @@
                 "dateMarked": 1477388194946
               },
               "riskReasonTypeList": [
-                "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
-                "ASSOCIATED_WITH_RISKY_DOMAIN"
+                "SOURCE_OF_UNSAFE_MODULE",
+                "KNOWN_BY_IP_BLACKLIST_VENDOR",
+                "COMMUNICATED_BY_UNSAFE_MODULE",
+                "DOWNLOADED_FROM_UNSAFE_DOMAIN"
               ],
               "tags":["RECONNAISSANCE_SCANNING", "RECONNAISSANCE_TOR"],
               "customerPercentage": 34.24,
@@ -943,6 +1033,92 @@
           },
           {
             "LiveConnectApi" : {
+              "riskReasonTypes": [
+                {
+                  "value": "SOURCE_OF_UNSAFE_MODULE",
+                  "description": "Source of unsafe module"
+                },
+                {
+                  "value": "KNOWN_BY_IP_BLACKLIST_VENDOR",
+                  "description": "IP is blacklisted by a vendor"
+                },
+                {
+                  "value": "COMMUNICATED_BY_UNSAFE_MODULE",
+                  "description": "Communicated by unsafe module"
+                },
+                {
+                  "value": "MARKED_AS_RISKY",
+                  "description": "Marked as risky"
+                },
+                {
+                  "value": "MARKED_AS_NOT_RISKY",
+                  "description": "Marked as not risky"
+                },
+                {
+                  "value": "FILE_BLACKLISTED",
+                  "description": "File is blacklisted"
+                },
+                {
+                  "value": "FILE_GRAYLISTED",
+                  "description": "File is graylisted"
+                },
+                {
+                  "value": "VIRUS_VENDOR_REPUTATION",
+                  "description": "Known by anti-virus vendor(s)"
+                },
+                {
+                  "value": "AVERAGE_ANALYTICS_SCORE",
+                  "description": "Average analytics score"
+                },
+                {
+                  "value": "ASSOCIATED_WITH_RISKY_DOMAIN",
+                  "description": "Associated with a risky domain"
+                },
+                {
+                  "value": "IP_REP_UNSAFE",
+                  "description": "IP reputation is known to be unsafe"
+                },
+                {
+                  "value": "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
+                  "description": "Blacklisted by one or more customers"
+                },
+                {
+                  "value": "GRAYLISTED_BY_ONE_OR_MORE_CUSTOMERS",
+                  "description": "Graylisted by one or more customers"
+                },
+                {
+                  "value": "REPORTED_UNSAFE_BY_VIRUS_VENDOR",
+                  "description": "Reported by anti-virus vendor(s) as unsafe"
+                },
+                {
+                  "value": "HIGH_RISK_SCORE",
+                  "description": "High risk score"
+                },
+                {
+                  "value": "COMMUNICATION_TO_UNSAFE_IP",
+                  "description": "Known to have communicated to an unsafe IP"
+                },
+                {
+                  "value": "DOWNLOADED_FROM_UNSAFE_IP",
+                  "description": "Downloaded from a known unsafe IP"
+                },
+                {
+                  "value": "COMMUNICATION_TO_UNSAFE_DOMAIN",
+                  "description": "Known to have communicated to an unsafe domain"
+                },
+                {
+                  "value": "DOWNLOADED_FROM_UNSAFE_DOMAIN",
+                  "description": "Downloaded from an unsafe domain"
+                },
+                {
+                  "value": "SUSPICIOUS_BEHAVIOR",
+                  "description": "Suspicious behavior"
+                },
+                {
+                  "value": "STATIC_ANALYSIS",
+                  "description": "Static analysis"
+                }
+              ],
               "riskTagTypes": [
                 {
                   "value" : "RECONNAISSANCE_SCANNING",
@@ -1075,8 +1251,10 @@
                 "dateMarked": 1477388194946
               },
               "riskReasonTypeList": [
-                "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
-                "ASSOCIATED_WITH_RISKY_DOMAIN"
+                "SOURCE_OF_UNSAFE_MODULE",
+                "KNOWN_BY_IP_BLACKLIST_VENDOR",
+                "COMMUNICATED_BY_UNSAFE_MODULE",
+                "STATIC_ANALYSIS"
               ],
               "tags": ["RECONNAISSANCE_SCANNING", "RECONNAISSANCE_TOR"],
               "customerPercentage": 34.24,
@@ -1156,6 +1334,92 @@
           },
           {
             "LiveConnectApi" : {
+              "riskReasonTypes": [
+                {
+                  "value": "SOURCE_OF_UNSAFE_MODULE",
+                  "description": "Source of unsafe module"
+                },
+                {
+                  "value": "KNOWN_BY_IP_BLACKLIST_VENDOR",
+                  "description": "IP is blacklisted by a vendor"
+                },
+                {
+                  "value": "COMMUNICATED_BY_UNSAFE_MODULE",
+                  "description": "Communicated by unsafe module"
+                },
+                {
+                  "value": "MARKED_AS_RISKY",
+                  "description": "Marked as risky"
+                },
+                {
+                  "value": "MARKED_AS_NOT_RISKY",
+                  "description": "Marked as not risky"
+                },
+                {
+                  "value": "FILE_BLACKLISTED",
+                  "description": "File is blacklisted"
+                },
+                {
+                  "value": "FILE_GRAYLISTED",
+                  "description": "File is graylisted"
+                },
+                {
+                  "value": "VIRUS_VENDOR_REPUTATION",
+                  "description": "Known by anti-virus vendor(s)"
+                },
+                {
+                  "value": "AVERAGE_ANALYTICS_SCORE",
+                  "description": "Average analytics score"
+                },
+                {
+                  "value": "ASSOCIATED_WITH_RISKY_DOMAIN",
+                  "description": "Associated with a risky domain"
+                },
+                {
+                  "value": "IP_REP_UNSAFE",
+                  "description": "IP reputation is known to be unsafe"
+                },
+                {
+                  "value": "BLACKLISTED_BY_ONE_OR_MORE_CUSTOMER",
+                  "description": "Blacklisted by one or more customers"
+                },
+                {
+                  "value": "GRAYLISTED_BY_ONE_OR_MORE_CUSTOMERS",
+                  "description": "Graylisted by one or more customers"
+                },
+                {
+                  "value": "REPORTED_UNSAFE_BY_VIRUS_VENDOR",
+                  "description": "Reported by anti-virus vendor(s) as unsafe"
+                },
+                {
+                  "value": "HIGH_RISK_SCORE",
+                  "description": "High risk score"
+                },
+                {
+                  "value": "COMMUNICATION_TO_UNSAFE_IP",
+                  "description": "Known to have communicated to an unsafe IP"
+                },
+                {
+                  "value": "DOWNLOADED_FROM_UNSAFE_IP",
+                  "description": "Downloaded from a known unsafe IP"
+                },
+                {
+                  "value": "COMMUNICATION_TO_UNSAFE_DOMAIN",
+                  "description": "Known to have communicated to an unsafe domain"
+                },
+                {
+                  "value": "DOWNLOADED_FROM_UNSAFE_DOMAIN",
+                  "description": "Downloaded from an unsafe domain"
+                },
+                {
+                  "value": "SUSPICIOUS_BEHAVIOR",
+                  "description": "Suspicious behavior"
+                },
+                {
+                  "value": "STATIC_ANALYSIS",
+                  "description": "Static analysis"
+                }
+              ],
               "riskTagTypes": [
                 {
                   "value" : "RECONNAISSANCE_SCANNING",

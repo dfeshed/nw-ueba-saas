@@ -18,20 +18,23 @@ closePanel=(route-action 'closeContextPanel')
      {{rsa-context-panel/lc-community-activity
         liveConnectData=contextData.liveConnectData.IpReputation
         model=model
-        allTags=contextData.liveConnectData.allTags}}
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
      {{rsa-context-panel/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
    {{else if (is-equal model.meta 'FILE')}}
      {{rsa-context-panel/lc-community-activity
         liveConnectData=contextData.liveConnectData.FileReputation
         model=model
-        allTags=contextData.liveConnectData.allTags}}
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
      {{rsa-context-panel/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
      {{rsa-context-panel/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
    {{else if (is-equal model.meta 'DOMAIN')}}
      {{rsa-context-panel/lc-community-activity
         liveConnectData=contextData.liveConnectData.DomainReputation
         model=model
-        allTags=contextData.liveConnectData.allTags}}
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
      {{rsa-context-panel/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
      {{rsa-context-panel/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
    {{/if}}

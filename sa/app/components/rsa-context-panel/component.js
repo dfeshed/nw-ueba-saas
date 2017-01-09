@@ -145,5 +145,6 @@ export default Component.extend({
         break;
     }
     lcData.set('allTags', record[2].LiveConnectApi.riskTagTypes);
+    lcData.set('allReasons', record[2].LiveConnectApi.riskReasonTypes);
   }
 });
