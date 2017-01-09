@@ -38,21 +38,28 @@
     <div class='event-overview__summary'>
       <div class='event-overview__summary__indicators'>
         {{#each scoreBadges as |badge|}}
-          {{#rsa-content-tethered-panel position='top' panelId=(concat badge.key 'BadgeTooltip')}}
-            <section>{{t (concat 'incident.details.eventOverview.badges.' badge.key '.description')}}</section>
-          {{/rsa-content-tethered-panel}}
-          {{#rsa-content-tethered-panel-trigger panel=(concat badge.key 'BadgeTooltip') class='event-overview__summary__indicators__group'}}
+          <span class='event-overview__summary__indicators__group'>
             {{rsa-content-badge-score size='small' invertColor=true score=badge.score style=(call-method this 'badgeStyle' badge.score)}}
-            <span class='event-overview__summary__indicators__group__description'>
-              {{t (concat 'incident.details.eventOverview.badges.' badge.key '.label')}}
-            </span>
-          {{/rsa-content-tethered-panel-trigger}}
+            {{#rsa-content-tethered-panel position='top-left' panelId=(concat badge.key 'BadgeTooltip')}}
+              <section>{{t (concat 'incident.details.eventOverview.badges.' badge.key '.description')}}</section>
+            {{/rsa-content-tethered-panel}}
+            {{#rsa-content-tethered-panel-trigger panel=(concat badge.key 'BadgeTooltip') class='event-overview__summary__indicators__group__description'}}
+              <span>
+                {{t (concat 'incident.details.eventOverview.badges.' badge.key '.label')}}
+              </span>
+            {{/rsa-content-tethered-panel-trigger}}
+          </span>
+          <span class='invisible-style-buffer'></span>
         {{/each}}
       </div>
 
       <div class='event-overview__summary__timestamp'>
         {{t 'incident.details.eventOverview.networkEvent'}}
-        {{truthy-or-default event.timestamp event.timestamp (t 'incident.details.eventOverview.notAvailable')}}
+        {{#if event.timestamp}}
+          {{rsa-content-datetime timestamp=event.timestamp}}
+        {{else}}
+          {{t 'incident.details.eventOverview.notAvailable'}}
+        {{/if}}
       </div>
     </div>
   {{/if}}

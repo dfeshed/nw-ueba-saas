@@ -34,38 +34,63 @@
 
   &__summary {
     border-top: solid 1px rsa-color(black);
-    padding: rsa-whitespace();
+    padding: rsa-whitespace(base);
+    padding-left: 0;
     background-color: $contentSectionHeaderBackgroundColor;
 
     &__indicators {
+      padding-left: rsa-whitespace(less);
       @include rsa-flex-direction(row);
       @include rsa-flex-justify-content(flex-start);
       @include rsa-flex-align-items(center);
       @include rsa-vendor-prefix(flex-wrap, wrap);
       @include rsa-vendor-prefix(align-content, center);
 
+      .invisible-style-buffer {
+        @include rsa-vendor-prefix(flex, 1 1 auto);
+      }
+
       &__group {
+        padding: 0 0 2px 0;
         @include rsa-flex-direction(row);
-        @include rsa-flex-justify-content(space-between);
+        @include rsa-flex-justify-content(flex-start);
         @include rsa-flex-align-items(center);
         @include rsa-vendor-prefix(flex-wrap, nowrap);
-        @include rsa-vendor-prefix(flex, 1 1 100px);
+        @include rsa-vendor-prefix(flex, 0 1 100px);
 
         .rsa-content-badge-score {
-          @include rsa-vendor-prefix(flex, 0 0 calc(#{rsa-whitespace(more)} * 2));
+          height: 42px;
+          padding: 2px;
+          @include rsa-vendor-prefix(flex, 0 0 3rem);
+
           .score {
+            line-height: 0;
             @include rsa-font(body, base);
           }
-          circle {
-            stroke-width: 4;
+          svg {
+            -moz-border-radius: 50px;
+            -webkit-border-radius: 50px;
+            circle {
+              stroke-width: 12;
+              r: 44;
+            }
+          }
+
+        }
+
+        .details {
+          .score {
+            padding-left: 1px;
           }
         }
+
         &__description {
+          padding-left: 2px;
           @include rsa-font(default, small);
-          color: rsa-color(gray, lightest);
+          line-height: 13px;
           text-transform: capitalize;
-          flex: 1 1 auto;
         }
+
       }
     }
 
@@ -74,7 +99,8 @@
       display: block;
       color: rsa-color(gray);
       letter-spacing: 0.05rem;
-      padding-top: rsa-whitespace(less);
+      padding-top: rsa-whitespace(base);
+      padding-left: rsa-whitespace(base);
     }
   }
 
