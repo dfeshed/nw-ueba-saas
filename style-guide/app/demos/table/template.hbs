@@ -45,5 +45,47 @@
         {{code-snippet name="table1.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
+    {{#spec-category title="Reordering/Resizing Columns"}}
+      {{#spec-member title="Reordering"}}
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsConfig}}
+
+          {{rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+
+            {{#rsa-data-table/body-cell
+              column=column
+              columnWidth=column.width}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+        {{!-- BEGIN-SNIPPET reorderColumns1
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsConfig}}
+
+          {{! The default, blockless header automatically wraps in .js-move-handle}}
+          {{rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+
+            {{#rsa-data-table/body-cell
+            column=column
+            columnWidth=column.width}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+        END-SNIPPET --}}
+        {{code-snippet name="reorderColumns1.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
   </div>
 </hbox>

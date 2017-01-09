@@ -14,6 +14,10 @@ shim(EmberApp);
 
 module.exports = function(defaults) {
   var app = new EmberApp(defaults, {
+    autoprefixer: {
+      browsers: ['last 2 versions', 'IE > 10'],
+      enabled: appEnv !== 'test'
+    },
     babel: {
       stage: 0,
       includePolyfill: true

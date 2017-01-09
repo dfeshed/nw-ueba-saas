@@ -98,9 +98,17 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     /* enables re-ordering columns via drag, with animation. @see ember-sortable */
     transition: transform 0.125s;
 
+    .js-move-handle {
+      cursor: grab;
+    }
+
     &.is-dragging {
+      background-color: rsa-color(gray);
       transition-duration: 0s;
       z-index: $data-table-max-z-index;
+      .js-move-handle {
+        cursor: grabbing;
+      }
     }
     &.is-dropping {
       z-index: $data-table-max-z-index;
@@ -132,10 +140,6 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
         right: 0;
         transform: translate(50%,0);
       }
-    }
-
-    .js-move-handle {
-      cursor: move;
     }
   }
 
