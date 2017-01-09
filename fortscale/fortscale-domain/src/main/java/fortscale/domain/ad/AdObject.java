@@ -1,13 +1,12 @@
 package fortscale.domain.ad;
 
-import org.springframework.data.annotation.Id;
+import fortscale.domain.core.AbstractDocument;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class AdObject implements Serializable {
+public class AdObject extends AbstractDocument {
 	private static final long serialVersionUID = 4373713742111586501L;
 
 	public static final String dnField = "distinguishedName";
@@ -20,10 +19,6 @@ public class AdObject implements Serializable {
 
 	@Indexed
 	@Field(objectGUIDField)
-	@Id
-	/**
-	 * The GuId field is the id for the collection - in mongo saved as "_id" field
-	 */
 	private String objectGUID;
 	
 	private String objectSid;
@@ -37,8 +32,8 @@ public class AdObject implements Serializable {
 	private Long timestampepoch;
 
 
-	@Indexed(unique = false)
 	@Field(lastModifiedField)
+	@Indexed(unique = false, expireAfterSeconds=60*60*48)
 	private Date lastModified;
 	
 	@Field(runTimeField)
@@ -98,7 +93,6 @@ public class AdObject implements Serializable {
 		this.runtime = runtime;
 	}
 
-
 	public enum AdObjectType {
 		GROUP("Group"), OU("OU"), USER("User"), COMPUTER("Computer");
 
@@ -113,5 +107,4 @@ public class AdObject implements Serializable {
 			return displayName;
 		}
 	}
-	
 }
