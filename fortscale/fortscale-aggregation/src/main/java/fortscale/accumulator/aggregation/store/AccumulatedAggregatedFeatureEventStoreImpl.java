@@ -11,12 +11,14 @@ import fortscale.utils.monitoring.stats.StatsService;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.Instant;
 import java.time.Period;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static fortscale.accumulator.util.AccumulatorStoreUtil.getACMExistingCollections;
 import static fortscale.accumulator.util.AccumulatorStoreUtil.getRetentionTimeInDays;
@@ -160,6 +162,20 @@ public class AccumulatedAggregatedFeatureEventStoreImpl implements AccumulatedAg
 
         logger.debug("found {} accumulated events", accumulatedAggregatedFeatureEvents.size());
         return accumulatedAggregatedFeatureEvents;
+    }
+
+    @Override
+    public Set<String> findDistinctContextsByTimeRange(AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
+
+        String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
+        String acmCollectionName = translator.toAcmCollectionName(aggregatedFeatureName);
+
+        Criteria startTimeCriteria = Criteria.where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_START_TIME).gte(startTime);
+        Criteria endTimeCriteria = Criteria.where(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_END_TIME).lte(endTime);
+        Query query = new Query(startTimeCriteria).addCriteria(endTimeCriteria);
+        Set<String>distinctContexts = (Set<String>) mongoTemplate.getCollection(acmCollectionName).distinct(AccumulatedAggregatedFeatureEvent.ACCUMULATED_AGGREGATED_FEATURE_EVENT_FIELD_NAME_CONTEXT_ID, query.getQueryObject()).stream().collect(Collectors.toSet());
+
+        return distinctContexts ;
     }
 
     /**

@@ -14,6 +14,7 @@
     <bean class="fortscale.ml.model.config.ModelBuildingConfiguration"/>
     <bean id="nullStatsServiceConfig" class="fortscale.utils.monitoring.stats.config.NullStatsServiceConfig" />
 
+    <mockito:mock class="fortscale.domain.core.dao.AlertsRepository" id="alertRepository" />
     <context:spring-configured/>
     <context:annotation-config/>
 </beans>
