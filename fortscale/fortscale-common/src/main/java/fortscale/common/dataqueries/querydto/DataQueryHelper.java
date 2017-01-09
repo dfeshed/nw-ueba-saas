@@ -74,6 +74,16 @@ public class DataQueryHelper {
     }
 
     /**
+     * Create a data query with default parameters.
+     *
+     * @param dataEntityId data entity to run the query for
+     * @return a {@link DataQueryDTO}
+     */
+    public DataQueryDTO createDataQuery(String dataEntityId) {
+        return createDataQuery(dataEntityId, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
+    }
+
+    /**
      * Generate the list of fields to return in the SQL statement
      * @param defaultFieldsString a CSV list of fields to return. if '*' is passed, then return all fields
      * @param dataEntity the Data Entity to query

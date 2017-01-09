@@ -2,7 +2,7 @@ package fortscale.collection.jobs.notifications;
 
 import fortscale.common.dataentity.DataEntitiesConfig;
 import fortscale.common.dataqueries.querydto.DataQueryDTO;
-import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
+import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.DataQueryHelper;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
@@ -27,18 +27,23 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public abstract class NotificationGeneratorServiceAbstract implements NotificationGeneratorService {
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+import static java.lang.Math.min;
+import static java.time.Instant.ofEpochSecond;
 
-	protected static final String NEXT_EPOCHTIME_KEY = "next_epochtime";
-	protected static final String NEXT_EPOCHTIME_VALUE = "nextEpochtime";
-	protected static final long DAY_IN_SECONDS = TimeUnit.DAYS.toSeconds(1);
-	protected static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10);
+public abstract class NotificationGeneratorServiceAbstract implements NotificationGeneratorService {
+	private static final String END_TIME_FIELD_NAME = "end_time";
+	private static final String MIN_TS_FIELD_ALIAS = "min_ts";
+	private static final String MAX_TS_FIELD_ALIAS = "max_ts";
+	private static final String NEXT_EPOCHTIME_KEY = "next_epochtime";
+	private static final String NEXT_EPOCHTIME_VALUE = "nextEpochtime";
 	private static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	private static final long MIN_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10); // 10 minutes
+	private static final long MAX_UPPER_LIMIT_INC_DELTA = TimeUnit.DAYS.toSeconds(1) - 1; // 23:59:59
 
 	@Autowired
 	protected ApplicationConfigurationService applicationConfigurationService;
@@ -53,8 +58,6 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	@Autowired
 	protected DataEntitiesConfig dataEntitiesConfig;
 
-	@Value("${collection.evidence.notification.topic}")
-	private String evidenceNotificationTopic;
 	@Value("${collection.evidence.notification.score.field}")
 	protected String notificationScoreField;
 	@Value("${collection.evidence.notification.value.field}")
@@ -75,12 +78,14 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	protected String notificationNumOfEventsField;
 	@Value("${collection.evidence.notification.score}")
 	protected double notificationFixedScore;
+	@Value("${collection.evidence.notification.topic}")
+	private String evidenceNotificationTopic;
 
-	protected long nextEpochtime = 0L;
-	protected long lastEpochtime = 0L;
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected String dataEntity;
 
-	protected abstract List<JSONObject> generateNotificationInternal() throws Exception;
+	private long nextEpochtime = 0;
+	private long lastEpochtime = 0;
 
 	/**
 	 * @return true if completed successfully, false if an error occurred
@@ -92,16 +97,14 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 			logger.info("Epochtime of next event to process was 0, so it was set to the earliest epochtime.");
 		}
 
-		lastEpochtime = getLatestEpochtime();
-		logger.info("Next event to process epochtime = {}, latest epochtime = {}.", nextEpochtime, lastEpochtime);
-
 		if (nextEpochtime == 0) {
 			logger.info("No data to create notifications. Exiting.");
 			return true;
 		}
 
-		List<JSONObject> notifications = generateNotificationInternal();
-		if (CollectionUtils.isNotEmpty(notifications)) sendNotificationsToKafka(notifications);
+		lastEpochtime = getLatestEpochtime();
+		logger.info("Next event to process epochtime = {}, latest epochtime = {}.", nextEpochtime, lastEpochtime);
+		generateNotificationsInternal();
 		return true;
 	}
 
@@ -125,19 +128,19 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	}
 
 	private long getEarliestEpochtime() throws InvalidQueryException {
-		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(
-				dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-		dataQueryHelper.setFuncFieldToQuery(dataQueryHelper.createMinFieldFunc("end_time", "min_ts"), dataQueryDto);
-		Long earliest = getEpochtime(dataQueryDto, "min_ts");
-		return earliest == null ? 0 : earliest; // TODO: What if there wasn't a result (null)?
+		DataQueryField minFieldFunc = dataQueryHelper.createMinFieldFunc(END_TIME_FIELD_NAME, MIN_TS_FIELD_ALIAS);
+		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(dataEntity);
+		dataQueryHelper.setFuncFieldToQuery(minFieldFunc, dataQueryDto);
+		Long earliest = getEpochtime(dataQueryDto, MIN_TS_FIELD_ALIAS);
+		return earliest == null ? 0 : earliest;
 	}
 
 	private long getLatestEpochtime() throws InvalidQueryException {
-		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(
-				dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-		dataQueryHelper.setFuncFieldToQuery(dataQueryHelper.createMaxFieldFunc("end_time", "max_ts"), dataQueryDto);
-		Long latest = getEpochtime(dataQueryDto, "max_ts");
-		return latest == null ? 0 : latest; // TODO: What if there wasn't a result (null)?
+		DataQueryField maxFieldFunc = dataQueryHelper.createMaxFieldFunc(END_TIME_FIELD_NAME, MAX_TS_FIELD_ALIAS);
+		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(dataEntity);
+		dataQueryHelper.setFuncFieldToQuery(maxFieldFunc, dataQueryDto);
+		Long latest = getEpochtime(dataQueryDto, MAX_TS_FIELD_ALIAS);
+		return latest == null ? 0 : latest;
 	}
 
 	/**
@@ -171,6 +174,7 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 		parameters.add(new ImmutablePair<>("notificationSupportingInformationField", "notificationSupportingInformationField"));
 		parameters.add(new ImmutablePair<>("notificationDataSourceField", "notificationDataSourceField"));
 		parameters.add(new ImmutablePair<>("notificationFixedScore", "notificationFixedScore"));
+		parameters.add(new ImmutablePair<>(NEXT_EPOCHTIME_KEY, NEXT_EPOCHTIME_VALUE));
 		parameters.addAll(list);
 		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, parameters);
 	}
@@ -254,6 +258,38 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 		// Note that the formatter is specific to the "yearmonthday" partition
 		return String.format("yearmonthday >= %s and date_time_unix >= %d",
 				yearMonthDayFormatter.format(lowerLimitIncluding), lowerLimitIncluding.getEpochSecond());
+	}
+
+	private void generateNotificationsInternal() {
+		logger.info("{} is going to generate notifications. Next time {} ({}), last time {} ({}).",
+				getClass().getSimpleName(),
+				ofEpochSecond(nextEpochtime), nextEpochtime,
+				ofEpochSecond(lastEpochtime), lastEpochtime);
+
+		while (nextEpochtime <= lastEpochtime - MIN_PROCESSING_PERIOD_IN_SEC) {
+			Instant lowerLimitInc = ofEpochSecond(nextEpochtime);
+			Instant upperLimitInc = ofEpochSecond(min(nextEpochtime + MAX_UPPER_LIMIT_INC_DELTA, lastEpochtime));
+			logger.info("{} is going to process events from {} ({}) to {} ({}).", getClass().getSimpleName(),
+					lowerLimitInc, lowerLimitInc.getEpochSecond(),
+					upperLimitInc, upperLimitInc.getEpochSecond());
+
+			List<JSONObject> notifications = generateNotificationsInternal(lowerLimitInc, upperLimitInc);
+			if (CollectionUtils.isNotEmpty(notifications)) sendNotificationsToKafka(notifications);
+			nextEpochtime = upperLimitInc.getEpochSecond() + 1;
+			Map<String, String> updateNextTimestamp = new HashMap<>();
+			updateNextTimestamp.put(getAppConfPrefix() + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
+			applicationConfigurationService.updateConfigItems(updateNextTimestamp);
+		}
+	}
+
+	protected abstract List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc);
+
+	protected abstract String getAppConfPrefix();
+
+	protected void doneGeneratingNotifications(int numOfEvents, int numOfNotifications) {
+		logger.info("{} finished generating notifications. {} events, {} notifications, next process time {} ({}).",
+				getClass().getSimpleName(), numOfEvents, numOfNotifications,
+				ofEpochSecond(nextEpochtime), nextEpochtime);
 	}
 
 	public String getNormalizedUsernameField() {

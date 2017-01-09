@@ -32,8 +32,6 @@ import java.util.stream.Collectors;
  * Created by Amir Keren on 06/20/2016.
  */
 public class VpnLateralMovementNotificationService extends NotificationGeneratorServiceAbstract {
-	private static final String SERVICE_NAME = "VpnLateralMovementNotification";
-	private static final String APP_CONF_PREFIX = "lateral_movement_notification";
 	private static final String SOURCE_IP_FIELD = "source_ip";
 	private static final String VPN_START_TIME = "vpn_session_start";
 	private static final String VPN_END_TIME = "vpn_session_end";
@@ -61,39 +59,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 	private Map<String, Pair<String, String>> tableToEntityIdAndIPField;
 
-	protected List<JSONObject> generateNotificationInternal() throws Exception {
-		Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
-		logger.info("Generating notifications of {}. Next time: {} ({}), Last time: {} ({}).", SERVICE_NAME,
-				Instant.ofEpochSecond(nextEpochtime), nextEpochtime,
-				Instant.ofEpochSecond(lastEpochtime), lastEpochtime);
-
-		// Process events that occurred from "next time" until "last time" in the table
-		// Don't process periods shorter than MINIMAL_PROCESSING_PERIOD_IN_SEC - Protects from periodic execution jitter
-		while (nextEpochtime <= lastEpochtime - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
-			// Calculate the processing end time - Process up to one day
-			// Never process after the "last time", because those events simply do not exist yet
-			long upperLimitExcluding = Math.min(nextEpochtime + DAY_IN_SECONDS, lastEpochtime + 1);
-			getLateralMovementEventsFromHDFS(lateralMovementEvents, upperLimitExcluding - 1);
-			nextEpochtime = upperLimitExcluding;
-		}
-
-		List<JSONObject> lateralMovementNotifications =
-				createLateralMovementsNotificationsFromImpalaRawEvents(lateralMovementEvents);
-		lateralMovementNotifications =
-				addRawEventsToLateralMovement(lateralMovementNotifications, lateralMovementEvents);
-
-		// Save next epochtime to process in Mongo application_configuration
-		// Do that in the end, in case there is an error before
-		Map<String, String> updateNextTimestamp = new HashMap<>();
-		updateNextTimestamp.put(APP_CONF_PREFIX + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
-		applicationConfigurationService.updateConfigItems(updateNextTimestamp);
-
-		logger.info("Processing of {} done. {} events, {} notifications. Next process time {} ({}).", SERVICE_NAME,
-				lateralMovementEvents.size(), lateralMovementNotifications.size(),
-				Instant.ofEpochSecond(nextEpochtime), nextEpochtime);
-		return lateralMovementNotifications;
-	}
-
 	/**
 	 * resolve and init some attributes from other attributes
 	 */
@@ -101,8 +66,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	public void init() throws Exception {
 		tableToEntityIdAndIPField = new HashMap<>();
 		Map<String, DataEntity> entities;
-		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX,
-				Collections.singletonList(new ImmutablePair<>(NEXT_EPOCHTIME_KEY, NEXT_EPOCHTIME_VALUE)));
+		initConfigurationFromApplicationConfiguration(getAppConfPrefix(), Collections.emptyList());
 		try {
 			entities = dataEntitiesConfig.getAllLeafeEntities();
 		} catch (Exception ex) {
@@ -247,13 +211,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		return dataQueryRunner.executeQuery(rawEventsQuery);
 	}
 
-	private void getLateralMovementEventsFromHDFS(
-			Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents, long upperLimitIncluding) {
-
-		Instant lowerLimitInstInc = Instant.ofEpochSecond(nextEpochtime);
-		Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluding);
-		logger.info("Processing {} from {} ({}) to {} ({})",
-				SERVICE_NAME, lowerLimitInstInc, nextEpochtime, upperLimitInstInc, upperLimitIncluding);
+	private Map<VPNSessionEvent, List<Map<String, Object>>> getEventsFromHdfs(Instant lowerLimitInc, Instant upperLimitInc) {
+		Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
 
 		for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
 			String tableName = entry.getKey();
@@ -262,11 +221,11 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 			String t1Query = String.format(
 					"select date_time, date_time_unix, normalized_username, hostname, source_ip, local_ip, duration " +
 					"from vpnsessiondatares where %s and local_ip != ''",
-					getEpochtimeBetweenCondition("vpnsessiondatares", lowerLimitInstInc, upperLimitInstInc));
+					getEpochtimeBetweenCondition("vpnsessiondatares", lowerLimitInc, upperLimitInc));
 
 			String t2Query = String.format(
 					"select date_time_unix, normalized_username, %s from %s where %s",
-					ipField, tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInstInc, upperLimitInstInc));
+					ipField, tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInc, upperLimitInc));
 
 			String query = String.format(
 					"select distinct " +
@@ -304,6 +263,8 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 				}
 			}
 		}
+
+		return lateralMovementEvents;
 	}
 
 	private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(
@@ -327,6 +288,20 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		return createNotification(
 				startTime, endTime, normalizedUsername,
 				NotificationAnomalyType.VPN_LATERAL_MOVEMENT.getType(), normalizedUsername);
+	}
+
+	@Override
+	protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
+		Map<VPNSessionEvent, List<Map<String, Object>>> events = getEventsFromHdfs(lowerLimitInc, upperLimitInc);
+		List<JSONObject> notifications = createLateralMovementsNotificationsFromImpalaRawEvents(events);
+		notifications = addRawEventsToLateralMovement(notifications, events);
+		doneGeneratingNotifications(events.size(), notifications.size());
+		return notifications;
+	}
+
+	@Override
+	protected String getAppConfPrefix() {
+		return "lateral_movement_notification";
 	}
 
 	private class VPNSessionEvent {

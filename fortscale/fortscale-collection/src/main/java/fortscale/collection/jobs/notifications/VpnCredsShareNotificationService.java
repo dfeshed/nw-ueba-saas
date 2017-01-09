@@ -37,12 +37,7 @@ import java.util.*;
  *
  * Created by galiar on 01/03/2016.
  */
-public class VpnCredsShareNotificationService
-        extends NotificationGeneratorServiceAbstract implements ApplicationContextAware {
-
-    private static final String SERVICE_NAME = "VpnCredsShareNotifications";
-    private static final String APP_CONF_PREFIX = "creds_share_notification";
-
+public class VpnCredsShareNotificationService extends NotificationGeneratorServiceAbstract implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private String fieldManipulatorBeanName;
     private String hostnameField;
@@ -51,44 +46,12 @@ public class VpnCredsShareNotificationService
     private int numberOfConcurrentSessions;
     private String hostnameCondition;
 
-    protected List<JSONObject> generateNotificationInternal() throws Exception {
-        List<Map<String, Object>> credsShareEvents = new ArrayList<>();
-        logger.info("Generating notifications of {}. Next time: {} ({}), Last time: {} ({}).", SERVICE_NAME,
-                Instant.ofEpochSecond(nextEpochtime), nextEpochtime,
-                Instant.ofEpochSecond(lastEpochtime), lastEpochtime);
-
-        // Process events that occurred from "next time" until "last time" in the table
-        // Don't process periods shorter than MINIMAL_PROCESSING_PERIOD_IN_SEC - Protects from periodic execution jitter
-        while (nextEpochtime <= lastEpochtime - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
-            // Calculate the processing end time - Process up to one day
-            // Never process after the "last time", because those events simply do not exist yet
-            long upperLimitExcluded = Math.min(nextEpochtime + DAY_IN_SECONDS, lastEpochtime + 1);
-            credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimitExcluded - 1));
-            nextEpochtime = upperLimitExcluded;
-        }
-
-        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
-        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
-
-        // Save next epochtime to process in Mongo application_configuration
-        // Do that in the end, in case there is an error before
-        Map<String, String> updateNextTimestamp = new HashMap<>();
-        updateNextTimestamp.put(APP_CONF_PREFIX + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
-        applicationConfigurationService.updateConfigItems(updateNextTimestamp);
-
-        logger.info("Processing of {} done. {} events, {} notifications. Next process time {} ({}).", SERVICE_NAME,
-                credsShareEvents.size(), credsShareNotifications.size(),
-                Instant.ofEpochSecond(nextEpochtime), nextEpochtime);
-        return credsShareNotifications;
-    }
-
     /**
      * resolve and init some attributes from other attributes
      */
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(
-                new ImmutablePair<>(NEXT_EPOCHTIME_KEY, NEXT_EPOCHTIME_VALUE),
+        initConfigurationFromApplicationConfiguration(getAppConfPrefix(), Arrays.asList(
                 new ImmutablePair<>("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
                 new ImmutablePair<>("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
                 new ImmutablePair<>("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
@@ -135,22 +98,16 @@ public class VpnCredsShareNotificationService
         credsShare.put(notificationNumOfEventsField, rawEvents.size());
     }
 
-    private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimitIncluded) {
-        // create ConditionTerm for the hostname condition
-        // TODO - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
-        // create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
-        // some features of the query aren't supported in dataQuery: e.g. CASE WHEN , or SQL functions: lpad, instr
-
-        Instant lowerLimitInstInc = Instant.ofEpochSecond(nextEpochtime);
-        Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluded);
-        logger.info("Processing {} from {} ({}) to {} ({})",
-                SERVICE_NAME, lowerLimitInstInc, nextEpochtime, upperLimitInstInc, upperLimitIncluded);
+    private List<Map<String, Object>> getCredsShareEventsFromHDFS(Instant lowerLimitInc, Instant upperLimitInc) {
+        // TODO - DEVELOP THE UNSUPPORTED SQL FUNCTIONS AND REPLACE THIS CODE TO SUPPORT DATA QUERY
+        // Create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since some
+        // features of the query aren't supported in dataQuery: e.g. CASE WHEN, or SQL functions
 
         String t1Query = String.format(
                 "select * from %s where %s and source_ip != '' and country = 'Reserved Range'",
-                tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInstInc, upperLimitInstInc));
+                tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInc, upperLimitInc));
 
-        Instant t2LowerLimitInc = getT2LowerLimitInc(lowerLimitInstInc, upperLimitInstInc);
+        Instant t2LowerLimitInc = getT2LowerLimitInc(lowerLimitInc, upperLimitInc);
         if (t2LowerLimitInc == null) return Collections.emptyList();
         String t2Query = String.format(
                 "select * from %s where %s and source_ip != '' and country = 'Reserved Range'",
@@ -294,6 +251,20 @@ public class VpnCredsShareNotificationService
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    @Override
+    protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
+        List<Map<String, Object>> credsShareEvents = getCredsShareEventsFromHDFS(lowerLimitInc, upperLimitInc);
+        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
+        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
+        doneGeneratingNotifications(credsShareEvents.size(), credsShareNotifications.size());
+        return credsShareNotifications;
+    }
+
+    @Override
+    protected String getAppConfPrefix() {
+        return "creds_share_notification";
     }
 
     /**
