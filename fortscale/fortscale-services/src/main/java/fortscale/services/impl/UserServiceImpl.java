@@ -4,7 +4,6 @@ import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.ad.dao.AdUserThumbnailService;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
@@ -15,6 +14,7 @@ import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
 import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
+import fortscale.services.ActiveDirectoryService;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
@@ -65,7 +65,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private AdUserRepository adUserRepository;
 
 	@Autowired
-	private AdUserThumbnailService adUserThumbnailService;
+	private ActiveDirectoryService activeDirectoryService;
 
 	@Autowired
 	private AdGroupRepository adGroupRepository;
@@ -358,7 +358,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		final AdUserThumbnail adUserThumbnail = adUserThumbnailService.findById(user.getAdInfo().getObjectGUID());
+		final AdUserThumbnail adUserThumbnail = activeDirectoryService.findAdUserThumbnailById(user.getAdInfo().getObjectGUID());
 		if(adUserThumbnail != null){
 			ret = adUserThumbnail.getThumbnailPhoto();
 		} else {

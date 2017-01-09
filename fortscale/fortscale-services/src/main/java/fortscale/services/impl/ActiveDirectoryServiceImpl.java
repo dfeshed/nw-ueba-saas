@@ -1,25 +1,16 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.Exceptions.PasswordDecryptionException;
-import fortscale.domain.ad.AdConnection;
-import fortscale.domain.ad.AdGroup;
-import fortscale.domain.ad.AdOU;
-import fortscale.domain.ad.AdObject;
+import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.naming.AuthenticationException;
-import javax.naming.CommunicationException;
 import javax.naming.NamingException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,22 +29,24 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     private final AdOURepository adOURepository;
     private final AdUserRepository adUserRepository;
     private final AdComputerRepository adComputerRepository;
+    private final AdUserThumbnailRepository adUserThumbnailRepository;
 
 
     @Autowired
     public ActiveDirectoryServiceImpl(
-                                    ActiveDirectoryDAO activeDirectoryDAO,
-                                    ApplicationConfigurationService applicationConfigurationService,
-                                    AdGroupRepository adGroupRepository,
-                                    AdOURepository adOURepository,
-                                    AdUserRepository adUserRepository,
-                                    AdComputerRepository adComputerRepository) {
+            ActiveDirectoryDAO activeDirectoryDAO,
+            ApplicationConfigurationService applicationConfigurationService,
+            AdGroupRepository adGroupRepository,
+            AdOURepository adOURepository,
+            AdUserRepository adUserRepository,
+            AdComputerRepository adComputerRepository, AdUserThumbnailRepository adUserThumbnailRepository) {
         this.adGroupRepository = adGroupRepository;
         this.adOURepository = adOURepository;
         this.adUserRepository = adUserRepository;
         this.adComputerRepository = adComputerRepository;
         this.activeDirectoryDAO = activeDirectoryDAO;
         this.applicationConfigurationService = applicationConfigurationService;
+        this.adUserThumbnailRepository = adUserThumbnailRepository;
     }
 
     /**
@@ -121,7 +114,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public boolean canConnect(AdConnection adConnection) throws CommunicationException, AuthenticationException, NamingException, PasswordDecryptionException{
+    public boolean canConnect(AdConnection adConnection) throws NamingException, PasswordDecryptionException{
         boolean success;
         try {
             success = activeDirectoryDAO.connectToAD(adConnection);
@@ -144,10 +137,22 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
                 return adUserRepository.count();
             case COMPUTER:
                 return adComputerRepository.count();
+            case USER_THUMBNAIL:
+                return adUserThumbnailRepository.count();
             default:
                 throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
         }
 
+    }
+
+    @Override
+    public AdUserThumbnail findAdUserThumbnailById(String objectGUID) {
+        return adUserThumbnailRepository.findById(objectGUID);
+    }
+
+    @Override
+    public List<AdUserThumbnail> save(List<AdUserThumbnail> adUserThumbnails) {
+        return adUserThumbnailRepository.save(adUserThumbnails);
     }
 
     /**

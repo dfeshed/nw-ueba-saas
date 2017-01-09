@@ -4,10 +4,7 @@ import fortscale.domain.core.AbstractDocument;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 public class AdObject extends AbstractDocument{
 	/**
@@ -112,13 +109,6 @@ public class AdObject extends AbstractDocument{
 		AdObjectType(String displayName) {
 			this.displayName = displayName;
 		}
-
-		public static Set<AdObjectType> getIndependentTypes() {
-			Set<AdObjectType> independentTypes = new HashSet<>(Arrays.asList(AdObjectType.values()));
-			independentTypes.remove(USER_THUMBNAIL);
-			return independentTypes;
-		}
-
 
 		@Override
 		public String toString() {

@@ -3,15 +3,12 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
-import fortscale.domain.ad.dao.AdUserThumbnailService;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -28,15 +25,18 @@ import java.util.List;
 public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdUserThumbnailProcessJob.class);
-		
+
 	@Autowired
-	private AdUserThumbnailService adUserThumbnailservice;
+	private ApplicationConfigurationService applicationConfigurationService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
 
 	@Value("${users.ou.filter:}")
     private String ouUsersFilter;
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
 
 	private String ldapFieldSeparator;
 	
@@ -47,11 +47,15 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private String adFields;
 	
 	private List<AdUserThumbnail> adUserThumbnails = new ArrayList<>();
+
+	private String resultsKey;
 	
 	
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		final JobKey key = jobExecutionContext.getJobDetail().getKey();
 
 		// get parameters values from the job data map
 
@@ -62,6 +66,12 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		filter = jobDataMapExtension.getJobDataMapStringValue(map, "filter");
 		//AD selected fields
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
+
+		// random generated ID for deployment wizard fetch and ETL results
+		final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
+		if (resultsId != null) {
+			resultsKey = key.getName().toLowerCase() + "." + resultsId;
+		}
 	}
 
 	@Override
@@ -75,6 +85,12 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 		getFromActiveDirectory(filter, adFields, -1);
 		flushAdUserThumbnailBuffer();
+
+
+		if (resultsKey != null) {
+			logger.debug("Inserting status to application configuration in key {}", resultsKey);
+			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		}
 
 		finishStep();
 	}
@@ -121,7 +137,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 	private void flushAdUserThumbnailBuffer(){
 		if(!adUserThumbnails.isEmpty()) {
-			adUserThumbnailservice.save(adUserThumbnails);
+			activeDirectoryService.save(adUserThumbnails);
 			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
 			adUserThumbnails.clear();
 		}

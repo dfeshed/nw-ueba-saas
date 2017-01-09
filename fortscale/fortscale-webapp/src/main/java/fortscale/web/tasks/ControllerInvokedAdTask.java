@@ -12,15 +12,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.ETL;
-import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.FETCH;
+import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.*;
 
 public class ControllerInvokedAdTask implements Runnable {
 
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
 
-    protected static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
+    protected static final String THREAD_NAME = "system_setup";
 
     private static final String RESULTS_DELIMITER = "=";
     private static final String RESULTS_KEY_SUCCESS = "success";
@@ -156,7 +155,7 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         /* get objects count for this data source from mongo (if it's a Fetch job we don't care about the count)*/
-        final long objectsCount = adTaskType==ETL? activeDirectoryService.getCount(dataSource) : -1;
+        final long objectsCount = (adTaskType==ETL || adTaskType==FETCH_ETL)? activeDirectoryService.getCount(dataSource) : -1;
 
 
         notifyTaskDone();
@@ -178,9 +177,9 @@ public class ControllerInvokedAdTask implements Runnable {
         final String key = split[0];
         final String value = split[1];
         taskResults.put(key, value);
-        if (applicationConfigurationService.delete(resultsKey) == 0) {
-            logger.warn("Failed to delete query result with key {}.", resultsKey);
-        }
+//        if (applicationConfigurationService.delete(resultsKey) == 0) {
+//            logger.warn("Failed to delete query result with key {}.", resultsKey);
+//        }
 
         return taskResults;
     }
@@ -232,7 +231,7 @@ public class ControllerInvokedAdTask implements Runnable {
             return false;
         }
 
-        logger.info("Execution of task {} has finished with status {}", jobName, status);
+        logger.debug("Execution of task {} has finished with status {}", jobName, status);
         return true;
     }
 

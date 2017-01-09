@@ -33,10 +33,7 @@ import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
 import javax.naming.NamingException;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -61,11 +58,11 @@ public class ApiActiveDirectoryController {
 
 	private final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 
-	private final String DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX ="deployment_wizard_ad.last_execution_time";
+	private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
 
-	private final String DEPLOYMENT_WIZARD_AD_EXECUTION_START_TIME_PREFIX ="deployment_wizard_ad.execution_start__time";
+	private final String SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX ="system_setup_ad.execution_start_time";
 
-	private final Set<AdObjectType> dataSources = AdObjectType.getIndependentTypes();
+	private final Set<AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObjectType.values()));
 
 	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
 
@@ -246,7 +243,13 @@ public class ApiActiveDirectoryController {
 				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, -1L, currExecutionStartTime));
 			}
 			else { //not running
-				final Long currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
+				Long currLastExecutionFinishTime;
+				if (datasource == AdObjectType.USER_THUMBNAIL) {
+					currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.FETCH_ETL, datasource);
+				}
+				else {
+					currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
+				}
 				final Long currObjectsCount = activeDirectoryService.getCount(datasource);
 				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount, currExecutionStartTime));
 			}
@@ -258,11 +261,13 @@ public class ApiActiveDirectoryController {
 	private List<ControllerInvokedAdTask> createAdTasks() {
 		final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
 		for (AdObjectType dataSource : dataSources) {
-			final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource);
-			if (currTask.getDataSource() == AdObjectType.USER) {
-				currTask.addFollowingTask(new CompoundControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, AdObjectType.USER_THUMBNAIL));
+			if (dataSource != AdObjectType.USER_THUMBNAIL) { //user thumbnail job shouldn't run initially
+				final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource);
+				if (currTask.getDataSource() == AdObjectType.USER) { //user thumbnail job should run after user job
+					currTask.addFollowingTask(new CompoundControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, AdObjectType.USER_THUMBNAIL));
+				}
+				tasks.add(currTask);
 			}
-			tasks.add(currTask);
 		}
 
 		return tasks;
@@ -284,19 +289,19 @@ public class ApiActiveDirectoryController {
 	}
 
 	public Long getLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
-		return applicationConfigurationService.getApplicationConfigurationAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+		return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
 	}
 
 	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource, Long lastExecutionTime) {
-		applicationConfigurationService.updateConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
+		applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
 	}
 
 	public Long getExecutionStartTime(AdTaskType adTaskType, AdObjectType dataSource) {
-		return applicationConfigurationService.getApplicationConfigurationAsObject(DEPLOYMENT_WIZARD_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+		return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
 	}
 
 	public void setExecutionStartTime(AdTaskType adTaskType, AdObjectType dataSource, Long executionStartTime) {
-		applicationConfigurationService.updateConfigItemAsObject(DEPLOYMENT_WIZARD_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), executionStartTime);
+		applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), executionStartTime);
 	}
 
 	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {
@@ -323,7 +328,7 @@ public class ApiActiveDirectoryController {
 	}
 
 	private void executeTask(ControllerInvokedAdTask taskToExecute) {
-		logger.info("Executing task for data source {}.", taskToExecute.getDataSource());
+		logger.debug("Executing task for data source {}.", taskToExecute.getDataSource());
 		executorService.execute(taskToExecute);
 	}
 
