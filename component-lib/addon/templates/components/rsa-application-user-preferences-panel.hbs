@@ -1,26 +1,20 @@
-<form {{action 'saveUserPreferences' on="submit"}}>
-  {{#if session.isAuthenticated}}
-    <hbox>
-      <vbox xs="12">
-        <label class="rsa-form-label power-select js-test-default-landing-page-select">
-          <div class="label-text">
-            {{t 'userPreferences.defaultLandingPage.label'}}
-          </div>
+{{#rsa-content-section-header label='Section Heading'}}
+  {{t 'userPreferences.preferences'}}
 
-          {{#power-select
-            options=landingPage.options
-            selected=(or pendingLandingPage landingPage.selected)
-            searchEnabled=false
-            onchange=(action 'setDefaultLandingPage') as |option|}}
-            {{t option.label}}
-          {{/power-select}}
-        </label>
-      </vbox>
-    </hbox>
-  {{/if}}
+  <div class="controls">
+    {{#rsa-form-button isIconOnly=true defaultAction=(action 'toggleUserPreferences')}}
+      {{rsa-icon name="close" size="small"}}
+    {{/rsa-form-button}}
+  </div>
+{{/rsa-content-section-header}}
+
+<form {{action 'saveUserPreferences' on="submit"}}>
+  <p>
+    {{t 'userPreferences.personalize'}}
+  </p>
 
   <hbox>
-    <vbox xs="6">
+    <vbox xs="12">
       <label class="rsa-form-label power-select js-test-language-select">
         <div class="label-text">
           {{t 'userPreferences.language'}}
@@ -35,8 +29,10 @@
         {{/power-select}}
       </label>
     </vbox>
+  </hbox>
 
-    <vbox xs="6">
+  <hbox>
+    <vbox xs="12">
       <label class="rsa-form-label power-select js-test-time-zone-select">
         <div class="label-text">
           {{t 'userPreferences.timeZone'}}
@@ -83,24 +79,34 @@
   </hbox>
 
   <hbox>
-    <vbox xs="6">
-      {{#rsa-form-button
-        isFullWidth=true
-        class="js-test-revert"
-        defaultAction=(action 'revertUserPreferences')}}
-        {{t 'forms.reset'}}
-      {{/rsa-form-button}}
-    </vbox>
+    <vbox xs="12">
+      <label class="rsa-form-label power-select js-test-default-landing-page-select">
+        <div class="label-text">
+          {{t 'userPreferences.defaultLandingPage.label'}}
+        </div>
 
-    <vbox xs="6">
-      {{#rsa-form-button
-        class="js-test-apply"
-        type="submit"
-        isDisabled=withoutChanges
-        style="primary"
-        isFullWidth=true}}
-        {{t 'forms.apply'}}
-      {{/rsa-form-button}}
+        {{#power-select
+          options=landingPage.options
+          selected=(or pendingLandingPage landingPage.selected)
+          searchEnabled=false
+          onchange=(action 'setDefaultLandingPage') as |option|}}
+          {{t option.label}}
+        {{/power-select}}
+      </label>
     </vbox>
   </hbox>
 </form>
+
+<footer>
+  <hbox>
+    <vbox xs="6">
+      <p>
+        {{t 'userPreferences.version'}}
+      </p>
+    </vbox>
+
+    <vbox xs="6">
+      <a {{action 'logout'}}>{{t 'userPreferences.signOut'}}</a>
+    </vbox>
+  </hbox>
+</footer>

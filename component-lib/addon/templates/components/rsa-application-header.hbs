@@ -7,29 +7,14 @@
 {{/if}}
 
 <div class="global">
-  {{!-- {{#if session.isAuthenticated}}
+  {{#if session.isAuthenticated}}
     {{#rsa-form-button
-      isIconOnly=true
-      click=(action 'toggleNotifications')
-      class=(if layoutService.notificationsActive 'notifications-panel-trigger is-active' 'notifications-panel-trigger ')}}
-      {{rsa-icon
-        name="alarm"
-        style=(if layoutService.notificationsActive 'filled' 'lined')}}
+      defaultAction=(action 'toggleUserPreferences')
+      class=(if layoutService.userPreferencesActive 'user-preferences-trigger is-active' 'user-preferences-trigger ')}}
+      {{rsa-icon name='account-circle-1' style='lined'}}
+      {{timezone.selected.offset}}
     {{/rsa-form-button}}
-  {{/if}} --}}
-
-  {{#rsa-application-modal
-    eventId="userPreferences"
-    label=(t 'userPreferences.preferences')}}
-    <span class="user-preferences-trigger js-test-user-preferences-modal modal-trigger">
-      {{#rsa-form-button isIconOnly=true}}
-        {{rsa-icon name='settings-2' style='lined'}}
-      {{/rsa-form-button}}
-    </span>
-    <div class="modal-content">
-      {{rsa-application-user-preferences}}
-    </div>
-  {{/rsa-application-modal}}
+  {{/if}}
 
   {{#if contextualHelp.module}}
     {{#rsa-form-button
@@ -37,14 +22,6 @@
       class="global-contextual-help"
       defaultAction=(action 'goToGlobalHelp')}}
       {{rsa-icon name="help-circle" style="lined"}}
-    {{/rsa-form-button}}
-  {{/if}}
-
-  {{#if session.isAuthenticated}}
-    {{#rsa-form-button
-      isIconOnly=true
-      click=(action 'logout')}}
-      {{rsa-icon name="logout-1" style="lined"}}
     {{/rsa-form-button}}
   {{/if}}
 </div>

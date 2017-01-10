@@ -1,26 +1,87 @@
-.user-preferences-panel {
-  width: $userPreferencesPanelWidth;
+.rsa-application-user-preferences-panel {
+  transition: width .65s;
+  position: absolute;
+  top: $applicationHeaderHeight;
+  right: 0;
+  width: 0;
+  bottom: 0;
+  background-color: rsa-color(gray, darker);
+  border-top: 1px solid rsa-color(blue);
+  overflow-x: hidden;
+  @include rsa-layer(panels);
 
-  h3 {
-    @include rsa-font(header, larger);
-    background-color: $userPreferencesPanelHeaderBackgroundColor;
+  &.is-expanded {
+    transition: width .65s;
+    width: calc(100vw / 4);
+  }
+
+  .rsa-content-section-header {
+    min-width: calc(100vw / 4);
     padding: rsa-whitespace();
+    box-sizing: border-box;
+    background-color: rsa-color(gray, darkest);
+
+    .controls {
+      right: rsa-whitespace(less);
+    }
   }
 
   form {
-    padding: rsa-whitespace(less);
+    min-width: calc(100vw / 4);
 
-    vbox {
-      padding: rsa-whitespace(less);
+    p {
+      padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
+      @include rsa-font(paragraph);
+      color: rsa-color(gray);
+    }
 
-      &[xs='6'] {
-        flex-basis: 50%;
-      }
+    hbox {
+      padding: 0 rsa-whitespace() rsa-whitespace();
     }
   }
 
   .rsa-form-radio {
     margin-right: rsa-whitespace();
+  }
+
+  vbox {
+    &.col-xs-6 {
+      flex-basis: 50%;
+      &:first-child {
+        padding-right: rsa-whitespace(less);
+      }
+      &:last-child {
+        padding-left: rsa-whitespace(less);
+      }
+    }
+  }
+
+  footer {
+    min-width: calc(100vw / 4);
+    position: absolute;
+    bottom: 0;
+    height: $applicationHeaderHeight;
+    line-height: $applicationHeaderHeight;
+    left: 0;
+    right: 0;
+    border-top: 1px solid rsa-color(blue);
+    background-color: rsa-color(gray, darkest);
+
+    p {
+      color: rsa-color(gray);
+      padding: 0 rsa-whitespace();
+    }
+
+    a {
+      color: rsa-color(blue);
+      padding: 0 rsa-whitespace();
+      display: inline-block;
+      text-align: right;
+
+      &:hover {
+        cursor: pointer;
+      }
+    }
   }
 
 }

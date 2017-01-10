@@ -37,8 +37,10 @@ export default {
     }
   },
   userPreferences: {
-    preferences: 'ja_Preferences',
-    preferencesFor: 'ja_Preferences for {{user}}',
+    preferences: 'ja_User Preferences',
+    personalize: 'ja_Personalize your experience',
+    signOut: 'ja_Sign Out',
+    version: 'ja_Version 11.0.0',
     username: 'ja_Username',
     email: 'ja_Email',
     language: 'ja_Language',

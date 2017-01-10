@@ -28,7 +28,7 @@ test('sets defaults', function(assert) {
   const service = this.subject();
   assert.equal(service.get('main'), 'panelA');
   assert.equal(service.get('incidentQueueActive'), false);
-  assert.equal(service.get('notificationsActive'), false);
+  assert.equal(service.get('userPreferencesActive'), false);
 
   assert.equal(service.get('journalPanel'), 'hidden');
   assert.equal(service.get('contextPanel'), 'hidden');
@@ -53,9 +53,9 @@ test('sets panel classes', function(assert) {
 test('toggle incident queue', function(assert) {
   const service = this.subject();
   const spy = sinon.spy(service.get('eventBus'), 'trigger');
-  service.toggleNotifications();
-  assert.ok(spy.withArgs('rsa-application-notifications-panel-will-toggle').calledOnce);
-  assert.equal(service.get('notificationsActive'), true);
+  service.toggleUserPreferences();
+  assert.ok(spy.withArgs('rsa-application-user-preferences-panel-will-toggle').calledOnce);
+  assert.equal(service.get('userPreferencesActive'), true);
 });
 
 test('toggle notifications', function(assert) {

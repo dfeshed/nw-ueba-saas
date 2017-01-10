@@ -47,40 +47,49 @@
     top: 0;
     line-height: $applicationHeaderHeight;
 
-    .is-open {
-      .modal-trigger i {
-        font-family: 'Streamline-2-Filled';
-        color: $applicationHeaderActiveButtonColor;
-      }
-    }
-
     .rsa-form-button-wrapper {
       border-left: 1px solid rsa-color(gray, dark);
-      width: $applicationHeaderHeight;
+      border-bottom: rsa-whitespace(least) solid transparent;
       text-align: center;
+      height: $applicationHeaderHeight;
 
-      i {
+      &.user-preferences-trigger {
+        vertical-align: middle;
         position: relative;
-        top: 1px;
-        left: 2px;
-      }
 
-      &.is-active {
-        i {
-          color: $applicationHeaderActiveButtonColor;
+        .rsa-icon {
+          border-right: 1px solid rsa-color(gray, lighter);
+          padding: rsa-whitespace(least) rsa-whitespace(less) rsa-whitespace(least) 0;
+          margin-right: rsa-whitespace(less);
+          vertical-align: text-bottom;
         }
       }
 
-      &.is-icon-only {
+      &.is-active {
+        border-bottom: rsa-whitespace(least) solid rsa-color(blue);
+
+        .rsa-form-button {
+          background: rsa-color(black);
+          color: rsa-color(gray, lightest);
+        }
+      }
+
+      i {
         position: relative;
-        top: -3px;
+        left: 2px;
       }
 
       .rsa-form-button {
         border-width: 0;
+        color: rsa-color(gray, lighter);
 
         .expand {
           left: 0;
+        }
+
+        &:hover {
+          background: rsa-color(black);
+          color: rsa-color(gray, lightest);
         }
       }
     }

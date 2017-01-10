@@ -12,10 +12,13 @@ test('it includes the proper classes', function(assert) {
 });
 
 test('it included a link to User Preferences', function(assert) {
-  this.render(hbs `<div id="modalDestination"></div>{{rsa-application-header}}`);
-  this.$('.user-preferences-trigger').click();
-  this.$('.js-test-user-preferences-modal').click();
-  assert.equal(this.$('.js-test-user-preferences-modal').length, 1);
+  this.set('session', {
+    isAuthenticated: true
+  });
+
+  this.render(hbs `{{rsa-application-header session=session}}`);
+
+  assert.equal(this.$('.user-preferences-trigger').length, 1);
 });
 
 test('it does not include help link when contextualHelp.module is not populated', function(assert) {

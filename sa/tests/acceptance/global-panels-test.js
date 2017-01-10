@@ -7,21 +7,6 @@ moduleForAcceptance('Acceptance | global panels', {
   afterEach: teardownSockets
 });
 
-// test('toggling notifications panel', function(assert) {
-//   assert.expect(2);
-//   visit('/do/monitor');
-//   click('.notifications-panel-trigger');
-//
-//   andThen(function() {
-//     assert.equal(find('.rsa-application-notifications-panel.is-expanded').length, 1);
-//     click('.notifications-panel-trigger');
-//
-//     andThen(function() {
-//       assert.equal(find('.rsa-application-notifications-panel.is-expanded').length, 0);
-//     });
-//   });
-// });
-
 test('toggling incident queue panel', function(assert) {
   assert.expect(10);
   server.createList('incidents', 3);
