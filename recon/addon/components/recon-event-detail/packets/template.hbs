@@ -1,10 +1,8 @@
-{{#each packets as |packet index|}}
+{{#each visiblePackets as |packet index|}}
   {{recon-event-detail/single-packet
     index=index
     packet=packet
     packetFields=packetFields
-    isRequestShown=isRequestShown
-    isResponseShown=isResponseShown
     tooltipData=tooltipData
   }}
 {{/each}}

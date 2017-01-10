@@ -1,89 +1,87 @@
-{{#if shouldShowPacket}}
-  <section class="rsa-packet {{packet.side}}">
-    <vbox class="rsa-packet__header">
-      <hbox class="request-response">
-        <box align="center" horizontal>
-          <span>
-            {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
-          </span>
-          <span class="text">
-            {{#if (eq packet.side 'request')}}
-              request
-            {{else}}
-              response
-            {{/if}}
-          </span>
-        </box>
-      </hbox>
-      <hbox class="packet-details">
-        <box align="center" horizontal>
-          <span>
-            {{rsa-icon
-              click=(action 'expandPacket')
-              name=(concat 'arrow-' collapseArrowDirection '-12')}}
-          </span>
-          <span class="text">
-            {{t 'list.packet'}}&nbsp;{{add index 1}}
-          </span>
-        </box>
-        <box xs="3" align="end">
-          {{moment-format packet.timestamp 'YYYY-MM-DD hh:mm:ss.ssss'}}
-        </box>
-        <box align="center" justify="end" horizontal>
-          <span class="label">ID</span> {{packet.id}}
-        </box>
-        <box align="center" justify="end" horizontal>
-          <span class="label">SEQ</span> {{packet.sequence}}
-        </box>
-        <box align="center" justify="end" horizontal>
-          {{packet.payloadSize}} bytes
-        </box>
-      </hbox>
-    </vbox>
-    {{#if packetIsExpanded}}
-      <section class="rsa-packet__body">
-        <section class="rsa-packet__offsets hex">
-          {{recon-event-detail/single-packet/offset-table
-            byteRows=byteRows
-            bytesPerRow=bytesPerRow
-            digits=6
-          }}
-        </section>
-        <section class="rsa-packet__hex">
-          {{#if viewportEntered}}
-            {{recon-event-detail/single-packet/byte-table
-              index=index
-              byteFormat="hex"
-              byteRows=byteRows
-              bytes=bytes
-              packet=packet
-              packetFields=packetFields
-              byteGrouping=byteGrouping
-              bytesPerRow=bytesPerRow
-              selection=selection
-              onselect=onselect
-              tooltipData=tooltipData
-            }}
+<section class="rsa-packet {{packet.side}}">
+  <vbox class="rsa-packet__header">
+    <hbox class="request-response">
+      <box align="center" horizontal>
+        <span>
+          {{rsa-icon name=(concat 'arrow-circle-' arrowDirection '-2')}}
+        </span>
+        <span class="text">
+          {{#if (eq packet.side 'request')}}
+            request
+          {{else}}
+            response
           {{/if}}
-        </section>
-        <section class="rsa-packet__ascii">
-          {{#if viewportEntered}}
-            {{recon-event-detail/single-packet/byte-table
-              index=index
-              byteFormat="ascii"
-              byteRows=byteRows
-              bytes=bytes
-              packet=packet
-              packetFields=packetFields
-              byteGrouping=byteGrouping
-              bytesPerRow=bytesPerRow
-              selection=selection
-              onselect=onselect
-              tooltipData=tooltipData
-            }}
-          {{/if}}
-        </section>
+        </span>
+      </box>
+    </hbox>
+    <hbox class="packet-details">
+      <box align="center" horizontal>
+        <span>
+          {{rsa-icon
+            click=(action 'expandPacket')
+            name=(concat 'arrow-' collapseArrowDirection '-12')}}
+        </span>
+        <span class="text">
+          {{t 'list.packet'}}&nbsp;{{add index 1}}
+        </span>
+      </box>
+      <box xs="3" align="end">
+        {{moment-format packet.timestamp 'YYYY-MM-DD hh:mm:ss.ssss'}}
+      </box>
+      <box align="center" justify="end" horizontal>
+        <span class="label">ID</span> {{packet.id}}
+      </box>
+      <box align="center" justify="end" horizontal>
+        <span class="label">SEQ</span> {{packet.sequence}}
+      </box>
+      <box align="center" justify="end" horizontal>
+        {{packet.payloadSize}} bytes
+      </box>
+    </hbox>
+  </vbox>
+  {{#if packetIsExpanded}}
+    <section class="rsa-packet__body">
+      <section class="rsa-packet__offsets hex">
+        {{recon-event-detail/single-packet/offset-table
+          byteRows=byteRows
+          bytesPerRow=bytesPerRow
+          digits=6
+        }}
       </section>
-    {{/if}}
-  </section>
-{{/if}}
+      <section class="rsa-packet__hex">
+        {{#if viewportEntered}}
+          {{recon-event-detail/single-packet/byte-table
+            index=index
+            byteFormat="hex"
+            byteRows=byteRows
+            bytes=bytes
+            packet=packet
+            packetFields=packetFields
+            byteGrouping=byteGrouping
+            bytesPerRow=bytesPerRow
+            selection=selection
+            onselect=onselect
+            tooltipData=tooltipData
+          }}
+        {{/if}}
+      </section>
+      <section class="rsa-packet__ascii">
+        {{#if viewportEntered}}
+          {{recon-event-detail/single-packet/byte-table
+            index=index
+            byteFormat="ascii"
+            byteRows=byteRows
+            bytes=bytes
+            packet=packet
+            packetFields=packetFields
+            byteGrouping=byteGrouping
+            bytesPerRow=bytesPerRow
+            selection=selection
+            onselect=onselect
+            tooltipData=tooltipData
+          }}
+        {{/if}}
+      </section>
+    </section>
+  {{/if}}
+</section>

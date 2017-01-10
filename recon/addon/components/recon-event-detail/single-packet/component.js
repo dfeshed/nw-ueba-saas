@@ -189,11 +189,6 @@ export default Component.extend({
     return rows;
   },
 
-  @computed('packet.side', 'isRequestShown', 'isResponseShown')
-  shouldShowPacket(side, isRequestShown, isResponseShown) {
-    return (side === 'request' && isRequestShown) || (side === 'response' && isResponseShown);
-  },
-
   /**
    * Observe the component's this.element intersecting with the root element
    * @private
