@@ -3,7 +3,6 @@ package fortscale.collection.jobs.notifications;
 import fortscale.common.dataentity.DataEntity;
 import fortscale.common.dataqueries.querydto.DataQueryDTO;
 import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
-import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -20,7 +19,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.PostConstruct;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,9 +32,6 @@ import java.util.stream.Collectors;
  * Created by Amir Keren on 06/20/2016.
  */
 public class VpnLateralMovementNotificationService extends NotificationGeneratorServiceAbstract {
-	private static final String SERVICE_NAME = "VpnLateralMovementNotification";
-	private static final String APP_CONF_PREFIX = "lateral_movement_notification";
-	private static final String MIN_DATE_TIME_FIELD = "min_ts";
 	private static final String SOURCE_IP_FIELD = "source_ip";
 	private static final String VPN_START_TIME = "vpn_session_start";
 	private static final String VPN_END_TIME = "vpn_session_end";
@@ -64,62 +59,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 
 	private Map<String, Pair<String, String>> tableToEntityIdAndIPField;
 
-	protected List<JSONObject> generateNotificationInternal() throws Exception {
-		Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
-		logger.info("Generating notification of {}. latest time: {} ({}) current time: {} ({})", SERVICE_NAME,
-				Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
-				Instant.ofEpochSecond(currentTimestamp), currentTimestamp);
-
-		// Process events occurred until now. Do not process periods shorter than
-		// MINIMAL_PROCESSING_PERIOD_IN_SEC. Protects from periodic execution jitter
-		while (latestTimestamp <= currentTimestamp - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
-			// Calc the processing end time: process up to one day. Never process
-			// post the current time because those event simply does not exist yet
-			long upperLimitExcluding = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
-			getLateralMovementEventsFromHDFS(lateralMovementEvents, upperLimitExcluding - 1);
-			latestTimestamp = upperLimitExcluding;
-		}
-
-		List<JSONObject> lateralMovementNotifications =
-				createLateralMovementsNotificationsFromImpalaRawEvents(lateralMovementEvents);
-		lateralMovementNotifications =
-				addRawEventsToLateralMovement(lateralMovementNotifications, lateralMovementEvents);
-
-		// Save latest processed timestamp in mongo application_configuration.
-		// Do that at the end in case there is an error before
-		Map<String, String> updateLastTimestamp = new HashMap<>();
-		updateLastTimestamp.put(APP_CONF_PREFIX + "." + LATEST_TS, String.valueOf(latestTimestamp));
-		applicationConfigurationService.updateConfigItems(updateLastTimestamp);
-
-		logger.info("Processing of {} done. {} events, {} notifications, latest process time {} ({})", SERVICE_NAME,
-				lateralMovementEvents.size(), lateralMovementNotifications.size(),
-				Instant.ofEpochSecond(latestTimestamp), latestTimestamp);
-		return lateralMovementNotifications;
-	}
-
-	/**
-	 * This method responsible on the fetching of the earliest event that this notification based on
-	 *
-	 * @throws InvalidQueryException
-	 */
-	protected long fetchEarliestEvent() throws InvalidQueryException {
-		DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
-				dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-		DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
-		dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
-		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-		String query = dataQueryRunner.generateQuery(dataQueryDTO);
-		logger.info("Running the query: {}", query);
-		// execute Query
-		List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
-		if (CollectionUtils.isEmpty(queryList)) {
-			//no data in table
-			logger.info("Table is empty. Quit...");
-			return Long.MAX_VALUE;
-		}
-		return extractEarliestEventFromDataQueryResult(queryList);
-	}
-
 	/**
 	 * resolve and init some attributes from other attributes
 	 */
@@ -127,8 +66,7 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 	public void init() throws Exception {
 		tableToEntityIdAndIPField = new HashMap<>();
 		Map<String, DataEntity> entities;
-		initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX,
-				Collections.singletonList(new ImmutablePair<>(LATEST_TS, TS_PARAM)));
+		initConfigurationFromApplicationConfiguration(getAppConfPrefix(), Collections.emptyList());
 		try {
 			entities = dataEntitiesConfig.getAllLeafeEntities();
 		} catch (Exception ex) {
@@ -148,6 +86,71 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 			}
 			tableToEntityIdAndIPField.put(tableName, new ImmutablePair<>(entry.getKey(), sourceIpField));
 		}
+	}
+
+	@Override
+	protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
+		Map<VPNSessionEvent, List<Map<String, Object>>> events = getEventsFromHdfs(lowerLimitInc, upperLimitInc);
+		List<JSONObject> notifications = createLateralMovementsNotificationsFromImpalaRawEvents(events);
+		notifications = addRawEventsToLateralMovement(notifications, events);
+		doneGeneratingNotifications(events.size(), notifications.size());
+		return notifications;
+	}
+
+	private Map<VPNSessionEvent, List<Map<String, Object>>> getEventsFromHdfs(Instant lowerLimitInc, Instant upperLimitInc) {
+		Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
+
+		for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
+			String tableName = entry.getKey();
+			String ipField = entry.getValue().getRight();
+
+			String t1Query = String.format(
+					"select date_time, date_time_unix, normalized_username, hostname, source_ip, local_ip, duration " +
+					"from vpnsessiondatares where %s and local_ip != ''",
+					getEpochtimeBetweenCondition("vpnsessiondatares", lowerLimitInc, upperLimitInc));
+
+			String t2Query = String.format(
+					"select date_time_unix, normalized_username, %s from %s where %s",
+					ipField, tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInc, upperLimitInc));
+
+			String query = String.format(
+					"select distinct " +
+					// Columns start
+					"unix_timestamp(seconds_sub(t1.date_time, t1.duration)) %s, " +
+					"t1.date_time_unix %s, " +
+					"t1.normalized_username %s, " +
+					"t2.normalized_username %s, " +
+					"t1.source_ip vpn_source_ip, " +
+					"t2.%s %s, " +
+					"t1.hostname as hostname, " +
+					"'%s' as %s " +
+					// Columns end
+					"from (%s) t1 inner join (%s) t2 " +
+					"on t1.local_ip = t2.%s " +
+					"and t2.date_time_unix between t1.date_time_unix - t1.duration and t1.date_time_unix " +
+					"and t1.normalized_username != t2.normalized_username",
+					VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME,
+					ipField, DATASOURCE_IP, tableName, TABLE_NAME,
+					t1Query, t2Query, ipField);
+
+			List<Map<String, Object>> rows = queryRunner.executeQuery(query);
+			if (!CollectionUtils.isEmpty(rows)) {
+				for (Map<String, Object> row : rows) {
+					VPNSessionEvent vpnSessionEvent = new VPNSessionEvent(
+							row.get(VPN_USERNAME).toString(),
+							row.get(VPN_START_TIME).toString(),
+							row.get(VPN_END_TIME).toString());
+					List<Map<String, Object>> lateralMovement = lateralMovementEvents.get(vpnSessionEvent);
+					if (lateralMovement == null) {
+						lateralMovement = new ArrayList<>();
+					}
+					lateralMovement.add(row);
+					lateralMovementEvents.put(vpnSessionEvent, lateralMovement);
+				}
+			}
+		}
+
+		return lateralMovementEvents;
 	}
 
 	private List<JSONObject> addRawEventsToLateralMovement(
@@ -273,75 +276,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		return dataQueryRunner.executeQuery(rawEventsQuery);
 	}
 
-	private void getLateralMovementEventsFromHDFS(
-			Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents, long upperLimitIncluding) {
-
-		Instant lowerLimitInstInc = Instant.ofEpochSecond(latestTimestamp);
-		Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluding);
-		logger.info("Processing {} from {} ({}) to {} ({})",
-				SERVICE_NAME, lowerLimitInstInc, latestTimestamp, upperLimitInstInc, upperLimitIncluding);
-
-		for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
-			String tableName = entry.getKey();
-			String ipField = entry.getValue().getRight();
-
-			String t1Query = String.format(
-					"select date_time, date_time_unix, normalized_username, hostname, source_ip, local_ip, duration " +
-					"from vpnsessiondatares where %s and local_ip != ''",
-					getEpochtimeBetweenCondition("vpnsessiondatares", lowerLimitInstInc, upperLimitInstInc));
-
-			String t2Query = String.format(
-					"select date_time_unix, normalized_username, %s from %s where %s",
-					ipField, tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInstInc, upperLimitInstInc));
-
-			String query = String.format(
-					"select distinct " +
-					// Columns start
-					"unix_timestamp(seconds_sub(t1.date_time, t1.duration)) %s, " +
-					"t1.date_time_unix %s, " +
-					"t1.normalized_username %s, " +
-					"t2.normalized_username %s, " +
-					"t1.source_ip vpn_source_ip, " +
-					"t2.%s %s, " +
-					"t1.hostname as hostname, " +
-					"'%s' as %s " +
-					// Columns end
-					"from (%s) t1 inner join (%s) t2 " +
-					"on t1.local_ip = t2.%s " +
-					"and t2.date_time_unix between t1.date_time_unix - t1.duration and t1.date_time_unix " +
-					"and t1.normalized_username != t2.normalized_username",
-					VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME,
-					ipField, DATASOURCE_IP, tableName, TABLE_NAME,
-					t1Query, t2Query, ipField);
-
-			List<Map<String, Object>> rows = queryRunner.executeQuery(query);
-			if (!CollectionUtils.isEmpty(rows)) {
-				for (Map<String, Object> row : rows) {
-					VPNSessionEvent vpnSessionEvent = new VPNSessionEvent(
-							row.get(VPN_USERNAME).toString(),
-							row.get(VPN_START_TIME).toString(),
-							row.get(VPN_END_TIME).toString());
-					List<Map<String, Object>> lateralMovement = lateralMovementEvents.get(vpnSessionEvent);
-					if (lateralMovement == null) {
-						lateralMovement = new ArrayList<>();
-					}
-					lateralMovement.add(row);
-					lateralMovementEvents.put(vpnSessionEvent, lateralMovement);
-				}
-			}
-		}
-	}
-
-	private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
-		for (Map<String, Object> resultPair : queryList) {
-			if (resultPair.get(MIN_DATE_TIME_FIELD) != null) {
-				Timestamp timeToUnix = (Timestamp)resultPair.get(MIN_DATE_TIME_FIELD);
-				return timeToUnix.getTime();
-			}
-		}
-		return 0;
-	}
-
 	private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(
 			Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents) {
 
@@ -363,6 +297,11 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		return createNotification(
 				startTime, endTime, normalizedUsername,
 				NotificationAnomalyType.VPN_LATERAL_MOVEMENT.getType(), normalizedUsername);
+	}
+
+	@Override
+	protected String getAppConfPrefix() {
+		return "lateral_movement_notification";
 	}
 
 	private class VPNSessionEvent {

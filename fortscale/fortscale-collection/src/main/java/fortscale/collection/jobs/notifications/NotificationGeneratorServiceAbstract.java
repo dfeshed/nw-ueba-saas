@@ -1,7 +1,10 @@
 package fortscale.collection.jobs.notifications;
 
 import fortscale.common.dataentity.DataEntitiesConfig;
+import fortscale.common.dataqueries.querydto.DataQueryDTO;
+import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.DataQueryHelper;
+import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunnerFactory;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
 import fortscale.common.dataqueries.querygenerators.mysqlgenerator.MySqlQueryRunner;
@@ -20,21 +23,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
-public abstract class NotificationGeneratorServiceAbstract implements NotificationGeneratorService {
-	protected Logger logger = LoggerFactory.getLogger(this.getClass());
+import static java.lang.Math.min;
+import static java.time.Instant.ofEpochSecond;
 
-	protected static final String LATEST_TS = "latest_ts";
-	protected static final String TS_PARAM = "latestTimestamp";
-	protected static final long DAY_IN_SECONDS = TimeUnit.DAYS.toSeconds(1);
-	protected static final long MINIMAL_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10);
+public abstract class NotificationGeneratorServiceAbstract implements NotificationGeneratorService {
+	private static final String END_TIME_FIELD_NAME = "end_time";
+	private static final String MIN_TS_FIELD_ALIAS = "min_ts";
+	private static final String MAX_TS_FIELD_ALIAS = "max_ts";
+	private static final String NEXT_EPOCHTIME_KEY = "next_epochtime";
+	private static final String NEXT_EPOCHTIME_VALUE = "nextEpochtime";
 	private static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	private static final long MIN_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10); // 10 minutes
+	private static final long MAX_UPPER_LIMIT_INC_DELTA = TimeUnit.DAYS.toSeconds(1) - 1; // 23:59:59
 
 	@Autowired
 	protected ApplicationConfigurationService applicationConfigurationService;
@@ -49,8 +58,6 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	@Autowired
 	protected DataEntitiesConfig dataEntitiesConfig;
 
-	@Value("${collection.evidence.notification.topic}")
-	private String evidenceNotificationTopic;
 	@Value("${collection.evidence.notification.score.field}")
 	protected String notificationScoreField;
 	@Value("${collection.evidence.notification.value.field}")
@@ -71,30 +78,81 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	protected String notificationNumOfEventsField;
 	@Value("${collection.evidence.notification.score}")
 	protected double notificationFixedScore;
+	@Value("${collection.evidence.notification.topic}")
+	private String evidenceNotificationTopic;
 
-	protected long latestTimestamp = 0L;
-	protected long currentTimestamp = 0L;
+	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected String dataEntity;
-
-	protected abstract List<JSONObject> generateNotificationInternal() throws Exception;
-	protected abstract long fetchEarliestEvent() throws InvalidQueryException;
+	private long nextEpochtime = 0;
 
 	/**
-	 * @return boolean, true is completed successfully, or false if some error took place
+	 * @return true if completed successfully, false if an error occurred
 	 * @throws Exception
 	 */
 	public boolean generateNotification() throws Exception {
-		figureLatestRunTime();
-		if (latestTimestamp == 0L) {
-			//No relevant data. Step out.
-			logger.info("No data for notification creation. Exit");
+		if (nextEpochtime == 0) {
+			nextEpochtime = getEarliestEpochtime();
+			logger.info("Epochtime of next event to process was 0, so it was set to the earliest epochtime ({}).", nextEpochtime);
+		}
+
+		if (nextEpochtime == 0) {
+			logger.info("No data to create notifications. Exiting.");
 			return true;
 		}
-		List<JSONObject> notifications = generateNotificationInternal();
-		if (CollectionUtils.isNotEmpty(notifications)) {
-			sendNotificationsToKafka(notifications);
+
+		long lastEpochtime = getLatestEpochtime();
+		logger.info("{} is going to generate notifications. Next time {} ({}), last time {} ({}).", getClass().getSimpleName(),
+				ofEpochSecond(nextEpochtime), nextEpochtime, ofEpochSecond(lastEpochtime), lastEpochtime);
+
+		while (nextEpochtime <= lastEpochtime - MIN_PROCESSING_PERIOD_IN_SEC) {
+			Instant lowerLimitInc = ofEpochSecond(nextEpochtime);
+			Instant upperLimitInc = ofEpochSecond(min(nextEpochtime + MAX_UPPER_LIMIT_INC_DELTA, lastEpochtime));
+			logger.info("{} is going to process events from {} ({}) to {} ({}).", getClass().getSimpleName(),
+					lowerLimitInc, lowerLimitInc.getEpochSecond(), upperLimitInc, upperLimitInc.getEpochSecond());
+			List<JSONObject> notifications = generateNotificationsInternal(lowerLimitInc, upperLimitInc);
+			if (CollectionUtils.isNotEmpty(notifications)) sendNotificationsToKafka(notifications);
+			nextEpochtime = upperLimitInc.getEpochSecond() + 1;
+			Map<String, String> updateNextTimestamp = new HashMap<>();
+			updateNextTimestamp.put(getAppConfPrefix() + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
+			applicationConfigurationService.updateConfigItems(updateNextTimestamp);
 		}
+
 		return true;
+	}
+
+	private Long getEpochtime(DataQueryDTO dataQueryDto, String key) throws InvalidQueryException {
+		DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDto);
+		String query = dataQueryRunner.generateQuery(dataQueryDto);
+		logger.info("Running the query {}.", query);
+		List<Map<String, Object>> queryResults = dataQueryRunner.executeQuery(query);
+
+		if (CollectionUtils.isEmpty(queryResults)) {
+			logger.info("The table is empty. Quitting.");
+			return null;
+		}
+
+		for (Map<String, Object> queryResult : queryResults) {
+			Object timestamp = queryResult.get(key);
+			if (timestamp instanceof Timestamp) return TimestampUtils.convertToSeconds((Timestamp)timestamp);
+		}
+
+		return null;
+	}
+
+	private long getEarliestEpochtime() throws InvalidQueryException {
+		DataQueryField minFieldFunc = dataQueryHelper.createMinFieldFunc(END_TIME_FIELD_NAME, MIN_TS_FIELD_ALIAS);
+		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(dataEntity);
+		dataQueryHelper.setFuncFieldToQuery(minFieldFunc, dataQueryDto);
+		Long earliest = getEpochtime(dataQueryDto, MIN_TS_FIELD_ALIAS);
+		return earliest == null ? 0 : earliest;
+	}
+
+	private long getLatestEpochtime() throws InvalidQueryException {
+		DataQueryField maxFieldFunc = dataQueryHelper.createMaxFieldFunc(END_TIME_FIELD_NAME, MAX_TS_FIELD_ALIAS);
+		DataQueryDTO dataQueryDto = dataQueryHelper.createDataQuery(dataEntity);
+		dataQueryHelper.setFuncFieldToQuery(maxFieldFunc, dataQueryDto);
+		Long latest = getEpochtime(dataQueryDto, MAX_TS_FIELD_ALIAS);
+		return latest == null ? 0 : latest;
 	}
 
 	/**
@@ -116,21 +174,6 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 		streamWriter.send("VPN_user_creds_share", messageToWrite);
 	}
 
-	/**
-	 * check if there is new data to process, newest data then last execution
-	 *
-	 * @throws InvalidQueryException
-	 */
-	protected void figureLatestRunTime() throws InvalidQueryException {
-		//read latestTimestamp from mongo collection application_configuration
-		currentTimestamp = TimestampUtils.convertToSeconds(System.currentTimeMillis());
-		if (latestTimestamp == 0L) {
-			//create query to find the earliest event
-			latestTimestamp = fetchEarliestEvent();
-			logger.info("Latest run time was empty. Latest timestamp was set to {}.", latestTimestamp);
-		}
-	}
-
 	protected void initConfigurationFromApplicationConfiguration(String configurationPrefix, List<Pair<String, String>> list)
 			throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
 
@@ -143,6 +186,7 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 		parameters.add(new ImmutablePair<>("notificationSupportingInformationField", "notificationSupportingInformationField"));
 		parameters.add(new ImmutablePair<>("notificationDataSourceField", "notificationDataSourceField"));
 		parameters.add(new ImmutablePair<>("notificationFixedScore", "notificationFixedScore"));
+		parameters.add(new ImmutablePair<>(NEXT_EPOCHTIME_KEY, NEXT_EPOCHTIME_VALUE));
 		parameters.addAll(list);
 		applicationConfigurationHelper.syncWithConfiguration(configurationPrefix, this, parameters);
 	}
@@ -228,6 +272,16 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 				yearMonthDayFormatter.format(lowerLimitIncluding), lowerLimitIncluding.getEpochSecond());
 	}
 
+	protected abstract List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc);
+
+	protected abstract String getAppConfPrefix();
+
+	protected void doneGeneratingNotifications(int numOfEvents, int numOfNotifications) {
+		logger.info("{} finished generating notifications. {} events, {} notifications, next process time {} ({}).",
+				getClass().getSimpleName(), numOfEvents, numOfNotifications,
+				ofEpochSecond(nextEpochtime), nextEpochtime);
+	}
+
 	public String getNormalizedUsernameField() {
 		return normalizedUsernameField;
 	}
@@ -249,13 +303,13 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	 */
 
 	@SuppressWarnings("unused")
-	public long getLatestTimestamp() {
-		return latestTimestamp;
+	public long getNextEpochtime() {
+		return nextEpochtime;
 	}
 
 	@SuppressWarnings("unused")
-	public void setLatestTimestamp(long latestTimestamp) {
-		this.latestTimestamp = latestTimestamp;
+	public void setNextEpochtime(long nextEpochtime) {
+		this.nextEpochtime = nextEpochtime;
 	}
 
 	@SuppressWarnings("unused")
