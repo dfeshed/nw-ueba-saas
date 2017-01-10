@@ -50,10 +50,13 @@ const TextReconComponent = Component.extend({
       const payloadOffset = byteCount - (packet.payloadSize || 0);
 
       // Use substring to apply payload offset.
+      // Replace angle brackets with HTML escaped entities.
       // Replace carriage returns with '<br>'
       // Replace tabs with two spaces
       // Replace any remaining ASCII 0-31 with '.'
       consecutiveText += decodedData.substring(payloadOffset)
+        .replace(/\</g, '&lt;')
+        .replace(/\>/g, '&gt;')
         .replace(/(?:\r\n|\r|\n)/g, '<br>')
         .replace(/\t/g, '&nbsp;&nbsp;')
         .replace(/[\x00-\x1F]/g, '.');
