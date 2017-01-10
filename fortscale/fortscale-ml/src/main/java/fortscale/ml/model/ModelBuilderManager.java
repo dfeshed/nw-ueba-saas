@@ -17,7 +17,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
@@ -64,7 +67,7 @@ public class ModelBuilderManager {
         logger.info("<<< Starting building models for {}, sessionId {}, previousEndTime {}, currentEndTime {}",
                 modelConf.getName(), sessionId, previousEndTime, currentEndTime);
 
-        List<String> contextIds = getContextIds(previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
+        Set<String> contextIds = getContextIds(previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
 
         long numOfSuccesses = 0;
         long numOfFailures = 0;
@@ -96,21 +99,21 @@ public class ModelBuilderManager {
                 modelConf.getName(), sessionId, numOfSuccesses, numOfFailures);
     }
 
-    private List<String> getContextIds(Date previousEndTime,
+    private Set<String> getContextIds(Date previousEndTime,
                                        Date currentEndTime,
                                        boolean selectHighScoreContexts,
                                        Set<String> specifiedContextIds) {
         if (!specifiedContextIds.isEmpty()) {
             if (selectHighScoreContexts) {
                 metrics.illegalRequest++;
-                return Collections.emptyList();
+                return Collections.emptySet();
             }
             metrics.specifiedContextIds++;
             if (contextSelector != null) {
                 // global models can operate only on all of the users
-                return new ArrayList<>(specifiedContextIds);
+                return new HashSet<>(specifiedContextIds);
             }
-            return Collections.emptyList();
+            return Collections.emptySet();
         }
 
         if (selectHighScoreContexts) {
@@ -119,7 +122,7 @@ public class ModelBuilderManager {
             metrics.getContexts++;
         }
 
-        List<String> contextIds;
+        Set<String> contextIds;
         if (contextSelector != null) {
             if (previousEndTime == null) {
                 metrics.processWithNoPreviousEndTime++;
@@ -137,7 +140,7 @@ public class ModelBuilderManager {
                 contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
             }
         } else {
-            contextIds = new ArrayList<>();
+            contextIds = new HashSet<>();
             if (!selectHighScoreContexts) {
                 // global models can operate only on all of the users
                 contextIds.add(null);
