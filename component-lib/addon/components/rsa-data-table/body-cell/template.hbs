@@ -4,12 +4,11 @@
   {{yield item index}}
 
 {{else}}
-
   {{!columns are declared imperatively, so assume we have a `column` model}}
   {{#if hasBlock}}
 
     {{!a custom block was given, so just yield that}}
-    {{yield item index column}}
+    <div title="{{get item column.field}}">{{yield item index column}}</div>
 
   {{else}}
 

@@ -1,41 +1,87 @@
 import Ember from 'ember';
-const { Route } = Ember;
+const {
+  Object: EmberObject,
+  Route
+} = Ember;
 
 export default Route.extend({
-  columnsConfig: [
-    {
+  columnsWithCheckboxConfig: [
+    EmberObject.create({
+      title: '',
+      class: 'rsa-form-row-checkbox',
+      width: '21',
+      dataType: 'checkbox',
+      componentClass: 'rsa-form-checkbox',
+      visible: true,
+      disableSort: true,
+      headerComponentClass: 'rsa-form-checkbox'
+    }),
+    EmberObject.create({
       field: 'foo',
       title: 'Foo Column'
-    },
-    {
+    }),
+    EmberObject.create({
       field: 'bar',
       title: 'Bar Column'
-    },
-    {
+    }),
+    EmberObject.create({
       field: 'baz',
       title: 'Baz Column'
-    }
+    })
+  ],
+  columnsWithoutCheckboxConfig: [
+    EmberObject.create({
+      field: 'foo',
+      title: 'Foo Column'
+    }),
+    EmberObject.create({
+      field: 'bar',
+      title: 'Bar Column'
+    }),
+    EmberObject.create({
+      field: 'baz',
+      title: 'Baz Column'
+    })
+  ],
+  columnsWithWidthConfig: [
+    EmberObject.create({
+      field: 'foo',
+      title: 'Foo Column',
+      width: 350
+    }),
+    EmberObject.create({
+      field: 'bar',
+      title: 'Bar Column',
+      width: 150
+    }),
+    EmberObject.create({
+      field: 'baz',
+      title: 'Baz Column',
+      width: 150
+    })
   ],
   items: [
-    {
-      foo: 'Test Foo 1',
+    EmberObject.create({
+      foo: 'Really really really very very long Test Foo 1',
       bar: 'Test Bar 1',
       baz: 'Test Baz 1'
-    },
-    {
+    }),
+    EmberObject.create({
       foo: 'Test Foo 2',
       bar: 'Test Bar 2',
       baz: 'Test Baz 2'
-    },
-    {
+    }),
+    EmberObject.create({
       foo: 'Test Foo 3',
       bar: 'Test Bar 3',
       baz: 'Test Baz 3'
-    }
+    })
   ],
   model() {
     return {
-      columnsConfig: this.columnsConfig,
+      columnsWithCheckboxConfig: this.columnsWithCheckboxConfig,
+      columnsWithoutCheckboxConfig: this.columnsWithoutCheckboxConfig,
+      columnsWithWidthConfig: this.columnsWithWidthConfig,
       items: this.items,
       title: 'Table',
       subtitle: 'An all purpose table component',

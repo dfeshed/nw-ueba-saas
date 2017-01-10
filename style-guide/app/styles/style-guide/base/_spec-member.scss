@@ -1,7 +1,7 @@
 // sass-lint:disable no-universal-selectors
 
 .spec-member {
-  background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
+  background-color: rsa-color(gray, darkest, $rsa-translucent);
   border: 1px solid rsa-color(gray, darkest);
   padding: rsa-whitespace();
   color: rsa-color(gray, lighter);
@@ -9,11 +9,6 @@
 
   &:last-child {
     margin-bottom: 0;
-  }
-
-  p {
-    @include rsa-font(paragraph);
-    margin-bottom: rsa-whitespace();
   }
 
   > header {
@@ -40,6 +35,11 @@
 
   > section {
     position: relative;
+
+    p {
+      @include rsa-font(paragraph);
+      margin: rsa-whitespace() 0;
+    }
 
     pre,
     code {

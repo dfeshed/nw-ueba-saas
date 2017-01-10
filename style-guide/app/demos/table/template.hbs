@@ -8,21 +8,21 @@
       {{#spec-member title="Bare Bones"}}
         {{#rsa-data-table
           items=model.items
-          columnsConfig=model.columnsConfig}}
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
 
           {{#rsa-data-table/header as |column|}}
             {{column.title}}
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell columnWidth=column.width}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
+            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
           {{/rsa-data-table/body}}
-
         {{/rsa-data-table}}
+
+        <p>
+          In the template you will want to add the data table component.
+        </p>
+
         {{!-- BEGIN-SNIPPET table1
         {{#rsa-data-table
           items=model.items
@@ -33,23 +33,278 @@
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-
-            {{#rsa-data-table/body-cell columnWidth=column.width}}
-              {{get item column.field}}
-            {{/rsa-data-table/body-cell}}
-
+            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
           {{/rsa-data-table/body}}
-
         {{/rsa-data-table}}
         END-SNIPPET --}}
         {{code-snippet name="table1.hbs"}}
+
+        <p>
+          In your route, component, or controller you will need to create a configuration for the columns.
+        </p>
+
+        {{!-- BEGIN-SNIPPET table1a
+        columnsWithoutCheckboxConfig: [
+          EmberObject.create({
+            field: 'foo',
+            title: 'Foo Column'
+          }),
+          EmberObject.create({
+            field: 'bar',
+            title: 'Bar Column'
+          }),
+          EmberObject.create({
+            field: 'baz',
+            title: 'Baz Column'
+          })
+        ]
+        END-SNIPPET --}}
+        {{code-snippet name="table1a.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member title="Bare Bones with Defined Column Widths"}}
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsWithWidthConfig}}
+
+          {{#rsa-data-table/header as |column|}}
+            {{column.title}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+
+        <p>
+          In the template you will want to add the data table component as you normally would.
+        </p>
+
+        {{!-- BEGIN-SNIPPET table1c
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsConfig}}
+
+          {{#rsa-data-table/header as |column|}}
+            {{column.title}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+        END-SNIPPET --}}
+        {{code-snippet name="table1c.hbs"}}
+
+        <p>
+          In your route, component, or controller you will need to create a configuration for the columns as you normally would, but notice how you can pass width to the column configuration.
+        </p>
+
+        {{!-- BEGIN-SNIPPET table1d
+        columnsWithWidthConfig: [
+          EmberObject.create({
+            field: 'foo',
+            title: 'Foo Column',
+            width: 350
+          }),
+          EmberObject.create({
+            field: 'bar',
+            title: 'Bar Column',
+            width: 150
+          }),
+          EmberObject.create({
+            field: 'baz',
+            title: 'Baz Column',
+            width: 150
+          })
+        ]
+        END-SNIPPET --}}
+        {{code-snippet name="table1d.hbs"}}
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Bare Bones with Custom Body Blocks"
+        subtitle="Use this if you need to inject custom markup into your body cells."}}
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+          {{#rsa-data-table/header as |column|}}
+            {{column.title}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+              <div>{{get item column.field}}</div>
+            {{/rsa-data-table/body-cell}}
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+
+        <p>
+          Add the table component same as above, but pass a block to the body cell component.
+        </p>
+
+        {{!-- BEGIN-SNIPPET table2
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsConfig}}
+
+          {{#rsa-data-table/header as |column|}}
+            {{column.title}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+              <div>{{get item column.field}}</div>
+            {{/rsa-data-table/body-cell}}
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+        END-SNIPPET --}}
+        {{code-snippet name="table2.hbs"}}
+
+        <p>
+          Configuring the header works the same way as shown above.
+        </p>
+      {{/spec-member}}
+
+      {{#spec-member
+        title="Bare Bones with Checkbox"}}
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsWithCheckboxConfig}}
+
+          {{#rsa-data-table/header as |column|}}
+            {{#if column.headerComponentClass}}
+              {{component column.headerComponentClass
+                item=item
+                index=index
+                column=column
+                value=headerCheckbox
+                mouseUp=(action 'toggleItemsSelection' model.items)}}
+            {{else}}
+              {{column.title}}
+            {{/if}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{#if column.componentClass}}
+              {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+                {{component column.componentClass
+                  item=item
+                  isSelected=item.checked
+                  mouseUp=(action 'toggleItemSelection' item)}}
+              {{/rsa-data-table/body-cell}}
+            {{else}}
+              {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{/if}}
+
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+
+        <p>
+          In the template you will want to add the checkbox component.
+        </p>
+
+        {{!-- BEGIN-SNIPPET table3
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsWithCheckboxConfig}}
+
+          {{#rsa-data-table/header as |column|}}
+            {{#if column.headerComponentClass}}
+              {{component column.headerComponentClass
+                item=item
+                index=index
+                column=column
+                value=headerCheckbox
+                mouseUp=(action 'toggleItemsSelection' model.items)}}
+            {{else}}
+              {{column.title}}
+            {{/if}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{#if column.componentClass}}
+              {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+                {{component column.componentClass
+                  item=item
+                  isSelected=item.checked
+                  mouseUp=(action 'toggleItemSelection' item)}}
+              {{/rsa-data-table/body-cell}}
+            {{else}}
+              {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{/if}}
+
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+
+        END-SNIPPET --}}
+        {{code-snippet name="table3.hbs"}}
+
+        <p>
+          In your route, component, or controller you will need to create a configuration for the columns.
+        </p>
+        {{!-- BEGIN-SNIPPET table4
+        columnsWithCheckboxConfig: [
+          EmberObject.create({
+            title: '',
+            class: 'rsa-form-row-checkbox',
+            width: '21',
+            dataType: 'checkbox',
+            componentClass: 'rsa-form-checkbox',
+            visible: true,
+            disableSort: true,
+            headerComponentClass: 'rsa-form-checkbox'
+          }),
+          EmberObject.create({
+            field: 'foo',
+            title: 'Foo Column'
+          }),
+          EmberObject.create({
+            field: 'bar',
+            title: 'Bar Column'
+          }),
+          EmberObject.create({
+            field: 'baz',
+            title: 'Baz Column'
+          })
+        ]
+        END-SNIPPET --}}
+        {{code-snippet name="table4.hbs"}}
+
+        <p>
+          Finally, ensure you have actions in your route, controller, or component to support the actions you set in the template.
+        </p>
+
+        {{!-- BEGIN-SNIPPET table6
+        allItemsChecked: false,
+
+        actions: {
+          toggleItemSelection(item) {
+            item.toggleProperty('checked');
+          },
+
+          toggleItemsSelection(items) {
+            if (this.get('allItemsChecked')) {
+              items.setEach('checked', false);
+            } else {
+              items.setEach('checked', true);
+            }
+
+            this.toggleProperty('allItemsChecked');
+          }
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="table6.hbs"}}
+
+
       {{/spec-member}}
     {{/spec-category}}
     {{#spec-category title="Reordering/Resizing Columns"}}
       {{#spec-member title="Reordering"}}
         {{#rsa-data-table
           items=model.items
-          columnsConfig=model.columnsConfig}}
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
 
           {{rsa-data-table/header}}
 

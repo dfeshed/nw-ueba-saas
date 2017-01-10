@@ -8,10 +8,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-header {
     @include rsa-vendor-prefix(flex-shrink, 0); /* can't shrink beyond min size */
     @include rsa-vendor-prefix(flex-grow, 0); /* can't grow beyond min size */
-    padding: rsa-whitespace(less) 0;
-    margin: rsa-whitespace(less) 0;
-    border-bottom: 1px solid rsa-color(black);
-    padding-bottom: rsa-whitespace(least);
+    background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
 
     &__column-selector {
       position: absolute;
@@ -36,13 +33,57 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-body-rows {
     position: relative;
+
+    &:hover {
+      .rsa-data-table-body-row {
+        color: rsa-color(gray, light);
+      }
+    }
   }
 
   &-body-row,
   &-header-row {
     white-space: nowrap;
     position: relative;
+
+    .rsa-form-checkbox {
+      margin: 0;
+    }
   }
+
+  &-header-row {
+    @include rsa-font(header, small);
+    text-transform: uppercase;
+    height: 30px;
+    color: rsa-color(gray, light);
+  }
+
+  &-body-row {
+    position: absolute;
+    left: calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
+    right: calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
+    @include rsa-font(paragraph, small);
+    border-top: 1px solid rsa-color(gray, darker);
+    color: rsa-color(gray, lighter);
+
+    &:hover {
+      margin: 0 calc((#{rsa-whitespace()} + #{rsa-whitespace(least)}) * -1);
+      padding: 0 calc(#{rsa-whitespace()} + #{rsa-whitespace(least)});
+      color: rsa-color(gray, lighter)!important;
+      background-color: rsa-color(gray, darkest, $rsa-nearly-transparent);
+      border-top: 1px solid transparent;
+
+      + .rsa-data-table-body-row {
+        border-top: 1px solid transparent;
+      }
+    }
+
+    &:first-child {
+      border-top: 1px solid transparent;
+    }
+
+  }
+
 
   &.fit-to-width {
     .rsa-data-table {
@@ -62,25 +103,16 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     }
   }
 
-  &-header-row {
-    @include rsa-font(header, small);
-    color: rsa-color(white);
-  }
-
-  &-body-row {
-    position: absolute;
-    left: 0;
-    min-width: 100%;
-    @include rsa-font(light, small);
-    border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
-    color: rsa-color(white);
-    padding: rsa-whitespace(least) 0;
+  &-body-cell {
+    padding: rsa-whitespace(less);
+    align-items: flex-start;
   }
 
   &-body-cell,
   &-header-cell {
     display: inline-block;
     overflow: hidden;
+    text-overflow: ellipsis;
     @include rsa-vendor-prefix(flex-shrink, 0);
 
     /* By default cell widths are fixed and don't expand. */
@@ -90,16 +122,29 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     &.auto-width {
       @include rsa-vendor-prefix(flex-grow,1);
     }
+
+    * {
+      overflow-x: hidden;
+      text-overflow: ellipsis;
+      max-width: 100%;
+    }
   }
 
   &-header-cell {
-    position: relative; /* enables absolute positioning for the .resize-handle children */
-
     /* enables re-ordering columns via drag, with animation. @see ember-sortable */
     transition: transform 0.125s;
+    position: relative; /* enables absolute positioning for the .resize-handle children */
+    line-height: 30px;
+    padding: 0 rsa-whitespace(less);
+    border-right: 1px solid rsa-color(gray, dark);
+    margin-right: -1px;
 
-    .js-move-handle {
-      cursor: grab;
+    &:first-child {
+      padding-left: calc((#{rsa-whitespace()} + #{rsa-whitespace(least)} + #{rsa-whitespace(less)}) - 1px);
+    }
+
+    &:last-child {
+      border-right: none;
     }
 
     &.is-dragging {
@@ -110,8 +155,13 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
         cursor: grabbing;
       }
     }
+
     &.is-dropping {
       z-index: $data-table-max-z-index;
+    }
+
+    .js-move-handle {
+      cursor: grab;
     }
 
     .title {
