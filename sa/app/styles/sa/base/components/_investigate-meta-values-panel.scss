@@ -3,11 +3,9 @@
   &__empties {
     @include rsa-font(body,small);
     li {
-      line-height: 1.28rem;
       color: rsa-color(gray);
-      display: inline;
-      list-style: none;
-      padding: rsa-whitespace(least) rsa-whitespace(least) rsa-whitespace(least) 0;
+      display: inline-block;
+      padding: 0 rsa-whitespace(least) rsa-whitespace(less) 0;
       &::after {
         content: ',';
       }
