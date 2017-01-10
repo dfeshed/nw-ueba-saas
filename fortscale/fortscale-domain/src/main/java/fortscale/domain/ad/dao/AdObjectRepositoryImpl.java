@@ -22,10 +22,16 @@ public class AdObjectRepositoryImpl {
 		query.fields().include(AdObject.timestampepochField);
 		query.with(new PageRequest(0, 1, Direction.DESC, AdObject.timestampepochField));
 		AdObject adObject = mongoTemplate.findOne(query, AdObject.class, collectionName);
+
+		// In case no fetch ever run on the system
+		if (adObject == null){
+			return  0l;
+		}
+
 		return adObject.getTimestampepoch();
 	}
 
 	public long countByTimestampepoch(Long timestampepoch, String collectionName) {
-		return mongoTemplate.count(query(where(AdObject.timestampepochField).is(timestampepoch)), AdUser.class);
+		return mongoTemplate.count(query(where(AdObject.timestampepochField).is(timestampepoch)), collectionName);
 	}
 }

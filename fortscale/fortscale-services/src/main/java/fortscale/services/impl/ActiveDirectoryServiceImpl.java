@@ -1,10 +1,7 @@
 package fortscale.services.impl;
 
 import fortscale.domain.Exceptions.PasswordDecryptionException;
-import fortscale.domain.ad.AdConnection;
-import fortscale.domain.ad.AdGroup;
-import fortscale.domain.ad.AdOU;
-import fortscale.domain.ad.AdObject;
+import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
@@ -34,8 +31,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     private final AdOURepository adOURepository;
     private final AdUserRepository adUserRepository;
     private final AdComputerRepository adComputerRepository;
-    private final AdObjectRepositoryImpl adObjectRepository;
-
 
     @Autowired
     public ActiveDirectoryServiceImpl(
@@ -44,14 +39,13 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             AdGroupRepository adGroupRepository,
             AdOURepository adOURepository,
             AdUserRepository adUserRepository,
-            AdComputerRepository adComputerRepository, AdObjectRepositoryImpl adObjectRepository) {
+            AdComputerRepository adComputerRepository) {
         this.adGroupRepository = adGroupRepository;
         this.adOURepository = adOURepository;
         this.adUserRepository = adUserRepository;
         this.adComputerRepository = adComputerRepository;
         this.activeDirectoryDAO = activeDirectoryDAO;
         this.applicationConfigurationService = applicationConfigurationService;
-        this.adObjectRepository = adObjectRepository;
     }
 
     /**
@@ -199,11 +193,33 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
     @Override
     public Long getLatestRuntime(AdObject.AdObjectType adObjectType) {
-        return adObjectRepository.getLatestTimeStampepoch(adObjectType.getCollectionName());
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.getLatestTimeStampepoch(AdGroup.COLLECTION_NAME);
+            case OU:
+                return adOURepository.getLatestTimeStampepoch(AdOU.COLLECTION_NAME);
+            case USER:
+                return adUserRepository.getLatestTimeStampepoch(AdUser.COLLECTION_NAME);
+            case COMPUTER:
+                return adComputerRepository.getLatestTimeStampepoch(AdComputer.COLLECTION_NAME);
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+        }
     }
 
     @Override
     public Long countByTimestampepoch(AdObject.AdObjectType adObjectType, Long latestRuntime) {
-        return adObjectRepository.countByTimestampepoch(latestRuntime, adObjectType.getCollectionName());
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.countByTimestampepoch(latestRuntime, AdGroup.COLLECTION_NAME);
+            case OU:
+                return adOURepository.countByTimestampepoch(latestRuntime, AdOU.COLLECTION_NAME);
+            case USER:
+                return adUserRepository.countByTimestampepoch(latestRuntime, AdUser.COLLECTION_NAME);
+            case COMPUTER:
+                return adComputerRepository.countByTimestampepoch(latestRuntime, AdComputer.COLLECTION_NAME);
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+        }
     }
 }
