@@ -2,7 +2,6 @@ package fortscale.collection.jobs.notifications;
 
 import fortscale.common.dataqueries.querydto.DataQueryDTO;
 import fortscale.common.dataqueries.querydto.DataQueryDTOImpl;
-import fortscale.common.dataqueries.querydto.DataQueryField;
 import fortscale.common.dataqueries.querydto.Term;
 import fortscale.common.dataqueries.querygenerators.DataQueryRunner;
 import fortscale.common.dataqueries.querygenerators.exceptions.InvalidQueryException;
@@ -15,7 +14,6 @@ import org.springframework.context.ApplicationContextAware;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.InvocationTargetException;
-import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
 
@@ -39,13 +37,7 @@ import java.util.*;
  *
  * Created by galiar on 01/03/2016.
  */
-public class VpnCredsShareNotificationService
-        extends NotificationGeneratorServiceAbstract implements ApplicationContextAware {
-
-    private static final String SERVICE_NAME = "VpnCredsShareNotifications";
-    private static final String APP_CONF_PREFIX = "creds_share_notification";
-    private static final String MIN_DATE_TIME_FIELD = "min_ts";
-
+public class VpnCredsShareNotificationService extends NotificationGeneratorServiceAbstract implements ApplicationContextAware {
     private ApplicationContext applicationContext;
     private String fieldManipulatorBeanName;
     private String hostnameField;
@@ -54,44 +46,12 @@ public class VpnCredsShareNotificationService
     private int numberOfConcurrentSessions;
     private String hostnameCondition;
 
-    protected List<JSONObject> generateNotificationInternal() throws Exception {
-        List<Map<String, Object>> credsShareEvents = new ArrayList<>();
-        logger.info("Generating notification of {}. latest time: {} ({}) current time: {} ({})", SERVICE_NAME,
-                Instant.ofEpochSecond(latestTimestamp), latestTimestamp,
-                Instant.ofEpochSecond(currentTimestamp), currentTimestamp);
-
-        // Process events occurred until now. Do not process periods shorter than
-        // MINIMAL_PROCESSING_PERIOD_IN_SEC. Protects from periodic execution jitter
-        while (latestTimestamp <= currentTimestamp - MINIMAL_PROCESSING_PERIOD_IN_SEC) {
-            // Calc the processing end time: process up to one day. Never process
-            // post the current time because those event simply does not exist yet
-            long upperLimitExcluded = Math.min(latestTimestamp + DAY_IN_SECONDS, currentTimestamp);
-            credsShareEvents.addAll(getCredsShareEventsFromHDFS(upperLimitExcluded - 1));
-            latestTimestamp = upperLimitExcluded;
-        }
-
-        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
-        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
-
-        // Save latest processed timestamp in mongo application_configuration.
-        // Do that at the end in case there is an error before
-        Map<String, String> updateLastTimestamp = new HashMap<>();
-        updateLastTimestamp.put(APP_CONF_PREFIX + "." + LATEST_TS, String.valueOf(latestTimestamp));
-        applicationConfigurationService.updateConfigItems(updateLastTimestamp);
-
-        logger.info("Processing of {} done. {} events, {} notifications.Latest process time {} ({})", SERVICE_NAME,
-                credsShareEvents.size(), credsShareNotifications.size(),
-                Instant.ofEpochSecond(latestTimestamp), latestTimestamp);
-        return credsShareNotifications;
-    }
-
     /**
      * resolve and init some attributes from other attributes
      */
     @PostConstruct
     public void init() throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        initConfigurationFromApplicationConfiguration(APP_CONF_PREFIX, Arrays.asList(
-                new ImmutablePair<>(LATEST_TS, TS_PARAM),
+        initConfigurationFromApplicationConfiguration(getAppConfPrefix(), Arrays.asList(
                 new ImmutablePair<>("hostnameDomainMarkersString", "hostnameDomainMarkersString"),
                 new ImmutablePair<>("numberOfConcurrentSessions", "numberOfConcurrentSessions"),
                 new ImmutablePair<>("fieldManipulatorBeanName", "fieldManipulatorBeanName")));
@@ -103,57 +63,25 @@ public class VpnCredsShareNotificationService
         this.hostnameCondition = fieldManipulator.getManipulatedFieldCondition(hostnameField, hostnameDomainMarkers);
     }
 
-    private List<JSONObject> addRawEventsToCredsShare(List<JSONObject> credsShareNotifications) {
-        credsShareNotifications.forEach(this::addRawEvents);
+    @Override
+    protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
+        List<Map<String, Object>> credsShareEvents = getCredsShareEventsFromHDFS(lowerLimitInc, upperLimitInc);
+        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
+        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
+        doneGeneratingNotifications(credsShareEvents.size(), credsShareNotifications.size());
         return credsShareNotifications;
     }
 
-    private void addRawEvents(JSONObject credsShare) {
-        // select * from vpnsessiondatares
-        // where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
-        List<Term> conditions = new ArrayList<>();
-        conditions.add(dataQueryHelper.createUserTerm(dataEntity, credsShare.getAsString("normalized_username")));
-        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc",
-                (Long)credsShare.get(notificationStartTimestampField),
-                (Long)credsShare.get(notificationEndTimestampField)));
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
-                dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
-        DataQueryRunner dataQueryRunner = null;
-        String rawEventsQuery = "";
-        try {
-            dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-            rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
-            logger.info("Running the query: {}", rawEventsQuery);
-        } catch (InvalidQueryException e) {
-            logger.debug("Bad supporting information query. Not adding raw events.", e);
-        }
-        // execute Query
-        List<Map<String, Object>> queryList =
-                dataQueryRunner == null ? Collections.emptyList() : dataQueryRunner.executeQuery(rawEventsQuery);
-        //extract the supporting information
-        List<VpnSessionOverlap> rawEvents = new ArrayList<>();
-        // each map is a single event, each pair is column and value
-        queryList.forEach(rawEvent -> rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent)));
-        credsShare.put(notificationSupportingInformationField, rawEvents);
-        credsShare.put(notificationNumOfEventsField, rawEvents.size());
-    }
-
-    private List<Map<String, Object>> getCredsShareEventsFromHDFS(long upperLimitIncluded) {
-        // create ConditionTerm for the hostname condition
-        // TODO - NEED TO DEVELOP THE UNSUPPORTED SQL FUNCTION AND TO REPLACE THIS CODE TO SUPPORT DATA QUERY
-        // create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since
-        // some features of the query aren't supported in dataQuery: e.g. CASE WHEN , or SQL functions: lpad, instr
-
-        Instant lowerLimitInstInc = Instant.ofEpochSecond(latestTimestamp);
-        Instant upperLimitInstInc = Instant.ofEpochSecond(upperLimitIncluded);
-        logger.info("Processing {} from {} ({}) to {} ({})",
-                SERVICE_NAME, lowerLimitInstInc, latestTimestamp, upperLimitInstInc, upperLimitIncluded);
+    private List<Map<String, Object>> getCredsShareEventsFromHDFS(Instant lowerLimitInc, Instant upperLimitInc) {
+        // TODO - DEVELOP THE UNSUPPORTED SQL FUNCTIONS AND REPLACE THIS CODE TO SUPPORT DATA QUERY
+        // Create dataQuery for the overlapping sessions - use impalaJDBC and not dataQuery mechanism since some
+        // features of the query aren't supported in dataQuery: e.g. CASE WHEN, or SQL functions
 
         String t1Query = String.format(
                 "select * from %s where %s and source_ip != '' and country = 'Reserved Range'",
-                tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInstInc, upperLimitInstInc));
+                tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInc, upperLimitInc));
 
-        Instant t2LowerLimitInc = getT2LowerLimitInc(lowerLimitInstInc, upperLimitInstInc);
+        Instant t2LowerLimitInc = getT2LowerLimitInc(lowerLimitInc, upperLimitInc);
         if (t2LowerLimitInc == null) return Collections.emptyList();
         String t2Query = String.format(
                 "select * from %s where %s and source_ip != '' and country = 'Reserved Range'",
@@ -200,6 +128,41 @@ public class VpnCredsShareNotificationService
         return queryRunner.executeQuery(query);
     }
 
+    private List<JSONObject> addRawEventsToCredsShare(List<JSONObject> credsShareNotifications) {
+        credsShareNotifications.forEach(this::addRawEvents);
+        return credsShareNotifications;
+    }
+
+    private void addRawEvents(JSONObject credsShare) {
+        // select * from vpnsessiondatares
+        // where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
+        List<Term> conditions = new ArrayList<>();
+        conditions.add(dataQueryHelper.createUserTerm(dataEntity, credsShare.getAsString("normalized_username")));
+        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc",
+                (Long)credsShare.get(notificationStartTimestampField),
+                (Long)credsShare.get(notificationEndTimestampField)));
+        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
+                dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
+        DataQueryRunner dataQueryRunner = null;
+        String rawEventsQuery = "";
+        try {
+            dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
+            rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
+            logger.info("Running the query: {}", rawEventsQuery);
+        } catch (InvalidQueryException e) {
+            logger.debug("Bad supporting information query. Not adding raw events.", e);
+        }
+        // execute Query
+        List<Map<String, Object>> queryList =
+                dataQueryRunner == null ? Collections.emptyList() : dataQueryRunner.executeQuery(rawEventsQuery);
+        //extract the supporting information
+        List<VpnSessionOverlap> rawEvents = new ArrayList<>();
+        // each map is a single event, each pair is column and value
+        queryList.forEach(rawEvent -> rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent)));
+        credsShare.put(notificationSupportingInformationField, rawEvents);
+        credsShare.put(notificationNumOfEventsField, rawEvents.size());
+    }
+
     private Instant getT2LowerLimitInc(Instant t1LowerLimitInc, Instant t1UpperLimitInc) {
         String query = String.format(
                 "select min(unix_timestamp(seconds_sub(date_time, duration))) as min " +
@@ -224,16 +187,6 @@ public class VpnCredsShareNotificationService
             logger.error("getT2LowerLimitInc - parsing to Instant exception. queryResult = {}.", queryResult, e);
             return null;
         }
-    }
-
-    private long extractEarliestEventFromDataQueryResult(List<Map<String, Object>> queryList) {
-        for (Map<String, Object> resultPair : queryList) {
-            if (resultPair.get(MIN_DATE_TIME_FIELD) != null) {
-                Timestamp timeToUnix = (Timestamp)resultPair.get(MIN_DATE_TIME_FIELD);
-                return timeToUnix.getTime();
-            }
-        }
-        return 0;
     }
 
     private List<JSONObject> createCredsShareNotificationsFromImpalaRawEvents(
@@ -304,34 +257,14 @@ public class VpnCredsShareNotificationService
         this.dataEntity = dataEntity;
     }
 
-    /**
-     * This method responsible on the fetching of the earliest event that this notification based on i.e - for cred
-     * sharing the base data source is vpnsession , in case of the first run we want to start executing the heuristic
-     * from the first event time.
-     *
-     * @throws InvalidQueryException
-     */
-    protected long fetchEarliestEvent() throws InvalidQueryException {
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
-                dataEntity, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
-        DataQueryField countField = dataQueryHelper.createMinFieldFunc("end_time", MIN_DATE_TIME_FIELD);
-        dataQueryHelper.setFuncFieldToQuery(countField, dataQueryDTO);
-        DataQueryRunner dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-        String query = dataQueryRunner.generateQuery(dataQueryDTO);
-        logger.info("Running the query: {}", query);
-        // execute Query
-        List<Map<String, Object>> queryList = dataQueryRunner.executeQuery(query);
-        if (queryList.isEmpty()) {
-            //no data in table
-            logger.info("Table is empty. Quit...");
-            return Long.MAX_VALUE;
-        }
-        return extractEarliestEventFromDataQueryResult(queryList);
-    }
-
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
+    }
+
+    @Override
+    protected String getAppConfPrefix() {
+        return "creds_share_notification";
     }
 
     /**
