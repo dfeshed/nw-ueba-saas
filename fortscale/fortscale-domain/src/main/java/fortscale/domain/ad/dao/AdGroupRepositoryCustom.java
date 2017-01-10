@@ -5,8 +5,8 @@ import fortscale.domain.ad.AdGroup;
 import java.util.List;
 
 public interface AdGroupRepositoryCustom {
-	Long getLatestTimeStampepoch(String collectionName);
-	long countByTimestampepoch(Long timestampepoch, String collectionName);
+	Long getLatestTimeStampepoch();
+	long countByTimestampepoch(Long timestampepoch);
 	AdGroup findByDistinguishedNameInLastSnapshot(String dn);
 	List<AdGroup> getActiveDirectoryGroups(int maxNumberOfReturnElements);
 }

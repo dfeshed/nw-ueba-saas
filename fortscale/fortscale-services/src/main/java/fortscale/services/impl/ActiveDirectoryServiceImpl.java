@@ -195,13 +195,13 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     public Long getLatestRuntime(AdObject.AdObjectType adObjectType) {
         switch (adObjectType) {
             case GROUP:
-                return adGroupRepository.getLatestTimeStampepoch(AdGroup.COLLECTION_NAME);
+                return adGroupRepository.getLatestTimeStampepoch();
             case OU:
-                return adOURepository.getLatestTimeStampepoch(AdOU.COLLECTION_NAME);
+                return adOURepository.getLatestTimeStampepoch();
             case USER:
-                return adUserRepository.getLatestTimeStampepoch(AdUser.COLLECTION_NAME);
+                return adUserRepository.getLatestTimeStampepoch();
             case COMPUTER:
-                return adComputerRepository.getLatestTimeStampepoch(AdComputer.COLLECTION_NAME);
+                return adComputerRepository.getLatestTimeStampepoch();
             default:
                 throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
         }
@@ -211,13 +211,13 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     public Long countByTimestampepoch(AdObject.AdObjectType adObjectType, Long latestRuntime) {
         switch (adObjectType) {
             case GROUP:
-                return adGroupRepository.countByTimestampepoch(latestRuntime, AdGroup.COLLECTION_NAME);
+                return adGroupRepository.countByTimestampepoch(latestRuntime);
             case OU:
-                return adOURepository.countByTimestampepoch(latestRuntime, AdOU.COLLECTION_NAME);
+                return adOURepository.countByTimestampepoch(latestRuntime);
             case USER:
-                return adUserRepository.countByTimestampepoch(latestRuntime, AdUser.COLLECTION_NAME);
+                return adUserRepository.countByTimestampepoch(latestRuntime);
             case COMPUTER:
-                return adComputerRepository.countByTimestampepoch(latestRuntime, AdComputer.COLLECTION_NAME);
+                return adComputerRepository.countByTimestampepoch(latestRuntime);
             default:
                 throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
         }

@@ -10,8 +10,8 @@ import fortscale.domain.ad.AdUser;
 
 interface AdUserRepositoryCustom {
 
-	Long getLatestTimeStampepoch(String collectionName);
-	long countByTimestampepoch(Long timestampepoch, String collectionName);
+	Long getLatestTimeStampepoch();
+	long countByTimestampepoch(Long timestampepoch);
 	Page<AdUser> findAdUsersBelongtoOUInSnapshot(String ou, Pageable pageable, String runtime);
 	List<AdUser> findByDnUsersIn(List<String> usersDn);
 	String getAdUsersLastSnapshotRuntime();

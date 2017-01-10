@@ -370,7 +370,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		Long timestampepoc = adUserRepository.getLatestTimeStampepoch(AdUser.COLLECTION_NAME);
+		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
 		if(timestampepoc != null) {
 			updateUserWithADInfo(timestampepoc);
 		} else {
