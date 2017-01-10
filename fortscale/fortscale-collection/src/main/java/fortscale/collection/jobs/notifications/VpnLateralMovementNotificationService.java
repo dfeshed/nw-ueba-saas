@@ -88,6 +88,71 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		}
 	}
 
+	@Override
+	protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
+		Map<VPNSessionEvent, List<Map<String, Object>>> events = getEventsFromHdfs(lowerLimitInc, upperLimitInc);
+		List<JSONObject> notifications = createLateralMovementsNotificationsFromImpalaRawEvents(events);
+		notifications = addRawEventsToLateralMovement(notifications, events);
+		doneGeneratingNotifications(events.size(), notifications.size());
+		return notifications;
+	}
+
+	private Map<VPNSessionEvent, List<Map<String, Object>>> getEventsFromHdfs(Instant lowerLimitInc, Instant upperLimitInc) {
+		Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
+
+		for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
+			String tableName = entry.getKey();
+			String ipField = entry.getValue().getRight();
+
+			String t1Query = String.format(
+					"select date_time, date_time_unix, normalized_username, hostname, source_ip, local_ip, duration " +
+					"from vpnsessiondatares where %s and local_ip != ''",
+					getEpochtimeBetweenCondition("vpnsessiondatares", lowerLimitInc, upperLimitInc));
+
+			String t2Query = String.format(
+					"select date_time_unix, normalized_username, %s from %s where %s",
+					ipField, tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInc, upperLimitInc));
+
+			String query = String.format(
+					"select distinct " +
+					// Columns start
+					"unix_timestamp(seconds_sub(t1.date_time, t1.duration)) %s, " +
+					"t1.date_time_unix %s, " +
+					"t1.normalized_username %s, " +
+					"t2.normalized_username %s, " +
+					"t1.source_ip vpn_source_ip, " +
+					"t2.%s %s, " +
+					"t1.hostname as hostname, " +
+					"'%s' as %s " +
+					// Columns end
+					"from (%s) t1 inner join (%s) t2 " +
+					"on t1.local_ip = t2.%s " +
+					"and t2.date_time_unix between t1.date_time_unix - t1.duration and t1.date_time_unix " +
+					"and t1.normalized_username != t2.normalized_username",
+					VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME,
+					ipField, DATASOURCE_IP, tableName, TABLE_NAME,
+					t1Query, t2Query, ipField);
+
+			List<Map<String, Object>> rows = queryRunner.executeQuery(query);
+			if (!CollectionUtils.isEmpty(rows)) {
+				for (Map<String, Object> row : rows) {
+					VPNSessionEvent vpnSessionEvent = new VPNSessionEvent(
+							row.get(VPN_USERNAME).toString(),
+							row.get(VPN_START_TIME).toString(),
+							row.get(VPN_END_TIME).toString());
+					List<Map<String, Object>> lateralMovement = lateralMovementEvents.get(vpnSessionEvent);
+					if (lateralMovement == null) {
+						lateralMovement = new ArrayList<>();
+					}
+					lateralMovement.add(row);
+					lateralMovementEvents.put(vpnSessionEvent, lateralMovement);
+				}
+			}
+		}
+
+		return lateralMovementEvents;
+	}
+
 	private List<JSONObject> addRawEventsToLateralMovement(
 			List<JSONObject> lateralMovementNotifications,
 			Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents) {
@@ -211,62 +276,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		return dataQueryRunner.executeQuery(rawEventsQuery);
 	}
 
-	private Map<VPNSessionEvent, List<Map<String, Object>>> getEventsFromHdfs(Instant lowerLimitInc, Instant upperLimitInc) {
-		Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents = new HashMap<>();
-
-		for (Map.Entry<String, Pair<String, String>> entry : tableToEntityIdAndIPField.entrySet()) {
-			String tableName = entry.getKey();
-			String ipField = entry.getValue().getRight();
-
-			String t1Query = String.format(
-					"select date_time, date_time_unix, normalized_username, hostname, source_ip, local_ip, duration " +
-					"from vpnsessiondatares where %s and local_ip != ''",
-					getEpochtimeBetweenCondition("vpnsessiondatares", lowerLimitInc, upperLimitInc));
-
-			String t2Query = String.format(
-					"select date_time_unix, normalized_username, %s from %s where %s",
-					ipField, tableName, getEpochtimeBetweenCondition(tableName, lowerLimitInc, upperLimitInc));
-
-			String query = String.format(
-					"select distinct " +
-					// Columns start
-					"unix_timestamp(seconds_sub(t1.date_time, t1.duration)) %s, " +
-					"t1.date_time_unix %s, " +
-					"t1.normalized_username %s, " +
-					"t2.normalized_username %s, " +
-					"t1.source_ip vpn_source_ip, " +
-					"t2.%s %s, " +
-					"t1.hostname as hostname, " +
-					"'%s' as %s " +
-					// Columns end
-					"from (%s) t1 inner join (%s) t2 " +
-					"on t1.local_ip = t2.%s " +
-					"and t2.date_time_unix between t1.date_time_unix - t1.duration and t1.date_time_unix " +
-					"and t1.normalized_username != t2.normalized_username",
-					VPN_START_TIME, VPN_END_TIME, VPN_USERNAME, DATASOURCE_USERNAME,
-					ipField, DATASOURCE_IP, tableName, TABLE_NAME,
-					t1Query, t2Query, ipField);
-
-			List<Map<String, Object>> rows = queryRunner.executeQuery(query);
-			if (!CollectionUtils.isEmpty(rows)) {
-				for (Map<String, Object> row : rows) {
-					VPNSessionEvent vpnSessionEvent = new VPNSessionEvent(
-							row.get(VPN_USERNAME).toString(),
-							row.get(VPN_START_TIME).toString(),
-							row.get(VPN_END_TIME).toString());
-					List<Map<String, Object>> lateralMovement = lateralMovementEvents.get(vpnSessionEvent);
-					if (lateralMovement == null) {
-						lateralMovement = new ArrayList<>();
-					}
-					lateralMovement.add(row);
-					lateralMovementEvents.put(vpnSessionEvent, lateralMovement);
-				}
-			}
-		}
-
-		return lateralMovementEvents;
-	}
-
 	private List<JSONObject> createLateralMovementsNotificationsFromImpalaRawEvents(
 			Map<VPNSessionEvent, List<Map<String, Object>>> lateralMovementEvents) {
 
@@ -288,15 +297,6 @@ public class VpnLateralMovementNotificationService extends NotificationGenerator
 		return createNotification(
 				startTime, endTime, normalizedUsername,
 				NotificationAnomalyType.VPN_LATERAL_MOVEMENT.getType(), normalizedUsername);
-	}
-
-	@Override
-	protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
-		Map<VPNSessionEvent, List<Map<String, Object>>> events = getEventsFromHdfs(lowerLimitInc, upperLimitInc);
-		List<JSONObject> notifications = createLateralMovementsNotificationsFromImpalaRawEvents(events);
-		notifications = addRawEventsToLateralMovement(notifications, events);
-		doneGeneratingNotifications(events.size(), notifications.size());
-		return notifications;
 	}
 
 	@Override

@@ -83,9 +83,7 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 
 	protected Logger logger = LoggerFactory.getLogger(getClass());
 	protected String dataEntity;
-
 	private long nextEpochtime = 0;
-	private long lastEpochtime = 0;
 
 	/**
 	 * @return true if completed successfully, false if an error occurred
@@ -94,7 +92,7 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	public boolean generateNotification() throws Exception {
 		if (nextEpochtime == 0) {
 			nextEpochtime = getEarliestEpochtime();
-			logger.info("Epochtime of next event to process was 0, so it was set to the earliest epochtime.");
+			logger.info("Epochtime of next event to process was 0, so it was set to the earliest epochtime ({}).", nextEpochtime);
 		}
 
 		if (nextEpochtime == 0) {
@@ -102,9 +100,23 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 			return true;
 		}
 
-		lastEpochtime = getLatestEpochtime();
-		logger.info("Next event to process epochtime = {}, latest epochtime = {}.", nextEpochtime, lastEpochtime);
-		generateNotificationsInternal();
+		long lastEpochtime = getLatestEpochtime();
+		logger.info("{} is going to generate notifications. Next time {} ({}), last time {} ({}).", getClass().getSimpleName(),
+				ofEpochSecond(nextEpochtime), nextEpochtime, ofEpochSecond(lastEpochtime), lastEpochtime);
+
+		while (nextEpochtime <= lastEpochtime - MIN_PROCESSING_PERIOD_IN_SEC) {
+			Instant lowerLimitInc = ofEpochSecond(nextEpochtime);
+			Instant upperLimitInc = ofEpochSecond(min(nextEpochtime + MAX_UPPER_LIMIT_INC_DELTA, lastEpochtime));
+			logger.info("{} is going to process events from {} ({}) to {} ({}).", getClass().getSimpleName(),
+					lowerLimitInc, lowerLimitInc.getEpochSecond(), upperLimitInc, upperLimitInc.getEpochSecond());
+			List<JSONObject> notifications = generateNotificationsInternal(lowerLimitInc, upperLimitInc);
+			if (CollectionUtils.isNotEmpty(notifications)) sendNotificationsToKafka(notifications);
+			nextEpochtime = upperLimitInc.getEpochSecond() + 1;
+			Map<String, String> updateNextTimestamp = new HashMap<>();
+			updateNextTimestamp.put(getAppConfPrefix() + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
+			applicationConfigurationService.updateConfigItems(updateNextTimestamp);
+		}
+
 		return true;
 	}
 
@@ -258,28 +270,6 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 		// Note that the formatter is specific to the "yearmonthday" partition
 		return String.format("yearmonthday >= %s and date_time_unix >= %d",
 				yearMonthDayFormatter.format(lowerLimitIncluding), lowerLimitIncluding.getEpochSecond());
-	}
-
-	private void generateNotificationsInternal() {
-		logger.info("{} is going to generate notifications. Next time {} ({}), last time {} ({}).",
-				getClass().getSimpleName(),
-				ofEpochSecond(nextEpochtime), nextEpochtime,
-				ofEpochSecond(lastEpochtime), lastEpochtime);
-
-		while (nextEpochtime <= lastEpochtime - MIN_PROCESSING_PERIOD_IN_SEC) {
-			Instant lowerLimitInc = ofEpochSecond(nextEpochtime);
-			Instant upperLimitInc = ofEpochSecond(min(nextEpochtime + MAX_UPPER_LIMIT_INC_DELTA, lastEpochtime));
-			logger.info("{} is going to process events from {} ({}) to {} ({}).", getClass().getSimpleName(),
-					lowerLimitInc, lowerLimitInc.getEpochSecond(),
-					upperLimitInc, upperLimitInc.getEpochSecond());
-
-			List<JSONObject> notifications = generateNotificationsInternal(lowerLimitInc, upperLimitInc);
-			if (CollectionUtils.isNotEmpty(notifications)) sendNotificationsToKafka(notifications);
-			nextEpochtime = upperLimitInc.getEpochSecond() + 1;
-			Map<String, String> updateNextTimestamp = new HashMap<>();
-			updateNextTimestamp.put(getAppConfPrefix() + "." + NEXT_EPOCHTIME_KEY, String.valueOf(nextEpochtime));
-			applicationConfigurationService.updateConfigItems(updateNextTimestamp);
-		}
 	}
 
 	protected abstract List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc);

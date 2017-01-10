@@ -63,39 +63,13 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
         this.hostnameCondition = fieldManipulator.getManipulatedFieldCondition(hostnameField, hostnameDomainMarkers);
     }
 
-    private List<JSONObject> addRawEventsToCredsShare(List<JSONObject> credsShareNotifications) {
-        credsShareNotifications.forEach(this::addRawEvents);
+    @Override
+    protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
+        List<Map<String, Object>> credsShareEvents = getCredsShareEventsFromHDFS(lowerLimitInc, upperLimitInc);
+        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
+        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
+        doneGeneratingNotifications(credsShareEvents.size(), credsShareNotifications.size());
         return credsShareNotifications;
-    }
-
-    private void addRawEvents(JSONObject credsShare) {
-        // select * from vpnsessiondatares
-        // where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
-        List<Term> conditions = new ArrayList<>();
-        conditions.add(dataQueryHelper.createUserTerm(dataEntity, credsShare.getAsString("normalized_username")));
-        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc",
-                (Long)credsShare.get(notificationStartTimestampField),
-                (Long)credsShare.get(notificationEndTimestampField)));
-        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
-                dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
-        DataQueryRunner dataQueryRunner = null;
-        String rawEventsQuery = "";
-        try {
-            dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
-            rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
-            logger.info("Running the query: {}", rawEventsQuery);
-        } catch (InvalidQueryException e) {
-            logger.debug("Bad supporting information query. Not adding raw events.", e);
-        }
-        // execute Query
-        List<Map<String, Object>> queryList =
-                dataQueryRunner == null ? Collections.emptyList() : dataQueryRunner.executeQuery(rawEventsQuery);
-        //extract the supporting information
-        List<VpnSessionOverlap> rawEvents = new ArrayList<>();
-        // each map is a single event, each pair is column and value
-        queryList.forEach(rawEvent -> rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent)));
-        credsShare.put(notificationSupportingInformationField, rawEvents);
-        credsShare.put(notificationNumOfEventsField, rawEvents.size());
     }
 
     private List<Map<String, Object>> getCredsShareEventsFromHDFS(Instant lowerLimitInc, Instant upperLimitInc) {
@@ -152,6 +126,41 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
 
         //run the query
         return queryRunner.executeQuery(query);
+    }
+
+    private List<JSONObject> addRawEventsToCredsShare(List<JSONObject> credsShareNotifications) {
+        credsShareNotifications.forEach(this::addRawEvents);
+        return credsShareNotifications;
+    }
+
+    private void addRawEvents(JSONObject credsShare) {
+        // select * from vpnsessiondatares
+        // where username='#{username}' and date_time_unix>=#{start_time} and date_time_unix<=#{end_time}
+        List<Term> conditions = new ArrayList<>();
+        conditions.add(dataQueryHelper.createUserTerm(dataEntity, credsShare.getAsString("normalized_username")));
+        conditions.add(dataQueryHelper.createDateRangeTermByOtherTimeField(dataEntity, "start_time_utc",
+                (Long)credsShare.get(notificationStartTimestampField),
+                (Long)credsShare.get(notificationEndTimestampField)));
+        DataQueryDTO dataQueryDTO = dataQueryHelper.createDataQuery(
+                dataEntity, "*", conditions, new ArrayList<>(), -1, DataQueryDTOImpl.class);
+        DataQueryRunner dataQueryRunner = null;
+        String rawEventsQuery = "";
+        try {
+            dataQueryRunner = dataQueryRunnerFactory.getDataQueryRunner(dataQueryDTO);
+            rawEventsQuery = dataQueryRunner.generateQuery(dataQueryDTO);
+            logger.info("Running the query: {}", rawEventsQuery);
+        } catch (InvalidQueryException e) {
+            logger.debug("Bad supporting information query. Not adding raw events.", e);
+        }
+        // execute Query
+        List<Map<String, Object>> queryList =
+                dataQueryRunner == null ? Collections.emptyList() : dataQueryRunner.executeQuery(rawEventsQuery);
+        //extract the supporting information
+        List<VpnSessionOverlap> rawEvents = new ArrayList<>();
+        // each map is a single event, each pair is column and value
+        queryList.forEach(rawEvent -> rawEvents.add(createVpnSessionOverlapFromImpalaRow(rawEvent)));
+        credsShare.put(notificationSupportingInformationField, rawEvents);
+        credsShare.put(notificationNumOfEventsField, rawEvents.size());
     }
 
     private Instant getT2LowerLimitInc(Instant t1LowerLimitInc, Instant t1UpperLimitInc) {
@@ -251,15 +260,6 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
-    }
-
-    @Override
-    protected List<JSONObject> generateNotificationsInternal(Instant lowerLimitInc, Instant upperLimitInc) {
-        List<Map<String, Object>> credsShareEvents = getCredsShareEventsFromHDFS(lowerLimitInc, upperLimitInc);
-        List<JSONObject> credsShareNotifications = createCredsShareNotificationsFromImpalaRawEvents(credsShareEvents);
-        credsShareNotifications = addRawEventsToCredsShare(credsShareNotifications);
-        doneGeneratingNotifications(credsShareEvents.size(), credsShareNotifications.size());
-        return credsShareNotifications;
     }
 
     @Override
