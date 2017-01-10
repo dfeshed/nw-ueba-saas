@@ -15,6 +15,7 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
 
     public CompoundControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, ApplicationConfigurationService applicationConfigurationService, AdObjectType dataSource) {
         super(controller, activeDirectoryService, applicationConfigurationService, dataSource);
+        currentAdTaskType = AdTaskType.FETCH_ETL;
     }
 
     @Override

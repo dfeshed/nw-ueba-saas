@@ -322,6 +322,7 @@ public class ApiActiveDirectoryController {
 	}
 
 	public void executeTasks(List<ControllerInvokedAdTask> tasksToExecute) {
+		logger.trace("Executing tasks {}", tasksToExecute);
 		for (ControllerInvokedAdTask controllerInvokedAdTask : tasksToExecute) {
 			executeTask(controllerInvokedAdTask);
 		}

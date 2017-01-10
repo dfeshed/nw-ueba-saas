@@ -177,9 +177,9 @@ public class ControllerInvokedAdTask implements Runnable {
         final String key = split[0];
         final String value = split[1];
         taskResults.put(key, value);
-//        if (applicationConfigurationService.delete(resultsKey) == 0) {
-//            logger.warn("Failed to delete query result with key {}.", resultsKey);
-//        }
+        if (applicationConfigurationService.delete(resultsKey) == 0) {
+            logger.warn("Failed to delete query result with key {}.", resultsKey);
+        }
 
         return taskResults;
     }
@@ -250,7 +250,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
     @Override
     public String toString() {
-        return "ControllerInvokedAdTask{" +
+        return getClass() + "{" +
                 "dataSource=" + dataSource +
                 ", currentAdTaskType=" + currentAdTaskType +
                 '}';
