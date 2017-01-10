@@ -4,17 +4,18 @@ export default{
   title: 'context.list.title',
   columns: [
     {
-      field: 'dataSourceName',
+      field1: 'dataSourceName',
+      field2: 'connectionName',
       title: 'context.list.dataSourceName',
       groupedColumn: true
     },
     {
-      field: 'dataSourceDescription',
+      field1: 'dataSourceDescription',
       title: 'context.list.dataSourceDescription',
       groupedColumn: true
     },
     {
-      field: 'data',
+      field1: 'data',
       title: 'context.list.data',
       groupedColumn: false,
       groupdata: 'resultList',

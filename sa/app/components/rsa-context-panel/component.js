@@ -1,7 +1,8 @@
 import Ember from 'ember';
-import DatasourceList from 'sa/context/datasource-list';
 import MultiColumnList from 'sa/context/tree-table';
 import LiveConnect from 'sa/context/live-connect';
+import ecatColumns from 'sa/context/ecat-columns';
+import imColumns from 'sa/context/im-columns';
 
 const {
   inject: {
@@ -21,9 +22,9 @@ export default Component.extend({
 
   model: null,
   contextData: null,
-  columnHeader: {
-    datasourceList: DatasourceList
-  },
+
+  contextColumnsConfig: ecatColumns.concat(imColumns),
+
   multicolumn: {
     multiColumnList: MultiColumnList
 
@@ -95,19 +96,19 @@ export default Component.extend({
   },
 
   _populateContextsData(contextData) {
-    switch (contextData.dataSourceType) {
+    switch (contextData.dataSourceGroup || contextData.dataSourceType) {
       case 'Modules': {
         set(this.get('model').contextData, 'additionalData', contextData.resultMeta);
-        set(this.get('model').contextData, contextData.dataSourceType, contextData.resultList);
+        set(this.get('model').contextData, contextData.dataSourceGroup, contextData.resultList);
         break;
       }
 
       case 'LIST': {
-        const { dataSourceType } = contextData;
+        const { dataSourceGroup } = contextData;
         const model = this.get('model');
         const { contextData: allContextData } = model;
-        const allSourceTypeData = allContextData[dataSourceType] || [];
-        set(allContextData, dataSourceType, allSourceTypeData.concat(contextData));
+        const allSourceTypeData = allContextData[dataSourceGroup] || [];
+        set(allContextData, dataSourceGroup, allSourceTypeData.concat(contextData));
         break;
       }
 
@@ -123,7 +124,7 @@ export default Component.extend({
         });
         break;
       default:
-        set(this.get('model').contextData, contextData.dataSourceType, contextData.resultList);
+        set(this.get('model').contextData, contextData.dataSourceGroup, contextData.resultList);
 
     }
   },

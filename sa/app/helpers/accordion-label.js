@@ -1,11 +1,12 @@
 import Ember from 'ember';
 const { Helper: { helper } } = Ember;
 export function accordionLabel([data, columns]) {
-  const value = [];
-  columns.forEach((obj) => {
-    value.push(data[obj.field]);
+  // return an array of values, one per column
+  return columns.map(({ field1, field2 }) => {
+    // try this column's field2 first; if empty, try field1
+    return data[field2] || data[field1];
   });
-  return value;
+
 }
 export default helper(accordionLabel);
 
