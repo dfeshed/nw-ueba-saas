@@ -839,7 +839,7 @@ broccoli-funnel@^0.2.3:
     symlink-or-copy "^1.0.0"
     walk-sync "^0.2.6"
 
-broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3, broccoli-funnel@^1.0.6:
+broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.6:
   version "1.0.8"
   resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.0.8.tgz#48af6688314561b27898580e23cf6b925951e5c6"
   dependencies:
@@ -858,7 +858,7 @@ broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3, broccoli
     symlink-or-copy "^1.0.0"
     walk-sync "^0.3.1"
 
-broccoli-funnel@^1.1.0:
+broccoli-funnel@^1.0.3, broccoli-funnel@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.1.0.tgz#dfb91a37c902456456de4a40a1881948d65b27d9"
   dependencies:
@@ -1725,9 +1725,17 @@ d3-array@1, d3-array@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-array/-/d3-array-1.0.1.tgz#375c02874fcd96c16ed9f1bcf5b4a7be53f358e7"
 
+d3-array@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-array/-/d3-array-1.0.2.tgz#174237bf356a852fadd6af87743d928631de7655"
+
 d3-axis@1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/d3-axis/-/d3-axis-1.0.3.tgz#ddcbd8a23c2a568d3787de0dee00a36413c5d595"
+
+d3-axis@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/d3-axis/-/d3-axis-1.0.4.tgz#bdfdcf5e859824062e0f17ad920f76236e72512c"
 
 d3-brush@1.0.3:
   version "1.0.3"
@@ -1746,21 +1754,47 @@ d3-chord@1.0.2:
     d3-array "1"
     d3-path "1"
 
+d3-chord@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/d3-chord/-/d3-chord-1.0.3.tgz#a398bae7cb632a3c4ea687a555a6b9ee4609d990"
+  dependencies:
+    d3-array "1"
+    d3-path "1"
+
 d3-collection@1, d3-collection@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-collection/-/d3-collection-1.0.1.tgz#5b5c5626f731122b600b107d71a08833fec049ad"
+
+d3-collection@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-collection/-/d3-collection-1.0.2.tgz#df5acb5400443e9eabe9c1379896c67e52426b39"
 
 d3-color@1, d3-color@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-color/-/d3-color-1.0.1.tgz#73cc91f4ee3f12e00ca06b1596a7c83cf104723a"
 
+d3-color@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-color/-/d3-color-1.0.2.tgz#83cb4b3a9474e40795f009d97e97a15649830bbc"
+
 d3-dispatch@1, d3-dispatch@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-dispatch/-/d3-dispatch-1.0.1.tgz#4bd65a43cecff4318deb9df24552aa8bf281a840"
 
+d3-dispatch@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-dispatch/-/d3-dispatch-1.0.2.tgz#5b511e79a46a1f89492841c0a8f656687d5daa0a"
+
 d3-drag@1, d3-drag@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-drag/-/d3-drag-1.0.1.tgz#49ad9f5c91865593fb30c86b15f9322d43fec51f"
+  dependencies:
+    d3-dispatch "1"
+    d3-selection "1"
+
+d3-drag@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-drag/-/d3-drag-1.0.2.tgz#d634cc3f7689f99dd03fd7eb1af2945c0f4339ad"
   dependencies:
     d3-dispatch "1"
     d3-selection "1"
@@ -1777,9 +1811,22 @@ d3-ease@1, d3-ease@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-ease/-/d3-ease-1.0.1.tgz#a18c2d44e218fb8b9ec6d635bcca587f85979a85"
 
+d3-ease@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-ease/-/d3-ease-1.0.2.tgz#b486f8f3ca308ca7be38197d65622b6e30983377"
+
 d3-force@1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/d3-force/-/d3-force-1.0.3.tgz#4b7bc812382b24497954b19a6130b551a33e1b73"
+  dependencies:
+    d3-collection "1"
+    d3-dispatch "1"
+    d3-quadtree "1"
+    d3-timer "1"
+
+d3-force@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/d3-force/-/d3-force-1.0.4.tgz#f84dcbb3200be41de7bc30fa71923143156758bf"
   dependencies:
     d3-collection "1"
     d3-dispatch "1"
@@ -1796,9 +1843,19 @@ d3-geo@1.3.1:
   dependencies:
     d3-array "1"
 
+d3-geo@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/d3-geo/-/d3-geo-1.4.0.tgz#15e58c414b5bafa1a960eeeb29059c94a60d8408"
+  dependencies:
+    d3-array "1"
+
 d3-hierarchy@1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/d3-hierarchy/-/d3-hierarchy-1.0.2.tgz#c8faa11dc49bcc93914c6aa35a46bdee4e01ee72"
+
+d3-hierarchy@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/d3-hierarchy/-/d3-hierarchy-1.0.3.tgz#986b4925e81f1e0b4087e9442850f950cf27d338"
 
 d3-interpolate@1, d3-interpolate@1.1.1:
   version "1.1.1"
@@ -1806,17 +1863,35 @@ d3-interpolate@1, d3-interpolate@1.1.1:
   dependencies:
     d3-color "1"
 
+d3-interpolate@1.1.2:
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/d3-interpolate/-/d3-interpolate-1.1.2.tgz#b52e6927a04fe1fe2a4cffc139e5389ed3e5e790"
+  dependencies:
+    d3-color "1"
+
 d3-path@1, d3-path@1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/d3-path/-/d3-path-1.0.2.tgz#9941a472daed62084e5ecf4394987bcadc8c39a7"
+
+d3-path@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/d3-path/-/d3-path-1.0.3.tgz#60103d0dea9a6cd6ca58de86c6d56724002d3fde"
 
 d3-polygon@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-polygon/-/d3-polygon-1.0.1.tgz#c1e710cc715b082f18494d102e41bdaaf8c44d03"
 
+d3-polygon@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-polygon/-/d3-polygon-1.0.2.tgz#6552c0fb03aa2d05023351da6e0e8adc4df0202b"
+
 d3-quadtree@1, d3-quadtree@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-quadtree/-/d3-quadtree-1.0.1.tgz#13be025624f110405ed43536c506aaec199ed591"
+
+d3-quadtree@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-quadtree/-/d3-quadtree-1.0.2.tgz#e7e873af06aaa427eaa4af094cc4cbfb350b9e38"
 
 d3-queue@3.0.3:
   version "3.0.3"
@@ -1826,9 +1901,22 @@ d3-random@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/d3-random/-/d3-random-1.0.1.tgz#2c9444cdcba23f8c41f7940d46bf301bf99603eb"
 
+d3-random@1.0.2:
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/d3-random/-/d3-random-1.0.2.tgz#83ff6a391206209c30565299e43c6549866db269"
+
 d3-request@1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/d3-request/-/d3-request-1.0.2.tgz#98083736d4146fdd28703b5aa8ef7e7328ba3f69"
+  dependencies:
+    d3-collection "1"
+    d3-dispatch "1"
+    d3-dsv "1"
+    xmlhttprequest "1"
+
+d3-request@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/d3-request/-/d3-request-1.0.3.tgz#63fc7dfd784607db0df5d535d7cb898fceba755a"
   dependencies:
     d3-collection "1"
     d3-dispatch "1"
@@ -1847,9 +1935,25 @@ d3-scale@1.0.3:
     d3-time "1"
     d3-time-format "2"
 
+d3-scale@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/d3-scale/-/d3-scale-1.0.4.tgz#50e28bf6a193b706745528515ed9b3d44205a033"
+  dependencies:
+    d3-array "1"
+    d3-collection "1"
+    d3-color "1"
+    d3-format "1"
+    d3-interpolate "1"
+    d3-time "1"
+    d3-time-format "2"
+
 d3-selection@1, d3-selection@1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/d3-selection/-/d3-selection-1.0.2.tgz#ae662afd4702ac9c5da039b2107a1764fa1c9070"
+
+d3-selection@1.0.3:
+  version "1.0.3"
+  resolved "https://registry.npmjs.org/d3-selection/-/d3-selection-1.0.3.tgz#e63e51416172427854c1bcdfa066eb5fe872c108"
 
 d3-shape@1.0.3:
   version "1.0.3"
@@ -1857,9 +1961,21 @@ d3-shape@1.0.3:
   dependencies:
     d3-path "1"
 
+d3-shape@1.0.4:
+  version "1.0.4"
+  resolved "https://registry.npmjs.org/d3-shape/-/d3-shape-1.0.4.tgz#145ee100ccbec42f8e3f1996cd05c786f79fe1c6"
+  dependencies:
+    d3-path "1"
+
 d3-time-format@2, d3-time-format@2.0.2:
   version "2.0.2"
   resolved "https://registry.npmjs.org/d3-time-format/-/d3-time-format-2.0.2.tgz#1c537e9d4558966a658c51f4ca3dd1b47369c2d5"
+  dependencies:
+    d3-time "1"
+
+d3-time-format@2.0.3:
+  version "2.0.3"
+  resolved "https://registry.npmjs.org/d3-time-format/-/d3-time-format-2.0.3.tgz#3241569b74ddc9c42e0689c0e8a903579fd6280a"
   dependencies:
     d3-time "1"
 
@@ -1886,9 +2002,23 @@ d3-voronoi@1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/d3-voronoi/-/d3-voronoi-1.1.0.tgz#69ea59563cf1e75d1c6c45edc803c6583768f628"
 
+d3-voronoi@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/d3-voronoi/-/d3-voronoi-1.1.1.tgz#998544dca98ef0e89a6c40c0bac3510d1bc1b8b9"
+
 d3-zoom@1.0.3:
   version "1.0.3"
   resolved "https://registry.npmjs.org/d3-zoom/-/d3-zoom-1.0.3.tgz#b36bfb517e535dff0e179088dbeb3d7899a6050e"
+  dependencies:
+    d3-dispatch "1"
+    d3-drag "1"
+    d3-interpolate "1"
+    d3-selection "1"
+    d3-transition "1"
+
+d3-zoom@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/d3-zoom/-/d3-zoom-1.1.1.tgz#d2362d8f7043c1fc5d96a438de69f4e02ef1e67b"
   dependencies:
     d3-dispatch "1"
     d3-drag "1"
@@ -1930,6 +2060,41 @@ d3@^4.0.0:
     d3-transition "1.0.3"
     d3-voronoi "1.1.0"
     d3-zoom "1.0.3"
+
+d3@^4.4.0:
+  version "4.4.1"
+  resolved "https://registry.npmjs.org/d3/-/d3-4.4.1.tgz#2cbb08f92970364076ffe91ab83ef66b80610785"
+  dependencies:
+    d3-array "1.0.2"
+    d3-axis "1.0.4"
+    d3-brush "1.0.3"
+    d3-chord "1.0.3"
+    d3-collection "1.0.2"
+    d3-color "1.0.2"
+    d3-dispatch "1.0.2"
+    d3-drag "1.0.2"
+    d3-dsv "1.0.3"
+    d3-ease "1.0.2"
+    d3-force "1.0.4"
+    d3-format "1.0.2"
+    d3-geo "1.4.0"
+    d3-hierarchy "1.0.3"
+    d3-interpolate "1.1.2"
+    d3-path "1.0.3"
+    d3-polygon "1.0.2"
+    d3-quadtree "1.0.2"
+    d3-queue "3.0.3"
+    d3-random "1.0.2"
+    d3-request "1.0.3"
+    d3-scale "1.0.4"
+    d3-selection "1.0.3"
+    d3-shape "1.0.4"
+    d3-time "1.0.4"
+    d3-time-format "2.0.3"
+    d3-timer "1.0.3"
+    d3-transition "1.0.3"
+    d3-voronoi "1.1.1"
+    d3-zoom "1.1.1"
 
 d@^0.1.1, d@~0.1.1:
   version "0.1.1"
@@ -2595,9 +2760,9 @@ ember-concurrency@^0.7.15:
     ember-getowner-polyfill "1.0.1"
     ember-maybe-import-regenerator "^0.1.4"
 
-ember-d3@^0.3.0:
-  version "0.3.0"
-  resolved "https://registry.npmjs.org/ember-d3/-/ember-d3-0.3.0.tgz#853f98110607a41fd8caff06652251d260403f5b"
+ember-d3@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.npmjs.org/ember-d3/-/ember-d3-0.3.1.tgz#c90c1d42483c1dcf2b7c33c8e65e772666e189ae"
   dependencies:
     broccoli-filter "^1.2.4"
     broccoli-funnel "^1.0.3"
