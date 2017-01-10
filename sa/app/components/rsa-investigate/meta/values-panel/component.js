@@ -36,6 +36,11 @@ export default Component.extend({
   // @see components/rsa-investigate/meta
   contextLookupAction: undefined,
 
+  emptyMetaGroup: {
+    name: 'Meta keys with no values',
+    isOpen: false
+  },
+
   /**
    * Maps `group.keys` to objects in `keys`. Essentially, the state of array objects that correspond to the meta
    * keys in the current `group`. These are the state objects for the keys to be displayed in DOM.

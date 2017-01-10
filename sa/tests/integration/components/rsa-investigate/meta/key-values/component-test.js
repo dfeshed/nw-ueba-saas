@@ -30,12 +30,12 @@ test('it can be toggled open/closed, and responds by toggling instruction DOM an
     toggleAction
   });
   this.render(hbs`{{rsa-investigate/meta/key-values groupKey=groupKey toggleAction=toggleAction}}`);
-  assert.equal(this.$('.js-instruct').length, isOpenDefault ? 0 : 1, 'Expected instruction DOM to reflect isOpen state');
+  assert.equal(this.$('.rsa-investigate-meta-key-values__body').css('display'), 'none', 'Expected hidden meta value body DOM to reflect closed state');
 
   const $el = this.$('.js-toggle-open');
   assert.equal($el.length, 1, 'Expected to find DOM that will trigger the toggle action');
 
   $el.click();
-  assert.equal(this.$('.js-meta-instruct').length, isOpenDefault ? 1 : 0, 'Expected instruction DOM to reflect isOpen state');
+  assert.equal(this.$('.rsa-investigate-meta-key-values__body').css('display'), 'block', 'Expected visible meta value body DOM to reflect open state');
 
 });

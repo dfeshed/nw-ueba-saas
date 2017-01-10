@@ -12,13 +12,21 @@
     toggleAction=(action "safeCallback" toggleAction groupKey)}}
 {{/each}}
 
-<footer class="rsa-investigate-meta-values-panel__empties">
-  {{#if emptyMetaKeyStates.length}}
-    <h2>The following meta keys have no values: ({{emptyMetaKeyStates.length}})</h2>
-  {{/if}}
-  <ul>
-    {{#each emptyMetaKeyStates as |keyState|}}
-      <li>{{keyState.info.displayName}}</li>
-    {{/each}}
-  </ul>
-</footer>
+{{#if emptyMetaKeyStates.length}}
+  <div class="rsa-investigate-meta-key-values complete {{if emptyMetaGroup.isOpen 'is-open'}}">
+    <header class="rsa-investigate-meta-key-values__header js-toggle-open" {{action "safeCallback" toggleAction emptyMetaGroup}}>
+      <h2 class="rsa-investigate-meta-key-values__title">
+        <span class="toggle-icon">{{rsa-icon name="arrow-right-12" size="smaller"}}</span>
+        <span class="meta-name" title="{{emptyMetaGroup.name}}">{{emptyMetaGroup.name}}</span>
+        <span class="meta-size">({{emptyMetaKeyStates.length}})</span>
+      </h2>
+    </header>
+    <section class="rsa-investigate-meta-key-values__body">
+      <ul class="rsa-investigate-meta-key-values__empties js-content">
+        {{#each emptyMetaKeyStates as |keyState|}}
+          <li>{{keyState.info.displayName}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  </div>
+{{/if}}

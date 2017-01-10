@@ -6,5 +6,5 @@ const { isEmpty } = Ember;
 
 export default StreamState.extend({
   @computed('status', 'data')
-  isEmpty: ((status, data) => (status === 'complete') && isEmpty(data))
+  isEmpty: ((status, data) => (status === 'complete' || status === 'error') && isEmpty(data))
 });
