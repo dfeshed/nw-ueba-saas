@@ -7,10 +7,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class ActivityMonitoringExecutorServiceImpl<T extends Runnable> implements ActivityMonitoringExecutorService<T> {
 
     private static final Logger logger = Logger.getLogger(ActivityMonitoringExecutorServiceImpl.class);
+
+    private final AtomicBoolean inProgress = new AtomicBoolean(false);
 
     private final ExecutorService executorService;
     private final Set<T> activeTasks;
@@ -121,6 +124,21 @@ public class ActivityMonitoringExecutorServiceImpl<T extends Runnable> implement
         for (T task : tasksToExecute) {
             executeTask(task);
         }
+    }
+
+    @Override
+    public boolean isAdExecutionInProgress() {
+        return inProgress.get();
+    }
+
+    @Override
+    public boolean tryExecute() {
+        return !isHasActiveTasks() && inProgress.compareAndSet(false, true);
+    }
+
+    @Override
+    public void markEndExecution() {
+        inProgress.set(false);
     }
 
     private void executeTask(T taskToExecute) {

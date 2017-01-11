@@ -59,8 +59,6 @@ public class ApiActiveDirectoryController {
 
 	private final Set<AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObjectType.values()));
 
-	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
-
 	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
 	private Long lastAdFetchEtlExecutionStartTime;
@@ -167,13 +165,7 @@ public class ApiActiveDirectoryController {
 	public ResponseEntity<ResponseEntityMessage> executeAdFetchAndEtl() {
 		isFetchEtlExecutionRequestStopped.set(false);
 		final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
-		if (isFetchEtlExecutionRequestInProgress.compareAndSet(false, true)) {
-			if (!executorService.isHasActiveTasks()) {
-				logger.warn(inProgressMsg);
-				isFetchEtlExecutionRequestInProgress.set(false);
-				return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.FORBIDDEN);
-			}
-
+		if (executorService.tryExecute()) {
 			try {
 				lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
 				logger.info("Starting Active Directory fetch and ETL");
@@ -182,12 +174,12 @@ public class ApiActiveDirectoryController {
 				if (isFetchEtlExecutionRequestStopped.get()) { //check that there weren't any requests to stop between execution and now (actual execution)
 					final String stopMessage = "Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.";
 					logger.warn(stopMessage);
-					isFetchEtlExecutionRequestInProgress.set(false);
+					executorService.markEndExecution();
 					return new ResponseEntity<>(new ResponseEntityMessage(stopMessage), HttpStatus.LOCKED);
 				}
 				executorService.executeTasks(adTasks);
 			} finally {
-				isFetchEtlExecutionRequestInProgress.set(false);
+				executorService.markEndExecution();
 			}
 
 			return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
