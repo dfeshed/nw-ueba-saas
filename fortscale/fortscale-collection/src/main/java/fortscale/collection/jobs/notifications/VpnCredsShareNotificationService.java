@@ -171,7 +171,7 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
         List<Map<String, Object>> queryResults = queryRunner.executeQuery(query);
 
         if (queryResults == null) {
-            logger.error("getT2LowerLimitInc - query returned null.");
+            logger.error("getT2LowerLimitInc - query execution returned null, expected a list of events.");
             return null;
         } else if (queryResults.size() != 1) {
             logger.error("getT2LowerLimitInc - unexpected number of query results. queryResults = {}.", queryResults);
@@ -180,11 +180,23 @@ public class VpnCredsShareNotificationService extends NotificationGeneratorServi
 
         Map<String, Object> queryResult = queryResults.get(0);
 
+        if (queryResult == null) {
+            logger.error("getT2LowerLimitInc - query result is null, expected an event (a map).");
+            return null;
+        } else if (!queryResult.containsKey("min")) {
+            logger.error("getT2LowerLimitInc - query result does not contain the field 'min'.");
+            return null;
+        }
+
+        Object min = queryResult.get("min");
+        // The 'min' value can be null if there are no events meeting the conditions
+        if (min == null) return null;
+
         try {
-            long t2LowerLimitInc = getLongValueFromEvent(queryResult, "min");
+            long t2LowerLimitInc = Long.parseLong(min.toString());
             return Instant.ofEpochSecond(t2LowerLimitInc);
         } catch (Exception e) {
-            logger.error("getT2LowerLimitInc - parsing to Instant exception. queryResult = {}.", queryResult, e);
+            logger.error("getT2LowerLimitInc - parsing of 'min' value to Instant exception. min = {}.", min, e);
             return null;
         }
     }
