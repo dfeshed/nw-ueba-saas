@@ -5,7 +5,7 @@ import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.ad.AdTaskService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
@@ -27,7 +27,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdUserThumbnailProcessJob.class);
 
 	@Autowired
-	private ApplicationConfigurationService applicationConfigurationService;
+	private AdTaskService adTaskService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -89,7 +89,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 		if (resultsKey != null) {
 			logger.debug("Inserting status to application configuration in key {}", resultsKey);
-			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+			adTaskService.writeTaskResults(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
 		}
 
 		finishStep();

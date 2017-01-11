@@ -1,10 +1,10 @@
-package fortscale.web.rest;
+package fortscale.services.ad;
 
 import fortscale.domain.ad.AdObject;
+import fortscale.domain.ad.AdTaskType;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import fortscale.web.tasks.ControllerInvokedAdTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -51,19 +51,24 @@ public class AdTaskServiceImpl implements AdTaskService {
         return taskResults;
     }
 
-    public Long getLastExecutionTime(ControllerInvokedAdTask.AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
+    @Override
+    public void writeTaskResults(String resultsKey, String value) {
+        applicationConfigurationService.insertConfigItem(resultsKey, value);
+    }
+
+    public Long getLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
         return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
     }
 
-    public void setLastExecutionTime(ControllerInvokedAdTask.AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long lastExecutionTime) {
+    public void setLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long lastExecutionTime) {
         applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
     }
 
-    public Long getExecutionStartTime(ControllerInvokedAdTask.AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
+    public Long getExecutionStartTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
         return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
     }
 
-    public void setExecutionStartTime(ControllerInvokedAdTask.AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long executionStartTime) {
+    public void setExecutionStartTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long executionStartTime) {
         applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), executionStartTime);
     }
 }

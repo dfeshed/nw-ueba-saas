@@ -1,9 +1,10 @@
 package fortscale.web.tasks;
 
 import fortscale.domain.ad.AdObject.AdObjectType;
+import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ad.AdTaskService;
 import fortscale.utils.logging.Logger;
-import fortscale.web.rest.AdTaskService;
 import fortscale.web.rest.ApiActiveDirectoryController;
 
 /**

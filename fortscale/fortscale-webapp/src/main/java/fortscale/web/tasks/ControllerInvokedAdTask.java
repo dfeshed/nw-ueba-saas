@@ -1,10 +1,11 @@
 package fortscale.web.tasks;
 
 import fortscale.domain.ad.AdObject.AdObjectType;
+import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ad.AdTaskService;
+import fortscale.services.ad.AdTaskServiceImpl;
 import fortscale.utils.logging.Logger;
-import fortscale.web.rest.AdTaskService;
-import fortscale.web.rest.AdTaskServiceImpl;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import org.apache.commons.io.IOUtils;
 
@@ -12,7 +13,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.*;
+import static fortscale.domain.ad.AdTaskType.*;
+
+
 
 public class ControllerInvokedAdTask implements Runnable {
 
@@ -330,26 +333,6 @@ public class ControllerInvokedAdTask implements Runnable {
         }
     }
 
-
-
-    public enum AdTaskType {
-        FETCH("Fetch"), ETL("ETL"), FETCH_ETL(FETCH.getType() + "_" + ETL.getType());
-
-        private final String type;
-
-        AdTaskType(String type) {
-            this.type = type;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        @Override
-        public String toString() {
-            return type;
-        }
-    }
 }
 
 

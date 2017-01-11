@@ -5,7 +5,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.domain.JobDataReceived;
-import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.ad.AdTaskService;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
@@ -23,7 +23,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
-	private ApplicationConfigurationService applicationConfigurationService;
+	private AdTaskService adTaskService;
 
 	@Autowired
 	protected ImpalaClient impalaClient;
@@ -130,7 +130,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 		if (resultsKey != null) {
 			logger.debug("Inserting status to application configuration in key {}", resultsKey);
-			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+			adTaskService.writeTaskResults(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
 		}
 	}
 	

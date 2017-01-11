@@ -4,7 +4,7 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.ad.AdTaskService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 import org.quartz.*;
@@ -32,7 +32,7 @@ public class AdFetchJob extends FortscaleJob {
 	private static final String KEY_SUCCESS = "success";
 
 	@Autowired
-	private ApplicationConfigurationService applicationConfigurationService;
+	private AdTaskService adTaskService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -88,7 +88,7 @@ public class AdFetchJob extends FortscaleJob {
 
 		if (resultsKey != null) {
 			logger.debug("Inserting status to application configuration in key {}", resultsKey);
-			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+			adTaskService.writeTaskResults(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
 		}
 	}
 
