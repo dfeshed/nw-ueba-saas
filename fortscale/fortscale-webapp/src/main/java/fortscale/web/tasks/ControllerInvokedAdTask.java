@@ -131,7 +131,7 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         /* get objects count for this data source from mongo (if it's a Fetch job we don't care about the count)*/
-        final long objectsCount = adTaskType==ETL? activeDirectoryService.getCount(dataSource) : -1;
+        final long objectsCount = adTaskType==ETL? activeDirectoryService.getLastRunCount(dataSource) : -1;
 
 
         notifyTaskDone();

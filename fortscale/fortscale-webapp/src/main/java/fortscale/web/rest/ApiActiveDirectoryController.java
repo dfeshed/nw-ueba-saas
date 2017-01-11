@@ -242,8 +242,7 @@ public class ApiActiveDirectoryController {
 			}
 			else { //not running
 				final Long currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
-				Long latestRuntime = activeDirectoryService.getLatestRuntime(datasource);
-				final Long currObjectsCount = activeDirectoryService.countByTimestampepoch(datasource, latestRuntime);
+				final Long currObjectsCount = activeDirectoryService.getLastRunCount(datasource);
 				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount));
 			}
 		});

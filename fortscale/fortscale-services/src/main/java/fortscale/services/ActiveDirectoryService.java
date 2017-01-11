@@ -29,4 +29,5 @@ public interface ActiveDirectoryService {
     Long getCount(AdObject.AdObjectType adObjectType);
     Long getLatestRuntime(AdObject.AdObjectType adObjectType);
     Long countByTimestampepoch(AdObject.AdObjectType adObjectType, Long latestRuntime);
+    Long getLastRunCount(AdObject.AdObjectType adObjectType);
 }

@@ -222,4 +222,11 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
                 throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
         }
     }
+
+    @Override
+    public Long getLastRunCount(AdObject.AdObjectType adObjectType) {
+        Long latestRuntime = getLatestRuntime(adObjectType);
+        final Long currObjectsCount = countByTimestampepoch(adObjectType, latestRuntime);
+        return currObjectsCount;
+    }
 }
