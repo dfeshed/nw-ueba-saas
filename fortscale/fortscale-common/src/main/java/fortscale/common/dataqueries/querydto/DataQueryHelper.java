@@ -74,6 +74,16 @@ public class DataQueryHelper {
     }
 
     /**
+     * Create a data query with default parameters.
+     *
+     * @param dataEntityId data entity to run the query for
+     * @return a {@link DataQueryDTO}
+     */
+    public DataQueryDTO createDataQuery(String dataEntityId) {
+        return createDataQuery(dataEntityId, null, new ArrayList<>(), new ArrayList<>(), -1, DataQueryDTOImpl.class);
+    }
+
+    /**
      * Generate the list of fields to return in the SQL statement
      * @param defaultFieldsString a CSV list of fields to return. if '*' is passed, then return all fields
      * @param dataEntity the Data Entity to query
@@ -299,22 +309,38 @@ public class DataQueryHelper {
     }
 
     /**
-     * creates min function on a field: min(field) as alias
-     * @param field
-     * @param alias
-     * @return
+     * Create a minimum function on a field: "min(field) as alias".
+     *
+     * @param field the field
+     * @param alias the alias
+     * @return a {@link DataQueryField}
      */
-    public DataQueryField createMinFieldFunc(String field, String alias){
+    public DataQueryField createMinFieldFunc(String field, String alias) {
         DataQueryField minField = new DataQueryField();
         minField.setId(field);
         minField.setAlias(alias);
         FieldFunction minFunction = new FieldFunction();
         minFunction.setName(QueryFieldFunction.min);
         minField.setFunc(minFunction);
-
         return minField;
     }
 
+    /**
+     * Create a maximum function on a field: "max(field) as alias".
+     *
+     * @param field the field
+     * @param alias the alias
+     * @return a {@link DataQueryField}
+     */
+    public DataQueryField createMaxFieldFunc(String field, String alias) {
+        DataQueryField maxField = new DataQueryField();
+        maxField.setId(field);
+        maxField.setAlias(alias);
+        FieldFunction maxFunction = new FieldFunction();
+        maxFunction.setName(QueryFieldFunction.max);
+        maxField.setFunc(maxFunction);
+        return maxField;
+    }
 
 	/**
 	 * This method will set group by clause to a given data query DTO

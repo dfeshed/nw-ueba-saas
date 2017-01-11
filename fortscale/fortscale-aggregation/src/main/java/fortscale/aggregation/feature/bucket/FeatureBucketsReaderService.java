@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Set;
 
 public class FeatureBucketsReaderService {
 
@@ -22,7 +23,7 @@ public class FeatureBucketsReaderService {
         return featureBucketsMongoStore.getFeatureBucketsByEndTimeBetweenTimeRange(featureBucketConf, bucketStartTime, bucketEndTime, pageable);
     }
 
-    public List<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
+    public Set<String> findDistinctContextByTimeRange(FeatureBucketConf featureBucketConf, Long startTime, Long endTime){
         return featureBucketsMongoStore.findDistinctContextByTimeRange(featureBucketConf, startTime, endTime);
     }
 

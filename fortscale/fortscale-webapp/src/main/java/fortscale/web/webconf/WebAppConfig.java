@@ -1,26 +1,56 @@
 package fortscale.web.webconf;
 
+import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import fortscale.web.rest.ApiActiveDirectoryController;
+
+
+import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
+import fortscale.web.exceptions.handlers.RestExceptionHandler;
+import fortscale.web.extensions.FortscaleCustomEditorService;
+import fortscale.web.extensions.RenamingProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+
+import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+
+
+import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
+import org.springframework.http.MediaType;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.servlet.HandlerExceptionResolver;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.PathResourceResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
+
+import javax.servlet.http.HttpServletResponse;
+import java.util.*;
 
 /**
  * Created by shays on 01/01/2017.
- *
- * Java Configuration that replacing parts of webapp-config.xml
- * Todo: should move all configurations webapp-config.xml and remove the file when done (opened Jira https://fortscale.atlassian.net/browse/FV-13388)
+ * Load webapp spring context
  */
+
+
 @Configuration
+@EnableSpringConfigured
+@EnableAnnotationConfiguration
 @EnableWebMvc
+//Scan and init all controllers
+@ComponentScan(basePackages = "fortscale", useDefaultFilters = false,
+        includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
+)
+@ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
+@Import(GlobalConfiguration.class)
+//Load properties files:
+@PropertySource({"classpath:META-INF/application-config.properties","classpath:META-INF/entities-overriding.properties","classpath:META-INF/evidence.events.filtering.properties"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
-
-
 
 
     public static final int DEFAULT_CACHE_PERIOD_SECONDS = 3600 * 24; //Default time to keep resource in seconds
@@ -31,20 +61,35 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
+
+
     /**
      * tells the browser to save the resource for X seconds by define cache-ontrol header with max-age
      *
      * @param registry
      */
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
+
         int cachePeriodConf  = initCachePeriodValue();
         logger.info("Control-Cache/Max-Age for static resource set to {}",cachePeriodConf);
 
         registry
+                //.addResourceHandler("/*.html")
                 .addResourceHandler("/**")
                 .addResourceLocations("/resources/")
+                .setCachePeriod(cachePeriodConf);
+               // .resourceChain(true);
+                //.addResolver(new PathResourceResolver());
+
+        //All CSS & JS
+        registry
+                .addResourceHandler("/assets/**")
+                .addResourceLocations("/resources/assets/")
+                .setCachePeriod(cachePeriodConf)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
+
 
         //All CSS & JS
         registry
@@ -96,6 +141,90 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     }
 
     /**
+     * Adding naming processor as argument resolver
+     * The naming processor init and register FortscaleCustomEditorService
+     */
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
+        argumentResolvers.add(renamingProcessor());
+
+    }
+
+
+    @Bean
+    FortscaleCustomEditorService fortscaleCustomEditorService(){
+        return new FortscaleCustomEditorService();
+    }
+
+    @Bean
+    public RenamingProcessor renamingProcessor(){
+        return new RenamingProcessor(true);
+    }
+
+
+
+    @Override
+    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
+        configurer.ignoreUnknownPathExtensions(false).defaultContentType(MediaType.TEXT_HTML);
+
+
+    }
+
+
+    @Override
+    public void configureHandlerExceptionResolvers(List<HandlerExceptionResolver> exceptionResolvers) {
+        super.configureHandlerExceptionResolvers(exceptionResolvers);
+        exceptionResolvers.add(exceptionHandlerExceptionResolver());
+        exceptionResolvers.add(restExceptionResolver());
+    }
+
+    /**
+     * Init spring execption resolver
+     * @return
+     */
+    //@Bean(name = "exceptionHandlerExceptionResolver")
+    public ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver(){
+
+        ExceptionHandlerExceptionResolver exceptionHandlerExceptionResolver = new ExceptionHandlerExceptionResolver();
+        exceptionHandlerExceptionResolver.setOrder(0);
+        return  exceptionHandlerExceptionResolver;
+    }
+
+    /**
+     * Init fortscale error resolver for rest not found exceptions
+     * @return
+     */
+    //@Bean(name="restExceptionResolver")
+    RestExceptionHandler restExceptionResolver(){
+        LocaleResolver localeResolver =  new org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver();
+
+        //Create exceptionMappingDefinitions
+        Map exceptionMappingDefinitions = new HashMap();
+        exceptionMappingDefinitions.put("fortscale.common.exceptions.UnknownResourceException", HttpServletResponse.SC_NOT_FOUND);
+
+
+        //Create error resolver and set the locale resolver and exceptionMappingDefinitions
+        FortscaleRestErrorResolver resolver = new FortscaleRestErrorResolver();
+        resolver.setLocaleResolver(localeResolver);
+        resolver.setExceptionMappingDefinitions(exceptionMappingDefinitions);
+
+        //Create rest exception handler
+        RestExceptionHandler handler = new RestExceptionHandler();
+        handler.setOrder(100);
+        handler.setErrorResolver(resolver);
+        return handler;
+    }
+
+    //Use JSON view resolver as the only viewer
+    @Override
+    public void configureViewResolvers(ViewResolverRegistry registry) {
+        MappingJackson2JsonView jsonView = new MappingJackson2JsonView();
+        jsonView.setPrettyPrint(true);
+
+
+        registry.enableContentNegotiation(jsonView);
+    }
+    /**
      * Check if the cache period defined on mongo, is so use it, if not set the devault value to mongo and return it
      * @return
      */
@@ -111,11 +240,4 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         }
     }
 
-    public ApplicationConfigurationService getApplicationConfigurationService() {
-        return applicationConfigurationService;
-    }
-
-    public void setApplicationConfigurationService(ApplicationConfigurationService applicationConfigurationService) {
-        this.applicationConfigurationService = applicationConfigurationService;
-    }
 }

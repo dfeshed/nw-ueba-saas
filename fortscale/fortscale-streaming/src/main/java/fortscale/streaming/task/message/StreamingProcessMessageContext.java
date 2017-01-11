@@ -3,7 +3,6 @@ package fortscale.streaming.task.message;
 import fortscale.streaming.service.config.StreamingTaskDataSourceConfigKey;
 import fortscale.streaming.task.AbstractStreamTask;
 import fortscale.streaming.task.metrics.StreamingTaskCommonMetrics;
-import fortscale.utils.logging.Logger;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import net.minidev.json.parser.ParseException;
@@ -20,7 +19,6 @@ import static fortscale.streaming.task.AbstractStreamTask.LAST_STATE_FIELD_NAME;
  * Created by baraks on 12/12/2016.
  */
 public class StreamingProcessMessageContext implements ProcessMessageContext {
-    private final static Logger logger = Logger.getLogger(StreamingProcessMessageContext.class);
     private final AbstractStreamTask streamTask;
     private TaskCoordinator coordinator;
     private MessageCollector collector;
@@ -35,9 +33,6 @@ public class StreamingProcessMessageContext implements ProcessMessageContext {
     /**
      *
      * @param incomingMessageEnvelope the original message
-     * @param collector
-     * @param coordinator
-     * @param streamTask
      * @throws ParseException in case the message cannot be parsed into jsonObject
      */
     public StreamingProcessMessageContext(IncomingMessageEnvelope incomingMessageEnvelope, MessageCollector collector, TaskCoordinator coordinator, AbstractStreamTask streamTask) throws ParseException {
@@ -115,20 +110,18 @@ public class StreamingProcessMessageContext implements ProcessMessageContext {
     }
 
     /**
-     * extracts dataSource name from message json
+     * Extract the data source from the message
      */
     protected void extractDataSourceConfigKey() {
-        if (messageAsJson==null)
-        {
+        if (messageAsJson == null) {
             return;
         }
         String dataSource = messageAsJson.getAsString(DATA_SOURCE_FIELD_NAME);
         String lastState = messageAsJson.getAsString(LAST_STATE_FIELD_NAME);
 
         if (dataSource == null) {
-
+            // Note that some messages (control messages, for example) do not contain a data source field
             streamingTaskCommonMetrics.messagesWithoutDataSourceName++;
-            logger.warn("Message does not contain " + DATA_SOURCE_FIELD_NAME + " field: " + messageAsString);
             return;
         }
         streamingTaskDataSourceConfigKey = new StreamingTaskDataSourceConfigKey(dataSource, lastState);

@@ -48,11 +48,17 @@ import java.util.List;
 			String[] alertSeverity = jsonArrayToStringArray(params.getJSONArray(ALERT_SEVERITY));
 			long startTime = params.getLong(START_TIME);
 			long endTime = params.getLong(END_TIME);
-			MessageFormat messageFormat = (MessageFormat) params.get(MESSAGE_FORMAT);
-			if (messageFormat == null){
+
+			String messageFormatString = params.getString(MESSAGE_FORMAT);
+			MessageFormat messageFormat;
+
+			if (messageFormatString == null){
 				messageFormat = MessageFormat.RFC_3164;
 				logger.debug("Received no message format, using default format - {}", messageFormat);
+			}else{
+				messageFormat = MessageFormat.valueOf(messageFormatString);
 			}
+
 			int numberOfForwardedAlerts = forwardingService.forwardAlertsByTimeRange(ip, port, forwardingType,
 					userTags, alertSeverity, startTime, endTime, messageFormat);
 			return ResponseEntity.ok().body("{ \"message\": \"" + "Forward " + numberOfForwardedAlerts + " Alerts\"}");
