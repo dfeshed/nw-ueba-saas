@@ -28,12 +28,14 @@ export default Mixin.create({
         this.send('metaGet', queryNode, forceReload);
       }
 
-      // If the meta panel is maximized, the events & timeline are hidden, so data not needed.
+      // If the meta panel is maximized, the events are hidden, so data not needed.
       if (metaPanelSize !== 'max') {
         this.send('eventsGetFirst', queryNode, forceReload);
         this.send('eventCountGet', queryNode, forceReload);
-        this.send('eventTimelineGet', queryNode, forceReload);
       }
+
+      // Get timeline data as it's always visible
+      this.send('eventTimelineGet', queryNode, forceReload);
     },
 
     /**
