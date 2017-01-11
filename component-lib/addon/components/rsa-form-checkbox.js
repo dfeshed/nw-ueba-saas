@@ -4,7 +4,11 @@ import layout from '../templates/components/rsa-form-checkbox';
 const {
   Component,
   run,
-  computed
+  computed,
+  Checkbox,
+  Logger: {
+    warn
+  }
 } = Ember;
 
 export default Component.extend({
@@ -46,6 +50,8 @@ export default Component.extend({
   trackOwnValue: true,
 
   didInsertElement() {
+    warn('DEPRECATION: rsa-form-checkbox has been deprecated. Use rsa-form-checkbox-2 instead.');
+
     const that = this;
     this.$('input').on('focus', function() {
       run.next(that, function() {
