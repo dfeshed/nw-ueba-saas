@@ -5,7 +5,7 @@ import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ad.AdTaskService;
 import fortscale.utils.logging.Logger;
-import fortscale.web.ActivityMonitoringExecutorService;
+import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 /**

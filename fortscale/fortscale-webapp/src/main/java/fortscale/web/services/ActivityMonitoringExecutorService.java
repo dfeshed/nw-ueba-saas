@@ -1,4 +1,4 @@
-package fortscale.web;
+package fortscale.web.services;
 
 
 import java.util.List;

@@ -10,7 +10,7 @@ public interface AdTaskService {
 
     Map<String, String> getTaskResults(String resultsKey);
 
-    void writeTaskResults(String resultsKey, String value);
+    void writeTaskResults(String dataSource, String taskName, String resultsId, boolean result);
 
     Long getLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource);
 

@@ -58,13 +58,14 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	String outputSeparator;
 
-	private String resultsKey;
+	private String resultsId;
+	private JobKey jobKey;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 
-		final JobKey key = jobExecutionContext.getJobDetail().getKey();
+		jobKey = jobExecutionContext.getJobDetail().getKey();
 
 		// get parameters values from the job data map
 		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
@@ -81,12 +82,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
-		if (resultsId != null) {
-			resultsKey = key.getName().toLowerCase() + "." + resultsId;
-		}
-
-
+		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 	}
 
 	@Override
@@ -128,9 +124,13 @@ public abstract class AdProcessJob extends FortscaleJob {
 		}
 
 
-		if (resultsKey != null) {
-			logger.debug("Inserting status to application configuration in key {}", resultsKey);
-			adTaskService.writeTaskResults(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		if (resultsId != null) {
+			final String name = jobKey.getName();
+			final String[] splitName = name.split("_");
+			final String dataSource = splitName[0];
+			final String taskName = splitName[1];
+
+			adTaskService.writeTaskResults(dataSource, taskName,resultsId, true);
 		}
 	}
 	

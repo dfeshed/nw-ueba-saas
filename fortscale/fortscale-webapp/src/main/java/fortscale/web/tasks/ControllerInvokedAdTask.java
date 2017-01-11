@@ -6,8 +6,8 @@ import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ad.AdTaskService;
 import fortscale.services.ad.AdTaskServiceImpl;
 import fortscale.utils.logging.Logger;
-import fortscale.web.ActivityMonitoringExecutorService;
 import fortscale.web.rest.ApiActiveDirectoryController;
+import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.apache.commons.io.IOUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 

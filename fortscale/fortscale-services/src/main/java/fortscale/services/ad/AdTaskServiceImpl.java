@@ -17,6 +17,7 @@ public class AdTaskServiceImpl implements AdTaskService {
     private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
 
     public static final String RESULTS_DELIMITER = "=";
+    public static final String RESULTS_KEY_DELIMITER = "-";
     public static final String RESULTS_KEY_SUCCESS = "success";
 
     private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
@@ -51,9 +52,15 @@ public class AdTaskServiceImpl implements AdTaskService {
         return taskResults;
     }
 
-    @Override
-    public void writeTaskResults(String resultsKey, String value) {
-        applicationConfigurationService.insertConfigItem(resultsKey, value);
+    public void writeTaskResults(String dataSource, String taskName, String resultsId, boolean result) {
+        String resultsKey =
+                        dataSource.toLowerCase() +
+                        RESULTS_KEY_DELIMITER +
+                        taskName.toLowerCase() +
+                        applicationConfigurationService.getKeyDelimiter() +
+                        resultsId;
+        logger.debug("Inserting status to application configuration in key {}", resultsKey);
+        applicationConfigurationService.insertConfigItem(resultsKey, RESULTS_KEY_SUCCESS + RESULTS_DELIMITER + result);
     }
 
     public Long getLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
