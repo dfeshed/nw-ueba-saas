@@ -22,23 +22,35 @@ export default Component.extend({
 
   classNameBindings: ['isExpanded'],
 
-  isExpanded: false,
+  eventBus: service(),
+
+  dateFormat: service(),
+
+  landingPage: service(),
 
   layoutService: service('layout'),
 
-  request: service(),
-
-  eventBus: service(),
-
   moment: service(),
 
-  timezone: service('timezone'),
+  request: service(),
 
-  timeFormat: service('time-format'),
+  timeFormat: service(),
 
-  landingPage: service('landing-page'),
+  timezone: service(),
 
-  dateFormat: service('date-format'),
+  isExpanded: false,
+
+  locales: ['en-us', 'ja'],
+
+  @computed('timeFormat.selected')
+  selectedTimeFormat: {
+    get: (selectedTimeformat) => selectedTimeformat,
+
+    set(selectedTimeFormat) {
+      this.set('timeFormat.selected', selectedTimeFormat.key);
+      return selectedTimeFormat;
+    }
+  },
 
   init() {
     this._super(arguments);
@@ -61,18 +73,6 @@ export default Component.extend({
         }
       }
     });
-  },
-
-  locales: ['en-us', 'ja'],
-
-  @computed('timeFormat.selected')
-  selectedTimeFormat: {
-    get: (selectedTimeformat) => selectedTimeformat,
-
-    set(selectedTimeFormat) {
-      this.set('timeFormat.selected', selectedTimeFormat.key);
-      return selectedTimeFormat;
-    }
   },
 
   actions: {
