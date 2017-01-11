@@ -58,10 +58,6 @@ public class ApiActiveDirectoryController {
 
 	private final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 
-	private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
-
-	private final String SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX ="system_setup_ad.execution_start_time";
-
 	private final Set<AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObjectType.values()));
 
 	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
@@ -78,7 +74,7 @@ public class ApiActiveDirectoryController {
 	private ActiveDirectoryService activeDirectoryService;
 
 	@Autowired
-	private ApplicationConfigurationService applicationConfigurationService;
+	private AdTaskService adTaskService;
 
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
@@ -238,17 +234,17 @@ public class ApiActiveDirectoryController {
 		Set<AdTaskStatus> statuses = new HashSet<>();
 		dataSources.forEach(datasource -> {
 			final AdTaskType runningMode = getRunningMode(datasource);
-			final Long currExecutionStartTime = getLastExecutionTime(runningMode, datasource);
+			final Long currExecutionStartTime = adTaskService.getLastExecutionTime(runningMode, datasource);
 			if (runningMode != null) { //running
 				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, -1L, currExecutionStartTime));
 			}
 			else { //not running
 				Long currLastExecutionFinishTime;
 				if (datasource == AdObjectType.USER_THUMBNAIL) {
-					currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.FETCH_ETL, datasource);
+					currLastExecutionFinishTime = adTaskService.getLastExecutionTime(AdTaskType.FETCH_ETL, datasource);
 				}
 				else {
-					currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
+					currLastExecutionFinishTime = adTaskService.getLastExecutionTime(AdTaskType.ETL, datasource);
 				}
 				final Long currObjectsCount = activeDirectoryService.getCount(datasource);
 				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount, currExecutionStartTime));
@@ -262,9 +258,9 @@ public class ApiActiveDirectoryController {
 		final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
 		for (AdObjectType dataSource : dataSources) {
 			if (dataSource != AdObjectType.USER_THUMBNAIL) { //user thumbnail job shouldn't run initially
-				final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource);
+				final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, adTaskService, dataSource);
 				if (currTask.getDataSource() == AdObjectType.USER) { //user thumbnail job should run after user job
-					currTask.addFollowingTask(new CompoundControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, AdObjectType.USER_THUMBNAIL));
+					currTask.addFollowingTask(new CompoundControllerInvokedAdTask(this, activeDirectoryService, adTaskService, AdObjectType.USER_THUMBNAIL));
 				}
 				tasks.add(currTask);
 			}
@@ -286,22 +282,6 @@ public class ApiActiveDirectoryController {
 		}
 
 		return null;
-	}
-
-	public Long getLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
-		return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
-	}
-
-	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource, Long lastExecutionTime) {
-		applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
-	}
-
-	public Long getExecutionStartTime(AdTaskType adTaskType, AdObjectType dataSource) {
-		return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
-	}
-
-	public void setExecutionStartTime(AdTaskType adTaskType, AdObjectType dataSource, Long executionStartTime) {
-		applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), executionStartTime);
 	}
 
 	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {

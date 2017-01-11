@@ -1,10 +1,10 @@
 package fortscale.web.tasks;
 
 import fortscale.domain.ad.AdObject.AdObjectType;
-import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
+import fortscale.web.rest.AdTaskService;
+import fortscale.web.rest.AdTaskServiceImpl;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import org.apache.commons.io.IOUtils;
 
@@ -21,23 +21,21 @@ public class ControllerInvokedAdTask implements Runnable {
 
     protected static final String THREAD_NAME = "system_setup";
 
-    private static final String RESULTS_DELIMITER = "=";
-    private static final String RESULTS_KEY_SUCCESS = "success";
     private static final String AD_JOB_GROUP = "AD";
     private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
 
     protected final ApiActiveDirectoryController controller;
     private ActiveDirectoryService activeDirectoryService;
-    private final ApplicationConfigurationService applicationConfigurationService;
+    private final AdTaskService adTaskService;
     protected final AdObjectType dataSource;
     protected AdTaskType currentAdTaskType;
     protected List<ControllerInvokedAdTask> followingTasks = new ArrayList<>();
 
-    public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, ApplicationConfigurationService applicationConfigurationService, AdObjectType dataSource) {
+    public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
         this.controller = controller;
         this.activeDirectoryService = activeDirectoryService;
-        this.applicationConfigurationService = applicationConfigurationService;
+        this.adTaskService = adTaskService;
         this.dataSource = dataSource;
     }
 
@@ -87,7 +85,7 @@ public class ControllerInvokedAdTask implements Runnable {
     protected boolean handleAdTask(AdTaskType adTaskType) {
         final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
         controller.sendTemplateMessage(RESPONSE_DESTINATION, response);
-        controller.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
+        adTaskService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
         if (!response.success) {
             logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
         }
@@ -122,7 +120,7 @@ public class ControllerInvokedAdTask implements Runnable {
      * @return an AdTaskResponse representing the results of the task
      */
     private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObjectType dataSource) {
-        controller.setExecutionStartTime(adTaskType, dataSource, System.currentTimeMillis());
+        adTaskService.setExecutionStartTime(adTaskType, dataSource, System.currentTimeMillis());
         notifyTaskStart();
         final String dataSourceName = dataSource.toString();
 
@@ -140,14 +138,14 @@ public class ControllerInvokedAdTask implements Runnable {
 
         /* get task results from file */
         logger.debug("Getting results for task {} with results key {}", jobName, resultsKey);
-        final Map<String, String> taskResults = getTaskResults(resultsKey);
+        final Map<String, String> taskResults = adTaskService.getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(RESULTS_KEY_SUCCESS);
+        final String success = taskResults.get(AdTaskServiceImpl.RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
             notifyTaskDone();
@@ -161,27 +159,6 @@ public class ControllerInvokedAdTask implements Runnable {
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
         return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSource, lastExecutionTime);
-    }
-
-    private Map<String, String> getTaskResults(String resultsKey) {
-        Map<String, String> taskResults = new HashMap<>();
-        ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
-        if (queryResult == null) {
-            logger.error("No result found for result key {}. Task failed", resultsKey);
-            taskResults.put(RESULTS_KEY_SUCCESS, Boolean.FALSE.toString());
-            return taskResults;
-        }
-
-        final String taskExecutionResult = queryResult.getValue();
-        final String[] split = taskExecutionResult.split(RESULTS_DELIMITER);
-        final String key = split[0];
-        final String value = split[1];
-        taskResults.put(key, value);
-        if (applicationConfigurationService.delete(resultsKey) == 0) {
-            logger.warn("Failed to delete query result with key {}.", resultsKey);
-        }
-
-        return taskResults;
     }
 
     /**

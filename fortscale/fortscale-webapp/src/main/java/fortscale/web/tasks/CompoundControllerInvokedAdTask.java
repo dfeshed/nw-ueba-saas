@@ -2,8 +2,8 @@ package fortscale.web.tasks;
 
 import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
+import fortscale.web.rest.AdTaskService;
 import fortscale.web.rest.ApiActiveDirectoryController;
 
 /**
@@ -13,8 +13,8 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
 
     private static final Logger logger = Logger.getLogger(CompoundControllerInvokedAdTask.class);
 
-    public CompoundControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, ApplicationConfigurationService applicationConfigurationService, AdObjectType dataSource) {
-        super(controller, activeDirectoryService, applicationConfigurationService, dataSource);
+    public CompoundControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
+        super(controller, activeDirectoryService, adTaskService, dataSource);
         currentAdTaskType = AdTaskType.FETCH_ETL;
     }
 
