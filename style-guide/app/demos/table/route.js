@@ -9,12 +9,12 @@ export default Route.extend({
     EmberObject.create({
       title: '',
       class: 'rsa-form-row-checkbox',
-      width: '21',
+      width: '18',
       dataType: 'checkbox',
-      componentClass: 'rsa-form-checkbox',
+      componentClass: 'rsa-form-checkbox-2',
       visible: true,
       disableSort: true,
-      headerComponentClass: 'rsa-form-checkbox'
+      headerComponentClass: 'rsa-form-checkbox-2'
     }),
     EmberObject.create({
       field: 'foo',

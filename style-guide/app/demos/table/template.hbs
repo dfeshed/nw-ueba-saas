@@ -179,7 +179,6 @@
                 item=item
                 index=index
                 column=column
-                value=headerCheckbox
                 mouseUp=(action 'toggleItemsSelection' model.items)}}
             {{else}}
               {{column.title}}
@@ -191,8 +190,8 @@
               {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
                 {{component column.componentClass
                   item=item
-                  isSelected=item.checked
-                  mouseUp=(action 'toggleItemSelection' item)}}
+                  checked=item.checked
+                  change=(action 'toggleItemSelection' item)}}
               {{/rsa-data-table/body-cell}}
             {{else}}
               {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
@@ -216,7 +215,6 @@
                 item=item
                 index=index
                 column=column
-                value=headerCheckbox
                 mouseUp=(action 'toggleItemsSelection' model.items)}}
             {{else}}
               {{column.title}}
@@ -228,8 +226,8 @@
               {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
                 {{component column.componentClass
                   item=item
-                  isSelected=item.checked
-                  mouseUp=(action 'toggleItemSelection' item)}}
+                  checked=item.checked
+                  change=(action 'toggleItemSelection' item)}}
               {{/rsa-data-table/body-cell}}
             {{else}}
               {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
@@ -237,7 +235,6 @@
 
           {{/rsa-data-table/body}}
         {{/rsa-data-table}}
-
         END-SNIPPET --}}
         {{code-snippet name="table3.hbs"}}
 
@@ -249,12 +246,12 @@
           EmberObject.create({
             title: '',
             class: 'rsa-form-row-checkbox',
-            width: '21',
+            width: '18',
             dataType: 'checkbox',
-            componentClass: 'rsa-form-checkbox',
+            componentClass: 'rsa-form-checkbox-2',
             visible: true,
             disableSort: true,
-            headerComponentClass: 'rsa-form-checkbox'
+            headerComponentClass: 'rsa-form-checkbox-2'
           }),
           EmberObject.create({
             field: 'foo',

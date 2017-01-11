@@ -5,8 +5,11 @@ const {
 } = Ember
 
 export default Checkbox.extend({
+  classNames: ['rsa-form-checkbox-2'],
+
   classNameBindings: [
     'checked',
-    'disabled'
+    'disabled',
+    'error'
   ]
 });
