@@ -5,7 +5,8 @@ import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ad.AdTaskService;
 import fortscale.utils.logging.Logger;
-import fortscale.web.rest.ApiActiveDirectoryController;
+import fortscale.web.ActivityMonitoringExecutorService;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 /**
  * this class represents ControllerInvokedAdTask that do compound work like Fetch+ETL (example task is user_thumbnail_fetch_etl)
@@ -14,10 +15,11 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
 
     private static final Logger logger = Logger.getLogger(CompoundControllerInvokedAdTask.class);
 
-    public CompoundControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
-        super(controller, activeDirectoryService, adTaskService, dataSource);
+    public CompoundControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
+        super(executorService, simpMessagingTemplate, activeDirectoryService, adTaskService, dataSource);
         currentAdTaskType = AdTaskType.FETCH_ETL;
     }
+
 
     @Override
     public void run() {
@@ -33,7 +35,7 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
             }
             else {
                 logger.info("Running task {}'s following tasks {}", this, followingTasks);
-                controller.executeTasks(followingTasks);
+                executorService.executeTasks(followingTasks);
             }
         }
     }

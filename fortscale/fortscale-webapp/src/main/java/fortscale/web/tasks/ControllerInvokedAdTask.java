@@ -6,8 +6,10 @@ import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ad.AdTaskService;
 import fortscale.services.ad.AdTaskServiceImpl;
 import fortscale.utils.logging.Logger;
+import fortscale.web.ActivityMonitoringExecutorService;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import org.apache.commons.io.IOUtils;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.io.File;
 import java.io.IOException;
@@ -28,15 +30,18 @@ public class ControllerInvokedAdTask implements Runnable {
     private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
 
-    protected final ApiActiveDirectoryController controller;
-    private ActiveDirectoryService activeDirectoryService;
+    private final ActiveDirectoryService activeDirectoryService;
     private final AdTaskService adTaskService;
+
+    protected final ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
+    protected SimpMessagingTemplate simpMessagingTemplate;
     protected final AdObjectType dataSource;
     protected AdTaskType currentAdTaskType;
     protected List<ControllerInvokedAdTask> followingTasks = new ArrayList<>();
 
-    public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
-        this.controller = controller;
+    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
+        this.executorService = executorService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
         this.activeDirectoryService = activeDirectoryService;
         this.adTaskService = adTaskService;
         this.dataSource = dataSource;
@@ -80,14 +85,14 @@ public class ControllerInvokedAdTask implements Runnable {
             }
             else {
                 logger.info("Running task {}'s following tasks {}", this, followingTasks);
-                controller.executeTasks(followingTasks);
+                executorService.executeTasks(followingTasks);
             }
         }
     }
 
     protected boolean handleAdTask(AdTaskType adTaskType) {
         final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
-        controller.sendTemplateMessage(RESPONSE_DESTINATION, response);
+        simpMessagingTemplate.convertAndSend(RESPONSE_DESTINATION, response);
         adTaskService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
         if (!response.success) {
             logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
@@ -97,7 +102,7 @@ public class ControllerInvokedAdTask implements Runnable {
     }
 
     private void notifyTaskStart() {
-        if (!controller.addActiveTask(this)) {
+        if (!executorService.markTaskActive(this)) {
             logger.warn("Tried to add task {} but the task already exists.", this);
         }
         else {
@@ -107,7 +112,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
     private void notifyTaskDone() {
-        if (!controller.removeActiveTask(this)) {
+        if (!executorService.markTaskInactive(this)) {
             logger.warn("Tried to remove task {} but task doesn't exist.", this);
         }
         else {
@@ -173,10 +178,10 @@ public class ControllerInvokedAdTask implements Runnable {
     private boolean runCollectionJob(String jobName, UUID resultsId) {
         Process process;
         try {
-            final String scriptPath = controller.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
+            final String scriptPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
-            processBuilder.directory(new File(controller.COLLECTION_TARGET_DIR));
+            processBuilder.directory(new File(ApiActiveDirectoryController.COLLECTION_TARGET_DIR));
             processBuilder.redirectErrorStream(true);
             logger.debug("Starting process with arguments {}", arguments);
             process = processBuilder.start();

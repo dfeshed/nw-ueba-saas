@@ -12,12 +12,13 @@ import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.logging.annotation.LogSensitiveFunctionsAsEnum;
 import fortscale.utils.spring.SpringPropertiesUtil;
+import fortscale.web.ActivityMonitoringExecutorService;
+import fortscale.web.ActivityMonitoringExecutorServiceImpl;
 import fortscale.web.beans.AuthenticationTestResult;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
 import fortscale.web.tasks.CompoundControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask;
-import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,8 +35,6 @@ import javax.naming.CommunicationException;
 import javax.naming.NamingException;
 import javax.validation.Valid;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -50,7 +49,7 @@ public class ApiActiveDirectoryController {
 	public static final String WRONG_CREDENTIALS_ERROR = "Wrong Credentials, please update and try again.";
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
-	public String COLLECTION_TARGET_DIR;
+	public static String COLLECTION_TARGET_DIR;
 
 	public String COLLECTION_USER;
 
@@ -64,11 +63,9 @@ public class ApiActiveDirectoryController {
 
 	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
-	private Set<ControllerInvokedAdTask> activeTasks = ConcurrentHashMap.newKeySet(dataSources.size());
-
 	private Long lastAdFetchEtlExecutionStartTime;
 
-	private ExecutorService executorService;
+	private ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -171,7 +168,7 @@ public class ApiActiveDirectoryController {
 		isFetchEtlExecutionRequestStopped.set(false);
 		final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
 		if (isFetchEtlExecutionRequestInProgress.compareAndSet(false, true)) {
-			if (!activeTasks.isEmpty()) {
+			if (!executorService.isHasActiveTasks()) {
 				logger.warn(inProgressMsg);
 				isFetchEtlExecutionRequestInProgress.set(false);
 				return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.FORBIDDEN);
@@ -188,7 +185,7 @@ public class ApiActiveDirectoryController {
 					isFetchEtlExecutionRequestInProgress.set(false);
 					return new ResponseEntity<>(new ResponseEntityMessage(stopMessage), HttpStatus.LOCKED);
 				}
-				executeTasks(adTasks);
+				executorService.executeTasks(adTasks);
 			} finally {
 				isFetchEtlExecutionRequestInProgress.set(false);
 			}
@@ -204,13 +201,12 @@ public class ApiActiveDirectoryController {
 
 	@RequestMapping("/stop_ad_fetch_etl" )
 	public ResponseEntity<ResponseEntityMessage> stopAdFetchAndEtlExecution() {
-		if (!activeTasks.isEmpty()) {
+		if (!executorService.isHasActiveTasks()) {
 			isFetchEtlExecutionRequestStopped.set(true);
-			logger.info("Attempting to kill all running threads {}", activeTasks);
+			logger.info("Attempting to kill all running threads {}", executorService.getActiveTasks());
 			executorService.shutdownNow();
 			try {
 				executorService.awaitTermination(FETCH_AND_ETL_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
-				activeTasks = ConcurrentHashMap.newKeySet(dataSources.size());
 			} catch (InterruptedException e) {
 				final String msg = "Failed to await termination of running threads.";
 				logger.error(msg);
@@ -258,9 +254,9 @@ public class ApiActiveDirectoryController {
 		final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
 		for (AdObjectType dataSource : dataSources) {
 			if (dataSource != AdObjectType.USER_THUMBNAIL) { //user thumbnail job shouldn't run initially
-				final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(this, activeDirectoryService, adTaskService, dataSource);
+				final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(executorService, simpMessagingTemplate, activeDirectoryService, adTaskService, dataSource);
 				if (currTask.getDataSource() == AdObjectType.USER) { //user thumbnail job should run after user job
-					currTask.addFollowingTask(new CompoundControllerInvokedAdTask(this, activeDirectoryService, adTaskService, AdObjectType.USER_THUMBNAIL));
+					currTask.addFollowingTask(new CompoundControllerInvokedAdTask(executorService, simpMessagingTemplate, activeDirectoryService, adTaskService, AdObjectType.USER_THUMBNAIL));
 				}
 				tasks.add(currTask);
 			}
@@ -275,7 +271,7 @@ public class ApiActiveDirectoryController {
 	 * @return Fetch, ETL or null for not running
 	 */
 	private AdTaskType getRunningMode(AdObjectType datasource) {
-		for (ControllerInvokedAdTask activeThread : activeTasks) {
+		for (ControllerInvokedAdTask activeThread : executorService.getActiveTasks()) {
 			if (datasource.equals(activeThread.getDataSource())) {
 				return activeThread.getCurrentAdTaskType();
 			}
@@ -284,42 +280,19 @@ public class ApiActiveDirectoryController {
 		return null;
 	}
 
-	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {
-		simpMessagingTemplate.convertAndSend(responseDestination, fetchResponse);
-	}
-
 	private void initExecutorService() {
 		if (executorService != null && !executorService.isShutdown()) {
 			return; // use the already working executor service
 		}
 		else {
-			executorService = Executors.newFixedThreadPool(dataSources.size(), runnable -> {
-				Thread thread = new Thread(runnable);
-				thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-				return thread;
-			});
+			executorService = new ActivityMonitoringExecutorServiceImpl<>(
+					Executors.newFixedThreadPool(dataSources.size(), runnable -> {
+						Thread thread = new Thread(runnable);
+						thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
+						return thread;
+					}),
+					dataSources.size());
 		}
-	}
-
-	public void executeTasks(List<ControllerInvokedAdTask> tasksToExecute) {
-		logger.trace("Executing tasks {}", tasksToExecute);
-		for (ControllerInvokedAdTask controllerInvokedAdTask : tasksToExecute) {
-			executeTask(controllerInvokedAdTask);
-		}
-	}
-
-	private void executeTask(ControllerInvokedAdTask taskToExecute) {
-		logger.debug("Executing task for data source {}.", taskToExecute.getDataSource());
-		executorService.execute(taskToExecute);
-	}
-
-
-	public boolean addActiveTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		return activeTasks.add(controllerInvokedAdTask);
-	}
-
-	public boolean removeActiveTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		return activeTasks.remove(controllerInvokedAdTask);
 	}
 
 
