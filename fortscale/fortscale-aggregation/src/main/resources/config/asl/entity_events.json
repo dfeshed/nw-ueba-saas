@@ -137,7 +137,7 @@
           "distinct_number_of_normalized_src_machine_oracle": [
             "normalized_username_oracle_daily.distinct_number_of_normalized_src_machine_oracle_daily"
           ],
-          "distinct_number_of_normalized_dst_machineachines_oracle": [
+          "distinct_number_of_normalized_dst_machine_oracle": [
             "normalized_username_oracle_daily.distinct_number_of_normalized_dst_machine_oracle_daily"
           ],
           "wame_events": [
@@ -203,7 +203,7 @@
           "distinct_number_of_db_username_oracle":0.09,
           "distinct_number_of_db_objects_oracle":0.09,
           "distinct_number_of_normalized_src_machine_oracle":0.09,
-          "distinct_number_of_normalized_dst_machineachines_oracle":0.09,
+          "distinct_number_of_normalized_dst_machine_oracle":0.09,
           "number_of_events_prnlog_daily": 0.09,
           "number_of_total_pages_prnlog_daily": 0.09,
           "number_of_distinct_normalized_src_machines_prnlog_daily": 0.09,
@@ -386,7 +386,7 @@
           "distinct_number_of_normalized_src_machine_oracle": [
             "normalized_username_oracle_hourly.distinct_number_of_normalized_src_machine_oracle_hourly"
           ],
-          "distinct_number_of_normalized_dst_machineachines_oracle": [
+          "distinct_number_of_normalized_dst_machine_oracle": [
             "normalized_username_oracle_hourly.distinct_number_of_normalized_dst_machine_oracle_hourly"
           ],
           "wame_events": [
@@ -452,7 +452,7 @@
           "distinct_number_of_db_username_oracle":0.09,
           "distinct_number_of_db_objects_oracle":0.09,
           "distinct_number_of_normalized_src_machine_oracle":0.09,
-          "distinct_number_of_normalized_dst_machineachines_oracle":0.09,
+          "distinct_number_of_normalized_dst_machine_oracle":0.09,
           "number_of_events_prnlog_hourly": 0.09,
           "number_of_total_pages_prnlog_hourly": 0.09,
           "number_of_distinct_normalized_src_machines_prnlog_hourly": 0.09,
