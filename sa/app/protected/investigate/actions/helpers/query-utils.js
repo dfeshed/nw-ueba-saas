@@ -282,20 +282,14 @@ function executeLogDataRequest(request, inputs, events = []) {
  */
 function parseEventQueryUri(uri) {
   const parts = uri ? uri.split('/') : [];
-  const [ serviceId ] = parts;
-  let [ , startTime, endTime ] = parts;
-  startTime = _floorAtMinute(startTime);
-  endTime = _ceilAtMinute(endTime);
-
-  const metaFilterUri = parts.slice(3, parts.length)
-    .join('/');
-
+  const [ serviceId, startTime, endTime ] = parts;
+  const metaFilterUri = parts.slice(3, parts.length).join('/');
   const metaFilterConditions = parseMetaFilterUri(metaFilterUri);
 
   return {
     serviceId,
-    startTime,
-    endTime,
+    startTime: _floorAtMinute(startTime),
+    endTime: _ceilAtMinute(endTime),
     metaFilter: {
       uri: metaFilterUri,
       conditions: metaFilterConditions
@@ -324,11 +318,11 @@ function parseMetaFilterUri(uri) {
     return [];
   }
   return uri.split('/')
-    .uniq()
+    .filter((segment) => !!segment)
     .map((queryString) => {
       queryString = decodeURIComponent(queryString);
       const condition = { queryString };
-      const matchPair = queryString.match(/([^\=]+)\=([^\=]+)/);
+      const matchPair = queryString.match(/([^\=]+)\=(.*)/);
       const matchAndOr = queryString.match(/\&\&|\|\|/);
       if (matchPair && !matchAndOr) {
         const [ , key, value ] = matchPair;
