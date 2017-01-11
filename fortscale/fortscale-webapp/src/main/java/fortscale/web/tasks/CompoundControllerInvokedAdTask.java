@@ -3,7 +3,7 @@ package fortscale.web.tasks;
 import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ad.AdTaskService;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -15,8 +15,8 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
 
     private static final Logger logger = Logger.getLogger(CompoundControllerInvokedAdTask.class);
 
-    public CompoundControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
-        super(executorService, simpMessagingTemplate, activeDirectoryService, adTaskService, dataSource);
+    public CompoundControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
+        super(executorService, simpMessagingTemplate, activeDirectoryService, adTaskPersistencyService, dataSource);
         currentAdTaskType = AdTaskType.FETCH_ETL;
     }
 

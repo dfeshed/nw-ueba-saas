@@ -1,14 +1,17 @@
 package fortscale.web.webconf;
 
 import fortscale.global.configuration.GlobalConfiguration;
+import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.ad.AdTaskService;
-import fortscale.services.ad.AdTaskServiceImpl;
+import fortscale.services.ad.AdTaskPersistencyService;
+import fortscale.services.ad.AdTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
 import fortscale.web.exceptions.handlers.RestExceptionHandler;
 import fortscale.web.extensions.FortscaleCustomEditorService;
 import fortscale.web.extensions.RenamingProcessor;
+import fortscale.web.services.AdTaskService;
+import fortscale.web.services.AdTaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
@@ -56,6 +59,9 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
+
+    @Autowired
+    private ActiveDirectoryService activeDirectoryService;
 
 
 
@@ -158,17 +164,19 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    AdTaskService adTaskService(){
-        return new AdTaskServiceImpl(applicationConfigurationService);
+    AdTaskPersistencyService adTaskPersistencyService(){
+        return new AdTaskPersistencyServiceImpl(applicationConfigurationService);
     }
 
+    @Bean
+    AdTaskService adTaskService(){
+        return new AdTaskServiceImpl(activeDirectoryService, adTaskPersistencyService());
+    }
 
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.ignoreUnknownPathExtensions(false).defaultContentType(MediaType.TEXT_HTML);
-
-
     }
 
 

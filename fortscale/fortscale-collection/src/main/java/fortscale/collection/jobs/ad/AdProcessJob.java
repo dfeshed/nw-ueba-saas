@@ -5,7 +5,7 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.domain.JobDataReceived;
-import fortscale.services.ad.AdTaskService;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
@@ -23,7 +23,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
-	private AdTaskService adTaskService;
+	private AdTaskPersistencyService adTaskPersistencyService;
 
 	@Autowired
 	protected ImpalaClient impalaClient;
@@ -130,7 +130,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			final String dataSource = splitName[0];
 			final String taskName = splitName[1];
 
-			adTaskService.writeTaskResults(dataSource, taskName,resultsId, true);
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName,resultsId, true);
 		}
 	}
 	

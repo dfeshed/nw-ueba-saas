@@ -5,7 +5,7 @@ import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ad.AdTaskService;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
 import org.quartz.*;
@@ -27,7 +27,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdUserThumbnailProcessJob.class);
 
 	@Autowired
-	private AdTaskService adTaskService;
+	private AdTaskPersistencyService adTaskPersistencyService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -92,7 +92,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 			final String dataSource = splitName[0];
 			final String taskName = splitName[1];
 
-			adTaskService.writeTaskResults(dataSource, taskName,resultsId, true);
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName,resultsId, true);
 		}
 
 		finishStep();

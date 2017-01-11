@@ -4,7 +4,7 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ad.AdTaskService;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 import org.quartz.*;
@@ -32,7 +32,7 @@ public class AdFetchJob extends FortscaleJob {
 	private static final String KEY_SUCCESS = "success";
 
 	@Autowired
-	private AdTaskService adTaskService;
+	private AdTaskPersistencyService adTaskPersistencyService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -89,7 +89,7 @@ public class AdFetchJob extends FortscaleJob {
 			final String dataSource = splitName[0];
 			final String taskName = splitName[1];
 
-			adTaskService.writeTaskResults(dataSource, taskName,resultsId, true);
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName,resultsId, true);
 		}
 	}
 

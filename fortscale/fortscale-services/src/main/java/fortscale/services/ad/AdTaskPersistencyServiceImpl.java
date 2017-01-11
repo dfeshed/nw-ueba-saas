@@ -12,9 +12,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-public class AdTaskServiceImpl implements AdTaskService {
+public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
 
-    private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
+    private static final Logger logger = Logger.getLogger(AdTaskPersistencyServiceImpl.class);
 
     public static final String RESULTS_DELIMITER = "=";
     public static final String RESULTS_KEY_DELIMITER = "-";
@@ -26,7 +26,7 @@ public class AdTaskServiceImpl implements AdTaskService {
     private final ApplicationConfigurationService applicationConfigurationService;
 
     @Autowired
-    public AdTaskServiceImpl(ApplicationConfigurationService applicationConfigurationService) {
+    public AdTaskPersistencyServiceImpl(ApplicationConfigurationService applicationConfigurationService) {
         this.applicationConfigurationService = applicationConfigurationService;
     }
 

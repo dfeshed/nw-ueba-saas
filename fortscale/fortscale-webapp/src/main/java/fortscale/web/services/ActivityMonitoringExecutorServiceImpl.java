@@ -127,7 +127,7 @@ public class ActivityMonitoringExecutorServiceImpl<T extends Runnable> implement
     }
 
     @Override
-    public boolean isAdExecutionInProgress() {
+    public boolean isExecutionInProgress() {
         return inProgress.get();
     }
 

@@ -17,7 +17,7 @@ public interface ActivityMonitoringExecutorService<T> extends ExecutorService {
 
     void executeTasks(List<T> followingTasks);
 
-    boolean isAdExecutionInProgress();
+    boolean isExecutionInProgress();
 
     boolean tryExecute();
 

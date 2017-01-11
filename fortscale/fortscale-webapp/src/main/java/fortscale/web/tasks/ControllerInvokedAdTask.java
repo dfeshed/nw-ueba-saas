@@ -3,8 +3,8 @@ package fortscale.web.tasks;
 import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ad.AdTaskService;
-import fortscale.services.ad.AdTaskServiceImpl;
+import fortscale.services.ad.AdTaskPersistencyService;
+import fortscale.services.ad.AdTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import fortscale.web.services.ActivityMonitoringExecutorService;
@@ -31,7 +31,7 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
     private final ActiveDirectoryService activeDirectoryService;
-    private final AdTaskService adTaskService;
+    private final AdTaskPersistencyService adTaskPersistencyService;
 
     protected final ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
     protected SimpMessagingTemplate simpMessagingTemplate;
@@ -39,11 +39,11 @@ public class ControllerInvokedAdTask implements Runnable {
     protected AdTaskType currentAdTaskType;
     protected List<ControllerInvokedAdTask> followingTasks = new ArrayList<>();
 
-    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskService adTaskService, AdObjectType dataSource) {
+    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
         this.executorService = executorService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.activeDirectoryService = activeDirectoryService;
-        this.adTaskService = adTaskService;
+        this.adTaskPersistencyService = adTaskPersistencyService;
         this.dataSource = dataSource;
     }
 
@@ -93,7 +93,7 @@ public class ControllerInvokedAdTask implements Runnable {
     protected boolean handleAdTask(AdTaskType adTaskType) {
         final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
         simpMessagingTemplate.convertAndSend(RESPONSE_DESTINATION, response);
-        adTaskService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
+        adTaskPersistencyService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
         if (!response.success) {
             logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
         }
@@ -128,7 +128,7 @@ public class ControllerInvokedAdTask implements Runnable {
      * @return an AdTaskResponse representing the results of the task
      */
     private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObjectType dataSource) {
-        adTaskService.setExecutionStartTime(adTaskType, dataSource, System.currentTimeMillis());
+        adTaskPersistencyService.setExecutionStartTime(adTaskType, dataSource, System.currentTimeMillis());
         notifyTaskStart();
         final String dataSourceName = dataSource.toString();
 
@@ -146,14 +146,14 @@ public class ControllerInvokedAdTask implements Runnable {
 
         /* get task results from file */
         logger.debug("Getting results for task {} with results key {}", jobName, resultsKey);
-        final Map<String, String> taskResults = adTaskService.getTaskResults(resultsKey);
+        final Map<String, String> taskResults = adTaskPersistencyService.getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(AdTaskServiceImpl.RESULTS_KEY_SUCCESS);
+        final String success = taskResults.get(AdTaskPersistencyServiceImpl.RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
             notifyTaskDone();

@@ -6,7 +6,7 @@ import fortscale.domain.ad.AdTaskType;
 
 import java.util.Map;
 
-public interface AdTaskService {
+public interface AdTaskPersistencyService {
 
     Map<String, String> getTaskResults(String resultsKey);
 
