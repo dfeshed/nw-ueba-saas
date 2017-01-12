@@ -46,12 +46,12 @@ test('it updates hasBlur when rsa-application-modal-did-open is triggered', func
   });
 });
 
-test('it updates hasBlur when rsa-application-notifications-panel-will-toggle is triggered', function(assert) {
+test('it updates hasBlur when rsa-application-user-preferences-panel-will-toggle is triggered', function(assert) {
   this.set('initialBlur', false);
-  this.set('layoutService.notificationsActive', true);
+  this.set('layoutService.userPreferencesActive', true);
   this.render(hbs `{{#rsa-application-content hasBlur=initialBlur}}foo{{/rsa-application-content}}`);
   assert.equal(this.get('initialBlur'), false);
-  this.get('eventBus').trigger('rsa-application-notifications-panel-will-toggle');
+  this.get('eventBus').trigger('rsa-application-user-preferences-panel-will-toggle');
 
   return wait().then(() => {
     assert.equal(this.get('initialBlur'), true);
@@ -71,13 +71,13 @@ test('it updates hasBlur when rsa-application-incident-queue-panel-will-toggle i
   });
 });
 
-test('it removes hasBlur is true when both notificationsActive and incidentQueueActive are false', function(assert) {
+test('it removes hasBlur is true when both userPreferencesActive and incidentQueueActive are false', function(assert) {
   this.set('initialBlur', true);
   this.set('layoutService.incidentQueueActive', false);
-  this.set('layoutService.notificationsActive', false);
+  this.set('layoutService.userPreferencesActive', false);
   this.render(hbs `{{#rsa-application-content hasBlur=initialBlur}}foo{{/rsa-application-content}}`);
   assert.equal(this.get('initialBlur'), true);
-  this.get('eventBus').trigger('rsa-application-notifications-panel-will-toggle');
+  this.get('eventBus').trigger('rsa-application-user-preferences-panel-will-toggle');
 
   const that = this;
   return wait().then(function() {

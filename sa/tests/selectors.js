@@ -14,8 +14,7 @@ export default Ember$.extend({}, BaseSelectors, {
     'changeLocaleButton': '.js-test-nav-locale-btn',
     'enLocaleListItem': '.js-test-nav-locale-en-li',
     'jpLocaleListItem': '.js-test-nav-locale-jp-li',
-    'preferenceButton': '.js-test-user-preferences-modal .rsa-form-button',
-    'logoutButton': '.global>.rsa-form-button-wrapper .rsa-form-button'
+    'preferenceButton': '.user-preferences-trigger .rsa-form-button'
   },
   'pages': {
     'monitor': {
@@ -38,15 +37,15 @@ export default Ember$.extend({}, BaseSelectors, {
       'errorMessage': 'rsa-login-error-message'
     },
     'userPref': {
-      'friendlyUsernameInput': '#modalDestination .js-test-friendly-username input',
-      'defaultLandingPageTrigger': '#modalDestination .js-test-default-landing-page-select .ember-power-select-trigger',
-      'languageTrigger': '#modalDestination .js-test-language-select .ember-power-select-trigger',
-      'timeZoneTrigger': '#modalDestination .js-test-time-zone-select .ember-power-select-trigger',
-      'dateFormatTrigger': '#modalDestination .js-test-date-format-select .ember-power-select-trigger',
-      'timeFormatRadioGroupInput': '#modalDestination .time-format-radio-group .rsa-form-radio input',
-      'resetButton': '#modalDestination .js-test-revert button',
-      'applyButton': '#modalDestination .js-test-apply button',
-      'userPrefDropDownListItem': '#ember-basic-dropdown-wormhole ul li'
+      'defaultLandingPageTrigger': '.js-test-default-landing-page-select .ember-power-select-trigger',
+      'languageTrigger': '.js-test-language-select .ember-power-select-trigger',
+      'timeZoneTrigger': '.js-test-time-zone-select .ember-power-select-trigger',
+      'dateFormatTrigger': '.js-test-date-format-select .ember-power-select-trigger',
+      'timeFormatRadioGroupInput': '.time-format-radio-group .rsa-form-radio input',
+      'userPrefDropDownListItem': '#ember-basic-dropdown-wormhole ul li',
+      'versionText': '.rsa-application-user-preferences-panel footer p',
+      'signOutLink': '.rsa-application-user-preferences-panel footer a',
+      'closeButton': '.rsa-application-user-preferences-panel button'
     },
     'respond': {
 

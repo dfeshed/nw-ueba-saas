@@ -39,12 +39,12 @@ export default Component.extend({
 
   togglePanelBlur() {
     run.next(() => {
-      const notificationsActive = this.get('layoutService.notificationsActive');
+      const userPreferencesActive = this.get('layoutService.userPreferencesActive');
       const incidentQueueActive = this.get('layoutService.incidentQueueActive');
 
-      if (notificationsActive || incidentQueueActive) {
+      if (userPreferencesActive || incidentQueueActive) {
         this.set('hasBlur', true);
-      } else if (!notificationsActive && !incidentQueueActive) {
+      } else if (!userPreferencesActive && !incidentQueueActive) {
         this.set('hasBlur', false);
       }
     });
@@ -53,7 +53,7 @@ export default Component.extend({
   listen() {
     this.get('eventBus').on('rsa-application-modal-did-open', this, 'addModalBlur');
     this.get('eventBus').on('rsa-application-modal-did-close', this, 'removeModalBlur');
-    this.get('eventBus').on('rsa-application-notifications-panel-will-toggle', this, 'togglePanelBlur');
+    this.get('eventBus').on('rsa-application-user-preferences-panel-will-toggle', this, 'togglePanelBlur');
     this.get('eventBus').on('rsa-application-incident-queue-panel-will-toggle', this, 'togglePanelBlur');
   },
 

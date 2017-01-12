@@ -18,7 +18,7 @@ export default Service.extend({
 
   incidentQueueActive: false,
 
-  notificationsActive: false,
+  userPreferencesActive: false,
 
   journalPanel: 'hidden', // ['hidden', 'quarter', 'half', 'main', 'full']
   journalPanelClass: computed('journalPanel', function() {
@@ -63,9 +63,9 @@ export default Service.extend({
     this.get('eventBus').trigger('rsa-application-incident-queue-panel-will-toggle');
   },
 
-  toggleNotifications() {
-    this.toggleProperty('notificationsActive');
-    this.get('eventBus').trigger('rsa-application-notifications-panel-will-toggle');
+  toggleUserPreferences() {
+    this.toggleProperty('userPreferencesActive');
+    this.get('eventBus').trigger('rsa-application-user-preferences-panel-will-toggle');
   },
 
   toggleFullWidthPanel(panel) {

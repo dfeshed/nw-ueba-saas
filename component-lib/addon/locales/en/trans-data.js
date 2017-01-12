@@ -37,8 +37,10 @@ export default {
     }
   },
   userPreferences: {
-    preferences: 'Preferences',
-    preferencesFor: 'Preferences for {{user}}',
+    preferences: 'User Preferences',
+    personalize: 'Personalize your experience',
+    signOut: 'Sign Out',
+    version: 'Version 11.0.0',
     username: 'Username',
     email: 'Email',
     language: 'Language',

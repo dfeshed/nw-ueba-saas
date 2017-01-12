@@ -11,7 +11,6 @@ $applicationHeaderLinkActiveArrowColor: rsa-color(red, dark);
 $applicationHeaderLinkActiveArrowSize: 5px;
 $applicationHeaderActiveButtonColor: rsa-color(blue);
 
-$userPreferencesPanelWidth: 50rem;
 $userPreferencesPanelHeaderBackgroundColor: rsa-color(blue);
 
 $applicationContentBlur: rsa-whitespace(least);
@@ -115,7 +114,6 @@ body {
 @import 'application-layout-manager';
 @import 'routable-login';
 @import 'user-preferences-panel';
-@import 'application-notifications-panel';
 @import 'application-flash-messages';
 
 page, screen {

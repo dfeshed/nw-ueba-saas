@@ -6,9 +6,7 @@ const {
   Component,
   inject: {
     service
-  },
-  RSVP,
-  $
+  }
 } = Ember;
 
 export default Component.extend(ContextualHelp, {
@@ -19,32 +17,17 @@ export default Component.extend(ContextualHelp, {
 
   layoutService: service('layout'),
 
-  usernameFormat: service('username-format'),
+  usernameFormat: service(),
+
+  timezone: service(),
 
   layout,
 
   classNames: ['rsa-application-header'],
 
   actions: {
-    logout() {
-      return new RSVP.Promise((resolve) => {
-        $.ajax({
-          type: 'POST',
-          url: '/oauth/logout',
-          timeout: 3000,
-          data: {
-            access_token: this.get('session').get('data.authenticated.access_token')
-          }
-        })
-          .always(() => {
-            this.get('session').invalidate();
-            resolve();
-          });
-      });
-    },
-
-    toggleNotifications() {
-      this.get('layoutService').toggleNotifications();
+    toggleUserPreferences() {
+      this.get('layoutService').toggleUserPreferences();
     }
   }
 
