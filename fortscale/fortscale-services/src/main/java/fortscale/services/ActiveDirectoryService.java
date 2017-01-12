@@ -3,6 +3,7 @@ package fortscale.services;
 import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
+import fortscale.services.impl.AdObjectType;
 
 import javax.naming.NamingException;
 import java.util.List;
