@@ -3,15 +3,11 @@ package fortscale.web.webconf;
 import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.ad.AdTaskPersistencyService;
-import fortscale.services.ad.AdTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
 import fortscale.web.exceptions.handlers.RestExceptionHandler;
 import fortscale.web.extensions.FortscaleCustomEditorService;
 import fortscale.web.extensions.RenamingProcessor;
-import fortscale.web.services.AdTaskService;
-import fortscale.web.services.AdTaskServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
@@ -46,7 +42,7 @@ import java.util.Map;
         includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
 )
 @ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
-@Import(GlobalConfiguration.class)
+@Import({GlobalConfiguration.class, AdTaskConfig.class})
 //Load properties files:
 @PropertySource({"classpath:META-INF/application-config.properties","classpath:META-INF/entities-overriding.properties","classpath:META-INF/evidence.events.filtering.properties"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
@@ -163,15 +159,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         return new RenamingProcessor(true);
     }
 
-    @Bean
-    AdTaskPersistencyService adTaskPersistencyService(){
-        return new AdTaskPersistencyServiceImpl(applicationConfigurationService);
-    }
 
-    @Bean
-    AdTaskService adTaskService(){
-        return new AdTaskServiceImpl(activeDirectoryService, adTaskPersistencyService());
-    }
 
 
     @Override

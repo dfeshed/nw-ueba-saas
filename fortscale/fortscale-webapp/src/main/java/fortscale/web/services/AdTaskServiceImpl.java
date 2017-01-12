@@ -20,9 +20,12 @@ public class AdTaskServiceImpl implements AdTaskService {
     private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
 
     private ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
-    private final ActiveDirectoryService activeDirectoryService;
-    private final AdTaskPersistencyService adTaskPersistencyService;
+    private ActiveDirectoryService activeDirectoryService;
+    private AdTaskPersistencyService adTaskPersistencyService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
+
+    private AdTaskServiceImpl() {
+    }
 
     public AdTaskServiceImpl(ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService) {
         this.activeDirectoryService = activeDirectoryService;
