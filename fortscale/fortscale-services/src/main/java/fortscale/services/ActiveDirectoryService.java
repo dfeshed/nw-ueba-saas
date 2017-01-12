@@ -4,8 +4,8 @@ import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
-import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
+import fortscale.services.impl.AdObjectType;
 
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
@@ -26,8 +26,8 @@ public interface ActiveDirectoryService {
     boolean canConnect(AdConnection adConnection) throws CommunicationException, AuthenticationException, NamingException, PasswordDecryptionException;
     List<AdGroup> getGroupsByNameContains(String contains);
     List<AdOU> getOusByOuContains(String contains);
-    Long getCount(AdObject.AdObjectType adObjectType);
-    Long getLatestRuntime(AdObject.AdObjectType adObjectType);
-    Long countByTimestampepoch(AdObject.AdObjectType adObjectType, Long latestRuntime);
-    Long getLastRunCount(AdObject.AdObjectType adObjectType);
+    Long getCount(AdObjectType adObjectType);
+    Long getLatestRuntime(AdObjectType adObjectType);
+    Long countByTimestampepoch(AdObjectType adObjectType, Long latestRuntime);
+    Long getLastRunCount(AdObjectType adObjectType);
 }

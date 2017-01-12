@@ -1,12 +1,14 @@
 package fortscale.services.impl;
 
 import fortscale.domain.Exceptions.PasswordDecryptionException;
-import fortscale.domain.ad.*;
+import fortscale.domain.ad.AdConnection;
+import fortscale.domain.ad.AdGroup;
+import fortscale.domain.ad.AdOU;
+import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service("ActiveDirectoryService")
-public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
+public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
@@ -126,7 +128,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
 
     @Override
-    public Long getCount(AdObject.AdObjectType  adObjectType) {
+    public Long getCount(AdObjectType  adObjectType) {
         switch (adObjectType) {
             case GROUP:
                 return adGroupRepository.count();
@@ -137,7 +139,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             case COMPUTER:
                 return adComputerRepository.count();
             default:
-                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
         }
 
     }
@@ -188,11 +190,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-    }
-
-    @Override
-    public Long getLatestRuntime(AdObject.AdObjectType adObjectType) {
+    public Long getLatestRuntime(AdObjectType adObjectType) {
         switch (adObjectType) {
             case GROUP:
                 return adGroupRepository.getLatestTimeStampepoch();
@@ -203,12 +201,12 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             case COMPUTER:
                 return adComputerRepository.getLatestTimeStampepoch();
             default:
-                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
         }
     }
 
     @Override
-    public Long countByTimestampepoch(AdObject.AdObjectType adObjectType, Long latestRuntime) {
+    public Long countByTimestampepoch(AdObjectType adObjectType, Long latestRuntime) {
         switch (adObjectType) {
             case GROUP:
                 return adGroupRepository.countByTimestampepoch(latestRuntime);
@@ -219,12 +217,12 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             case COMPUTER:
                 return adComputerRepository.countByTimestampepoch(latestRuntime);
             default:
-                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
         }
     }
 
     @Override
-    public Long getLastRunCount(AdObject.AdObjectType adObjectType) {
+    public Long getLastRunCount(AdObjectType adObjectType) {
         Long latestRuntime = getLatestRuntime(adObjectType);
         final Long currObjectsCount = countByTimestampepoch(adObjectType, latestRuntime);
         return currObjectsCount;

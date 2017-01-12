@@ -1,9 +1,9 @@
 package fortscale.web.tasks;
 
-import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.impl.AdObjectType;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
 import org.apache.commons.io.IOUtils;

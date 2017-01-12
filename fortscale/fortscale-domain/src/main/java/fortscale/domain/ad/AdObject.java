@@ -92,25 +92,4 @@ public class AdObject extends AbstractDocument {
 	public void setRuntime(String runtime) {
 		this.runtime = runtime;
 	}
-
-	public enum AdObjectType {
-		GROUP("Group", AdGroup.COLLECTION_NAME), OU("OU", AdOU.COLLECTION_NAME), USER("User", AdUser.COLLECTION_NAME), COMPUTER("Computer", AdComputer.COLLECTION_NAME);
-
-		private final String displayName;
-		private final String collectionName;
-
-		AdObjectType(String displayName, String collectionName) {
-			this.displayName = displayName;
-			this.collectionName = collectionName;
-		}
-
-		public String getCollectionName() {
-			return collectionName;
-		}
-
-		@Override
-		public String toString() {
-			return displayName;
-		}
-	}
 }
