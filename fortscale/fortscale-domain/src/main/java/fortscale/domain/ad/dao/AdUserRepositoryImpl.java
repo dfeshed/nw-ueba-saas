@@ -18,36 +18,14 @@ import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 
 
 
-class AdUserRepositoryImpl extends AdObjectRepositoryImpl implements AdUserRepositoryCustom{
+class AdUserRepositoryImpl extends AdObjectRepository implements AdUserRepositoryCustom{
 	private static final int inOperatorSizeLimit = 2000; 
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
 	@Autowired
 	private MongoDbRepositoryUtil mongoDbRepositoryUtil;
-//	@SuppressWarnings("unchecked")
-//	@Override
-//	public List<AdUser> findAdUsersAttrVals() {
-//		DBCollection collection = getDBCollection();
-//		
-//		List<AdUser> ret = new ArrayList<AdUser>();
-//		Iterator<DBObject> iter = collection.find().iterator();
-//		while(iter.hasNext()){
-//			DBObject cur = iter.next();
-//			AdUser adUser = new AdUser();
-//			adUser.setDistinguishedName((String) cur.toMap().get(AdObject.dnField));
-//			adUser.setAttrVals(cur.toMap());
-//			ret.add(adUser);
-//		}
-//		
-//		return ret;
-//	}
-	
-//	private DBCollection getDBCollection(){
-//		DB db = mongoDbFactory.getDb();
-//		return db.getCollection("ad_user");
-//	}
-	
+
 	public String getAdUsersLastSnapshotRuntime(){
 		return  mongoDbRepositoryUtil.getLatestTimeStampString(AdUser.runTimeField, AdUser.COLLECTION_NAME);
 	}
@@ -73,4 +51,8 @@ class AdUserRepositoryImpl extends AdObjectRepositoryImpl implements AdUserRepos
 		return mongoTemplate.find(query, AdUser.class, AdUser.COLLECTION_NAME);
 	}
 
+	@Override
+	public String getCollectionName() {
+		return AdUser.COLLECTION_NAME;
+	}
 }

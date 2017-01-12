@@ -36,6 +36,11 @@ public abstract class AdProcessJob extends FortscaleJob {
 	@Value("${collection.lines.print.enabled}")
 	protected boolean linesPrintEnabled;
 
+	@Value("${ldap.tables.fields.timestampepoch}")
+	private String timestampepochFieldName;
+	@Value("${ldap.tables.fields.runtime}")
+	private String runtimeFieldName;
+
 	private static final String DELIMITER = "=";
 	private static final String KEY_SUCCESS = "success";
 
@@ -201,6 +206,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 			numOfLines++;
 			Record record = morphlineProcessLine(line);
 			if(record != null){
+				record.put(runtimeFieldName, runtimeString);
+				record.put(timestampepochFieldName, timestampepoch);
+
 				if(updateDb(record)){
 					counter++;
 				}

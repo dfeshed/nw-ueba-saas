@@ -4,9 +4,10 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 
-@Document(collection="ad_computer")
+@Document(collection=AdComputer.COLLECTION_NAME)
 public class AdComputer extends AdObject{
 
+	public static final String COLLECTION_NAME = "ad_computer";
 	/**
 	 * 
 	 */
