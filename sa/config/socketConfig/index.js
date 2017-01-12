@@ -4,6 +4,7 @@ var contextConfigGen = require('./context');
 var adminConfigGen = require('./administration');
 var testConfigGen = require('./test');
 var reconConfigGen = require('../../../recon').socketRouteGenerator;
+var liveContentConfigGen = require('./live-content');
 
 // order matters, first config in wins if there are matching configs
 var configGenerators = [
@@ -12,7 +13,9 @@ var configGenerators = [
   responseConfigGen,
   contextConfigGen,
   reconConfigGen,
-  adminConfigGen
+  adminConfigGen,
+  liveContentConfigGen
+
 ];
 
 var cache = null;

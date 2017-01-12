@@ -5,9 +5,11 @@ var contextLookup = require('./contextLookup');
 
 var mockPort = process.env.MOCK_PORT || 9999;
 var mockServerUrl = "http://localhost:" + mockPort;
+var useMockServer = !process.env.NOMOCK;
 
 module.exports = function(environment) {
   var ENV = {
+    useMockServer: useMockServer,
     mockServerUrl: mockServerUrl,
     mockPort: mockPort,
     modulePrefix: 'sa',
