@@ -15,7 +15,7 @@
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{rsa-data-table/body-cell item=item column=column}}
           {{/rsa-data-table/body}}
         {{/rsa-data-table}}
 
@@ -33,7 +33,7 @@
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{rsa-data-table/body-cell item=item column=column}}
           {{/rsa-data-table/body}}
         {{/rsa-data-table}}
         END-SNIPPET --}}
@@ -72,7 +72,7 @@
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{rsa-data-table/body-cell item=item column=column}}
           {{/rsa-data-table/body}}
         {{/rsa-data-table}}
 
@@ -90,7 +90,7 @@
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-            {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{rsa-data-table/body-cell item=item column=column}}
           {{/rsa-data-table/body}}
         {{/rsa-data-table}}
         END-SNIPPET --}}
@@ -134,7 +134,7 @@
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-            {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{#rsa-data-table/body-cell item=item column=column}}
               <div>{{get item column.field}}</div>
             {{/rsa-data-table/body-cell}}
           {{/rsa-data-table/body}}
@@ -154,7 +154,7 @@
           {{/rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}
-            {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+            {{#rsa-data-table/body-cell item=item column=column}}
               <div>{{get item column.field}}</div>
             {{/rsa-data-table/body-cell}}
           {{/rsa-data-table/body}}
@@ -187,14 +187,14 @@
 
           {{#rsa-data-table/body as |item index column|}}
             {{#if column.componentClass}}
-              {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+              {{#rsa-data-table/body-cell item=item column=column}}
                 {{component column.componentClass
                   item=item
                   checked=item.checked
                   change=(action 'toggleItemSelection' item)}}
               {{/rsa-data-table/body-cell}}
             {{else}}
-              {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+              {{rsa-data-table/body-cell item=item column=column}}
             {{/if}}
 
           {{/rsa-data-table/body}}
@@ -223,14 +223,14 @@
 
           {{#rsa-data-table/body as |item index column|}}
             {{#if column.componentClass}}
-              {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+              {{#rsa-data-table/body-cell item=item column=column}}
                 {{component column.componentClass
                   item=item
                   checked=item.checked
                   change=(action 'toggleItemSelection' item)}}
               {{/rsa-data-table/body-cell}}
             {{else}}
-              {{rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+              {{rsa-data-table/body-cell item=item column=column}}
             {{/if}}
 
           {{/rsa-data-table/body}}
@@ -307,9 +307,7 @@
 
           {{#rsa-data-table/body as |item index column|}}
 
-            {{#rsa-data-table/body-cell
-              column=column
-              columnWidth=column.width}}
+            {{#rsa-data-table/body-cell column=column}}
               {{get item column.field}}
             {{/rsa-data-table/body-cell}}
 
@@ -326,9 +324,7 @@
 
           {{#rsa-data-table/body as |item index column|}}
 
-            {{#rsa-data-table/body-cell
-            column=column
-            columnWidth=column.width}}
+            {{#rsa-data-table/body-cell column=column}}
               {{get item column.field}}
             {{/rsa-data-table/body-cell}}
 
