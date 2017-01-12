@@ -89,10 +89,12 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		if (resultsId != null) {
 			final String name = jobKey.getName();
 			final String[] splitName = name.split("_");
-			final String dataSource = splitName[0];
-			final String taskName = splitName[1];
+			final String dataSource = splitName[0] + "_" + splitName[1];
+			final String taskName = splitName[2] + "_" + splitName[3];
 
-			adTaskPersistencyService.writeTaskResults(dataSource, taskName,resultsId, true);
+
+			logger.error("***** JOB THUMBNAIL SUCCESS!!! ds {} tn {} id {}", dataSource, taskName, resultsId);
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName, resultsId, true);
 		}
 
 		finishStep();

@@ -89,7 +89,7 @@ public class AdFetchJob extends FortscaleJob {
 			final String dataSource = splitName[0];
 			final String taskName = splitName[1];
 
-			adTaskPersistencyService.writeTaskResults(dataSource, taskName,resultsId, true);
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName, resultsId, true);
 		}
 	}
 

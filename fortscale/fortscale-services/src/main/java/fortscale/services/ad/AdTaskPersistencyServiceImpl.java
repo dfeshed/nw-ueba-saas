@@ -35,6 +35,7 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
     @Override
     public Map<String, String> getTaskResults(String resultsKey) {
         Map<String, String> taskResults = new HashMap<>();
+        logger.error("**** getting result for key {}", resultsKey);
         ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
         if (queryResult == null) {
             logger.error("No result found for result key {}", resultsKey);
@@ -54,13 +55,8 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
         return taskResults;
     }
 
-    public void writeTaskResults(String dataSource, String taskName, String resultsId, boolean result) {
-        String resultsKey =
-                        dataSource.toLowerCase() +
-                        RESULTS_KEY_DELIMITER +
-                        taskName.toLowerCase() +
-                        applicationConfigurationService.getKeyDelimiter() +
-                        resultsId;
+    public void writeTaskResults(String dataSource, String taskTypeName, String resultsId, boolean result) {
+        String resultsKey = createResultKey(dataSource, taskTypeName, resultsId);
         logger.debug("Inserting status to application configuration in key {}", resultsKey);
         applicationConfigurationService.insertConfigItem(resultsKey, RESULTS_KEY_SUCCESS + RESULTS_DELIMITER + result);
     }
@@ -82,7 +78,13 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
     }
 
     @Override
-    public String createResultKey(AdTaskType adTaskType, AdObject.AdObjectType dataSource, UUID resultsId) {
-        return dataSource.toString().toLowerCase() + RESULTS_KEY_DELIMITER + adTaskType.toString().toLowerCase() + applicationConfigurationService.getKeyDelimiter() + resultsId;
+    public String createResultKey(AdObject.AdObjectType dataSource, AdTaskType adTaskType, UUID resultsId) {
+        return createResultKey(dataSource.name(), adTaskType.getType(), resultsId.toString());
     }
+
+    private String createResultKey(String dataSource, String taskTypeName, String resultsId) {
+        return dataSource.toLowerCase() + RESULTS_KEY_DELIMITER + taskTypeName.toLowerCase() + applicationConfigurationService.getKeyDelimiter() + resultsId;
+
+    }
+
 }

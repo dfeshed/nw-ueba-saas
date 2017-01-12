@@ -21,5 +21,5 @@ public interface AdTaskPersistencyService {
 
     void setExecutionStartTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long executionStartTime);
 
-    String createResultKey(AdTaskType adTaskType, AdObject.AdObjectType dataSource, UUID resultsId);
+    String createResultKey(AdObject.AdObjectType dataSource, AdTaskType adTaskType, UUID resultsId);
 }
