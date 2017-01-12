@@ -25,11 +25,13 @@ public class AdTaskServiceImpl implements AdTaskService {
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
     private AdTaskServiceImpl() {
+        initExecutorService();
     }
 
     public AdTaskServiceImpl(ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService) {
         this.activeDirectoryService = activeDirectoryService;
         this.adTaskPersistencyService = adTaskPersistencyService;
+        initExecutorService();
     }
 
     public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate) {
