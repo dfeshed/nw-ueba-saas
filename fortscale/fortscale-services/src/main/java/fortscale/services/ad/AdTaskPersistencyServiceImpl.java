@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
@@ -17,7 +18,8 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
     private static final Logger logger = Logger.getLogger(AdTaskPersistencyServiceImpl.class);
 
     public static final String RESULTS_DELIMITER = "=";
-    public static final String RESULTS_KEY_DELIMITER = "-";
+    public static final String RESULTS_KEY_DELIMITER = "_";
+    public static final String EXECUTION_TIME_KEY_DELIMITER = "_";
     public static final String RESULTS_KEY_SUCCESS = "success";
 
     private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
@@ -64,18 +66,23 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
     }
 
     public Long getLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + EXECUTION_TIME_KEY_DELIMITER + adTaskType + EXECUTION_TIME_KEY_DELIMITER + dataSource.toString(), Long.class);
     }
 
     public void setLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long lastExecutionTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX + EXECUTION_TIME_KEY_DELIMITER + adTaskType + EXECUTION_TIME_KEY_DELIMITER + dataSource.toString(), lastExecutionTime);
     }
 
     public Long getExecutionStartTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + EXECUTION_TIME_KEY_DELIMITER + adTaskType + EXECUTION_TIME_KEY_DELIMITER + dataSource.toString(), Long.class);
     }
 
     public void setExecutionStartTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long executionStartTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), executionStartTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX + EXECUTION_TIME_KEY_DELIMITER + adTaskType + EXECUTION_TIME_KEY_DELIMITER + dataSource.toString(), executionStartTime);
+    }
+
+    @Override
+    public String createResultKey(AdTaskType adTaskType, AdObject.AdObjectType dataSource, UUID resultsId) {
+        return dataSource.toString().toLowerCase() + RESULTS_KEY_DELIMITER + adTaskType.toString().toLowerCase() + applicationConfigurationService.getKeyDelimiter() + resultsId;
     }
 }

@@ -5,6 +5,7 @@ import fortscale.domain.ad.AdObject;
 import fortscale.domain.ad.AdTaskType;
 
 import java.util.Map;
+import java.util.UUID;
 
 public interface AdTaskPersistencyService {
 
@@ -19,4 +20,6 @@ public interface AdTaskPersistencyService {
     Long getExecutionStartTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource);
 
     void setExecutionStartTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource, Long executionStartTime);
+
+    String createResultKey(AdTaskType adTaskType, AdObject.AdObjectType dataSource, UUID resultsId);
 }
