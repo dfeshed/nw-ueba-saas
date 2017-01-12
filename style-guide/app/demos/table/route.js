@@ -1,6 +1,5 @@
 import Ember from 'ember';
 const {
-  Object: EmberObject,
   Route
 } = Ember;
 
