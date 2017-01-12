@@ -22,8 +22,9 @@ import org.apache.samza.task.TaskContext;
 import org.apache.samza.task.TaskCoordinator;
 import org.springframework.util.Assert;
 
+import java.util.Set;
+
 import static fortscale.streaming.ConfigUtils.getConfigString;
-import static fortscale.streaming.task.ModelBuildingStreamTask.CONTROL_OUTPUT_TOPIC_KEY;
 import static fortscale.utils.ConversionUtils.convertToLong;
 
 
@@ -35,9 +36,8 @@ public class ScoringTask extends AbstractStreamTask {
     private String timestampField;
     private Counter processedMessageCount;
     private Counter lastTimestampCount;
-    private String modelBuildingControlOutputTopic;
     private ObjectMapper objectMapper;
-
+    private Set<String> modelOutputControlTopics;
 
     @Override
     protected void processInit(Config config, TaskContext context) throws Exception {
@@ -54,8 +54,9 @@ public class ScoringTask extends AbstractStreamTask {
 
         eventService = springService.resolve(EventService.class);
 
-        modelBuildingControlOutputTopic = resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY,res);
-        Assert.hasText(modelBuildingControlOutputTopic);
+        modelOutputControlTopics = res.resolveStringValueToSet("${fortscale.model.build.control.output.topics}",",");
+
+        Assert.notEmpty(modelOutputControlTopics);
 
         objectMapper = new ObjectMapper().registerModule(new JsonOrgModule());
     }
@@ -66,7 +67,7 @@ public class ScoringTask extends AbstractStreamTask {
 
         JSONObject message = messageContext.getMessageAsJson();
         String messageText = messageContext.getMessageAsString();
-        if(topicName.equals(modelBuildingControlOutputTopic))
+        if(modelOutputControlTopics.contains(topicName))
         {
             taskMetrics.modelBuildingEvents++;
 

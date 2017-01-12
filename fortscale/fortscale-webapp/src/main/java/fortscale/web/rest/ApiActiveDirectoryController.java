@@ -2,9 +2,9 @@ package fortscale.web.rest;
 
 import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
-import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.impl.AdObjectType;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
@@ -242,7 +242,7 @@ public class ApiActiveDirectoryController {
 			}
 			else { //not running
 				final Long currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
-				final Long currObjectsCount = activeDirectoryService.getCount(datasource);
+				final Long currObjectsCount = activeDirectoryService.getLastRunCount(datasource);
 				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount));
 			}
 		});

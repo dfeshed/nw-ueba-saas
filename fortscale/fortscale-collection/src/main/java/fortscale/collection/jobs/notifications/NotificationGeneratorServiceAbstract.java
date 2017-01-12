@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +42,8 @@ public abstract class NotificationGeneratorServiceAbstract implements Notificati
 	private static final String MAX_TS_FIELD_ALIAS = "max_ts";
 	private static final String NEXT_EPOCHTIME_KEY = "next_epochtime";
 	private static final String NEXT_EPOCHTIME_VALUE = "nextEpochtime";
-	private static final DateTimeFormatter yearMonthDayFormatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+	private static final DateTimeFormatter yearMonthDayFormatter =
+			DateTimeFormatter.ofPattern("yyyyMMdd").withZone(ZoneId.of("Z"));
 	private static final long MIN_PROCESSING_PERIOD_IN_SEC = TimeUnit.MINUTES.toSeconds(10); // 10 minutes
 	private static final long MAX_UPPER_LIMIT_INC_DELTA = TimeUnit.DAYS.toSeconds(1) - 1; // 23:59:59
 

@@ -5,14 +5,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 
 
-@Document(collection="ad_ou")
+@Document(collection= AdOU.COLLECTION_NAME)
 public class AdOU extends AdObject{
-	
-	
-	/**
-	 * 
-	 */
+	public static final String COLLECTION_NAME = "ad_ou";
+
 	private static final long serialVersionUID = -7154327202343258119L;
+
 	private String isCriticalSystemObject;
 	private String isDeleted;
 	private String defaultGroup;
