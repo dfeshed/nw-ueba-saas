@@ -1,8 +1,20 @@
 import Ember from 'ember';
-const { Route } = Ember;
+const {
+  Route
+} = Ember;
 
 export default Route.extend({
-  columnsConfig: [
+  columnsWithCheckboxConfig: [
+    {
+      title: '',
+      class: 'rsa-form-row-checkbox',
+      width: '18',
+      dataType: 'checkbox',
+      componentClass: 'rsa-form-checkbox-2',
+      visible: true,
+      disableSort: true,
+      headerComponentClass: 'rsa-form-checkbox-2'
+    },
     {
       field: 'foo',
       title: 'Foo Column'
@@ -16,9 +28,40 @@ export default Route.extend({
       title: 'Baz Column'
     }
   ],
+  columnsWithoutCheckboxConfig: [
+    {
+      field: 'foo',
+      title: 'Foo Column'
+    },
+    {
+      field: 'bar',
+      title: 'Bar Column'
+    },
+    {
+      field: 'baz',
+      title: 'Baz Column'
+    }
+  ],
+  columnsWithWidthConfig: [
+    {
+      field: 'foo',
+      title: 'Foo Column',
+      width: 350
+    },
+    {
+      field: 'bar',
+      title: 'Bar Column',
+      width: 150
+    },
+    {
+      field: 'baz',
+      title: 'Baz Column',
+      width: 150
+    }
+  ],
   items: [
     {
-      foo: 'Test Foo 1',
+      foo: 'Really really really very very long Test Foo 1',
       bar: 'Test Bar 1',
       baz: 'Test Baz 1'
     },
@@ -35,7 +78,9 @@ export default Route.extend({
   ],
   model() {
     return {
-      columnsConfig: this.columnsConfig,
+      columnsWithCheckboxConfig: this.columnsWithCheckboxConfig,
+      columnsWithoutCheckboxConfig: this.columnsWithoutCheckboxConfig,
+      columnsWithWidthConfig: this.columnsWithWidthConfig,
       items: this.items,
       title: 'Table',
       subtitle: 'An all purpose table component',

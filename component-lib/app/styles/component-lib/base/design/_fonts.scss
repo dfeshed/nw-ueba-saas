@@ -118,9 +118,14 @@
       text-transform: uppercase;
     }
   } @else if ($weight == paragraph) {
-    font-size: 1rem;
     font-weight: 400;
     line-height: 1.5rem;
+
+    @if ($size == small) {
+      font-size: .85rem;
+    } @else {
+      font-size: 1rem;
+    }
   } @else if ($weight == navigation) {
     letter-spacing: 2px;
     text-transform: uppercase;

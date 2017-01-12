@@ -6,33 +6,60 @@
   <div class="scroll-box">
     {{#spec-category title="States"}}
       {{#spec-member title="Default"}}
-        {{rsa-form-checkbox label='Input Label'}}
+        <label class="rsa-form-checkbox-2-label">
+          {{rsa-form-checkbox-2
+          checked=isChecked
+          change=(action 'toggleIsChecked')}}
+          Input Label
+        </label>
+
         {{!-- BEGIN-SNIPPET checkbox1
-        {{rsa-form-checkbox label='Input Label'}}
+        <label class="rsa-form-checkbox-2-label">
+          {{rsa-form-checkbox-2
+          checked=isChecked
+          change=(action 'toggleIsChecked')}}
+          Input Label
+        </label>
         END-SNIPPET --}}
         {{code-snippet name="checkbox1.hbs"}}
       {{/spec-member}}
 
-      {{#spec-member title="Read Only"}}
-        {{rsa-form-checkbox label='Input Label' isReadOnly=true}}
-        {{!-- BEGIN-SNIPPET checkbox2
-        {{rsa-form-checkbox label='Input Label' isReadOnly=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="checkbox2.hbs"}}
-      {{/spec-member}}
-
       {{#spec-member title="Disabled"}}
-        {{rsa-form-checkbox label='Input Label' isDisabled=true}}
+        <label class="rsa-form-checkbox-2-label {{if true 'disabled'}}">
+          {{rsa-form-checkbox-2
+          checked=isChecked
+          disabled=true
+          change=(action 'toggleIsChecked')}}
+          Input Label
+        </label>
         {{!-- BEGIN-SNIPPET checkbox3
-        {{rsa-form-checkbox label='Input Label' isDisabled=true}}
+        <label class="rsa-form-checkbox-2-label {{if true 'disabled'}}">
+          {{rsa-form-checkbox-2
+          checked=isChecked
+          disabled=true
+          change=(action 'toggleIsChecked')}}
+          Input Label
+        </label>
         END-SNIPPET --}}
         {{code-snippet name="checkbox3.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Error"}}
-        {{rsa-form-checkbox label='Input Label' isError=true}}
+        <label class="rsa-form-checkbox-2-label {{if true 'error'}}">
+          {{rsa-form-checkbox-2
+          checked=isChecked
+          error=true
+          change=(action 'toggleIsChecked')}}
+          Input Label
+        </label>
         {{!-- BEGIN-SNIPPET checkbox4
-        {{rsa-form-checkbox label='Input Label' isError=true}}
+        <label class="rsa-form-checkbox-2-label {{if true 'error'}}">
+          {{rsa-form-checkbox-2
+          checked=isChecked
+          error=true
+          change=(action 'toggleIsChecked')}}
+          Input Label
+        </label>
         END-SNIPPET --}}
         {{code-snippet name="checkbox4.hbs"}}
       {{/spec-member}}
