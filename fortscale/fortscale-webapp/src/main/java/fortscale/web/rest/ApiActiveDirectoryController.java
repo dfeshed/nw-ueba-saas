@@ -163,33 +163,45 @@ public class ApiActiveDirectoryController {
 
 	@RequestMapping("/ad_fetch_etl" )
 	public ResponseEntity<ResponseEntityMessage> executeAdFetchAndEtl() {
-		logger.debug("Executing AD Fetch and ETL");
-		final boolean executedSuccessfully = adTaskService.executeTasks(simpMessagingTemplate);
-		if (executedSuccessfully) {
-			lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
-			return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
-		}
-		else {
-			final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
-			logger.warn(inProgressMsg);
-			return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.LOCKED);
+		try {
+			logger.debug("Executing AD Fetch and ETL");
+			final boolean executedSuccessfully = adTaskService.executeTasks(simpMessagingTemplate);
+			if (executedSuccessfully) {
+                lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
+                return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
+            }
+            else {
+                final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
+                logger.warn(inProgressMsg);
+                return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.LOCKED);
+            }
+		} catch (Exception e) {
+			final String msg = "Failed to stop AD Fetch and ETL execution";
+			logger.error(msg, e);
+			return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
 
 	@RequestMapping("/stop_ad_fetch_etl" )
 	public ResponseEntity<ResponseEntityMessage> stopAdFetchAndEtlExecution() {
-		logger.debug("Stopping AD Fetch and ETL execution");
-		if (adTaskService.stopAllTasks(FETCH_AND_ETL_TIMEOUT_IN_SECONDS)) {
-			lastAdFetchEtlExecutionStartTime = null;
-			final String message = "AD fetch and ETL execution has stopped successfully";
-			logger.debug(message);
-			return new ResponseEntity<>(new ResponseEntityMessage(message), HttpStatus.OK);
-		}
-		else {
+		try {
+			logger.debug("Stopping AD Fetch and ETL execution");
+			if (adTaskService.stopAllTasks(FETCH_AND_ETL_TIMEOUT_IN_SECONDS)) {
+                lastAdFetchEtlExecutionStartTime = null;
+                final String message = "AD fetch and ETL execution has stopped successfully";
+                logger.debug(message);
+                return new ResponseEntity<>(new ResponseEntityMessage(message), HttpStatus.OK);
+            }
+            else {
+                final String msg = "Failed to stop AD Fetch and ETL execution";
+                logger.error(msg);
+                return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.NOT_ACCEPTABLE);
+            }
+		} catch (Exception e) {
 			final String msg = "Failed to stop AD Fetch and ETL execution";
-			logger.error(msg);
-			return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.NOT_ACCEPTABLE);
+			logger.error(msg, e);
+			return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

@@ -91,14 +91,20 @@ public class ControllerInvokedAdTask implements Runnable {
     }
 
     protected boolean handleAdTask(AdTaskType adTaskType) {
-        final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
-        simpMessagingTemplate.convertAndSend(RESPONSE_DESTINATION, response);
-        adTaskPersistencyService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
-        if (!response.success) {
-            logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
-        }
+        try {
+            final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
+            simpMessagingTemplate.convertAndSend(RESPONSE_DESTINATION, response);
+            adTaskPersistencyService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
+            if (!response.success) {
+                logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
+            }
 
-        return response.success;
+            return response.success;
+        } catch (Exception e) {
+            logger.error("Failed to handle task {} for data source {}.", adTaskType, dataSource, e);
+            simpMessagingTemplate.convertAndSend(RESPONSE_DESTINATION, new AdTaskResponse(adTaskType, false, -1, dataSource, -1L ));
+            return false;
+        }
     }
 
     private void notifyTaskStart() {

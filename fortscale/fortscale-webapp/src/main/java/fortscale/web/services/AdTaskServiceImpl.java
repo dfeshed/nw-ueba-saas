@@ -7,6 +7,7 @@ import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.tasks.CompoundControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +29,7 @@ public class AdTaskServiceImpl implements AdTaskService {
         initExecutorService();
     }
 
+    @Autowired
     public AdTaskServiceImpl(ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService) {
         this.activeDirectoryService = activeDirectoryService;
         this.adTaskPersistencyService = adTaskPersistencyService;

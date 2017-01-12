@@ -96,7 +96,7 @@ public class ActivityMonitoringExecutorServiceImpl<T extends Runnable> implement
 
     @Override
     public boolean isHasActiveTasks() {
-        return activeTasks.isEmpty();
+        return !activeTasks.isEmpty();
     }
 
 

@@ -229,13 +229,20 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
                 return adUserRepository.countByTimestampepoch(latestRuntime);
             case COMPUTER:
                 return adComputerRepository.countByTimestampepoch(latestRuntime);
+            case USER_THUMBNAIL:
+                return adUserThumbnailRepository.count();
             default:
-                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
+                final ArrayList<AdObjectType> validAdObjectTypes = new ArrayList<>(Arrays.asList(AdObjectType.values()));
+                validAdObjectTypes.remove(AdObjectType.USER_THUMBNAIL);
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, validAdObjectTypes));
         }
     }
 
     @Override
     public Long getLastRunCount(AdObjectType adObjectType) {
+        if (adObjectType == AdObjectType.USER_THUMBNAIL) {
+            return adUserThumbnailRepository.count();
+        }
         Long latestRuntime = getLatestRuntime(adObjectType);
         final Long currObjectsCount = countByTimestampepoch(adObjectType, latestRuntime);
         return currObjectsCount;
