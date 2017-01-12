@@ -29,8 +29,6 @@
 
     <!-- Hadoop mocks -->
     <mockito:mock id="hadoopFs" class="org.apache.hadoop.fs.FileSystem"/>
-    <mockito:mock id="userActivitySourceMachineHandler" class="fortscale.collection.jobs.activity.UserActivitySourceMachineHandler" />
-
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
     <mockito:mock id="usernameService" class="fortscale.services.impl.UsernameService"/>
@@ -65,7 +63,9 @@
         <context:exclude-filter type="regex" expression="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
     </context:component-scan>
 -->
-    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.collection,fortscale.collection.services.time" />
+    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.collection,fortscale.collection.services.time">
+        <context:exclude-filter type="regex" expression="fortscale.collection.jobs.activity.*"/>
+    </context:component-scan>
 
     <bean id="UtilsLegacyComponentScanConfigExclude1" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfigExclude1" />
 
