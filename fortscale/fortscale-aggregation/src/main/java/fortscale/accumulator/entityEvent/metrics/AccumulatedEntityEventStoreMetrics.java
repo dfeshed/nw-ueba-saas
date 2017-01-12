@@ -14,6 +14,8 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
 @StatsMetricsGroupParams(name = "accumulator.entity-events.store")
 public class AccumulatedEntityEventStoreMetrics extends StatsMetricsGroup {
 
+
+
     /**
      * The ctor, in addition to initializing the class, registers the metrics group to the stats service.
      *
@@ -41,6 +43,8 @@ public class AccumulatedEntityEventStoreMetrics extends StatsMetricsGroup {
     public long createFailure;
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long retrieveCalls;
+    @StatsDoubleMetricParams(rateSeconds = 1)
+    public long selectorCalls;
     @StatsDoubleMetricParams(rateSeconds = 1)
     public long retrievedObjects;
 

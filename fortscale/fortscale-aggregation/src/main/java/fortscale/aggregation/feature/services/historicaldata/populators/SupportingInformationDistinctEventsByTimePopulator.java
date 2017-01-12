@@ -74,15 +74,15 @@ public class SupportingInformationDistinctEventsByTimePopulator extends Supporti
         String normalizedContextType = getNormalizedContextType(contextType);
 
         Long startTime = TimeUtils.calculateStartingTime(evidenceEndTime, timePeriodInDays);
-        List<AggrEvent> aggregatedEventsByContextAndTimeRange = aggregatedEventQueryService.getAggregatedEventsByContextAndTimeRange(featureName, normalizedContextType, contextValue, startTime, evidenceEndTime);
+        List<AggrEvent> aggregatedEventsByContextIdAndTimeRange = aggregatedEventQueryService.getAggregatedEventsByContextIdAndTimeRange(featureName, normalizedContextType, contextValue, startTime, evidenceEndTime);
 
-        if (aggregatedEventsByContextAndTimeRange.isEmpty()) {
+        if (aggregatedEventsByContextIdAndTimeRange.isEmpty()) {
             throw new SupportingInformationException("Could not find any relevant scored aggregated events for supporting information creation");
         }
 
         Map<SupportingInformationKey, Double> supportingInformationHistogram = new HashMap<>();
 
-        for (AggrEvent aggrEvent : aggregatedEventsByContextAndTimeRange) {
+        for (AggrEvent aggrEvent : aggregatedEventsByContextIdAndTimeRange) {
             Double numOfEvents = aggrEvent.getAggregatedFeatureValue();
 
             SupportingInformationKey supportingInformationKey = new SupportingInformationTimestampKey(Long.toString(TimestampUtils.convertToMilliSeconds(aggrEvent.getStartTimeUnix())));

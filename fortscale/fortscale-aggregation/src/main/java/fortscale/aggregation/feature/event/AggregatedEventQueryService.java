@@ -9,5 +9,5 @@ import java.util.List;
  * Date: 16/09/2015
  */
 public interface AggregatedEventQueryService {
-    List<AggrEvent> getAggregatedEventsByContextAndTimeRange(String featureName, String contextType, String ContextName, Long startTime, Long endTime);
+    List<AggrEvent> getAggregatedEventsByContextIdAndTimeRange(String featureName, String contextType, String contextName, Long startTime, Long endTime);
 }
