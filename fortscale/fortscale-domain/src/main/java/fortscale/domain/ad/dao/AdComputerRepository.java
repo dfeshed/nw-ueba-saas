@@ -5,7 +5,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface AdComputerRepository extends MongoRepository<AdComputer, String> {
+public interface AdComputerRepository extends MongoRepository<AdComputer, String>, AdComputerRepositoryCustom {
 	List<AdComputer> findByLastModifiedExists(boolean exists);
-	long countByTimestampepoch(Long timestampepoch);
 }

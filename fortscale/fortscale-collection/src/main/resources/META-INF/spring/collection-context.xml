@@ -29,8 +29,11 @@
 	<context:component-scan base-package="fortscale">
 		<context:exclude-filter type="regex" expression="fortscale\.utils\..*"/> <!-- fortscale.utils. is scanned via utilsLegacyComponentScanConfig bean -->
 		<context:exclude-filter type="regex" expression="fortscale.ml.*"/>
+		<context:exclude-filter type="regex" expression="fortscale.aggregation.feature.bucket.repository.state.*"/>
+		<context:exclude-filter type="regex" expression="fortscale.aggregation.feature.bucket.state.*"/>
 	</context:component-scan>
 
     <bean id="utilsLegacyComponentScanConfig" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfig" />
+	<bean id="featureBucketStateServiceConfig" class="fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServiceConfig"/>
 </beans>
 

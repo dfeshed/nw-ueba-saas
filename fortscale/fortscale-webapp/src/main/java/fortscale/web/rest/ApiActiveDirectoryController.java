@@ -18,6 +18,7 @@ import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
 import fortscale.web.services.AdTaskServiceImpl;
 import fortscale.web.tasks.ControllerInvokedAdTask;
+import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +37,7 @@ import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
+
 
 @Controller
 @RequestMapping(value = "/api/active_directory")
@@ -212,7 +213,7 @@ public class ApiActiveDirectoryController {
 				else {
 					currLastExecutionFinishTime = adTaskPersistencyService.getLastExecutionTime(AdTaskType.ETL, datasource);
 				}
-				final Long currObjectsCount = activeDirectoryService.getCount(datasource);
+				final Long currObjectsCount = activeDirectoryService.getLastRunCount(datasource);
 				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount, currExecutionStartTime));
 			}
 		});

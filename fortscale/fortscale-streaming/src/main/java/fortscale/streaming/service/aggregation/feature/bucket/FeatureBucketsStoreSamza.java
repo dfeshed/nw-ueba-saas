@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
+import fortscale.aggregation.feature.bucket.state.FeatureBucketStateService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.logging.Logger;
 import org.apache.samza.config.Config;
@@ -54,8 +55,12 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private long storeSyncPageSize;
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.window.in.system.seconds}")
 	private long storeSyncUpdateWindowInSystemSeconds;
+
+	@Autowired
+	private FeatureBucketStateService featureBucketStateService;
 	
 	private Instant lastSyncSystemEpochTime = Instant.EPOCH;
+
 
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
@@ -94,6 +99,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		if(lastSyncSystemEpochTime.equals(Instant.EPOCH) || nextSyncWindowMillis.isBefore(now) || forceSync){
 			logger.info("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
 			lastSyncSystemEpochTime = now;
+
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
@@ -127,6 +133,7 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 			}
 
 			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime.getEpochSecond());
+			featureBucketStateService.updateFeatureBucketState(endTimeLt);
 
 			if(error){
 				logger.error(errorMsg);

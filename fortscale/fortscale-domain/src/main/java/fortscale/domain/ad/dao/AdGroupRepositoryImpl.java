@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
-public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdGroupRepositoryCustom {
+public class AdGroupRepositoryImpl extends AdObjectRepository implements AdGroupRepositoryCustom {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 	
@@ -31,5 +31,10 @@ public class AdGroupRepositoryImpl extends AdObjectRepositoryImpl implements AdG
 		query.limit(maxNumberOfReturnElements);
 
 		return mongoTemplate.find(query, AdGroup.class);
+	}
+
+	@Override
+	public String getCollectionName() {
+		return AdGroup.COLLECTION_NAME;
 	}
 }

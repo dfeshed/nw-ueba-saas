@@ -5,7 +5,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "aggr_%%%prefix@@@date:::endTime###FeatureBucketMetadata@@@date:::endTime"
+        "dataSources": "aggr_%%%prefix@@@date:::endTime###FeatureBucketMetadata@@@date:::endTime###FeatureBucketState"
       },
       {
         "technology": "MONGO",
@@ -152,7 +152,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
+        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###user_activity@@@prefix###FeatureBucketState###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -177,7 +177,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###user_activity@@@prefix###FeatureBucketState###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
