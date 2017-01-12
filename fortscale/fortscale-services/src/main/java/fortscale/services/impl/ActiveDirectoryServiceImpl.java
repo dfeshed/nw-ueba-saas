@@ -1,7 +1,5 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.AdGroup;
@@ -11,21 +9,18 @@ import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
 import javax.naming.CommunicationException;
 import javax.naming.NamingException;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service("ActiveDirectoryService")
-public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
+public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
     private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
@@ -39,15 +34,14 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     private final AdUserRepository adUserRepository;
     private final AdComputerRepository adComputerRepository;
 
-
     @Autowired
     public ActiveDirectoryServiceImpl(
-                                    ActiveDirectoryDAO activeDirectoryDAO,
-                                    ApplicationConfigurationService applicationConfigurationService,
-                                    AdGroupRepository adGroupRepository,
-                                    AdOURepository adOURepository,
-                                    AdUserRepository adUserRepository,
-                                    AdComputerRepository adComputerRepository) {
+            ActiveDirectoryDAO activeDirectoryDAO,
+            ApplicationConfigurationService applicationConfigurationService,
+            AdGroupRepository adGroupRepository,
+            AdOURepository adOURepository,
+            AdUserRepository adUserRepository,
+            AdComputerRepository adComputerRepository) {
         this.adGroupRepository = adGroupRepository;
         this.adOURepository = adOURepository;
         this.adUserRepository = adUserRepository;
@@ -134,7 +128,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
 
 
     @Override
-    public Long getCount(AdObject.AdObjectType  adObjectType) {
+    public Long getCount(AdObjectType  adObjectType) {
         switch (adObjectType) {
             case GROUP:
                 return adGroupRepository.count();
@@ -145,7 +139,7 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
             case COMPUTER:
                 return adComputerRepository.count();
             default:
-                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObject.AdObjectType.values())));
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
         }
 
     }
@@ -196,25 +190,41 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-//        if (!applicationConfigurationService.isApplicationConfigurationExists(AdConnection.ACTIVE_DIRECTORY_KEY)) {
-//            //initialize with default test values if no configuration key exists
-//            logger.warn("Active Directory configuration not found, trying to load configuration from file");
-//            List<AdConnection> adConnections;
-//            ObjectMapper mapper = new ObjectMapper();
-//            File jsonFile = new File(adConnectionsFile);
-//            if (!jsonFile.exists()) {
-//                logger.error("AdConnections json file does not exist");
-//                return;
-//            }
-//            try {
-//                adConnections = mapper.readValue(jsonFile, new TypeReference<List<AdConnection>>(){});
-//            } catch (Exception ex) {
-//                logger.error("Error - Bad Active Directory Json connection file");
-//                throw new Exception(ex);
-//            }
-//            applicationConfigurationService.insertConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY, adConnections);
-//        }
+    public Long getLatestRuntime(AdObjectType adObjectType) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.getLatestTimeStampepoch();
+            case OU:
+                return adOURepository.getLatestTimeStampepoch();
+            case USER:
+                return adUserRepository.getLatestTimeStampepoch();
+            case COMPUTER:
+                return adComputerRepository.getLatestTimeStampepoch();
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
+        }
     }
 
+    @Override
+    public Long countByTimestampepoch(AdObjectType adObjectType, Long latestRuntime) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.countByTimestampepoch(latestRuntime);
+            case OU:
+                return adOURepository.countByTimestampepoch(latestRuntime);
+            case USER:
+                return adUserRepository.countByTimestampepoch(latestRuntime);
+            case COMPUTER:
+                return adComputerRepository.countByTimestampepoch(latestRuntime);
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
+        }
+    }
+
+    @Override
+    public Long getLastRunCount(AdObjectType adObjectType) {
+        Long latestRuntime = getLatestRuntime(adObjectType);
+        final Long currObjectsCount = countByTimestampepoch(adObjectType, latestRuntime);
+        return currObjectsCount;
+    }
 }
