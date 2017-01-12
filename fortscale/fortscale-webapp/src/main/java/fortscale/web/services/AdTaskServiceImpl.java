@@ -8,11 +8,13 @@ import fortscale.utils.logging.Logger;
 import fortscale.web.tasks.CompoundControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+@Service
 public class AdTaskServiceImpl implements AdTaskService {
 
     private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
