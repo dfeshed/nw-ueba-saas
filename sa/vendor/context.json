@@ -648,6 +648,8 @@
                 "status": "VIEWED",
                 "dateMarked": 1477388194946
               },
+              "relatedDomainsCount": 100,
+              "relatedFilesCount": 100,
               "riskReasonTypeList": [
                 "SOURCE_OF_UNSAFE_MODULE",
                 "KNOWN_BY_IP_BLACKLIST_VENDOR",
@@ -949,6 +951,8 @@
                 "status": "VIEWED",
                 "dateMarked": 1477388194946
               },
+              "relatedIpsCount": 100,
+              "relatedDomainsCount": 100,
               "riskReasonTypeList": [
                 "SOURCE_OF_UNSAFE_MODULE",
                 "KNOWN_BY_IP_BLACKLIST_VENDOR",
@@ -1246,6 +1250,8 @@
               "id": "1a708f247cc6a7364b873c029bbdf459",
               "firstSeen": 1476077742000,
               "risk": "UNSAFE",
+              "relatedIpsCount": 100,
+              "relatedFilesCount": 100,
               "feedback": {
                 "status": "VIEWED",
                 "dateMarked": 1477388194946

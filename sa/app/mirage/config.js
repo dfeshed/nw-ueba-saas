@@ -27,6 +27,7 @@ import categoryTags from 'sa/mirage/sockets/routes/category-tags';
 import journalEntry from 'sa/mirage/sockets/routes/journal-entry';
 import storyline from 'sa/mirage/sockets/routes/incident-storyline';
 import context from 'sa/mirage/sockets/routes/context';
+import relatedEntity from 'sa/mirage/sockets/routes/related-entity';
 import events from 'sa/mirage/sockets/routes/events';
 import users from 'sa/mirage/sockets/routes/users';
 
@@ -87,6 +88,7 @@ export default function() {
     storyline(server);
     events(server);
     context(server);
+    relatedEntity(server);
     users(server);
     server.mirageServer = this;
     return server;

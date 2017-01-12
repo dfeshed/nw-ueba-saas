@@ -16,6 +16,13 @@ module.exports = function(environment) {
         requestDestination: '/ws/administration/context/lookup',
         cancelDestination: '/ws/administration/context/cancel'
       }
+    },
+    'related-entity': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/administration/context/liveconnect/related',
+        requestDestination: '/ws/administration/context/liveconnect/related'
+      }
     }
   };
 }

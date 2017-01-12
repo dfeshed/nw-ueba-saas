@@ -39,6 +39,7 @@ module.exports = function(defaults) {
     app.import("vendor/incident.json");
     app.import("vendor/alerts.json");
     app.import("vendor/context.json");
+    app.import("vendor/related-entity.json");
   }
 
   return app.toTree();

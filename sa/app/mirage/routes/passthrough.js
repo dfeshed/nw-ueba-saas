@@ -11,4 +11,5 @@ export default function(config) {
   config.pretender.post('/write-blanket-coverage', config.pretender.passthrough);
   config.pretender.get('/vendor/context.json', config.pretender.passthrough);
   config.pretender.get(`http://localhost:${appConfig.mockPort}/socket/info`, config.pretender.passthrough);
+  config.pretender.get('/vendor/related-entity.json', config.pretender.passthrough);
 }
