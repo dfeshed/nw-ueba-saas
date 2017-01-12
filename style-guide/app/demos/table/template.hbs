@@ -297,6 +297,55 @@
 
       {{/spec-member}}
     {{/spec-category}}
+
+    {{#spec-category title="Clicking Rows"}}
+      {{#spec-member title="Selecting/onRowClick"}}
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsWithoutCheckboxConfig
+          onRowClick=(action 'toggleSelectedRow')}}
+
+          {{rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+
+            {{#rsa-data-table/body-cell column=column}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+
+        <p>
+          You can pass onRowClick as a function to call when a row is clicked. It receives item, index, e, and table as params.
+          Here we have used onRowClick to fire an action that sets the selectedIndex on the table to highlight the row:
+          toggleSelectedRow(item, index, e, table) { table.set('selectedIndex', index); }
+        </p>
+
+        {{!-- BEGIN-SNIPPET selectRow1
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsConfig
+          onRowClick=(action 'toggleSelectedRow')}}
+
+          {{! The default, blockless header automatically wraps in .js-move-handle}}
+          {{rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+
+            {{#rsa-data-table/body-cell column=column}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+        END-SNIPPET --}}
+        {{code-snippet name="selectRow1.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+
     {{#spec-category title="Reordering/Resizing Columns"}}
       {{#spec-member title="Reordering"}}
         {{#rsa-data-table

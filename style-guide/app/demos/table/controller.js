@@ -9,6 +9,9 @@ export default Controller.extend({
   allItemsChecked: false,
 
   actions: {
+    toggleSelectedRow(item, index, e, table) {
+      table.set('selectedIndex', index);
+    },
     toggleItemSelection(item) {
       item.toggleProperty('checked');
     },

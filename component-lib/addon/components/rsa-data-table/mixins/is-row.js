@@ -4,16 +4,16 @@
  * @public
  */
 import Ember from 'ember';
+import computed from 'ember-computed-decorators';
 import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 import SizeBindings from './size-bindings';
 import DomIsReady from './dom-is-ready';
 import HasTableParent from './has-table-parent';
 
 const {
-  computed,
-  set,
+  $,
   Mixin,
-  $
+  set
 } = Ember;
 
 export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, CspStyleMixin, {
@@ -62,27 +62,30 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, CspStyleMi
    * @type {number}
    * @private
    */
-  index: computed('relativeIndex', 'relativeIndexOffset', function() {
-    return this.get('relativeIndex') + this.get('relativeIndexOffset');
-  }),
+  @computed('relativeIndex', 'relativeIndexOffset')
+  index(relativeIndex, relativeIndexOffset) {
+    return relativeIndex + relativeIndexOffset;
+  },
 
   /**
    * Resolves to `true` if `index` matches the parent table's `selectedIndex`.
    * @type {boolean}
    * @private
    */
-  isSelected: computed('index', 'table.selectedIndex', function() {
-    return this.get('index') === this.get('table.selectedIndex');
-  }),
+  @computed('index', 'table.selectedIndex')
+  isSelected(index, selectedIndex) {
+    return index === selectedIndex;
+  },
 
   /**
    * The y-coordinate (in pixels) of this row relative to the table body's root DOM element.
    * @type {number}
    * @private
    */
-  top: computed('index', 'height', function() {
-    return (this.get('height') * this.get('index')) || 0;
-  }),
+  @computed('index', 'height')
+  top(index, height) {
+    return (height * index) || 0;
+  },
 
   /**
    * Configurable action to be invoked when a click event is triggered in the row DOM.
@@ -99,7 +102,7 @@ export default Mixin.create(HasTableParent, DomIsReady, SizeBindings, CspStyleMi
   click(e) {
     const fn = this.get('clickAction');
     if ($.isFunction(fn)) {
-      fn(this.get('item'), this.get('index'), e);
+      fn(this.get('item'), this.get('index'), e, this.get('table'));
     }
   },
 
