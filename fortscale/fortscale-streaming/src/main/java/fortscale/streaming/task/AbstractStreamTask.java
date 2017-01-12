@@ -52,6 +52,7 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 
 	protected FortscaleValueResolver res;
 	protected SpringService springService;
+
 	private SamzaContainerService samzaContainerService;
 
 	private Config config;
@@ -133,7 +134,6 @@ public abstract class AbstractStreamTask implements StreamTask, WindowableTask, 
 		}
 
 		springService = SpringService.getInstance();
-
 		res = springService.resolve(FortscaleValueResolver.class);
 
 		// Init stats monitoring service
