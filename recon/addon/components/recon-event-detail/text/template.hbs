@@ -6,10 +6,10 @@
   }}
 {{else}}
   <vbox class="rsa-text-entry">
-    <hbox xs="12" class="text-container">
+    <div class="text-container">
       Error: No text data was generated during content reconstruction. This could mean that the event data
       was corrupt or invalid. Check the other reconstruction views.
-    </hbox>
+    </div>
   </vbox>
 {{/each}}
 {{recon-pager total=packets.length pageSize=pageSize}}
