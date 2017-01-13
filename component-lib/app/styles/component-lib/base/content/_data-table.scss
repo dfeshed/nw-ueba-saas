@@ -99,6 +99,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       &-body-row,
       &-header-row {
         @include rsa-row(justify,fill);
+        width: 100%;
       }
     }
   }

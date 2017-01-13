@@ -1,8 +1,9 @@
 .recon-event-detail-files {
   padding: rsa-whitespace();
 
-  .recon-file-hash {
-    text-transform: uppercase;
+  .recon-file-ellipsis {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .recon-file-link {

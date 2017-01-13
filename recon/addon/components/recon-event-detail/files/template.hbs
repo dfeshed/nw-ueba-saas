@@ -30,23 +30,28 @@
             {{t 'recon.files.linkFile'}}
           {{else}}
             {{#each item.hashes as |hash|}}
-              <span class="recon-file-hash">{{hash.type}}</span>: {{hash.value}} <br>
+              <div class="recon-file-ellipsis" title="{{to-upper-case hash.type}}: {{hash.value}}">
+                {{to-upper-case hash.type}}: {{hash.value}}
+              </div><br>
             {{/each}}
           {{/if}}
         {{else if (eq column.field "fileSize")}}
           {{#unless (eq item.type "link")}}
-            {{rsa-content-memsize size=(get item column.field)}}
+            <div class="recon-file-ellipsis">
+              {{rsa-content-memsize size=(get item column.field)}}
+            </div>
           {{/unless}}
         {{else if (eq column.field "fileName")}}
           {{#if (eq item.type "link")}}
-            <span class="recon-file-link" {{action "openLinkedFile" item}}>
+            <div class="recon-file-ellipsis recon-file-link" title="{{get item column.field}}"
+            {{action "openLinkedFile" item}}>
               {{get item column.field}}
-            </span>
+            </div>
           {{else}}
-            {{get item column.field}}
+            <div class="recon-file-ellipsis" title="{{get item column.field}}">{{get item column.field}}</div>
           {{/if}}
         {{else}}
-          {{get item column.field}}
+          <div class="recon-file-ellipsis" title="{{get item column.field}}">{{get item column.field}}</div>
         {{/if}}
       {{/rsa-data-table/body-cell}}
 

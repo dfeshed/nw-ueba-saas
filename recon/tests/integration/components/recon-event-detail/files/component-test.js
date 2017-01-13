@@ -16,7 +16,7 @@ test('it renders files', function(assert) {
   this.render(hbs`{{recon-event-detail/files}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'FileNameMIMETypeFileSizeHashesa_file_name.docxapplication/vnd.openxmlformats-officedocument.wordprocessingml.document305.1KBmd5:f71f80a9cb8e24b06419a895cadd1a47sha1:5a39b799a8f63cf4dd774d4ee024715ed25');
+    assert.equal(str, 'FileNameMIMETypeFileSizeHashesa_file_name.docxapplication/vnd.openxmlformats-officedocument.wordprocessingml.document305.1KBMD5:f71f80a9cb8e24b06419a895cadd1a47SHA1:5a39b799a8f63cf4dd774d4ee024715ed25');
   });
 });
 
