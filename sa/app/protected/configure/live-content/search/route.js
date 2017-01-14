@@ -6,6 +6,7 @@ const { RSVP: { hash }, Route } = Ember;
 
 const model = (dispatch) => {
   dispatch(DataActions.initializeDictionaries());
+  dispatch(DataActions.search());
   return hash({ });
 };
 

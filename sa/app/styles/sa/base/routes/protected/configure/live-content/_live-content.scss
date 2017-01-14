@@ -45,7 +45,7 @@ $animationDuration: 0.5s;
         &.active{
           section {
             border-bottom: none;
-            background-color: rsa-color(blue);
+            background-color: rsa-color(blue, base, $rsa-translucent);
           }
         }
       }

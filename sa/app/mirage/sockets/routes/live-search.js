@@ -50,7 +50,7 @@ export default function(server) {
         frames);
   });
 
-  server.route('live-search', 'getSearchResult', function(message, frames, server) {
+  server.route('live-search', 'query', function(message, frames, server) {
     const dbs = server.mirageServer.db;
     const data = dbs['live-search'][0].searchResult;
     server.sendList(

@@ -10,7 +10,7 @@ const fetchResults = (criteria) => {
   cmsSearchRequest.setPageSize(pageSize);
   cmsSearchRequest.setSort(sort);
 
-  return basicPromiseRequest('getSearchResult', 'live-search', '/rsa/cms/search/search', 'POST', cmsSearchRequest.toJSON());
+  return basicPromiseRequest('query', 'live-search', '/rsa/cms/search/search', 'POST', cmsSearchRequest.toJSON());
 };
 
 export {

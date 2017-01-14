@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import { RESOURCE_TOGGLE_SELECT, FOCUS_RESOURCE, BLUR_RESOURCE } from 'sa/actions/live-content/types';
+import { BLUR_RESOURCE } from 'sa/actions/live-content/types';
 import computed from 'ember-computed-decorators';
 import * as DataActions from 'sa/actions/live-content/live-search-creators';
 
@@ -9,51 +9,22 @@ const {
   inject: { service }
 } = Ember;
 
-const stateToComputed = ({ live: { selections, search } }) => {
-
+const stateToComputed = ({ live: { search } }) => {
   return {
-    selections,
     resourceTypes: search.resourceTypes,
     media: search.media,
     metaKeys: search.metaKeys,
     metaValues: search.metaValues,
     categories: search.categories,
-    searchResults: search.results,
     searchCriteria: search.searchCriteria,
-    isLoading: search.isLoadingResults,
-    focusResource: search.focusResource
+    searchResults: search.results
   };
 };
 
 const dispatchToActions = (dispatch) => {
   return {
-    toggleSelect(item) {
-      dispatch({ type: RESOURCE_TOGGLE_SELECT, item });
-      return false;
-    },
-
     search(criteria) {
       dispatch(DataActions.updateSearchCriteria(criteria));
-    },
-
-    sortByColumn(columnId, sortDirection) {
-      dispatch(DataActions.updateSearchCriteria({ sort: `${columnId}|${sortDirection}` }));
-    },
-
-    goToBeginning() {
-      dispatch(DataActions.firstPage());
-    },
-
-    goToPrevious() {
-      dispatch(DataActions.previousPage());
-    },
-
-    goToNext() {
-      dispatch(DataActions.nextPage());
-    },
-
-    goToEnd() {
-      dispatch(DataActions.lastPage());
     },
 
     toggleSearchCriteriaPanel() {
@@ -65,11 +36,6 @@ const dispatchToActions = (dispatch) => {
         this.collapseCriteriaPanel();
       }
       return true;
-    },
-
-    viewResourceDetails(model) {
-      dispatch({ type: FOCUS_RESOURCE, payload: model });
-      this.showDetailsPanel();
     }
   };
 };
@@ -129,6 +95,12 @@ const LiveSearch = Component.extend({
     this.set('layoutService.panelC', 'quarter');
     this.sendAction('onDetailsPanelOpened');
     this.collapseCriteriaPanel();
+  },
+
+  actions: {
+    showDetailsPanel() {
+      this.showDetailsPanel();
+    }
   }
 });
 
