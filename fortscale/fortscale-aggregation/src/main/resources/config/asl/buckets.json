@@ -2346,6 +2346,17 @@
       "strategyName": "fixed_duration_daily",
       "aggrFeatureConfs": [
         {
+          "name": "date_time_unix_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "two_minute_resolution_epochtime"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_histogram_func"
+          }
+        },
+        {
           "name": "number_of_events_per_hour_histogram",
           "featureNamesMap": {
             "groupBy": [
@@ -2357,14 +2368,32 @@
           }
         },
         {
-          "name": "date_time_unix_histogram",
+          "name": "highest_date_time_score",
           "featureNamesMap": {
-            "groupBy": [
-              "two_minute_resolution_epochtime"
+            "maximize": [
+              "date_time_score"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "sum_of_total_pages",
+          "featureNamesMap": {
+            "sum": [
+              "total_pages"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
           }
         },
         {
@@ -2379,10 +2408,24 @@
           }
         },
         {
-          "name": "total_pages_histogram",
+          "name": "normalized_src_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "total_pages"
+              "normalized_src_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "normalized_dst_machine_histogram",
+          "featureNamesMap": {
+            "groupBy": [
+              "normalized_dst_machine"
             ]
           },
           "aggrFeatureFuncJson": {
@@ -2390,30 +2433,26 @@
           }
         },
         {
-          "name": "file_size_histogram",
+          "name": "normalized_dst_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
+              "normalized_dst_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "sum_of_file_size",
+          "featureNamesMap": {
+            "sum": [
               "file_size"
             ]
           },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
-          "name": "target_machine_histogram",
-          "featureNamesMap": {
-            "groupBy": [
-              "target_machine"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
-          }
-        },
-        {
-          "name": "events_counter",
-          "featureNamesMap": {},
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
           }
@@ -2432,6 +2471,35 @@
       "strategyName": "fixed_duration_hourly",
       "aggrFeatureConfs": [
         {
+          "name": "highest_date_time_score",
+          "featureNamesMap": {
+            "maximize": [
+              "date_time_score"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_feature_to_max_map_func"
+          }
+        },
+        {
+          "name": "events_counter",
+          "featureNamesMap": {},
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
+          "name": "sum_of_total_pages",
+          "featureNamesMap": {
+            "sum": [
+              "total_pages"
+            ]
+          },
+          "aggrFeatureFuncJson": {
+            "type": "aggr_feature_sum_func"
+          }
+        },
+        {
           "name": "normalized_src_machine_histogram",
           "featureNamesMap": {
             "groupBy": [
@@ -2443,32 +2511,31 @@
           }
         },
         {
-          "name": "target_machine_machine_histogram",
+          "name": "normalized_src_machine_to_highest_score_map",
           "featureNamesMap": {
             "groupBy": [
-              "target_machine"
+              "normalized_src_machine"
+            ],
+            "maximize": [
+              "normalized_src_machine_score"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_histogram_func"
+            "type": "aggr_feature_feature_to_max_map_func"
           }
         },
         {
-          "name": "events_counter",
-          "featureNamesMap": {},
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
-          }
-        },
-        {
-          "name": "sum_of_pages",
+          "name": "normalized_dst_machine_to_highest_score_map",
           "featureNamesMap": {
-            "sum": [
-              "total_pages"
+            "groupBy": [
+              "normalized_dst_machine"
+            ],
+            "maximize": [
+              "normalized_dst_machine_score"
             ]
           },
           "aggrFeatureFuncJson": {
-            "type": "aggr_feature_sum_func"
+            "type": "aggr_feature_feature_to_max_map_func"
           }
         },
         {
@@ -2480,39 +2547,6 @@
           },
           "aggrFeatureFuncJson": {
             "type": "aggr_feature_sum_func"
-          }
-        },
-        {
-          "name": "normalized_dst_machine_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": [
-              "normalized_dst_machine"
-            ],
-            "maximize": [
-              "destination_machine_score"
-            ]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
-          "name": "normalized_src_machine_to_highest_score_map",
-          "featureNamesMap": {
-            "groupBy": ["normalized_src_machine"],
-            "maximize": ["normalized_src_machine_score"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
-          }
-        },
-        {
-          "name": "highest_score_date_time",
-          "featureNamesMap": {
-            "maximize": ["date_time_score"]
-          },
-          "aggrFeatureFuncJson": {
-            "type": "aggr_feature_feature_to_max_map_func"
           }
         }
       ]
@@ -2542,10 +2576,10 @@
       ]
     },
     {
-      "name": "target_machine_prnlog_daily",
+      "name": "normalized_dst_machine_prnlog_daily",
       "expireAfterSeconds": 31536000,
       "contextFieldNames": [
-        "target_machine"
+        "normalized_dst_machine"
       ],
       "dataSources": [
         "prnlog"
