@@ -118,7 +118,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		if (!shouldSendNewAlert(alertSeverity)) {
 			return;
 		}
-		User user = userService.findByUsername(alert.getEntityName());
+
+		// Getting the relevant user by user id saved on the alert
+		User user = userService.getUserById(alert.getEntityId());
 		if (user == null) {
 			logger.error("couldn't find username - {}", alert.getEntityName());
 			return;
