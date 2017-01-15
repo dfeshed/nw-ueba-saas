@@ -167,7 +167,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
+        "dataSources": "hdfs-write-logindata###hdfs-write-kerberostgtscore###hdfs-write-kerberostgtscore_top###hdfs-write-crmsfenriched###hdfs-write-crmsfscore###hdfs-write-crmsfscore_top###hdfs-write-oracleenriched###hdfs-write-oraclescore###hdfs-write-oraclescore_top###hdfs-write-wameenriched###hdfs-write-wamescore###hdfs-write-wamescore_top###hdfs-write-ntlmenriched###hdfs-write-ntlmscore###hdfs-write-ntlmscore_top###hdfs-write-gwameenriched###hdfs-write-gwamescore###hdfs-write-gwamescore_top###hdfs-write-prnlogenriched###hdfs-write-prnlogscore###hdfs-write-prnlogscore_top###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
       }
     ]
   },
@@ -192,7 +192,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
+        "dataSources": "hdfs-write-kerberostgtscore###hdfs-write-kerberostgtscore_top###hdfs-write-crmsfenriched###hdfs-write-crmsfscore###hdfs-write-crmsfscore_top###hdfs-write-oraclescore###hdfs-write-oraclescore_top###hdfs-write-wamescore###hdfs-write-wamescore_top###hdfs-write-ntlmscore###hdfs-write-ntlmscore_top###hdfs-write-gwamescore###hdfs-write-gwamescore_top###hdfs-write-prnlogscore###hdfs-write-prnlogscore_top###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
       }
     ]
   },
