@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +39,7 @@ import java.util.Map;
 	@Autowired private UserService userService;
 	@Autowired private LocalizationService localizationService;
 
-	private String[] alertSeverity;
+	private List<String> alertSeverity;
 	private String[] userTags;
 	private String baseUrl;
 	private SyslogSender syslogSender;
@@ -122,10 +123,10 @@ import java.util.Map;
 				userTags = userTagsValue.split(SPLITTER);
 			}
 			String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
-			if (alertSeverityValue == null) {
-				alertSeverity = new String[] {};
+			if (StringUtils.isBlank(alertSeverityValue)) {
+				alertSeverity = Collections.emptyList();
 			} else {
-				alertSeverity = alertSeverityValue.split(SPLITTER);
+				alertSeverity = Arrays.asList(alertSeverityValue.split(SPLITTER));
 			}
 			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
 
@@ -147,32 +148,26 @@ import java.util.Map;
 	}
 
 	private boolean filterAlert(Alert alert) {
-		if (filterBySeverity(alert.getSeverity())) {
-			return true;
-		}
-		if (filterByUserType(alert.getEntityName(), userTags)) {
-			return true;
-		}
-
-		return false;
+		return filterBySeverity(alert.getSeverity()) || filterByUserType(alert.getEntityName(), userTags);
 	}
 
 	private boolean filterBySeverity(Severity severity) {
-
 		// If alert severity is not present, do not filter
-		if (alertSeverity.length == 0) {
+		if (alertSeverity.isEmpty()) {
 			return false;
 		}
-		return (!Arrays.asList(alertSeverity).contains(severity.name()));
+
+		// If alert severity contains the severity name, do not filter
+		return !alertSeverity.contains(severity.name());
 	}
 
 	private boolean filterByUserType(String entityName, String[] tags) {
-
-		// If userTags is not present, do not filter
+		// If tags is not present, do not filter
 		if (tags.length == 0) {
 			return false;
 		}
 
+		// If user has one of the tags, do not filter
 		User user = userService.findByUsername(entityName);
 
 		for (String tag : tags) {
