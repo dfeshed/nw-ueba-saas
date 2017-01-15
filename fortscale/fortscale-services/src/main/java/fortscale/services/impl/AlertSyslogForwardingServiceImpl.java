@@ -126,8 +126,7 @@ import java.util.Map;
 			ip = applicationConfiguration.get(IP_KEY);
 			port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
 			String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
-			applicationConfiguration.get(USER_TYPES_KEY);
-			if (userTagsValue == null) {
+			if (StringUtils.isBlank(userTagsValue)) {
 				userTags = new String[] {};
 			} else {
 				userTags = userTagsValue.split(SPILTER);
