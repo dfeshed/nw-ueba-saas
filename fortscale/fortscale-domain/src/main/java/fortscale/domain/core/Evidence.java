@@ -161,7 +161,7 @@ public class Evidence extends AbstractDocument{
 		this.severity = evidence.getSeverity();
 		this.timeframe = evidence.getTimeframe();
 		// set retention to start date
-		this.retentionDate = new Date(startDate);
+		this.retentionDate = new Date(evidence.startDate);
 		// We must create ID for the evidence so the alert can have reference to it
 		this.setId(evidence.getId());
 	}
