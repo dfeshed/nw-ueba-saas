@@ -49,6 +49,7 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Value("${fortscale.model.sec.diff.between.cleaning.cache.checks}")
 	private long secDiffBetweenCleaningCacheChecks;
 
+
 	private Map<String, ModelCacheManager> modelCacheManagers;
 	private long lastCleaningCacheEpochtime = convertToSeconds(System.currentTimeMillis());
 
@@ -60,6 +61,13 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 		return modelCacheManagers;
 	}
 
+	/**
+	 * @param feature
+	 * @param modelConfName
+	 * @param context
+	 * @param eventEpochtime - in seconds
+     * @return latest model from cache for given params
+     */
 	@Override
 	public Model getModel(Feature feature, String modelConfName, Map<String, String> context, long eventEpochtime) {
 		if (getModelCacheManagers().containsKey(modelConfName)) {
@@ -75,7 +83,7 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 
 		// Check if it's time to clean the cache from unused models - return if not
 		if (currentEpochtime - lastCleaningCacheEpochtime < secDiffBetweenCleaningCacheChecks) {
-			logger.info("Not going to clean unused models from cache in this window. Set to clean every {} seconds.",
+			logger.debug("Not going to clean unused models from cache in this window. Set to clean every {} seconds.",
 					secDiffBetweenCleaningCacheChecks);
 			return;
 		}

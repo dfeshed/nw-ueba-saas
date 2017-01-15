@@ -10,21 +10,29 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 
 import fortscale.domain.ad.AdObject;
-import fortscale.domain.ad.AdUser;
 
-public class AdObjectRepositoryImpl {
+public abstract class AdObjectRepository {
+
 	@Autowired
 	private MongoTemplate mongoTemplate;
-
 
 	public Long getLatestTimeStampepoch() {
 		Query query = new Query();
 		query.fields().include(AdObject.timestampepochField);
-		AdUser adUser = mongoTemplate.findOne(query.with(new PageRequest(0, 1, Direction.DESC, AdObject.timestampepochField)), AdUser.class);
-		return adUser.getTimestampepoch();
+		query.with(new PageRequest(0, 1, Direction.DESC, AdObject.timestampepochField));
+		AdObject adObject = mongoTemplate.findOne(query, AdObject.class, getCollectionName());
+
+		// In case no fetch ever run on the system
+		if (adObject == null){
+			return  0l;
+		}
+
+		return adObject.getTimestampepoch();
 	}
 
 	public long countByTimestampepoch(Long timestampepoch) {
-		return mongoTemplate.count(query(where(AdObject.timestampepochField).is(timestampepoch)), AdUser.class);
+		return mongoTemplate.count(query(where(AdObject.timestampepochField).is(timestampepoch)), getCollectionName());
 	}
+
+	public abstract String getCollectionName();
 }

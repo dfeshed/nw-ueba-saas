@@ -89,7 +89,7 @@ public class ScoringTaskService {
      * @param modelBuildingStatusMessage message indicating that model been built, containing build details
      */
     public void refreshModelCache(ModelBuildingStatusMessage modelBuildingStatusMessage) {
-        logger.info("received modelBuilding status message={}, refreshing cache", modelBuildingStatusMessage);
+        logger.debug("received modelBuilding status message={}, refreshing cache", modelBuildingStatusMessage);
         String modelConfName = modelBuildingStatusMessage.getModelConfName();
         String contextId = modelBuildingStatusMessage.getContextId();
         modelsCacheService.deleteFromCache(modelConfName, contextId);
