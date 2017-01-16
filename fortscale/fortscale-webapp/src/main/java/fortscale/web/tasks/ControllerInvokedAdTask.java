@@ -27,9 +27,8 @@ public class ControllerInvokedAdTask implements Runnable {
     protected static final String THREAD_NAME = "system_setup";
 
     private static final String AD_JOB_GROUP = "AD";
-    private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
-
+    private final String responseDestination;
     private final ActiveDirectoryService activeDirectoryService;
     private final AdTaskPersistencyService adTaskPersistencyService;
 
@@ -39,9 +38,10 @@ public class ControllerInvokedAdTask implements Runnable {
     protected AdTaskType currentAdTaskType;
     protected List<ControllerInvokedAdTask> followingTasks = new ArrayList<>();
 
-    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
+    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, String responseDestination, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
         this.executorService = executorService;
         this.simpMessagingTemplate = simpMessagingTemplate;
+        this.responseDestination = responseDestination;
         this.activeDirectoryService = activeDirectoryService;
         this.adTaskPersistencyService = adTaskPersistencyService;
         this.dataSource = dataSource;
@@ -93,7 +93,7 @@ public class ControllerInvokedAdTask implements Runnable {
     protected boolean handleAdTask(AdTaskType adTaskType) {
         try {
             final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
-            simpMessagingTemplate.convertAndSend(RESPONSE_DESTINATION, response);
+            simpMessagingTemplate.convertAndSend(responseDestination, response);
             adTaskPersistencyService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
             if (!response.success) {
                 logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
@@ -102,7 +102,7 @@ public class ControllerInvokedAdTask implements Runnable {
             return response.success;
         } catch (Exception e) {
             logger.error("Failed to handle task {} for data source {}.", adTaskType, dataSource, e);
-            simpMessagingTemplate.convertAndSend(RESPONSE_DESTINATION, new AdTaskResponse(adTaskType, false, -1, dataSource, -1L ));
+            simpMessagingTemplate.convertAndSend(responseDestination, new AdTaskResponse(adTaskType, false, -1, dataSource, -1L ));
             return false;
         }
     }

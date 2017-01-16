@@ -15,8 +15,8 @@ public class CompoundControllerInvokedAdTask extends ControllerInvokedAdTask {
 
     private static final Logger logger = Logger.getLogger(CompoundControllerInvokedAdTask.class);
 
-    public CompoundControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
-        super(executorService, simpMessagingTemplate, activeDirectoryService, adTaskPersistencyService, dataSource);
+    public CompoundControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, String responseDestination, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
+        super(executorService, simpMessagingTemplate, responseDestination, activeDirectoryService, adTaskPersistencyService, dataSource);
         currentAdTaskType = AdTaskType.FETCH_ETL;
     }
 

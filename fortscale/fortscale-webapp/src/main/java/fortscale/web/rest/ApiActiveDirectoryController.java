@@ -57,6 +57,12 @@ public class ApiActiveDirectoryController {
 
 	private final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 
+	private static final String DESTINATION_TASK_RESPONSE = "/wizard/ad_fetch_etl_response";
+
+	private static final String DESTINATION_ACTIONS = "/wizard/ad_fetch_etl_actions";
+
+
+
 	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
 	private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
@@ -165,10 +171,11 @@ public class ApiActiveDirectoryController {
 	public ResponseEntity<ResponseEntityMessage> executeAdFetchAndEtl() {
 		try {
 			logger.debug("Executing AD Fetch and ETL");
-			final boolean executedSuccessfully = adTaskService.executeTasks(simpMessagingTemplate);
+			final boolean executedSuccessfully = adTaskService.executeTasks(simpMessagingTemplate, DESTINATION_TASK_RESPONSE);
 			if (executedSuccessfully) {
                 lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
-                return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
+				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, FetchEtlAction.EXECUTE);
+				return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
             }
             else {
                 final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
@@ -184,22 +191,23 @@ public class ApiActiveDirectoryController {
 
 
 	@RequestMapping("/stop_ad_fetch_etl" )
-	public ResponseEntity<ResponseEntityMessage> stopAdFetchAndEtlExecution() {
+	public ResponseEntity<ResponseEntityMessage> cancelAdFetchAndEtlExecution() {
 		try {
-			logger.debug("Stopping AD Fetch and ETL execution");
-			if (adTaskService.stopAllTasks(FETCH_AND_ETL_TIMEOUT_IN_SECONDS)) {
+			logger.debug("Cancelling AD Fetch and ETL execution");
+			if (adTaskService.cancelAllTasks(FETCH_AND_ETL_TIMEOUT_IN_SECONDS)) {
                 lastAdFetchEtlExecutionStartTime = null;
-                final String message = "AD fetch and ETL execution has stopped successfully";
+                final String message = "AD fetch and ETL execution has been cancelled successfully";
                 logger.debug(message);
+				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, FetchEtlAction.CANCEL);
                 return new ResponseEntity<>(new ResponseEntityMessage(message), HttpStatus.OK);
             }
             else {
-                final String msg = "Failed to stop AD Fetch and ETL execution";
+                final String msg = "Failed to cancel AD Fetch and ETL execution";
                 logger.error(msg);
                 return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.NOT_ACCEPTABLE);
             }
 		} catch (Exception e) {
-			final String msg = "Failed to stop AD Fetch and ETL execution";
+			final String msg = "Failed to cancel AD Fetch and ETL execution";
 			logger.error(msg, e);
 			return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -251,6 +259,9 @@ public class ApiActiveDirectoryController {
 	}
 
 
+	private enum FetchEtlAction {
+		EXECUTE, CANCEL
+	}
 
 
 	private static class FetchEtlExecutionStatus {

@@ -8,9 +8,9 @@ import java.util.Set;
 
 public interface AdTaskService {
 
-    boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate);
+    boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination);
 
-    boolean stopAllTasks(long terminationTimeout);
+    boolean cancelAllTasks(long terminationTimeout);
 
     Set<ControllerInvokedAdTask> getActiveTasks();
 }

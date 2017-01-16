@@ -36,12 +36,12 @@ public class AdTaskServiceImpl implements AdTaskService {
         initExecutorService();
     }
 
-    public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate) {
+    public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
         initExecutorService();
         if (executorService.tryExecute()) {
             try {
                 logger.info("Starting Active Directory fetch and ETL");
-                final List<ControllerInvokedAdTask> adTasks = createAdTasks(simpMessagingTemplate);
+                final List<ControllerInvokedAdTask> adTasks = createAdTasks(simpMessagingTemplate, responseDestination);
                 executorService.executeTasks(adTasks);
                 return true;
             } finally {
@@ -53,7 +53,7 @@ public class AdTaskServiceImpl implements AdTaskService {
         }
     }
 
-    public boolean stopAllTasks(long terminationTimeout) {
+    public boolean cancelAllTasks(long terminationTimeout) {
         if (executorService.isHasActiveTasks()) {
             logger.info("Attempting to kill all running threads {}", executorService.getActiveTasks());
             executorService.shutdownNow();
@@ -66,7 +66,7 @@ public class AdTaskServiceImpl implements AdTaskService {
                 return false;
             }
         } else {
-            final String msg = "Attempted to stop threads was made but there are no running tasks.";
+            final String msg = "Attempted to cancel threads was made but there are no running tasks.";
             logger.warn(msg);
             return false;
         }
@@ -92,13 +92,13 @@ public class AdTaskServiceImpl implements AdTaskService {
     }
 
 
-    private List<ControllerInvokedAdTask> createAdTasks(SimpMessagingTemplate simpMessagingTemplate) {
+    private List<ControllerInvokedAdTask> createAdTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
         final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
         for (AdObject.AdObjectType dataSource : dataSources) {
             if (dataSource != AdObject.AdObjectType.USER_THUMBNAIL) { //user thumbnail job shouldn't run initially
-                final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(executorService, simpMessagingTemplate, activeDirectoryService, adTaskPersistencyService, dataSource);
+                final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(executorService, simpMessagingTemplate, responseDestination, activeDirectoryService, adTaskPersistencyService, dataSource);
                 if (currTask.getDataSource() == AdObject.AdObjectType.USER) { //user thumbnail job should run after user job
-                    currTask.addFollowingTask(new CompoundControllerInvokedAdTask(executorService, simpMessagingTemplate, activeDirectoryService, adTaskPersistencyService, AdObject.AdObjectType.USER_THUMBNAIL));
+                    currTask.addFollowingTask(new CompoundControllerInvokedAdTask(executorService, simpMessagingTemplate, responseDestination, activeDirectoryService, adTaskPersistencyService, AdObject.AdObjectType.USER_THUMBNAIL));
                 }
                 tasks.add(currTask);
             }
