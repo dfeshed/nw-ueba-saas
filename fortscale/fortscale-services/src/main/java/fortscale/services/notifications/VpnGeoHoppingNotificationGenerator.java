@@ -265,7 +265,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 		List<CountryCity> citiesList = new ArrayList<>(cities);
 		if (cities.size()!=2){
-			logger.error("Wrong amount of cities-countries pairs in GeoHopping. Expected 2 but {0} was found", cities.size());
+			logger.error("Wrong amount of cities-countries pairs in GeoHopping for user {}. Expected 2 but {} was found", username, cities.size());
 			throw new RuntimeException("Wrong amount of cities-countries pairs in GeoHopping");
 		}
 		CountryCity city1 = citiesList.get(0);
