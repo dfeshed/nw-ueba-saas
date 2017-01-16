@@ -6,7 +6,6 @@ import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
 import fortscale.domain.dto.DateRange;
 import fortscale.services.*;
-import fortscale.utils.logging.Logger;
 import fortscale.utils.syslog.SyslogSender;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
@@ -17,23 +16,16 @@ import org.springframework.stereotype.Service;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by tomerd on 21/02/2016.
- */
 @Service("alertSyslogForwardingService") public class AlertSyslogForwardingServiceImpl
 		implements AlertSyslogForwardingService, InitializingBean {
 
-	private static Logger logger = Logger.getLogger(AlertSyslogForwardingServiceImpl.class);
-
-	public static final String SPILTER = ",";
-
+	public static final String SPLITTER = ",";
 	public static final String CONFIGURATION_NAMESPACE = "system.syslogforwarding";
-
 	public final static String ALERT_FORWARDING_KEY = CONFIGURATION_NAMESPACE + ".enabled";
-
 	public static final String IP_KEY = CONFIGURATION_NAMESPACE + ".ip";
 	public static final String PORT_KEY = CONFIGURATION_NAMESPACE + ".port";
 	public static final String USER_TYPES_KEY = CONFIGURATION_NAMESPACE + ".usertypes";
@@ -45,18 +37,15 @@ import java.util.Map;
 	@Autowired private AlertsService alertsService;
 	@Autowired private ApplicationConfigurationService applicationConfigurationService;
 	@Autowired private UserService userService;
-    @Autowired private LocalizationService localizationService;
+	@Autowired private LocalizationService localizationService;
 
-	private String ip;
-	private int port;
-	private String[] alertSeverity;
+	private List<String> alertSeverity;
 	private String[] userTags;
 	private String baseUrl;
 	private SyslogSender syslogSender;
 	private ForwardingType forwardingType;
-    private MessageFormat messageFormat;
 
-    @Override public void afterPropertiesSet() throws Exception {
+	@Override public void afterPropertiesSet() throws Exception {
 		loadConfiguration();
 	}
 
@@ -75,13 +64,13 @@ import java.util.Map;
 		return false;
 	}
 
-	@Override public int forwardAlertsByTimeRange(String ip, int port, String forwardingType, String[] userTags,
-                                                  String[] alertSeverity, long startTime, long endTime, MessageFormat syslogMessageFormat) throws RuntimeException {
+	@Override public int forwardAlertsByTimeRange(
+			String ip, int port, String forwardingType, String[] userTags, String[] alertSeverity,
+			long startTime, long endTime, MessageFormat syslogMessageFormat) throws RuntimeException {
 
-		List<Alert> alerts = alertsService.getAlertsByTimeRange(new DateRange(startTime,endTime), Arrays.asList(alertSeverity));
-
+		List<Alert> alerts = alertsService.getAlertsByTimeRange(
+				new DateRange(startTime, endTime), Arrays.asList(alertSeverity));
 		SyslogSender sender = new SyslogSender(ip, port, "tcp", syslogMessageFormat);
-
 		ForwardingType forwardingTypeEnum = ForwardingType.valueOf(forwardingType);
 		int counter = 0;
 
@@ -100,7 +89,7 @@ import java.util.Map;
 	}
 
 	private String generateAlert(Alert alert, ForwardingType forwardingType) {
-        prettifyAlert(alert);
+		prettifyAlert(alert);
 		String rawAlert = "Alert URL: " + generateAlertPath(alert) + " ";
 		switch (forwardingType) {
 		case ALERT:
@@ -115,7 +104,9 @@ import java.util.Map;
 	}
 
 	private void loadConfiguration() throws ConfigurationException, UnknownHostException {
-		Map<String, String> applicationConfiguration = applicationConfigurationService.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
+		@SuppressWarnings("unchecked")
+		Map<String, String> applicationConfiguration = applicationConfigurationService
+				.getApplicationConfigurationByNamespace(CONFIGURATION_NAMESPACE);
 
 		String isEnabled = applicationConfiguration.get(ALERT_FORWARDING_KEY);
 		if (isEnabled == null || isEnabled.equals("false")) {
@@ -123,66 +114,60 @@ import java.util.Map;
 		}
 
 		try {
-			ip = applicationConfiguration.get(IP_KEY);
-			port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
+			String ip = applicationConfiguration.get(IP_KEY);
+			int port = Integer.valueOf(applicationConfiguration.get(PORT_KEY));
 			String userTagsValue = applicationConfiguration.get(USER_TYPES_KEY);
-			applicationConfiguration.get(USER_TYPES_KEY);
-			if (userTagsValue == null) {
+			if (StringUtils.isBlank(userTagsValue)) {
 				userTags = new String[] {};
 			} else {
-				userTags = userTagsValue.split(SPILTER);
+				userTags = userTagsValue.split(SPLITTER);
 			}
 			String alertSeverityValue = applicationConfiguration.get(ALERT_SEVERITY_KEY);
-			if (alertSeverityValue == null) {
-				alertSeverity = new String[] {};
+			if (StringUtils.isBlank(alertSeverityValue)) {
+				alertSeverity = Collections.emptyList();
 			} else {
-				alertSeverity = alertSeverityValue.split(SPILTER);
+				alertSeverity = Arrays.asList(alertSeverityValue.split(SPLITTER));
 			}
 			forwardingType = ForwardingType.valueOf(applicationConfiguration.get(FORWARDING_TYPE_KEY));
 
 			// Getting the message format
 			String messageFormatString = applicationConfiguration.get(MESSAGE_FORMAT);
-			if (StringUtils.isEmpty(messageFormatString)){
+			MessageFormat messageFormat;
+			if (StringUtils.isEmpty(messageFormatString)) {
 				messageFormat = DEFAULT_MESSAGE_FORMAT;
-			}else{
+			} else {
 				messageFormat = MessageFormat.valueOf(messageFormatString);
 			}
 
 			syslogSender = new SyslogSender(ip, port, "tcp", messageFormat);
-
-			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() + ":8443/fortscale-webapp/index.html#/user/";
+			baseUrl = "https://" + InetAddress.getLocalHost().getHostName() +
+					":8443/fortscale-webapp/index.html#/user/";
 		} catch (Exception e) {
 			throw new ConfigurationException("Error creating syslog forwarder - Configuration error. Error: " + e);
 		}
 	}
 
 	private boolean filterAlert(Alert alert) {
-		if (filterBySeverity(alert.getSeverity())) {
-			return true;
-		}
-		if (filterByUserType(alert.getEntityName(), userTags)) {
-			return true;
-		}
-
-		return false;
+		return filterBySeverity(alert.getSeverity()) || filterByUserType(alert.getEntityName(), userTags);
 	}
 
 	private boolean filterBySeverity(Severity severity) {
-
 		// If alert severity is not present, do not filter
-		if (alertSeverity.length == 0) {
+		if (alertSeverity.isEmpty()) {
 			return false;
 		}
-		return (!Arrays.asList(alertSeverity).contains(severity.name()));
+
+		// If alert severity contains the severity name, do not filter
+		return !alertSeverity.contains(severity.name());
 	}
 
 	private boolean filterByUserType(String entityName, String[] tags) {
-
-		// If userTags is not present, do not filter
+		// If tags is not present, do not filter
 		if (tags.length == 0) {
 			return false;
 		}
 
+		// If user has one of the tags, do not filter
 		User user = userService.findByUsername(entityName);
 
 		for (String tag : tags) {
@@ -198,8 +183,8 @@ import java.util.Map;
 		return baseUrl + alert.getEntityId() + "/alert/" + alert.getId();
 	}
 
-    private void prettifyAlert(Alert alert) {
-        alert.setName(localizationService.getAlertName(alert));
-        alert.getEvidences().forEach(evidence -> evidence.setName(localizationService.getIndicatorName(evidence)));
-    }
+	private void prettifyAlert(Alert alert) {
+		alert.setName(localizationService.getAlertName(alert));
+		alert.getEvidences().forEach(evidence -> evidence.setName(localizationService.getIndicatorName(evidence)));
+	}
 }
