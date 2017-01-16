@@ -11,7 +11,7 @@ moduleForAcceptance('Acceptance | preference panel', {
 });
 
 test('Iteration: verify all options are available in components', function(assert) {
-  assert.expect(4);
+  assert.expect(5);
   visit('/do/monitor');
   click('.user-preferences-trigger');
 
@@ -43,10 +43,7 @@ test('Iteration: verify all options are available in components', function(asser
           ['Respond', 'Investigate', 'Investigate Classic', 'Monitor', 'Configure', 'Admin'], 'Default Landing Page');
     });
 
-    // iterate time format options.
-    assert.deepEqual(find('.rsa-application-user-preferences-panel .time-format-radio-group .rsa-form-radio')
-        .map(trimText).get(),
-        ['12hr', '24hr'], 'Time Format');
-
+    assert.equal(find('.rsa-application-user-preferences-panel .time-format-radio-group .rsa-form-radio-label.HR24').length, 1);
+    assert.equal(find('.rsa-application-user-preferences-panel .time-format-radio-group .rsa-form-radio-label.HR12').length, 1);
   });
 });

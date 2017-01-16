@@ -42,16 +42,6 @@ export default Component.extend({
 
   locales: ['en-us', 'ja'],
 
-  @computed('timeFormat.selected')
-  selectedTimeFormat: {
-    get: (selectedTimeformat) => selectedTimeformat,
-
-    set(selectedTimeFormat) {
-      this.set('timeFormat.selected', selectedTimeFormat.key);
-      return selectedTimeFormat;
-    }
-  },
-
   init() {
     this._super(arguments);
 
@@ -103,6 +93,10 @@ export default Component.extend({
 
     setDateFormat(selection) {
       this.set('dateFormat.selected', selection);
+    },
+
+    setTimeFormat(selection) {
+      this.set('timeFormat.selected', selection);
     },
 
     toggleUserPreferences() {

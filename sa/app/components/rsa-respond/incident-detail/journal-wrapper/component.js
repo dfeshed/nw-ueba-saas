@@ -43,6 +43,10 @@ export default Component.extend({
   actions: {
     toogleFilterVisibily() {
       this.toggleProperty('filterVisible');
+    },
+
+    notesChanged(val) {
+      this.set('viewNotes', val);
     }
   }
 });

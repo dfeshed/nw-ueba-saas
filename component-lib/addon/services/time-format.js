@@ -24,33 +24,39 @@ export default Service.extend({
     format: 'HH:mm'
   }],
 
+  persist(value) {
+    this.get('request').promiseRequest({
+      method: 'setPreference',
+      modelName: 'preferences',
+      query: {
+        data: {
+          timeFormat: value
+        }
+      }
+    }).catch(() => {
+      Logger.error('Error updating preferences');
+    });
+  },
+
   selected: computed({
     get() {
       return this.get('_selected');
     },
 
     set(key, value) {
-      const option = this.get('options').findBy('key', value);
-
-      if (!isNone(this.get('_selected'))) {
-        this.get('request').promiseRequest({
-          method: 'setPreference',
-          modelName: 'preferences',
-          query: {
-            data: {
-              timeFormat: value
-            }
-          }
-        }).then(() => {
-          this.set('_selected', option);
-        }).catch(() => {
-          Logger.error('Error updating preferences');
-        });
+      if (value.key) {
+        if (!isNone(this.get('_selected'))) {
+          this.persist(value.key);
+        }
+        this.set('_selected', value);
+        return value;
       } else {
-        this.set('_selected', option);
+        if (!isNone(this.get('_selected'))) {
+          this.persist(value);
+        }
+        this.set('_selected', this.get('options').findBy('key', value));
+        return this.get('_selected');
       }
-
-      return option;
     }
   })
 

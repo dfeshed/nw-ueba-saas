@@ -839,7 +839,7 @@ broccoli-funnel@^0.2.3:
     symlink-or-copy "^1.0.0"
     walk-sync "^0.2.6"
 
-broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.6:
+broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.3, broccoli-funnel@^1.0.6:
   version "1.0.8"
   resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.0.8.tgz#48af6688314561b27898580e23cf6b925951e5c6"
   dependencies:
@@ -858,7 +858,7 @@ broccoli-funnel@^1.0.0, broccoli-funnel@^1.0.1, broccoli-funnel@^1.0.6:
     symlink-or-copy "^1.0.0"
     walk-sync "^0.3.1"
 
-broccoli-funnel@^1.0.3, broccoli-funnel@^1.1.0:
+broccoli-funnel@^1.1.0:
   version "1.1.0"
   resolved "https://registry.npmjs.org/broccoli-funnel/-/broccoli-funnel-1.1.0.tgz#dfb91a37c902456456de4a40a1881948d65b27d9"
   dependencies:
@@ -2759,6 +2759,13 @@ ember-qunit@^0.4.18:
   resolved "https://registry.npmjs.org/ember-qunit/-/ember-qunit-0.4.22.tgz#bc389798e1a4a933f542863025e2fb91d856da49"
   dependencies:
     ember-test-helpers "^0.5.32"
+
+ember-radio-button@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/ember-radio-button/-/ember-radio-button-1.1.1.tgz#e5ae8361ff032a4f1be91a810295e196eb2acf97"
+  dependencies:
+    ember-cli-babel "^5.1.7"
+    ember-cli-htmlbars "^1.0.10"
 
 ember-redux@1.10.0:
   version "1.10.0"

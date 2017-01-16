@@ -22,10 +22,6 @@
     }
     .rsa-data-table {
       top: 63px;
-
-      .rsa-data-table-header-row {
-        align-items: center;
-      }
     }
   }
 
@@ -41,8 +37,6 @@
   &-alertCount {
     overflow: hidden;
     text-overflow: ellipsis;
-    height: 100%;
-    padding-top: rsa-whitespace(less);
   }
 
   .panel-A.rsa-respond-list__panelA {
@@ -101,10 +95,6 @@
     }
   }
 
-  .rsa-content-badge-score {
-    padding-left: 0;
-  }
-
   &__filter-panel {
     padding: rsa-whitespace(base);
 
@@ -131,24 +121,13 @@
     &__reset-button {
       padding-top: rsa-whitespace(more);
     }
+
+    .rsa-form-checkbox {
+      padding: rsa-whitespace(least) 0;
+    }
   }
 
   .rsa-data-table {
-
-    &-header {
-      margin-top: 5px;
-      padding-top: 1px;
-      margin-bottom: 0;
-
-      &__column-selector {
-        padding-top: 4px;
-      }
-
-      .rsa-form-checkbox{
-        margin: 0;
-        overflow: visible;
-      }
-    }
     &-header-cell .hideSort{
       visibility: hidden;
     }
@@ -169,11 +148,6 @@
     }
     button.expand {
       padding-left: rsa-whitespace(less);
-    }
-
-    .rsa-data-table-header, .rsa-data-table-body-row {
-      padding-left: rsa-whitespace(less);
-      box-sizing: border-box;
     }
   }
 }

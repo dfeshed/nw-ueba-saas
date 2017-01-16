@@ -26,7 +26,7 @@
         {{!-- BEGIN-SNIPPET table1
         {{#rsa-data-table
           items=model.items
-          columnsConfig=model.columnsConfig}}
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
 
           {{#rsa-data-table/header as |column|}}
             {{column.title}}
@@ -45,15 +45,15 @@
 
         {{!-- BEGIN-SNIPPET table1a
         columnsWithoutCheckboxConfig: [
-          EmberObject.create({
+          Object.create({
             field: 'foo',
             title: 'Foo Column'
           }),
-          EmberObject.create({
+          Object.create({
             field: 'bar',
             title: 'Bar Column'
           }),
-          EmberObject.create({
+          Object.create({
             field: 'baz',
             title: 'Baz Column'
           })
@@ -83,7 +83,7 @@
         {{!-- BEGIN-SNIPPET table1c
         {{#rsa-data-table
           items=model.items
-          columnsConfig=model.columnsConfig}}
+          columnsConfig=model.columnsWithWidthConfig}}
 
           {{#rsa-data-table/header as |column|}}
             {{column.title}}
@@ -102,17 +102,17 @@
 
         {{!-- BEGIN-SNIPPET table1d
         columnsWithWidthConfig: [
-          EmberObject.create({
+          Object.create({
             field: 'foo',
             title: 'Foo Column',
             width: 350
           }),
-          EmberObject.create({
+          Object.create({
             field: 'bar',
             title: 'Bar Column',
             width: 150
           }),
-          EmberObject.create({
+          Object.create({
             field: 'baz',
             title: 'Baz Column',
             width: 150
@@ -147,7 +147,7 @@
         {{!-- BEGIN-SNIPPET table2
         {{#rsa-data-table
           items=model.items
-          columnsConfig=model.columnsConfig}}
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
 
           {{#rsa-data-table/header as |column|}}
             {{column.title}}
@@ -243,7 +243,7 @@
         </p>
         {{!-- BEGIN-SNIPPET table4
         columnsWithCheckboxConfig: [
-          EmberObject.create({
+          Object.create({
             title: '',
             class: 'rsa-form-row-checkbox',
             width: '18',
@@ -253,15 +253,15 @@
             disableSort: true,
             headerComponentClass: 'rsa-form-checkbox-2'
           }),
-          EmberObject.create({
+          Object.create({
             field: 'foo',
             title: 'Foo Column'
           }),
-          EmberObject.create({
+          Object.create({
             field: 'bar',
             title: 'Bar Column'
           }),
-          EmberObject.create({
+          Object.create({
             field: 'baz',
             title: 'Baz Column'
           })
@@ -366,9 +366,8 @@
         {{!-- BEGIN-SNIPPET reorderColumns1
         {{#rsa-data-table
           items=model.items
-          columnsConfig=model.columnsConfig}}
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
 
-          {{! The default, blockless header automatically wraps in .js-move-handle}}
           {{rsa-data-table/header}}
 
           {{#rsa-data-table/body as |item index column|}}

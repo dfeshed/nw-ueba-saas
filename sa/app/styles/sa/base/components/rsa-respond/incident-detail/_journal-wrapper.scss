@@ -31,14 +31,7 @@
     &__title {
       @include rsa-font(header, small);
       margin-right: rsa-whitespace(less);
-    }
-
-    .rsa-form-radio {
-      margin-right: rsa-whitespace();
-
-      .rsa-form-label {
-        @include rsa-font(body, small);
-      }
+      display: inline-block;
     }
 
     &.hidden {

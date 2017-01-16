@@ -146,7 +146,7 @@ test('Radio button,Button and Drop down renders correctly', function(assert) {
   this.set('allReasons', allReasons);
   this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags allReasons=allReasons}}`);
 
-  assert.equal(this.$('.rsa-form-radio').length, 6, 'Correct number of Radio group inputs is present');
+  assert.equal(this.$('.rsa-form-radio-label').length, 6, 'Correct number of Radio group inputs is present');
   assert.equal(this.$('.rsa-form-button').length, 1, 'Submit button exists');
 
 });

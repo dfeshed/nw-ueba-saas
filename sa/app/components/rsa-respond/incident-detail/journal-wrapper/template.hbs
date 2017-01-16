@@ -5,12 +5,25 @@
   {{/rsa-form-button}}
 {{/rsa-content-section-header}}
 
+<div class='rsa-form-radio-group rsa-journal-wrapper__journal-sort {{unless filterVisible 'hidden'}}'>
+  <h4 class='rsa-form-radio-group-label rsa-journal-wrapper__journal-sort__title'>{{t 'journal.sort.title'}}:</h4>
+  <label class="rsa-form-radio-label rsa-journal-wrapper__journal-sort__my-notes">
+    {{radio-button
+      value="my"
+      groupValue=viewNotes
+      changed="notesChanged"}}
+    {{t 'journal.sort.myNotes'}}
+  </label>
 
-<div class="rsa-form-radio-group rsa-journal-wrapper__journal-sort {{unless filterVisible 'hidden'}}">
-  <label class='rsa-journal-wrapper__journal-sort__title'>{{t 'journal.sort.title'}}:</label>
-  {{rsa-form-radio class='rsa-journal-wrapper__journal-sort__my-notes' model=viewNotes value='my' label=(t 'journal.sort.myNotes')}}
-  {{rsa-form-radio class='rsa-journal-wrapper__journal-sort__all-notes' model=viewNotes value='all' label=(t 'journal.sort.allNotes')}}
+  <label class="rsa-form-radio-label rsa-journal-wrapper__journal-sort__all-notes">
+    {{radio-button
+      value="all"
+      groupValue=viewNotes
+      changed="notesChanged"}}
+    {{t 'journal.sort.allNotes'}}
+  </label>
 </div>
+
 {{rsa-respond/incident-detail/journal-entry addMode=true saveJournalAction=(route-action 'saveJournal')}}
 <div class="rsa-journal-wrapper__journal-viewport">
   {{#each incident.notes as | journal | }}

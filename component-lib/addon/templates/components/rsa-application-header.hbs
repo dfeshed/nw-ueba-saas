@@ -7,7 +7,7 @@
 {{/if}}
 
 <div class="global">
-  {{#if session.isAuthenticated}}
+  {{#if (and session.isAuthenticated displayPreferences)}}
     {{#rsa-form-button
       defaultAction=(action 'toggleUserPreferences')
       class=(if layoutService.userPreferencesActive 'user-preferences-trigger is-active' 'user-preferences-trigger ')}}

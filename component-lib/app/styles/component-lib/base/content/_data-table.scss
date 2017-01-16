@@ -256,4 +256,8 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       display: none;
     }
   }
+
+  .rsa-content-badge-score {
+    padding: 0;
+  }
 }

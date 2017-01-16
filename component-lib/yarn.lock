@@ -2656,6 +2656,13 @@ ember-qunit@^0.4.18:
   dependencies:
     ember-test-helpers "^0.5.32"
 
+ember-radio-button@1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/ember-radio-button/-/ember-radio-button-1.1.1.tgz#e5ae8361ff032a4f1be91a810295e196eb2acf97"
+  dependencies:
+    ember-cli-babel "^5.1.7"
+    ember-cli-htmlbars "^1.0.10"
+
 ember-resolver@^2.0.3:
   version "2.1.0"
   resolved "https://registry.npmjs.org/ember-resolver/-/ember-resolver-2.1.0.tgz#e6d249d3b5806468c0ba2c67ccecf7aa24b754bf"

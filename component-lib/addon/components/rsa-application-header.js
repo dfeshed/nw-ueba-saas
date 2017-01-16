@@ -25,6 +25,8 @@ export default Component.extend(ContextualHelp, {
 
   classNames: ['rsa-application-header'],
 
+  displayPreferences: true,
+
   actions: {
     toggleUserPreferences() {
       this.get('layoutService').toggleUserPreferences();

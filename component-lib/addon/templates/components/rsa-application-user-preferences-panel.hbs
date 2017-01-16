@@ -66,13 +66,16 @@
     </vbox>
 
     <vbox xs="6">
-      <div class="rsa-form-radio-group time-format-radio-group">
-        <h4 class="rsa-form-radio-group-label">{{t 'userPreferences.timeFormat.label'}}</h4>
+      <div class='rsa-form-radio-group time-format-radio-group'>
+        <h4 class='rsa-form-radio-group-label'>{{t 'userPreferences.timeFormat.label'}}</h4>
         {{#each timeFormat.options as |option|}}
-          {{rsa-form-radio
-            label=(t option.label)
-            model=selectedTimeFormat
-            value=option}}
+          <label class="rsa-form-radio-label {{option.key}}">
+            {{radio-button
+              value=option
+              groupValue=timeFormat.selected
+              changed="setTimeFormat"}}
+            {{t option.label}}
+          </label>
         {{/each}}
       </div>
     </vbox>

@@ -24,15 +24,52 @@
     <vbox fill class="rsa-context-panel__liveconnect__reviewstatus__col-2">
       <div class='rsa-form-radio-group' class="rsa-context-panel__liveconnect__field">
         <h4 class='rsa-form-radio-group-label'>{{t 'context.lc.riskConfirmation'}}</h4>
-        {{rsa-form-radio model=baz value='safe' label=(t 'context.lc.safe')}}
-        {{rsa-form-radio model=baz value='unsafe' label=(t 'context.lc.unsafe')}}
-        {{rsa-form-radio model=baz value='unknown' label=(t 'context.lc.unknown')}}
+        <label class="rsa-form-radio-label">
+          {{radio-button
+            value="safe"
+            groupValue=baz
+            changed=""}}
+          {{t 'context.lc.safe'}}
+        </label>
+        <label class="rsa-form-radio-label">
+          {{radio-button
+            value="unsafe"
+            groupValue=baz
+            changed=""}}
+          {{t 'context.lc.unsafe'}}
+        </label>
+        <label class="rsa-form-radio-label">
+          {{radio-button
+            value="unknown"
+            groupValue=baz
+            changed=""}}
+          {{t 'context.lc.unknown'}}
+        </label>
       </div>
+
       <div class='rsa-form-radio-group' class="rsa-context-panel__liveconnect__field">
         <h4 class='rsa-form-radio-group-label'>{{t 'context.lc.confidenceStatus'}}</h4>
-        {{rsa-form-radio model=baz value='high' label=(t 'context.lc.high')}}
-        {{rsa-form-radio model=baz value='medium' label=(t 'context.lc.med')}}
-        {{rsa-form-radio model=baz value='low' label=(t 'context.lc.low')}}
+        <label class="rsa-form-radio-label">
+          {{radio-button
+            value="high"
+            groupValue=baz
+            changed=""}}
+          {{t 'context.lc.high'}}
+        </label>
+        <label class="rsa-form-radio-label">
+          {{radio-button
+            value="medium"
+            groupValue=baz
+            changed=""}}
+          {{t 'context.lc.med'}}
+        </label>
+        <label class="rsa-form-radio-label">
+          {{radio-button
+            value="low"
+            groupValue=baz
+            changed=""}}
+          {{t 'context.lc.low'}}
+        </label>
       </div>
     </vbox>
     <vbox class="rsa-context-panel__liveconnect__reviewstatus__col-3">

@@ -1,6 +1,5 @@
 .rsa-form-checkbox {
   display: block;
-  margin: rsa-whitespace(less) 0;
 
   .outer-wrapper {
     display: inline-block;
@@ -126,7 +125,7 @@
   &::after {
     font-family: 'Streamline-2-Filled';
     content: '';
-    visibility: visible;;
+    visibility: visible;
     display: block;
     border: 1px solid $formCheckboxBorderColor;
     display: inline-block;

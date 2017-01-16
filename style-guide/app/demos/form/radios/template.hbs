@@ -8,39 +8,128 @@
       {{#spec-member title="Default"}}
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          {{rsa-form-radio model=baz value='bar' label='Bar'}}
-          {{rsa-form-radio model=baz value='foo' label='Foo'}}
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="foo"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Foo
+          </label>
+
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="bar"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Bar
+          </label>
         </div>
+
         {{!-- BEGIN-SNIPPET radios1
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          {{rsa-form-radio model=baz value='bar' label='Bar'}}
-          {{rsa-form-radio model=baz value='foo' label='Foo'}}
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="foo"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Foo
+          </label>
+
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="bar"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Bar
+          </label>
         </div>
         END-SNIPPET --}}
         {{code-snippet name="radios1.hbs"}}
       {{/spec-member}}
 
-      {{#spec-member title="Read Only"}}
-        {{rsa-form-radio label='Input Label' isReadOnly=true}}
-        {{!-- BEGIN-SNIPPET radios2
-        {{rsa-form-radio label='Input Label' isReadOnly=true}}
-        END-SNIPPET --}}
-        {{code-snippet name="radios2.hbs"}}
-      {{/spec-member}}
-
       {{#spec-member title="Disabled"}}
-        {{rsa-form-radio label='Input Label' isDisabled=true}}
+        <div class='rsa-form-radio-group'>
+          <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
+          <label class="rsa-form-radio-label {{if true 'disabled'}}">
+            {{radio-button
+              disabled=true
+              value="foo"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Foo
+          </label>
+
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="bar"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Bar
+          </label>
+        </div>
         {{!-- BEGIN-SNIPPET radios3
-        {{rsa-form-radio label='Input Label' isDisabled=true}}
+        <div class='rsa-form-radio-group'>
+          <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
+          <label class="rsa-form-radio-label {{if true 'disabled'}}">
+            {{radio-button
+              disabled=true
+              value="foo"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Foo
+          </label>
+
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="bar"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Bar
+          </label>
+        </div>
         END-SNIPPET --}}
         {{code-snippet name="radios3.hbs"}}
       {{/spec-member}}
 
       {{#spec-member title="Error"}}
-        {{rsa-form-radio label='Input Label' isError=true}}
+        <div class='rsa-form-radio-group'>
+          <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
+          <label class="rsa-form-radio-label {{if true 'error'}}">
+            {{radio-button
+              value="foo"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Foo
+          </label>
+
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="bar"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Bar
+          </label>
+        </div>
         {{!-- BEGIN-SNIPPET radios4
-        {{rsa-form-radio label='Input Label' isError=true}}
+        <div class='rsa-form-radio-group'>
+          <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
+          <label class="rsa-form-radio-label  {{if true 'error'}}">
+            {{radio-button
+              value="foo"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Foo
+          </label>
+
+          <label class="rsa-form-radio-label">
+            {{radio-button
+              value="bar"
+              groupValue=valueStore
+              changed="valueChanged"}}
+              Bar
+          </label>
+        </div>
         END-SNIPPET --}}
         {{code-snippet name="radios4.hbs"}}
       {{/spec-member}}
