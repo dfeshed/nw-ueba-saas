@@ -197,7 +197,7 @@ class Runner(object):
         if (self._is_process_running(pid) == True):
             os.kill(pid, signal.SIGTERM)
             for i in xrange(_WAIT_FOR_PROCESS_TO_EXIT_IN_SECONDS):
-                if self.isProcRunning(pid) == False:
+                if self._is_process_running(pid) == False:
                     break
                 else:
                     time.sleep(1)
