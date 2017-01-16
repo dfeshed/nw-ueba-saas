@@ -141,5 +141,10 @@ package fortscale.domain.core;
             result = 31 * result + (city != null ? city.hashCode() : 0);
             return result;
         }
+
+        @Override
+        public String toString() {
+            return String.format("country: %s, city: %s", this.country, this.city);
+        }
     }
 }
