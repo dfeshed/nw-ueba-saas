@@ -12,6 +12,10 @@
   padding: rsa-whitespace(more);
 }
 
+.recon-noscroll {
+  overflow-y: hidden;
+}
+
 .recon-loader {
   position: absolute;
   top: 0;
