@@ -214,8 +214,9 @@ public class ApiActiveDirectoryController {
 		dataSources.forEach(datasource -> {
 			final AdTaskType runningMode = getRunningMode(datasource);
 			final Long currExecutionStartTime = adTaskPersistencyService.getLastExecutionTime(runningMode, datasource);
-			if (runningMode != null) { //running
-				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, -1L, currExecutionStartTime));
+			final boolean currentlyRunning = runningMode != null;
+			if (currentlyRunning) { //running
+				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, currExecutionStartTime, -1L));
 			}
 			else { //not running
 				Long currLastExecutionFinishTime;
@@ -226,7 +227,7 @@ public class ApiActiveDirectoryController {
 					currLastExecutionFinishTime = adTaskPersistencyService.getLastExecutionTime(AdTaskType.ETL, datasource);
 				}
 				final Long currObjectsCount = activeDirectoryService.getLastRunCount(datasource);
-				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount, currExecutionStartTime));
+				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currExecutionStartTime, currObjectsCount));
 			}
 		});
 
