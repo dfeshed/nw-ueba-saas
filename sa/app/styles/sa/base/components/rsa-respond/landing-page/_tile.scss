@@ -9,12 +9,6 @@
     max-height: 92px;
   }
 
-  .rsa-form-select {
-    .rsa-form-label {
-      @include rsa-font(header, small);
-    }
-  }
-
   &.clicked {
     outline: 1px solid rsa-color(blue, dark);
   }

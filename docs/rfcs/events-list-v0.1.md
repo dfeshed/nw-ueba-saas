@@ -87,7 +87,7 @@ The paradigm we will follow is somewhat similar to the [Flux pattern](https://fa
 
   ```hbs
   {{!file: protected/investigate/index/template.hbs}}
-  {{rsa-form-select options=model.foo ..}}
+  {{#power-select options=model.foo ..}}
   ```
 
   * **Dispatcher & actions**: As in Flux, components will generally avoid mutating the app state directly. Instead they will fire actions. However, rather than introducting a new global "dispatcher" for actions, we will simply leverage Ember's existing `send()` Action API.  The actions will be implemented as standard Ember actions on the `protected.investigate` route.  To help us keep the actions code organized, we will borrow a Redux idea: we will create a subfolder `protected/investigate/actions/` with an `index.js` file.  This file will simply import all the other `*.js` files in this subfolder, which will each implement actions.  This structure will help us separate our growing number of actions into meaningful groups.

@@ -261,7 +261,7 @@ export default Component.extend({
 
   /**
    * @name selectedAssignees
-   * @description Returns a list of one element with the current assignee id. This is consumed by rsa-form-select
+   * @description Returns a list of one element with the current assignee id. This is consumed by ember-power-select
    * @public
    */
   @computed

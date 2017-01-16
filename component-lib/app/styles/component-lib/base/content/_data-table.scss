@@ -85,7 +85,8 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
     &.is-selected,
     &.is-selected:hover {
-      background-color: rsa-color(blue);
+      background-color: rsa-color(blue, base, 0.6);
+      color: rsa-color(gray, lighter)!important;
     }
 
     &:first-child {
