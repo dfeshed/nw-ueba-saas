@@ -52,5 +52,13 @@ const {
   } = Ember;
 
 export default Component.extend({
-  classNames: 'rsa-context-tree-table'
+  classNames: 'rsa-context-tree-table',
+
+  actions: {
+    activate(option) {
+      this.sendAction('activatePanel', option);
+    }
+
+  }
+
 });

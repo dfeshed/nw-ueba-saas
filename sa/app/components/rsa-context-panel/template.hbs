@@ -1,41 +1,44 @@
-{{rsa-context-panel/header
-contextData=contextData
-hostCount=(if contextData.Machines 1 0)
-model=model
-closePanel=(route-action 'closeContextPanel')
-}}
+<hbox>
+  <vbox xs='7'>
+    <div class="rsa-context-panel-header__header-text">
+      &#9734; <span> {{t 'context.title'}} {{model.meta}} :</span>
+      {{model.lookupKey}}
+    </div>
+  </vbox>
+  <vbox>
+    <div xs='1'>
+      <button class="rsa-context-panel-header__panel-close" {{action 'closeAction'}}>{{rsa-icon style='filled' name='close'}}</button>
+    </div>
+  </vbox>
+</hbox>
 
- <section class="rsa-context-panel__body">
-   {{rsa-context-panel/ecat
-     ecatData=contextData.Machines
-     ecatAdditionalData=contextData.additionalData
-   }}
-   {{#each contextColumnsConfig as |columns|}}
-     {{rsa-context-data-table data=(get contextData columns.dataSourceGroup)   title=(t columns.title ) modulesColumnListConfig=columns.columns headerdata=(t columns.header) footerdata=columns.footer}}
-   {{/each}}
-   {{rsa-context-tree-table data=contextData.LIST title=(t multicolumn.multiColumnList.title ) columnsConfig=multicolumn.multiColumnList.columns}}
-   {{#if (is-equal model.meta 'IP')}}
-     {{rsa-context-panel/lc-community-activity
-        liveConnectData=contextData.liveConnectData.IpReputation
-        model=model
-        allTags=contextData.liveConnectData.allTags
-        allReasons=contextData.liveConnectData.allReasons}}
-     {{rsa-context-panel/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
-   {{else if (is-equal model.meta 'FILE')}}
-     {{rsa-context-panel/lc-community-activity
-        liveConnectData=contextData.liveConnectData.FileReputation
-        model=model
-        allTags=contextData.liveConnectData.allTags
-        allReasons=contextData.liveConnectData.allReasons}}
-     {{rsa-context-panel/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
-     {{rsa-context-panel/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
-   {{else if (is-equal model.meta 'DOMAIN')}}
-     {{rsa-context-panel/lc-community-activity
-        liveConnectData=contextData.liveConnectData.DomainReputation
-        model=model
-        allTags=contextData.liveConnectData.allTags
-        allReasons=contextData.liveConnectData.allReasons}}
-     {{rsa-context-panel/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
-     {{rsa-context-panel/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
-   {{/if}}
- </section>
+{{#each dynamictabs.tabs as |tabList|}}
+  {{#if (is-equal tabList.tabType model.meta)}}
+    <div class="rsa-nav-tab-group">
+      {{#each tabList.columns as |tabdetails|}}
+        {{#rsa-nav-tab  isCompact=true isActive=(is-equal active tabdetails.field) click=(action 'activate' tabdetails.field)}}
+          {{#if (or (eq tabdetails.field 'overview') or (eq tabdetails.field 'liveConnect'))}}
+            <div class="label">{{ t tabdetails.title }}  </div>
+          {{else}}
+          <div class="label">{{ t tabdetails.title }} ({{call-method this 'getDataSourceLength' (get contextData tabdetails.dataSourceType  )}}) </div>
+
+          {{/if}}
+        {{/rsa-nav-tab}}
+      {{/each}}
+    </div>
+    <hbox class="rsa-context-panel-header__tab">
+      {{#each tabList.toolbar  as | buttons | }}
+        {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
+      {{/each}}
+    </hbox>
+  {{/if}}
+{{/each}}
+
+{{rsa-context-panel/body
+  contextData=contextData
+  datasourceList=contextColumnsConfig
+  multiColumnList=multicolumn.multiColumnList
+  model=model
+  tabdata=active
+  activatePanel=(action 'activate')
+}}

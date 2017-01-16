@@ -1,0 +1,53 @@
+<section class="rsa-context-panel__body">
+  {{#if (eq tabdata 'overview')}}
+    {{rsa-context-panel/ecat
+      ecatData=contextData.Machines
+      ecatAdditionalData=contextData.additionalData
+    }}
+  {{/if}}
+  {{#each datasourceList as |columns index|}}
+
+    {{#if (or (eq tabdata columns.dataSourceGroup)(eq tabdata 'overview')) }}
+      {{rsa-context-data-table
+        data=(top-records (get contextData columns.dataSourceGroup) tabdata)
+        title=(t columns.title )
+        modulesColumnListConfig=columns.columns
+        headerdata=(t columns.header)
+        footerdata=columns.footer
+        type=columns.dataSourceType
+        activatePanel=(action 'activate' columns.dataSourceGroup)
+        tabdata=tabdata}}
+    {{/if}}
+  {{/each}}
+
+  {{#if (or (eq tabdata 'Lists')(eq tabdata 'overview'))}}
+    {{rsa-context-tree-table data=(top-records contextData.LIST tabdata) title=(t multiColumnList.title ) columnsConfig=multiColumnList.columns tabdata=tabdata type='Lists'  activatePanel=(action 'activate' 'Lists')}}
+  {{/if}}
+
+  {{#if (eq tabdata 'overview')}}
+    {{#if (is-equal model.meta 'IP')}}
+      {{rsa-context-panel/lc-community-activity
+        liveConnectData=contextData.liveConnectData.IpReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
+      {{rsa-context-panel/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
+    {{else if (is-equal model.meta 'FILE')}}
+      {{rsa-context-panel/lc-community-activity
+        liveConnectData=contextData.liveConnectData.FileReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
+      {{rsa-context-panel/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
+      {{rsa-context-panel/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
+    {{else if (is-equal model.meta 'DOMAIN')}}
+      {{rsa-context-panel/lc-community-activity
+        liveConnectData=contextData.liveConnectData.DomainReputation
+        model=model
+        allTags=contextData.liveConnectData.allTags
+        allReasons=contextData.liveConnectData.allReasons}}
+      {{rsa-context-panel/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
+      {{rsa-context-panel/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
+    {{/if}}
+  {{/if}}
+</section>

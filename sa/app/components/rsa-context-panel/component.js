@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import MultiColumnList from 'sa/context/tree-table';
 import LiveConnect from 'sa/context/live-connect';
+import TabList from 'sa/context/dynamic-tab';
 import ecatColumns from 'sa/context/ecat-columns';
 import imColumns from 'sa/context/im-columns';
 
@@ -16,8 +17,14 @@ const {
 } = Ember;
 
 export default Component.extend({
-  classNames: 'rsa-context-panel',
 
+  classNames: 'rsa-context-panel-header',
+
+  entity: null,
+  active: 'overview',
+  dynamictabs: {
+    tabs: TabList
+  },
   request: service(),
 
   model: null,
@@ -147,5 +154,27 @@ export default Component.extend({
     }
     lcData.set('allTags', record[2].LiveConnectApi.riskTagTypes);
     lcData.set('allReasons', record[2].LiveConnectApi.riskReasonTypes);
+  },
+
+
+  actions: {
+    activate(option) {
+      this.set('active', option);
+    },
+
+    closeAction() {
+      this.sendAction('closePanel');
+    }
+  },
+
+
+  getDataSourceLength(data) {
+    if (data) {
+      return data.length;
+    } else {
+      return 0;
+    }
+
   }
+
 });

@@ -167,9 +167,13 @@ export default {
     details: 'Admin contents go here.'
   },
   context: {
-    title: 'Context',
+    title: 'Context for',
     header: {
-      hosts: 'Hosts',
+      overview: 'overview',
+      iioc: 'iioc',
+      users: 'users',
+      categoryTags: 'category tags',
+      modules: 'modules',
       incidents: 'Incidents',
       alerts: 'Alerts',
       files: 'Files',
@@ -177,6 +181,13 @@ export default {
       feeds: 'Feeds',
       liveConnect: 'Live Connect',
       unsafe: 'Unsafe'
+    },
+    toolbar: {
+      investigate: 'Investigate',
+      ecat: 'ECAT',
+      googleLookup: 'Google Lookup',
+      virusTotal: 'VirusTotal Lookup',
+      addToList: 'Add to List'
     },
     hostSummary: {
       title: 'Host Summary',
@@ -232,7 +243,7 @@ export default {
       header: ''
     },
     list: {
-      title: 'list',
+      title: 'List',
       createdByUser: 'Author',
       createdTimeStamp: 'Created',
       lastModifiedTimeStamp: 'Updated',
@@ -318,6 +329,9 @@ export default {
       unsafeRiskDesc: 'Research and analysis shows resource to be untrusted',
       unknownRiskDesc: 'Inconclusive results from any available information, research, and analysis',
       suspiciousRiskDesc: 'Research and analysis indicates potentially threatening activity'
+    },
+    footer: {
+      viewAll: 'VIEW All'
     }
   },
   about: {

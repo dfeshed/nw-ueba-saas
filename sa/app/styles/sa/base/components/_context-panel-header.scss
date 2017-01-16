@@ -2,12 +2,40 @@
 
   background-color: rsa-color(gray, darkest);
 
+
+  .rsa-nav-tab.is-compact {
+    &.is-compact {
+      line-height: 1rem;
+    }
+  }
+
+  .rsa-nav-tab.is-left-aligned-primary{
+    padding: rsa-whitespace(base) rsa-whitespace(least);
+    margin: 0rem rsa-whitespace(less);
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .rsa-nav-tab.is-left-aligned-primary .label {
+    text-transform: uppercase;;
+    font-weight: 400;
+    font-size: rsa-whitespace(base);
+    letter-spacing: 0.05rem;
+  }
   &__header-text {
     @include rsa-font(header);
     text-transform: capitalize;
-    color: rsa-color(gray, lighter);
+    color: rsa-color(gray, lightest);
     padding: rsa-whitespace(less);
   }
+
+  &__header-text>span {
+
+    padding:rsa-whitespace(least);
+    color: rsa-color(gray, base);
+
+  }
+
 
   &__ip-value {
     @include rsa-font(bold);
@@ -24,5 +52,20 @@
     text-align: center;
     margin-bottom: rsa-whitespace(less);
     color: rsa-color(red, darker);
+  }
+
+  &__tab {
+    padding: rsa-whitespace(less);
+    font-size: 90%;
+    .rsa-form-button {
+      margin-left: rsa-whitespace(least);
+      font-size: 90%;
+    }
+  }
+
+  &__tab>span{
+    color: white;
+    padding: 7px 7px;
+    margin-left: rsa-whitespace(most);
   }
 }

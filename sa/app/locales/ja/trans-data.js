@@ -169,7 +169,11 @@ export default {
   context: {
     title: 'ja_Context',
     header: {
-      hosts: 'ja_Hosts',
+      overview: 'ja_overview',
+      iioc: 'ja_iioc',
+      modules: 'ja_modules',
+      users: 'ja_users',
+      categoryTags: 'ja_category tags',
       incidents: 'ja_Incidents',
       alerts: 'ja_Alerts',
       files: 'ja_Files',
@@ -177,6 +181,13 @@ export default {
       feeds: 'ja_Feeds',
       liveConnect: 'ja_Live Connect',
       unsafe: 'ja_Unsafe'
+    },
+    toolbar: {
+      investigate: 'ja_Investigate',
+      ecat: 'ja_ECAT',
+      googleLookup: 'ja_Google Lookup',
+      virusTotal: 'ja_VirusTotal Lookup',
+      addToList: 'ja_Add to List'
     },
     hostSummary: {
       title: 'ja_Host Summary',
@@ -318,6 +329,9 @@ export default {
       unsafeRiskDesc: 'ja_Research and analysis shows resource to be untrusted',
       unknownRiskDesc: 'ja_Inconclusive results from any available information, research, and analysis',
       suspiciousRiskDesc: 'ja_Research and analysis indicates potentially threatening activity'
+    },
+    footer: {
+      viewAll: 'ja_VIEW All'
     }
   },
   about: {

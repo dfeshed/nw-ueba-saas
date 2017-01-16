@@ -1,14 +1,22 @@
 $font-highlight-color: rsa-color(gray, lightest);
 $font-fade-color: rsa-color(gray, light);
-
+$panelBackgroundImage:
+radial-gradient(circle at 0px 25%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
+radial-gradient(circle at 70% 0px, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
+radial-gradient(circle at 35% 65%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%),
+radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue, dark, 0) 65%);
 .rsa-context-panel{
-  position: relative;
-  @include rsa-col(justify,fill);
+  position: absolute;
+  top: 140px;
+  bottom: 0;
+  left: 0;
+  right: 0;
 
-  &__sectionEnd {
-    border-bottom: 1px solid rsa-color(gray, darker);
+
+  .rsa-content-badge-score{
+    padding: 0 0.5rem 0 0.5rem ;
   }
-
+  @include rsa-col(justify,fill);
   &__loader {
     display: flex;
     justify-content: center;
@@ -25,8 +33,11 @@ $font-fade-color: rsa-color(gray, light);
     @include rsa-vendor-prefix(flex-grow,1);
     @include rsa-vendor-prefix(flex-shrink,1);
     position: relative;
-    background-color: rsa-color(gray, darker);
+    color: rsa-color(white);
+    position: relative;
     overflow: auto;
+    background-image: $panelBackgroundImage;
+    background-color: rsa-color(gray, darker);
   }
 
   &__ecat, &__context-data-table {
@@ -34,16 +45,37 @@ $font-fade-color: rsa-color(gray, light);
     height: 100%;
     width: -webkit-calc(100% - (4px));
 
-    .heading-text {
+    &__heading-text {
       @include rsa-font(header, large);
       color: rsa-color(gray, lighter);
       padding: rsa-whitespace();
     }
 
-    .heading-text>span {
+    &__heading-text>span {
       float: right;
       padding:rsa-whitespace(least);
       color: $font-fade-color;
+
+    }
+
+
+    &__button {
+      background:none!important;
+      border:none;
+      padding-left:50%;
+      color:rsa-color(blue,base);
+      text-decoration:underline;
+      cursor:pointer;
+      @include rsa-font(default, small);
+    }
+    &__border
+    {
+      padding-left: rsa-whitespace(base);
+      padding-top: rsa-whitespace(less);
+      padding-bottom: rsa-whitespace(less);
+      border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+      border-bottom-style: ridge;
+
     }
 
     .footer-text {
@@ -67,11 +99,12 @@ $font-fade-color: rsa-color(gray, light);
         padding-left: rsa-whitespace(more);
         padding-bottom: rsa-whitespace();
       }
-      .rsa-content-badge-score{
-        padding: 0rem;
-      }
+
       &__badge-score {
-        max-width: 11%;
+        max-height: 25%;
+        padding: rsa-whitespace();
+        padding: 0;
+        max-width: 25%;
         @include rsa-font(default, small);
       }
     }

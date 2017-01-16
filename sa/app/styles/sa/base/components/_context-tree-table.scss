@@ -1,4 +1,33 @@
 .rsa-context-tree-table {
+
+  .button {
+    background:none!important;
+    border:none;
+    padding-left:50%;
+    color:rsa-color(blue,base);
+    @include rsa-font(default, small);
+    text-decoration:underline;
+    cursor:pointer;
+  }
+  .border
+  {
+    padding-left: rsa-whitespace(base);
+    padding-top: rsa-whitespace(less);
+    padding-bottom: rsa-whitespace(less);
+    border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+
+  }
+  .heading-text {
+    @include rsa-font(header, large);
+    color: rsa-color(gray, lighter);
+    padding: rsa-whitespace();
+  }
+  .heading-text>span {
+    float: right;
+    padding:rsa-whitespace(least);
+    color: $font-fade-color;
+
+  }
   .rsa-content-accordion {
 
     border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);

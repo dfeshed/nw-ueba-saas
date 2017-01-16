@@ -9,7 +9,7 @@ export default[
         field: 'Score',
         title: 'context.modules.iiocScore',
         dataType: 'riskscore',
-        width: '15%',
+        width: '10%',
         class: 'rsa-module-riskscore',
         componentClass: 'rsa-content-badge-score',
         nested: 'IOCScore.Score'
