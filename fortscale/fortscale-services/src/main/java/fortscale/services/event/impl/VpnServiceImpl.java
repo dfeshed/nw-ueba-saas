@@ -237,6 +237,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		if(geoHoppingData == null){
 			//This is the first vpn session ever for this user.
 			addNewGeoHoppingData(curVpnSession);
+			logger.info("This is the first vpn session ever for user {}", curVpnSession.getNormalizedUserName());
 		} else if(geoHoppingData.isEqualsGeoLocation(curVpnSession)){
 			//In this case the current vpn session is from the country as the previous received vpn session.
 			//Notice that the current vpn session may be a geo-hopping event only if the vpn session before was also a geo-hopping event.
