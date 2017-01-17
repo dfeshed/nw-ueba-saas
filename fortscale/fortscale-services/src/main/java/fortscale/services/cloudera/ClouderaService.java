@@ -1,7 +1,7 @@
 package fortscale.services.cloudera;
 
 /**
- * Created by barak_schuster on 1/17/17.
+ * Created by barak_schuster & Amir Keren on 1/17/17.
  */
 public interface ClouderaService {
     boolean start(String serviceName);

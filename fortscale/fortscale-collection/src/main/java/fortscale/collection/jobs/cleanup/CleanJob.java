@@ -1,7 +1,7 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.services.cloudera.ClouderaServiceImpl;
+import fortscale.services.cloudera.ClouderaService;
 import fortscale.services.hdfs.HDFSService;
 import fortscale.services.impala.ImpalaService;
 import fortscale.services.kafka.KafkaService;
@@ -51,7 +51,7 @@ public class CleanJob extends FortscaleJob {
 	@Autowired
 	private StoreService storeService;
 	@Autowired
-	private ClouderaServiceImpl clouderaService;
+	private ClouderaService clouderaService;
 
 	@Value("${seconds.to.sleep}")
 	private int secondsToSleep;
