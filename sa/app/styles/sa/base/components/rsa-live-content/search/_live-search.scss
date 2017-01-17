@@ -151,4 +151,15 @@ $animationDuration: 0.5s;
       }
     }
   }
+
+  .rsa-live-search-results-panel {
+    .result-count {
+      display: inline-block;
+      padding-right: rsa-whitespace(less);
+    }
+
+    vbox:not(.flexi-fit) {
+      height: calc(100% - 40px);
+    }
+  }
 }

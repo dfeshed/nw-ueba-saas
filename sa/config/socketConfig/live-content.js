@@ -42,6 +42,13 @@ module.exports = function(environment) {
         subscriptionDestination: '/cms/search/get-resource-categories',
         requestDestination: '/ws/cms/search/get-resource-categories'
       }
+    },
+    'live-search': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/cms/search/search',
+        requestDestination: '/ws/cms/search/search'
+      }
     }
   };
 };

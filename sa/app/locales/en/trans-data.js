@@ -140,7 +140,7 @@ export default {
         updatedDate: 'Updated',
         requiredMetaKeys: 'Required Meta Keys',
         generatedMetaValues: 'Generated Meta Values',
-        select: 'Select',
+        select: '',
         remove: 'Remove',
         subscribed: 'Subscribed',
         resourceName: 'Name',
