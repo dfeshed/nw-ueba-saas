@@ -21,6 +21,7 @@ import java.util.List;
  */
 public class ClouderaServiceImpl implements ClouderaService{
 
+    public static final int CHECK_ROLE_STATUS_WINDOW_SECONDS = 7;
     private static Logger logger = LoggerFactory.getLogger(ClouderaServiceImpl.class);
 
     private RootResourceV10 apiRoot;
@@ -192,7 +193,7 @@ public class ClouderaServiceImpl implements ClouderaService{
             if (currentRoleState != desiredState) {
                 while (waitedDuration.compareTo(desiredStateTimeout) < 0 && currentRoleState != desiredState) {
                     try {
-                        Duration sleepDuration = Duration.ofSeconds(7);
+                        Duration sleepDuration = Duration.ofSeconds(CHECK_ROLE_STATUS_WINDOW_SECONDS);
                         Thread.sleep(sleepDuration.toMillis());
                         waitedDuration = waitedDuration.plus(sleepDuration);
                         currentRoleState = apiRole.getRoleState();
