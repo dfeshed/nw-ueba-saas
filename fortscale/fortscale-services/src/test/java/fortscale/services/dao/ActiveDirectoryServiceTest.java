@@ -42,6 +42,8 @@ public class ActiveDirectoryServiceTest {
     private AdUserRepository adUserRepository;
     @Mock
     private AdComputerRepository adComputerRepository;
+    @Mock
+    private AdUserThumbnailRepository adUserThumbnailRepository;
 
     private ActiveDirectoryService testedActiveDirectoryService;
 
@@ -58,7 +60,7 @@ public class ActiveDirectoryServiceTest {
                 adGroupRepository,
                 adOURepository,
                 adUserRepository,
-                adComputerRepository);
+                adComputerRepository, adUserThumbnailRepository);
     }
 
     @Test

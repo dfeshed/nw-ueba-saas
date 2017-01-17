@@ -92,4 +92,21 @@ public class AdObject extends AbstractDocument {
 	public void setRuntime(String runtime) {
 		this.runtime = runtime;
 	}
+
+
+	public enum AdObjectType {
+		GROUP("Group"), OU("OU"), USER("User"), COMPUTER("Computer"), USER_THUMBNAIL(USER.displayName + "_" + "Thumbnail");
+
+		private final String displayName;
+
+		AdObjectType(String displayName) {
+			this.displayName = displayName;
+		}
+
+		@Override
+		public String toString() {
+			return displayName;
+		}
+	}
+	
 }

@@ -7,9 +7,9 @@
 
 	<schedule>
 		<job>
-			<name>User_Thumbnail_ETL</name>
+			<name>User_Thumbnail_Fetch_ETL</name>
 			<group>AD</group>
-			<description>Run AD USER THUMBNAIL ETL HOURLY</description>
+			<description>Run AD USER THUMBNAIL FETCH ETL HOURLY</description>
 			<job-class>fortscale.collection.jobs.ad.AdUserThumbnailProcessJob</job-class>
 			<durability>true</durability>
 			<recover>true</recover>
@@ -36,9 +36,9 @@
 	
 		<trigger>
 			<cron>
-				<name>ad_user_thumbnail_etl_daily_trigger</name>
+				<name>ad_user_thumbnail_fetch_etl_daily_trigger</name>
 				<group>AD</group>
-				<job-name>User_Thumbnail_ETL</job-name>
+				<job-name>User_Thumbnail_Fetch_ETL</job-name>
 				<job-group>AD</job-group>
  				<cron-expression>0 40 0 * * ?</cron-expression>
 			</cron>

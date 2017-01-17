@@ -4,7 +4,7 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.codec.binary.Base64;
 import org.quartz.*;
@@ -32,7 +32,7 @@ public class AdFetchJob extends FortscaleJob {
 	private static final String KEY_SUCCESS = "success";
 
 	@Autowired
-	private ApplicationConfigurationService applicationConfigurationService;
+	private AdTaskPersistencyService adTaskPersistencyService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -45,13 +45,14 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 	private BufferedWriter fileWriter;
-	private String resultsKey;
+	private String resultsId;
+	private JobKey jobKey;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
 
-		final JobKey key = jobExecutionContext.getJobDetail().getKey();
+		jobKey = jobExecutionContext.getJobDetail().getKey();
 
 
 		// get parameters values from the job data map
@@ -63,11 +64,7 @@ public class AdFetchJob extends FortscaleJob {
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
 
 		// random generated ID for deployment wizard fetch and ETL results
-		final String resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
-		if (resultsId != null) {
-			resultsKey = key.getName().toLowerCase() + "." + resultsId;
-		}
-
+		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 	}
 
 	@Override
@@ -86,9 +83,13 @@ public class AdFetchJob extends FortscaleJob {
 			return;
 		}
 
-		if (resultsKey != null) {
-			logger.debug("Inserting status to application configuration in key {}", resultsKey);
-			applicationConfigurationService.insertConfigItem(resultsKey, KEY_SUCCESS + DELIMITER + Boolean.TRUE);
+		if (resultsId != null) {
+			final String name = jobKey.getName();
+			final String[] splitName = name.split("_");
+			final String dataSource = splitName[0];
+			final String taskName = splitName[1];
+
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName, resultsId, true);
 		}
 	}
 
