@@ -23,13 +23,16 @@
   }
 
   &:hover {
-    background-color: $navTabHoverBackgroundColor;
     cursor: pointer;
+
+    .imagery,
+    .label {
+      color: $navTabHoverTypeColor;
+    }
   }
 
   &.is-active {
     border-bottom: rsa-whitespace(least) solid $navTabActiveBorderBottomColor;
-    background-color: $navTabActiveBackgroundColor;
     align-self: center;
     cursor: default;
 
