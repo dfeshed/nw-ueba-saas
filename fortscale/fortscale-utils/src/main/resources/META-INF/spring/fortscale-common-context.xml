@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns:sec="http://www.springframework.org/schema/security"
-	xmlns:context="http://www.springframework.org/schema/context" xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:oauth="http://www.springframework.org/schema/security/oauth2"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
-    					http://www.springframework.org/schema/security/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
-    					http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
-                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+<beans
+		xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+    					/oauth2 http://www.springframework.org/schema/security/spring-security-oauth2.xsd
+
+                        http://www.springframework.org/schema/security">
 
 	<bean id="impalaParser" class="fortscale.utils.impala.ImpalaParser" />
 	<bean id="impalaClient" class="fortscale.utils.impala.ImpalaClient" />
@@ -27,11 +27,6 @@
 
 	<bean id="jadeUtils" class="fortscale.utils.jade.JadeUtils" />
 
-	<bean id="clouderaService" class="fortscale.services.cloudera.ClouderaService" >
-		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />
-		<constructor-arg name="clusterName" value="${cm_cluster_name}" />
-		<constructor-arg name="cmAdminUser" value="${cm_user}" />
-		<constructor-arg name="cmAdminPass" value="${cm_pass}" />
-	</bean>
+	<bean id="clouderaService" class="fortscale.services.cloudera.ClouderaServiceConfig" />
 
 </beans>
