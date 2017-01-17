@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class ClouderaServiceImpl implements ClouderaService{
 
-    public static final int CHECK_ROLE_STATUS_WINDOW_SECONDS = 7;
+    public static final int CHECK_ROLE_STATUS_WINDOW_SECONDS = 5;
     private static Logger logger = LoggerFactory.getLogger(ClouderaServiceImpl.class);
 
     private RootResourceV10 apiRoot;
@@ -192,6 +192,7 @@ public class ClouderaServiceImpl implements ClouderaService{
             Duration waitedDuration = Duration.ZERO;
             if (currentRoleState != desiredState) {
                 while (waitedDuration.compareTo(desiredStateTimeout) < 0 && currentRoleState != desiredState) {
+                    logger.info("role={} is still not {}, going to sleep...",currRole,desiredState);
                     try {
                         Duration sleepDuration = Duration.ofSeconds(CHECK_ROLE_STATUS_WINDOW_SECONDS);
                         Thread.sleep(sleepDuration.toMillis());
@@ -207,6 +208,10 @@ public class ClouderaServiceImpl implements ClouderaService{
                     logger.warn("timeout has occurred, role={} is at state={} should be at desired state={} after waiting={}",
                             currRole, currentRoleState, desiredState, waitedDuration);
                     allRolesInDesiredState = false;
+                }
+                else
+                {
+                    logger.info("role={} arrived desired state={} sucessfully after {}",currRole,desiredState,waitedDuration);
                 }
                 if (currentRoleHealthSummary.equals(ApiHealthSummary.BAD)) {
                     logger.warn("role={} at BAD state", currRole);
