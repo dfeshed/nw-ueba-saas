@@ -246,7 +246,10 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 				if(curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).isAfter(geoHoppingData.otherOpenSessionCountryTime)){
 					geoHoppingData.otherOpenSessionCountryTime = null;
 				} else{
-					curVpnSession.setGeoHopping(true);
+					//The below line is currently commented out, since currently geo hopping indicator need to have at least on session with which the geo hopping occured.
+					//Finding this vpn session might mean to many calls to mongo.
+					// I suggest that combining them together will be done in the alert generator instead.
+					//curVpnSession.setGeoHopping(true);
 					logger.info("geo hopping due to other open session country time {}. more info: curCountry ({}). curCountryTime({})", geoHoppingData.otherOpenSessionCountryTime, geoHoppingData.curCountry, geoHoppingData.curCountryTime);
 				}
 			}
