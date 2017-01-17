@@ -21,7 +21,6 @@ import java.util.List;
  */
 public class ClouderaServiceImpl implements ClouderaService{
 
-    public static final int CHECK_ROLE_STATUS_WINDOW_SECONDS = 5;
     private static Logger logger = LoggerFactory.getLogger(ClouderaServiceImpl.class);
 
     private RootResourceV10 apiRoot;
@@ -30,8 +29,9 @@ public class ClouderaServiceImpl implements ClouderaService{
     private final String cmAdminUser;
     private final String cmAdminPass;
     private final String clusterName;
-    private Duration roleStartTimeout;
-    private Duration roleStopTimeout;
+    private final Duration checkRoleStatusEvery;
+    private final Duration roleStartTimeout;
+    private final Duration roleStopTimeout;
     private ClouderaManagerClientBuilderFactoryHelper factoryHelper;
 
     public static class ClouderaManagerClientBuilderFactoryHelper {
@@ -44,10 +44,12 @@ public class ClouderaServiceImpl implements ClouderaService{
     /**
      * C'tor
      */
-    public ClouderaServiceImpl(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass, Duration roleStartTimeout, Duration roleStopTimeout) {
+    public ClouderaServiceImpl(String serverHost, String clusterName, String cmAdminUser, String cmAdminPass,
+                               Duration roleStartTimeout, Duration roleStopTimeout, Duration checkRoleStatusWindowDuration) {
         this.factoryHelper = new ClouderaManagerClientBuilderFactoryHelper();
         this.roleStartTimeout = roleStartTimeout;
         this.roleStopTimeout = roleStopTimeout;
+        this.checkRoleStatusEvery = checkRoleStatusWindowDuration;
         this.serverHost = serverHost;
         this.cmAdminUser = cmAdminUser;
         this.cmAdminPass = cmAdminPass;
@@ -194,9 +196,9 @@ public class ClouderaServiceImpl implements ClouderaService{
                 while (waitedDuration.compareTo(desiredStateTimeout) < 0 && currentRoleState != desiredState) {
                     logger.info("role={} is still not {}, going to sleep...",currRole,desiredState);
                     try {
-                        Duration sleepDuration = Duration.ofSeconds(CHECK_ROLE_STATUS_WINDOW_SECONDS);
-                        Thread.sleep(sleepDuration.toMillis());
-                        waitedDuration = waitedDuration.plus(sleepDuration);
+                        Thread.sleep(checkRoleStatusEvery.toMillis());
+                        waitedDuration = waitedDuration.plus(checkRoleStatusEvery);
+                        apiRole = rolesResource.readRole(currRole);
                         currentRoleState = apiRole.getRoleState();
                     } catch (InterruptedException e) {
                         logger.error("sleep interrupted while waiting for role={} to change state to={}", currRole, desiredState, e);

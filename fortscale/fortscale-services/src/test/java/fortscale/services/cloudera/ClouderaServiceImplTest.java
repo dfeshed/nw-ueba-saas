@@ -23,7 +23,7 @@ public class ClouderaServiceImplTest {
 
     public void setup(Duration roleStartTimeout,Duration roleStopTimeout )
     {
-        clouderaService = new ClouderaServiceImpl("host","cluster","user","pass", roleStartTimeout, roleStopTimeout);
+        clouderaService = new ClouderaServiceImpl("host","cluster","user","pass", roleStartTimeout, roleStopTimeout, Duration.ofSeconds(1));
         ServicesResourceV10 servicesRes = Mockito.mock(ServicesResourceV10.class);
         RolesResourceV8 rolesResource = Mockito.mock(RolesResourceV8.class);
         ApiRoleList roles = new ApiRoleList();

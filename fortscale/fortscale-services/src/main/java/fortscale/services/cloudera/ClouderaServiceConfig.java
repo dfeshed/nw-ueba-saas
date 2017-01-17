@@ -23,11 +23,14 @@ public class ClouderaServiceConfig {
     private Duration startTimeout;
     @Value("#{ T(java.time.Duration).parse('${cm_role_stop_timeout_after}')}")
     private Duration stopTimeout;
+    @Value("#{ T(java.time.Duration).parse('${cm_role_check_role_status_window_duration}')}")
+    private Duration checkRoleStatusWindowDuration;
 
     @Bean
     public ClouderaService clouderaService()
     {
-        ClouderaServiceImpl clouderaService = new ClouderaServiceImpl(serverHost, clusterName, cmAdminUser, cmAdminPass, startTimeout, stopTimeout);
+        ClouderaServiceImpl clouderaService = new ClouderaServiceImpl(serverHost, clusterName, cmAdminUser,
+                cmAdminPass, startTimeout, stopTimeout, checkRoleStatusWindowDuration);
         clouderaService.init();
         return clouderaService;
     }
