@@ -30,7 +30,5 @@ public class ClouderaServiceConfig {
         ClouderaServiceImpl clouderaService = new ClouderaServiceImpl(serverHost, clusterName, cmAdminUser, cmAdminPass, startTimeout, stopTimeout);
         clouderaService.init();
         return clouderaService;
-
-
     }
 }

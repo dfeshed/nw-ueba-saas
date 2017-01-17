@@ -192,7 +192,7 @@ public class ClouderaServiceImpl implements ClouderaService{
             if (currentRoleState != desiredState) {
                 while (waitedDuration.compareTo(desiredStateTimeout) < 0 && currentRoleState != desiredState) {
                     try {
-                        Duration sleepDuration = Duration.ofSeconds(1);
+                        Duration sleepDuration = Duration.ofSeconds(7);
                         Thread.sleep(sleepDuration.toMillis());
                         waitedDuration = waitedDuration.plus(sleepDuration);
                         currentRoleState = apiRole.getRoleState();
