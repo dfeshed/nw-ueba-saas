@@ -57,9 +57,15 @@ public class ClouderaServiceImpl implements ClouderaService{
     }
 
     void init() {
-        logger.debug("initializing cloudera manager utils");
+        logger.debug("initializing cloudera manager utils {}",this);
         apiRoot = factoryHelper.makeClouderaManagerClientBuilder().withHost(serverHost).withUsernamePassword(cmAdminUser, cmAdminPass).build().getRootV10();
         servicesRes = apiRoot.getClustersResource().getServicesResource(clusterName);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("ClouderaServiceImpl{serverHost='%s', clusterName='%s', checkRoleStatusEvery=%s, roleStartTimeout=%s, roleStopTimeout=%s}",
+                serverHost, clusterName, checkRoleStatusEvery, roleStartTimeout, roleStopTimeout);
     }
 
     /**
