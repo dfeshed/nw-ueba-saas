@@ -88,7 +88,6 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         FeatureBucketState featureBucketState = getFeatureBucketState();
         if (featureBucketState != null){
             // Getting the value of the last closed daily bucket
-//            lastClosedDailyBucketDate = featureBucketState.getLastClosedDailyBucketDate();
             logger.info("FeatureBucketStateService recovery finished, got {}", featureBucketState);
         }
     }
