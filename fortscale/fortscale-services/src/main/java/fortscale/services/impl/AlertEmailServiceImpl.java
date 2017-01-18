@@ -11,6 +11,7 @@ import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -157,7 +158,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		//remove the unused severities from the attachments map
 		allSeverities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
 		attachmentsMap.put(SHADOW_CID, shadowImage);
-		String dateAsString = getDateAsString(new DateTime(alert.getStartDate()));
+		String dateAsString = getDateAsString(new Date(alert.getStartDate()));
 		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), dateAsString);
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration) {
@@ -166,7 +167,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				try {
 					emailService.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,
 							true);
-					logger.info("Alert - {} -  forward using email at {}",alert.toString(false), getDateAsString(new DateTime()));
+					logger.info("Alert - {} -  forward using email at {}",alert.toString(false), getDateAsString(new Date()));
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
@@ -175,8 +176,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		}
 	}
 
-	private String getDateAsString(DateTime date){
-		return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
+	private String getDateAsString(Date date){
+		return DateFormatUtils.format(date, "MMMM dd yyyy");
 	}
 
 	/**
