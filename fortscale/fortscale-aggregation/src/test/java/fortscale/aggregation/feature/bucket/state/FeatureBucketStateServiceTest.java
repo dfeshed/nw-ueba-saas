@@ -64,7 +64,7 @@ public class FeatureBucketStateServiceTest {
         featureBucketStateService.updateFeatureBucketState(time);
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
-        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS), date) ;
+        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS).minus(Duration.ofDays(1)), date) ;
         Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
         Assert.assertEquals(expected.getLastSyncedEventDate(), actual.getLastSyncedEventDate());
@@ -83,7 +83,7 @@ public class FeatureBucketStateServiceTest {
         featureBucketStateService.updateFeatureBucketState(date.getEpochSecond());
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
-        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS), date);
+        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS).minus(Duration.ofDays(1)), date);
         Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
         Assert.assertEquals(expected.getLastSyncedEventDate(), actual.getLastSyncedEventDate());
@@ -98,11 +98,11 @@ public class FeatureBucketStateServiceTest {
         Instant date = Instant.ofEpochSecond(time);
         Instant dayBefore = date.minus(Duration.ofDays(1));
 
-        // Updating with next date
+        // Updating with prev date
         featureBucketStateService.updateFeatureBucketState(dayBefore.getEpochSecond());
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
-        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS), date);
+        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS).minus(Duration.ofDays(1)), date);
         Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
         Assert.assertEquals(expected.getLastSyncedEventDate(), actual.getLastSyncedEventDate());
@@ -121,7 +121,7 @@ public class FeatureBucketStateServiceTest {
         featureBucketStateService.updateFeatureBucketState(date.getEpochSecond());
 
         FeatureBucketState actual = featureBucketStateService.getFeatureBucketState();
-        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS), date);
+        FeatureBucketState expected = new FeatureBucketState(date.truncatedTo(ChronoUnit.DAYS).minus(Duration.ofDays(1)), date);
         Assert.assertNotNull(actual);
         Assert.assertEquals(expected.getLastClosedDailyBucketDate(), actual.getLastClosedDailyBucketDate());
         Assert.assertEquals(firstUpdate.getModifiedAt(), actual.getModifiedAt());

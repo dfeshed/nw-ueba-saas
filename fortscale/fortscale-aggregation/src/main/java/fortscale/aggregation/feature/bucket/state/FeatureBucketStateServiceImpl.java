@@ -4,6 +4,7 @@ import fortscale.aggregation.feature.bucket.repository.state.FeatureBucketStateR
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
@@ -14,8 +15,6 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
     private static final Logger logger = Logger.getLogger(FeatureBucketStateService.class);
 
     private FeatureBucketStateRepository featureBucketStateRepository;
-
-    private Instant lastClosedDailyBucketDate;
 
     private StatsService statsService;
 
@@ -39,24 +38,28 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         FeatureBucketState featureBucketState = getFeatureBucketState();
         Instant lastEventDate = Instant.ofEpochSecond(lastEventEpochtime);
         Instant lastEventDay = lastEventDate.truncatedTo(ChronoUnit.DAYS);
+        Instant lastClosedDailyBucket = lastEventDay.minus(Duration.ofDays(1));
         boolean shouldSave = true;
 
         // Creating new state object
-        if (lastClosedDailyBucketDate == null){
-            featureBucketState = new FeatureBucketState(lastEventDay, lastEventDate);
-            lastClosedDailyBucketDate = featureBucketState.getLastClosedDailyBucketDate();
+        if (featureBucketState == null){
+            featureBucketState = new FeatureBucketState(lastClosedDailyBucket, lastEventDate);
         // Updating the last synced date in case that the last event date is after the lst sync date
-        }else if (lastClosedDailyBucketDate.isBefore(lastEventDate)) {
-            featureBucketState.setLastClosedDailyBucketDate(lastEventDay);
-            lastClosedDailyBucketDate = lastEventDate;
-            // Updating the lastSyncedEventDate
-            featureBucketState.setLastSyncedEventDate(lastEventDate);
-        // When the last event date is before the last synced date - shouldn't happen
-        } else {
-            logger.warn(
-                    String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
-                            lastClosedDailyBucketDate, lastEventDate));
-            shouldSave = false;
+        }else {
+            if (featureBucketState.getLastSyncedEventDate().isBefore(lastEventDate)) {
+                // Updating the lastSyncedEventDate
+                featureBucketState.setLastSyncedEventDate(lastEventDate);
+
+                // Save the previous day as last aggregated day
+                featureBucketState.setLastClosedDailyBucketDate(lastClosedDailyBucket);
+
+            // When the last event date is before the last synced date - shouldn't happen
+            } else {
+                logger.warn(
+                        String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
+                                getFeatureBucketState().getLastSyncedEventDate(), lastEventDate));
+                shouldSave = false;
+            }
         }
 
         try {
@@ -85,7 +88,7 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         FeatureBucketState featureBucketState = getFeatureBucketState();
         if (featureBucketState != null){
             // Getting the value of the last closed daily bucket
-            lastClosedDailyBucketDate = featureBucketState.getLastClosedDailyBucketDate();
+//            lastClosedDailyBucketDate = featureBucketState.getLastClosedDailyBucketDate();
             logger.info("FeatureBucketStateService recovery finished, got {}", featureBucketState);
         }
     }
