@@ -1,41 +1,54 @@
 package fortscale.services.impl;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
-import fortscale.domain.ad.dao.ActiveDirectoryDAO;
-import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
+import fortscale.domain.ad.AdGroup;
+import fortscale.domain.ad.AdOU;
+import fortscale.domain.ad.AdObject.AdObjectType;
+import fortscale.domain.ad.AdUserThumbnail;
+import fortscale.domain.ad.dao.*;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
+import javax.naming.NamingException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service("ActiveDirectoryService")
-public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, InitializingBean {
+public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
 
-	private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
+    private static Logger logger = Logger.getLogger(ActiveDirectoryServiceImpl.class);
 
-	private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
+    private static final String DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY = "system.activeDirectory.domainControllers";
 
-    @Value("${ad.connections}")
-    private String adConnectionsFile;
 
     private final ActiveDirectoryDAO activeDirectoryDAO;
     private final ApplicationConfigurationService applicationConfigurationService;
+    private final AdGroupRepository adGroupRepository;
+    private final AdOURepository adOURepository;
+    private final AdUserRepository adUserRepository;
+    private final AdComputerRepository adComputerRepository;
+    private final AdUserThumbnailRepository adUserThumbnailRepository;
 
     @Autowired
-    public ActiveDirectoryServiceImpl(ActiveDirectoryDAO activeDirectoryDAO,
-                                      ApplicationConfigurationService applicationConfigurationService) {
+    public ActiveDirectoryServiceImpl(
+            ActiveDirectoryDAO activeDirectoryDAO,
+            ApplicationConfigurationService applicationConfigurationService,
+            AdGroupRepository adGroupRepository,
+            AdOURepository adOURepository,
+            AdUserRepository adUserRepository,
+            AdComputerRepository adComputerRepository, AdUserThumbnailRepository adUserThumbnailRepository) {
+        this.adGroupRepository = adGroupRepository;
+        this.adOURepository = adOURepository;
+        this.adUserRepository = adUserRepository;
+        this.adComputerRepository = adComputerRepository;
         this.activeDirectoryDAO = activeDirectoryDAO;
         this.applicationConfigurationService = applicationConfigurationService;
+        this.adUserThumbnailRepository = adUserThumbnailRepository;
     }
 
     /**
@@ -68,30 +81,6 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public void saveDomainControllersInDatabase(List<String> domainControllers) {
-        logger.debug("Saving domain controllers in database");
-        String value = String.join(",", domainControllers);
-        applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
-    }
-
-	@Override
-	public void saveAdConnectionsInDatabase(List<AdConnection> adConnections) {
-		applicationConfigurationService.updateConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY,adConnections);
-	}
-
-	@Override
-	public String canConnect(AdConnection adConnection) {
-		String result;
-		try {
-			result = activeDirectoryDAO.connectToAD(adConnection);
-		} catch (Exception ex) {
-			logger.error("failed to connect to ad - {}", ex);
-			result = ex.getLocalizedMessage();
-		}
-		return result;
-	}
-
-	@Override
     public List<String> getDomainControllers() {
         List<String> domainControllers = new ArrayList<>();
         try {
@@ -114,6 +103,81 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
         return domainControllers;
     }
 
+    @Override
+    public void saveDomainControllersInDatabase(List<String> domainControllers) {
+        logger.debug("Saving domain controllers in database");
+        String value = String.join(",", domainControllers);
+        applicationConfigurationService.insertConfigItem(DB_DOMAIN_CONTROLLERS_CONFIGURATION_KEY, value);
+    }
+
+    @Override
+    public void saveAdConnectionsInDatabase(List<AdConnection> adConnections) {
+        applicationConfigurationService.updateConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY,adConnections);
+    }
+
+    @Override
+    public boolean canConnect(AdConnection adConnection) throws NamingException, PasswordDecryptionException{
+        boolean success;
+        try {
+            success = activeDirectoryDAO.connectToAD(adConnection);
+        } catch (NamingException | PasswordDecryptionException ex) {
+            logger.error("failed to connect to ad - {}", ex);
+            throw ex;
+        }
+        return success;
+    }
+
+
+    @Override
+    public Long getCount(AdObjectType adObjectType) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.count();
+            case OU:
+                return adOURepository.count();
+            case USER:
+                return adUserRepository.count();
+            case COMPUTER:
+                return adComputerRepository.count();
+            case USER_THUMBNAIL:
+                return adUserThumbnailRepository.count();
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
+        }
+
+    }
+
+    @Override
+    public AdUserThumbnail findAdUserThumbnailById(String objectGUID) {
+        return adUserThumbnailRepository.findById(objectGUID);
+    }
+
+    @Override
+    public List<AdUserThumbnail> save(List<AdUserThumbnail> adUserThumbnails) {
+        return adUserThumbnailRepository.save(adUserThumbnails);
+    }
+
+    /**
+     * This method queries the {@link AdGroup} collection and returns a list of {@link AdGroup}s whose 'name' field contains the given {@param contains}.
+     * This method is case-insensitive
+     *
+     * @param contains the string that {@link AdGroup}'s 'name' field needs to contain
+     * @return         a list of {@link AdGroup}s whose 'name' field contains the given {@param contains}
+     */
+    public List<AdGroup> getGroupsByNameContains(String contains) {
+        return adGroupRepository.findByNameLikeIgnoreCase(contains);
+    }
+
+    /**
+     * This method queries the {@link AdOU} collection and returns a list of {@link AdOU}s whose 'ou' field contains the given {@param contains}.
+     * This method is case-insensitive
+     * @param contains the string that {@link AdOU}'s 'ou' field needs to contain
+     * @return         a list of {@link AdOU}s whose 'ou' field contains the given {@param contains}
+     */
+    @Override
+    public List<AdOU> getOusByOuContains(String contains) {
+        return adOURepository.findByOuLikeIgnoreCase(contains);
+    }
 
     /**
      * This method gets all the AD domain controllers from the database
@@ -139,25 +203,48 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService, Initi
     }
 
     @Override
-    public void afterPropertiesSet() throws Exception {
-        if (!applicationConfigurationService.isApplicationConfigurationExists(AdConnection.ACTIVE_DIRECTORY_KEY)) {
-            //initialize with default test values if no configuration key exists
-            logger.warn("Active Directory configuration not found, trying to load configuration from file");
-            List<AdConnection> adConnections;
-            ObjectMapper mapper = new ObjectMapper();
-            File jsonFile = new File(adConnectionsFile);
-            if (!jsonFile.exists()) {
-                logger.error("AdConnections json file does not exist");
-                return;
-            }
-            try {
-                adConnections = mapper.readValue(jsonFile, new TypeReference<List<AdConnection>>(){});
-            } catch (Exception ex) {
-                logger.error("Error - Bad Active Directory Json connection file");
-                throw new Exception(ex);
-            }
-            applicationConfigurationService.insertConfigItemAsObject(AdConnection.ACTIVE_DIRECTORY_KEY, adConnections);
+    public Long getLatestRuntime(AdObjectType adObjectType) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.getLatestTimeStampepoch();
+            case OU:
+                return adOURepository.getLatestTimeStampepoch();
+            case USER:
+                return adUserRepository.getLatestTimeStampepoch();
+            case COMPUTER:
+                return adComputerRepository.getLatestTimeStampepoch();
+            default:
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
         }
     }
 
+    @Override
+    public Long countByTimestampepoch(AdObjectType adObjectType, Long latestRuntime) {
+        switch (adObjectType) {
+            case GROUP:
+                return adGroupRepository.countByTimestampepoch(latestRuntime);
+            case OU:
+                return adOURepository.countByTimestampepoch(latestRuntime);
+            case USER:
+                return adUserRepository.countByTimestampepoch(latestRuntime);
+            case COMPUTER:
+                return adComputerRepository.countByTimestampepoch(latestRuntime);
+            case USER_THUMBNAIL:
+                return adUserThumbnailRepository.count();
+            default:
+                final ArrayList<AdObjectType> validAdObjectTypes = new ArrayList<>(Arrays.asList(AdObjectType.values()));
+                validAdObjectTypes.remove(AdObjectType.USER_THUMBNAIL);
+                throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, validAdObjectTypes));
+        }
+    }
+
+    @Override
+    public Long getLastRunCount(AdObjectType adObjectType) {
+        if (adObjectType == AdObjectType.USER_THUMBNAIL) {
+            return adUserThumbnailRepository.count();
+        }
+        Long latestRuntime = getLatestRuntime(adObjectType);
+        final Long currObjectsCount = countByTimestampepoch(adObjectType, latestRuntime);
+        return currObjectsCount;
+    }
 }

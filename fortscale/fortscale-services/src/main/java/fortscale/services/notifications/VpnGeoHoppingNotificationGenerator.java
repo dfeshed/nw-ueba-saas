@@ -16,6 +16,7 @@ import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -265,7 +266,9 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 
 		List<CountryCity> citiesList = new ArrayList<>(cities);
 		if (cities.size()!=2){
-			logger.error("Wrong amount of cities-countries pairs in GeoHopping. Expected 2 but {0} was found", cities.size());
+			logger.error("Wrong amount of cities-countries pairs in GeoHopping for user {}. Expected 2 but {} was found. " +
+							"Cities -{}",
+					username, cities.size(), StringUtils.join(cities, ','));
 			throw new RuntimeException("Wrong amount of cities-countries pairs in GeoHopping");
 		}
 		CountryCity city1 = citiesList.get(0);

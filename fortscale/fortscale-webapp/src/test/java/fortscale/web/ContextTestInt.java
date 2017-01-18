@@ -2,19 +2,24 @@ package fortscale.web;
 
 import fortscale.domain.fe.dao.AccessDAO;
 import fortscale.utils.test.category.IntegrationTestCategory;
+import fortscale.web.webconf.AdTaskConfig;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"classpath*:META-INF/spring/applicationContext.xml"})
+@WebAppConfiguration( "classpath*:webapp-config.xml"  )
 @Category(IntegrationTestCategory.class)
+@Import(AdTaskConfig.class)
 public class ContextTestInt {
 
 	@Autowired

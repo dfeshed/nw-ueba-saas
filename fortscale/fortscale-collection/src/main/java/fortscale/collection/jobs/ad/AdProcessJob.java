@@ -5,15 +5,13 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.domain.JobDataReceived;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -25,6 +23,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
+	private AdTaskPersistencyService adTaskPersistencyService;
+
+	@Autowired
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
@@ -34,6 +35,14 @@ public abstract class AdProcessJob extends FortscaleJob {
 	protected int linesPrintSkip;
 	@Value("${collection.lines.print.enabled}")
 	protected boolean linesPrintEnabled;
+
+	@Value("${ldap.tables.fields.timestampepoch}")
+	private String timestampepochFieldName;
+	@Value("${ldap.tables.fields.runtime}")
+	private String runtimeFieldName;
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
 
 
 	protected MorphlinesItemsProcessor morphline;
@@ -54,9 +63,14 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	String outputSeparator;
 
+	private String resultsId;
+	private JobKey jobKey;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		jobKey = jobExecutionContext.getJobDetail().getKey();
 
 		// get parameters values from the job data map
 		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
@@ -72,6 +86,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
 
+		// random generated ID for deployment wizard fetch and ETL results
+		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 	}
 
 	@Override
@@ -112,9 +128,15 @@ public abstract class AdProcessJob extends FortscaleJob {
 			morphline.close();
 		}
 
-		
-		runFinalStep();
 
+		if (resultsId != null) {
+			final String name = jobKey.getName();
+			final String[] splitName = name.split("_");
+			final String dataSource = splitName[0];
+			final String taskName = splitName[1];
+
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName, resultsId, true);
+		}
 	}
 	
 	protected void runFinalStep() throws Exception{
@@ -184,6 +206,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 			numOfLines++;
 			Record record = morphlineProcessLine(line);
 			if(record != null){
+				record.put(runtimeFieldName, runtimeString);
+				record.put(timestampepochFieldName, timestampepoch);
+
 				if(updateDb(record)){
 					counter++;
 				}
@@ -198,7 +223,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			}
 		}
 		
-		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataRecievedType(), new Integer(counter), ""));
+		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataReceivedType(), new Integer(counter), ""));
 		if (reader.HasErrors()) {
 			monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			return false;
@@ -209,8 +234,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 			return true;
 		}
 	}
-	
-	protected abstract String getDataRecievedType();
+
+	protected abstract String getDataReceivedType();
 	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
 	protected abstract boolean updateDb(Record record) throws Exception;
 	

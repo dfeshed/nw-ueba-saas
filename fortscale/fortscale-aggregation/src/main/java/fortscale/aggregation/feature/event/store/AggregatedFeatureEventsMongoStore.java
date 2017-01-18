@@ -8,7 +8,6 @@ import fortscale.utils.MongoStoreUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -126,7 +125,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<String> findDistinctContextsByTimeRange(
+	public Set<String> findDistinctContextsByTimeRange(
 			AggregatedFeatureEventConf aggregatedFeatureEventConf, Date startTime, Date endTime) {
 
 		String aggregatedFeatureName = aggregatedFeatureEventConf.getName();
@@ -137,7 +136,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
         return (getCollectionsNames(aggregatedFeatureName).stream()
                 .flatMap(collectionName -> runDistinctContextQuery(collectionName,query).stream())
-                .collect(Collectors.toSet())).stream().collect(Collectors.toList());
+                .collect(Collectors.toSet())).stream().collect(Collectors.toSet());
 	}
 
 	private List<String> runDistinctContextQuery(String collectionName, Query query) {

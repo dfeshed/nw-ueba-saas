@@ -4,7 +4,6 @@ import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
@@ -15,6 +14,7 @@ import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
 import fortscale.domain.rest.UserFilter;
 import fortscale.domain.rest.UserRestFilter;
+import fortscale.services.ActiveDirectoryService;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
@@ -36,7 +36,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -66,7 +65,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private AdUserRepository adUserRepository;
 
 	@Autowired
-	private AdUserThumbnailRepository adUserThumbnailRepository;
+	private ActiveDirectoryService activeDirectoryService;
 
 	@Autowired
 	private AdGroupRepository adGroupRepository;
@@ -359,10 +358,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.CREATED_AT_FIELD_NAME);
-		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailRepository.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
-		if(adUserThumbnails.size() > 0){
-			ret = adUserThumbnails.get(0).getThumbnailPhoto();
+		final AdUserThumbnail adUserThumbnail = activeDirectoryService.findAdUserThumbnailById(user.getAdInfo().getObjectGUID());
+		if(adUserThumbnail != null){
+			ret = adUserThumbnail.getThumbnailPhoto();
 		} else {
 			serviceMetrics.thumbnailNotFound++;
 		}
@@ -1211,5 +1209,27 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
 
 		return userRepository.updateFollowed(criteriaList, watch);
+	}
+
+
+	/**
+	 * removes tag with name {@code tagName} from field 'tags' of all users (if exists in tags array)
+	 * @param tagName the name of tag to remove
+	 * @return the amount of modified users
+	 */
+    @Override
+    public int removeTagFromAllUsers(String tagName) {
+		return userRepository.updateTagsByFilter(false, Collections.singletonList(tagName), Collections.singletonList(where(User.tagsField).in(tagName)), Collections.singletonList(tagName));
+	}
+
+	@Override
+	public int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score) {
+		int updateCount = 0;
+		try {
+			updateCount = userRepository.updateUserScoreForUsersNotInIdList(userIds, score);
+		}catch (Exception e){
+			logger.error("Error updating user score for {} users not in id list to score {}", userIds.size(), score, e);
+		}
+		return updateCount;
 	}
 }

@@ -4,11 +4,10 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.apache.commons.codec.binary.Base64;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.naming.NamingEnumeration;
@@ -22,15 +21,18 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
 
-/**
- * Created by Amir Keren on 17/05/2015.
- */
 @DisallowConcurrentExecution
 public class AdFetchJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdFetchJob.class);
 
 	private static final String OUTPUT_TEMP_FILE_SUFFIX = ".part";
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
+
+	@Autowired
+	private AdTaskPersistencyService adTaskPersistencyService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
@@ -43,10 +45,16 @@ public class AdFetchJob extends FortscaleJob {
 	private String filter;
 	private String adFields;
 	private BufferedWriter fileWriter;
+	private String resultsId;
+	private JobKey jobKey;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		jobKey = jobExecutionContext.getJobDetail().getKey();
+
+
 		// get parameters values from the job data map
 		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
 		outputPath = jobDataMapExtension.getJobDataMapStringValue(map, "outputPath");
@@ -54,6 +62,9 @@ public class AdFetchJob extends FortscaleJob {
 		filter = jobDataMapExtension.getJobDataMapStringValue(map, "filter");
 		//AD selected fields
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
+
+		// random generated ID for deployment wizard fetch and ETL results
+		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 	}
 
 	@Override
@@ -71,9 +82,18 @@ public class AdFetchJob extends FortscaleJob {
 		if (!isSucceeded) {
 			return;
 		}
+
+		if (resultsId != null) {
+			final String name = jobKey.getName();
+			final String[] splitName = name.split("_");
+			final String dataSource = splitName[0];
+			final String taskName = splitName[1];
+
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName, resultsId, true);
+		}
 	}
 
-	private boolean prepareSinkFileStep() throws JobExecutionException{
+	private boolean prepareSinkFileStep() throws JobExecutionException {
 		startNewStep("Prepare sink file");
 		logger.debug("creating output file at {}", outputPath);
 		// ensure output path exists
@@ -127,21 +147,34 @@ public class AdFetchJob extends FortscaleJob {
 		return true;
 	}
 
-	private void appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values)
+	private boolean appendAllAttributeElements(BufferedWriter fileWriter, String key, NamingEnumeration<?> values)
 			throws IOException {
+		boolean appendNewLineResult = false;
 		boolean first = true;
 		while (values.hasMoreElements()) {
 			String value = (String)values.nextElement();
-			if (value.contains("\n") || value.contains("\r")) {
-				value = DatatypeConverter.printBase64Binary(value.getBytes());
-			}
-			if (first) {
-				first = false;
-			} else {
+			if (!first) {
 				fileWriter.append("\n");
 			}
-			fileWriter.append(key).append(": ").append(value);
+			appendSingleAttributeElement(fileWriter, key, value);
+			first = false;
+			appendNewLineResult=true;
 		}
+
+		return appendNewLineResult;
+	}
+
+	private boolean appendSingleAttributeElement(BufferedWriter fileWriter, String key, String value) throws IOException {
+
+		if (value == null)
+			return false;
+
+		if (value.contains("\n") || value.contains("\r")) {
+            value = DatatypeConverter.printBase64Binary(value.getBytes());
+        }
+		fileWriter.append(key).append(": ").append(value);
+		return true;
+
 	}
 
 	private class AdFetchJobHandler implements ActiveDirectoryResultHandler {
@@ -156,8 +189,13 @@ public class AdFetchJob extends FortscaleJob {
 					Attribute atr = index.next();
 					String key = atr.getID();
 					NamingEnumeration<?> values = atr.getAll();
+					boolean elementWritten = false;
+
+					//handle range 0-1499 member attribute (in case that AD group contain mor then 1500 members)
+					if (key.contains("member;"))
+						key = "member";
 					if (key.equals("member")) {
-						appendAllAttributeElements(fileWriter, key, values);
+						elementWritten = appendAllAttributeElements(fileWriter, key, values);
 					} else if (values.hasMoreElements()) {
 						String value;
 						if (key.equals("distinguishedName")) {
@@ -168,15 +206,30 @@ public class AdFetchJob extends FortscaleJob {
 							fileWriter.append("dn: ").append(value);
 							fileWriter.append("\n");
 							fileWriter.append(key).append(": ").append(value);
+							elementWritten=true;
 						} else if (key.equals("objectGUID") || key.equals("objectSid")) {
 							value = DatatypeConverter.printBase64Binary((byte[]) values.nextElement());
 							fileWriter.append(key).append(": ").append(value);
+							elementWritten=true;
+						} else if (key.equals("streetAddress")) {
+							value = (String) values.nextElement();
+							final boolean isPossibleBase64String = !value.isEmpty() && !value.contains(" ") && Base64.isBase64(value);
+							if (isPossibleBase64String) {
+								value = new String(java.util.Base64.getDecoder().decode(value));
+								fileWriter.append(key).append(": ").append(value);
+								elementWritten=true;
+							}
+							else {
+								elementWritten = appendSingleAttributeElement(fileWriter, key, value);
+							}
+
 						} else {
-							appendAllAttributeElements(fileWriter, key, values);
+							elementWritten = appendAllAttributeElements(fileWriter, key, values);
 						}
 
 					}
-					fileWriter.append("\n");
+					if (elementWritten)
+						fileWriter.append("\n");
 				}
 			}
 			fileWriter.append("\n");

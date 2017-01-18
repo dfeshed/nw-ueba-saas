@@ -15,6 +15,7 @@ from automatic_config.common.utils import time_utils, io
 from automatic_config.common.utils.mongo import get_collections_time_boundary
 
 _IGNORE_COLLECTION_ARG = '--ignore_collection'
+_WAIT_FOR_PROCESS_TO_EXIT_IN_SECONDS = 20
 
 
 class _Locker:
@@ -183,11 +184,37 @@ class Runner(object):
             for child_pid in filter(lambda child_pid: child_pid.strip() != '', children_pids.split('\n')):
                 child_pid = int(child_pid)
                 self._logger.info("killing BDP's child process (pid %d)" % child_pid)
-                os.kill(child_pid, signal.SIGTERM)
+                self._kill_process(child_pid)
             if p.poll() is None:
                 self._logger.info('killing BDP (pid %d)' % p.pid)
-                p.kill()
+                self._kill_process(p.pid)
         return kill
+
+    # try to kill process with SIGTERM and waits for proper process shutdown.
+    # if proper shutdown did not happened after a few seconds, brutal kill will be executed (SIGKILL).
+    # And the process may RIP
+    def _kill_process(self, pid):
+        if (self._is_process_running(pid) == True):
+            os.kill(pid, signal.SIGTERM)
+            for i in xrange(_WAIT_FOR_PROCESS_TO_EXIT_IN_SECONDS):
+                if self._is_process_running(pid) == False:
+                    break
+                else:
+                    time.sleep(1)
+        if (self._is_process_running(pid) == True):
+            os.kill(pid, signal.SIGKILL)
+
+    # validates that process with given pid is up and running
+    # returns: False - if not running.
+    def _is_process_running(self,pid):
+        try:
+            os.kill(pid, 0)
+            if (os.path.exists("/proc/%d" % (pid))):
+                return True
+            return False
+        except (IOError,OSError) as err:
+            self._logger.info("proc %d does not exist" % (pid))
+            return False
 
     def _wait_for_log(self, bdp_output_file):
         args = ['tail', '-f', '-n', '0', bdp_output_file]
@@ -276,3 +303,4 @@ def validate_by_polling(logger, progress_cb, is_done_cb, no_progress_timeout, po
             last_progress_time = time.time()
 
     return True
+

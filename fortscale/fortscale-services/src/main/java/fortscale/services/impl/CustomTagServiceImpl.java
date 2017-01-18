@@ -1,7 +1,6 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.Tag;
-import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.services.UserTagService;
@@ -32,15 +31,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Value("${user.list.custom_tags.deletion_symbol:-}")
 	private String deletionSymbol;
 
-	private UserRepository userRepository;
 	private UserService userService;
 	private TagService tagService;
 	private ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper;
 
 	@Autowired
-	public CustomTagServiceImpl(UserRepository userRepository, UserService userService, TagService tagService,
+	public CustomTagServiceImpl(UserService userService, TagService tagService,
 			ActiveDirectoryGroupsHelper activeDirectoryGroupsHelper) {
-		this.userRepository = userRepository;
 		this.userService = userService;
 		this.tagService = tagService;
 		this.activeDirectoryGroupsHelper = activeDirectoryGroupsHelper;
@@ -52,9 +49,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 		boolean warmedUpCache = false;
 		for (Tag tag : tagService.getAllTags()) {
 			logger.info("processing tag - {}", tag.getName());
-			Map<String, Set<String>> tagsToAddToUsers = new HashMap();
-			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap();
-			Set<String> users = new HashSet();
+			Map<String, Set<String>> tagsToAddToUsers = new HashMap<>();
+			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap<>();
+			Set<String> users = new HashSet<>();
 			for (String rule : tag.getRules()) {
 				boolean removeFlag = rule.startsWith(deletionSymbol);
 				String searchTerm = removeFlag ? rule.substring(1) : rule;
@@ -66,13 +63,13 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 						activeDirectoryGroupsHelper.warmUpCache();
 						warmedUpCache = true;
 					}
-					Set<String> groupsToTag = new HashSet(Arrays.asList(searchTerm));
+					Set<String> groupsToTag = new HashSet<>(Arrays.asList(searchTerm));
 					// Extend the group list
 					groupsToTag.addAll(updateGroupsList(groupsToTag));
 					Set<String> subset;
 					Pageable pageable = new PageRequest(0, pageSize);
 					do {
-						subset = userService.findNamesInGroup(new ArrayList(groupsToTag), pageable);
+						subset = userService.findNamesInGroup(new ArrayList<>(groupsToTag), pageable);
 						users.addAll(subset);
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
@@ -82,14 +79,14 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 					Set<String> subset;
 					Pageable pageable = new PageRequest(0, pageSize);
 					do {
-						subset = userService.findNamesInOU(Arrays.asList(searchTerm), pageable);
+						subset = userService.findNamesInOU(Collections.singletonList(searchTerm), pageable);
 						users.addAll(subset);
 						pageable = pageable.next();
 					} while (subset.size() == pageSize);
 				//if regex
 				} else {
 					logger.info("regex rule - {}", rule);
-					users.addAll(userRepository.findByUsernameRegex(searchTerm));
+					users.addAll(userService.findByUsernameRegex(searchTerm));
 				}
 				if (!users.isEmpty()) {
 					if (removeFlag) {
@@ -125,9 +122,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	 */
 	private Set<String> updateGroupsList(Set<String> groupsToTag) {
 		// Set to hold the groups need to be add
-		Set<String> completeGroupList = new HashSet();
+		Set<String> completeGroupList = new HashSet<>();
 		// Set to hold the group to be checked
-		Queue<String> groupsToCheck = new LinkedList();
+		Queue<String> groupsToCheck = new LinkedList<>();
 		// Add all group to list to be checked
 		groupsToCheck.addAll(groupsToTag);
 		// Temp variable to hold the returned data from handler
@@ -150,9 +147,9 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	@Override
 	public void afterPropertiesSet() throws Exception {
 		//add default tags to system
-		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true, true));
-		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true, true));
-		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true, true));
+		tagService.addTag(new Tag(Tag.ADMIN_TAG, WordUtils.capitalize(Tag.ADMIN_TAG), true, true,true));
+		tagService.addTag(new Tag(Tag.EXECUTIVE_TAG, WordUtils.capitalize(Tag.EXECUTIVE_TAG), true, true,true));
+		tagService.addTag(new Tag(Tag.SERVICE_ACCOUNT_TAG, WordUtils.capitalize(Tag.SERVICE_ACCOUNT_TAG), true, true,true));
 	}
 
 	@Override
@@ -171,8 +168,22 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 	}
 
 	@Override
+	public void addUserTagsRegex(String usernameRegex, List<String> tags) throws Exception {
+		final Set<String> usernames = userService.findByUsernameRegex(usernameRegex);
+		for (String username : usernames) {
+			addUserTags(username, tags);
+		}
+	}
+
+	@Override
 	public void removeUserTags(String username, List<String> tags) {
 		userService.updateUserTagList(null, tags, username);
 	}
+
+	@Override
+	public int removeTagFromAllUsers(String tagName) {
+		return userService.removeTagFromAllUsers(tagName);
+	}
+
 
 }

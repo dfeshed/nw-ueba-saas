@@ -135,5 +135,6 @@ public interface UserRepositoryCustom {
 
 	int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags);
 
+    int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score);
 }
 

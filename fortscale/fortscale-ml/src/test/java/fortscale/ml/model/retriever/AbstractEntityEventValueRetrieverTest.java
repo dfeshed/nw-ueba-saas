@@ -1,5 +1,6 @@
 package fortscale.ml.model.retriever;
 
+import com.google.common.collect.Sets;
 import fortscale.common.util.GenericHistogram;
 import fortscale.entity.event.EntityEventConf;
 import fortscale.entity.event.JokerEntityEventData;
@@ -15,7 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.stream.Stream;
@@ -59,8 +59,8 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 				return null;
 			}
 		};
-		GenericHistogram hist = (GenericHistogram) retriever.retrieve(contextIdToRetrieve, new Date());
 
+		GenericHistogram hist = (GenericHistogram)retriever.retrieve(contextIdToRetrieve, new Date()).getData();
 		Assert.assertEquals(3, hist.getTotalCount(), 0.0000001);
 		Assert.assertEquals(2, hist.get(0.5), 0.0000001);
 		Assert.assertEquals(1, hist.get(0.6), 0.0000001);
@@ -77,7 +77,7 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 
 
 		IContextSelector contextSelector = Mockito.mock(EntityEventContextSelector.class);
-		when(contextSelector.getContexts(Mockito.any(Date.class),Mockito.any(Date.class))).thenReturn(Arrays.asList(contextId1, contextId2, contextId3));
+		when(contextSelector.getContexts(Mockito.any(Date.class),Mockito.any(Date.class))).thenReturn(Sets.newHashSet(contextId1, contextId2, contextId3));
 		when(contextSelectorFactoryService.getProduct(Mockito.any(EntityEventContextSelectorConf.class))).thenReturn(contextSelector);
 
 
@@ -110,8 +110,8 @@ public class AbstractEntityEventValueRetrieverTest extends EntityEventValueRetri
 				return null;
 			}
 		};
-		GenericHistogram hist = (GenericHistogram) retriever.retrieve(null, new Date());
 
+		GenericHistogram hist = (GenericHistogram)retriever.retrieve(null, new Date()).getData();
 		Assert.assertEquals(3, hist.getTotalCount(), 0.0000001);
 		Assert.assertEquals(1, hist.get(0.6), 0.0000001);
 		Assert.assertEquals(2, hist.get(0.7), 0.0000001);

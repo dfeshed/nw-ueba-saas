@@ -82,6 +82,7 @@
 		<spring-data-mongodb.version>1.9.3.RELEASE</spring-data-mongodb.version>
 		<spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
 		<spring-data-hadoop.version>2.2.0.RELEASE</spring-data-hadoop.version>
+		<fongo.version>1.6.8</fongo.version>
 		<quartz.version>2.2.1</quartz.version>
 		<perf4j.version>0.9.16</perf4j.version>
 		<jackson.version>2.2.3</jackson.version>
@@ -128,6 +129,11 @@
 		<!-- eclipse plugins versions -->
 
 		<asm-commons.version>5.0.3</asm-commons.version>
+
+
+
+		<commons-codec.version>1.9</commons-codec.version>
+		<h2.version>1.4.193</h2.version>
 	</properties>
 
 	<dependencyManagement>
@@ -191,8 +197,7 @@
 		<dependency>
 			<groupId>com.github.fakemongo</groupId>
 			<artifactId>fongo</artifactId>
-			<version>1.6.8</version>
-			<scope>test</scope>
+			<version>${fongo.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -288,6 +293,16 @@
 		<dependency>
 			<groupId>org.springframework</groupId>
 			<artifactId>spring-webmvc</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-messaging</artifactId>
+			<version>${org.springframework-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-websocket</artifactId>
 			<version>${org.springframework-version}</version>
 		</dependency>
 		<dependency>

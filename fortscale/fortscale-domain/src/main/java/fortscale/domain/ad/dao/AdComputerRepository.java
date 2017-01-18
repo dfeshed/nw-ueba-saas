@@ -1,12 +1,10 @@
 package fortscale.domain.ad.dao;
 
-import java.util.List;
-
+import fortscale.domain.ad.AdComputer;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-import fortscale.domain.ad.AdComputer;
+import java.util.List;
 
-public interface AdComputerRepository extends MongoRepository<AdComputer, String>{
-	public List<AdComputer> findByLastModifiedExists(boolean exists);
-	public long countByTimestampepoch(Long timestampepoch);
+public interface AdComputerRepository extends MongoRepository<AdComputer, String>, AdComputerRepositoryCustom {
+	List<AdComputer> findByLastModifiedExists(boolean exists);
 }

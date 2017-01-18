@@ -1,17 +1,14 @@
 package fortscale.domain.ad;
 
-import java.util.Date;
-
+import fortscale.domain.core.AbstractDocument;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import fortscale.domain.core.AbstractDocument;
+import java.util.Date;
 
-public class AdObject extends AbstractDocument{
-	/**
-	 * 
-	 */
+public class AdObject extends AbstractDocument {
 	private static final long serialVersionUID = 4373713742111586501L;
+
 	public static final String dnField = "distinguishedName";
 	public static final String memberField = "member";
 	public static final String nameField = "name";
@@ -19,7 +16,7 @@ public class AdObject extends AbstractDocument{
 	public static final String timestampepochField = "timestampepoch";
 	public static final String lastModifiedField = "lastModified";
 	public static final String runTimeField = "runtime";
-	
+
 	@Indexed
 	@Field(objectGUIDField)
 	private String objectGUID;
@@ -29,24 +26,19 @@ public class AdObject extends AbstractDocument{
 	@Indexed
 	@Field(dnField)
 	private String distinguishedName;
+
 	@Indexed()
 	@Field(timestampepochField)
 	private Long timestampepoch;
 
 
-    //The ttl for each document is 48 hours
-	@Indexed(unique = false, expireAfterSeconds=60*60*48)
 	@Field(lastModifiedField)
+	@Indexed(unique = false, expireAfterSeconds=60*60*48)
 	private Date lastModified;
 	
 	@Field(runTimeField)
 	private String runtime;
-	
-//	public AdObject(String distinguishedName){
-//		Assert.hasText(distinguishedName);
-//		this.distinguishedName = distinguishedName;
-//	}
-	
+
 	public String getObjectGUID() {
 		return objectGUID;
 	}
@@ -100,6 +92,21 @@ public class AdObject extends AbstractDocument{
 	public void setRuntime(String runtime) {
 		this.runtime = runtime;
 	}
-	
+
+
+	public enum AdObjectType {
+		GROUP("Group"), OU("OU"), USER("User"), COMPUTER("Computer"), USER_THUMBNAIL(USER.displayName + "_" + "Thumbnail");
+
+		private final String displayName;
+
+		AdObjectType(String displayName) {
+			this.displayName = displayName;
+		}
+
+		@Override
+		public String toString() {
+			return displayName;
+		}
+	}
 	
 }

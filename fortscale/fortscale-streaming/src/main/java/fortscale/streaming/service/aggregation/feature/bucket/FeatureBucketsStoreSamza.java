@@ -7,6 +7,7 @@ import fortscale.aggregation.feature.bucket.FeatureBucketConf;
 import fortscale.aggregation.feature.bucket.FeatureBucketsMongoStore;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadata;
 import fortscale.aggregation.feature.bucket.repository.FeatureBucketMetadataRepository;
+import fortscale.aggregation.feature.bucket.state.FeatureBucketStateService;
 import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.utils.logging.Logger;
 import org.apache.samza.config.Config;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
+import java.time.Instant;
 import java.util.*;
 
 import static fortscale.streaming.ConfigUtils.getConfigString;
@@ -37,9 +39,6 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	@Autowired
 	private BucketConfigurationService bucketConfigurationService;
-
-	@Autowired
-	private FeatureBucketsMongoStore featureBucketsMongoStore;
 	
 	@Value("${fortscale.aggregation.feature.bucket.keyvaluedb.retention.in.event.seconds}")
 	private long keyValueDbRetentionInEventSeconds;
@@ -52,10 +51,16 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.threshold.in.event.seconds}")
 	private long storeSyncThresholdInEventSeconds;
+	@Value("${fortscale.aggregation.feature.bucket.store.sync.page.size}")
+	private long storeSyncPageSize;
 	@Value("${fortscale.aggregation.feature.bucket.store.sync.window.in.system.seconds}")
 	private long storeSyncUpdateWindowInSystemSeconds;
+
+	@Autowired
+	private FeatureBucketStateService featureBucketStateService;
 	
-	private long lastSyncSystemEpochTime = 0;
+	private Instant lastSyncSystemEpochTime = Instant.EPOCH;
+
 
 	@SuppressWarnings("unchecked")
 	public FeatureBucketsStoreSamza(ExtendedSamzaTaskContext context) {
@@ -67,8 +72,8 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		Assert.notNull(featureBucketStore);
 	}
 	
-	public void cleanup() throws Exception{
-		syncAll();
+	public void cleanup(boolean forceSync) throws Exception{
+		syncAll(forceSync);
 
 		keyValueDbCleanup();
 	}
@@ -88,50 +93,74 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		}
 	}
 
-	private void syncAll() throws Exception{
-		if(lastSyncSystemEpochTime == 0 || lastSyncSystemEpochTime + storeSyncUpdateWindowInSystemSeconds < System.currentTimeMillis()){
+	private void syncAll(boolean forceSync) throws Exception{
+		Instant now = Instant.now();
+		Instant nextSyncWindowMillis = lastSyncSystemEpochTime.plusSeconds(storeSyncUpdateWindowInSystemSeconds);
+		if(lastSyncSystemEpochTime.equals(Instant.EPOCH) || nextSyncWindowMillis.isBefore(now) || forceSync){
+			logger.info("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
+			lastSyncSystemEpochTime = now;
+
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
-			Map<String, Collection<FeatureBucket>> bucketConfNameToBucketCollectionMap = new HashMap<>();
+			Map<String, List<FeatureBucketMetadata>> featureBucketConfNameToFeatureBucketMetaDataMap = mapFeatureBucketConfNameToFeatureBucketMetadataList(featureBucketMetadataList);
+
 			String errorMsg = "";
 			boolean error = false;
 
-			// Creating collections of buckets to sync per FeatureBucketConf
-			for(FeatureBucketMetadata featureBucketMetadata: featureBucketMetadataList) {
-				String featureBucketConfName = featureBucketMetadata.getFeatureBucketConfName();
-				Collection<FeatureBucket> featureBuckets = bucketConfNameToBucketCollectionMap.get(featureBucketConfName);
-				if (featureBuckets == null) {
-					featureBuckets = new ArrayList<>();
-					bucketConfNameToBucketCollectionMap.put(featureBucketConfName, featureBuckets);
-				}
-				String key = getBucketKey(featureBucketConfName, featureBucketMetadata.getBucketId());
-				FeatureBucket featureBucket = featureBucketStore.get(key);
-				if (featureBucket != null) {
-					if(featureBucket.getId() == null) {
-						featureBuckets.add(featureBucket);
+			for(String featureBucketConfName : featureBucketConfNameToFeatureBucketMetaDataMap.keySet())
+			{
+				ArrayList<FeatureBucket> featureBuckets = new ArrayList<>();
+				FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(featureBucketConfName);
+				for(FeatureBucketMetadata featureBucketMetadata: featureBucketConfNameToFeatureBucketMetaDataMap.get(featureBucketConfName))
+				{
+					String key = getBucketKey(featureBucketConfName, featureBucketMetadata.getBucketId());
+					FeatureBucket featureBucket = featureBucketStore.get(key);
+					if (featureBucket != null) {
+						if(!featureBucket.isFeatureBucketSynced()) {
+							featureBuckets.add(featureBucket);
+						}
+					} else {
+						errorMsg += String.format("\nFailed to sync bucktConfName %s, bucketId %s", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
+						error = true;
 					}
-				} else {
-					errorMsg += String.format("\nFailed to sync bucktConfName %s, bucketId %s", featureBucketMetadata.getFeatureBucketConfName(), featureBucketMetadata.getBucketId());
-					error = true;
+					if (featureBuckets.size() >= storeSyncPageSize) {
+						insertFeatureBuckets(featureBucketConf, featureBuckets);
+						featureBuckets.clear();
+					}
 				}
-			}
-
-			// Bulk Insert Per Collection
-			for(Map.Entry<String, Collection<FeatureBucket>> entry: bucketConfNameToBucketCollectionMap.entrySet()) {
-				FeatureBucketConf featureBucketConf = bucketConfigurationService.getBucketConf(entry.getKey());
-				Collection<FeatureBucket> featureBuckets = entry.getValue();
-
 				insertFeatureBuckets(featureBucketConf, featureBuckets);
 			}
 
-			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime);
+			featureBucketMetadataRepository.updateByIsSyncedFalseAndEndTimeLessThanWithSyncedTrueAndSyncTime(endTimeLt, lastSyncSystemEpochTime.getEpochSecond());
+			featureBucketStateService.updateFeatureBucketState(endTimeLt);
 
 			if(error){
 				logger.error(errorMsg);
 				throw new RuntimeException(errorMsg);
 			}
 		}
+	}
+
+	/**
+	 * Create a map from a feature bucket conf name to all the
+	 * {@link FeatureBucketMetadata} objects contained in the given list.
+	 *
+	 * @param featureBucketMetadataList the given list of {@link FeatureBucketMetadata} objects
+	 * @return {@code Map<String, List<FeatureBucketMetadata>>}
+	 */
+	public Map<String, List<FeatureBucketMetadata>> mapFeatureBucketConfNameToFeatureBucketMetadataList(
+			List<FeatureBucketMetadata> featureBucketMetadataList) {
+
+		Map<String, List<FeatureBucketMetadata>> featureBucketConfNameToMetadataList = new HashMap<>();
+		for (FeatureBucketMetadata metadata : featureBucketMetadataList) {
+			String featureBucketConfName = metadata.getFeatureBucketConfName();
+			if (!featureBucketConfNameToMetadataList.containsKey(featureBucketConfName)) {
+				featureBucketConfNameToMetadataList.put(featureBucketConfName, new LinkedList<>());
+			}
+			featureBucketConfNameToMetadataList.get(featureBucketConfName).add(metadata);
+		}
+		return featureBucketConfNameToMetadataList;
 	}
 
 	@Override
@@ -185,15 +214,11 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 	private void updateFeatureBucket(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception {
 		String key = getBucketKey(featureBucket);
 		featureBucketStore.put(key, featureBucket);
-		if(featureBucket.getId() != null)
-		{
-			featureBucketsMongoStore.storeFeatureBucket(featureBucketConf,featureBucket);
-		}
 	}
 	
 	private void updateFeatureBucketAfterEndTimeReached(FeatureBucketConf featureBucketConf, FeatureBucket featureBucket) throws Exception{
 		super.storeFeatureBucket(featureBucketConf, featureBucket);
-		if(featureBucket.getId() == null){
+		if(!featureBucket.isFeatureBucketSynced()){
 			// At the first time the bucket is stored in mongo it gets an id, so we
 			// need to get the updated bucket with the id and store it in the level db so next time we will update the existing document and not insert new document.
 			featureBucket = super.getFeatureBucket(featureBucketConf, featureBucket.getBucketId());

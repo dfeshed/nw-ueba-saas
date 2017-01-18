@@ -39,7 +39,6 @@ import org.springframework.context.annotation.Configuration;
             "fortscale.utils.servlet",
             "fortscale.utils.splunk",
             "fortscale.utils.syslog",
-            "fortscale.utils.test",
             "fortscale.utils.time" })
 
 public class UtilsLegacyComponentScanConfig {

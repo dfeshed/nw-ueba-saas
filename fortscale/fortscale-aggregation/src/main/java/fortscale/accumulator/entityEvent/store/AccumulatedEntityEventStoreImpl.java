@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.Period;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static fortscale.accumulator.util.AccumulatorStoreUtil.getACMExistingCollections;
 import static fortscale.accumulator.util.AccumulatorStoreUtil.getRetentionTimeInDays;
@@ -119,6 +120,25 @@ public class AccumulatedEntityEventStoreImpl implements AccumulatedEntityEventSt
 
         logger.debug("found {} accumulated events", accumulatedEntityEvents.size());
         return accumulatedEntityEvents;
+    }
+
+    @Override
+    public Set<String> findDistinctContextsByTimeRange(EntityEventConf entityEventConf, Instant startTime, Instant endTime) {
+        String entityEventConfName = entityEventConf.getName();
+        logger.debug("finding distinct contexts by entityEventConfName={} startTime={} endTime={} ",
+                entityEventConfName, startTime, endTime);
+
+        String collectionName = translator.toAcmCollectionName(entityEventConfName);
+        getMetrics(collectionName).selectorCalls++;
+        Query query = new Query();
+        // todo: remove Date.from when https://jira.spring.io/browse/DATAMONGO-1580 is fixed
+        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_START_TIME).gte(Date.from(startTime)));
+        query.addCriteria(where(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_END_TIME).lte(Date.from(endTime)));
+        Set <String> distinctContexts = (Set<String>) mongoTemplate.getCollection(collectionName)
+                .distinct(AccumulatedEntityEvent.ACCUMULATED_ENTITY_EVENT_FIELD_NAME_CONTEXT_ID, query.getQueryObject())
+                .stream().collect(Collectors.toSet());
+        logger.debug("found distinct contexts: {}",Arrays.toString(distinctContexts.toArray()));
+        return distinctContexts;
     }
 
     /**

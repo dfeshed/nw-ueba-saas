@@ -2,7 +2,6 @@ package fortscale.utils.monitoring.stats.impl;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import fortscale.utils.monitoring.stats.StatsMetricsGroupHandler;
-import fortscale.utils.monitoring.stats.StatsMetricsTag;
 import fortscale.utils.monitoring.stats.engine.StatsEngine;
 import fortscale.utils.monitoring.stats.StatsMetricsGroup;
 import fortscale.utils.monitoring.stats.StatsService;
@@ -81,6 +80,9 @@ public class StatsServiceImpl implements StatsService {
     // see ctor doc
     boolean isExternalEnginePushTick;
 
+    // Stats service self metrics
+    StatsServiceSelfMetrics selfMetrics;
+
     /**
      * ctor - creates the stats service and creates the tick thread
      *
@@ -143,6 +145,10 @@ public class StatsServiceImpl implements StatsService {
         this.isExternalMetricUpdateTick   = isExternalMetricUpdateTick;
         this.isExternalEnginePushTick     = isExternalEnginePushTick;
 
+
+        // Create stats self metrics
+        selfMetrics = new StatsServiceSelfMetrics();
+
         // Make sure we have service tags and save them
 
         // Create tick thread if enabled
@@ -163,6 +169,9 @@ public class StatsServiceImpl implements StatsService {
         else {
             logger.info("Stats tick task disabled");
         }
+
+        // Register the self metrics to the stats service
+        selfMetrics.manualRegister(this);
 
     }
 
@@ -203,14 +212,16 @@ public class StatsServiceImpl implements StatsService {
                 metricsGroupHandlersList.add(groupHandler);
             }
 
+            selfMetrics.metricsGroupRegister++;
             return groupHandler;
 
         }
         catch (Exception ex){
-            logger.error("A problem while registering metrics group {} had obscured. Instrumented class is {}",
+            selfMetrics.metricsGroupRegisterError++;
+            logger.error("A problem while registering metrics group {} had occurred. Instrumented class is {}",
                       metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
 
-            String msg = String.format("A problem while registering metrics group %s had obscured. Instrumented class is %s",
+            String msg = String.format("A problem while registering metrics group %s had occurred. Instrumented class is %s",
                                         metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
             throw (new StatsMetricsExceptions.ProblemWhileRegisteringMetricsGroupException(msg, ex));
 
@@ -242,6 +253,7 @@ public class StatsServiceImpl implements StatsService {
 
             // Check no group handler
             if (groupHandler == null) {
+                selfMetrics.metricsGroupUnregisterError++;
                 logger.warn("Failed to unregister StatsMetricsGroup class {} instrumented class{} - null group handler",
                         metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
                 return;
@@ -257,16 +269,24 @@ public class StatsServiceImpl implements StatsService {
 
             // Check attempt to remove non-existing group handler
             if (!found) {
+                selfMetrics.metricsGroupUnregisterError++;
                 logger.warn("Failed to unregister StatsMetricsGroup class {} instrumented class{} - not registered",
                         metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName());
+                return;
             }
+
+            selfMetrics.metricsGroupUnregister++;
+
 
         }
         catch (Exception ex){
-            logger.error("A problem while unregistering metrics group {} had obscured. Instrumented class is {}",
+
+            selfMetrics.metricsGroupUnregisterError++;
+
+            logger.error("A problem while unregistering metrics group {} had occurred. Instrumented class is {}",
                     metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
 
-            String msg = String.format("A problem while unregistering metrics group %s had obscured. Instrumented class is %s",
+            String msg = String.format("A problem while unregistering metrics group %s had occurred. Instrumented class is %s",
                     metricsGroup.getClass().getName(), metricsGroup.getInstrumentedClass().getName() );
             throw (new StatsMetricsExceptions.ProblemWhileRegisteringMetricsGroupException(msg, ex));
 
@@ -285,6 +305,7 @@ public class StatsServiceImpl implements StatsService {
      */
     public void writeMetricsGroupsToEngine(long epochTime){
 
+        selfMetrics.writeMetricsGroupsToEngine++;
         logger.debug("Writing metrics groups to engine. EpochTime is {}", epochTime);
 
         try { // Just in case
@@ -316,6 +337,9 @@ public class StatsServiceImpl implements StatsService {
         }
 
         catch (Exception ex) {
+
+            selfMetrics.writeMetricsGroupsToEngineError++;
+
             logger.error("Unexpected error while writing metrics groups to engine", ex);
         }
     }
@@ -358,10 +382,16 @@ public class StatsServiceImpl implements StatsService {
 
         // Make sure no exceptions are thrown
         try {
+
+            selfMetrics.manualUpdatePush++;
+
             // Call the engine to do the real work
             getStatsEngine().flushMetricsGroupData();
         }
         catch (Exception ex) {
+
+            selfMetrics.manualUpdatePushError++;
+
             logger.error("Got an exception while pushing data to the engine", ex);
         }
 
@@ -376,6 +406,8 @@ public class StatsServiceImpl implements StatsService {
      * @param epoch - time when tick occurred. This epoch as parameter enables easy testing
      */
     public void tick(long epoch) {
+
+        selfMetrics.tick++;
 
         try {
 
@@ -396,6 +428,9 @@ public class StatsServiceImpl implements StatsService {
 
         }
         catch (Exception ex) {
+
+            selfMetrics.tickError++;
+
             logger.error("Ignoring unexpected exception at stats service tick function", ex);
         }
 
@@ -427,6 +462,9 @@ public class StatsServiceImpl implements StatsService {
 
         // If slipped for too long, issue a warning
         if (epoch > expectedMetricsUpdateEpoch + metricsUpdateSlipWarnSeconds) {
+
+            selfMetrics.tickMetricsUpdateSlips++;
+
             logger.warn("Metric update tick slipped for too long {} seconds. Threshold hold is {} seconds",
                         epoch - expectedMetricsUpdateEpoch,
                         metricsUpdateSlipWarnSeconds);
@@ -473,6 +511,9 @@ public class StatsServiceImpl implements StatsService {
 
         // If slipped for too long, issue a warning
         if (epoch > expectedEnginePushEpoch + enginePushSlipWarnSeconds) {
+
+            selfMetrics.tickEnginePushSlips++;
+
             logger.warn("Engine push  tick slipped for too long {} seconds. Threshold hold is {} seconds",
                     epoch - expectedEnginePushEpoch,
                     enginePushSlipWarnSeconds);
@@ -518,5 +559,9 @@ public class StatsServiceImpl implements StatsService {
 
     public HostnameService getHostnameService() {
         return hostnameService;
+    }
+
+    public StatsServiceSelfMetrics getSelfMetrics() {
+        return selfMetrics;
     }
 }

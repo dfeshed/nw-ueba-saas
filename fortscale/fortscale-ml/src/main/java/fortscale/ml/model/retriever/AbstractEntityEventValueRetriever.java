@@ -5,6 +5,8 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.*;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.exceptions.InvalidEntityEventConfNameException;
 import fortscale.ml.model.retriever.metrics.EntityEventValueRetrieverMetrics;
 import fortscale.ml.model.selector.EntityEventContextSelectorConf;
@@ -57,7 +59,7 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime) {
+	public ModelBuilderData retrieve(String contextId, Date endTime) {
 		// If the retrieve is called for building a global model
 		if (contextId == null) {
 			return retrieveUsingContextIds(endTime);
@@ -65,20 +67,27 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 
 		metrics.retrieveWithContextId++;
 		Stream<JokerEntityEventData> jokerEntityEventsData = readJokerEntityEventData(
-				entityEventConf,
-				contextId,
-				getStartTime(endTime),
-				endTime
-		);
+				entityEventConf, contextId, getStartTime(endTime), endTime);
 		GenericHistogram reductionHistogram = new GenericHistogram();
+		final boolean[] noDataInDatabase = {true};
+
 		jokerEntityEventsData.forEach(jokerEntityEventData -> {
-			Double entityEventValue =
-					jokerFunction.calculateEntityEventValue(getJokerAggrEventDataMap(jokerEntityEventData));
+			noDataInDatabase[0] = false;
+			Map<String, JokerAggrEventData> jokerAggrEventDataMap = getJokerAggrEventDataMap(jokerEntityEventData);
+			Double entityEventValue = jokerFunction.calculateEntityEventValue(jokerAggrEventDataMap);
 			// TODO: Retriever functions should be iterated and executed here.
 			reductionHistogram.add(entityEventValue, 1d);
 		});
 
-		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+		if (reductionHistogram.getN() == 0) {
+			if (noDataInDatabase[0]) {
+				return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+			} else {
+				return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+			}
+		} else {
+			return new ModelBuilderData(reductionHistogram);
+		}
 	}
 
 	protected abstract Stream<JokerEntityEventData> readJokerEntityEventData(EntityEventConf entityEventConf,
@@ -86,23 +95,25 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 																			 Date startTime,
 																			 Date endTime);
 
-	private Object retrieveUsingContextIds(Date endTime) {
+	private ModelBuilderData retrieveUsingContextIds(Date endTime) {
 		metrics.retrieveWithNoContextId++;
 		Date startTime = getStartTime(endTime);
-		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(
-				new EntityEventContextSelectorConf(entityEventConf.getName()));
-		List<String> contextIds = contextSelector.getContexts(startTime, endTime);
+		EntityEventContextSelectorConf conf = new EntityEventContextSelectorConf(entityEventConf.getName());
+		IContextSelector contextSelector = contextSelectorFactoryService.getProduct(conf);
+		Set<String> contextIds = contextSelector.getContexts(startTime, endTime);
 		metrics.contextIds++;
 		logger.info("Number of contextIds: " + contextIds.size());
-
 		GenericHistogram reductionHistogram = new GenericHistogram();
+
+		if (contextIds.isEmpty()) {
+			return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
+		}
+
 		for (String contextId : contextIds) {
-			readJokerEntityEventData(
-					entityEventConf, contextId, startTime, endTime).
-					mapToDouble(jokerEntityEventData -> {
+			readJokerEntityEventData(entityEventConf, contextId, startTime, endTime)
+					.mapToDouble(jokerEntityEventData -> {
 						metrics.entityEventsData++;
-						return jokerFunction.calculateEntityEventValue(
-								getJokerAggrEventDataMap(jokerEntityEventData));
+						return jokerFunction.calculateEntityEventValue(getJokerAggrEventDataMap(jokerEntityEventData));
 					})
 					.max()
 					.ifPresent(maxEntityEventValue -> {
@@ -111,11 +122,15 @@ public abstract class AbstractEntityEventValueRetriever extends AbstractDataRetr
 					});
 		}
 
-		return reductionHistogram.getN() > 0 ? reductionHistogram : null;
+		if (reductionHistogram.getN() == 0) {
+			return new ModelBuilderData(NoDataReason.ALL_DATA_FILTERED);
+		} else {
+			return new ModelBuilderData(reductionHistogram);
+		}
 	}
 
 	@Override
-	public Object retrieve(String contextId, Date endTime, Feature feature) {
+	public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
 		throw new UnsupportedOperationException(String.format(
 				"%s does not support retrieval of a single feature",
 				getClass().getSimpleName()));
