@@ -26,7 +26,7 @@ test('The Search Result component appears in the DOM', function(assert) {
   assert.equal(this.$('.rsa-live-search-results').length, 1, 'The Search Results component\'s class name appears in the DOM');
   assert.equal(this.$('.rsa-data-table-body-row').length, 20, 'The correct number of data table rows are found based on the search result data');
   assert.equal(this.$('.rsa-live-search-results .rsa-data-table-header-cell').length, 6, 'There are six columns (header cells) displayed');
-  assert.equal(this.$('.rsa-form-checkbox-2.checked').length, 0, 'There are no row selection checkboxes checked since there a no selections');
+  assert.equal(this.$('.rsa-form-checkbox.checked').length, 0, 'There are no row selection checkboxes checked since there a no selections');
 });
 
 test('Presence of selections appears as checked resources in the results', function(assert) {
@@ -43,7 +43,7 @@ test('Presence of selections appears as checked resources in the results', funct
   this.on('showDetailsPanel', function() { });
   this.render(hbs`{{rsa-live/search-results showDetailsPanel=(action 'showDetailsPanel')}}`);
 
-  assert.equal(this.$('.rsa-form-checkbox-2.checked').length, 10, '10 rows are selected based on the selection object');
+  assert.equal(this.$('.rsa-form-checkbox.checked').length, 10, '10 rows are selected based on the selection object');
 });
 
 test('Pagination control shows correctly enabled/disabled buttons and message for the first page of results', function(assert) {

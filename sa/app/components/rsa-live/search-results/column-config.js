@@ -4,7 +4,7 @@ export default [
     class: 'rsa-form-row-checkbox',
     width: 18,
     dataType: 'checkbox',
-    componentClass: 'rsa-form-checkbox-2',
+    componentClass: 'rsa-form-checkbox',
     visible: true,
     disableSort: true
   },

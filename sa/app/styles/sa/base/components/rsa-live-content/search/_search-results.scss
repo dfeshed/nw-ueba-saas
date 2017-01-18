@@ -28,7 +28,7 @@
       background-color: rsa-color(blue, base, $rsa-translucent);
       color: rsa-color(white);
 
-      .rsa-form-checkbox-2.checked::after {
+      .rsa-form-checkbox.checked::after {
         color: rsa-color(white);
         font-weight: bold;
       }
@@ -41,7 +41,7 @@
     text-overflow: ellipsis;
     font-weight: 300;
 
-    .rsa-form-checkbox-2 {
+    .rsa-form-checkbox {
       overflow: visible;
     }
   }

@@ -123,7 +123,7 @@ const SearchResults = Component.extend({
       const $eventTarget = this.$(event.target);
 
       // Do not send the action if the checkbox is being selected
-      if (!$eventTarget.is('.rsa-form-checkbox-2')) {
+      if (!$eventTarget.is('.rsa-form-checkbox')) {
         this.send('viewResourceDetails', model);
       }
       return false;
@@ -132,4 +132,3 @@ const SearchResults = Component.extend({
 });
 
 export default connect(stateToComputed, dispatchToActions)(SearchResults);
-
