@@ -4,16 +4,22 @@
     {{rsa-icon name='cog' style='filled'}}
   {{/rsa-content-tethered-panel-trigger}}
 
-  {{#rsa-content-tethered-panel position='left-bottom' panelId='columnSelectorpanel'}}
+  {{#rsa-content-tethered-panel displayCloseButton=false position='left-bottom' panelId='columnSelectorpanel'}}
     <section>
-      {{#each table.sortedColumns as |column|}}
-        {{#if (not-eq column.dataType "checkbox")}}
-          {{rsa-form-checkbox
-            class=(concat 'column-selection-' column.field)
-            value=column.selected
-            label=(t column.title)}}
+      <ul>
+        {{#each table.sortedColumns as |column|}}
+          {{#if (not-eq column.dataType "checkbox")}}
+            <li>
+              <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}}">
+                {{rsa-form-checkbox
+                  checked=column.selected
+                  change=(action 'toggleColumn' column)}}
+                {{t column.title}}
+              </label>
+            </li>
         {{/if}}
       {{/each}}
+      </ul>
     </section>
   {{/rsa-content-tethered-panel}}
 

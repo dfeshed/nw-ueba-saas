@@ -62,5 +62,11 @@ export default Component.extend(HasTableParent, {
   willDestroyElement() {
     this._$row = null;
     this._super(...arguments);
+  },
+
+  actions: {
+    toggleColumn(col) {
+      col.toggleProperty('selected');
+    }
   }
 });

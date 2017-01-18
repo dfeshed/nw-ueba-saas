@@ -28,6 +28,8 @@ export default Component.extend({
 
   timeFormat: service(),
 
+  allIncidentsSelected: false,
+
   // disables the persitance save and restore. Used in tests.
   disablePersistence: false,
 
@@ -195,13 +197,13 @@ export default Component.extend({
    * @type number[]
    * @public
    */
-  @computed()
-  statusList() {
+  @computed('filteredStatuses')
+  statusList(statuses) {
     const statusArray = IncidentConstants.incidentStatusIds.map((statusId) => {
       return EmberObject.extend({
         id: statusId,
         value: emberComputed({
-          get: () => this.get('filteredStatuses').includes(statusId),
+          get: () => statuses.includes(statusId),
           set: (key, value) => {
 
             run.once(() => {
@@ -222,13 +224,13 @@ export default Component.extend({
    *  - value: a computed property used to handle user interaction
    * @public
    */
-  @computed()
-  priorityList() {
+  @computed('filteredPriorities')
+  priorityList(priorities) {
     const priorityArray = IncidentConstants.incidentPriorityIds.map((priorityId) => {
       return EmberObject.extend({
         id: priorityId,
         value: emberComputed({
-          get: () => this.get('filteredPriorities').includes(priorityId),
+          get: () => priorities.includes(priorityId),
           set: (key, value) => {
             run.once(() => {
               this.updateFilterValue('priority', 'filteredPriorities', priorityId, value);
@@ -757,6 +759,24 @@ export default Component.extend({
      */
     onRiskScoreFilterUpdate(values) {
       run.debounce(this, this._filterByRiskScore, values, 200);
+    },
+
+    togglePriority(priority) {
+      priority.toggleProperty('value');
+    },
+
+    toggleStatus(status) {
+      status.toggleProperty('value');
+    },
+
+    toggleAllIncidents(incidents) {
+      if (this.get('allIncidentsSelected')) {
+        incidents.setEach('checked', false);
+      } else {
+        incidents.setEach('checked', true);
+      }
+
+      this.toggleProperty('allIncidentsSelected');
     }
   }
 });

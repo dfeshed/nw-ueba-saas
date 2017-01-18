@@ -57,23 +57,35 @@
       </div>
       <div class="rsa-respond-list__filter-panel__priority">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.fields.priority'}}</div>
-        {{#each priorityList as |priority|}}
-          {{rsa-form-checkbox
-            class=(concat 'priority-' priority.id)
-            value=priority.value
-            isDisabled=isBulkEditInProgress
-            label=(t (concat 'incident.priority.' priority.id))}}
-        {{/each}}
+        <ul>
+          {{#each priorityList as |priority|}}
+            <li>
+              <label class="rsa-form-checkbox-label {{concat 'priority-' priority.id}} {{if isBulkEditInProgress 'disabled'}}">
+                {{rsa-form-checkbox
+                  checked=priority.value
+                  disabled=isBulkEditInProgress
+                  change=(action 'togglePriority' priority)}}
+                {{t (concat 'incident.priority.' priority.id)}}
+              </label>
+            </li>
+          {{/each}}
+        </ul>
       </div>
       <div class="rsa-respond-list__filter-panel__status">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.fields.status'}}</div>
-        {{#each statusList as |status|}}
-          {{rsa-form-checkbox
-            class=(concat 'status-' status.id)
-            value=status.value
-            isDisabled=isBulkEditInProgress
-            label=(t (concat 'incident.status.' status.id))}}
-        {{/each}}
+        <ul>
+          {{#each statusList as |status|}}
+            <li>
+              <label class="rsa-form-checkbox-label {{concat 'status-' status.id}} {{if isBulkEditInProgress 'disabled'}}">
+                {{rsa-form-checkbox
+                  checked=status.value
+                  disabled=isBulkEditInProgress
+                  change=(action 'toggleStatus' status)}}
+                {{t (concat 'incident.status.' status.id)}}
+              </label>
+            </li>
+          {{/each}}
+        </ul>
       </div>
       <div class="rsa-respond-list__filter-panel__sources">
         <div class="rsa-respond-list__filter-panel__title">{{t 'incident.list.sources'}}</div>
@@ -161,7 +173,8 @@
             {{component column.headerComponentClass
               'rsa-data-table/body-cell'
               item=item index=index column=column
-              value=headerCheckbox
+              checked=allIncidentsSelected
+              change=(action 'toggleAllIncidents' allIncidents.results)
               class="js-respond-listview-checkbox-header"
             }}
           {{else}}
@@ -194,8 +207,8 @@
                   item=item
                   index=index
                   column=column
-                  isSelected=item.checked
-                  mouseUp=(action 'toggleCheckBox' item.id)
+                  checked=item.checked
+                  change=(action 'toggleCheckBox' item.id)
                   class=(concat 'js-respond-listview-checkbox js-respond-listview-' item.id)
                 }}
               {{/if}}

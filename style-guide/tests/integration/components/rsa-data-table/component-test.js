@@ -223,7 +223,7 @@ test('Column selector displays available columns', function(assert) {
 
   return wait().then(() => {
     assert.equal(this.$('.rsa-content-tethered-panel .panel-content .rsa-form-checkbox').length, 2, 'Displaying all available columns on column-selector');
-    assert.equal(this.$('.rsa-content-tethered-panel .panel-content .rsa-form-checkbox.is-selected').length, 1, 'Default visible columns are selected by default');
+    assert.equal(this.$('.rsa-content-tethered-panel .panel-content .rsa-form-checkbox.checked').length, 1, 'Default visible columns are selected by default');
   });
 });
 

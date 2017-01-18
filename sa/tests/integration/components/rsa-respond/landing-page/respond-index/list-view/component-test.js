@@ -668,13 +668,13 @@ test('All incients are checked and then unchecked when the header checkbox is to
     categoryTags=categoryTags}}`);
 
   assert.equal(this.$('.rsa-form-row-checkbox').length, this.get('allIncidents.array.length'), 'The proper number of checkboxes was found');
-  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.is-selected').length, 0, 'None of the checkboxes are currently selected.');
+  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.checked').length, 0, 'None of the checkboxes are currently selected.');
 
-  this.$('.js-respond-listview-checkbox-header input').prop('checked', true).trigger('change');
-  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.is-selected').length, this.get('allIncidents.array.length'), 'All of the checkboxes are currently selected.');
+  this.$('input.js-respond-listview-checkbox-header').prop('checked', true).trigger('change');
+  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.checked').length, this.get('allIncidents.array.length'), 'All of the checkboxes are currently selected.');
 
-  this.$('.js-respond-listview-checkbox-header input').prop('checked', false).trigger('change');
-  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.is-selected').length, 0, 'None of the checkboxes are currently selected.');
+  this.$('input.js-respond-listview-checkbox-header').prop('checked', false).trigger('change');
+  assert.equal(this.$('.rsa-form-row-checkbox .rsa-form-checkbox.checked').length, 0, 'None of the checkboxes are currently selected.');
 });
 
 test('When a bulk edit is active, the filter controls are disabled.', function(assert) {
@@ -686,13 +686,13 @@ test('When a bulk edit is active, the filter controls are disabled.', function(a
     categoryTags=categoryTags}}`);
 
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), false, 'The risk score filter component is not disabled.');
-  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority rsa-form-checkbox').hasClass('is-disabled'), false, 'The priority filter component is not disabled.');
-  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status rsa-form-checkbox').hasClass('is-disabled'), false, 'The status filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority .rsa-form-checkbox').hasClass('disabled'), false, 'The priority filter component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status .rsa-form-checkbox').hasClass('disabled'), false, 'The status filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').length, 1, 'The source selector filter component is not disabled.');
   assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee-selector').length, 1, 'The assignee selector filter component is not disabled.');
-  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-tag-manager').hasClass('is-disabled'), false, 'The form tag manager component is not disabled.');
+  assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-tag-manager').hasClass('.is-disabled'), false, 'The form tag manager component is not disabled.');
 
-  this.$('.js-respond-listview-checkbox-header input').prop('checked', true).trigger('change');
+  this.$('input.js-respond-listview-checkbox-header').prop('checked', true).trigger('change');
 
   wait().then(() => {
     clickTrigger('.rsa-form-assignee-select');
@@ -700,8 +700,8 @@ test('When a bulk edit is active, the filter controls are disabled.', function(a
 
     wait().then(() => {
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-form-slider').hasClass('is-disabled'), true, 'The risk score filter component is disabled.');
-      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority .rsa-form-checkbox').hasClass('is-disabled'), true, 'The priority filter component is disabled.');
-      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status .rsa-form-checkbox').hasClass('is-disabled'), true, 'The status filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__priority .rsa-form-checkbox').hasClass('disabled'), true, 'The priority filter component is disabled.');
+      assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__status .rsa-form-checkbox').hasClass('disabled'), true, 'The status filter component is disabled.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__sources .empty-selection').length, 1, 'The source selector placeholder is present.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__source-selector').length, 0, 'The source selector is not present.');
       assert.equal(this.$('.rsa-respond-list__filter-panel .rsa-respond-list__filter-panel__assignee .empty-selection').length, 1, 'The assignee selector placeholder is present.');

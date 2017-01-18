@@ -11,7 +11,7 @@
     {{#rsa-data-table/header as |column index|}}
       {{#if column.isCheckboxColumn}}
         {{#if hasMultipleSessionFiles}}
-          {{rsa-form-checkbox trackOwnValue=false value=allSelected click=(action "toggleAll")}}
+          {{rsa-form-checkbox checked=allSelected change=(action "toggleAll")}}
         {{/if}}
       {{else}}
         {{t column.title}}
@@ -23,7 +23,7 @@
       {{#rsa-data-table/body-cell columnWidth=column.width}}
         {{#if column.isCheckboxColumn}}
           {{#unless (eq item.type "link")}}
-            {{rsa-form-checkbox trackOwnValue=false value=item.selected click=(action "toggleOne" item.id)}}
+            {{rsa-form-checkbox checked=item.selected change=(action "toggleOne" item.id)}}
           {{/unless}}
         {{else if (eq column.field "hashes")}}
           {{#if (eq item.type "link")}}

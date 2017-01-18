@@ -89,18 +89,14 @@ const FileReconComponent = Component.extend({
   @gt('sessionFiles.length', 1) hasMultipleSessionFiles: null,
 
   actions: {
-    toggleAll(e) {
-      // get click events on span and input
-      // only want input
-      if (e.target.tagName === 'INPUT') {
-        if (this.get('allSelected')) {
-          this.send('selectAllFiles');
-        } else {
-          this.send('deselectAllFiles');
-        }
-
-        this.toggleProperty('allSelected');
+    toggleAll() {
+      if (this.get('allSelected')) {
+        this.send('selectAllFiles');
+      } else {
+        this.send('deselectAllFiles');
       }
+
+      this.toggleProperty('allSelected');
     },
 
     toggleOne(id, e) {

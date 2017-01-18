@@ -6,16 +6,16 @@
   <div class="scroll-box">
     {{#spec-category title="States"}}
       {{#spec-member title="Default"}}
-        <label class="rsa-form-checkbox-2-label">
-          {{rsa-form-checkbox-2
+        <label class="rsa-form-checkbox-label">
+          {{rsa-form-checkbox
           checked=isChecked
           change=(action 'toggleIsChecked')}}
           Input Label
         </label>
 
         {{!-- BEGIN-SNIPPET checkbox1
-        <label class="rsa-form-checkbox-2-label">
-          {{rsa-form-checkbox-2
+        <label class="rsa-form-checkbox-label">
+          {{rsa-form-checkbox
           checked=isChecked
           change=(action 'toggleIsChecked')}}
           Input Label
@@ -25,16 +25,16 @@
       {{/spec-member}}
 
       {{#spec-member title="Disabled"}}
-        <label class="rsa-form-checkbox-2-label {{if true 'disabled'}}">
-          {{rsa-form-checkbox-2
+        <label class="rsa-form-checkbox-label {{if true 'disabled'}}">
+          {{rsa-form-checkbox
           checked=isChecked
           disabled=true
           change=(action 'toggleIsChecked')}}
           Input Label
         </label>
         {{!-- BEGIN-SNIPPET checkbox3
-        <label class="rsa-form-checkbox-2-label {{if true 'disabled'}}">
-          {{rsa-form-checkbox-2
+        <label class="rsa-form-checkbox-label {{if true 'disabled'}}">
+          {{rsa-form-checkbox
           checked=isChecked
           disabled=true
           change=(action 'toggleIsChecked')}}
@@ -45,16 +45,16 @@
       {{/spec-member}}
 
       {{#spec-member title="Error"}}
-        <label class="rsa-form-checkbox-2-label {{if true 'error'}}">
-          {{rsa-form-checkbox-2
+        <label class="rsa-form-checkbox-label {{if true 'error'}}">
+          {{rsa-form-checkbox
           checked=isChecked
           error=true
           change=(action 'toggleIsChecked')}}
           Input Label
         </label>
         {{!-- BEGIN-SNIPPET checkbox4
-        <label class="rsa-form-checkbox-2-label {{if true 'error'}}">
-          {{rsa-form-checkbox-2
+        <label class="rsa-form-checkbox-label {{if true 'error'}}">
+          {{rsa-form-checkbox
           checked=isChecked
           error=true
           change=(action 'toggleIsChecked')}}

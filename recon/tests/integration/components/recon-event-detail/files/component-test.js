@@ -41,11 +41,11 @@ test('with 4 non-linked files + 1 linked file, 5 checkboxes total, has one in he
 test('clicking top checkbox clicks them all', function(assert) {
   new DataHelper(this.get('redux')).populateFiles();
   this.render(hbs`{{recon-event-detail/files}}`);
-  assert.equal(this.$('.is-selected').length, 0);
+  assert.equal(this.$('input.checked').length, 0);
   return wait().then(() => {
     this.$('input').first().click();
     return wait().then(() => {
-      assert.equal(this.$('.is-selected').length, 5);
+      assert.equal(this.$('input.checked').length, 5);
     });
   });
 });
