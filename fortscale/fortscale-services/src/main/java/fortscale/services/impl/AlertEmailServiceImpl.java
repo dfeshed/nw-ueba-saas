@@ -158,7 +158,7 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		allSeverities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
 		attachmentsMap.put(SHADOW_CID, shadowImage);
 		DateTime now = new DateTime();
-		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
+		String date = getDateAsString(now);
 		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), date);
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration) {
@@ -167,12 +167,17 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				try {
 					emailService.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,
 							true);
+					logger.info("Alert - {} -  forward using email at {}",alert.toString(false), getDateAsString(new DateTime()));
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
 				}
 			}
 		}
+	}
+
+	private String getDateAsString(DateTime date){
+		return date.toString("MMMM") + " " + date.getDayOfMonth() + ", " + date.getYear();
 	}
 
 	/**
