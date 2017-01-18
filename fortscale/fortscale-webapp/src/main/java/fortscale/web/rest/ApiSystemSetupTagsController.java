@@ -14,6 +14,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,6 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ApiSystemSetupTagsController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
+    public static final String CHARS_TO_REMOVE_FROM_TAG_RULE = "\n";
 
     private String COLLECTION_TARGET_DIR;
     private String COLLECTION_USER;
@@ -97,6 +99,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     public ResponseEntity<ResponseEntityMessage> updateTags(@RequestBody @Valid List<Tag> tags) {
         logger.info("Updating {} tags", tags.size());
         for (Tag tag: tags) {
+            tag.setRules(sanitizeRules(tag.getRules()));
             if (!tagService.updateTag(tag)) {
                 return new ResponseEntity<>(new ResponseEntityMessage("failed to update tag"), HttpStatus.INTERNAL_SERVER_ERROR);
                 //if update was successful and tag is no longer active - remove that tag from all users
@@ -108,6 +111,18 @@ public class ApiSystemSetupTagsController extends BaseController {
         return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.ACCEPTED);
     }
 
+    private List<String> sanitizeRules(List<String> rules){
+        List<String> senitizedRules = new ArrayList<>();
+        for (String rule: rules){
+
+            String sanitized = rule.replace(CHARS_TO_REMOVE_FROM_TAG_RULE,"");
+            if (StringUtils.isNotBlank(sanitized)){
+                senitizedRules.add(sanitized);
+            }
+
+        }
+        return senitizedRules;
+    }
 
     /**
      * This method adds/removes tags to/from the users in the users collection
