@@ -127,7 +127,8 @@
         <cxf.version>3.1.0</cxf.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
 		<!-- eclipse plugins versions -->
-
+		<commons-lang3.version>3.5</commons-lang3.version>
+		<commons-lang.version>2.6</commons-lang.version>
 		<asm-commons.version>5.0.3</asm-commons.version>
 
 
@@ -163,6 +164,16 @@
 			<version>${java-lang-config.version}</version>
 			<scope>system</scope>
 			<systemPath>${JAVA_HOME}/lib/tools.jar</systemPath>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>${commons-lang3.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>${commons-lang.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>

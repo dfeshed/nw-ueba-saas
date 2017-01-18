@@ -61,7 +61,6 @@
 		<aspectjweaver.version>1.6.8</aspectjweaver.version>
 		<velocity.version>1.7</velocity.version>
 		<jackson-mapper-asl.version>1.9.12</jackson-mapper-asl.version>
-		<commons-lang3.version>3.1</commons-lang3.version>
 		<open-csv.version>2.3</open-csv.version>
 		<!-- maven plugins versions -->
 		<!--<aspectj-maven-plugin.version>1.5</aspectj-maven-plugin.version>-->
@@ -260,7 +259,6 @@
 		<dependency>
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-lang3</artifactId>
-			<version>${commons-lang3.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.opencsv</groupId>

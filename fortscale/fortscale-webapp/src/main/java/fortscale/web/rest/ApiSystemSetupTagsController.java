@@ -14,7 +14,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,7 +38,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class ApiSystemSetupTagsController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
-    public static final String CHARS_TO_REMOVE_FROM_TAG_RULE = "\n";
+    public static final String CLEAN_TAG_RULE_CHARS_REGEXP = "\n";
 
     private String COLLECTION_TARGET_DIR;
     private String COLLECTION_USER;
@@ -114,12 +114,10 @@ public class ApiSystemSetupTagsController extends BaseController {
     private List<String> sanitizeRules(List<String> rules){
         List<String> senitizedRules = new ArrayList<>();
         for (String rule: rules){
-
-            String sanitized = rule.replace(CHARS_TO_REMOVE_FROM_TAG_RULE,"");
+            String sanitized = StringUtils.removeAll(rule, CLEAN_TAG_RULE_CHARS_REGEXP);
             if (StringUtils.isNotBlank(sanitized)){
                 senitizedRules.add(sanitized);
             }
-
         }
         return senitizedRules;
     }
