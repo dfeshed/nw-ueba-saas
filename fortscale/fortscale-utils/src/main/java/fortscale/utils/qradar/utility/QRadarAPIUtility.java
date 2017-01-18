@@ -5,6 +5,7 @@ import fortscale.utils.qradar.requests.CreateSearchRequest;
 import fortscale.utils.qradar.requests.GenericRequest;
 import fortscale.utils.qradar.requests.SearchInformationRequest;
 import fortscale.utils.qradar.requests.SearchResultRequest;
+import org.apache.commons.httpclient.HttpStatus;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -33,6 +34,7 @@ public class QRadarAPIUtility {
 	private static final int RESPONSE_SUCCESS = 200;
 	private static final int RESPONSE_CREATED = 201;
 	private static final int RESPONSE_DOESNOTEXIST = 404;
+	private static final int RESPONSE_UNAUTHORIZED = HttpStatus.SC_UNAUTHORIZED;
 	private static final int RESPONSE_ALREADYEXISTS = 400;
 	private static final int RESPONSE_INVALIDPARAM = 422;
 	private static final int RESPONSE_ERROR = 500;
@@ -220,10 +222,15 @@ public class QRadarAPIUtility {
 					logger.error("A request parameter is not valid or Search result not " +
 							"found, the search is still in progress.");
 					break;
-				}
-				case RESPONSE_ALREADYEXISTS: {
+				} case RESPONSE_ALREADYEXISTS: {
 					logger.error("The search could not be created, the searchID provided is " +
 							"already in use. Please use a unique SearchID.");
+					break;
+				} case RESPONSE_UNAUTHORIZED:{
+					logger.error("Unauthorized request.");
+					break;
+				} default:{
+					logger.error("Got error from Qradar {}", rspCode);
 					break;
 				}
 			}
