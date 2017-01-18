@@ -51,6 +51,7 @@ export default Component.extend({
       meta: entityType,
       ips: [],
       prefetch: [],
+      liveConnectErrorMessage: null,
       contextData: {
         incidentsData: null,
         alertsData: null,
@@ -122,13 +123,17 @@ export default Component.extend({
       case 'LiveConnect-File':
       case 'LiveConnect-Ip':
       case 'LiveConnect-Domain':
-        contextData.resultList.forEach((obj) => {
-          if (obj && obj.record && obj.record.length > 2) {
-            this._parseLiveConnectData(contextData.dataSourceType, obj.record);
-          } else {
-            set(this.get('model').contextData, 'liveConnectData', null);
-          }
-        });
+        if (contextData.failed) {
+          set(this.get('model'), 'liveConnectErrorMessage', contextData.errorMessage);
+        } else {
+          contextData.resultList.forEach((obj) => {
+            if (obj && obj.record && obj.record.length > 2) {
+              this._parseLiveConnectData(contextData.dataSourceType, obj.record);
+            } else {
+              set(this.get('model').contextData, 'liveConnectData', null);
+            }
+          });
+        }
         break;
       default:
         set(this.get('model').contextData, contextData.dataSourceGroup, contextData.resultList);

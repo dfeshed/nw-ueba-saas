@@ -356,6 +356,10 @@ export default[{
       field: 'Lists',
       title: 'context.header.lists',
       dataSourceType: 'LIST'
+    },
+    {
+      field: 'liveConnect',
+      title: 'context.header.liveConnect'
     }
   ],
 
@@ -375,10 +379,6 @@ export default[{
     {
       field: 'Add To List',
       title: 'context.toolbar.addToList'
-    },
-    {
-      field: 'liveConnect',
-      title: 'context.header.liveConnect'
     }
   ]
 }

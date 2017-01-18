@@ -1183,8 +1183,8 @@
     "datasourceId": "57c149bfe4b0e8a1f1769a40",
     "currentPageId": 0,
     "pagingEnabled": "False",
-    "failed": "False",
-    "errorMessage": "None",
+    "failed": false,
+    "errorMessage": "Connection Exception occurred. ",
     "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
     "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
     "maxPages": 0
@@ -1486,8 +1486,8 @@
     "datasourceId": "57c149bfe4b0e8a1f1769a40",
     "currentPageId": 0,
     "pagingEnabled": "False",
-    "failed": "False",
-    "errorMessage": "None",
+    "failed": true,
+    "errorMessage": "Connection Exception occurred. ",
     "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
     "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
     "maxPages": 0
@@ -1789,8 +1789,8 @@
     "datasourceId": "57c149bfe4b0e8a1f1769a40",
     "currentPageId": 0,
     "pagingEnabled": "False",
-    "failed": "False",
-    "errorMessage": "None",
+    "failed": false,
+    "errorMessage": "Connection Exception occurred. ",
     "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
     "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
     "maxPages": 0

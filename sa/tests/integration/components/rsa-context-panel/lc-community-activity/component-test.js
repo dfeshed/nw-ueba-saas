@@ -132,22 +132,10 @@ test('it renders correctly with the correct number of expected elements', functi
   this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags  allReasons=allReasons}}`);
 
   assert.equal(this.$('.rsa-context-panel__liveconnect__reviewstatus__col-1').length, 1, 'review status element exists.');
-  assert.equal(this.$('.rsa-form-radio-group-label').length, 2, 'Radio group label elements present');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity__desc').length, 4, 'Community Activity description element exists');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity').length, 1, 'Community Activity element exists');
   assert.equal(this.$('.rsa-content-section-header').length, 4, 'Correct number of section header elements found');
   assert.equal(this.$('.rsa-content-datetime').length, 2, 'Correct number of rsa-content-datetime elements found');
-
-});
-
-test('Radio button,Button and Drop down renders correctly', function(assert) {
-  this.set('liveConnectData', liveConnectData);
-  this.set('allTags', allTags);
-  this.set('allReasons', allReasons);
-  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags allReasons=allReasons}}`);
-
-  assert.equal(this.$('.rsa-form-radio-label').length, 6, 'Correct number of Radio group inputs is present');
-  assert.equal(this.$('.rsa-form-button').length, 1, 'Submit button exists');
 
 });
 

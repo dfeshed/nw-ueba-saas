@@ -5,87 +5,20 @@
 {{else if liveConnectData}}
 
   {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.reviewStatus'}}{{/rsa-content-section-header}}
-
-  <grid class="rsa-context-panel__liveconnect__reviewstatus" fill>
-    <vbox class="rsa-context-panel__liveconnect__reviewstatus__col-1">
-      <div class="rsa-context-panel__liveconnect__field">
-        {{rsa-content-definition label=(t 'context.lc.status') value=liveConnectData.feedback.status}}
-      </div>
-      <div class="rsa-context-panel__liveconnect__field">
-        <vbox>
-          {{rsa-content-definition label=(t 'context.lc.modifiedDate')}}
-          {{rsa-content-datetime timestamp=liveConnectData.feedback.dateMarked}}
-        </vbox>
-      </div>
-      <div class="rsa-context-panel__liveconnect__field">
-        {{rsa-content-definition label=(t 'context.lc.reviewer') value='##Tony##'}}
-      </div>
-    </vbox>
-    <vbox fill class="rsa-context-panel__liveconnect__reviewstatus__col-2">
-      <div class='rsa-form-radio-group' class="rsa-context-panel__liveconnect__field">
-        <h4 class='rsa-form-radio-group-label'>{{t 'context.lc.riskConfirmation'}}</h4>
-        <label class="rsa-form-radio-label">
-          {{radio-button
-            value="safe"
-            groupValue=baz
-            changed=""}}
-          {{t 'context.lc.safe'}}
-        </label>
-        <label class="rsa-form-radio-label">
-          {{radio-button
-            value="unsafe"
-            groupValue=baz
-            changed=""}}
-          {{t 'context.lc.unsafe'}}
-        </label>
-        <label class="rsa-form-radio-label">
-          {{radio-button
-            value="unknown"
-            groupValue=baz
-            changed=""}}
-          {{t 'context.lc.unknown'}}
-        </label>
-      </div>
-
-      <div class='rsa-form-radio-group' class="rsa-context-panel__liveconnect__field">
-        <h4 class='rsa-form-radio-group-label'>{{t 'context.lc.confidenceStatus'}}</h4>
-        <label class="rsa-form-radio-label">
-          {{radio-button
-            value="high"
-            groupValue=baz
-            changed=""}}
-          {{t 'context.lc.high'}}
-        </label>
-        <label class="rsa-form-radio-label">
-          {{radio-button
-            value="medium"
-            groupValue=baz
-            changed=""}}
-          {{t 'context.lc.med'}}
-        </label>
-        <label class="rsa-form-radio-label">
-          {{radio-button
-            value="low"
-            groupValue=baz
-            changed=""}}
-          {{t 'context.lc.low'}}
-        </label>
-      </div>
-    </vbox>
-    <vbox class="rsa-context-panel__liveconnect__reviewstatus__col-3">
-      <div class="rsa-context-panel__liveconnect__field">
-        {{!TODO: put in a real power-select here}}
-        <label>
-          {{t 'context.lc.riskTags'}}
-        </label>
-      </div>
-    </vbox>
-    <vbox class="rsa-context-panel__liveconnect__reviewstatus__col-5">
-      <div class="rsa-context-panel__liveconnect__field">
-        {{#rsa-form-button style='primary'}}{{t 'context.lc.submit'}}{{/rsa-form-button}}
-      </div>
-    </vbox>
-  </grid>
+  <hbox class="rsa-context-panel__liveconnect__reviewstatus__col-1">
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.status') value=liveConnectData.feedback.status}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.reviewer') value='##Tony##'}}
+    </div>
+    <div class="rsa-context-panel__liveconnect__field">
+      <vbox>
+        {{rsa-content-definition label=(t 'context.lc.modifiedDate')}}
+        {{rsa-content-datetime timestamp=liveConnectData.feedback.dateMarked}}
+      </vbox>
+    </div>
+  </hbox>
 
   {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskAssessment'}}{{/rsa-content-section-header}}
   <hbox>
@@ -98,8 +31,36 @@
       {{/each}}
     </vbox>
   </hbox>
-  {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.commActivity'}}{{/rsa-content-section-header}}
+  {{#rsa-content-section-header label='Section Heading'}}
+    {{t 'context.lc.riskIndicators'}}
+  {{/rsa-content-section-header}}
+  <hbox class="rsa-context-panel__liveconnect__risk-indicators">
+    {{#each riskIndicatorCategories as |category|}}
+      <vbox class="rsa-context-panel__liveconnect__risk-indicators__category-panel">
+        <span class="rsa-context-panel__liveconnect__risk-indicators__category-panel__cat-header">
+          {{category.categoryText}}
+        </span>
+        <hbox class="rsa-context-panel__liveconnect__risk-indicators__tags-panel">
+          <div>
+            {{#each category.tags as |tag|}}
+              {{#if tag.highlight}}
+                {{#rsa-content-tethered-panel-trigger panel=tag.value}}
+                  {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
+                {{/rsa-content-tethered-panel-trigger}}
+                {{#rsa-content-tethered-panel position='top-left' panelId=tag.value}}
+                  <section>{{tag.description}}</section>
+                {{/rsa-content-tethered-panel}}
+              {{else}}
+                {{rsa-content-label label=tag.nameText isDisabled=true class="js-test-risk-indicator-tag disabled"}}
+              {{/if}}
+            {{/each}}
+          </div>
+        </hbox>
+      </vbox>
+    {{/each}}
+  </hbox>
 
+  {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.commActivity'}}{{/rsa-content-section-header}}
   <div class="rsa-context-panel__liveconnect__comm-activity">
     <hbox fill>
       <vbox class="rsa-context-panel__liveconnect__field">
@@ -154,36 +115,6 @@
       </vbox>
     </hbox>
   </div>
-
-  {{#rsa-content-section-header label='Section Heading'}}
-    {{t 'context.lc.riskIndicators'}}
-  {{/rsa-content-section-header}}
-
-  <hbox class="rsa-context-panel__liveconnect__risk-indicators">
-    {{#each riskIndicatorCategories as |category|}}
-      <vbox class="rsa-context-panel__liveconnect__risk-indicators__category-panel">
-        <span class="rsa-context-panel__liveconnect__risk-indicators__category-panel__cat-header">
-          {{category.categoryText}}
-        </span>
-        <hbox class="rsa-context-panel__liveconnect__risk-indicators__tags-panel">
-          <div>
-            {{#each category.tags as |tag|}}
-              {{#if tag.highlight}}
-                {{#rsa-content-tethered-panel-trigger panel=tag.value}}
-                  {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
-                {{/rsa-content-tethered-panel-trigger}}
-                {{#rsa-content-tethered-panel position='top-left' panelId=tag.value}}
-                  <section>{{tag.description}}</section>
-                {{/rsa-content-tethered-panel}}
-              {{else}}
-                {{rsa-content-label label=tag.nameText isDisabled=true class="js-test-risk-indicator-tag disabled"}}
-              {{/if}}
-            {{/each}}
-          </div>
-        </hbox>
-      </vbox>
-    {{/each}}
-  </hbox>
 {{else}}
   {{#rsa-content-section-header label='Section Heading'}}No data from Live Connect{{/rsa-content-section-header}}
 {{/if}}

@@ -321,14 +321,15 @@ export default {
       whoisEmail: 'Email',
       domain: 'Domain',
       ipAddress: 'IP Address',
-      error: 'Error fetching Live Connect Data',
+      errorMsg: 'Error occurred while fetching Live Connect data: ',
       riskAssessment: 'Live Connect Risk Assessment',
       riskReason: 'Risk Reasons',
       highRiskDesc: 'Indicator seen as high risk and deserves focused attention',
       safeRiskDesc: 'Research and analysis shows indicators to be trusted resources',
       unsafeRiskDesc: 'Research and analysis shows resource to be untrusted',
       unknownRiskDesc: 'Inconclusive results from any available information, research, and analysis',
-      suspiciousRiskDesc: 'Research and analysis indicates potentially threatening activity'
+      suspiciousRiskDesc: 'Research and analysis indicates potentially threatening activity',
+      riskFeedback: 'Risk Assessment Feedback'
     },
     footer: {
       viewAll: 'VIEW All'
