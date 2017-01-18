@@ -157,9 +157,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		//remove the unused severities from the attachments map
 		allSeverities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
 		attachmentsMap.put(SHADOW_CID, shadowImage);
-		DateTime now = new DateTime();
-		String date = getDateAsString(now);
-		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), date);
+		String dateAsString = getDateAsString(new DateTime(alert.getStartDate()));
+		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), dateAsString);
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration) {
 			NewAlert newAlert = emailGroup.getNewAlert();
