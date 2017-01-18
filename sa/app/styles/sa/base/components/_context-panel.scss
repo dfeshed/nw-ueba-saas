@@ -40,7 +40,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     background-color: rsa-color(gray, darker);
   }
 
-  &__ecat, &__context-data-table {
+  &__endpoint, &__context-data-table {
     color: $font-fade-color;
     height: 100%;
     width: -webkit-calc(100% - (4px));

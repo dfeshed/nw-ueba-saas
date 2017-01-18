@@ -9,15 +9,14 @@ const {
 } = Ember;
 
 export default Component.extend({
-  classNames: 'rsa-context-panel__ecat',
+  classNames: 'rsa-context-panel__endpoint',
 
-  ecatData: null,
+  endpointData: null,
 
-  @computed('ecatData.iioc')
+  @computed('endpointData.iioc')
   iiocs: (iioc) => ContextHelper.getIocs(iioc),
 
   modulesColumnListConfig: [].concat(ModuleColumns),
 
   iiocsColumnListConfig: [].concat(IiocColumns)
-
 });

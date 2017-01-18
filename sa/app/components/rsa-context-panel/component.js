@@ -2,7 +2,7 @@ import Ember from 'ember';
 import MultiColumnList from 'sa/context/tree-table';
 import LiveConnect from 'sa/context/live-connect';
 import TabList from 'sa/context/dynamic-tab';
-import ecatColumns from 'sa/context/ecat-columns';
+import endpointColumns from 'sa/context/endpoint-columns';
 import imColumns from 'sa/context/im-columns';
 
 const {
@@ -30,7 +30,7 @@ export default Component.extend({
   model: null,
   contextData: null,
 
-  contextColumnsConfig: ecatColumns.concat(imColumns),
+  contextColumnsConfig: endpointColumns.concat(imColumns),
 
   multicolumn: {
     multiColumnList: MultiColumnList
@@ -55,7 +55,7 @@ export default Component.extend({
       contextData: {
         incidentsData: null,
         alertsData: null,
-        ecatData: null,
+        endpointData: null,
         liveConnectData: LiveConnect.create()
       }
     };

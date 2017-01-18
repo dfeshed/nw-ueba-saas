@@ -1,8 +1,8 @@
 <section class="rsa-context-panel__body">
   {{#if (eq tabdata 'overview')}}
-    {{rsa-context-panel/ecat
-      ecatData=contextData.Machines
-      ecatAdditionalData=contextData.additionalData
+    {{rsa-context-panel/endpoint
+      endpointData=contextData.Machines
+      endpointAdditionalData=contextData.additionalData
     }}
   {{/if}}
   {{#each datasourceList as |columns index|}}
