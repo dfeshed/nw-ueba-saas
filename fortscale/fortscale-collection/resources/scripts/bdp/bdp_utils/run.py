@@ -212,8 +212,8 @@ class Runner(object):
             if (os.path.exists("/proc/%d" % (pid))):
                 return True
             return False
-        except IOError as err:
-            self.logger.error("proc %d does not exist" % (pid))
+        except (IOError,OSError) as err:
+            self._logger.info("proc %d does not exist" % (pid))
             return False
 
     def _wait_for_log(self, bdp_output_file):
@@ -303,3 +303,4 @@ def validate_by_polling(logger, progress_cb, is_done_cb, no_progress_timeout, po
             last_progress_time = time.time()
 
     return True
+
