@@ -115,7 +115,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         List<String> senitizedRules = new ArrayList<>();
         for (String rule: rules){
 
-            String sanitized = rule.replace(CHARS_TO_REMOVE_FROM_TAG_RULE,"");
+            String sanitized = rule.replaceAll(CHARS_TO_REMOVE_FROM_TAG_RULE,"");
             if (StringUtils.isNotBlank(sanitized)){
                 senitizedRules.add(sanitized);
             }
