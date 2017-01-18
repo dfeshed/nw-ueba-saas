@@ -112,16 +112,16 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
     private List<String> sanitizeRules(List<String> rules){
-        List<String> senitizedRules = new ArrayList<>();
+        List<String> sanitizedRules = new ArrayList<>();
         for (String rule: rules){
 
             String sanitized = rule.replaceAll(CHARS_TO_REMOVE_FROM_TAG_RULE,"");
             if (StringUtils.isNotBlank(sanitized)){
-                senitizedRules.add(sanitized);
+                sanitizedRules.add(sanitized);
             }
 
         }
-        return senitizedRules;
+        return sanitizedRules;
     }
 
     /**
