@@ -29,6 +29,12 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     @include rsa-vendor-prefix(flex-grow, 1);
     position: relative;
     overflow: auto;
+
+    .no-results {
+      color: rsa-color(gray);
+      font-style: italic;
+      padding: rsa-whitespace();
+    }
   }
 
   &-body-rows {

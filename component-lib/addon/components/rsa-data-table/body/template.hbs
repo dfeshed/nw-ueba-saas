@@ -15,6 +15,8 @@
       {{yield firstRowItem firstRowIndex column}}
     {{/component}}
 
+  {{else}}
+    <centered class="no-results">{{_noResultsMessage}}</centered>
   {{/if}}
 
   {{!also render each of the items that fit within the current viewport}}

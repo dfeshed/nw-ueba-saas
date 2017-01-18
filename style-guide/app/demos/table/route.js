@@ -60,6 +60,7 @@ export default Route.extend({
       width: 150
     })
   ],
+  emptyItems: [],
   items: [
     EmberObject.create({
       foo: 'Really really really very very long Test Foo 1',

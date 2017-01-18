@@ -97,7 +97,8 @@
         {{code-snippet name="table1c.hbs"}}
 
         <p>
-          In your route, component, or controller you will need to create a configuration for the columns as you normally would, but notice how you can pass width to the column configuration.
+          In your route, component, or controller you will need to create a configuration for the columns as you
+          normally would, but notice how you can pass width to the column configuration.
         </p>
 
         {{!-- BEGIN-SNIPPET table1d
@@ -175,7 +176,8 @@
 
           {{#rsa-data-table/header as |column|}}
             {{#if column.headerComponentClass}}
-              {{component column.headerComponentClass
+              {{component
+                column.headerComponentClass
                 item=item
                 index=index
                 column=column
@@ -188,7 +190,8 @@
           {{#rsa-data-table/body as |item index column|}}
             {{#if column.componentClass}}
               {{#rsa-data-table/body-cell item=item column=column}}
-                {{component column.componentClass
+                {{component
+                  column.componentClass
                   item=item
                   checked=item.checked
                   change=(action 'toggleItemSelection' item)}}
@@ -270,7 +273,8 @@
         {{code-snippet name="table4.hbs"}}
 
         <p>
-          Finally, ensure you have actions in your route, controller, or component to support the actions you set in the template.
+          Finally, ensure you have actions in your route, controller, or component to support the actions you set in the
+          template.
         </p>
 
         {{!-- BEGIN-SNIPPET table6
@@ -298,6 +302,53 @@
       {{/spec-member}}
     {{/spec-category}}
 
+    {{#spec-category title="No Results"}}
+      {{#spec-member title="No Results"}}
+        {{#rsa-data-table
+          items=model.emptyItems
+          columnsConfig=model.columnsWithoutCheckboxConfig
+          onRowClick=(action 'toggleSelectedRow')}}
+
+          {{rsa-data-table/header}}
+
+          {{#rsa-data-table/body
+            noResultsMessage=noResultsMessage as |item index column|}}
+
+            {{#rsa-data-table/body-cell column=column}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+
+        <p>You can pass a custom noResultsMessage to rsa-data-table/body or a default of 'No Results' will be
+          applied.</p>
+
+        {{!-- BEGIN-SNIPPET noResults1
+        {{#rsa-data-table
+          items=model.emptyItems
+          columnsConfig=model.columnsConfig
+          onRowClick=(action 'toggleSelectedRow')}}
+
+          {{rsa-data-table/header}}
+
+          {{!A custom noResultsMessage is passed}}
+          {{#rsa-data-table/body
+            noResultsMessage=noResultsMessage as |item index column|}}
+
+            {{#rsa-data-table/body-cell column=column}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+        END-SNIPPET --}}
+        {{code-snippet name="noResults1.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
+
     {{#spec-category title="Clicking Rows"}}
       {{#spec-member title="Selecting/onRowClick"}}
         {{#rsa-data-table
@@ -318,7 +369,8 @@
         {{/rsa-data-table}}
 
         <p>
-          You can pass onRowClick as a function to call when a row is clicked. It receives item, index, e, and table as params.
+          You can pass onRowClick as a function to call when a row is clicked. It receives item, index, e, and table as
+          params.
           Here we have used onRowClick to fire an action that sets the selectedIndex on the table to highlight the row:
           toggleSelectedRow(item, index, e, table) { table.set('selectedIndex', index); }
         </p>

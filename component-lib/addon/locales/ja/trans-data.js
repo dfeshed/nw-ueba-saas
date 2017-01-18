@@ -13,6 +13,9 @@ export default {
     delete: 'ja_Delete',
     save: 'ja_Save'
   },
+  tables: {
+    noResults: 'ja_No Results'
+  },
   login: {
     username: 'ja_Username',
     password: 'ja_Password',

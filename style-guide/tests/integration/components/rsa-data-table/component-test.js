@@ -263,3 +263,28 @@ test('Column selection affects visible columns on screen', function(assert) {
     });
   });
 });
+
+test('it renders a no results message when items.length === 0.', function(assert) {
+  this.setProperties({
+    items: [],
+    columnsConfig: mockColumnsConfig
+  });
+  this.render(hbs`
+    {{#rsa-data-table lazy=false items=items columnsConfig=columnsConfig}}
+      {{rsa-data-table/header}}
+      {{#rsa-data-table/body noResultsMessage=noResultsMessage as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const rows = this.$('.rsa-data-table-body-row');
+  assert.equal(rows.length, 0, 'Correct number of body-row dom elements found.');
+  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No Results');
+  this.set('noResultsMessage', 'No events found. Your filter criteria did not match any records.');
+  assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No events found. Your filter criteria did not match any records.');
+});

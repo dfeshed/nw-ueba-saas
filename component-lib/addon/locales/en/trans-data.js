@@ -13,6 +13,9 @@ export default {
     delete: 'Delete',
     save: 'Save'
   },
+  tables: {
+    noResults: 'No Results'
+  },
   login: {
     username: 'Username',
     password: 'Password',

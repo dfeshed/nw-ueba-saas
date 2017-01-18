@@ -8,6 +8,8 @@ export default Controller.extend({
 
   allItemsChecked: false,
 
+  noResultsMessage: 'No events found. Your filter criteria did not match any records.',
+
   actions: {
     toggleSelectedRow(item, index, e, table) {
       table.set('selectedIndex', index);
