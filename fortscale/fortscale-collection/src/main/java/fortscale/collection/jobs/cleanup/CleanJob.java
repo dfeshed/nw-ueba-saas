@@ -1,15 +1,15 @@
 package fortscale.collection.jobs.cleanup;
 
 import fortscale.collection.jobs.FortscaleJob;
-import fortscale.utils.cleanup.CleanupDeletionUtil;
-import fortscale.utils.cleanup.CleanupUtil;
 import fortscale.services.cloudera.ClouderaService;
 import fortscale.services.hdfs.HDFSService;
 import fortscale.services.impala.ImpalaService;
 import fortscale.services.kafka.KafkaService;
-import fortscale.utils.logging.Logger;
 import fortscale.services.mongo.MongoService;
 import fortscale.services.store.StoreService;
+import fortscale.utils.cleanup.CleanupDeletionUtil;
+import fortscale.utils.cleanup.CleanupUtil;
+import fortscale.utils.logging.Logger;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -337,10 +337,10 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 */
 	private boolean checkAndStopAllRelevantServices() {
-		boolean collectionServiceStoppedSuccess = checkAndStopService(collectionServiceName, true);
-		boolean streamingServiceStoppedSuccess = checkAndStopService(streamingServiceName, true);
-		boolean kafkaServiceStartedSuccess = checkAndStopService(kafkaServiceName, true);
-		return collectionServiceStoppedSuccess && streamingServiceStoppedSuccess && kafkaServiceStartedSuccess;
+		boolean collectionServiceStoppedSuccess = checkAndStopService(collectionServiceName);
+		boolean streamingServiceStoppedSuccess = checkAndStopService(streamingServiceName);
+		boolean kafkaServiceStopSuccess = checkAndStopService(kafkaServiceName);
+		return collectionServiceStoppedSuccess && streamingServiceStoppedSuccess && kafkaServiceStopSuccess;
 	}
 
 	/***
@@ -617,39 +617,26 @@ public class CleanJob extends FortscaleJob {
 	 *
 	 * @param serviceName
 	 */
-	private boolean checkAndStopService(String serviceName, boolean stopped) {
-		//if service is not started/stopped
-		if (!clouderaService.validateServiceStartedOrStopped(serviceName, stopped)) {
-			if (stopped) {
+	private boolean checkAndStopService(String serviceName) {
+		boolean installed = clouderaService.isInstalled(serviceName);
+		if(!installed) {
+			return false;
+		}
+		//if service is not stopped
+		boolean stopped = clouderaService.isStopped(serviceName);
+		if (!stopped) {
 				logger.info("{} service is not stopped, attempting to stop...", serviceName);
-			} else {
-				logger.info("{} service is not started, attempting to start...", serviceName);
+
+			//try to stop the service
+			stopped = clouderaService.stop(serviceName);
+			if(stopped) {
+				logger.info("{} is down, good!", serviceName);
 			}
-			//try to start/stop the service
-			clouderaService.startOrStopService(serviceName, stopped);
-			//validate if starting/stopping succeeded
-			boolean success = clouderaService.validateServiceStartedOrStopped(serviceName, stopped);
-			if (success) {
-				if (stopped) {
-					logger.info("{} is down, good!", serviceName);
-				} else {
-					logger.info("{} is up, good!", serviceName);
-				}
-			} else {
-				if (stopped) {
-					logger.warn("{} service is not stopped, cleaning might not be performed fully", serviceName);
-				} else {
-					logger.warn("{} service is not started, cleaning might not be performed fully", serviceName);
-				}
+			else {
+				logger.warn("{} service is not stopped, cleaning might not be performed fully", serviceName);
 			}
-			return success;
 		}
-		if (stopped) {
-			logger.info("{} is down, good!", serviceName);
-		} else {
-			logger.info("{} is up, good!", serviceName);
-		}
-		return true;
+		return stopped;
 	}
 
 	/***

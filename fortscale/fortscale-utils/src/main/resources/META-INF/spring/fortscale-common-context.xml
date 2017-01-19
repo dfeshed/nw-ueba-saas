@@ -27,11 +27,6 @@
 
 	<bean id="jadeUtils" class="fortscale.utils.jade.JadeUtils" />
 
-	<bean id="clouderaService" class="fortscale.services.cloudera.ClouderaService" >
-		<constructor-arg name="serverHost" value="${cloudera_manager_host}" />
-		<constructor-arg name="clusterName" value="${cm_cluster_name}" />
-		<constructor-arg name="cmAdminUser" value="${cm_user}" />
-		<constructor-arg name="cmAdminPass" value="${cm_pass}" />
-	</bean>
+	<bean id="clouderaServiceConfig" class="fortscale.services.cloudera.ClouderaServiceConfig" />
 
 </beans>

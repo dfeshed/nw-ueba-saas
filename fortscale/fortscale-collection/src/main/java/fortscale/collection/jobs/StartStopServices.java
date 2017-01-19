@@ -50,7 +50,17 @@ public class StartStopServices extends FortscaleJob {
         }
         for (String service: services) {
             logger.info("{} service {}", action, service);
-            if (clouderaService.startOrStopService(service, isStop)) {
+            boolean sucessfulyPreformed=false;
+            if(action.equals("Start"))
+            {
+                sucessfulyPreformed = clouderaService.start(service);
+            }
+            else
+            {
+                sucessfulyPreformed = clouderaService.stop(service);
+            }
+            if(sucessfulyPreformed)
+            {
                 logger.info("{} {} - successful", action, service);
             } else {
                 logger.error("{} {} - failed", action, service);
