@@ -47,7 +47,6 @@ import java.util.Map;
 @EnableSpringConfigured
 @EnableAnnotationConfiguration
 @EnableWebMvc
-@EnableSwagger2
 //Scan and init all controllers
 @ComponentScan(basePackages = "fortscale.web", useDefaultFilters = false,
         includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
@@ -148,8 +147,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
 
-        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
-        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     /**
