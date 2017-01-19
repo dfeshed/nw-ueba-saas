@@ -19,6 +19,8 @@ import fortscale.web.beans.request.ActiveDirectoryRequest;
 import fortscale.web.services.AdTaskServiceImpl;
 import fortscale.web.tasks.ControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +42,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 
 @Controller
+@Api(value="/api/active_directory", description="This resource manage the system users in the AD",produces = "JSON", protocols = "HTTP,HTTPS")
 @RequestMapping(value = "/api/active_directory")
 public class ApiActiveDirectoryController {
 
@@ -97,6 +100,7 @@ public class ApiActiveDirectoryController {
 	 *
 	 * @return ResponseEntity
 	 */
+	@ApiOperation(value = "Update list of active directory requests", response = Void.class)
 	@RequestMapping(method = RequestMethod.POST)
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException
@@ -123,6 +127,7 @@ public class ApiActiveDirectoryController {
 	 *
 	 * @return ResponseEntity
 	 */
+	@ApiOperation(value = "Test the authentication", response = AuthenticationTestResult.class)
 	@RequestMapping(method = RequestMethod.POST,value = "/test")
 	@HideSensitiveArgumentsFromLog(sensitivityCondition = LogSensitiveFunctionsAsEnum.APPLICATION_CONFIGURATION)
 	@LogException

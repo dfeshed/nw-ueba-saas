@@ -4,6 +4,7 @@ import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
+import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
 import fortscale.web.exceptions.handlers.RestExceptionHandler;
 import fortscale.web.extensions.FortscaleCustomEditorService;
@@ -13,6 +14,7 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -22,7 +24,15 @@ import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExc
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
 import javax.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,12 +47,13 @@ import java.util.Map;
 @EnableSpringConfigured
 @EnableAnnotationConfiguration
 @EnableWebMvc
+@EnableSwagger2
 //Scan and init all controllers
 @ComponentScan(basePackages = "fortscale.web", useDefaultFilters = false,
         includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
 )
 @ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
-@Import({GlobalConfiguration.class, AdTaskConfig.class})
+@Import({GlobalConfiguration.class, AdTaskConfig.class,SwaggerConfig.class})
 //Load properties files:
 @PropertySource({"classpath:META-INF/application-config.properties","classpath:META-INF/entities-overriding.properties","classpath:META-INF/evidence.events.filtering.properties"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
@@ -136,6 +147,9 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .setCachePeriod(cachePeriodConf)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
+
+        registry.addResourceHandler("swagger-ui.html").addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
     }
 
     /**
@@ -159,7 +173,25 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         return new RenamingProcessor(true);
     }
 
+    @Bean
+    public Docket mainConfig(){
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select().apis(RequestHandlerSelectors.basePackage("fortscale.web"))
+                .paths(PathSelectors.any()).build().pathMapping("/api").directModelSubstitute(LocalDate.class, String.class)
+                //.genericModelSubstitutes(ResponseEntity.class, DataBean.class).apiInfo(apiInfo());
+                .genericModelSubstitutes(ResponseEntity.class).apiInfo(apiInfo());
+    }  //@formatter: on
 
+    private ApiInfo apiInfo() {
+        ApiInfo apiInfo = new ApiInfo("Fortscale API",
+                "This is not official API for fortscale data.",
+                "",
+                "Any user of fortscale allow to use the API on his own responsibility",
+                "fortscale@fortscale.com",
+                "Any user of fortscale allow to use the API on his own responsibility",
+                "");
+        return apiInfo;
+    }
 
 
     @Override
@@ -211,6 +243,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         handler.setErrorResolver(resolver);
         return handler;
     }
+
+
+
+
 
     //Use JSON view resolver as the only viewer
     @Override

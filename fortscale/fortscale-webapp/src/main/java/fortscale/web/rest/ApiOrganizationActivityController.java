@@ -57,7 +57,7 @@ public class ApiOrganizationActivityController {
             locationEntries = getLocationEntries(organizationActivityLocationDocuments, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
-            organizationActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            organizationActivityLocationsBean.addWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
             logger.error(errorMessage);
         }
 
