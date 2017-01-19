@@ -58,7 +58,10 @@ def update_configurations():
         if type(config.aggregated_feature_event_prevalance_stats_path) == dict:
             file_names = []
             if os.path.isdir(config.aggregated_feature_event_prevalance_stats_path['overriding_path']):
-                file_names = os.listdir(config.aggregated_feature_event_prevalance_stats_path['overriding_path'])
+                tmp_file_names = os.listdir(config.aggregated_feature_event_prevalance_stats_path['overriding_path'])
+                for file_name in tmp_file_names:
+                    file_names.append(config.aggregated_feature_event_prevalance_stats_path['path_in_jar'] + '/' + file_name)
+
             if len(file_names) == 0:
                 zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' +
                                      config.aggregated_feature_event_prevalance_stats_path['jar_name'], 'r')
