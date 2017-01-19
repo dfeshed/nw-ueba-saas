@@ -27,6 +27,8 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -66,8 +68,9 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         // Getting the last day the aggregation process finished processing
         FeatureBucketState featureBucketState = featureBucketStateService.getFeatureBucketState();
         logger.info("Starting user activity calculation, the state is {}", featureBucketState);
-        if (featureBucketState != null  && featureBucketState.getLastClosedDailyBucketDate() != null){
-            Long endTime = featureBucketState.getLastClosedDailyBucketDate().toEpochMilli();
+        if (featureBucketState != null  && featureBucketState.getLastSyncedEventDate() != null){
+            // Get the date of last closed daily bucket
+            Long endTime = featureBucketState.getLastSyncedEventDate().truncatedTo(ChronoUnit.DAYS).minus(Duration.ofDays(1)).toEpochMilli();
             long startingTime = TimestampUtils.toStartOfDay(TimeUtils.calculateStartingTime(endTime, numOfLastDaysToCalculate));
 
             logger.info("Going to handle {} Activity..", getActivityName());

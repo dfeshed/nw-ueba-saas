@@ -37,21 +37,16 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
 
         FeatureBucketState featureBucketState = getFeatureBucketState();
         Instant lastEventDate = Instant.ofEpochSecond(lastEventEpochtime);
-        Instant lastEventDay = lastEventDate.truncatedTo(ChronoUnit.DAYS);
-        Instant lastClosedDailyBucket = lastEventDay.minus(Duration.ofDays(1));
         boolean shouldSave = true;
 
         // Creating new state object
         if (featureBucketState == null){
-            featureBucketState = new FeatureBucketState(lastClosedDailyBucket, lastEventDate);
+            featureBucketState = new FeatureBucketState(lastEventDate);
         // Updating the last synced date in case that the last event date is after the lst sync date
         }else {
             if (featureBucketState.getLastSyncedEventDate().isBefore(lastEventDate)) {
                 // Updating the lastSyncedEventDate
                 featureBucketState.setLastSyncedEventDate(lastEventDate);
-
-                // Save the previous day as last aggregated day
-                featureBucketState.setLastClosedDailyBucketDate(lastClosedDailyBucket);
 
             // When the last event date is before the last synced date - shouldn't happen
             } else {
@@ -71,7 +66,6 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
                 logger.info("Updated FeatureBucketState mongo collection with {}", savedState);
 
                 metrics.updateFeatureBucketStateSuccess++;
-                metrics.lastClosedDailyBucketDate = savedState.getLastClosedDailyBucketDate().getEpochSecond();
                 metrics.lastSyncedEventDate = savedState.getLastSyncedEventDate().getEpochSecond();
             }
         } catch (Exception e){
