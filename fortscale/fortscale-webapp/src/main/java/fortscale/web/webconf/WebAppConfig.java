@@ -173,27 +173,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         return new RenamingProcessor(true);
     }
 
-    @Bean
-    public Docket mainConfig(){
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select().apis(RequestHandlerSelectors.basePackage("fortscale.web"))
-                .paths(PathSelectors.any()).build().pathMapping("/api").directModelSubstitute(LocalDate.class, String.class)
-                //.genericModelSubstitutes(ResponseEntity.class, DataBean.class).apiInfo(apiInfo());
-                .genericModelSubstitutes(ResponseEntity.class).apiInfo(apiInfo());
-    }  //@formatter: on
-
-    private ApiInfo apiInfo() {
-        ApiInfo apiInfo = new ApiInfo("Fortscale API",
-                "This is not official API for fortscale data.",
-                "",
-                "Any user of fortscale allow to use the API on his own responsibility",
-                "fortscale@fortscale.com",
-                "Any user of fortscale allow to use the API on his own responsibility",
-                "");
-        return apiInfo;
-    }
-
-
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.ignoreUnknownPathExtensions(false).defaultContentType(MediaType.TEXT_HTML);
