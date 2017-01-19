@@ -100,4 +100,13 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
         }
         return featureBucketState;
     }
+
+    @Override
+    public Instant getLastClosedDailyBucketDate() {
+        FeatureBucketState featureBucketState = getFeatureBucketState();
+        if (featureBucketState != null && featureBucketState.getLastSyncedEventDate() != null){
+            return featureBucketState.getLastSyncedEventDate().truncatedTo(ChronoUnit.DAYS).minus(Duration.ofDays(1));
+        }
+        return null;
+    }
 }

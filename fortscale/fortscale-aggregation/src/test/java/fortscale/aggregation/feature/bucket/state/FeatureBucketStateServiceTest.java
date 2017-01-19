@@ -5,6 +5,7 @@ import fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServi
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
 import fortscale.utils.test.mongodb.MongodbTestConfig;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,11 @@ public class FeatureBucketStateServiceTest {
 
     @Autowired
     MongoTemplate mongoTemplate;
+
+    @Before
+    public void beforeMethod(){
+        mongoTemplate.dropCollection(FeatureBucketState.class);
+    }
 
     @Test
     public void testCollectionExists(){
@@ -122,5 +128,25 @@ public class FeatureBucketStateServiceTest {
         Assert.assertNotNull(actual);
         Assert.assertEquals(firstUpdate.getModifiedAt(), actual.getModifiedAt());
         Assert.assertEquals(expected.getLastSyncedEventDate(), actual.getLastSyncedEventDate());
+    }
+
+    @Test
+    public void testGetLastClosedDailyBucket_noData(){
+        Instant lastClosedDailyBucketDate = featureBucketStateService.getLastClosedDailyBucketDate();
+
+        Assert.assertNull(lastClosedDailyBucketDate);
+    }
+
+    @Test
+    public void testGetLastClosedDailyBucket_withData(){
+
+        long time = System.currentTimeMillis()/1000;
+
+        // Updating the date
+        featureBucketStateService.updateFeatureBucketState(time) ;
+        Instant date = Instant.ofEpochSecond(time);
+        Instant lastClosedDailyBucketDate = featureBucketStateService.getLastClosedDailyBucketDate();
+
+        Assert.assertEquals(date.truncatedTo(ChronoUnit.DAYS).minus(Duration.ofDays(1)), lastClosedDailyBucketDate);
     }
 }
