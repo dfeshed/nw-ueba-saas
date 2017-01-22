@@ -1,4 +1,5 @@
 import pymongo
+import re
 
 from data import Data, DataCollection
 from ..utils import mongo
@@ -27,4 +28,4 @@ class MongoDataCollection(DataCollection):
         DataCollection.__init__(self, dir_path, data_class, db)
 
     def _get_all_data_names(self):
-        return filter(lambda name: name.startswith('scored___aggr_event'), mongo.get_all_collection_names(self._db))
+        return filter(lambda name: re.search('^scored___aggr_event__.*(daily|hourly)', name), mongo.get_all_collection_names(self._db))
