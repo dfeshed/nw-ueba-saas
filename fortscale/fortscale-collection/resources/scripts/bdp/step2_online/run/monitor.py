@@ -19,9 +19,9 @@ if __name__ == '__main__':
         user = sys.stdin.readline().strip()
         password = sys.stdin.readline().strip()
     if arguments.start is not None:
-        _run_step2(args)
+        _run_step2(user, password, args)
         i = args.index('--start')
         args.pop(i + 1)
         args.pop(i)
     while True:
-        _run_step2(args)
+        _run_step2(user, password, args)
