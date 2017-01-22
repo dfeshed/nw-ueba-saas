@@ -33,16 +33,13 @@ class _UpdatesManager:
 
 def init_reducers(logger):
     for f in iter_overrides_files(overriding_path=config.aggregated_feature_event_prevalance_stats_path['overriding_path'],
-                                     jar_name=config.aggregated_feature_event_prevalance_stats_path['jar_name'],
-                                     path_in_jar=config.aggregated_feature_event_prevalance_stats_path['path_in_jar']):
-        _init_reducers_conf_file(f, logger)
-    for f in iter_overrides_files(overriding_path=config.aggregated_feature_event_prevalance_stats_path['overriding_path'],
                                       jar_name=config.aggregated_feature_event_prevalance_stats_path['jar_name'],
                                       path_in_jar=config.aggregated_feature_event_prevalance_stats_path['path_in_jar']):
             _init_reducers_conf_file(f, logger)
 
 
 def _init_reducers_conf_file(f, logger):
+    original_to_backup = {}
     scorer_json = json.load(f)
     for scorers_conf in scorer_json['data-source-scorers']:
         if len(scorers_conf['scorers']) != 1:
@@ -56,8 +53,8 @@ def _init_reducers_conf_file(f, logger):
             'min_value_for_not_reduce': reduction_config['minValueForNotReduce']
         }
         reduction_configs[0] = reduction_config
-    logger.info('updating scorer reduction of ' + path + '...')
     path = f.name
+    logger.info('initiating scorer reducing_factor=0.1 of ' + path + '...')
     original_to_backup[path] = backup(path=path) if os.path.isfile(path) else None
     with FileWriter(path) as scorer_confFile:
         json.dump(scorer_json, scorer_confFile, indent=4)

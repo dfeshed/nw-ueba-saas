@@ -35,6 +35,7 @@ class Manager(ModelsCacheOverridingManager):
     _SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED = 'run_scores_after_reducers_and_alphas_and_betas_have_been_calculated'
 
     SUB_STEPS = [
+        _SUB_STEP_RUN_INIT,
         _SUB_STEP_RUN_SCORES,
         _SUB_STEP_BUILD_MODELS,
         _SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME,
