@@ -15,7 +15,7 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common import config
 from automatic_config.common.utils import io
 from automatic_config.common.utils.mongo import get_collections_time_boundary
-from automatic_config.common.results.committer import update_configurations
+from automatic_config.common.results.committer import update_configurations, init_reducers
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
 from automatic_config.alphas_and_betas import main as weights_main
@@ -25,6 +25,7 @@ logger = logging.getLogger('step3')
 
 
 class Manager(ModelsCacheOverridingManager):
+    _SUB_STEP_RUN_INIT = 'run_init'
     _SUB_STEP_RUN_SCORES = 'run_scores'
     _SUB_STEP_BUILD_MODELS = 'build_models'
     _SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME = 'cleanup_and_move_models_back_in_time'
@@ -73,6 +74,7 @@ class Manager(ModelsCacheOverridingManager):
         end += (-end) % (24 * 60 * 60)
         self._builder.set_start(end).set_end(end)
         for sub_step_name, sub_step in [
+            (Manager._SUB_STEP_RUN_INIT, self._run_init),
             (Manager._SUB_STEP_RUN_SCORES, self._run_scores),
             (Manager._SUB_STEP_BUILD_MODELS, self._build_models),
             (Manager._SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME, self._cleanup_and_move_models_back_in_time),
@@ -92,6 +94,10 @@ class Manager(ModelsCacheOverridingManager):
                 logger.info('skipping all the sub-steps to follow')
                 break
         return True
+
+    def _run_init(self):
+        logger.info('initing reducers')
+        init_reducers(logger=logger)
 
     def _run_scores(self):
         kill_process = self._runner.run(overrides_key='step3.scores')
