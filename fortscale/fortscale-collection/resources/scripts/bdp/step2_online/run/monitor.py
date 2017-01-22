@@ -5,8 +5,9 @@ import sys
 from parse import create_parser
 
 
-def _run_step2(args):
-    subprocess.call(['python', os.path.sep.join([os.path.dirname(os.path.abspath(__file__))])] + args)
+def _run_step2(user, password, args):
+    ps_p = subprocess.Popen(['echo', '-e', user + '\n' + password], stdout=subprocess.PIPE)
+    subprocess.call(['python', os.path.sep.join([os.path.dirname(os.path.abspath(__file__))])] + args, stdin=ps_p.stdout)
 
 
 if __name__ == '__main__':
@@ -14,6 +15,9 @@ if __name__ == '__main__':
     # step2_online directly, e.g. printing the usage with "-h"
     arguments = create_parser().parse_args()
     args = sys.argv[1:]
+    if not sys.stdin.isatty():
+        user = sys.stdin.readline().strip()
+        password = sys.stdin.readline().strip()
     if arguments.start is not None:
         _run_step2(args)
         i = args.index('--start')
