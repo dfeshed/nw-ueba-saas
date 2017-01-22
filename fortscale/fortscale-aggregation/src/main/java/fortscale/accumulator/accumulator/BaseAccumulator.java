@@ -62,9 +62,9 @@ public abstract class BaseAccumulator implements Accumulator {
 
     public abstract void accumulateEvents(String featureName, final Instant fromCursor, final Instant toCursor);
 
-    public Instant getDefaultFromPeriod(String feature) {
+    public Instant getDefaultFromPeriod(String feature, Instant to) {
 
-        Instant result = Instant.now();
+        Instant result = to;
         if(feature.endsWith(DAILY_FEATURE_SUFFIX))
         {
             result = result.minus(getAmountOfDaysInPeriod(defaultFromPeriodDaily), ChronoUnit.DAYS);

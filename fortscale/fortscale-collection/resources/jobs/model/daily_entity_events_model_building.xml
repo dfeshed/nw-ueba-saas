@@ -48,7 +48,7 @@
 				<group>Model</group>
 				<job-name>DailyEntityEventsModelBuilding</job-name>
 				<job-group>Model</job-group>
-				<cron-expression>0 0 1 * * ?</cron-expression>
+				<cron-expression>0 0 0/4 * * ?</cron-expression>
 			</cron>
 		</trigger-->
 	</schedule>

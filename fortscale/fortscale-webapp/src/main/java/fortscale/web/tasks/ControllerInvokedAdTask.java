@@ -1,42 +1,49 @@
 package fortscale.web.tasks;
 
-import fortscale.domain.core.ApplicationConfiguration;
+import fortscale.domain.ad.AdObject.AdObjectType;
+import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.impl.AdObjectType;
+import fortscale.services.ad.AdTaskPersistencyService;
+import fortscale.services.ad.AdTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.rest.ApiActiveDirectoryController;
+import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.apache.commons.io.IOUtils;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
-import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.ETL;
-import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType.FETCH;
+import static fortscale.domain.ad.AdTaskType.*;
+
+
 
 public class ControllerInvokedAdTask implements Runnable {
 
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
 
-    private static final String RESULTS_DELIMITER = "=";
-    private static final String RESULTS_KEY_SUCCESS = "success";
-    private static final String THREAD_NAME = "deployment_wizard_fetch_and_etl";
+    protected static final String THREAD_NAME = "system_setup";
+
     private static final String AD_JOB_GROUP = "AD";
-    private static final String RESPONSE_DESTINATION = "/wizard/ad_fetch_etl_response";
 
+    private final String responseDestination;
+    private final ActiveDirectoryService activeDirectoryService;
+    private final AdTaskPersistencyService adTaskPersistencyService;
 
-    private final ApiActiveDirectoryController controller;
-    private ActiveDirectoryService activeDirectoryService;
-    private final ApplicationConfigurationService applicationConfigurationService;
-    private final AdObjectType dataSource;
-    private AdTaskType currentAdTaskType;
+    protected final ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
+    protected SimpMessagingTemplate simpMessagingTemplate;
+    protected final AdObjectType dataSource;
+    protected AdTaskType currentAdTaskType;
+    protected List<ControllerInvokedAdTask> followingTasks = new ArrayList<>();
 
-    public ControllerInvokedAdTask(ApiActiveDirectoryController controller, ActiveDirectoryService activeDirectoryService, ApplicationConfigurationService applicationConfigurationService, AdObjectType dataSource) {
-        this.controller = controller;
+    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, String responseDestination, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
+        this.executorService = executorService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.responseDestination = responseDestination;
         this.activeDirectoryService = activeDirectoryService;
-        this.applicationConfigurationService = applicationConfigurationService;
+        this.adTaskPersistencyService = adTaskPersistencyService;
         this.dataSource = dataSource;
     }
 
@@ -48,30 +55,60 @@ public class ControllerInvokedAdTask implements Runnable {
         return currentAdTaskType;
     }
 
+    public List<ControllerInvokedAdTask> getFollowingTasks() {
+        return Collections.unmodifiableList(followingTasks); //defensive copy
+    }
 
+    public void addFollowingTask(ControllerInvokedAdTask taskToAdd) {
+        followingTasks.add(taskToAdd);
+    }
 
     @Override
     public void run() {
         currentAdTaskType = FETCH;
-        Thread.currentThread().setName(THREAD_NAME + "_" + dataSource);
+        Thread.currentThread().setName(THREAD_NAME + "_" + currentAdTaskType + "_" + dataSource);
 
-        final AdTaskResponse fetchResponse = executeAdTask(FETCH, dataSource);
-        controller.sendTemplateMessage(RESPONSE_DESTINATION, fetchResponse);
-
-        if (!fetchResponse.success) {
-            logger.warn("Fetch phase failed so not executing ETL.");
+        final boolean fetchTaskSucceeded = handleAdTask(currentAdTaskType);
+        if (!fetchTaskSucceeded) {
+            logger.error("ETL phase for data source {} has been cancelled since Fetch phase has failed.", dataSource);
             return;
         }
 
         currentAdTaskType = ETL;
-        final AdTaskResponse etlResponse = executeAdTask(ETL, dataSource);
-        controller.sendTemplateMessage(RESPONSE_DESTINATION, etlResponse);
-        controller.setLastExecutionTime(currentAdTaskType, dataSource, fetchResponse.lastExecutionTime);
+        Thread.currentThread().setName(THREAD_NAME + "_" + currentAdTaskType + "_" + dataSource);
+        final boolean etlTaskSucceeded = handleAdTask(currentAdTaskType);
         logger.info("Finished executing Fetch and ETL for datasource {}", dataSource);
+
+        if (!followingTasks.isEmpty()) {
+            if (!etlTaskSucceeded) {
+                logger.warn("There are following task {}, but task didn't succeed so they will not be executed");
+            }
+            else {
+                logger.info("Running task {}'s following tasks {}", this, followingTasks);
+                executorService.executeTasks(followingTasks);
+            }
+        }
+    }
+
+    protected boolean handleAdTask(AdTaskType adTaskType) {
+        try {
+            final AdTaskResponse response = executeAdTask(adTaskType, dataSource);
+            simpMessagingTemplate.convertAndSend(responseDestination, response);
+            adTaskPersistencyService.setLastExecutionTime(currentAdTaskType, dataSource, response.lastExecutionTime);
+            if (!response.success) {
+                logger.warn("{} phase for data source {} has failed.", adTaskType, dataSource);
+            }
+
+            return response.success;
+        } catch (Exception e) {
+            logger.error("Failed to handle task {} for data source {}.", adTaskType, dataSource, e);
+            simpMessagingTemplate.convertAndSend(responseDestination, new AdTaskResponse(adTaskType, false, -1, dataSource, -1L ));
+            return false;
+        }
     }
 
     private void notifyTaskStart() {
-        if (!controller.addRunningTask(this)) {
+        if (!executorService.markTaskActive(this)) {
             logger.warn("Tried to add task {} but the task already exists.", this);
         }
         else {
@@ -81,15 +118,13 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
     private void notifyTaskDone() {
-        if (!controller.removeRunningTask(this)) {
+        if (!executorService.markTaskInactive(this)) {
             logger.warn("Tried to remove task {} but task doesn't exist.", this);
         }
         else {
             logger.debug("Removed running task {} from active tasks", this);
         }
     }
-
-
 
 
     /**
@@ -99,11 +134,12 @@ public class ControllerInvokedAdTask implements Runnable {
      * @return an AdTaskResponse representing the results of the task
      */
     private AdTaskResponse executeAdTask(AdTaskType adTaskType, AdObjectType dataSource) {
+        adTaskPersistencyService.setExecutionStartTime(adTaskType, dataSource, System.currentTimeMillis());
         notifyTaskStart();
         final String dataSourceName = dataSource.toString();
 
         UUID resultsId = UUID.randomUUID();
-        final String resultsKey = dataSourceName.toLowerCase() + "_" + adTaskType.toString().toLowerCase() + "." + resultsId;
+        final String resultsKey = adTaskPersistencyService.createResultKey(dataSource, adTaskType, resultsId);
 
         /* run task */
         final String jobName = dataSourceName + "_" + adTaskType.toString();
@@ -115,15 +151,15 @@ public class ControllerInvokedAdTask implements Runnable {
 
 
         /* get task results from file */
-        logger.info("Getting results for task {} with results key {}", jobName, resultsKey);
-        final Map<String, String> taskResults = getTaskResults(resultsKey);
+        logger.debug("Getting results for task {} with results key {}", jobName, resultsKey);
+        final Map<String, String> taskResults = adTaskPersistencyService.getTaskResults(resultsKey);
         if (taskResults == null) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(RESULTS_KEY_SUCCESS);
+        final String success = taskResults.get(AdTaskPersistencyServiceImpl.RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
             notifyTaskDone();
@@ -131,33 +167,12 @@ public class ControllerInvokedAdTask implements Runnable {
         }
 
         /* get objects count for this data source from mongo (if it's a Fetch job we don't care about the count)*/
-        final long objectsCount = adTaskType==ETL? activeDirectoryService.getLastRunCount(dataSource) : -1;
+        final long objectsCount = (adTaskType==ETL || adTaskType==FETCH_ETL)? activeDirectoryService.getLastRunCount(dataSource) : -1;
 
 
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
         return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSource, lastExecutionTime);
-    }
-
-    private Map<String, String> getTaskResults(String resultsKey) {
-        Map<String, String> taskResults = new HashMap<>();
-        ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
-        if (queryResult == null) {
-            logger.error("No result found for result key {}. Task failed", resultsKey);
-            taskResults.put(RESULTS_KEY_SUCCESS, Boolean.FALSE.toString());
-            return taskResults;
-        }
-
-        final String taskExecutionResult = queryResult.getValue();
-        final String[] split = taskExecutionResult.split(RESULTS_DELIMITER);
-        final String key = split[0];
-        final String value = split[1];
-        taskResults.put(key, value);
-        if (applicationConfigurationService.delete(resultsKey) == 0) {
-            logger.warn("Failed to delete query result with key {}.", resultsKey);
-        }
-
-        return taskResults;
     }
 
     /**
@@ -169,10 +184,10 @@ public class ControllerInvokedAdTask implements Runnable {
     private boolean runCollectionJob(String jobName, UUID resultsId) {
         Process process;
         try {
-            final String scriptPath = controller.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
+            final String scriptPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
             final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
             final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
-            processBuilder.directory(new File(controller.COLLECTION_TARGET_DIR));
+            processBuilder.directory(new File(ApiActiveDirectoryController.COLLECTION_TARGET_DIR));
             processBuilder.redirectErrorStream(true);
             logger.debug("Starting process with arguments {}", arguments);
             process = processBuilder.start();
@@ -207,7 +222,7 @@ public class ControllerInvokedAdTask implements Runnable {
             return false;
         }
 
-        logger.info("Execution of task {} has finished with status {}", jobName, status);
+        logger.debug("Execution of task {} has finished with status {}", jobName, status);
         return true;
     }
 
@@ -226,11 +241,13 @@ public class ControllerInvokedAdTask implements Runnable {
 
     @Override
     public String toString() {
-        return "ControllerInvokedAdTask{" +
+        return getClass() + "{" +
                 "dataSource=" + dataSource +
                 ", currentAdTaskType=" + currentAdTaskType +
                 '}';
     }
+
+
 
     /**
      * This class represents an ADTask response to the controller that executed it containing various information the controller needs to return the UI
@@ -295,12 +312,14 @@ public class ControllerInvokedAdTask implements Runnable {
         private final AdTaskType runningMode; //null for not running
         private final AdObjectType datasource;
         private final Long lastExecutionFinishTime;
+        private final Long executionStartTime;
         private final Long objectsCount;
 
-        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime, Long objectsCount) {
+        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime, Long executionStartTime, Long objectsCount) {
             this.runningMode = runningMode;
             this.datasource = datasource;
             this.lastExecutionFinishTime = lastExecutionFinishTime;
+            this.executionStartTime = executionStartTime;
             this.objectsCount = objectsCount;
         }
 
@@ -316,27 +335,15 @@ public class ControllerInvokedAdTask implements Runnable {
             return lastExecutionFinishTime;
         }
 
+        public Long getExecutionStartTime() {
+            return executionStartTime;
+        }
+
         public Long getObjectsCount() {
             return objectsCount;
         }
     }
 
-
-
-    public enum AdTaskType {
-        FETCH("Fetch"), ETL("ETL");
-
-        private final String type;
-
-        AdTaskType(String type) {
-            this.type = type;
-        }
-
-        @Override
-        public String toString() {
-            return type;
-        }
-    }
 }
 
 

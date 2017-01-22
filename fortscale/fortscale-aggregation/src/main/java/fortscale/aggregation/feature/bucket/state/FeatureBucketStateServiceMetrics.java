@@ -27,7 +27,4 @@ public class FeatureBucketStateServiceMetrics extends StatsMetricsGroup {
 
     @StatsDateMetricParams(name="lastSyncedEventDate")
     public long lastSyncedEventDate;
-
-    @StatsDateMetricParams(name="lastClosedDailyBucketDate")
-    public long lastClosedDailyBucketDate;
 }

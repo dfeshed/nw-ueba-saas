@@ -1,36 +1,31 @@
 package fortscale.web.webconf;
 
 import fortscale.global.configuration.GlobalConfiguration;
+import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
-
-
 import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
 import fortscale.web.exceptions.handlers.RestExceptionHandler;
 import fortscale.web.extensions.FortscaleCustomEditorService;
 import fortscale.web.extensions.RenamingProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
-
-
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.http.MediaType;
-
 import org.springframework.stereotype.Controller;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
-import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
 
-
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by shays on 01/01/2017.
@@ -47,7 +42,7 @@ import java.util.*;
         includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
 )
 @ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
-@Import(GlobalConfiguration.class)
+@Import({GlobalConfiguration.class, AdTaskConfig.class})
 //Load properties files:
 @PropertySource({"classpath:META-INF/application-config.properties","classpath:META-INF/entities-overriding.properties","classpath:META-INF/evidence.events.filtering.properties"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
@@ -60,6 +55,9 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
+
+    @Autowired
+    private ActiveDirectoryService activeDirectoryService;
 
 
 
@@ -163,11 +161,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
 
 
+
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.ignoreUnknownPathExtensions(false).defaultContentType(MediaType.TEXT_HTML);
-
-
     }
 
 

@@ -2,9 +2,11 @@ package fortscale.web.rest;
 
 import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
+import fortscale.domain.ad.AdObject;
+import fortscale.domain.ad.AdObject.AdObjectType;
+import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ApplicationConfigurationService;
-import fortscale.services.impl.AdObjectType;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.EncryptionUtils;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.HideSensitiveArgumentsFromLog;
@@ -14,9 +16,9 @@ import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.beans.AuthenticationTestResult;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.beans.request.ActiveDirectoryRequest;
+import fortscale.web.services.AdTaskServiceImpl;
 import fortscale.web.tasks.ControllerInvokedAdTask;
-import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskResponse;
-import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskType;
+import fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,13 +35,9 @@ import javax.naming.CommunicationException;
 import javax.naming.NamingException;
 import javax.validation.Valid;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static fortscale.web.tasks.ControllerInvokedAdTask.AdTaskStatus;
+
 
 @Controller
 @RequestMapping(value = "/api/active_directory")
@@ -49,33 +47,35 @@ public class ApiActiveDirectoryController {
 	public static final String WRONG_CREDENTIALS_ERROR = "Wrong Credentials, please update and try again.";
 	private static Logger logger = Logger.getLogger(ApiActiveDirectoryController.class);
 
-	public String COLLECTION_TARGET_DIR;
+	public static String COLLECTION_TARGET_DIR;
 
 	public String COLLECTION_USER;
 
 	public String USER_HOME_DIR;
 
+	private Long lastAdFetchEtlExecutionStartTime;
+
 	private final long FETCH_AND_ETL_TIMEOUT_IN_SECONDS = 60;
 
-	private final String DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX ="deployment_wizard_ad.last_execution_time";
+	private static final String DESTINATION_TASK_RESPONSE = "/wizard/ad_fetch_etl_response";
 
-	private final List<AdObjectType> dataSources = new ArrayList<>(Arrays.asList(AdObjectType.values()));
+	private static final String DESTINATION_ACTIONS = "/wizard/ad_fetch_etl_actions";
 
-	private final AtomicBoolean isFetchEtlExecutionRequestInProgress = new AtomicBoolean(false);
+
 
 	private final AtomicBoolean isFetchEtlExecutionRequestStopped = new AtomicBoolean(false);
 
-	private Set<ControllerInvokedAdTask> activeTasks = ConcurrentHashMap.newKeySet(dataSources.size());
+	private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
-	private Long lastAdFetchEtlExecutionStartTime;
 
-	private ExecutorService executorService;
+	@Autowired
+	private AdTaskServiceImpl adTaskService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
 
 	@Autowired
-	private ApplicationConfigurationService applicationConfigurationService;
+	private AdTaskPersistencyService adTaskPersistencyService;
 
 	@Autowired
 	private SimpMessagingTemplate simpMessagingTemplate;
@@ -169,63 +169,47 @@ public class ApiActiveDirectoryController {
 
 	@RequestMapping("/ad_fetch_etl" )
 	public ResponseEntity<ResponseEntityMessage> executeAdFetchAndEtl() {
-		isFetchEtlExecutionRequestStopped.set(false);
-		final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
-		if (isFetchEtlExecutionRequestInProgress.compareAndSet(false, true)) {
-			if (!activeTasks.isEmpty()) {
-				logger.warn(inProgressMsg);
-				isFetchEtlExecutionRequestInProgress.set(false);
-				return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.FORBIDDEN);
-			}
-			lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
-
-			logger.info("Starting Active Directory fetch and ETL");
-
-			try {
-				executorService = createExecutorService();
-				if (isFetchEtlExecutionRequestStopped.get()) { //check that not asked to stop between execution and now (actual execution)
-					final String stopMessage = "Active Directory fetch and ETL already was signaled to stop. Request to execute ignored.";
-					logger.warn(stopMessage);
-					isFetchEtlExecutionRequestInProgress.set(false);
-					return new ResponseEntity<>(new ResponseEntityMessage(stopMessage), HttpStatus.LOCKED);
-				}
-				dataSources.forEach(dataSource -> executorService.execute(new ControllerInvokedAdTask(this, activeDirectoryService, applicationConfigurationService, dataSource)));
-			} finally {
-				executorService.shutdown();
-				isFetchEtlExecutionRequestInProgress.set(false);
-			}
-
-			return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
-		}
-		else {
-			logger.warn(inProgressMsg);
-			return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.LOCKED);
+		try {
+			logger.debug("Executing AD Fetch and ETL");
+			final boolean executedSuccessfully = adTaskService.executeTasks(simpMessagingTemplate, DESTINATION_TASK_RESPONSE);
+			if (executedSuccessfully) {
+                lastAdFetchEtlExecutionStartTime = System.currentTimeMillis();
+				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, FetchEtlAction.EXECUTE);
+				return new ResponseEntity<>(new ResponseEntityMessage("Fetch and ETL is running."), HttpStatus.OK);
+            }
+            else {
+                final String inProgressMsg = "Active Directory fetch and ETL already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
+                logger.warn(inProgressMsg);
+                return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.LOCKED);
+            }
+		} catch (Exception e) {
+			final String msg = "Failed to stop AD Fetch and ETL execution";
+			logger.error(msg, e);
+			return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	@RequestMapping("/stop_ad_fetch_etl" )
-	public ResponseEntity<ResponseEntityMessage> stopAdFetchAndEtlExecution() {
-		if (!activeTasks.isEmpty()) {
-			isFetchEtlExecutionRequestStopped.set(true);
-			logger.info("Attempting to kill all running threads {}", activeTasks);
-			executorService.shutdownNow();
-			try {
-				executorService.awaitTermination(FETCH_AND_ETL_TIMEOUT_IN_SECONDS, TimeUnit.SECONDS);
-				activeTasks = ConcurrentHashMap.newKeySet(dataSources.size());
-			} catch (InterruptedException e) {
-				final String msg = "Failed to await termination of running threads.";
-				logger.error(msg);
-				return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.FORBIDDEN);
-			} finally {
-				executorService = createExecutorService();
-			}
 
-			lastAdFetchEtlExecutionStartTime = null;
-			return new ResponseEntity<>(new ResponseEntityMessage("AD fetch and ETL execution has stopped successfully"), HttpStatus.OK);
-		} else {
-			final String msg = "Attempted to stop threads was made but there are no running tasks.";
-			logger.warn(msg);
-			return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.NOT_ACCEPTABLE);
+	@RequestMapping("/stop_ad_fetch_etl" )
+	public ResponseEntity<ResponseEntityMessage> cancelAdFetchAndEtlExecution() {
+		try {
+			logger.debug("Cancelling AD Fetch and ETL execution");
+			if (adTaskService.cancelAllTasks(FETCH_AND_ETL_TIMEOUT_IN_SECONDS)) {
+                lastAdFetchEtlExecutionStartTime = null;
+                final String message = "AD fetch and ETL execution has been cancelled successfully";
+                logger.debug(message);
+				simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, FetchEtlAction.CANCEL);
+                return new ResponseEntity<>(new ResponseEntityMessage(message), HttpStatus.OK);
+            }
+            else {
+                final String msg = "Failed to cancel AD Fetch and ETL execution";
+                logger.error(msg);
+                return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.NOT_ACCEPTABLE);
+            }
+		} catch (Exception e) {
+			final String msg = "Failed to cancel AD Fetch and ETL execution";
+			logger.error(msg, e);
+			return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -237,18 +221,27 @@ public class ApiActiveDirectoryController {
 		Set<AdTaskStatus> statuses = new HashSet<>();
 		dataSources.forEach(datasource -> {
 			final AdTaskType runningMode = getRunningMode(datasource);
-			if (runningMode != null) { //running
-				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, -1L));
+			final Long currExecutionStartTime = adTaskPersistencyService.getLastExecutionTime(runningMode, datasource);
+			final boolean currentlyRunning = runningMode != null;
+			if (currentlyRunning) { //running
+				statuses.add(new AdTaskStatus(runningMode, datasource, -1L, currExecutionStartTime, -1L));
 			}
 			else { //not running
-				final Long currLastExecutionFinishTime = getLastExecutionTime(AdTaskType.ETL, datasource);
+				Long currLastExecutionFinishTime;
+				if (datasource == AdObjectType.USER_THUMBNAIL) {
+					currLastExecutionFinishTime = adTaskPersistencyService.getLastExecutionTime(AdTaskType.FETCH_ETL, datasource);
+				}
+				else {
+					currLastExecutionFinishTime = adTaskPersistencyService.getLastExecutionTime(AdTaskType.ETL, datasource);
+				}
 				final Long currObjectsCount = activeDirectoryService.getLastRunCount(datasource);
-				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currObjectsCount));
+				statuses.add(new AdTaskStatus(null, datasource, currLastExecutionFinishTime, currExecutionStartTime, currObjectsCount));
 			}
 		});
 
 		return new FetchEtlExecutionStatus(lastAdFetchEtlExecutionStartTime, statuses);
 	}
+
 
 	/**
 	 * this method returns the running mode (Fetch, ETL or null for not running) of the given {@code dataSource}
@@ -256,7 +249,7 @@ public class ApiActiveDirectoryController {
 	 * @return Fetch, ETL or null for not running
 	 */
 	private AdTaskType getRunningMode(AdObjectType datasource) {
-		for (ControllerInvokedAdTask activeThread : activeTasks) {
+		for (ControllerInvokedAdTask activeThread : adTaskService.getActiveTasks()) {
 			if (datasource.equals(activeThread.getDataSource())) {
 				return activeThread.getCurrentAdTaskType();
 			}
@@ -265,32 +258,9 @@ public class ApiActiveDirectoryController {
 		return null;
 	}
 
-	public Long getLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource) {
-		return applicationConfigurationService.getApplicationConfigurationAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), Long.class);
-	}
 
-	public void setLastExecutionTime(AdTaskType adTaskType, AdObjectType dataSource, Long lastExecutionTime) {
-		applicationConfigurationService.updateConfigItemAsObject(DEPLOYMENT_WIZARD_AD_LAST_EXECUTION_TIME_PREFIX + "_" + adTaskType + "_" + dataSource.toString(), lastExecutionTime);
-	}
-
-	public void sendTemplateMessage(String responseDestination, AdTaskResponse fetchResponse) {
-		simpMessagingTemplate.convertAndSend(responseDestination, fetchResponse);
-	}
-
-	private ExecutorService createExecutorService() {
-		return Executors.newFixedThreadPool(dataSources.size(), runnable -> {
-			Thread thread = new Thread(runnable);
-			thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-			return thread;
-		});
-	}
-
-	public boolean addRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		return activeTasks.add(controllerInvokedAdTask);
-	}
-
-	public boolean removeRunningTask(ControllerInvokedAdTask controllerInvokedAdTask) {
-		return activeTasks.remove(controllerInvokedAdTask);
+	private enum FetchEtlAction {
+		EXECUTE, CANCEL
 	}
 
 

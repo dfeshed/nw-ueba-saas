@@ -62,7 +62,7 @@ def _create_default_reducer():
     return {
         'min_value_for_not_reduce': (config.DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE - 1) * 2,
         'max_value_for_fully_reduce': config.DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE - 1,
-        'reducing_factor': 0.1
+        'reducing_factor': 0
     }
 
 def update(conf_lines, reducers):

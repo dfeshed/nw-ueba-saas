@@ -2354,24 +2354,6 @@
                     ],
                     "type": "alias"
                   }
-                ],
-                [
-                  {
-                    "params": [
-                      "lastClosedDailyBucketDate"
-                    ],
-                    "type": "field"
-                  },
-                  {
-                    "params": [],
-                    "type": "mean"
-                  },
-                  {
-                    "params": [
-                      "lastClosedDailyBucket"
-                    ],
-                    "type": "alias"
-                  }
                 ]
               ],
               "tags": [

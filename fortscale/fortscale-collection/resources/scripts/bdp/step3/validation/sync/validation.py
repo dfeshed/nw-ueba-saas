@@ -21,7 +21,7 @@ def validate_scored_aggr_synced(logger, host, num_of_scored_events, timeout, pol
     logger.info('validating scored aggregations synced...')
     if validate_by_polling(logger=logger,
                            progress_cb=lambda: get_collections_size(host=host,
-                                                                    collection_names_regex='^scored___aggr_event__'),
+                                                                    collection_names_regex='^scored___aggr_event__.*(daily|hourly)'),
                            is_done_cb=lambda progress: progress == num_of_scored_events,
                            no_progress_timeout=timeout,
                            polling=polling):

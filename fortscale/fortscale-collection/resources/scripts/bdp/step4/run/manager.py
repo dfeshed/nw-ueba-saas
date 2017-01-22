@@ -51,7 +51,6 @@ class Manager(ModelsCacheOverridingManager):
                                         ('run scores after entity event models and global entity event models have been built', self._run_scores),
                                         ('remove unneeded models', lambda: self._clean_collections(collection_names_regex=models_regex)),
                                         ('build models second time (so we have good alert control models)', self._build_models),
-                                        ('move models back in time second time', lambda: self._move_models_back_in_time(collection_names_regex=models_regex)),
                                         ('remove scored entities collections second time', lambda: self._clean_collections(collection_names_regex=scored_entity_events_regex)),
                                         ('restart scoring task second time (so models will be loaded from mongo)', self._restart_scoring_task),
                                         ('run scores after all needed models have been built (including alert control)', self._run_scores),

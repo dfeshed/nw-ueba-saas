@@ -159,4 +159,9 @@ public class ApplicationConfigurationServiceImpl implements ApplicationConfigura
         return applicationConfigurationRepository.deleteByKey(key);
     }
 
+    @Override
+    public String getKeyDelimiter() {
+        return ".";
+    }
+
 }

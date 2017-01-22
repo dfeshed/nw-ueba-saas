@@ -45,7 +45,8 @@ public interface Accumulator {
     /**
      *
      * @param feature
+     * @param to
      * @return now minus default period (start of day)
      */
-    Instant getDefaultFromPeriod(String feature);
+    Instant getDefaultFromPeriod(String feature, Instant to);
 }

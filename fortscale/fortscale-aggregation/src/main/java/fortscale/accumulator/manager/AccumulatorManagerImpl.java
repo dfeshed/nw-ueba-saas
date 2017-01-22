@@ -39,8 +39,9 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
             features = getFeatureNames();
         }
         for (String feature : features) {
-            Instant accumulateFrom = calcFromInstant(params, feature);
+
             Instant accumulateTo = getToInstant(params, feature);
+            Instant accumulateFrom = calcFromInstant(params, feature,accumulateTo );
             if(accumulateTo==null)
             {
                 logger.info("found 0 events to accumulate for feature={}", feature);
@@ -77,9 +78,13 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         return accumulateTo.truncatedTo(ChronoUnit.DAYS).minusSeconds(1);
     }
 
-    private Instant calcFromInstant(AccumulatorManagerParams params, String feature) {
+    private Instant calcFromInstant(AccumulatorManagerParams params, String feature, Instant to) {
         Instant accumulateFrom;
         Instant lastAccumulatedEvent = getLastAccumulatedEventTime(feature);
+        if(params.getFrom() == null)
+        {
+            params.setFrom(accumulator.getDefaultFromPeriod(feature, to));
+        }
         if (lastAccumulatedEvent != null) {
             if (lastAccumulatedEvent.isAfter(params.getFrom())) {
                 accumulateFrom = lastAccumulatedEvent.plus(1,ChronoUnit.DAYS);
@@ -89,10 +94,7 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         } else {
             accumulateFrom = params.getFrom();
         }
-        if(accumulateFrom == null)
-        {
-            accumulateFrom = accumulator.getDefaultFromPeriod(feature);
-        }
+
         return accumulateFrom.truncatedTo(ChronoUnit.DAYS);
     }
 
