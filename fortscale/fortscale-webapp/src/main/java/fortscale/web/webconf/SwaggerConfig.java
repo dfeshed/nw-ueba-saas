@@ -2,6 +2,7 @@ package fortscale.web.webconf;
 
 import fortscale.web.beans.DataBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -27,7 +28,9 @@ import java.time.LocalDate;
  */
 @EnableSwagger2
 @EnableWebMvc
+@Profile(WebAppConfig.SWAGGER_PROFILE) //Only when swagger profile on we should enable swagger
 public class SwaggerConfig  extends WebMvcConfigurerAdapter {
+
 
     /**
      * When user access to /fortscale-webapp/swagger-ui.html he will get the swagger-ui.html
