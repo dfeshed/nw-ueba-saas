@@ -41,7 +41,6 @@ public class DhcpResolverTest {
 		MockitoAnnotations.initMocks(this);
 		dhcpResolver.setShouldUseBlackList(true);
 		dhcpResolver = spy(dhcpResolver);
-		dhcpResolver.initMetricsClass(null);
 		now = System.currentTimeMillis();
 	}
 	
