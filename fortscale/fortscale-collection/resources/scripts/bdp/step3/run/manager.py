@@ -99,6 +99,7 @@ class Manager(ModelsCacheOverridingManager):
     def _run_init(self):
         logger.info('initing reducers')
         init_reducers(logger=logger)
+        return True
 
     def _run_scores(self):
         kill_process = self._runner.run(overrides_key='step3.scores')
