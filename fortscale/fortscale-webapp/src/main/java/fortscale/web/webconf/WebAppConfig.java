@@ -67,34 +67,15 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     public static final int DEFAULT_CACHE_PERIOD_SECONDS = 3600 * 24; //Default time to keep resource in seconds
     public static final String CACHE_PERIOD_KEY= "webapp.configurations.cache_time_period";
-    public static final String SPRING_PROFILES_ACTIVE = "spring.profiles.active";
-    public static final String SWAGGER_PROFILE = "swagger";
 
     private static Logger logger = Logger.getLogger(WebAppConfig.class);
 
-    @Value("${rest.swagger.show}")
-    private Boolean enableSwagger;
 
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
     @Autowired
     private ActiveDirectoryService activeDirectoryService;
-
-
-    @PostConstruct
-    public void setProfiles() {
-        if (BooleanUtils.isTrue(this.enableSwagger)){
-
-            String activeProfiles = System.getProperty(SPRING_PROFILES_ACTIVE);
-            if(StringUtils.isBlank(activeProfiles)){
-                activeProfiles = SWAGGER_PROFILE;
-            } else if (!activeProfiles.contains(SWAGGER_PROFILE)){
-                activeProfiles +=","+SWAGGER_PROFILE;
-            }
-            System.setProperty(SPRING_PROFILES_ACTIVE,"swagger");
-        }
-    }
 
 
     /**

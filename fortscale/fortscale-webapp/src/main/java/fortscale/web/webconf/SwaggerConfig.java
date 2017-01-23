@@ -28,7 +28,7 @@ import java.time.LocalDate;
  */
 @EnableSwagger2
 @EnableWebMvc
-@Profile(WebAppConfig.SWAGGER_PROFILE) //Only when swagger profile on we should enable swagger
+@Profile("swagger") //Only when swagger profile on we should enable swagger
 public class SwaggerConfig  extends WebMvcConfigurerAdapter {
 
 
