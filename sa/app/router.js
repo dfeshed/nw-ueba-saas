@@ -25,10 +25,7 @@ Router.map(function() {
     }
 
     if (config.featureFlags['show-investigate-route']) {
-      this.route('investigate', function() {
-        this.route('query', { path: '/query/*filter' });
-        this.route('not-found', { path: '*invalidinvestigatepath' });
-      });
+      this.mount('investigate');
     }
 
     if (config.featureFlags['show-live-content-route']) {

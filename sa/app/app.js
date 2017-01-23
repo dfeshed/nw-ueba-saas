@@ -15,6 +15,21 @@ const App = Application.extend({
   podModulePrefix: config.podModulePrefix,
   Resolver,
 
+  engines: {
+    investigate: {
+      dependencies: {
+        services: [
+          '-document',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n',
+          'redux'
+        ]
+      }
+    }
+  },
+
   /**
    * Callback after app has finished initializing. Responsible for hiding the app's 'loading' animation DOM.
    * Assumes config.APP.appLoadingSelector will specify how to find the 'loading' DOM. Uses that selector to

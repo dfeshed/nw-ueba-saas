@@ -1,7 +1,6 @@
 /* eslint-disable */
 
 var generateSocketConfiguration = require('./socketConfig');
-var contextLookup = require('./contextLookup');
 
 var mockPort = process.env.MOCK_PORT || 9999;
 var mockServerUrl = "http://localhost:" + mockPort;
@@ -52,7 +51,6 @@ module.exports = function(environment) {
       defaultLocale: 'en-us',
       includedLocales: ['en-us', 'ja']
     },
-    contextLookup: contextLookup,
     APP: {
       // Here you can pass flags/options to your application instance
       // when it is created

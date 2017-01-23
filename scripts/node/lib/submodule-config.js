@@ -2,6 +2,7 @@ const ALL_SUBMODULES = [
   'component-lib',
   'mock-server',
   'recon',
+  'investigate',
   'sa',
   'streaming-data',
   'style-guide'
@@ -14,7 +15,8 @@ const saModuleDependants = {
   'component-lib': [
     'recon',
     'sa',
-    'style-guide'
+    'style-guide',
+    'investigate'
   ],
   docs: [], // lol
   'mock-server': [ // This list will grow as more uses the mock-server
@@ -22,12 +24,15 @@ const saModuleDependants = {
     'recon'
   ],
   recon: [
-    'sa'
+    'sa',
+    'investigate'
   ],
   sa: [], // sa is an end state app, nothing depends on it
+  investigate: ['sa'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
+    'investigate',
     'sa',
     'style-guide'
   ],
@@ -47,6 +52,12 @@ const saModuleDependencies = {
     'mock-server'
   ],
   sa: [
+    'component-lib',
+    'streaming-data',
+    'investigate',
+    'recon'
+  ],
+  investigate: [
     'component-lib',
     'streaming-data',
     'recon'

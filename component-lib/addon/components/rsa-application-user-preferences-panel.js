@@ -1,5 +1,4 @@
 import Ember from 'ember';
-import computed from 'ember-computed-decorators';
 import layout from '../templates/components/rsa-application-user-preferences-panel';
 
 const {

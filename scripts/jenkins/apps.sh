@@ -98,7 +98,8 @@ function runEmberBuild {
 }
 
 # $1 = name of app
-# $2 = whether or not `ember build` is necessary
+# $2 = whether or not `ember build` is necessary, it is necessary
+#      when the app is deployable
 # $3 = whether or not a mock server is needed
 function buildEmberApp {
 
@@ -224,6 +225,7 @@ buildEmberApp streaming-data false true
 buildEmberApp component-lib false
 buildEmberApp recon false true
 buildEmberApp style-guide true
+buildEmberApp investigate false
 buildEmberApp sa true
 
 unsetWebProxy

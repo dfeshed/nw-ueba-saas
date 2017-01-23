@@ -1,0 +1,32 @@
+{{#each group.keys as |groupKey groupKeyIndex|}}
+  {{m-meta/key-values
+    group=group
+    groupKey=groupKey
+    values=(get (array-lookup metaKeyStatesForGroup groupKeyIndex) 'values')
+    options=(get (array-lookup metaKeyStatesForGroup groupKeyIndex) 'options')
+    query=query
+    language=language
+    aliases=aliases
+    clickValueAction=clickValueAction
+    contextLookupAction=contextLookupAction
+    toggleAction=(action "safeCallback" toggleAction groupKey)}}
+{{/each}}
+
+{{#if emptyMetaKeyStates.length}}
+  <div class="rsa-investigate-meta-key-values complete {{if emptyMetaGroup.isOpen 'is-open'}}">
+    <header class="rsa-investigate-meta-key-values__header js-toggle-open" {{action "safeCallback" toggleAction emptyMetaGroup}}>
+      <h2 class="rsa-investigate-meta-key-values__title">
+        <span class="toggle-icon">{{rsa-icon name="arrow-right-12" size="smaller"}}</span>
+        <span class="meta-name" title="{{emptyMetaGroup.name}}">{{emptyMetaGroup.name}}</span>
+        <span class="meta-size">({{emptyMetaKeyStates.length}})</span>
+      </h2>
+    </header>
+    <section class="rsa-investigate-meta-key-values__body">
+      <ul class="rsa-investigate-meta-key-values__empties js-content">
+        {{#each emptyMetaKeyStates as |keyState|}}
+          <li>{{keyState.info.displayName}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  </div>
+{{/if}}

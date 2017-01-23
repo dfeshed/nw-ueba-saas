@@ -49,57 +49,6 @@ export default {
       incident: 'the incident'
     }
   },
-  investigate: {
-    title: 'Investigate',
-    loading: 'Loading',
-    loadMore: 'Load More',
-    tryAgain: 'Try Again',
-    service: 'Service',
-    timeRange: 'Time Range',
-    filter: 'Filter',
-    size: {
-      bytes: 'bytes',
-      KB: 'KB',
-      MB: 'MB',
-      GB: 'GB',
-      TB: 'TB'
-    },
-    medium: {
-      network: 'Network',
-      log: 'Log',
-      correlation: 'Correlation'
-    },
-    empty: {
-      title: 'No events found.',
-      description: 'Your filter criteria did not match any records.'
-    },
-    error: {
-      title: 'Unable to load data.',
-      description: 'An unexpected error occurred when attempting to fetch the data records.'
-    },
-    meta: {
-      title: 'Meta',
-      clickToOpen: 'Click to open'
-    },
-    events: {
-      title: 'Events',
-      error: 'An unexpected error occurred when executing this query.'
-    },
-    services: {
-      loading: 'Loading list of available services',
-      empty: {
-        title: 'Unable to find services.',
-        description: 'No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
-      },
-      error: {
-        title: 'Unable to load services.',
-        description: 'Unexpected error loading the list of Brokers, Concentrators, and other services to investigate. This may be due to a configuration or connectivity issue.'
-      }
-    },
-    customQuery: {
-      title: 'Enter a query.'
-    }
-  },
   live: {
     title: 'Live Content',
     home: 'Home',

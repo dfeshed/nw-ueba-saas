@@ -22,23 +22,22 @@ const developedAddons = [];
 const isDevelopingAddon = function(projectName) {
   return function() {
 
+    // If it is the current project being processed
+    // always true
+    var projName = this.project.pkg.name;
+
+    if (projName === projectName) {
+      return true;
+    }
+
     // If already processed, return false
     if (developedAddons.indexOf(projectName) > -1) {
       return false;
     }
 
-    // This is set to the project ember is running
-    // which could be THIS project, or it could be
-    // something using this addon
-    var projName = this.project.pkg.name;
-
-    // This is set to 'test' when running 'ember test'
-    var env = process.env.EMBER_ENV
-
     // We want to report as a 'developingAddon' when
-    // we are NOT running 'ember test' OR
-    // when the project being run is THIS project
-    var isDevAddon = env !== 'test'|| projName === projectName;
+    // we are NOT running 'ember test'
+    var isDevAddon = process.env.EMBER_ENV !== 'test';
 
     if (isDevAddon) {
       developedAddons.push(projectName);

@@ -140,6 +140,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       @include rsa-vendor-prefix(flex-grow,1);
     }
 
+    // sass-lint:disable no-universal-selectors
     * {
       overflow-x: hidden;
       text-overflow: ellipsis;

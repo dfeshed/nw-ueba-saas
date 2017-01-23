@@ -24,8 +24,7 @@ const submodulesAffected = (submoduleList) => {
   // If a root file (like .eslintrc) has changed (infrequent),
   // for now lets just assume we have to build everything
   if (rootFiles.length > 0) {
-    console.log(ALL_SUBMODULES.join(' '));
-    process.exit(0);
+    return buildUniqueList(ALL_SUBMODULES);
   }
 
   // yank the first part of the path out, that is the app/submodule

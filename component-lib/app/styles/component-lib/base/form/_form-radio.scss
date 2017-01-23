@@ -7,8 +7,8 @@
     visibility: hidden;
     margin-right: rsa-whitespace(least);
 
-    &:before,
-    &:after {
+    &::before,
+    &::after {
       content: '';
       text-indent: 10rem;
       overflow: hidden;
@@ -20,13 +20,13 @@
       border-radius: 10rem;
     }
 
-    &:before {
+    &::before {
       width: 11px;
       height: 11px;
       border: 1px solid rsa-color(gray);
     }
 
-    &:after {
+    &::after {
       background: transparent;
       width: 7px;
       height: 7px;
@@ -34,7 +34,7 @@
     }
 
     &:checked {
-      &:after {
+      &::after {
         background-color: rsa-color(blue);
       }
     }
@@ -46,12 +46,12 @@
     input:not(.disabled) {
       cursor: pointer;
 
-      &:before {
+      &::before {
         border-color: rsa-color(gray, lighter);
       }
 
       &:checked {
-        &:before {
+        &::before {
           border-color: rsa-color(blue);
         }
       }
@@ -63,7 +63,7 @@
 
     input {
       &:checked {
-        &:after {
+        &::after {
           background-color: rsa-color(gray);
         }
       }
@@ -74,12 +74,12 @@
     color: rsa-color(red);
 
     input {
-      &:before {
+      &::before {
         border-color: rsa-color(red);
       }
 
       &:checked {
-        &:after {
+        &::after {
           background-color: rsa-color(red);
         }
       }
@@ -87,11 +87,11 @@
 
     &:hover {
       input {
-        &:before {
+        &::before {
 
         }
 
-        &:before {
+        &::before {
           border-color: rsa-color(red, light)!important;
         }
       }

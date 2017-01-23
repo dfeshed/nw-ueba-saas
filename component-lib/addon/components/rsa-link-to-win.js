@@ -1,6 +1,11 @@
 import Ember from 'ember';
 
-const { LinkComponent } = Ember;
+const {
+  LinkComponent,
+  getOwner,
+  get,
+  set
+} = Ember;
 
 /**
  * This component is similar to Ember.LinkComponent, except that:
@@ -35,5 +40,16 @@ export default LinkComponent.extend({
     this._super(...arguments);
     window.open(this.get('href'), this.get('target') || '_self');
     return true;
+  },
+
+  // handle engine case
+  // https://github.com/ember-engines/ember-engines/blob/1b36714653fbc395db23b849058617c31d778fed/addon/-private/link-to-component.js
+  didReceiveAttrs() {
+    this._super(...arguments);
+    const owner = getOwner(this);
+    if (owner.mountPoint) {
+      const fullRouteName = `${owner.mountPoint}.${get(this, 'targetRouteName')}`;
+      set(this, 'targetRouteName', fullRouteName);
+    }
   }
 });

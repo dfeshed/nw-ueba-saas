@@ -3,30 +3,21 @@
 @import 'category-tags-panel';
 
 @import 'list-button';
-@import 'progress-bar';
 @import 'rsa_chart';
 @import 'rsa-tree';
 @import 'rsa-nav-secondary';
 @import 'rsa-live-content/search/manifest';
 
-// investigate related styles
-@import 'investigate-breadcrumb';
-@import 'investigate-events-table';
-@import 'investigate-timeline';
-@import 'investigate-meta';
-@import 'investigate-meta-groups-panel';
-@import 'investigate-meta-key-values';
-@import 'investigate-meta-values-panel';
-@import 'investigate-query-bar';
-@import 'investigate-query-input';
-@import 'progress-bar';
+// respond
 @import 'rsa-respond/manifest';
 
+// context
 @import 'context-panel';
 @import 'context-panel-header';
 @import 'rsa-application-incident-queue-panel';
-
 @import 'context-tree-table';
 
-
+// live
+@import 'rsa-nav-secondary';
+@import 'rsa-live-content/search/manifest';
 

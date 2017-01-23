@@ -35,6 +35,7 @@ nukeApp component-lib
 nukeApp streaming-data
 nukeApp recon
 nukeApp style-guide
+nukeApp investigate
 nukeApp sa
 
 red "                               ________________

@@ -2,7 +2,7 @@ import Ember from 'ember';
 
 const {
   Checkbox
-} = Ember
+} = Ember;
 
 export default Checkbox.extend({
   classNames: ['rsa-form-checkbox'],

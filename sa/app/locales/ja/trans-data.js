@@ -49,57 +49,6 @@ export default {
       incident: 'ja_the incident'
     }
   },
-  investigate: {
-    title: 'ja_Investigate',
-    loading: 'ja_Loading',
-    loadMore: 'ja_Load More',
-    tryAgain: 'ja_Try Again',
-    service: 'ja_Service',
-    timeRange: 'ja_Time Range',
-    filter: 'ja_Filter',
-    size: {
-      bytes: 'ja_bytes',
-      KB: 'ja_KB',
-      MB: 'ja_MB',
-      GB: 'ja_GB',
-      TB: 'ja_TB'
-    },
-    medium: {
-      network: 'ja_Network',
-      log: 'ja_Log',
-      correlation: 'ja_Correlation'
-    },
-    empty: {
-      title: 'ja_No events found.',
-      description: 'ja_Your filter criteria did not match any records.'
-    },
-    error: {
-      title: 'ja_Unable to load data.',
-      description: 'ja_An unexpected error occurred when attempting to fetch the data records.'
-    },
-    meta: {
-      title: 'ja_Meta',
-      clickToOpen: 'ja_Click to open'
-    },
-    events: {
-      title: 'ja_Events',
-      error: 'ja_An unexpected error occurred when executing this query.'
-    },
-    services: {
-      loading: 'ja_Loading list of available services',
-      empty: {
-        title: 'ja_Unable to find services.',
-        description: 'ja_No Brokers, Concentrators, or other services were detected. This may be due to a configuration or connectivity issue.'
-      },
-      error: {
-        title: 'ja_Unable to load services.',
-        description: 'ja_Unexpected error loading the list of Brokers, Concentrators, and other services to investigate. This may be due to a configuration or connectivity issue.'
-      }
-    },
-    customQuery: {
-      title: 'ja_Enter a query.'
-    }
-  },
   live: {
     title: 'ja_Live Content',
     home: 'ja_Home',
