@@ -40,7 +40,6 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 
 	public DhcpResolver(boolean shouldUseBlackList, CacheHandler<String,Range<Long>> ipBlackListCache) {
 		super(shouldUseBlackList, ipBlackListCache, DhcpEvent.class);
-		initMetricsClass(statsService);
 	}
 
 	public DhcpResolver(){
@@ -69,7 +68,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 			// expiration time and hostname
 			DhcpEvent cached = cache.get(event.getIpaddress());
 			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration()>= event.getExpiration()) {
-				dhcpResolverMetrics.dhcpAlreadyInCache++;
+				getMetrics().dhcpAlreadyInCache++;
 				return;
 			}
 
@@ -85,7 +84,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 
 			// put in cache if the cache is empty
 			if (cached==null) {
-				dhcpResolverMetrics.addToCache++;
+				getMetrics().addToCache++;
 				cache.put(event.getIpaddress(), event);
 				dhcpEventRepository.save(event);
 			} else {
@@ -99,7 +98,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 						// update the existing event in mongodb and in the cache
 						cache.put(cached.getIpaddress(), cached);
 						dhcpEventRepository.save(cached);
-						dhcpResolverMetrics.updateCacheToNewHostname++;
+						getMetrics().updateCacheToNewHostname++;
 						removeFromBlackList(cached);
 					}
 
@@ -110,7 +109,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 					}
 					dhcpEventRepository.save(event);
 				} else {
-					dhcpResolverMetrics.updateExpirationOnly++;
+					getMetrics().updateExpirationOnly++;
 					// for the same hostname as cached event, check if we need to update the 
 					// expiration date on the cached event
 					if (event.getExpiration() > cached.getExpiration()) {
@@ -124,7 +123,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 		}
 		// end previous assignment in case of expiration or release
 		if (DhcpEvent.RELEASE_ACTION.equals(event.getAction()) || DhcpEvent.EXPIRED_ACTION.equals(event.getAction())) {
-			dhcpResolverMetrics.releaseHostname++;
+			getMetrics().releaseHostname++;
 			// check if we have an existing dhcp event than need to be updated with expiration time
 			DhcpEvent cached = cache.get(event.getIpaddress());
 			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration() > event.getTimestampepoch()) {
@@ -215,8 +214,12 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 		removeFromBlackList(event.getIpaddress(), event.getTimestampepoch(), event.getExpiration());
 	}
 
-	public void initMetricsClass(StatsService statsService){
-		dhcpResolverMetrics = new DhcpResolverMetrics(statsService);
+	private DhcpResolverMetrics getMetrics() {
+		if(dhcpResolverMetrics==null)
+		{
+			dhcpResolverMetrics = new DhcpResolverMetrics(statsService);
+		}
+		return dhcpResolverMetrics;
 	}
 
 }
