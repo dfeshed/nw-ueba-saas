@@ -126,6 +126,7 @@
         <org.codehaus.mojo.version>1.4.0</org.codehaus.mojo.version>
         <cxf.version>3.1.0</cxf.version>
 		<hibernate-validator.version>5.2.4.Final</hibernate-validator.version>
+		<swager.version>2.2.2</swager.version>
 		<!-- eclipse plugins versions -->
 
 		<asm-commons.version>5.0.3</asm-commons.version>
@@ -397,7 +398,19 @@
 			<version>${org.aspectj-version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>${swager.version}</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>${swager.version}</version>
+		</dependency>
 	</dependencies>
+
 	</dependencyManagement>
 	<dependencies>
 		<dependency>

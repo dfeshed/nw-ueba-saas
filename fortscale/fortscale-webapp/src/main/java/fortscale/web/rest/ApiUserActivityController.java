@@ -208,7 +208,7 @@ public class ApiUserActivityController extends DataQueryController {
 
             } catch (Exception e) {
                 final String errorMessage = e.getLocalizedMessage();
-                userActivityBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+                userActivityBean.addWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
                 logger.error(errorMessage);
             }
             userActivityBean.setData(entryList);

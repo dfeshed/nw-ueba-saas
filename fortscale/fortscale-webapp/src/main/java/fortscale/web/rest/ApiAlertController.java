@@ -21,6 +21,7 @@ import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +45,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
+@Api(value="/api/alerts", protocols = "HTTP, HTTPS")
 @RequestMapping("/api/alerts")
 public class ApiAlertController extends BaseController {
 
@@ -75,6 +77,8 @@ public class ApiAlertController extends BaseController {
 
     @Autowired
     private AlertsService alertsService;
+
+
 
 	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
 	@ResponseBody
@@ -331,6 +335,14 @@ public class ApiAlertController extends BaseController {
 
 	}
 
+	@ApiOperation(value = "Add new comment on the alert", notes = "The comment include the analyst details, date, and text", response = Comment.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful retrieval of user detail", response = Comment.class),
+			@ApiResponse(code = 400, message = "Analyst name different the username"),
+			@ApiResponse(code = 404, message = "Alert Not Found")}
+
+	)
+	@ApiParam(name="Comment", value="Comment details", required = true)
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE) @LogException @ResponseBody
 	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id, @RequestBody @Valid CommentRequest request) {
 
@@ -345,7 +357,7 @@ public class ApiAlertController extends BaseController {
 		}
 
 		if (alert == null){
-			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.NOT_FOUND);
 		}
 
 		Comment c= alert.addComment(request.getAnalystUserName(), request.getCommentText(), timeStamp);

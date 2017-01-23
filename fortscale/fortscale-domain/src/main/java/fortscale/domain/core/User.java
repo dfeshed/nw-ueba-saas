@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.joda.time.DateTime;
@@ -15,6 +17,7 @@ import java.util.*;
 import static com.google.common.base.Preconditions.checkNotNull;
 
 
+
 @Document(collection=User.collectionName)
 @CompoundIndexes({
 		@CompoundIndex(name="ad_objectGUID_1", def = "{'adInfo.objectGUID': 1}", unique=true, sparse=true),
@@ -26,6 +29,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 		@CompoundIndex(name="logUsername_vpndatares_1", def = "{'logUsername.vpndatares': 1}"),
 		@CompoundIndex(name="logUsername_sshscores_1", def = "{'logUsername.sshscores': 1}"),
 })
+@ApiModel
 public class User extends AbstractDocument {
 	private static final long serialVersionUID = -2544779887545246880L;
 	
@@ -167,7 +171,8 @@ public class User extends AbstractDocument {
 		// populate display name field with updated user ad info
 		populateDisplayName();
 	}
-	
+
+	@ApiModelProperty(position = 1, required = true, value = "The normalized user name")
 	public String getUsername() {
 		return username;
 	}
@@ -214,7 +219,8 @@ public class User extends AbstractDocument {
 	public void setSearchField(String searchField) {
 		this.searchField = searchField;
 	}
-	
+
+	@ApiModelProperty(position = 1, required = false, value = "The normalized user name",dataType = "Boolean")
 	public Boolean getFollowed() {
 		return followed;
 	}
@@ -281,6 +287,7 @@ public class User extends AbstractDocument {
 		tags.remove(tag);
 	}
 
+	@ApiModelProperty(position = 1, required = true, value = "Set of users tags",example = "tag1,tag2,tag3" )
 	public Set<String> getTags(){
 		return tags;
 	}

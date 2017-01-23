@@ -111,7 +111,7 @@ public class ApiAlertsControllerTest {
 				.andReturn();
 
 		//validate
-		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
+		assertEquals(HttpStatus.NOT_FOUND.value(), result.getResponse().getStatus());
 	}
 
 	@Test public void addComment_emptyComment() throws Exception {

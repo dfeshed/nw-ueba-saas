@@ -4,15 +4,23 @@ import fortscale.global.configuration.GlobalConfiguration;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.ApplicationConfigurationService;
 import fortscale.utils.logging.Logger;
+import fortscale.web.beans.DataBean;
 import fortscale.web.exceptions.handlers.FortscaleRestErrorResolver;
 import fortscale.web.exceptions.handlers.RestExceptionHandler;
 import fortscale.web.extensions.FortscaleCustomEditorService;
 import fortscale.web.extensions.RenamingProcessor;
+import org.apache.commons.lang.BooleanUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.HandlerExceptionResolver;
@@ -21,7 +29,6 @@ import org.springframework.web.servlet.config.annotation.*;
 import org.springframework.web.servlet.mvc.method.annotation.ExceptionHandlerExceptionResolver;
 import org.springframework.web.servlet.resource.PathResourceResolver;
 import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
@@ -42,7 +49,7 @@ import java.util.Map;
         includeFilters = @ComponentScan.Filter(type = FilterType.ANNOTATION, value = Controller.class)
 )
 @ImportResource({"classpath*:META-INF/spring/fortscale-logging-context.xml"})
-@Import({GlobalConfiguration.class, AdTaskConfig.class})
+@Import({GlobalConfiguration.class, AdTaskConfig.class,SwaggerConfig.class})
 //Load properties files:
 @PropertySource({"classpath:META-INF/application-config.properties","classpath:META-INF/entities-overriding.properties","classpath:META-INF/evidence.events.filtering.properties"})
 public class WebAppConfig extends WebMvcConfigurerAdapter {
@@ -53,12 +60,12 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
 
     private static Logger logger = Logger.getLogger(WebAppConfig.class);
 
+
     @Autowired
     private ApplicationConfigurationService applicationConfigurationService;
 
     @Autowired
     private ActiveDirectoryService activeDirectoryService;
-
 
 
     /**
@@ -136,6 +143,7 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
                 .setCachePeriod(cachePeriodConf)
                 .resourceChain(true)
                 .addResolver(new PathResourceResolver());
+
     }
 
     /**
@@ -158,9 +166,6 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
     public RenamingProcessor renamingProcessor(){
         return new RenamingProcessor(true);
     }
-
-
-
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
@@ -212,6 +217,10 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
         return handler;
     }
 
+
+
+
+
     //Use JSON view resolver as the only viewer
     @Override
     public void configureViewResolvers(ViewResolverRegistry registry) {
@@ -236,5 +245,5 @@ public class WebAppConfig extends WebMvcConfigurerAdapter {
             return cachePeriodConf;
         }
     }
-
+    
 }
