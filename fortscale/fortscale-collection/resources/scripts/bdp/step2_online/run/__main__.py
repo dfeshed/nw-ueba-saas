@@ -49,7 +49,6 @@ def validate_not_running_same_period_twice(arguments):
             sys.exit(1)
 
 
-@step_runner_main(logger)
 def main():
     arguments = create_parser().parse_args()
     if not are_tasks_running(logger=logger,

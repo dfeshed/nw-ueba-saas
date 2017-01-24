@@ -3,7 +3,7 @@ import json
 import pymongo
 from common import utils
 from common.data.mongo import MongoData, MongoDataCollection
-from common.utils import mongo
+from automatic_config.common.utils.mongo import get_db
 from common.utils.io import print_verbose
 
 
@@ -106,4 +106,4 @@ class F(MongoData):
 
 class Fs(MongoDataCollection):
     def __init__(self, dir_path, mongo_ip):
-        MongoDataCollection.__init__(self, dir_path, F, mongo.get_db(host=mongo_ip))
+        MongoDataCollection.__init__(self, dir_path, F, get_db(host=mongo_ip))

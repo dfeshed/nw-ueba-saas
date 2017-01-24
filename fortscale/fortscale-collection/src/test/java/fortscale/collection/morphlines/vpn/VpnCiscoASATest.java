@@ -472,4 +472,22 @@ public class VpnCiscoASATest {
         String expectedOutput = "2016-10-31 22:42:17,1477953737,ctjebben,173.17.22.207,,CLOSED,,,,,,,,34002568,16871523,17131045,212964,,,,";
         morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
     }
+
+    @Test
+    public void test_crdc_dup_group_open() {
+        String testCase = "Open - crdc dup group";
+        String inputLine = "Oct 25 2016 14:01:11 sjce-vpn-cluster-4 : %ASA-4-722051: Group <crdc_dup> User <evdusr29> IP <41.96.0.0> IPv4 Address <10.3.0.141> IPv6 address <2001:420:c0c8:1004::315> assigned to session";
+        String expectedOutput = "2016-10-25 14:01:11,1477404071,evdusr29,41.96.0.0,10.3.0.141,SUCCESS,,,,,,,,,,,,,,,";
+        morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+    }
+
+    @Test
+    public void test_bodc_eng2_in_group_open() {
+        String testCase = "Open - bodc eng2 in group";
+        String inputLine = "Oct 31 2016 11:17:45 sjce-vpn-cluster-4 : %ASA-4-722051: Group <bodc-eng2-in> User <evdusr29> IP <41.96.0.0> IPv4 Address <10.3.0.141> IPv6 address <2001:420:c0c8:1004::315> assigned to session";
+        String expectedOutput = "2016-10-31 11:17:45,1477912665,evdusr29,41.96.0.0,10.3.0.141,SUCCESS,,,,,,,,,,,,,,,";
+        morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+    }
+
+
 }

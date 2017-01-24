@@ -29,7 +29,12 @@ def get_indicator_score(a, name = None, reducer = None):
 
 def reduce_low_values(score, value, reducer, old_reducer = None):
     if old_reducer is not None:
-        score /= _calc_reducing_factor(value, old_reducer['min_value_for_not_reduce'], old_reducer['max_value_for_fully_reduce'], old_reducer['reducing_factor'])
+        if score > 0:
+            factor = _calc_reducing_factor(value, old_reducer['min_value_for_not_reduce'], old_reducer['max_value_for_fully_reduce'], old_reducer['reducing_factor'])
+            if factor > 0:
+                score /= factor
+            else:
+                raise Exception('factor is zero ' + str(old_reducer['min_value_for_not_reduce']) + ' ' + str(old_reducer['max_value_for_fully_reduce']) + ' ' +  str(old_reducer['reducing_factor']))
     if reducer is not None:
         score *= _calc_reducing_factor(value, reducer['min_value_for_not_reduce'], reducer['max_value_for_fully_reduce'], reducer['reducing_factor'])
     return score

@@ -297,6 +297,12 @@ public abstract class FetchJob {
 		} catch (OptimisticLockingFailureException ex) {
 			logger.warn("failed to save fetch configuration - {}", ex);
 		}
+
+		if (earliestDate != null && latestDate != null) {
+			if (earliestDate.after(latestDate) || earliestDate.equals(latestDate)) {
+				keepFetching = false;
+			}
+		}
 	}
 
 	/**

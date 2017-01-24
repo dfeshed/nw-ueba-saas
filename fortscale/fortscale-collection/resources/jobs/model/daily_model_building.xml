@@ -33,15 +33,43 @@
 				</entry>
 			</job-data-map>
 		</job>
-
-		<!--trigger>
+		<!--
+		<trigger>
 			<cron>
-				<name>daily_model_building_trigger</name>
+				<name>daily_model_building_trigger_sat</name>
+				<group>Model</group>
+				<job-name>DailyModelBuilding</job-name>
+				<job-group>Model</job-group>
+				<cron-expression>0 0 0 ? * SAT</cron-expression>
+			</cron>
+		</trigger>
+		<trigger>
+			<cron>
+				<name>daily_model_building_trigger_sun</name>
 				<group>Model</group>
 				<job-name>DailyModelBuilding</job-name>
 				<job-group>Model</job-group>
 				<cron-expression>0 0 0 ? * SUN</cron-expression>
 			</cron>
-		</trigger-->
+		</trigger>
+		<trigger>
+			<cron>
+				<name>daily_model_building_trigger_tue</name>
+				<group>Model</group>
+				<job-name>DailyModelBuilding</job-name>
+				<job-group>Model</job-group>
+				<cron-expression>0 0 0 ? * TUE</cron-expression>
+			</cron>
+		</trigger>
+		<trigger>
+			<cron>
+				<name>daily_model_building_trigger_thu</name>
+				<group>Model</group>
+				<job-name>DailyModelBuilding</job-name>
+				<job-group>Model</job-group>
+				<cron-expression>0 0 0 ? * THU</cron-expression>
+			</cron>
+		</trigger>
+		-->
 	</schedule>
 </job-scheduling-data>

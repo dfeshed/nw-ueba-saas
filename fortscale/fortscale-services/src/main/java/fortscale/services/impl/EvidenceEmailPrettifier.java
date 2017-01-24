@@ -136,19 +136,23 @@ public class EvidenceEmailPrettifier implements EvidencePrettifierService<EmailE
 
     @Override
     public EmailEvidenceDecorator prettify(Evidence evidence) {
-        EmailEvidenceDecorator decoratedEvidence = new EmailEvidenceDecorator(evidence);
+        EmailEvidenceDecorator decoratedEvidence = null;
+        try{
+            decoratedEvidence = new EmailEvidenceDecorator(evidence);
+            // Set pretty name
+            decoratedEvidence.setName(decorateName(evidence));
 
-        // Set pretty name
-        decoratedEvidence.setName(decorateName(evidence));
+            // Set data source
+            decoratedEvidence.setDataSource(decorateDataEntityIds(evidence.getDataEntitiesIds()));
 
-        // Set data source
-        decoratedEvidence.setDataSource(decorateDataEntityIds(evidence.getDataEntitiesIds()));
+            // Set the anomaly value
+            decoratedEvidence.setPrettifiedAnomalyValue(decorateAnomalyValue(evidence));
 
-        // Set the anomaly value
-        decoratedEvidence.setPrettifiedAnomalyValue(decorateAnomalyValue(evidence));
-
-        // Set pretty start date
-        decoratedEvidence.setPrettyStartDate(decorateStartDate(evidence));
+            // Set pretty start date
+            decoratedEvidence.setPrettyStartDate(decorateStartDate(evidence));
+        }catch (Exception e){
+            logger.error("Error creating EmailEvidenceDecorator, the evidence is {}", evidence, e);
+        }
 
         return decoratedEvidence;
     }

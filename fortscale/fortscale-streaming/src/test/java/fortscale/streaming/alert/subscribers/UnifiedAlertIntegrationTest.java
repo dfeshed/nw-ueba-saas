@@ -86,8 +86,8 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "normalized_username_hourly");
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "normalized_username_hourly",AlertTimeframe.Hourly);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50,AlertTimeframe.Hourly);
 
 
 
@@ -126,7 +126,7 @@ public class UnifiedAlertIntegrationTest {
 
         Map[] insertStream = new Map[1];
         insertStream[0] = unifiedAlertIntegrationTestHelper.createEvidenceWrapper(geoHoppingBuilder);
-
+        insertStream[0].put("timeframe", AlertTimeframe.Daily);
         //Execute
         alertCreationSubscriber.update(insertStream, null);
 
@@ -135,8 +135,8 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "vpn_geo_hopping");
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 60);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "vpn_geo_hopping", AlertTimeframe.Daily);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 60, AlertTimeframe.Daily);
 
         //Verify alert creation save alert
 
@@ -186,8 +186,8 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly");
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly",AlertTimeframe.Hourly);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50, AlertTimeframe.Hourly);
 
         //Verify alert creation save alert
 
@@ -239,6 +239,8 @@ public class UnifiedAlertIntegrationTest {
 
         Map[] insertStream = new Map[1];
         insertStream[0] = unifiedAlertIntegrationTestHelper.createEvidenceWrapper(smartEventBuilder, evidenceBuilder,geoHoppingBuilder);
+        insertStream[0].put("timeframe", AlertTimeframe.Daily);
+
 
         //Execute
         alertCreationSubscriber.update(insertStream, null);
@@ -250,8 +252,8 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly");
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "brute_force_normalized_username_hourly", AlertTimeframe.Daily);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50, AlertTimeframe.Daily);
 
         //Verify alert creation save alert
 

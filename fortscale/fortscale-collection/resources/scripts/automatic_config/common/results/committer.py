@@ -1,12 +1,12 @@
 import os
 import re
 import zipfile
-
+import json
 import alphas_and_betas
 import reducers
 from store import Store
 from .. import config
-from ..utils.io import print_verbose, backup, open_overrides_file, FileWriter
+from ..utils.io import print_verbose, backup, open_overrides_file, FileWriter, iter_overrides_files
 
 
 class _UpdatesManager:
@@ -30,6 +30,34 @@ class _UpdatesManager:
 
     def updated_something(self):
         return len(self._backuped) > 0
+
+def init_reducers(logger):
+    for f in iter_overrides_files(overriding_path=config.aggregated_feature_event_prevalance_stats_path['overriding_path'],
+                                      jar_name=config.aggregated_feature_event_prevalance_stats_path['jar_name'],
+                                      path_in_jar=config.aggregated_feature_event_prevalance_stats_path['path_in_jar']):
+            _init_reducers_conf_file(f, logger)
+
+
+def _init_reducers_conf_file(f, logger):
+    original_to_backup = {}
+    scorer_json = json.load(f)
+    for scorers_conf in scorer_json['data-source-scorers']:
+        if len(scorers_conf['scorers']) != 1:
+            raise Exception('multiple scorers are not supported')
+        scorer_conf = scorers_conf['scorers'][0]
+        reduction_configs = scorer_conf['reduction-configs']
+        reduction_config = reduction_configs[0]
+        reduction_config = {
+            'reducing_factor': 0.1,
+            'max_value_for_fully_reduce': reduction_config['maxValueForFullyReduce'],
+            'min_value_for_not_reduce': reduction_config['minValueForNotReduce']
+        }
+        reduction_configs[0] = reduction_config
+    path = f.name
+    logger.info('initiating scorer reducing_factor=0.1 of ' + path + '...')
+    original_to_backup[path] = backup(path=path) if os.path.isfile(path) else None
+    with FileWriter(path) as scorer_confFile:
+        json.dump(scorer_json, scorer_confFile, indent=4)
 
 
 def update_configurations():
