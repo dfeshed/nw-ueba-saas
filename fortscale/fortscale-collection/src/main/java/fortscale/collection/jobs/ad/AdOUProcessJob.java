@@ -30,7 +30,7 @@ public class AdOUProcessJob extends AdProcessJob {
 
 	@Override
 	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adOURepository.countByTimestampepoch(runtime.getTime()) > 0 ? true : false;
+		return adOURepository.countByRuntime(runtime.toString()) > 0 ? true : false;
 	}
 
 	@Override

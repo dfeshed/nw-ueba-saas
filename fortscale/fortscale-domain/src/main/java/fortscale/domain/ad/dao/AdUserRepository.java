@@ -10,7 +10,7 @@ public interface AdUserRepository extends MongoRepository<AdUser, String>, AdUse
 	AdUser findByMail(String mail);
 	List<AdUser> findByTimestampepoch(Long timestampepoch);
 	AdUser findByTimestampepochAndObjectGUID(Long timestampepoch, String objectGUID);
-	List<AdUser> findByTimestampepoch(Long timestampepoch, Pageable pageable);
+	List<AdUser> findByRuntime(String runtime, Pageable pageable);
 	AdUser findByDistinguishedName(String distinguishedName);
 	List<AdUser> findByDistinguishedNameIgnoreCaseContaining(String distinguishedName);
 	List<AdUser> findByLastModifiedExists(boolean exists);

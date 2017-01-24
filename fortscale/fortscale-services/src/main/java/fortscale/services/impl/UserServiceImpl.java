@@ -370,9 +370,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public void updateUserWithCurrentADInfo() {
-		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
-		if(timestampepoc != null) {
-			updateUserWithADInfo(timestampepoc);
+		String runtime = adUserRepository.getLatestRuntime();
+		if(runtime != null) {
+			updateUserWithADInfo(runtime);
 		} else {
 			logger.warn("no timestamp. probably the ad_user table is empty");
 		}
@@ -380,13 +380,13 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public void updateUserWithADInfo(final Long timestampepoch) {
+	public void updateUserWithADInfo(final String runtime) {
 		logger.info("Starting to update users with ad info.");
 
 		int numOfPages = (int)(((adUserRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {
 			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			Iterable<AdUser> listOfAdUsers = adUserRepository.findByTimestampepoch(timestampepoch, pageRequest);
+			Iterable<AdUser> listOfAdUsers = adUserRepository.findByRuntime(runtime, pageRequest);
 			for (AdUser adUser : listOfAdUsers)
 				updateUserWithADInfo(adUser);
 		}
