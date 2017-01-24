@@ -7,26 +7,21 @@ moduleForComponent('recon-pager', 'Integration | Component | recon pager', {
 
 test('it renders with the appropriate css class names', function(assert) {
   this.setProperties({
-    total: 10,
-    pageSize: 100
+    eventIndex: 1,
+    eventTotal: 1000,
+    packetCount: 100,
+    packetTotal: 500
   });
-  this.render(hbs`{{recon-pager total=total pageSize=pageSize}}`);
+  this.render(hbs`{{recon-pager eventIndex=eventIndex eventTotal=eventTotal packetCount=packetCount packetTotal=packetTotal}}`);
 
   assert.equal(this.$('.recon-pager').length, 1, 'Expected DOM with base CSS class');
-  assert.equal(this.$('.recon-pager.is-hidden').length, 1, 'Expected hidden class for small enough list');
+  assert.equal(this.$().text().length, 84, 'Expected extra text');
 
   this.setProperties({
-    total: 100,
-    pageSize: 100
+    packetCount: 500,
+    packetTotal: 500
   });
 
-  assert.equal(this.$('.recon-pager.is-hidden').length, 0, 'Expected no hidden class for a list that matches page size');
+  assert.equal(this.$().text().length, 62, 'Expected no extra text');
 
-  this.setProperties({
-    total: 101,
-    pageSize: 100
-  });
-
-  assert.equal(this.$('.recon-pager.is-hidden').length, 0, 'Expected no hidden class for a list that exceeds page size');
-  assert.ok(this.$().text().indexOf('1 - 100') > -1, 'Expected appropriate text in DOM');
 });

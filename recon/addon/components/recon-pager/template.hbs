@@ -1,1 +1,10 @@
-1 - {{pageSize}} of {{pageSize}}+ records
+<div class="event-info">
+  <span class="lighter">{{eventIndex}} of {{eventTotal}}</span>
+  events
+</div>
+<div class="packet-info">
+  Rendered
+  <span class="lighter">{{packetCount}} of {{packetTotal}}</span>
+  packets
+  {{unless isHidden 'to improve performance'}}
+</div>

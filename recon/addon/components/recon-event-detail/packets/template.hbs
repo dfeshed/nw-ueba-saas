@@ -1,12 +1,18 @@
-{{#each visiblePackets as |packet index|}}
-  {{recon-event-detail/single-packet
-    index=index
-    packet=packet
-    packetFields=packetFields
-    tooltipData=tooltipData
-  }}
-{{/each}}
-
-{{recon-pager total=packets.length pageSize=pageSize}}
+<div class="scroll-box">
+  {{#each visiblePackets as |packet index|}}
+    {{recon-event-detail/single-packet
+      index=index
+      packet=packet
+      packetFields=packetFields
+      tooltipData=tooltipData
+    }}
+  {{/each}}
+</div>
+{{recon-pager
+  eventIndex=eventIndex
+  eventTotal=eventTotal
+  packetCount=packetCount
+  packetTotal=packetTotal
+}}
 
 {{recon-event-detail/single-packet/byte-tooltip }}

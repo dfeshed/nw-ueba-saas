@@ -7,28 +7,46 @@ const { Component } = Ember;
 export default Component.extend({
   layout,
   tagName: 'section',
-  classNameBindings: [':recon-pager', 'isHidden'],
+  classNames: ['recon-pager'],
 
   /**
-   * Total count of list items (across all pages).
+   * Index of event.
    * @type Number
    * @default 0
    * @public
    */
-  total: 0,
+  eventIndex: 0,
 
   /**
-   * Maximum number of list items allowed in a single page.
+   * Total number of all events.
    * @type Number
    * @default 0
    * @public
    */
-  pageSize: 0,
+  eventTotal: 0,
 
-  // Resolve to `true` if all items fit within a single page.
-  @computed('total', 'pageSize')
+  /**
+   * Number of rendered packets.
+   * @type Number
+   * @default 0
+   * @public
+   */
+  packetCount: 0,
+
+  /**
+   * Total number of possible packets. This could be more than `packetCount` and
+   * is configured in the data reducer.
+   * @type Number
+   * @default 0
+   * @public
+   * @see /reducers/data-reducers#packetsPageSize
+   */
+  packetTotal: 0,
+
+  // Resolve to `true` if we have all the packets.
+  @computed('packetCount', 'packetTotal')
   isHidden(total = 0, pageSize = 0) {
-    return !total || (total < pageSize);
+    return total === pageSize;
   }
 
 });

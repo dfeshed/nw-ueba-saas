@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import ReconPager from 'recon/mixins/recon-pager';
 import connect from 'ember-redux/components/connect';
 import layout from './template';
 import computed from 'ember-computed-decorators';
@@ -8,15 +9,17 @@ const { Component } = Ember;
 const stateToComputed = ({ recon: { data, visuals } }) => ({
   packetFields: data.packetFields,
   packets: data.packets,
-  pageSize: data.packetsPageSize,
+  eventTotal: data.total,
+  eventMeta: data.meta,
+  dataIndex: data.index,
   isRequestShown: visuals.isRequestShown,
   isResponseShown: visuals.isResponseShown,
   tooltipData: visuals.packetTooltipData
 });
 
-const PacketReconComponent = Component.extend({
+const PacketReconComponent = Component.extend(ReconPager, {
   layout,
-  classNameBindings: [':recon-event-detail-packets'],
+  classNames: ['recon-event-detail-packets'],
 
   @computed('packets.[]', 'isRequestShown', 'isResponseShown')
   visiblePackets(packets = [], isRequestShown, isResponseShown) {

@@ -1,4 +1,5 @@
 .recon-event-detail-packets {
-  height: 100vh;
-  overflow-y: scroll;
+  .scroll-box {
+    bottom: rsa-whitespace(more);
+  }
 }

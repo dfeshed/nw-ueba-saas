@@ -1,15 +1,13 @@
-<div class="scroll-box recon-noscroll">
-  {{#if isLoading}}
-    <div class="recon-loader">
-      {{rsa-loader size='larger'}}
+{{#if isLoading}}
+  <div class="recon-loader">
+    {{rsa-loader size='larger'}}
+  </div>
+{{else}}
+  {{#if contentError}}
+    <div class="recon-error">
+      {{errorMessage}}
     </div>
   {{else}}
-    {{#if contentError}}
-      <div class="recon-error">
-        {{errorMessage}}
-      </div>
-    {{else}}
-      {{component currentReconView.component}}
-    {{/if}}
+    {{component currentReconView.component}}
   {{/if}}
-</div>
+{{/if}}

@@ -1,12 +1,22 @@
 .recon-pager {
   @include rsa-font(body, small);
-  padding: rsa-whitespace();
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-  &.is-hidden {
-    display: none;
+  color: rsa-color(gray);
+  background-color: rsa-color(gray, darker);
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: rsa-whitespace(more);
+  .event-info {
+    position: absolute;
+    top: rsa-whitespace(less);
+    left: rsa-whitespace();
+  }
+  .packet-info {
+    position: absolute;
+    top: rsa-whitespace(less);
+    right: rsa-whitespace();
+  }
+  .lighter {
+    color: rsa-color(grey, lighter);
   }
 }

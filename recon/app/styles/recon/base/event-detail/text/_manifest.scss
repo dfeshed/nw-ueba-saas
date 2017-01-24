@@ -1,11 +1,21 @@
 .recon-event-detail-text {
-  line-height: 1.75rem;
+  .scroll-box {
+    bottom: rsa-whitespace(more);
+  }
   .rsa-text-entry {
+    line-height: 1.75rem;
     .text-container {
       overflow-x: hidden;
       padding: 0.5rem rsa-whitespace(more);
       word-break: break-word;
       @include rsa-font-monospace();
     }
+  }
+  .no-text {
+    position: absolute;
+    top: rsa-whitespace(more);
+    right: rsa-whitespace(more);
+    left: rsa-whitespace(more);
+    text-align: center;
   }
 }

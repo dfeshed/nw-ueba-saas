@@ -1,15 +1,19 @@
-{{#each parsedPackets as |packet index|}}
-  {{recon-event-detail/single-text
-    index=index
-    isLog=isLog
-    packet=packet
+{{#if parsedPackets}}
+  <div class="scroll-box">
+    {{#each parsedPackets as |packet index|}}
+      {{recon-event-detail/single-text
+        index=index
+        isLog=isLog
+        packet=packet
+      }}
+    {{/each}}
+  </div>
+  {{recon-pager
+    eventIndex=eventIndex
+    eventTotal=eventTotal
+    packetCount=packetCount
+    packetTotal=packetTotal
   }}
 {{else}}
-  <vbox class="rsa-text-entry">
-    <div class="text-container">
-      Error: No text data was generated during content reconstruction. This could mean that the event data
-      was corrupt or invalid. Check the other reconstruction views.
-    </div>
-  </vbox>
-{{/each}}
-{{recon-pager total=packets.length pageSize=pageSize}}
+  <p class="no-text">Error: No text data was generated during content reconstruction. This could mean that the event data was corrupt or invalid. Check the other reconstruction views.</p>
+{{/if}}

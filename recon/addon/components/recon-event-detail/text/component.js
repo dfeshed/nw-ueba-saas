@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import ReconPager from 'recon/mixins/recon-pager';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 import layout from './template';
@@ -8,12 +9,15 @@ const { Component, set, String: { htmlSafe } } = Ember;
 const stateToComputed = ({ recon: { data } }) => ({
   eventType: data.eventType,
   packets: data.packets,
-  pageSize: data.packetsPageSize
+  eventTotal: data.total,
+  eventMeta: data.meta,
+  dataIndex: data.index
 });
 
-const TextReconComponent = Component.extend({
+const TextReconComponent = Component.extend(ReconPager, {
   layout,
-  classNameBindings: [':recon-event-detail-text'],
+  classNames: ['recon-event-detail-text'],
+
   /**
    * Check if eventType is 'LOG'
    * @param {object} eventType The event type object
