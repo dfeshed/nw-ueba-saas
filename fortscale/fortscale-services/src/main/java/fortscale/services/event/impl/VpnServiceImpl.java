@@ -246,6 +246,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 				if(curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).isAfter(geoHoppingData.otherOpenSessionCountryTime)){
 					geoHoppingData.otherOpenSessionCountryTime = null;
 				} else{
+
 					curVpnSession.setGeoHopping(true);
 					logger.info("geo hopping due to other open session country time {}. more info: curCountry ({}). curCountryTime({})", geoHoppingData.otherOpenSessionCountryTime, geoHoppingData.curCountry, geoHoppingData.curCountryTime);
 				}

@@ -3,8 +3,10 @@ package fortscale.services;
 import fortscale.domain.core.*;
 
 import fortscale.domain.core.GeoHopping.CountryCity;
-        
-        
+
+import java.util.Set;
+
+
 /**
   * Date: 6/23/2015.
   */
@@ -20,6 +22,9 @@ public interface GeoHoppingService {
          * @return number of indicators which match to criteria
          */
         int getGeoHoppingCount(long indicatorStartTime, CountryCity location1, CountryCity location2, String username);
+
+        int getMinGeoHoppingCount(long timestamp, Set<CountryCity> country1Set, Set<CountryCity> country2Set, String username);
+
         GeoHopping save(GeoHopping geoHopping);
 
 }

@@ -278,7 +278,9 @@ import static fortscale.utils.ConversionUtils.*;
 	private JSONObject processGeoHopping(VpnSessionUpdateConfig vpnSessionUpdateConfig, VpnSession curVpnSession) {
 		if (curVpnSession.getClosedAt() == null) {
 			List<VpnSession> vpnSessions = vpnService.getGeoHoppingVpnSessions(curVpnSession, vpnSessionUpdateConfig.getVpnGeoHoppingCloseSessionThresholdInHours(), vpnSessionUpdateConfig.getVpnGeoHoppingOpenSessionThresholdInHours());
-			if (curVpnSession.getGeoHopping()) {
+			// curVpnSession may belong to geo-hopping that was already triggered. In this case the returned list is empty.
+			//Since currently geo hopping indicator need to have at least one session with which the geo hopping occurred we do not trigger another indicator.
+			if (curVpnSession.getGeoHopping() && !vpnSessions.isEmpty()) {
 				// put curVpnSession first in the list - important for createIndicator
 				List<VpnSession> notificationList = new ArrayList<>();
 				notificationList.add(curVpnSession);
