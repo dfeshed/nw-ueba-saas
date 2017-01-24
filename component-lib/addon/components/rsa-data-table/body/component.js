@@ -9,7 +9,7 @@ import layout from './template';
 const {
   set,
   Component,
-  inject: {service}
+  inject: { service }
 } = Ember;
 
 export default Component.extend(HasTableParent, DomIsReady, SizeBindings, ScrollBindings, {
