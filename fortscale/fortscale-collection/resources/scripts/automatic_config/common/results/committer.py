@@ -1,7 +1,8 @@
+import json
 import os
 import re
 import zipfile
-import json
+
 import alphas_and_betas
 import reducers
 from store import Store
@@ -48,9 +49,10 @@ def _init_reducers_conf_file(f, logger):
         reduction_configs = scorer_conf['reduction-configs']
         reduction_config = reduction_configs[0]
         reduction_config = {
-            'reducing_factor': 0.1,
-            'max_value_for_fully_reduce': reduction_config['maxValueForFullyReduce'],
-            'min_value_for_not_reduce': reduction_config['minValueForNotReduce']
+            'reducingFactor': 0.1,
+            'maxValueForFullyReduce': reduction_config['maxValueForFullyReduce'],
+            'minValueForNotReduce': reduction_config['minValueForNotReduce'],
+            'reducingFeatureName': reduction_config['reducingFeatureName']
         }
         reduction_configs[0] = reduction_config
     path = f.name
