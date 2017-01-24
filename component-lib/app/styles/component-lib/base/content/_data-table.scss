@@ -123,6 +123,10 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
   &-body-cell {
     padding: rsa-whitespace(less);
     align-items: flex-start;
+
+    &.is-error {
+      background-color: rsa-color(red, base, 0.2);
+    }
   }
 
   &-body-cell,

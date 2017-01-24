@@ -83,6 +83,7 @@ export default Route.extend({
       columnsWithCheckboxConfig: this.columnsWithCheckboxConfig,
       columnsWithoutCheckboxConfig: this.columnsWithoutCheckboxConfig,
       columnsWithWidthConfig: this.columnsWithWidthConfig,
+      emptyItems: this.emptyItems,
       items: this.items,
       title: 'Table',
       subtitle: 'An all purpose table component',

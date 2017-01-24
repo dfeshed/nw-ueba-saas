@@ -38,7 +38,7 @@ function _parseNumberAndUnits(value) {
 }
 
 export default Mixin.create(CspStyleMixin, HasTableParent, {
-  classNameBindings: ['_resolvedWidthIsAuto:auto-width'],
+  classNameBindings: ['_resolvedWidthIsAuto:auto-width', 'isError'],
   styleBindings: ['_resolvedWidth:width'],
 
   /**
@@ -56,6 +56,13 @@ export default Mixin.create(CspStyleMixin, HasTableParent, {
    * @public
    */
   column: null,
+
+  /**
+   * A boolean to set when the cell should be in the error state
+   * @type {boolean}
+   * @public
+   */
+  isError: false,
 
   /**
    * Data object corresponding to this cell's row.

@@ -288,3 +288,25 @@ test('it renders a no results message when items.length === 0.', function(assert
   this.set('noResultsMessage', 'No events found. Your filter criteria did not match any records.');
   assert.equal(this.$('.rsa-data-table-body').text().trim(), 'No events found. Your filter criteria did not match any records.');
 });
+
+test('it applies an is-error class to cells when isError=true.', function(assert) {
+  this.setProperties({
+    items: mockItems,
+    columnsConfig: mockColumnsConfig
+  });
+  this.render(hbs`
+    {{#rsa-data-table lazy=false items=items columnsConfig=columnsConfig}}
+      {{rsa-data-table/header}}
+      {{#rsa-data-table/body noResultsMessage=noResultsMessage as |item index column|}}
+        {{#rsa-data-table/body-cell item=item index=index column=column isError=(eq (get item column.field) 'foo1')~}}
+          {{get item column.field}}
+        {{~/rsa-data-table/body-cell}}
+      {{/rsa-data-table/body}}
+    {{/rsa-data-table}}
+  `);
+
+  assert.equal(this.$('.rsa-data-table').length, 1, 'data-table root dom element found.');
+
+  const errorCell = this.$('.rsa-data-table-body-cell.is-error');
+  assert.equal(errorCell.length, 1, 'One cell has an error.');
+});

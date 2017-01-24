@@ -435,5 +435,48 @@
         {{code-snippet name="reorderColumns1.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
+
+    {{#spec-category title="Error Handling"}}
+      {{#spec-member title="Cell Errors"}}
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+          {{rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+
+            {{#rsa-data-table/body-cell column=column isError=(eq (get item column.field) 'Test Foo 2')}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+
+        <p>To apply an is-error class to a cell, just pass an expression that evaluates to true when there is an error.
+          Currently, it seems the best thing to do is keep a list of possible error messages, and compare the content to
+          those,
+          and if it matches, set isError to true.</p>
+        {{!-- BEGIN-SNIPPET tableErrors1
+        {{#rsa-data-table
+          items=model.items
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+          {{rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+
+            {{#rsa-data-table/body-cell column=column isError=(eq (get item column.field) 'Test Foo 2')}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+
+          {{/rsa-data-table/body}}
+
+        {{/rsa-data-table}}
+        END-SNIPPET --}}
+        {{code-snippet name="tableErrors1.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
   </div>
 </hbox>
