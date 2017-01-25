@@ -3,10 +3,10 @@ package fortscale.utils.monitoring.stats.engine.topic.config;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
 import fortscale.utils.monitoring.stats.engine.topic.StatsTopicEngine;
-import fortscale.utils.process.hostnameService.config.HostnameServiceConfig;
 import fortscale.utils.spring.PropertySourceConfigurer;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
 import java.util.Properties;
 
@@ -70,7 +70,7 @@ public class StatsTopicEngineConfig {
      *
      * @return
      */
-    @Bean
+    @Bean(destroyMethod = "close")
     public StatsTopicEngine statsTopicEngine() {
 
         // Get the topic writer
@@ -81,5 +81,7 @@ public class StatsTopicEngineConfig {
 
         return statsTopicEngine;
     }
+
+
 
 }

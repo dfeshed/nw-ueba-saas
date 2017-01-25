@@ -28,6 +28,11 @@ public class StatsTestingEngine extends StatsEngineBase {
         //System.out.println(this.getClass().getName() + ": write \n" + metricsGroupData.toString());
     }
 
+    @Override
+    protected void preDestroy() {
+
+    }
+
     public void flushMetricsGroupData() {
         // NOP
     }
