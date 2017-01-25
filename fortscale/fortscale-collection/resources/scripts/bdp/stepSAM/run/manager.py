@@ -54,11 +54,9 @@ class Manager(ModelsCacheOverridingManager):
         self._end = time_utils.get_epochtime(end) if end is not None else None
         self._cleanup_first = cleanup_first
         self._impala_connection = impala_utils.connect(host=host)
-        data_sources_before_filtering = data_sources
-        data_sources = [data_source
-                        for data_source in data_sources
-                        if impala_utils.get_last_event_time(connection=self._impala_connection,
-                                                            table=data_source_to_enriched_tables[data_source]) is not None]
+        data_sources_before_filtering = list(data_sources)
+        data_sources = self._filter_data_source_by_data(data_sources)
+
         if data_sources != data_sources_before_filtering:
             logger.warning("some of the data sources don't contain data in the enriched table. "
                            "Using only the following data sources: " + ', '.join(data_sources))
@@ -82,6 +80,40 @@ class Manager(ModelsCacheOverridingManager):
                                                                       convert_to_minutes_timeout=convert_to_minutes_timeout,
                                                                       start=self._get_start(data_source=data_source),
                                                                       end=self._get_end(data_source=data_source))) for data_source in self._data_sources)
+
+    def _filter_data_source_by_data(self, data_sources):
+        filtered_data_sources = []
+        for data_source in data_sources:
+            data_source_added = False
+            first_event_time = impala_utils.get_first_event_time(connection=self._impala_connection,
+                                                                 table=data_source_to_enriched_tables[data_source])
+
+            last_event_time = impala_utils.get_last_event_time(connection=self._impala_connection,
+                                                               table=data_source_to_enriched_tables[data_source])
+            logger.info("%s first event time: %s, last event time: %s" % (data_source,first_event_time,last_event_time))
+
+            if last_event_time is None:
+                logger.info("no data found for data source: %s " % data_source)
+                continue
+            last_event_epoch_time = time_utils.get_epochtime(last_event_time)
+            first_event_epoch_time = time_utils.get_epochtime(first_event_time)
+            if (self._end is not None):
+                if (self._start is not None):
+                    if (first_event_epoch_time <= self._end and last_event_epoch_time >= self._start):
+                        data_source_added = True
+                        filtered_data_sources.append(data_source)
+                else:
+                    if (first_event_epoch_time <= self._end):
+                        data_source_added = True
+                        filtered_data_sources.append(data_source)
+            else:
+                if (self._start is not None):
+                    if (last_event_epoch_time >= self._start):
+                        data_source_added = True
+                        filtered_data_sources.append(data_source)
+            if data_source_added == False:
+                logger.info('datasource: %s has data, but not between start: %s to end: %s' % (data_source,str(self._end),str(self._start)))
+        return filtered_data_sources
 
     def _update_model_confs(self, path, model_confs, original_to_backup):
         updated = False
