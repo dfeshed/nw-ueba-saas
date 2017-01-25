@@ -6,7 +6,6 @@ import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.DhcpEvent;
 import fortscale.services.ipresolving.DhcpResolver;
-import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.DisallowConcurrentExecution;
 import org.quartz.JobDataMap;
@@ -34,9 +33,6 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 	
 	private MorphlinesItemsProcessor sharedMorphline;
 
-	@Autowired
-	private StatsService statsService;
-
 	private RecordToBeanItemConverter<DhcpEvent> recordToBeanItemConverter;
 
 
@@ -52,7 +48,7 @@ public class DHCPEventsProcessJob extends EventProcessJob {
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "specificMorphlineFile");
 		sharedMorphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "sharedMorphlineFile");
 
-		recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job",statsService);
+		recordToBeanItemConverter = new RecordToBeanItemConverter<DhcpEvent>(new DhcpEvent(),"dhcp-event-job");
 	}
 	
 	@Override
