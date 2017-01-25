@@ -35,7 +35,7 @@ public class SearchQueryJob extends SearchJob {
 			search = "search " + search;
 			job = service.getJobs().create(search, jobArgs);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			logger.error("Error running search query {} " ,search, ex);
 		}
 		return job;
 	}
