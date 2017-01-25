@@ -31,7 +31,7 @@ public class UserActivityDataUsageConfigurationService extends BaseUserActivityC
 	private static final String DATA_SOURCE_VPN_SESSION_PROPERTY_NAME = "vpn_session";
 	private static final String DATA_SOURCE_PRINT_LOG_PROPERTY_NAME = "prnlog";
 	private static final String DATA_SOURCE_ORACLE_PROPERTY_NAME = "oracle";
-	private static final String FILE_SIZE_HISTOGRAM = "file_size_histogram";
+	private static final String FILE_SIZE_HISTOGRAM = "sum_of_file_size";
 	private static final String DB_OBJECT_HISTOGRAM = "db_object_histogram";
 	private static final String DATABUCKET_HISTOGRAM = "databucket_histogram";
 
