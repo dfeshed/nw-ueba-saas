@@ -844,9 +844,10 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 	public int updateTagsByFilter(Boolean addTag, List<String> tagNames, List<Criteria> criteriaList, List<String> filteredTags) {
 
 		Update update = new Update();
-
+		int count=0;
 		// Count all the users that will be affected by the change
-		int count = getCount(addTag, tagNames, criteriaList, filteredTags);
+		count = getCount(addTag, tagNames, criteriaList, filteredTags);
+
 
 		tagNames.forEach(tag -> {
 			Query query = new Query();
@@ -855,7 +856,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 			criteriaList.forEach(criteria -> {
 				// If we have filter by tags we will want to create one single criteria for the tags field in case
 				// we want to add new tags
-				if (criteria.getKey().equals(User.tagsField) && addTag){
+				if (User.tagsField.equals(criteria.getKey()) && addTag){
 					Criteria andCr = new Criteria();
 					List<String> tags = new ArrayList<>();
 					tags.add(tag);
@@ -892,7 +893,7 @@ public class UserRepositoryImpl implements UserRepositoryCustom {
 					countCriteria.addAll(criteriaList);
 					countCriteria.add(new Criteria(User.tagsField).in(tagNames));
 				}else {
-					if (criteria.getKey().equals(User.tagsField)) {
+					if (User.tagsField.equals(criteria.getKey())) {
 						Criteria newCriteria = new Criteria(User.tagsField);
 						newCriteria.in(CollectionUtils.union(tagNames, filteredTags));
 						countCriteria.add(newCriteria);
