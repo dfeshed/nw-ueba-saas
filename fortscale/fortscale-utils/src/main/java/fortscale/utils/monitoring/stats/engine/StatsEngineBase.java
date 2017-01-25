@@ -1,14 +1,9 @@
 package fortscale.utils.monitoring.stats.engine;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import fortscale.utils.monitoring.stats.StatsMetricsTag;
 import fortscale.utils.logging.Logger;
-import  fortscale.utils.monitoring.stats.models.engine.EngineData;
-import  fortscale.utils.monitoring.stats.models.engine.MetricGroup;
-import  fortscale.utils.monitoring.stats.models.engine.Tag;
-import  fortscale.utils.monitoring.stats.models.engine.LongField;
-import  fortscale.utils.monitoring.stats.models.engine.DoubleField;
-import  fortscale.utils.monitoring.stats.models.engine.StringField;
+import fortscale.utils.monitoring.stats.StatsMetricsTag;
+import fortscale.utils.monitoring.stats.models.engine.*;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -31,7 +26,7 @@ public abstract class StatsEngineBase implements StatsEngine {
     protected List<StatsEngineMetricsGroupData> accumulatedMetricsGroupDataList = null;
 
     // A lock object for accumulatedMetricsGroupDataList
-    protected Object accumulatedMetricsGroupDataListLock = new Object();
+    protected final Object accumulatedMetricsGroupDataListLock = new Object();
 
     // Something to write to the JSON. Will be more important in the future
     final long MODEL_VERSION = 100;
@@ -165,5 +160,24 @@ public abstract class StatsEngineBase implements StatsEngine {
         }
 
     }
+
+    /**
+     * Method for graceful close. Closes all the resources
+     */
+    abstract protected void preDestroy();
+
+    /**
+     * Flushes all the accumulated data and then calls preDestroy
+     */
+    public void close() {
+        synchronized (accumulatedMetricsGroupDataListLock) {
+            logger.info("Closing {}. Flushing all data before closing.", this);
+            flushMetricsGroupData();
+            preDestroy();
+        }
+
+    }
+
+
 
 }
