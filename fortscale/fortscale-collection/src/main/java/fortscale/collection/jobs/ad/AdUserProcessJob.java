@@ -79,8 +79,8 @@ public class AdUserProcessJob extends AdProcessJob {
 	}
 
 	@Override
-	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adUserRepository.countByRuntime(runtime.toString()) > 0 ? true : false;
+	protected boolean isTimestampAlreadyProcessed(String runtime) {
+		return adUserRepository.countByRuntime(runtime) > 0 ? true : false;
 	}
 
 	@Override
