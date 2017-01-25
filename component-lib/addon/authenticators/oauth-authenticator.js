@@ -17,7 +17,10 @@ const {
   },
   $,
   run,
-  isEmpty
+  isEmpty,
+  RSVP,
+  assign,
+  makeArray
 } = Ember;
 
 export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
@@ -92,7 +95,38 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
         access_token: this.get('session').get('data.authenticated.access_token')
       }
     }).always(()=>{
+      localStorage.removeItem(this.get('csrfLocalstorageKey'));
       this.get('session').invalidate();
+    });
+  },
+
+  authenticate(identification, password, scope = []) {
+    return new RSVP.Promise((resolve, reject) => {
+      const data = { 'grant_type': 'password', username: identification, password };
+      const serverTokenEndpoint = this.get('serverTokenEndpoint');
+      const scopesString = makeArray(scope).join(' ');
+      if (!isEmpty(scopesString)) {
+        data.scope = scopesString;
+      }
+      this.makeRequest(serverTokenEndpoint, data).then((response, status, jqXHR) => {
+        run(() => {
+          const csrfKey = this.get('csrfLocalstorageKey');
+
+          const csrf = jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
+          if (csrf) {
+            localStorage.setItem(csrfKey, csrf);
+          }
+
+          const expiresAt = this._absolutizeExpirationTime(response.expires_in);
+          this._scheduleAccessTokenRefresh(response.expires_in, expiresAt, response.refresh_token);
+          if (!isEmpty(expiresAt)) {
+            response = assign(response, { 'expires_at': expiresAt });
+          }
+          resolve(response);
+        });
+      }, (xhr) => {
+        run(null, reject, xhr.responseJSON || xhr.responseText);
+      });
     });
   }
 });

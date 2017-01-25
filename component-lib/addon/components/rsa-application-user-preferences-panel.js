@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import layout from '../templates/components/rsa-application-user-preferences-panel';
+import csrfToken from '../mixins/csrf-token';
 
 const {
   getOwner,
@@ -13,7 +14,7 @@ const {
   $
  } = Ember;
 
-export default Component.extend({
+export default Component.extend(csrfToken, {
 
   layout,
 
@@ -104,10 +105,15 @@ export default Component.extend({
 
     logout() {
       return new RSVP.Promise((resolve) => {
+        const csrfKey = this.get('csrfLocalstorageKey');
+
         $.ajax({
           type: 'POST',
           url: '/oauth/logout',
           timeout: 3000,
+          headers: {
+            'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
+          },
           data: {
             access_token: this.get('session').get('data.authenticated.access_token')
           }

@@ -15,7 +15,8 @@ const {
   Object: EmberObject,
   computed,
   RSVP,
-  Logger
+  Logger,
+  isEmpty
 } = Ember;
 
 /**
@@ -136,13 +137,10 @@ export default EmberObject.extend({
   connect() {
     const headers = this.headers || {};
 
-    const accessToken = localStorage.getItem('rsa-oauth2-jwt-access-token');
-    headers['X-CSRF-TOKEN'] = localStorage.getItem('rsa-x-csrf-token');
-    headers.Upgrade = 'websocket';
-    headers.Authorization = `Bearer ${accessToken}`;
     const me = this;
     return this.set('promise',
       new RSVP.Promise(function(resolve, reject) {
+
         me.set('isConnecting', true);
         me.get('stompClient').connect(headers, function() {
           me.set('isConnecting', false);
@@ -269,8 +267,14 @@ export default EmberObject.extend({
       throw ('Invalid socket URL for STOMP client connection.');
     }
 
+    const csrfToken = localStorage.getItem('rsa-x-csrf-token');
+
+    let csrfUrl = url;
+    if (!isEmpty(csrfToken)) {
+      csrfUrl = `${url}?_csrf=${csrfToken}`;
+    }
     const stompClient = Stomp.over(
-      new SockJS(url, {}, { transports: ['websocket'] })
+      new SockJS(csrfUrl, {}, { transports: ['websocket'] })
     );
     stompClient.debug = config.socketDebug ? Logger.debug.bind(Logger) : null;
     this.set('stompClient', stompClient);
