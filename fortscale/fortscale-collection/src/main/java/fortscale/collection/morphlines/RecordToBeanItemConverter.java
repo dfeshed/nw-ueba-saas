@@ -7,6 +7,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.kitesdk.morphline.api.Record;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.Assert;
 
 import java.beans.PropertyDescriptor;
@@ -14,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+@Configurable
 public class RecordToBeanItemConverter<T> {
 	private static Logger logger = Logger.getLogger(RecordToBeanItemConverter.class);
 	private final String name;
