@@ -53,7 +53,7 @@ public class CustomTagServiceImpl implements UserTagService, InitializingBean {
 			Map<String, Set<String>> tagsToRemoveFromUsers = new HashMap<>();
 			Set<String> users = new HashSet<>();
 			for (String rule : tag.getRules()) {
-				boolean removeFlag = rule.startsWith(deletionSymbol);
+				boolean removeFlag = rule.startsWith(deletionSymbol) || !tag.getActive();
 				String searchTerm = removeFlag ? rule.substring(1) : rule;
 				//if group
 				if (searchTerm.toLowerCase().startsWith(GROUP_PREFIX)) {

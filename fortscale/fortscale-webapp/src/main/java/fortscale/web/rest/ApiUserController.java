@@ -322,11 +322,13 @@ public class ApiUserController extends BaseController{
 		}
 		try {
 			result.count = userWithAlertService.updateTags(userRestFilter, addTag, tagNames);
+			return new ResponseEntity(result, HttpStatus.OK);
 		} catch (Exception e) {
 			e.printStackTrace();
+			return new ResponseEntity(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
-		return new ResponseEntity(result, HttpStatus.OK);
+
 	}
 
 	@RequestMapping(value="/followedUsers", method=RequestMethod.GET)
