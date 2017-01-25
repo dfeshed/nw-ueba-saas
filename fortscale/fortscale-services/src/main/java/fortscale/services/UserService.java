@@ -22,7 +22,7 @@ import java.util.Set;
 public interface UserService {
 	void updateUserWithCurrentADInfo();
 	
-	void updateUserWithADInfo(Long timestampepoch);
+	void updateUserWithADInfo(String timestampepoch);
 	
 	List<User> findBySearchFieldContaining(String prefix, int page, int size);
 

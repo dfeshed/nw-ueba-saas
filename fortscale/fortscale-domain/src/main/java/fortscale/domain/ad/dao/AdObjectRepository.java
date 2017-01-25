@@ -16,22 +16,22 @@ public abstract class AdObjectRepository {
 	@Autowired
 	private MongoTemplate mongoTemplate;
 
-	public Long getLatestTimeStampepoch() {
+	public String getLatestRuntime() {
 		Query query = new Query();
-		query.fields().include(AdObject.timestampepochField);
-		query.with(new PageRequest(0, 1, Direction.DESC, AdObject.timestampepochField));
+		query.fields().include(AdObject.runTimeField);
+		query.with(new PageRequest(0, 1, Direction.DESC, AdObject.runTimeField));
 		AdObject adObject = mongoTemplate.findOne(query, AdObject.class, getCollectionName());
 
 		// In case no fetch ever run on the system
 		if (adObject == null){
-			return  0l;
+			return  null;
 		}
 
-		return adObject.getTimestampepoch();
+		return adObject.getRuntime();
 	}
 
-	public long countByTimestampepoch(Long timestampepoch) {
-		return mongoTemplate.count(query(where(AdObject.timestampepochField).is(timestampepoch)), getCollectionName());
+	public long countByRuntime(String runtime) {
+		return mongoTemplate.count(query(where(AdObject.runTimeField).is(runtime)), getCollectionName());
 	}
 
 	public abstract String getCollectionName();

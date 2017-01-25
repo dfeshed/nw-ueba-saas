@@ -31,7 +31,7 @@ public class AdComputerProcessJob extends AdProcessJob {
 
 	@Override
 	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adComputerRepository.countByTimestampepoch(runtime.getTime()) > 0 ? true : false;
+		return adComputerRepository.countByRuntime(runtime.toString()) > 0 ? true : false;
 	}
 
 	@Override

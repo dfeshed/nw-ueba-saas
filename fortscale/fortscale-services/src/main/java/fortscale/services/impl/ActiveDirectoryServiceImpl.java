@@ -203,32 +203,32 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
     }
 
     @Override
-    public Long getLatestRuntime(AdObjectType adObjectType) {
+    public String getLatestRuntime(AdObjectType adObjectType) {
         switch (adObjectType) {
             case GROUP:
-                return adGroupRepository.getLatestTimeStampepoch();
+                return adGroupRepository.getLatestRuntime();
             case OU:
-                return adOURepository.getLatestTimeStampepoch();
+                return adOURepository.getLatestRuntime();
             case USER:
-                return adUserRepository.getLatestTimeStampepoch();
+                return adUserRepository.getLatestRuntime();
             case COMPUTER:
-                return adComputerRepository.getLatestTimeStampepoch();
+                return adComputerRepository.getLatestRuntime();
             default:
                 throw new IllegalArgumentException(String.format("Invalid AD object type %s. Valid types are: %s", adObjectType, Arrays.toString(AdObjectType.values())));
         }
     }
 
     @Override
-    public Long countByTimestampepoch(AdObjectType adObjectType, Long latestRuntime) {
+    public Long countByRuntime(AdObjectType adObjectType, String latestRuntime) {
         switch (adObjectType) {
             case GROUP:
-                return adGroupRepository.countByTimestampepoch(latestRuntime);
+                return adGroupRepository.countByRuntime(latestRuntime);
             case OU:
-                return adOURepository.countByTimestampepoch(latestRuntime);
+                return adOURepository.countByRuntime(latestRuntime);
             case USER:
-                return adUserRepository.countByTimestampepoch(latestRuntime);
+                return adUserRepository.countByRuntime(latestRuntime);
             case COMPUTER:
-                return adComputerRepository.countByTimestampepoch(latestRuntime);
+                return adComputerRepository.countByRuntime(latestRuntime);
             case USER_THUMBNAIL:
                 return adUserThumbnailRepository.count();
             default:
@@ -243,8 +243,8 @@ public class ActiveDirectoryServiceImpl implements ActiveDirectoryService {
         if (adObjectType == AdObjectType.USER_THUMBNAIL) {
             return adUserThumbnailRepository.count();
         }
-        Long latestRuntime = getLatestRuntime(adObjectType);
-        final Long currObjectsCount = countByTimestampepoch(adObjectType, latestRuntime);
+        String latestRuntime = getLatestRuntime(adObjectType);
+        final Long currObjectsCount = countByRuntime(adObjectType, latestRuntime);
         return currObjectsCount;
     }
 }
