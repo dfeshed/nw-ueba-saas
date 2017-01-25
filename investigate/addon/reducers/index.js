@@ -4,8 +4,8 @@
 import thunk from 'npm:redux-thunk';
 import reduxPackMiddleware from 'npm:redux-pack';
 
-import live from './live-content/index';
+import recon from 'recon/reducers/index';
 
 export default {
-  ...live
+  ...recon
 };

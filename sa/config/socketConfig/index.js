@@ -1,64 +1,32 @@
-var investigateConfigGen = require('./investigate');
-var responseConfigGen = require('./response');
-var contextConfigGen = require('./context');
-var adminConfigGen = require('./administration');
-var testConfigGen = require('./test');
-var reconConfigGen = require('../../../recon').socketRouteGenerator;
-var liveContentConfigGen = require('./live-content');
+/* eslint-env node */
+const common = require('../../../common');
+const investigateConfigGen = require('../../../investigate').socketRouteGenerator;
+const responseConfigGen = require('./response');
+const contextConfigGen = require('./context');
+const adminConfigGen = require('./administration');
+const testConfigGen = require('./test');
+const liveContentConfigGen = require('./live-content');
 
 // order matters, first config in wins if there are matching configs
-var configGenerators = [
+const configGenerators = [
   testConfigGen,
   investigateConfigGen,
   responseConfigGen,
   contextConfigGen,
-  reconConfigGen,
   adminConfigGen,
   liveContentConfigGen
-
 ];
 
-var cache = null;
+var socketConfig = null;
 
-var generateSocketConfiguration = function(environment) {
+const generateSocketConfiguration = function(environment) {
 
   // this gets called a looooot on ember start up so use cache
-  if (cache) {
-    return cache;
+  if (socketConfig) {
+    return socketConfig;
   }
 
-  var socketConfig = configGenerators
-    .map((cG) => cG(environment))
-    .reduce((previous, current) => {
-      Object.keys(current).forEach((modelName) => {
-        // Don't have this model? Add it
-        if (!previous[modelName]) {
-          previous[modelName] = current[modelName];
-        } else {
-          // Have this model? then check methods
-          // and if method not present, add it,
-          // otherwise ignore
-          var methods = current[modelName];
-          Object.keys(methods).forEach((method) => {
-            // won't be overriding any socketUrls
-            // and its the only special case in this config
-            // that isn't a method
-            if (method === 'socketUrl') {
-              return;
-            }
-
-            if (!previous[modelName][method]) {
-              previous[modelName][method] = methods[method];
-            } else {
-              console.log('Ignoring duplicate socket config for', modelName, method);
-            }
-          });
-        }
-      });
-      return previous;
-    }, {});
-
-  cache = socketConfig;
+  socketConfig = common.mergeSocketConfigs(configGenerators, environment);
 
   // UNCOMMENT to see combined socketConfig on startup
   // console.log(socketConfig)

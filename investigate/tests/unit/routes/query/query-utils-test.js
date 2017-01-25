@@ -1,4 +1,4 @@
-import queryUtils from 'investigate/routes/actions/helpers/query-utils';
+import queryUtils from 'investigate/actions/helpers/query-utils';
 import { module, test } from 'qunit';
 
 module('Unit | Helper | query utils');

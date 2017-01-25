@@ -1,8 +1,10 @@
-var determineSocketUrl = require('../../common').determineSocketUrl;
+/* eslint-env node */
+
+const common = require('../../common');
 
 module.exports = function(environment) {
 
-  var socketUrl = determineSocketUrl(environment, '/investigate/socket');
+  const socketUrl = common.determineSocketUrl(environment, '/investigate/socket');
 
   return {
     'core-event': {
@@ -62,4 +64,4 @@ module.exports = function(environment) {
       }
     }
   };
-}
+};

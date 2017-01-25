@@ -27,14 +27,14 @@ export default Component.extend({
   groupKey: undefined,
 
   /**
-   * @see routes/state/meta-key-values
+   * @see state/meta-key-values
    * @type {object}
    * @public
    */
   values: undefined,
 
   /**
-   * @see routes/state/meta-key-options
+   * @see state/meta-key-options
    * @type {object}
    * @public
    */

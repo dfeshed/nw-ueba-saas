@@ -1,10 +1,9 @@
-/* eslint-disable */
-'use strict';
-const EngineAddon = require('ember-engines/lib/engine-addon')
+/* eslint-env node */
 
-var path = require('path');
-var isDevelopingAddon = require('../common').isDevelopingAddon;
-var projectName = 'investigate';
+const EngineAddon = require('ember-engines/lib/engine-addon');
+
+const common = require('../common');
+const projectName = 'investigate';
 
 module.exports = EngineAddon.extend({
   name: projectName,
@@ -19,17 +18,17 @@ module.exports = EngineAddon.extend({
     this.options.babel.stage = 0;
   },
 
-  // socketRouteGenerator: require('./config/socketRoutes'),
+  socketRouteGenerator: require('./config/socketRoutes'),
 
   // mockDestinations: path.join(__dirname, 'tests', 'server', 'subscriptions')
 
   // See ../common.js for details on this function
-  isDevelopingAddon: isDevelopingAddon(projectName),
+  isDevelopingAddon: common.isDevelopingAddon(projectName),
 
   outputPaths: {
     vendor: {
-      js: "/assets/investigate.js",
-      css: "/assets/investigate.css"
+      js: '/assets/investigate.js',
+      css: '/assets/investigate.css'
     }
   }
-})
+});

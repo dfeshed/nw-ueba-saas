@@ -1,6 +1,6 @@
 import Ember from 'ember';
-import QueryTreeNode from '../state/query-node';
-import QueryDefinition from '../state/query-definition';
+import QueryTreeNode from 'investigate/state/query-node';
+import QueryDefinition from 'investigate/state/query-definition';
 import { makeServerInputsForEndpointInfo } from './helpers/query-utils';
 import { eventQueryUri } from 'investigate/helpers/event-query-uri';
 

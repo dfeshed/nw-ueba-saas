@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { parseEventQueryUri } from './actions/helpers/query-utils';
+import { parseEventQueryUri } from 'investigate/actions/helpers/query-utils';
 
 const { run, Route } = Ember;
 

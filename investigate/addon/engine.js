@@ -19,10 +19,7 @@ const Eng = Engine.extend({
       'dateFormat',
       'timeFormat',
       'timezone',
-      'i18n',
-
-      // redux is meant for shared state, so makes sense to share service
-      'redux'
+      'i18n'
     ]
   }
 });

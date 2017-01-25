@@ -9,7 +9,7 @@ const Router = ERouter.extend({
 });
 
 Router.map(function() {
-  this.mount('changeMe');
+  this.mount('changeme');
 });
 
 export default Router;

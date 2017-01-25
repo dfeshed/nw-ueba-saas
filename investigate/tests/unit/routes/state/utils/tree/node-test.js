@@ -1,4 +1,4 @@
-import TreeNode from 'investigate/routes/state/utils/tree/node';
+import TreeNode from 'investigate/state/utils/tree/node';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | tree/node');

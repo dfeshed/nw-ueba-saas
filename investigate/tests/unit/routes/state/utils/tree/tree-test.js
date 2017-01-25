@@ -1,5 +1,5 @@
-import Tree from 'investigate/routes/state/utils/tree/tree';
-import TreeNode from 'investigate/routes/state/utils/tree/node';
+import Tree from 'investigate/state/utils/tree/tree';
+import TreeNode from 'investigate/state/utils/tree/node';
 import { module, test } from 'qunit';
 
 module('Unit | Utility | tree/tree');

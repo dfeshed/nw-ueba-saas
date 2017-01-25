@@ -85,7 +85,6 @@
   "ember-addon": {
     "paths": [
       "../component-lib",
-      "../recon",
       "../streaming-data",
       "../investigate"
     ]

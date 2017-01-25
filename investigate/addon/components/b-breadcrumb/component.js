@@ -5,7 +5,7 @@
  */
 import Ember from 'ember';
 import computed, { bool, empty } from 'ember-computed-decorators';
-import { uriEncodeEventQuery } from 'investigate/routes/actions/helpers/query-utils';
+import { uriEncodeEventQuery } from 'investigate/actions/helpers/query-utils';
 import formatUtil from 'investigate/components/events-table-row/format-util';
 import { metaKeyAlias } from 'investigate/helpers/meta-key-alias';
 
@@ -36,7 +36,7 @@ export default Component.extend({
   /**
    * An object whose properties are the filter parameters for a Netwitness Core query; including
    * `serviceId`, `startTime`, `endTime` and an optional `metaFilter`.
-   * @see routes/state/query
+   * @see state/query
    * @type {object}
    * @public
    */

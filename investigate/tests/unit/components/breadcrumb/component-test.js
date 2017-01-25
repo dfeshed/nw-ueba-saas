@@ -1,5 +1,5 @@
 import { moduleForComponent, test } from 'ember-qunit';
-import Query from 'investigate/routes/state/query-definition';
+import Query from 'investigate/state/query-definition';
 import engineResolverFor from '../../../helpers/engine-resolver';
 
 moduleForComponent('b-breadcrumb', 'Unit | Component | b-breadcrumb', {

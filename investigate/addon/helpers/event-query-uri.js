@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { uriEncodeEventQuery } from 'investigate/routes/actions/helpers/query-utils';
+import { uriEncodeEventQuery } from 'investigate/actions/helpers/query-utils';
 
 const {
   get,

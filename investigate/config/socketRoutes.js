@@ -1,18 +1,83 @@
-// THE FOLLOWING IS AN EXAMPLE, WILL NEED TO BE CHANGED PER ENGINE
+/* eslint-env node */
 
-var determineSocketUrl = require('../../common').determineSocketUrl;
+const reconConfigGen = require('../../recon').socketRouteGenerator;
+const common = require('../../common');
+var mergedConfig;
 
-module.exports = function(environment) {
+const investigateConfigGen = function(env) {
+  var socketUrl = common.determineSocketUrl(env, '/investigate/socket');
 
-  var socketUrl = determineSocketUrl(environment, '/investigate/socket');
+  // remove this line when mock server in place
+  socketUrl = '/investigate/socket';
 
   return {
+    'core-service': {
+      socketUrl,
+      findAll: {
+        subscriptionDestination: '/user/queue/investigate/endpoints',
+        requestDestination: '/ws/investigate/endpoints'
+      }
+    },
     'core-event': {
       socketUrl,
       stream: {
         subscriptionDestination: '/user/queue/investigate/events',
         requestDestination: '/ws/investigate/events/stream'
       }
+    },
+    'core-event-count': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/events/count',
+        requestDestination: '/ws/investigate/events/count'
+      }
+    },
+    'core-event-log': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/reconstruct/log-data',
+        requestDestination: '/ws/investigate/reconstruct/log-data/stream'
+      }
+    },
+    'core-event-timeline': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/timeline',
+        requestDestination: '/ws/investigate/timeline'
+      }
+    },
+    'core-meta-key': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/languages',
+        requestDestination: '/ws/investigate/languages'
+      }
+    },
+    'core-meta-alias': {
+      socketUrl,
+      query: {
+        subscriptionDestination: '/user/queue/investigate/aliases',
+        requestDestination: '/ws/investigate/aliases'
+      }
+    },
+    'core-meta-value': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/meta/values',
+        requestDestination: '/ws/investigate/meta/values/stream',
+        cancelDestination: '/ws/investigate/cancel'
+      }
     }
   };
+};
+
+module.exports = function(environment) {
+  // cache it, prevents super spammy console as this gets called
+  // many times during startup
+  if (mergedConfig) {
+    return mergedConfig;
+  }
+  const configGenerators = [investigateConfigGen, reconConfigGen];
+  mergedConfig = common.mergeSocketConfigs(configGenerators, environment);
+  return mergedConfig;
 };

@@ -40,7 +40,7 @@ export default Component.extend({
   /**
    * The status of the request to fetch the timeline `data`.
    * Either undefined (promise hasn't been executed yet), 'wait' (promise is in progress), 'resolved' or 'rejected'.
-   * @see routes/state/event-timeline
+   * @see state/event-timeline
    * @type {string}
    * @public
    */

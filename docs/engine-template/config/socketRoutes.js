@@ -1,10 +1,11 @@
+/* eslint-env node */
 // THE FOLLOWING IS AN EXAMPLE, WILL NEED TO BE CHANGED PER ENGINE
 
-var determineSocketUrl = require('../../common').determineSocketUrl;
+const common = require('../../common');
 
 module.exports = function(environment) {
 
-  var socketUrl = determineSocketUrl(environment, '/investigate/socket');
+  const socketUrl = common.determineSocketUrl(environment, '/investigate/socket');
 
   return {
     'core-event': {

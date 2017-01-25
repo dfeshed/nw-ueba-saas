@@ -1,6 +1,6 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import Query from 'investigate/routes/state/query-definition';
+import Query from 'investigate/state/query-definition';
 import engineResolverFor from '../../../helpers/engine-resolver';
 
 moduleForComponent('b-breadcrumb', 'Integration | Component | b-breadcrumb', {

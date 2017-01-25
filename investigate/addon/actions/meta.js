@@ -5,7 +5,7 @@
  * @public
  */
 import Ember from 'ember';
-import MetaKeyState from '../state/meta-key';
+import MetaKeyState from 'investigate/state/meta-key';
 import { buildMetaValueStreamInputs, executeMetaValuesRequest } from './helpers/query-utils';
 
 const { get, set, Mixin } = Ember;

@@ -1,7 +1,6 @@
 /* eslint-disable */
 var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
 var shim = require('flexi/lib/pod-templates-shim');
-var path = require('path');
 
 shim(EmberAddon);
 

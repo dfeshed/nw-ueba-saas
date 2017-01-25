@@ -1,4 +1,4 @@
- /* eslint-disable */
+ /* eslint-env node */
 
 const developedAddons = [];
 
@@ -24,7 +24,7 @@ const isDevelopingAddon = function(projectName) {
 
     // If it is the current project being processed
     // always true
-    var projName = this.project.pkg.name;
+    const projName = this.project.pkg.name;
 
     if (projName === projectName) {
       return true;
@@ -37,14 +37,14 @@ const isDevelopingAddon = function(projectName) {
 
     // We want to report as a 'developingAddon' when
     // we are NOT running 'ember test'
-    var isDevAddon = process.env.EMBER_ENV !== 'test';
+    const isDevAddon = process.env.EMBER_ENV !== 'test';
 
     if (isDevAddon) {
       developedAddons.push(projectName);
     }
 
     return isDevAddon;
-  }
+  };
 };
 
 /**
@@ -53,6 +53,7 @@ const isDevelopingAddon = function(projectName) {
  * If in `development` or `test` this function will calculate a URL that points to the `mock-server`.
  * To NOT point at the `mock-server` in `development` or `test`, start `ember` with the `NOMOCK` environment variable set to anything.
  * For example: `NOMOCK=1 ember s`
+ * @public
  */
 const determineSocketUrl = function(environment, productionPath) {
   // Set NOMOCK=anything (ex 'NOMOCK=1 ember s')
@@ -63,16 +64,50 @@ const determineSocketUrl = function(environment, productionPath) {
   // so need to get from 'process.env'
 
   let socketUrl;
-  if ((environment === 'development' || environment === 'test') && !process.env.NOMOCK)  {
-    let mockPort = process.env.MOCK_PORT || 9999;
-    socketUrl = 'http://localhost:' + mockPort + '/socket/';
+  if ((environment === 'development' || environment === 'test') && !process.env.NOMOCK) {
+    const mockPort = process.env.MOCK_PORT || 9999;
+    socketUrl = `http://localhost:${mockPort}/socket/`;
   } else {
     socketUrl = productionPath;
   }
   return socketUrl;
-}
+};
+
+const mergeSocketConfigs = function(configGenerators, environment) {
+  return configGenerators
+    .map((cG) => cG(environment))
+    .reduce((previous, current) => {
+      Object.keys(current).forEach((modelName) => {
+        // Don't have this model? Add it
+        if (!previous[modelName]) {
+          previous[modelName] = current[modelName];
+        } else {
+          // Have this model? then check methods
+          // and if method not present, add it,
+          // otherwise ignore
+          const methods = current[modelName];
+          Object.keys(methods).forEach((method) => {
+            // won't be overriding any socketUrls
+            // and its the only special case in this config
+            // that isn't a method
+            if (method === 'socketUrl') {
+              return;
+            }
+
+            if (!previous[modelName][method]) {
+              previous[modelName][method] = methods[method];
+            } else {
+              console.log('Ignoring duplicate socket config for', modelName, method);
+            }
+          });
+        }
+      });
+      return previous;
+    }, {});
+};
 
 module.exports = {
   isDevelopingAddon,
-  determineSocketUrl
+  determineSocketUrl,
+  mergeSocketConfigs
 };

@@ -23,8 +23,7 @@ const App = Application.extend({
           'dateFormat',
           'timeFormat',
           'timezone',
-          'i18n',
-          'redux'
+          'i18n'
         ]
       }
     }

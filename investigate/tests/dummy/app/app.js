@@ -10,7 +10,20 @@ Ember.MODEL_FACTORY_INJECTIONS = true;
 const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
-  Resolver
+  Resolver,
+  engines: {
+    investigate: {
+      dependencies: {
+        services: [
+          '-document',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n'
+        ]
+      }
+    }
+  }
 });
 
 loadInitializers(App, config.modulePrefix);

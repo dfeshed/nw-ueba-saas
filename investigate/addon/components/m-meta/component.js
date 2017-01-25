@@ -96,7 +96,7 @@ export default Component.extend({
 
   /**
    * The current query's definition. Used to fetch meta values and to create links for drill-downs on the meta values.
-   * @see routes/state/query
+   * @see state/query
    * @type {object}
    * @public
    */
@@ -150,7 +150,7 @@ export default Component.extend({
   /**
    * An array of state objects, one for each meta key in `language`. These objects represent the data streams
    * that fetch the meta values for the meta keys in `language`.
-   * @see routes/state/meta-key
+   * @see state/meta-key
    * @type {object[]}
    * @public
    */

@@ -11,6 +11,20 @@ const App = Application.extend({
   modulePrefix: config.modulePrefix,
   podModulePrefix: config.podModulePrefix,
   Resolver
+  // ,
+  // engines: {
+  //   changeme: {
+  //     dependencies: {
+  //       services: [
+  //         '-document',
+  //         'dateFormat',
+  //         'timeFormat',
+  //         'timezone',
+  //         'i18n'
+  //       ]
+  //     }
+  //   }
+  // }
 });
 
 loadInitializers(App, config.modulePrefix);
