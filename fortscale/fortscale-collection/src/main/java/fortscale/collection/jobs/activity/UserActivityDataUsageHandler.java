@@ -65,6 +65,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 				final AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) featureValue;
 				total = Double.valueOf(aggrFeatureValue.getValue().toString());
 			}else{
+				logger.error("Error converting feature to histogram expected generic histogram or aggr feature value instead got {}", featureValue.getClass());
 				throw new RuntimeException("Error converting feature to histogram expected generic histogram or aggr feature value instead got " + featureValue.getClass());
 			}
 
