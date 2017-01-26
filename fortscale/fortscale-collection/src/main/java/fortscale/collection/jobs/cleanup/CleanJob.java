@@ -606,8 +606,8 @@ public class CleanJob extends FortscaleJob {
 		boolean mongoSuccess = clearMongo(doValidate);
 		boolean impalaSuccess = clearImpala(doValidate);
 		boolean hdfsSuccess = clearHDFS(doValidate);
-		boolean storeSuccess = clearStore(doValidate);
 		boolean kafkaSuccess = clearKafka(doValidate);
+		boolean storeSuccess = clearStore(doValidate);
 		return mongoSuccess && impalaSuccess && hdfsSuccess && kafkaSuccess && storeSuccess;
 	}
 
