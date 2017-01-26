@@ -3,8 +3,8 @@
 /* Imports all styles from component-lib addon. */
 @import 'component-lib/manifest';
 
-/* Imports all styles from recon addon. */
-@import 'investigate/manifest';
+/* Imports all styles from investigate engine */
+@import 'investigate';
 
 /* Imports styles specific for this sa app. */
 @import 'sa/manifest';
