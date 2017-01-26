@@ -3,6 +3,34 @@
 This README outlines the details of collaborating on this Ember application.
 A short introduction of this app could easily go here.
 
+## Using the TOC (Table of Contents) Component
+You will have to define an id as a selector for each spec-category you want to scroll to.
+
+```hbs
+   {{#spec-category id="basic-table" title="Basic Table"}}
+   {{/spec-category}}
+```
+
+You can then define an array of objects containing titles and selectors to use in the TOC.
+
+```js
+ toc: [
+   {
+     selector: '#basic-table',
+     title: 'Basic Table'
+   },
+   ...
+ ]
+```
+
+Finally, you will need to use the component itself, and pass in `scrollTo`. 
+You also need to wrap everything in `.spec-container.scroll-box`.
+
+```hbs
+  <div class="spec-container scroll-box">
+    {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
+```
+
 ## Prerequisites
 
 You will need the following things properly installed on your computer.

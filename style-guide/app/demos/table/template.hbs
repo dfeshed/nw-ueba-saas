@@ -3,8 +3,10 @@
 </hbox>
 
 <hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Basic Table"}}
+  <div class="spec-container scroll-box">
+    {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
+
+    {{#spec-category id="basic-table" title="Basic Table"}}
       {{#spec-member title="Bare Bones"}}
         {{#rsa-data-table
           items=model.items
@@ -302,7 +304,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="No Results"}}
+    {{#spec-category id="no-results" title="No Results"}}
       {{#spec-member title="No Results"}}
         {{#rsa-data-table
           items=model.emptyItems
@@ -349,7 +351,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Clicking Rows"}}
+    {{#spec-category id="row-select" title="Selecting Rows"}}
       {{#spec-member title="Selecting/onRowClick"}}
         {{#rsa-data-table
           items=model.items
@@ -398,7 +400,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Reordering/Resizing Columns"}}
+    {{#spec-category id="column-reorder-resize" title="Reordering/Resizing Columns"}}
       {{#spec-member title="Reordering"}}
         {{#rsa-data-table
           items=model.items
@@ -436,7 +438,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Error Handling"}}
+    {{#spec-category id="error-handling" title="Error Handling"}}
       {{#spec-member title="Cell Errors"}}
         {{#rsa-data-table
           items=model.items

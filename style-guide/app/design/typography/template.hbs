@@ -3,8 +3,14 @@
 </hbox>
 
 <hbox>
-  <div class="scroll-box">
+  <div class="spec-container scroll-box">
+    {{spec-toc
+      offset=-210
+      toc=toc
+      scrollTo=(route-action 'scrollTo')}}
+
     {{#spec-category
+      id="typeface"
       title="Typeface"
       subtitle="Open Sans is used exclusively throughout RSA products."
       description="While Open Sans is the only font used, use of the predefined styles below allow for easy communication of context. Size, weight, spacing, and case can be used to satisfy edge cases not already defined in the style options."}}
@@ -24,6 +30,7 @@
     {{/spec-category}}
 
     {{#spec-category
+      id="styles"
       title="Styles"
       subtitle="Predetermined styles that can be used in a variety of scenarios."
       description=""}}
@@ -222,6 +229,7 @@
     {{/spec-category}}
 
     {{#spec-category
+      id="sizes"
       title="Sizes"}}
 
       {{#spec-member
@@ -311,6 +319,7 @@
     {{/spec-category}}
 
     {{#spec-category
+      id="weight"
       title="Weight"}}
       {{#spec-member
         title="Light"}}

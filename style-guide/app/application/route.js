@@ -2,6 +2,7 @@ import Ember from 'ember';
 import RsaApplicationRoute from 'component-lib/routes/application';
 
 const {
+  $,
   inject: {
     service
   }
@@ -31,6 +32,11 @@ export default RsaApplicationRoute.extend({
   actions: {
     clearFatalErrorQueue() {
       this.get('fatalErrors').clearQueue();
+    },
+    scrollTo(selector, offset = -185) {
+      $('.spec-container.scroll-box').animate({
+        scrollTop: $(selector).offset().top + offset
+      }, 600);
     }
   }
 });

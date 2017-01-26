@@ -1,0 +1,8 @@
+<h1 class="toc-header">Table of Contents</h1>
+<ol class="table-of-contents">
+  {{#each toc as |section|}}
+    <li>
+      <a href="" {{action 'scrollTo' section.selector}}>{{section.title}}</a>
+    </li>
+  {{/each}}
+</ol>

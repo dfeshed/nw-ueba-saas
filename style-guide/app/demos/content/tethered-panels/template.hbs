@@ -3,8 +3,10 @@
 </hbox>
 
 <hbox>
-  <div class="scroll-box">
-    {{#spec-category title="Multiple Triggers One panel"}}
+  <div class="spec-container scroll-box">
+    {{spec-toc toc=toc scrollTo=(route-action 'scrollTo')}}
+
+    {{#spec-category id="multi-trigger" title="Multiple Triggers One Panel"}}
       {{#spec-member title="Example"}}
         {{#rsa-content-tethered-panel-trigger panel='panel1'}}
           {{#rsa-form-button}}
@@ -44,7 +46,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Events"}}
+    {{#spec-category id="events" title="Events"}}
       {{#spec-member title="Hover"}}
         {{#rsa-content-tethered-panel-trigger panel='panel2'}}
           {{#rsa-form-button}}
@@ -94,7 +96,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Styles"}}
+    {{#spec-category id="styles" title="Styles"}}
       {{#spec-member title="Default"}}
         {{#rsa-content-tethered-panel-trigger panel='panel4'}}
           {{#rsa-form-button}}
@@ -168,7 +170,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Misc Configuration"}}
+    {{#spec-category id="misc-config" title="Misc Configuration"}}
       {{#spec-member title="Hiding the panel Close Button"}}
         {{#rsa-content-tethered-panel-trigger panel='panel7'}}
           {{#rsa-form-button}}
@@ -194,7 +196,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Content Types"}}
+    {{#spec-category id="content-types" title="Content Types"}}
       {{#spec-member title="panel Style with Header"}}
         {{#rsa-content-tethered-panel-trigger panel='panel8'}}
           {{#rsa-form-button}}
@@ -330,7 +332,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Position as a panel"}}
+    {{#spec-category id="position-as-panel" title="Position as a Panel"}}
       {{#spec-member title="Left"}}
         {{#rsa-content-tethered-panel-trigger panel='panel12'}}
         {{#rsa-form-button}}
@@ -642,7 +644,7 @@
       {{/spec-member}}
     {{/spec-category}}
 
-    {{#spec-category title="Position As a Popover"}}
+    {{#spec-category id="position-as-popover" title="Position as a Popover"}}
       {{#spec-member title="Left"}}
         {{#rsa-content-tethered-panel-trigger panel='panel24'}}
           {{#rsa-form-button}}

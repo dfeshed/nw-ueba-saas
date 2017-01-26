@@ -1,0 +1,15 @@
+.table-of-contents {
+  @include rsa-font(body, large);
+  color: rsa-color(gray, lighter);
+  list-style: decimal;
+  margin-left: rsa-whitespace(more);
+  li {
+    padding: rsa-whitespace(least);
+  }
+}
+
+.toc-header {
+  @include rsa-font(header, large);
+  color: rsa-color(white);
+  margin: rsa-whitespace();
+}
