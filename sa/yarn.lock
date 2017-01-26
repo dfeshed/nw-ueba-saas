@@ -2785,6 +2785,12 @@ ember-try@^0.2.6:
     semver "^5.1.0"
     sync-exec "^0.6.2"
 
+ember-user-activity@0.6.2:
+  version "0.6.2"
+  resolved "https://registry.npmjs.org/ember-user-activity/-/ember-user-activity-0.6.2.tgz#f7deeab0c68af1943e1b6f529f0b005b05997d19"
+  dependencies:
+    ember-cli-babel "^5.1.7"
+
 ember-wormhole@0.4.1:
   version "0.4.1"
   resolved "https://registry.npmjs.org/ember-wormhole/-/ember-wormhole-0.4.1.tgz#55fafaad20a650d21f6583a0e59c060a65338111"
