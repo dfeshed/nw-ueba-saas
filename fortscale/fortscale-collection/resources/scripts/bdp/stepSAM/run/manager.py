@@ -56,7 +56,8 @@ class Manager(ModelsCacheOverridingManager):
         self._impala_connection = impala_utils.connect(host=host)
         data_sources_before_filtering = list(data_sources)
         data_sources = self._filter_data_source_by_data(data_sources)
-
+        if(len(data_sources)==0):
+            raise Exception('found no data to for given params. not executing stepSAM')
         if data_sources != data_sources_before_filtering:
             logger.warning("some of the data sources don't contain data in the enriched table. "
                            "Using only the following data sources: " + ', '.join(data_sources))
