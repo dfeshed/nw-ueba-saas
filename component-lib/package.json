@@ -23,7 +23,6 @@
     "ember-cli-htmlbars": "^1.0.10",
     "ember-cli-node-assets": "0.1.6",
     "ember-cli-nouislider": "0.10.0",
-    "ember-cli-sass": "5.6.0",
     "ember-i18n": "4.3.2",
     "ember-simple-auth": "1.1.0",
     "ember-spaniel": "0.1.1",
