@@ -8,11 +8,9 @@ const {
   inject: {
     service
   },
-  RSVP,
   run,
-  Logger,
-  $
- } = Ember;
+  Logger
+} = Ember;
 
 export default Component.extend(csrfToken, {
 
@@ -66,6 +64,9 @@ export default Component.extend(csrfToken, {
   },
 
   actions: {
+    logout() {
+      this.logout();
+    },
     setLocale(selection) {
       this.set('i18n.locale', selection);
       this.get('request').promiseRequest({
@@ -101,28 +102,6 @@ export default Component.extend(csrfToken, {
 
     toggleUserPreferences() {
       this.get('layoutService').toggleUserPreferences();
-    },
-
-    logout() {
-      return new RSVP.Promise((resolve) => {
-        const csrfKey = this.get('csrfLocalstorageKey');
-
-        $.ajax({
-          type: 'POST',
-          url: '/oauth/logout',
-          timeout: 3000,
-          headers: {
-            'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
-          },
-          data: {
-            access_token: this.get('session').get('data.authenticated.access_token')
-          }
-        })
-          .always(() => {
-            this.get('session').invalidate();
-            resolve();
-          });
-      });
     }
   }
 });
