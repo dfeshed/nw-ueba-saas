@@ -15,7 +15,11 @@ export default Mixin.create({
 
   csrfLocalstorageKey: computed(function() {
     const config = getOwner(this).resolveRegistration('config:environment');
-    return config['ember-simple-auth'].csrfLocalstorageKey;
+
+    // For cases (like engines) in development where simple-auth isn't configured
+    // but we still want to log in, default the csrfLocalstorageKey in
+    const authConfig = config['ember-simple-auth'] || { csrfLocalstorageKey: 'rsa-x-csrf-token' };
+    return authConfig.csrfLocalstorageKey;
   })
 
 });

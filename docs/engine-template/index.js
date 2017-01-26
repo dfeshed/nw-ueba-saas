@@ -12,12 +12,21 @@ module.exports = EngineAddon.extend({
   // we can worry about lazy loading down the road when engines evolves
   lazyLoading: false,
 
-  init: function() {
+  init() {
     this._super.init && this._super.init.apply(this, arguments);
     this.options = this.options || {};
     this.options.babel = this.options.babel || {};
     this.options.babel.stage = 0;
   },
+
+    // This allows node environment variables
+  // to be added to the ember config
+  config() {
+    return {
+      mock: process.env.NOMOCK === undefined
+    };
+  },
+
 
   socketRouteGenerator: require('./config/socketRoutes'),
 
