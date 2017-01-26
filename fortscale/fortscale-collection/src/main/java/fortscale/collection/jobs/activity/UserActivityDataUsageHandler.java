@@ -49,11 +49,10 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 		}
 		if (objectToConvert instanceof Feature) {
 			FeatureValue featureValue = ((Feature) objectToConvert).getValue();
-			GenericHistogram genericHistogram = null;
 			Double total = 0.0;
 
 			if (featureValue instanceof GenericHistogram) {
-				genericHistogram = (GenericHistogram) featureValue;
+				final GenericHistogram genericHistogram = (GenericHistogram) featureValue;
 				for (String key: genericHistogram.getHistogramMap().keySet()) {
 					key = key.replaceAll(DOT_REPLACEMENT, ".");
 					if (NumberUtils.isNumber(key)) {
@@ -63,7 +62,7 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 					}
 				}
 			}else if (featureValue instanceof AggrFeatureValue){
-				AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) featureValue;
+				final AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) featureValue;
 				total = Double.valueOf(aggrFeatureValue.getValue().toString());
 			}else{
 				throw new RuntimeException("Error converting feature to histogram expected generic histogram or aggr feature value instead got " + featureValue.getClass());
