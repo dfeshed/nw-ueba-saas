@@ -183,11 +183,12 @@ public abstract class AdProcessJob extends FortscaleJob {
 	}
 
 	protected boolean processFile(File file, BufferedLineReader reader, Date runtime) throws Exception {
-		if(isTimestampAlreadyProcessed(runtime)){
+		String runtimeString = impalaParser.formatTimeDate(runtime);
+		if(isTimestampAlreadyProcessed(runtimeString)){
 			logger.warn("the following runtime ({}) was already processed.", runtime);
 			return false;
 		}
-		String runtimeString = impalaParser.formatTimeDate(runtime);
+
 		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
 
 		long totalLines = 0;
@@ -236,7 +237,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 	}
 
 	protected abstract String getDataReceivedType();
-	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
+	protected abstract boolean isTimestampAlreadyProcessed(String runtime);
 	protected abstract boolean updateDb(Record record) throws Exception;
 	
 

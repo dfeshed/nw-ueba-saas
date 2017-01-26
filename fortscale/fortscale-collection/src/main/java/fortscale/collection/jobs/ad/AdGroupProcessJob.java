@@ -29,8 +29,8 @@ public class AdGroupProcessJob extends AdProcessJob {
 	}
 
 	@Override
-	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adGroupRepository.countByRuntime(runtime.toString()) > 0 ? true : false;
+	protected boolean isTimestampAlreadyProcessed(String runtime) {
+		return adGroupRepository.countByRuntime(runtime) > 0 ? true : false;
 	}
 
 	@Override

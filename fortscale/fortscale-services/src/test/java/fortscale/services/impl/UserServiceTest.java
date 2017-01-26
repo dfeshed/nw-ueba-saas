@@ -21,6 +21,7 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.mockito.internal.matchers.Any;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Query;
@@ -166,22 +167,21 @@ public class UserServiceTest {
 		}
 
 		when(adUserRepository.count()).thenReturn((long)numOfUsers);
-		Long timestampEpoch = new Long(0);
-		String runtime = Instant.ofEpochSecond(timestampEpoch).toString();
+		String anyRuntime = "0";
 		int numOfPages = ((numOfUsers - 1) / pageSize) + 1;
 		for (int i = 0; i < numOfPages; i++) {
 			PageRequest pageRequest = new PageRequest(i, pageSize);
 			int first = i * pageSize;
 			int last = Math.min((i + 1) * pageSize, numOfUsers);
 			List<AdUser> subList = listOfAdUsers.subList(first, last);
-			when(adUserRepository.findByRuntime(runtime, pageRequest)).thenReturn(subList);
+			when(adUserRepository.findByRuntime(anyRuntime, pageRequest)).thenReturn(subList);
 		}
 		when(userRepository.save(any(User.class))).thenReturn(new User());
 
 		userService.setListOfBuiltInADUsers("Administrator,Guest,krbtgt");
 
 		// Act
-		userService.updateUserWithADInfo(runtime);
+		userService.updateUserWithADInfo(anyRuntime);
 
 		// Assert
 		verify(userRepository, times(numOfUsers)).save(any(User.class));
