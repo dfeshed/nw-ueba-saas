@@ -5,10 +5,7 @@ const common = require('../../common');
 var mergedConfig;
 
 const investigateConfigGen = function(env) {
-  var socketUrl = common.determineSocketUrl(env, '/investigate/socket');
-
-  // remove this line when mock server in place
-  socketUrl = '/investigate/socket';
+  const socketUrl = common.determineSocketUrl(env, '/investigate/socket');
 
   return {
     'core-service': {

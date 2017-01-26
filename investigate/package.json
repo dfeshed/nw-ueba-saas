@@ -70,6 +70,7 @@
     "ember-sortable": "1.9.1",
     "ember-wormhole": "0.5.1",
     "eslint-plugin-ember-suave": "^1.0.0",
+    "faker": "3.1.0",
     "jquery": "3.1.1",
     "loader.js": "^4.0.10",
     "nouislider": "^8.0.1"

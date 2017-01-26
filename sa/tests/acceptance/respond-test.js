@@ -51,7 +51,7 @@ test('disable respond feature flag, visiting /do/respond and check DOM ', functi
 
 });
 
-test('ensure journal-trigger is added on the respond incident route', function(assert) {
+skip('ensure journal-trigger is added on the respond incident route', function(assert) {
   assert.expect(1);
   visit('/do/respond');
   andThen(function() {

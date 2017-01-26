@@ -1,6 +1,21 @@
-export default [
+const data = [
   { 'id': '555d9a6fe4b0d37c827d402d', 'displayName': 'loki-concentrator', 'name': 'CONCENTRATOR' },
   { 'id': '555d9a6fe4b0d37c827d4021', 'displayName': 'loki-broker', 'name': 'BROKER' },
   { 'id': '555d9a6fe4b0d37c827d402e', 'displayName': 'local-concentrator', 'name': 'CONCENTRATOR' },
   { 'id': '555d9a6fe4b0d37c827d402f', 'displayName': 'qamac01-concentrator', 'name': 'CONCENTRATOR' }
 ];
+
+export default {
+  subscriptionDestination: '/user/queue/investigate/endpoints',
+  requestDestination: '/ws/investigate/endpoints',
+  message(/* frame */) {
+    return {
+      meta: {
+        complete: true
+      },
+      data
+    };
+  }
+};
+
+

@@ -27,7 +27,7 @@ test('disable investigate route feature flag and confirm route is missing from a
   });
 });
 
-test('enable investigate route feature flag and confirm route is accessible', function(assert) {
+skip('enable investigate route feature flag and confirm route is accessible', function(assert) {
   config.featureFlags = {
     'show-investigate-route': true
   };

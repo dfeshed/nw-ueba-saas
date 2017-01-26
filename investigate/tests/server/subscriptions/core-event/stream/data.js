@@ -1,12 +1,9 @@
-/**
- * @description Specifies the list of keys and values that must be created and
- * populated for the /api/users call
- * @public
- */
+import faker from 'faker';
+import { shared } from 'mock-server';
 
-import { faker, Factory } from 'ember-cli-mirage';
-import aliases from '../helpers/meta-aliases';
-
+let eventList;
+const NUMBER_OF_EVENTS = 500;
+const aliases = shared.subscriptions.coreMetaAliasData;
 const MEDIUMS = Object.keys(aliases.medium).map(Number);
 const SERVICES = Object.keys(aliases.service).map(Number);
 const TCP_SRC_PORTS = Object.keys(aliases['tcp.srcport']).map(Number);
@@ -16,18 +13,15 @@ const IP_PROTOS = Object.keys(aliases['ip.proto']);
 const now = +(new Date());
 const oneDayAgo = now - 24 * 60 * 60 * 1000;
 
-function randInt(min, max) {
+const randInt = function(min, max) {
   return parseInt(min + (max - min) * Math.random(), 10);
-}
-export default Factory.extend({
-  sessionId: ((i) => {
-    return i;
-  }),
-  time: ((i) => {
-    return oneDayAgo + i;
-  }),
-  metas: (() => {
-    return [
+};
+
+const factory = function(i) {
+  return {
+    sessionId: i,
+    time: oneDayAgo + i,
+    metas: [
       [ 'service', faker.random.arrayElement(SERVICES) ],
       [ 'medium', faker.random.arrayElement(MEDIUMS) ],
       [ 'size', randInt(15, 2000) ],
@@ -36,6 +30,20 @@ export default Factory.extend({
       [ 'tcp.srcport', faker.random.arrayElement(TCP_SRC_PORTS) ],
       [ 'ip.dst', faker.internet.ip() ],
       [ 'tcp.dstport', faker.random.arrayElement(TCP_DST_PORTS) ]
-    ];
-  })
-});
+    ]
+  };
+};
+
+export default function() {
+  if (eventList) {
+    return eventList;
+  }
+
+  eventList = [];
+
+  for (let i = 0; i < NUMBER_OF_EVENTS; i++) {
+    eventList.push(factory(i));
+  }
+
+  return eventList;
+}

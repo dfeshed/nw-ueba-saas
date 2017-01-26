@@ -9,7 +9,7 @@ function sendBatches({
   const dataLength = dataArray.length;
 
   const batch = stream.batch || 10;
-  const pageSize = page.size || 100;
+  const pageSize = page.size || stream.limit || 100;
   let pageStart = page.index || 0;
   let pageEnd = pageStart + pageSize;
 
@@ -35,9 +35,15 @@ function sendBatches({
   for (let i = 0; i < batches.length; i++) {
     setTimeout(function(index) {
       return function() {
-        sendMessage({
+        const dataToSend = {
           data: batches[index]
-        });
+        };
+
+        if (index + 1 === batches.length) {
+          dataToSend.meta = { complete: true };
+        }
+
+        sendMessage(dataToSend);
       };
     }(i), i * delayBetweenBatches);
   }

@@ -4,7 +4,6 @@
  */
 import login from 'sa/mirage/data/login';
 import info from 'sa/mirage/data/info';
-import coreEvents from 'sa/mirage/data/core-events';
 import asyncFixtures from './async-fixtures';
 
 export default function(server) {
@@ -13,7 +12,6 @@ export default function(server) {
   // data will not be loaded in your tests.
   login(server);
   info(server);
-  coreEvents(server);
 
   // Synchronously load fixtures from app/mirage/fixtures into mirage DB collections.
   server.loadFixtures();

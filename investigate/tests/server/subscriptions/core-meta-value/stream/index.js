@@ -1,7 +1,10 @@
-import { faker } from 'ember-cli-mirage';
-import aliases from '../../helpers/meta-aliases';
+import faker from 'faker';
+import { shared } from 'mock-server';
+
+const aliases = shared.subscriptions.coreMetaAliasData;
 
 const ENUMS_BY_META_NAME = {};
+const SIZE = 20;
 
 ['medium', 'service', 'tcp.srcport', 'tcp.dstport', 'ip.proto'].forEach((metaName) => {
   ENUMS_BY_META_NAME[metaName] = Object.keys(aliases[metaName]);
@@ -57,59 +60,47 @@ function mockResultForKey(keyName, size) {
   return mockMetaValuesForKey(keyName, size).map(addRandomCount);
 }
 
-export default function(server) {
-
-  server.route('core-meta-value', 'stream', function(message, frames, server) {
-    const SIZE = 20;
-
-    // What meta key are we fetching values for?
-    let [ frame ] = frames;
-    frame = frame || {};
+export default {
+  subscriptionDestination: '/user/queue/investigate/meta/values',
+  requestDestination: '/ws/investigate/meta/values/stream',
+  page(frame, sendMessage) {
     const { body } = frame;
-    const { filter } = body;
-    const metaFilter = (filter || []).findBy('field', 'metaName') || {};
+    const bodyParsed = JSON.parse(body);
+    if (bodyParsed.cancel) {
+      return;
+    }
+    const metaFilter = (bodyParsed.filter || []).find((ele) => ele.field === 'metaName') || {};
     const metaName = metaFilter.value;
-
     const data = mockResultForKey(metaName, SIZE);
 
-    // Simulate progress update response.
-    server.sendFrame('MESSAGE', {
-      subscription: (frame.headers || {}).id || '',
-      'content-type': 'application/json'
-    }, {
-      code: 0,
+    // immediately send back "progress"
+    sendMessage({
       data: [],
-      request: frame.body,
       meta: {
         description: 'Please wait...',
         percent: '0'
       }
-    },
-    0);
+    });
 
-    // Simulate 2nd progress update response.
-    server.sendFrame('MESSAGE', {
-      subscription: (frame.headers || {}).id || '',
-      'content-type': 'application/json'
-    }, {
-      code: 0,
-      data: [],
-      request: frame.body,
-      meta: {
-        description: 'Almost ready...',
-        percent: '50'
-      }
-    },
-    1000);
+    // fake more progress a second later
+    setTimeout(() => {
+      sendMessage({
+        data: [],
+        meta: {
+          description: 'Almost ready...',
+          percent: '50'
+        }
+      });
+    }, 1000);
 
-    // Simulate completed response data.
-    server.sendList(
-      data.sort((a, b) => {
-        return b.count - a.count;
-      }),
-      frames[0].body.page,
-      null,
-      frames,
-      2000);
-  });
-}
+    // and done
+    setTimeout(() => {
+      sendMessage({
+        data: data.sort((a, b) => b.count - a.count),
+        meta: {
+          complete: true
+        }
+      });
+    }, 2000);
+  }
+};
