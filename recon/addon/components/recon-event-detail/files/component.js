@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import computed, { empty, filterBy, gt } from 'ember-computed-decorators';
+import ReconPager from 'recon/mixins/recon-pager';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
@@ -10,7 +11,9 @@ const { $, Component } = Ember;
 
 const stateToComputed = ({ recon: { data } }) => ({
   files: data.files,
-  linkToFileAction: data.linkToFileAction
+  linkToFileAction: data.linkToFileAction,
+  eventTotal: data.total,
+  dataIndex: data.index
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -27,9 +30,9 @@ const calculateColumnWidth = (text) => {
   return width;
 };
 
-const FileReconComponent = Component.extend({
+const FileReconComponent = Component.extend(ReconPager, {
   layout,
-  classNameBindings: [':recon-event-detail-files'],
+  classNames: ['recon-event-detail-files'],
 
   allSelected: false,
   calculatedConfig: null,

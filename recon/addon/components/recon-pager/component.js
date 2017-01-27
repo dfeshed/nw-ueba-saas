@@ -26,6 +26,14 @@ export default Component.extend({
   eventTotal: 0,
 
   /**
+   * Medium type
+   * @type Boolean
+   * @default false
+   * @public
+   */
+  isPacket: false,
+
+  /**
    * Number of rendered packets.
    * @type Number
    * @default 0
