@@ -17,12 +17,14 @@ export default Route.extend(ApplicationRouteMixin, {
   userIdle: service(),
 
   init() {
-    // After 10 idle minutes, logout
-    this.get('userIdle').on('idleChanged', (isIdle) => {
-      if (isIdle) {
-        this._logout();
-      }
-    });
+    if (!testing) {
+      // After 10 idle minutes, logout
+      this.get('userIdle').on('idleChanged', (isIdle) => {
+        if (isIdle) {
+          this._logout();
+        }
+      });
+    }
 
     this._super(...arguments);
   },
