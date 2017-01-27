@@ -1,12 +1,12 @@
 import Ember from 'ember';
 import * as ACTION_TYPES from 'sa/actions/live-content/types';
-import reduxActions from 'npm:redux-actions';
+import { handleActions } from 'redux-actions';
 
 const { copy, isPresent } = Ember;
 
 const initialState = { };
 
-const selections = reduxActions.handleActions({
+const selections = handleActions({
   [ACTION_TYPES.RESOURCE_TOGGLE_SELECT]: (state, { payload = {} }) => {
     if (payload.id) {
       state = copy(state);

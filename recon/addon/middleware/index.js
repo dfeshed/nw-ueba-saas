@@ -1,6 +1,4 @@
-import thunk from 'npm:redux-thunk';
-import reduxPackMiddleware from 'npm:redux-pack';
+import thunk from 'redux-thunk';
+import { middleware } from 'redux-pack';
 
-const middleware = [thunk.default, reduxPackMiddleware.middleware];
-
-export default middleware;
+export default [thunk, middleware];

@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from 'sa/actions/live-content/types';
-import reduxActions from 'npm:redux-actions';
+import { handleActions } from 'redux-actions';
 
 // Baseline search criteria that returns the first page of all results
 const searchCriteria = {
@@ -22,7 +22,7 @@ const initialState = {
   searchCriteria
 };
 
-const search = reduxActions.handleActions({
+const search = handleActions({
 
   [ACTION_TYPES.FETCH_RESOURCE_TYPES]: (state, { payload }) => ({
     ...state,

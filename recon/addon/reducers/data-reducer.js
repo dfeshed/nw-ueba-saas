@@ -2,8 +2,8 @@ import Ember from 'ember';
 import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import { EVENT_TYPES } from '../utils/event-types';
 import * as ACTION_TYPES from '../actions/types';
-import reduxActions from 'npm:redux-actions';
-import reduxPack from 'npm:redux-pack';
+import { handleActions } from 'redux-actions';
+import { handle } from 'redux-pack';
 
 const { set } = Ember;
 
@@ -72,7 +72,7 @@ const allFilesSelection = (setTo) => {
   });
 };
 
-const data = reduxActions.handleActions({
+const data = handleActions({
   [ACTION_TYPES.INITIALIZE]: (state, { payload }) => {
     // only clear out data if its a new event
     if (state.eventId === payload.eventId) {
@@ -101,7 +101,7 @@ const data = reduxActions.handleActions({
 
   // Meta reducing
   [ACTION_TYPES.META_RETRIEVE]: (state, action) => {
-    return reduxPack.handle(state, action, {
+    return handle(state, action, {
       start: (s) => ({ ...s, metaError: null, metaLoading: true }),
       finish: (s) => ({ ...s, metaLoading: false }),
       failure: (s) => ({ ...s, metaError: true, meta: null }),
@@ -116,7 +116,7 @@ const data = reduxActions.handleActions({
 
   // Summary Reducing
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
-    return reduxPack.handle(state, action, {
+    return handle(state, action, {
       start: (s) => ({ ...s, headerItems: null, packetFields: true, headerError: null, headerLoading: true }),
       finish: (s) => ({ ...s, headerLoading: false }),
       failure: (s) => ({ ...s, headerError: true }),
@@ -174,7 +174,7 @@ const data = reduxActions.handleActions({
 
     // Summary Reducing
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
-    return reduxPack.handle(state, action, {
+    return handle(state, action, {
       start: (s) => ({ ...s, ...fileExtractInitialState, fileExtractStatus: 'init' }),
       failure: (s) => ({ ...s, fileExtractStatus: 'error', fileExtractError: action.payload }),
       success: (s) => ({ ...s, fileExtractStatus: 'wait', fileExtractJobId: action.payload.data.jobId })

@@ -1,5 +1,5 @@
 import * as ACTION_TYPES from '../actions/types';
-import reduxActions from 'npm:redux-actions';
+import { handleActions } from 'redux-actions';
 
 const visualsInitialState = {
   isHeaderOpen: true,
@@ -11,7 +11,7 @@ const visualsInitialState = {
   packetTooltipData: null
 };
 
-const visuals = reduxActions.handleActions({
+const visuals = handleActions({
   [ACTION_TYPES.OPEN_RECON]: (state) => ({
     ...state,
     isReconOpen: true
