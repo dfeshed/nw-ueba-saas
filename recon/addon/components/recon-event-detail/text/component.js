@@ -10,7 +10,6 @@ const stateToComputed = ({ recon: { data } }) => ({
   eventType: data.eventType,
   packets: data.packets,
   eventTotal: data.total,
-  eventMeta: data.meta,
   dataIndex: data.index
 });
 
