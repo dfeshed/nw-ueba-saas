@@ -126,8 +126,15 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     	long curTime = System.currentTimeMillis()/1000;
     	long endTime = curEventTime+fetchDataCycleInSeconds;
 		metrics.endEpochtime = endTime;
-		logger.info("going to sync featureBuckets curEventTime={} endTime={}", Instant.ofEpochSecond(curEventTime),Instant.ofEpochSecond(endTime));
-    	for(FeatureBucketAggrMetadata aggrMetadata: featureBucketAggrMetadataRepository.findByEndTimeLessThan(endTime)){
+		logger.debug("going to sync featureBuckets curEventTime={} endTime={}", Instant.ofEpochSecond(curEventTime),Instant.ofEpochSecond(endTime));
+
+
+
+		List<FeatureBucketAggrMetadata> featureBucketAggrMetadataList = featureBucketAggrMetadataRepository.findByEndTimeLessThan(endTime);
+		if(featureBucketAggrMetadataList != null && featureBucketAggrMetadataList.size() > 0){
+			logger.info("Moving {} FeatureBucketAggrMetadata to sending queue.", featureBucketAggrMetadataList.size());
+		}
+    	for(FeatureBucketAggrMetadata aggrMetadata: featureBucketAggrMetadataList){
 			String featureBucketConfName = aggrMetadata.getFeatureBucketConfName();
 			FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue = new FeatureBucketAggrSendingQueue(featureBucketConfName, aggrMetadata.getBucketId(), curTime, aggrMetadata.getEndTime());
     		featureBucketAggrSendingQueueRepository.save(featureBucketAggrSendingQueue);
@@ -143,6 +150,10 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
     		featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(fireTime, new Sort(Direction.ASC, FeatureBucketAggrSendingQueue.END_TIME_FIELD));
 		} else{
 			featureBucketAggrSendingQueueList = featureBucketAggrSendingQueueRepository.findByFireTimeLessThan(fireTime);
+		}
+
+		if(featureBucketAggrSendingQueueList != null && featureBucketAggrSendingQueueList.size() > 0){
+			logger.info("Got {} featureBucketAggrSendingQueue for preparing aggregations and sending them.", featureBucketAggrMetadataList.size());
 		}
     	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueList){
     		FeatureBucket bucket = null;
