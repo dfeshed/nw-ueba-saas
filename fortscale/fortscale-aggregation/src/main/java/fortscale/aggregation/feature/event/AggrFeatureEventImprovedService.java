@@ -153,7 +153,7 @@ public class AggrFeatureEventImprovedService implements IAggrFeatureEventService
 		}
 
 		if(featureBucketAggrSendingQueueList != null && featureBucketAggrSendingQueueList.size() > 0){
-			logger.info("Got {} featureBucketAggrSendingQueue for preparing aggregations and sending them.", featureBucketAggrMetadataList.size());
+			logger.info("Got {} featureBucketAggrSendingQueue for preparing aggregations and sending them.", featureBucketAggrSendingQueueList.size());
 		}
     	for(FeatureBucketAggrSendingQueue featureBucketAggrSendingQueue: featureBucketAggrSendingQueueList){
     		FeatureBucket bucket = null;
