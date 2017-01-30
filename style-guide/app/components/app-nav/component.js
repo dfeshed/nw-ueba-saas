@@ -32,7 +32,8 @@ export default Component.extend({
         { name: 'Fatal Errors', link: 'fatal-error' },
         { name: 'Flash Messages', link: 'flash-messages' },
         { name: 'Layouts and Workflows', link: 'layout-manager' },
-        { name: 'Modal', link: 'modal' }
+        { name: 'Modals', link: 'modal' },
+        { name: 'Panels', link: 'panels' }
       ]
     },
     {

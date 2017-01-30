@@ -199,8 +199,6 @@
 }
 
 .rsa-button-group {
-  overflow: hidden;
-
   .rsa-form-button-wrapper, .rsa-content-tethered-panel {
     float: left;
     margin-right: 1px;
@@ -222,20 +220,25 @@
 .rsa-icon-button-group {
   overflow: hidden;
 
-  .rsa-form-button-wrapper, .rsa-content-tethered-panel {
-    float: left;
-    border-top: rsa-whitespace(least) solid transparent;
+  .rsa-form-button-wrapper {
+    display: inline-block;
     border-bottom: rsa-whitespace(least) solid transparent;
-    padding-bottom: rsa-whitespace(least);
     padding-top: rsa-whitespace(least);
+    padding-bottom: rsa-whitespace(least);
     margin: 0 rsa-whitespace(least);
 
     &.is-active {
       border-bottom: rsa-whitespace(least) solid rsa-color(blue);
+      background: none!important;
+
+      button {
+        color: rsa-color(gray, lightest)!important;
+      }
     }
 
-    &:hover:not(.is-disabled):not(.is-active) {
-      border-bottom: rsa-whitespace(least) solid rsa-color(blue, base, $rsa-nearly-transparent);
+    button {
+      padding: rsa-whitespace() rsa-whitespace(less) !important;
+      // color: rsa-color(gray, light)!important;
     }
   }
 }

@@ -34,6 +34,7 @@ Router.map(function() {
       this.route('fatal-error');
       this.route('contextual-help');
       this.route('flash-messages');
+      this.route('panels');
     });
 
     this.route('chart', function() {
