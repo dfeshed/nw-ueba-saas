@@ -97,12 +97,23 @@ public class FeatureBucketsStoreSamza extends FeatureBucketsMongoStore {
 		Instant now = Instant.now();
 		Instant nextSyncWindowMillis = lastSyncSystemEpochTime.plusSeconds(storeSyncUpdateWindowInSystemSeconds);
 		if(lastSyncSystemEpochTime.equals(Instant.EPOCH) || nextSyncWindowMillis.isBefore(now) || forceSync){
-			logger.info("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
+			if(forceSync){
+				logger.info("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
+			} else{
+				logger.debug("performing syncAll forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={}",forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds);
+			}
+
 			lastSyncSystemEpochTime = now;
 
 			long lastEventEpochTime = dataSourcesSyncTimer.getLastEventEpochtime();
 			long endTimeLt = lastEventEpochTime - storeSyncThresholdInEventSeconds;
 			List<FeatureBucketMetadata> featureBucketMetadataList = featureBucketMetadataRepository.findByIsSyncedFalseAndEndTimeLessThan(endTimeLt);
+
+			if(featureBucketMetadataList.size()>0){
+				logger.info("performing syncAll on {} buckets. forceSync={} lastSyncSystemEpochTime={} storeSyncUpdateWindowInSystemSeconds={} endTimeLt={} lastEventEpochTime={} storeSyncThresholdInEventSeconds={}",
+						featureBucketMetadataList.size(),forceSync,lastSyncSystemEpochTime,storeSyncUpdateWindowInSystemSeconds, endTimeLt, lastEventEpochTime, storeSyncThresholdInEventSeconds);
+			}
+
 			Map<String, List<FeatureBucketMetadata>> featureBucketConfNameToFeatureBucketMetaDataMap = mapFeatureBucketConfNameToFeatureBucketMetadataList(featureBucketMetadataList);
 
 			String errorMsg = "";
