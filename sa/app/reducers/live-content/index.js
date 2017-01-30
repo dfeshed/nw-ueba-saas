@@ -1,4 +1,4 @@
-import redux from 'npm:redux';
+import redux from 'redux';
 
 import selections from './live-search-selections';
 import search from './live-search';

@@ -1,4 +1,4 @@
-import redux from 'npm:redux';
+import redux from 'redux';
 
 import visuals from './visuals-reducer';
 import data from './data-reducer';
