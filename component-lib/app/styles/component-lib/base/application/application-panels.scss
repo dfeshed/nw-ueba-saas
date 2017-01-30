@@ -31,7 +31,7 @@
       &.with-separator {
         margin-right: 0;
         border-right: 1px solid rsa-color(gray);
-        padding-right: calc(#{rsa-whitespace(less)} + #{rsa-whitespace()};
+        padding-right: calc(#{rsa-whitespace(less)} + #{rsa-whitespace()});
       }
 
       i {
