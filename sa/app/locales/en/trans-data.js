@@ -149,7 +149,8 @@ export default {
       lastLogin: 'Last Login',
       macAddress: 'Mac Address',
       operatingSystem: 'Operating System',
-      machineStatus: 'Machine Status'
+      machineStatus: 'Machine Status',
+      ipAddress: 'IPAddress'
     },
     modules: {
       title: 'Top Suspicious Modules',

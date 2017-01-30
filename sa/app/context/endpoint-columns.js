@@ -9,7 +9,7 @@ export default[
         field: 'Score',
         title: 'context.modules.iiocScore',
         dataType: 'riskscore',
-        width: '10%',
+        width: '100',
         class: 'rsa-module-riskscore',
         componentClass: 'rsa-content-badge-score',
         nested: 'IOCScore.Score'
@@ -17,28 +17,28 @@ export default[
       {
         field: 'Name',
         title: 'context.modules.moduleName',
-        width: '25%',
+        width: '100',
         class: 'rsa-module-moduleName',
         nested: ''
       },
       {
         field: 'AnalyticsScore',
         title: 'context.modules.analyticsScore',
-        width: '15%',
+        width: '100',
         class: 'rsa-module-riskScore',
         nested: ''
       },
       {
         field: 'GlobalMachineCount',
         title: 'context.modules.machineCount',
-        width: '15%',
+        width: '100',
         class: 'rsa-module-machineCount',
         nested: ''
       },
       {
         field: 'Signature',
         title: 'context.modules.signature',
-        width: '30%',
+        width: '100',
         class: 'rsa-module-signature',
         nested: ''
       }
@@ -54,7 +54,7 @@ export default[
       {
         field: 'LastExecuted',
         title: 'context.iiocs.lastExecuted',
-        width: '25%',
+        width: '200',
         class: 'rsa-iioc-iiocLevel2',
         dataType: 'text',
         nested: ''
@@ -62,7 +62,7 @@ export default[
       {
         field: 'IOCLevel',
         title: 'context.iiocs.iOCLevel',
-        width: '25%',
+        width: '200',
         class: 'rsa-iioc-iiocLevel1',
         dataType: 'text',
         nested: ''
@@ -70,7 +70,7 @@ export default[
       {
         field: 'Description',
         title: 'context.iiocs.description',
-        width: '25%',
+        width: '200',
         class: 'rsa-iioc-iiocLevel0',
         dataType: 'text',
         nested: ''

@@ -93,7 +93,11 @@ export default Component.extend({
 
         if (isArray(data)) {
           data.forEach((entry) => {
-            this._populateContextsData(entry);
+            if (entry.dataSourceGroup) {
+              this._populateContextsData(entry);
+            } else {
+              Logger.error('DataSource group for', entry.dataSourceName, 'is not configured');
+            }
           });
         }
       },
@@ -104,7 +108,7 @@ export default Component.extend({
   },
 
   _populateContextsData(contextData) {
-    switch (contextData.dataSourceGroup || contextData.dataSourceType) {
+    switch (contextData.dataSourceGroup) {
       case 'Modules': {
         set(this.get('model').contextData, 'additionalData', contextData.resultMeta);
         set(this.get('model').contextData, contextData.dataSourceGroup, contextData.resultList);
@@ -128,7 +132,7 @@ export default Component.extend({
         } else {
           contextData.resultList.forEach((obj) => {
             if (obj && obj.record && obj.record.length > 2) {
-              this._parseLiveConnectData(contextData.dataSourceType, obj.record);
+              this._parseLiveConnectData(contextData.dataSourceGroup, obj.record);
             } else {
               set(this.get('model').contextData, 'liveConnectData', null);
             }

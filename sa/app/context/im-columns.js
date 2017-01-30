@@ -8,7 +8,7 @@ export default [
       {
         field: 'averageAlertRiskScore',
         title: 'context.incident.averageAlertRiskScore',
-        width: '9%',
+        width: '100',
         nested: 'averageAlertRiskScore',
         class: 'rsa-module-riskscore',
         componentClass: 'rsa-content-badge-score',
@@ -17,45 +17,48 @@ export default [
       {
         field: '_id',
         title: 'context.incident._id',
-        nested: '',
-        width: '7%'
+        nested: '_id',
+        width: '80',
+        dataType: 'link',
+        path: '/do/respond/incident/{0}'
+
       },
       {
         field: 'name',
         title: 'context.incident.name',
-        width: '24%',
+        width: '50',
         nested: ''
       },
       {
         field: 'created',
         title: 'context.incident.created',
-        width: '20%',
+        width: '100',
         dataType: 'datetime',
         nested: 'created.$date'
       },
       {
         field: 'status',
         title: 'context.incident.status',
-        width: '9%',
+        width: '100',
         nested: ''
       },
 
       {
         field: 'name',
         title: 'context.incident.assignee',
-        width: '9%',
+        width: '50',
         nested: 'assignee'
       },
       {
         field: 'priority',
         title: 'context.incident.priority',
-        width: '9%',
+        width: '50',
         nested: ''
       },
       {
         field: 'alertCount',
         title: 'context.incident.alertCount',
-        width: '8%',
+        width: '50',
         nested: ''
       }
     ]
@@ -69,7 +72,7 @@ export default [
       {
         field: 'risk_score',
         title: 'context.alerts.risk_score',
-        width: '9%',
+        width: '100',
         dataType: 'riskscore',
         nested: 'alert.risk_score',
         class: 'rsa-module-riskscore',
@@ -79,32 +82,36 @@ export default [
         field: 'source',
         title: 'context.alerts.source',
         nested: 'alert',
-        width: '22%'
+        width: '100'
       },
       {
         field: 'name',
         title: 'context.alerts.name',
-        width: '9%',
+        width: '100',
         nested: 'alert'
       },
       {
         field: 'numEvents',
         title: 'context.alerts.numEvents',
-        width: '5%',
+        width: '100',
         nested: 'alert'
       },
       {
         field: 'created',
         title: 'context.alerts.created',
-        width: '25%',
+        width: '100',
         dataType: 'datetime',
         nested: 'alert.timestamp.$date'
       },
       {
         field: 'incidentId',
         title: 'context.alerts.id',
-        width: '30%',
-        nested: ''
+        width: '80',
+        nested: 'incidentId',
+        dataType: 'link',
+        path: '/do/respond/incident/{0}/details/catalyst'
+
+
       }
     ]
   }

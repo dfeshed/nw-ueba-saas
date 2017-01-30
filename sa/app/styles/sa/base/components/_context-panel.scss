@@ -12,10 +12,6 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   left: 0;
   right: 0;
 
-
-  .rsa-content-badge-score{
-    padding: 0 0.5rem 0 0.5rem ;
-  }
   @include rsa-col(justify,fill);
   &__loader {
     display: flex;
@@ -45,6 +41,23 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     height: 100%;
     width: -webkit-calc(100% - (4px));
 
+    &__itemsContainer {
+      position:relative
+    }
+    &__itemsContainer:hover &__iconlink{display:block}
+    &__iconlink{
+      position : absolute;
+      display:none;
+      top:20%;
+      width:40px;
+      margin:0 auto;
+      left:0px;
+      right:-60%;
+    }
+    .link{
+      color:rsa-color(blue,base);
+      text-decoration:underline;
+    }
     &__heading-text {
       @include rsa-font(header, large);
       color: rsa-color(gray, lighter);
@@ -116,24 +129,10 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       .rsa-data-table {
         padding-left: rsa-whitespace(base);
         &-header-cell{
-
-
           @include rsa-font(header, small);
-          white-space: nowrap;
-          text-overflow: ellipsis;
-        }
-        &-body-row{
-          width: 100%;
-          padding: 0 0;
-          align-items: baseline;
         }
         &-body-cell{
-
           color: $font-highlight-color;
-          @include rsa-font(paragraph);
-          white-space: nowrap;
-          text-overflow: ellipsis;
-
           .iioc-description {
             white-space: pre-wrap;
           }
@@ -141,7 +140,7 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       }
 
       .progress-bar{
-        width: 100%;
+        width: 30%;
       }
     }
 

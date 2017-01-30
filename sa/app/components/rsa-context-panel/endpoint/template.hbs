@@ -44,6 +44,12 @@
     <vbox xs='2'>
       <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.machineStatus'}}</div>
       <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.MachineStatus}}</div>
+
+      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.ipAddress'}}</div>
+      <div class="rsa-context-panel__endpoint__host-details__field-value rsa-context-panel__endpoint link">
+        <a href={{concat 'ecatui://' (get data "LocalIPAddress")  }} target="_blank">{{data.LocalIPAddress}}</a>
+      </div>
+
     </vbox>
   </hbox>
   <div class="rsa-context-panel__endpoint__border"></div>

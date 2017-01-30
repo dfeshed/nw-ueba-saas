@@ -1,6 +1,6 @@
 export default [
   {
-    dataSourceType: 'LiveConnect',
+    dataSourceGroup: 'LiveConnect',
     dataStore: 'RelatedIps',
     header: 'relatedIpsCount',
     title: 'context.lc.relatedIps',
@@ -60,7 +60,7 @@ export default [
     ]
   },
   {
-    dataSourceType: 'LiveConnect',
+    dataSourceGroup: 'LiveConnect',
     dataStore: 'RelatedFiles',
     header: 'relatedFilesCount',
     title: 'context.lc.relatedFiles',
@@ -108,7 +108,7 @@ export default [
     ]
   },
   {
-    dataSourceType: 'LiveConnect',
+    dataSourceGroup: 'LiveConnect',
     header: 'relatedDomainsCount',
     dataStore: 'RelatedDomains',
     title: 'context.lc.relatedDomains',
