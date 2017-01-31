@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 const {
   Service,
@@ -40,7 +41,7 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      return this.get('_selected');
+      return this.get('_selected') || this.get('options').findBy('key', config.timeFormatDefault);
     },
 
     set(key, value) {

@@ -15,6 +15,16 @@ module.exports = function(environment) {
     environment: environment,
     rootURL: '/',
     locationType: 'auto',
+    dateFormatDefault: 'MM/dd/yyyy',
+    timeFormatDefault: 'HR24',
+    timezoneDefault: 'UTC',
+    landingPageDefault: '/do/respond',
+    timezones: [{
+      'displayLabel': 'UTC (GMT+00:00)',
+      'offset': 'GMT+00:00',
+      'zoneId': 'UTC'
+    }],
+    roles: [],
     flashMessageDefaults: {
       timeout: 5000,
       iconSize: 'larger',
@@ -94,6 +104,13 @@ module.exports = function(environment) {
   if (environment === 'development') {
     ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
 
+    ENV.roles = [
+      'viewAppliances',
+      'searchLiveResources',
+      'accessInvestigationModule',
+      'accessIncidentModule'
+    ];
+
     // ENV.APP.LOG_RESOLVER = true;
     // ENV.APP.LOG_ACTIVE_GENERATION = true;
     // ENV.APP.LOG_TRANSITIONS = true;
@@ -107,6 +124,12 @@ module.exports = function(environment) {
     // this allows connections to be made to mock-sever running on
     ENV.contentSecurityPolicy['connect-src'] = ["'self' ws: wss:", mockServerUrl];
 
+    ENV.roles = [
+      'viewAppliances',
+      'searchLiveResources',
+      'accessInvestigationModule',
+      'accessIncidentModule'
+    ];
 
     // Testem prefers this...
     ENV.locationType = 'none';

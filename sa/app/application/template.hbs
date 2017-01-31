@@ -19,18 +19,32 @@
 {{#if isFullyAuthenticated}}
   {{#rsa-application-header version=version title=title}}
     {{#if features.showRespondRoute}}
-      {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}{{t "respond.title"}}{{/link-to}}
+      {{#if accessControl.hasRespondAccess}}
+        {{#link-to "protected.respond" class="rsa-header-nav-respond js-test-nav-respond-link"}}{{t "respond.title"}}{{/link-to}}
+      {{/if}}
     {{/if}}
+
     {{#if features.showInvestigateRoute}}
-      {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}{{t "investigate.title"}}{{/link-to}}
+      {{#if accessControl.hasInvestigateAccess}}
+        {{#link-to "protected.investigate" class="rsa-header-nav-investigate js-test-nav-investigate-link"}}{{t "investigate.title"}}{{/link-to}}
+      {{/if}}
     {{/if}}
-    <a href="/unified/dashboard" class="rsa-header-nav-monitor js-test-nav-monitor-link">{{t "monitor.title"}}</a>
-    {{#if features.showLiveContentRoute}}
-      {{#link-to "protected.configure.live-content" class="rsa-header-nav-live js-test-nav-live-link"}}{{t "config.title"}}{{/link-to}}
-    {{else}}
-      <a href="/live/search" class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
+
+    {{#if accessControl.hasMonitorAccess}}
+      <a href="/unified/dashboard" class="rsa-header-nav-monitor js-test-nav-monitor-link">{{t "monitor.title"}}</a>
     {{/if}}
-    <a href="/admin" class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
+
+    {{#if accessControl.hasConfigAccess}}
+      {{#if (and features.showLiveContentRoute (eq accessControl.configUrl '/live/search'))}}
+        {{#link-to "protected.configure.live-content" class="rsa-header-nav-live js-test-nav-live-link"}}{{t "config.title"}}{{/link-to}}
+      {{else}}
+        <a href={{accessControl.configUrl}} class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
+      {{/if}}
+    {{/if}}
+
+    {{#if accessControl.hasAdminAccess}}
+      <a href={{accessControl.adminUrl}} class="rsa-header-nav-admin js-test-nav-admin-link">{{t "admin.title"}}</a>
+    {{/if}}
   {{/rsa-application-header}}
 
   {{rsa-application-action-bar}}

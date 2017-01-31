@@ -1,3 +1,5 @@
+
+
 var determineSocketUrl = require('../../../common').determineSocketUrl;
 
 module.exports = function(environment) {
@@ -19,6 +21,15 @@ module.exports = function(environment) {
         requestDestination: '/ws/administration/global/set/user/preferences'
       }
     },
+
+    permissions: {
+      socketUrl,
+      getPermissions: {
+        subscriptionDestination: '/user/queue/administration/rbac/get/permissions',
+        requestDestination: '/ws/administration/rbac/get/permissions'
+      }
+    },
+
     timezones: {
       socketUrl,
       getTimezones: {
@@ -26,6 +37,7 @@ module.exports = function(environment) {
         requestDestination: '/ws/administration/timezones/get'
       }
     }
+
 
   };
 };

@@ -5,6 +5,7 @@
  */
 import Ember from 'ember';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
+import config from '../config/environment';
 
 const {
   Route,
@@ -18,8 +19,8 @@ const {
     all
   },
   run: {
-    cancel,
-    later
+    later,
+    cancel
   }
  } = Ember;
 
@@ -30,6 +31,9 @@ const {
  * @public
  */
 export default Route.extend(AuthenticatedRouteMixin, {
+
+  accessControl: service(),
+
   session: service(),
 
   dateFormat: service(),
@@ -69,13 +73,30 @@ export default Route.extend(AuthenticatedRouteMixin, {
   },
 
   model() {
-    const timezonesPromise = new Promise((resolve) => {
+    localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);
+    this.set('i18n.locale', config.i18n.defaultLocale);
+
+    const permissionsPromise = new Promise((resolve, reject) => {
       const forceResolve = later(() => {
-        this.set('timezone.options', [{
-          'displayLabel': 'UTC (GMT+00:00)',
-          'offset': 'GMT+00:00',
-          'zoneId': 'UTC'
-        }]);
+        resolve();
+      }, 3500);
+
+      this.request.promiseRequest({
+        method: 'getPermissions',
+        modelName: 'permissions',
+        query: {}
+      }).then((response) => {
+        this.set('accessControl.roles', response.data);
+        cancel(forceResolve);
+        resolve();
+      }).catch((error) => {
+        Logger.error('Error loading permissions', error);
+        reject(error);
+      });
+    });
+
+    const timezonesPromise = new Promise((resolve, reject) => {
+      const forceResolve = later(() => {
         resolve();
       }, 3500);
 
@@ -89,21 +110,12 @@ export default Route.extend(AuthenticatedRouteMixin, {
         resolve();
       }).catch((error) => {
         Logger.error('Error loading timezones', error);
+        reject(error);
       });
     });
 
-    const preferencesPromise = new Promise((resolve) => {
+    const preferencesPromise = new Promise((resolve, reject) => {
       const forceResolve = later(() => {
-        localStorage.setItem('rsa-i18n-default-locale', 'en-us');
-
-        this.setProperties({
-          'i18n.locale': 'en-us',
-          'dateFormat.selected': 'MM/dd/yyyy',
-          'timeFormat.selected': 'HR24',
-          'timezone.selected': 'UTC',
-          'landingPage.selected': '/do/respond'
-        });
-
         resolve();
       }, 3500);
 
@@ -135,10 +147,39 @@ export default Route.extend(AuthenticatedRouteMixin, {
         resolve();
       }).catch((error) => {
         Logger.error('Error loading preferences', error);
+        reject(error);
       });
     });
 
-    return all([preferencesPromise, timezonesPromise]);
+    return all([preferencesPromise, timezonesPromise, permissionsPromise]).then(() => {
+      if (!this.get('accessControl.hasMonitorAccess')) {
+        const monitorOption = this.get('landingPage.options').findBy('key', '/unified');
+        this.get('landingPage.options').removeObject(monitorOption);
+      }
+
+      if (!this.get('accessControl.hasRespondAccess')) {
+        const respondOption = this.get('landingPage.options').findBy('key', '/do/respond');
+        this.get('landingPage.options').removeObject(respondOption);
+      }
+
+      if (!this.get('accessControl.hasInvestigateAccess')) {
+        const investigateOption = this.get('landingPage.options').findBy('key', '/do/investigate');
+        this.get('landingPage.options').removeObject(investigateOption);
+
+        const investigateClassicOption = this.get('landingPage.options').findBy('key', '/investigation');
+        this.get('landingPage.options').removeObject(investigateClassicOption);
+      }
+
+      if (!this.get('accessControl.hasAdminAccess')) {
+        const adminOption = this.get('landingPage.options').findBy('key', this.get('accessControl.adminUrl'));
+        this.get('landingPage.options').removeObject(adminOption);
+      }
+
+      if (!this.get('accessControl.hasConfigAccess')) {
+        const configOption = this.get('landingPage.options').findBy('key', this.get('accessControl.configUrl'));
+        this.get('landingPage.options').removeObject(configOption);
+      }
+    });
   },
 
   actions: {

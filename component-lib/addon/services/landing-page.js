@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 const {
   Service,
@@ -11,27 +12,33 @@ const {
 } = Ember;
 
 export default Service.extend({
+
+  accessControl: service(),
   request: service(),
 
-  options: [{
-    key: '/do/respond',
-    label: 'userPreferences.defaultLandingPage.respond'
-  }, {
-    key: '/do/investigate',
-    label: 'userPreferences.defaultLandingPage.investigate'
-  }, {
-    key: '/investigation',
-    label: 'userPreferences.defaultLandingPage.investigateClassic'
-  }, {
-    key: '/unified',
-    label: 'userPreferences.defaultLandingPage.dashboard'
-  }, {
-    key: '/live',
-    label: 'userPreferences.defaultLandingPage.live'
-  }, {
-    key: '/admin',
-    label: 'userPreferences.defaultLandingPage.admin'
-  }],
+  options: computed(function() {
+    return [
+      {
+        key: '/do/respond',
+        label: 'userPreferences.defaultLandingPage.respond'
+      }, {
+        key: '/do/investigate',
+        label: 'userPreferences.defaultLandingPage.investigate'
+      }, {
+        key: '/investigation',
+        label: 'userPreferences.defaultLandingPage.investigateClassic'
+      }, {
+        key: '/unified',
+        label: 'userPreferences.defaultLandingPage.dashboard'
+      }, {
+        key: this.get('accessControl.configUrl'),
+        label: 'userPreferences.defaultLandingPage.live'
+      }, {
+        key: this.get('accessControl.adminUrl'),
+        label: 'userPreferences.defaultLandingPage.admin'
+      }
+    ];
+  }),
 
   persist(value) {
     this.get('request').promiseRequest({
@@ -49,7 +56,7 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      return this.get('_selected');
+      return this.get('_selected') || this.get('options').findBy('key', config.landingPageDefault);
     },
 
     set(key, value) {

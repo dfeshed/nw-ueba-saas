@@ -2459,9 +2459,9 @@ ember-redux-actions@0.1.1:
     broccoli-merge-trees "^1.2.1"
     ember-cli-babel "^5.1.7"
 
-ember-redux-pack-shim@0.0.2:
-  version "0.0.2"
-  resolved "https://registry.npmjs.org/ember-redux-pack-shim/-/ember-redux-pack-shim-0.0.2.tgz#51a1034ba6a60899d97486bdbbd4e25921beaf56"
+ember-redux-pack-shim@0.0.3:
+  version "0.0.3"
+  resolved "https://registry.npmjs.org/ember-redux-pack-shim/-/ember-redux-pack-shim-0.0.3.tgz#9eb71e9bf654cb0e99fd08fab14f9bc66be3309c"
   dependencies:
     broccoli-merge-trees "^1.1.4"
     broccoli-webpack "^1.0.0"

@@ -5,6 +5,14 @@ module.exports = function(environment) {
     environment: environment,
     rootURL: '/',
     locationType: 'hash',
+    dateFormatDefault: 'MM/dd/yyyy',
+    timeFormatDefault: 'HR24',
+    timezoneDefault: 'UTC',
+    timezones: [{
+      'displayLabel': 'UTC (GMT+00:00)',
+      'offset': 'GMT+00:00',
+      'zoneId': 'UTC'
+    }],
     flashMessageDefaults: {
       timeout: 5000,
       iconSize: 'larger',

@@ -1,4 +1,5 @@
 import Ember from 'ember';
+import config from 'ember-get-config';
 
 const {
   Service,
@@ -14,7 +15,7 @@ export default Service.extend({
 
   request: service(),
 
-  options: null,
+  options: config.timezones || [],
 
   persist(value) {
     this.get('request').promiseRequest({
@@ -32,7 +33,7 @@ export default Service.extend({
 
   selected: computed({
     get() {
-      return this.get('_selected');
+      return this.get('_selected') || this.get('options').findBy('zoneId', config.timezoneDefault);
     },
 
     set(key, value) {

@@ -13,6 +13,8 @@ export default Controller.extend({
 
   session: service(),
 
+  accessControl: service(),
+
   isFullyAuthenticated: computed('session.isAuthenticated', 'currentPath', function() {
     if (!this.get('session.isAuthenticated')) {
       return false;
