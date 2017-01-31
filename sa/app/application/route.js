@@ -2,7 +2,9 @@ import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 
 const {
+  $,
   Route,
+  RSVP,
   inject: {
     service
   },
@@ -11,6 +13,21 @@ const {
 
 export default Route.extend(ApplicationRouteMixin, {
   fatalErrors: service(),
+  session: service(),
+  userIdle: service(),
+
+  init() {
+    if (!testing) {
+      // After 10 idle minutes, logout
+      this.get('userIdle').on('idleChanged', (isIdle) => {
+        if (isIdle) {
+          this._logout();
+        }
+      });
+    }
+
+    this._super(...arguments);
+  },
 
   _initialize: function() {
     const session = this.get('session').get('session');
@@ -27,6 +44,9 @@ export default Route.extend(ApplicationRouteMixin, {
 
     clearFatalErrorQueue() {
       this.get('fatalErrors').clearQueue();
+    },
+    logout() {
+      this._logout();
     }
   },
 
@@ -38,6 +58,28 @@ export default Route.extend(ApplicationRouteMixin, {
     } else {
       localStorage.removeItem('_redirecting');
     }
+  },
+
+  _logout() {
+    return new RSVP.Promise((resolve) => {
+      const csrfKey = this.get('csrfLocalstorageKey');
+
+      $.ajax({
+        type: 'POST',
+        url: '/oauth/logout',
+        timeout: 3000,
+        headers: {
+          'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
+        },
+        data: {
+          access_token: this.get('session').get('data.authenticated.access_token')
+        }
+      })
+        .always(() => {
+          this.get('session').invalidate();
+          resolve();
+        });
+    });
   },
 
   sessionAuthenticated() {
