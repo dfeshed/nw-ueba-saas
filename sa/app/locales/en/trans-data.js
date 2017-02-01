@@ -281,6 +281,19 @@ export default {
       suspiciousRiskDesc: 'Research and analysis indicates potentially threatening activity',
       riskFeedback: 'Risk Assessment Feedback'
     },
+    error: {
+      error: 'Error processing stream call for context lookup.',
+      dataSource: 'Error processing stream call for data source.',
+      noData: 'No context data present for this DataSource.',
+      'datasource.query.not.supported': 'Context data is query not supported for given meta.',
+      'transport.http.read.failed': 'Context data is not available as the data source is down.',
+      'transport.ad.read.failed': 'Context data is not available as the data source is not reachable.',
+      'transport.init.failed': 'Context data is not available as the connection to the data source is timed out.',
+      'transport.not.found': 'Context data is not available as the data source is down.',
+      'transport.create.failed': 'Context data is not available as the Data Source is down.',
+      'transport.refresh.failed': 'Context data is not available as the Data Source is down.',
+      'transport.connect.failed': 'Context data is not available as the Data Source is down.'
+    },
     footer: {
       viewAll: 'VIEW All'
     }

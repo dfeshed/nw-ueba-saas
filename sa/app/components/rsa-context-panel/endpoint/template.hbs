@@ -1,56 +1,58 @@
 {{#each endpointData as |data|}}
   <div class="rsa-context-panel__endpoint__heading-text">
-    {{t 'context.hostSummary.title'}}
+    {{t 'context.hostSummary.title'}}  
     <span title={{t 'context.hostSummary.title'}}>{{rsa-icon style='lined' name='information-circle'}}</span>
   </div>
-  <hbox class="rsa-context-panel__endpoint__host-details">
-    <vbox class='rsa-context-panel__endpoint__host-details__badge-score' xs='2'>
-      {{rsa-content-badge-score
-      label=(t 'context.hostSummary.riskScore')
-      class="rsa-context-risk-score"
-      score=data.IIOCScore
-      size='small'
-      style=(context/risk-score-to-badge-level data.IIOCScore)
-      }}
-    </vbox>
+  {{#if errorMessage}}  
+    <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
+  {{else}}
+    <hbox class="rsa-context-panel__endpoint__host-details">
+      <vbox class='rsa-context-panel__endpoint__host-details__badge-score' xs='2'>
+        {{rsa-content-badge-score
+          label=(t 'context.hostSummary.riskScore')
+          class="rsa-context-risk-score"
+          score=data.IIOCScore
+          size='small'
+          style=(context/risk-score-to-badge-level data.IIOCScore)
+        }}
+      </vbox>
+      <vbox xs='2'>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.modulesCount'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{endpointAdditionalData.total_modules_count}}</div>
 
-    <vbox xs='2'>
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.modulesCount'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{endpointAdditionalData.total_modules_count}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.iioc0'}}</div>  
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.IIOCLevel0}}</div>
 
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.iioc0'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.IIOCLevel0}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.iioc1'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.IIOCLevel1}}</div>
+      </vbox>
+      <vbox xs='3'>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.lastUpdated'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.LastScan}}</div>
 
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.iioc1'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.IIOCLevel1}}</div>
-    </vbox>
-    <vbox xs='3'>
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.lastUpdated'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.LastScan}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.adminStatus'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.AdminStatus}}</div>
 
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.adminStatus'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.AdminStatus}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.lastLogin'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.LastSeen}}</div>
+      </vbox>
+      <vbox xs='3'>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.macAddress'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.MAC}}</div>
 
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.lastLogin'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.LastSeen}}</div>
-    </vbox>
-    <vbox xs='3'>
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.macAddress'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.MAC}}</div>
-
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.operatingSystem'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.OperatingSystem}}</div>
-    </vbox>
-    <vbox xs='2'>
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.machineStatus'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.MachineStatus}}</div>
-
-      <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.ipAddress'}}</div>
-      <div class="rsa-context-panel__endpoint__host-details__field-value rsa-context-panel__endpoint link">
-        <a href={{concat 'ecatui://' (get data "LocalIPAddress")  }} target="_blank">{{data.LocalIPAddress}}</a>
-      </div>
-
-    </vbox>
-  </hbox>
-  <div class="rsa-context-panel__endpoint__border"></div>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.operatingSystem'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.OperatingSystem}}</div>
+      </vbox>
+      <vbox xs='2'>
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.machineStatus'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value">{{data.MachineStatus}}</div>
+          
+        <div class="rsa-context-panel__endpoint__host-details__field-name">{{t 'context.hostSummary.ipAddress'}}</div>
+        <div class="rsa-context-panel__endpoint__host-details__field-value rsa-context-panel__endpoint link">
+          <a href={{concat 'ecatui://' (get data "LocalIPAddress")  }} target="_blank">{{data.LocalIPAddress}}</a>
+        </div>  
+      </vbox>
+    </hbox>
+    <div class="rsa-context-panel__endpoint__border"></div>
+  {{/if}}
 {{/each}}

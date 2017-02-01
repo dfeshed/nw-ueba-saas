@@ -13,15 +13,19 @@ const {
   run,
   set,
   Component,
-  Logger
+  Logger,
+  String: {
+    htmlSafe
+  }
 } = Ember;
 
 export default Component.extend({
 
   classNames: 'rsa-context-panel-header',
-
   entity: null,
   active: 'overview',
+  hasResponse: false,
+  errorMessage: null,
   dynamictabs: {
     tabs: TabList
   },
@@ -89,8 +93,12 @@ export default Component.extend({
       },
       streamOptions: { requireRequestId: false },
       onResponse: ({ data }) => {
+        set(this, 'hasResponse', true);
+        if (!data || data.length === 0) {
+          set(this, 'errorMessage', this.get('i18n').t('context.error.error'));
+          return;
+        }
         Logger.info('pushing data to context model');
-
         if (isArray(data)) {
           data.forEach((entry) => {
             if (entry.dataSourceGroup) {
@@ -101,13 +109,40 @@ export default Component.extend({
           });
         }
       },
-      onError(response) {
+      onError: (response) => {
+        if (this.hasResponse) {
+          return;
+        }
+        set(this, 'hasResponse', true);
+        set(this, 'errorMessage', this.get('i18n').t('context.error.error') + response);
         Logger.error('Error processing stream call for context lookup.', response);
       }
     });
   },
-
+  _displayDataSourceError(contextData) {
+    if (contextData.errorMessage) {
+      let errorMessage = this.get('i18n').t(`context.error.${contextData.errorMessage}`);
+      if (errorMessage.string) {
+        if (contextData.errorParameters) {
+          errorMessage = errorMessage.string;
+          for (const [key, value] of Object.entries(contextData.errorParameters)) {
+            errorMessage = errorMessage.replace(`{${key}}`, value);
+          }
+        }
+        contextData.errorMessage = htmlSafe(errorMessage);
+      } else {
+        contextData.errorMessage = this.get('i18n').t('context.error.dataSource');
+      }
+      Logger.error('Error processing stream call for context lookup for data source ->', contextData.dataSourceName);
+    }
+    return contextData;
+  },
   _populateContextsData(contextData) {
+    contextData = this._displayDataSourceError(contextData);
+    if (contextData.errorMessage) {
+      set(this.get('model').contextData, `${contextData.dataSourceGroup}_ERROR`, contextData.errorMessage);
+      return;
+    }
     switch (contextData.dataSourceGroup) {
       case 'Modules': {
         set(this.get('model').contextData, 'additionalData', contextData.resultMeta);
@@ -141,7 +176,6 @@ export default Component.extend({
         break;
       default:
         set(this.get('model').contextData, contextData.dataSourceGroup, contextData.resultList);
-
     }
   },
 
@@ -173,6 +207,8 @@ export default Component.extend({
 
     closeAction() {
       this.sendAction('closePanel');
+      set(this, 'hasResponse', false);
+      set(this, 'errorMessage', null);
     }
   },
 

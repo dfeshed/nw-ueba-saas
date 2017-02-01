@@ -16,13 +16,20 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
   &__loader {
     display: flex;
     justify-content: center;
-    //height: 100%;
+    height: 100%;
     align-items: center;
   }
-
+  &__error-text {
+    @include rsa-font();
+    color: $font-fade-color;
+    text-align: center;
+    padding: rsa-whitespace(least);
+    font-style: italic;
+  }
   &-header {
     @include rsa-vendor-prefix(flex-grow,0);
     @include rsa-vendor-prefix(flex-shrink,0);
+    height: 100%;  
   }
 
   &__body{

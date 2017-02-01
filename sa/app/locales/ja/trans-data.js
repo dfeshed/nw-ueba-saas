@@ -281,6 +281,19 @@ export default {
       suspiciousRiskDesc: 'ja_Research and analysis indicates potentially threatening activity',
       riskFeedback: 'ja_Risk Assessment Feedback'
     },
+    error: {
+      error: 'ja_Error processing stream call for context lookup.',
+      dataSource: 'ja_Error processing stream call for data source.',
+      noData: 'ja_No context data present for this DataSource.',
+      'datasource.query.not.supported': 'ja_Context data is query not supported for given meta.',
+      'transport.http.read.failed': 'ja_Context data is not available as the data source is down.',
+      'transport.ad.read.failed': 'ja_Context data is not available as the data source is not reachable.',
+      'transport.init.failed': 'ja_Context data is not available as the connection to the data source is timed out.',
+      'transport.not.found': 'ja_Context data is not available as the data source is down.',
+      'transport.create.failed': 'ja_Context data is not available as the Database is down.',
+      'transport.refresh.failed': 'ja_Context data is not available as the Database is down.',
+      'transport.connect.failed': 'ja_Context data is not available as the Data Source is down.'
+    },
     footer: {
       viewAll: 'ja_VIEW All'
     }

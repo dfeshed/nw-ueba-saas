@@ -1,8 +1,10 @@
-{{#if data}}
-  <div class="heading-text" >
-    {{title}}
-    <span title= {{title}}>{{rsa-icon style='lined' name='information-circle'}}</span>
-  </div>
+<div class="heading-text" >
+  {{title}}
+  <span title= {{title}}>{{rsa-icon style='lined' name='information-circle'}}</span>
+</div>
+{{#if errorMessage}}  
+  <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
+{{else if data}}
   <hbox class="rsa-context-tree-table__table_header">
     {{#each columnsConfig as |columnHeaders|}}
       <vbox xs="2">
@@ -10,7 +12,7 @@
       </vbox>
     {{/each}}
   </hbox>
-
+  
   {{#each data as |rows|}}
     {{#rsa-context-tree-table/header isCollapsed=true label=(accordion-label rows columnsConfig) treeTable=true}}
       <hbox>
@@ -47,4 +49,6 @@
   {{#if (is-equal tabdata 'overview')}}
     <div class="border"><button class="button" {{action 'activate' }}>{{t 'context.footer.viewAll'}}</button></div>
   {{/if}}
-{{/if}}
+{{else}}
+    <div class='rsa-context-panel__error-text'>{{t 'context.error.noData'}}</div>
+{{/if}} 

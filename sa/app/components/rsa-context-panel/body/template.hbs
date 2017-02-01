@@ -3,14 +3,15 @@
     {{rsa-context-panel/endpoint
       endpointData=contextData.Machines
       endpointAdditionalData=contextData.additionalData
+      errorMessage=(get contextData 'Machines_ERROR')
     }}
   {{/if}}
   {{#each datasourceList as |columns index|}}
-
     {{#if (or (eq tabdata columns.dataSourceGroup)(eq tabdata 'overview')) }}
       {{rsa-context-data-table
         data=(top-records (get contextData columns.dataSourceGroup) tabdata)
         title=(t columns.title )
+        errorMessage=(get contextData (concat columns.dataSourceGroup '_ERROR'))
         modulesColumnListConfig=columns.columns
         headerdata=(t columns.header)
         footerdata=columns.footer
@@ -21,7 +22,13 @@
   {{/each}}
 
   {{#if (or (eq tabdata 'Lists')(eq tabdata 'overview'))}}
-    {{rsa-context-tree-table data=(top-records contextData.LIST tabdata) title=(t multiColumnList.title ) columnsConfig=multiColumnList.columns tabdata=tabdata type='Lists'  activatePanel=(action 'activate' 'Lists')}}
+    {{rsa-context-tree-table 
+      data=(top-records contextData.LIST tabdata)
+      title=(t multiColumnList.title ) 
+      columnsConfig=multiColumnList.columns 
+      tabdata=tabdata type='Lists'
+      errorMessage=(get contextData 'LIST_ERROR')
+      activatePanel=(action 'activate' 'Lists')}}
   {{/if}}
 
   {{rsa-context-panel/live-connect tabdata=tabdata model=model contextData=contextData}}
