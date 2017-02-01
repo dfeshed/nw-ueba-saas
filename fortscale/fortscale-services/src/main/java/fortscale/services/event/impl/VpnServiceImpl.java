@@ -6,10 +6,12 @@ import fortscale.domain.events.dao.VpnSessionRepository;
 import fortscale.geoip.GeoIPInfo;
 import fortscale.services.event.VpnService;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.codehaus.jackson.annotate.JsonProperty;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +54,6 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	private int retentionInSeconds;
 	@Value("${vpnsession.retention.enabled}")
 	private boolean retentionEnabled;
-
 
 	private GeoHoppingBlackListRepresentation geoHoppingBlackListRepresentation;
 
@@ -167,23 +168,38 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 	}
 
 	@Override
-	public VpnSession updateCloseVpnSession(VpnSession vpnSessionUpdate) {
+	public VpnSession updateCloseVpnSession(VpnSession vpnSessionUpdate, boolean createVpnSessionWithNoOpenEvent) {
 		VpnSession vpnSession = findOpenVpnSession(vpnSessionUpdate);
+
+		// No open session found
 		if(vpnSession == null){
-			logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
-			return null;
+			// We don't want to save the close session if we didn't find the open
+			// or we don't have the duration for the session
+			if (!createVpnSessionWithNoOpenEvent || vpnSessionUpdate.getDuration() == null){
+				logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
+				return null;
+			}else{
+				// We want to save the close session without the open by calculating the missing data
+				DateTime startTime = vpnSessionUpdate.getClosedAt().minus(Duration.standardSeconds(vpnSessionUpdate.getDuration().longValue()));
+				vpnSessionUpdate.setCreatedAt(startTime);
+				vpnSessionUpdate.setCreatedAtEpoch(startTime.getMillis() / 1000);
+				vpnSessionUpdate.setModifiedAt(new DateTime());
+				vpnSession = vpnSessionUpdate;
+			}
+		// We found the open session - we will update the document with the closing info
+		}else {
+			vpnSession.setClosedAt(vpnSessionUpdate.getClosedAt());
+			vpnSession.setClosedAtEpoch(vpnSession.getClosedAt().getMillis());
+			vpnSession.setDataBucket(vpnSessionUpdate.getDataBucket());
+			vpnSession.setDuration(vpnSessionUpdate.getDuration());
+			vpnSession.setReadBytes(vpnSessionUpdate.getReadBytes());
+			vpnSession.setWriteBytes(vpnSessionUpdate.getWriteBytes());
+			vpnSession.setTotalBytes(vpnSessionUpdate.getTotalBytes());
+
+			vpnSession.setModifiedAt(new DateTime());
 		}
 
-		vpnSession.setClosedAt(vpnSessionUpdate.getClosedAt());
-		vpnSession.setClosedAtEpoch(vpnSession.getClosedAt().getMillis());
-		vpnSession.setDataBucket(vpnSessionUpdate.getDataBucket());
-		vpnSession.setDuration(vpnSessionUpdate.getDuration());
-		vpnSession.setReadBytes(vpnSessionUpdate.getReadBytes());
-		vpnSession.setWriteBytes(vpnSessionUpdate.getWriteBytes());
-		vpnSession.setTotalBytes(vpnSessionUpdate.getTotalBytes());
-				
-		vpnSession.setModifiedAt(new DateTime());
-		
+		// Save the updated document to mongo
 		vpnSessionRepository.save(vpnSession);
 		return vpnSession;
 	}
@@ -317,7 +333,19 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 			if(!vpnSession.getCountry().equals(prevCountry)){
 				logger.debug("got vpn session with different country then {}, hence all the event before it got notification if there was a need. VpnSession: sessionid({}), sourceIp({}), country ({})",prevCountry, vpnSession.getSessionId(),
 						vpnSession.getSourceIp(), vpnSession.getCountry());
-				break;
+
+				if (CollectionUtils.isEmpty(ret) && vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt())){
+					// The first vpn session we got is different from the one we expected
+					// (we expected that the first session is equals to the prevCountry)
+					// so we take it as geo hoping
+					ret.add(vpnSession);
+				}
+
+				if (!CollectionUtils.isEmpty(ret)){
+					// Only when we already found one candidate for geo hoping
+					break;
+				}
+
 			} else if(vpnSession.getClosedAt() == null || vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt())){
 				ret.add(vpnSession);
 			}

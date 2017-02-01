@@ -1,6 +1,7 @@
 package fortscale.services.event.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -152,8 +155,9 @@ public class VpnServiceImpleTest {
         assertEquals("10.80.229.52", (String) result.getSourceIp());
         assertEquals("Japan", (String) result.getCountry());
     }
+
     @Test
-    public void updateCloseVpnSession(){
+    public void updateCloseVpnSession_DontCreateVpnSessionWithNoOpen_WithOpen(){
         System.out.println("updateCloseVpnSession");
         JSONObject openEvent = (JSONObject) JSONValue.parse(OPEN_EVENT_1);
         JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_1);
@@ -163,11 +167,58 @@ public class VpnServiceImpleTest {
 
         when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(vpnOpenSession);
 
-        service.updateCloseVpnSession(vpnCloseSession);
+        service.updateCloseVpnSession(vpnCloseSession, false);
         assertEquals(1424700169626L, vpnCloseSession.getClosedAt().getMillis());
         assertEquals((Integer)23, vpnCloseSession.getDataBucket());
         assertEquals((Integer)24, vpnCloseSession.getDuration());
         assertEquals((Long)1200211L, vpnCloseSession.getWriteBytes());
         assertEquals((Long)8700211L, vpnCloseSession.getTotalBytes());
+    }
+
+    @Test
+    public void updateCloseVpnSession_DontCreateVpnSessionWithNoOpen_NoOpen(){
+        System.out.println("updateCloseVpnSession");
+        JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_1);
+
+        VpnSession vpnCloseSession = createSession(closeEvent);
+
+        when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(null);
+
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, false);
+        assertNull(result);
+    }
+
+
+    @Test
+    public void updateCloseVpnSession_CreateVpnSessionWithNoOpen(){
+        System.out.println("updateCloseVpnSession");
+        JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_Cisco_ASA);
+
+        VpnSession vpnCloseSession = createSession(closeEvent);
+
+        when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(null);
+        DateTime startTime = vpnCloseSession.getClosedAt().minus(Duration.standardSeconds(vpnCloseSession.getDuration()));
+
+        service.updateCloseVpnSession(vpnCloseSession, true);
+        assertEquals(1424700169626L, vpnCloseSession.getClosedAt().getMillis());
+        assertEquals((Integer)23, vpnCloseSession.getDataBucket());
+        assertEquals((Integer)24, vpnCloseSession.getDuration());
+        assertEquals((Long)1200211L, vpnCloseSession.getWriteBytes());
+        assertEquals(startTime, vpnCloseSession.getCreatedAt());
+        assertEquals(Long.valueOf(startTime.getMillis() / 1000), vpnCloseSession.getCreatedAtEpoch());
+    }
+
+    @Test
+    public void updateCloseVpnSession_CreateVpnSessionWithNoOpen_NoDuration(){
+        System.out.println("updateCloseVpnSession");
+        JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_Cisco_ASA);
+
+        VpnSession vpnCloseSession = createSession(closeEvent);
+        vpnCloseSession.setDuration(null);
+
+        when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(null);
+
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, true);
+        Assert.assertNull(result);
     }
 }
