@@ -93,7 +93,8 @@
     "paths": [
       "../component-lib",
       "../streaming-data",
-      "../investigate"
+      "../investigate",
+      "../recon"
     ]
   },
   "engines": {
