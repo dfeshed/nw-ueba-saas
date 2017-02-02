@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
+import csrfToken from 'component-lib/mixins/csrf-token';
 
 const {
   $,
@@ -11,7 +12,7 @@ const {
   testing
 } = Ember;
 
-export default Route.extend(ApplicationRouteMixin, {
+export default Route.extend(ApplicationRouteMixin, csrfToken, {
   fatalErrors: service(),
   session: service(),
   userIdle: service(),
@@ -63,7 +64,6 @@ export default Route.extend(ApplicationRouteMixin, {
   _logout() {
     return new RSVP.Promise((resolve) => {
       const csrfKey = this.get('csrfLocalstorageKey');
-
       $.ajax({
         type: 'POST',
         url: '/oauth/logout',
@@ -76,6 +76,7 @@ export default Route.extend(ApplicationRouteMixin, {
         }
       })
         .always(() => {
+          localStorage.removeItem(csrfKey);
           this.get('session').invalidate();
           resolve();
         });

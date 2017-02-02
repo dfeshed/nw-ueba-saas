@@ -87,15 +87,20 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
   },
 
   _logoutAndInvalidate() {
+    const csrfKey = this.get('csrfLocalstorageKey');
+
     $.ajax({
       type: 'POST',
       url: '/oauth/logout',
       timeout: 2000,
+      headers: {
+        'X-CSRF-TOKEN': localStorage.getItem(csrfKey)
+      },
       data: {
         access_token: this.get('session').get('data.authenticated.access_token')
       }
     }).always(()=>{
-      localStorage.removeItem(this.get('csrfLocalstorageKey'));
+      localStorage.removeItem(csrfKey);
       this.get('session').invalidate();
     });
   },
