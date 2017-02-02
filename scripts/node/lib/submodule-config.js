@@ -5,7 +5,8 @@ const ALL_SUBMODULES = [
   'investigate',
   'sa',
   'streaming-data',
-  'style-guide'
+  'style-guide',
+  'context'
 ];
 
 // A configuration that lists each submodule with
@@ -16,12 +17,15 @@ const saModuleDependants = {
     'recon',
     'sa',
     'style-guide',
-    'investigate'
+    'investigate',
+    'context'
   ],
   docs: [], // lol
   'mock-server': [ // This list will grow as more uses the mock-server
     'streaming-data',
-    'recon'
+    'recon',
+    'investigate',
+    'context'
   ],
   recon: [
     'sa',
@@ -34,9 +38,14 @@ const saModuleDependants = {
     'recon',
     'investigate',
     'sa',
-    'style-guide'
+    'style-guide',
+    'context'
   ],
-  'style-guide': [] // style-guide is an end state app, nothing depends on it
+  'style-guide': [], // style-guide is an end state app, nothing depends on it
+  'context': [
+    'sa',
+    'investigate'
+  ]
 };
 
 // A configuration that lists each submodule with
@@ -60,7 +69,8 @@ const saModuleDependencies = {
   investigate: [
     'component-lib',
     'streaming-data',
-    'recon'
+    'recon',
+    'mock-server'
   ],
   scripts: ALL_SUBMODULES,
   'streaming-data': [
@@ -69,6 +79,11 @@ const saModuleDependencies = {
   'style-guide': [
     'component-lib',
     'streaming-data'
+  ],
+  context: [
+    'component-lib',
+    'streaming-data',
+    'mock-server'
   ]
 };
 
