@@ -15,7 +15,8 @@ module.exports = {
   globals: {
     waitForReduxStateChange: true,
     waitForReduxStateToEqual: true,
-    dispatchReduxAction: true
+    dispatchReduxAction: true,
+    waitFor: true
   },
   rules: {
     // BASIC ESLINT RULES

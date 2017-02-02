@@ -2569,6 +2569,12 @@ ember-try@^0.2.6:
     semver "^5.1.0"
     sync-exec "^0.6.2"
 
+ember-wait-for-test-helper@0.1.1:
+  version "0.1.1"
+  resolved "https://registry.npmjs.org/ember-wait-for-test-helper/-/ember-wait-for-test-helper-0.1.1.tgz#c333470c989a09762d188611bfa575206d658118"
+  dependencies:
+    ember-cli-babel "^5.1.6"
+
 ember-wormhole@0.5.1, ember-wormhole@^0.5.1:
   version "0.5.1"
   resolved "https://registry.npmjs.org/ember-wormhole/-/ember-wormhole-0.5.1.tgz#f2a6fff13b1c037ffa83b2c9291d8b5978878e5b"
