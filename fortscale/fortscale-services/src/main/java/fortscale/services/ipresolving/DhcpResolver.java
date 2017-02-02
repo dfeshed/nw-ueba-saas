@@ -65,6 +65,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	public void addDhcpEvent(DhcpEvent event) {
 
 		if (StringUtils.isBlank(event.getAction())){
+			logger.error("DHCP Event is not containing action field. The event is: {}",event);
 			return;
 		}
 
@@ -72,14 +73,15 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 		switch(event.getAction().toUpperCase()){
 			case DhcpEvent.ASSIGN_ACTION:
 				saveDhcpRecord(event);
-
-
 			break;
 			// end previous assignment in case of expiration or release
 			case DhcpEvent.RELEASE_ACTION:
 			case DhcpEvent.EXPIRED_ACTION:
 				releaseDhcpRecord(event);
 			break;
+			default: {
+				return;
+			}
 		}
 
 
@@ -87,13 +89,14 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	}
 
 	private void releaseDhcpRecord(DhcpEvent event) {
+			logger.debug("Releasing DHCP record {}",event);
 			getMetrics().releaseHostname++;
 			// check if we have an existing dhcp event than need to be updated with expiration time
-			DhcpEvent cached = cache.get(event.getIpaddress());
-			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration() > event.getTimestampepoch()) {
-				cached.setExpiration(event.getExpiration());
-				cache.put(cached.getIpaddress(), cached);
-				removeFromBlackList(cached);
+			DhcpEvent dhcpEventFromCache = cache.get(event.getIpaddress());
+			if (dhcpEventFromCache!=null && dhcpEventFromCache.getHostname().equals(event.getHostname()) && dhcpEventFromCache.getExpiration() > event.getTimestampepoch()) {
+				dhcpEventFromCache.setExpiration(event.getExpiration());
+				cache.put(dhcpEventFromCache.getIpaddress(), dhcpEventFromCache);
+				removeFromBlackList(dhcpEventFromCache);
 			}
 
 			// update saved event in repository as well
@@ -108,7 +111,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 					removeFromBlackList(existing);
 
 					// update cache
-					if (cached==null) {
+					if (dhcpEventFromCache==null) {
 						removeFromBlackList(existing);
 						cache.put(existing.getIpaddress(), existing);
 					}
@@ -117,6 +120,9 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	}
 
 	private void saveDhcpRecord(DhcpEvent event) {
+
+		logger.debug("Adding DHCP record {}",event);
+
 		// see that we don't already have such an event in cache with the same
 		// expiration time and hostname
 		DhcpEvent cached = cache.get(event.getIpaddress());
@@ -134,9 +140,8 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
             }
         }
 
-
-		// put in cache if the cache is empty
 		if (cached==null) {
+			// if this record is not cached, update the cache
             getMetrics().addToCache++;
             cache.put(event.getIpaddress(), event);
             dhcpEventRepository.save(event);
