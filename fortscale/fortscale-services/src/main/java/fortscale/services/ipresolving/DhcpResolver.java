@@ -25,7 +25,7 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	private static Logger logger = LoggerFactory.getLogger(DhcpResolver.class);
 	@Autowired
 	private DhcpEventRepository dhcpEventRepository;
-	
+
 	@Value("${dhcp.resolver.leaseTimeInSec:5}")
 	private int graceTimeInSec;
 
@@ -63,24 +63,31 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	 * are some cases where we will not handle events as expected if they are received out of order
 	 */
 	public void addDhcpEvent(DhcpEvent event) {
-		// add assigned events to repository
-		if (StringUtils.isEmpty(event.getAction())){
+
+		if (StringUtils.isBlank(event.getAction())){
 			return;
 		}
-		switch (event.getAction().toUpperCase()){
+
+
+		// add assigned events to repository
+		switch(event.getAction().toUpperCase()){
 			case DhcpEvent.ASSIGN_ACTION:
-				saveAssignActionDhcpEvent(event);
+				saveDhcpRecord(event);
+
+
 				break;
+			// end previous assignment in case of expiration or release
 			case DhcpEvent.RELEASE_ACTION:
 			case DhcpEvent.EXPIRED_ACTION:
-				// end previous assignment in case of expiration or release
-				expireDHCPEvent(event);
-				break;
-
+				releaseDhcpRecord(event);
+			break;
 		}
+
+
+
 	}
 
-	private void expireDHCPEvent(DhcpEvent event) {
+	private void releaseDhcpRecord(DhcpEvent event) {
 		getMetrics().releaseHostname++;
 		// check if we have an existing dhcp event than need to be updated with expiration time
 		DhcpEvent cached = cache.get(event.getIpaddress());
@@ -110,13 +117,13 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
         }
 	}
 
-	private void saveAssignActionDhcpEvent(DhcpEvent event) {
+	private void saveDhcpRecord(DhcpEvent event) {
 		// see that we don't already have such an event in cache with the same
 		// expiration time and hostname
 		DhcpEvent cached = cache.get(event.getIpaddress());
 		if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration()>= event.getExpiration()) {
             getMetrics().dhcpAlreadyInCache++;
-			return;
+            return;
         }
 
 		// get the latest assignment from the repository if cache is empty
@@ -167,7 +174,6 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
                 }
             }
         }
-		return;
 	}
 
 	public DhcpEvent getLatestDhcpEventBeforeTimestamp(String ip, long ts) {
