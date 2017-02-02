@@ -1,120 +1,108 @@
-{{#if model.lcLoading}}
-
-  <div class="rsa-context-panel__loader">{{rsa-loader size='largest'}}</div>
-
-{{else if liveConnectData}}
-
-  {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.reviewStatus'}}{{/rsa-content-section-header}}
-  <hbox class="rsa-context-panel__liveconnect__reviewstatus__col-1">
-    <div class="rsa-context-panel__liveconnect__field">
-      {{rsa-content-definition label=(t 'context.lc.status') value=liveConnectData.feedback.status}}
-    </div>
-    <div class="rsa-context-panel__liveconnect__field">
-      {{rsa-content-definition label=(t 'context.lc.reviewer') value='##Tony##'}}
-    </div>
-    <div class="rsa-context-panel__liveconnect__field">
-      <vbox>
-        {{rsa-content-definition label=(t 'context.lc.modifiedDate')}}
-        {{rsa-content-datetime timestamp=liveConnectData.feedback.dateMarked}}
-      </vbox>
-    </div>
-  </hbox>
-
-  {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskAssessment'}}{{/rsa-content-section-header}}
-  <hbox>
-    <div class="rsa-context-panel__liveconnect__risk-badge">{{rsa-content-badge-score class=riskBadgeStyle score=liveConnectData.risk size='small'}}</div>
+{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.reviewStatus'}}{{/rsa-content-section-header}}
+<hbox class="rsa-context-panel__liveconnect__reviewstatus__col-1">
+  <div class="rsa-context-panel__liveconnect__field">
+    {{rsa-content-definition label=(t 'context.lc.status') value=liveConnectData.feedback.status}}
+  </div>
+  <div class="rsa-context-panel__liveconnect__field">
     <vbox>
-      <div class="rsa-context-panel__liveconnect__risk-description">{{t riskDescription}}</div>
-      <div class="rsa-context-panel__liveconnect__field">{{rsa-content-definition label=(t 'context.lc.riskReason')}}</div>
-      {{#each riskReasonList as |reason|}}
-        <div class="rsa-context-panel__liveconnect__risk-reason">{{reason}}</div>
-      {{/each}}
+      {{rsa-content-definition label=(t 'context.lc.modifiedDate')}}
+      {{rsa-content-datetime timestamp=liveConnectData.feedback.dateMarked}}
+    </vbox>
+  </div>
+</hbox>
+
+{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskAssessment'}}{{/rsa-content-section-header}}
+<hbox>
+  <div class="rsa-context-panel__liveconnect__risk-badge">{{rsa-content-badge-score class=riskBadgeStyle score=liveConnectData.risk size='small'}}</div>
+  <vbox>
+    <div class="rsa-context-panel__liveconnect__risk-description">{{t riskDescription}}</div>
+    <div class="rsa-context-panel__liveconnect__field">{{rsa-content-definition label=(t 'context.lc.riskReason')}}</div>
+    {{#each riskReasonList as |reason|}}
+      <div class="rsa-context-panel__liveconnect__risk-reason">{{reason}}</div>
+    {{/each}}
+  </vbox>
+</hbox>
+{{#rsa-content-section-header label='Section Heading'}}
+  {{t 'context.lc.riskIndicators'}}
+{{/rsa-content-section-header}}
+<hbox class="rsa-context-panel__liveconnect__risk-indicators">
+  {{#each riskIndicatorCategories as |category|}}
+    <vbox class="rsa-context-panel__liveconnect__risk-indicators__category-panel">
+      <span class="rsa-context-panel__liveconnect__risk-indicators__category-panel__cat-header">
+        {{category.categoryText}}
+      </span>
+      <hbox class="rsa-context-panel__liveconnect__risk-indicators__tags-panel">
+        <div>
+          {{#each category.tags as |tag|}}
+            {{#if tag.highlight}}
+              {{#rsa-content-tethered-panel-trigger panel=tag.value}}
+                {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
+              {{/rsa-content-tethered-panel-trigger}}
+              {{#rsa-content-tethered-panel position='top-left' panelId=tag.value}}
+                <section>{{tag.description}}</section>
+              {{/rsa-content-tethered-panel}}
+            {{else}}
+              {{rsa-content-label label=tag.nameText isDisabled=true class="js-test-risk-indicator-tag disabled"}}
+            {{/if}}
+          {{/each}}
+        </div>
+      </hbox>
+    </vbox>
+  {{/each}}
+</hbox>
+
+{{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.commActivity'}}{{/rsa-content-section-header}}
+<div class="rsa-context-panel__liveconnect__comm-activity">
+  <hbox fill>
+    <vbox class="rsa-context-panel__liveconnect__field">
+      {{rsa-content-definition label=(t 'context.lc.firstSeen')}}
+      {{rsa-content-datetime timestamp=liveConnectData.firstSeen withTimeAgo=true}}
     </vbox>
   </hbox>
-  {{#rsa-content-section-header label='Section Heading'}}
-    {{t 'context.lc.riskIndicators'}}
-  {{/rsa-content-section-header}}
-  <hbox class="rsa-context-panel__liveconnect__risk-indicators">
-    {{#each riskIndicatorCategories as |category|}}
-      <vbox class="rsa-context-panel__liveconnect__risk-indicators__category-panel">
-        <span class="rsa-context-panel__liveconnect__risk-indicators__category-panel__cat-header">
-          {{category.categoryText}}
-        </span>
-        <hbox class="rsa-context-panel__liveconnect__risk-indicators__tags-panel">
-          <div>
-            {{#each category.tags as |tag|}}
-              {{#if tag.highlight}}
-                {{#rsa-content-tethered-panel-trigger panel=tag.value}}
-                  {{rsa-content-label label=tag.nameText style='medium' class="js-test-risk-indicator-tag highlighted"}}
-                {{/rsa-content-tethered-panel-trigger}}
-                {{#rsa-content-tethered-panel position='top-left' panelId=tag.value}}
-                  <section>{{tag.description}}</section>
-                {{/rsa-content-tethered-panel}}
-              {{else}}
-                {{rsa-content-label label=tag.nameText isDisabled=true class="js-test-risk-indicator-tag disabled"}}
-              {{/if}}
-            {{/each}}
-          </div>
-        </hbox>
-      </vbox>
-    {{/each}}
+
+  <hbox fill class="rsa-context-panel__liveconnect__comm-activity__charts-parent">
+    <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
+      <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.communityTrend'}}</div>
+      <div class="rsa-context-panel__liveconnect__community_trend">
+        {{#rsa-chart data=trendingCommunityActivity xProp='time' yProp='percentage' yDomain=fixedYDomain as |params|}}
+          {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale tickCount=4}}
+          {{rsa-y-axis scale=params.yScale tickCount=5}}
+          {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth yTickCount=5}}
+        {{/rsa-chart}}
+      </div>
+
+      <div class="rsa-context-panel__liveconnect__comm-activity__desc">
+        {{t 'context.lc.communityActivityDesc1' seen=liveConnectData.customerPercentage value=model.lookupKey}}<br>
+      </div>
+    </vbox>
+    <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
+      <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.submitTrend'}}</div>
+      <div class="rsa-context-panel__liveconnect__submission_trend">
+        {{#rsa-chart data=trendingSubmissionActivity xProp='time' yProp='percentage' yDomain=fixedYDomain as |params|}}
+          {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+          {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+          {{rsa-area-series data=params.data dataIndex=2 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
+          {{rsa-x-axis height=params.graphHeight scale=params.xScale tickCount=4}}
+          {{rsa-y-axis width=params.graphWidth scale=params.yScale tickCount=5}}
+          {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth yTickCount=5}}
+        {{/rsa-chart}}
+      </div>
+      <div class="rsa-context-panel__liveconnect__comm-activity__desc">
+        {{t 'context.lc.submittedActivityDesc1' submitted=liveConnectData.customerInvestigatedPercentage}}<br>
+      </div>
+      <hbox>
+        <div class="rsa-context-panel__liveconnect__comm-activity__desc">
+          {{t 'context.lc.submittedActivityDesc2' highrisk=liveConnectData.customerHighRiskFeedbackPercentage}}<br>
+          {{t 'context.lc.submittedActivityDesc3' unsafe=liveConnectData.customerRiskyFeedbackPercentage}}<br>
+          {{t 'context.lc.submittedActivityDesc4' suspicious=liveConnectData.customerSuspiciousFeedbackPercentage}}<br>
+        </div>
+        <div class="rsa-context-panel__liveconnect__comm-activity__desc">
+          {{rsa-content-definition label=(t 'context.lc.submittedActivityDesc5')}}<br>
+          {{t 'context.lc.submittedActivityDesc6' safe=liveConnectData.customerNotRiskyFeedbackPercentage}}<br>
+          {{t 'context.lc.submittedActivityDesc7' unknown=liveConnectData.customerUnknownFeedbackPercentage}}<br>
+        </div>
+      </hbox>
+    </vbox>
   </hbox>
-
-  {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.commActivity'}}{{/rsa-content-section-header}}
-  <div class="rsa-context-panel__liveconnect__comm-activity">
-    <hbox fill>
-      <vbox class="rsa-context-panel__liveconnect__field">
-        {{rsa-content-definition label=(t 'context.lc.firstSeen')}}
-        {{rsa-content-datetime timestamp=liveConnectData.firstSeen withTimeAgo=true}}
-      </vbox>
-    </hbox>
-
-    <hbox fill class="rsa-context-panel__liveconnect__comm-activity__charts-parent">
-      <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
-        <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.communityTrend'}}</div>
-        <div class="rsa-context-panel__liveconnect__community_trend">
-          {{#rsa-chart data=trendingCommunityActivity xProp='time' yProp='percentage' yDomain=fixedYDomain as |params|}}
-            {{rsa-area-series data=params.data xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
-            {{rsa-x-axis height=params.graphHeight scale=params.xScale tickCount=4}}
-            {{rsa-y-axis scale=params.yScale tickCount=5}}
-            {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth yTickCount=5}}
-          {{/rsa-chart}}
-        </div>
-
-        <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-          {{t 'context.lc.communityActivityDesc1' seen=liveConnectData.customerPercentage value=model.lookupKey}}<br>
-        </div>
-      </vbox>
-      <vbox class="rsa-context-panel__liveconnect__comm-activity__charts-container">
-        <div class="rsa-context-panel__liveconnect__field-name">{{t 'context.lc.submitTrend'}}</div>
-        <div class="rsa-context-panel__liveconnect__submission_trend">
-          {{#rsa-chart data=trendingSubmissionActivity xProp='time' yProp='percentage' yDomain=fixedYDomain as |params|}}
-            {{rsa-area-series data=params.data dataIndex=0 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
-            {{rsa-area-series data=params.data dataIndex=1 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
-            {{rsa-area-series data=params.data dataIndex=2 xScale=params.xScale yScale=params.yScale height=params.graphHeight xProp='time' yProp='percentage'}}
-            {{rsa-x-axis height=params.graphHeight scale=params.xScale tickCount=4}}
-            {{rsa-y-axis width=params.graphWidth scale=params.yScale tickCount=5}}
-            {{rsa-chart-grids showXGrid=false yScale=params.yScale width=params.graphWidth yTickCount=5}}
-          {{/rsa-chart}}
-        </div>
-        <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-          {{t 'context.lc.submittedActivityDesc1' submitted=liveConnectData.customerInvestigatedPercentage}}<br>
-        </div>
-        <hbox>
-          <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-            {{t 'context.lc.submittedActivityDesc2' highrisk=liveConnectData.customerHighRiskFeedbackPercentage}}<br>
-            {{t 'context.lc.submittedActivityDesc3' unsafe=liveConnectData.customerRiskyFeedbackPercentage}}<br>
-            {{t 'context.lc.submittedActivityDesc4' suspicious=liveConnectData.customerSuspiciousFeedbackPercentage}}<br>
-          </div>
-          <div class="rsa-context-panel__liveconnect__comm-activity__desc">
-            {{rsa-content-definition label=(t 'context.lc.submittedActivityDesc5')}}<br>
-            {{t 'context.lc.submittedActivityDesc6' safe=liveConnectData.customerNotRiskyFeedbackPercentage}}<br>
-            {{t 'context.lc.submittedActivityDesc7' unknown=liveConnectData.customerUnknownFeedbackPercentage}}<br>
-          </div>
-        </hbox>
-      </vbox>
-    </hbox>
-  </div>
-{{else}}
-  {{#rsa-content-section-header label='Section Heading'}}No data from Live Connect{{/rsa-content-section-header}}
-{{/if}}
+</div>

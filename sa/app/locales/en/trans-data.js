@@ -279,7 +279,8 @@ export default {
       unsafeRiskDesc: 'Research and analysis shows resource to be untrusted',
       unknownRiskDesc: 'Inconclusive results from any available information, research, and analysis',
       suspiciousRiskDesc: 'Research and analysis indicates potentially threatening activity',
-      riskFeedback: 'Risk Assessment Feedback'
+      riskFeedback: 'Risk Assessment Feedback',
+      noDataMsg: 'No data from Live Connect'
     },
     error: {
       error: 'Error processing stream call for context lookup.',

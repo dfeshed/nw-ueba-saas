@@ -1,34 +1,40 @@
 {{#if (not-eq  model.liveConnectErrorMessage null)}}
   <div class="rsa-context-panel__liveconnect__field">{{t 'context.lc.errorMsg'}}{{model.liveConnectErrorMessage}}</div>
 {{else if (or (is-equal tabdata 'overview')(is-equal tabdata 'liveConnect'))}}
-  {{#if (is-equal model.meta 'IP')}}
-    {{rsa-context-panel/lc-community-activity
+  {{#if (eq contextData.liveConnectData null)}}
+    {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.noDataMsg'}}{{/rsa-content-section-header}}
+  {{else if contextData.liveConnectData.allTags}}
+    {{#if (is-equal model.meta 'IP')}}
+      {{rsa-context-panel/lc-community-activity
       liveConnectData=contextData.liveConnectData.IpReputation
       model=model
       allTags=contextData.liveConnectData.allTags
       allReasons=contextData.liveConnectData.allReasons}}
-    {{#if (is-equal tabdata 'liveConnect')}}
-      {{rsa-context-panel/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
-    {{/if}}
-  {{else if (is-equal model.meta 'FILE_HASH')}}
-    {{rsa-context-panel/lc-community-activity
+      {{#if (is-equal tabdata 'liveConnect')}}
+        {{rsa-context-panel/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
+      {{/if}}
+    {{else if (is-equal model.meta 'FILE_HASH')}}
+      {{rsa-context-panel/lc-community-activity
       liveConnectData=contextData.liveConnectData.FileReputation
       model=model
       allTags=contextData.liveConnectData.allTags
       allReasons=contextData.liveConnectData.allReasons}}
-    {{#if (is-equal tabdata 'liveConnect')}}
-      {{rsa-context-panel/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
-      {{rsa-context-panel/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
-    {{/if}}
-  {{else if (is-equal model.meta 'DOMAIN')}}
-    {{rsa-context-panel/lc-community-activity
+      {{#if (is-equal tabdata 'liveConnect')}}
+        {{rsa-context-panel/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
+        {{rsa-context-panel/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
+      {{/if}}
+    {{else if (is-equal model.meta 'DOMAIN')}}
+      {{rsa-context-panel/lc-community-activity
       liveConnectData=contextData.liveConnectData.DomainReputation
       model=model
       allTags=contextData.liveConnectData.allTags
       allReasons=contextData.liveConnectData.allReasons}}
-    {{#if (is-equal tabdata 'liveConnect')}}
-      {{rsa-context-panel/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
-      {{rsa-context-panel/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
+      {{#if (is-equal tabdata 'liveConnect')}}
+        {{rsa-context-panel/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
+        {{rsa-context-panel/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
+      {{/if}}
     {{/if}}
+  {{else}}
+    <div class="rsa-context-panel__loader">{{rsa-loader size='largest'}}</div>
   {{/if}}
 {{/if}}
