@@ -68,14 +68,13 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 			return;
 		}
 
-
 		// add assigned events to repository
 		switch(event.getAction().toUpperCase()){
 			case DhcpEvent.ASSIGN_ACTION:
 				saveDhcpRecord(event);
 
 
-				break;
+			break;
 			// end previous assignment in case of expiration or release
 			case DhcpEvent.RELEASE_ACTION:
 			case DhcpEvent.EXPIRED_ACTION:
@@ -88,33 +87,33 @@ public class DhcpResolver extends GeneralIpResolver<DhcpEvent> {
 	}
 
 	private void releaseDhcpRecord(DhcpEvent event) {
-		getMetrics().releaseHostname++;
-		// check if we have an existing dhcp event than need to be updated with expiration time
-		DhcpEvent cached = cache.get(event.getIpaddress());
-		if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration() > event.getTimestampepoch()) {
-            cached.setExpiration(event.getExpiration());
-            cache.put(cached.getIpaddress(), cached);
-            removeFromBlackList(cached);
-        }
+			getMetrics().releaseHostname++;
+			// check if we have an existing dhcp event than need to be updated with expiration time
+			DhcpEvent cached = cache.get(event.getIpaddress());
+			if (cached!=null && cached.getHostname().equals(event.getHostname()) && cached.getExpiration() > event.getTimestampepoch()) {
+				cached.setExpiration(event.getExpiration());
+				cache.put(cached.getIpaddress(), cached);
+				removeFromBlackList(cached);
+			}
 
-		// update saved event in repository as well
-		List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochLessThan(event.getIpaddress(), event.getTimestampepoch(),
-                new PageRequest(0, 1, Direction.DESC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));
-		if (!dhcpEvents.isEmpty()) {
-            DhcpEvent existing = dhcpEvents.get(0);
-            if (existing.getHostname().equals(event.getHostname()) && existing.getExpiration() > event.getTimestampepoch()) {
-                // mark previous event as expired once the ip is released
-                existing.setExpiration(event.getTimestampepoch());
-                dhcpEventRepository.save(existing);
-                removeFromBlackList(existing);
+			// update saved event in repository as well
+			List<DhcpEvent> dhcpEvents = dhcpEventRepository.findByIpaddressAndTimestampepochLessThan(event.getIpaddress(), event.getTimestampepoch(),
+					new PageRequest(0, 1, Direction.DESC, DhcpEvent.TIMESTAMP_EPOCH_FIELD_NAME));
+			if (!dhcpEvents.isEmpty()) {
+				DhcpEvent existing = dhcpEvents.get(0);
+				if (existing.getHostname().equals(event.getHostname()) && existing.getExpiration() > event.getTimestampepoch()) {
+					// mark previous event as expired once the ip is released
+					existing.setExpiration(event.getTimestampepoch());
+					dhcpEventRepository.save(existing);
+					removeFromBlackList(existing);
 
-                // update cache
-                if (cached==null) {
-                    removeFromBlackList(existing);
-                    cache.put(existing.getIpaddress(), existing);
-                }
-            }
-        }
+					// update cache
+					if (cached==null) {
+						removeFromBlackList(existing);
+						cache.put(existing.getIpaddress(), existing);
+					}
+				}
+			}
 	}
 
 	private void saveDhcpRecord(DhcpEvent event) {
