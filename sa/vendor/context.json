@@ -1180,11 +1180,12 @@
       }
     ],
     "dataSourceType": "LiveConnect-Ip",
+    "dataSourceGroup": "LiveConnect-Ip",  
     "datasourceId": "57c149bfe4b0e8a1f1769a40",
     "currentPageId": 0,
     "pagingEnabled": "False",
     "failed": false,
-    "errorMessage": "Connection Exception occurred. ",
+    "errorMessage": null,
     "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
     "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
     "maxPages": 0
@@ -1487,8 +1488,9 @@
     "currentPageId": 0,
     "pagingEnabled": "False",
     "failed": true,
-    "errorMessage": "Connection Exception occurred. ",
+    "errorMessage": null,
     "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
+    "dataSourceGroup":  "LiveConnect-File",
     "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
     "maxPages": 0
   },
@@ -1786,11 +1788,12 @@
       }
     ],
     "dataSourceType": "LiveConnect-Domain",
+    "dataSourceGroup": "LiveConnect-Domain",  
     "datasourceId": "57c149bfe4b0e8a1f1769a40",
     "currentPageId": 0,
     "pagingEnabled": "False",
     "failed": false,
-    "errorMessage": "Connection Exception occurred. ",
+    "errorMessage": null,
     "dataSourceName": "TestLookUpLiveConnect_LiveConnect_datasource",
     "resultId": "8fbd6f6a-1e12-47f4-b609-052f3c4652bd/1",
     "maxPages": 0
@@ -1803,6 +1806,7 @@
     "dataSourceName":"586a8f23d4978a1cf00f1f40_EXTERNAL_LIST_datasource",
     "dataSourceDescription":null,
     "dataSourceType":"EXTERNAL_LIST",
+    "dataSourceGroup":"LIST",  
     "resultList":[
       {
         "id":"8c52c13e-5ca1-410a-ba67-9e41669ca561",
