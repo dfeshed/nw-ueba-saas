@@ -3,6 +3,7 @@ package fortscale.domain.events;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import fortscale.domain.core.AbstractDocument;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.joda.time.DateTime;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -288,5 +289,10 @@ public class VpnSession extends AbstractDocument{
 
 	public void setNormalizedUserName(String normalizedUserName) {
 		this.normalizedUserName = normalizedUserName;
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

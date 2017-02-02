@@ -100,8 +100,9 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     Long StartSessionTime2;
     JSONObject event;
     String username;
+    Boolean createVpnSessionWithNoOpenEvent;
 
-    public VpnSessionUpdateServiceTest(String TEST_CASE, String eventObj, String updatedLocalIp, String updatedSourceIp, String status, Long StartSessionTime1, Long StartSessionTime2, String username) {
+    public VpnSessionUpdateServiceTest(String TEST_CASE, String eventObj, String updatedLocalIp, String updatedSourceIp, String status, Long StartSessionTime1, Long StartSessionTime2, String username, boolean createVpnSessionWithNoOpenEvent) {
         this.TEST_CASE = TEST_CASE;
         this.EVENT = eventObj;
         this.UPDATED_LOCAL_IP = updatedLocalIp;
@@ -110,6 +111,7 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
         this.StartSessionTime1 = StartSessionTime1;
         this.StartSessionTime2 = StartSessionTime2;
         this.username = username;
+        this.createVpnSessionWithNoOpenEvent = createVpnSessionWithNoOpenEvent;
 
     }
 
@@ -118,6 +120,8 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
     @Test
     @Parameters(name = "Run test: {index} {1})")
     public void testSessionUpdate() throws UnknownHostException {
+        // When we receive close event with no open - wont create the mongo vpn session document
+        vpnEnrichService.createVpnSessionWithNoOpenEvent = createVpnSessionWithNoOpenEvent;
         //stubs:
         event = (JSONObject)JSONValue.parse(EVENT);
         Long startSessionTime = (Long)event.get("date_time_unix") - (Integer)event.get("duration") * 1000;
@@ -193,7 +197,8 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
                                 "SUCCESS", //expected status
                                 1424700115626L,
                                 1424700175626L,
-                                "John Dow" //expected username
+                                "John Dow", //expected username
+                                false
                         },
                         {
                                 "VPN Session Update: Close",
@@ -203,9 +208,9 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
                                 "CLOSED",
                                 1424700115626L,
                                 1424700175626L,
-                                "Martin K"
+                                "Martin K",
+                                false
                         },
-
                         {
                                 "VPN Cisco ASA: Retrieve local_ip for close session from start session event",
                                 "{'local_ip':null,'status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':null,'duration':24,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
@@ -214,7 +219,41 @@ public class VpnSessionUpdateServiceTest extends AbstractJUnit4SpringContextTest
                                 "CLOSED",
                                 (Long)null,
                                 (Long)null,
-                                "Martin K"
+                                "Martin K",
+                                false
+                        },
+                        {
+                                "VPN Session Update: Open",
+                                "{'local_ip':'171.19.1.4','status':'SUCCESS','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':'12345AAA','duration':24,'username':'John Dow','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
+                                "171.19.1.4", //expected local ip
+                                "10.19.121.11",//expected source ip
+                                "SUCCESS", //expected status
+                                1424700115626L,
+                                1424700175626L,
+                                "John Dow", //expected username
+                                true
+                        },
+                        {
+                                "VPN Session Update: Close",
+                                "{'local_ip':'171.19.1.4','status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':'12345AAA','duration':104,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
+                                "171.19.1.4",
+                                "171.181.1.14",
+                                "CLOSED",
+                                1424700115626L,
+                                1424700175626L,
+                                "Martin K",
+                                true
+                        },
+                        {
+                                "VPN Cisco ASA: Retrieve local_ip for close session from start session event",
+                                "{'local_ip':null,'status':'CLOSED','hostname':'my-pc1','writebytes':1200211,'durationFieldName':null,'date_time_unix':1424700169626,'city':'Jerusalem','country':'Israel','session_id_field':null,'duration':24,'username':'Martin K','ip_field':'172.16.0.0','source_ip':'10.19.121.11','partition-1':'part-1','normalized_username':'John Dow','readbytesFieldName':null,'databucket':23,'totalbytes':null}",
+                                (String)null,
+                                "10.19.121.11",
+                                "CLOSED",
+                                (Long)null,
+                                (Long)null,
+                                "Martin K",
+                                true
                         }
                 }
         );

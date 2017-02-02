@@ -338,6 +338,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 					// The first vpn session we got is different from the one we expected
 					// (we expected that the first session is equals to the prevCountry)
 					// so we take it as geo hoping
+					logger.info("Got geo hoping with session {} expecting {} but found {}", curVpnSession, prevCountry, vpnSession);
 					ret.add(vpnSession);
 				}
 

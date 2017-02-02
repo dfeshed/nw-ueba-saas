@@ -53,7 +53,7 @@ import static fortscale.utils.ConversionUtils.*;
 	private String vpnIpPoolTopic;
 
 	@Value("${vpnsession.create.vpn.session.with.no.open.event}")
-	private boolean createVpnSessionWithNoOpenEvent;
+	protected boolean createVpnSessionWithNoOpenEvent;
 
 	Boolean isResolveIp;
 	Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
