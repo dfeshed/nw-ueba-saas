@@ -1,7 +1,7 @@
 package fortscale.services;
 
 import com.cloudbees.syslog.MessageFormat;
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.alert.Alert;
 
 /**
  * Created by Tomer Dvir on 22/02/16.

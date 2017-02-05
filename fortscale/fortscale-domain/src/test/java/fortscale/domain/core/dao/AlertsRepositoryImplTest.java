@@ -1,6 +1,9 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.alert.AlertFeedback;
+import fortscale.domain.core.alert.AlertStatus;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
 import org.junit.Before;

@@ -1,6 +1,6 @@
 package fortscale.services;
 
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.alert.Alert;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;

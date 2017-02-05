@@ -2,6 +2,8 @@ package fortscale.web.rest;
 
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
+import fortscale.domain.core.alert.*;
+import fortscale.domain.core.alert.analystfeedback.Comment;
 import fortscale.services.AlertsService;
 import org.junit.Before;
 import org.junit.Test;

@@ -1,5 +1,7 @@
 package fortscale.domain.core;
 
+import fortscale.domain.core.alert.Alert;
+
 import java.util.ArrayList;
 import java.util.List;
 

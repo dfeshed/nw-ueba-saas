@@ -1,8 +1,7 @@
 package fortscale.services;
 
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.alert.Alert;
 import fortscale.domain.core.Evidence;
-import org.springframework.stereotype.Component;
 
 import java.util.Locale;
 import java.util.Map;

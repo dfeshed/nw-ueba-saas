@@ -1,6 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.applicable;
 
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.alert.Alert;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.services.cache.CacheHandler;
 import org.springframework.beans.factory.annotation.Autowired;

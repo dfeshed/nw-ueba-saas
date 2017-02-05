@@ -1,19 +1,18 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.alert.Alert;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.ForwardingService;
 import fortscale.services.UserService;
 import junit.framework.TestCase;
 import net.minidev.json.JSONObject;
-import org.fusesource.hawtjni.runtime.T32;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;

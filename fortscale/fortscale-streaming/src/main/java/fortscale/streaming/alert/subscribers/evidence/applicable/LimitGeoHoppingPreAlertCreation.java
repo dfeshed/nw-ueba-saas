@@ -1,6 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.applicable;
 
-import fortscale.domain.core.AlertTimeframe;
+import fortscale.domain.core.alert.AlertTimeframe;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.core.EvidenceType;
 import fortscale.domain.core.VpnGeoHoppingSupportingInformation;

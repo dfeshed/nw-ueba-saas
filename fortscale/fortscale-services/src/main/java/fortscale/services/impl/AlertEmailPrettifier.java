@@ -1,16 +1,13 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.alert.Alert;
 import fortscale.domain.core.EmailAlertDecorator;
-import fortscale.domain.core.EmailEvidenceDecorator;
-import fortscale.domain.core.Evidence;
 import fortscale.services.AlertPrettifierService;
 import fortscale.services.LocalizationService;
 import fortscale.utils.time.TimeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 
 /**

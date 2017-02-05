@@ -1,9 +1,7 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
-import fortscale.domain.core.AlertTimeframe;
+import fortscale.domain.core.alert.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 

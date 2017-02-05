@@ -7,7 +7,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import java.util.*;
 
 import com.mongodb.BasicDBObject;
-import fortscale.domain.core.Alert;
+import fortscale.domain.core.alert.Alert;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;

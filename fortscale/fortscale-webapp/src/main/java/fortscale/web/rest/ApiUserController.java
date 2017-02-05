@@ -5,6 +5,7 @@ import fortscale.common.exceptions.InvalidValueException;
 import fortscale.domain.ad.UserMachine;
 import fortscale.domain.core.*;
 import fortscale.domain.core.activities.UserActivitySourceMachineDocument;
+import fortscale.domain.core.alert.Alert;
 import fortscale.domain.core.dao.TagPair;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.rest.UserFilter;

@@ -1,7 +1,7 @@
 package fortscale.services;
 
-import fortscale.domain.core.Alert;
-import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.alert.AlertFeedback;
 import fortscale.domain.core.Severity;
 import org.apache.commons.lang3.tuple.Pair;
 

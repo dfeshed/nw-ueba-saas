@@ -1,9 +1,7 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
-import fortscale.domain.core.AlertTimeframe;
+import fortscale.domain.core.alert.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
-
-import java.util.*;
 
 /**
  * Created by rans on 14/03/16.

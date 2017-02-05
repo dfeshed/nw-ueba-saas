@@ -1,6 +1,10 @@
 package fortscale.ml.model.selector;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.alert.AlertFeedback;
+import fortscale.domain.core.alert.AlertStatus;
+import fortscale.domain.core.alert.AlertTimeframe;
 import fortscale.domain.core.dao.AlertsRepository;
 import org.junit.Assert;
 import org.junit.Test;

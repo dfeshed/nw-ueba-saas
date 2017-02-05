@@ -1,5 +1,7 @@
-package fortscale.domain.core;
+package fortscale.domain.core.alert;
 
+import fortscale.domain.core.*;
+import fortscale.domain.core.alert.analystfeedback.Comment;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
