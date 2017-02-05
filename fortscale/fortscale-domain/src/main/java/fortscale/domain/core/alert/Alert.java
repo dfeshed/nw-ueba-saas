@@ -1,6 +1,7 @@
 package fortscale.domain.core.alert;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
 import fortscale.domain.core.alert.analystfeedback.Comment;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -42,7 +43,7 @@ public class Alert extends AbstractDocument implements Serializable {
 	public static final String severityCodeField = "severityCode";
 	public static final String timeframeField = "timeframe";
     public static final String anomalyTypeField = "anomalyTypes";
-	public static final String commentsField = "comments";
+	public static final String analystFeedbackField = "analystFeedback";
     public static final String userScoreContributionField = "userScoreContribution";
     public static final String userScoreContributionFlagField = "userScoreContributionFlag";
 
@@ -77,7 +78,8 @@ public class Alert extends AbstractDocument implements Serializable {
     @Field(anomalyTypeField)
     private Set<DataSourceAnomalyTypePair> dataSourceAnomalyTypePair;
 
-	@Field(commentsField) private List<Comment> comments = new ArrayList<>();
+	@Field(analystFeedbackField)
+	private List<AnalystFeedback> analystFeedback = new ArrayList<>();
 
 	public Alert() {
 	}
@@ -95,7 +97,7 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.severityCode = this.severity.ordinal();
 		this.status = alert.getStatus();
 		this.feedback = alert.getFeedback();
-		this.comments = alert.getComments();
+		this.analystFeedback = alert.getAnalystFeedback();
 		this.entityId = alert.getEntityId();
 		this.timeframe = alert.getTimeframe();
         this.dataSourceAnomalyTypePair = alert.getDataSourceAnomalyTypePair();
@@ -204,12 +206,12 @@ public class Alert extends AbstractDocument implements Serializable {
 		this.status = status;
 	}
 
-	public List<Comment> getComments() {
-		return comments;
+	public List<AnalystFeedback> getAnalystFeedback() {
+		return analystFeedback;
 	}
 
-	public void setComments(List<Comment> comments) {
-		this.comments = comments;
+	public void setAnalystFeedback(List<AnalystFeedback> analystFeedback) {
+		this.analystFeedback = analystFeedback;
 	}
 
 	public String getName() {
@@ -348,11 +350,11 @@ public class Alert extends AbstractDocument implements Serializable {
 
 	public Comment addComment(String analystName, String commentText, long timeStamp){
 		Comment comment = new Comment(analystName, timeStamp, commentText);
-		this.getComments().add(0, comment);
+		this.getAnalystFeedback().add(0, comment);
 		return comment;
 	}
 
-	public Comment getComment(String commentId){
-		return comments.stream().filter(comment -> comment.getCommentId().equals(commentId)).findFirst().orElse(null);
+	public AnalystFeedback getComment(String commentId){
+		return analystFeedback.stream().filter(comment -> comment.getCommentId().equals(commentId)).findFirst().orElse(null);
 	}
 }

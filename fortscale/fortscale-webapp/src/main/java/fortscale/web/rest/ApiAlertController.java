@@ -413,7 +413,7 @@ public class ApiAlertController extends BaseController {
 		}
 
 		Comment commentToDelete = alert.getComment(commentId);
-		alert.getComments().remove(commentToDelete);
+		alert.getAnalystFeedback().remove(commentToDelete);
 		alertsService.saveAlertInRepository(alert);
 
 		return new ResponseEntity(HttpStatus.OK);

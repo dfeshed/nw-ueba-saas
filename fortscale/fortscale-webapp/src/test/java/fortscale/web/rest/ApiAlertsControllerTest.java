@@ -204,7 +204,7 @@ public class ApiAlertsControllerTest {
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
-		alert.setComments(comments);
+		alert.setAnalystFeedback(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -264,7 +264,7 @@ public class ApiAlertsControllerTest {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-		alert.setComments(comments);
+		alert.setAnalystFeedback(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -291,7 +291,7 @@ public class ApiAlertsControllerTest {
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		comments.add(comment);
-		alert.setComments(comments);
+		alert.setAnalystFeedback(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -318,7 +318,7 @@ public class ApiAlertsControllerTest {
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		comments.add(comment);
-		alert.setComments(comments);
+		alert.setAnalystFeedback(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -345,7 +345,7 @@ public class ApiAlertsControllerTest {
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
 		comments.add(comment);
-		alert.setComments(comments);
+		alert.setAnalystFeedback(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -372,7 +372,7 @@ public class ApiAlertsControllerTest {
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
 
-		alert.setComments(comments);
+		alert.setAnalystFeedback(comments);
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
 
@@ -407,7 +407,7 @@ public class ApiAlertsControllerTest {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-		alert.setComments(comments);
+		alert.setAnalystFeedback(comments);
 
 
 		when(alertsService.getAlertById(anyString())).thenReturn(alert);
