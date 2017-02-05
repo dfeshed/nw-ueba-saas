@@ -17,8 +17,6 @@ import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.DAILY_FEATURE_SUFFIX;
-import static fortscale.accumulator.translator.BaseAccumulatedFeatureTranslator.HOURLY_FEATURE_SUFFIX;
 import static fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService.buildFullAggregatedFeatureEventName;
 import static fortscale.utils.time.TimeUtils.epochSecondsToHourOfDay;
 
@@ -76,8 +74,9 @@ public class EntityEventAccumulator extends BaseAccumulator {
             if (nextHourCursor.isAfter(toCursor)) {
                 nextHourCursor = toCursor;
             }
+            // we add 1 hour minus 1 second since we are querying by end time - which is how entity_event is indexed
             List<EntityEvent> entityEvents =
-                    entityEventMongoStore.findEntityEventsByStartTimeRange(fromHourCursor, nextHourCursor, featureName);
+                    entityEventMongoStore.findEntityEventsByEndTimeRange(fromHourCursor.plus(1,ChronoUnit.HOURS).minusSeconds(1), nextHourCursor.plus(1,ChronoUnit.HOURS).minusSeconds(1), featureName);
             accumulateEvents(entityEvents, fromCursor, toCursor, creationTime, accumulatedEntityEventMap);
             fromHourCursor = nextHourCursor;
         }
@@ -94,8 +93,8 @@ public class EntityEventAccumulator extends BaseAccumulator {
     }
 
     @Override
-    public Instant getLastSourceEventStartTime(String featureName) {
-        return entityEventMongoStore.getLastEntityEventStartTime(featureName);
+    public Instant getLastSourceEventDay(String featureName) {
+        return entityEventMongoStore.getLastEntityEventEndTime(featureName).truncatedTo(ChronoUnit.DAYS);
     }
 
     private void accumulateEvents(List<EntityEvent> events, Instant from, Instant to, Instant creationTime,
