@@ -2,7 +2,9 @@ package fortscale.collection.jobs.activity;
 
 import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityDataUsageConfigurationService;
+import fortscale.common.feature.AggrFeatureValue;
 import fortscale.common.feature.Feature;
+import fortscale.common.feature.FeatureValue;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityDataUsageDocument;
 import fortscale.utils.logging.Logger;
@@ -46,16 +48,27 @@ public class UserActivityDataUsageHandler extends UserActivityBaseHandler implem
 			return histogram;
 		}
 		if (objectToConvert instanceof Feature) {
-			final GenericHistogram genericHistogram = (GenericHistogram)((Feature)objectToConvert).getValue();
+			FeatureValue featureValue = ((Feature) objectToConvert).getValue();
 			Double total = 0.0;
-			for (String key: genericHistogram.getHistogramMap().keySet()) {
-				key = key.replaceAll(DOT_REPLACEMENT, ".");
-				if (NumberUtils.isNumber(key)) {
-					total += Double.parseDouble(key) * genericHistogram.getHistogramMap().get(key);
-				} else {
-					total += genericHistogram.getHistogramMap().get(key);
+
+			if (featureValue instanceof GenericHistogram) {
+				final GenericHistogram genericHistogram = (GenericHistogram) featureValue;
+				for (String key: genericHistogram.getHistogramMap().keySet()) {
+					key = key.replaceAll(DOT_REPLACEMENT, ".");
+					if (NumberUtils.isNumber(key)) {
+						total += Double.parseDouble(key) * genericHistogram.getHistogramMap().get(key);
+					} else {
+						total += genericHistogram.getHistogramMap().get(key);
+					}
 				}
+			}else if (featureValue instanceof AggrFeatureValue){
+				final AggrFeatureValue aggrFeatureValue = (AggrFeatureValue) featureValue;
+				total = Double.valueOf(aggrFeatureValue.getValue().toString());
+			}else{
+				logger.error("Error converting feature to histogram expected generic histogram or aggr feature value instead got {}", featureValue.getClass());
+				throw new RuntimeException("Error converting feature to histogram expected generic histogram or aggr feature value instead got " + featureValue.getClass());
 			}
+
 			histogram.add(getKeyByValue(collectionToHistogram, histogramFeatureName) + "." + histogramFeatureName,
 					total);
 		} else {

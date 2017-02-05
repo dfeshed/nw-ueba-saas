@@ -1,11 +1,11 @@
 package fortscale.utils.monitoring.stats.engine.topic;
 
 import fortscale.utils.kafka.KafkaEventsWriter;
-
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.engine.StatsEngineBase;
 import fortscale.utils.monitoring.stats.engine.StatsEngineMetricsGroupData;
 import fortscale.utils.monitoring.stats.models.engine.EngineData;
+import org.apache.commons.lang.builder.ToStringBuilder;
 
 import java.util.List;
 
@@ -50,18 +50,16 @@ public class StatsTopicEngine extends StatsEngineBase {
 
         super();
 
-        this.kafkaEventsWriter           = kafkaEventsWriter;
-        this.metricGroupBatchWriteSize   = (int)metricGroupBatchWriteSize;
+        this.kafkaEventsWriter = kafkaEventsWriter;
+        this.metricGroupBatchWriteSize = (int) metricGroupBatchWriteSize;
         this.messageSizeWarningThreshold = messageSizeWarningThreshold;
 
         logger.info("Created StatsTopicEngine. kafkaEventsWriter={}  metricGroupBatchWriteSize={} messageSizeWarningThreshold={}",
-                    kafkaEventsWriter, metricGroupBatchWriteSize, messageSizeWarningThreshold);
+                kafkaEventsWriter, metricGroupBatchWriteSize, messageSizeWarningThreshold);
     }
 
     /**
-     *
      * A simplified ctor - USE IT ONLY FOR TESTING
-     *
      *
      * @param kafkaEventsWriter
      */
@@ -72,13 +70,11 @@ public class StatsTopicEngine extends StatsEngineBase {
 
 
     /**
-     *
      * Grubs the accumulated metrics data list (if any), converts it to Engine data model and then to JSON string.
-     *
+     * <p>
      * The last step is to write the JSON string to a Kafka topic
-     *
+     * <p>
      * This function is called once a collection cycle was completed.
-     *
      */
     @Override
     public void flushMetricsGroupData() {
@@ -100,9 +96,9 @@ public class StatsTopicEngine extends StatsEngineBase {
 
 
         // Write the list in batches
-        int start = 0 ;  // inclusive index
+        int start = 0;  // inclusive index
         int last;        // exclusive index
-        int listSize  = metricsGroupDataListToWrite.size();
+        int listSize = metricsGroupDataListToWrite.size();
 
         do {
 
@@ -119,7 +115,7 @@ public class StatsTopicEngine extends StatsEngineBase {
 
                 // Log it
                 logger.debug("Stats topic engine, writing items [{},{}) of {} items to the topic{}",
-                             start, last, listSize, subListAsString.toString());
+                        start, last, listSize, subListAsString.toString());
             }
 
             // We have a metrics group data to write, convert the metrics group data to engine data model object
@@ -127,7 +123,7 @@ public class StatsTopicEngine extends StatsEngineBase {
 
             // Get the first and list entries time
             long firstEpochTime = subListToWrite.get(0).getMeasurementEpoch();
-            long lastEpochTime  = subListToWrite.get(subListToWrite.size() - 1).getMeasurementEpoch();
+            long lastEpochTime = subListToWrite.get(subListToWrite.size() - 1).getMeasurementEpoch();
 
             // Convert the engine data into a JSON string to be written to a topic
             String topicMessage = modelMetricGroupToJsonInString(engineData);
@@ -150,13 +146,12 @@ public class StatsTopicEngine extends StatsEngineBase {
             // Next
             start = last;
 
-        } while ( last < listSize);
+        } while (last < listSize);
 
     }
 
 
     /**
-     *
      * Writes a message to the kafka topic
      *
      * @param message - to write
@@ -168,5 +163,15 @@ public class StatsTopicEngine extends StatsEngineBase {
         kafkaEventsWriter.send("", message);
     }
 
+    @Override
+    protected void preDestroy() {
+        kafkaEventsWriter.close();
+    }
+
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
 
 }

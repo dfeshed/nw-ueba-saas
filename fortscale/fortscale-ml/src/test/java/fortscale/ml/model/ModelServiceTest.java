@@ -15,6 +15,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.python.google.common.collect.Sets;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -94,7 +95,7 @@ public class ModelServiceTest {
 		long currentEndTimeInSeconds = 1420070410;
 		long currentEndTimeInMillis = TimestampUtils.convertToMilliSeconds(currentEndTimeInSeconds);
 
-		List<String> contextIds = Arrays.asList("id1", "id2");
+		Set<String> contextIds = Sets.newHashSet("id1", "id2");
 		when(featureBucketsReaderService.findDistinctContextByTimeRange(
 				selectorFeatureBucketConf, previousEndTimeInMillis, currentEndTimeInMillis)).thenReturn(contextIds);
 
@@ -139,13 +140,14 @@ public class ModelServiceTest {
 		// Consistent with the name in the configuration
 		String modelConfName = "first_test_model_conf";
 		Date currentEndTime = new Date(currentEndTimeInMillis);
-		modelService.process(listener, sessionId, modelConfName, null, currentEndTime);
+		modelService.process(listener, sessionId, modelConfName, null, currentEndTime, false, Collections.emptySet());
 
 		// Assert listener
 		JSONObject expectedStatusForId1 = buildStatus(modelConfName, "id1", currentEndTime, true);
 		JSONObject expectedStatusForId2 = buildStatus(modelConfName, "id2", currentEndTime, true);
 		List<JSONObject> expectedStatuses = Arrays.asList(expectedStatusForId1, expectedStatusForId2);
-		Assert.assertEquals(expectedStatuses, listener.getStatuses());
+		expectedStatuses.forEach(status -> Assert.assertTrue(listener.getStatuses().contains(status)));
+
 
 		// Assert built models
 		Query expectedId1Query = new Query();
@@ -165,20 +167,16 @@ public class ModelServiceTest {
 		verify(mongoTemplate, times(2)).insert(modelDaoArgCaptor.capture(), eq(expectedCollectionName));
 		verifyNoMoreInteractions(mongoTemplate);
 
-		ContinuousDataModel expectedId1Model = new ContinuousDataModel();
-		expectedId1Model.setParameters(96, 316.667, 81.223);
-		ContinuousDataModel expectedId2Model = new ContinuousDataModel();
-		expectedId2Model.setParameters(75, 7.319, 6.540);
+		ContinuousDataModel expectedId1Model = new ContinuousDataModel().setParameters(96, 316.666667, 81.223286, 400);
+		ContinuousDataModel expectedId2Model = new ContinuousDataModel().setParameters(75, 7.319200, 6.539804, 17);
 
-		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().get(0);
+		ModelDAO actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id1")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
-		Assert.assertEquals("id1", actualModelDao.getContextId());
 		Assert.assertEquals(expectedId1Model, actualModelDao.getModel());
 		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
 
-		actualModelDao = modelDaoArgCaptor.getAllValues().get(1);
+		actualModelDao = modelDaoArgCaptor.getAllValues().stream().filter(modelDAO -> modelDAO.getContextId().equals("id2")).findFirst().get();
 		Assert.assertEquals(sessionId, actualModelDao.getSessionId());
-		Assert.assertEquals("id2", actualModelDao.getContextId());
 		Assert.assertEquals(expectedId2Model, actualModelDao.getModel());
 		Assert.assertEquals(currentEndTime, actualModelDao.getEndTime());
 	}
@@ -204,7 +202,7 @@ public class ModelServiceTest {
 
 		@Override
 		public void modelBuildingStatus(String modelConfName, String sessionId, String contextId, Date endTime, ModelBuildingStatus status) {
-			statuses.add(buildStatus(modelConfName, contextId, endTime, status.equals(ModelBuildingStatus.SUCCESS)));
+			statuses.add(buildStatus(modelConfName, contextId, endTime, !status.isFailure()));
 		}
 
 		@Override

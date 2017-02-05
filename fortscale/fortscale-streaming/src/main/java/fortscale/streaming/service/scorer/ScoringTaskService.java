@@ -3,6 +3,7 @@ package fortscale.streaming.service.scorer;
 import fortscale.common.event.Event;
 import fortscale.domain.core.FeatureScore;
 import fortscale.ml.model.cache.ModelsCacheService;
+import fortscale.ml.model.message.ModelBuildingStatusMessage;
 import fortscale.ml.scorer.ScorersService;
 import fortscale.streaming.service.event.EventPersistencyHandlerFactory;
 import fortscale.streaming.service.topology.KafkaEventTopologyService;
@@ -45,13 +46,15 @@ public class ScoringTaskService {
     @Value("${streaming.event.field.type}")
     private String eventTypeFieldName;
 
+    @Value("${fortscale.streaming.turbo.mode:true}")
+    private boolean isTurboMode;
+
     private String jobName;
 
     public ScoringTaskService(Config config, TaskContext context) throws Exception  {
-
         jobName = config.get("job.name");
         eventTopologyService.setSendingJobName(jobName);
-
+        logger.info("scoringTask job={} isTurboMode={}", isTurboMode);
         // The following initialization could also be done lazily
         scorersService.loadScorers();
     }
@@ -80,4 +83,15 @@ public class ScoringTaskService {
         modelsCacheService.close();
     }
 
+    /**
+     * refreshing model cache by deleting existing model entry the relevant cache manager
+     *
+     * @param modelBuildingStatusMessage message indicating that model been built, containing build details
+     */
+    public void refreshModelCache(ModelBuildingStatusMessage modelBuildingStatusMessage) {
+        logger.debug("received modelBuilding status message={}, refreshing cache", modelBuildingStatusMessage);
+        String modelConfName = modelBuildingStatusMessage.getModelConfName();
+        String contextId = modelBuildingStatusMessage.getContextId();
+        modelsCacheService.deleteFromCache(modelConfName, contextId);
+    }
 }

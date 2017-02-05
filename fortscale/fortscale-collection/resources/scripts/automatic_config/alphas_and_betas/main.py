@@ -8,7 +8,7 @@ import hist_utils
 from algorithm import weights, reducer
 from common import config
 from common.utils.io import print_verbose
-from common.utils.mongo import get_collection_names
+from automatic_config.common.utils.mongo import get_collection_names
 from common.results.store import Store
 
 def _load_data(mongo_ip, should_query, entity_type, start, end):

@@ -1,11 +1,13 @@
+import json
 import os
 import re
 import zipfile
-from .. import config
-from store import Store
+
 import alphas_and_betas
 import reducers
-from ..utils.io import print_verbose, backup, open_overrides_file, FileWriter
+from store import Store
+from .. import config
+from ..utils.io import print_verbose, backup, open_overrides_file, FileWriter, iter_overrides_files
 
 
 class _UpdatesManager:
@@ -29,6 +31,35 @@ class _UpdatesManager:
 
     def updated_something(self):
         return len(self._backuped) > 0
+
+def init_reducers(logger):
+    for f in iter_overrides_files(overriding_path=config.aggregated_feature_event_prevalance_stats_path['overriding_path'],
+                                      jar_name=config.aggregated_feature_event_prevalance_stats_path['jar_name'],
+                                      path_in_jar=config.aggregated_feature_event_prevalance_stats_path['path_in_jar']):
+            _init_reducers_conf_file(f, logger)
+
+
+def _init_reducers_conf_file(f, logger):
+    original_to_backup = {}
+    scorer_json = json.load(f)
+    for scorers_conf in scorer_json['data-source-scorers']:
+        if len(scorers_conf['scorers']) != 1:
+            raise Exception('multiple scorers are not supported')
+        scorer_conf = scorers_conf['scorers'][0]
+        reduction_configs = scorer_conf['reduction-configs']
+        reduction_config = reduction_configs[0]
+        reduction_config = {
+            'reducingFactor': 0.1,
+            'maxValueForFullyReduce': reduction_config['maxValueForFullyReduce'],
+            'minValueForNotReduce': reduction_config['minValueForNotReduce'],
+            'reducingFeatureName': reduction_config['reducingFeatureName']
+        }
+        reduction_configs[0] = reduction_config
+    path = f.name
+    logger.info('initiating scorer reducing_factor=0.1 of ' + path + '...')
+    original_to_backup[path] = backup(path=path) if os.path.isfile(path) else None
+    with FileWriter(path) as scorer_confFile:
+        json.dump(scorer_json, scorer_confFile, indent=4)
 
 
 def update_configurations():
@@ -55,9 +86,17 @@ def update_configurations():
 
     if len(reducers_to_update) > 0 or fs_reducers is not None:
         if type(config.aggregated_feature_event_prevalance_stats_path) == dict:
-            zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' +
-                                 config.aggregated_feature_event_prevalance_stats_path['jar_name'], 'r')
-            for file_name in zf.namelist():
+            file_names = []
+            if os.path.isdir(config.aggregated_feature_event_prevalance_stats_path['overriding_path']):
+                tmp_file_names = os.listdir(config.aggregated_feature_event_prevalance_stats_path['overriding_path'])
+                for file_name in tmp_file_names:
+                    file_names.append(config.aggregated_feature_event_prevalance_stats_path['path_in_jar'] + '/' + file_name)
+
+            if len(file_names) == 0:
+                zf = zipfile.ZipFile('/home/cloudera/fortscale/streaming/lib/' +
+                                     config.aggregated_feature_event_prevalance_stats_path['jar_name'], 'r')
+                file_names = zf.namelist()
+            for file_name in file_names:
                 match = re.match(config.aggregated_feature_event_prevalance_stats_path['path_in_jar'] + '/(.+)', file_name)
                 if match is not None:
                     conf_file_path = {

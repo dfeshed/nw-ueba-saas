@@ -16,6 +16,7 @@ import fortscale.utils.time.TimestampUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.beanutils.PropertyUtils;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -195,8 +196,7 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 		indicator.put(notificationTypeField, (NotificationAnomalyType.VPN_GEO_HOPPING.getType()));
 		indicator.put(notificationValueField, vpnSessions.get(0).getCountry());
 		indicator.put(notificationNumOfEventsField, vpnSessions.size());
-		indicator.put(notificationSupportingInformationField, getSupportingInformation(cities,vpnSessions,
-																			normalizedUserName,endTimestamp));
+		indicator.put(notificationSupportingInformationField, getSupportingInformation(cities,vpnSessions, normalizedUserName,endTimestamp));
 		List<String> entities = new ArrayList();
 		entities.add(DATA_SOURCE_NAME);
 		indicator.put(dataSourceField, entities);
@@ -262,20 +262,26 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	private VpnGeoHoppingSupportingInformationDTO getSupportingInformation
 								(Set<CountryCity> cities,
 								 List<VpnSession> vpnSessions, String username, long timestamp) {
+		Map<String, Set<CountryCity>> countryToCountryCityMap = new HashMap<>();
+		for(CountryCity countryCity: cities){
+			Set<CountryCity> countryCitySet = countryToCountryCityMap.get(countryCity.getCountry());
+			if(countryCitySet == null){
+				countryCitySet = new HashSet<>();
+				countryToCountryCityMap.put(countryCity.getCountry(),countryCitySet);
+			}
+			countryCitySet.add(countryCity);
+		}
 
-		List<CountryCity> citiesList = new ArrayList<>(cities);
-		if (cities.size()!=2){
-			logger.error("Wrong amount of cities-countries pairs in GeoHopping. Expected 2 but {0} was found", cities.size());
+		if(countryToCountryCityMap.size() != 2){
+			logger.error("Expected pair of countries in GeoHopping for user {}, but found {}. " +
+							"Cities -{}",
+					username, countryToCountryCityMap.size(), StringUtils.join(cities, ','));
 			throw new RuntimeException("Wrong amount of cities-countries pairs in GeoHopping");
 		}
-		CountryCity city1 = citiesList.get(0);
-		CountryCity city2 = citiesList.get(1);
 
+		List<Set<CountryCity>> countryCitySetList = new ArrayList<>(countryToCountryCityMap.values());
 
-		VpnGeoHoppingSupportingInformationDTO supportingInformation =
-				countCityPairsForUser(
-						city1, city2,
-						username, timestamp);
+		VpnGeoHoppingSupportingInformationDTO supportingInformation = countCityPairsForUser(countryCitySetList.get(0), countryCitySetList.get(1),username, timestamp);
 
 		supportingInformation.setRawEvents(vpnSessions);
 		return supportingInformation;
@@ -292,24 +298,17 @@ public class VpnGeoHoppingNotificationGenerator implements InitializingBean {
 	}
 
 
-	private VpnGeoHoppingSupportingInformationDTO countCityPairsForUser(CountryCity city1, CountryCity city2,
-																		String username, long timestamp){
-
+	private VpnGeoHoppingSupportingInformationDTO countCityPairsForUser(Set<CountryCity> country1Set, Set<CountryCity> country2Set, String username, long timestamp){
 		VpnGeoHoppingSupportingInformationDTO supportingInformation = new VpnGeoHoppingSupportingInformationDTO();
 
-		supportingInformation.setPairInstancesPerUser(geoHoppingService.getGeoHoppingCount(
-				timestamp, city1,	city2, username));
+		supportingInformation.setPairInstancesPerUser(geoHoppingService.getMinGeoHoppingCount(timestamp, country1Set, country2Set, username));
+
+		supportingInformation.setPairInstancesGlobalUser(geoHoppingService.getMinGeoHoppingCount(timestamp, country1Set, country2Set, null));
 
 
-		supportingInformation.setPairInstancesGlobalUser(geoHoppingService.getGeoHoppingCount(
-						timestamp, city1, city2, null));
+		int numberOfInstancesGlobalUserSingleLocation1 = geoHoppingService.getMinGeoHoppingCount(timestamp, country1Set , null, null);
 
-
-		int numberOfInstancesGlobalUserSingleLocation1 = geoHoppingService.getGeoHoppingCount(
-				timestamp, city1 , null, null);
-
-		int numberOfInstancesGlobalUserSingleLocation2 = geoHoppingService.getGeoHoppingCount(
-				timestamp, city2,null, null);
+		int numberOfInstancesGlobalUserSingleLocation2 = geoHoppingService.getMinGeoHoppingCount(timestamp, country2Set,null, null);
 
 		supportingInformation.setMaximumGlobalSingleCity(Integer.max(numberOfInstancesGlobalUserSingleLocation1, numberOfInstancesGlobalUserSingleLocation2));
 

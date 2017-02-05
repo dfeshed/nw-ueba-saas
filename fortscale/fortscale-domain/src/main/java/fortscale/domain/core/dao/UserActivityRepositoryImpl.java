@@ -2,9 +2,15 @@ package fortscale.domain.core.dao;
 
 import fortscale.domain.core.activities.*;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository("UserActivityRepository")
 public class UserActivityRepositoryImpl extends UserActivityBaseRepository implements UserActivityRepositoryCustom {
@@ -51,6 +57,22 @@ public class UserActivityRepositoryImpl extends UserActivityBaseRepository imple
     public List<UserActivityTargetDeviceDocument> getUserActivityTargetDeviceEntries(String username, int timeRangeInDays){
         return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_TARGET_DEVICE, UserActivityTargetDeviceDocument.class);
     }
+
+	@Override public Set<String> getUserIdByLocation(List<String> locations) {
+		Query query = new Query();
+		String fieldName = String.format("%s.%s.", UserActivityLocationDocument.LOCATIONS_FIELD_NAME, UserActivityLocationDocument.COUNTRY_HISTOGRAM_FIELD_NAME);
+
+		if (CollectionUtils.isNotEmpty(locations)) {
+			List<Criteria> locationsCriteriaList = new ArrayList<>();
+			locations.stream().forEach(location -> locationsCriteriaList.add(new Criteria(fieldName + location).exists(true)));
+			query.addCriteria(new Criteria().orOperator(locationsCriteriaList.toArray(new Criteria[locations.size()])));
+		}
+
+		List<String> distinctUserNames = mongoTemplate.getCollection(UserActivityLocationDocument.COLLECTION_NAME)
+				.distinct(UserActivityLocationDocument.ENTITY_ID_FIELD_NAME, query.getQueryObject());
+		return new HashSet<>(distinctUserNames);
+	}
+
 	@Override
 	public List<UserActivityDataUsageDocument> getUserActivityDataUsageEntries(String username, int timeRangeInDays) {
 		return getUserActivityEntries(username, timeRangeInDays, COLLECTION_NAME_DATA_USAGE,

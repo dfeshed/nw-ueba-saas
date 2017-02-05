@@ -2,6 +2,7 @@ package fortscale.web.beans;
 
 import java.util.List;
 import java.util.Map;
+import java.util.HashMap;
 
 public class DataBean<T> {
 	private T data;
@@ -42,6 +43,16 @@ public class DataBean<T> {
 		this.info = info;
 	}
 
+	public void addInfo(String infoKey, Object infoValue) {
+
+		if (this.info == null){
+			this.info = new HashMap<>();
+		}
+
+		this.info.put(infoKey, infoValue);
+
+	}
+
 	public WarningMessage getWarning() {
 
 		if (warning.size()>0)
@@ -49,22 +60,24 @@ public class DataBean<T> {
 		return null;
 	}
 
-	public void setWarning(WarningMessage warning) {
+	public void addWarning(WarningMessage warning) {
 		WarningMessage warningMsg = new WarningMessage(warning.getCode(), warning.getMessage());
 		this.warning.add(warningMsg);
 	}
 	
-	public void setWarning(DataWarningsEnum warningType) {
+	public void addWarning(DataWarningsEnum warningType) {
 		WarningMessage warningMsg = new WarningMessage(warningType.getCode(), warningType.getMessage());
 		this.warning.add(warningMsg);
 	}
 
-	public void setWarning(DataWarningsEnum warningType, String warningMessage) {
+	public void addWarning(DataWarningsEnum warningType, String warningMessage) {
 		WarningMessage warningMsg = new WarningMessage(warningType.getCode(), String.format("%s - %s",warningType.getMessage(), warningMessage));
 		this.warning.add(warningMsg);
 	}
 
-
+	public void setWarning(List<WarningMessage> warning) {
+		this.warning = warning;
+	}
 
 	public class WarningMessage {
 		private int code;

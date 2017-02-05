@@ -1,18 +1,20 @@
 package fortscale.collection.jobs.ad;
 
-import java.util.Date;
-
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.domain.ad.AdGroup;
+import fortscale.domain.ad.dao.AdGroupRepository;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.domain.ad.AdGroup;
-import fortscale.domain.ad.dao.AdGroupRepository;
+import java.util.Date;
 
 public class AdGroupProcessJob extends AdProcessJob {
+
+	private static final Logger logger = Logger.getLogger(AdGroupProcessJob.class);
 	
 	@Autowired
 	private AdGroupRepository adGroupRepository;
@@ -27,8 +29,8 @@ public class AdGroupProcessJob extends AdProcessJob {
 	}
 
 	@Override
-	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adGroupRepository.countByTimestampepoch(runtime.getTime()) > 0 ? true : false;
+	protected boolean isTimestampAlreadyProcessed(String runtime) {
+		return adGroupRepository.countByRuntime(runtime) > 0 ? true : false;
 	}
 
 	@Override
@@ -38,6 +40,12 @@ public class AdGroupProcessJob extends AdProcessJob {
 		if(StringUtils.isEmpty(adGroup.getDistinguishedName()) || StringUtils.isEmpty(adGroup.getObjectGUID())){
 			return false;
 		}
+		final AdGroup existingGroup = adGroupRepository.findByObjectGUID(adGroup.getObjectGUID());
+		if (existingGroup != null) {
+			logger.info("Updating group with objectGUID {}", existingGroup.getObjectGUID());
+			adGroupRepository.delete(existingGroup);
+		}
+
 		adGroup.setLastModified(new Date());
 		adGroupRepository.save(adGroup);
 		
@@ -45,7 +53,7 @@ public class AdGroupProcessJob extends AdProcessJob {
 	}
 	
 	@Override
-	protected String getDataRecievedType() {
+	protected String getDataReceivedType() {
 		return "Groups";
 	}
 

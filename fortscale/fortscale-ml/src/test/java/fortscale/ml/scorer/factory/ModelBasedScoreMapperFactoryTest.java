@@ -1,9 +1,12 @@
 package fortscale.ml.scorer.factory;
 
+import com.google.common.collect.Sets;
 import fortscale.common.event.Event;
 import fortscale.common.feature.Feature;
 import fortscale.common.feature.extraction.FeatureExtractService;
 import fortscale.domain.core.FeatureScore;
+import fortscale.ml.model.ModelBuilderData;
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.ModelConf;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.ScoreMappingModel;
@@ -113,18 +116,13 @@ public class ModelBasedScoreMapperFactoryTest {
 		dataRetrieverFactoryService.register(modelConf.getDataRetrieverConf().getFactoryName(),
 				factoryConfig -> new AbstractDataRetriever(dataRetrieverConf) {
 					@Override
-					public Object retrieve(String contextId, Date endTime) {
-						return null;
+					public ModelBuilderData retrieve(String contextId, Date endTime) {
+						return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 					}
 
 					@Override
-					public Object retrieve(String contextId, Date endTime, Feature feature) {
-						return null;
-					}
-
-					@Override
-					public String getContextId(Map<String, String> context) {
-						return null;
+					public ModelBuilderData retrieve(String contextId, Date endTime, Feature feature) {
+						return new ModelBuilderData(NoDataReason.NO_DATA_IN_DATABASE);
 					}
 
 					@Override
@@ -136,10 +134,27 @@ public class ModelBasedScoreMapperFactoryTest {
 					public List<String> getContextFieldNames() {
 						return Collections.singletonList(contextFieldName);
 					}
+
+					@Override
+					public String getContextId(Map<String, String> context) {
+						return null;
+					}
 				});
 		if (!isGlobal) {
 			contextSelectorFactoryService.register(modelConf.getContextSelectorConf().getFactoryName(), factoryConfig ->
-					(startTime, endTime) -> Collections.singletonList("some_user_context"));
+					new IContextSelector() {
+						@Override
+						public Set<String> getContexts(Date startTime, Date endTime) {
+							return Sets.newHashSet("some_user_context");
+						}
+
+						@Override
+						public Set<String> getHighScoreContexts(Date startTime, Date endTime) {
+							HashSet<String> result = new HashSet<>();
+							result.add("some_user_context");
+							return result;
+						}
+					});
 		}
 
 		when(featureExtractService.extract(Mockito.anySetOf(String.class), Mockito.any(Event.class)))

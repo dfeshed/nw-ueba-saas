@@ -1,17 +1,17 @@
 package fortscale.ml.model.selector;
 
+import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventConf;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
-import fortscale.aggregation.exceptions.InvalidAggregatedFeatureEventConfNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 @Configurable(preConstruction = true)
-public class AggregatedEventContextSelector implements IContextSelector {
+public class AggregatedEventContextSelector extends AlertTriggeringHighScoreContextSelector {
     @Autowired
     private AggregatedFeatureEventsConfService aggregatedFeatureEventsConfService;
     @Autowired
@@ -32,8 +32,8 @@ public class AggregatedEventContextSelector implements IContextSelector {
     }
 
     @Override
-    public List<String> getContexts(Date startTime, Date endTime) {
-        return aggregatedFeatureEventsReaderService.findDistinctContextsByTimeRange(
+    public Set<String> getContexts(Date startTime, Date endTime) {
+        return aggregatedFeatureEventsReaderService.findDistinctAcmContextsByTimeRange(
                 aggregatedFeatureEventConf, startTime, endTime);
     }
 }

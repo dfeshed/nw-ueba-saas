@@ -27,7 +27,7 @@
 	<bean id="aggrFeatureFuncService" class="fortscale.aggregation.feature.functions.AggrFeatureFuncService"/>
 	<bean id="mongoDbUtilService" class="fortscale.aggregation.util.MongoDbUtilService" />
 
-	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrInternalAndKafkaEventTopologyService"/>
+	<bean id="aggrEventTopologyService" class="fortscale.streaming.service.aggregation.feature.event.AggrKafkaEventTopologyService"/>
 	<bean id="entityEventGlobalParamsConfService" class="fortscale.entity.event.EntityEventGlobalParamsConfService"/>
 	<bean id="entityEventConfService" class="fortscale.entity.event.EntityEventConfService"/>
 	<bean id="entityEventDataStore" class="fortscale.entity.event.EntityEventDataMongoStore"/>
@@ -35,7 +35,9 @@
 
 	<bean id="aggregationStreamingTaskInitializer" class="fortscale.streaming.service.aggregation.feature.AggregationStreamingTaskInitializer" />
 
-    <context:annotation-config />
+	<bean id="featureBucketStateServiceConfig" class="fortscale.aggregation.feature.bucket.state.config.FeatureBucketStateServiceConfig"/>
+
+	<context:annotation-config />
     <context:spring-configured />
     <context:component-scan base-package="fortscale.global,fortscale.streaming,fortscale.domain,fortscale.common.dataentity,fortscale.common.feature.extraction,fortscale.aggregation" />
     <mongo:repositories base-package="fortscale.aggregation.feature.bucket.repository,fortscale.aggregation.domain.feature.event" />

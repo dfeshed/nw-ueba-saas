@@ -1,6 +1,7 @@
 package fortscale.ml.scorer;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.util.Assert;
 
@@ -11,7 +12,9 @@ import java.util.stream.Collectors;
 
 
 public class ScoreMapping {
-	@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.NONE, getterVisibility = JsonAutoDetect.Visibility.ANY, setterVisibility = JsonAutoDetect.Visibility.NONE)
+	@JsonAutoDetect(
+			fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
+			setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 	public static class ScoreMappingConf {
 		private Map<Double, Double> mapping;
 

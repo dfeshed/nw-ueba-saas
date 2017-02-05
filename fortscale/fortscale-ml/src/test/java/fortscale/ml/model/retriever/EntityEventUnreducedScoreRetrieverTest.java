@@ -27,7 +27,8 @@ public class EntityEventUnreducedScoreRetrieverTest {
 
 	@Test
 	public void shouldFilterEntityEventsWithoutUnreducedScore() {
-		EntityEventUnreducedScoreRetrieverConf config = Mockito.mock(EntityEventUnreducedScoreRetrieverConf.class);
+
+		EntityEventUnreducedScoreRetrieverConf config = new EntityEventUnreducedScoreRetrieverConf(Collections.emptyList(), "entityEventConfName", 21, 3D);
 		EntityEventConf entityEventConf = Mockito.mock(EntityEventConf.class);
 		when(entityEventConfService.getEntityEventConf(config.getEntityEventConfName())).thenReturn(entityEventConf);
 		EntityEventUnreducedScoreRetriever retriever = new EntityEventUnreducedScoreRetriever(config);
@@ -44,11 +45,14 @@ public class EntityEventUnreducedScoreRetrieverTest {
 		dateToTopEntityEvents.put(twoDaysAgo, Collections.singletonList(entityEvent2));
 
 		Date endTime = new Date();
-		when(entityEventMongoStore.getDateToTopEntityEvents(config.getEntityEventConfName(),
-				endTime,
-				config.getNumOfDays(),
-				(int) config.getNumOfAlertsPerDay())).thenReturn(dateToTopEntityEvents);
-		Map<Long, List<Double>> data = retriever.retrieve(null, endTime);
+		when(entityEventMongoStore.getDateToTopEntityEvents(
+						config.getEntityEventConfName(),
+						endTime,
+						config.getNumOfDays(),
+						(int) (config.getNumOfDays() * config.getNumOfAlertsPerDay() + 1))
+		).thenReturn(dateToTopEntityEvents);
+		@SuppressWarnings("unchecked")
+		Map<Long, List<Double>> data = (Map<Long, List<Double>>)retriever.retrieve(null, endTime).getData();
 		Assert.assertEquals(new HashMap<Long, List<Double>>() {{
 			put(yesterday, Collections.singletonList(unreducedScore));
 			put(twoDaysAgo, Collections.emptyList());

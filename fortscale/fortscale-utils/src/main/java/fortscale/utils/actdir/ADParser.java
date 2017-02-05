@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.TimeZone;
 
 public class ADParser {
-	public static final String DATE_FORMAT = "yyyy/MM/dd'T'HH:mm:ss" ;
+	public static final String[] DATE_FORMATS = { "yyyy/MM/dd'T'HH:mm:ss", "yyyyMMddHHmmss'.0Z'" };
 	public static final String TIMESTAMP_FORMAT = "yyyy/MM/dd'T'HH:mm" ;
 	public static final String ATTRIBUTE_OU_PREFIX = "OU=";
 	public static final String ATTRIBUTE_CN_PREFIX = "CN=";
@@ -74,9 +74,14 @@ public class ADParser {
 	
 	
 	public Date parseDate(String dateString) throws ParseException {
-		SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
-		pattern.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return pattern.parse(dateString);
+		for (String DATE_FORMAT: DATE_FORMATS) {
+			SimpleDateFormat pattern = new SimpleDateFormat(DATE_FORMAT);
+			pattern.setTimeZone(TimeZone.getTimeZone("UTC"));
+			try {
+				return pattern.parse(dateString);
+			} catch (ParseException ex) {}
+		}
+		throw new ParseException("failed to parse date", 0);
 	}
 
 	

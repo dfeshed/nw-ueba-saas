@@ -16,6 +16,7 @@ import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,7 +59,50 @@ public class JobDataMapExtension implements ApplicationContextAware{
 		
 		return value;
 	}
-	
+
+	/**
+	 * get the job data map string value, throw exception if the key does not exists of the value is empty
+	 * @param map the merged job data map
+	 * @param key the field key
+	 * @param mandatory weather the key is mandatory
+	 * @return the field value, null if doesn't exist
+	 * @throws JobExecutionException
+	 */
+	public String getJobDataMapStringValue(JobDataMap map, String key, boolean mandatory) throws JobExecutionException {
+		if (mandatory) {
+			return getJobDataMapStringValue(map, key);
+		}
+		else {
+			if (map.containsKey(key)) {
+				String value = map.getString(key);
+				if (value==null || value.length()==0) {
+					logger.error("JobDataMap key {} does not have value", key);
+					throw new JobExecutionException("JobDataMap key " + key + " does not have value");
+				}
+
+				value = getEnvPropertyValue(value, key);
+
+				return value;
+
+			}
+			else {
+				logger.info("JobDataMap does not contain non-mandatory key {}.", key);
+				return null;
+			}
+		}
+
+	}
+
+	public Instant getJobDataMapInstantValue(JobDataMap map, String key, Instant defaultValue)
+	{
+		if (!map.containsKey(key))
+			return defaultValue;
+
+		String value = map.getString(key);
+
+		return Instant.parse(value);
+	}
+
 	/**
 	 * get all job data map keys that start with the given prefix.
 	 */

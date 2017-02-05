@@ -24,11 +24,11 @@ public class ModelsCacheInfo {
 		setLastUsageEpochtime(currentEpochtime);
 	}
 
-	public ModelDAO getModelDaoWithLatestEndTimeLte(long eventEpochtime) {
+	public ModelDAO getModelDaoWithLatestEndTimeLte(long eventEpochtime, long futureDiffBetweenModelAndEvent) {
 		Collections.sort(modelDaos, new DescModelDaoEndTimeComp());
 
 		for (ModelDAO modelDao : modelDaos) {
-			if (TimestampUtils.convertToSeconds(modelDao.getEndTime()) <= eventEpochtime) {
+			if (TimestampUtils.convertToSeconds(modelDao.getEndTime()) <= (eventEpochtime+futureDiffBetweenModelAndEvent)) {
 				return modelDao;
 			}
 		}

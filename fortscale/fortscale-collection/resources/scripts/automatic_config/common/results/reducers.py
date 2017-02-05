@@ -1,6 +1,8 @@
 import json
 import re
 
+from .. import config
+
 
 def _find_name_to_scorer_names(lines):
     name_to_scorer_names = {}
@@ -56,11 +58,11 @@ def _transform_to_reducer_if_needed(l, name_to_scorer_names, reducers):
             l = l.replace(scorer_name, base_scorer_name)
     return l
 
-def _create_noop_reducer():
+def _create_default_reducer():
     return {
-        'min_value_for_not_reduce': 0,
-        'max_value_for_fully_reduce': 0,
-        'reducing_factor': 1
+        'min_value_for_not_reduce': (config.DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE - 1) * 2,
+        'max_value_for_fully_reduce': config.DEFAULT_F_REDUCERS_MIN_POSITIVE_SCORE - 1,
+        'reducing_factor': 0
     }
 
 def update(conf_lines, reducers):
@@ -80,7 +82,7 @@ def update(conf_lines, reducers):
     for name in name_to_scorer_names.iterkeys():
         if not reducers.has_key(name) and with_low_values_scorers.has_key(name):
             # any reducer in the config file which is not specified in the results file should be deactivated
-            reducers[name] = _create_noop_reducer()
+            reducers[name] = _create_default_reducer()
     res = ''
     for l in conf_lines:
         l = _update_reducer_if_needed(l, with_low_values_scorers, reducers)
@@ -116,5 +118,5 @@ def update26(conf_lines, reducers):
         else:
             if scorer_conf['type'] == 'low-values-score-reducer':
                 # any reducer in the config file which is not specified in the results file should be deactivated
-                _apply_reducer(scorer_conf, _create_noop_reducer())
+                _apply_reducer(scorer_conf, _create_default_reducer())
     return json.dumps(conf, indent=4)

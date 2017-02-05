@@ -2,6 +2,8 @@ package fortscale.domain.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -26,7 +28,9 @@ import java.util.UUID;
 		// index for getting all evidences for specific user
 	@CompoundIndex(name="entity_idx", def = "{'" + Evidence.entityNameField + "': 1, '" + Evidence.entityTypeField +"': 1}", unique = false),
 		// index for making sure our evidence is unique
-	@CompoundIndex(name="new_unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1, '"+ Evidence.anomalyValueField +"': 1}", unique = true)
+	@CompoundIndex(name="new_unique_evidence", def = "{'" + Evidence.startDateField + "': 1, '" + Evidence.endDateField +"': 1, '" + Evidence.entityTypeField +"': 1, '" + Evidence.entityNameField +"': 1, '" + Evidence.anomalyTypeFieldNameField +"': 1, '"+ Evidence.anomalyValueField +"': 1}", unique = true),
+		// index for python step6 (BDP) - for creating notifications in a fast manner
+	@CompoundIndex(name="endDate_and_evidenceType", def = "{'" + Evidence.endDateField + "': 1, '" + Evidence.evidenceTypeField +"': 1}", unique = false)
 })
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Evidence extends AbstractDocument{
@@ -157,7 +161,7 @@ public class Evidence extends AbstractDocument{
 		this.severity = evidence.getSeverity();
 		this.timeframe = evidence.getTimeframe();
 		// set retention to start date
-		this.retentionDate = new Date(startDate);
+		this.retentionDate = new Date(evidence.startDate);
 		// We must create ID for the evidence so the alert can have reference to it
 		this.setId(evidence.getId());
 	}
@@ -192,7 +196,7 @@ public class Evidence extends AbstractDocument{
 		this.retentionDate = new Date(startDate);
 
 		// We must create ID for the evidence so the alert can have reference to it
-		this.setId(UUID.randomUUID().toString());
+		this.setId(ObjectId.get().toString());
 	}
 
 	// used to create references to evidences within alerts (see BasicAlertSubscriber)
@@ -393,7 +397,8 @@ public class Evidence extends AbstractDocument{
 				", entityName='" + entityName + '\'' +
 				", startDate=" + startDate +
 				", endDate=" + endDate +
-				", anomalyTypeFieldName='" + anomalyTypeFieldName + '\'' +
+				", anomalyTypeFieldName='" + (StringUtils.isEmpty(name) ? anomalyTypeFieldName : name) + '\'' +
+				", anomalyValue=" + anomalyValue +
 				'}';
 	}
 }

@@ -1,5 +1,6 @@
 package fortscale.ml.model;
 
+import fortscale.ml.model.ModelBuilderData.NoDataReason;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.listener.IModelBuildingListener;
 import fortscale.ml.model.listener.ModelBuildingStatus;
@@ -16,9 +17,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 @Configurable(preConstruction = true)
@@ -53,38 +55,19 @@ public class ModelBuilderManager {
         contextSelector = contextSelectorConf == null ? null : contextSelectorFactoryService.getProduct(contextSelectorConf);
         dataRetriever = dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
         modelBuilder = modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
-        metrics = new ModelBuilderManagerMetrics(statsService, modelConf.getName());
+        metrics = new ModelBuilderManagerMetrics(statsService, modelConf.getName(), contextSelector == null);
     }
 
-    public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime, Date currentEndTime) {
+    public void process(IModelBuildingListener listener, String sessionId, Date previousEndTime,
+                        Date currentEndTime, boolean selectHighScoreContexts, Set<String> specifiedContextIds) {
         Assert.notNull(currentEndTime);
-        List<String> contextIds;
 
         metrics.process++;
         metrics.currentEndTime = TimeUnit.MILLISECONDS.toSeconds(currentEndTime.getTime());
         logger.info("<<< Starting building models for {}, sessionId {}, previousEndTime {}, currentEndTime {}",
                 modelConf.getName(), sessionId, previousEndTime, currentEndTime);
 
-        if (contextSelector != null) {
-            if (previousEndTime == null) {
-                metrics.processWithNoPreviousEndTime++;
-                long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
-                long timeRangeInMillis = TimeUnit.SECONDS.toMillis(timeRangeInSeconds);
-                previousEndTime = new Date(currentEndTime.getTime() - timeRangeInMillis);
-            } else {
-                metrics.processWithPreviousEndTime++;
-                previousEndTime = new Date(currentEndTime.getTime() - TimeUnit.SECONDS.toMillis(selectorDeltaInSeconds));
-            }
-
-            contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
-        } else {
-            metrics.processWithNoContextSelector++;
-            contextIds = new ArrayList<>();
-            contextIds.add(null);
-        }
-
-        metrics.contextIds += contextIds.size();
-        logger.info("Selected {} context IDs", contextIds.size());
+        Set<String> contextIds = getContextIds(previousEndTime, currentEndTime, selectHighScoreContexts, specifiedContextIds);
 
         long numOfSuccesses = 0;
         long numOfFailures = 0;
@@ -99,7 +82,7 @@ public class ModelBuilderManager {
             }
 
             // Update metrics
-            if (status.equals(ModelBuildingStatus.SUCCESS)) {
+            if (!status.isFailure()) {
                 metrics.successes++;
                 numOfSuccesses++;
             } else {
@@ -116,8 +99,61 @@ public class ModelBuilderManager {
                 modelConf.getName(), sessionId, numOfSuccesses, numOfFailures);
     }
 
+    private Set<String> getContextIds(Date previousEndTime,
+                                       Date currentEndTime,
+                                       boolean selectHighScoreContexts,
+                                       Set<String> specifiedContextIds) {
+        if (!specifiedContextIds.isEmpty()) {
+            if (selectHighScoreContexts) {
+                metrics.illegalRequest++;
+                return Collections.emptySet();
+            }
+            metrics.specifiedContextIds++;
+            if (contextSelector != null) {
+                // global models can operate only on all of the users
+                return new HashSet<>(specifiedContextIds);
+            }
+            return Collections.emptySet();
+        }
+
+        if (selectHighScoreContexts) {
+            metrics.getHighScoreContexts++;
+        } else {
+            metrics.getContexts++;
+        }
+
+        Set<String> contextIds;
+        if (contextSelector != null) {
+            if (previousEndTime == null) {
+                metrics.processWithNoPreviousEndTime++;
+                long timeRangeInSeconds = modelConf.getDataRetrieverConf().getTimeRangeInSeconds();
+                long timeRangeInMillis = TimeUnit.SECONDS.toMillis(timeRangeInSeconds);
+                previousEndTime = new Date(currentEndTime.getTime() - timeRangeInMillis);
+            } else {
+                metrics.processWithPreviousEndTime++;
+                previousEndTime = new Date(currentEndTime.getTime() - TimeUnit.SECONDS.toMillis(selectorDeltaInSeconds));
+            }
+
+            if (selectHighScoreContexts) {
+                contextIds = contextSelector.getHighScoreContexts(previousEndTime, currentEndTime);
+            } else {
+                contextIds = contextSelector.getContexts(previousEndTime, currentEndTime);
+            }
+        } else {
+            contextIds = new HashSet<>();
+            if (!selectHighScoreContexts) {
+                // global models can operate only on all of the users
+                contextIds.add(null);
+            }
+        }
+
+        metrics.contextIds += contextIds.size();
+        logger.info("Selected {} context IDs", contextIds.size());
+        return contextIds;
+    }
+
     private ModelBuildingStatus process(String sessionId, String contextId, Date endTime) {
-        Object modelBuilderData;
+        ModelBuilderData modelBuilderData;
         Model model;
 
         // Retriever
@@ -125,22 +161,35 @@ public class ModelBuilderManager {
             modelBuilderData = dataRetriever.retrieve(contextId, endTime);
         } catch (Exception e) {
             metrics.retrieverFailures++;
-            logger.error("Failed to retrieve data: " + e.toString());
-            modelBuilderData = null;
-        }
-        if (modelBuilderData == null) {
+            logger.error("Failed to retrieve data for context ID {}.", contextId, e);
             return ModelBuildingStatus.RETRIEVER_FAILURE;
+        }
+
+        if (!modelBuilderData.dataExists()) {
+            switch (modelBuilderData.getNoDataReason()) {
+                case NO_DATA_IN_DATABASE:
+                    logger.error("No data in database for context ID {}.", contextId);
+                    return ModelBuildingStatus.RETRIEVER_FAILURE;
+                case ALL_DATA_FILTERED:
+                    logger.info("All data filtered out for context ID {}.", contextId);
+                    return ModelBuildingStatus.DATA_FILTERED_OUT;
+                default:
+                    throw new IllegalArgumentException(String.format("Unsupported %s %s.",
+                            NoDataReason.class.getSimpleName(), modelBuilderData.getNoDataReason()));
+            }
         }
 
         // Builder
         try {
-            model = modelBuilder.build(modelBuilderData);
+            model = modelBuilder.build(modelBuilderData.getData());
         } catch (Exception e) {
             metrics.builderFailures++;
-            logger.error("Failed to build model: " + e.toString());
-            model = null;
+            logger.error("Failed to build model for context ID {}.", contextId, e);
+            return ModelBuildingStatus.BUILDER_FAILURE;
         }
+
         if (model == null) {
+            logger.error("Built model for context ID {} is null.", contextId);
             return ModelBuildingStatus.BUILDER_FAILURE;
         }
 
@@ -152,7 +201,7 @@ public class ModelBuilderManager {
             modelStore.save(modelConf, sessionId, contextId, model, startTime, endTime);
         } catch (Exception e) {
             metrics.storeFailures++;
-            logger.error("Failed to store model: " + e.toString());
+            logger.error("Failed to store model for context ID {}.", contextId, e);
             return ModelBuildingStatus.STORE_FAILURE;
         }
 

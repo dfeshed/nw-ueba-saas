@@ -13,13 +13,15 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
+import fortscale.web.beans.ValueCountBean;
 import fortscale.web.beans.request.AlertFilterHelperImpl;
-import fortscale.web.beans.request.AlertRestFilter;
+import fortscale.domain.rest.AlertRestFilter;
 import fortscale.web.beans.request.CommentRequest;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
 import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
+import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -38,14 +40,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
+@Api(value="/api/alerts", protocols = "HTTP, HTTPS")
 @RequestMapping("/api/alerts")
 public class ApiAlertController extends BaseController {
 
@@ -78,6 +78,8 @@ public class ApiAlertController extends BaseController {
     @Autowired
     private AlertsService alertsService;
 
+
+
 	@RequestMapping(value="/exist-anomaly-types", method = RequestMethod.GET)
 	@ResponseBody
 	@LogException
@@ -90,6 +92,24 @@ public class ApiAlertController extends BaseController {
 			response.add(anomalyType.getDataSource()+seperator+anomalyType.getAnomalyType());
 		}
 		return response;
+	}
+
+	@RequestMapping(value="/exist-alert-types", method = RequestMethod.GET)
+	@ResponseBody
+	@LogException
+	public DataBean<Set<ValueCountBean>> getDistinctAlertNames(@RequestParam(required=true, value = "ignore_rejected")Boolean ignoreRejected){
+		Set<ValueCountBean> alertTypesNameAndCount = new HashSet<>();
+
+		for (Map.Entry<String, Integer> alertTypeToCountEntry : alertsService.getAlertsTypesCounted(ignoreRejected).entrySet()){
+			alertTypesNameAndCount.add(new ValueCountBean(alertTypeToCountEntry.getKey(), alertTypeToCountEntry.getValue()));
+		}
+
+		DataBean<Set<ValueCountBean>> result = new DataBean<>();
+
+		result.setData(alertTypesNameAndCount);
+		result.setTotal(alertTypesNameAndCount.size());
+
+		return result;
 	}
 
 	/**
@@ -129,6 +149,7 @@ public class ApiAlertController extends BaseController {
 				START_TIME_COLUMN_NAME,
 				NUMBER_OF_INDICATORS_COLUMN_NAME,
 				STATUS_COLUMN_NAME,
+				FEEDBACK_COLUMN_NAME,
 				SEVERITY_COLUMN_NAME};
 
 		csvWriter.writeNext(tableTitleRow);
@@ -146,7 +167,8 @@ public class ApiAlertController extends BaseController {
 					alert.getEntityName(),
 					simpleDateFormat.format(new Date(alert.getStartDate())),
 					evidencesSizeAsString,
-					alert.getStatus().name(),
+					alert.getStatus().getPrettyValue(),
+					alert.getFeedback().getPrettyValue(),
 					alert.getSeverity().name()};
 			csvWriter.writeNext(alertRow);
 
@@ -220,7 +242,6 @@ public class ApiAlertController extends BaseController {
 		}
 		return entities;
 	}
-
 
 	private Map<Severity, Integer> countSeverities (AlertRestFilter filter) {
 		Map<Severity, Integer> severitiesCount = new HashMap<>();
@@ -314,6 +335,14 @@ public class ApiAlertController extends BaseController {
 
 	}
 
+	@ApiOperation(value = "Add new comment on the alert", notes = "The comment include the analyst details, date, and text", response = Comment.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 200, message = "Successful retrieval of user detail", response = Comment.class),
+			@ApiResponse(code = 400, message = "Analyst name different the username"),
+			@ApiResponse(code = 404, message = "Alert Not Found")}
+
+	)
+	@ApiParam(name="Comment", value="Comment details", required = true)
 	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE) @LogException @ResponseBody
 	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id, @RequestBody @Valid CommentRequest request) {
 
@@ -328,7 +357,7 @@ public class ApiAlertController extends BaseController {
 		}
 
 		if (alert == null){
-			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
+			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.NOT_FOUND);
 		}
 
 		Comment c= alert.addComment(request.getAnalystUserName(), request.getCommentText(), timeStamp);

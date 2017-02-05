@@ -4,14 +4,17 @@ import fortscale.common.exceptions.UnknownResourceException;
 import fortscale.domain.ad.*;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
-import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.domain.ad.dao.UserMachineDAO;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.ComputerRepository;
 import fortscale.domain.core.dao.DeletedUserRepository;
+import fortscale.domain.core.dao.FavoriteUserFilterRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.domain.fe.dao.EventScoreDAO;
 import fortscale.domain.fe.dao.EventsToMachineCount;
+import fortscale.domain.rest.UserFilter;
+import fortscale.domain.rest.UserRestFilter;
+import fortscale.services.ActiveDirectoryService;
 import fortscale.services.UserApplication;
 import fortscale.services.UserService;
 import fortscale.services.cache.CacheHandler;
@@ -22,6 +25,7 @@ import fortscale.utils.JksonSerilaizablePair;
 import fortscale.utils.actdir.ADParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -32,7 +36,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
@@ -42,6 +45,7 @@ import org.springframework.stereotype.Service;
 import java.text.ParseException;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -56,13 +60,13 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Autowired
 	private MongoOperations mongoTemplate;
-	
+
 	@Autowired
 	private AdUserRepository adUserRepository;
-	
+
 	@Autowired
-	private AdUserThumbnailRepository adUserThumbnailRepository;
-	
+	private ActiveDirectoryService activeDirectoryService;
+
 	@Autowired
 	private AdGroupRepository adGroupRepository;
 
@@ -74,24 +78,27 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Autowired
 	private ComputerRepository computerRepository;
-	
+
 	@Autowired
 	private UserMachineDAO userMachineDAO;
-	
+
 	@Autowired
 	private EventScoreDAO loginDAO;
-	
+
 	@Autowired
 	private EventScoreDAO sshDAO;
-	
+
 	@Autowired
 	private EventScoreDAO vpnDAO;
-	
+
 	@Autowired
 	private UsernameService usernameService;
 
-	@Autowired 
+	@Autowired
 	private ADParser adUserParser;
+
+	@Autowired
+	private FavoriteUserFilterRepository favoriteUserFilterRepository;
 
 	@Autowired
 	@Qualifier("groupByTagsCache")
@@ -124,9 +131,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	private Map<String, String> groupDnToNameMap = new HashMap<>();
 
-	@Autowired
-	private CacheHandler<String, List<String>> userTagsCache;
-
 	private UserServiceMetrics serviceMetrics;
 
 	public void setListOfBuiltInADUsers(String listOfBuiltInADUsers) {
@@ -142,8 +146,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		createNewApplicationUserDetails(user, new ApplicationUserDetails(userApplication, appUsername), false);
 		return user;
 	}
-	
-	
+
+
 	//NOTICE: The user of this method should check the status of the event if he doesn't want to add new users with fail status he should call with onlyUpdate=true
 	//        The same goes for cases like security events where we don't want to create new User if there is no correlation with the active directory.
 	@Override
@@ -161,16 +165,16 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		if(userId == null && onlyUpdate){
 			return;
 		}
-			
+
 		if(userId != null){
 			if(!usernameService.isLogUsernameExist(logEventId, logUsername, userId)){
 				// i.e. user exists but the log username is not updated ==> update the user with the new log username
 				serviceMetrics.updatedUsers++;
 				updateUser(logUsername, updateAppUsername, logEventId, userApplicationId, userId);
 			}
-        } else{
+		} else{
 			createNewUser(classifierId, normalizedUsername, logUsername, logEventId, userApplicationId);
-		}		
+		}
 	}
 
 	private void createNewUser(String classifierId, String normalizedUsername, String logUsername, String logEventId, String userApplicationId) {
@@ -179,33 +183,30 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		usernameService.addLogUsername(user, logEventId, logUsername);
 		saveUser(user);
 		if(user == null || user.getId() == null){
-            logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
+			logger.error("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, normalizedUsername, logUsername);
 			serviceMetrics.failedToCreateUser++;
-        } else{
-            usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
-            usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
-        }
+		} else{
+			usernameService.addUsernameToCache(logEventId, user.getId(), normalizedUsername);
+			usernameService.addLogUsernameToCache(logEventId, logUsername, user.getId());
+		}
 	}
 
 	private void updateUser(String logUsername, boolean updateAppUsername, String logEventId, String userApplicationId, String userId) {
 		Update update = new Update();
 		usernameService.fillUpdateLogUsername(update, logUsername, logEventId);
 		if(updateAppUsername){
-            usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
-        }
+			usernameService.fillUpdateAppUsername(update, createNewApplicationUserDetails(userApplicationId, logUsername), userApplicationId);
+		}
 
 		updateUserInMongo(userId, update);
 
 		usernameService.addLogUsernameToCache(logEventId, logUsername, userId);
 	}
 
-	private User saveUser(User user){
+	@Override
+	public User saveUser(User user){
 		user = userRepository.save(user);
 		usernameService.updateUsernameInCache(user);
-		//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-		if (user.getTags() != null && user.getTags().size() > 0){
-			userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-		}
 		return user;
 	}
 
@@ -213,17 +214,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		userRepository.save(users);
 		for (User user : users) {
 			usernameService.updateUsernameInCache(user);
-			//probably will never be called, but just to make sure the cache is always synchronized with mongoDB
-			if (user.getTags() != null && user.getTags().size() > 0) {
-				userTagsCache.put(user.getUsername(), new ArrayList<String>(user.getTags()));
-			}
 		}
 	}
 
 	@Override
 	public void updateUsersInfo(String username, Map<String, JksonSerilaizablePair<Long,String>> userInfo,Map<String,Boolean> dataSourceUpdateOnlyFlagMap) {
-
-
 		// get user by username
 		User user = userRepository.getLastActivityAndLogUserNameByUserName(username);
 
@@ -242,7 +237,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			String classifierId = getFirstClassifierId(userInfo, dataSourceUpdateOnlyFlagMap);
 			String logUsernameValue = userInfo.get(classifierId).getValue();
 
-
 			// need to create the user at mongo
 			serviceMetrics.attemptToCreateUser++;
 			user = createUser(ClassifierHelper.getUserApplicationId(classifierId), username, logUsernameValue);
@@ -252,8 +246,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				serviceMetrics.failedToCreateUser++;
 				logger.info("Failed to save {} user with normalize username ({}) and log username ({})", classifierId, username, logUsernameValue);
 			}
-
-
 		}
 
 		DateTime userCurrLast = user.getLastActivity();
@@ -366,49 +358,35 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 		serviceMetrics.findThumbnail++;
 
-		PageRequest pageRequest = new PageRequest(0, 1, Direction.DESC, AdUserThumbnail.CREATED_AT_FIELD_NAME);
-		List<AdUserThumbnail> adUserThumbnails = adUserThumbnailRepository.findByObjectGUID(user.getAdInfo().getObjectGUID(), pageRequest);
-		if(adUserThumbnails.size() > 0){
-			ret = adUserThumbnails.get(0).getThumbnailPhoto();
+		final AdUserThumbnail adUserThumbnail = activeDirectoryService.findAdUserThumbnailById(user.getAdInfo().getObjectGUID());
+		if(adUserThumbnail != null){
+			ret = adUserThumbnail.getThumbnailPhoto();
 		} else {
 			serviceMetrics.thumbnailNotFound++;
 		}
-		
+
 		return ret;
 	}
 
 	@Override
-	public void removeClassifierFromAllUsers(String classifierId) {
-		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
-
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			List<User> listOfUsers = userRepository.findAllExcludeAdInfo(pageRequest);
-			for (User user : listOfUsers)
-				user.removeClassifierScore(classifierId);
-			saveUsers(listOfUsers);
-		}
-	}
-
-	@Override
 	public void updateUserWithCurrentADInfo() {
-		Long timestampepoc = adUserRepository.getLatestTimeStampepoch();
-		if(timestampepoc != null) {
-			updateUserWithADInfo(timestampepoc);
+		String runtime = adUserRepository.getLatestRuntime();
+		if(runtime != null) {
+			updateUserWithADInfo(runtime);
 		} else {
 			logger.warn("no timestamp. probably the ad_user table is empty");
 		}
-		
+
 	}
 
 	@Override
-	public void updateUserWithADInfo(final Long timestampepoch) {
+	public void updateUserWithADInfo(final String runtime) {
 		logger.info("Starting to update users with ad info.");
 
 		int numOfPages = (int)(((adUserRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {
 			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			Iterable<AdUser> listOfAdUsers = adUserRepository.findByTimestampepoch(timestampepoch, pageRequest);
+			Iterable<AdUser> listOfAdUsers = adUserRepository.findByRuntime(runtime, pageRequest);
 			for (AdUser adUser : listOfAdUsers)
 				updateUserWithADInfo(adUser);
 		}
@@ -418,19 +396,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public void updateUserWithADInfo(AdUser adUser) {
-		if(adUser.getObjectGUID() == null) {
-			logger.warn("got ad user with no ObjectGUID name field.");
-			serviceMetrics.emptyGUID++;
-			return;
-		}
-		if(adUser.getDistinguishedName() == null) {
-			logger.warn("got ad user with no distinguished name field.");
-			serviceMetrics.emptyDN++;
-			return;
-		}
-		
-		
 		User user =  findUserByObjectGUID(adUser.getObjectGUID());
+
+		//When changed logic
 		Date whenChanged = null;
 		try {
 			if(!StringUtils.isEmpty(adUser.getWhenChanged())){
@@ -458,105 +426,23 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				return;
 			}
 		}
-		
-		final UserAdInfo userAdInfo = new UserAdInfo();
-		userAdInfo.setObjectGUID(adUser.getObjectGUID());
-		userAdInfo.setDn(adUser.getDistinguishedName());
-		userAdInfo.setFirstname(adUser.getGivenName());
-		userAdInfo.setLastname(adUser.getSn());
-		if(adUser.getMail() != null && adUser.getMail().length() > 0){
-			userAdInfo.setEmailAddress(new EmailAddress(adUser.getMail()));
-		}
-		userAdInfo.setUserPrincipalName(adUser.getUserPrincipalName());
-		userAdInfo.setsAMAccountName(adUser.getsAMAccountName());
-		
-		
-		
-		userAdInfo.setEmployeeID(adUser.getEmployeeID());
-		userAdInfo.setEmployeeNumber(adUser.getEmployeeNumber());
-		userAdInfo.setManagerDN(adUser.getManager());
-		userAdInfo.setMobile(adUser.getMobile());
-		userAdInfo.setTelephoneNumber(adUser.getTelephoneNumber());
-		userAdInfo.setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
-		userAdInfo.setOtherHomePhone(adUser.getOtherHomePhone());
-		userAdInfo.setOtherMobile(adUser.getOtherMobile());
-		userAdInfo.setOtherTelephone(adUser.getOtherTelephone());
-		userAdInfo.setHomePhone(adUser.getHomePhone());
-		userAdInfo.setDepartment(adUser.getDepartment());
-		userAdInfo.setPosition(adUser.getTitle());
-		userAdInfo.setDisplayName(adUser.getDisplayName());
-		userAdInfo.setLogonHours(adUser.getLogonHours());
 
-		userAdInfo.setWhenChanged(whenChanged);
-		
-		try {
-			if(!StringUtils.isEmpty(adUser.getWhenCreated())){
-				userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
-			}
-		} catch (ParseException e) {
-			serviceMetrics.dateParsingError++;
-			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
-		}
-		
-		userAdInfo.setDescription(adUser.getDescription());
-		userAdInfo.setStreetAddress(adUser.getStreetAddress());
-		userAdInfo.setCompany(adUser.getCompany());
-		userAdInfo.setC(adUser.getC());
-		userAdInfo.setDivision(adUser.getDivision());
-		userAdInfo.setL(adUser.getL());
-		userAdInfo.setO(adUser.getO());
-		userAdInfo.setRoomNumber(adUser.getRoomNumber());
-		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
-			try {
-				userAdInfo.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
-			} catch (ParseException e) {
-				serviceMetrics.dateParsingError++;
-				logger.error(String.format("got and exception while trying to parse active directory account expires field (%s)",adUser.getAccountExpires()), e);
-			}
-		}
-		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
-		userAdInfo.setIsAccountDisabled(adUserParser.isAccountIsDisabled(userAdInfo.getUserAccountControl()));
-		
-		// update user's groups
-		userAdInfo.setGroups(groups);
-
-		// update user's direct reports
-		userAdInfo.setAdDirectReports(directReports);
-
-		DateTime disableAccountTime = null;
-		if (userAdInfo.getIsAccountDisabled()){
-			if (user == null || !user.getAdInfo().getIsAccountDisabled()){
-				disableAccountTime = new DateTime(whenChanged);
-			} else{
-				disableAccountTime = user.getAdInfo().getDisableAccountTime();
-			}
-		}
-		userAdInfo.setDisableAccountTime(disableAccountTime);
-				
 		boolean isSaveUser = false;
-		if(user == null){
+		if(user==null)
+		{
 			user = new User();
 			isSaveUser = true;
 		}
-		
+
+		//create the Ad user info field
+		final UserAdInfo userAdInfo = createUserAdInfo(user,adUser,whenChanged,groups,directReports,isSaveUser);
+
+
+		String username = user.getUsername();
 		user.setAdInfo(userAdInfo);
-		
-		String username = adUser.getUserPrincipalName();
-		if(StringUtils.isEmpty(username)) {
-			username = adUser.getsAMAccountName();
-		}
-		
-		if(!StringUtils.isEmpty(username)) {
-			username = username.toLowerCase();
-		} else{
-			logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
-			serviceMetrics.emptyUsername++;
-		}
-		
-		
-		
+
 		final String searchField = createSearchField(userAdInfo, username);
-		
+
 		String noDomainUsername = null;
 		if(!StringUtils.isEmpty(username)) {
 			noDomainUsername = StringUtils.split(username, '@')[0];
@@ -565,15 +451,13 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		//New user that supposed to be saved
 		if(isSaveUser){
 			if(!StringUtils.isEmpty(username)) {
-				user.setUsername(username);
+				//user.setUsername(username);
 				user.setNoDomainUsername(noDomainUsername);
 				user.addApplicationUserDetails(createApplicationUserDetails(UserApplication.active_directory, user.getUsername()));
 
 				//check if there is another user with the same username (old record of user)
-				//in case of true move the old record into duplicatedUser collection and update thje new record with old fortscale relevant information (i.e scores, last activity etc )
+				//in case of true move the old record into duplicatedUser collection and update the new record with old fortscale relevant information (i.e scores, last activity etc )
 				User oldUserRecord  = userRepository.findByUsername(username);
-
-
 
 
 				//In case that the oldUserRecord is not null (we have other record on User collection with the same username ) and also doesnt exist in the ad built in users (doesnt have principal name only SAMAccountName )
@@ -581,7 +465,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 					DeletedUser deletedUser = convertToDuplicatedUser(oldUserRecord);
 					updateUserWithOldInfo(deletedUser,user);
 					try {
-						deletedUser = duplicatedUserRepository.save(deletedUser);
+						duplicatedUserRepository.save(deletedUser);
 					} catch (Exception ex) {
 						serviceMetrics.failedToCreateDeletedUser++;
 						logger.warn("failed to save deleted user in DeletedUser repository - {}", ex);
@@ -601,7 +485,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			if(!StringUtils.isEmpty(username) && !username.equals(user.getUsername())){
 				update.set(User.usernameField, username);
 			}
-			if(!StringUtils.isEmpty(noDomainUsername) && !noDomainUsername.equals(user.getNoDomainUsername())){
+			if(!StringUtils.isEmpty(noDomainUsername) && (noDomainUsername!=null && !noDomainUsername.equals(user.getNoDomainUsername()))){
 				update.set(User.noDomainUsernameField, noDomainUsername);
 			}
 			if(!searchField.equals(user.getSearchField())){
@@ -609,6 +493,113 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			}
 			updateUser(user, update);
 		}
+	}
+
+	public UserAdInfo createUserAdInfo(User user,AdUser adUser,Date whenChanged,Set<AdUserGroup> groups,Set<AdUserDirectReport> directReports,boolean isNewUser)
+	{
+		UserAdInfo userAdInfo = new UserAdInfo();
+
+		userAdInfo.setObjectGUID(adUser.getObjectGUID());
+		userAdInfo.setDn(adUser.getDistinguishedName());
+		userAdInfo.setFirstname(adUser.getGivenName());
+		userAdInfo.setLastname(adUser.getSn());
+		if(adUser.getMail() != null && adUser.getMail().length() > 0){
+			userAdInfo.setEmailAddress(new EmailAddress(adUser.getMail()));
+		}
+		userAdInfo.setUserPrincipalName(adUser.getUserPrincipalName());
+		userAdInfo.setsAMAccountName(adUser.getsAMAccountName());
+
+
+
+		userAdInfo.setEmployeeID(adUser.getEmployeeID());
+		userAdInfo.setEmployeeNumber(adUser.getEmployeeNumber());
+		userAdInfo.setManagerDN(adUser.getManager());
+		userAdInfo.setMobile(adUser.getMobile());
+		userAdInfo.setTelephoneNumber(adUser.getTelephoneNumber());
+		userAdInfo.setOtherFacsimileTelephoneNumber(adUser.getOtherFacsimileTelephoneNumber());
+		userAdInfo.setOtherHomePhone(adUser.getOtherHomePhone());
+		userAdInfo.setOtherMobile(adUser.getOtherMobile());
+		userAdInfo.setOtherTelephone(adUser.getOtherTelephone());
+		userAdInfo.setHomePhone(adUser.getHomePhone());
+		userAdInfo.setDepartment(adUser.getDepartment());
+		userAdInfo.setPosition(adUser.getTitle());
+		userAdInfo.setDisplayName(adUser.getDisplayName());
+		userAdInfo.setLogonHours(adUser.getLogonHours());
+
+		userAdInfo.setWhenChanged(whenChanged);
+
+		try {
+			if(!StringUtils.isEmpty(adUser.getWhenCreated())){
+				userAdInfo.setWhenCreated(adUserParser.parseDate(adUser.getWhenCreated()));
+			}
+		} catch (ParseException e) {
+			serviceMetrics.dateParsingError++;
+			logger.error(String.format("got and exception while trying to parse active directory when created field (%s)",adUser.getWhenCreated()), e);
+		}
+
+		userAdInfo.setDescription(adUser.getDescription());
+		userAdInfo.setStreetAddress(adUser.getStreetAddress());
+		userAdInfo.setCompany(adUser.getCompany());
+		userAdInfo.setC(adUser.getC());
+		userAdInfo.setDivision(adUser.getDivision());
+		userAdInfo.setL(adUser.getL());
+		userAdInfo.setO(adUser.getO());
+		userAdInfo.setRoomNumber(adUser.getRoomNumber());
+		if(!StringUtils.isEmpty(adUser.getAccountExpires()) && !adUser.getAccountExpires().equals("0") && !adUser.getAccountExpires().startsWith("30828")){
+			try {
+				userAdInfo.setAccountExpires(adUserParser.parseDate(adUser.getAccountExpires()));
+			} catch (ParseException e) {
+				serviceMetrics.dateParsingError++;
+				logger.error(String.format("got and exception while trying to parse active directory account expires field (%s)",adUser.getAccountExpires()), e);
+			}
+		}
+		userAdInfo.setUserAccountControl(adUser.getUserAccountControl());
+		userAdInfo.setIsAccountDisabled(adUserParser.isAccountIsDisabled(userAdInfo.getUserAccountControl()));
+
+		// update user's groups
+		userAdInfo.setGroups(groups);
+
+		// update user's direct reports
+		userAdInfo.setAdDirectReports(directReports);
+
+		//calculate the disable Account Time
+		DateTime disableAccountTime = null;
+		if (userAdInfo.getIsAccountDisabled()){
+			if (!user.getAdInfo().getIsAccountDisabled()){
+				disableAccountTime = new DateTime(whenChanged);
+			} else{
+				disableAccountTime = user.getAdInfo().getDisableAccountTime();
+			}
+		}
+		userAdInfo.setDisableAccountTime(disableAccountTime);
+
+
+
+		String username="";
+
+		//In case the user does not exist and we are going to create a new user we want that the username will be taken from the principal name or the SAMAccount name
+		//Other wise we will keep the existing username
+		if(isNewUser){
+
+			username = adUser.getUserPrincipalName();
+			if(StringUtils.isEmpty(username)) {
+				username = adUser.getsAMAccountName();
+			}
+
+			if(!StringUtils.isEmpty(username)) {
+				username = username.toLowerCase();
+			} else{
+				logger.error("ad user does not have ad user principal name and no sAMAcountName!!! dn: {}", adUser.getDistinguishedName());
+				serviceMetrics.emptyUsername++;
+			}
+
+		}
+		else{
+			username = user.getUsername();
+		}
+
+		user.setUsername(username);
+		return userAdInfo;
 	}
 
 	public boolean needToBeDeleted(User oldUserRecord)
@@ -656,9 +647,6 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		for (Map.Entry<String,String> entry : deletedUser.getLogUsernameMap().entrySet())
 			user.addLogUsername(entry.getKey(), entry.getValue());
 
-		for (Map.Entry<String,ClassifierScore> entry : deletedUser.getScores().entrySet())
-			user.putClassifierScore(entry.getValue());
-
 		for (Map.Entry<String,DateTime> entry : deletedUser.getLogLastActivityMap().entrySet())
 			user.getLogLastActivityMap().put(entry.getKey(),entry.getValue());
 
@@ -699,18 +687,18 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	private User findUserByObjectGUID(String objectGUID){
 		return userRepository.findByObjectGUID(objectGUID);
 	}
-	
+
 	@Override
 	public void updateUser(User user, Update update){
 		if(user.getId() != null){
 			mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(user.getId())), update, User.class);
 		}
 	}
-	
+
 	private void updateUserInMongo(String userId, Update update){
 		mongoTemplate.updateFirst(query(where(User.ID_FIELD).is(userId)), update, User.class);
 	}
-	
+
 	private String createSearchField(UserAdInfo userAdInfo, String username){
 		StringBuilder sb = new StringBuilder();
 		if(userAdInfo != null){
@@ -727,7 +715,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 				}
 			}
 		}
-		
+
 		if(!StringUtils.isEmpty(username)){
 			sb.append(SEARCH_FIELD_PREFIX).append(username);
 		}
@@ -736,7 +724,7 @@ public class UserServiceImpl implements UserService, InitializingBean {
 
 	@Override
 	public List<User> findBySearchFieldContaining(String prefix, int page, int size) {
-		
+
 		return userRepository.findBySearchFieldContaining(SEARCH_FIELD_PREFIX + prefix.toLowerCase(), new PageRequest(page, size));
 	}
 
@@ -749,8 +737,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 		return user.getUsername();
 	}
-	
-	
+
+
 
 	@Override
 	public List<UserMachine> getUserMachines(String uid) {
@@ -775,8 +763,8 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public List<User> getUsernamesActiveSince(DateTime date) {
-		return userRepository.getUsernamesActiveSince(date);
+	public List<User> getUsersActiveSinceIncludingUsernameAndLogLastActivity(DateTime date) {
+		return userRepository.getUsersActiveSinceIncludingUsernameAndLogLastActivity(date);
 	}
 
 	@Override
@@ -788,30 +776,30 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public boolean findIfUserExists(String username) {
 		return userRepository.findIfUserExists(username);
 	}
-	
+
 	@Override
 	public boolean createNewApplicationUserDetails(User user, String userApplication, String username, boolean isSave){
 		return createNewApplicationUserDetails(user, createNewApplicationUserDetails(userApplication, username), isSave);
 	}
-	
+
 	private ApplicationUserDetails createNewApplicationUserDetails(String userApplication, String username){
 		return new ApplicationUserDetails(userApplication, username);
 	}
-	
+
 	public boolean createNewApplicationUserDetails(User user, ApplicationUserDetails applicationUserDetails, boolean isSave) {
 		boolean isNewVal = false;
 		if(!user.containsApplicationUserDetails(applicationUserDetails)){
 			user.addApplicationUserDetails(applicationUserDetails);
 			isNewVal = true;
 		}
-		
+
 		if(isSave && isNewVal){
 			saveUser(user);
 		}
-		
+
 		return isNewVal;
 	}
-	
+
 	@Override
 	public ApplicationUserDetails createApplicationUserDetails(UserApplication userApplication, String username) {
 		return new ApplicationUserDetails(userApplication.getId(), username);
@@ -822,40 +810,40 @@ public class UserServiceImpl implements UserService, InitializingBean {
 			UserApplication userApplication, List<String> usernames) {
 		return userRepository.findByApplicationUserName(userApplication.getId(), usernames);
 	}
-	
+
 	public PropertiesDistribution getDestinationComputerPropertyDistribution(String uid, String propertyName, Long latestDate, Long earliestDate, int maxValues, int minScore) {
 		// get the destinations from 4769 events and ssh events
 		Map<String, EventsToMachineCount> destinationsCount = new HashMap<String, EventsToMachineCount>();
-		
+
 		String username = getUserNameFromID(uid);
-		
+
 		addEventsToMachineCountToMap(destinationsCount, loginDAO.getEventsToTargetMachineCount(username, latestDate,earliestDate, minScore));
 		addEventsToMachineCountToMap(destinationsCount, sshDAO.getEventsToTargetMachineCount(username, latestDate,earliestDate, minScore));
-	
+
 		// create a properties distribution object
 		PropertiesDistribution distribution = new PropertiesDistribution(propertyName);
-		
+
 		// go over the computers returned by events and get the operating system for each one
 		int numberOfDestinations = 0;
 		for (EventsToMachineCount destMachine : destinationsCount.values()) {
 			Computer computer = computerRepository.getComputerWithPartialFields(destMachine.getHostname().toUpperCase(), propertyName);
 			distribution.incValueCount(computer.getPropertyValue(propertyName).toString(), destMachine.getEventsCount());
 			numberOfDestinations++;
-			
+
 			// in case we return more than a certain amount of values distribution, mark result as not conclusive
 			if (numberOfDestinations > maxValues) {
 				distribution.setConclusive(false);
 				break;
 			}
 		}
-		
+
 		// calculate distribution for every operating systems and return the result
 		if (distribution.isConclusive())
 			distribution.calculateValuesDistribution();
-		
+
 		return distribution;
 	}
-	
+
 	private void addEventsToMachineCountToMap(Map<String, EventsToMachineCount> total, List<EventsToMachineCount> toAdd) {
 		for (EventsToMachineCount machine : toAdd) {
 			String hostname = machine.getHostname();
@@ -869,68 +857,34 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		}
 	}
 
-	
-	
+
+
 	public void updateTags(String username, Map<String, Boolean> tagSettings) {
-		
 		// construct lists of tags to remove and tags to add from the map
 		List<String> tagsToAdd = new LinkedList<String>();
 		List<String> tagsToRemove = new LinkedList<String>();
 		for (String tag : tagSettings.keySet()) {
-			if (tagSettings.get(tag)) 
+			if (tagSettings.get(tag))
 				tagsToAdd.add(tag);
 			else
 				tagsToRemove.add(tag);
 		}
-		updateTags(username, tagsToAdd, tagsToRemove);
-	}
-
-	private void updateTags(String username, List<String> tagsToAdd, List<String> tagsToRemove){
-		// call the repository to update mongodb with the tags settings
 		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		//also update the tags cache with the new updates
-		List<String> tags = userTagsCache.get(username);
-		Set<String> tagSet = new HashSet<String>();
-		if (tags!=null) {
-			tagSet = new HashSet<String>(tags);
-		}
-		if (tagsToAdd != null)
-			tagSet.addAll(tagsToAdd);
-		if (tagsToRemove != null)
-			tagSet.removeAll(tagsToRemove);
-
-
-		tags = new ArrayList<String>(tagSet);
-
-
-		userTagsCache.put(username, tags);
 	}
 
 
 	@Override
 	public boolean isUserTagged(String username, String tag) {
-		// check if the user tags are kept in cache
-		List<String> tags = userTagsCache.get(username);
-		if (tags==null) {
-			// get tags from mongodb and add to cache
-			Set<String> tagSet = userRepository.getUserTags(username);
-			serviceMetrics.findTags++;
-			if (tagSet != null) {
-				tags = new ArrayList<String>(tagSet);
-				userTagsCache.put(username, tags);
-			} else {
-				serviceMetrics.tagsNotFound++;
-			}
+		// get tags from mongodb
+		Set<String> tagSet = userRepository.getUserTags(username);
+
+		if (tagSet == null) {
+			serviceMetrics.tagsNotFound++;
+			return false;
 		}
-		return tags!=null && tags.contains(tag);
-	}
 
-	@Override public CacheHandler getCache() {
-		return userTagsCache;
-	}
-
-	@Override public void setCache(CacheHandler cache) {
-		userTagsCache = cache;
+		serviceMetrics.findTags++;
+		return tagSet.contains(tag);
 	}
 
 	@Override
@@ -943,6 +897,11 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return userRepository.findByUserInOU(ousToTag, pageable);
 	}
 
+	@Override
+	public Set<String> findByUsernameRegex(String usernameRegex) {
+		return userRepository.findByUsernameRegex(usernameRegex);
+	}
+
 	public String findAdMembers(String adName) {
 		return adGroupRepository.findByName(adName);
 	}
@@ -952,25 +911,28 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public Set<String> findNamesByTag(String tagFieldName, Boolean value) {
+	public Set<String> findNamesByTag(String tag) {
 		Set<String> namesByTag = new HashSet<String>();
 		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
 		for (int i = 0; i < numOfPages; i++) {
 			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			namesByTag.addAll(userRepository.findNameByTag(tagFieldName, value, pageRequest));
+			namesByTag.addAll(userRepository.findNameByTag(tag, pageRequest));
 		}
 		return namesByTag;
 	}
 
 	@Override
-	public Set<String> findNamesByTag(String tagFieldName, String value) {
-		Set<String> namesByTag = new HashSet<String>();
-		int numOfPages = (int)(((userRepository.count() - 1) / userServiceImplPageSize) + 1);
-		for (int i = 0; i < numOfPages; i++) {
-			PageRequest pageRequest = new PageRequest(i, userServiceImplPageSize);
-			namesByTag.addAll(userRepository.findNameByTag(tagFieldName, value, pageRequest));
+	public Map<String, Set<String>> findAllTaggedUsers() {
+		Map<String, Set<String>> result = new HashMap();
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+		query.fields().include(User.tagsField);
+		query.addCriteria(new Criteria().where(User.tagsField + ".0").exists(true));
+		List<User> users = mongoTemplate.find(query, User.class);
+		for (User user: users) {
+			result.put(user.getUsername(), user.getTags());
 		}
-		return namesByTag;
+		return result;
 	}
 
 	@Override
@@ -1003,6 +965,20 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
+	public Set<String> findUsernamesByTags(String[] tags) {
+		Set<String> usernamesByTags = new HashSet();
+		Query query = new Query();
+		query.fields().include(User.usernameField);
+		List<Criteria> criterias = new ArrayList<>();
+		criterias.add(where(User.tagsField).in(tags));
+		Criteria[] criteriasArr = new Criteria[]{criterias.get(0)};
+		query.addCriteria(new Criteria().andOperator(criteriasArr));
+		List<User> users = mongoTemplate.find(query, User.class);
+		usernamesByTags.addAll(users.stream().map(User::getUsername).collect(Collectors.toList()));
+		return usernamesByTags;
+	}
+
+	@Override
 	public Map<String, Long> groupByTags() {
 		final String TAGS = "tags";
 		Map<String, Long> items = groupByTagsCache.get(TAGS);
@@ -1014,42 +990,29 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	}
 
 	@Override
-	public void updateUserTag(String tagField, String userTagEnumId, String username, boolean value){
-		userRepository.updateUserTag(tagField, username, value);
+	public void updateUserTag(String userTagEnumId, String username, boolean value) {
 		List<String> tagsToAdd = new ArrayList<>();
 		List<String> tagsToRemove = new ArrayList<>();
 		if (value) {
 			tagsToAdd.add(userTagEnumId);
 		}
-		else{
+		else {
 			tagsToRemove.add(userTagEnumId);
 		}
-
-		updateUserTagList(tagsToAdd,tagsToRemove,username);
-
+		updateUserTagList(tagsToAdd, tagsToRemove, username);
 	}
 
 	@Override
-	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username)
-	{
-		Set<String> tags = userRepository.syncTags(username, tagsToAdd, tagsToRemove);
-		userTagsCache.put(username, new ArrayList(tags));
-	}
-
-	@Override public void handleNewValue(String key, String value) throws Exception {
-		if(value == null){
-			getCache().remove(key);
-		}
-		else {
-			getCache().putFromString(key, value);
-		}
+	public void updateUserTagList(List<String> tagsToAdd, List<String> tagsToRemove , String username) {
+		userRepository.syncTags(username, tagsToAdd, tagsToRemove);
 	}
 
 	@Override public List<Map<String, String>> getUsersByPrefix(String prefix, Pageable pageable) {
 		return userRepository.getUsersByPrefix(prefix, pageable);
 	}
 
-	@Override public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
+	@Override
+	public List<Map<String, String>> getUsersByIds(String ids, Pageable pageable) {
 		return userRepository.getUsersByIds(ids, pageable);
 	}
 
@@ -1057,8 +1020,9 @@ public class UserServiceImpl implements UserService, InitializingBean {
 	public User getUserById(String id) {
 		return userRepository.findOne(id);
 	}
-	
-	@Override public Boolean isPasswordExpired(User user) {
+
+	@Override
+	public Boolean isPasswordExpired(User user) {
 		try{
 			return user.getAdInfo().getUserAccountControl() != null ? adUserParser.isPasswordExpired(user.getAdInfo().getUserAccountControl()) : null;
 		} catch (NumberFormatException e) {
@@ -1162,6 +1126,52 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		return  userRepository.groupCount(User.displayNameField, displayNames);
 	}
 
+	@Override public List<User> findUsersByFilter(UserRestFilter userRestFilter, PageRequest pageRequest,
+												  Set<String> relevantUserIds, List<String> fieldsRequired) {
+
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUserIds);
+
+		return userRepository.findAllUsers(criteriaList, pageRequest, fieldsRequired);
+	}
+
+	private List<Criteria> getCriteriaListByFilterAndUserIds(UserRestFilter userRestFilter,
+															 Set<String> relevantUserNames) {
+		List<Criteria> criteriaList = userRepository.getUsersCriteriaByFilters(userRestFilter);
+
+		// If there was filter for alert type or anomaly type or locations
+		// we want to add criteria for getting data of specific users
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getLocations())
+				|| CollectionUtils.isNotEmpty(userRestFilter.getUserIds())) {
+			criteriaList.add(userRepository.getUserCriteriaByUserIds(relevantUserNames));
+		}
+
+		return criteriaList;
+	}
+
+	@Override public int countUsersByFilter(UserRestFilter userRestFilter, Set<String> relevantUsers) {
+
+		return userRepository.countAllUsers(getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers));
+	}
+
+	@Override public void saveFavoriteFilter(UserFilter userFilter, String filterName) {
+		favoriteUserFilterRepository.save(userFilter, filterName);
+	}
+
+	@Override public List<FavoriteUserFilter> getAllFavoriteFilters() {
+		return favoriteUserFilterRepository.findAll();
+	}
+
+	@Override public long deleteFavoriteFilter(String filterName) {
+		return favoriteUserFilterRepository.deleteById(filterName);
+	}
+
+	@Override
+	public List getDistinctValuesByFieldName(String fieldName) {
+		return userRepository.getDistinctFieldValues(fieldName);
+	}
+
 	@Override public String getUserId(String username) {
 		return usernameService.getUserId(username, null);
 	}
@@ -1175,4 +1185,51 @@ public class UserServiceImpl implements UserService, InitializingBean {
 		serviceMetrics = new UserServiceMetrics(statsService);
 	}
 
+
+	@Override
+	public void updateSourceMachineCount(String userId, int sourceMachineCount) {
+		userRepository.updateSourceMachineCount(userId, sourceMachineCount);
+	}
+
+
+	@Override
+	public Set<String> getUserTags(String userName) {
+		return userRepository.getUserTags(userName);
+	}
+
+	@Override
+	public int updateTags(UserRestFilter userRestFilter, Boolean addTag, List<String> tagNames, Set<String> relevantUsers) {
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
+
+		return userRepository.updateTagsByFilter(addTag, tagNames, criteriaList, userRestFilter.getUserTags());
+	}
+
+	@Override
+	public int updateWatched(UserRestFilter userRestFilter, Set<String> relevantUsers, Boolean watch) {
+		List<Criteria> criteriaList = getCriteriaListByFilterAndUserIds(userRestFilter, relevantUsers);
+
+		return userRepository.updateFollowed(criteriaList, watch);
+	}
+
+
+	/**
+	 * removes tag with name {@code tagName} from field 'tags' of all users (if exists in tags array)
+	 * @param tagName the name of tag to remove
+	 * @return the amount of modified users
+	 */
+    @Override
+    public int removeTagFromAllUsers(String tagName) {
+		return userRepository.updateTagsByFilter(false, Collections.singletonList(tagName), Collections.singletonList(where(User.tagsField).in(tagName)), Collections.singletonList(tagName));
+	}
+
+	@Override
+	public int updateUserScoreForUsersNotInIdList(Set<String> userIds, double score) {
+		int updateCount = 0;
+		try {
+			updateCount = userRepository.updateUserScoreForUsersNotInIdList(userIds, score);
+		}catch (Exception e){
+			logger.error("Error updating user score for {} users not in id list to score {}", userIds.size(), score, e);
+		}
+		return updateCount;
+	}
 }

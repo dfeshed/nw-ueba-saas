@@ -1,19 +1,21 @@
 package fortscale.collection.jobs.ad;
 
-import java.util.Date;
-
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.domain.ad.AdOU;
+import fortscale.domain.ad.dao.AdOURepository;
+import fortscale.utils.logging.Logger;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.domain.ad.AdOU;
-import fortscale.domain.ad.dao.AdOURepository;
+import java.util.Date;
 
 public class AdOUProcessJob extends AdProcessJob {
-	
+
+	private static final Logger logger = Logger.getLogger(AdOUProcessJob.class);
+
 	@Autowired
 	private AdOURepository adOURepository;
 		
@@ -27,8 +29,8 @@ public class AdOUProcessJob extends AdProcessJob {
 	}
 
 	@Override
-	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adOURepository.countByTimestampepoch(runtime.getTime()) > 0 ? true : false;
+	protected boolean isTimestampAlreadyProcessed(String runtime) {
+		return adOURepository.countByRuntime(runtime) > 0 ? true : false;
 	}
 
 	@Override
@@ -38,14 +40,19 @@ public class AdOUProcessJob extends AdProcessJob {
 		if(StringUtils.isEmpty(adOU.getDistinguishedName()) || StringUtils.isEmpty(adOU.getObjectGUID())){
 			return false;
 		}
-		adOU.setLastModified(new Date());
+		final AdOU existingOu = adOURepository.findByObjectGUID(adOU.getObjectGUID());
+		if (existingOu != null) {
+			logger.debug("Updating OU with objectGUID {}", existingOu.getObjectGUID());
+			adOURepository.delete(existingOu);
+		}
+
 		adOURepository.save(adOU);
-		
+		adOU.setLastModified(new Date());
 		return true;
 	}
 
 	@Override
-	protected String getDataRecievedType() {
+	protected String getDataReceivedType() {
 		return "OU";
 	}
 }

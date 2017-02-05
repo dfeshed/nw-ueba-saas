@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface TagRepository extends MongoRepository<Tag, String>, TagRepositoryCustom {
 
-	Tag findByName(String name);
+	Tag findByNameIgnoreCase(String name);
 	List<Tag> findByCreatesIndicator(Boolean createsIndicator);
 
 }

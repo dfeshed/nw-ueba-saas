@@ -1,8 +1,11 @@
 package fortscale.ml.model.selector;
 
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 public interface IContextSelector {
-	public List<String> getContexts(Date startTime, Date endTime);
+
+	Set<String> getContexts(Date startTime, Date endTime);
+	Set<String> getHighScoreContexts(Date startTime, Date endTime);
+
 }

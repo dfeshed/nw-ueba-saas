@@ -12,7 +12,6 @@ import fortscale.streaming.ConfigUtils;
 import fortscale.streaming.common.SamzaContainerInitializedListener;
 import fortscale.streaming.common.SamzaContainerService;
 import fortscale.utils.logging.Logger;
-import fortscale.utils.time.TimestampUtils;
 import org.apache.samza.storage.kv.KeyValueIterator;
 import org.apache.samza.storage.kv.KeyValueStore;
 import org.springframework.beans.factory.InitializingBean;
@@ -23,6 +22,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static fortscale.utils.time.TimestampUtils.convertToSeconds;
 
 public class ModelsCacheServiceSamza implements ModelsCacheService, InitializingBean, SamzaContainerInitializedListener {
 	private static final String NULL_VALUE_ERROR_MSG_FORMAT = String.format(
@@ -38,18 +39,35 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 	@Autowired
 	private SamzaContainerService samzaContainerService;
 
+	/* If the last usage of a certain model in the cache was more than {@code maxSecDiffBeforeCleaningCache}
+	 * seconds ago, the model will be deleted from the cache (i.e. delete unused models from the cache) */
 	@Value("${fortscale.model.max.sec.diff.before.cleaning.cache}")
 	private long maxSecDiffBeforeCleaningCache;
 
+	/* clean the cache (delete unused models from it) every
+	 * {@code secDiffBetweenCleaningCacheChecks} seconds (or more) */
+	@Value("${fortscale.model.sec.diff.between.cleaning.cache.checks}")
+	private long secDiffBetweenCleaningCacheChecks;
+
+
 	private Map<String, ModelCacheManager> modelCacheManagers;
+	private long lastCleaningCacheEpochtime = convertToSeconds(System.currentTimeMillis());
 
 	private Map<String, ModelCacheManager> getModelCacheManagers() {
 		if (modelCacheManagers == null) {
 			loadCacheManagers();
 		}
+
 		return modelCacheManagers;
 	}
 
+	/**
+	 * @param feature
+	 * @param modelConfName
+	 * @param context
+	 * @param eventEpochtime - in seconds
+     * @return latest model from cache for given params
+     */
 	@Override
 	public Model getModel(Feature feature, String modelConfName, Map<String, String> context, long eventEpochtime) {
 		if (getModelCacheManagers().containsKey(modelConfName)) {
@@ -61,11 +79,22 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 
 	@Override
 	public void window() {
+		long currentEpochtime = convertToSeconds(System.currentTimeMillis());
+
+		// Check if it's time to clean the cache from unused models - return if not
+		if (currentEpochtime - lastCleaningCacheEpochtime < secDiffBetweenCleaningCacheChecks) {
+			logger.debug("Not going to clean unused models from cache in this window. Set to clean every {} seconds.",
+					secDiffBetweenCleaningCacheChecks);
+			return;
+		}
+
+		logger.info("Going to clean unused models from cache. Set to clean every {} seconds.",
+				secDiffBetweenCleaningCacheChecks);
 		KeyValueStore<String, ModelsCacheInfo> store = getStore();
 		KeyValueIterator<String, ModelsCacheInfo> iterator = null;
+
 		try {
 			iterator = store.all();
-			long currentEpochtime = TimestampUtils.convertToSeconds(System.currentTimeMillis());
 			List<String> keysToClean = new ArrayList<>();
 
 			while (iterator.hasNext()) {
@@ -78,11 +107,15 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 					keysToClean.add(key);
 				}
 			}
+
 			keysToClean.forEach(store::delete);
 		} finally {
-			if(iterator!=null) {
+			if (iterator != null) {
 				iterator.close();
 			}
+
+			// Update the last time models were cleaned from the cache, even if the iterator failed
+			lastCleaningCacheEpochtime = currentEpochtime;
 		}
 	}
 
@@ -98,6 +131,11 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 
 	@Override
 	public void close() {}
+
+	@Override
+	public void deleteFromCache(String modelConfName, String contextId) {
+		modelCacheManagers.get(modelConfName).deleteFromCache(modelConfName, contextId);
+	}
 
 	/**
 	 * TODO: Following functionality should be implemented in a dedicated service.
@@ -116,9 +154,10 @@ public class ModelsCacheServiceSamza implements ModelsCacheService, Initializing
 		modelCacheManagers = new HashMap<>();
 
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
+			String storeName = getStoreName();
 			ModelCacheManager modelCacheManager = isDiscreteModelConf(modelConf) ?
-					new DiscreteModelCacheManagerSamza(getStoreName(), modelConf) :
-					new LazyModelCacheManagerSamza(getStoreName(), modelConf);
+					new DiscreteTriggeredModelCacheManagerSamza(storeName, modelConf) :
+					new LazyTriggeredModelCacheManagerSamza(storeName, modelConf);
 			modelCacheManagers.put(modelConf.getName(), modelCacheManager);
 		}
 	}

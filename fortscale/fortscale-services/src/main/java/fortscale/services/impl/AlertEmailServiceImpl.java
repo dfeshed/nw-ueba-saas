@@ -10,6 +10,8 @@ import fortscale.services.*;
 import fortscale.utils.image.ImageUtils;
 import fortscale.utils.jade.JadeUtils;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.time.DateFormatUtils;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -98,12 +100,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendNewAlertEmail(Alert alert) {
+		emailService.loadEmailConfiguration();
 		if (!emailService.isEmailConfigured()) {
 			logger.debug("no email configuration found");
 			return;
 		}
 		emailConfiguration = loadAlertEmailConfiguration();
-		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+		if (CollectionUtils.isEmpty(emailConfiguration)) {
 			logger.debug("no email alert configuration found");
 			return;
 		}
@@ -116,7 +119,9 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		if (!shouldSendNewAlert(alertSeverity)) {
 			return;
 		}
-		User user = userService.findByUsername(alert.getEntityName());
+
+		// Getting the relevant user by user id saved on the alert
+		User user = userService.getUserById(alert.getEntityId());
 		if (user == null) {
 			logger.error("couldn't find username - {}", alert.getEntityName());
 			return;
@@ -153,9 +158,8 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 		//remove the unused severities from the attachments map
 		allSeverities.forEach(severity -> attachmentsMap.remove(severity.name().toLowerCase()));
 		attachmentsMap.put(SHADOW_CID, shadowImage);
-		DateTime now = new DateTime();
-		String date = now.toString("MMMM") + " " + now.getDayOfMonth() + ", " + now.getYear();
-		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), date);
+		String dateAsString = getDateAsString(new Date(alert.getStartDate()));
+		String newAlertSubject = String.format("Fortscale %s Alert Notification, %s", alert.getSeverity().name(), dateAsString);
 		//for each group check if they should be notified of the alert
 		for (EmailGroup emailGroup : emailConfiguration) {
 			NewAlert newAlert = emailGroup.getNewAlert();
@@ -163,12 +167,17 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 				try {
 					emailService.sendEmail(emailGroup.getUsers(), null, null, newAlertSubject, html, attachmentsMap,
 							true);
+					logger.info("Alert - {} -  forward using email at {}",alert.toString(false), getDateAsString(new Date()));
 				} catch (MessagingException | IOException ex) {
 					logger.error("failed to send email - {}", ex);
 					return;
 				}
 			}
 		}
+	}
+
+	private String getDateAsString(Date date){
+		return DateFormatUtils.format(date, "MMMM dd yyyy");
 	}
 
 	/**
@@ -238,12 +247,13 @@ public class AlertEmailServiceImpl implements AlertEmailService, InitializingBea
 	 */
 	@Override
 	public void sendAlertSummaryEmail(Frequency frequency) {
+		emailService.loadEmailConfiguration();
 		if (!emailService.isEmailConfigured()) {
 			logger.debug("no email configuration found");
 			return;
 		}
 		emailConfiguration = loadAlertEmailConfiguration();
-		if (emailConfiguration == null || emailConfiguration.isEmpty()) {
+		if (CollectionUtils.isEmpty(emailConfiguration)) {
 			logger.debug("no email alert configuration found");
 			return;
 		}

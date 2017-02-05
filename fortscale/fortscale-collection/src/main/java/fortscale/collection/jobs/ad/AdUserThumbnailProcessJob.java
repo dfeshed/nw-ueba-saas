@@ -3,15 +3,12 @@ package fortscale.collection.jobs.ad;
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.domain.ad.AdUserThumbnail;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
-import fortscale.domain.ad.dao.AdUserThumbnailRepository;
 import fortscale.monitor.domain.JobDataReceived;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.lang.StringUtils;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -28,15 +25,18 @@ import java.util.List;
 public class AdUserThumbnailProcessJob extends FortscaleJob {
 
 	private static Logger logger = Logger.getLogger(AdUserThumbnailProcessJob.class);
-		
+
 	@Autowired
-	private AdUserThumbnailRepository adUserThumbnailRepository;
+	private AdTaskPersistencyService adTaskPersistencyService;
 
 	@Autowired
 	private ActiveDirectoryService activeDirectoryService;
 
 	@Value("${users.ou.filter:}")
     private String ouUsersFilter;
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
 
 	private String ldapFieldSeparator;
 	
@@ -47,11 +47,16 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	private String adFields;
 	
 	private List<AdUserThumbnail> adUserThumbnails = new ArrayList<>();
-	
-	
+
+	private String resultsId;
+	private JobKey jobKey;
+
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		jobKey = jobExecutionContext.getJobDetail().getKey();
 
 		// get parameters values from the job data map
 
@@ -62,6 +67,10 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		filter = jobDataMapExtension.getJobDataMapStringValue(map, "filter");
 		//AD selected fields
 		adFields = jobDataMapExtension.getJobDataMapStringValue(map, "adFields");
+
+		// random generated ID for deployment wizard fetch and ETL results
+		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
+
 	}
 
 	@Override
@@ -76,9 +85,17 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		getFromActiveDirectory(filter, adFields, -1);
 		flushAdUserThumbnailBuffer();
 
+
+		if (resultsId != null) {
+			final String name = jobKey.getName();
+			final String[] splitName = name.split("_");
+			final String dataSource = splitName[0] + "_" + splitName[1];
+			final String taskName = splitName[2] + "_" + splitName[3];
+
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName, resultsId, true);
+		}
+
 		finishStep();
-
-
 	}
 
 
@@ -107,9 +124,12 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 		if(lineSplit.length != 2){
 			return;
 		}
+
+		final String objectGUID = lineSplit[1];
 		AdUserThumbnail adUserThumbnail = new AdUserThumbnail();
-		adUserThumbnail.setThumbnailPhoto(lineSplit[0]);
-		adUserThumbnail.setObjectGUID(lineSplit[1]);
+		adUserThumbnail.setId(objectGUID);
+		final String thumbnailPhoto = lineSplit[0];
+		adUserThumbnail.setThumbnailPhoto(thumbnailPhoto);
 
 		adUserThumbnails.add(adUserThumbnail);
 
@@ -119,8 +139,8 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 	}
 
 	private void flushAdUserThumbnailBuffer(){
-		if(!adUserThumbnails.isEmpty()){
-			adUserThumbnailRepository.save(adUserThumbnails);
+		if(!adUserThumbnails.isEmpty()) {
+			activeDirectoryService.save(adUserThumbnails);
 			monitor.addDataReceived(getMonitorId(), new JobDataReceived("User Thumbnails", adUserThumbnails.size(), "Users"));
 			adUserThumbnails.clear();
 		}
@@ -155,7 +175,7 @@ public class AdUserThumbnailProcessJob extends FortscaleJob {
 				try {
 					processLine(line.toString());
 				} catch (Exception e) {
-					logger.warn("Process line Fail - {}", e.getMessage());
+					logger.warn("Process line Fail", e);
 
 
 				}

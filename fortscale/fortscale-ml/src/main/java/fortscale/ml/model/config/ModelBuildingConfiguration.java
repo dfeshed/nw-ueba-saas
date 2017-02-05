@@ -1,5 +1,8 @@
 package fortscale.ml.model.config;
 
+import fortscale.domain.core.dao.AlertsRepositoryCustom;
+import fortscale.domain.core.dao.AlertsRepositoryImpl;
+import fortscale.domain.core.dao.MongoDbRepositoryUtil;
 import fortscale.ml.model.ModelConfService;
 import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
@@ -42,5 +45,15 @@ public class ModelBuildingConfiguration {
 	@Bean
 	public FactoryService<IModelBuilder> modelBuilderFactoryService() {
 		return new FactoryService<>();
+	}
+
+	@Bean
+	public MongoDbRepositoryUtil MongoDbRepositoryUtil() {
+		return new MongoDbRepositoryUtil();
+	}
+
+	@Bean
+	public AlertsRepositoryCustom alertsRepository() {
+		return new AlertsRepositoryImpl();
 	}
 }

@@ -1,26 +1,25 @@
 package fortscale.collection.jobs.ad;
 
-import java.util.Date;
-
+import fortscale.collection.morphlines.RecordToBeanItemConverter;
+import fortscale.domain.ad.AdComputer;
+import fortscale.domain.ad.dao.AdComputerRepository;
+import fortscale.services.ComputerService;
 import org.apache.commons.lang3.StringUtils;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import fortscale.collection.morphlines.RecordToBeanItemConverter;
-import fortscale.domain.ad.AdComputer;
-import fortscale.domain.ad.dao.AdComputerRepository;
-import fortscale.services.ComputerService;
+import java.util.Date;
 
 public class AdComputerProcessJob extends AdProcessJob {
-	
+
 	@Autowired
 	private AdComputerRepository adComputerRepository;
-		
+
 	@Autowired
 	private ComputerService service;
-	
+
 	private RecordToBeanItemConverter<AdComputer> converter;
 
 
@@ -31,8 +30,8 @@ public class AdComputerProcessJob extends AdProcessJob {
 	}
 
 	@Override
-	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adComputerRepository.countByTimestampepoch(runtime.getTime()) > 0 ? true : false;
+	protected boolean isTimestampAlreadyProcessed(String runtime) {
+		return adComputerRepository.countByRuntime(runtime) > 0 ? true : false;
 	}
 
 	@Override
@@ -45,12 +44,12 @@ public class AdComputerProcessJob extends AdProcessJob {
 		adComputer.setLastModified(new Date());
 		adComputerRepository.save(adComputer);
 		service.updateComputerWithADInfo(adComputer);
-		
+
 		return true;
 	}
 
 	@Override
-	protected String getDataRecievedType() {
+	protected String getDataReceivedType() {
 		return "Computers";
 	}
 }

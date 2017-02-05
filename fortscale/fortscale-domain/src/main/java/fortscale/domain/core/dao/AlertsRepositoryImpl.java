@@ -1,16 +1,16 @@
 package fortscale.domain.core.dao;
 
 
-import com.google.common.collect.Lists;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
-import com.mongodb.CommandResult;
-import com.mongodb.DBObject;
 import fortscale.domain.core.*;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
+import fortscale.domain.rest.UserRestFilter;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,6 +124,15 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes){
 		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
 		return mongoDbRepositoryUtil.groupCount(fieldName, criteria, "alerts");
+
+
+	}
+
+	public Map<Pair<String,String>, Integer> groupCountBy2Fields(String fieldName1, String filedName2, String severityArrayFilter, String statusArrayFilter,
+										   String feedbackArrayFilter, DateRange dateRangeFilter, String entityName,
+										   Set<String> entitiesIds, Set<DataSourceAnomalyTypePair> indicatorTypes){
+		Criteria criteria = getCriteriaForGroupCount(severityArrayFilter, statusArrayFilter, feedbackArrayFilter, dateRangeFilter, entityName, entitiesIds, indicatorTypes);
+		return mongoDbRepositoryUtil.groupCountBy2Fields(fieldName1, filedName2, criteria, "alerts");
 
 
 	}
@@ -275,6 +284,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     }
 
 
+
     @Override
     public Set<String> getDistinctUserIdsFromAlertsRelevantToUserScore(){
 
@@ -284,7 +294,17 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         return  new HashSet<>(userNames);
     }
 
-    @Override
+
+	@Override public Set<String> getDistinctAlertNames(Set<String> feedbackSet) {
+
+		Query query = buildQueryByUserNameAndFeedback(null, feedbackSet);
+
+		List<String> alertNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME)
+				.distinct(Alert.nameField, query.getQueryObject());
+		return new HashSet<>(alertNames);
+	}
+
+	@Override
     public Set<Alert> getAlertsRelevantToUserScore(String userId){
 
         Query query = getQueryForAlertsRelevantToUserScore(userId);
@@ -296,6 +316,30 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
     }
 
 	@Override
+	public List<Alert> getAlertsForUserByFeedback(String userName, Set<String> feedbackSet) {
+
+		Query query = buildQueryByUserNameAndFeedback(userName, feedbackSet);
+		query.fields().exclude(Alert.evidencesField);
+
+		return mongoTemplate.find(query, Alert.class);
+	}
+
+	private Query buildQueryByUserNameAndFeedback(String userName, Set<String> feedbackSet) {
+		Query query = new Query();
+		if (CollectionUtils.isNotEmpty(feedbackSet)) {
+			query.addCriteria(new Criteria().where(Alert.feedbackField).in(feedbackSet));
+		}
+
+		if (StringUtils.isNotBlank(userName)){
+			query.addCriteria(new Criteria().where(Alert.entityNameField).is(userName));
+		}
+
+		query.with(new Sort(Sort.Direction.ASC, Alert.severityCodeField));
+
+		return query;
+	}
+
+	@Override
 	public void updateUserContribution(String alertId, double newContribution, boolean newContributionFlag ){
 		Query q = new Query(Criteria.where("_id").is(alertId));
 		Update u = new Update().
@@ -305,7 +349,37 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
 
 	}
 
-    private  Query getQueryForAlertsRelevantToUserScore(String userId) {
+	@Override
+	public Set<String> getDistinctUserIdByUserRestFilter(UserRestFilter userRestFilter) {
+		Query query = new Query();
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAnomalyTypesAsSet())){
+			Criteria anomalyTypeCriteria = fetchAnomalyTypeCriteria(userRestFilter.getAnomalyTypesAsSet());
+			query.addCriteria(anomalyTypeCriteria);
+		}
+
+		if (CollectionUtils.isNotEmpty(userRestFilter.getAlertTypes())){
+			Criteria criteriaForAlertsByAlertName = getCriteriaForAlertsByAlertName(userRestFilter.getAlertTypes());
+			query.addCriteria(criteriaForAlertsByAlertName);
+		}
+
+		List<String> userNames = mongoTemplate.getCollection(Alert.COLLECTION_NAME).distinct(Alert.entityIdField, query.getQueryObject());
+
+		return new HashSet<>(userNames);
+	}
+
+	private Criteria getCriteriaForAlertsByAlertName(List<String> alertNames) {
+
+		Criteria criteria = null;
+
+		if (CollectionUtils.isNotEmpty(alertNames)) {
+			criteria = new Criteria().where(Alert.nameField).in(alertNames);
+		}
+
+		return criteria;
+	}
+
+	private  Query getQueryForAlertsRelevantToUserScore(String userId) {
         Criteria criteria = new Criteria();
         criteria.where(Alert.feedbackField).ne(AlertFeedback.None).
                 and(Alert.userScoreContributionFlagField).is(Boolean.TRUE);
@@ -313,6 +387,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
         if (StringUtils.isNotBlank(userId)){
             criteria.and(Alert.entityIdField).is(userId);
         }
+
         Query query = new Query();
         query.addCriteria(criteria);
         return query;
@@ -475,7 +550,7 @@ public class AlertsRepositoryImpl implements AlertsRepositoryCustom {
      * @param indicatorTypes
      * @return
      */
-    private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
+	private Criteria fetchAnomalyTypeCriteria(Set<DataSourceAnomalyTypePair> indicatorTypes) {
         BasicDBList dataSourceAndAnomalyConditions = new BasicDBList();
         List<String> dataSourceOnlyConditions = new ArrayList<>();
         indicatorTypes.forEach(anomalyType ->{

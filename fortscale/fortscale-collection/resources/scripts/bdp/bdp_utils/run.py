@@ -14,6 +14,62 @@ sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '.
 from automatic_config.common.utils import time_utils, io
 from automatic_config.common.utils.mongo import get_collections_time_boundary
 
+_IGNORE_COLLECTION_ARG = '--ignore_collection'
+_WAIT_FOR_PROCESS_TO_EXIT_IN_SECONDS = 20
+
+
+class _Locker:
+    _LOCK_FILE_PATH = os.path.dirname(os.path.abspath(__file__)) + '/step.lock'
+
+    def __init__(self, logger):
+        self._logger = logger
+
+    def get_path(self):
+        return _Locker._LOCK_FILE_PATH
+
+    def read(self):
+        if os.path.isfile(_Locker._LOCK_FILE_PATH):
+            with open(_Locker._LOCK_FILE_PATH, 'r') as lock_file:
+                return lock_file.read()
+        return None
+
+    def lock(self):
+        with open(_Locker._LOCK_FILE_PATH, 'w') as lock_file:
+            lock_file.write(self._logger.name)
+
+    def unlock(self):
+        os.remove(_Locker._LOCK_FILE_PATH)
+
+
+def _is_collection_running():
+    ps_p = subprocess.Popen(['ps', '-elf'], stdout=subprocess.PIPE)
+    grep_p = subprocess.Popen(['grep', '[f]ortscale-collection'], stdin=ps_p.stdout, stdout=subprocess.PIPE)
+    return len(grep_p.communicate()[0]) > 0
+
+
+def step_runner_main(logger):
+    def wrapper(main):
+        def run_main():
+            if _IGNORE_COLLECTION_ARG in sys.argv:
+                sys.argv.remove(_IGNORE_COLLECTION_ARG)
+            elif _is_collection_running():
+                logger.error('There is a fortscale-collection already running. '
+                             'Either kill it and then try again, or run the script with ' + _IGNORE_COLLECTION_ARG + '.')
+                sys.exit(1)
+            locker = _Locker(logger)
+            lock_name = locker.read()
+            if lock_name not in [None, logger.name]:
+                logger.error(lock_name + ' has been started but failed to finish! If you still want to run ' +
+                             logger.name + ' - do it on your own risk (after removing ' + locker.get_path() + ')')
+                return
+            locker.lock()
+            if main():
+                locker.unlock()
+            else:
+                sys.exit(1)
+        return run_main
+    return wrapper
+
 
 def validate_bdp_flag(is_online_mode):
     with open('/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties', 'r') as f:
@@ -128,11 +184,37 @@ class Runner(object):
             for child_pid in filter(lambda child_pid: child_pid.strip() != '', children_pids.split('\n')):
                 child_pid = int(child_pid)
                 self._logger.info("killing BDP's child process (pid %d)" % child_pid)
-                os.kill(child_pid, signal.SIGTERM)
+                self._kill_process(child_pid)
             if p.poll() is None:
                 self._logger.info('killing BDP (pid %d)' % p.pid)
-                p.kill()
+                self._kill_process(p.pid)
         return kill
+
+    # try to kill process with SIGTERM and waits for proper process shutdown.
+    # if proper shutdown did not happened after a few seconds, brutal kill will be executed (SIGKILL).
+    # And the process may RIP
+    def _kill_process(self, pid):
+        if (self._is_process_running(pid) == True):
+            os.kill(pid, signal.SIGTERM)
+            for i in xrange(_WAIT_FOR_PROCESS_TO_EXIT_IN_SECONDS):
+                if self._is_process_running(pid) == False:
+                    break
+                else:
+                    time.sleep(1)
+        if (self._is_process_running(pid) == True):
+            os.kill(pid, signal.SIGKILL)
+
+    # validates that process with given pid is up and running
+    # returns: False - if not running.
+    def _is_process_running(self,pid):
+        try:
+            os.kill(pid, 0)
+            if (os.path.exists("/proc/%d" % (pid))):
+                return True
+            return False
+        except (IOError,OSError) as err:
+            self._logger.info("proc %d does not exist" % (pid))
+            return False
 
     def _wait_for_log(self, bdp_output_file):
         args = ['tail', '-f', '-n', '0', bdp_output_file]
@@ -148,9 +230,22 @@ class Runner(object):
     def _update_overrides(self, call_overrides):
         self._logger.info('updating overrides:' + '\n\t'.join([''] + call_overrides))
         bdp_overrides_file_path = '/home/cloudera/fortscale/BDPtool/target/resources/bdp-overriding.properties'
+        mongo_db_user = ""
+        mongo_db_password = ""
+        with open(bdp_overrides_file_path, 'r') as f:
+            for l in f.readlines():
+                if l.startswith("mongo_db_user="):
+                    mongo_db_user = l
+                if l.startswith("mongo_db_password="):
+                    mongo_db_password = l
+
         io.backup(path=bdp_overrides_file_path)
         with open(bdp_overrides_file_path, 'w') as f:
             f.write('\n'.join(call_overrides))
+            if mongo_db_user:
+                f.write('\n%s' % mongo_db_user)
+            if mongo_db_password:
+                f.write('\n%s' % mongo_db_password)
 
 
 class Cleaner(Runner):
@@ -208,3 +303,4 @@ def validate_by_polling(logger, progress_cb, is_done_cb, no_progress_timeout, po
             last_progress_time = time.time()
 
     return True
+

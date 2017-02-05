@@ -14,10 +14,11 @@ import fortscale.utils.monitoring.stats.annotations.StatsMetricsGroupParams;
  */
 @StatsMetricsGroupParams(name = "streaming.model.manager")
 public class ModelBuilderManagerMetrics extends StatsMetricsGroup {
-	public ModelBuilderManagerMetrics(StatsService statsService, String modelConfName) {
+	public ModelBuilderManagerMetrics(StatsService statsService, String modelConfName, boolean global) {
 		super(statsService, ModelBuilderManager.class, new StatsMetricsGroupAttributes() {
 			{
 				addTag("confName", modelConfName);
+				addTag("global", String.valueOf(global));
 			}
 		});
 	}
@@ -35,7 +36,16 @@ public class ModelBuilderManagerMetrics extends StatsMetricsGroup {
 	public long processWithPreviousEndTime;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
-	public long processWithNoContextSelector;
+	public long getContexts;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long specifiedContextIds;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long getHighScoreContexts;
+
+	@StatsDoubleMetricParams(rateSeconds = 1)
+	public long illegalRequest;
 
 	@StatsDoubleMetricParams(rateSeconds = 1)
 	public long contextIds;

@@ -9,7 +9,9 @@ import fortscale.utils.qradar.responses.SearchResponse;
 import fortscale.utils.qradar.result.SearchResultRequestReader;
 import fortscale.utils.qradar.utility.QRadarAPIUtility;
 import fortscale.utils.time.TimestampUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -61,6 +63,27 @@ public class QRadarAPI {
 			logger.error("error sending request - ", ex);
 		}
 		return null;
+	}
+
+	public String canConnect() throws IOException, InterruptedException {
+		GenericRequest request = new CreateSearchRequest("select * from events limit 1");
+		try {
+			String response = QRadarAPIUtility.sendRequest(hostname, token, request, true, 1, 0);
+			if (StringUtils.isBlank(response)) {
+				return "Failed to connect, possibly incorrect token";
+			}
+			SearchResponse sr = objectMapper.readValue(response, SearchResponse.class);
+			while (sr.getStatus() != SearchResponse.Status.COMPLETED) {
+				Thread.sleep(100);
+				request = new SearchInformationRequest(sr.getSearch_id());
+				response = QRadarAPIUtility.sendRequest(hostname, token, request, true, 1, 0);
+				sr = objectMapper.readValue(response, SearchResponse.class);
+			}
+		} catch (Exception ex) {
+			logger.info("failed to connect to {}", this, ex);
+			throw ex;
+		}
+		return "";
 	}
 
 }

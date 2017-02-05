@@ -1,16 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<beans 
-	xmlns="http://www.springframework.org/schema/beans" 
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:mongo="http://www.springframework.org/schema/data/mongo" 
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-						http://www.springframework.org/schema/data/mongo http://www.springframework.org/schema/data/mongo/spring-mongo.xsd         
-						http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-	
-	<!-- setup mongodb repositories -->
-	<mongo:db-factory id="mongoDbFactory" dbname="${mongo.db.name}"  host="${mongo.host.name}" port="${mongo.host.port}"/>
-	
-	<mongo:template id="mongoTemplate" db-factory-ref="mongoDbFactory" write-concern="SAFE" />
-	
+<beans
+		xmlns="http://www.springframework.org/schema/beans"
+		xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="fsMongoConfiguration" class="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
+
 </beans>

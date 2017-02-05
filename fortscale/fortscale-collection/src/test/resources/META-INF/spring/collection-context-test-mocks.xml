@@ -33,7 +33,7 @@
     <mockito:mock id="hadoopFs" class="org.apache.hadoop.fs.FileSystem"/>
 
     <mockito:mock id="userService" class="fortscale.services.impl.UserServiceImpl"/>
-
+    <mockito:mock id="usernameService" class="fortscale.services.impl.UsernameService"/>
     <bean id="globalConfiguration" class="fortscale.global.configuration.GlobalConfiguration"/>
 
 
@@ -67,9 +67,13 @@
         <context:exclude-filter type="regex" expression="fortscale.utils.mongodb.config.SpringMongoConfiguration"/>
     </context:component-scan>
 -->
-    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.collection,fortscale.collection.services.time" />
+    <context:component-scan base-package="fortscale.services.event,fortscale.domain.core,fortscale.domain.schema,fortscale.collection,fortscale.collection.services.time">
+        <context:exclude-filter type="regex" expression="fortscale.collection.jobs.activity.*"/>
+    </context:component-scan>
 
     <bean id="UtilsLegacyComponentScanConfigExclude1" class="fortscale.utils.spring.config.UtilsLegacyComponentScanConfigExclude1" />
 
-
+    <!-- DcServiceFilter related beans -->
+    <bean id="serversListConfiguration" class="fortscale.services.impl.ServersListConfigurationImpl"/>
+    <mockito:mock id="activeDirectoryService" class="fortscale.services.ActiveDirectoryService"/>
 </beans>

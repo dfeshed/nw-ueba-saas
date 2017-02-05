@@ -114,8 +114,8 @@ public class UseServerDesktopTagImpl implements ServiceAccountTagging {
 
     @Override public void addTagToMongo(TagService tagService) {
         tagService.addTag(new Tag(ComputerUsageType.Server.name(),
-                ComputerUsageType.Server.toString(), false, true));
-        tagService.addTag(new Tag(endpointTag, endpointTag, false, true));
+                ComputerUsageType.Server.toString(), false, false,true));
+        tagService.addTag(new Tag(endpointTag, endpointTag, false, false,true));
     }
 
     private void tagPerType(AccountMachineAccess account)

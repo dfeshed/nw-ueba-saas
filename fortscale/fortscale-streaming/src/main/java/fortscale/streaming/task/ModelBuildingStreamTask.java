@@ -6,16 +6,16 @@ import fortscale.streaming.ExtendedSamzaTaskContext;
 import fortscale.streaming.service.FortscaleValueResolver;
 import fortscale.streaming.service.model.ModelBuildingRegistrationService;
 import fortscale.streaming.service.model.ModelBuildingSamzaStore;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
-import org.apache.samza.system.IncomingMessageEnvelope;
 import org.apache.samza.task.*;
 import org.springframework.util.Assert;
 
 public class ModelBuildingStreamTask extends AbstractStreamTask implements InitableTask, ClosableTask {
 
-	private static final String CONTROL_OUTPUT_TOPIC_KEY = "fortscale.model.build.control.output.topic";
+	public static final String CONTROL_OUTPUT_TOPIC_KEY = "fortscale.model.build.control.output.topic";
 	private static final String MODEL_FILTER_REGEX = "fortscale.model.build.all_models.model_name.filter.regex";
 
 	private KafkaModelBuildingListener modelBuildingListener;
@@ -23,7 +23,7 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	private String allModelFilterRegex;
 
 	@Override
-	protected void wrappedInit(Config config, TaskContext context) throws Exception {
+	protected void processInit(Config config, TaskContext context) throws Exception {
 		FortscaleValueResolver resolver = SpringService.getInstance().resolve(FortscaleValueResolver.class);
 		String controlOutputTopic = resolver.resolveStringValue(config, CONTROL_OUTPUT_TOPIC_KEY);
 		Assert.hasText(controlOutputTopic);
@@ -35,11 +35,11 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	}
 
 	@Override
-	protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector, TaskCoordinator coordinator) throws Exception {
-		String message = (String)envelope.getMessage();
-		JSONObject event = (JSONObject)JSONValue.parseWithException(message);
+	protected void processMessage(ProcessMessageContext messageContext) throws Exception {
+		JSONObject event = messageContext.getMessageAsJson();
 
 		if (modelBuildingListener != null) {
+			MessageCollector collector = ((StreamingProcessMessageContext) messageContext).getCollector();
 			modelBuildingListener.setMessageCollector(collector);
 		}
 
@@ -49,7 +49,7 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	}
 
 	@Override
-	protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 		if (modelBuildingListener != null) {
 			modelBuildingListener.setMessageCollector(collector);
 		}
@@ -60,7 +60,7 @@ public class ModelBuildingStreamTask extends AbstractStreamTask implements Inita
 	}
 
 	@Override
-	protected void wrappedClose() throws Exception {
+	protected void processClose() throws Exception {
 		modelBuildingListener = null;
 		modelBuildingRegistrationService = null;
 	}

@@ -4,10 +4,10 @@ import fortscale.utils.logging.Logger;
 import kafka.javaapi.producer.Producer;
 import kafka.producer.KeyedMessage;
 import kafka.producer.ProducerConfig;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.beans.factory.annotation.Value;
 
-import java.io.Closeable;
 import java.util.Properties;
 
 import static com.google.common.base.Preconditions.checkNotNull;
@@ -16,7 +16,7 @@ import static com.google.common.base.Preconditions.checkNotNull;
 /**
  * Thread-safe implementation of kafka events writer
  */
-public class KafkaEventsWriter implements Closeable {
+public class KafkaEventsWriter {
 	private static final Logger logger = Logger.getLogger(KafkaEventsWriter.class);
 
 	@Value("${kafka.broker.list}")
@@ -79,14 +79,19 @@ public class KafkaEventsWriter implements Closeable {
 	}
 
 
-	@Override
 	public void close() {
 		// using thread-safe manner, similarly to getProducer initialization method
+		logger.info("Closing KafkaEventsWriter {}", this);
 		if (producer != null) {
 			synchronized (this) {
 				if (producer != null)
 					producer.close();
 			}
 		}
+	}
+
+	@Override
+	public String toString() {
+		return ToStringBuilder.reflectionToString(this);
 	}
 }

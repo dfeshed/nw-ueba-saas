@@ -5,19 +5,13 @@ import fortscale.collection.jobs.FortscaleJob;
 import fortscale.collection.morphlines.MorphlinesItemsProcessor;
 import fortscale.collection.morphlines.RecordToStringItemsProcessor;
 import fortscale.monitor.domain.JobDataReceived;
-import fortscale.utils.hdfs.HDFSPartitionsWriter;
-import fortscale.utils.hdfs.partition.PartitionStrategy;
-import fortscale.utils.hdfs.partition.PartitionsUtils;
-import fortscale.utils.hdfs.split.DefaultFileSplitStrategy;
+import fortscale.services.ad.AdTaskPersistencyService;
 import fortscale.utils.impala.ImpalaClient;
 import fortscale.utils.impala.ImpalaParser;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
-import org.quartz.DisallowConcurrentExecution;
-import org.quartz.JobDataMap;
-import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
@@ -29,26 +23,30 @@ public abstract class AdProcessJob extends FortscaleJob {
 	private static Logger logger = Logger.getLogger(AdProcessJob.class);
 
 	@Autowired
+	private AdTaskPersistencyService adTaskPersistencyService;
+
+	@Autowired
 	protected ImpalaClient impalaClient;
 	
 	@Autowired
 	private ImpalaParser impalaParser;
 	
-	@Value("${ldap.tables.fields.timestampepoch}")
-	private String timestampepochFieldName;
-	@Value("${ldap.tables.fields.runtime}")
-	private String runtimeFieldName;
 	@Value("${collection.lines.print.skip}")
 	protected int linesPrintSkip;
 	@Value("${collection.lines.print.enabled}")
 	protected boolean linesPrintEnabled;
 
+	@Value("${ldap.tables.fields.timestampepoch}")
+	private String timestampepochFieldName;
+	@Value("${ldap.tables.fields.runtime}")
+	private String runtimeFieldName;
+
+	private static final String DELIMITER = "=";
+	private static final String KEY_SUCCESS = "success";
+
 
 	protected MorphlinesItemsProcessor morphline;
 	protected RecordToStringItemsProcessor recordToString;
-
-	protected HDFSPartitionsWriter appender;
-	protected String hadoopFilename;
 
 	// job parameters:
 	private String ldiftocsv;
@@ -58,12 +56,6 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	private String filesFilter;
 
-	protected String hadoopDirPath;
-	private String filenameFormat;
-	protected String impalaTableName;
-    protected String partitionType;
-    protected PartitionStrategy partitionStrategy;
-
 	@Autowired
 	protected StatsService statsService;
 	
@@ -71,9 +63,14 @@ public abstract class AdProcessJob extends FortscaleJob {
 
 	String outputSeparator;
 
+	private String resultsId;
+	private JobKey jobKey;
+
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
 		JobDataMap map = jobExecutionContext.getMergedJobDataMap();
+
+		jobKey = jobExecutionContext.getJobDetail().getKey();
 
 		// get parameters values from the job data map
 		ldiftocsv = jobDataMapExtension.getJobDataMapStringValue(map, "ldiftocsv");
@@ -81,13 +78,6 @@ public abstract class AdProcessJob extends FortscaleJob {
 		finishPath = jobDataMapExtension.getJobDataMapStringValue(map, "finishPath");
 		errorPath = jobDataMapExtension.getJobDataMapStringValue(map, "errorPath");
 		filesFilter = jobDataMapExtension.getJobDataMapStringValue(map, "filesFilter");
-		hadoopDirPath = jobDataMapExtension.getJobDataMapStringValue(map, "hadoopDirPath");
-		filenameFormat = jobDataMapExtension.getJobDataMapStringValue(map, "filenameFormat");
-		impalaTableName = jobDataMapExtension.getJobDataMapStringValue(map, "impalaTableName");
-        partitionType = jobDataMapExtension.getJobDataMapStringValue(map, "partitionStrategy");
-
-        //create the appropriate  partition strategy
-        partitionStrategy = PartitionsUtils.getPartitionStrategy(partitionType);
 
 		// build record to items processor
 		outputFields = ImpalaParser.getTableFieldNamesAsArray(jobDataMapExtension.getJobDataMapStringValue(map, "outputFields"));
@@ -95,9 +85,9 @@ public abstract class AdProcessJob extends FortscaleJob {
 		recordToString = new RecordToStringItemsProcessor(outputSeparator, statsService, "AdProcessJob", outputFields);
 
 		morphline = jobDataMapExtension.getMorphlinesItemsProcessor(map, "morphlineFile");
-		
-		// generate filename according to the job name and time
-		hadoopFilename = String.format(filenameFormat, (new Date()).getTime()/1000);
+
+		// random generated ID for deployment wizard fetch and ETL results
+		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 	}
 
 	@Override
@@ -128,7 +118,6 @@ public abstract class AdProcessJob extends FortscaleJob {
 		
 		startNewStep("create hadoop file writer");
 		// get hadoop file writer
-		createOutputAppender();
 		
 		finishStep();
 
@@ -137,13 +126,17 @@ public abstract class AdProcessJob extends FortscaleJob {
 			processFile(files[files.length - 1]);
 		} finally{
 			morphline.close();
-			closeOutputAppender();
 		}
-		
-		refreshImpala();
-		
-		runFinalStep();
 
+
+		if (resultsId != null) {
+			final String name = jobKey.getName();
+			final String[] splitName = name.split("_");
+			final String dataSource = splitName[0];
+			final String taskName = splitName[1];
+
+			adTaskPersistencyService.writeTaskResults(dataSource, taskName, resultsId, true);
+		}
 	}
 	
 	protected void runFinalStep() throws Exception{
@@ -190,11 +183,12 @@ public abstract class AdProcessJob extends FortscaleJob {
 	}
 
 	protected boolean processFile(File file, BufferedLineReader reader, Date runtime) throws Exception {
-		if(isTimestampAlreadyProcessed(runtime)){
+		String runtimeString = impalaParser.formatTimeDate(runtime);
+		if(isTimestampAlreadyProcessed(runtimeString)){
 			logger.warn("the following runtime ({}) was already processed.", runtime);
 			return false;
 		}
-		String runtimeString = impalaParser.formatTimeDate(runtime);
+
 		String timestampepoch = Long.toString(impalaParser.getRuntime(runtime));
 
 		long totalLines = 0;
@@ -215,8 +209,8 @@ public abstract class AdProcessJob extends FortscaleJob {
 			if(record != null){
 				record.put(runtimeFieldName, runtimeString);
 				record.put(timestampepochFieldName, timestampepoch);
+
 				if(updateDb(record)){
-					writeToHdfs(record, runtime.getTime());
 					counter++;
 				}
 			}
@@ -230,7 +224,7 @@ public abstract class AdProcessJob extends FortscaleJob {
 			}
 		}
 		
-		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataRecievedType(), new Integer(counter), ""));
+		monitor.addDataReceived(getMonitorId(), new JobDataReceived(getDataReceivedType(), new Integer(counter), ""));
 		if (reader.HasErrors()) {
 			monitor.error(getMonitorId(), getStepName(), reader.getException().toString());
 			return false;
@@ -241,90 +235,14 @@ public abstract class AdProcessJob extends FortscaleJob {
 			return true;
 		}
 	}
-	
-	protected abstract String getDataRecievedType();
-	protected abstract boolean isTimestampAlreadyProcessed(Date runtime);
+
+	protected abstract String getDataReceivedType();
+	protected abstract boolean isTimestampAlreadyProcessed(String runtime);
 	protected abstract boolean updateDb(Record record) throws Exception;
 	
 
 	protected Record morphlineProcessLine(String line){
 		return morphline.process(line, null);
-	}
-	
-	protected boolean writeToHdfs(Record record, long runtime) throws IOException{
-		String output = recordToString.process(record);
-
-		// append to hadoop, if there is data to be written
-
-		if (output != null) {
-			appender.writeLine(output, runtime);
-			return true;
-		} else {
-			return false;
-		}
-	}
-
-	protected void refreshImpala() throws JobExecutionException {
-		startNewStep("impala refresh");
-		
-		// add any new partition created during write to hdfs
-		Exception lastException = null;
-		for (String partition : appender.getNewPartitions()) {
-			try {
-				impalaClient.addPartitionToTable(impalaTableName, partition);
-			} catch (Exception e) {
-				logger.error(String.format("error adding partition '%s' to table '%s'", partition, impalaTableName), e);
-				lastException = e;
-			}
-		}
-		appender.clearNewPartitions();
-		
-		try {
-			impalaClient.refreshTable(impalaTableName);
-		} catch (Exception e) {
-			lastException = e;
-		}
-		
-		if (lastException!=null)
-			throw new JobExecutionException("got exception while refreshing impala", lastException);
-		
-		finishStep();
-	}
-
-	protected void createOutputAppender() throws JobExecutionException {
-		
-		try {
-			logger.debug("opening hdfs file {} for append", hadoopDirPath);
-
-			appender = new HDFSPartitionsWriter(hadoopDirPath, partitionStrategy, new DefaultFileSplitStrategy(), outputSeparator);
-			appender.open(hadoopFilename);
-
-		} catch (IOException e) {
-			logger.error("error opening hdfs file for append at " + hadoopDirPath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error opening hdfs file %s: \n %s", hadoopDirPath, e.toString()));
-			throw new JobExecutionException("error opening hdfs file for append at " + hadoopDirPath, e);
-		}
-	}
-
-	protected void flushOutputAppender() throws IOException {
-		try {
-			appender.flush();
-		} catch (IOException e) {
-			logger.error("error flushing hdfs file " + hadoopDirPath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error flushing hdfs file %s: \n %s", hadoopDirPath, e.toString()));
-			throw e;
-		}
-	}
-
-	protected void closeOutputAppender() throws JobExecutionException {
-		try {
-			logger.debug("closing hdfs file {}", hadoopDirPath);
-			appender.close();
-		} catch (IOException e) {
-			logger.error("error closing hdfs file " + hadoopDirPath, e);
-			monitor.error(getMonitorId(), getStepName(), String.format("error closing hdfs file %s: \n %s", hadoopDirPath, e.toString()));
-			throw new JobExecutionException("error closing hdfs file " + hadoopDirPath, e);
-		}
 	}
 
 	protected String[] getOutputFields() {
@@ -335,6 +253,6 @@ public abstract class AdProcessJob extends FortscaleJob {
 	protected boolean shouldReportDataReceived() {
 		return true;
 	}
-	
+
 
 }

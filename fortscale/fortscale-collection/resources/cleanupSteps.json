@@ -5,7 +5,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "aggr_%%%prefix@@@date:::endTime###FeatureBucketMetadata@@@date:::endTime"
+        "dataSources": "aggr_%%%prefix@@@date:::endTime###FeatureBucketMetadata@@@date:::endTime###FeatureBucketState"
       },
       {
         "technology": "MONGO",
@@ -37,7 +37,7 @@
       {
         "technology": "KAFKA",
         "strategy": "DELETE",
-        "dataSources": "user-score-task-store-changelog###feature_buckets_store-changelog###model_building_store-changelog###entity_events_model_building_store-changelog###fortscale-aggregation-events-control###fortscale-model-building-control-input###fortscale-model-building-control-output###fortscale-entity-events-model-building-control-input###fortscale-entity-events-model-building-control-output"
+        "dataSources": "feature_buckets_store-changelog###model_building_store-changelog###entity_events_model_building_store-changelog###fortscale-aggregation-events-control###fortscale-model-building-control-input###fortscale-model-building-control-output###fortscale-entity-events-model-building-control-input###fortscale-entity-events-model-building-control-output"
       },
       {
         "technology": "STORE",
@@ -57,7 +57,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "AggrFeatureEventToSend@@@date:::endTime###scored___aggr%%%prefix@@@date:::end_time_unix###entity_event_%%%prefix@@@date:::endTime"
+        "dataSources": "AggrFeatureEventToSend@@@date:::endTime###scored___aggr.*(daily|hourly)%%%regex@@@date:::end_time_unix###entity_event_%%%prefix@@@date:::endTime###^scored___aggr.*(d_acm|h_acm)$%%%regex@@@date:::end_time"
       }
     ],
     "otherSteps": [
@@ -79,7 +79,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "^model_.*(entity){1}.*(daily|hourly)$%%%regex@@@date:::endTime###scored___entity_event%%%prefix@@@date:::end_time_unix"
+        "dataSources": "^model_.*(entity){1}.*(daily|hourly)$%%%regex@@@date:::endTime###^scored___entity_event.*(daily|hourly)%%%regex@@@date:::end_time_unix###^scored___entity_event.*(d_acm|h_acm)$%%%regex@@@date:::end_time"
       }
     ],
     "otherSteps": [
@@ -152,7 +152,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
+        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###user_activity@@@prefix###FeatureBucketState###entity@@@prefix###scored@@@prefix###streaming_@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -167,7 +167,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggregated-feature-events-model-cache-store###user-score-task-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
+        "dataSources": "hdfs-write-logindata###hdfs-write-kerberostgtscore###hdfs-write-kerberostgtscore_top###hdfs-write-crmsfenriched###hdfs-write-crmsfscore###hdfs-write-crmsfscore_top###hdfs-write-oracleenriched###hdfs-write-oraclescore###hdfs-write-oraclescore_top###hdfs-write-wameenriched###hdfs-write-wamescore###hdfs-write-wamescore_top###hdfs-write-ntlmenriched###hdfs-write-ntlmscore###hdfs-write-ntlmscore_top###hdfs-write-gwameenriched###hdfs-write-gwamescore###hdfs-write-gwamescore_top###hdfs-write-prnlogenriched###hdfs-write-prnlogscore###hdfs-write-prnlogscore_top###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###hdfs-write-4769enriched###hdfs-write-sshenriched###hdfs-write-vpnenriched###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
       }
     ]
   },
@@ -177,7 +177,7 @@
       {
         "technology": "MONGO",
         "strategy": "DELETE",
-        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###entity@@@prefix###scored@@@prefix"
+        "dataSources": "model@@@prefix###alerts###evidences###ad_user_features_extraction###feature_bucket_strategies###Feature@@@prefix###aggr@@@prefix###user_activity@@@prefix###FeatureBucketState###entity@@@prefix###scored@@@prefix"
       },
       {
         "technology": "KAFKA",
@@ -192,7 +192,7 @@
       {
         "technology": "STORE",
         "strategy": "DELETE",
-        "dataSources": "hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###aggregated-feature-events-model-cache-store###user-score-task-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
+        "dataSources": "hdfs-write-kerberostgtscore###hdfs-write-kerberostgtscore_top###hdfs-write-crmsfenriched###hdfs-write-crmsfscore###hdfs-write-crmsfscore_top###hdfs-write-oraclescore###hdfs-write-oraclescore_top###hdfs-write-wamescore###hdfs-write-wamescore_top###hdfs-write-ntlmscore###hdfs-write-ntlmscore_top###hdfs-write-gwamescore###hdfs-write-gwamescore_top###hdfs-write-prnlogscore###hdfs-write-prnlogscore_top###hdfs-write-authenticationscores###hdfs-write-authenticationscores_top###hdfs-write-sshscores###hdfs-write-sshscores_top###hdfs-write-vpndatares###hdfs-write-vpndatares_top###hdfs-write-vpnsessiondatares###hdfs-write-vpnsessiondatares_top###entity_events_store###feature_buckets_store###aggregated-feature-events-model-cache-store###entity-events-model-cache-store###model_building_store###entity_events_model_building_store###raw-events-model-cache-store"
       }
     ]
   },

@@ -7,8 +7,8 @@ import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.DataWarningsEnum;
-import fortscale.web.rest.Utils.UserAndOrganizationActivityHelper;
-import fortscale.web.rest.entities.activity.OrganizationActivityData;
+import fortscale.services.users.util.UserAndOrganizationActivityHelper;
+import fortscale.services.users.util.activity.OrganizationActivityData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -57,7 +57,7 @@ public class ApiOrganizationActivityController {
             locationEntries = getLocationEntries(organizationActivityLocationDocuments, limit);
         } catch (Exception e) {
             final String errorMessage = e.getLocalizedMessage();
-            organizationActivityLocationsBean.setWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
+            organizationActivityLocationsBean.addWarning(DataWarningsEnum.ITEM_NOT_FOUND, errorMessage);
             logger.error(errorMessage);
         }
 

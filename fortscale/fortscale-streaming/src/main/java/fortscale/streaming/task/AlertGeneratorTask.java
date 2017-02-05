@@ -6,14 +6,14 @@ import com.espertech.esper.client.EPServiceProviderManager;
 import com.espertech.esper.client.EPStatement;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.services.impl.SpringService;
-import fortscale.services.impl.UserTagsCacheServiceImpl;
 import fortscale.streaming.alert.event.wrappers.EventWrapper;
 import fortscale.streaming.alert.rule.RuleConfig;
 import fortscale.streaming.alert.statement.decorators.DummyDecorator;
 import fortscale.streaming.alert.statement.decorators.StatementDecorator;
 import fortscale.streaming.alert.subscribers.AbstractSubscriber;
+import fortscale.streaming.task.message.ProcessMessageContext;
+import fortscale.streaming.task.message.StreamingProcessMessageContext;
 import net.minidev.json.JSONObject;
-import net.minidev.json.JSONValue;
 import org.apache.samza.config.Config;
 import org.apache.samza.config.MapConfig;
 import org.apache.samza.metrics.Counter;
@@ -40,11 +40,9 @@ import static fortscale.utils.ConversionUtils.convertToLong;
  */
 public class AlertGeneratorTask extends AbstractStreamTask
 {
-
 	private static Logger logger = LoggerFactory.getLogger(AlertGeneratorTask.class);
 
     private static String topicConfigKeyFormat = "fortscale.%s.service.cache.topic";
-    private static String userTagsKey = "user-tag";
 
 	List<EPStatement> epsStatements = new ArrayList<>();
 
@@ -63,11 +61,7 @@ public class AlertGeneratorTask extends AbstractStreamTask
 
 	private Counter lastTimestampCount;
 
-
-
-	private UserTagsCacheServiceImpl userTagsCacheService;
-
-	@Override protected void wrappedInit(Config config, TaskContext context) throws Exception{
+	@Override protected void processInit(Config config, TaskContext context) throws Exception{
 
 		// creating the esper configuration
 		Configuration esperConfig = new Configuration();
@@ -94,30 +88,14 @@ public class AlertGeneratorTask extends AbstractStreamTask
 
 		lastTimestampCount = context.getMetricsRegistry().newCounter(getClass().getName(),
 				String.format("%s-last-message-epochtime", config.get("job.name")));
-
-		userTagsCacheService = SpringService.getInstance().resolve(UserTagsCacheServiceImpl.class);
-
-
-
 	}
 
-
-	@Override protected void wrappedProcess(IncomingMessageEnvelope envelope, MessageCollector collector,
-			TaskCoordinator coordinator) throws Exception {
+	@Override protected void processMessage(ProcessMessageContext messageContext) throws Exception {
 		// parse the message into json
-		String inputTopic = envelope.getSystemStreamPartition().getSystemStream().getStream();
-
-
-        //Update the UserTagCahceService
-        if (inputTopic.equals("user-tag-service-cache-updates"))
-        {
-            Set<String> tags = mapper.readValue((String)envelope.getMessage(), Set.class);
-            this.userTagsCacheService.addUserTags((String) envelope.getKey(),tags);
-        }
-
+		String inputTopic = messageContext.getTopicName();
 
 		if (inputTopicMapping.containsKey(inputTopic)) {
-			Object info = convertMessageToEsperRepresentationObject(envelope, inputTopic);
+			Object info = convertMessageToEsperRepresentationObject(((StreamingProcessMessageContext) messageContext).getIncomingMessageEnvelope(), inputTopic);
 			if (info != null) {
 
 				createDynamicStatements(inputTopic, info);
@@ -130,16 +108,15 @@ public class AlertGeneratorTask extends AbstractStreamTask
 					keyValueStore.put(info.toString(), info);
 				}
 
-				String messageText = (String) envelope.getMessage();
 				try {
 					if (inputTopicMapping.get(inputTopic).getTimeStampField()!=null) {
 						// parse the message into json
-						JSONObject message = (JSONObject) JSONValue.parse(messageText);
+						JSONObject message = messageContext.getMessageAsJson();
 						Long endTimestampSeconds = convertToLong(message.get(inputTopicMapping.get(inputTopic).getTimeStampField()));
 						lastTimestampCount.set(endTimestampSeconds);
                     }
 				} catch (Exception ex) {
-					logger.error("Failed to extract timestamp from message - {}, error is - {}", messageText, ex);
+					logger.error("Failed to extract timestamp from message - {}, error is - {}", messageContext, ex);
 				}
 			}
 		}
@@ -148,12 +125,10 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		}
 	}
 
-
-	@Override protected void wrappedWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
+	@Override protected void processWindow(MessageCollector collector, TaskCoordinator coordinator) throws Exception {
 	}
 
-
-	@Override protected void wrappedClose() throws Exception {
+	@Override protected void processClose() throws Exception {
 		for (EPStatement esperEventStatement : epsStatements) {
 			try {
 				esperEventStatement.destroy();
@@ -163,6 +138,7 @@ public class AlertGeneratorTask extends AbstractStreamTask
 			}
 		}
 	}
+
 
 	/*
 	 *
@@ -311,7 +287,6 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		epsStatements.add(epStatement);
 	}
 
-
 	//create dynamic statements if necessary
 	private  void createDynamicStatements(String inputTopic, Object info) throws Exception {
 		if (inputTopicMapping.get(inputTopic).getDynamicStatements() != null && inputTopicMapping.get(inputTopic).getEventWrapper() != null) {
@@ -325,9 +300,6 @@ public class AlertGeneratorTask extends AbstractStreamTask
 			}
 		}
 	}
-
-
-
 
 	// inner class for holding input topic configurations
 	protected static class TopicConfiguration {
@@ -390,9 +362,5 @@ public class AlertGeneratorTask extends AbstractStreamTask
 		public void setTimeStampField(String timeStampField) {
 			this.timeStampField = timeStampField;
 		}
-
-
-
 	}
-
 }

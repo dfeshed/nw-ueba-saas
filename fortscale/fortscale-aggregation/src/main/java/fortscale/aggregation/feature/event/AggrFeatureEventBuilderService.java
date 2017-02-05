@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -325,7 +326,7 @@ public class AggrFeatureEventBuilderService {
 
     public static String getAggregatedFeatureContextId(Map<String, String> context) {
         return context.entrySet().stream()
-                .sorted((entry1, entry2) -> entry1.getKey().compareTo(entry2.getKey()))
+                .sorted(Comparator.comparing(Map.Entry::getKey))
                 .map(entry -> StringUtils.join(entry.getKey(), CONTEXT_ID_SEPARATOR, entry.getValue()))
                 .collect(Collectors.joining(CONTEXT_ID_SEPARATOR));
     }

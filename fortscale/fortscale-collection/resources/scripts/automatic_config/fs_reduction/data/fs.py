@@ -3,6 +3,7 @@ import json
 import pymongo
 from common import utils
 from common.data.mongo import MongoData, MongoDataCollection
+from automatic_config.common.utils.mongo import get_db
 from common.utils.io import print_verbose
 
 
@@ -105,4 +106,4 @@ class F(MongoData):
 
 class Fs(MongoDataCollection):
     def __init__(self, dir_path, mongo_ip):
-        MongoDataCollection.__init__(self, dir_path, F, pymongo.MongoClient(mongo_ip, 27017).fortscale)
+        MongoDataCollection.__init__(self, dir_path, F, get_db(host=mongo_ip))

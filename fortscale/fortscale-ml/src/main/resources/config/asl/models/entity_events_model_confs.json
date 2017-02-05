@@ -7,7 +7,7 @@
         "entityEventConfName": "normalized_username_daily"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_daily"
@@ -23,7 +23,7 @@
         "entityEventConfName": "normalized_username_hourly"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly"
@@ -36,25 +36,25 @@
     {
       "name": "entity_event.global.normalized_username.daily",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
       "name": "entity_event.global.normalized_username.hourly",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -62,7 +62,6 @@
       "name": "entity_event.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_daily",
         "numOfDays": 21,
@@ -78,7 +77,6 @@
       "name": "entity_event.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "normalized_username_hourly",
         "numOfDays": 21,
@@ -98,7 +96,7 @@
         "entityEventConfName": "data_exfiltration_normalized_username_daily"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_daily"
@@ -114,7 +112,7 @@
         "entityEventConfName": "data_exfiltration_normalized_username_hourly"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_hourly"
@@ -127,25 +125,25 @@
     {
       "name": "entity_event.data_exfiltration.global.normalized_username.daily",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
       "name": "entity_event.data_exfiltration.global.normalized_username.hourly",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -153,7 +151,6 @@
       "name": "entity_event.data_exfiltration.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_daily",
         "numOfDays": 21,
@@ -169,7 +166,6 @@
       "name": "entity_event.data_exfiltration.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "data_exfiltration_normalized_username_hourly",
         "numOfDays": 21,
@@ -189,7 +185,7 @@
         "entityEventConfName": "brute_force_normalized_username_daily"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_daily"
@@ -205,7 +201,7 @@
         "entityEventConfName": "brute_force_normalized_username_hourly"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_hourly"
@@ -218,25 +214,25 @@
     {
       "name": "entity_event.brute_force.global.normalized_username.daily",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
       "name": "entity_event.brute_force.global.normalized_username.hourly",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -244,7 +240,6 @@
       "name": "entity_event.brute_force.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_daily",
         "numOfDays": 21,
@@ -260,7 +255,6 @@
       "name": "entity_event.brute_force.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "brute_force_normalized_username_hourly",
         "numOfDays": 21,
@@ -280,7 +274,7 @@
         "entityEventConfName": "snooping_normalized_username_daily"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_daily"
@@ -296,7 +290,7 @@
         "entityEventConfName": "snooping_normalized_username_hourly"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_hourly"
@@ -309,25 +303,25 @@
     {
       "name": "entity_event.snooping.global.normalized_username.daily",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
       "name": "entity_event.snooping.global.normalized_username.hourly",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 2592000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -335,7 +329,6 @@
       "name": "entity_event.snooping.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_daily",
         "numOfDays": 21,
@@ -351,7 +344,6 @@
       "name": "entity_event.snooping.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "snooping_normalized_username_hourly",
         "numOfDays": 21,
@@ -371,7 +363,7 @@
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
@@ -387,7 +379,7 @@
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
       },
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
@@ -400,25 +392,25 @@
     {
       "name": "entity_event.anomalous_admin_activity.global.normalized_username.daily",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
     {
       "name": "entity_event.anomalous_admin_activity.global.normalized_username.hourly",
       "retriever": {
-        "type": "entity_event_value_retriever",
+        "type": "accumulated_entity_event_value_retriever",
         "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly"
       },
       "builder": {
-        "type": "smart_values_model_builder"
+        "type": "smart_values_prior_model_builder"
       }
     },
 
@@ -426,7 +418,6 @@
       "name": "entity_event.anomalous_admin_activity.global.alert_control.daily",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_daily",
         "numOfDays": 21,
@@ -442,7 +433,6 @@
       "name": "entity_event.anomalous_admin_activity.global.alert_control.hourly",
       "retriever": {
         "type": "entity_event_unreduced_score_retriever",
-        "timeRangeInSeconds": 7776000,
         "functions": [],
         "entityEventConfName": "anomalous_admin_activity_normalized_username_hourly",
         "numOfDays": 21,

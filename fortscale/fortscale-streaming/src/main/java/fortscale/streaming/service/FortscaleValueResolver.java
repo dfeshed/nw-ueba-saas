@@ -1,7 +1,6 @@
 package fortscale.streaming.service;
 
-import static fortscale.streaming.ConfigUtils.getConfigString;
-
+import com.google.common.collect.Sets;
 import org.apache.samza.config.Config;
 import org.springframework.context.EmbeddedValueResolverAware;
 import org.springframework.stereotype.Component;
@@ -9,6 +8,9 @@ import org.springframework.util.StringValueResolver;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+
+import static fortscale.streaming.ConfigUtils.getConfigString;
 
 /**
  * A simple EmbeddedValueResolverAware implementation.
@@ -48,5 +50,30 @@ public class FortscaleValueResolver implements EmbeddedValueResolverAware {
             resolvedList.add(resolveStringValue(str));
 
         return resolvedList;
+    }
+
+    /**
+     *
+     * @param key
+     * @param delimiter placeholders resolved values will be splited into array by this delimiter
+     * @return example:
+     * for given properties:
+     * a=1
+     * b=2
+     * c=${a},${b}
+     * and params: key="c",delimiter=","
+     * result will be: [1,2]
+     *
+     */
+    public String[] resolveStringValueToStringArray(String key, String delimiter) {
+        return resolveStringValue(key).split(delimiter);
+    }
+
+    /**
+     *@see this#resolveStringValueToStringArray(String, String)
+     */
+    public Set<String> resolveStringValueToSet(String key, String delimiter)
+    {
+        return Sets.newHashSet(resolveStringValueToStringArray(key, delimiter));
     }
 }

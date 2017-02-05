@@ -237,6 +237,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 		if(geoHoppingData == null){
 			//This is the first vpn session ever for this user.
 			addNewGeoHoppingData(curVpnSession);
+			logger.info("This is the first vpn session ever for user {}", curVpnSession.getNormalizedUserName());
 		} else if(geoHoppingData.isEqualsGeoLocation(curVpnSession)){
 			//In this case the current vpn session is from the country as the previous received vpn session.
 			//Notice that the current vpn session may be a geo-hopping event only if the vpn session before was also a geo-hopping event.
@@ -245,6 +246,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 				if(curVpnSession.getCreatedAt().minusHours(vpnGeoHoppingOpenSessionThresholdInHours).isAfter(geoHoppingData.otherOpenSessionCountryTime)){
 					geoHoppingData.otherOpenSessionCountryTime = null;
 				} else{
+
 					curVpnSession.setGeoHopping(true);
 					logger.info("geo hopping due to other open session country time {}. more info: curCountry ({}). curCountryTime({})", geoHoppingData.otherOpenSessionCountryTime, geoHoppingData.curCountry, geoHoppingData.curCountryTime);
 				}

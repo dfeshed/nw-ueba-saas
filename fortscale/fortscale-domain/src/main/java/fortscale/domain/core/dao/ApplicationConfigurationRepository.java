@@ -11,5 +11,6 @@ public interface ApplicationConfigurationRepository extends MongoRepository<Appl
 
 	ApplicationConfiguration findOneByKey(String key);
 	List<ApplicationConfiguration> findByKeyStartsWith(String key);
+	Long deleteByKey(String key);
 
 }

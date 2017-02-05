@@ -1,15 +1,15 @@
 package fortscale.aggregation.feature.event;
 
-import fortscale.aggregation.util.MongoDbUtilService;
-import fortscale.utils.time.TimestampUtils;
+import fortscale.utils.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Service implementation of basic query functionality for aggregated events, based on mongo persistence
@@ -19,35 +19,62 @@ import java.util.Map;
  */
 public class AggregatedEventQueryMongoService implements AggregatedEventQueryService {
 
-    private static final String SCORED_AGGR_EVENT_COLLECTION_PREFIX = "scored___aggr_event__";
+	private static final String SCORED_AGGR_EVENT_COLLECTION_PREFIX = "scored___aggr_event__";
+	private static final String COLLECTIONS_NAMES_DELIMITER =",";
+	private static final String CONTEXT_ID_DELIMITER = "#";
 
-    @Autowired
-    private MongoTemplate mongoTemplate;
+	@Value("${fortscale.store.collection.backup.prefix}")
+	private String collectionsBackupPrefixListAsString;
 
-    @Override
-    public List<AggrEvent> getAggregatedEventsByContextAndTimeRange(String featureName, String contextType, String ContextName, Long startTime, Long endTime) {
-        String collectionName = SCORED_AGGR_EVENT_COLLECTION_PREFIX + featureName;
+	@Autowired
+	private MongoTemplate mongoTemplate;
 
-        if (mongoTemplate.collectionExists(collectionName)) {
-            Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).gte(TimestampUtils.convertToSeconds(startTime));
+	@Override
+	public List<AggrEvent> getAggregatedEventsByContextIdAndTimeRange(String featureName, String contextType, String contextName, Long startTime, Long endTime) {
 
-            Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME_UNIX).lte(TimestampUtils.convertToSeconds(endTime));
+		List<AggrEvent> result;
 
-            Criteria contextCriteria = createContextCriteria(contextType, ContextName);
+		//In case of backups collections - will create the backup prefix list
+		List<String> collectionsBackupPrefixList = ConversionUtils.convertStringToList(collectionsBackupPrefixListAsString, COLLECTIONS_NAMES_DELIMITER);
 
-            Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria,contextCriteria));
 
-            return mongoTemplate.find(query, AggrEvent.class, collectionName);
-        }
-        else {
-            throw new RuntimeException("Could not fetch aggregated events from collection " + collectionName);
-        }
-    }
+		String collectionName = SCORED_AGGR_EVENT_COLLECTION_PREFIX + featureName;
 
-    private Criteria createContextCriteria(String contextType, String contextName) {
-        Map<String, String> contextMap = new HashMap<>(1);
-        contextMap.put(contextType, contextName);
+		//Get the data from the origin collection
+		result = readFromMongo(collectionName , contextType, contextName,  startTime,  endTime);
 
-        return Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT).in(contextMap); // TODO check for multiple context, might not work
-    }
+		//get the data from each of the backup collections and combine it with the origin collection
+		final List<AggrEvent> finalResult = result;
+		collectionsBackupPrefixList.forEach(prefix->{
+			if(!org.apache.commons.lang.StringUtils.isEmpty(prefix))
+				finalResult.addAll(readFromMongo(prefix + collectionName, contextType, contextName, startTime, endTime));
+		});
+
+		return finalResult;
+
+	}
+
+	private List<AggrEvent> readFromMongo(String collectionName,String contextType, String contextName, Long startTimeInMillis, Long endTimeInMillis) {
+
+		Date startTimeDate = new Date(startTimeInMillis);
+		Criteria startTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).gte(startTimeDate);
+
+		Date endTimeDate = new Date(endTimeInMillis);
+		Criteria endTimeCriteria = Criteria.where(AggrEvent.EVENT_FIELD_START_TIME).lte(endTimeDate);
+
+		final HashMap<String, String> context = new HashMap<>();
+		context.put(contextType, contextName);
+		String contextId = AggrFeatureEventBuilderService.getAggregatedFeatureContextId(context);
+		Criteria contextCriteria = Criteria.where(AggrEvent.EVENT_FIELD_CONTEXT_ID).is(contextId);
+
+		Query query = new Query(startTimeCriteria.andOperator(endTimeCriteria, contextCriteria));
+		try {
+			return mongoTemplate.find(query, AggrEvent.class, collectionName);
+		}
+		catch (Exception e) {
+			throw new RuntimeException("Could not fetch aggregated events from collection " + collectionName + " due to: " + e);
+		}
+
+	}
+
 }

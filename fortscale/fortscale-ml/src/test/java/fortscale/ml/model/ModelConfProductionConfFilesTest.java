@@ -1,11 +1,14 @@
 package fortscale.ml.model;
 
+import fortscale.accumulator.aggregation.store.AccumulatedAggregatedFeatureEventStore;
+import fortscale.accumulator.entityEvent.store.AccumulatedEntityEventStore;
 import fortscale.aggregation.feature.bucket.BucketConfigurationService;
 import fortscale.aggregation.feature.bucket.FeatureBucketsReaderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfUtilService;
 import fortscale.aggregation.feature.event.RetentionStrategiesConfService;
 import fortscale.aggregation.feature.event.store.AggregatedFeatureEventsReaderService;
+import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.entity.event.EntityEventConfService;
 import fortscale.entity.event.EntityEventDataReaderService;
 import fortscale.entity.event.EntityEventGlobalParamsConfService;
@@ -14,18 +17,15 @@ import fortscale.ml.model.builder.IModelBuilder;
 import fortscale.ml.model.retriever.AbstractDataRetriever;
 import fortscale.ml.model.selector.IContextSelector;
 import fortscale.ml.model.selector.IContextSelectorConf;
+import fortscale.ml.model.store.ModelStore;
 import fortscale.utils.factory.FactoryService;
 import fortscale.utils.monitoring.stats.config.NullStatsServiceConfig;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.data.hadoop.config.common.annotation.EnableAnnotationConfiguration;
 import org.springframework.test.context.ContextConfiguration;
@@ -40,18 +40,27 @@ public class ModelConfProductionConfFilesTest {
 	@Configuration
 	@EnableSpringConfigured
 	@EnableAnnotationConfiguration
-	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder")
+	@ComponentScan(basePackages = "fortscale.ml.model.selector,fortscale.ml.model.retriever,fortscale.ml.model.builder",
+			excludeFilters = @ComponentScan.Filter(type = FilterType.REGEX,pattern = "fortscale.ml.model.selector.AlertTriggeringHighScoreContextSelectorTest*"))
 	@Import(NullStatsServiceConfig.class)
 	static class ContextConfiguration {
 		@Mock private FeatureBucketsReaderService featureBucketsReaderService;
 		@Mock private AggregatedFeatureEventsReaderService aggregatedFeatureEventsReaderService;
+		@Mock private AccumulatedAggregatedFeatureEventStore accumulatedAggregatedFeatureEventStore;
 		@Mock private EntityEventDataReaderService entityEventDataReaderService;
+		@Mock private AccumulatedEntityEventStore accumulatedEntityEventStore;
 		@Mock private EntityEventMongoStore entityEventMongoStore;
+		@Mock private ModelStore modelStore;
+		@Mock private AlertsRepository alertsRepository;
 
 		@Bean public FeatureBucketsReaderService getFeatureBucketsReaderService() {return featureBucketsReaderService;}
 		@Bean public AggregatedFeatureEventsReaderService getAggregatedFeatureEventsReaderService() {return aggregatedFeatureEventsReaderService;}
+		@Bean public AccumulatedAggregatedFeatureEventStore getAccumulatedAggregatedFeatureEventStore() {return accumulatedAggregatedFeatureEventStore;}
 		@Bean public EntityEventDataReaderService getEntityEventDataReaderService() {return entityEventDataReaderService;}
+		@Bean public AccumulatedEntityEventStore getAccumulatedEntityEventStore() {return accumulatedEntityEventStore;}
 		@Bean public EntityEventMongoStore getEntityEventMongoStore() {return entityEventMongoStore;}
+		@Bean public ModelStore getModelStore() {return modelStore;}
+		@Bean public AlertsRepository getAlertsRepository() {return alertsRepository;}
 
 		@Bean
 		public BucketConfigurationService bucketConfigurationService() {
@@ -146,19 +155,11 @@ public class ModelConfProductionConfFilesTest {
 
 	@Test
 	public void ShouldBeValidConf() {
-		int counter = 0;
-
 		for (ModelConf modelConf : modelConfService.getModelConfs()) {
 			IContextSelectorConf contextSelectorConf = modelConf.getContextSelectorConf();
 			if (contextSelectorConf != null) contextSelectorFactoryService.getProduct(contextSelectorConf);
 			dataRetrieverFactoryService.getProduct(modelConf.getDataRetrieverConf());
 			modelBuilderFactoryService.getProduct(modelConf.getModelBuilderConf());
-			counter++;
 		}
-
-		int expRawEventsModelConfs = 53;
-		int expAggrEventsModelConfs = 64;
-		int expEntityEventsModelConfs = 30;
-		Assert.assertEquals(expRawEventsModelConfs + expAggrEventsModelConfs + expEntityEventsModelConfs, counter);
 	}
 }

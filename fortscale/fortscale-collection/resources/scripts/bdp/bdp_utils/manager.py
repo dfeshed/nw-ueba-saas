@@ -15,7 +15,7 @@ from automatic_config.common.utils import time_utils, impala_utils, io
 from automatic_config.common.utils.mongo import rename_documents
 
 
-def cleanup_everything_but_models(logger,
+def cleanup_everything_but_models_and_acm(logger,
                                   host,
                                   clean_overrides_key,
                                   start_time_epoch=None,
@@ -33,10 +33,18 @@ def cleanup_everything_but_models(logger,
                                name_to_new_name_cb=lambda name: models_backup_prefix + name)
     if renames == 0:
         if fail_if_no_models:
-            logger.error('failed to rename collections')
+            logger.error('failed to rename model collections')
             return False
         else:
-            logger.warning('no models in mongo')
+            logger.warning('no model collections in mongo')
+    accumulated_backup_prefix = 'bkp_s_'
+    scored_collection_prefix = "scored___"
+    acm_renames = rename_documents(logger=logger,
+                               host=host,
+                               collection_names_regex='^scored.*(aggr|entity).*(d_acm|h_acm)$',
+                               name_to_new_name_cb=lambda name: accumulated_backup_prefix + name[len(scored_collection_prefix):])
+    if acm_renames == 0:
+        logger.warning('no accumulated collections in mongo')
 
     logger.info('running cleanup...')
     cleaner = Cleaner(name=clean_overrides_key,
@@ -56,7 +64,13 @@ def cleanup_everything_but_models(logger,
                         name_to_new_name_cb=lambda name: name[len(models_backup_prefix):]) != renames:
         logger.error('failed to rename collections back')
         return False
-
+    logger.info('renaming accumulated collections back...')
+    if rename_documents(logger=logger,
+                    host=host,
+                    collection_names_regex='^' + accumulated_backup_prefix + '.*(d_acm|h_acm)$',
+                    name_to_new_name_cb=lambda name: scored_collection_prefix + name[len(accumulated_backup_prefix):]) != acm_renames:
+        logger.error('failed to rename accumulated collections back')
+        return False
     logger.info('DONE')
     return is_success
 
@@ -89,29 +103,31 @@ class OverridingManager(object):
         raise NotImplementedException()
 
 
-class DontReloadModelsOverridingManager(OverridingManager):
+class ModelsCacheOverridingManager(OverridingManager):
     _FORTSCALE_OVERRIDING_PATH = '/home/cloudera/fortscale/streaming/config/fortscale-overriding-streaming.properties'
 
     def __init__(self, logger, host, scoring_task_name_that_should_not_reload_models):
-        super(DontReloadModelsOverridingManager, self).__init__(logger=logger)
+        super(ModelsCacheOverridingManager, self).__init__(logger=logger)
         self._host = host
         self._scoring_task_name_that_should_not_reload_models = scoring_task_name_that_should_not_reload_models
 
     def _backup_and_override(self):
         self._logger.info('updating fortscale-overriding-streaming.properties...')
         original_to_backup = {
-            DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH: io.backup(path=DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH) \
-                if os.path.isfile(DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH) \
+            ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH: io.backup(path=ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH) \
+                if os.path.isfile(ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH) \
                 else None
         }
         really_big_epochtime = time_utils.get_epochtime('29990101')
+        really_big_epochtime_str = str(really_big_epochtime)
         configuration = [
             '',
-            'fortscale.model.wait.sec.between.loads=' + str(really_big_epochtime),
-            'fortscale.model.max.sec.diff.before.outdated=' + str(really_big_epochtime)
+            'fortscale.model.wait.sec.between.loads=' + really_big_epochtime_str,
+            'fortscale.model.max.sec.diff.before.outdated=' + really_big_epochtime_str,
+            'fortscale.model.max.sec.futureDiffBetweenModelAndEvent=' + really_big_epochtime_str
         ]
         self._logger.info('overriding the following:' + '\n\t'.join(configuration))
-        with open(DontReloadModelsOverridingManager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
+        with open(ModelsCacheOverridingManager._FORTSCALE_OVERRIDING_PATH, 'a') as f:
             f.write('\n'.join(configuration))
         return original_to_backup
 

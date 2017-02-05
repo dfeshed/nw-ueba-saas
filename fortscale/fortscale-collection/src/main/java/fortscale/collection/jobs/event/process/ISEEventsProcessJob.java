@@ -1,11 +1,10 @@
 package fortscale.collection.jobs.event.process;
 
-import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.JobDataMapExtension;
+import fortscale.collection.monitoring.ItemContext;
 import fortscale.collection.morphlines.RecordToBeanItemConverter;
 import fortscale.domain.events.IseEvent;
 import fortscale.services.ipresolving.IseResolver;
-import fortscale.utils.monitoring.stats.StatsService;
 import org.kitesdk.morphline.api.Record;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
@@ -29,11 +28,8 @@ public class ISEEventsProcessJob extends EventProcessJob {
     @Autowired
     private JobDataMapExtension jobDataMapExtension;
 
-    @Autowired
-    private StatsService statsService;
-
     private RecordToBeanItemConverter<IseEvent> recordToBeanItemConverter = new RecordToBeanItemConverter<IseEvent>(
-            new IseEvent(),"ise-event-job",statsService);
+            new IseEvent(),"ise-event-job");
 
     @Override
     protected void getJobParameters(JobExecutionContext context) throws JobExecutionException {

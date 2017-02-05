@@ -2,6 +2,7 @@ package fortscale.ml.model;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.google.common.base.Joiner;
 import fortscale.utils.ConversionUtils;
 import org.springframework.util.Assert;
 
@@ -12,7 +13,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-@JsonAutoDetect(fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE)
+@JsonAutoDetect(
+		fieldVisibility = Visibility.ANY, getterVisibility = Visibility.NONE,
+		setterVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
 public class TimeModel implements Model {
 	private static final int SMOOTHING_DISTANCE = 10;
 
@@ -77,7 +80,8 @@ public class TimeModel implements Model {
 		smoothingDistance = Math.min(smoothingDistance, (smoothedBucketHits.size() - 1) / 2);
 		cyclicallyAddToBucket(smoothedBucketHits, bucketInd, hits);
 		for (int distance = 1; distance <= smoothingDistance; distance++) {
-			double addVal = hits * Sigmoid.calcLogisticFunc(smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
+			double addVal = hits * Sigmoid.calcLogisticFunc(
+					smoothingDistance * 0.5, smoothingDistance, 0.1 / hits, distance);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd + distance, addVal);
 			cyclicallyAddToBucket(smoothedBucketHits, bucketInd - distance, addVal);
 		}
@@ -103,6 +107,17 @@ public class TimeModel implements Model {
 	@Override
 	public long getNumOfSamples() {
 		return numOfSamples;
+	}
+
+	@Override
+	public String toString() {
+
+		String smoothedBucketsStr="null";
+		if(smoothedBuckets!=null) {
+
+			smoothedBucketsStr = Joiner.on(",").join(smoothedBuckets);
+		}
+		return String.format("<TimeModel: timeResolution=%d bucketSize=%d smoothedBuckets=%s numOfSamples=%d categoryRarityModel=%s>", timeResolution,bucketSize,smoothedBucketsStr,numOfSamples,categoryRarityModel.toString());
 	}
 
 	public CategoryRarityModel getCategoryRarityModel() {

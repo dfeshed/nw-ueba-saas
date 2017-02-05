@@ -2,10 +2,7 @@ package fortscale.streaming.service.model;
 
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
-import fortscale.ml.model.CategoryRarityModel;
-import fortscale.ml.model.Model;
-import fortscale.ml.model.ModelConf;
-import fortscale.ml.model.ModelConfService;
+import fortscale.ml.model.*;
 import fortscale.ml.model.builder.CategoryRarityModelBuilderConf;
 import fortscale.ml.model.builder.IModelBuilderConf;
 import fortscale.ml.model.cache.ModelsCacheInfo;
@@ -111,7 +108,7 @@ public class ModelsCacheServiceSamzaTest {
 		Feature feature3 = new Feature("country", "Israel");
 		GenericHistogram histogram3 = new GenericHistogram();
 		histogram3.add(feature3.getValue().toString(), 5d);
-		when(containers.get(2).getRetriever().retrieve(eq(DEFAULT_CONTEXT_ID), eq(endTime3), eq(feature3))).thenReturn(histogram3);
+		when(containers.get(2).getRetriever().retrieve(eq(DEFAULT_CONTEXT_ID), eq(endTime3), eq(feature3))).thenReturn(new ModelBuilderData(histogram3));
 		Model actualModel3 = modelsCacheService.getModel(feature3, modelConfName3, getDefaultFeatureContext(), convertToSeconds(plusDay(endTime3)));
 		Assert.assertEquals(expectedModel3, actualModel3);
 
@@ -123,7 +120,7 @@ public class ModelsCacheServiceSamzaTest {
 		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
 		modelsCacheInfo = cache.get(ModelCacheManagerSamza.getStoreKey(containers.get(2).getModelConf(), DEFAULT_CONTEXT_ID));
 		Assert.assertEquals(1, modelsCacheInfo.getNumOfModelDaos());
-		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(new Date()));
+		ModelDAO modelDao = modelsCacheInfo.getModelDaoWithLatestEndTimeLte(convertToSeconds(new Date()), 0);
 		Assert.assertEquals(modelDao3, modelDao);
 		Assert.assertEquals(5, expectedModel3.getFeatureCount(feature3.getValue().toString()), 0);
 	}

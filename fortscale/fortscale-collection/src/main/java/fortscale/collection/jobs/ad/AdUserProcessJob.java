@@ -6,8 +6,6 @@ import fortscale.domain.ad.AdUser;
 import fortscale.domain.ad.dao.AdGroupRepository;
 import fortscale.domain.ad.dao.AdUserRepository;
 import fortscale.services.UserServiceFacade;
-import fortscale.services.UserTagEnum;
-import fortscale.services.UserTaggingService;
 import fortscale.services.impl.ParsingUsersMachinesFiltering;
 import fortscale.services.impl.UsernameService;
 import fortscale.services.impl.UsersMachinesFilterEnum;
@@ -32,7 +30,6 @@ import java.util.List;
 
 public class AdUserProcessJob extends AdProcessJob {
 
-	
 	@Autowired
 	private AdUserRepository adUserRepository;
 	
@@ -47,10 +44,7 @@ public class AdUserProcessJob extends AdProcessJob {
 	
 	@Autowired
 	private UsernameService usernameService;
-	
-	@Autowired
-	private UserTaggingService userTaggingService;
-	
+
 	@Value("${users.filter.prioritylist:}")
     private String ouUsersFilter;
 	
@@ -85,8 +79,8 @@ public class AdUserProcessJob extends AdProcessJob {
 	}
 
 	@Override
-	protected boolean isTimestampAlreadyProcessed(Date runtime) {
-		return adUserRepository.countByTimestampepoch(runtime.getTime()) > 0 ? true : false;
+	protected boolean isTimestampAlreadyProcessed(String runtime) {
+		return adUserRepository.countByRuntime(runtime) > 0 ? true : false;
 	}
 
 	@Override
@@ -165,7 +159,7 @@ public class AdUserProcessJob extends AdProcessJob {
 	}
 	
 	@Override
-	protected String getDataRecievedType() {
+	protected String getDataReceivedType() {
 		return "Users";
 	}
 	
@@ -173,11 +167,6 @@ public class AdUserProcessJob extends AdProcessJob {
 		startNewStep("update username set");
 
 		// Update admin tag
-		userTaggingService.update(UserTagEnum.executive.getId());
-		userTaggingService.update(UserTagEnum.admin.getId());
-		userTaggingService.update(UserTagEnum.service.getId());
-		userTaggingService.update(UserTagEnum.LR.getId());
-		userTaggingService.update(UserTagEnum.custom.getId());
 		if(!StringUtils.isEmpty(ouUsersFilter)){
 			if(addUsers == true){
 				updateUsersWhoBelongtoOUOrGroup();

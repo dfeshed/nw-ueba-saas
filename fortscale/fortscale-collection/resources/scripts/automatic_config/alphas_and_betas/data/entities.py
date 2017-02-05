@@ -2,6 +2,7 @@ import itertools
 import json
 import pymongo
 import sys
+from automatic_config.common.utils.mongo import get_db
 from common import utils
 from common import visualizations
 from common.data.mongo import MongoData
@@ -114,10 +115,10 @@ class Entities:
         self.entity_type = entity_type
         self._daily = SingleTypeEntities(dir_path,
                                          entity_type + '_daily',
-                                         pymongo.MongoClient(mongo_ip, 27017).fortscale)
+                                         get_db(host=mongo_ip))
         self._hourly = SingleTypeEntities(dir_path,
                                           entity_type + '_hourly',
-                                          pymongo.MongoClient(mongo_ip, 27017).fortscale)
+                                          get_db(host=mongo_ip))
 
     def query(self, start_time, end_time, is_daily = None, should_save_every_day = False):
         if is_daily or is_daily is None:

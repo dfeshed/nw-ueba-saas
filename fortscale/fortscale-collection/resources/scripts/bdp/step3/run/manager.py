@@ -1,39 +1,41 @@
 import logging
-import shutil
 import os
+import shutil
 import sys
+
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..']))
-from validation import validate_no_missing_events, validate_entities_synced
+from validation import validate_no_missing_events, validate_entities_synced, validate_scored_aggr_synced
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..']))
 import bdp_utils.run
 from bdp_utils.kafka import send
-from bdp_utils.manager import DontReloadModelsOverridingManager, cleanup_everything_but_models
+from bdp_utils.manager import ModelsCacheOverridingManager, cleanup_everything_but_models_and_acm
 
 sys.path.append(os.path.sep.join([os.path.dirname(os.path.abspath(__file__)), '..', '..', '..']))
 from automatic_config.common import config
 from automatic_config.common.utils import io
 from automatic_config.common.utils.mongo import get_collections_time_boundary
-from automatic_config.common.results.committer import update_configurations
+from automatic_config.common.results.committer import update_configurations, init_reducers
 from automatic_config.common.results.store import Store
 from automatic_config.fs_reduction import main as fs_main
 from automatic_config.alphas_and_betas import main as weights_main
-from automatic_config.common.utils.mongo import update_models_time
 
 
 logger = logging.getLogger('step3')
 
 
-class Manager(DontReloadModelsOverridingManager):
+class Manager(ModelsCacheOverridingManager):
+    _SUB_STEP_RUN_INIT = 'run_init'
     _SUB_STEP_RUN_SCORES = 'run_scores'
     _SUB_STEP_BUILD_MODELS = 'build_models'
     _SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME = 'cleanup_and_move_models_back_in_time'
     _SUB_STEP_RUN_SCORES_AFTER_MODELS_HAVE_BEEN_BUILT = 'run_scores_after_models_have_been_built'
     _SUB_STEP_CALC_REDUCERS_AND_ALPHAS_AND_BETAS = 'calc_reducers_and_alphas_and_betas'
     _SUB_STEP_CLEANUP_AFTER_EVERYTHING_IS_SET_UP = 'cleanup_after_everything_is_set_up'
-    _SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED = 'run_scores_after_reducers_and_alphas_abd_betas_have_been_calculated'
+    _SUB_STEP_RUN_SCORES_AFTER_REDUCERS_AND_ALPHAS_AND_BETAS_HAVE_BEEN_CALCULATED = 'run_scores_after_reducers_and_alphas_and_betas_have_been_calculated'
 
     SUB_STEPS = [
+        _SUB_STEP_RUN_INIT,
         _SUB_STEP_RUN_SCORES,
         _SUB_STEP_BUILD_MODELS,
         _SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME,
@@ -73,6 +75,7 @@ class Manager(DontReloadModelsOverridingManager):
         end += (-end) % (24 * 60 * 60)
         self._builder.set_start(end).set_end(end)
         for sub_step_name, sub_step in [
+            (Manager._SUB_STEP_RUN_INIT, self._run_init),
             (Manager._SUB_STEP_RUN_SCORES, self._run_scores),
             (Manager._SUB_STEP_BUILD_MODELS, self._build_models),
             (Manager._SUB_STEP_CLEANUP_AND_MOVE_MODELS_BACK_IN_TIME, self._cleanup_and_move_models_back_in_time),
@@ -93,15 +96,24 @@ class Manager(DontReloadModelsOverridingManager):
                 break
         return True
 
+    def _run_init(self):
+        logger.info('initing reducers')
+        init_reducers(logger=logger)
+        return True
+
     def _run_scores(self):
         kill_process = self._runner.run(overrides_key='step3.scores')
-        is_valid = validate_no_missing_events(host=self._host,
-                                              timeout=self._validation_timeout,
-                                              start=self._runner.get_start(),
-                                              end=self._runner.get_end())
+        num_of_scored_events = validate_no_missing_events(host=self._host,
+                                                          timeout=self._validation_timeout,
+                                                          start=self._runner.get_start(),
+                                                          end=self._runner.get_end())
         logger.info('making sure bdp process exits...')
         kill_process()
-        return is_valid and self._sync_entities()
+        return num_of_scored_events and self._sync_entities() and validate_scored_aggr_synced(logger=logger,
+                                                                                              host=self._host,
+                                                                                              num_of_scored_events=num_of_scored_events,
+                                                                                              timeout=self._validation_timeout,
+                                                                                              polling=self._validation_polling)
 
     def _sync_entities(self):
         logger.info('syncing entities...')
@@ -118,14 +130,11 @@ class Manager(DontReloadModelsOverridingManager):
         return True
 
     def _cleanup_and_move_models_back_in_time(self):
-        return cleanup_everything_but_models(logger=logger,
+        return cleanup_everything_but_models_and_acm(logger=logger,
                                              host=self._host,
                                              clean_overrides_key='step3.cleanup',
-                                             infer_start_and_end_from_collection_names_regex='^aggr_') and \
-               update_models_time(logger=logger,
-                                  host=self._host,
-                                  collection_names_regex='^model_',
-                                  infer_start_from_collection_names_regex='^aggr_')
+                                             infer_start_and_end_from_collection_names_regex='^aggr_')
+
 
     def _calc_reducers_and_alphas_and_betas(self):
         if os.path.exists(config.interim_results_path):

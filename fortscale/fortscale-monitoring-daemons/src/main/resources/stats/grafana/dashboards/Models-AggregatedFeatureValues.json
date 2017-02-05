@@ -219,7 +219,7 @@
                 [
                   {
                     "params": [
-                      "aggregatedFeatureEvents"
+                      "aggregatedFeatureValues"
                     ],
                     "type": "field"
                   },
@@ -229,7 +229,7 @@
                   },
                   {
                     "params": [
-                      "aggregatedFeatureEvents"
+                      "aggregatedFeatureValues"
                     ],
                     "type": "alias"
                   }

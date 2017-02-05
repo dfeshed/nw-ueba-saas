@@ -8,12 +8,12 @@ import kafka.utils.ZkUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import scala.collection.Seq;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * Created by Amir Keren on 22/09/15.
@@ -33,6 +33,8 @@ public class KafkaService extends CleanupDeletionUtil {
     private boolean isBrutalDelete;
 
     private static final int KAFKA_REMOVE_DIR_POLLING_TIMEOUT = 30;
+
+	public static final String CHANGELOG_SUFFIX = "-changelog";
 
     /***
      *
@@ -66,7 +68,6 @@ public class KafkaService extends CleanupDeletionUtil {
                 TopicCommand.TopicCommandOptions opts = new TopicCommand.TopicCommandOptions(cmdArray);
                 try {
                     TopicCommand.deleteTopic(zkClient, opts);
-
                 } catch (AdminOperationException ex) {
                     logger.error("failed to drop all {} topics, {}", topics.size(), ex.getMessage());
                     logger.error(ex.toString());
@@ -118,8 +119,9 @@ public class KafkaService extends CleanupDeletionUtil {
         logger.debug("establishing connection to zookeeper");
         ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
         logger.debug("connection established, fetching topics");
-        Collection<String> topics = scala.collection.JavaConversions.seqAsJavaList((Seq<String>)ZkUtils.
-                getAllTopics(zkClient));
+        Collection<String> topics = scala.collection.JavaConversions.seqAsJavaList(ZkUtils.getAllTopics(zkClient));
+		//ignore changelog topics (remove them from the collection to be deleted)
+		topics.removeIf(topic -> topic.endsWith(CHANGELOG_SUFFIX));
         zkClient.close();
         return topics;
     }
@@ -133,62 +135,90 @@ public class KafkaService extends CleanupDeletionUtil {
      */
     @Override
     public boolean deleteAllEntities(boolean doValidate) {
-        Collection<String> topics = getAllEntities();
-        ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
-        boolean success = false;
-        logger.info("found {} topics to delete", topics.size());
-        if (isBrutalDelete) {
-            //delete physical files
-            for (String topic: topics) {
-                //delete zookeeper entries first
-                String topicPath = ZkUtils.getTopicPath(topic);
-                logger.debug("attempting to delete topic {}", topic);
-                zkClient.deleteRecursive(topicPath);
-            }
-            success = cleanKafkaDataFolders(doValidate);
-        } else {
-            //delete using API
-            success = deleteEntities(topics, doValidate);
-        }
-        return success;
+		return deleteEntitiesAux(doValidate, false);
     }
 
-    /***
+	/***
+	 *
+	 * This methods deletes all of the topics in Kafka
+	 *
+	 * @param doValidate  flag to determine should we perform validations
+	 * @return
+	 */
+	public boolean deleteAllEntitiesIncludingDataFolder(boolean doValidate) {
+		return deleteEntitiesAux(doValidate, true);
+	}
+
+	private boolean deleteEntitiesAux(boolean doValidate, boolean includingChangelog) {
+		Collection<String> topics = getAllEntities();
+		ZkClient zkClient = new ZkClient(zookeeperConnection, zookeeperTimeout);
+		boolean success;
+		logger.info("found {} topics to delete", topics.size());
+		if (isBrutalDelete) {
+			//delete physical files
+			for (String topic: topics) {
+				//delete zookeeper entries first
+				String topicPath = ZkUtils.getTopicPath(topic);
+				logger.debug("attempting to delete topic {}", topic);
+				zkClient.deleteRecursive(topicPath);
+			}
+			success = cleanKafkaDataFolders(doValidate, includingChangelog);
+		} else {
+			//delete using API
+			success = deleteEntities(topics, doValidate);
+		}
+		return success;
+	}
+
+	/***
      *
      * This method clears the entire kafka data folder
      *
-     * @param validate  flag to determine should we perform validations
+     * @param validate  		  flag to determine should we perform validations
+	 * @param includingChangeLog  flag to determine should we also delete changelog folders
      * @return
      */
-    private boolean cleanKafkaDataFolders(boolean validate) {
+    private boolean cleanKafkaDataFolders(boolean validate, boolean includingChangeLog) {
         File directory = new File(kafkaDataFolder);
         if (!directory.exists() || !directory.isDirectory()) {
             logger.warn("no kafka data folder {} found", kafkaDataFolder);
             return true;
         }
-        String[] cmdArray = {"bash", "-c", "sudo rm -rf /var/local/kafka/data"};
+		String[] cmdArray;
+		if (includingChangeLog) {
+			cmdArray = new String[] { "bash", "-c", "sudo rm -rf /var/local/kafka/data" };
+		} else {
+			cmdArray = new String[] { "bash", "-c", "find /var/local/kafka/data/* -not -name '*" + CHANGELOG_SUFFIX +
+					"-*' -print0 | sudo xargs -0 rm -rf" };
+		}
         boolean removalProcessEnded = false;
         try {
             Process kafkaDirRemovalProcess = Runtime.getRuntime().exec(cmdArray);
-
             // blocking call to check if removal process actually finished
             removalProcessEnded = kafkaDirRemovalProcess.waitFor(KAFKA_REMOVE_DIR_POLLING_TIMEOUT, TimeUnit.MINUTES);
         } catch (IOException | InterruptedException e) {
             logger.error("Error while trying to remove kafka folder {} : {}", kafkaDataFolder, e);
         }
         if (validate) {
-            if (!removalProcessEnded && directory.exists()) {
-                logger.error("Removal of {} directory did not finish after {} minutes", kafkaDataFolder,
-                        KAFKA_REMOVE_DIR_POLLING_TIMEOUT);
-
-                return false;
-            }
-            if (directory.exists()) {
-                logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
-                return false;
-            }
+			if (includingChangeLog) {
+				if (!removalProcessEnded && directory.exists()) {
+					logger.error("Removal of {} directory did not finish after {} minutes", kafkaDataFolder,
+							KAFKA_REMOVE_DIR_POLLING_TIMEOUT);
+					return false;
+				}
+				if (directory.exists()) {
+					logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
+					return false;
+				}
+			} else {
+				if (!removalProcessEnded) {
+					logger.error("Cleaning of {} directory did not finish after {} minutes", kafkaDataFolder,
+							KAFKA_REMOVE_DIR_POLLING_TIMEOUT);
+					return false;
+				}
+			}
         }
-        logger.info("Kafka data folder deleted successfully");
+        logger.info("Kafka data folder cleaned successfully");
         return true;
     }
 
@@ -208,29 +238,24 @@ public class KafkaService extends CleanupDeletionUtil {
         }
         String[] folders = directory.list();
         boolean removalProcessEnded = false;
-        for(String folderName : folders) {
+        for (String folderName: folders) {
             File folder = new File(kafkaDataFolder + "/" + folderName);
             if (folderName.startsWith(prefix) && folder.isDirectory()) {
-
                 String[] cmdArray = {"bash", "-c", "sudo rm -rf " + kafkaDataFolder + "/" + folderName};
                 try {
                     Process kafkaDirRemovalProcess = Runtime.getRuntime().exec(cmdArray);
-
                     // blocking call to check if removal process actually finished
                     removalProcessEnded = kafkaDirRemovalProcess.waitFor(KAFKA_REMOVE_DIR_POLLING_TIMEOUT,
                             TimeUnit.MINUTES);
                 } catch (IOException | InterruptedException e) {
                     logger.error("Error while trying to remove kafka folder {} : {}", folder.getAbsolutePath(), e);
                 }
-
                 if (validate) {
                     if (!removalProcessEnded && directory.exists()) {
                         logger.error("Removal of {} directory did not finish after {} minutes",
                                 folder.getAbsolutePath(), KAFKA_REMOVE_DIR_POLLING_TIMEOUT);
-
                         return false;
                     }
-
                     if (directory.exists()) {
                         logger.error("failed to clean kafka data folder from {}", kafkaDataFolder);
                         return false;

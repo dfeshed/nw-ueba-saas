@@ -1,15 +1,13 @@
 package fortscale.domain.ad.dao.impl;
 
+import fortscale.domain.Exceptions.PasswordDecryptionException;
 import fortscale.domain.ad.AdConnection;
 import fortscale.domain.ad.dao.ActiveDirectoryDAO;
 import fortscale.domain.ad.dao.ActiveDirectoryResultHandler;
 import fortscale.utils.logging.Logger;
 import org.springframework.stereotype.Repository;
 
-import javax.naming.CommunicationException;
-import javax.naming.Context;
-import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
+import javax.naming.*;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
@@ -28,6 +26,41 @@ public class ActiveDirectoryDAOImpl implements ActiveDirectoryDAO {
     private static final String AD_DOMAIN_CONTROLLERS_FILTER =
             "(&(objectCategory=computer)(userAccountControl:1.2.840.113556.1.4.803:=8192))";
     private static final String CONTEXT_FACTORY = "com.sun.jndi.ldap.LdapCtxFactory";
+
+    public boolean connectToAD(AdConnection adConnection) throws CommunicationException, AuthenticationException, NamingException, PasswordDecryptionException {
+
+
+        Hashtable<String, String> environment;
+        boolean success = false;
+        try {
+            environment = initializeAdConnectionEnv(adConnection);
+        } catch (Exception e){
+            throw new PasswordDecryptionException("Cannot decrypt active directory password");
+        }
+
+        NamingException lastTryExecption = null;
+
+		for (String dcAddress : adConnection.getDcs()) {
+			logger.debug("Trying to connect to domain controller at {}", dcAddress);
+			environment.put(Context.PROVIDER_URL, dcAddress);
+
+			try {
+				new InitialLdapContext(environment, null);
+                success=true;
+			} catch (NamingException ex) {
+                logger.error("Connection to {} failed - {}", dcAddress, ex.getMessage());
+                lastTryExecption = ex;
+			}
+
+		}
+		if(success){
+            return true;
+        } else if (lastTryExecption!=null){
+            throw  lastTryExecption;
+        } else{
+            return false;
+        }
+    }
 
     @Override
     public void getAndHandle(String filter, String adFields, int resultLimit, ActiveDirectoryResultHandler handler,
