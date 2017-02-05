@@ -76,7 +76,7 @@ public class EntityEventAccumulator extends BaseAccumulator {
             }
             // we add 1 hour minus 1 second since we are querying by end time - which is how entity_event is indexed
             List<EntityEvent> entityEvents =
-                    entityEventMongoStore.findEntityEventsByEndTimeRange(fromHourCursor.plus(1,ChronoUnit.HOURS).minusSeconds(1), nextHourCursor.plus(1,ChronoUnit.HOURS).minusSeconds(1), featureName);
+                    entityEventMongoStore.findEntityEventsByEndTimeRange(fromHourCursor, nextHourCursor, featureName);
             accumulateEvents(entityEvents, fromCursor, toCursor, creationTime, accumulatedEntityEventMap);
             fromHourCursor = nextHourCursor;
         }

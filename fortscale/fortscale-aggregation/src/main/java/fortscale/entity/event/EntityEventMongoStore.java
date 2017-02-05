@@ -246,7 +246,7 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 
 		if(!queryResult.isEmpty())
 		{
-			long maxEndDate = queryResult.stream().max(Comparator.comparingLong(EntityEvent::getEnd_time_unix)).get().getStart_time_unix();
+			long maxEndDate = queryResult.get(0).getEnd_time_unix();
 			return Instant.ofEpochSecond(maxEndDate);
 		}
 		return null;
