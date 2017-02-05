@@ -179,12 +179,13 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 				logger.debug("got close session for non existing session! username: {}, source ip: {}", vpnSessionUpdate.getUsername(), vpnSessionUpdate.getSourceIp());
 				return null;
 			}else{
+				vpnSession = new VpnSession(vpnSessionUpdate);
 				// We want to save the close session without the open by calculating the missing data
 				DateTime startTime = vpnSessionUpdate.getClosedAt().minus(Duration.standardSeconds(vpnSessionUpdate.getDuration().longValue()));
-				vpnSessionUpdate.setCreatedAt(startTime);
-				vpnSessionUpdate.setCreatedAtEpoch(startTime.getMillis() / 1000);
-				vpnSessionUpdate.setModifiedAt(new DateTime());
-				vpnSession = vpnSessionUpdate;
+				vpnSession.setCreatedAt(startTime);
+				vpnSession.setCreatedAtEpoch(startTime.getMillis() / 1000);
+				vpnSession.setModifiedAt(new DateTime());
+
 			}
 		// We found the open session - we will update the document with the closing info
 		}else {

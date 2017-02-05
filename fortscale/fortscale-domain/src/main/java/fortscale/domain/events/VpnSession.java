@@ -20,18 +20,12 @@ import org.springframework.data.mongodb.core.mapping.Field;
 	@CompoundIndex(name="normalizedUsernameCreatedAtEpochIdx", def = "{'normalizedUsername': 1, 'createdAtEpoch': -1}"),
 })
 public class VpnSession extends AbstractDocument{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1247127683048664797L;
 
 	public static final String collectionName =  "VpnSession";
-	
 	public static final String createdAtEpochFieldName = "createdAtEpoch";
 	public static final String modifiedAtFieldName = "modifiedAt";
-	
-	
-	
+
 	@Indexed
 	private String username;
 	
@@ -40,10 +34,13 @@ public class VpnSession extends AbstractDocument{
 	
 	@Indexed
 	private String sessionId;
+
 	@JsonIgnore
 	private DateTime createdAt;
+
 	@Field(createdAtEpochFieldName)
 	private Long createdAtEpoch;
+
 	@JsonIgnore
 	private DateTime closedAt;
 	
@@ -86,6 +83,37 @@ public class VpnSession extends AbstractDocument{
 	private Double latitude;
 	
 	private Boolean geoHopping = false;
+
+	public VpnSession() {
+	}
+
+	public VpnSession(VpnSession vpnSession) {
+		this.setCreatedAt(vpnSession.getCreatedAt());
+		this.setCreatedAtEpoch(vpnSession.getCreatedAtEpoch());
+		this.setDuration(vpnSession.getDuration());
+		this.setClosedAtEpoch(vpnSession.getClosedAtEpoch());
+		this.setClosedAt(vpnSession.getClosedAt());
+		this.setCity(vpnSession.getCity());
+		this.setCountry(vpnSession.getCountry());
+		this.setCountryIsoCode(vpnSession.getCountryIsoCode());
+		this.setDataBucket(vpnSession.getDataBucket());
+		this.setGeoHopping(vpnSession.geoHopping);
+		this.setHostname(vpnSession.getHostname());
+		this.setIsp(vpnSession.getIsp());
+		this.setIspUsage(vpnSession.getIspUsage());
+		this.setLatitude(vpnSession.getLatitude());
+		this.setLocalIp(vpnSession.getLocalIp());
+		this.setLongtitude(vpnSession.getLongtitude());
+		this.setNormalizedUserName(vpnSession.getNormalizedUserName());
+		this.setReadBytes(vpnSession.getReadBytes());
+		this.setRegion(vpnSession.getRegion());
+		this.setSessionId(vpnSession.getSessionId());
+		this.setSourceIp(vpnSession.getSourceIp());
+		this.setTotalBytes(vpnSession.getTotalBytes());
+		this.setUsername(vpnSession.getUsername());
+		this.setWriteBytes(vpnSession.getWriteBytes());
+		this.setId(vpnSession.getId());
+	}
 
 	public String getSourceIp() {
 		return sourceIp;

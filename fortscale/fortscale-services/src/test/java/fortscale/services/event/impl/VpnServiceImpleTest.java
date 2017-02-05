@@ -167,12 +167,12 @@ public class VpnServiceImpleTest {
 
         when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(vpnOpenSession);
 
-        service.updateCloseVpnSession(vpnCloseSession, false);
-        assertEquals(1424700169626L, vpnCloseSession.getClosedAt().getMillis());
-        assertEquals((Integer)23, vpnCloseSession.getDataBucket());
-        assertEquals((Integer)24, vpnCloseSession.getDuration());
-        assertEquals((Long)1200211L, vpnCloseSession.getWriteBytes());
-        assertEquals((Long)8700211L, vpnCloseSession.getTotalBytes());
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, false);
+        assertEquals(1424700169626L, result.getClosedAt().getMillis());
+        assertEquals((Integer)23, result.getDataBucket());
+        assertEquals((Integer)24, result.getDuration());
+        assertEquals((Long)1200211L, result.getWriteBytes());
+        assertEquals((Long)8700211L, result.getTotalBytes());
     }
 
     @Test
@@ -199,13 +199,13 @@ public class VpnServiceImpleTest {
         when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(null);
         DateTime startTime = vpnCloseSession.getClosedAt().minus(Duration.standardSeconds(vpnCloseSession.getDuration()));
 
-        service.updateCloseVpnSession(vpnCloseSession, true);
-        assertEquals(1424700169626L, vpnCloseSession.getClosedAt().getMillis());
-        assertEquals((Integer)23, vpnCloseSession.getDataBucket());
-        assertEquals((Integer)24, vpnCloseSession.getDuration());
-        assertEquals((Long)1200211L, vpnCloseSession.getWriteBytes());
-        assertEquals(startTime, vpnCloseSession.getCreatedAt());
-        assertEquals(Long.valueOf(startTime.getMillis() / 1000), vpnCloseSession.getCreatedAtEpoch());
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, true);
+        assertEquals(1424700169626L, result.getClosedAt().getMillis());
+        assertEquals((Integer)23, result.getDataBucket());
+        assertEquals((Integer)24, result.getDuration());
+        assertEquals((Long)1200211L, result.getWriteBytes());
+        assertEquals(startTime, result.getCreatedAt());
+        assertEquals(Long.valueOf(startTime.getMillis() / 1000), result.getCreatedAtEpoch());
     }
 
     @Test
