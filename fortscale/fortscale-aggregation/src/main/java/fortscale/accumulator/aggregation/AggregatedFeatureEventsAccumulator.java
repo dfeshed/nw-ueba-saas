@@ -102,7 +102,11 @@ public class AggregatedFeatureEventsAccumulator extends BaseAccumulator {
 
     @Override
     public Instant getLastSourceEventDay(String featureName) {
-        return aggregatedFeatureEventsMongoStore.getLastAggrFeatureEventStartTime(featureName).truncatedTo(ChronoUnit.DAYS);
+        Instant lastAggrFeatureEventStartTime = aggregatedFeatureEventsMongoStore.getLastAggrFeatureEventStartTime(featureName);
+        if(lastAggrFeatureEventStartTime!=null) {
+            return lastAggrFeatureEventStartTime.truncatedTo(ChronoUnit.DAYS);
+        }
+        return null;
     }
 
     private void accumulateEvents(List<AggrEvent> aggrEvents, Instant from, Instant to, Instant creationTime,

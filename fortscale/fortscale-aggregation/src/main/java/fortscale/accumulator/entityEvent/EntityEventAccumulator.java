@@ -94,7 +94,12 @@ public class EntityEventAccumulator extends BaseAccumulator {
 
     @Override
     public Instant getLastSourceEventDay(String featureName) {
-        return entityEventMongoStore.getLastEntityEventEndTime(featureName).truncatedTo(ChronoUnit.DAYS);
+        Instant lastEntityEventEndTime = entityEventMongoStore.getLastEntityEventEndTime(featureName);
+        if(lastEntityEventEndTime!=null) {
+            return lastEntityEventEndTime.truncatedTo(ChronoUnit.DAYS);
+        }
+        
+        return null;
     }
 
     private void accumulateEvents(List<EntityEvent> events, Instant from, Instant to, Instant creationTime,
