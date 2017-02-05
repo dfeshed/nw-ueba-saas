@@ -19,7 +19,6 @@ import fortscale.domain.rest.AlertRestFilter;
 import fortscale.web.beans.request.CommentRequest;
 import fortscale.web.exceptions.InvalidParameterException;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
-import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
@@ -532,17 +531,4 @@ public class ApiAlertController extends BaseController {
         return result;
     }
 
-
-    /**
-     * A URL for checking the controller
-     * @return
-     */
-    @RequestMapping(value="/shay", method=RequestMethod.GET)
-    @ResponseBody
-    public DataBean<Shay> shay(@Valid Shay s){
-
-        DataBean<Shay> response = new DataBean<>();
-        response.setData(s);
-        return response;
-    }
 }
