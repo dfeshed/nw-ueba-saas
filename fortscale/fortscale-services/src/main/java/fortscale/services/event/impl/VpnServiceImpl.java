@@ -332,7 +332,7 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 				continue;
 			}
 			if(!vpnSession.getCountry().equals(prevCountry)){
-				logger.debug("got vpn session with different country then {}, hence all the event before it got notification if there was a need. VpnSession: sessionid({}), sourceIp({}), country ({})",prevCountry, vpnSession.getSessionId(),
+				logger.debug("got vpn session with different country then {}. VpnSession: sessionid({}), sourceIp({}), country ({})",prevCountry, vpnSession.getSessionId(),
 						vpnSession.getSourceIp(), vpnSession.getCountry());
 
 				if (CollectionUtils.isEmpty(ret) && vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt())){

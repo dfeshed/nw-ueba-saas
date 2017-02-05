@@ -157,8 +157,8 @@ public class VpnServiceImpleTest {
     }
 
     @Test
-    public void updateCloseVpnSession_DontCreateVpnSessionWithNoOpen_WithOpen(){
-        System.out.println("updateCloseVpnSession");
+    // The flag for creating vpn session when received only closed session is false
+    public void updateCloseVpnSession_WithOpenSession(){
         JSONObject openEvent = (JSONObject) JSONValue.parse(OPEN_EVENT_1);
         JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_1);
 
@@ -176,8 +176,8 @@ public class VpnServiceImpleTest {
     }
 
     @Test
-    public void updateCloseVpnSession_DontCreateVpnSessionWithNoOpen_NoOpen(){
-        System.out.println("updateCloseVpnSession");
+    // The flag for creating vpn session when received only closed session is false
+    public void updateCloseVpnSession_NoOpenSession(){
         JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_1);
 
         VpnSession vpnCloseSession = createSession(closeEvent);
@@ -190,8 +190,8 @@ public class VpnServiceImpleTest {
 
 
     @Test
-    public void updateCloseVpnSession_CreateVpnSessionWithNoOpen(){
-        System.out.println("updateCloseVpnSession");
+    // The flag for creating vpn session when received only closed session is true
+    public void updateCloseVpnSession_CreateVpnSessionWithNoOpenSession(){
         JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_Cisco_ASA);
 
         VpnSession vpnCloseSession = createSession(closeEvent);
@@ -209,7 +209,8 @@ public class VpnServiceImpleTest {
     }
 
     @Test
-    public void updateCloseVpnSession_CreateVpnSessionWithNoOpen_NoDuration(){
+    // The flag for creating vpn session when received only closed session is true
+    public void updateCloseVpnSession_CreateVpnSessionWithNoOpenSession_NoDuration(){
         System.out.println("updateCloseVpnSession");
         JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_Cisco_ASA);
 
