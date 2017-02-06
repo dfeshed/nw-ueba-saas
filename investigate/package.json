@@ -90,7 +90,8 @@
     "paths": [
       "../component-lib",
       "../streaming-data",
-      "../recon"
+      "../recon",
+      "../context"
     ]
   },
   "private": true

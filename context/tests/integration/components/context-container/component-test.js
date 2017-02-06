@@ -10,6 +10,6 @@ test('it renders a message', function(assert) {
   this.render(hbs`{{context-container message="whatwhat"}}`);
   return wait().then(() => {
     const str = this.$().text().trim();
-    assert.equal(str, 'whatwhatwhat');
+    assert.equal(str, 'whatwhat');
   });
 });

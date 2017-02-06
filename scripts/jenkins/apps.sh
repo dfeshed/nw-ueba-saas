@@ -223,6 +223,7 @@ buildMockServer
 buildEmberApp streaming-data false true
 buildEmberApp component-lib false
 buildEmberApp recon false true
+buildEmberApp context false
 buildEmberApp style-guide true
 buildEmberApp investigate false
 buildEmberApp sa true

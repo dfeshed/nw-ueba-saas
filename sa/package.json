@@ -94,7 +94,8 @@
       "../component-lib",
       "../streaming-data",
       "../investigate",
-      "../recon"
+      "../recon",
+      "../context"
     ]
   },
   "engines": {
