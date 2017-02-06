@@ -51,7 +51,7 @@ function runEmberTestWithMockServer {
   local mockPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
 
-  yarn link mock-server
+  yarn add file:../mock-server
 
   info "Starting Express mock test server for $1"
 
@@ -175,7 +175,6 @@ function buildMockServer {
   else
     info "Installing mock-server dependencies"
     runAppYarnInstall mock-server
-    yarn link
   fi
 
   # Run eslint/tests on mock-server code
