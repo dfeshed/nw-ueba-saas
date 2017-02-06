@@ -74,7 +74,6 @@ public class EntityEventAccumulator extends BaseAccumulator {
             if (nextHourCursor.isAfter(toCursor)) {
                 nextHourCursor = toCursor;
             }
-            // we add 1 hour minus 1 second since we are querying by end time - which is how entity_event is indexed
             List<EntityEvent> entityEvents =
                     entityEventMongoStore.findEntityEventsByEndTimeRange(fromHourCursor, nextHourCursor, featureName);
             accumulateEvents(entityEvents, fromCursor, toCursor, creationTime, accumulatedEntityEventMap);
