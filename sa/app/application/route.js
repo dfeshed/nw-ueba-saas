@@ -38,13 +38,15 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   }.on('init'),
 
   actions: {
-    error(message) {
-      this.get('fatalErrors').logError(message);
-      this.transitionTo('not-found');
+    back() {
+      history.back();
     },
-
     clearFatalErrorQueue() {
       this.get('fatalErrors').clearQueue();
+    },
+    error(message) {
+      this.get('fatalErrors').logError(message);
+      this.transitionTo('404');
     },
     logout() {
       this._logout();

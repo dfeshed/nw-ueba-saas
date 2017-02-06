@@ -116,6 +116,7 @@ body {
 @import 'user-preferences-panel';
 @import 'application-flash-messages';
 @import 'application-panels';
+@import 'application-error-page';
 
 page, screen {
   min-height: calc(100vh - #{$applicationHeaderHeight});

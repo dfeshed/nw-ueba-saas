@@ -1,0 +1,34 @@
+.error-page {
+  color: rsa-color(gray, lighter);
+  padding: rsa-whitespace(more);
+
+  vbox {
+    margin: rsa-whitespace() 0;
+  }
+
+  .bottom-links {
+    color: rsa-color(blue);
+    box {
+      cursor: pointer;
+      padding-right: rsa-whitespace(more);
+    }
+  }
+
+  .error-description {
+    @include rsa-font(body);
+
+    h3 {
+      @include rsa-font(header, base, true);
+      color: rsa-color(gray, light);
+    }
+  }
+
+  .subtitle, .title {
+    @include rsa-font(header, larger);
+    color: rsa-color(gray);
+  }
+
+  .title {
+    font-size: 4rem;
+  }
+}

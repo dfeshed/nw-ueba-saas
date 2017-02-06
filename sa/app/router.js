@@ -9,17 +9,16 @@ const Router = EmberRouter.extend({
 });
 
 Router.map(function() {
-  this.route('not-found', { path: '*invalidunprotectedpath' });
   this.route('login');
 
   this.route('protected', { path: '/do' }, function() {
-    this.route('not-found', { path: '*invalidprotectedpath' });
     this.route('monitor');
 
     if (config.featureFlags['show-respond-route']) {
       this.route('respond', function() {
         this.route('incident', { path: '/incident/:incident_id' }, function() {
-          this.route('details', { path: '/details/:detail_id' }, function() {});
+          this.route('details', { path: '/details/:detail_id' }, function() {
+          });
         });
       });
     }
@@ -41,6 +40,7 @@ Router.map(function() {
       });
     }
   });
+  this.route('404', { path: '/*path' });
 });
 
 export default Router;

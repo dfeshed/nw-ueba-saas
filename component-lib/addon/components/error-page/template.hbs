@@ -1,0 +1,45 @@
+<box xs="5">
+  <vbox>
+    <h1 class="title">{{title}}</h1>
+    {{#if subtitle}}
+      <h2 class="subtitle">{{subtitle}}</h2>
+    {{/if}}
+  </vbox>
+
+  <vbox>
+    <hbox class="error-description">
+      <box xs="12">
+        <h3>Error Description</h3>
+      </box>
+      <box xs="12">
+        {{errorDescription}}
+      </box>
+    </hbox>
+  </vbox>
+
+  <vbox>
+    <hbox>
+      <box>
+        View online documentation for details about the error.
+      </box>
+    </hbox>
+  </vbox>
+
+  <vbox>
+    <hbox class="bottom-links">
+      <box fit {{action "back"}}>
+        <span>{{rsa-icon name="arrow-left-9"}} Back</span>
+      </box>
+      <box fit>
+        <a href="https://community.rsa.com/docs/DOC-40370" target="_blank">
+          <span>{{rsa-icon name="help-circle" style="lined"}} Documentation</span>
+        </a>
+      </box>
+      <box fit>
+        <a href="https://community.rsa.com/docs/DOC-1294" target="_blank">
+          <span>{{rsa-icon name="headphone"}} Support</span>
+        </a>
+      </box>
+    </hbox>
+  </vbox>
+</box>
