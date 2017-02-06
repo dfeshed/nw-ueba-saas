@@ -121,7 +121,7 @@ const allReasons = [
   }
 ];
 
-moduleForComponent('rsa-context-panel/lc-community-activity', 'Integration | Component | rsa context panel/lc community activity', {
+moduleForComponent('rsa-context-panel/live-connect/lc-community-activity', 'Integration | Component | rsa context panel/lc community activity', {
   integration: true
 });
 
@@ -129,7 +129,7 @@ test('it renders correctly with the correct number of expected elements', functi
   this.set('liveConnectData', liveConnectData);
   this.set('allTags', allTags);
   this.set('allReasons', allReasons);
-  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags  allReasons=allReasons}}`);
+  this.render(hbs`{{rsa-context-panel/live-connect/lc-community-activity liveConnectData=liveConnectData allTags=allTags  allReasons=allReasons}}`);
 
   assert.equal(this.$('.rsa-context-panel__liveconnect__reviewstatus__col-1').length, 1, 'review status element exists.');
   assert.equal(this.$('.rsa-context-panel__liveconnect__comm-activity__desc').length, 4, 'Community Activity description element exists');
@@ -143,7 +143,7 @@ test('line charts are rendered correctly', function(assert) {
   this.set('liveConnectData', liveConnectData);
   this.set('allTags', allTags);
   this.set('allReasons', allReasons);
-  this.render(hbs`{{rsa-context-panel/lc-community-activity liveConnectData=liveConnectData allTags=allTags allReasons=allReasons}}`);
+  this.render(hbs`{{rsa-context-panel/live-connect/lc-community-activity liveConnectData=liveConnectData allTags=allTags allReasons=allReasons}}`);
 
   assert.equal(this.$('.rsa-chart').length, 2, 'Correct number of .rsa-chart  is present');
   assert.equal(this.$('.rsa-area-series').length, 4, 'Correct number of .rsa-area-series is present');

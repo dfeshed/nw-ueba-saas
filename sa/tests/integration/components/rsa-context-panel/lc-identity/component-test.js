@@ -32,7 +32,7 @@ test('it renders', function(assert) {
     'fileDate': 1401972584000
   };
   this.set('liveConnectData', liveConnectData);
-  this.render(hbs`{{rsa-context-panel/lc-identity liveConnectData=liveConnectData}}`);
+  this.render(hbs`{{rsa-context-panel/live-connect/lc-identity liveConnectData=liveConnectData}}`);
   assert.equal(this.$('.rsa-content-definition').length, 4, 'Correct number of rsa-content-definition elements found');
 
 

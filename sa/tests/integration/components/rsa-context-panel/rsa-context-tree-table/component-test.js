@@ -103,7 +103,7 @@ skip('it renders', function(assert) {
   this.set('list', list);
   this.set('columns', columns);
 
-  this.render(hbs`  {{rsa-context-tree-table data=list title=(t columns.title) columnsConfig=columns.columns headerdata=columns.header footerdata=columns.footer}}`);
+  this.render(hbs`  {{rsa-context-panel/rsa-context-tree-table data=list title=(t columns.title) columnsConfig=columns.columns headerdata=columns.header footerdata=columns.footer}}`);
   assert.equal(this.$('.rsa-content-accordion h3').length, 2, 'Testing to see tree table  headers are rendered');
   assert.equal(this.$('.rsa-content-accordion .content').length, 2, 'Testing to see tree table content is rendered');
   assert.equal(this.$('.rsa-context-tree-table__content-header').length, 39, 'Testing to see tree table columns are rendered ');

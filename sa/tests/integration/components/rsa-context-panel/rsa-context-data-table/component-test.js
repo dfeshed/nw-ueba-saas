@@ -50,7 +50,7 @@ test('it renders', function(assert) {
 
   this.set('incidents', incidents);
   this.set('columns', columns);
-  this.render(hbs`  {{rsa-context-data-table data=incidents   title=(t columns.title ) modulesColumnListConfig=columns.columns headerdata=columns.header footerdata=columns.footer}}`);
+  this.render(hbs`  {{rsa-context-panel/rsa-context-data-table data=incidents   title=(t columns.title ) modulesColumnListConfig=columns.columns headerdata=columns.header footerdata=columns.footer}}`);
   assert.equal(this.$('.rsa-data-table-header-cell').length, 8, 'Testing count of incidents header cells');
 
 

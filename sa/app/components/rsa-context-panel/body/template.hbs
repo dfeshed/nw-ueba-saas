@@ -8,7 +8,7 @@
   {{/if}}
   {{#each datasourceList as |columns index|}}
     {{#if (or (eq tabdata columns.dataSourceGroup)(eq tabdata 'overview')) }}
-      {{rsa-context-data-table
+      {{rsa-context-panel/rsa-context-data-table
         data=(top-records (get contextData columns.dataSourceGroup) tabdata)
         title=(t columns.title )
         errorMessage=(get contextData (concat columns.dataSourceGroup '_ERROR'))
@@ -22,7 +22,7 @@
   {{/each}}
 
   {{#if (or (eq tabdata 'Lists')(eq tabdata 'overview'))}}
-    {{rsa-context-tree-table 
+    {{rsa-context-panel/rsa-context-tree-table 
       data=(top-records contextData.LIST tabdata)
       title=(t multiColumnList.title ) 
       columnsConfig=multiColumnList.columns 

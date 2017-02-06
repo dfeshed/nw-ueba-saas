@@ -5,33 +5,33 @@
     {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.noDataMsg'}}{{/rsa-content-section-header}}
   {{else if contextData.liveConnectData.allTags}}
     {{#if (is-equal model.meta 'IP')}}
-      {{rsa-context-panel/lc-community-activity
+      {{rsa-context-panel/live-connect/lc-community-activity
       liveConnectData=contextData.liveConnectData.IpReputation
       model=model
       allTags=contextData.liveConnectData.allTags
       allReasons=contextData.liveConnectData.allReasons}}
       {{#if (is-equal tabdata 'liveConnect')}}
-        {{rsa-context-panel/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
+        {{rsa-context-panel/live-connect/lc-identity liveConnectData=contextData.liveConnectData.IpInfo}}
       {{/if}}
     {{else if (is-equal model.meta 'FILE_HASH')}}
-      {{rsa-context-panel/lc-community-activity
+      {{rsa-context-panel/live-connect/lc-community-activity
       liveConnectData=contextData.liveConnectData.FileReputation
       model=model
       allTags=contextData.liveConnectData.allTags
       allReasons=contextData.liveConnectData.allReasons}}
       {{#if (is-equal tabdata 'liveConnect')}}
-        {{rsa-context-panel/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
-        {{rsa-context-panel/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
+        {{rsa-context-panel/live-connect/lc-file-identity liveConnectData=contextData.liveConnectData.FileInfo}}
+        {{rsa-context-panel/live-connect/lc-certificate-info liveConnectData=contextData.liveConnectData.FileInfo}}
       {{/if}}
     {{else if (is-equal model.meta 'DOMAIN')}}
-      {{rsa-context-panel/lc-community-activity
+      {{rsa-context-panel/live-connect/lc-community-activity
       liveConnectData=contextData.liveConnectData.DomainReputation
       model=model
       allTags=contextData.liveConnectData.allTags
       allReasons=contextData.liveConnectData.allReasons}}
       {{#if (is-equal tabdata 'liveConnect')}}
-        {{rsa-context-panel/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
-        {{rsa-context-panel/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
+        {{rsa-context-panel/live-connect/lc-domain-identity liveConnectData=contextData.liveConnectData.DomainInfo}}
+        {{rsa-context-panel/live-connect/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
       {{/if}}
     {{/if}}
   {{else}}
