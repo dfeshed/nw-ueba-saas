@@ -65,7 +65,7 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         } else {
             accumulateTo = params.getTo();
         }
-        Instant lastSourceEventStartTime = getLastSourceEventStartTime(feature);
+        Instant lastSourceEventStartTime = getLastSourceEventDay(feature);
         // nothing to accumulate
         if(lastSourceEventStartTime == null)
         {
@@ -107,8 +107,8 @@ public abstract class AccumulatorManagerImpl implements AccumulatorManger {
         return accumulator.getLastAccumulatedEventStartTime(featureName);
     }
 
-    private Instant getLastSourceEventStartTime(String featureName)
+    private Instant getLastSourceEventDay(String featureName)
     {
-        return accumulator.getLastSourceEventStartTime(featureName);
+        return accumulator.getLastSourceEventDay(featureName);
     }
 }
