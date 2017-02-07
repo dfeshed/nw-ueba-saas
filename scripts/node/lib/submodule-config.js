@@ -21,6 +21,7 @@ const saModuleDependants = {
     'context'
   ],
   docs: [], // lol
+  'live-content': [],
   'mock-server': [ // This list will grow as more uses the mock-server
     'streaming-data',
     'recon',
@@ -54,6 +55,7 @@ const saModuleDependants = {
 const saModuleDependencies = {
   'component-lib': [],
   docs: [], // lol
+  'live-content': [],
   'mock-server': [],
   recon: [
     'component-lib',

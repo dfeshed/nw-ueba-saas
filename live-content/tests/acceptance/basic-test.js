@@ -6,10 +6,10 @@ moduleForAcceptance('Acceptance | basic', {
   resolver: engineResolverFor('live-content')
 });
 
-test('visiting /live-content/index', function(assert) {
-  visit('/live-content/index');
+test('visiting /live-content/live', function(assert) {
+  visit('/live-content/live');
 
   andThen(function() {
-    assert.equal(currentURL(), '/live-content/index');
+    assert.equal(currentURL(), '/live-content/live');
   });
 });
