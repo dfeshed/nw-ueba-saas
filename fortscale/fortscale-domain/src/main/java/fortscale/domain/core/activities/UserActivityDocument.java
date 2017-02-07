@@ -63,5 +63,11 @@ public abstract class UserActivityDocument extends AbstractAuditableDocument { /
 		this.dataSources = dataSources;
 	}
 
+	public void addDataSourceIfAbsent(String dataSource){
+		if (!this.dataSources.contains(dataSource)){
+			this.dataSources.add(dataSource);
+		}
+	}
+
 	public abstract Map<String, Double> getHistogram();
 }

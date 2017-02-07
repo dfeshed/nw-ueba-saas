@@ -157,26 +157,25 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
         List<String> dataSources = getDataSources();
 
         for (String dataSource : dataSources) {
-            calculateDataSourceInTimeBucket(dataSourceToUserIds, currBucketStartTime, currBucketEndTime, additionalActivityHistogram, dataSource);
+            calculateDataSourceInTimeBucket(dataSourceToUserIds.get(dataSource), currBucketStartTime, currBucketEndTime, additionalActivityHistogram, dataSource);
         }
         updateAdditionalActivitySpecificDocumentInDatabase(dataSources, currBucketStartTime, currBucketEndTime,
                 additionalActivityHistogram);
     }
 
-    private void calculateDataSourceInTimeBucket(Map<String, List<String>> dataSourceToUserIds,
+    private void calculateDataSourceInTimeBucket(List<String> userIds,
                                                  long currBucketStartTime,
                                                  long currBucketEndTime,
                                                  Map<String, Double> additionalActivityHistogram,
                                                  String dataSource) {
 
 
-        List<String> dataSources = getDataSources();
-        List<String> userIds = dataSourceToUserIds.get(dataSource);
         int numberOfUsers = userIds.size();
         String collectionName = getDataSourceToCollection().get(dataSource);
         int actualUserChunkSize = Math.min(mongoBatchSize, numberOfUsers);
         int numOfHandledUsers = 0;
 
+        //Iterate bulk of users and calculate the the activities of those users per single data source in between currBucketStartTime end currBucketEndTime
         while (numOfHandledUsers < numberOfUsers) {
 
             int currentUsersChunkStartIndex = numOfHandledUsers;
@@ -192,11 +191,14 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
 
             if (!bucketsForDataSource.isEmpty()) {
                 long updateUsersHistogramInMemoryStartTime = System.nanoTime();
-                updateUsersHistogram(userActivityMap, bucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSources);
+                updateUsersHistogram(userActivityMap, bucketsForDataSource, currBucketStartTime, currBucketEndTime, dataSource);
                 long updateUsersHistogramInMemoryElapsedTime = System.nanoTime() - updateUsersHistogramInMemoryStartTime;
                 logger.info("Update users histogram in memory for {} users took {} seconds", currentUsersChunk.size(), durationInSecondsWithPrecision(updateUsersHistogramInMemoryElapsedTime));
             }
 
+            //If this activity have single uniqe histogram (I.E. global countries for all the system in advance to countries per user)
+            //We need to process the additional computation, and store it on additionalActivityHistogram,
+            //So the next loop could also read and update additionalActivityHistogram.
             Map<String, Double> histograms = updateAdditionalActivitySpecificHistograms(userActivityMap);
             histograms.forEach((k, v) -> additionalActivityHistogram.merge(k, v, (v1, v2) -> v1 + v2));
 
@@ -340,7 +342,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     }
 
     protected void updateUsersHistogram(Map<String, UserActivityDocument> userActivityMap, List<FeatureBucket> featureBucketsForDataSource,
-                                        Long startTime, Long endTime, List<String> dataSources) {
+                                        Long startTime, Long endTime, String dataSource) {
         for (FeatureBucket featureBucket : featureBucketsForDataSource) {
             String contextId = featureBucket.getContextId().substring(CONTEXT_ID_USERNAME_PREFIX.length());
 			contextId = usernameService.getUserId(contextId, null);
@@ -357,7 +359,6 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                     userActivityDocument.setEntityId(contextId);
                     userActivityDocument.setStartTime(startTime);
                     userActivityDocument.setEndTime(endTime);
-                    userActivityDocument.setDataSources(dataSources);
 
                     userActivityMap.put(contextId, userActivityDocument);
                 } catch (Exception e){
@@ -365,12 +366,13 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
                 }
             }
 
-            updateActivitySpecificHistogram(userActivityMap, featureBucket, contextId);
+            updateActivitySpecificHistogram(userActivityMap, featureBucket, contextId,dataSource);
         }
     }
 
-    private void updateActivitySpecificHistogram(Map<String, UserActivityDocument> userActivityMap, FeatureBucket featureBucket, String contextId) {
+    private void updateActivitySpecificHistogram(Map<String, UserActivityDocument> userActivityMap, FeatureBucket featureBucket, String contextId, String dataSource) {
         UserActivityDocument userActivityDocument = userActivityMap.get(contextId);
+        userActivityDocument.addDataSourceIfAbsent(dataSource);
         Map<String, Double> histogramOfUser = userActivityDocument.getHistogram();
 
         final Map<String, Feature> aggregatedFeatures = featureBucket.getAggregatedFeatures();
