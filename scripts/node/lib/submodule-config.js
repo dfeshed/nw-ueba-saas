@@ -72,7 +72,8 @@ const saModuleDependencies = {
     'component-lib',
     'streaming-data',
     'recon',
-    'mock-server'
+    'mock-server',
+    'context'
   ],
   scripts: ALL_SUBMODULES,
   'streaming-data': [

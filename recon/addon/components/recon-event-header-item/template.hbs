@@ -3,6 +3,13 @@
     {{name}}
   </div>
   <div class="value">
-    {{value}}
+    {{#if isDate}}
+      {{rsa-content-datetime timestamp=asInteger}}
+      <span style="margin-left: -3px">
+        {{extendedDate}}
+      </span>
+    {{else}}
+      {{value}}
+    {{/if}}
   </div>
 </box>

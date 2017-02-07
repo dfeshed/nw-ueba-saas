@@ -12,7 +12,7 @@
         {{#if headerItems}}
           <grid responsive>
             {{#each headerItems as |item|}}
-              {{recon-event-header-item name=item.name value=item.value}}
+              {{recon-event-header-item name=item.name value=item.value type=item.type}}
             {{/each}}
           </grid>
         {{/if}}
