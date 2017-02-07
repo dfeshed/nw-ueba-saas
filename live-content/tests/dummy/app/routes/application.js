@@ -5,7 +5,7 @@ const {
   Route,
   getOwner,
   inject: {
-      service
+    service
   }
 } = Ember;
 
