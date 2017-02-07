@@ -15,13 +15,14 @@ import * as ACTION_TYPES from './types';
 import { determineEventType } from 'recon/utils/event-types';
 import { RECON_VIEW_TYPES_BY_NAME } from '../utils/reconstruction-types';
 import {
-  fetchReconSummary,
-  fetchMeta,
-  fetchReconFiles,
-  fetchPacketData,
-  fetchLanguage,
   fetchAliases,
-  fetchNotifications
+  fetchLanguage,
+  fetchMeta,
+  fetchNotifications,
+  fetchPacketData,
+  fetchReconFiles,
+  fetchReconSummary,
+  fetchTextData
 } from './fetch';
 
 const { Logger } = Ember;
@@ -108,11 +109,17 @@ const setNewReconView = (newView) => {
             });
           break;
         case RECON_VIEW_TYPES_BY_NAME.PACKET.code:
-        case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
           fetchPacketData(
             dataState,
             (payload) => dispatch({ type: ACTION_TYPES.PACKETS_RETRIEVE_PAGE, payload }),
             (response) => _handleContentError(dispatch, response, 'packet')
+          );
+          break;
+        case RECON_VIEW_TYPES_BY_NAME.TEXT.code:
+          fetchTextData(
+            dataState,
+            (payload) => dispatch({ type: ACTION_TYPES.TEXT_DECODE_PAGE, payload }),
+            (response) => _handleContentError(dispatch, response, 'text')
           );
           break;
       }
@@ -306,12 +313,31 @@ const initializeNotifications = () => {
   };
 };
 
+/**
+ * Action Creator to retrieve decoded text data (i.e. HTTP traffic).
+ * @return {function} redux-thunk
+ * @public
+ */
+const decodeText = (decode) => {
+  return (dispatch, getState) => {
+    dispatch({ type: ACTION_TYPES.CONTENT_RETRIEVE_STARTED });
+    dispatch({ type: ACTION_TYPES.TOGGLE_TEXT_DECODE, payload: decode });
+    const dataState = getState().recon.data;
+    fetchTextData(
+      dataState,
+      (payload) => dispatch({ type: ACTION_TYPES.TEXT_DECODE_PAGE, payload }),
+      (response) => _handleContentError(dispatch, response, 'decode')
+    );
+  };
+};
+
 const teardownNotifications = () => ({ type: ACTION_TYPES.NOTIFICATION_TEARDOWN_SUCCESS });
 
 export {
-  setNewReconView,
-  initializeRecon,
-  toggleMetaData,
+  decodeText,
   initializeNotifications,
-  teardownNotifications
+  initializeRecon,
+  setNewReconView,
+  teardownNotifications,
+  toggleMetaData
 };

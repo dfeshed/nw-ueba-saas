@@ -1,10 +1,10 @@
-{{#if parsedPackets}}
+{{#if textContent}}
   <div class="scroll-box">
-    {{#each parsedPackets as |packet index|}}
+    {{#each textContent as |text index|}}
       {{recon-event-detail/single-text
         index=index
         isLog=isLog
-        packet=packet
+        packet=text
       }}
     {{/each}}
   </div>

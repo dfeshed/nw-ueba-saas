@@ -11,29 +11,34 @@ moduleForComponent('recon-event-detail-text', 'Integration | Component | recon e
   }
 });
 
-test('text view renders packet text', function(assert) {
-  new DataHelper(this.get('redux'))
-    .initializeData()
-    .setViewToText();
-
-  this.render(hbs`{{recon-event-detail/text}}`);
-
+test('text view renders encoded text', function(assert) {
+  new DataHelper(this.get('redux')).populateTexts();
+  this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'requestGET/images/hp/thirds__sml_ad_3.jpgHTTP/1.1Host:www.bladehq.comAccept:*/*Connection:keep-aliveCookie:__atuvc=8%7C49;__atuvs=56679ca029696108007;_isuid=50728CB8-C07A-4F02-9CEC-35F63080AA0C;cat_id');
+    assert.equal(str, 'requestGET/stats.php?ev=site:player:music_quality:128kbps&songid=EsAKpbWJ&_t=1485792552819&ct=1982326421HTTP/1.1$Host:www.saavn.comresponseHTTP/1.1200OKCache-control:no-store,no-cache,must-revalidate,');
   });
 });
 
+test('text view renders decoded text', function(assert) {
+  new DataHelper(this.get('redux')).populateTexts(true);
+  this.render(hbs`{{recon-event-detail/text-content}}`);
+  return wait().then(() => {
+    const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
+    assert.equal(str, 'requestGET/stats.php?ev=site:player:music_quality:128kbps&songid=EsAKpbWJ&_t=1485792552819&ct=1982326421HTTP/1.1Host:www.saavn.comConnection:keep-aliveAccept:*/*X-Requested-With:XMLHttpRequestUser-Age');
+  });
+});
+
+// TODO - I don't know if this is a valid test anymore. What output would we see
+// in the Text view for log data?
 test('text view renders log text', function(assert) {
   new DataHelper(this.get('redux'))
     .initializeData()
     .setEventTypeToLog()
     .setViewToText();
-
-  this.render(hbs`{{recon-event-detail/text}}`);
-
+  this.render(hbs`{{recon-event-detail/text-content}}`);
   return wait().then(() => {
     const str = this.$().text().trim().replace(/\s/g, '').substring(0, 200);
-    assert.equal(str, 'GET/images/hp/thirds__sml_ad_3.jpgHTTP/1.1Host:www.bladehq.comAccept:*/*Connection:keep-aliveCookie:__atuvc=8%7C49;__atuvs=56679ca029696108007;_isuid=50728CB8-C07A-4F02-9CEC-35F63080AA0C;cat_id=1;curr');
+    assert.equal(str, 'Error:Notextdatawasgeneratedduringcontentreconstruction.Thiscouldmeanthattheeventdatawascorruptorinvalid.Checktheotherreconstructionviews.');
   });
 });

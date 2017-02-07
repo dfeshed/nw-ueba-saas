@@ -367,6 +367,7 @@ export default Ember$.extend({}, BaseSelectors, {
         'recon': '.recon-container',
         'reconCloseRecon': '.recon-event-header .rsa-icon-close',
         'reconDownloadFiles': '.recon-container .export-files-button button',
+        'reconDecodeText': '.recon-container .decode-text-button button',
         'reconHidePacket': '.recon-event-detail-packets .rsa-icon-arrow-down-12',
         'reconHideShowHeader': '.recon-event-header .rsa-icon-layout-6',
         'reconHideShowRequest': '.recon-event-header .rsa-icon-arrow-circle-right-2',

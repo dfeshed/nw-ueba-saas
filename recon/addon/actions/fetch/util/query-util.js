@@ -118,6 +118,10 @@ const addSessionIdsFilter = (query, ids) => {
   );
 };
 
+const addDecode = (query, decode) => {
+  return _addFilter(query, 'decode', decode);
+};
+
 export {
   addCatchAllTimeRange,
   addFileTypeFilter,
@@ -127,5 +131,6 @@ export {
   buildBaseQuery,
   addStreaming,
   addSessionQueryFilter,
-  basicPromiseRequest
+  basicPromiseRequest,
+  addDecode
 };

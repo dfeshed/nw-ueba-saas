@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import * as ACTION_TYPES from './types';
-import fetchFileExtractJobId from './fetch/file-extract';
+import { fetchFileExtractJobId } from './fetch';
 
 const {
   Logger

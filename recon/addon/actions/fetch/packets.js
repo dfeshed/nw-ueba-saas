@@ -10,11 +10,7 @@ const fetchPacketData = ({ endpointId, eventId, packetsPageSize }, dispatchPage,
     modelName: 'reconstruction-packet-data',
     query: streamingQuery,
     onResponse({ data }) {
-      const packetData = data.map((p) => {
-        p.side = (p.side === 1) ? 'request' : 'response';
-        return p;
-      });
-      dispatchPage(packetData);
+      dispatchPage(data);
     },
     onError: dispatchError
   });

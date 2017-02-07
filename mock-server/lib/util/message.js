@@ -2,6 +2,8 @@ import jsesc from 'jsesc';
 import Stomp from 'stompjs';
 import merge from 'merge';
 
+const PLACEHOLDER = 'REPLACE_ME';
+
 /*
  * Utility function to prepare the headers for a SEND stomp message
  */
@@ -20,15 +22,24 @@ const _createSendHeader = function(subscription, frame) {
 const _createMessageWithBody = function(subscription, frame, body) {
   // create headers
   const headers = _createSendHeader(subscription, frame);
-  // Stringify body
+  // stringify body
   const bodyStringified = JSON.stringify(body);
-  // Stomp it
-  const sendMessage = Stomp.Frame.marshall('MESSAGE', headers, bodyStringified);
-  // Sock it
-  const sendMessageFull = `a["${jsesc(sendMessage.slice(0, -1))}\\u0000"]`;
-  // Mangle it so that the body payload is properly escaped
-  const outMsg = sendMessageFull.replace(bodyStringified, bodyStringified.replace(/"/g, '\\"'));
-  return outMsg;
+  // jsesc stringifies again, but this time it escapes quote marks and unicode
+  // characters. The output is a valid JavaScript string literal that is not
+  // wrapped in quotes.
+  const bodyEscaped = jsesc(bodyStringified, { json: true, wrap: false });
+  // This creates the Stomp protocol wrapper. We don't inject the
+  // actual message in at this point, but instead use a place holder. This
+  // helps avoid things getting triple stringified in the next step.
+  // Since we're not marshalling the actual message content, we need to rewrite
+  // the content-length property to match the real message.
+  const stompMessage = Stomp.Frame.marshall('MESSAGE', headers, PLACEHOLDER)
+    .replace(`content-length:${PLACEHOLDER.length}`, `content-length:${bodyEscaped.length}`);
+  // Wrap the message in a SockJS wrapper, trimming off the trailing "0" added
+  // by the Stomp frame marshalling.
+  const sockMessage = `a["${jsesc(stompMessage.slice(0, -1))}\\u0000"]`;
+  // Time to replace the place holder message with the actual message.
+  return sockMessage.replace(PLACEHOLDER, bodyEscaped);
 };
 
 /*

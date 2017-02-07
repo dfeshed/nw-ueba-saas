@@ -5,14 +5,14 @@ import * as ACTION_TYPES from '../actions/types';
 import { handleActions } from 'redux-actions';
 import { handle } from 'redux-pack';
 
-const { set } = Ember;
+const { set, String: { htmlSafe } } = Ember;
 
 // State of server jobs for downloading file(s)
 const fileExtractInitialState = {
   fileExtractStatus: null,  // either 'init' (creating job), 'wait' (job executing), 'success' or 'error'
   fileExtractError: null,   // error object
   fileExtractJobId: null,   // job id for tracking notifications
-  fileExtractLink: null    // url for downloading successful job's results
+  fileExtractLink: null     // url for downloading successful job's results
 };
 
 const dataInitialState = {
@@ -24,6 +24,7 @@ const dataInitialState = {
   eventId: null,
   total: null,
   index: null,
+  decode: true,
 
   // Recon inputs or fetched if not provided
   meta: null,
@@ -38,6 +39,7 @@ const dataInitialState = {
   packetFields: null,
   packets: null,
   packetsPageSize: 100,
+  textContent: null,
 
   ...fileExtractInitialState,
 
@@ -114,7 +116,7 @@ const data = handleActions({
     eventType
   }),
 
-  // Summary Reducing
+  // Summary reducing
   [ACTION_TYPES.SUMMARY_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => ({ ...s, headerItems: null, packetFields: true, headerError: null, headerLoading: true }),
@@ -138,17 +140,33 @@ const data = handleActions({
     }),
     contentLoading: false
   }),
-  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => ({
-    ...state,
-    contentLoading: false,
-    // have packets already? then this is another page of packets from API
-    // Need to create new packet array with new ones at end
-    packets: state.packets ? [...state.packets, ...payload] : payload
-  }),
+  [ACTION_TYPES.PACKETS_RETRIEVE_PAGE]: (state, { payload }) => {
+    const newPackets = addPacketSide(payload);
+    return {
+      ...state,
+      contentLoading: false,
+      // have packets already? then this is another page of packets from API
+      // Need to create new packet array with new ones at end
+      packets: state.packets ? [...state.packets, ...newPackets] : newPackets
+    };
+  },
   [ACTION_TYPES.CONTENT_RETRIEVE_FAILURE]: (state, { payload }) => ({
     ...state,
     contentError: payload,
     contentLoading: false
+  }),
+  [ACTION_TYPES.TEXT_DECODE_PAGE]: (state, { payload }) => {
+    const newContent = generateHTMLSafeText(addPacketSide(payload));
+    return {
+      ...state,
+      contentLoading: false,
+      textContent: state.textContent ? [...state.textContent, ...newContent] : newContent
+    };
+  },
+  [ACTION_TYPES.TOGGLE_TEXT_DECODE]: (state, { payload }) => ({
+    ...state,
+    decode: payload,
+    textContent: []
   }),
 
   // Download reducing
@@ -172,7 +190,7 @@ const data = handleActions({
   [ACTION_TYPES.FILES_DESELECT_ALL]: allFilesSelection(false),
   [ACTION_TYPES.FILES_SELECT_ALL]: allFilesSelection(true),
 
-    // Summary Reducing
+  // Summary Reducing
   [ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE]: (state, action) => {
     return handle(state, action, {
       start: (s) => ({ ...s, ...fileExtractInitialState, fileExtractStatus: 'init' }),
@@ -180,7 +198,6 @@ const data = handleActions({
       success: (s) => ({ ...s, fileExtractStatus: 'wait', fileExtractJobId: action.payload.data.jobId })
     });
   },
-
   [ACTION_TYPES.FILE_EXTRACT_JOB_SUCCESS]: (state, { payload }) => ({
     ...state,
     fileExtractStatus: 'success',
@@ -208,5 +225,28 @@ const data = handleActions({
     stopNotifications: null
   })
 }, dataInitialState);
+
+const addPacketSide = (data) => {
+  return data.map((d) => ({
+    ...d,
+    side: (d.side === 1) ? 'request' : 'response'
+  }));
+};
+
+const generateHTMLSafeText = (data) => {
+  data = Array.isArray(data) ? data : [];
+  return data.map((d) => {
+    if (typeof(d.text) === 'string') {
+      const safeString = d.text
+        .replace(/\</g, '&lt;')
+        .replace(/\>/g, '&gt;')
+        .replace(/(?:\r\n|\r|\n)/g, '<br>')
+        .replace(/\t/g, '&nbsp;&nbsp;')
+        .replace(/[\x00-\x1F]/g, '.');
+      set(d, 'text', htmlSafe(safeString));
+    }
+    return d;
+  });
+};
 
 export default data;

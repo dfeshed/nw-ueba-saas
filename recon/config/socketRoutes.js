@@ -42,6 +42,13 @@ module.exports = function(environment) {
         requestDestination: '/ws/investigate/reconstruct/session-packets/stream'
       }
     },
+    'reconstruction-text-data': {
+      socketUrl,
+      stream: {
+        subscriptionDestination: '/user/queue/investigate/reconstruct/session-text',
+        requestDestination: '/ws/investigate/reconstruct/session-text/stream'
+      }
+    },
     'reconstruction-file-data': {
       socketUrl,
       query: {

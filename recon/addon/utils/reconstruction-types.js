@@ -23,8 +23,8 @@ const RECON_VIEW_TYPES = [{
   code: 3,
   name: 'TEXT',
   label: 'Text View',
-  component: 'recon-event-detail/text',
-  dataKey: 'packets'
+  component: 'recon-event-detail/text-content',
+  dataKey: 'text-content'
 }
 ];
 

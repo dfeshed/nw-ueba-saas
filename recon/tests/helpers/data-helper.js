@@ -1,11 +1,15 @@
 import Ember from 'ember';
-
 import { EVENT_TYPES_BY_NAME } from 'recon/utils/event-types';
 import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
 import * as ACTION_TYPES from 'recon/actions/types';
 import VisualActions from 'recon/actions/visual-creators';
-
-import { files, packetDataWithSide, summaryData } from './data';
+import {
+  files,
+  decodedTextData,
+  encodedTextData,
+  packetDataWithSide,
+  summaryData
+} from './data';
 
 const DEFAULT_INITIALIZE = { eventId: 1, endpointId: 2, meta: [['medium', 1]] };
 
@@ -76,6 +80,14 @@ class DataHelper {
     this.redux.dispatch({
       type: ACTION_TYPES.FILES_RETRIEVE_SUCCESS,
       payload: _files
+    });
+    return this;
+  }
+
+  populateTexts(decode = false) {
+    this.redux.dispatch({
+      type: ACTION_TYPES.TEXT_DECODE_PAGE,
+      payload: decode ? encodedTextData : decodedTextData
     });
     return this;
   }

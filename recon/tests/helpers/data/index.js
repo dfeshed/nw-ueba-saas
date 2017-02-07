@@ -1,6 +1,8 @@
 import Ember from 'ember';
 
 import packetData from '../../server/subscriptions/reconstruction-packet-data/stream/data';
+import encodedTextData from '../../server/subscriptions/reconstruction-text-data/stream/encodedData';
+import decodedTextData from '../../server/subscriptions/reconstruction-text-data/stream/decodedData';
 import summaryDataInput from '../../server/subscriptions/reconstruction-summary/query/data';
 import files from '../../server/subscriptions/reconstruction-file-data/query/data';
 
@@ -35,6 +37,8 @@ const summaryData = {
 };
 
 export {
+  decodedTextData,
+  encodedTextData,
   files,
   packetDataWithSide,
   summaryData
