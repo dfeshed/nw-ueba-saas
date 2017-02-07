@@ -35,11 +35,7 @@
     {{/if}}
 
     {{#if accessControl.hasConfigAccess}}
-      {{#if (and features.showLiveContentRoute (eq accessControl.configUrl '/live/search'))}}
-        {{#link-to "protected.configure.live-content" class="rsa-header-nav-live js-test-nav-live-link"}}{{t "config.title"}}{{/link-to}}
-      {{else}}
-        <a href={{accessControl.configUrl}} class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
-      {{/if}}
+      <a href={{accessControl.configUrl}} class="rsa-header-nav-configure js-test-nav-configure-link">{{t "config.title"}}</a>
     {{/if}}
 
     {{#if accessControl.hasAdminAccess}}

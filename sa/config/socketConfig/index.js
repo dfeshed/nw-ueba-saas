@@ -5,7 +5,6 @@ const responseConfigGen = require('./response');
 const contextConfigGen = require('./context');
 const adminConfigGen = require('./administration');
 const testConfigGen = require('./test');
-const liveContentConfigGen = require('./live-content');
 
 // order matters, first config in wins if there are matching configs
 const configGenerators = [
@@ -13,8 +12,7 @@ const configGenerators = [
   investigateConfigGen,
   responseConfigGen,
   contextConfigGen,
-  adminConfigGen,
-  liveContentConfigGen
+  adminConfigGen
 ];
 
 var socketConfig = null;

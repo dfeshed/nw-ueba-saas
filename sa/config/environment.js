@@ -50,8 +50,7 @@ module.exports = function(environment) {
     },
     featureFlags: {
       'show-respond-route': true,
-      'show-investigate-route': true,
-      'show-live-content-route': false
+      'show-investigate-route': true
     },
     'ember-cli-mirage':  {},
     'ember-cli-mock-socket': {},

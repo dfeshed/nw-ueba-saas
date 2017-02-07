@@ -22,7 +22,6 @@ import context from 'sa/mirage/sockets/routes/context';
 import relatedEntity from 'sa/mirage/sockets/routes/related-entity';
 import events from 'sa/mirage/sockets/routes/events';
 import users from 'sa/mirage/sockets/routes/users';
-import liveSearch from 'sa/mirage/sockets/routes/live-search';
 
 /*
   Helper for collecting an array of all the unique `socketUrl`s found in the app's `config/environment.js` file.
@@ -74,7 +73,6 @@ export default function() {
     events(server);
     context(server);
     relatedEntity(server);
-    liveSearch(server);
     users(server);
     server.mirageServer = this;
     return server;
