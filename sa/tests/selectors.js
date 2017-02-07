@@ -21,7 +21,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'root': '.js-test-monitor-root'
     },
     'explore': {
-      'url': '/do/explore',
+      'url': '/explore',
       'path': 'protected.explore',
       'root': '.js-test-explore-root'
     },
@@ -52,7 +52,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'root': '.js-test-respond-root',
       'carouselItems': 'div[class=rsa-carousel__visible-items] div[class^=rsa-incident-content-card]',
       'incidentTile': 'div[class=rsa-carousel__visible-items] span[class=rsa-incident-tile-created-date]',
-      'url': '/do/respond',
+      'url': '/respond',
       'path': 'protected.respond.index',
       'updateIndLbl': '.rsa-update-indicator__label',
       'rsaLoader': '.rsa-loader',
@@ -392,7 +392,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'timeRangeDropDown': '.rsa-investigate-query-bar__time-range .ember-power-select-trigger',
       'timeRangeLbl': '.datetime',
       'timeRangeSelectOptions': '.rsa-investigate-query-bar__time-range select option',
-      'url': '/do/investigate'
+      'url': '/investigate'
     },
     'contextpanel': {
       'liveconnect': {

@@ -158,12 +158,12 @@ export default Route.extend(AuthenticatedRouteMixin, {
       }
 
       if (!this.get('accessControl.hasRespondAccess')) {
-        const respondOption = this.get('landingPage.options').findBy('key', '/do/respond');
+        const respondOption = this.get('landingPage.options').findBy('key', '/respond');
         this.get('landingPage.options').removeObject(respondOption);
       }
 
       if (!this.get('accessControl.hasInvestigateAccess')) {
-        const investigateOption = this.get('landingPage.options').findBy('key', '/do/investigate');
+        const investigateOption = this.get('landingPage.options').findBy('key', '/investigate');
         this.get('landingPage.options').removeObject(investigateOption);
 
         const investigateClassicOption = this.get('landingPage.options').findBy('key', '/investigation');

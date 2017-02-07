@@ -18,7 +18,7 @@ module.exports = function(environment) {
     dateFormatDefault: 'MM/dd/yyyy',
     timeFormatDefault: 'HR24',
     timezoneDefault: 'UTC',
-    landingPageDefault: '/do/respond',
+    landingPageDefault: '/respond',
     timezones: [{
       'displayLabel': 'UTC (GMT+00:00)',
       'offset': 'GMT+00:00',
@@ -85,7 +85,9 @@ module.exports = function(environment) {
       /* Local storage key that holds the OAuth access token returned by the Security Server */
       accessTokenKey: 'rsa-oauth2-jwt-access-token',
       /* Local storage key that holds the OAuth refresh token returned by the Security Server */
-      refreshTokenKey: 'rsa-oauth2-jwt-refresh-token'
+      refreshTokenKey: 'rsa-oauth2-jwt-refresh-token',
+      routeAfterAuthentication: 'protected.index',
+      routeIfAlreadyAuthenticated: 'protected.index'
     },
     contentSecurityPolicy: {
 

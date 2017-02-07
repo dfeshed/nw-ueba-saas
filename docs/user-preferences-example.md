@@ -24,7 +24,7 @@ we don't get a response back from the service or the backend service is not avai
 'dateFormat.selected': 'MM/dd/yyyy',
 'timeFormat.selected': 'HR24',
 'timezone.selected': 'UTC',
-'landingPage.selected': '/do/respond'
+'landingPage.selected': '/respond'
 ```
 ## Getting user preferences
 

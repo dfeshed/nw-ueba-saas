@@ -20,7 +20,7 @@ export default [
         nested: '_id',
         width: '80',
         dataType: 'link',
-        path: '/do/respond/incident/{0}'
+        path: '/respond/incident/{0}'
 
       },
       {
@@ -109,7 +109,7 @@ export default [
         width: '80',
         nested: 'incidentId',
         dataType: 'link',
-        path: '/do/respond/incident/{0}/details/catalyst'
+        path: '/respond/incident/{0}/details/catalyst'
 
 
       }

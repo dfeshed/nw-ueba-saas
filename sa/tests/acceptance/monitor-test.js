@@ -6,8 +6,8 @@ moduleForAcceptance('Acceptance | monitor', {
   afterEach: teardownSockets
 });
 
-test('visiting /do/monitor and check DOM', function(assert) {
-  visit('/do/monitor');
+test('visiting /monitor and check DOM', function(assert) {
+  visit('/monitor');
 
   andThen(function() {
     assert.equal(currentPath(), 'protected.monitor');
