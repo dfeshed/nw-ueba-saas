@@ -122,7 +122,7 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
             localStorage.setItem(csrfKey, csrf);
           }
 
-          const idleSessionTimeout = jqXHR.getResponseHeader('X-NW-Idle-Session-Timeout');
+          const idleSessionTimeout = (parseInt(jqXHR.getResponseHeader('X-NW-Idle-Session-Timeout') || 1, 10)) * 60000;
           localStorage.setItem('rsa-x-idle-session-timeout', idleSessionTimeout);
           localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
 
