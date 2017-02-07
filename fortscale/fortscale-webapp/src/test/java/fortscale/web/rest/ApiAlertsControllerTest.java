@@ -3,7 +3,9 @@ package fortscale.web.rest;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
 import fortscale.domain.core.alert.*;
-import fortscale.domain.core.alert.analystfeedback.Comment;
+import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
+import fortscale.domain.core.alert.analystfeedback.AnalystCommentFeedback;
+import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.services.AlertsService;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,6 +25,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
+import java.time.Instant;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;
@@ -34,16 +37,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 @RunWith(MockitoJUnitRunner.class)
 public class ApiAlertsControllerTest {
 
-	//	@Mock
-	//	private EvidencesService evidencesDao;
 	@Mock private AlertsService alertsDao;
 	@Mock private AlertsService alertsService;
-
-	//	@Mock
-	//	AlertRestFilter alertFilterHelper;
-	//
-	//	@InjectMocks
-	//	private AlertFilterHelperImpl subject;
 
 	@InjectMocks private ApiAlertController controller;
 
@@ -58,6 +53,62 @@ public class ApiAlertsControllerTest {
 
 	}
 
+
+	@Test public void updateStatus_valid() throws Exception {
+		// set up alerts repository mocked behavior
+		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+
+		when(alertsService.getAlertById(anyString())).thenReturn(alert);
+		when(alertsService.updateAlertStatus(alert, AlertStatus.Closed, AlertFeedback.Approved, "admin")).thenReturn(new AnalystRiskFeedback());
+
+		// perform rest call to the controller
+		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}", "2222")
+				.sessionAttr("SPRING_SECURITY_CONTEXT",getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"status\": \"Closed\", \"feedback\": \"Rejected\", \"analystUserName\":\"admin\"}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		//validate
+		assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
+		verify(alertsService).updateAlertStatus(any(), any(), any(), any());
+	}
+
+	@Test public void updateStatus_NoAlert() throws Exception {
+
+		when(alertsService.getAlertById(anyString())).thenReturn(null);
+
+		// perform rest call to the controller
+		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}", "2222")
+				.sessionAttr("SPRING_SECURITY_CONTEXT",getSecurityContextForSessionWithAnalyst("admin"))
+				.content("{\"status\": \"Closed\", \"feedback\": \"Rejected\", \"analystUserName\":\"admin\"}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		//validate
+		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
+	}
+
+	@Test public void updateStatus_WrongAnalyst() throws Exception {
+		// set up alerts repository mocked behavior
+		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
+				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
+
+		when(alertsService.getAlertById(anyString())).thenReturn(alert);
+
+		// perform rest call to the controller
+		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}", "2222")
+				.sessionAttr("SPRING_SECURITY_CONTEXT",getSecurityContextForSessionWithAnalyst("not admin"))
+				.content("{\"status\": \"Closed\", \"feedback\": \"Rejected\", \"analystUserName\":\"admin\"}")
+				.contentType(MediaType.APPLICATION_JSON)
+				.accept(MediaType.APPLICATION_JSON_VALUE))
+				.andReturn();
+
+		//validate
+		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
+	}
 
 	@Test public void addComment_valid() throws Exception {
 		// set up alerts repository mocked behavior
@@ -197,9 +248,9 @@ public class ApiAlertsControllerTest {
 
 	@Test public void updateComment_valid() throws Exception {
 		// set up alerts repository mocked behavior
-		List<Comment> comments = new ArrayList<>();
+		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		Comment comment = new Comment("Alex", 123, "Comment", commentId);
+		AnalystFeedback comment = new AnalystCommentFeedback("Alex", "AnalystCommentFeedback", commentId, Instant.now());
 		comments.add(comment);
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
@@ -256,9 +307,9 @@ public class ApiAlertsControllerTest {
 	}
 
 	@Test public void updateComment_emptyComment() throws Exception {
-		List<Comment> comments = new ArrayList<>();
+		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		Comment comment = new Comment("Alex", 123, "Comment", commentId);
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex", "AnalystCommentFeedback", commentId, Instant.now());
 		comments.add(comment);
 
 		// set up alerts repository mocked behavior
@@ -282,9 +333,9 @@ public class ApiAlertsControllerTest {
 	}
 
 	@Test public void updateComment_nullComment() throws Exception {
-		List<Comment> comments = new ArrayList<>();
+		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		Comment comment = new Comment("Alex", 123, "Comment", commentId);
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -309,9 +360,9 @@ public class ApiAlertsControllerTest {
 	}
 
 	@Test public void updateComment_null_analystName() throws Exception {
-		List<Comment> comments = new ArrayList<>();
+		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		Comment comment = new Comment("Alex", 123, "Comment", commentId);
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -336,9 +387,9 @@ public class ApiAlertsControllerTest {
 	}
 
 	@Test public void updateComment_empty_analystName() throws Exception {
-		List<Comment> comments = new ArrayList<>();
+		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		Comment comment = new Comment("Alex", 123, "Comment", commentId);
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -363,9 +414,9 @@ public class ApiAlertsControllerTest {
 	}
 
 	@Test public void deleteComment_valid() throws Exception {
-		List<Comment> comments = new ArrayList<>();
+		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		Comment comment = new Comment("Alex", 123, "Comment", commentId);
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
 		comments.add(comment);
 
 		// set up alerts repository mocked behavior
@@ -402,7 +453,7 @@ public class ApiAlertsControllerTest {
 	}
 
 	@Test public void deleteComment_noComment() throws Exception {
-		List<Comment> comments = new ArrayList<>();
+		List<AnalystFeedback> comments = new ArrayList<>();
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,

@@ -1,8 +1,12 @@
 package fortscale.services.impl;
 
+import fortscale.domain.core.Severity;
+import fortscale.domain.core.User;
 import fortscale.domain.core.alert.Alert;
 import fortscale.domain.core.alert.AlertFeedback;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
+import fortscale.domain.core.alert.AlertStatus;
+import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
@@ -20,6 +24,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -303,5 +308,47 @@ public class AlertsServiceImpl implements AlertsService {
 	@Override
 	public Set<String> getDistinctUserIdByUserFilter(UserRestFilter userRestFilter) {
 		return alertsRepository.getDistinctUserIdByUserRestFilter(userRestFilter);
+	}
+
+	@Override
+	public AnalystRiskFeedback updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName) {
+		boolean alertUpdated = false;
+		AnalystRiskFeedback analystRiskFeedback = null;
+
+		if (alert != null) {
+
+			// update the alerts' status
+			if (alertStatus != null) {
+				alert.setStatus(alertStatus);
+				alertUpdated = true;
+			}
+
+			// update the alerts' feedback
+			if (alertFeedback != null) {
+				alert.setFeedback(alertFeedback);
+				alertUpdated = true;
+			}
+
+			if (alertUpdated) {
+				// Check what was the alerts' user score contribution before the status update
+				double userScoreContributionBeforeUpdate = alert.getUserScoreContribution();
+
+				// Save the alert to repository
+				saveAlertInRepository(alert);
+
+				// Get the users' score and severity after the status update
+				User user = userService.getUserById(alert.getEntityId());
+				Severity userSeverity = userScoreService.getUserSeverityForScore(user.getScore());
+
+				// Create analystRiskFeedback, add it to the alert and save
+				analystRiskFeedback = new AnalystRiskFeedback(analystUserName, alertFeedback,
+						user.getScore(), userScoreContributionBeforeUpdate, alert.getUserScoreContribution(),
+						userSeverity, Instant.now());
+				alert.addAnalystFeedback(analystRiskFeedback);
+
+				saveAlertInRepository(alert);
+			}
+		}
+		return analystRiskFeedback;
 	}
 }

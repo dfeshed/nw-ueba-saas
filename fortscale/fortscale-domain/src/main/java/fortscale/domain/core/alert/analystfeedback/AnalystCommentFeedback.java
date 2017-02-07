@@ -2,27 +2,28 @@ package fortscale.domain.core.alert.analystfeedback;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.UUID;
+import java.time.Instant;
 
 /**
  * Created by alexp on 04/07/2016.
  */
-public class Comment extends AnalystFeedback {
+public class AnalystCommentFeedback extends AnalystFeedback {
 
 	public static final String commentTextField = "commentText";
 
-	@Field(commentTextField) private String commentText;
+	@Field(commentTextField)
+	private String commentText;
 
-	public Comment() {
+	public AnalystCommentFeedback() {
 	}
 
-	public Comment(String analyst, long updateDate, String commentText) {
-		super(analyst, updateDate);
+	public AnalystCommentFeedback(String analyst, String commentText, Instant modifiedAt) {
+		super(analyst, modifiedAt);
 		this.commentText = commentText;
 	}
 
-	public Comment(String analyst, long updateDate, String commentText, String commentId){
-		super(commentId, analyst, updateDate);
+	public AnalystCommentFeedback(String analyst, String commentText, String commentId, Instant modifiedAt){
+		super(commentId, analyst, modifiedAt);
 		this.commentText = commentText;
 	}
 

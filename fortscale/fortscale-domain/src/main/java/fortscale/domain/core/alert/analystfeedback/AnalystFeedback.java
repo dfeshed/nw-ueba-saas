@@ -2,36 +2,38 @@ package fortscale.domain.core.alert.analystfeedback;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.time.Instant;
 import java.util.UUID;
 
 /**
  * Created by alexp on 02/02/17.
  */
 public abstract class AnalystFeedback {
-    public static final String commentIdField = "commentId";
-    public static final String analystUserNameField = "analystUserName";
-    public static final String updateDateField = "updateDate";
+    public static final String ANALYST_FEEDBACK_ID_FIELD = "analystFeedbackId";
+    public static final String ANALYST_USER_NAME_FIELD = "analystUserName";
+    private static final String MODIFIED_AT_FIELD = "modifiedAt";
 
-    @Field(commentIdField)
-    private String commentId;
-    @Field(analystUserNameField)
+    @Field(ANALYST_FEEDBACK_ID_FIELD)
+    private String analystFeedbackId;
+    @Field(ANALYST_USER_NAME_FIELD)
     private String analystUserName;
-    @Field(updateDateField)
-    private long updateDate;
+
+    @Field(MODIFIED_AT_FIELD)
+    private Instant modifiedAt;
 
     public AnalystFeedback() {
     }
 
-    public AnalystFeedback(String analystUserName, long updateDate) {
-        this.commentId = UUID.randomUUID().toString();
+    public AnalystFeedback(String analystUserName, Instant modifiedAt) {
+        this.analystFeedbackId = UUID.randomUUID().toString();
         this.analystUserName = analystUserName;
-        this.updateDate = updateDate;
+        this.modifiedAt = modifiedAt;
     }
 
-    public AnalystFeedback(String commentId, String analystUserName, long updateDate) {
-        this.commentId = commentId;
+    public AnalystFeedback(String commentId, String analystUserName, Instant modifiedAt) {
+        this.analystFeedbackId = commentId;
         this.analystUserName = analystUserName;
-        this.updateDate = updateDate;
+        this.modifiedAt = modifiedAt;
     }
 
     public String getAnalystUserName() {
@@ -42,16 +44,16 @@ public abstract class AnalystFeedback {
         this.analystUserName = analystUserName;
     }
 
-    public long getUpdateDate() {
-        return updateDate;
+    public String getAnalystFeedbackId() {
+        return analystFeedbackId;
     }
 
-    public void setUpdateDate(long updateDate) {
-        this.updateDate = updateDate;
+    public Instant getModifiedAt() {
+        return modifiedAt;
     }
 
-    public String getCommentId() {
-        return commentId;
+    public void setModifiedAt(Instant modifiedAt) {
+        this.modifiedAt = modifiedAt;
     }
 
     @Override
@@ -61,14 +63,14 @@ public abstract class AnalystFeedback {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        Comment comment = (Comment) o;
+        AnalystCommentFeedback comment = (AnalystCommentFeedback) o;
 
-        return commentId != null ? commentId.equals(comment.getCommentId()) : comment.getCommentId() == null;
+        return analystFeedbackId != null ? analystFeedbackId.equals(comment.getAnalystFeedbackId()) : comment.getAnalystFeedbackId() == null;
 
     }
 
     @Override
     public int hashCode() {
-        return commentId != null ? commentId.hashCode() : 0;
+        return analystFeedbackId != null ? analystFeedbackId.hashCode() : 0;
     }
 }

@@ -2,6 +2,9 @@ package fortscale.services;
 
 import fortscale.domain.core.alert.Alert;
 import fortscale.domain.core.DataSourceAnomalyTypePair;
+import fortscale.domain.core.alert.AlertFeedback;
+import fortscale.domain.core.alert.AlertStatus;
+import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
@@ -117,4 +120,6 @@ public interface AlertsService {
 	Set<String> getDistinctAlertNames(Boolean ignoreRejected);
 
 	Set<String> getDistinctUserIdByUserFilter(UserRestFilter userRestFilter);
+
+	AnalystRiskFeedback updateAlertStatus(Alert alert, AlertStatus alertStatus, AlertFeedback alertFeedback, String analystUserName);
 }
