@@ -36,6 +36,7 @@ nukeApp streaming-data
 nukeApp recon
 nukeApp style-guide
 nukeApp investigate
+nukeApp context
 nukeApp sa
 
 red "                               ________________

@@ -44,6 +44,7 @@ installAppDeps streaming-data
 installAppDeps recon
 installAppDeps style-guide
 installAppDeps investigate
+installAppDeps context
 installAppDeps sa
 
 cd $CWD
