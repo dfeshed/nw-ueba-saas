@@ -43,7 +43,7 @@ const saModuleDependants = {
     'context'
   ],
   'style-guide': [], // style-guide is an end state app, nothing depends on it
-  'context': [
+  context: [
     'sa',
     'investigate'
   ]

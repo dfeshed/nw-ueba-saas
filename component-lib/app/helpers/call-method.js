@@ -1,0 +1,1 @@
+export { default, callMethod } from 'component-lib/helpers/call-method';

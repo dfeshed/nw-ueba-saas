@@ -2,6 +2,7 @@ import Ember from 'ember';
 import Application from '../../app';
 import config from '../../config/environment';
 import registerPowerSelectHelpers from '../../tests/helpers/ember-power-select';
+import 'ember-wait-for-test-helper/wait-for';
 
 const { assign, run } = Ember;
 
