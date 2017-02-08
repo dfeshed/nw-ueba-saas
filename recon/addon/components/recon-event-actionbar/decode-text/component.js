@@ -23,7 +23,7 @@ const DecodeTextComponent = Component.extend({
   isDisabled: (view) => view !== RECON_VIEW_TYPES_BY_NAME.TEXT.code,
 
   @computed('isDecoded')
-  caption: (isDecoded) => isDecoded ? 'Decompressed' : 'Compressed',
+  caption: (isDecoded) => isDecoded ? 'Compress' : 'Decompress',
 
   actions: {
     toggleDecode() {
