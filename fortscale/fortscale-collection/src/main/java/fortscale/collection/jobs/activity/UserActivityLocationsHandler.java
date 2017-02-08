@@ -49,7 +49,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         locations.getCountryHistogram().putAll(organizationActivityLocationHistogram);
         organizationActivityLocationDocument.setLocations(locations);
 
-        mongoTemplate.save(organizationActivityLocationDocument, OrganizationActivityLocationDocument.COLLECTION_NAME);
+        userActivityFeaturesExtractiionsRepositoryUtil.saveDocument(OrganizationActivityLocationDocument.COLLECTION_NAME, organizationActivityLocationDocument);
     }
 
     private void updateOrganizationHistogram(Map<String, Double> organizationActivityLocationHistogram, Map<String, UserActivityDocument> userActivityMap) {
