@@ -5,7 +5,9 @@
 
     {{#rsa-form-button}}Export PCAP{{/rsa-form-button}}
 
-    {{recon-event-actionbar/decode-text}}
+    {{#if isTextView }}
+      {{recon-event-actionbar/decode-text}}
+    {{/if}}
 
     <centered class="right">
       {{rsa-icon name='filter-22'}}
