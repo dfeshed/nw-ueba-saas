@@ -11,7 +11,7 @@ moduleForAcceptance('CTF_Acceptance_respond', {
 });
 
 test('Landing Page card components should be displayed on load', function(assert) {
-  visit('/do/respond');
+  visit('/respond');
   andThen(function() {
     assert.equal(currentPath(), selectors.pages.respond.path);
     const el = find(selectors.pages.respond.incTile.editButton);
@@ -31,7 +31,7 @@ test('Landing Page card components should be displayed on load', function(assert
 
 test('Selectors should be visible on click', function(assert) {
   assert.expect(3);
-  visit('/do/respond');
+  visit('/respond');
   andThen(function() {
     let el = find(selectors.pages.respond.incTile.editButton);
     triggerEvent(el[0], 'mouseover');
@@ -53,7 +53,7 @@ test('Selectors should be visible on click', function(assert) {
 
 skip('User should be able to setStatus, Assignee and Priority', function(assert) {
 
-  visit('/do/respond');
+  visit('/respond');
   andThen(function() {
     const editBtn = find(selectors.pages.respond.incTile.editButton);
     andThen(function() {

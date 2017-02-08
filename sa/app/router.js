@@ -11,7 +11,7 @@ const Router = EmberRouter.extend({
 Router.map(function() {
   this.route('login');
 
-  this.route('protected', { path: '/do' }, function() {
+  this.route('protected', { path: '/' }, function() {
     this.route('monitor');
 
     if (config.featureFlags['show-respond-route']) {
@@ -27,7 +27,8 @@ Router.map(function() {
       this.mount('investigate');
     }
   });
-  this.route('404', { path: '/*path' });
+
+  this.route('not-found', { path: '/*path' });
 });
 
 export default Router;

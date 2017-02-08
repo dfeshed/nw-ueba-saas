@@ -29,10 +29,10 @@ export default Route.extend({
       this.transitionTo(redirect);
     } else {
       switch (key) {
-        case '/do/investigate':
+        case '/investigate':
           this.transitionTo(key);
           break;
-        case '/do/respond':
+        case '/respond':
           this.transitionTo(key);
           break;
         default:

@@ -12,7 +12,7 @@ moduleForAcceptance('Acceptance | preference panel', {
 
 test('Iteration: verify all options are available in components', function(assert) {
   assert.expect(5);
-  visit('/do/monitor');
+  visit('/monitor');
   click('.user-preferences-trigger');
 
   andThen(() => {

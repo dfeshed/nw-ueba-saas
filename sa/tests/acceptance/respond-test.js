@@ -20,7 +20,7 @@ let oldFeatureFlags;
  */
 function navigateToMonitor() {
   Logger.log(' Navigating to /monitor...');
-  visit('/do/monitor');
+  visit('/monitor');
 
   andThen(function() {
     Logger.log(' Landed to /monitor');
@@ -38,12 +38,12 @@ moduleForAcceptance('Acceptance | respond', {
   }
 });
 
-test('disable respond feature flag, visiting /do/respond and check DOM ', function(assert) {
+test('disable respond feature flag, visiting /respond and check DOM ', function(assert) {
   config.featureFlags = {
     'show-respond-route': false
   };
 
-  visit('/do/monitor');
+  visit('/monitor');
 
   andThen(function() {
     assert.equal(find('.rsa-header-nav-respond').length, 0, '.rsa-header-nav-respond should not be in dom');
@@ -53,7 +53,7 @@ test('disable respond feature flag, visiting /do/respond and check DOM ', functi
 
 skip('ensure journal-trigger is added on the respond incident route', function(assert) {
   assert.expect(1);
-  visit('/do/respond');
+  visit('/respond');
   andThen(function() {
     click('.rsa-incident-tile:first-of-type');
 
@@ -63,14 +63,14 @@ skip('ensure journal-trigger is added on the respond incident route', function(a
   });
 });
 
-test('enable respond feature flag, visiting /do/respond and check DOM ', function(assert) {
+test('enable respond feature flag, visiting /respond and check DOM ', function(assert) {
   config.featureFlags = {
     'show-respond-route': true
   };
 
   withFeature('show-respond-route');
 
-  visit('/do/respond');
+  visit('/respond');
 
   andThen(function() {
     assert.equal(find('.rsa-header-nav-respond').length, 1, '.rsa-header-nav-respond should be in dom');
@@ -85,7 +85,7 @@ skip('Landing Page card components should be displayed on load by default', func
   };
 
   withFeature('show-respond-route');
-  visit('/do/respond');
+  visit('/respond');
   andThen(function() {
 
     assert.equal(currentPath(), selectors.pages.respond.path);
@@ -114,7 +114,7 @@ skip('Landing Page card components should be displayed on load by default', func
 
 skip('Selectors should be visible on click', function(assert) {
   assert.expect(3);
-  visit('/do/respond');
+  visit('/respond');
   andThen(function() {
     setTimeout(function() {
       let el = find(selectors.pages.respond.card.incTile.editButton);
@@ -137,7 +137,7 @@ skip('Selectors should be visible on click', function(assert) {
 });
 
 skip('User should be able to set Status, Assignee and Priority', function(assert) {
-  visit('/do/respond');
+  visit('/respond');
   andThen(() => {
     setTimeout(function() {
       const editBtn = find(selectors.pages.respond.card.incTile.editButton).first();
@@ -179,7 +179,7 @@ skip('User should be able to set Status, Assignee and Priority', function(assert
   and uncomment this test.*/
 skip('Toggle list button renders incidents list view with right number of columns', function(assert) {
 
-  visit('/do/respond');
+  visit('/respond');
   andThen(() => {
     const listViewBtn = find(selectors.pages.respond.listViewBtn);
     click(listViewBtn);
@@ -199,7 +199,7 @@ skip('Toggle list button renders incidents list view with right number of column
 });
 
 test('Side panel queue button is disabled', function(assert) {
-  visit('/do/respond');
+  visit('/respond');
   andThen(() => {
     const queue = find('.incident-queue-trigger.is-disabled');
     assert.equal(queue.length, 1, 'Incident queue button in side panel is disabled in landing page');

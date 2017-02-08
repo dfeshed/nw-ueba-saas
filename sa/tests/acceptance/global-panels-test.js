@@ -10,7 +10,7 @@ moduleForAcceptance('Acceptance | global panels', {
 test('toggling incident queue panel', function(assert) {
   assert.expect(10);
   server.createList('incidents', 3);
-  visit('/do/monitor');
+  visit('/monitor');
   click('.incident-queue-trigger');
 
   andThen(function() {

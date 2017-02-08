@@ -21,7 +21,7 @@ test('disable investigate route feature flag and confirm route is missing from a
   config.featureFlags = {
     'show-investigate-route': false
   };
-  visit('/do/monitor');
+  visit('/monitor');
   andThen(function() {
     assert.equal(find(navLink).length, 0, 'link to investigate route should not be in dom.');
   });
@@ -31,7 +31,7 @@ skip('enable investigate route feature flag and confirm route is accessible', fu
   config.featureFlags = {
     'show-investigate-route': true
   };
-  visit('/do/monitor');
+  visit('/monitor');
   andThen(function() {
     assert.equal(find(navLink).length, 1, 'Link to Investigate route should be in DOM.');
     return click(navLink);
@@ -39,17 +39,17 @@ skip('enable investigate route feature flag and confirm route is accessible', fu
   andThen(function() {
     assert.equal(currentPath(), 'protected.investigate.index', 'correct path was transitioned into.');
   });
-  visit('/do/monitor');
+  visit('/monitor');
 });
 
 skip('investigate route redirects to index subroute if invalid subroute is requested', function(assert) {
   config.featureFlags = {
     'show-investigate-route': true
   };
-  visit('/do/investigate/some-invalid-subroute');
+  visit('/investigate/some-invalid-subroute');
   andThen(function() {
     assert.equal(currentPath(), 'protected.investigate.index', 'correct path was redirected into.');
   });
-  visit('/do/monitor');
+  visit('/monitor');
 });
 

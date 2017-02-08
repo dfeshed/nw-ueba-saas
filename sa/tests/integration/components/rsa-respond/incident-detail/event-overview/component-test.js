@@ -178,19 +178,19 @@ test('All Links to Investigate page', function(assert) {
 
   this.render(hbs`{{rsa-respond/incident-detail/event-overview event=event incident=incident services=services}}`);
 
-  const sourceIpQueryUrl = '/do/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/ip.src=192.168.1.1';
+  const sourceIpQueryUrl = '/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/ip.src=192.168.1.1';
   let templateUrl = this.$('.event-overview__source a').attr('href');
   assert.equal(templateUrl, sourceIpQueryUrl, 'Check URL for Source IP query');
 
-  const dstIpQueryUrl = '/do/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/ip.dst=2.2.2.2';
+  const dstIpQueryUrl = '/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/ip.dst=2.2.2.2';
   templateUrl = this.$('.event-overview__destination a').attr('href');
   assert.equal(templateUrl, dstIpQueryUrl, 'Check URL for Destination IP query');
 
-  const domainQueryUrl = '/do/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/alias.host=4554mb.ru';
+  const domainQueryUrl = '/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/alias.host=4554mb.ru';
   templateUrl = this.$('.event-overview__domain a').attr('href');
   assert.equal(templateUrl, domainQueryUrl, 'Check URL for Domain (aka alias host) query');
 
-  const detectorQueryUrl = '/do/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/device.ip=1.2.3.4';
+  const detectorQueryUrl = '/investigate/query/555d9a6fe4b0d37c827d402d/1474090965/1474092165/device.ip=1.2.3.4';
   templateUrl = this.$('.event-overview__detector a').attr('href');
   assert.equal(templateUrl, detectorQueryUrl, 'Check URL for Detector (aka device ip) query');
 

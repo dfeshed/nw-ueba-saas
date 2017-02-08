@@ -19,10 +19,10 @@ export default Service.extend({
   options: computed(function() {
     return [
       {
-        key: '/do/respond',
+        key: '/respond',
         label: 'userPreferences.defaultLandingPage.respond'
       }, {
-        key: '/do/investigate',
+        key: '/investigate',
         label: 'userPreferences.defaultLandingPage.investigate'
       }, {
         key: '/investigation',
