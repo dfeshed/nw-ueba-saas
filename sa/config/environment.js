@@ -56,9 +56,9 @@ module.exports = function(environment) {
     'ember-cli-mock-socket': {},
     socketRoutes: generateSocketConfiguration(environment),
     socketDebug: false,
-    'i18n': {
-      defaultLocale: 'en-us',
-      includedLocales: ['en-us', 'ja']
+    i18n: {
+      defaultLocale: 'en',
+      includedLocales: ['en', 'ja']
     },
     APP: {
       // Here you can pass flags/options to your application instance
