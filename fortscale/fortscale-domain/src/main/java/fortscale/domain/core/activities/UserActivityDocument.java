@@ -7,6 +7,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -64,6 +65,9 @@ public abstract class UserActivityDocument extends AbstractAuditableDocument { /
 	}
 
 	public void addDataSourceIfAbsent(String dataSource){
+		if (this.dataSources == null){
+			this.dataSources = new ArrayList<>();
+		}
 		if (!this.dataSources.contains(dataSource)){
 			this.dataSources.add(dataSource);
 		}
