@@ -3,7 +3,8 @@ import * as ACTION_TYPES from './types';
 import { fetchFileExtractJobId } from './fetch';
 
 const {
-  Logger
+  Logger,
+  isArray
 } = Ember;
 
 const fileSelected = (fileId) => {
@@ -17,6 +18,26 @@ const deselectAllFiles = () => ({ type: ACTION_TYPES.FILES_SELECT_ALL });
 
 const selectAllFiles = () => ({ type: ACTION_TYPES.FILES_DESELECT_ALL });
 
+const selectHeaderItem = (headerItems, item) => {
+  let v;
+  if (isArray(headerItems)) {
+    const d = headerItems.find((hi) => hi.name === item);
+
+    if (d && d.hasOwnProperty('value')) {
+      v = d.value;
+    }
+  }
+  return v;
+};
+
+const createFilename = (deviceName, session, files) => {
+  let fn;
+  if (deviceName && session && isArray(files)) {
+    fn = `${deviceName}_SID${session}_FC${files.length}_${new Date().getTime()}`;
+  }
+  return fn;
+};
+
 const downloadFiles = () => {
   return (dispatch, getState) => {
     const {
@@ -24,7 +45,8 @@ const downloadFiles = () => {
         data: {
           endpointId,
           eventId,
-          files
+          files,
+          headerItems
         }
       }
     } = getState();
@@ -33,9 +55,13 @@ const downloadFiles = () => {
       .filterBy('selected', true)
       .map((file) => file.fileName);
 
+    const deviceName = selectHeaderItem(headerItems, 'device');
+    const session = selectHeaderItem(headerItems, 'session');
+    const filename = createFilename(deviceName, session, selectedFileNames);
+
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
-      promise: fetchFileExtractJobId(endpointId, eventId, selectedFileNames),
+      promise: fetchFileExtractJobId(endpointId, eventId, selectedFileNames, filename),
       meta: {
         onFailure(response) {
           Logger.error('Error fetching job id for file extraction', { endpointId, eventId }, response);

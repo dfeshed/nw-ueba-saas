@@ -122,10 +122,22 @@ const addDecode = (query, decode) => {
   return _addFilter(query, 'decode', decode);
 };
 
+const addFilenameFilter = (query, filename) => {
+  if (filename) {
+    query = _addFilter(
+      query,
+      'filename',
+      filename
+    );
+  }
+  return query;
+};
+
 export {
   addCatchAllTimeRange,
   addFileTypeFilter,
   addFileSelectionsFilter,
+  addFilenameFilter,
   addSessionIdsFilter,
   endpointFilter,
   buildBaseQuery,
