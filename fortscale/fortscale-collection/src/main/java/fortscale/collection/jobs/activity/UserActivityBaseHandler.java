@@ -9,7 +9,7 @@ import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityJobState;
-import fortscale.domain.core.dao.UserActivityFeaturesExtractiionsRepositoryUtil;
+import fortscale.domain.core.dao.UserActivityFeaturesExtractionsRepositoryUtil;
 import fortscale.services.UserService;
 import fortscale.services.impl.UsernameService;
 import fortscale.utils.logging.Logger;
@@ -28,7 +28,6 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import static fortscale.utils.time.TimestampUtils.convertToSeconds;
-import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * Abstract class to provide basic functionality of user activity handlers
@@ -53,7 +52,7 @@ public abstract class UserActivityBaseHandler implements UserActivityHandler {
     FeatureBucketStateService featureBucketStateService;
 
     @Autowired
-    protected UserActivityFeaturesExtractiionsRepositoryUtil userActivityFeaturesExtractiionsRepositoryUtil;
+    protected UserActivityFeaturesExtractionsRepositoryUtil userActivityFeaturesExtractiionsRepositoryUtil;
 
 
 	@Value("${user.activity.mongo.batch.size:10000}")

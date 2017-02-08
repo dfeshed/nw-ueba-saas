@@ -34,7 +34,7 @@ import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
 @Component("userActivityFeaturesExtractiionsRepositoryUtil")
-public class UserActivityFeaturesExtractiionsRepositoryUtil {
+public class UserActivityFeaturesExtractionsRepositoryUtil {
 
 
 	@Autowired
