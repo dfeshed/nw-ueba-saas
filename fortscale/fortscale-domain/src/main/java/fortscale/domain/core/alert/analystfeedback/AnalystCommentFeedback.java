@@ -8,6 +8,7 @@ import java.time.Instant;
  * Created by alexp on 04/07/2016.
  */
 public class AnalystCommentFeedback extends AnalystFeedback {
+	public static final String ANALYST_COMMENT_FEEDBACK_TYPE = "AnalystCommentFeedback";
 
 	public static final String commentTextField = "commentText";
 

@@ -10,6 +10,7 @@ import java.time.Instant;
  * Created by alexp on 02/02/17.
  */
 public class AnalystRiskFeedback extends AnalystFeedback {
+    public static final String ANALYST_RISK_FEEDBACK_TYPE = "AnalystRiskFeedback";
 
     private static final String ALERT_FEEDBACK_FIELD = "alertFeedback";
     private static final String USER_SCORE_AFTER_FIELD = "userScoreAfter";

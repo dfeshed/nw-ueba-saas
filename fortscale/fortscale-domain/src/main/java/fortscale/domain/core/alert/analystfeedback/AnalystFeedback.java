@@ -1,5 +1,8 @@
 package fortscale.domain.core.alert.analystfeedback;
 
+import com.fasterxml.jackson.annotation.JsonSubTypes;
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import io.swagger.annotations.ApiModel;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 import java.time.Instant;
@@ -8,6 +11,10 @@ import java.util.UUID;
 /**
  * Created by alexp on 02/02/17.
  */
+@JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY, property = "type")
+@JsonSubTypes({ @JsonSubTypes.Type(value = AnalystRiskFeedback.class, name = AnalystRiskFeedback.ANALYST_RISK_FEEDBACK_TYPE),
+                @JsonSubTypes.Type(value = AnalystCommentFeedback.class, name = AnalystCommentFeedback.ANALYST_COMMENT_FEEDBACK_TYPE) })
+@ApiModel(subTypes = {AnalystRiskFeedback.class, AnalystCommentFeedback.class})
 public abstract class AnalystFeedback {
     public static final String ANALYST_FEEDBACK_ID_FIELD = "analystFeedbackId";
     public static final String ANALYST_USER_NAME_FIELD = "analystUserName";
@@ -63,9 +70,9 @@ public abstract class AnalystFeedback {
         if (o == null || getClass() != o.getClass())
             return false;
 
-        AnalystCommentFeedback comment = (AnalystCommentFeedback) o;
+        AnalystFeedback analystFeedback = (AnalystFeedback) o;
 
-        return analystFeedbackId != null ? analystFeedbackId.equals(comment.getAnalystFeedbackId()) : comment.getAnalystFeedbackId() == null;
+        return analystFeedbackId != null ? analystFeedbackId.equals(analystFeedback.getAnalystFeedbackId()) : analystFeedback.getAnalystFeedbackId() == null;
 
     }
 

@@ -391,11 +391,17 @@ public class ApiAlertController extends BaseController {
 		if (alert == null) {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
 		}
+		AnalystFeedback analystFeedback = alert.getAnalystFeedback(commentId);
 
-		AnalystCommentFeedback oldComment = (AnalystCommentFeedback) alert.getAnalystFeedback(commentId);
-		if (oldComment == null) {
+		if (analystFeedback == null) {
 			return new ResponseEntity("Alert doesn't have comment with id " + commentId, HttpStatus.BAD_REQUEST);
 		}
+
+		if (!(analystFeedback instanceof AnalystCommentFeedback)){
+			return new ResponseEntity("Cannot update analyst feedback other then comment", HttpStatus.BAD_REQUEST);
+		}
+
+		AnalystCommentFeedback oldComment = (AnalystCommentFeedback) analystFeedback;
 
 		if (!oldComment.getCommentText().equals(request.getCommentText())) {
 			oldComment.setCommentText(request.getCommentText());
@@ -417,6 +423,11 @@ public class ApiAlertController extends BaseController {
 		}
 
 		AnalystFeedback analystFeedback = alert.getAnalystFeedback(commentId);
+
+		if (!(analystFeedback instanceof AnalystCommentFeedback)){
+			return new ResponseEntity("Cannot update analyst feedback other then comment", HttpStatus.BAD_REQUEST);
+		}
+
 		alert.getAnalystFeedback().remove(analystFeedback);
 		alertsService.saveAlertInRepository(alert);
 
