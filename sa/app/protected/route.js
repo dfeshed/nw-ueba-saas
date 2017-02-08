@@ -21,7 +21,8 @@ const {
   run: {
     later,
     cancel
-  }
+  },
+  testing
  } = Ember;
 
 /**
@@ -41,6 +42,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
   timeFormat: service(),
   timezone: service(),
   i18n: service(),
+
+  userIdle: service(),
 
   queryParams: {
     /**
@@ -62,6 +65,19 @@ export default Route.extend(AuthenticatedRouteMixin, {
       refreshModel: false,
       replace: true
     }
+  },
+
+  init() {
+    if (!testing) {
+      // After configured idle timeout period, logout
+      this.get('userIdle').on('idleChanged', (isIdle) => {
+        if (isIdle) {
+          this.send('logout');
+        }
+      });
+    }
+
+    this._super(...arguments);
   },
 
   beforeModel(transition) {

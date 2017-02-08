@@ -15,20 +15,6 @@ const {
 export default Route.extend(ApplicationRouteMixin, csrfToken, {
   fatalErrors: service(),
   session: service(),
-  userIdle: service(),
-
-  init() {
-    if (!testing) {
-      // After 10 idle minutes, logout
-      this.get('userIdle').on('idleChanged', (isIdle) => {
-        if (isIdle) {
-          this._logout();
-        }
-      });
-    }
-
-    this._super(...arguments);
-  },
 
   _initialize: function() {
     const session = this.get('session').get('session');
