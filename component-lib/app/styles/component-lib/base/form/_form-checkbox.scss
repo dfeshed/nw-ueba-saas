@@ -1,15 +1,18 @@
-.rsa-form-checkbox {
-  visibility: hidden;
-  display: inline-block;
-  box-sizing: border-box;
-  width: calc(1rem - 1px);
-  padding: 1px;
-  height: calc(1rem - 1px);
-  border: 1px solid transparent;
-  margin-right: rsa-whitespace(less);
-  position: relative;
+.rsa-form-checkbox-label {
+  .rsa-form-checkbox {
+    vertical-align: baseline;
+    visibility: hidden;
+    display: inline-block;
+    box-sizing: border-box;
+    width: calc(1rem - 1px);
+    padding: 1px;
+    height: calc(1rem - 1px);
+    border: 1px solid transparent;
+    margin-right: rsa-whitespace(least);
+    position: relative;
+  }
 
-  &::after {
+  &::before {
     font-family: 'Streamline-2-Filled';
     content: '';
     visibility: visible;
@@ -27,25 +30,30 @@
   }
 
   &.checked {
-    &::after {
+    &::before {
       content: "\e62f";
       color:rsa-color(blue);
     }
   }
-}
 
-.rsa-form-checkbox-label {
-  .rsa-form-checkbox {
-    vertical-align: baseline;
+  &:hover:not(.disabled) {
+    cursor: pointer;
 
+    &::before {
+      border-color: $formCheckboxHoverBorderColor;
+    }
+
+    &.checked {
+      &::before {
+        border-color: rsa-color(blue);
+      }
+    }
   }
-}
 
-.rsa-form-checkbox-label,
-.rsa-form-checkbox {
   &.disabled {
     color: $formCheckboxBorderColor;
-    input::after {
+
+    ::before {
       opacity: $rsa-translucent;
     }
   }
@@ -53,36 +61,17 @@
   &.error {
     color: $formCheckboxErrorColor;
 
-    input {
-      &::after {
-        border-color: $formCheckboxErrorColor;
-        color: $formCheckboxErrorColor;
-      }
-    }
-  }
-
-  &:hover:not(.disabled) {
-    cursor: pointer;
-
-    input {
-      &::after {
-        border-color: $formCheckboxHoverBorderColor;
-      }
-    }
-    input.checked {
-      &::after {
-        border-color: rsa-color(blue);
-      }
+    &::before {
+      border-color: $formCheckboxErrorColor;
+      color: $formCheckboxErrorColor;
     }
   }
 
   &.error:hover:not(.disabled) {
     cursor: pointer;
 
-    input {
-      &::after {
-        border-color: rsa-color(red, light);
-      }
+    &::before {
+      border-color: rsa-color(red, light);
     }
   }
 }

@@ -10,7 +10,7 @@
         {{#each table.sortedColumns as |column|}}
           {{#if (not-eq column.dataType "checkbox")}}
             <li>
-              <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}}">
+              <label class="rsa-form-checkbox-label {{concat 'column-selection-' column.field}} {{if column.selected 'checked'}}">
                 {{rsa-form-checkbox
                   checked=column.selected
                   change=(action 'toggleColumn' column)}}

@@ -7,7 +7,7 @@
 
 <div class='rsa-form-radio-group rsa-journal-wrapper__journal-sort {{unless filterVisible 'hidden'}}'>
   <h4 class='rsa-form-radio-group-label rsa-journal-wrapper__journal-sort__title'>{{t 'journal.sort.title'}}:</h4>
-  <label class="rsa-form-radio-label rsa-journal-wrapper__journal-sort__my-notes">
+  <label class="rsa-form-radio-label rsa-journal-wrapper__journal-sort__my-notes {{if (eq 'my' viewNotes) 'checked'}}">
     {{radio-button
       value="my"
       groupValue=viewNotes
@@ -15,7 +15,7 @@
     {{t 'journal.sort.myNotes'}}
   </label>
 
-  <label class="rsa-form-radio-label rsa-journal-wrapper__journal-sort__all-notes">
+  <label class="rsa-form-radio-label rsa-journal-wrapper__journal-sort__all-notes {{if (eq 'all' viewNotes) 'checked'}}">
     {{radio-button
       value="all"
       groupValue=viewNotes

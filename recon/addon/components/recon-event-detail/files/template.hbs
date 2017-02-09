@@ -11,7 +11,9 @@
     {{#rsa-data-table/header as |column index|}}
       {{#if column.isCheckboxColumn}}
         {{#if hasMultipleSessionFiles}}
-          {{rsa-form-checkbox checked=allSelected change=(action "toggleAll")}}
+          <label class="rsa-form-checkbox-label {{if allSelected 'checked'}}">
+            {{rsa-form-checkbox checked=allSelected change=(action "toggleAll")}}
+          </label>
         {{/if}}
       {{else}}
         {{t column.title}}
@@ -23,7 +25,9 @@
       {{#rsa-data-table/body-cell columnWidth=column.width}}
         {{#if column.isCheckboxColumn}}
           {{#unless (eq item.type "link")}}
-            {{rsa-form-checkbox checked=item.selected change=(action "toggleOne" item.id)}}
+            <label class="rsa-form-checkbox-label {{if item.selected 'checked'}}">
+              {{rsa-form-checkbox checked=item.selected change=(action "toggleOne" item.id)}}
+            </label>
           {{/unless}}
         {{else if (eq column.field "hashes")}}
           {{#if (eq item.type "link")}}

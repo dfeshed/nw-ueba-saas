@@ -6,37 +6,37 @@
   input {
     visibility: hidden;
     margin-right: rsa-whitespace(least);
+  }
 
-    &::before,
+  &::before,
+  &::after {
+    content: '';
+    text-indent: 10rem;
+    overflow: hidden;
+    visibility: visible;
+    display: block;
+    position: absolute;
+    top: 3px;
+    left: 0;
+    border-radius: 10rem;
+  }
+
+  &::before {
+    width: 11px;
+    height: 11px;
+    border: 1px solid rsa-color(gray);
+  }
+
+  &::after {
+    background: transparent;
+    width: 7px;
+    height: 7px;
+    margin: 3px;
+  }
+
+  &.checked {
     &::after {
-      content: '';
-      text-indent: 10rem;
-      overflow: hidden;
-      visibility: visible;
-      display: block;
-      position: absolute;
-      top: 3px;
-      left: 0;
-      border-radius: 10rem;
-    }
-
-    &::before {
-      width: 11px;
-      height: 11px;
-      border: 1px solid rsa-color(gray);
-    }
-
-    &::after {
-      background: transparent;
-      width: 7px;
-      height: 7px;
-      margin: 3px;
-    }
-
-    &:checked {
-      &::after {
-        background-color: rsa-color(blue);
-      }
+      background-color: rsa-color(blue);
     }
   }
 
@@ -45,15 +45,15 @@
 
     input:not(.disabled) {
       cursor: pointer;
+    }
 
+    &::before {
+      border-color: rsa-color(gray, lighter);
+    }
+
+    &.checked {
       &::before {
-        border-color: rsa-color(gray, lighter);
-      }
-
-      &:checked {
-        &::before {
-          border-color: rsa-color(blue);
-        }
+        border-color: rsa-color(blue);
       }
     }
   }
@@ -61,11 +61,9 @@
   &.disabled {
     opacity: $rsa-translucent;
 
-    input {
-      &:checked {
-        &::after {
-          background-color: rsa-color(gray);
-        }
+    &.checked {
+      &::after {
+        background-color: rsa-color(gray);
       }
     }
   }
@@ -73,27 +71,20 @@
   &.error {
     color: rsa-color(red);
 
-    input {
-      &::before {
-        border-color: rsa-color(red);
-      }
+    &::before {
+      border-color: rsa-color(red);
+    }
 
-      &:checked {
-        &::after {
-          background-color: rsa-color(red);
-        }
+    &.checked {
+      &::after {
+        background-color: rsa-color(red);
       }
     }
 
+
     &:hover {
-      input {
-        &::before {
-
-        }
-
-        &::before {
-          border-color: rsa-color(red, light)!important;
-        }
+      &::before {
+        border-color: rsa-color(red, light)!important;
       }
     }
   }

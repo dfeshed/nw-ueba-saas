@@ -8,7 +8,7 @@
       {{#spec-member title="Default"}}
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'foo' valueStore) 'checked'}}">
             {{radio-button
               value="foo"
               groupValue=valueStore
@@ -16,7 +16,7 @@
               Foo
           </label>
 
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'bar' valueStore) 'checked'}}">
             {{radio-button
               value="bar"
               groupValue=valueStore
@@ -28,7 +28,7 @@
         {{!-- BEGIN-SNIPPET radios1
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'foo' valueStore) 'checked'}}">
             {{radio-button
               value="foo"
               groupValue=valueStore
@@ -36,7 +36,7 @@
               Foo
           </label>
 
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'bar' valueStore) 'checked'}}">
             {{radio-button
               value="bar"
               groupValue=valueStore
@@ -51,7 +51,7 @@
       {{#spec-member title="Disabled"}}
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          <label class="rsa-form-radio-label {{if true 'disabled'}}">
+          <label class="rsa-form-radio-label {{if true 'disabled'}} {{if (eq 'foo' valueStore) 'checked'}}">
             {{radio-button
               disabled=true
               value="foo"
@@ -60,7 +60,7 @@
               Foo
           </label>
 
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'bar' valueStore) 'checked'}}">
             {{radio-button
               value="bar"
               groupValue=valueStore
@@ -71,7 +71,7 @@
         {{!-- BEGIN-SNIPPET radios3
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          <label class="rsa-form-radio-label {{if true 'disabled'}}">
+          <label class="rsa-form-radio-label {{if true 'disabled'}} {{if (eq 'foo' valueStore) 'checked'}}">
             {{radio-button
               disabled=true
               value="foo"
@@ -80,7 +80,7 @@
               Foo
           </label>
 
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'bar' valueStore) 'checked'}}">
             {{radio-button
               value="bar"
               groupValue=valueStore
@@ -95,7 +95,7 @@
       {{#spec-member title="Error"}}
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          <label class="rsa-form-radio-label {{if true 'error'}}">
+          <label class="rsa-form-radio-label {{if true 'error'}} {{if (eq 'foo' valueStore) 'checked'}}">
             {{radio-button
               value="foo"
               groupValue=valueStore
@@ -103,7 +103,7 @@
               Foo
           </label>
 
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'bar' valueStore) 'checked'}}">
             {{radio-button
               value="bar"
               groupValue=valueStore
@@ -114,7 +114,7 @@
         {{!-- BEGIN-SNIPPET radios4
         <div class='rsa-form-radio-group'>
           <h4 class='rsa-form-radio-group-label'>Radio Group Label</h4>
-          <label class="rsa-form-radio-label  {{if true 'error'}}">
+          <label class="rsa-form-radio-label  {{if true 'error'}} {{if (eq 'foo' valueStore) 'checked'}}">
             {{radio-button
               value="foo"
               groupValue=valueStore
@@ -122,7 +122,7 @@
               Foo
           </label>
 
-          <label class="rsa-form-radio-label">
+          <label class="rsa-form-radio-label {{if (eq 'bar' valueStore) 'checked'}}">
             {{radio-button
               value="bar"
               groupValue=valueStore

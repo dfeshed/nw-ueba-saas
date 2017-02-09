@@ -6,7 +6,7 @@
   <div class="scroll-box">
     {{#spec-category title="States"}}
       {{#spec-member title="Default"}}
-        <label class="rsa-form-checkbox-label">
+        <label class="rsa-form-checkbox-label {{if isChecked 'checked'}}">
           {{rsa-form-checkbox
           checked=isChecked
           change=(action 'toggleIsChecked')}}
@@ -14,7 +14,7 @@
         </label>
 
         {{!-- BEGIN-SNIPPET checkbox1
-        <label class="rsa-form-checkbox-label">
+        <label class="rsa-form-checkbox-label {{if isChecked 'checked'}}">
           {{rsa-form-checkbox
           checked=isChecked
           change=(action 'toggleIsChecked')}}
@@ -25,7 +25,7 @@
       {{/spec-member}}
 
       {{#spec-member title="Disabled"}}
-        <label class="rsa-form-checkbox-label {{if true 'disabled'}}">
+        <label class="rsa-form-checkbox-label {{if true 'disabled'}} {{if isChecked 'checked'}}">
           {{rsa-form-checkbox
           checked=isChecked
           disabled=true
@@ -33,7 +33,7 @@
           Input Label
         </label>
         {{!-- BEGIN-SNIPPET checkbox3
-        <label class="rsa-form-checkbox-label {{if true 'disabled'}}">
+        <label class="rsa-form-checkbox-label {{if true 'disabled'}} {{if isChecked 'checked'}}">
           {{rsa-form-checkbox
           checked=isChecked
           disabled=true
@@ -45,7 +45,7 @@
       {{/spec-member}}
 
       {{#spec-member title="Error"}}
-        <label class="rsa-form-checkbox-label {{if true 'error'}}">
+        <label class="rsa-form-checkbox-label {{if true 'error'}} {{if isChecked 'checked'}}">
           {{rsa-form-checkbox
           checked=isChecked
           error=true
@@ -53,7 +53,7 @@
           Input Label
         </label>
         {{!-- BEGIN-SNIPPET checkbox4
-        <label class="rsa-form-checkbox-label {{if true 'error'}}">
+        <label class="rsa-form-checkbox-label {{if true 'error'}} {{if isChecked 'checked'}}">
           {{rsa-form-checkbox
           checked=isChecked
           error=true

@@ -60,7 +60,7 @@
         <ul>
           {{#each priorityList as |priority|}}
             <li>
-              <label class="rsa-form-checkbox-label {{concat 'priority-' priority.id}} {{if isBulkEditInProgress 'disabled'}}">
+              <label class="rsa-form-checkbox-label {{concat 'priority-' priority.id}} {{if isBulkEditInProgress 'disabled'}} {{if priority.value 'checked'}}">
                 {{rsa-form-checkbox
                   checked=priority.value
                   disabled=isBulkEditInProgress
@@ -76,7 +76,7 @@
         <ul>
           {{#each statusList as |status|}}
             <li>
-              <label class="rsa-form-checkbox-label {{concat 'status-' status.id}} {{if isBulkEditInProgress 'disabled'}}">
+              <label class="rsa-form-checkbox-label {{concat 'status-' status.id}} {{if isBulkEditInProgress 'disabled'}} {{if status.value 'checked'}}">
                 {{rsa-form-checkbox
                   checked=status.value
                   disabled=isBulkEditInProgress
