@@ -3,9 +3,10 @@ This needs updating later.
 # Usage
 
 ```hbs
-{{context-container message="HELLO WORLD"}}
+{{context-panel entityId=entityId entityType=entityType}}
 ```
 
 ## Inputs
 
-* `message`, `String`, a string to show
+* `entityId`, `String`
+* `entityType`, `String`
