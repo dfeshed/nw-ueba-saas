@@ -343,7 +343,7 @@ public class AlertsServiceImpl implements AlertsService {
 				// Create analystRiskFeedback, add it to the alert and save
 				analystRiskFeedback = new AnalystRiskFeedback(analystUserName, alertFeedback,
 						user.getScore(), userScoreContributionBeforeUpdate, alert.getUserScoreContribution(),
-						userSeverity, Instant.now());
+						userSeverity, System.currentTimeMillis());
 				alert.addAnalystFeedback(analystRiskFeedback);
 
 				saveAlertInRepository(alert);

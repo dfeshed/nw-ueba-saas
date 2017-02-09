@@ -2,8 +2,6 @@ package fortscale.domain.core.alert.analystfeedback;
 
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.Instant;
-
 /**
  * Created by alexp on 04/07/2016.
  */
@@ -18,12 +16,12 @@ public class AnalystCommentFeedback extends AnalystFeedback {
 	public AnalystCommentFeedback() {
 	}
 
-	public AnalystCommentFeedback(String analyst, String commentText, Instant modifiedAt) {
+	public AnalystCommentFeedback(String analyst, String commentText, Long modifiedAt) {
 		super(analyst, modifiedAt);
 		this.commentText = commentText;
 	}
 
-	public AnalystCommentFeedback(String analyst, String commentText, String commentId, Instant modifiedAt){
+	public AnalystCommentFeedback(String analyst, String commentText, String commentId, Long modifiedAt){
 		super(commentId, analyst, modifiedAt);
 		this.commentText = commentText;
 	}

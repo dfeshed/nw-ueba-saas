@@ -250,7 +250,7 @@ public class ApiAlertsControllerTest {
 		// set up alerts repository mocked behavior
 		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		AnalystFeedback comment = new AnalystCommentFeedback("Alex", "AnalystCommentFeedback", commentId, Instant.now());
+		AnalystFeedback comment = new AnalystCommentFeedback("Alex", "AnalystCommentFeedback", commentId, System.currentTimeMillis());
 		comments.add(comment);
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
 				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
@@ -309,7 +309,7 @@ public class ApiAlertsControllerTest {
 	@Test public void updateComment_emptyComment() throws Exception {
 		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex", "AnalystCommentFeedback", commentId, Instant.now());
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex", "AnalystCommentFeedback", commentId, System.currentTimeMillis());
 		comments.add(comment);
 
 		// set up alerts repository mocked behavior
@@ -335,7 +335,7 @@ public class ApiAlertsControllerTest {
 	@Test public void updateComment_nullComment() throws Exception {
 		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, System.currentTimeMillis());
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -362,7 +362,7 @@ public class ApiAlertsControllerTest {
 	@Test public void updateComment_null_analystName() throws Exception {
 		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, System.currentTimeMillis());
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -389,7 +389,7 @@ public class ApiAlertsControllerTest {
 	@Test public void updateComment_empty_analystName() throws Exception {
 		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, System.currentTimeMillis());
 
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -416,7 +416,7 @@ public class ApiAlertsControllerTest {
 	@Test public void deleteComment_valid() throws Exception {
 		List<AnalystFeedback> comments = new ArrayList<>();
 		String commentId = "1";
-		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, Instant.now());
+		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, System.currentTimeMillis());
 		comments.add(comment);
 
 		// set up alerts repository mocked behavior

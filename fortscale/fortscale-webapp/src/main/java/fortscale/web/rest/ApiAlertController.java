@@ -366,7 +366,7 @@ public class ApiAlertController extends BaseController {
 		}
 
 		AnalystCommentFeedback comment = new AnalystCommentFeedback(request.getAnalystUserName(), request.getCommentText(),
-				Instant.now());
+				System.currentTimeMillis());
 
 		alert.addAnalystFeedback(comment);
 

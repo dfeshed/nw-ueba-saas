@@ -4,8 +4,6 @@ import fortscale.domain.core.Severity;
 import fortscale.domain.core.alert.AlertFeedback;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.Instant;
-
 /**
  * Created by alexp on 02/02/17.
  */
@@ -32,7 +30,7 @@ public class AnalystRiskFeedback extends AnalystFeedback {
     public AnalystRiskFeedback(String analystUserName, AlertFeedback alertFeedback,
                                double userScoreAfter, Double userScoreContributionBeforeUpdate,
                                Double userScoreContributionAfterUpdate, Severity userScoreSeverityAfter,
-                               Instant modifiedAt) {
+                               Long modifiedAt) {
         super(analystUserName, modifiedAt);
         this.alertFeedback = alertFeedback;
         this.userScoreAfter = userScoreAfter;

@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import io.swagger.annotations.ApiModel;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.Instant;
 import java.util.UUID;
 
 /**
@@ -26,18 +25,18 @@ public abstract class AnalystFeedback {
     private String analystUserName;
 
     @Field(MODIFIED_AT_FIELD)
-    private Instant modifiedAt;
+    private Long modifiedAt;
 
     public AnalystFeedback() {
     }
 
-    public AnalystFeedback(String analystUserName, Instant modifiedAt) {
+    public AnalystFeedback(String analystUserName, Long modifiedAt) {
         this.analystFeedbackId = UUID.randomUUID().toString();
         this.analystUserName = analystUserName;
         this.modifiedAt = modifiedAt;
     }
 
-    public AnalystFeedback(String commentId, String analystUserName, Instant modifiedAt) {
+    public AnalystFeedback(String commentId, String analystUserName, Long modifiedAt) {
         this.analystFeedbackId = commentId;
         this.analystUserName = analystUserName;
         this.modifiedAt = modifiedAt;
@@ -55,11 +54,11 @@ public abstract class AnalystFeedback {
         return analystFeedbackId;
     }
 
-    public Instant getModifiedAt() {
+    public Long getModifiedAt() {
         return modifiedAt;
     }
 
-    public void setModifiedAt(Instant modifiedAt) {
+    public void setModifiedAt(Long modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
 
