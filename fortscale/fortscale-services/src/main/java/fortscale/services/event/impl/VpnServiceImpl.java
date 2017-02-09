@@ -331,15 +331,16 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 			if(!isValidSessionForGeoHopping(vpnSession)){
 				continue;
 			}
-			if(!vpnSession.getCountry().equals(prevCountry)){
-				logger.debug("got vpn session with different country then {}. VpnSession: sessionid({}), sourceIp({}), country ({})",prevCountry, vpnSession.getSessionId(),
+			// looking for vpn session from location that doesn't match prevCountry and curr vpn session location
+			if(!vpnSession.getCountry().equals(prevCountry) && !vpnSession.getCountry().equals(curVpnSession.getCountry())){
+				logger.debug("got vpn session with different country then {} and {}. VpnSession: sessionid({}), sourceIp({}), country ({})",prevCountry, curVpnSession.getCountry(), vpnSession.getSessionId(),
 						vpnSession.getSourceIp(), vpnSession.getCountry());
 
 				if (CollectionUtils.isEmpty(ret) && vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt())){
 					// The first vpn session we got is different from the one we expected
 					// (we expected that the first session is equals to the prevCountry)
 					// so we take it as geo hoping
-					logger.info("Got geo hoping with session {} expecting {} but found {}", curVpnSession, prevCountry, vpnSession);
+					logger.info("Got geo hoping with session {} expecting {} but found {}", curVpnSession, prevCountry, vpnSession.getCountry());
 					ret.add(vpnSession);
 				}
 
