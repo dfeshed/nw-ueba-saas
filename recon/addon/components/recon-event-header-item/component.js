@@ -22,7 +22,9 @@ export default Component.extend({
     let ret = '';
     if (type === DATE_DATATYPE) {
       const date = new Date(dateInt);
-      ret = `:${date.getSeconds()}.${date.getMilliseconds()}`;
+      // Create a zero padded millisecond string to match what Moment gives us
+      const ms = `00${date.getMilliseconds()}`.slice(-3);
+      ret = `:${date.getSeconds()}.${ms}`;
     }
     return ret;
   }
