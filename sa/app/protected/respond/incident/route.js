@@ -17,9 +17,22 @@ export default Route.extend(NotificationHelper, {
   incidentId: null,
 
   layoutService: service('layout'),
+  i18n: service(),
 
   // Service to retrieve information from local storage
   respondMode: service(),
+
+  titleToken(model) {
+    return model.incidentId;
+  },
+
+  title(tokens) {
+    return this.get('i18n').t('pageTitle', {
+      section: this.get('i18n').t('respond.incidentDetails.titleWithId', {
+        id: tokens[0]
+      })
+    });
+  },
 
   activate() {
     this.set('layoutService.actionConfig', 'incident');
@@ -39,7 +52,7 @@ export default Route.extend(NotificationHelper, {
 
   model(params) {
     this.set('incidentId', params.incident_id);
-    const details = { 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [], 'events': [], 'services': [] };
+    const details = { 'incidentId': params.incident_id, 'indicators': [], 'incident': [], 'categoryTags': [], 'users': [], 'events': [], 'services': [] };
     this.request.streamRequest({
       method: 'stream',
       modelName: 'storyline',

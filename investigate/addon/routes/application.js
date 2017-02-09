@@ -13,12 +13,21 @@ import Context from 'investigate/actions/context';
 
 const {
   computed,
-  Route
+  Route,
+  inject: {
+    service
+  }
 } = Ember;
 
 export default Route.extend(
   Transition, Nav, Services, Results, Events, EventCount, EventTimeline, Meta, Recon, Context,
   {
+    i18n: service(),
+
+    title() {
+      return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('investigate.title') });
+    },
+
     model() {
       return this.get('state');
     },

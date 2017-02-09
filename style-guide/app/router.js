@@ -36,6 +36,7 @@ Router.map(function() {
       this.route('flash-messages');
       this.route('panels');
       this.route('permissions');
+      this.route('page-titles');
     });
 
     this.route('chart', function() {

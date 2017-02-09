@@ -26,9 +26,14 @@ export default Route.extend(NotificationHelper, {
   contextualHelp: service(),
   layoutService: service('layout'),
   respondMode: service(),
+  i18n: service(),
   listViewCube: null,
   cardViewCube: null,
   persistenceHelper: PersistenceHelper.create(),
+
+  title() {
+    return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.myQueue') });
+  },
 
   /*
   gets the sort field and order required for making model available for the component.

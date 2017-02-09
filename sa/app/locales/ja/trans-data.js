@@ -26,6 +26,7 @@ export default {
     },
     incidentDetails: {
       title: 'ja_Incident Details',
+      titleWithId: 'ja_{{id}} - Incident Details',
       instructions: 'ja_Please select an Incident from the list on the left in order to view its information here.',
       summary: 'ja_Summary',
       details: 'ja_Details',

@@ -1,4 +1,5 @@
 export default {
+  pageTitle: '{{section}} - Netwitness Suite',
   languages: {
     en: 'English',
     'en-us': 'English',

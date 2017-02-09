@@ -31,9 +31,9 @@ export default Ember$.extend({}, BaseSelectors, {
     'login': {
       'url': '/login',
       'root': '.js-test-login-root',
-      'usernameInput': 'label[class$=rsa-form-input] input',
-      'passwordInput': 'label[class$=rsa-form-input] input',
-      'loginButton': 'div[class$=rsa-application-content] button[class*=rsa-form-button]',
+      'usernameInput': '.js-test-login-username-input input',
+      'passwordInput': '.js-test-login-password-input input',
+      'submitButton': '.js-test-login-submit-button button',
       'errorMessage': 'rsa-login-error-message'
     },
     'userPref': {
