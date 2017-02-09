@@ -317,7 +317,7 @@ export default {
     },
     toolbar: {
       investigate: 'Investigate',
-      ecat: 'ECAT',
+      endpoint: 'NETWITNESS ENDPOINT',
       googleLookup: 'Google Lookup',
       virusTotal: 'VirusTotal Lookup',
       addToList: 'Add to List'
@@ -342,8 +342,7 @@ export default {
       moduleName: 'Module Name',
       analyticsScore: 'Analytics Score',
       machineCount: 'Machine Count',
-      signature: 'Signature',
-      header: '(IIOC Score > 500)'
+      signature: 'Signature'
     },
     iiocs: {
       title: 'Machine IIOC Levels',

@@ -13,7 +13,7 @@
         title=(t columns.title )
         errorMessage=(get contextData (concat columns.dataSourceGroup '_ERROR'))
         modulesColumnListConfig=columns.columns
-        headerdata=(t columns.header)
+        headerdata=(get contextData (concat columns.dataSourceGroup '_HEADER'))
         footerdata=columns.footer
         type=columns.dataSourceType
         activatePanel=(action 'activate' columns.dataSourceGroup)

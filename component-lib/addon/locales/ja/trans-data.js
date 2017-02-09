@@ -317,7 +317,7 @@ export default {
     },
     toolbar: {
       investigate: 'ja_Investigate',
-      ecat: 'ja_ECAT',
+      endpoint: 'ja_NETWITNESS ENDPOINT',
       googleLookup: 'ja_Google Lookup',
       virusTotal: 'ja_VirusTotal Lookup',
       addToList: 'ja_Add to List'
@@ -342,8 +342,7 @@ export default {
       moduleName: 'ja_Module Name',
       analyticsScore: 'ja_Analytics Score',
       machineCount: 'ja_Machine Count',
-      signature: 'ja_Signature',
-      header: 'ja_(IIOC Score > 500)'
+      signature: 'ja_Signature'
     },
     iiocs: {
       title: 'ja_Machine IIOC Levels',

@@ -699,7 +699,7 @@
       }
     ],
     "resultMeta": {
-      "minimum_ioc": "500",
+      "iocScore_gte": "500",
       "total_modules_count": "3642"
     },
     "pagingEnabled": false,

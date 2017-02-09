@@ -45,8 +45,8 @@ export default [{
       title: 'context.toolbar.investigate'
     },
     {
-      field: 'ECAT',
-      title: 'context.toolbar.ecat'
+      field: 'ENDPOINT',
+      title: 'context.toolbar.endpoint'
     },
     {
       field: 'Google Lookup',

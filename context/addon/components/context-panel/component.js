@@ -129,8 +129,6 @@ export default Component.extend({
           }
         }
         contextData.errorMessage = htmlSafe(errorMessage);
-      } else {
-        contextData.errorMessage = this.get('i18n').t('context.error.dataSource');
       }
       Logger.error('Error processing stream call for context lookup for data source ->', contextData.dataSourceName);
     }
@@ -145,6 +143,7 @@ export default Component.extend({
     switch (contextData.dataSourceGroup) {
       case 'Modules': {
         set(this.get('model').contextData, 'additionalData', contextData.resultMeta);
+        set(this.get('model').contextData, `${contextData.dataSourceGroup}_HEADER`, ` (IIOC Score > ${contextData.resultMeta.iocScore_gte})`);
         set(this.get('model').contextData, contextData.dataSourceGroup, contextData.resultList);
         break;
       }
