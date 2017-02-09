@@ -1,6 +1,7 @@
 import Ember from 'ember';
-import layout from '../templates/components/rsa-application-user-preferences-panel';
-import csrfToken from '../mixins/csrf-token';
+import layout from './template';
+import { alias } from 'ember-computed-decorators';
+import csrfToken from '../../mixins/csrf-token';
 
 const {
   getOwner,
@@ -20,25 +21,20 @@ export default Component.extend(csrfToken, {
 
   classNameBindings: ['isExpanded'],
 
+  appVersion: service(),
   eventBus: service(),
-
   dateFormat: service(),
-
   landingPage: service(),
-
   layoutService: service('layout'),
-
   moment: service(),
-
   request: service(),
-
   timeFormat: service(),
-
   timezone: service(),
 
   isExpanded: false,
-
   locales: ['en-us', 'ja'],
+
+  @alias('appVersion.version') version: null,
 
   init() {
     this._super(arguments);

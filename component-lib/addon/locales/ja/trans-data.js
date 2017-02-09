@@ -44,7 +44,7 @@ export default {
     preferences: 'ja_User Preferences',
     personalize: 'ja_Personalize your experience',
     signOut: 'ja_Sign Out',
-    version: 'ja_Version 11.0.0',
+    version: 'ja_Version',
     username: 'ja_Username',
     email: 'ja_Email',
     language: 'ja_Language',

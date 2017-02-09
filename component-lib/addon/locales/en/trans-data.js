@@ -44,7 +44,7 @@ export default {
     preferences: 'User Preferences',
     personalize: 'Personalize your experience',
     signOut: 'Sign Out',
-    version: 'Version 11.0.0',
+    version: 'Version',
     username: 'Username',
     email: 'Email',
     language: 'Language',
