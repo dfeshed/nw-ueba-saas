@@ -23,7 +23,7 @@ const {
     cancel
   },
   testing
- } = Ember;
+} = Ember;
 
 /**
  * Add AuthenticatedRouteMixin to ensure the routes extending from this
@@ -44,6 +44,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
   i18n: service(),
 
   userIdle: service(),
+  userActivity: service(),
 
   queryParams: {
     /**
@@ -69,6 +70,11 @@ export default Route.extend(AuthenticatedRouteMixin, {
 
   init() {
     if (!testing) {
+      // When the user performs an action, update last session access
+      this.get('userActivity').on('userActive', this, () => {
+        localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
+      });
+
       // After configured idle timeout period, logout
       this.get('userIdle').on('idleChanged', (isIdle) => {
         if (isIdle) {
