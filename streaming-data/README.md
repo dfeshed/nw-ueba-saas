@@ -24,7 +24,7 @@ In the example below, `core-event` is the `modelName` and `stream` is the method
 socketRoutes: {
   ...
   'core-event': {
-    socketUrl: '/investigate/socket',
+    socketUrl: '/api/investigate/socket',
     stream: {
       subscriptionDestination: '/user/queue/investigate/events',
       requestDestination: '/ws/investigate/events/stream'
