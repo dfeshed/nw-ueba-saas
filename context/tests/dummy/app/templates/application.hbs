@@ -1,3 +1,19 @@
-<page>
-  {{context-container message="Hello World"}}
-</page>
+<grid responsive>
+  <box class="col-xs-2">
+    <aside>
+      <h1>Data Types</h1>
+      <p>{{#link-to "application" (query-params entityType="IP")}}IP{{/link-to}}</p>
+      <p>{{#link-to "application" (query-params entityType="USER")}}USER{{/link-to}}</p>
+      <p>{{#link-to "application" (query-params entityType="MAC_ADDRESS")}}MAC_ADDRESS{{/link-to}}</p>
+      <p>{{#link-to "application" (query-params entityType="HOST")}}HOST{{/link-to}}</p>
+      <p>{{#link-to "application" (query-params entityType="FILE_NAME")}}FILE_NAME{{/link-to}}</p>
+      <p>{{#link-to "application" (query-params entityType="FILE_HASH")}}FILE_HASH{{/link-to}}</p>
+      <p>{{#link-to "application" (query-params entityType="DOMAIN")}}DOMAIN{{/link-to}}</p>
+    </aside>
+  </box>
+  <box class="col-xs-10">
+    <page>
+      {{context-panel entityId="100" entityType=entityType}}
+    </page>
+  </box>
+</grid>
