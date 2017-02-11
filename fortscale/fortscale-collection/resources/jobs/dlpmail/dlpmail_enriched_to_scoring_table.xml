@@ -7,20 +7,20 @@
 
     <schedule>
         <job>
-            <name>EnrichedToScoringAggregationModeling</name>
-            <group>VERDASYS</group>
-            <description>Running enriched verdasys to scoring, aggregation and modeling</description>
-            <job-class>fortscale.collection.jobs.ScoreAggregateModelRawEvents</job-class>
+            <name>EnrichedToScoring</name>
+            <group>DLPMAIL</group>
+            <description>Running DLPMAIL Scoring</description>
+            <job-class>fortscale.collection.jobs.EventsFromDataTableToStreamingJob</job-class>
             <durability>true</durability>
             <recover>true</recover>
             <job-data-map>
                 <entry>
                     <key>impalaTableName</key>
-                    <value>${impala.enricheddata.verdasys.table.name}</value>
+                    <value>dlpmailenriched</value>
                 </entry>
                 <entry>
                     <key>epochtimeField</key>
-                    <value>${impala.enricheddata.verdasys.table.field.date_time_unix}</value>
+                    <value>${impala.data.table.fields.epochtime}</value>
                 </entry>
                 <entry>
                     <key>streamingTopic</key>
@@ -28,23 +28,23 @@
                 </entry>
                 <entry>
                     <key>streamingTopicPartitionKey</key>
-                    <value>${impala.enricheddata.verdasys.table.field.normalized_username}</value>
+                    <value>normalized_username</value>
                 </entry>
                 <entry>
                     <key>impalaTableFields</key>
-                    <value>${impala.enricheddata.verdasys.table.fields}</value>
+                    <value>${impala.enricheddata.dlpmail.table.fields}</value>
                 </entry>
                 <entry>
                     <key>impalaTablePartitionType</key>
-                    <value>${impala.enricheddata.verdasys.table.partition.type}</value>
+                    <value>${impala.enricheddata.dlpmail.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTablePartitionType</key>
-                    <value>${impala.score.verdasys.table.partition.type}</value>
+                    <value>${impala.score.dlpmail.table.partition.type}</value>
                 </entry>
                 <entry>
                     <key>impalaDestinationTable</key>
-                    <value>${impala.score.verdasys.table.name}</value>
+                    <value>${impala.score.dlpmail.table.name}</value>
                 </entry>
                 <entry>
                     <key>throttlingSleep</key>
@@ -52,33 +52,29 @@
                 </entry>
                 <entry>
                     <key>dataSource</key>
-                    <value>verdasys</value>
+                    <value>dlpmail</value>
                 </entry>
                 <entry>
                     <key>lastState</key>
                     <value>HDFSWriterStreamTask</value>
                 </entry>
-                <entry>
-                    <key>secondsBetweenSyncs</key>
-                    <value>86400</value>
-                </entry>
-                <entry>
-                    <key>maxSyncGapInSeconds</key>
-                    <value>172800</value>
-                </entry>
-                <entry>
-                    <key>timeoutInSeconds</key>
-                    <value>300</value>
-                </entry>
-                <entry>
-                    <key>fortscale.model.build.control.input.topic</key>
-                    <value>${fortscale.model.build.control.input.topic}</value>
-                </entry>
-                <entry>
-                    <key>fortscale.model.build.control.output.topic</key>
-                    <value>${fortscale.model.build.control.output.topic}</value>
-                </entry>
             </job-data-map>
+
         </job>
+
+        <!-- need to comment out when working in multi collector mode
+        <trigger>
+            <cron>
+                <name>DLPMAILEX_send_to_streaming_hourly_trigger</name>
+
+                <group>DLPMAILEX</group>
+                <job-name>Scoring</job-name>
+                <job-group>DLPMAILEX</job-group>
+                <cron-expression>0 30 * * * ?</cron-expression>
+            </cron>
+        </trigger>
+        -->
     </schedule>
+
+
 </job-scheduling-data>
