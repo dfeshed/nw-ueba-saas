@@ -40,32 +40,16 @@
           "normalized_username_kerberos_tgt_daily.number_of_successful_kerberos_tgt_events_daily",
           "normalized_username_kerberos_tgt_daily.number_of_failed_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.distinct_number_of_normalized_src_machine_kerberos_tgt_daily",
-          "normalized_username_verdasys_daily.number_of_distinct_normalized_src_machine_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_distinct_application_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_distinct_event_description_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_alerted_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_classified_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_outbound_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_removable_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_blocked_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_daily",
-          "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_daily",
+          "normalized_username_dlpmail_daily.number_of_distinct_normalized_src_machine_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_distinct_application_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_alerted_event_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_classified_event_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_outbound_event_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_removable_event_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_blocked_event_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_email_attachment_event_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_distinct_email_recipient_dlpmail_daily",
+          "normalized_username_dlpmail_daily.number_of_sent_mail_event_dlpmail_daily",
 
 
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily",
@@ -102,17 +86,14 @@
           "normalized_username_kerberos_tgt_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.highest_scores_over_failure_code_kerberos_tgt_daily",
           "normalized_username_kerberos_tgt_daily.highest_score_over_date_time_events_kerberos_tgt_daily",
-          "normalized_username_verdasys_daily.highest_date_time_score_verdasys_daily",
-          "normalized_username_verdasys_daily.highest_bytes_written_score_verdasys_daily",
-          "normalized_username_verdasys_daily.highest_detail_file_size_score_verdasys_daily",
-          "normalized_username_verdasys_daily.highest_bytes_read_score_verdasys_daily",
-          "normalized_username_verdasys_daily.sum_of_highest_normalized_src_machine_scores_verdasys_daily",
-          "normalized_username_verdasys_daily.sum_of_highest_application_scores_verdasys_daily",
-          "normalized_username_verdasys_daily.sum_of_highest_destination_file_type_scores_verdasys_daily",
-          "normalized_username_verdasys_daily.sum_of_highest_email_sender_scores_verdasys_daily",
-          "normalized_username_verdasys_daily.sum_of_highest_event_description_scores_verdasys_daily",
-          "normalized_username_verdasys_daily.sum_of_highest_source_file_type_scores_verdasys_daily",
-          "normalized_username_verdasys_daily.sum_of_highest_printer_scores_verdasys_daily"
+          "normalized_username_dlpmail_daily.highest_date_time_score_dlpmail_daily",
+          "normalized_username_dlpmail_daily.highest_detail_file_size_score_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_normalized_src_machine_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_application_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_destination_file_type_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_email_sender_scores_dlpmail_daily",
+          "normalized_username_dlpmail_daily.sum_of_highest_source_file_type_scores_dlpmail_daily"
+
         ]
       },
       "entityEventFunction": {
@@ -213,84 +194,38 @@
           "distinct_normalized_src_machine_kerberos_tgt":[
             "normalized_username_kerberos_tgt_daily.distinct_number_of_normalized_src_machine_kerberos_tgt_daily"
           ],
-          "distinct_normalized_src_machine_verdasys": [
-              "normalized_username_verdasys_daily.number_of_distinct_normalized_src_machine_verdasys_daily"
+          "distinct_normalized_src_machine_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_distinct_normalized_src_machine_dlpmail_daily"
           ],
-          "distinct_application_verdasys": [
-              "normalized_username_verdasys_daily.number_of_distinct_application_verdasys_daily"
+          "distinct_application_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_distinct_application_dlpmail_daily"
           ],
-          "distinct_event_description_verdasys": [
-              "normalized_username_verdasys_daily.number_of_distinct_event_description_verdasys_daily"
+
+          "distinct_alerted_event_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_alerted_event_dlpmail_daily"
           ],
-          "distinct_alerted_event_verdasys": [
-              "normalized_username_verdasys_daily.number_of_alerted_event_verdasys_daily"
+          "distinct_classified_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_classified_event_dlpmail_daily"
           ],
-          "distinct_classified_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_classified_event_verdasys_daily"
+          "distinct_outbound_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_outbound_event_dlpmail_daily"
           ],
-          "distinct_outbound_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_outbound_event_verdasys_daily"
+          "distinct_removable_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_removable_event_dlpmail_daily"
           ],
-          "distinct_removable_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_removable_event_verdasys_daily"
+          "distinct_blocked_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_blocked_event_dlpmail_daily"
           ],
-          "distinct_blocked_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_blocked_event_verdasys_daily"
+          "distinct_email_attachment_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_email_attachment_event_dlpmail_daily"
           ],
-          "distinct_email_attachment_verdasys": [
-              "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_daily"
+          "distinct_email_recipient_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_distinct_email_recipient_dlpmail_daily"
           ],
-          "distinct_email_recipient_verdasys": [
-              "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_daily"
-          ],
-          "distinct_sent_mail_verdasys": [
-              "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_daily"
-          ],
-          "distinct_CD_Burn_verdasys": [
-              "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_daily"
-          ],
-          "distinct_File_Archive_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_daily"
-          ],
-          "distinct_File_Close_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_daily"
-          ],
-          "distinct_File_Copy_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_daily"
-          ],
-          "distinct_File_Create_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_daily"
-          ],
-          "distinct_File_Delete_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_daily"
-          ],
-          "distinct_File_Edit_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_daily"
-          ],
-          "distinct_File_Move_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_daily"
-          ],
-          "distinct_File_Open_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_daily"
-          ],
-          "distinct_File_Read_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_daily"
-          ],
-          "distinct_File_Recycle_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_daily"
-          ],
-          "distinct_File_Rename_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_daily"
-          ],
-          "distinct_File_Restore_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_daily"
-          ],
-          "distinct_File_Saveas_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_daily"
-          ],
-          "distinct_File_Write_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_daily"
+          "distinct_sent_mail_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_sent_mail_event_dlpmail_daily"
           ]
+
 
         },
         "alphas": {
@@ -326,32 +261,18 @@
           "successful_kerberos_tgt":0.09,
           "failed_kerberos_tgt":0.09,
           "distinct_normalized_src_machine_kerberos_tgt":0.09,
-          "distinct_normalized_src_machine_verdasys": 0.09,
-          "distinct_application_verdasys": 0.09,
-          "distinct_event_description_verdasys": 0.09,
-          "distinct_alerted_event_verdasys": 0.09,
-          "distinct_classified_event_verdasys": 0.09,
-          "distinct_outbound_event_verdasys": 0.09,
-          "distinct_removable_event_verdasys": 0.09,
-          "distinct_blocked_event_verdasys": 0.09,
-          "distinct_email_attachment_verdasys":0.09,
-          "distinct_email_recipient_verdasys":0.09,
-          "distinct_sent_mail_verdasys":0.09,
-          "distinct_CD_Burn_verdasys":0.09,
-          "distinct_File_Archive_verdasys":0.09,
-          "distinct_File_Close_verdasys":0.09,
-          "distinct_File_Copy_verdasys":0.09,
-          "distinct_File_Create_verdasys":0.09,
-          "distinct_File_Delete_verdasys":0.09,
-          "distinct_File_Edit_verdasys":0.09,
-          "distinct_File_Move_verdasys":0.09,
-          "distinct_File_Open_verdasys":0.09,
-          "distinct_File_Read_verdasys":0.09,
-          "distinct_File_Recycle_verdasys":0.09,
-          "distinct_File_Rename_verdasys":0.09,
-          "distinct_File_Restore_verdasys":0.09,
-          "distinct_File_Saveas_verdasys":0.09,
-          "distinct_File_Write_verdasys":0.09
+          "distinct_normalized_src_machine_dlpmail": 0.09,
+          "distinct_application_dlpmail": 0.09,
+
+          "distinct_alerted_event_dlpmail": 0.09,
+          "distinct_classified_event_dlpmail": 0.09,
+          "distinct_outbound_event_dlpmail": 0.09,
+          "distinct_removable_event_dlpmail": 0.09,
+          "distinct_blocked_event_dlpmail": 0.09,
+          "distinct_email_attachment_dlpmail":0.09,
+          "distinct_email_recipient_dlpmail":0.09,
+          "distinct_sent_mail_dlpmail":0.09
+
         },
         "betas": {
           "normalized_username_kerberos_logins_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_daily": 0.002,
@@ -388,17 +309,14 @@
           "normalized_username_kerberos_tgt_daily.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_daily":0.002,
           "normalized_username_kerberos_tgt_daily.highest_scores_over_failure_code_kerberos_tgt_daily":0.002,
           "normalized_username_kerberos_tgt_daily.highest_score_over_date_time_events_kerberos_tgt_daily":0.002,
-          "normalized_username_verdasys_daily.highest_date_time_score_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.highest_bytes_written_score_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.highest_detail_file_size_score_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.highest_bytes_read_score_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.sum_of_highest_normalized_src_machine_scores_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.sum_of_highest_application_scores_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.sum_of_highest_destination_file_type_scores_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.sum_of_highest_email_sender_scores_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.sum_of_highest_event_description_scores_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.sum_of_highest_source_file_type_scores_verdasys_daily": 0.002,
-          "normalized_username_verdasys_daily.sum_of_highest_printer_scores_verdasys_daily": 0.002
+          "normalized_username_dlpmail_daily.highest_date_time_score_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.highest_detail_file_size_score_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_normalized_src_machine_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_application_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_destination_file_type_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_email_sender_scores_dlpmail_daily": 0.002,
+          "normalized_username_dlpmail_daily.sum_of_highest_source_file_type_scores_dlpmail_daily": 0.002
+
         }
       }
     },
@@ -442,32 +360,17 @@
           "normalized_username_kerberos_tgt_hourly.number_of_successful_kerberos_tgt_events_hourly",
           "normalized_username_kerberos_tgt_hourly.number_of_failed_kerberos_tgt_hourly",
           "normalized_username_kerberos_tgt_hourly.distinct_number_of_normalized_src_machine_kerberos_tgt_hourly",
-          "normalized_username_verdasys_hourly.number_of_distinct_normalized_src_machine_verdasys_hourly",
-          "normalized_username_verdasys_hourly.number_of_distinct_application_verdasys_hourly",
-          "normalized_username_verdasys_hourly.number_of_distinct_event_description_verdasys_hourly",
-          "normalized_username_verdasys_hourly.number_of_alerted_event_verdasys_hourly",
-          "normalized_username_verdasys_hourly.number_of_classified_event_verdasys_hourly",
-          "normalized_username_verdasys_hourly.number_of_outbound_event_verdasys_hourly",
-          "normalized_username_verdasys_hourly.number_of_removable_event_verdasys_hourly",
-          "normalized_username_verdasys_hourly.number_of_blocked_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_hourly",
-          "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_hourly",
+          "normalized_username_dlpmail_hourly.number_of_distinct_normalized_src_machine_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_distinct_application_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_alerted_event_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_classified_event_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_outbound_event_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_removable_event_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_blocked_event_dlpmail_hourly",
+          "normalized_username_dlpmail_daily.number_of_email_attachment_event_dlpmail_hourly",
+          "normalized_username_dlpmail_daily.number_of_distinct_email_recipient_dlpmail_hourly",
+          "normalized_username_dlpmail_daily.number_of_sent_mail_event_dlpmail_hourly",
+
 
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly",
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_dst_machine_kerberos_logins_hourly",
@@ -503,17 +406,14 @@
           "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_hourly",
           "normalized_username_kerberos_tgt_hourly.highest_scores_over_failure_code_kerberos_tgt_hourly",
           "normalized_username_kerberos_tgt_hourly.highest_score_over_date_time_events_kerberos_tgt_hourly",
-          "normalized_username_verdasys_hourly.highest_date_time_score_verdasys_hourly",
-          "normalized_username_verdasys_hourly.highest_bytes_written_score_verdasys_hourly",
-          "normalized_username_verdasys_hourly.highest_detail_file_size_score_verdasys_hourly",
-          "normalized_username_verdasys_hourly.highest_bytes_read_score_verdasys_hourly",
-          "normalized_username_verdasys_hourly.sum_of_highest_normalized_src_machine_scores_verdasys_hourly",
-          "normalized_username_verdasys_hourly.sum_of_highest_application_scores_verdasys_hourly",
-          "normalized_username_verdasys_hourly.sum_of_highest_destination_file_type_scores_verdasys_hourly",
-          "normalized_username_verdasys_hourly.sum_of_highest_email_sender_scores_verdasys_hourly",
-          "normalized_username_verdasys_hourly.sum_of_highest_event_description_scores_verdasys_hourly",
-          "normalized_username_verdasys_hourly.sum_of_highest_source_file_type_scores_verdasys_hourly",
-          "normalized_username_verdasys_hourly.sum_of_highest_printer_scores_verdasys_hourly"
+          "normalized_username_dlpmail_hourly.highest_date_time_score_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.highest_detail_file_size_score_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_normalized_src_machine_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_application_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_destination_file_type_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_email_sender_scores_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_highest_source_file_type_scores_dlpmail_hourly"
+
         ]
       },
       "entityEventFunction": {
@@ -614,83 +514,35 @@
           "distinct_normalized_src_machine_kerberos_tgt":[
             "normalized_username_kerberos_tgt_hourly.distinct_number_of_normalized_src_machine_kerberos_tgt_hourly"
           ],
-          "distinct_normalized_src_machine_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_distinct_normalized_src_machine_verdasys_hourly"
+          "distinct_normalized_src_machine_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_distinct_normalized_src_machine_dlpmail_hourly"
           ],
-          "distinct_application_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_distinct_application_verdasys_hourly"
+          "distinct_application_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_distinct_application_dlpmail_hourly"
           ],
-          "distinct_event_description_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_distinct_event_description_verdasys_hourly"
+          "distinct_alerted_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_alerted_event_dlpmail_hourly"
           ],
-          "distinct_alerted_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_alerted_event_verdasys_hourly"
+          "distinct_classified_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_classified_event_dlpmail_hourly"
           ],
-          "distinct_classified_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_classified_event_verdasys_hourly"
+          "distinct_outbound_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_outbound_event_dlpmail_hourly"
           ],
-          "distinct_outbound_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_outbound_event_verdasys_hourly"
+          "distinct_removable_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_removable_event_dlpmail_hourly"
           ],
-          "distinct_removable_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_removable_event_verdasys_hourly"
+          "distinct_blocked_event_dlpmail": [
+              "normalized_username_dlpmail_hourly.number_of_blocked_event_dlpmail_hourly"
           ],
-          "distinct_blocked_event_verdasys": [
-              "normalized_username_verdasys_hourly.number_of_blocked_event_verdasys_hourly"
+          "distinct_email_attachment_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_email_attachment_event_dlpmail_hourly"
           ],
-          "distinct_email_attachment_verdasys": [
-              "normalized_username_verdasys_daily.number_of_email_attachment_event_verdasys_hourly"
+          "distinct_email_recipient_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_distinct_email_recipient_dlpmail_hourly"
           ],
-          "distinct_email_recipient_verdasys": [
-              "normalized_username_verdasys_daily.number_of_distinct_email_recipient_verdasys_hourly"
-          ],
-          "distinct_sent_mail_verdasys": [
-              "normalized_username_verdasys_daily.number_of_sent_mail_event_verdasys_hourly"
-          ],
-          "distinct_CD_Burn_verdasys": [
-              "normalized_username_verdasys_daily.number_of_CD_Burn_event_verdasys_hourly"
-          ],
-          "distinct_File_Archive_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Archive_event_verdasys_hourly"
-          ],
-          "distinct_File_Close_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Close_event_verdasys_hourly"
-          ],
-          "distinct_File_Copy_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Copy_event_verdasys_hourly"
-          ],
-          "distinct_File_Create_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Create_event_verdasys_hourly"
-          ],
-          "distinct_File_Delete_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Delete_event_verdasys_hourly"
-          ],
-          "distinct_File_Edit_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Edit_event_verdasys_hourly"
-          ],
-          "distinct_File_Move_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Move_event_verdasys_hourly"
-          ],
-          "distinct_File_Open_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Open_event_verdasys_hourly"
-          ],
-          "distinct_File_Read_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Read_event_verdasys_hourly"
-          ],
-          "distinct_File_Recycle_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Recycle_event_verdasys_hourly"
-          ],
-          "distinct_File_Rename_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Rename_event_verdasys_hourly"
-          ],
-          "distinct_File_Restore_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Restore_event_verdasys_hourly"
-          ],
-          "distinct_File_Saveas_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Saveas_event_verdasys_hourly"
-          ],
-          "distinct_File_Write_verdasys": [
-              "normalized_username_verdasys_daily.number_of_File_Write_event_verdasys_hourly"
+          "distinct_sent_mail_dlpmail": [
+              "normalized_username_dlpmail_daily.number_of_sent_mail_event_dlpmail_hourly"
           ]
 
         },
@@ -728,32 +580,17 @@
           "successful_kerberos_tgt":0.09,
           "failed_kerberos_tgt":0.09,
           "distinct_normalized_src_machine_kerberos_tgt":0.09,
-          "distinct_normalized_src_machine_verdasys": 0.09,
-          "distinct_application_verdasys": 0.09,
-          "distinct_event_description_verdasys": 0.09,
-          "distinct_alerted_event_verdasys": 0.09,
-          "distinct_classified_event_verdasys": 0.09,
-          "distinct_outbound_event_verdasys": 0.09,
-          "distinct_removable_event_verdasys": 0.09,
-          "distinct_blocked_event_verdasys": 0.09,
-          "distinct_email_attachment_verdasys":0.09,
-          "distinct_email_recipient_verdasys":0.09,
-          "distinct_sent_mail_verdasys":0.09,
-          "distinct_CD_Burn_verdasys":0.09,
-          "distinct_File_Archive_verdasys":0.09,
-          "distinct_File_Close_verdasys":0.09,
-          "distinct_File_Copy_verdasys":0.09,
-          "distinct_File_Create_verdasys":0.09,
-          "distinct_File_Delete_verdasys":0.09,
-          "distinct_File_Edit_verdasys":0.09,
-          "distinct_File_Move_verdasys":0.09,
-          "distinct_File_Open_verdasys":0.09,
-          "distinct_File_Read_verdasys":0.09,
-          "distinct_File_Recycle_verdasys":0.09,
-          "distinct_File_Rename_verdasys":0.09,
-          "distinct_File_Restore_verdasys":0.09,
-          "distinct_File_Saveas_verdasys":0.09,
-          "distinct_File_Write_verdasys":0.09
+          "distinct_normalized_src_machine_dlpmail": 0.09,
+          "distinct_application_dlpmail": 0.09,
+          "distinct_alerted_event_dlpmail": 0.09,
+          "distinct_classified_event_dlpmail": 0.09,
+          "distinct_outbound_event_dlpmail": 0.09,
+          "distinct_removable_event_dlpmail": 0.09,
+          "distinct_blocked_event_dlpmail": 0.09,
+          "distinct_email_attachment_dlpmail":0.09,
+          "distinct_email_recipient_dlpmail":0.09,
+          "distinct_sent_mail_dlpmail":0.09
+
         },
        "betas": {
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly": 0.002,
@@ -790,17 +627,14 @@
          "normalized_username_kerberos_tgt_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_tgt_hourly":0.002,
          "normalized_username_kerberos_tgt_hourly.highest_scores_over_failure_code_kerberos_tgt_hourly":0.002,
          "normalized_username_kerberos_tgt_hourly.highest_score_over_date_time_events_kerberos_tgt_hourly":0.002,
-         "normalized_username_verdasys_hourly.highest_date_time_score_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.highest_bytes_written_score_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.highest_detail_file_size_score_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.highest_bytes_read_score_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.sum_of_highest_normalized_src_machine_scores_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.sum_of_highest_application_scores_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.sum_of_highest_destination_file_type_scores_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.sum_of_highest_email_sender_scores_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.sum_of_highest_event_description_scores_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.sum_of_highest_source_file_type_scores_verdasys_hourly": 0.002,
-         "normalized_username_verdasys_hourly.sum_of_highest_printer_scores_verdasys_hourly": 0.002
+         "normalized_username_dlpmail_hourly.highest_date_time_score_dlpmail_hourly": 0.002,
+         "normalized_username_dlpmail_hourly.highest_detail_file_size_score_dlpmail_hourly": 0.002,
+         "normalized_username_dlpmail_hourly.sum_of_highest_normalized_src_machine_scores_dlpmail_hourly": 0.002,
+         "normalized_username_dlpmail_hourly.sum_of_highest_application_scores_dlpmail_hourly": 0.002,
+         "normalized_username_dlpmail_hourly.sum_of_highest_destination_file_type_scores_dlpmail_hourly": 0.002,
+         "normalized_username_dlpmail_hourly.sum_of_highest_email_sender_scores_dlpmail_hourly": 0.002,
+         "normalized_username_dlpmail_hourly.sum_of_highest_source_file_type_scores_dlpmail_hourly": 0.002
+         
         }
       }
     },

@@ -37,8 +37,8 @@ public class DGVerdasysEmailTest {
 		String kafkaMessageFields = propertiesResolver.getProperty("kafka.verdasys.message.record.fields");
 
 		List<String> sshMessageOutputFields = ImpalaParser.getTableFieldNames(kafkaMessageFields);
-		String confFile = "resources/conf-files/parseDG.conf";
-		String confEnrichmentFile = "resources/conf-files/enrichment/readVERDASYS_enrich.conf";
+		String confFile = "resources/conf-files/parseDlpMail.conf";
+		String confEnrichmentFile = "resources/conf-files/enrichment/readDlpMail_enrich.conf";
 		morphlineTester.init(new String[]{confFile, confEnrichmentFile}, sshMessageOutputFields);
 	}
 

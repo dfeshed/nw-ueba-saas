@@ -1,18 +1,18 @@
 {
     "data-source-scorers": [
         {
-            "data-source": "",
+            "data-source": "dlpmail",
             "scorers": [
                 {
                     "type": "pareto-scorer",
-                    "name": "verdasys-event-scorer",
+                    "name": "dlpmail-event-scorer",
                     "highest-score-weight": 0.65,
                     "scorers": [
                         {
                             "type": "time-model-scorer",
-                            "name": "date_time_unix.normalized_username.verdasys.scorer",
+                            "name": "date_time_unix.normalized_username.dlpmail.scorer",
                             "model": {
-                                "name": "date_time_unix.normalized_username.verdasys"
+                                "name": "date_time_unix.normalized_username.dlpmail"
                             },
                             "number-of-samples-to-influence-enough": 30,
                             "use-certainty-to-calculate-score": true
@@ -22,21 +22,21 @@
                             "name": "normalizedSrcMachineScorer",
                             "main-scorer": {
                                 "type": "category-rarity-model-scorer",
-                                "name": "normalized_src_machine.normalized_username.verdasys.scorer",
+                                "name": "normalized_src_machine.normalized_username.dlpmail.scorer",
                                 "model": {
-                                    "name": "normalized_src_machine.normalized_username.verdasys"
+                                    "name": "normalized_src_machine.normalized_username.dlpmail"
                                 },
                                 "max-rare-count": 5,
                                 "max-num-of-rare-features": 15
                             },
                             "reduction-scorer": {
                                 "type": "score-and-certainty-multiplier-scorer",
-                                "name": "normalized_username.normalized_src_machine.verdasys.scorer",
+                                "name": "normalized_username.normalized_src_machine.dlpmail.scorer",
                                 "base-scorer": {
                                     "type": "category-rarity-model-scorer",
-                                    "name": "normalized_username.normalized_src_machine.verdasys.base_scorer",
+                                    "name": "normalized_username.normalized_src_machine.dlpmail.base_scorer",
                                     "model": {
-                                        "name": "normalized_username.normalized_src_machine.verdasys"
+                                        "name": "normalized_username.normalized_src_machine.dlpmail"
                                     },
                                     "max-rare-count": 5,
                                     "max-num-of-rare-features": 15
@@ -46,9 +46,9 @@
                         },
                         {
                             "type": "category-rarity-model-scorer",
-                            "name": "application.normalized_username.verdasys.scorer",
+                            "name": "application.normalized_username.dlpmail.scorer",
                             "model": {
-                                "name": "application.normalized_username.verdasys"
+                                "name": "application.normalized_username.dlpmail"
                             },
                             "max-rare-count": 5,
                             "max-num-of-rare-features": 15,
@@ -57,9 +57,9 @@
                         },
                         {
                             "type": "category-rarity-model-scorer",
-                            "name": "destination_file_type.normalized_username.verdasys.scorer",
+                            "name": "destination_file_type.normalized_username.dlpmail.scorer",
                             "model": {
-                                "name": "destination_file_type.normalized_username.verdasys"
+                                "name": "destination_file_type.normalized_username.dlpmail"
                             },
                             "max-rare-count": 5,
                             "max-num-of-rare-features": 15,
@@ -68,9 +68,9 @@
                         },
                         {
                             "type": "category-rarity-model-scorer",
-                            "name": "email_sender.normalized_username.verdasys.scorer",
+                            "name": "email_sender.normalized_username.dlpmail.scorer",
                             "model": {
-                                "name": "email_sender.normalized_username.verdasys"
+                                "name": "email_sender.normalized_username.dlpmail"
                             },
                             "max-rare-count": 5,
                             "max-num-of-rare-features": 15,
@@ -79,115 +79,23 @@
                         },
                         {
                             "type": "category-rarity-model-scorer",
-                            "name": "event_description.normalized_username.verdasys.scorer",
+                            "name": "source_file_type.normalized_username.dlpmail.scorer",
                             "model": {
-                                "name": "event_description.normalized_username.verdasys"
+                                "name": "source_file_type.normalized_username.dlpmail"
                             },
                             "max-rare-count": 5,
                             "max-num-of-rare-features": 15,
                             "number-of-samples-to-influence-enough": 30,
                             "use-certainty-to-calculate-score": true
-                        },
-                        {
-                            "type": "reduction-scorer",
-                            "name": "printerScorer",
-                            "main-scorer": {
-                                "type": "category-rarity-model-scorer",
-                                "name": "printer.normalized_username.verdasys.scorer",
-                                "model": {
-                                    "name": "printer.normalized_username.verdasys"
-                                },
-                                "max-rare-count": 5,
-                                "max-num-of-rare-features": 15
-                            },
-                            "reduction-scorer": {
-                                "type": "score-and-certainty-multiplier-scorer",
-                                "name": "normalized_username.printer.verdasys.scorer",
-                                "base-scorer": {
-                                    "type": "category-rarity-model-scorer",
-                                    "name": "normalized_username.printer.verdasys.base_scorer",
-                                    "model": {
-                                        "name": "normalized_username.printer.verdasys"
-                                    },
-                                    "max-rare-count": 5,
-                                    "max-num-of-rare-features": 15
-                                }
-                            },
-                            "reduction-weight": 0.5
-                        },
-                        {
-                            "type": "category-rarity-model-scorer",
-                            "name": "source_file_type.normalized_username.verdasys.scorer",
-                            "model": {
-                                "name": "source_file_type.normalized_username.verdasys"
-                            },
-                            "max-rare-count": 5,
-                            "max-num-of-rare-features": 15,
-                            "number-of-samples-to-influence-enough": 30,
-                            "use-certainty-to-calculate-score": true
-                        },
-                        {
-                            "type": "low-values-score-reducer",
-                            "name": "bytesReadScorer",
-                            "base-scorer": {
-                                "type": "continuous-values-model-scorer",
-                                "name": "bytes_read.normalized_username.verdasys.scorer",
-                                "model": {
-                                    "name": "bytes_read.normalized_username.verdasys"
-                                },
-                                "quad-poly-calibration-conf": {
-                                    "a1": 1500.0,
-                                    "a2": 499999.0,
-                                    "sensitivity": 1.0,
-                                    "is-score-for-small-values": false
-                                },
-                                "number-of-samples-to-influence-enough": 30,
-                                "use-certainty-to-calculate-score": true
-                            },
-                            "reduction-configs": [
-                                {
-                                    "reducingFeatureName": "readbytes",
-                                    "reducingFactor": 0,
-                                    "maxValueForFullyReduce": 25000000,
-                                    "minValueForNotReduce": 600000000
-                                }
-                            ]
-                        },
-                        {
-                            "type": "low-values-score-reducer",
-                            "name": "bytesWriteScorer",
-                            "base-scorer": {
-                                "type": "continuous-values-model-scorer",
-                                "name": "bytes_written.normalized_username.verdasys.scorer",
-                                "model": {
-                                    "name": "bytes_written.normalized_username.verdasys"
-                                },
-                                "quad-poly-calibration-conf": {
-                                    "a1": 1500.0,
-                                    "a2": 499999.0,
-                                    "sensitivity": 1.0,
-                                    "is-score-for-small-values": false
-                                },
-                                "number-of-samples-to-influence-enough": 30,
-                                "use-certainty-to-calculate-score": true
-                            },
-                            "reduction-configs": [
-                                {
-                                    "reducingFeatureName": "readbytes",
-                                    "reducingFactor": 0,
-                                    "maxValueForFullyReduce": 25000000,
-                                    "minValueForNotReduce": 600000000
-                                }
-                            ]
                         },
                         {
                             "type": "low-values-score-reducer",
                             "name": "DestFileSizeScorer",
                             "base-scorer": {
                                 "type": "continuous-values-model-scorer",
-                                "name": "detail_file_size_kb.normalized_username.verdasys.scorer",
+                                "name": "detail_file_size_kb.normalized_username.dlpmail.scorer",
                                 "model": {
-                                    "name": "detail_file_size_kb.normalized_username.verdasys"
+                                    "name": "detail_file_size_kb.normalized_username.dlpmail"
                                 },
                                 "quad-poly-calibration-conf": {
                                     "a1": 1500.0,
@@ -255,7 +163,7 @@
                                     "name": "isRemovableRegexScorer",
                                     "regex": "true",
                                     "regex-field-name": "is_removable",
-                                    "constant-score": 80
+                                    "constant-score": 0
                                 }
                             ]
                         },
@@ -268,7 +176,7 @@
                                     "name": "wasBlockedRegexScorer",
                                     "regex": "true",
                                     "regex-field-name": "was_blocked_event",
-                                    "constant-score": 0
+                                    "constant-score": 80
                                 }
                             ]
                         },
@@ -310,33 +218,8 @@
                                     "constant-score": 100
                                 }
                             ]
-                        },
-                        {
-                            "type": "max-scorer-container",
-                            "name": "isLogoffScorer",
-                            "scorers": [
-                                {
-                                    "type": "constant-regex-scorer",
-                                    "name": "isOutboundRegexScorer",
-                                    "regex": "true",
-                                    "regex-field-name": "is_logoff",
-                                    "constant-score": 100
-                                }
-                            ]
-                        },
-                        {
-                            "type": "max-scorer-container",
-                            "name": "isLogonScorer",
-                            "scorers": [
-                                {
-                                    "type": "constant-regex-scorer",
-                                    "name": "isOutboundRegexScorer",
-                                    "regex": "true",
-                                    "regex-field-name": "is_logon",
-                                    "constant-score": 100
-                                }
-                            ]
                         }
+
                     ]
                 }
             ]
