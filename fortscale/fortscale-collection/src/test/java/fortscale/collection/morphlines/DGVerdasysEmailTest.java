@@ -171,6 +171,28 @@ public class DGVerdasysEmailTest {
 		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
 	}
 
+	@Test
+	public void test_has_src_classification_CALCULATION_true() {
+
+
+		String testCase = "Test has_src_classification calculation";
+		String inputLine = "2016.04.03,4/3/2016 9:20:07 PM,4/4/2016 1:20:07 AM,outlook.exe,verdasys\\arollins-e7450,Windows,,,,,,Ashlee,Rollins,A2591A52-25E6-4D65-B860-9A406D8C7E85,verdasys\\arollins,,microsoft,4A7E05E6B884634865B46C183398C2B0308C2B06,C15B3AC1EDA1B6CA671526FE00F88804AFAD96DD8E7699854C027548415114D6,microsoft outlook,15.0.4805.1000,Scanned,3/9/2016 3:54:25 AM,Virus Total: 0 / 57 scans positive.,,,,,outlook,arollins@digitalguardian.com,Invoice 905 and 956,,AE8E5A08-761C-1034-92A3-806E7FDE1400,,,5ed6ecbd5a82c562188ce3256f68e923,bdecd65e-825a-62c5-188c-e3256f68e923,Outbound,Send Mail,,0,,False,False,False,True,False,True,1,False,0,False,False,False,,,,,,,,,,,,,Not Blocked,8011,0,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,isecurity - novatek taiwan mnt inv 956.pdf,,pdf,F32286A1-FA02-11E5-828D-4C348811383D,8011,False,isecurity.com.tw,cendy@isecurity.com.tw,To,,isecurity - novatek taiwan mnt inv 956.mdb,,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,isecurity - novatek taiwan mnt inv 956.mdb,,pdf,,False,False,True,0,0,False,False,False,Fixed,4ce49592-9453-00ae-144a-8e8d90c803cf,None,,arollins@digitalguardian.com,,,,,Unknown\n";
+		String expectedOutput = "2016-04-04 01:20:07,1459732807,arollins,,,arollins-e7450,arollins-e7450,,,,,,,,,A2591A52-25E6-4D65-B860-9A406D8C7E85,,outlook.exe,8011,0,,None,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,isecurity - novatek taiwan mnt inv 956.pdf,,,8011,outlook,,,,cendy@isecurity.com.tw,isecurity.com.tw,,arollins@digitalguardian.com,Invoice 905 and 956,,Send Mail,,,AE8E5A08-761C-1034-92A3-806E7FDE1400,,,,true,true,False,,,,,isecurity - novatek taiwan mnt inv 956.mdb,0,,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,,Fixed,isecurity - novatek taiwan mnt inv 956.mdb,,,,false,false,false,true,,,Ashlee Rollins,dlpmail,etl";
+
+		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+	}
+
+	@Test
+	public void test_has_src_classification_CALCULATION_false() {
+
+
+		String testCase = "Test has_src_classification calculation";
+		String inputLine = "2016.04.03,4/3/2016 9:20:07 PM,4/4/2016 1:20:07 AM,outlook.exe,verdasys\\arollins-e7450,Windows,,,,,,Ashlee,Rollins,A2591A52-25E6-4D65-B860-9A406D8C7E85,verdasys\\arollins,,microsoft,4A7E05E6B884634865B46C183398C2B0308C2B06,C15B3AC1EDA1B6CA671526FE00F88804AFAD96DD8E7699854C027548415114D6,microsoft outlook,15.0.4805.1000,Scanned,3/9/2016 3:54:25 AM,Virus Total: 0 / 57 scans positive.,,,,,outlook,arollins@digitalguardian.com,Invoice 905 and 956,,AE8E5A08-761C-1034-92A3-806E7FDE1400,,,5ed6ecbd5a82c562188ce3256f68e923,bdecd65e-825a-62c5-188c-e3256f68e923,Outbound,Send Mail,,0,,False,False,False,True,False,True,1,False,0,False,False,False,,,,,,,,,,,,,Not Blocked,8011,0,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,isecurity - novatek taiwan mnt inv 956.pdf,,pdf,F32286A1-FA02-11E5-828D-4C348811383D,8011,False,isecurity.com.tw,cendy@isecurity.com.tw,To,,isecurity - novatek taiwan mnt inv 956.pdf,,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,isecurity - novatek taiwan mnt inv 956.pdf,,pdf,,False,False,True,0,0,False,False,False,Fixed,4ce49592-9453-00ae-144a-8e8d90c803cf,None,,arollins@digitalguardian.com,,,,,Unknown\n";
+		String expectedOutput = "2016-04-04 01:20:07,1459732807,arollins,,,arollins-e7450,arollins-e7450,,,,,,,,,A2591A52-25E6-4D65-B860-9A406D8C7E85,,outlook.exe,8011,0,,None,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,isecurity - novatek taiwan mnt inv 956.pdf,,,8011,outlook,,,,cendy@isecurity.com.tw,isecurity.com.tw,,arollins@digitalguardian.com,Invoice 905 and 956,,Send Mail,,,AE8E5A08-761C-1034-92A3-806E7FDE1400,,,,false,true,False,,,,,isecurity - novatek taiwan mnt inv 956.pdf,0,,c:\\users\\arollins\\appdata\\local\\microsoft\\windows\\inetcache\\content.word\\,,Fixed,isecurity - novatek taiwan mnt inv 956.pdf,,,,false,false,false,true,,,Ashlee Rollins,dlpmail,etl";
+
+		morphlineTester.testSingleLine(testCase, inputLine, expectedOutput);
+	}
+
 
 
 
