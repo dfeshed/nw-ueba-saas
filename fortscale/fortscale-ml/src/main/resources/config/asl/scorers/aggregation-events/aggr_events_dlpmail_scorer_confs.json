@@ -388,38 +388,6 @@
         },
 
         {
-            "data-source": "aggr_event.normalized_username_dlpmail_hourly.number_of_alerted_event_description_dlpmail_daily",
-            "scorers": [
-                {
-                    "type": "low-values-score-reducer",
-                    "name": "number_of_alerted_event_description_dlpmail_daily_scorer",
-                    "base-scorer": {
-                        "type": "continuous-values-model-scorer",
-                        "name": "number_of_alerted_event_description.normalized_username.dlpmail.daily.scorer",
-                        "model": {
-                            "name": "number_of_alerted_event_description.dlpmail.daily"
-                        },
-                        "quad-poly-calibration-conf": {
-                            "a1": 1500.0,
-                            "a2": 499999.0,
-                            "sensitivity": 1.0,
-                            "is-score-for-small-values": false
-                        },
-                        "number-of-samples-to-influence-enough": 30,
-                        "use-certainty-to-calculate-score": true
-                    },
-                    "reduction-configs": [
-                        {
-                            "reducingFeatureName": "aggregated_feature_value",
-                            "reducingFactor": 0.1,
-                            "maxValueForFullyReduce": 2,
-                            "minValueForNotReduce": 6
-                        }
-                    ]
-                }
-            ]
-        },
-        {
             "data-source": "aggr_event.normalized_username_dlpmail_hourly.number_of_classified_event_dlpmail_daily",
             "scorers": [
                 {
