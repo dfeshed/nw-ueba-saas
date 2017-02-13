@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
-import { alias } from 'ember-computed-decorators';
+import { alias, readOnly } from 'ember-computed-decorators';
 import csrfToken from '../../mixins/csrf-token';
 
 const {
@@ -34,7 +34,7 @@ export default Component.extend(csrfToken, {
   isExpanded: false,
   locales: ['en-us', 'ja'],
 
-  @alias('appVersion.version') version: null,
+  @readOnly @alias('appVersion.version') version: null,
 
   init() {
     this._super(arguments);

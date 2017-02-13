@@ -14,7 +14,7 @@ export default Service.extend({
   i18n: service(),
 
   locale: computed.alias('i18n.locale'),
-  version: computed.alias('appVersion.version'),
+  version: computed.readOnly('appVersion.version'),
 
   urlBase: 'http://cms.netwitness.com/sadocs',
 
