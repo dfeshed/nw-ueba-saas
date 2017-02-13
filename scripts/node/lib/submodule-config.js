@@ -72,7 +72,8 @@ const saModuleDependencies = {
     'streaming-data',
     'investigate',
     'recon',
-    'context'
+    'context',
+    'respond'
   ],
   investigate: [
     'component-lib',
