@@ -10,12 +10,11 @@ const {
 } = Ember;
 
 export default Service.extend({
-
+  appVersion: service(),
   i18n: service(),
 
   locale: computed.alias('i18n.locale'),
-
-  version: '11.0.0',
+  version: computed.alias('appVersion.version'),
 
   urlBase: 'http://cms.netwitness.com/sadocs',
 

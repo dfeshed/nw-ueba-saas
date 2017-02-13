@@ -4,7 +4,6 @@
 export default {
   application: {
     title: 'ja_Netwitness Suite',
-    version: 'ja_11.0.0',
     copyright: 'ja_&copy;2015 RSA Security LLC. All rights reserved.'
   },
   monitor: {

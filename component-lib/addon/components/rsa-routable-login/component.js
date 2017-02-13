@@ -1,11 +1,12 @@
 /**
-* @file Login component
-* @description component responsible for establishing new session
-* @public
-*/
+ * @file Login component
+ * @description component responsible for establishing new session
+ * @public
+ */
 
 import Ember from 'ember';
-import layout from '../templates/components/rsa-routable-login';
+import layout from './template';
+
 
 const {
   getOwner,
@@ -31,7 +32,7 @@ const _STATUS = {
 };
 
 export default Component.extend({
-
+  appVersion: service(),
   session: service(),
 
   layout,
@@ -49,6 +50,8 @@ export default Component.extend({
    * @public
    */
   username: null,
+
+  version: computed.readOnly('appVersion.version'),
 
   /**
    * User password.
@@ -106,35 +109,35 @@ export default Component.extend({
   status: _STATUS.INIT,
 
   /**
-  * Indicates the user has started the password reset process.
-  * @type Boolean
-  * @default false
-  * @public
-  */
+   * Indicates the user has started the password reset process.
+   * @type Boolean
+   * @default false
+   * @public
+   */
   willRequestPasswordReset: false,
 
   /**
-  * Indicates the user has completed the password reset process.
-  * @type Boolean
-  * @default false
-  * @public
-  */
+   * Indicates the user has completed the password reset process.
+   * @type Boolean
+   * @default false
+   * @public
+   */
   didRequestPasswordReset: false,
 
   /**
-  * Indicates the user has completed the password reset process.
-  * @type Boolean
-  * @default false
-  * @public
-  */
+   * Indicates the user has completed the password reset process.
+   * @type Boolean
+   * @default false
+   * @public
+   */
   hasError: computed.notEmpty('errorMessage'),
 
   /**
-  * Only false when the 'username' and 'password' properties are non-empty strings with some non-space character.
-  * Used for enabling/disabling the login button in the UI.
-  * @type Boolean
-  * @public
-  */
+   * Only false when the 'username' and 'password' properties are non-empty strings with some non-space character.
+   * Used for enabling/disabling the login button in the UI.
+   * @type Boolean
+   * @public
+   */
   isLoginDisabled: computed('username', 'password', 'status', function() {
     const uid = this.get('username');
     const password = this.get('password');
@@ -154,9 +157,9 @@ export default Component.extend({
   actions: {
 
     /**
-    * Begins password reset process
-    * @public
-    */
+     * Begins password reset process
+     * @public
+     */
     initiatePasswordReset() {
       this.setProperties({
         status: null,
@@ -172,17 +175,17 @@ export default Component.extend({
     },
 
     /**
-    * Make reset request
-    * @public
-    */
+     * Make reset request
+     * @public
+     */
     requestPasswordReset() {
       this.set('didRequestPasswordReset', true);
     },
 
     /**
-    * Resets login process defaults, returns to login page
-    * @public
-    */
+     * Resets login process defaults, returns to login page
+     * @public
+     */
     resetComplete() {
       this.setProperties({
         status: null,
