@@ -44,6 +44,7 @@ installAppDeps streaming-data
 installAppDeps recon
 installAppDeps style-guide
 installAppDeps investigate
+installAppDeps respond
 installAppDeps context
 installAppDeps sa
 

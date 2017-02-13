@@ -3,6 +3,7 @@ const ALL_SUBMODULES = [
   'mock-server',
   'recon',
   'investigate',
+  'respond',
   'sa',
   'streaming-data',
   'style-guide',
@@ -18,6 +19,7 @@ const saModuleDependants = {
     'sa',
     'style-guide',
     'investigate',
+    'respond',
     'context'
   ],
   docs: [], // lol
@@ -26,6 +28,7 @@ const saModuleDependants = {
     'streaming-data',
     'recon',
     'investigate',
+    'respond',
     'context'
   ],
   recon: [
@@ -34,10 +37,12 @@ const saModuleDependants = {
   ],
   sa: [], // sa is an end state app, nothing depends on it
   investigate: ['sa'],
+  respond: ['sa'],
   scripts: ALL_SUBMODULES, // Everything depends on scripts
   'streaming-data': [
     'recon',
     'investigate',
+    'respond',
     'sa',
     'style-guide',
     'context'
@@ -75,6 +80,11 @@ const saModuleDependencies = {
     'recon',
     'mock-server',
     'context'
+  ],
+  respond: [
+    'component-lib',
+    'streaming-data',
+    'mock-server'
   ],
   scripts: ALL_SUBMODULES,
   'streaming-data': [

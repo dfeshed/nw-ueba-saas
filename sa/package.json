@@ -95,6 +95,7 @@
       "../component-lib",
       "../streaming-data",
       "../investigate",
+      "../respond",
       "../recon",
       "../context"
     ]

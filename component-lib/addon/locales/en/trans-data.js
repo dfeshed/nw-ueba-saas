@@ -300,6 +300,32 @@ export default {
       details: 'Live Feeds content goes here.'
     }
   },
+  respond: {
+    timeframeOptions: {
+      lastHour: 'Last hour',
+      lastTwelveHours: 'Last 12 hours',
+      lastTwentyFourHours: 'Last 24 hours',
+      lastFortyEightHours: 'Last 48 hours',
+      lastSevenDays: 'Last 7 days',
+      lastMonth: 'Last month',
+      lastTwelveMonths: 'Last 12 months',
+      allTime: 'All time'
+    },
+    incidents: {
+      precannedFilters: {
+        all: 'All Incidents',
+        assignedToMe: 'Assigned to me',
+        inProgress: 'In Progress',
+        unassigned: 'Unassigned'
+      },
+      sort: {
+        score: 'Score',
+        oldest: 'Oldest',
+        newest: 'Newest',
+        status: 'Status'
+      }
+    }
+  },
   context: {
     title: 'Context for',
     lastUpdated: 'Last Updated:',

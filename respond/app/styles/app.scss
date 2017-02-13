@@ -1,0 +1,37 @@
+@charset "UTF-8";
+
+/* pulling in component-lib from inside respond */
+@import 'component-lib/manifest';
+
+/* Pulling in local respond styles */
+@import 'respond/manifest';
+
+// Beautification of dummy app splash page for Engine dummy app -- purely cosmetic with no effect on application code
+body.respond-engine-dummy {
+  background: rsa-color(white);
+
+  .rsa-logo {
+    .rsa-logo__title {
+      color: rsa-color(green);
+      text-align: center;
+      font-size: 25px;
+    }
+  }
+
+  a:-webkit-any-link {
+    text-decoration: none;
+  }
+}
+
+.respond-engine {
+  // Temporary: overrides of component-lib base application backgrounds and color for Respond v2 prototype
+  background: rsa-color(white);
+  height: 100vh;
+  display: flex;
+
+  // Temporary background icon styling for in-progress routes
+  .background-icon {
+    font-size: 15rem;
+    color: rsa-color(red, dark);
+  }
+}

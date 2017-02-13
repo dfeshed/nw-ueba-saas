@@ -36,6 +36,7 @@ nukeApp streaming-data
 nukeApp recon
 nukeApp style-guide
 nukeApp investigate
+nukeApp respond
 nukeApp context
 nukeApp sa
 

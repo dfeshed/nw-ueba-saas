@@ -300,6 +300,32 @@ export default {
       details: 'ja_Live Feeds content goes here.'
     }
   },
+  respond: {
+    timeframeOptions: {
+      lastHour: 'ja_Last hour',
+      lastTwelveHours: 'ja_Last 12 hours',
+      lastTwentyFourHours: 'ja_Last 24 hours',
+      lastFortyEightHours: 'ja_Last 48 hours',
+      lastSevenDays: 'ja_Last 7 days',
+      lastMonth: 'ja_Last month',
+      lastTwelveMonths: 'ja_Last 12 months',
+      allTime: 'ja_All time'
+    },
+    incidents: {
+      precannedFilters: {
+        all: 'ja_All Incidents',
+        assignedToMe: 'ja_Assigned to me',
+        inProgress: 'ja_In Progress',
+        unassigned: 'ja_Unassigned'
+      },
+      sort: {
+        score: 'ja_Score',
+        oldest: 'ja_Oldest',
+        newest: 'ja_Newest',
+        status: 'ja_Status'
+      }
+    }
+  },
   context: {
     title: 'ja_Context',
     lastUpdated: 'ja_Last Updated:',

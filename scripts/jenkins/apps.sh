@@ -226,6 +226,7 @@ buildEmberApp recon false true
 buildEmberApp context false
 buildEmberApp style-guide true
 buildEmberApp investigate false
+buildEmberApp respond false true
 buildEmberApp sa true
 
 unsetWebProxy
