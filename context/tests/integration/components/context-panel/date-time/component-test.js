@@ -11,6 +11,6 @@ test('Test context panel should display time window', function(assert) {
 
   this.render(hbs`{{context-panel/date-time timestamp=timeStamp asTimeAgo=asTimeAgo}}`);
   assert.equal(this.$('.rsa-context-panel__context-data-table__heading-text').prevObject[0].textContent.trim(),
-      '11 days ago');
+      '12 days ago');
 
 });
