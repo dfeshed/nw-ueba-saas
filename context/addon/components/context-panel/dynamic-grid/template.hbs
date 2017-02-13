@@ -1,0 +1,47 @@
+{{#if (gt array.length 0)}}
+  <div class="rsa-context-panel__grid__heading-text">
+    {{t title}}
+    <span title={{t 'context.hostSummary.title'}}></span>
+  </div>
+  {{#each array as |data|}}
+    {{#if errorMessage}}
+      <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
+    {{else}}
+      <hbox class="rsa-context-panel__grid__host-details">
+        {{#each columns.columns as |columnsdata|}}
+          <vbox class={{columnsdata.class}}>
+            {{#each columnsdata.cell as |cellData index|}}
+              {{#if (eq cellData.dataType 'link')}}
+                <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
+                <div class="rsa-context-panel__grid__host-details__field-value rsa-context-panel__grid link">
+                  <a href={{concat 'ecatui://' (get data cellData.field)  }} target="_blank">{{get data cellData.field}}</a>
+                </div>
+              {{else if (eq cellData.dataType 'riskScore')}}
+                {{rsa-content-badge-score
+                  label=(t cellData.title)
+                  class="rsa-context-risk-score"
+                  score=(get data cellData.field )
+                  size='small'
+                  style=(risk-score-to-badge-level data.IIOCScore)
+                }}
+              {{else}}
+                {{#if columnsdata.displayField}}
+                  <div class="rsa-context-panel__grid__host-details__field-name">{{t cellData.title}}</div>
+                {{/if}}
+                <div class="rsa-context-panel__grid__host-details__field-value">
+                  <span title= {{get data cellData.field}}>{{get data cellData.field}}</span>
+                </div>
+              {{/if}}
+            {{/each}}
+          </vbox>
+        {{/each}}
+      </hbox>
+      <div class="rsa-context-panel__grid__border"></div>
+    {{/if}}
+  {{/each}}
+  {{#if (eq tabdata 'overview')}}
+    <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'activate'}}>{{t 'context.footer.viewAll'}}</button></div>
+  {{/if}}
+{{else}}
+  <div class='rsa-context-panel__error-text'>{{t 'context.error.noData'}}</div>
+{{/if}}

@@ -365,6 +365,15 @@ export default {
       machineStatus: 'Machine Status',
       ipAddress: 'IPAddress'
     },
+    ADdata: {
+      title: 'User Information',
+      employeeID: 'employeeID',
+      department: 'department',
+      postalAddress: 'location',
+      manager: 'manager',
+      groups: 'groups',
+      jobCodes: 'jobCodes'
+    },
     modules: {
       title: 'Top Suspicious Modules',
       iiocScore: 'Iioc Score',

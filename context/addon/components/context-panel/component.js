@@ -5,6 +5,8 @@ import TabList from 'context/config/dynamic-tab';
 import endpointColumns from 'context/config/endpoint-columns';
 import imColumns from 'context/config/im-columns';
 import layout from './template';
+import machineData from 'context/config/machines';
+import userDetails from 'context/config/users';
 
 const {
   inject: {
@@ -36,6 +38,8 @@ export default Component.extend({
   contextData: null,
 
   contextColumnsConfig: endpointColumns.concat(imColumns),
+  machineColumns: machineData,
+  userColumns: userDetails,
 
   multicolumn: {
     multiColumnList: MultiColumnList

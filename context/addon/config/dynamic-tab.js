@@ -74,9 +74,9 @@ export default [{
       title: 'context.header.overview'
     },
     {
-      field: 'users',
+      field: 'Users',
       title: 'context.header.users',
-      dataSourceType: 'AD'
+      dataSourceType: 'Users'
 
     },
     {
