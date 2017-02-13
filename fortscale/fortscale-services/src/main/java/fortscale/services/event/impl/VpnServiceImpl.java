@@ -321,7 +321,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 
 
 	// Returns vpn sessions that are from the given prevCountry and with in the given thresholds bounds.
-	private List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
+	// Protected for test use only
+	protected List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, String prevCountry, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours){
 		logger.debug("looking for vpn sessions from {} which were created at most {} hours before {} and closed at most {} hours before that same time", prevCountry, vpnGeoHoppingOpenSessionThresholdInHours, curVpnSession.getCreatedAt(),
 				vpnGeoHoppingCloseSessionThresholdInHours);
 		PageRequest pageRequest = new PageRequest(0, 10, Direction.DESC, VpnSession.createdAtEpochFieldName);
@@ -338,8 +339,8 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 						vpnSession.getCountry());
 
 				if (!vpnSession.getCountry().equals(curVpnSession.getCountry()) &&
-						CollectionUtils.isEmpty(ret) &&
-						vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt())){
+						CollectionUtils.isEmpty(ret) && (vpnSession.getClosedAt() == null ||
+						vpnSession.getClosedAt().plusHours(vpnGeoHoppingCloseSessionThresholdInHours).isAfter(curVpnSession.getCreatedAt()))){
 					// The first vpn session we got is different from the one we expected
 					// (we expected that the first session is equals to the prevCountry)
 					// so we take it as geo hoping
@@ -421,8 +422,9 @@ public class VpnServiceImpl implements VpnService,InitializingBean {
 
 		return false;
 	}
-	
-	private boolean isValidSessionForGeoHopping(VpnSession vpnSession){
+
+	// protected for test only
+	protected boolean isValidSessionForGeoHopping(VpnSession vpnSession){
 		return StringUtils.isNotEmpty(vpnSession.getCountry()) && !GeoIPInfo.RESERVED_RANGE.equalsIgnoreCase(vpnSession.getCountry()) && !skipBasedOnBlackList(vpnSession);
 	}
 	
