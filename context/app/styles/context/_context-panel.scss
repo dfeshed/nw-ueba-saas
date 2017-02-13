@@ -73,8 +73,9 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
 
     &__heading-text>span {
       float: right;
-      padding:rsa-whitespace(least);
       color: $font-fade-color;
+      @include rsa-font(header, small);
+      letter-spacing: 0.05rem;
 
     }
 

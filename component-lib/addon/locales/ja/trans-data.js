@@ -302,6 +302,8 @@ export default {
   },
   context: {
     title: 'ja_Context',
+    lastUpdated: 'ja_Last Updated:',
+    timeWindow: 'ja_Time Window:',
     header: {
       overview: 'ja_overview',
       iioc: 'ja_iioc',
@@ -318,7 +320,7 @@ export default {
     },
     toolbar: {
       investigate: 'ja_Investigate',
-      endpoint: 'ja_NETWITNESS ENDPOINT',
+      endpoint: 'ja_NetWitness Endpoint',
       googleLookup: 'ja_Google Lookup',
       virusTotal: 'ja_VirusTotal Lookup',
       addToList: 'ja_Add to List'
@@ -354,7 +356,7 @@ export default {
     },
     incident: {
       title: 'ja_Incidents',
-      averageAlertRiskScore: 'ja_Risk Score',
+      averageAlertRiskScore: 'ja_Severity',
       _id: 'ja_Id',
       name: 'ja_Name',
       created: 'ja_Created',
@@ -366,7 +368,7 @@ export default {
     },
     alerts: {
       title: 'ja_Alerts',
-      risk_score: 'ja_Risk Score',
+      risk_score: 'ja_Severity',
       source: 'ja_Source',
       name: 'ja_Name',
       numEvents: 'ja_Events',

@@ -273,6 +273,11 @@
         "status": "NEW"
       }
     ],
+    "resultMeta": {
+      "timeQuerySubmitted": 1486022329719,
+      "timeFilter.timeUnit" : "DAYS",
+      "timeFilter.timeUnitCount" : "7"
+    },
     "pagingEnabled": false,
     "currentPageId": 0,
     "failed": false,
@@ -513,6 +518,11 @@
       }
 
     ],
+    "resultMeta": {
+      "timeQuerySubmitted": 1458242092315,
+      "timeFilter.timeUnit" : "DAYS",
+      "timeFilter.timeUnitCount" : "7"
+    },
     "pagingEnabled": false,
     "currentPageId": 0,
     "failed": false,
@@ -700,7 +710,8 @@
     ],
     "resultMeta": {
       "iocScore_gte": "500",
-      "total_modules_count": "3642"
+      "total_modules_count": "3642",
+      "timeQuerySubmitted": 1458242092315
     },
     "pagingEnabled": false,
     "currentPageId": 0,
@@ -839,7 +850,9 @@
         "IOCContext": "0"
       }
     ],
-    "resultMeta": {},
+    "resultMeta": {
+      "timeQuerySubmitted": 1458242092315
+    },
     "pagingEnabled": false,
     "currentPageId": 0,
     "failed": false,
@@ -887,7 +900,9 @@
         "Online":"True"
       }
     ],
-    "resultMeta": {},
+    "resultMeta": {
+      "timeQuerySubmitted": 1458242092315
+    },
     "pagingEnabled": false,
     "currentPageId": 0,
     "failed": false,

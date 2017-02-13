@@ -1,5 +1,11 @@
 <div class="rsa-context-panel__context-data-table__heading-text" >
   {{title}}{{headerdata}}
+  {{#if lastUpdated}}
+    <span title= {{title}}>
+      {{t 'context.timeWindow'}}{{timeWindow}} |
+      {{t 'context.lastUpdated'}}{{context-panel/date-time timestamp=lastUpdated asTimeAgo=true}}
+    </span>
+  {{/if}}
 </div>
 {{#if errorMessage}}
   <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
@@ -24,9 +30,9 @@
         {{else if (eq column.dataType 'datetime')}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}
             {{#if (eq column.nested '')}}
-              {{rsa-content-datetime timestamp=item }}
+              {{rsa-content-datetime timestamp=item }}{{rsa-content-datetime timestamp=item asTimeAgo=true}}
             {{else}}
-              {{rsa-content-datetime timestamp=(get item column.nested )  }}
+              {{rsa-content-datetime timestamp=(get item column.nested )}}{{rsa-content-datetime timestamp=(get item column.nested )  asTimeAgo=true}}
             {{/if}}
           {{/rsa-data-table/body-cell}}
         {{else if (eq column.dataType 'link')}}

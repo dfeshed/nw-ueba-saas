@@ -302,6 +302,8 @@ export default {
   },
   context: {
     title: 'Context for',
+    lastUpdated: 'Last Updated:',
+    timeWindow: 'Time Window:',
     header: {
       overview: 'overview',
       iioc: 'iioc',
@@ -318,7 +320,7 @@ export default {
     },
     toolbar: {
       investigate: 'Investigate',
-      endpoint: 'NETWITNESS ENDPOINT',
+      endpoint: 'NetWitness Endpoint',
       googleLookup: 'Google Lookup',
       virusTotal: 'VirusTotal Lookup',
       addToList: 'Add to List'
@@ -354,7 +356,7 @@ export default {
     },
     incident: {
       title: 'Incidents',
-      averageAlertRiskScore: 'Risk Score',
+      averageAlertRiskScore: 'Severity',
       _id: 'Id',
       name: 'Name',
       created: 'Created',
@@ -366,7 +368,7 @@ export default {
     },
     alerts: {
       title: 'Alerts',
-      risk_score: 'Risk Score',
+      risk_score: 'Severity',
       source: 'Source',
       name: 'Name',
       numEvents: 'Events',

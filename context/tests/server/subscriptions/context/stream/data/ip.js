@@ -271,6 +271,11 @@ export default [
         'status': 'NEW'
       }
     ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1486022329719,
+      'timeFilter.timeUnit': 'DAYS',
+      'timeFilter.timeUnitCount': '7'
+    },
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,
@@ -511,6 +516,11 @@ export default [
       }
 
     ],
+    'resultMeta': {
+      'timeQuerySubmitted': 1458242092315,
+      'timeFilter.timeUnit': 'DAYS',
+      'timeFilter.timeUnitCount': '7'
+    },
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,
@@ -697,8 +707,9 @@ export default [
       }
     ],
     'resultMeta': {
-      'minimum_ioc': '500',
-      'total_modules_count': '3642'
+      'iocScore_gte': '500',
+      'total_modules_count': '3642',
+      'timeQuerySubmitted': 1458242092315
     },
     'pagingEnabled': false,
     'currentPageId': 0,
@@ -837,7 +848,9 @@ export default [
         'IOCContext': '0'
       }
     ],
-    'resultMeta': {},
+    'resultMeta': {
+      'timeQuerySubmitted': 1458242092315
+    },
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,
@@ -885,7 +898,9 @@ export default [
         'Online': 'True'
       }
     ],
-    'resultMeta': {},
+    'resultMeta': {
+      'timeQuerySubmitted': 1458242092315
+    },
     'pagingEnabled': false,
     'currentPageId': 0,
     'failed': false,

@@ -4,6 +4,8 @@
       endpointData=contextData.Machines
       endpointAdditionalData=contextData.additionalData
       errorMessage=(get contextData 'Machines_ERROR')
+      lastUpdated=(get contextData 'Machines_LASTUPDATED')
+      timeWindow=(get contextData 'Machines_TIMEWINDOW')
     }}
   {{/if}}
   {{#each datasourceList as |columns index|}}
@@ -12,6 +14,8 @@
         data=(top-records (get contextData columns.dataSourceGroup) tabdata)
         title=(t columns.title )
         errorMessage=(get contextData (concat columns.dataSourceGroup '_ERROR'))
+        lastUpdated=(get contextData (concat columns.dataSourceGroup '_LASTUPDATED'))
+        timeWindow=(get contextData (concat columns.dataSourceGroup '_TIMEWINDOW'))
         modulesColumnListConfig=columns.columns
         headerdata=(get contextData (concat columns.dataSourceGroup '_HEADER'))
         footerdata=columns.footer

@@ -134,12 +134,25 @@ export default Component.extend({
     }
     return contextData;
   },
+
+  _displayTimeRange(contextData) {
+    if (contextData.resultMeta && contextData.resultMeta.timeQuerySubmitted) {
+      const timeWindow = contextData.resultMeta['timeFilter.timeUnitCount'] +
+        contextData.resultMeta['timeFilter.timeUnit'];
+      this.get('model').contextData[`${contextData.dataSourceGroup}_LASTUPDATED`] =
+          contextData.resultMeta.timeQuerySubmitted;
+      set(this.get('model').contextData, `${contextData.dataSourceGroup}_TIMEWINDOW`, timeWindow || 'All Data');
+    }
+    return contextData;
+  },
+
   _populateContextsData(contextData) {
     contextData = this._displayDataSourceError(contextData);
     if (contextData.errorMessage) {
       set(this.get('model').contextData, `${contextData.dataSourceGroup}_ERROR`, contextData.errorMessage);
       return;
     }
+    contextData = this._displayTimeRange(contextData);
     switch (contextData.dataSourceGroup) {
       case 'Modules': {
         set(this.get('model').contextData, 'additionalData', contextData.resultMeta);
