@@ -16,12 +16,14 @@ export default Controller.extend({
   accessControl: service(),
 
   isFullyAuthenticated: computed('session.isAuthenticated', 'currentPath', function() {
-    if (!this.get('session.isAuthenticated')) {
+    const path = this.get('currentPath');
+
+    if (!this.get('session.isAuthenticated') || path === 'not-found') {
       return false;
     }
+
     const query = window.location.search;
     const isRedirecting = localStorage.getItem('_redirecting');
-    const path = this.get('currentPath');
     return !(typeof query !== 'undefined' && query.indexOf('?next=') == 0 && isRedirecting == null && path !== 'login');
   })
 });
