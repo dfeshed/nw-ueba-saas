@@ -33,7 +33,7 @@ const selectHeaderItem = (headerItems, item) => {
 const createFilename = (deviceName, session, files) => {
   let fn;
   if (deviceName && session && isArray(files)) {
-    fn = `${deviceName}_SID${session}_FC${files.length}_${new Date().getTime()}`;
+    fn = `${deviceName}_SID${session}_FC${files.length}`;
   }
   return fn;
 };
