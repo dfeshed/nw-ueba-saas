@@ -13,6 +13,7 @@ module.exports = function(environment) {
     mockPort: mockPort,
     modulePrefix: 'sa',
     environment: environment,
+    requestEula: true,
     rootURL: '/',
     locationType: 'auto',
     dateFormatDefault: 'MM/dd/yyyy',

@@ -8,6 +8,7 @@ import config from 'sa/config/environment';
 import passthrough from 'sa/mirage/routes/passthrough';
 import login from 'sa/mirage/routes/login';
 import info from 'sa/mirage/routes/info';
+import eula from 'sa/mirage/routes/eula';
 
 import MockServer from 'sa/mirage/sockets/mock-server';
 import connect from 'sa/mirage/sockets/routes/connect';
@@ -51,6 +52,7 @@ export default function() {
   // initialize the list of all apis that doesn't need mirage
   passthrough(this);
   login(this);
+  eula(this);
 
   this.namespace = '/api';
 

@@ -13,9 +13,48 @@
   right:0;
   bottom:0;
 
+  .eula-content {
+    margin-bottom: rsa-whitespace(more);
+    border: 1px solid rsa-color(gray);
+    height: 65vh;
+    overflow: auto;
+    width: 50vw;
+    @include rsa-font(paragraph);
+    font-weight: 300;
+    background: rsa-color(gray, darkest);
+
+    div {
+      color: rsa-color(gray, lightest);
+    }
+
+    .warning {
+      padding: rsa-whitespace();
+      background-color: rsa-color(gray, darkest);
+      @include rsa-font(header);
+      color: rsa-color(red);
+      text-align: center;
+    }
+
+    .section {
+      padding: rsa-whitespace();
+    }
+
+    .subsection {
+      padding: rsa-whitespace(less);
+    }
+
+    .bolded {
+      font-weight: 700;
+    }
+
+    .header {
+      @include rsa-font(header, small);
+    }
+
+  }
+
   .login-wrapper {
     box-sizing: border-box;
-    width: $applicationLoginWidth;
     padding: rsa-whitespace(more);
     background: $applicationLoginBackgroundColor;
     border: 1px solid $applicationLoginBorderColor;
@@ -50,6 +89,16 @@
     margin-bottom: rsa-whitespace(more);
     background-color: $applicationLoginHeaderBackgroundColor;
     padding: rsa-whitespace(more) rsa-whitespace(more);
+    position: relative;
+
+    h3 {
+      position: absolute;
+      right: 0;
+      top: 0;
+      padding: rsa-whitespace(more) rsa-whitespace(more);
+      line-height: 2rem;
+      color: rsa-color(gray, light);
+    }
 
     .rsa-logo {
       height: 2rem;
@@ -87,6 +136,7 @@
 
   .login {
     overflow: hidden;
+    width: $applicationLoginWidth;
 
     .rsa-form-button {
       margin-bottom: rsa-whitespace();

@@ -34,7 +34,8 @@ export default Ember$.extend({}, BaseSelectors, {
       'usernameInput': '.js-test-login-username-input input',
       'passwordInput': '.js-test-login-password-input input',
       'submitButton': '.js-test-login-submit-button button',
-      'errorMessage': 'rsa-login-error-message'
+      'errorMessage': 'rsa-login-error-message',
+      'eulaAgreeButton': '.eula .rsa-form-button'
     },
     'userPref': {
       'defaultLandingPageTrigger': '.js-test-default-landing-page-select .ember-power-select-trigger',
@@ -48,7 +49,6 @@ export default Ember$.extend({}, BaseSelectors, {
       'closeButton': '.rsa-application-user-preferences-panel button'
     },
     'respond': {
-
       'root': '.js-test-respond-root',
       'carouselItems': 'div[class=rsa-carousel__visible-items] div[class^=rsa-incident-content-card]',
       'incidentTile': 'div[class=rsa-carousel__visible-items] span[class=rsa-incident-tile-created-date]',

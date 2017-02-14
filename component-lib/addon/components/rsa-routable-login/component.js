@@ -16,7 +16,9 @@ const {
   typeOf,
   inject: {
     service
-  }
+  },
+  Logger,
+  isEmpty
 } = Ember;
 
 /**
@@ -35,109 +37,38 @@ export default Component.extend({
   appVersion: service(),
   session: service(),
 
-  layout,
-
-  tagName: 'centered',
+  ajax: service(),
 
   classNames: ['rsa-login'],
 
+  errorMessage: null,
+
+  eulaContent: null,
+
+  eulaKey: 'rsa::netWitness::eulaAccepted',
+
+  layout,
+
+  password: null,
+
+  tagName: 'centered',
+
   title: null,
 
-  /**
-   * Username.
-   * The user's inputted id from the login UI. Is set at run-time as user types.
-   * @type String
-   * @public
-   */
+  status: _STATUS.INIT,
+
   username: null,
 
-  version: computed.readOnly('appVersion.version'),
-
-  /**
-   * User password.
-   * The user's inputted pwd from the login UI. Is set at run-time as user types.
-   * Disables browser autofill.
-   * Password field binding does not support browser autofill
-   * @type String
-   * @public
-   */
-  password: computed({
+  displayEula: computed({
     get() {
-      return this.get('_password');
+      return isEmpty(localStorage.getItem(this.get('eulaKey')));
     },
-
     set(key, value) {
-      this.set('_password', value);
-      this.passwordDidChange();
+      localStorage.setItem(this.get('eulaKey'), true);
       return value;
     }
   }),
 
-  didInsertElement() {
-    run.schedule('afterRender', () => {
-      this.$('.js-test-login-username-input').focus();
-    });
-  },
-
-  /**
-   * Used disabling browser autofill.
-   * Password field binding does not support browser autofill
-   * @type Boolean
-   * @private
-   */
-  passwordDidChange() {
-    run.schedule('afterRender', () => {
-      this.$('input:last').attr('type', 'password');
-    });
-  },
-
-  /**
-   * Reason why the last authentication attempt failed.  Is set dynamically at run-time by
-   * the 'authenticate' action. Is displayed in the login template. Is resets back to null after a successful attempt.
-   * @type String
-   * @default null
-   * @public
-   */
-  errorMessage: null,
-
-  /**
-   * Indicates the status of the login request. Either: 'init', 'wait', 'err' or 'success'.
-   * @type String
-   * @default 'init'
-   * @public
-   */
-  status: _STATUS.INIT,
-
-  /**
-   * Indicates the user has started the password reset process.
-   * @type Boolean
-   * @default false
-   * @public
-   */
-  willRequestPasswordReset: false,
-
-  /**
-   * Indicates the user has completed the password reset process.
-   * @type Boolean
-   * @default false
-   * @public
-   */
-  didRequestPasswordReset: false,
-
-  /**
-   * Indicates the user has completed the password reset process.
-   * @type Boolean
-   * @default false
-   * @public
-   */
-  hasError: computed.notEmpty('errorMessage'),
-
-  /**
-   * Only false when the 'username' and 'password' properties are non-empty strings with some non-space character.
-   * Used for enabling/disabling the login button in the UI.
-   * @type Boolean
-   * @public
-   */
   isLoginDisabled: computed('username', 'password', 'status', function() {
     const uid = this.get('username');
     const password = this.get('password');
@@ -147,118 +78,85 @@ export default Component.extend({
     return (uidFails || pwFails || (this.get('status') === _STATUS.WAIT));
   }),
 
-  isResetDisabled: computed('username', 'status', function() {
-    const uid = this.get('username');
-    const uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0);
+  version: computed.readOnly('appVersion.version'),
 
-    return (uidFails || (this.get('status') === _STATUS.WAIT));
-  }),
+  authenticate() {
+    // Update status to that UI can indicate that a login is in progress.
+    this.setProperties({
+      status: _STATUS.WAIT,
+      errorMessage: null
+    });
+
+    const session = this.get('session');
+
+    if (session) {
+      // Calls the custom sa-authenticator app/authenticators/sa-authenticator
+      const config = getOwner(this).resolveRegistration('config:environment');
+      const auth = config['ember-simple-auth'].authenticate;
+
+      session.authenticate(auth, this.get('username'), this.get('password')).then(
+        // Auth succeeded
+        () => {
+          this.setProperties({
+            status: _STATUS.SUCCESS,
+            errorMessage: null
+          });
+        },
+
+        // Auth failed
+        (message) => {
+          let errorMessage = 'login.genericError';
+          const exception = message.error_description;
+
+          if (exception) {
+            if (exception.includes('Bad credentials')) {
+              errorMessage = 'login.badCredentials';
+            } else if (exception.includes('locked')) {
+              errorMessage = 'login.userLocked';
+            } else if (exception.includes('disabled')) {
+              errorMessage = 'login.userDisabled';
+            } else if (exception.includes('expired')) {
+              errorMessage = 'login.userDisabled';
+            }
+          }
+
+          this.setProperties({
+            status: _STATUS.ERROR,
+            username: null,
+            password: null,
+            errorMessage
+          });
+
+          this.$('.js-test-login-username-input').focus();
+        }
+      );
+    }
+  },
+
+  didInsertElement() {
+    run.scheduleOnce('afterRender', () => {
+      if (this.get('displayEula')) {
+        const { requestEula } = getOwner(this).resolveRegistration('config:environment');
+
+        if (requestEula) {
+          this.get('ajax').request('/eula/rsa', {
+            success: (response) => this.set('eulaContent', response),
+            error: (error) => Logger.error(error)
+          });
+        }
+      } else {
+        this.$('.js-test-login-username-input').focus();
+      }
+    });
+  },
 
   actions: {
-
-    /**
-     * Begins password reset process
-     * @public
-     */
-    initiatePasswordReset() {
-      this.setProperties({
-        status: null,
-        username: null,
-        password: null,
-        errorMessage: null,
-        willRequestPasswordReset: true
-      });
-
-      run.schedule('afterRender', () => {
-        this.$('.js-test-lost-password-username-input').focus();
-      });
+    acceptEula() {
+      this.set('displayEula', false);
     },
 
-    /**
-     * Make reset request
-     * @public
-     */
-    requestPasswordReset() {
-      this.set('didRequestPasswordReset', true);
-    },
-
-    /**
-     * Resets login process defaults, returns to login page
-     * @public
-     */
-    resetComplete() {
-      this.setProperties({
-        status: null,
-        username: null,
-        password: null,
-        errorMessage: null,
-        willRequestPasswordReset: false,
-        didRequestPasswordReset: false
-      });
-
-      run.schedule('afterRender', () => {
-        this.$('.js-test-login-username-input').focus();
-      });
-    },
-
-    /**
-     * Establishes session when users logs in.
-     * Updates the properties 'status' and 'errorMessage' accordingly, so that UI can
-     * notify user of progress.
-     * @listens login form submit action
-     * @public
-     */
     authenticate() {
-      // Update status to that UI can indicate that a login is in progress.
-      this.setProperties({
-        status: _STATUS.WAIT,
-        errorMessage: null
-      });
-
-      const session = this.get('session');
-
-      if (session) {
-        // Calls the custom sa-authenticator app/authenticators/sa-authenticator
-        const config = getOwner(this).resolveRegistration('config:environment');
-        const auth = config['ember-simple-auth'].authenticate;
-
-        session.authenticate(auth, this.get('username'), this.get('password')).then(
-          // Auth succeeded
-          () => {
-            this.setProperties({
-              status: _STATUS.SUCCESS,
-              errorMessage: null
-            });
-          },
-
-          // Auth failed
-          (message) => {
-            let errorMessage = 'login.genericError';
-            const exception = message.error_description;
-
-            if (exception) {
-              if (exception.indexOf('Bad credentials') !== -1) {
-                errorMessage = 'login.badCredentials';
-              } else if (exception.indexOf('locked') !== -1) {
-                errorMessage = 'login.userLocked';
-              } else if (exception.indexOf('disabled') !== -1) {
-                errorMessage = 'login.userDisabled';
-              } else if (exception.indexOf('expired') !== -1) {
-                errorMessage = 'login.userDisabled';
-              }
-            }
-
-            this.setProperties({
-              status: _STATUS.ERROR,
-              username: null,
-              password: null,
-              errorMessage
-            });
-
-            this.$('.js-test-login-username-input').focus();
-          }
-        );
-      }
+      this.authenticate();
     }
   }
 });

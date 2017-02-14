@@ -13,6 +13,7 @@ module.exports = function(environment) {
       'offset': 'GMT+00:00',
       'zoneId': 'UTC'
     }],
+    requestEula: false,
     flashMessageDefaults: {
       timeout: 5000,
       iconSize: 'larger',

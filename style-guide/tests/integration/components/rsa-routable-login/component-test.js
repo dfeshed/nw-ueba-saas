@@ -12,13 +12,23 @@ test('it renders', function(assert) {
 });
 
 test('the submit is disabled by default', function(assert) {
-  this.render(hbs `{{rsa-routable-login}}`);
+  this.render(hbs `{{rsa-routable-login displayEula=false}}`);
   assert.ok(this.$('button[type=submit]').is(':disabled'));
 });
 
 test('the submit is enabled after entering values', function(assert) {
-  this.render(hbs `{{rsa-routable-login username='foo' password='bar'}}`);
+  this.render(hbs `{{rsa-routable-login displayEula=false username='foo' password='bar'}}`);
   assert.notOk(this.$('button[type=submit]').is(':disabled'));
+});
+
+test('eula can be displayed', function(assert) {
+  this.render(hbs `{{rsa-routable-login displayEula=true}}`);
+  assert.equal(this.$('.eula-content').length, 1);
+});
+
+test('eula can be bypassed', function(assert) {
+  this.render(hbs `{{rsa-routable-login displayEula=false}}`);
+  assert.equal(this.$('.eula-content').length, 0);
 });
 
 skip('the password reset is disabled without a user name', function(assert) {
