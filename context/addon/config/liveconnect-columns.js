@@ -92,14 +92,14 @@ export default [
         nested: ''
       },
       {
-        field: 'compiledTime',
+        field: 'compileTime',
         title: 'context.lc.compiledTime',
         width: '18%',
         dataType: 'datetime',
         nested: ''
       },
       {
-        field: 'importHashFunction',
+        field: 'impHash',
         title: 'context.lc.importHashFunction',
         width: '35%',
         nested: ''

@@ -37,4 +37,16 @@
   {{else}}
     <div class="rsa-context-panel__loader">{{rsa-loader size='largest'}}</div>
   {{/if}}
+  {{#if (is-equal tabdata 'liveConnect')}}
+    {{#each lcColumnList as |columns|}}
+      {{#if (get contextData  columns.dataStore)}}
+        {{context-panel/data-table
+          data=(get contextData  columns.dataStore)
+          title=(t columns.title )
+          modulesColumnListConfig=columns.columns
+          headerdata=(get contextData columns.header)
+          footerdata=columns.footer}}
+      {{/if}}
+    {{/each}}
+  {{/if}}
 {{/if}}

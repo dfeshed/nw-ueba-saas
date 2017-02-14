@@ -501,7 +501,18 @@ export default {
       unknownRiskDesc: 'Inconclusive results from any available information, research, and analysis',
       suspiciousRiskDesc: 'Research and analysis indicates potentially threatening activity',
       riskFeedback: 'Risk Assessment Feedback',
-      noDataMsg: 'No data from Live Connect'
+      noDataMsg: 'No data from Live Connect',
+      relatedFiles: 'Related Files ',
+      risk: 'LC RISK RATING',
+      importHashFunction: 'API FUNCTION IMPORT HASH',
+      compiledTime: 'COMPILE DATE',
+      relatedDomains: 'Related Domains ',
+      relatedIps: 'Related IPs ',
+      country: 'Country',
+      registeredDate: 'Registered Date',
+      expiredDate: 'Expired Date',
+      email: 'Registrant email',
+      asnShort: 'ASN'
     },
     error: {
       error: 'Error processing stream call for context lookup.',

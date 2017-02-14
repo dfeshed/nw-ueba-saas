@@ -350,5 +350,18 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
       background-color: rsa-color(gray, darkest, $rsa-nearly-opaque);
       padding: rsa-whitespace();
     }
+
+    &__risk-rating-unsafe {
+      color: rsa-color(red, darker);
+    }
+    &__risk-rating-safe {
+      color: rsa-color(green);
+    }
+    &__risk-rating-unknown {
+      color: rsa-color(amber, dark);
+    }
+    &__entity-value {
+      color: rsa-color(blue);
+    }
   }
 }

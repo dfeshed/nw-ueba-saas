@@ -115,16 +115,16 @@ module.exports = [
                   'risk': 'UNKNOWN',
                   'unique': false,
                   'fileName': 'filename1',
-                  'importHashFunction': 'c6a7364b873c029',
-                  'compiledTime': 1401972584000
+                  'impHash': 'c6a7364b873c029',
+                  'compileTime': 1401972584000
                 },
                 {
                   'id': '2a708f247cc6a7364b873c029bbdf459',
                   'risk': 'UNSAFE',
                   'unique': true,
                   'fileName': 'filename2',
-                  'importHashFunction': 'c6a7364b873c030',
-                  'compiledTime': 1401972584000
+                  'impHash': 'c6a7364b873c030',
+                  'compileTime': 1401972584000
                 }
               ]
             }

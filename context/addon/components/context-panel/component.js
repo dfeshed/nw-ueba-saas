@@ -4,6 +4,7 @@ import LiveConnect from 'context/config/live-connect';
 import TabList from 'context/config/dynamic-tab';
 import endpointColumns from 'context/config/endpoint-columns';
 import imColumns from 'context/config/im-columns';
+import liveConnectColumns from 'context/config/liveconnect-columns';
 import layout from './template';
 import machineData from 'context/config/machines';
 import userDetails from 'context/config/users';
@@ -36,8 +37,36 @@ export default Component.extend({
 
   model: null,
   contextData: null,
+  liveConnectObj: {
+    allTags: 'allTags',
+    allReasons: 'allReasons',
+    'LiveConnect-Ip': {
+      info: 'IpInfo',
+      Reputation: 'IpReputation',
+      fetchRelatedEntities: ['lcRelatedFiles', 'lcRelatedDomains'],
+      relatedEntityResponse: 'ips',
+      relatedEntity: 'RelatedIps',
+      relatedEntities_count: ['relatedFilesCount', 'relatedDomainsCount']
+    },
+    'LiveConnect-Domain': {
+      info: 'DomainInfo',
+      Reputation: 'DomainReputation',
+      fetchRelatedEntities: ['lcRelatedIps', 'lcRelatedFiles'],
+      relatedEntityResponse: 'domains',
+      relatedEntity: 'RelatedDomains',
+      relatedEntities_count: ['relatedIpsCount', 'relatedFilesCount']
+    },
+    'LiveConnect-File': {
+      info: 'FileInfo', Reputation: 'FileReputation',
+      fetchRelatedEntities: ['lcRelatedDomains', 'lcRelatedIps'],
+      relatedEntityResponse: 'files',
+      relatedEntity: 'RelatedFiles',
+      relatedEntities_count: ['relatedIpsCount', 'relatedDomainsCount']
+    }
+  },
 
   contextColumnsConfig: endpointColumns.concat(imColumns),
+  lcColumnsConfig: liveConnectColumns,
   machineColumns: machineData,
   userColumns: userDetails,
 
@@ -183,6 +212,7 @@ export default Component.extend({
           contextData.resultList.forEach((obj) => {
             if (obj && obj.record && obj.record.length > 2) {
               this._parseLiveConnectData(contextData.dataSourceGroup, obj.record);
+              this._fetchRelatedEntities(this.liveConnectObj[contextData.dataSourceType].fetchRelatedEntities);
             } else {
               set(this.get('model').contextData, 'liveConnectData', null);
             }
@@ -194,26 +224,58 @@ export default Component.extend({
     }
   },
 
-  _parseLiveConnectData(entityType, record) {
+  _parseLiveConnectData(dataSourceType, record) {
     const lcData = this.get('model').contextData.liveConnectData;
-    switch (entityType) {
-      case 'LiveConnect-Ip':
-        lcData.set('IpInfo', record[0].IpInfo);
-        lcData.set('IpReputation', record[1].IpReputation);
-        break;
-      case 'LiveConnect-File':
-        lcData.set('FileInfo', record[0].FileInfo);
-        lcData.set('FileReputation', record[1].FileReputation);
-        break;
-      case 'LiveConnect-Domain':
-        lcData.set('DomainInfo', record[0].DomainInfo);
-        lcData.set('DomainReputation', record[1].DomainReputation);
-        break;
-    }
-    lcData.set('allTags', record[2].LiveConnectApi.riskTagTypes);
-    lcData.set('allReasons', record[2].LiveConnectApi.riskReasonTypes);
+    const entityType = this.liveConnectObj[dataSourceType];
+    lcData.set(entityType.info, record[0][entityType.info]);
+    lcData.set(entityType.Reputation, record[1][entityType.Reputation]);
+    lcData.set(this.liveConnectObj.allTags, record[2].LiveConnectApi.riskTagTypes);
+    lcData.set(this.liveConnectObj.allReasons, record[2].LiveConnectApi.riskReasonTypes);
+    entityType.relatedEntities_count.forEach((obj)=> {
+      set(this.get('model').contextData, obj, record[1][entityType.Reputation][obj]);
+    });
   },
-
+  _fetchRelatedEntities(relatedEntities) {
+    const { entityId, entityType } = this.getProperties('entityId', 'entityType');
+    const filter = [];
+    if (entityId && entityType) {
+      filter.push({ field: 'meta', value: entityType });
+      filter.push({ field: 'value', value: entityId });
+      filter.push({ field: 'pageNumber', value: 1 }); // hard-coded for now. will change in a later US
+      filter.push({ field: 'pageSize', value: 5 }); // hard-coded for now. will change in a later US
+      filter.push({ field: 'relatedEntities', value: relatedEntities });
+    }
+    this.get('request').streamRequest({
+      method: 'stream',
+      modelName: 'related-entity',
+      query: {
+        filter
+      },
+      streamOptions: { requireRequestId: false },
+      onResponse: ({ data }) => {
+        Logger.info('pushing data to relatedEntity model');
+        if (isArray(data)) {
+          data.forEach((entry) => {
+            this._populateRelatedEntities(entry);
+          });
+        }
+      },
+      onError(response) {
+        Logger.error('Error processing stream call for context lookup.', response);
+      }
+    });
+  },
+  _populateRelatedEntities(relatedEntities) {
+    const { resultList } = relatedEntities;
+    if (resultList) {
+      resultList.forEach((obj) => {
+        if (obj && obj.record && obj.record.length) {
+          const entityType = this.liveConnectObj[relatedEntities.dataSourceType];
+          set(this.get('model').contextData, entityType.relatedEntity, obj.record[0][entityType.relatedEntity][entityType.relatedEntityResponse]);
+        }
+      });
+    }
+  },
 
   actions: {
     activate(option) {

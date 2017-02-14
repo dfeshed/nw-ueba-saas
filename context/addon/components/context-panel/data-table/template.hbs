@@ -27,6 +27,10 @@
               style=(risk-score-to-badge-level (get item column.nested ))
             }}
           {{/rsa-data-table/body-cell}}
+        {{else if (eq column.dataType 'riskRating')}}
+          {{#rsa-data-table/body-cell item=item index=index column=column}}
+            <span class={{get column.class (get item  column.field)}}>{{get item column.field}}</span>
+          {{/rsa-data-table/body-cell}}
         {{else if (eq column.dataType 'datetime')}}
           {{#rsa-data-table/body-cell item=item index=index column=column}}
             {{#if (eq column.nested '')}}
@@ -47,7 +51,9 @@
 
         {{else}}
           {{#if (eq column.nested '')}}
-            {{rsa-data-table/body-cell item=item index=index column=column isInline=true }}
+            {{#rsa-data-table/body-cell item=item index=index column=column isInline=true }}
+              <span class={{column.className}} title={{get item column.field}}>{{get item column.field}}</span>
+            {{/rsa-data-table/body-cell}}
           {{else}}
             {{rsa-data-table/body-cell item=(get item column.nested) index=index column=column isInline=true }}
           {{/if}}

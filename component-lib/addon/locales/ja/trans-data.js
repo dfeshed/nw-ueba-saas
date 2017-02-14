@@ -501,7 +501,18 @@ export default {
       unknownRiskDesc: 'ja_Inconclusive results from any available information, research, and analysis',
       suspiciousRiskDesc: 'ja_Research and analysis indicates potentially threatening activity',
       riskFeedback: 'ja_Risk Assessment Feedback',
-      noDataMsg: 'ja_No data from Live Connect'
+      noDataMsg: 'ja_No data from Live Connect',
+      relatedFiles: 'ja_Related Files ',
+      risk: 'ja_LC RISK RATING',
+      importHashFunction: 'ja_API FUNCTION IMPORT HASH',
+      compiledTime: 'ja_COMPILE DATE',
+      relatedDomains: 'ja_Related Domains ',
+      relatedIps: 'ja_Related IPs ',
+      country: 'ja_Country',
+      registeredDate: 'ja_Registered Date',
+      expiredDate: 'ja_Expired Date',
+      email: 'ja_Registrant email',
+      asnShort: 'ja_ASN'
     },
     error: {
       error: 'ja_Error processing stream call for context lookup.',
