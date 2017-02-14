@@ -7,9 +7,9 @@
 import Ember from 'ember';
 import CspStyleMixin from 'ember-cli-csp-style/mixins/csp-style';
 import HasTableParent from './has-table-parent';
+import computed, { equal } from 'ember-computed-decorators';
 
 const {
-  computed,
   isEmpty,
   Mixin
 } = Ember;
@@ -38,7 +38,7 @@ function _parseNumberAndUnits(value) {
 }
 
 export default Mixin.create(CspStyleMixin, HasTableParent, {
-  classNameBindings: ['_resolvedWidthIsAuto:auto-width', 'isError'],
+  classNameBindings: ['_resolvedWidthIsAuto:auto-width', 'isError', 'isSorted:is-sorted', 'sortDir'],
   styleBindings: ['_resolvedWidth:width'],
 
   /**
@@ -86,13 +86,24 @@ export default Mixin.create(CspStyleMixin, HasTableParent, {
    * @type string
    * @private
    */
-  _resolvedWidth: computed('columnWidth', 'column.width', function() {
-    const w = _parseNumberAndUnits(this.get('columnWidth')) ||
-      _parseNumberAndUnits(this.get('column.width')) ||
-      _parseNumberAndUnits(DEFAULT_WIDTH);
+  @computed('columnWidth', 'column.width')
+  _resolvedWidth(definedColumnWidth, columnInstanceWidth) {
+    const w = _parseNumberAndUnits(definedColumnWidth) ||
+    _parseNumberAndUnits(columnInstanceWidth) ||
+    _parseNumberAndUnits(DEFAULT_WIDTH);
     return w.auto ? 'auto' : `${w.num}${w.units || 'px'}`;
-  }),
+  },
 
   // Resolves to `true` when `resolvedWidth` is 'auto'.
-  _resolvedWidthIsAuto: computed.equal('_resolvedWidth', 'auto')
+  @equal('_resolvedWidth', 'auto') _resolvedWidthIsAuto: null,
+
+  @equal('column.field', 'currentSort.field') isSorted: null,
+
+  @computed('isSorted', 'currentSort.direction')
+  sortDir(isSorted, currentDir) {
+    if (isSorted) {
+      return currentDir;
+    }
+  }
+
 });

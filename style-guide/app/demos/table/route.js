@@ -18,7 +18,8 @@ export default Route.extend({
     }),
     EmberObject.create({
       field: 'foo',
-      title: 'Foo Column'
+      title: 'Foo Column',
+      disableSort: true
     }),
     EmberObject.create({
       field: 'bar',
@@ -32,7 +33,8 @@ export default Route.extend({
   columnsWithoutCheckboxConfig: [
     EmberObject.create({
       field: 'foo',
-      title: 'Foo Column'
+      title: 'Foo Column',
+      disableSort: true
     }),
     EmberObject.create({
       field: 'bar',
@@ -47,7 +49,8 @@ export default Route.extend({
     EmberObject.create({
       field: 'foo',
       title: 'Foo Column',
-      width: 350
+      width: 350,
+      disableSort: true
     }),
     EmberObject.create({
       field: 'bar',
@@ -78,6 +81,23 @@ export default Route.extend({
       baz: 'Test Baz 3'
     })
   ],
+  sortableItems: [
+    EmberObject.create({
+      foo: 'Test Foo 1',
+      bar: 1,
+      baz: 3
+    }),
+    EmberObject.create({
+      foo: 'Test Foo 2',
+      bar: 2,
+      baz: 2
+    }),
+    EmberObject.create({
+      foo: 'Test Foo 3',
+      bar: 3,
+      baz: 1
+    })
+  ],
   model() {
     return {
       columnsWithCheckboxConfig: this.columnsWithCheckboxConfig,
@@ -85,6 +105,7 @@ export default Route.extend({
       columnsWithWidthConfig: this.columnsWithWidthConfig,
       emptyItems: this.emptyItems,
       items: this.items,
+      sortableItems: this.sortableItems,
       title: 'Table',
       subtitle: 'An all purpose table component',
       description: '',

@@ -480,5 +480,93 @@
         {{code-snippet name="tableErrors1.hbs"}}
       {{/spec-member}}
     {{/spec-category}}
+
+    {{#spec-category id="sorting" title="Sorting"}}
+      {{#spec-member title="Basic Sorting"}}
+        {{#rsa-data-table
+          items=model.sortableItems
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+          {{#rsa-data-table/header currentSort=currentSort as |column|}}
+            {{column.title}}
+
+            {{#unless column.disableSort}}
+              {{rsa-icon
+                click=(action 'sort' column)
+                name="arrow-down-7"
+                class="sort"}}
+            {{/unless}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{#rsa-data-table/body-cell column=column}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+
+        <p>
+          Sorting is allowed by default but can be disabled in the column config.
+        </p>
+
+        {{!-- BEGIN-SNIPPET tableSorting1
+        disableSort: true
+        END-SNIPPET --}}
+        {{code-snippet name="tableSorting1.hbs"}}
+
+        <p>
+          Add the icon and action to the template.
+        </p>
+
+        {{!-- BEGIN-SNIPPET tableSorting2
+        {{#rsa-data-table
+          items=model.sortableItems
+          columnsConfig=model.columnsWithoutCheckboxConfig}}
+
+          {{#rsa-data-table/header currentSort=currentSort as |column|}}
+            {{column.title}}
+
+            {{#unless column.disableSort}}
+              {{rsa-icon
+                click=(action 'sort' column)
+                name="arrow-down-7"
+                class="sort"}}
+            {{/unless}}
+          {{/rsa-data-table/header}}
+
+          {{#rsa-data-table/body as |item index column|}}
+            {{#rsa-data-table/body-cell column=column}}
+              {{get item column.field}}
+            {{/rsa-data-table/body-cell}}
+          {{/rsa-data-table/body}}
+        {{/rsa-data-table}}
+        END-SNIPPET --}}
+        {{code-snippet name="tableSorting2.hbs"}}
+
+        <p>
+          Don't forget to add an action to your component, route, or controller to handle the sorting of the data.
+          Whether this means a trip to the server, or a local sort depends on your needs.
+        </p>
+
+        {{!-- BEGIN-SNIPPET tableSorting3
+        sort(column) {
+          if ((this.get('currentSort.field') === column.get('field')) && (this.get('currentSort.direction') === 'desc')) {
+            this.set('currentSort.direction', 'asc');
+          } else {
+            this.set('currentSort', column);
+            this.set('currentSort.direction', 'desc');
+          }
+
+          const sorted = this.get('model.sortableItems').sortBy(this.get('currentSort.field'));
+          if (this.get('currentSort.direction') === 'asc') {
+            sorted.reverse();
+          }
+          this.set('model.sortableItems', sorted);
+
+        }
+        END-SNIPPET --}}
+        {{code-snippet name="tableSorting3.hbs"}}
+      {{/spec-member}}
+    {{/spec-category}}
   </div>
 </hbox>

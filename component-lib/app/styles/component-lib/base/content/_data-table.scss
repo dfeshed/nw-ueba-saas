@@ -23,6 +23,43 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
       background-image: $applicationBodyBackgroundImage;
       background-color: $applicationBodyBackgroundColor;
     }
+
+    .sortable-item {
+      position: relative;
+
+      .sort {
+        display: none;
+        position: absolute;
+        padding: rsa-whitespace(least);
+        right: rsa-whitespace(least);
+        top: rsa-whitespace(less);
+
+        &:hover {
+          cursor: pointer;
+        }
+      }
+
+      &.is-sorted {
+        background-color: rsa-color(gray, darkest, $rsa-translucent);
+
+        .sort {
+          color: rsa-color(blue);
+          display: inline-block;
+        }
+
+        &.asc {
+          .sort {
+            transform: rotate(180deg);
+          }
+        }
+      }
+
+      &:hover {
+        .sort {
+          display: inline-block;
+        }
+      }
+    }
   }
 
   &-body {
@@ -122,6 +159,8 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
 
   &-body-cell {
     padding: rsa-whitespace(less);
+    padding: rsa-whitespace(less) calc(#{rsa-whitespace()} + #{rsa-whitespace(less)}) rsa-whitespace(less) rsa-whitespace(less);
+
     align-items: flex-start;
 
     &.is-error {
@@ -157,7 +196,7 @@ $data-table-max-z-index: 1000 !default; /* should be larger than the total # of 
     transition: transform 0.125s;
     position: relative; /* enables absolute positioning for the .resize-handle children */
     line-height: 30px;
-    padding: 0 rsa-whitespace(less);
+    padding: 0 calc(#{rsa-whitespace()} + #{rsa-whitespace(less)}) 0 rsa-whitespace(less);
     border-right: 1px solid rsa-color(gray, dark);
     margin-right: -1px;
 
