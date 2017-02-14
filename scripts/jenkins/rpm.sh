@@ -46,6 +46,11 @@ function buildRPM() {
     cd $CWD
 }
 
+function gzipAssets() {
+    # GZIP the JS and CSS in /assets and keep the original as well
+    find $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui/html/assets -type f \( -name "*.js" -o -name "*.css" \) -exec sh -c "gzip -9 -c -- {} > {}.gz" \;
+}
+
 rm -f $SA_RPM_ROOT/*.rpm
 timestamp="$(date +%y%m%d%H%M%S)"
 
@@ -53,11 +58,13 @@ timestamp="$(date +%y%m%d%H%M%S)"
 makeRPMDirs
 cp -rf $SA_ROOT/rpm/nginx $TMP_RPM_BUILD_ROOT/etc/nginx
 cp -rf $SA_ROOT/dist $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui/html
+gzipAssets
 buildRPM $timestamp "el6"
 
 # Build EL7 RPM
 makeRPMDirs
 cp -rf $SA_ROOT/dist $TMP_RPM_BUILD_ROOT/opt/rsa/sa-ui/html
+gzipAssets
 buildRPM $timestamp "el7"
 
 mv $SA_RPM_ROOT/*.rpm $SA_RPM_ROOT/RPMS/noarch
