@@ -160,7 +160,6 @@
 
     "number_of_distinct_normalized_src_machine_dlpmail_hourly_scorer": "${fortscale.smart.f.field.score}",
     "number_of_application_dlpmail_hourly_scorer": "${fortscale.smart.f.field.score}",
-
     "number_of_alerted_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
     "number_of_classified_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
     "number_of_outbound_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
@@ -173,6 +172,7 @@
 
     "number_of_distinct_normalized_src_machine_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
     "number_of_distinct_application_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_alerted_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
     "number_of_classified_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
     "number_of_outbound_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
     "number_of_removable_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
