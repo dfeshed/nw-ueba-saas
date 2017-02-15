@@ -1,4 +1,4 @@
-package fortscale.domain.core.alert;
+package fortscale.domain.core;
 
 /**
  * Representation of the alert timeframe

@@ -1,6 +1,6 @@
 package fortscale.domain.core.dao;
 
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;

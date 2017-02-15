@@ -1,10 +1,9 @@
 package fortscale.domain.core.dao;
 
 import fortscale.domain.core.*;
-import fortscale.domain.core.alert.Alert;
-import fortscale.domain.core.alert.AlertFeedback;
-import fortscale.domain.core.alert.AlertStatus;
-import fortscale.domain.core.alert.AlertTimeframe;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.AlertTimeframe;
 import org.junit.Assert;
 import org.junit.Test;
 

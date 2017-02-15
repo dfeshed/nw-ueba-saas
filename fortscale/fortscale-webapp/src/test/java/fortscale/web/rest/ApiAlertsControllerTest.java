@@ -2,7 +2,6 @@ package fortscale.web.rest;
 
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
-import fortscale.domain.core.alert.*;
 import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
 import fortscale.domain.core.alert.analystfeedback.AnalystCommentFeedback;
 import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
@@ -25,7 +24,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 
-import java.time.Instant;
 import java.util.*;
 
 import static org.junit.Assert.assertEquals;

@@ -1,7 +1,7 @@
 package fortscale.streaming.alert.subscribers;
 
 import fortscale.domain.core.*;
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.ForwardingService;

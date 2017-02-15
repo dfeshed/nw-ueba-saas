@@ -1,7 +1,7 @@
 package fortscale.web.beans.request;
 
-import fortscale.domain.core.alert.AlertFeedback;
-import fortscale.domain.core.alert.AlertStatus;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;

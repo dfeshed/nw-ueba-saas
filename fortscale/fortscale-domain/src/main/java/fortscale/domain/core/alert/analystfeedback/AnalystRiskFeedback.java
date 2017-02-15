@@ -1,7 +1,7 @@
 package fortscale.domain.core.alert.analystfeedback;
 
 import fortscale.domain.core.Severity;
-import fortscale.domain.core.alert.AlertFeedback;
+import fortscale.domain.core.AlertFeedback;
 import org.springframework.data.mongodb.core.mapping.Field;
 
 /**

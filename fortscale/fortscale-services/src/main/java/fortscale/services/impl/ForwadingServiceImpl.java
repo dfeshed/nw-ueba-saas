@@ -1,7 +1,7 @@
 package fortscale.services.impl;
 
 import com.cloudbees.syslog.MessageFormat;
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.domain.email.Frequency;
 import fortscale.services.AlertEmailService;

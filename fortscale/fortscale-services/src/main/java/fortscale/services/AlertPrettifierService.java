@@ -1,6 +1,7 @@
 package fortscale.services;
 
-import fortscale.domain.core.alert.Alert;
+
+import fortscale.domain.core.Alert;
 
 /**
  * Created by Amir Keren on 18/01/16.

@@ -1,4 +1,4 @@
-package fortscale.domain.core.alert;
+package fortscale.domain.core;
 
 import fortscale.domain.core.*;
 import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;

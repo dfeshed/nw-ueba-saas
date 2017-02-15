@@ -1,6 +1,6 @@
 package fortscale.streaming.alert.subscribers.evidence.decider;
 
-import fortscale.domain.core.alert.AlertTimeframe;
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.services.impl.ApplicationConfigurationHelper;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.springframework.beans.factory.annotation.Autowired;

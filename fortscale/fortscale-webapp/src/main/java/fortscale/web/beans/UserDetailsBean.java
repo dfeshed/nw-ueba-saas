@@ -2,7 +2,7 @@ package fortscale.web.beans;
 
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import fortscale.domain.ad.AdUserGroup;
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.User;
 import fortscale.services.UserServiceFacade;
 import fortscale.utils.actdir.ADParser;
