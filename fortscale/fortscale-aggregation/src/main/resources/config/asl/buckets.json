@@ -3000,30 +3000,6 @@
                   }
               },
               {
-                  "name": "removable_event_counter",
-                  "featureNamesMap": {
-
-                  },
-                  "aggrFeatureFuncJson": {
-                      "type": "aggr_feature_sum_func"
-                  },
-                  "filter": {
-                      "jsonPath": "[?(@.is_removable == 'true')]"
-                  }
-              },
-              {
-                  "name": "blocked_event_counter",
-                  "featureNamesMap": {
-
-                  },
-                  "aggrFeatureFuncJson": {
-                      "type": "aggr_feature_sum_func"
-                  },
-                  "filter": {
-                      "jsonPath": "[?(@.was_blocked_event == 'true')]"
-                  }
-              },
-              {
                   "name": "normalized_src_machine_to_highest_score_map",
                   "featureNamesMap": {
                       "groupBy": [
@@ -3298,30 +3274,6 @@
                   },
                   "filter": {
                       "jsonPath": "[?(@.email_recipient != '')]"
-                  }
-              },
-              {
-                  "name": "removable_event_counter",
-                  "featureNamesMap": {
-
-                  },
-                  "aggrFeatureFuncJson": {
-                      "type": "aggr_feature_sum_func"
-                  },
-                  "filter": {
-                      "jsonPath": "[?(@.is_removable == 'true')]"
-                  }
-              },
-              {
-                  "name": "blocked_event_counter",
-                  "featureNamesMap": {
-
-                  },
-                  "aggrFeatureFuncJson": {
-                      "type": "aggr_feature_sum_func"
-                  },
-                  "filter": {
-                      "jsonPath": "[?(@.was_blocked_event == 'true')]"
                   }
               },
               {

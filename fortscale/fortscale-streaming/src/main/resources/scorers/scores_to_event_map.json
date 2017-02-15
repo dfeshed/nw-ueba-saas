@@ -74,13 +74,8 @@
     "dlpmail-event-scorer#hasAlertScorer": "has_alert_event_score",
     "dlpmail-event-scorer#hasSrcClassScorer": "has_src_classification_score",
     "dlpmail-event-scorer#isOutboundScorer": "outbound_score",
-    "dlpmail-event-scorer#isRemovableScorer": "removable_device_score",
-    "dlpmail-event-scorer#wasBlockedScorer": "was_blocked_event_score",
-    "dlpmail-event-scorer#was_rdpScorer": "was_rdp_score",
-    "dlpmail-event-scorer#admin_activityScorer": "admin_activity_score",
-    "dlpmail-event-scorer#registry_changedScorer": "registry_changed_score",
-    "dlpmail-event-scorer#isLogoffScorer": "is_logoff_score",
-    "dlpmail-event-scorer#isLogonScorer": "is_logon_score",
+    "dlpmail-event-scorer#email_recipient_domain.normalized_username.dlpmail.scorer": "email_recipient_domain_score",
+
 
 
 

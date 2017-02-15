@@ -91,42 +91,6 @@
             }
         },
         {
-            "name": "number_of_removable_event.normalized_username.dlpmail.hourly",
-            "selector": {
-                "type": "aggregated_event_context_selector",
-                "aggregatedFeatureEventConfName": "number_of_removable_event_dlpmail_hourly"
-            },
-            "retriever": {
-                "type": "aggregated_feature_value_retriever",
-                "timeRangeInSeconds": 7776000,
-                "functions": [
-
-                ],
-                "aggregatedFeatureEventConfName": "number_of_removable_event_dlpmail_hourly"
-            },
-            "builder": {
-                "type": "continuous_histogram_model_builder"
-            }
-        },
-        {
-            "name": "number_of_blocked_event.normalized_username.dlpmail.hourly",
-            "selector": {
-                "type": "aggregated_event_context_selector",
-                "aggregatedFeatureEventConfName": "number_of_blocked_event_dlpmail_hourly"
-            },
-            "retriever": {
-                "type": "aggregated_feature_value_retriever",
-                "timeRangeInSeconds": 7776000,
-                "functions": [
-
-                ],
-                "aggregatedFeatureEventConfName": "number_of_blocked_event_dlpmail_hourly"
-            },
-            "builder": {
-                "type": "continuous_histogram_model_builder"
-            }
-        },
-        {
             "name": "number_of_email_attachment_event.normalized_username.dlpmail.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector",
@@ -266,42 +230,6 @@
 
                 ],
                 "aggregatedFeatureEventConfName": "number_of_outbound_event_dlpmail_daily"
-            },
-            "builder": {
-                "type": "continuous_histogram_model_builder"
-            }
-        },
-        {
-            "name": "number_of_removable_event.normalized_username.dlpmail.daily",
-            "selector": {
-                "type": "aggregated_event_context_selector",
-                "aggregatedFeatureEventConfName": "number_of_removable_event_dlpmail_daily"
-            },
-            "retriever": {
-                "type": "aggregated_feature_value_retriever",
-                "timeRangeInSeconds": 7776000,
-                "functions": [
-
-                ],
-                "aggregatedFeatureEventConfName": "number_of_removable_event_dlpmail_daily"
-            },
-            "builder": {
-                "type": "continuous_histogram_model_builder"
-            }
-        },
-        {
-            "name": "number_of_blocked_event.normalized_username.dlpmail.daily",
-            "selector": {
-                "type": "aggregated_event_context_selector",
-                "aggregatedFeatureEventConfName": "number_of_blocked_event_dlpmail_daily"
-            },
-            "retriever": {
-                "type": "aggregated_feature_value_retriever",
-                "timeRangeInSeconds": 7776000,
-                "functions": [
-
-                ],
-                "aggregatedFeatureEventConfName": "number_of_blocked_event_dlpmail_daily"
             },
             "builder": {
                 "type": "continuous_histogram_model_builder"

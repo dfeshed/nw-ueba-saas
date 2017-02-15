@@ -2692,42 +2692,6 @@
           "retentionStrategyName": "hourly_feature_retention_strategy"
       },
       {
-          "name": "number_of_removable_event_dlpmail_hourly",
-          "type": "F",
-          "bucketConfName": "normalized_username_dlpmail_hourly",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "sum": [
-                  "removable_event_counter"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_sum_func"
-          },
-          "retentionStrategyName": "hourly_feature_retention_strategy"
-      },
-      {
-          "name": "number_of_blocked_event_dlpmail_hourly",
-          "type": "F",
-          "bucketConfName": "normalized_username_dlpmail_hourly",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "sum": [
-                  "blocked_event_counter"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_sum_func"
-          },
-          "retentionStrategyName": "hourly_feature_retention_strategy"
-      },
-      {
           "name": "number_of_email_attachment_event_dlpmail_hourly",
           "type": "F",
           "bucketConfName": "normalized_username_dlpmail_hourly",
@@ -3023,42 +2987,6 @@
           "aggregatedFeatureNamesMap": {
               "sum": [
                   "outbound_event_counter"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_sum_func"
-          },
-          "retentionStrategyName": "daily_feature_retention_strategy"
-      },
-      {
-          "name": "number_of_removable_event_dlpmail_daily",
-          "type": "F",
-          "bucketConfName": "normalized_username_dlpmail_daily",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "sum": [
-                  "removable_event_counter"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_sum_func"
-          },
-          "retentionStrategyName": "daily_feature_retention_strategy"
-      },
-      {
-          "name": "number_of_blocked_event_dlpmail_daily",
-          "type": "F",
-          "bucketConfName": "normalized_username_dlpmail_daily",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "evidencesFilterStrategy": "HIGHEST_SCORE",
-          "aggregatedFeatureNamesMap": {
-              "sum": [
-                  "blocked_event_counter"
               ]
           },
           "aggregatedFeatureEventFunction": {

@@ -155,70 +155,19 @@
                             ]
                         },
                         {
-                            "type": "max-scorer-container",
-                            "name": "isRemovableScorer",
-                            "scorers": [
-                                {
-                                    "type": "constant-regex-scorer",
-                                    "name": "isRemovableRegexScorer",
-                                    "regex": "true",
-                                    "regex-field-name": "is_removable",
-                                    "constant-score": 0
-                                }
-                            ]
-                        },
-                        {
-                            "type": "max-scorer-container",
-                            "name": "wasBlockedScorer",
-                            "scorers": [
-                                {
-                                    "type": "constant-regex-scorer",
-                                    "name": "wasBlockedRegexScorer",
-                                    "regex": "true",
-                                    "regex-field-name": "was_blocked_event",
-                                    "constant-score": 80
-                                }
-                            ]
-                        },
-                        {
-                            "type": "max-scorer-container",
-                            "name": "was_rdpScorer",
-                            "scorers": [
-                                {
-                                    "type": "constant-regex-scorer",
-                                    "name": "was_rdpRegexScorer",
-                                    "regex": "true",
-                                    "regex-field-name": "was_rdp",
-                                    "constant-score": 100
-                                }
-                            ]
-                        },
-                        {
-                            "type": "max-scorer-container",
-                            "name": "admin_activityScorer",
-                            "scorers": [
-                                {
-                                    "type": "constant-regex-scorer",
-                                    "name": "admin_activityRegexScorer",
-                                    "regex": "true",
-                                    "regex-field-name": "admin_activity",
-                                    "constant-score": 100
-                                }
-                            ]
-                        },
-                        {
-                            "type": "max-scorer-container",
-                            "name": "registry_changedScorer",
-                            "scorers": [
-                                {
-                                    "type": "constant-regex-scorer",
-                                    "name": "registry_changedRegexScorer",
-                                    "regex": "true",
-                                    "regex-field-name": "registry_changed",
-                                    "constant-score": 100
-                                }
-                            ]
+                            "type": "category-rarity-model-scorer",
+                            "name": "email_recipient_domain.normalized_username.dlpmail.scorer",
+                            "model": {
+                                "name": "email_recipient_domain.normalized_username.dlpmail"
+                            },
+                            "max-rare-count": 5,
+                            "max-num-of-rare-features": 15,
+                            "number-of-samples-to-influence-enough": 30,
+                            "use-certainty-to-calculate-score": true
                         }
+
+
+
 
                     ]
                 }
