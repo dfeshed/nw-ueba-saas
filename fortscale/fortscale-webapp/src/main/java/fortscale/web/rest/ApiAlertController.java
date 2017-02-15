@@ -421,6 +421,10 @@ public class ApiAlertController extends BaseController {
 
 		AnalystFeedback analystFeedback = alert.getAnalystFeedback(commentId);
 
+		if (analystFeedback== null){
+			return new ResponseEntity(String.format("No comment with id {} on alert {}", commentId, id) , HttpStatus.BAD_REQUEST);
+		}
+
 		if (!(analystFeedback instanceof AnalystCommentFeedback)){
 			return new ResponseEntity("Cannot update analyst feedback other then comment", HttpStatus.BAD_REQUEST);
 		}

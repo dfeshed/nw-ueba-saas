@@ -468,8 +468,7 @@ public class ApiAlertsControllerTest {
 				.andReturn();
 
 		//validate
-		assertEquals(HttpStatus.OK.value(), result.getResponse().getStatus());
-		verify(alertsService).saveAlertInRepository(any());
+		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
 	}
 
 	/*@Test
