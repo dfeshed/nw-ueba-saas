@@ -1,6 +1,6 @@
 /* eslint-disable */
 var EmberApp = require('ember-cli/lib/broccoli/ember-app');
-var shim = require('flexi/lib/pod-templates-shim');
+var shim = require('@html-next/flexi-layouts/lib/pod-templates-shim');
 var appEnv = EmberApp.env();
 
 shim(EmberApp);

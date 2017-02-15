@@ -19,6 +19,10 @@
     "postinstall": "node ../scripts/node/fake-out-bower jquery nouislider"
   },
   "dependencies": {
+    "@html-next/flexi-config": "2.0.0-beta.11",
+    "@html-next/flexi-default-styles": "2.0.0-beta.11",
+    "@html-next/flexi-dsl": "2.0.0-beta.11",
+    "@html-next/flexi-layouts": "2.0.0-beta.11",
     "ember-cli-babel": "^5.1.7",
     "ember-cli-htmlbars": "^1.0.10",
     "ember-cli-node-assets": "0.1.6",
@@ -26,7 +30,7 @@
     "ember-i18n": "4.3.2",
     "ember-simple-auth": "1.1.0",
     "ember-spaniel": "0.1.1",
-    "flexi": "1.2.0",
+    "flexi": "2.0.0-beta.11",
     "nouislider": "^8.0.1",
     "pikaday-time": "1.4.1"
   },
@@ -76,6 +80,6 @@
     "configPath": "tests/dummy/config"
   },
   "engines": {
-    "node": "6.3.1"
+    "node": "7.5.0"
   }
 }

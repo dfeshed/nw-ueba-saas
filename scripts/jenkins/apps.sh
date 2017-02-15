@@ -51,7 +51,7 @@ function runEmberTestWithMockServer {
   local mockPort=${MOCK_SERVER_PORTS_ARRAY[$RANDOM % ${#MOCK_SERVER_PORTS_ARRAY[@]} ]}
   local testemPort=${TESTEM_PORTS_ARRAY[$RANDOM % ${#TESTEM_PORTS_ARRAY[@]} ]}
 
-  yarn add file:../mock-server
+  yarn add --force file:../mock-server
 
   info "Starting Express mock test server for $1"
 
