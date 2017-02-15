@@ -4,7 +4,7 @@ const common = require('../../common');
 
 module.exports = function(environment) {
 
-  let socketUrl = common.determineSocketUrl(environment, '/administration/socket');
+  let socketUrl = common.determineSocketUrl(environment, '/api/administration/socket');
 
   // Want to run context panel inside sa
   // while sa still has respond and mirage in it?

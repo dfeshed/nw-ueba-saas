@@ -2,7 +2,7 @@ var determineSocketUrl = require('../../../common').determineSocketUrl;
 
 module.exports = function(environment) {
 
-  var socketUrl = determineSocketUrl(environment, '/response/socket');
+  var socketUrl = determineSocketUrl(environment, '/api/response/socket');
 
   // remove this line when mock server in place
   socketUrl = '/response/socket';
