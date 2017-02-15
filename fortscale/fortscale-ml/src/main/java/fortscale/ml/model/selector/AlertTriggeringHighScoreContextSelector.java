@@ -1,5 +1,6 @@
 package fortscale.ml.model.selector;
 
+import com.google.common.collect.Sets;
 import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.dto.DateRange;
@@ -27,7 +28,12 @@ public abstract class AlertTriggeringHighScoreContextSelector implements IContex
 		// model contexts will contain the intersection between contexts that are relevant to the model and those that have alert
 		if (modelContexts != null && !modelContexts.isEmpty() ) {
 			alertContexts.retainAll(modelContexts);
+			return alertContexts;
 		}
-		return alertContexts;
+		// in case there is no data for the specific model, return empty set
+		else
+		{
+			return Sets.newHashSet();
+		}
 	}
 }

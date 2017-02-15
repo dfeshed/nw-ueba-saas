@@ -1,6 +1,7 @@
 package fortscale.services.event.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.anyString;
@@ -10,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.joda.time.DateTime;
+import org.joda.time.Duration;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.InjectMocks;
@@ -152,9 +155,10 @@ public class VpnServiceImpleTest {
         assertEquals("10.80.229.52", (String) result.getSourceIp());
         assertEquals("Japan", (String) result.getCountry());
     }
+
     @Test
-    public void updateCloseVpnSession(){
-        System.out.println("updateCloseVpnSession");
+    // The flag for creating vpn session when received only closed session is false
+    public void updateCloseVpnSession_WithOpenSession(){
         JSONObject openEvent = (JSONObject) JSONValue.parse(OPEN_EVENT_1);
         JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_1);
 
@@ -163,11 +167,247 @@ public class VpnServiceImpleTest {
 
         when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(vpnOpenSession);
 
-        service.updateCloseVpnSession(vpnCloseSession);
-        assertEquals(1424700169626L, vpnCloseSession.getClosedAt().getMillis());
-        assertEquals((Integer)23, vpnCloseSession.getDataBucket());
-        assertEquals((Integer)24, vpnCloseSession.getDuration());
-        assertEquals((Long)1200211L, vpnCloseSession.getWriteBytes());
-        assertEquals((Long)8700211L, vpnCloseSession.getTotalBytes());
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, false);
+        assertEquals(1424700169626L, result.getClosedAt().getMillis());
+        assertEquals((Integer)23, result.getDataBucket());
+        assertEquals((Integer)24, result.getDuration());
+        assertEquals((Long)1200211L, result.getWriteBytes());
+        assertEquals((Long)8700211L, result.getTotalBytes());
+    }
+
+    @Test
+    // The flag for creating vpn session when received only closed session is false
+    public void updateCloseVpnSession_NoOpenSession(){
+        JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_1);
+
+        VpnSession vpnCloseSession = createSession(closeEvent);
+
+        when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(null);
+
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, false);
+        assertNull(result);
+    }
+
+
+    @Test
+    // The flag for creating vpn session when received only closed session is true
+    public void updateCloseVpnSession_CreateVpnSessionWithNoOpenSession(){
+        JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_Cisco_ASA);
+
+        VpnSession vpnCloseSession = createSession(closeEvent);
+
+        when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(null);
+        DateTime startTime = vpnCloseSession.getClosedAt().minus(Duration.standardSeconds(vpnCloseSession.getDuration()));
+
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, true);
+        assertEquals(1424700169626L, result.getClosedAt().getMillis());
+        assertEquals((Integer)23, result.getDataBucket());
+        assertEquals((Integer)24, result.getDuration());
+        assertEquals((Long)1200211L, result.getWriteBytes());
+        assertEquals(startTime, result.getCreatedAt());
+        assertEquals(Long.valueOf(startTime.getMillis() / 1000), result.getCreatedAtEpoch());
+    }
+
+    @Test
+    // The flag for creating vpn session when received only closed session is true
+    public void updateCloseVpnSession_CreateVpnSessionWithNoOpenSession_NoDuration(){
+        System.out.println("updateCloseVpnSession");
+        JSONObject closeEvent = (JSONObject) JSONValue.parse(CLOSE_EVENT_Cisco_ASA);
+
+        VpnSession vpnCloseSession = createSession(closeEvent);
+        vpnCloseSession.setDuration(null);
+
+        when(vpnSessionRepository.findBySessionId(anyString())).thenReturn(null);
+
+        VpnSession result = service.updateCloseVpnSession(vpnCloseSession, true);
+        Assert.assertNull(result);
+    }
+
+    // Test the function getGeoHoppingVpnSessions when we have regular geo hoping
+    // We get china -> greece -> qatar and want to mark geo hopping on greece&qatar
+    @Test
+    public void getGeoHoppingVpnSessions_basicGeoHopping(){
+
+        VpnSession chinaSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), DateTime.now(), "China", "China");
+        VpnSession greeceSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), DateTime.now(), "Greece", "Greece");
+        VpnSession qatarSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), DateTime.now(), "Qatar", "Qatar");
+
+        List<VpnSession> mongoResponse = new ArrayList<>();
+        mongoResponse.add(greeceSession);
+        mongoResponse.add(chinaSession);
+
+        service.afterPropertiesSet();
+
+        when(vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(anyString(), anyLong(), any(PageRequest.class))).thenReturn(mongoResponse);
+
+        List<VpnSession> geoHoppingVpnSessions = service.getGeoHoppingVpnSessions(qatarSession, greeceSession.getCountry(), 1, 6);
+
+        Assert.assertNotNull(geoHoppingVpnSessions);
+        Assert.assertEquals(1, geoHoppingVpnSessions.size());
+        Assert.assertEquals(greeceSession, geoHoppingVpnSessions.get(0));
+    }
+
+    // Test the function getGeoHoppingVpnSessions when we have regular geo hoping
+    // We get china -> greece -> qatar and want to mark geo hopping on greece&qatar where the greece session has no closed at value
+    @Test
+    public void getGeoHoppingVpnSessions_basicGeoHoppingWithClosedAtNull(){
+
+        VpnSession chinaSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), DateTime.now(), "China", "China");
+        VpnSession greeceSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), null, "Greece", "Greece");
+        VpnSession qatarSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), DateTime.now(), "Qatar", "Qatar");
+
+        List<VpnSession> mongoResponse = new ArrayList<>();
+        mongoResponse.add(greeceSession);
+        mongoResponse.add(chinaSession);
+
+        service.afterPropertiesSet();
+
+        when(vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(anyString(), anyLong(), any(PageRequest.class))).thenReturn(mongoResponse);
+
+        List<VpnSession> geoHoppingVpnSessions = service.getGeoHoppingVpnSessions(qatarSession, chinaSession.getCountry(), 1, 6);
+
+        Assert.assertNotNull(geoHoppingVpnSessions);
+        Assert.assertEquals(1, geoHoppingVpnSessions.size());
+        Assert.assertEquals(greeceSession, geoHoppingVpnSessions.get(0));
+    }
+
+    // Test the function getGeoHoppingVpnSessions when we have regular geo hoping
+    // We get china -> greece -> qatar created at more then 6 hours apart
+    @Test
+    public void getGeoHoppingVpnSessions_noGeoHopping_createdAtDidntMatch(){
+
+        VpnSession greeceSession = createVpnSession(DateTime.now().minus(Duration.standardHours(7)), DateTime.now(), "Greece", "Greece");
+        VpnSession qatarSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(10)), DateTime.now(), "Qatar", "Qatar");
+
+        // No response because the greece session is from more then 6 hours
+        List<VpnSession> mongoResponse = new ArrayList<>();
+
+        service.afterPropertiesSet();
+
+        when(vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(anyString(), anyLong(), any(PageRequest.class))).thenReturn(mongoResponse);
+
+        List<VpnSession> geoHoppingVpnSessions = service.getGeoHoppingVpnSessions(qatarSession, greeceSession.getCountry(), 1, 6);
+
+        Assert.assertNotNull(geoHoppingVpnSessions);
+        Assert.assertEquals(0, geoHoppingVpnSessions.size());
+    }
+
+    // Test the function getGeoHoppingVpnSessions when we have regular geo hoping
+    // We get china -> greece -> qatar closed at more then 1 hours apart
+    @Test
+    public void getGeoHoppingVpnSessions_noGeoHopping_closedAtDidntMatch(){
+
+        VpnSession chinaSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(40)), DateTime.now().minus(Duration.standardMinutes(75)), "China", "China");
+        VpnSession greeceSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), DateTime.now().minus(Duration.standardMinutes(70)), "Greece", "Greece");
+        VpnSession qatarSession = createVpnSession(DateTime.now(), DateTime.now(), "Qatar", "Qatar");
+
+        List<VpnSession> mongoResponse = new ArrayList<>();
+        mongoResponse.add(greeceSession);
+        mongoResponse.add(chinaSession);
+
+        service.afterPropertiesSet();
+
+        when(vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(anyString(), anyLong(), any(PageRequest.class))).thenReturn(mongoResponse);
+
+        List<VpnSession> geoHoppingVpnSessions = service.getGeoHoppingVpnSessions(qatarSession, greeceSession.getCountry(), 1, 6);
+
+        Assert.assertNotNull(geoHoppingVpnSessions);
+        Assert.assertEquals(0, geoHoppingVpnSessions.size());
+    }
+
+
+    // Test the function getGeoHoppingVpnSessions when we have regular geo hoping
+    // We get china -> greece -> qatar when later got holland session that wasn't expected and is located
+    // between greece and qatar on the time line
+    @Test
+    public void getGeoHoppingVpnSessions_WithUnexpectedSession(){
+
+        VpnSession chinaSession = createVpnSession(DateTime.now().minus(Duration.standardHours(5)), DateTime.now().minus(Duration.standardHours(4)), "China", "China");
+        VpnSession greeceSession = createVpnSession(DateTime.now().minus(Duration.standardHours(4)), DateTime.now().minus(Duration.standardHours(3)), "Greece", "Greece");
+        VpnSession hollandSession = createVpnSession(DateTime.now().minus(Duration.standardHours(3)), DateTime.now(), "Holland", "Holland");
+        VpnSession qatarSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), null, "Qatar", "Qatar");
+
+        List<VpnSession> mongoResponse = new ArrayList<>();
+        mongoResponse.add(hollandSession);
+        mongoResponse.add(greeceSession);
+        mongoResponse.add(chinaSession);
+
+        service.afterPropertiesSet();
+
+        when(vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(anyString(), anyLong(), any(PageRequest.class))).thenReturn(mongoResponse);
+
+        List<VpnSession> geoHoppingVpnSessions = service.getGeoHoppingVpnSessions(qatarSession, greeceSession.getCountry(), 1, 6);
+
+        Assert.assertNotNull(geoHoppingVpnSessions);
+        Assert.assertEquals(1, geoHoppingVpnSessions.size());
+        Assert.assertEquals(hollandSession, geoHoppingVpnSessions.get(0));
+    }
+
+    // Test the function getGeoHoppingVpnSessions when we have regular geo hoping
+    // We get china -> greece -> qatar when later got qatar session that wasn't expected and is located
+    // between greece and qatar on the time line
+    @Test
+    public void getGeoHoppingVpnSessions_WithUnexpectedSessionEqualsTheCurr(){
+
+        VpnSession chinaSession = createVpnSession(DateTime.now().minus(Duration.standardHours(5)), DateTime.now().minus(Duration.standardHours(4)), "China", "China");
+        VpnSession greeceSession = createVpnSession(DateTime.now().minus(Duration.standardHours(4)), DateTime.now(), "Greece", "Greece");
+        VpnSession unexpectedQatar = createVpnSession(DateTime.now().minus(Duration.standardHours(3)), DateTime.now(), "Qatar", "Qatar");
+        VpnSession qatarSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), null, "Qatar", "Qatar");
+
+        List<VpnSession> mongoResponse = new ArrayList<>();
+        mongoResponse.add(unexpectedQatar);
+        mongoResponse.add(greeceSession);
+        mongoResponse.add(chinaSession);
+
+        service.afterPropertiesSet();
+
+        when(vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(anyString(), anyLong(), any(PageRequest.class))).thenReturn(mongoResponse);
+
+        List<VpnSession> geoHoppingVpnSessions = service.getGeoHoppingVpnSessions(qatarSession, greeceSession.getCountry(), 1, 6);
+
+        Assert.assertNotNull(geoHoppingVpnSessions);
+        Assert.assertEquals(1, geoHoppingVpnSessions.size());
+        Assert.assertEquals(greeceSession, geoHoppingVpnSessions.get(0));
+    }
+
+    // Test the function getGeoHoppingVpnSessions when we have regular geo hoping
+    // We get china -> greece -> qatar when later got greece session that wasn't expected and is located
+    // between greece and qatar on the time line
+    @Test
+    public void getGeoHoppingVpnSessions_WithUnexpectedSessionEqualsThePrev(){
+
+        VpnSession chinaSession = createVpnSession(DateTime.now().minus(Duration.standardHours(5)), DateTime.now().minus(Duration.standardHours(4)), "China", "China");
+        VpnSession greeceSession = createVpnSession(DateTime.now().minus(Duration.standardHours(4)), DateTime.now().minus(Duration.standardHours(3)), "Greece", "Greece");
+        VpnSession unexpectedGreece = createVpnSession(DateTime.now().minus(Duration.standardHours(3)), DateTime.now(), "Greece", "Greece");
+        VpnSession qatarSession = createVpnSession(DateTime.now().minus(Duration.standardMinutes(30)), null, "Qatar", "Qatar");
+
+        List<VpnSession> mongoResponse = new ArrayList<>();
+        mongoResponse.add(unexpectedGreece);
+        mongoResponse.add(greeceSession);
+        mongoResponse.add(chinaSession);
+
+        service.afterPropertiesSet();
+
+        when(vpnSessionRepository.findByUsernameAndCreatedAtEpochGreaterThan(anyString(), anyLong(), any(PageRequest.class))).thenReturn(mongoResponse);
+
+        List<VpnSession> geoHoppingVpnSessions = service.getGeoHoppingVpnSessions(qatarSession, greeceSession.getCountry(), 1, 6);
+
+        Assert.assertNotNull(geoHoppingVpnSessions);
+        Assert.assertEquals(1, geoHoppingVpnSessions.size());
+        Assert.assertEquals(unexpectedGreece, geoHoppingVpnSessions.get(0));
+    }
+
+    private VpnSession createVpnSession(DateTime createdAt, DateTime closedAt, String country, String city){
+        VpnSession vpnSession = new VpnSession();
+        vpnSession.setCreatedAt(createdAt);
+        vpnSession.setClosedAtEpoch(createdAt.getMillis());
+        if (closedAt != null) {
+            vpnSession.setClosedAt(closedAt);
+            vpnSession.setClosedAtEpoch(closedAt.getMillis());
+        }
+        vpnSession.setCountry(country);
+        vpnSession.setCity(city);
+
+        return vpnSession;
     }
 }

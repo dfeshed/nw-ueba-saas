@@ -77,6 +77,16 @@ public class CiscoDHCPTest {
 				"time should be parsed according to input field timezone (expiration and assignment) (FV-6251)",
 				"2015-04-12T12:00:00.000+03:00,,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,04/14/2015 7:00:00 IDT",
 				"1428829200,ASSIGN,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,1428984000"
+				),
+				$(
+				"test that the event can be sent with upper case operation (I.E. ASSIGN) (FV-13486)",
+				"2015-04-12T12:00:00.000+03:00,ASSIGN,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,04/14/2015 7:00:00 IDT",
+				"1428829200,ASSIGN,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,1428984000"
+				),
+				$(
+				"test that the event can be sent with lower case operation (I.E. assign) (FV-13486)",
+				"2015-04-12T12:00:00.000+03:00,assign,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,04/14/2015 7:00:00 IDT",
+				"1428829200,assign,192.168.170.1,dhcpusr0_PC,3c:a9:f4:64:eb:84,1428984000"
 				)
         		);
     }

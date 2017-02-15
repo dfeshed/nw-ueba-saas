@@ -5,10 +5,13 @@ import fortscale.collection.services.UserActivityConfigurationService;
 import fortscale.collection.services.UserActivityLocationConfigurationService;
 import fortscale.common.feature.Feature;
 import fortscale.common.util.GenericHistogram;
+import fortscale.domain.core.User;
 import fortscale.domain.core.activities.OrganizationActivityLocationDocument;
 import fortscale.domain.core.activities.UserActivityDocument;
 import fortscale.domain.core.activities.UserActivityLocationDocument;
 import fortscale.utils.logging.Logger;
+import fortscale.utils.time.TimestampUtils;
+import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.stereotype.Component;
@@ -16,6 +19,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * User activity locations handler implementation
@@ -45,7 +49,7 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         locations.getCountryHistogram().putAll(organizationActivityLocationHistogram);
         organizationActivityLocationDocument.setLocations(locations);
 
-        mongoTemplate.save(organizationActivityLocationDocument, OrganizationActivityLocationDocument.COLLECTION_NAME);
+        userActivityFeaturesExtractiionsRepositoryUtil.saveDocument(OrganizationActivityLocationDocument.COLLECTION_NAME, organizationActivityLocationDocument);
     }
 
     private void updateOrganizationHistogram(Map<String, Double> organizationActivityLocationHistogram, Map<String, UserActivityDocument> userActivityMap) {
@@ -141,5 +145,26 @@ public class UserActivityLocationsHandler extends UserActivityBaseHandler {
         logger.info("Update org histogram in memory took {} seconds", durationInSecondsWithPrecision(updateOrgHistogramInMemoryElapsedTime));
 
         return organizationActivityLocationHistogram;
+    }
+
+
+    //This fetches all the active users from a certain point in time.
+    //There is an underlying assumption that we will always search for usernames with the CONTEXT_ID_USERNAME_PREFIX
+    @Override
+    protected Map<String, List<String>> fetchUserIdPerDatasource(List<String> dataSources, long startTime,long endTime, Map<String, String> dataSourceToCollection) {
+        Map<String, List<String>> dataSourceToUserIds = new HashMap<>();
+        DateTime startDate = new DateTime(TimestampUtils.convertToMilliSeconds(startTime));
+        List<User> users = userService.getUsersActiveSinceIncludingUsernameAndLogLastActivity(startDate);
+
+        for (String dataSource : dataSources) {
+            //we don't have vpn_session in the log last activity
+            final String logDataSource = dataSource.toLowerCase().equals("vpn_session") ? "vpn" : dataSource;
+
+            List<String> userIds = users.stream().filter(user -> user.getLogLastActivity(logDataSource) != null &&
+                    user.getLogLastActivity(logDataSource).isAfter(startDate)).map(user -> CONTEXT_ID_USERNAME_PREFIX +
+                    user.getUsername()).collect(Collectors.toList());
+            dataSourceToUserIds.put(dataSource, userIds);
+        }
+        return dataSourceToUserIds;
     }
 }
