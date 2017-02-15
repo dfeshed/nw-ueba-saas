@@ -65,22 +65,42 @@ module.exports = [
               'risk': null,
               'domains': [
                 {
-                  'id': 'Thisdomainsmailidistooolongfortestingweareusingthisfoo.com',
-                  'risk': 'SAFE',
-                  'countryCode': 'UK',
-                  'country': 'United Kingdom',
-                  'creationDate': 1475002318162,
-                  'expiredDate': 1425002318162,
-                  'registrantEmail': 'far@foo.com'
+                  'id': 'domain.a.com',
+                  'risk': 'UNSAFE',
+                  'ip': null,
+                  'whoisCreatedDate': 1437493116306,
+                  'whoisUpdatedDate': null,
+                  'whoisExpiredDate': 1520782716306,
+                  'whoisRegType': null,
+                  'whoisRegName': null,
+                  'whoisRegOrg': null,
+                  'whoisRegStreet': null,
+                  'whoisRegCity': null,
+                  'whoisRegState': null,
+                  'whoisPostalCode': null,
+                  'whoisCountry': 'CM',
+                  'whoisPhone': null,
+                  'whoisFax': null,
+                  'whoisEmail': 'hceelnwdk@hceelnwdl.com'
                 },
                 {
-                  'id': 'Thisdomainsmailidistooolongfortestingweareusingthisfoo.com',
+                  'id': 'domain.ab.com',
                   'risk': 'UNSAFE',
-                  'countryCode': 'US',
-                  'country': 'United States',
-                  'creationDate': 1475002318162,
-                  'expiredDate': 1415002318162,
-                  'registrantEmail': 'bar@foo.com'
+                  'ip': null,
+                  'whoisCreatedDate': 1437493116306,
+                  'whoisUpdatedDate': null,
+                  'whoisExpiredDate': 1520782716306,
+                  'whoisRegType': null,
+                  'whoisRegName': null,
+                  'whoisRegOrg': null,
+                  'whoisRegStreet': null,
+                  'whoisRegCity': null,
+                  'whoisRegState': null,
+                  'whoisPostalCode': null,
+                  'whoisCountry': 'CM',
+                  'whoisPhone': null,
+                  'whoisFax': null,
+                  'whoisEmail': 'hceelnwdk@hceelnwdl.com'
                 }
               ]
             }

@@ -46,12 +46,6 @@ export default [
         nested: ''
       },
       {
-        field: 'countryCode',
-        title: 'context.lc.countryCode',
-        width: '12%',
-        nested: ''
-      },
-      {
         field: 'country',
         title: 'context.lc.country',
         width: '20%',
@@ -135,33 +129,27 @@ export default [
         className: 'rsa-context-panel__liveconnect__entity-value'
       },
       {
-        field: 'countryCode',
-        title: 'context.lc.countryCode',
-        width: '12%',
-        nested: ''
-      },
-      {
-        field: 'country',
+        field: 'whoisCountry',
         title: 'context.lc.country',
         width: '14%',
         nested: ''
       },
       {
-        field: 'creationDate',
+        field: 'whoisCreatedDate',
         title: 'context.lc.registeredDate',
         dataType: 'datetime',
         width: '13%',
         nested: ''
       },
       {
-        field: 'expiredDate',
+        field: 'whoisExpiredDate',
         title: 'context.lc.expiredDate',
         dataType: 'datetime',
         width: '13%',
         nested: ''
       },
       {
-        field: 'registrantEmail',
+        field: 'whoisEmail',
         title: 'context.lc.email',
         width: '25%',
         nested: ''
