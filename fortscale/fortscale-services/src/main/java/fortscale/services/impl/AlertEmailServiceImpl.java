@@ -2,7 +2,6 @@ package fortscale.services.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import fortscale.domain.core.*;
-import fortscale.domain.core.alert.Alert;
 import fortscale.domain.email.AlertSummary;
 import fortscale.domain.email.EmailGroup;
 import fortscale.domain.email.Frequency;

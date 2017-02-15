@@ -1,6 +1,6 @@
 package fortscale.streaming.alert.subscribers;
 
-import fortscale.domain.core.alert.AlertTimeframe;
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 import fortscale.streaming.alert.subscribers.evidence.decider.DeciderCommand;
 import fortscale.streaming.alert.subscribers.evidence.decider.AlertTypeConfigurationServiceImpl;

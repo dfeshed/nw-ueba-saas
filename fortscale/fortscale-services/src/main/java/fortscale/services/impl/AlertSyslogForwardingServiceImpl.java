@@ -1,7 +1,7 @@
 package fortscale.services.impl;
 
 import com.cloudbees.syslog.MessageFormat;
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.Severity;
 import fortscale.domain.core.User;
 import fortscale.domain.dto.DateRange;

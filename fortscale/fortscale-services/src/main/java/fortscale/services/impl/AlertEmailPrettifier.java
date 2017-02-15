@@ -1,6 +1,6 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.EmailAlertDecorator;
 import fortscale.services.AlertPrettifierService;
 import fortscale.services.LocalizationService;

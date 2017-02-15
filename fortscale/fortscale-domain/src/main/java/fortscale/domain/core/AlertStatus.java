@@ -1,22 +1,20 @@
-package fortscale.domain.core.alert;
+package fortscale.domain.core;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represent analyst feedback
- * Date: 8/30/2015.
+ * Represent status of evidence/alert
+ * Date: 6/22/2015.
  */
-public enum AlertFeedback {
-	None ("NONE", "No Feedback"),
-	Approved ("APPROVED", "Actual Risk"),
-	Rejected("REJECTED", "No Risk");
-	
+public enum AlertStatus {
+	Open ("OPEN", "Reviewed"),
+	Closed("CLOSED", "Unreviewed");
 
 	private String upperCaseValue;
 	private String prettyValue;
 
-	private AlertFeedback(String upperCaseValue, String prettyValue) {
+	private AlertStatus(String upperCaseValue, String prettyValue) {
 
 		this.upperCaseValue = upperCaseValue;
 		this.prettyValue = prettyValue;
@@ -24,13 +22,13 @@ public enum AlertFeedback {
 
 	public static List<String> getUpperCaseValues(){
 		List<String> upperCaseValues = new ArrayList<>();
-		for (AlertFeedback status : AlertFeedback.values()){
+		for (AlertStatus status : AlertStatus.values()){
 			upperCaseValues.add(status.upperCaseValue);
 		}
 		return upperCaseValues;
 	}
-	public static AlertFeedback getByStringCaseInsensitive(String value){
-		for (AlertFeedback status : AlertFeedback.values()){
+	public static AlertStatus getByStringCaseInsensitive(String value){
+		for (AlertStatus status : AlertStatus.values()){
 			if (status.upperCaseValue.equals(value.toUpperCase())){
 				return status;
 			}

@@ -4,9 +4,6 @@ package fortscale.domain.core.dao;
 import com.mongodb.BasicDBList;
 import com.mongodb.BasicDBObject;
 import fortscale.domain.core.*;
-import fortscale.domain.core.alert.Alert;
-import fortscale.domain.core.alert.AlertFeedback;
-import fortscale.domain.core.alert.AlertStatus;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DateRange;
 import fortscale.domain.rest.UserRestFilter;
@@ -21,22 +18,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.aggregation.*;
+import org.springframework.data.mongodb.core.aggregation.Aggregation;
+import org.springframework.data.mongodb.core.aggregation.AggregationOperation;
+import org.springframework.data.mongodb.core.aggregation.AggregationResults;
+import org.springframework.data.mongodb.core.aggregation.Fields;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 
-
-//imports as static
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.group;
-
-import static org.springframework.data.mongodb.core.aggregation.Aggregation.project;
-
-
-
 import java.util.*;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
+
+//imports as static
 
 
 /**

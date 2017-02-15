@@ -1,6 +1,6 @@
 package fortscale.ml.model.selector;
 
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.dto.DateRange;
 import org.springframework.beans.factory.annotation.Autowired;

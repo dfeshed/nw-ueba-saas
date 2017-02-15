@@ -21,10 +21,6 @@ http://www.espertech.com/schema/esper/esper-configuration-2.0.xsd">
     <event-type-auto-name package-name="fortscale.domain.core"/>
     <auto-import import-name="fortscale.domain.core.*"/>
     <event-type name="SessionTimeUpdate" class="fortscale.domain.core.SessionTimeUpdate"/>
-    <event-type name="Alert" class="fortscale.domain.core.alert.Alert"/>
-    <event-type name="AlertFeedback" class="fortscale.domain.core.alert.AlertFeedback"/>
-    <event-type name="AlertStatus" class="fortscale.domain.core.alert.AlertStatus"/>
-    <event-type name="AlertTimeframe" class="fortscale.domain.core.alert.AlertTimeframe"/>
     <plugin-singlerow-function name="hourStartTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="hourStartTimestamp" />
     <plugin-singlerow-function name="dayStartTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="dayStartTimestamp" />
     <plugin-singlerow-function name="hourEndTimestamp" function-class="fortscale.streaming.alert.rule.RuleUtils" function-method="hourEndTimestamp" />

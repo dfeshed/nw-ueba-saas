@@ -1,11 +1,6 @@
 package fortscale.services.impl;
 
-import fortscale.domain.core.Severity;
-import fortscale.domain.core.User;
-import fortscale.domain.core.alert.Alert;
-import fortscale.domain.core.alert.AlertFeedback;
-import fortscale.domain.core.DataSourceAnomalyTypePair;
-import fortscale.domain.core.alert.AlertStatus;
+import fortscale.domain.core.*;
 import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.rest.Alerts;
@@ -24,7 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 

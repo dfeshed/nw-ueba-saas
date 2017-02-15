@@ -1,6 +1,6 @@
 package fortscale.services;
 
-import fortscale.domain.core.alert.Alert;
+import fortscale.domain.core.Alert;
 import fortscale.domain.email.Frequency;
 
 /**

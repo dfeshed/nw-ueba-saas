@@ -3,9 +3,9 @@ package fortscale.web.rest;
 import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
-import fortscale.domain.core.alert.Alert;
-import fortscale.domain.core.alert.AlertFeedback;
-import fortscale.domain.core.alert.AlertStatus;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.alert.analystfeedback.AnalystCommentFeedback;
 import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
 import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
@@ -15,7 +15,6 @@ import fortscale.domain.dto.DateRange;
 import fortscale.services.AlertsService;
 import fortscale.services.EvidencesService;
 import fortscale.services.LocalizationService;
-import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
@@ -48,7 +47,6 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.io.OutputStreamWriter;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.util.*;
 
 @Controller
