@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface VpnService {
 	void createOpenVpnSession(VpnSession vpnSessionUpdate);
-	VpnSession updateCloseVpnSession(VpnSession vpnSessionUpdate);
+	VpnSession updateCloseVpnSession(VpnSession vpnSessionUpdate, boolean createVpnSessionWithNoOpenEvent);
 	void saveVpnSession(VpnSession vpnSession);
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession);
 	List<VpnSession> getGeoHoppingVpnSessions(VpnSession curVpnSession, int vpnGeoHoppingCloseSessionThresholdInHours, int vpnGeoHoppingOpenSessionThresholdInHours);
