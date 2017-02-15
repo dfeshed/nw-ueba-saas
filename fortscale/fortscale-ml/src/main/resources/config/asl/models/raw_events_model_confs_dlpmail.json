@@ -146,7 +146,7 @@
             }
         },
         {
-            "name": "normalized_username.email_recipient_domain.dlpmail",
+            "name": "email_recipient_domain.normalized_username.dlpmail",
             "selector": {
                 "type": "feature_bucket_context_selector",
                 "featureBucketConfName": "normalized_username_dlpmail_daily"
