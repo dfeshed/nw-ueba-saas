@@ -15,7 +15,7 @@ test('packet text', function(assert) {
     'id': 574561,
     'payloadSize': 618,
     'sequence': 3946844195,
-    'side': 1,
+    'side': 'response',
     'text': 'Testing text',
     'timestamp': 1449631503277
   }));
@@ -139,6 +139,6 @@ test('log text', function(assert) {
   }}`);
 
   return wait().then(() => {
-    assert.equal(this.$().text().trim().replace(/\s/g, ''), 'Testinglogtext');
+    assert.equal(this.$().text().trim().replace(/\s/g, ''), 'rawlogTestinglogtext');
   });
 });

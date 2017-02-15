@@ -4,7 +4,7 @@ const common = require('../../common');
 
 module.exports = function(environment) {
 
-  const socketUrl = common.determineSocketUrl(environment, '/api/cms/socket');
+  const socketUrl = common.determineSocketUrl(environment, '/cms/socket');
 
   return {
     'live-search-resource-types': {

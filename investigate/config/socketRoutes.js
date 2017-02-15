@@ -7,7 +7,7 @@ const common = require('../../common');
 var mergedConfig;
 
 const investigateConfigGen = function(env) {
-  const socketUrl = common.determineSocketUrl(env, '/api/investigate/socket');
+  const socketUrl = common.determineSocketUrl(env, '/investigate/socket');
 
   return {
     'core-service': {
