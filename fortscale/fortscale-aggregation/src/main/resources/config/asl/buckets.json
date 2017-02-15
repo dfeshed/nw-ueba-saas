@@ -3291,6 +3291,20 @@
                   }
               },
               {
+                  "name": "email_recipient_domain_histogram",
+                  "featureNamesMap": {
+                      "groupBy": [
+                          "email_recipient_domain"
+                      ]
+                  },
+                  "aggrFeatureFuncJson": {
+                      "type": "aggr_feature_histogram_func"
+                  },
+                  "filter": {
+                      "jsonPath": "[?(@.email_recipient_domain != '')]"
+                  }
+              },
+              {
                   "name": "normalized_src_machine_to_highest_score_map",
                   "featureNamesMap": {
                       "groupBy": [
