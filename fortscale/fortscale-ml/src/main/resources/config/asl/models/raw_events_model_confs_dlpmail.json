@@ -149,14 +149,14 @@
             "name": "normalized_username.email_recipient_domain.dlpmail",
             "selector": {
                 "type": "feature_bucket_context_selector",
-                "featureBucketConfName": "email_recipient_domain_dlpmail_daily"
+                "featureBucketConfName": "normalized_username_dlpmail_daily"
             },
             "retriever": {
                 "type": "context_histogram_retriever",
                 "timeRangeInSeconds": 7776000,
                 "functions": [],
-                "featureBucketConfName": "email_recipient_domain_dlpmail_daily",
-                "featureName": "normalized_username_histogram"
+                "featureBucketConfName": "normalized_username_dlpmail_daily",
+                "featureName": "email_recipient_domain_histogram"
             },
             "builder": {
                 "type": "category_rarity_model_builder",
