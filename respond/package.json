@@ -42,10 +42,6 @@
     "flexi": "2.0.0-beta.11"
   },
   "devDependencies": {
-    "@html-next/flexi-config": "2.0.0-beta.11",
-    "@html-next/flexi-default-styles": "2.0.0-beta.11",
-    "@html-next/flexi-dsl": "2.0.0-beta.11",
-    "@html-next/flexi-layouts": "2.0.0-beta.11",
     "babel-eslint": "^7.1.1",
     "broccoli-asset-rev": "^2.4.5",
     "ember-ajax": "^2.4.1",
@@ -81,7 +77,6 @@
     "ember-wormhole": "0.5.1",
     "eslint-plugin-ember-suave": "^1.0.0",
     "faker": "3.1.0",
-    "flexi": "2.0.0-beta.11",
     "jquery": "3.1.1",
     "loader.js": "^4.0.10",
     "lodash-es": "4.17.4",
