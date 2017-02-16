@@ -140,8 +140,11 @@ export default Component.extend({
 
         if (requestEula) {
           this.get('ajax').request('/eula/rsa', {
-            success: (response) => this.set('eulaContent', response),
-            error: (error) => Logger.error(error)
+            dataType: 'html'
+          }).then((response) => {
+            this.set('eulaContent', response);
+          }).catch((error) => {
+            Logger.error(error);
           });
         }
       } else {
