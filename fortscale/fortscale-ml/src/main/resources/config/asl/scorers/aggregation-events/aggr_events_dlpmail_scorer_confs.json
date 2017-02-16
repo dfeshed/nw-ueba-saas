@@ -225,7 +225,7 @@
             ]
         },
         {
-            "data-source": "aggr_event.normalized_username_dlpmail_hourly.number_of_sent_mail_event_hourly",
+            "data-source": "aggr_event.normalized_username_dlpmail_hourly.number_of_sent_mail_event_dlpmail_hourly",
             "scorers": [
                 {
                     "type": "low-values-score-reducer",
@@ -418,7 +418,7 @@
             ]
         },
         {
-            "data-source": "aggr_event.normalized_username_dlpmail_daily.number_of_email_attachment_event_daily",
+            "data-source": "aggr_event.normalized_username_dlpmail_daily.number_of_email_attachment_event_dlpmail_daily",
             "scorers": [
                 {
                     "type": "low-values-score-reducer",
@@ -450,7 +450,7 @@
             ]
         },
         {
-            "data-source": "aggr_event.normalized_username_dlpmail_daily.number_of_distinct_email_recipient_daily",
+            "data-source": "aggr_event.normalized_username_dlpmail_daily.number_of_distinct_email_recipient_dlpmail_daily",
             "scorers": [
                 {
                     "type": "low-values-score-reducer",
@@ -482,7 +482,7 @@
             ]
         },
         {
-            "data-source": "aggr_event.normalized_username_dlpmail_daily.number_of_sent_mail_event_daily",
+            "data-source": "aggr_event.normalized_username_dlpmail_daily.number_of_sent_mail_event_dlpmail_daily",
             "scorers": [
                 {
                     "type": "low-values-score-reducer",
