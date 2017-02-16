@@ -1,26 +1,30 @@
 <section class="rsa-context-panel__body">
-  {{#if (eq tabdata 'overview') }}
-    {{#each machinedata as |columns index|}}
-      {{context-panel/dynamic-grid
-        array=(parse-host-data contextData.Machines contextData.additionalData)
-        columns=columns
-        errorMessage=(get contextData 'Machines_ERROR')
-        title=columns.title
-        lastUpdated=(get contextData 'Machines_LASTUPDATED')
-              timeWindow=(get contextData 'Machines_TIMEWINDOW')
-      }}
-    {{/each}}
-  {{/if}}
-  {{#if (or (eq tabdata 'Users')(eq tabdata 'overview')) }}
-    {{#each userData as |columns index|}}
-      {{context-panel/dynamic-grid
-        array=(parse-addata contextData.Users )
-        columns=columns
-        errorMessage=(get contextData 'Machines_ERROR')
-        activatePanel=(action 'activate' 'Users')
-        tabdata=tabdata title=columns.title
-      }}
-    {{/each}}
+  {{#if (or contextData.Machines contextData.Machines_ERROR)}}    
+    {{#if (eq tabdata 'overview')}}
+      {{#each machinedata as |columns index|}}
+        {{context-panel/dynamic-grid
+          array=(parse-host-data contextData.Machines contextData.additionalData)
+          columns=columns
+          errorMessage=(get contextData 'Machines_ERROR')
+          title=columns.title
+          lastUpdated=(get contextData 'Machines_LASTUPDATED')
+          timeWindow=(get contextData 'Machines_TIMEWINDOW')
+        }}
+      {{/each}}
+    {{/if}}
+  {{/if}} 
+  {{#if (or contextData.Users contextData.Users_ERROR)}}      
+    {{#if (or (eq tabdata 'Users')(eq tabdata 'overview')) }}
+      {{#each userData as |columns index|}}
+        {{context-panel/dynamic-grid
+          array=(parse-addata contextData.Users )
+          columns=columns
+          errorMessage=(get contextData 'Machines_ERROR')
+          activatePanel=(action 'activate' 'Users')
+          tabdata=tabdata title=columns.title
+        }}
+      {{/each}}
+    {{/if}}
   {{/if}}
   {{#each datasourceList as |columns index|}}
     {{#if (or (eq tabdata columns.dataSourceGroup)(eq tabdata 'overview')) }}

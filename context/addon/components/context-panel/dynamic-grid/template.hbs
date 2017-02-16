@@ -1,12 +1,12 @@
-{{#if (gt array.length 0)}}
-  <div class="rsa-context-panel__grid__heading-text">
-    {{t title}}
-    <span title={{t 'context.hostSummary.title'}}></span>
-  </div>
-  {{#each array as |data|}}
-    {{#if errorMessage}}
-      <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
-    {{else}}
+<div class="rsa-context-panel__grid__heading-text">
+  {{t title}}
+  <span title={{t 'context.hostSummary.title'}}></span>
+</div>
+{{#if errorMessage}}
+  <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>
+{{else}}
+  {{#if (gt array.length 0)}}
+    {{#each array as |data|}}
       <hbox class="rsa-context-panel__grid__host-details">
         {{#each columns.columns as |columnsdata|}}
           <vbox class={{columnsdata.class}}>
@@ -37,11 +37,11 @@
         {{/each}}
       </hbox>
       <div class="rsa-context-panel__grid__border"></div>
+    {{/each}}
+    {{#if (eq tabdata 'overview')}}
+      <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'activate'}}>{{t 'context.footer.viewAll'}}</button></div>
     {{/if}}
-  {{/each}}
-  {{#if (eq tabdata 'overview')}}
-    <div class="rsa-context-panel__context-data-table__border"><button class="rsa-context-panel__context-data-table__button" {{action 'activate'}}>{{t 'context.footer.viewAll'}}</button></div>
+  {{else}}
+    <div class='rsa-context-panel__error-text'>{{t 'context.error.noData'}}</div>
   {{/if}}
-{{else}}
-  <div class='rsa-context-panel__error-text'>{{t 'context.error.noData'}}</div>
 {{/if}}

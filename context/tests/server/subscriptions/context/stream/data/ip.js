@@ -536,7 +536,6 @@ export default [
     'dataSourceType': 'Modules',
     'resultList': [
       {
-        'Path': 'C:\\2015-05-11-malspam-associated-malware\\',
         'IOCScore': {
           'Score': 1024,
           '__type': 'Tools.IOCScore, Tools',
@@ -570,7 +569,6 @@ export default [
         'HashSHA1': '8657909D4C3B14C63129E38D05D3845A90C57BF8'
       },
       {
-        'Path': 'C:\\2015-05-11-malspam-associated-malware\\',
         'IOCScore': {
           'Score': 1024,
           '__type': 'Tools.IOCScore, Tools',
@@ -604,7 +602,6 @@ export default [
         'HashSHA1': '74A586ABAD423AF4D969A0064248075FFBC3B3BF'
       },
       {
-        'Path': 'C:\\2015-05-11-malspam-associated-malware\\',
         'IOCScore': {
           'Score': 1024,
           '__type': 'Tools.IOCScore, Tools',
@@ -638,7 +635,6 @@ export default [
         'HashSHA1': 'A2BDD69B38AD32C1FF70A219169E34B1924D66BB'
       },
       {
-        'Path': 'C:\\2015-05-11-malspam-associated-malware\\',
         'IOCScore': {
           'Score': 1024,
           '__type': 'Tools.IOCScore, Tools',
@@ -672,7 +668,6 @@ export default [
         'HashSHA1': '5522FB78749B8425F58B3F12C67C74D62E6EEDCA'
       },
       {
-        'Path': 'C:\\Users\\Administrator\\Desktop\\',
         'IOCScore': {
           'Score': 1024,
           '__type': 'Tools.IOCScore, Tools',
@@ -730,7 +725,6 @@ export default [
       {
         'LastExecuted': '5/15/2015 4:03:13 AM',
         'Description': 'Autorun unsigned ServiceDLL',
-        'Query': '\r\n\r\nSELECT DISTINCT\r\n\t[mp].[FK_Machines] AS [FK_Machines],\r\n\t[mp].[PK_MachineModulePaths] AS [FK_MachineModulePaths]           \r\nFROM\r\n\t[dbo].[mocAutoruns] AS [ar] WITH(NOLOCK)\r\n\tINNER JOIN [dbo].[MachinesToEvaluate] AS [me] WITH(NOLOCK) ON ([me].[RK_Machines] = [ar].[FK_Machines])\r\n\tINNER JOIN [dbo].[Paths] AS [pa] WITH(NOLOCK) ON ([pa].[PK_Paths] = [ar].[FK_Paths__RegistryPath])\r\n\tINNER JOIN [dbo].[MachineModulePaths] AS [mp] WITH(NOLOCK) ON ([mp].[PK_MachineModulePaths] = [ar].[FK_MachineModulePaths] AND [mp].[FK_Machines] = [ar].[FK_Machines])\r\n\tINNER JOIN [dbo].[Modules] AS [mo] WITH(NOLOCK) ON ([mo].[PK_Modules] = [mp].[FK_Modules])\r\nWHERE \r\n\t[ar].[Type] = 22 AND \r\n\t[mo].[ModuleSignaturePresent] = 0 AND\r\n\t[ar].[MarkedAsDeleted] = 0\r\n\r\n',
         'ModuleCount': '1',
         'Priority': '5',
         'IOCTriggeredOnMachine': 'True',
@@ -747,7 +741,6 @@ export default [
       {
         'LastExecuted': '5/15/2015 4:03:11 AM',
         'Description': 'Compiled in last month',
-        'Query': '\r\n\r\nDECLARE @DATE_THRESHOLD AS SMALLDATETIME = DATEADD(MONTH, -1, GETUTCDATE());\r\n\r\nSELECT DISTINCT\r\n\t[mp].[FK_Machines] AS [FK_Machines],\r\n\t[mp].[PK_MachineModulePaths] AS [FK_MachineModulePaths]           \r\nFROM\r\n\t[dbo].[MachineModulePaths] AS [mp] WITH(NOLOCK)\r\n\tINNER JOIN [dbo].[Modules] AS [mo] WITH(NOLOCK) ON ([mo].[PK_Modules] = [mp].[FK_Modules])\r\nWHERE \r\n\t[mo].[PEUTCTimeDateStamp] > @DATE_THRESHOLD AND\r\n\t[mo].[PEUTCTimeDateStamp] <= GETUTCDATE() AND\r\n\t[mp].[MarkedAsDeleted]  = 0\r\n\r\n',
         'ModuleCount': '127',
         'Priority': '0',
         'IOCTriggeredOnMachine': 'True',
@@ -764,7 +757,6 @@ export default [
       {
         'LastExecuted': '5/15/2015 4:03:11 AM',
         'Description': 'Created in last month',
-        'Query': '\r\n\r\nSELECT DISTINCT\r\n\t[mp].[FK_Machines] AS [FK_Machines],\r\n\t[mp].[PK_MachineModulePaths] AS [FK_MachineModulePaths]           \r\nFROM\r\n\t[dbo].[MachineModulePaths] AS [mp] WITH(NOLOCK)\r\nWHERE \r\n\t[mp].[FilenameUTCTimeCreated] >= DATEADD(MONTH, -1, GETUTCDATE()) AND\r\n\t[mp].[FilenameUTCTimeCreated] <= GETUTCDATE() AND\r\n\t[mp].[MarkedAsDeleted] = 0\r\n\r\n',
         'ModuleCount': '1466',
         'Priority': '0',
         'IOCTriggeredOnMachine': 'True',
@@ -781,7 +773,6 @@ export default [
       {
         'LastExecuted': '5/15/2015 4:03:13 AM',
         'Description': 'No file description',
-        'Query': "\r\n\r\nSELECT DISTINCT\r\n\t[mp].[FK_Machines] AS [FK_Machines],\r\n\t[mp].[PK_MachineModulePaths] AS [FK_MachineModulePaths]           \r\nFROM\r\n\t[dbo].[MachineModulePaths] AS [mp] WITH(NOLOCK)\r\n\tINNER JOIN [dbo].[MachinesToEvaluate] AS [me] WITH(NOLOCK) ON ([me].[RK_Machines] = [mp].[FK_Machines])\r\n\tINNER JOIN [dbo].[Modules] AS [mo] WITH(NOLOCK) ON ([mo].[PK_Modules] = [mp].[FK_Modules])\r\nWHERE \r\n\t[mo].[Description] = '' AND\r\n\t(\r\n\t\t[mo].[ModulePE32] = 1 OR\r\n\t\t[mo].[ModulePE64] = 1\r\n\t) AND\r\n\t[mp].[MarkedAsDeleted]  = 0\r\n\r\n",
         'ModuleCount': '8',
         'Priority': '5',
         'IOCTriggeredOnMachine': 'True',
@@ -798,7 +789,6 @@ export default [
       {
         'LastExecuted': '5/15/2015 4:03:14 AM',
         'Description': 'Directory hidden',
-        'Query': '\r\n\r\nSELECT DISTINCT\r\n\t[mp].[FK_Machines] AS [FK_Machines],\r\n\t[mp].[PK_MachineModulePaths] AS [FK_MachineModulePaths]           \r\nFROM\r\n\t[dbo].[MachineModulePaths] AS [mp] WITH(NOLOCK)\r\n\tINNER JOIN [dbo].[MachinesToEvaluate] AS [me] WITH(NOLOCK) ON ([me].[RK_Machines] = [mp].[FK_Machines])\r\nWHERE \r\n\t[mp].[FileDirectoryHiddenAttributes] = 1 AND\r\n\t[mp].[MarkedAsDeleted]  = 0\r\n\r\n',
         'ModuleCount': '141',
         'Priority': '5',
         'IOCTriggeredOnMachine': 'True',
@@ -816,7 +806,6 @@ export default [
       {
         'LastExecuted': '5/15/2015 4:03:16 AM',
         'Description': 'Runs SC.EXE',
-        'Query': "\r\n\r\nDECLARE @LASTIOCEVAL AS DATETIME2 = (SELECT ISNULL(LastIOCEvaluationUTCTime, CONVERT(DATETIME, 0)) FROM dbo.ApplicationSetup)\r\n\r\nSELECT DISTINCT\r\n\t[mp].[FK_Machines] AS [FK_Machines],\r\n\t[mp].[PK_MachineModulePaths] AS [FK_MachineModulePaths]\r\nFROM\r\n\t[dbo].[mocSentinelEvents] AS [se] WITH(NOLOCK)\r\n\tINNER JOIN [dbo].[MachinesToEvaluate] AS [me] WITH(NOLOCK) ON ([me].[RK_Machines] = [se].[FK_Machines])\r\n\tINNER JOIN [dbo].[MachineModulePaths] AS [mp] WITH(NOLOCK) ON ([mp].[PK_MachineModulePaths] = [se].[FK_MachineModulePaths])\r\n\tINNER JOIN [dbo].[FileNames] AS [fn] WITH(NOLOCK) ON ([fn].[PK_FileNames] = [se].[FK_FileNames__TargetProcessImageFileName])\r\nWHERE \r\n\t[se].[BehaviorProcessCreateProcess] = 1 AND\r\n\t[se].[AuditUTCDate] > @LASTIOCEVAL AND\r\n\t[fn].[FileName] = N'SC.EXE' AND\r\n\t[mp].[FK_Modules] != -1 AND\r\n\t[mp].[MarkedAsDeleted] = 0 -- Testing MarkedAsDeleted on MP instead of SE for Events\r\n\r\n",
         'ModuleCount': '4',
         'Priority': '5',
         'IOCTriggeredOnMachine': 'True',
@@ -833,7 +822,6 @@ export default [
       {
         'LastExecuted': '5/15/2015 4:03:17 AM',
         'Description': 'Runs SCHTASKS.EXE',
-        'Query': "\r\n\r\nDECLARE @LASTIOCEVAL AS DATETIME2 = (SELECT ISNULL(LastIOCEvaluationUTCTime, CONVERT(DATETIME, 0)) FROM dbo.ApplicationSetup)\r\n\r\nSELECT DISTINCT\r\n\t[mp].[FK_Machines] AS [FK_Machines],\r\n\t[mp].[PK_MachineModulePaths] AS [FK_MachineModulePaths]\r\nFROM\r\n\t[dbo].[mocSentinelEvents] AS [se] WITH(NOLOCK)\r\n\tINNER JOIN [dbo].[MachinesToEvaluate] AS [me] WITH(NOLOCK) ON ([me].[RK_Machines] = [se].[FK_Machines])\r\n\tINNER JOIN [dbo].[MachineModulePaths] AS [mp] WITH(NOLOCK) ON ([mp].[PK_MachineModulePaths] = [se].[FK_MachineModulePaths])\r\n\tINNER JOIN [dbo].[FileNames] AS [fn] WITH(NOLOCK) ON ([fn].[PK_FileNames] = [se].[FK_FileNames__TargetProcessImageFileName])\r\nWHERE \r\n\t[se].[BehaviorProcessCreateProcess] = 1 AND\r\n\t[se].[AuditUTCDate] > @LASTIOCEVAL AND\r\n\t[fn].[FileName] = N'SCHTASKS.EXE' AND\r\n\t[mp].[FK_Modules] != -1 AND\r\n\t[mp].[MarkedAsDeleted] = 0 -- Testing MarkedAsDeleted on MP instead of SE for Events\r\n\r\n",
         'ModuleCount': '4',
         'Priority': '5',
         'IOCTriggeredOnMachine': 'True',
@@ -1831,7 +1819,7 @@ export default [
         },
         'data': {
           'IPAddress': '10.101.47.66',
-          'Username': 'corp\\vaila'
+          'Username': 'corpvaila'
         }
       }
     ],
