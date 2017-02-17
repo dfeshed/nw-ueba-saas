@@ -48,27 +48,48 @@ const isDevelopingAddon = function(projectName) {
 };
 
 /**
- * This function is a utility for Ember apps for calculating socketUrls on startup.
- * This function takes the environment (`development`, `test`, `production`), the desired production socketUrl, inspects node.js process variables, and calculates the appropriate `socketUrl` to use.
- * If in `development` or `test` this function will calculate a URL that points to the `mock-server`.
- * To NOT point at the `mock-server` in `development` or `test`, start `ember` with the `NOMOCK` environment variable set to anything.
- * For example: `NOMOCK=1 ember s`
+ * This function is a utility for Ember apps to calculate socketUrls on startup.
+ *
+ * If environment in `development` or `test`
+ *   AND NOMOCK is not set
+ *     the URL is set to the mock-server endpoint
+ *     In this case, the user is using the local mock-server as a backend
+ *   AND NOMOCK is set
+ *     the URL is set to the passed in socketPath
+ *     In this case, the user is using a locally running micro-service
+ * If environment is not `development` or `test` (ex: `production`)
+ *   the URL has `api` prepended to it as it is assumed to be hitting nginx
+ *   in a prod or prod-like environment
+ *
  * @public
  */
-const determineSocketUrl = function(environment, productionPath) {
-  // Set NOMOCK=anything (ex 'NOMOCK=1 ember s')
-  // to not use mock in dev/test
-  //
-  // When running jenkins tests, the MOCK_PORT
-  // is set to any of a number of possible ports
-  // so need to get from 'process.env'
-
+const determineSocketUrl = function(environment, socketPath) {
   let socketUrl;
-  if ((environment === 'development' || environment === 'test') && !process.env.NOMOCK) {
-    const mockPort = process.env.MOCK_PORT || 9999;
-    socketUrl = `http://localhost:${mockPort}/socket/`;
+  if ((environment === 'development' || environment === 'test')) {
+    if (!process.env.NOMOCK) {
+
+      // Using mock-server
+      //
+      // When running jenkins tests, the MOCK_PORT
+      // is set to any of a number of possible ports
+      // so need to get from 'process.env'
+      const mockPort = process.env.MOCK_PORT || 9999;
+      socketUrl = `http://localhost:${mockPort}/socket/`;
+    } else {
+
+      // Using microservice
+      //
+      // Just use the path passed in as it matches the path
+      // the microservice uses
+      socketUrl = socketPath;
+    }
   } else {
-    socketUrl = productionPath;
+
+    // production
+    //
+    // Prefix with /api as it is routed by nginx to
+    // the appropriate microservice
+    socketUrl = `/api${socketPath}`;
   }
   return socketUrl;
 };
