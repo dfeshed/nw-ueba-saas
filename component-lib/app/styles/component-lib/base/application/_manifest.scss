@@ -1,7 +1,3 @@
-$applicationActionBarWidth: 40px;
-$applicationActionBarBackgroundColor: rsa-color(gray, darkest);
-$applicationActionBarActiveButtonColor: rsa-color(blue);
-
 $applicationHeaderHeight: 40px;
 $applicationHeaderBackground: rsa-color(gray, darkest);
 $applicationHeaderLinkColor: rsa-color(gray, light);
@@ -110,7 +106,6 @@ body {
 @import 'application-header';
 @import 'application-content';
 @import 'application-modal';
-@import 'application-action-bar';
 @import 'application-layout-manager';
 @import 'routable-login';
 @import 'user-preferences-panel';
@@ -119,11 +114,11 @@ body {
 @import 'application-error-page';
 
 page, screen {
-  min-height: calc(100vh - #{$applicationHeaderHeight});
+  min-height: 100vh;
 }
 
 page {
-  min-width: calc(100vw - #{$applicationActionBarWidth});
+  min-width: 100vw;
 }
 
 .col {

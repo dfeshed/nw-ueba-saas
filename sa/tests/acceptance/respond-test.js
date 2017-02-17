@@ -197,11 +197,3 @@ skip('Toggle list button renders incidents list view with right number of column
     });
   });
 });
-
-test('Side panel queue button is disabled', function(assert) {
-  visit('/respond');
-  andThen(() => {
-    const queue = find('.incident-queue-trigger.is-disabled');
-    assert.equal(queue.length, 1, 'Incident queue button in side panel is disabled in landing page');
-  });
-});
