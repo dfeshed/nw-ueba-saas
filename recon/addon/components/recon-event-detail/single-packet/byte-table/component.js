@@ -80,7 +80,7 @@ const ByteTableComponent = Component.extend({
       const tr = table.append('tr');
       byteRow.forEach((byte) => {
         const td = tr.append('td')
-          .attr('class', `${cellClass} ${byte.packetField ? byte.packetField.roles : ''} ${byte.isHeader ? headerCellClass : ''}`)
+          .attr('class', this.getByteClass(byte, cellClass, headerCellClass))
           .datum(byte);
 
         if (byte.isHeader) {
@@ -106,6 +106,16 @@ const ByteTableComponent = Component.extend({
         cells.push(td.nodes()[0]);
       });
     });
+  },
+
+  /**
+   * Appends appropriate cell, header and footer classes to the byteRow.
+   * @returns {{list of classes}}
+   * @public
+   */
+  getByteClass(byte, cellClass, headerCellClass) {
+    return `${cellClass} ${byte.packetField ? byte.packetField.roles : ''} ${byte.isHeader ?
+            headerCellClass : ''} ${byte.isFooter ? 'footer' : ''}`;
   },
 
   attachDomListeners() {

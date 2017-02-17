@@ -114,6 +114,11 @@ $packet-byte-border-width: 1px;
         }
       }
 
+      &.footer {
+        background-color: $dark-packet-footer-bg-color;
+        color: rsa-color(white);
+      }
+
       &[data-is-selected="true"] {
         background-color: $selected-bg-color;
         color: $selected-color;

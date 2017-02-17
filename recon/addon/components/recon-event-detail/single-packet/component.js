@@ -107,8 +107,8 @@ export default Component.extend({
    * @type {[]}
    * @public
    */
-  @computed('decodedData', 'payloadOffset', 'packetFields')
-  bytes(decodedData, payloadOffset, packetFields) {
+  @computed('decodedData', 'payloadOffset', 'packetFields', 'packet.footerPosition')
+  bytes(decodedData, payloadOffset, packetFields, footerPosition) {
     let bytes;
 
     // Has the `decodedData` remained the same since last time we were here?
@@ -128,7 +128,8 @@ export default Component.extend({
           int,
           hex: (`0${int.toString(16)}`).slice(-2),
           ascii: (int > 31) ? char : '.',
-          isHeader: index < payloadOffset
+          isHeader: index < payloadOffset,
+          isFooter: index >= footerPosition
         };
       });
 

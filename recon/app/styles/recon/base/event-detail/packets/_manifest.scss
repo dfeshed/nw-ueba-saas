@@ -22,6 +22,8 @@ $dark-packet-field-border-color: rsa-color(blue, base, $rsa-nearly-opaque);
 $dark-packet-field-bg-color: rsa-color(blue, base, $rsa-translucent);
 $dark-packet-field-hover-bg-color: rsa-color(blue, base, $rsa-opaque);
 
+$dark-packet-footer-bg-color: rsa-color(black, base, $rsa-nearly-transparent);
+
 $packet-offsets-width: 7.15rem !default;
 $session-list-footer-height: 24px !default;
 $tool-size: 24px;
