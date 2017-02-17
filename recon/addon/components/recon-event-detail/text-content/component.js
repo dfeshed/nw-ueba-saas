@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import ReconPager from 'recon/mixins/recon-pager';
-import computed from 'ember-computed-decorators';
+import ReconEventTypes from 'recon/mixins/recon-event-types';
 import connect from 'ember-redux/components/connect';
 import layout from './template';
 
@@ -13,20 +13,9 @@ const stateToComputed = ({ recon: { data } }) => ({
   dataIndex: data.index
 });
 
-const TextReconComponent = Component.extend(ReconPager, {
+const TextReconComponent = Component.extend(ReconPager, ReconEventTypes, {
   layout,
-  classNames: ['recon-event-detail-text'],
-
-  /**
-   * Check if eventType is 'LOG'
-   * @param {object} eventType The event type object
-   * @returns {boolean} Log or not
-   * @public
-   */
-  @computed('eventType')
-  isLog(eventType) {
-    return eventType && eventType.name === 'LOG';
-  }
+  classNames: ['recon-event-detail-text']
 });
 
 export default connect(stateToComputed)(TextReconComponent);

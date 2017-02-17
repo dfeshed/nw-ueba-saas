@@ -1,24 +1,26 @@
-{{#rsa-form-button
-  class="export-files-button"
-  defaultAction=(action 'launchDownload')
-  isDisabled=isExportDisabled
-}}
-  {{#if isExportInProgress}}{{rsa-loader size="small"}}{{/if}}
-  {{exportCaption}}
-{{/rsa-form-button}}
-
-{{! todo: Once UX is finalized, we can insert a modal here (if desired) with rsa-application-modal }}
-{{!#if showModal}}
-
-  {{!#rsa-application-modal
-    eventId='recon-download-name-form'
-    label="Extract File(s)"
-    autoOpen=true
-    onClose=(action 'closeModal')
+{{#unless isLog}}
+  {{#rsa-form-button
+    class="export-files-button"
+    defaultAction=(action 'launchDownload')
+    isDisabled=isExportDisabled
   }}
-    {{! <div class='modal-content'> Modal Content </div> }}
-  {{!/rsa-application-modal}}
+    {{#if isExportInProgress}}{{rsa-loader size="small"}}{{/if}}
+    {{exportCaption}}
+  {{/rsa-form-button}}
 
-{{!/if}}
+  {{! todo: Once UX is finalized, we can insert a modal here (if desired) with rsa-application-modal }}
+  {{!#if showModal}}
 
-<iframe class="export-files-iframe js-export-files-iframe"></iframe>
+    {{!#rsa-application-modal
+      eventId='recon-download-name-form'
+      label="Extract File(s)"
+      autoOpen=true
+      onClose=(action 'closeModal')
+    }}
+      {{! <div class='modal-content'> Modal Content </div> }}
+    {{!/rsa-application-modal}}
+
+  {{!/if}}
+
+  <iframe class="export-files-iframe js-export-files-iframe"></iframe>
+{{/unless}}

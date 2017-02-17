@@ -2,6 +2,7 @@ import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 import computed, { filterBy } from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
+import ReconEventTypes from 'recon/mixins/recon-event-types';
 import layout from './template';
 
 const {
@@ -13,7 +14,8 @@ const {
 const stateToComputed = ({ recon: { data } }) => ({
   files: data.files,
   status: data.fileExtractStatus,
-  extractLink: data.fileExtractLink
+  extractLink: data.fileExtractLink,
+  eventType: data.eventType
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -21,7 +23,7 @@ const dispatchToActions = (dispatch) => ({
   didDownloadFiles: () => dispatch(InteractionActions.didDownloadFiles())
 });
 
-const ExportFilesComponent = Component.extend({
+const ExportFilesComponent = Component.extend(ReconEventTypes, {
   layout,
 
   // URL from which to download a completed file extraction job's result
