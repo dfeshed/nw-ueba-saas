@@ -5,7 +5,7 @@ module.exports = function(environment) {
   var socketUrl = determineSocketUrl(environment, '/response/socket');
 
   // remove this line when mock server in place
-  socketUrl = '/response/socket';
+  socketUrl = '/api/response/socket';
 
   return {
     incident: {
