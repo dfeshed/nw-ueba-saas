@@ -1,7 +1,7 @@
 <section class="rsa-context-panel__body">
-  {{#if (or contextData.Machines contextData.Machines_ERROR)}}    
+  {{#if (or contextData.Machines contextData.Machines_ERROR)}}
     {{#if (eq tabdata 'overview')}}
-      {{#each machinedata as |columns index|}}
+      {{#each machineData as |columns index|}}
         {{context-panel/dynamic-grid
           array=(parse-host-data contextData.Machines contextData.additionalData)
           columns=columns
@@ -12,8 +12,8 @@
         }}
       {{/each}}
     {{/if}}
-  {{/if}} 
-  {{#if (or contextData.Users contextData.Users_ERROR)}}      
+  {{/if}}
+  {{#if (or contextData.Users contextData.Users_ERROR)}}
     {{#if (or (eq tabdata 'Users')(eq tabdata 'overview')) }}
       {{#each userData as |columns index|}}
         {{context-panel/dynamic-grid
@@ -46,13 +46,11 @@
   {{#if (or (eq tabdata 'Lists')(eq tabdata 'overview'))}}
     {{context-panel/tree-table
       data=(top-records contextData.LIST tabdata)
-      title=(t multiColumnList.title )
-      columnsConfig=multiColumnList.columns
       tabdata=tabdata type='Lists'
       errorMessage=(get contextData 'LIST_ERROR')
       activatePanel=(action 'activate' 'Lists')}}
   {{/if}}
 
-  {{context-panel/live-connect tabdata=tabdata model=model contextData=contextData lcColumnList=lcColumnList}}
+  {{context-panel/live-connect tabdata=tabdata model=model contextData=contextData }}
 
 </section>

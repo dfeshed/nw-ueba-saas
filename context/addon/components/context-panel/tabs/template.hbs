@@ -1,0 +1,12 @@
+<div class="rsa-nav-tab-group">
+  {{#each tabsActive as |tab|}}
+    {{#rsa-nav-tab isCompact=true isActive=tab.isActive click=(action 'activate' tab.field)}}
+      <div class="label">{{ t tab.title }} {{tab.countText}} </div>
+    {{/rsa-nav-tab}}
+  {{/each}}
+</div>
+<hbox class="rsa-context-panel-header__tab">
+  {{#each toolbar as | buttons | }}
+    {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
+  {{/each}}
+</hbox>

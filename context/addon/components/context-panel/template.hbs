@@ -12,52 +12,39 @@
     </div>
   </vbox>
 </hbox>
-{{#unless hasResponse}}
+
+{{#if hasResponse}}
+
+  {{#if errorMessage}}
+
+    <hbox class='rsa-context-panel__loader'>
+      <span class='rsa-context-panel__error-text'>
+        {{errorMessage}}
+      </span>
+    </hbox>
+
+  {{else}}
+
+    {{context-panel/tabs
+      model=model
+      activateAction=(action 'activate')
+    }}
+
+    {{context-panel/body
+      contextData=model.contextData
+      model=model
+      tabdata=active
+      activatePanel=(action 'activate')
+    }}
+
+  {{/if}}
+
+{{else}}
+
   <hbox class='rsa-context-panel__loader'>
     <div class="rsa-loader is-largest">
       <div class="rsa-loader__wheel"></div>
       <div class="rsa-loader__text"></div>
     </div>
   </hbox>
-{{/unless}}
-{{#if hasResponse}}
-  {{#if errorMessage}}
-    <hbox class='rsa-context-panel__loader'>
-      <span class='rsa-context-panel__error-text'>
-        {{errorMessage}}
-      </span>
-    </hbox>
-  {{else}}
-    {{#each dynamictabs.tabs as |tabList|}}
-      {{#if (is-equal tabList.tabType model.meta)}}
-        <div class="rsa-nav-tab-group">
-          {{#each tabList.columns as |tabdetails|}}
-            {{#rsa-nav-tab  isCompact=true isActive=(is-equal active tabdetails.field) click=(action 'activate' tabdetails.field)}}
-              {{#if (or (eq tabdetails.field 'overview') or (eq tabdetails.field 'liveConnect'))}}
-                <div class="label">{{ t tabdetails.title }}  </div>
-              {{else}}
-                <div class="label">{{ t tabdetails.title }} ({{call-method this 'getDataSourceLength' (get contextData tabdetails.dataSourceType  )}}) </div>
-              {{/if}}
-            {{/rsa-nav-tab}}
-          {{/each}}
-        </div>
-        <hbox class="rsa-context-panel-header__tab">
-          {{#each tabList.toolbar  as | buttons | }}
-            {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
-          {{/each}}
-        </hbox>
-      {{/if}}
-    {{/each}}
-    {{context-panel/body
-      contextData=contextData
-      datasourceList=contextColumnsConfig
-      multiColumnList=multicolumn.multiColumnList
-      lcColumnList=lcColumnsConfig
-      model=model
-      tabdata=active
-      machinedata=machineColumns
-      userData=userColumns
-      activatePanel=(action 'activate')
-    }}
-  {{/if}}
 {{/if}}

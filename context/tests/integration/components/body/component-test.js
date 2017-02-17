@@ -145,7 +145,7 @@ test('it renders', function(assert) {
 
   this.set('alertsData', data);
   this.set('columns', DatasourceList);
-  this.render(hbs`  {{context-panel/body contextData=alertsData   title=(t columns.title ) datasourceList=columns tabdata='overview'}}`);
+  this.render(hbs`{{context-panel/body contextData=alertsData datasourceList=columns tabdata='overview'}}`);
   assert.equal(this.$('.rsa-data-table-header-cell').length, 6, 'Testing count of data header cells');
 
 

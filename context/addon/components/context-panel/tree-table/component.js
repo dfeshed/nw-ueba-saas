@@ -1,5 +1,6 @@
 import Ember from 'ember';
 import layout from './template';
+import multiColumnList from 'context/config/tree-table';
 
 /*
 
@@ -49,12 +50,25 @@ It internally uses rsa-content-accordion and is driven by the following JSON
 
  */
 const {
-  Component
+  Component,
+  inject: {
+    service
+  }
 } = Ember;
 
 export default Component.extend({
   layout,
   classNames: 'rsa-context-tree-table',
+
+  title: null,
+  columnsConfig: multiColumnList.columns,
+
+  i18n: service(),
+
+  init() {
+    this._super(...arguments);
+    this.set('title', this.get('i18n').t(multiColumnList.title));
+  },
 
   actions: {
     activate(option) {
