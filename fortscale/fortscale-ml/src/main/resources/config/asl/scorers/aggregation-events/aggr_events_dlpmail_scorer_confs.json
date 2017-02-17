@@ -33,7 +33,7 @@
             ]
         },
         {
-            "data-source": "aggr_event.normalized_username_dlpmail_hourly.number_of_application_dlpmail_hourly",
+            "data-source": "aggr_event.normalized_username_dlpmail_hourly.number_of_distinct_application_dlpmail_hourly",
             "scorers": [
                 {
                     "type": "low-values-score-reducer",
