@@ -12,15 +12,10 @@ public class CommentFeedbackRequest {
     @NotEmpty
     private String commentText;
 
-    @NotNull
-    @NotEmpty
-    private String analystUserName;
-
     public CommentFeedbackRequest() {
     }
 
-    public CommentFeedbackRequest(String analystUserName, String commentText) {
-        this.analystUserName = analystUserName;
+    public CommentFeedbackRequest(String commentText) {
         this.commentText = commentText;
     }
 
@@ -32,11 +27,4 @@ public class CommentFeedbackRequest {
         this.commentText = commentText;
     }
 
-    public String getAnalystUserName() {
-        return analystUserName;
-    }
-
-    public void setAnalystUserName(String analystUserName) {
-        this.analystUserName = analystUserName;
-    }
 }

@@ -310,7 +310,7 @@ public class ApiAlertController extends BaseController {
 		return toReturn;
 	}
 
-	private void validateUserName(HttpSession session, String analystUserName){
+	private String getAnalystUserName(HttpSession session){
 		SecurityContextImpl securityContext = (SecurityContextImpl)(session.getAttribute("SPRING_SECURITY_CONTEXT"));
 
 		if (securityContext.getAuthentication()==null){
@@ -331,12 +331,7 @@ public class ApiAlertController extends BaseController {
 			throw new RuntimeException("User is not logged in");
 		}
 
-		if (!analystName.equals(analystUserName)){
-			throw new RuntimeException("User cannot send comment in behalf of other user");
-		}
-
-
-
+		return analystName;
 	}
 
 	@ApiOperation(value = "Add new comment on the alert", notes = "The comment include the analyst details, date, and text", response = AnalystCommentFeedback.class)
@@ -351,9 +346,10 @@ public class ApiAlertController extends BaseController {
 	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id,
 										@RequestBody @Valid CommentFeedbackRequest request) {
 		Alert alert = alertsService.getAlertById(id);
+		String analystName = null;
 
 		try {
-			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
+			analystName = getAnalystUserName(httpRequest.getSession());
 		} catch (Exception e) {
 			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
@@ -362,7 +358,7 @@ public class ApiAlertController extends BaseController {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.NOT_FOUND);
 		}
 
-		AnalystCommentFeedback comment = new AnalystCommentFeedback(request.getAnalystUserName(), request.getCommentText(),
+		AnalystCommentFeedback comment = new AnalystCommentFeedback(analystName, request.getCommentText(),
 				System.currentTimeMillis());
 
 		alert.addAnalystFeedback(comment);
@@ -378,9 +374,9 @@ public class ApiAlertController extends BaseController {
 	public ResponseEntity updateComment(HttpServletRequest httpRequest, @PathVariable String id, @PathVariable String commentId,
 										@RequestBody @Valid CommentFeedbackRequest request) {
 		Alert alert = alertsService.getAlertById(id);
-
+		String analystName = null;
 		try {
-			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
+			analystName = getAnalystUserName(httpRequest.getSession());
 		} catch (Exception e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
@@ -402,7 +398,7 @@ public class ApiAlertController extends BaseController {
 
 		if (!oldComment.getCommentText().equals(request.getCommentText())) {
 			oldComment.setCommentText(request.getCommentText());
-			oldComment.setAnalystUserName(request.getAnalystUserName());
+			oldComment.setAnalystUserName(analystName);
 			alertsService.saveAlertInRepository(alert);
 		}
 
@@ -507,18 +503,19 @@ public class ApiAlertController extends BaseController {
 										  @Valid @RequestBody AlertUpdateStatusRequest request){
 		// Getting the relevant alert
 		Alert alert = alertsService.getAlertById(id);
+		String analystUserName = null;
 
 		if (alert == null){
 			return new ResponseEntity(String.format("Alert with id {} not found", id), HttpStatus.BAD_REQUEST);
 		}
 
 		try {
-			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
+			analystUserName = getAnalystUserName(httpRequest.getSession());
 		} catch (Exception e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 
-		AnalystRiskFeedback analystRiskFeedback = alertsService.updateAlertStatus(alert, request.getStatus(), request.getFeedback(), request.getAnalystUserName());
+		AnalystRiskFeedback analystRiskFeedback = alertsService.updateAlertStatus(alert, request.getStatus(), request.getFeedback(), analystUserName);
 		return new ResponseEntity(analystRiskFeedback, HttpStatus.OK);
 	}
 

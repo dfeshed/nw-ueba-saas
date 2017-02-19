@@ -89,25 +89,6 @@ public class ApiAlertsControllerTest {
 		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
 	}
 
-	@Test public void updateStatus_WrongAnalyst() throws Exception {
-		// set up alerts repository mocked behavior
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-
-		when(alertsService.getAlertById(anyString())).thenReturn(alert);
-
-		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}", "2222")
-				.sessionAttr("SPRING_SECURITY_CONTEXT",getSecurityContextForSessionWithAnalyst("not admin"))
-				.content("{\"status\": \"Closed\", \"feedback\": \"Rejected\", \"analystUserName\":\"admin\"}")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON_VALUE))
-				.andReturn();
-
-		//validate
-		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-	}
-
 	@Test public void addComment_valid() throws Exception {
 		// set up alerts repository mocked behavior
 		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
@@ -126,27 +107,6 @@ public class ApiAlertsControllerTest {
 		//validate
 		assertEquals(HttpStatus.CREATED.value(), result.getResponse().getStatus());
 		verify(alertsService).saveAlertInRepository(any());
-	}
-
-	@Test public void addComment_user_not_valid() throws Exception {
-		// set up alerts repository mocked behavior
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-
-		when(alertsService.getAlertById(anyString())).thenReturn(alert);
-
-
-		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
-				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
-				.content("{\"analystUserName\": \"other_user\", \"commentText\":\"hhhh\"}")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON_VALUE))
-				.andReturn();
-
-		//validate
-		assertEquals(HttpStatus.BAD_REQUEST.value(), result.getResponse().getStatus());
-
 	}
 
 	@Test public void addComment_NoAlert() throws Exception {
@@ -203,45 +163,6 @@ public class ApiAlertsControllerTest {
 		assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
 		assertTrue(result.getResolvedException().getMessage().contains("commentText"));
 		assertTrue(result.getResolvedException().getMessage().contains("NotNull"));
-	}
-
-	@Test public void addComment_null_analystName() throws Exception {
-		// set up alerts repository mocked behavior
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-
-		when(alertsService.getAlertById(anyString())).thenReturn(alert);
-
-		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
-				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
-				.content("{\"analystUserName\": null, \"commentText\":\"comment\"}").
-				contentType(MediaType.APPLICATION_JSON).
-				accept(MediaType.APPLICATION_JSON_VALUE)).andReturn();
-
-		assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
-		assertTrue(result.getResolvedException().getMessage().contains("analystUserName"));
-		assertTrue(result.getResolvedException().getMessage().contains("NotNull"));
-	}
-
-	@Test public void addComment_empty_analystName() throws Exception {
-		// set up alerts repository mocked behavior
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-
-		when(alertsService.getAlertById(anyString())).thenReturn(alert);
-
-		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(post("/api/alerts/{id}/comments", "2222")
-				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
-				.content("{\"analystUserName\": \"\", \"commentText\":\"comment\"}")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON_VALUE))
-				.andReturn();
-
-		assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
-		assertTrue(result.getResolvedException().getMessage().contains("analystUserName"));
-		assertTrue(result.getResolvedException().getMessage().contains("NotEmpty"));
 	}
 
 	@Test public void updateComment_valid() throws Exception {
@@ -355,60 +276,6 @@ public class ApiAlertsControllerTest {
 		assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
 		assertTrue(result.getResolvedException().getMessage().contains("commentText"));
 		assertTrue(result.getResolvedException().getMessage().contains("NotNull"));
-	}
-
-	@Test public void updateComment_null_analystName() throws Exception {
-		List<AnalystFeedback> comments = new ArrayList<>();
-		String commentId = "1";
-		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, System.currentTimeMillis());
-
-		// set up alerts repository mocked behavior
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-
-		comments.add(comment);
-		alert.setAnalystFeedback(comments);
-
-		when(alertsService.getAlertById(anyString())).thenReturn(alert);
-
-		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", commentId)
-				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
-				.content("{\"analystUserName\": null, \"commentText\":\"comment\"}")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON_VALUE))
-				.andReturn();
-
-		assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
-		assertTrue(result.getResolvedException().getMessage().contains("analystUserName"));
-		assertTrue(result.getResolvedException().getMessage().contains("NotNull"));
-	}
-
-	@Test public void updateComment_empty_analystName() throws Exception {
-		List<AnalystFeedback> comments = new ArrayList<>();
-		String commentId = "1";
-		AnalystCommentFeedback comment = new AnalystCommentFeedback("Alex",  "AnalystCommentFeedback", commentId, System.currentTimeMillis());
-
-		// set up alerts repository mocked behavior
-		Alert alert = new Alert("Alert1", 1, 2, EntityType.User, "user1", null, 0, 90, Severity.Critical,
-				AlertStatus.Open, AlertFeedback.None, "a", AlertTimeframe.Daily, 0.0, true);
-
-		comments.add(comment);
-		alert.setAnalystFeedback(comments);
-
-		when(alertsService.getAlertById(anyString())).thenReturn(alert);
-
-		// perform rest call to the controller
-		MvcResult result = mockMvc.perform(patch("/api/alerts/{id}/comments/{commentId}", "2222", commentId)
-				.sessionAttr("SPRING_SECURITY_CONTEXT", getSecurityContextForSessionWithAnalyst("admin"))
-				.content("{\"analystUserName\": \"\", \"commentText\":\"comment\"}")
-				.contentType(MediaType.APPLICATION_JSON)
-				.accept(MediaType.APPLICATION_JSON_VALUE))
-				.andReturn();
-
-		assertTrue(result.getResolvedException() instanceof MethodArgumentNotValidException);
-		assertTrue(result.getResolvedException().getMessage().contains("analystUserName"));
-		assertTrue(result.getResolvedException().getMessage().contains("NotEmpty"));
 	}
 
 	@Test public void deleteComment_valid() throws Exception {
