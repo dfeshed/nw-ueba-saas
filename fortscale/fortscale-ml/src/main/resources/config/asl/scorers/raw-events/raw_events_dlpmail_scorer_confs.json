@@ -57,31 +57,9 @@
                         },
                         {
                             "type": "category-rarity-model-scorer",
-                            "name": "destination_file_type.normalized_username.dlpmail.scorer",
-                            "model": {
-                                "name": "destination_file_type.normalized_username.dlpmail"
-                            },
-                            "max-rare-count": 5,
-                            "max-num-of-rare-features": 15,
-                            "number-of-samples-to-influence-enough": 30,
-                            "use-certainty-to-calculate-score": true
-                        },
-                        {
-                            "type": "category-rarity-model-scorer",
                             "name": "email_sender.normalized_username.dlpmail.scorer",
                             "model": {
                                 "name": "email_sender.normalized_username.dlpmail"
-                            },
-                            "max-rare-count": 5,
-                            "max-num-of-rare-features": 15,
-                            "number-of-samples-to-influence-enough": 30,
-                            "use-certainty-to-calculate-score": true
-                        },
-                        {
-                            "type": "category-rarity-model-scorer",
-                            "name": "source_file_type.normalized_username.dlpmail.scorer",
-                            "model": {
-                                "name": "source_file_type.normalized_username.dlpmail"
                             },
                             "max-rare-count": 5,
                             "max-num-of-rare-features": 15,
@@ -165,9 +143,6 @@
                             "number-of-samples-to-influence-enough": 30,
                             "use-certainty-to-calculate-score": true
                         }
-
-
-
 
                     ]
                 }

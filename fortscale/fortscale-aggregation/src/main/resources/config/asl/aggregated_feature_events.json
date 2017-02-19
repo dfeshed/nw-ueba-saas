@@ -2746,6 +2746,24 @@
           },
           "retentionStrategyName": "hourly_feature_retention_strategy"
       },
+      {
+          "name": "sum_of_file_size_dlpmail_hourly",
+          "type": "F",
+          "bucketConfName": "normalized_username_dlpmail_hourly",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "sum_of_file_size"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "hourly_feature_retention_strategy"
+      },
 
 
 
@@ -2832,29 +2850,6 @@
           }
       },
       {
-          "name": "sum_of_highest_destination_file_type_scores_dlpmail_hourly",
-          "type": "P",
-          "bucketConfName": "normalized_username_dlpmail_hourly",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "anomalyType": "destination_file_type",
-          "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
-          "aggregatedFeatureNamesMap": {
-              "pick": [
-                  "destination_file_type_to_highest_score_map"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_map_values_max_sum_func",
-              "includeValues": true,
-              "minScoreToInclude": 1,
-              "pattern": "[0-9]",
-              "replacement": "",
-              "postCondition": "(.*[a-zA-Z]){5}.*"
-          }
-      },
-      {
           "name": "sum_of_highest_email_sender_scores_dlpmail_hourly",
           "type": "P",
           "bucketConfName": "normalized_username_dlpmail_hourly",
@@ -2866,29 +2861,6 @@
           "aggregatedFeatureNamesMap": {
               "pick": [
                   "email_sender_to_highest_score_map"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_map_values_max_sum_func",
-              "includeValues": true,
-              "minScoreToInclude": 1,
-              "pattern": "[0-9]",
-              "replacement": "",
-              "postCondition": "(.*[a-zA-Z]){5}.*"
-          }
-      },
-      {
-          "name": "sum_of_highest_source_file_type_scores_dlpmail_hourly",
-          "type": "P",
-          "bucketConfName": "normalized_username_dlpmail_hourly",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "anomalyType": "source_file_type",
-          "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
-          "aggregatedFeatureNamesMap": {
-              "pick": [
-                  "source_file_type_to_highest_score_map"
               ]
           },
           "aggregatedFeatureEventFunction": {
@@ -3049,6 +3021,24 @@
           },
           "retentionStrategyName": "daily_feature_retention_strategy"
       },
+      {
+          "name": "sum_of_file_size_dlpmail_daily",
+          "type": "F",
+          "bucketConfName": "normalized_username_dlpmail_daily",
+          "numberOfBuckets": 1,
+          "bucketsLeap": 1,
+          "waitAfterBucketCloseSeconds": 300,
+          "evidencesFilterStrategy": "HIGHEST_SCORE",
+          "aggregatedFeatureNamesMap": {
+              "sum": [
+                  "sum_of_file_size"
+              ]
+          },
+          "aggregatedFeatureEventFunction": {
+              "type": "aggr_feature_sum_func"
+          },
+          "retentionStrategyName": "daily_feature_retention_strategy"
+      },
 
 
       {
@@ -3134,29 +3124,6 @@
           }
       },
       {
-          "name": "sum_of_highest_destination_file_type_scores_dlpmail_daily",
-          "type": "P",
-          "bucketConfName": "normalized_username_dlpmail_daily",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "anomalyType": "destination_file_type",
-          "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
-          "aggregatedFeatureNamesMap": {
-              "pick": [
-                  "destination_file_type_to_highest_score_map"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_map_values_max_sum_func",
-              "includeValues": true,
-              "minScoreToInclude": 1,
-              "pattern": "[0-9]",
-              "replacement": "",
-              "postCondition": "(.*[a-zA-Z]){5}.*"
-          }
-      },
-      {
           "name": "sum_of_highest_email_sender_scores_dlpmail_daily",
           "type": "P",
           "bucketConfName": "normalized_username_dlpmail_daily",
@@ -3168,29 +3135,6 @@
           "aggregatedFeatureNamesMap": {
               "pick": [
                   "email_sender_to_highest_score_map"
-              ]
-          },
-          "aggregatedFeatureEventFunction": {
-              "type": "aggr_feature_map_values_max_sum_func",
-              "includeValues": true,
-              "minScoreToInclude": 1,
-              "pattern": "[0-9]",
-              "replacement": "",
-              "postCondition": "(.*[a-zA-Z]){5}.*"
-          }
-      },
-      {
-          "name": "sum_of_highest_source_file_type_scores_dlpmail_daily",
-          "type": "P",
-          "bucketConfName": "normalized_username_dlpmail_daily",
-          "numberOfBuckets": 1,
-          "bucketsLeap": 1,
-          "waitAfterBucketCloseSeconds": 300,
-          "anomalyType": "source_file_type",
-          "evidencesFilterStrategy": "HIGHEST_SCORE_PER_VALUE",
-          "aggregatedFeatureNamesMap": {
-              "pick": [
-                  "source_file_type_to_highest_score_map"
               ]
           },
           "aggregatedFeatureEventFunction": {
