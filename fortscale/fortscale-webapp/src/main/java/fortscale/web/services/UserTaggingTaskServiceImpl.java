@@ -7,6 +7,7 @@ import fortscale.utils.logging.Logger;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -15,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by alexp on 16/02/2017.
  */
+@Service
 public class UserTaggingTaskServiceImpl implements UserTaggingTaskService {
     private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
