@@ -3,21 +3,27 @@ package fortscale.web.rest;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
 import fortscale.domain.ad.AdObject;
+import fortscale.domain.ad.AdTaskType;
 import fortscale.domain.core.Tag;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.TagService;
 import fortscale.services.UserTagService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
 import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
+import fortscale.web.services.UserTaggingTaskService;
+import fortscale.web.tasks.ControllerInvokedAdTask;
+import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +45,8 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     private static final Logger logger = Logger.getLogger(ApiSystemSetupTagsController.class);
     public static final String CHARS_TO_REMOVE_FROM_TAG_RULE = "\n";
+    private static final long TIMEOUT_IN_SECONDS = 60;
+
 
     private String COLLECTION_TARGET_DIR;
     private String COLLECTION_USER;
@@ -47,19 +55,30 @@ public class ApiSystemSetupTagsController extends BaseController {
     private static final String SUCCESSFUL_RESPONSE = "Successful";
     private static final String KEY_GROUPS = "groups";
     private static final String KEY_OUS = "ous";
+    private static final String DESTINATION_TASK_RESPONSE = "/wizard/user_tagging_response";
+    private static final String DESTINATION_ACTIONS = "/wizard/user_tagging_actions";
 
 
     private final TagService tagService;
     private final UserTagService userTagService;
     private final ActiveDirectoryService activeDirectoryService;
     private AtomicBoolean taggingTaskInProgress = new AtomicBoolean(false);
+    private UserTaggingTaskService userTaggingTaskService;
+    private SimpMessagingTemplate simpMessagingTemplate;
+    private Long lastUserTaggingExecutionStartTime;
+    private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
 
 
     @Autowired
-    public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, ActiveDirectoryService activeDirectoryService) {
+    public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, ActiveDirectoryService activeDirectoryService,
+                                        UserTaggingTaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
+                                        UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.tagService = tagService;
         this.userTagService = userTagService;
         this.activeDirectoryService = activeDirectoryService;
+        this.userTaggingTaskService = userTaggingTaskService;
+        this.simpMessagingTemplate = simpMessagingTemplate;
+        this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
     }
 
     @PostConstruct
@@ -157,6 +176,79 @@ public class ApiSystemSetupTagsController extends BaseController {
             return new ResponseEntity<>(Collections.emptyMap(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @RequestMapping("/run_user_tagging" )
+    public ResponseEntity<ResponseEntityMessage> runUserTagging() {
+        try {
+            logger.debug("Executing user tagging");
+            final boolean executedSuccessfully = userTaggingTaskService.executeTasks(simpMessagingTemplate, DESTINATION_TASK_RESPONSE);
+            if (executedSuccessfully) {
+                lastUserTaggingExecutionStartTime = System.currentTimeMillis();
+                simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, "EXECUTE");
+                return new ResponseEntity<>(new ResponseEntityMessage("User tagging is running."), HttpStatus.OK);
+            }
+            else {
+                final String inProgressMsg = "User tagging already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
+                logger.warn(inProgressMsg);
+                return new ResponseEntity<>(new ResponseEntityMessage(inProgressMsg), HttpStatus.LOCKED);
+            }
+        } catch (Exception e) {
+            final String msg = "Failed to stop user tagging execution";
+            logger.error(msg, e);
+            return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+    @RequestMapping("/stop_user_tagging" )
+    public ResponseEntity<ResponseEntityMessage> cancelUserTaggingExecution() {
+        try {
+            logger.debug("Cancelling user tagging execution");
+            if (userTaggingTaskService.cancelAllTasks(TIMEOUT_IN_SECONDS)) {
+                lastUserTaggingExecutionStartTime = null;
+                final String message = "User tagging execution has been cancelled successfully";
+                logger.debug(message);
+                simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, "CANCEL");
+                return new ResponseEntity<>(new ResponseEntityMessage(message), HttpStatus.OK);
+            }
+            else {
+                final String msg = "Failed to cancel user tagging execution";
+                logger.error(msg);
+                return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.NOT_ACCEPTABLE);
+            }
+        } catch (Exception e) {
+            final String msg = "Failed to cancel user tagging execution";
+            logger.error(msg, e);
+            return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private static class UserTaggingExecutionStatus {
+
+        public final Long lastUserTaggingExecutionTime;
+
+        public UserTaggingExecutionStatus(Long lastUserTaggingExecutionTime) {
+            this.lastUserTaggingExecutionTime = lastUserTaggingExecutionTime;
+        }
+    }
+
+    /**
+     * this method returns the running mode (user tagging or null for not running) of the given {@code dataSource}
+     * @return user tagging or null for not running
+     */
+    private Set<ControllerInvokedUserTaggingTask> getRunningMode() {
+        return userTaggingTaskService.getActiveTasks();
+    }
+
+    @RequestMapping(method = RequestMethod.GET,value = "/user_tagging_status")
+    @LogException
+    public UserTaggingExecutionStatus getJobStatus() {
+
+        UserTaggingExecutionStatus userTaggingExecutionStatus =
+                new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime());
+        return userTaggingExecutionStatus;
+    }
+
 
     /**
      * This method executes the user tagging task
