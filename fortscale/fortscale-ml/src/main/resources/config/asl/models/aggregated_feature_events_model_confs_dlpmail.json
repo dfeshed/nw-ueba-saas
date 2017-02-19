@@ -145,16 +145,16 @@
             }
         },
         {
-            "name": "sum_of_file_size.normalized_username.dlpmai.hourly",
+            "name": "sum_of_file_size.normalized_username.dlpmail.hourly",
             "selector": {
                 "type": "aggregated_event_context_selector",
-                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmai_hourly"
+                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmail_hourly"
             },
             "retriever": {
                 "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000,
                 "functions": [],
-                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmai_hourly"
+                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmail_hourly"
             },
             "builder": {
                 "type": "continuous_histogram_model_builder"
@@ -306,16 +306,16 @@
             }
         },
         {
-            "name": "sum_of_file_size.normalized_username.dlpmai.daily",
+            "name": "sum_of_file_size.normalized_username.dlpmail.daily",
             "selector": {
                 "type": "aggregated_event_context_selector",
-                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmai_daily"
+                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmail_daily"
             },
             "retriever": {
                 "type": "accumulated_aggregated_feature_value_retriever",
                 "timeRangeInSeconds": 7776000,
                 "functions": [],
-                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmai_dailyy"
+                "aggregatedFeatureEventConfName": "sum_of_file_size_dlpmail_daily"
             },
             "builder": {
                 "type": "continuous_histogram_model_builder"
