@@ -266,7 +266,7 @@
                         "type": "continuous-values-model-scorer",
                         "name": "sum_of_file_size.normalized_username.dlpmail.hourly.base_scorer",
                         "model": {
-                            "name": "sum_of_file_size.normalized_username.dlpmai.hourly"
+                            "name": "sum_of_file_size.normalized_username.dlpmail.hourly"
                         },
                         "quad-poly-calibration-conf": {
                             "a1": 1500.0,
@@ -555,7 +555,7 @@
                         "type": "continuous-values-model-scorer",
                         "name": "sum_of_file_size.normalized_username.dlpmail.daily.base_scorer",
                         "model": {
-                            "name": "sum_of_file_size.normalized_username.dlpmai.daily"
+                            "name": "sum_of_file_size.normalized_username.dlpmail.daily"
                         },
                         "quad-poly-calibration-conf": {
                             "a1": 1500.0,
