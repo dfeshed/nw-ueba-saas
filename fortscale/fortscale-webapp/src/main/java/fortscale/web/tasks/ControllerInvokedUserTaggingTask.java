@@ -1,17 +1,13 @@
 package fortscale.web.tasks;
 
-import fortscale.domain.ad.AdObject.AdObjectType;
-import fortscale.domain.ad.AdTaskType;
-import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ad.AdTaskPersistencyServiceImpl;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.util.*;
-
-import static fortscale.domain.ad.AdTaskType.*;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class ControllerInvokedUserTaggingTask extends BasicControllerInvokedTask implements Runnable {
@@ -79,7 +75,7 @@ public class ControllerInvokedUserTaggingTask extends BasicControllerInvokedTask
         final String resultsKey = userTaggingTaskPersistenceService.createResultKey(resultsId);
 
         /* run task */
-        logger.info("Running AD task {} with ID {}", USER_TAGGING_JOB_NAME, resultsId);
+        logger.info("Running user tagging task {} with ID {}", USER_TAGGING_JOB_NAME, resultsId);
         if (!runCollectionJob(USER_TAGGING_JOB_NAME, resultsId, USER_TAGGING_JOB_NAME)) {
             notifyTaskDone();
             return new UserTaggingTaskResponse(false, -1L);
@@ -95,7 +91,7 @@ public class ControllerInvokedUserTaggingTask extends BasicControllerInvokedTask
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(AdTaskPersistencyServiceImpl.RESULTS_KEY_SUCCESS);
+        final String success = taskResults.get(UserTaggingTaskPersistencyServiceImpl.RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} . success status is missing. Task Failed", USER_TAGGING_JOB_NAME);
             notifyTaskDone();
