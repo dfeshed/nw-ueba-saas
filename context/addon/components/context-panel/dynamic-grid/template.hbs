@@ -1,6 +1,12 @@
 <div class="rsa-context-panel__grid__heading-text">
   {{t title}}
   <span title={{t 'context.hostSummary.title'}}></span>
+  {{#if lastUpdated}}
+    <span title={{t 'context.hostSummary.title'}}>
+      {{t 'context.timeWindow'}}{{timeWindow}} |
+      {{t 'context.lastUpdated'}}{{context-panel/date-time timestamp=lastUpdated asTimeAgo=true}}
+    </span>
+  {{/if}}    
 </div>
 {{#if errorMessage}}
   <div class='rsa-context-panel__error-text'>{{errorMessage}}</div>

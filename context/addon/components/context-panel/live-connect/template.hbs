@@ -34,8 +34,6 @@
         {{context-panel/live-connect/lc-domain-whois liveConnectData=contextData.liveConnectData.DomainInfo}}
       {{/if}}
     {{/if}}
-  {{else}}
-    <div class="rsa-context-panel__loader">{{rsa-loader size='largest'}}</div>
   {{/if}}
   {{#if (is-equal tabdata 'liveConnect')}}
     {{#each lcColumnList as |columns|}}

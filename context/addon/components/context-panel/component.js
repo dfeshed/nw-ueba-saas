@@ -169,7 +169,7 @@ export default Component.extend({
       return;
     }
 
-    this._setTimeRangeData(contextData);
+    this._setTimeRangeData(contextDatum);
 
     switch (contextDatum.dataSourceGroup) {
       case 'Modules': {

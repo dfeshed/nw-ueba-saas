@@ -19,8 +19,10 @@
         {{context-panel/dynamic-grid
           array=(parse-addata contextData.Users )
           columns=columns
-          errorMessage=(get contextData 'Machines_ERROR')
+          errorMessage=(get contextData 'Users_ERROR')
           activatePanel=(action 'activate' 'Users')
+          lastUpdated=(get contextData 'Users_LASTUPDATED')
+          timeWindow=(get contextData 'Users_TIMEWINDOW')
           tabdata=tabdata title=columns.title
         }}
       {{/each}}
