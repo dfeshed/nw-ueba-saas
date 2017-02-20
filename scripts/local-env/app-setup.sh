@@ -18,6 +18,14 @@ function installAppDeps {
 
   yarn link mock-server
 
+  # At present, the script only supports OS X and Windows
+  # If the user is not on Mac, then user must be Windows (CYGWIN*|MINGW32*|MSYS*)
+  if [ "$(uname)" != "Darwin" ]
+  then
+    info "Setting up ember-cli-windows to improve build performance for: $1"
+    ember windows
+  fi
+
   success "$1 is ready to go!"
 }
 
