@@ -9,6 +9,9 @@ import org.springframework.data.mongodb.core.query.Update;
 
 import java.util.List;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 /**
  * Created by Amir Keren on 02/12/15.
  */
@@ -35,7 +38,7 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 		update.set(Tag.displayNameField, tag.getDisplayName());
 		update.set(Tag.createsIndicatorField, tag.getCreatesIndicator());
 		update.set(Tag.rulesField, tag.getRules());
-		update.set(Tag.activeField, tag.getActive());
+		update.set(Tag.deletedField, tag.getDeleted());
 		update.set(Tag.isAssignableField, tag.getIsAssignable());
 		mongoTemplate.upsert(query, update, Tag.class);
 	}
@@ -51,8 +54,14 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 	}
 
 	@Override
-	public List<Tag> findAll() {
-		return mongoTemplate.findAll(Tag.class);
+	public List<Tag> findAll(boolean includeDeleted) {
+		if (includeDeleted) {
+			return mongoTemplate.findAll(Tag.class);
+		} else {
+			Query query = query(where(Tag.deletedField).is(true));
+			return mongoTemplate.find(query,Tag.class);
+		}
+
 	}
 
 }

@@ -3,6 +3,7 @@ package fortscale.services.impl;
 import fortscale.domain.core.Tag;
 import fortscale.domain.core.dao.TagRepository;
 import fortscale.services.TagService;
+import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -21,9 +22,12 @@ public class TagServiceImpl implements TagService {
 	@Autowired
 	private TagRepository tagRepository;
 
+	@Autowired
+	private UserService userService;
+
 	@Override
-	public List<Tag> getAllTags() {
-		return tagRepository.findAll();
+	public List<Tag> getAllTags(boolean includeDeleted) {
+		return tagRepository.findAll(includeDeleted);
 	}
 
 	@Override
@@ -54,6 +58,13 @@ public class TagServiceImpl implements TagService {
 					maxTagLength);
 			return false;
 		}
+		//Update tag cannot delete tag and cannot update deleted tag.
+		//To delete tag use deleteTag method.
+		//To update tag, first mark it as not deleted
+		if (tag.getDeleted()){
+			logger.error("failed to update tag {} - deleted tag could not be update. To mark tag as deleted use tagService.deleteTag)", tag);
+			return false;
+		}
 		try {
 			tagRepository.updateTag(tag);
 		} catch (Exception ex) {
@@ -61,6 +72,18 @@ public class TagServiceImpl implements TagService {
 			return false;
 		}
 		return true;
+	}
+
+	public void deleteTag(String tagName){
+		Tag tag = tagRepository.findByNameIgnoreCase(tagName);
+		if (tag==null){
+			logger.error("Try to delete not existing tag named {}", tagName);
+			throw new RuntimeException("Can't delete tag "+ tagName +" because its not exists");
+		}
+
+		tag.setDeleted(true);
+		tagRepository.updateTag(tag);
+		userService.removeTagFromAllUsers(tagName);
 	}
 
 }

@@ -19,10 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
@@ -80,9 +77,9 @@ public class ApiSystemSetupTagsController extends BaseController {
     @RequestMapping(value="/user_tags", method= RequestMethod.GET)
     @ResponseBody
     @LogException
-    public DataBean<List<Tag>> getAllTags() {
+    public DataBean<List<Tag>> getAllTags(@RequestParam(defaultValue = "false") boolean includeDeleted) {
         logger.info("Getting all tags");
-        List<Tag> result = tagService.getAllTags();
+        List<Tag> result = tagService.getAllTags(includeDeleted);
         DataBean<List<Tag>> response = new DataBean<>();
         response.setData(result);
         response.setTotal(result.size());
@@ -103,7 +100,7 @@ public class ApiSystemSetupTagsController extends BaseController {
             if (!tagService.updateTag(tag)) {
                 return new ResponseEntity<>(new ResponseEntityMessage("failed to update tag"), HttpStatus.INTERNAL_SERVER_ERROR);
                 //if update was successful and tag is no longer active - remove that tag from all users
-            } else if (!tag.getActive()) {
+            } else if (tag.getDeleted()) {
                 String tagName = tag.getName();
                 userTagService.removeTagFromAllUsers(tagName);
             }
