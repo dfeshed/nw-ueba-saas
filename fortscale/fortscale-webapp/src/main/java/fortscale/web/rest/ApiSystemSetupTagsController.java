@@ -38,7 +38,6 @@ public class ApiSystemSetupTagsController extends BaseController {
     public static final String CHARS_TO_REMOVE_FROM_TAG_RULE = "\n";
 
     private String COLLECTION_TARGET_DIR;
-    private String COLLECTION_USER;
     private String USER_HOME_DIR;
 
     private static final String SUCCESSFUL_RESPONSE = "Successful";
@@ -67,7 +66,6 @@ public class ApiSystemSetupTagsController extends BaseController {
         COLLECTION_TARGET_DIR =  USER_HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
 
         final String userName = SpringPropertiesUtil.getProperty("user.name");
-        COLLECTION_USER = userName!=null? userName : "cloudera";
     }
 
 

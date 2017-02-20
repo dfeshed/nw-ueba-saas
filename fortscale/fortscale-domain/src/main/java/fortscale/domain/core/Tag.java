@@ -39,7 +39,7 @@ public class Tag extends AbstractDocument{
 		displayName = name;
 		createsIndicator = false;
 		rules = new ArrayList<>();
-		deleted = true;
+		deleted = false;
 		isAssignable = true;
 		isPredefined = false;
 	}
@@ -50,7 +50,7 @@ public class Tag extends AbstractDocument{
 		this.isAssignable = isAssignable;
 		createsIndicator = setCreatesIndicator;
 		rules = new ArrayList<>();
-		deleted = true;
+		deleted = false;
 		this.isPredefined = isPredefined;
 	}
 
