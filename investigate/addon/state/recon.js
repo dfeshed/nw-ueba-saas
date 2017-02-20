@@ -39,7 +39,7 @@ export default EmberObject.extend({
   },
 
   /**
-   * The event (session) object from Netwitness Core to be inspected in the recon UI.
+   * The event (session) object from NetWitness Core to be inspected in the recon UI.
    * @type {object}
    * @public
    */

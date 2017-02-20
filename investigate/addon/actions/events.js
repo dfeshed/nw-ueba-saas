@@ -1,6 +1,6 @@
 /**
  * @file Investigate Route Events Actions
- * Route actions related to fetching a stream of events from a Netwitness Core query.
+ * Route actions related to fetching a stream of events from a NetWitness Core query.
  * These actions assume that the state is accessible via `this.get('state')`.
  * @public
  */

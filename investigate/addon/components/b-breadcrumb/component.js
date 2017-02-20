@@ -1,6 +1,6 @@
 /**
  * @file Breadcrumb component
- * Displays the constituent pieces of a given Netwitness Core query.
+ * Displays the constituent pieces of a given NetWitness Core query.
  * @public
  */
 import Ember from 'ember';
@@ -34,7 +34,7 @@ export default Component.extend({
   language: undefined,
 
   /**
-   * An object whose properties are the filter parameters for a Netwitness Core query; including
+   * An object whose properties are the filter parameters for a NetWitness Core query; including
    * `serviceId`, `startTime`, `endTime` and an optional `metaFilter`.
    * @see state/query
    * @type {object}
@@ -43,7 +43,7 @@ export default Component.extend({
   query: undefined,
 
   /**
-   * List of known Netwitness Core services.
+   * List of known NetWitness Core services.
    * Used for looking up the name of a service by its ID.
    * @type {object[]}
    * @public

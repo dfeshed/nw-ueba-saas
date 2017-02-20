@@ -1,4 +1,4 @@
-// Takes a Netwitness Core event object with a `metas` array, and applies each meta value as a key-value pair
+// Takes a NetWitness Core event object with a `metas` array, and applies each meta value as a key-value pair
 // on the event object (while leaving the original `metas` intact.
 // @example `{.., metas: [ [a, b], [c, d], .. ]} => {.., metas: [..], a: b, c: d, ..}
 // If any duplicate keys are found in `metas`, only the last key value will be applied.

@@ -1,6 +1,6 @@
 # Overview
 
-This document describes the client-side architecture for the first implementation of an Investigate route for the Netwitness 11 web UI client.
+This document describes the client-side architecture for the first implementation of an Investigate route for the NetWitness 11 web UI client.
 
 The Investigate UI may be compromised of several pieces. For this initial implementation, it will be composed of two screens:
 

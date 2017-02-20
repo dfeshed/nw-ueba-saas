@@ -384,9 +384,9 @@ function uriEncodeMetaFilterConditions(conditions = []) {
 }
 
 /**
- * Encodes a given list of meta conditions into a "where clause" string that can be used by Netwitness Core.
+ * Encodes a given list of meta conditions into a "where clause" string that can be used by NetWitness Core.
  * @param {object[]} conditions The array of meta conditions. For structure, @see return value of parseMetaFilterUri.
- * @param {object[]} language Array of meta key definitions form the Netwitness Core endpoint.  This is used for
+ * @param {object[]} language Array of meta key definitions form the NetWitness Core endpoint.  This is used for
  * checking the data types of meta keys, which is needed when deciding whether to wrap values in quotes.
  * @returns {string}
  * @public

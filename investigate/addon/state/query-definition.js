@@ -1,6 +1,6 @@
 /**
  * @file Query class
- * Represents an query for events from a Netwitness Core Service.
+ * Represents an query for events from a NetWitness Core Service.
  * @public
  */
 import Ember from 'ember';
