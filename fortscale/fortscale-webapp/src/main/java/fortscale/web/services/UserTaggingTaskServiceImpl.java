@@ -1,7 +1,6 @@
 package fortscale.web.services;
 
 import fortscale.domain.ad.AdObject;
-import fortscale.services.ActiveDirectoryService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.utils.logging.Logger;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
@@ -21,7 +20,6 @@ public class UserTaggingTaskServiceImpl implements UserTaggingTaskService {
     private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
     private ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;
-    private ActiveDirectoryService activeDirectoryService;
     private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
@@ -30,8 +28,7 @@ public class UserTaggingTaskServiceImpl implements UserTaggingTaskService {
     }
 
     @Autowired
-    public UserTaggingTaskServiceImpl(ActiveDirectoryService activeDirectoryService, UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
-        this.activeDirectoryService = activeDirectoryService;
+    public UserTaggingTaskServiceImpl(UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
         initExecutorService();
     }

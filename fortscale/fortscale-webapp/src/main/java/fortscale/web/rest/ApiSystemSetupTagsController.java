@@ -3,7 +3,6 @@ package fortscale.web.rest;
 import fortscale.domain.ad.AdGroup;
 import fortscale.domain.ad.AdOU;
 import fortscale.domain.ad.AdObject;
-import fortscale.domain.ad.AdTaskType;
 import fortscale.domain.core.Tag;
 import fortscale.services.ActiveDirectoryService;
 import fortscale.services.TagService;
@@ -11,14 +10,11 @@ import fortscale.services.UserTagService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.utils.logging.Logger;
 import fortscale.utils.logging.annotation.LogException;
-import fortscale.utils.spring.SpringPropertiesUtil;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.services.UserTaggingTaskService;
-import fortscale.web.tasks.ControllerInvokedAdTask;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,15 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 @RequestMapping("/api/tags")
@@ -47,22 +36,15 @@ public class ApiSystemSetupTagsController extends BaseController {
     public static final String CHARS_TO_REMOVE_FROM_TAG_RULE = "\n";
     private static final long TIMEOUT_IN_SECONDS = 60;
 
-
-    private String COLLECTION_TARGET_DIR;
-    private String COLLECTION_USER;
-    private String USER_HOME_DIR;
-
     private static final String SUCCESSFUL_RESPONSE = "Successful";
     private static final String KEY_GROUPS = "groups";
     private static final String KEY_OUS = "ous";
     private static final String DESTINATION_TASK_RESPONSE = "/wizard/user_tagging_response";
     private static final String DESTINATION_ACTIONS = "/wizard/user_tagging_actions";
 
-
     private final TagService tagService;
     private final UserTagService userTagService;
     private final ActiveDirectoryService activeDirectoryService;
-    private AtomicBoolean taggingTaskInProgress = new AtomicBoolean(false);
     private UserTaggingTaskService userTaggingTaskService;
     private SimpMessagingTemplate simpMessagingTemplate;
     private Long lastUserTaggingExecutionStartTime;
@@ -81,18 +63,6 @@ public class ApiSystemSetupTagsController extends BaseController {
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
     }
 
-    @PostConstruct
-    private void getProperties() {
-        final String homeDirProperty = SpringPropertiesUtil.getProperty("user.home.dir");
-        USER_HOME_DIR = homeDirProperty != null ? homeDirProperty : "/home/cloudera";
-
-        COLLECTION_TARGET_DIR =  USER_HOME_DIR + "/fortscale/fortscale-core/fortscale/fortscale-collection/target";
-
-        final String userName = SpringPropertiesUtil.getProperty("user.name");
-        COLLECTION_USER = userName!=null? userName : "cloudera";
-    }
-
-
     /**
      * This method gets all the tags in the tags collection
      */
@@ -107,7 +77,6 @@ public class ApiSystemSetupTagsController extends BaseController {
         response.setTotal(result.size());
         return response;
     }
-
 
     /**
      * This method updates tags in the tags collection and removes newly-inactive tags from the users collection
@@ -158,7 +127,6 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
         return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.OK);
     }
-
 
     @RequestMapping(value="/search", method=RequestMethod.GET)
     @LogException
@@ -223,112 +191,52 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    private static class UserTaggingExecutionStatus {
-
-        public final Long lastUserTaggingExecutionTime;
-
-        public UserTaggingExecutionStatus(Long lastUserTaggingExecutionTime) {
-            this.lastUserTaggingExecutionTime = lastUserTaggingExecutionTime;
-        }
-    }
-
-    /**
-     * this method returns the running mode (user tagging or null for not running) of the given {@code dataSource}
-     * @return user tagging or null for not running
-     */
-    private Set<ControllerInvokedUserTaggingTask> getRunningMode() {
-        return userTaggingTaskService.getActiveTasks();
-    }
-
     @RequestMapping(method = RequestMethod.GET,value = "/user_tagging_status")
     @LogException
     public UserTaggingExecutionStatus getJobStatus() {
+        if (isRunning()){
+            return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, "running");
+        }else {
 
-        UserTaggingExecutionStatus userTaggingExecutionStatus =
-                new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime());
-        return userTaggingExecutionStatus;
+         return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l, "not running");
+        }
     }
-
 
     /**
-     * This method executes the user tagging task
-     * @return the HTTP status of the request and an error message if there was an error
+     * this method returns the running mode (running not running)
+     * @return true - running false - not running
      */
-    @RequestMapping(value="/run_tagging_task", method=RequestMethod.GET)
-    @LogException
-    public ResponseEntity<ResponseEntityMessage> runTaggingTask() {
-        if (taggingTaskInProgress.compareAndSet(false, true)) {
-            logger.info("Starting Tagging task from deployment wizard");
-            ExecutorService executorService = Executors.newSingleThreadExecutor();
-            executorService.execute(this::executeRunningTask);
+    private Boolean isRunning() {
+        Set<ControllerInvokedUserTaggingTask> activeTasks = userTaggingTaskService.getActiveTasks();
 
-            executorService.shutdown();
-            return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.OK);
-
-        }
-        else {
-            final String msg = "Tagging task is already in progress. Can't execute again until the previous execution is finished. Request to execute ignored.";
-            logger.warn(msg);
-            return new ResponseEntity<>(new ResponseEntityMessage(msg), HttpStatus.LOCKED);
-        }
+        return activeTasks.size() > 0;
     }
 
-    private void executeRunningTask() {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            logger.warn("Tagging task from deployment wizard has been terminated using a shutdown hook (probably kill signal or ^C)");
-            taggingTaskInProgress.set(false);
-        }));
+    private static class UserTaggingExecutionStatus {
 
-        try {
-            Process process;
-            try {
-                String jarPath = COLLECTION_TARGET_DIR + "/fortscale-collection-1.1.0-SNAPSHOT.jar";
-                final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("java", "-jar", jarPath, "User", "Tagging"));
-                final ProcessBuilder processBuilder = new ProcessBuilder(arguments);
-                processBuilder.directory(new File(COLLECTION_TARGET_DIR));
-                processBuilder.redirectErrorStream(true);
-                process = processBuilder.start();
-            } catch (IOException e) {
-                final String msg = "Execution of tagging task from deployment wizard has failed. " + e.getLocalizedMessage();
-                logger.error(msg);
-                return;
-            }
-            int status;
-            try {
-                status = process.waitFor();
-            } catch (InterruptedException e) {
-                if (process.isAlive()) {
-                    logger.error("Killing the process forcibly");
-                    process.destroyForcibly();
-                }
-                final String msg = "Execution of tagging task from deployment wizard has been interrupted. Task failed. " + e.getLocalizedMessage();
-                logger.error(msg);
-                return;
-            }
-            if (status != 0) {
-                try {
-                    String processOutput = IOUtils.toString(process.getInputStream());
-                    final int length = processOutput.length();
-                    if (length > 1000) {
-                        processOutput = processOutput.substring(length - 1000, length); // getting last 1000 chars to not overload the log file
-                    }
-                    logger.error("Error stream for job User Tagging = \n{}", processOutput);
-                } catch (IOException e) {
-                    logger.warn("Failed to get error stream from process for job User Tagging");
-                }
-                final String msg = String.format("Execution of task User Tagging has finished with status %s. Execution failed", status);
-                logger.error(msg);
-                return;
-            }
-            else {
-                logger.info("Tagging task from deployment wizard has finished successfully");
-                return;
-            }
-        } finally {
-            taggingTaskInProgress.set(false);
+        private final Long lastExecutionFinishTime;
+        private final Long lastExecutionStartTime;
+        private final String status;
+
+
+        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, String status) {
+            this.lastExecutionFinishTime = lastExecutionFinishTime;
+            this.lastExecutionStartTime = lastExecutionStartTime;
+            this.status = status;
+        }
+
+        public Long getLastExecutionFinishTime() {
+            return lastExecutionFinishTime;
+        }
+
+        public Long getLastExecutionStartTime() {
+            return lastExecutionStartTime;
+        }
+
+        public String getStatus() {
+            return status;
         }
     }
-
 }
 
 
