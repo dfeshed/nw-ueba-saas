@@ -575,7 +575,7 @@
           "distinct_email_attachment_dlpmail":0.09,
           "distinct_email_recipient_dlpmail":0.09,
           "distinct_sent_mail_dlpmail":0.09,
-          "sum_of_file_size_dlpmail_daily": 0.09
+          "sum_of_file_size_dlpmail_hourly": 0.09
 
         },
        "betas": {
@@ -690,7 +690,7 @@
         "alphas": {
           "number_of_total_pages_prnlog_hourly": 0.09,
           "sum_of_file_size_prnlog_hourly": 0.09,
-          "sum_of_file_size_dlpmail_daily": 0.09
+          "sum_of_file_size_dlpmail_hourly": 0.09
         },
         "betas": {
           "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly": 0.001
