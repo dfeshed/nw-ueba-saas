@@ -1,6 +1,6 @@
 /**
  * @file Meta Key class
- * Represents the state of a request for values of a given meta key from a Netwitness Core Service.
+ * Represents the state of a request for values of a given meta key from a NetWitness Core Service.
  * @public
  */
 import Ember from 'ember';

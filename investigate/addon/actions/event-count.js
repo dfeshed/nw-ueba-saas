@@ -9,7 +9,7 @@ import { makeServerInputsForEventCount } from './helpers/query-utils';
 
 const { Mixin } = Ember;
 
-// Netwitness Core backend will stop counting events once count reaches this limit.
+// NetWitness Core backend will stop counting events once count reaches this limit.
 const COUNT_THRESHOLD = 100000;
 
 export default Mixin.create({

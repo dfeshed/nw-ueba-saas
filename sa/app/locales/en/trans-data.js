@@ -3,7 +3,7 @@
 
 export default {
   application: {
-    title: 'Netwitness Suite',
+    title: 'NetWitness Suite',
     copyright: '&copy;2015 RSA Security LLC. All rights reserved.'
   },
   monitor: {

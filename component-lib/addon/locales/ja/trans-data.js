@@ -1,5 +1,5 @@
 export default {
-  pageTitle: 'ja_{{section}} - Netwitness Suite',
+  pageTitle: 'ja_{{section}} - NetWitness Suite',
   languages: {
     en: 'ja_English',
     'en-us': 'ja_English',
