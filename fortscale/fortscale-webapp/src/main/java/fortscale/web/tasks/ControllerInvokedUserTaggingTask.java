@@ -17,7 +17,8 @@ public class ControllerInvokedUserTaggingTask extends BasicControllerInvokedTask
 
     protected static final String THREAD_NAME = "system_setup_user_tagging";
 
-    private static final String USER_TAGGING_JOB_NAME = "user_tagging";
+    private static final String USER_TAGGING_JOB_NAME = "User";
+    private static final String USER_TAGGING_JOB_GROUP = "Tagging";
 
     private final String responseDestination;
     private final UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
@@ -76,7 +77,7 @@ public class ControllerInvokedUserTaggingTask extends BasicControllerInvokedTask
 
         /* run task */
         logger.info("Running user tagging task {} with ID {}", USER_TAGGING_JOB_NAME, resultsId);
-        if (!runCollectionJob(USER_TAGGING_JOB_NAME, resultsId, USER_TAGGING_JOB_NAME)) {
+        if (!runCollectionJob(USER_TAGGING_JOB_NAME, resultsId, USER_TAGGING_JOB_GROUP)) {
             notifyTaskDone();
             return new UserTaggingTaskResponse(false, -1L);
         }
