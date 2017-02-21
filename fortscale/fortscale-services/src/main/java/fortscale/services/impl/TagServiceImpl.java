@@ -52,6 +52,15 @@ public class TagServiceImpl implements TagService {
 		return tagRepository.findByNameIgnoreCase(name);
 	}
 
+	/**
+	 * *
+	 * Update tag cannot delete tag and cannot update deleted tag.
+	 * To delete tag use deleteTag method.
+	 * To update tag, first mark it as not deleted
+	 *
+	 * @param tag - the new tag value
+	 * @return
+	 */
 	@Override
 	public boolean updateTag(Tag tag) {
 		if (tag.getName().length() > maxTagLength || tag.getDisplayName().length() > maxTagLength) {
@@ -59,9 +68,7 @@ public class TagServiceImpl implements TagService {
 					maxTagLength);
 			return false;
 		}
-		//Update tag cannot delete tag and cannot update deleted tag.
-		//To delete tag use deleteTag method.
-		//To update tag, first mark it as not deleted
+
 		if (tag.getDeleted()){
 			logger.error("failed to update tag {} - deleted tag could not be update. To mark tag as deleted use tagService.deleteTag)", tag);
 			return false;
@@ -75,16 +82,22 @@ public class TagServiceImpl implements TagService {
 		return true;
 	}
 
-	public void deleteTag(String tagName){
+	/**
+	 *
+	 * @param tagName the uniqie name of the tag
+	 * @return true if deleted successfuly.
+	 */
+	public boolean deleteTag(String tagName){
 		Tag tag = tagRepository.findByNameIgnoreCase(tagName);
 		if (tag==null){
 			logger.error("Try to delete not existing tag named {}", tagName);
-			throw new RuntimeException("Can't delete tag "+ tagName +" because its not exists");
+			return false;
 		}
 
 		tag.setDeleted(true);
 		tagRepository.updateTag(tag);
 		userService.removeTagFromAllUsers(tagName);
+		return  true;
 	}
 
 }

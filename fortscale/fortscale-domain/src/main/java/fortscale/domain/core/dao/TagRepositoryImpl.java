@@ -58,7 +58,7 @@ public class TagRepositoryImpl implements TagRepositoryCustom {
 		if (includeDeleted) {
 			return mongoTemplate.findAll(Tag.class);
 		} else {
-			Query query = query(where(Tag.deletedField).is(true));
+			Query query = query(where(Tag.deletedField).is(false));
 			return mongoTemplate.find(query,Tag.class);
 		}
 

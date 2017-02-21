@@ -39,12 +39,13 @@ public class TagServiceImplTest {
     TagServiceImpl tagService;
 
 
-    @Test(expected = RuntimeException.class)
+    @Test
     public void deleteNotExistingTagTest(){
         String tagName = "admini";
         Tag tag = new Tag(tagName);
         when(tagRepository.findByNameIgnoreCase("EXECUTIVE")).thenReturn(null);
-        tagService.deleteTag(tagName);
+        boolean success=tagService.deleteTag(tagName);
+        assertFalse(success);
     }
 
 
@@ -55,7 +56,8 @@ public class TagServiceImplTest {
         when(tagRepository.findByNameIgnoreCase(tagName)).thenReturn(tag);
 
         assertEquals(false, tag.getDeleted());
-        tagService.deleteTag(tagName);
+        boolean success=tagService.deleteTag(tagName);
+        assertTrue(success);
 
         //Check that tag value changed
         assertEquals(true, tag.getDeleted());

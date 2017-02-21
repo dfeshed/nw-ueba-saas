@@ -106,6 +106,27 @@ public class ApiSystemSetupTagsController extends BaseController {
         return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.ACCEPTED);
     }
 
+    @RequestMapping(value="{id}", method=RequestMethod.DELETE)
+    @LogException
+    public ResponseEntity<ResponseEntityMessage> deleteTag(@PathVariable String name) {
+        if (StringUtils.isBlank(name)){
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag not found"),HttpStatus.NOT_FOUND);
+        }
+
+        if (tagService.getTag(name) == null){
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag not found"),HttpStatus.NOT_FOUND);
+        }
+
+        boolean deletedSuccessfully = tagService.deleteTag(name);
+        if (deletedSuccessfully){
+            return  new ResponseEntity<ResponseEntityMessage>(HttpStatus.OK);
+        } else {
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Cannot delete tag, please assist system logs"),HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
+
     private List<String> sanitizeRules(List<String> rules){
         List<String> sanitizedRules = new ArrayList<>();
         for (String rule: rules){
