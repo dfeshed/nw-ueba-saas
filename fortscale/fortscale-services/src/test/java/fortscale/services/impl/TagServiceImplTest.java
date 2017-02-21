@@ -43,7 +43,7 @@ public class TagServiceImplTest {
     public void deleteNotExistingTagTest(){
         String tagName = "admini";
         Tag tag = new Tag(tagName);
-        when(tagRepository.findByNameIgnoreCase("EXECUTIVE")).thenReturn(null);
+
         boolean success=tagService.deleteTag(tagName);
         assertFalse(success);
     }
