@@ -16,7 +16,7 @@ public class CollectionConfiguration {
 	}
 
 	@Bean
-	public UserActivityFeaturesExtractionsRepositoryUtil getUserActivityFeaturesExtractiionsRepositoryUtil(){
+	public UserActivityFeaturesExtractionsRepositoryUtil getUserActivityFeaturesExtractionsRepositoryUtil(){
 		return new UserActivityFeaturesExtractionsRepositoryUtil();
 	}
 }
