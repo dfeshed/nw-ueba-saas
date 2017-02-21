@@ -110,18 +110,18 @@ public class ApiSystemSetupTagsController extends BaseController {
     @LogException
     public ResponseEntity<ResponseEntityMessage> deleteTag(@PathVariable String name) {
         if (StringUtils.isBlank(name)){
-            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag not found"),HttpStatus.NOT_FOUND);
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag '"+name+"' not found"),HttpStatus.NOT_FOUND);
         }
 
         if (tagService.getTag(name) == null){
-            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag not found"),HttpStatus.NOT_FOUND);
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Tag '"+name+"' not found"),HttpStatus.NOT_FOUND);
         }
 
         boolean deletedSuccessfully = tagService.deleteTag(name);
         if (deletedSuccessfully){
             return  new ResponseEntity<ResponseEntityMessage>(HttpStatus.OK);
         } else {
-            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage("Cannot delete tag, please assist system logs"),HttpStatus.INTERNAL_SERVER_ERROR);
+            return  new ResponseEntity<ResponseEntityMessage>(new ResponseEntityMessage(" Cannot delete tag '"+name+"', check log for more information"),HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
