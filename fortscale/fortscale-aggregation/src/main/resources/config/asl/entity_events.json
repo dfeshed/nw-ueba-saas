@@ -672,7 +672,7 @@
           "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly",
           "normalized_username_prnlog_hourly.number_of_total_pages_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly",
-          "normalized_username_dlpmail_daily.sum_of_file_size_dlpmail_hourly",
+          "normalized_username_dlpmail_daily.sum_of_file_size_dlpmail_hourly"
         ]
       },
       "entityEventFunction": {
