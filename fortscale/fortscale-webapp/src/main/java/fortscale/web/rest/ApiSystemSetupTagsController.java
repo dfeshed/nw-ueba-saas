@@ -195,10 +195,10 @@ public class ApiSystemSetupTagsController extends BaseController {
     @LogException
     public UserTaggingExecutionStatus getJobStatus() {
         if (isRunning()){
-            return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, "running");
+            return new UserTaggingExecutionStatus(-1l, lastUserTaggingExecutionStartTime, true);
         }else {
 
-         return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l, "not running");
+         return new UserTaggingExecutionStatus(userTaggingTaskPersistenceService.getLastExecutionTime(), -1l, false);
         }
     }
 
@@ -216,13 +216,13 @@ public class ApiSystemSetupTagsController extends BaseController {
 
         private final Long lastExecutionFinishTime;
         private final Long lastExecutionStartTime;
-        private final String status;
+        private final boolean isRunning;
 
 
-        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, String status) {
+        public UserTaggingExecutionStatus(Long lastExecutionFinishTime, Long lastExecutionStartTime, boolean isRunning) {
             this.lastExecutionFinishTime = lastExecutionFinishTime;
             this.lastExecutionStartTime = lastExecutionStartTime;
-            this.status = status;
+            this.isRunning = isRunning;
         }
 
         public Long getLastExecutionFinishTime() {
@@ -233,8 +233,8 @@ public class ApiSystemSetupTagsController extends BaseController {
             return lastExecutionStartTime;
         }
 
-        public String getStatus() {
-            return status;
+        public boolean getRunning() {
+            return isRunning;
         }
     }
 }
