@@ -50,7 +50,6 @@ export default Component.extend({
 
   request: service(),
 
-  active: 'overview',
   contextData: null,
   entity: null,
   errorMessage: null,
@@ -260,10 +259,6 @@ export default Component.extend({
   },
 
   actions: {
-    activate(option) {
-      this.set('active', option);
-    },
-
     closeAction() {
       this.sendAction('closePanel');
       this.set('hasResponse', false);

@@ -25,17 +25,9 @@
 
   {{else}}
 
-    {{context-panel/tabs
-      model=model
-      activateAction=(action 'activate')
-    }}
+    {{context-panel/tabs model=model }}
 
-    {{context-panel/body
-      contextData=model.contextData
-      model=model
-      tabdata=active
-      activatePanel=(action 'activate')
-    }}
+    {{context-panel/body contextData=model.contextData model=model }}
 
   {{/if}}
 

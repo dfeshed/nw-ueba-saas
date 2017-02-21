@@ -1,6 +1,9 @@
 import Ember from 'ember';
-import TabList from 'context/config/dynamic-tab';
+import connect from 'ember-redux/components/connect';
 import computed from 'ember-computed-decorators';
+
+import TabList from 'context/config/dynamic-tab';
+import * as ContextActions from 'context/actions/context-creators';
 import layout from './template';
 
 const NO_COUNT_TABS = ['overview', 'liveConnect'];
@@ -8,6 +11,14 @@ const NO_COUNT_TABS = ['overview', 'liveConnect'];
 const {
   Component
 } = Ember;
+
+const stateToComputed = ({ context }) => ({
+  activeTabName: context.activeTabName
+});
+
+const dispatchToActions = (dispatch) => ({
+  activate: (tabName) => dispatch(ContextActions.updateActiveTab(tabName))
+});
 
 const determineTabCountText = (tabName, tabData = []) => {
   if (NO_COUNT_TABS.indexOf(tabName) > -1) {
@@ -17,11 +28,10 @@ const determineTabCountText = (tabName, tabData = []) => {
   }
 };
 
-export default Component.extend({
+const TabsComponent = Component.extend({
   layout,
   tagName: '',
 
-  active: 'overview',
   model: null,
   toolbar: null,
 
@@ -49,18 +59,13 @@ export default Component.extend({
    * Using new computed to store collection with active flag to avoid
    * recalculating entire tabList when tab is clicked
    */
-  @computed('active', 'tabs')
-  tabsActive(active, tabs) {
+  @computed('activeTabName', 'tabs')
+  tabsActive(activeTabName, tabs) {
     return tabs.map((tab) => ({
       ...tab,
-      isActive: tab.field === active
+      isActive: tab.field === activeTabName
     }));
-  },
-
-  actions: {
-    activate(option) {
-      this.sendAction('activateAction', option);
-      this.set('active', option);
-    }
   }
 });
+
+export default connect(stateToComputed, dispatchToActions)(TabsComponent);

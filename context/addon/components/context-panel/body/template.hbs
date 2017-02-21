@@ -1,6 +1,6 @@
 <section class="rsa-context-panel__body">
   {{#if (or contextData.Machines contextData.Machines_ERROR)}}
-    {{#if (eq tabdata 'overview')}}
+    {{#if (eq activeTabName 'overview')}}
       {{#each machineData as |columns index|}}
         {{context-panel/dynamic-grid
           array=(parse-host-data contextData.Machines contextData.additionalData)
@@ -14,24 +14,26 @@
     {{/if}}
   {{/if}}
   {{#if (or contextData.Users contextData.Users_ERROR)}}
-    {{#if (or (eq tabdata 'Users')(eq tabdata 'overview')) }}
+    {{#if (or (eq activeTabName 'Users')(eq activeTabName 'overview')) }}
       {{#each userData as |columns index|}}
         {{context-panel/dynamic-grid
           array=(parse-addata contextData.Users )
           columns=columns
           errorMessage=(get contextData 'Users_ERROR')
-          activatePanel=(action 'activate' 'Users')
           lastUpdated=(get contextData 'Users_LASTUPDATED')
           timeWindow=(get contextData 'Users_TIMEWINDOW')
-          tabdata=tabdata title=columns.title
+          title=columns.title
+
+          activatePanel=(action 'activate' 'Users')
+          tabdata=activeTabName
         }}
       {{/each}}
     {{/if}}
   {{/if}}
   {{#each datasourceList as |columns index|}}
-    {{#if (or (eq tabdata columns.dataSourceGroup)(eq tabdata 'overview')) }}
+    {{#if (or (eq activeTabName columns.dataSourceGroup)(eq activeTabName 'overview')) }}
       {{context-panel/data-table
-        data=(top-records (get contextData columns.dataSourceGroup) tabdata)
+        data=(top-records (get contextData columns.dataSourceGroup) activeTabName)
         title=(t columns.title )
         errorMessage=(get contextData (concat columns.dataSourceGroup '_ERROR'))
         lastUpdated=(get contextData (concat columns.dataSourceGroup '_LASTUPDATED'))
@@ -40,19 +42,29 @@
         headerdata=(get contextData (concat columns.dataSourceGroup '_HEADER'))
         footerdata=columns.footer
         type=columns.dataSourceType
+
         activatePanel=(action 'activate' columns.dataSourceGroup)
-        tabdata=tabdata}}
+        tabdata=activeTabName
+      }}
     {{/if}}
   {{/each}}
 
-  {{#if (or (eq tabdata 'Lists')(eq tabdata 'overview'))}}
+  {{#if (or (eq activeTabName 'Lists')(eq activeTabName 'overview'))}}
     {{context-panel/tree-table
-      data=(top-records contextData.LIST tabdata)
-      tabdata=tabdata type='Lists'
+      data=(top-records contextData.LIST activeTabName)
+      type='Lists'
       errorMessage=(get contextData 'LIST_ERROR')
-      activatePanel=(action 'activate' 'Lists')}}
+
+      activatePanel=(action 'activate' 'Lists')
+      tabdata=activeTabName
+    }}
   {{/if}}
 
-  {{context-panel/live-connect tabdata=tabdata model=model contextData=contextData }}
+  {{context-panel/live-connect
+    model=model
+    contextData=contextData
+
+    tabdata=activeTabName
+  }}
 
 </section>
