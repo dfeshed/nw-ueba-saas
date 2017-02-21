@@ -24,7 +24,7 @@ public class AppWebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer
         registry.addEndpoint("/active_directory/ad_fetch_etl")
                 .setHandshakeHandler(new DefaultHandshakeHandler(new TomcatRequestUpgradeStrategy()))
                 .setAllowedOrigins("*").withSockJS();
-        registry.addEndpoint("/user_tagging/user_tagging")
+        registry.addEndpoint("/tags/user_tagging")
                 .setHandshakeHandler(new DefaultHandshakeHandler(new TomcatRequestUpgradeStrategy()))
                 .setAllowedOrigins("*").withSockJS();
 
