@@ -1,12 +1,12 @@
 package fortscale.collection.configuration;
 
 import fortscale.domain.core.dao.UserActivityFeaturesExtractionsRepositoryUtil;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 
 @Configuration
+@ComponentScan(basePackageClasses = UserActivityFeaturesExtractionsRepositoryUtil.class,
+		includeFilters = @ComponentScan.Filter(classes = UserActivityFeaturesExtractionsRepositoryUtil.class,type = FilterType.ASSIGNABLE_TYPE))
 @PropertySource("classpath:META-INF/fortscale-collection.properties")
 public class CollectionConfiguration {
 
@@ -15,8 +15,5 @@ public class CollectionConfiguration {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
-	@Bean
-	public UserActivityFeaturesExtractionsRepositoryUtil getUserActivityFeaturesExtractionsRepositoryUtil(){
-		return new UserActivityFeaturesExtractionsRepositoryUtil();
-	}
+
 }
