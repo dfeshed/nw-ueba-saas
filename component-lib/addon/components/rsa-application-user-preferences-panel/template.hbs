@@ -40,7 +40,7 @@
 
         {{#power-select
           options=timezone.options
-          matcher=timezoneMatcher
+          searchField="displayLabel"
           selected=(or pendingTimezone timezone.selected)
           onchange=(action 'setTimezone') as |option|}}
           {{option.displayLabel}}

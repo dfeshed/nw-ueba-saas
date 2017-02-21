@@ -59,10 +59,6 @@ export default Component.extend(csrfToken, {
     });
   },
 
-  timezoneMatcher({ displayLabel }, filterVal) {
-    return displayLabel.toLowerCase().indexOf(filterVal.toLowerCase());
-  },
-
   actions: {
     logout() {
       this.logout();
