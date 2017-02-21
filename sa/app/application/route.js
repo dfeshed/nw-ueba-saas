@@ -51,7 +51,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     },
     error(message) {
       this.get('fatalErrors').logError(message);
-      this.transitionTo('404');
+      this.transitionTo('not-found');
     },
     logout() {
       this._logout();

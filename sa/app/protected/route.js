@@ -4,24 +4,16 @@
  * @public
  */
 import Ember from 'ember';
+import { cancel, later } from 'ember-runloop';
+import { isNone } from 'ember-utils';
+import Route from 'ember-route';
+import RSVP from 'rsvp';
+import service from 'ember-service/inject';
 import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-route-mixin';
 import config from '../config/environment';
 
 const {
-  Route,
   Logger,
-  isNone,
-  inject: {
-    service
-  },
-  RSVP: {
-    Promise,
-    all
-  },
-  run: {
-    later,
-    cancel
-  },
   testing
 } = Ember;
 
@@ -98,7 +90,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);
     this.set('i18n.locale', config.i18n.defaultLocale);
 
-    const permissionsPromise = new Promise((resolve, reject) => {
+    const permissionsPromise = new RSVP.Promise((resolve, reject) => {
       const forceResolve = later(() => {
         resolve();
       }, 3500);
@@ -117,7 +109,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
       });
     });
 
-    const timezonesPromise = new Promise((resolve, reject) => {
+    const timezonesPromise = new RSVP.Promise((resolve, reject) => {
       const forceResolve = later(() => {
         resolve();
       }, 3500);
@@ -136,7 +128,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
       });
     });
 
-    const preferencesPromise = new Promise((resolve, reject) => {
+    const preferencesPromise = new RSVP.Promise((resolve, reject) => {
       const forceResolve = later(() => {
         resolve();
       }, 3500);
@@ -173,35 +165,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
       });
     });
 
-    return all([preferencesPromise, timezonesPromise, permissionsPromise]).then(() => {
-      if (!this.get('accessControl.hasMonitorAccess')) {
-        const monitorOption = this.get('landingPage.options').findBy('key', '/unified');
-        this.get('landingPage.options').removeObject(monitorOption);
-      }
-
-      if (!this.get('accessControl.hasRespondAccess')) {
-        const respondOption = this.get('landingPage.options').findBy('key', '/respond');
-        this.get('landingPage.options').removeObject(respondOption);
-      }
-
-      if (!this.get('accessControl.hasInvestigateAccess')) {
-        const investigateOption = this.get('landingPage.options').findBy('key', '/investigate');
-        this.get('landingPage.options').removeObject(investigateOption);
-
-        const investigateClassicOption = this.get('landingPage.options').findBy('key', '/investigation');
-        this.get('landingPage.options').removeObject(investigateClassicOption);
-      }
-
-      if (!this.get('accessControl.hasAdminAccess')) {
-        const adminOption = this.get('landingPage.options').findBy('key', this.get('accessControl.adminUrl'));
-        this.get('landingPage.options').removeObject(adminOption);
-      }
-
-      if (!this.get('accessControl.hasConfigAccess')) {
-        const configOption = this.get('landingPage.options').findBy('key', this.get('accessControl.configUrl'));
-        this.get('landingPage.options').removeObject(configOption);
-      }
-    });
+    return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]);
   },
 
   actions: {

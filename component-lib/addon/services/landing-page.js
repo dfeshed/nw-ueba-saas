@@ -1,13 +1,12 @@
 import Ember from 'ember';
+import { A } from 'ember-array/utils';
+import computed, { alias } from 'ember-computed';
+import { isNone } from 'ember-utils';
+import Service from 'ember-service';
+import service from 'ember-service/inject';
 import config from 'ember-get-config';
 
 const {
-  Service,
-  computed,
-  inject: {
-    service
-  },
-  isNone,
   Logger
 } = Ember;
 
@@ -16,28 +15,59 @@ export default Service.extend({
   accessControl: service(),
   request: service(),
 
-  options: computed(function() {
-    return [
-      {
+  hasAdminAccess: alias('accessControl.hasAdminAccess'),
+  hasConfigAccess: alias('accessControl.hasConfigAccess'),
+  hasMonitorAccess: alias('accessControl.hasMonitorAccess'),
+  hasInvestigateAccess: alias('accessControl.hasInvestigateAccess'),
+  hasRespondAccess: alias('accessControl.hasRespondAccess'),
+
+  options: computed('hasAdminAccess', 'hasConfigAccess', 'hasMonitorAccess', 'hasInvestigateAccess', 'hasRespondAccess', function() {
+    const { hasAdminAccess, hasConfigAccess, hasMonitorAccess, hasInvestigateAccess, hasRespondAccess } =
+      this.getProperties('hasAdminAccess', 'hasConfigAccess', 'hasMonitorAccess', 'hasInvestigateAccess', 'hasRespondAccess');
+
+    const options = A([]);
+
+    if (hasRespondAccess) {
+      options.pushObject({
         key: '/respond',
         label: 'userPreferences.defaultLandingPage.respond'
-      }, {
-        key: '/investigate',
-        label: 'userPreferences.defaultLandingPage.investigate'
-      }, {
-        key: '/investigation',
-        label: 'userPreferences.defaultLandingPage.investigateClassic'
-      }, {
+      });
+    }
+
+    if (hasInvestigateAccess) {
+      options.pushObjects([
+        {
+          key: '/investigate',
+          label: 'userPreferences.defaultLandingPage.investigate'
+        }, {
+          key: '/investigation',
+          label: 'userPreferences.defaultLandingPage.investigateClassic'
+        }
+      ]);
+    }
+
+    if (hasMonitorAccess) {
+      options.pushObject({
         key: '/unified',
         label: 'userPreferences.defaultLandingPage.dashboard'
-      }, {
+      });
+    }
+
+    if (hasConfigAccess) {
+      options.pushObject({
         key: this.get('accessControl.configUrl'),
         label: 'userPreferences.defaultLandingPage.live'
-      }, {
+      });
+    }
+
+    if (hasAdminAccess) {
+      options.pushObject({
         key: this.get('accessControl.adminUrl'),
         label: 'userPreferences.defaultLandingPage.admin'
-      }
-    ];
+      });
+    }
+
+    return options;
   }),
 
   persist(value) {

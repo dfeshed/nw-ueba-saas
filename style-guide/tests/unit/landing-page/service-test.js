@@ -1,3 +1,4 @@
+import EmObj from 'ember-object';
 import { moduleFor, test } from 'ember-qunit';
 
 moduleFor('service:landing-page', 'Unit | Service | landing page', {
@@ -12,7 +13,16 @@ test('it exists', function(assert) {
 });
 
 test('it provides the correct options', function(assert) {
-  const service = this.subject();
+  const accessControl = EmObj.create({
+    adminUrl: '/admin',
+    configUrl: '/config',
+    hasAdminAccess: true,
+    hasConfigAccess: true,
+    hasMonitorAccess: true,
+    hasInvestigateAccess: true,
+    hasRespondAccess: true
+  });
+  const service = this.subject({ accessControl });
   assert.equal(service.get('options.length'), 6);
   const options = service.get('options').map(function(option) {
     return option.key;
