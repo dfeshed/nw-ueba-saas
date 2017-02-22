@@ -1910,6 +1910,14 @@ ember-cli-eslint@3.0.0:
     rsvp "^3.2.1"
     walk-sync "^0.3.0"
 
+ember-cli-flash@1.4.0:
+  version "1.4.0"
+  resolved "https://registry.npmjs.org/ember-cli-flash/-/ember-cli-flash-1.4.0.tgz#0a831b406e98a0f62027e2706cbe581a1bf4f608"
+  dependencies:
+    ember-cli-babel "^5.1.6"
+    ember-cli-htmlbars "^1.0.3"
+    ember-runtime-enumerable-includes-polyfill "^1.0.1"
+
 ember-cli-get-component-path-option@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/ember-cli-get-component-path-option/-/ember-cli-get-component-path-option-1.0.0.tgz#0d7b595559e2f9050abed804f1d8eff1b08bc771"

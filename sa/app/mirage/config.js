@@ -21,6 +21,8 @@ import journalEntry from 'sa/mirage/sockets/routes/journal-entry';
 import storyline from 'sa/mirage/sockets/routes/incident-storyline';
 import context from 'sa/mirage/sockets/routes/context';
 import relatedEntity from 'sa/mirage/sockets/routes/related-entity';
+import liveConnectFeedback from 'sa/mirage/sockets/routes/liveconnect-feedback';
+
 import events from 'sa/mirage/sockets/routes/events';
 import users from 'sa/mirage/sockets/routes/users';
 
@@ -75,6 +77,7 @@ export default function() {
     events(server);
     context(server);
     relatedEntity(server);
+    liveConnectFeedback(server);
     users(server);
     server.mirageServer = this;
     return server;

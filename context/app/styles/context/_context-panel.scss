@@ -363,5 +363,25 @@ radial-gradient(circle at 85% 85%, rsa-color(blue, darker, .1) 0, rsa-color(blue
     &__entity-value {
       color: rsa-color(blue);
     }
+    &__feedback {
+      height: 120px;
+      position: absolute;
+      bottom: 1px;
+      width: 100%;
+      background-color: rsa-color(gray, darker);
+      background-image: $panelBackgroundImage;
+      .risk-level-col, .confidence-col {
+        max-width: 20%;
+      }
+      .submit-col {
+        max-width: 95px;
+      }
+      button {
+        margin-top: 2rem;
+      }
+    }
   }
+}
+.feedback-margin {
+  margin-bottom: 120px;
 }

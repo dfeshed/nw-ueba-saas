@@ -17,5 +17,5 @@ export default function(server) {
   server.loadFixtures();
 
   // Load mirage DB collections from any JSON/BSON files for testing here.
-  asyncFixtures(server, ['context', 'related-entity']);  // Example, to load file `vendor/incidents.json`: asyncFixtures(server, ['incidents'])
+  asyncFixtures(server, ['context', 'related-entity', 'liveconnect-feedback']);  // Example, to load file `vendor/incidents.json`: asyncFixtures(server, ['incidents'])
 }

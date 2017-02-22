@@ -1,0 +1,64 @@
+{{#if (eq activeTabName 'liveConnect')}}
+  <vbox class="rsa-context-panel__liveconnect__feedback">
+    {{#rsa-content-section-header label='Section Heading'}}{{t 'context.lc.riskFeedback'}}{{/rsa-content-section-header}}
+    <hbox>
+      <vbox class="risk-level-col">
+        <label class="rsa-form-label power-select rsa-context-panel__liveconnect__field">
+          <div class="label-text">
+            {{t 'context.lc.riskConfirmation'}}
+          </div>
+
+          {{#power-select
+          options=riskLevels
+          searchEnabled=false
+          selected=selectedRiskLevel
+          triggerClass=riskLevelTriggerClass
+          placeholder=(t 'context.lc.select')
+          onchange=(action 'setSelectedRiskLevel') as |option|}}
+            {{t option.name}}
+          {{/power-select}}
+        </label>
+      </vbox>
+
+      <vbox class="confidence-col">
+        <label class="rsa-form-label power-select rsa-context-panel__liveconnect__field">
+          <div class="label-text">
+            {{t 'context.lc.confidenceLevel'}}
+          </div>
+
+          {{#power-select
+          options=confidenceLevels
+          selected=selectedConfidenceLevel
+          searchEnabled=false
+          triggerClass=confidenceLevelTriggerClass
+          placeholder=(t 'context.lc.select')
+          onchange=(action 'setSelectedConfidenceLevel') as |option|}}
+            {{t option.name}}
+          {{/power-select}}
+        </label>
+      </vbox>
+
+      <vbox>
+        <label class="rsa-form-label power-select rsa-context-panel__liveconnect__field">
+          <div class="label-text">
+            {{t 'context.lc.riskTags'}}
+          </div>
+
+          {{#power-select-multiple
+          options=riskTags
+          selected=selectedTags
+          searchField='nameText'
+          onchange=(action 'setSelectedTags') as |option|}}
+            {{option.nameText}}
+          {{/power-select-multiple}}
+        </label>
+      </vbox>
+
+      <vbox class="submit-col">
+        {{#rsa-form-button style='primary' isDisabled=inProgress click=(action 'submit')}}
+          {{t 'forms.submit'}}
+        {{/rsa-form-button}}
+      </vbox>
+    </hbox>
+  </vbox>
+{{/if}}

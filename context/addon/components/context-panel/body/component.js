@@ -7,6 +7,7 @@ import endpointColumns from 'context/config/endpoint-columns';
 import imColumns from 'context/config/im-columns';
 import machineData from 'context/config/machines';
 import userData from 'context/config/users';
+import computed from 'ember-computed-decorators';
 
 const {
   Component
@@ -25,7 +26,12 @@ const BodyComponent = Component.extend({
   classNames: 'rsa-context-panel',
   datasourceList: endpointColumns.concat(imColumns),
   machineData,
-  userData
+  userData,
+
+  @computed('activeTabName')
+  bodyStyleClass: (activeTabName) => {
+    return activeTabName === 'liveConnect' ? 'rsa-context-panel__body feedback-margin' : 'rsa-context-panel__body';
+  }
 });
 
 export default connect(stateToComputed, dispatchToActions)(BodyComponent);

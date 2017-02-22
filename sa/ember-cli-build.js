@@ -41,6 +41,7 @@ module.exports = function(defaults) {
     app.import("vendor/alerts.json");
     app.import("vendor/context.json");
     app.import("vendor/related-entity.json");
+    app.import("vendor/liveconnect-feedback.json");
   }
 
   return app.toTree();

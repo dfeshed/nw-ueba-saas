@@ -4,7 +4,7 @@ const common = require('../../common');
 
 module.exports = function(environment) {
 
-  let socketUrl = common.determineSocketUrl(environment, '/administration/socket');
+  const socketUrl = common.determineSocketUrl(environment, '/administration/socket');
 
   // Want to run context panel inside sa
   // while sa still has respond and mirage in it?
@@ -27,6 +27,13 @@ module.exports = function(environment) {
       stream: {
         subscriptionDestination: '/user/queue/administration/context/liveconnect/related',
         requestDestination: '/ws/administration/context/liveconnect/related'
+      }
+    },
+    'liveconnect-feedback': {
+      socketUrl,
+      createRecord: {
+        subscriptionDestination: '/user/queue/administration/context/liveconnect/feedback',
+        requestDestination: '/ws/administration/context/liveconnect/feedback'
       }
     }
   };

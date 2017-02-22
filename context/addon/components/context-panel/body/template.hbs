@@ -1,4 +1,4 @@
-<section class="rsa-context-panel__body">
+<section class={{bodyStyleClass}}>
   {{#if (or contextData.Machines contextData.Machines_ERROR)}}
     {{#if (eq activeTabName 'overview')}}
       {{#each machineData as |columns index|}}
