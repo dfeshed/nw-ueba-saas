@@ -2,26 +2,26 @@
 # yarn lockfile v1
 
 
-"@html-next/flexi-config@2.0.0-beta.11":
-  version "2.0.0-beta.11"
-  resolved "https://registry.npmjs.org/@html-next/flexi-config/-/flexi-config-2.0.0-beta.11.tgz#85e6eac5839b86ed405eb7ad2a0896c836e7ea5f"
+"@html-next/flexi-config@2.0.0-beta.12":
+  version "2.0.0-beta.12"
+  resolved "https://registry.npmjs.org/@html-next/flexi-config/-/flexi-config-2.0.0-beta.12.tgz#af2fa4d90a6d1fb510511c1c02e51a9d6514eac6"
   dependencies:
     ember-cli-babel "^5.1.7"
 
-"@html-next/flexi-default-styles@2.0.0-beta.11":
-  version "2.0.0-beta.11"
-  resolved "https://registry.npmjs.org/@html-next/flexi-default-styles/-/flexi-default-styles-2.0.0-beta.11.tgz#475d9cc5a9aa9c4ee8be20ff7f2ea48fe9ea9878"
+"@html-next/flexi-default-styles@2.0.0-beta.12":
+  version "2.0.0-beta.12"
+  resolved "https://registry.npmjs.org/@html-next/flexi-default-styles/-/flexi-default-styles-2.0.0-beta.12.tgz#5f7a58a85e63d84dc75172b4045f0430a91084b0"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.11"
+    "@html-next/flexi-config" "2.0.0-beta.12"
     ember-cli-babel "^5.1.7"
     ember-cli-sass "^6.0.0"
     rsvp "^3.2.0"
 
-"@html-next/flexi-dsl@2.0.0-beta.11":
-  version "2.0.0-beta.11"
-  resolved "https://registry.npmjs.org/@html-next/flexi-dsl/-/flexi-dsl-2.0.0-beta.11.tgz#2b3743d4c5473de553c6702911ea4532e6d251d7"
+"@html-next/flexi-dsl@2.0.0-beta.12":
+  version "2.0.0-beta.12"
+  resolved "https://registry.npmjs.org/@html-next/flexi-dsl/-/flexi-dsl-2.0.0-beta.12.tgz#475f710c48f20c1bf8bbfc1a738e3245985870be"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.11"
+    "@html-next/flexi-config" "2.0.0-beta.12"
     chalk "^1.1.1"
     debug "^2.2.0"
     ember-cli-babel "^5.1.7"
@@ -29,11 +29,11 @@
     object-assign "^4.1.0"
     rsvp "^3.2.0"
 
-"@html-next/flexi-layouts@2.0.0-beta.11":
-  version "2.0.0-beta.11"
-  resolved "https://registry.npmjs.org/@html-next/flexi-layouts/-/flexi-layouts-2.0.0-beta.11.tgz#885f87254a50067d175b7ba7377bdc56edc91090"
+"@html-next/flexi-layouts@2.0.0-beta.12":
+  version "2.0.0-beta.12"
+  resolved "https://registry.npmjs.org/@html-next/flexi-layouts/-/flexi-layouts-2.0.0-beta.12.tgz#05c27c57436017fda8ea86fc40d7cc75e43cc53d"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.11"
+    "@html-next/flexi-config" "2.0.0-beta.12"
     broccoli-funnel "^1.0.1"
     broccoli-merge-trees "^1.1.1"
     broccoli-plugin "^1.2.1"
@@ -3070,11 +3070,11 @@ flat-cache@^1.2.1:
     graceful-fs "^4.1.2"
     write "^0.2.1"
 
-flexi@2.0.0-beta.11:
-  version "2.0.0-beta.11"
-  resolved "https://registry.npmjs.org/flexi/-/flexi-2.0.0-beta.11.tgz#38436455166d3a31643b0ab8e4184b78572d371c"
+flexi@2.0.0-beta.12:
+  version "2.0.0-beta.12"
+  resolved "https://registry.npmjs.org/flexi/-/flexi-2.0.0-beta.12.tgz#ef67768f1c78c8132a804da04ec991b1112461a1"
   dependencies:
-    "@html-next/flexi-config" "2.0.0-beta.11"
+    "@html-next/flexi-config" "2.0.0-beta.12"
     ember-cli-babel "^5.1.7"
 
 for-in@^0.1.5:
