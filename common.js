@@ -1,4 +1,5 @@
  /* eslint-env node */
+const os = require('os');
 
 const developedAddons = [];
 
@@ -30,9 +31,26 @@ const isDevelopingAddon = function(projectName) {
       return true;
     }
 
-    // If already processed, return false
+    // If already processed...
     if (developedAddons.indexOf(projectName) > -1) {
-      return false;
+
+      // In order for live recompile/reload of changed code
+      // to work on Windows, all the dependant addons must
+      // eventually return true. If return false from here
+      // Windows users will not have nested addon reload.
+      //
+      // Skipping Windows for this performance improvement
+      // will significantly slow down startup of ember cli
+      // and it will result in multiple outputs of things
+      // like lint warnings.
+
+      if (os.platform() !== 'win32') {
+
+        // Act as if not developing addon
+        // This stops ember-cli from re-processing an addon
+        // over and over.
+        return false;
+      }
     }
 
     // We want to report as a 'developingAddon' when
