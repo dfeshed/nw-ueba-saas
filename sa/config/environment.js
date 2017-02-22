@@ -86,8 +86,8 @@ module.exports = function(environment) {
       accessTokenKey: 'rsa-oauth2-jwt-access-token',
       /* Local storage key that holds the OAuth refresh token returned by the Security Server */
       refreshTokenKey: 'rsa-oauth2-jwt-refresh-token',
-      routeAfterAuthentication: 'protected.index',
-      routeIfAlreadyAuthenticated: 'protected.index'
+      routeAfterAuthentication: 'protected',
+      routeIfAlreadyAuthenticated: 'protected'
     },
     contentSecurityPolicy: {
 

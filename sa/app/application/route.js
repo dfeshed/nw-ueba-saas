@@ -1,20 +1,20 @@
+import $ from 'jquery';
 import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import csrfToken from 'component-lib/mixins/csrf-token';
+import { isEmpty, isNone } from 'ember-utils';
+import Route from 'ember-route';
+import RSVP from 'rsvp';
+import service from 'ember-service/inject';
 
 const {
-  $,
-  Route,
-  RSVP,
-  inject: {
-    service
-  },
   testing
 } = Ember;
 
 export default Route.extend(ApplicationRouteMixin, csrfToken, {
   fatalErrors: service(),
   session: service(),
+  userActivity: service(),
   userIdle: service(),
   i18n: service(),
 
@@ -22,14 +22,12 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     return this.get('i18n').t('application.title');
   },
 
-  init() {
-    if (!testing) {
-      // After 10 idle minutes, logout
-      this.get('userIdle').on('idleChanged', (isIdle) => {
-        if (isIdle) {
-          this._logout();
-        }
-      });
+  beforeModel(transition) {
+    if (!this.get('session.isAuthenticated') &&
+      isNone(localStorage.getItem('rsa-post-auth-redirect')) &&
+      transition.targetName !== 'login'
+    ) {
+      localStorage.setItem('rsa-post-auth-redirect', transition.targetName);
     }
 
     this._super(...arguments);
@@ -68,6 +66,11 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     }
   },
 
+  /**
+   * Logs the user out and invalidates the session
+   * @returns {RSVP.Promise}
+   * @private
+   */
   _logout() {
     return new RSVP.Promise((resolve) => {
       const csrfKey = this.get('csrfLocalstorageKey');
@@ -90,9 +93,30 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     });
   },
 
+  /**
+   * Sets up the activity and inactivity timeout events
+   * @private
+   */
+  _setupUserTimeout() {
+    if (!testing) {
+      // When the user performs an action, update last session access
+      this.get('userActivity').on('userActive', this, () => {
+        localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
+      });
+
+      // After configured idle timeout period, logout
+      this.get('userIdle').on('idleChanged', (isIdle) => {
+        if (isIdle) {
+          this._logout();
+        }
+      });
+    }
+  },
+
   sessionAuthenticated() {
+    this._setupUserTimeout();
     const isRedirecting = localStorage.getItem('_redirecting');
-    if (typeof isRedirecting !== 'undefined') {
+    if (!isEmpty(isRedirecting)) {
       // invoke redirect
       localStorage.removeItem('_redirecting');
       const query = window.location.search;

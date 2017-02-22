@@ -15,11 +15,15 @@ export default Mixin.create({
 
   accessTokenKey: computed(function() {
     const config = getOwner(this).resolveRegistration('config:environment');
-    return config['ember-simple-auth'].accessTokenKey;
+    if (config && config['ember-simple-auth']) {
+      return config['ember-simple-auth'].accessTokenKey;
+    }
   }),
 
   refreshTokenKey: computed(function() {
     const config = getOwner(this).resolveRegistration('config:environment');
-    return config['ember-simple-auth'].refreshTokenKey;
+    if (config && config['ember-simple-auth']) {
+      return config['ember-simple-auth'].refreshTokenKey;
+    }
   })
 });

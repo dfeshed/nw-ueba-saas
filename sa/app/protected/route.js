@@ -5,7 +5,6 @@
  */
 import Ember from 'ember';
 import { cancel, later } from 'ember-runloop';
-import { isNone } from 'ember-utils';
 import Route from 'ember-route';
 import RSVP from 'rsvp';
 import service from 'ember-service/inject';
@@ -13,8 +12,7 @@ import AuthenticatedRouteMixin from 'ember-simple-auth/mixins/authenticated-rout
 import config from '../config/environment';
 
 const {
-  Logger,
-  testing
+  Logger
 } = Ember;
 
 /**
@@ -60,33 +58,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  init() {
-    if (!testing) {
-      // When the user performs an action, update last session access
-      this.get('userActivity').on('userActive', this, () => {
-        localStorage.setItem('rsa-nw-last-session-access', new Date().getTime());
-      });
-
-      // After configured idle timeout period, logout
-      this.get('userIdle').on('idleChanged', (isIdle) => {
-        if (isIdle) {
-          this.send('logout');
-        }
-      });
-    }
-
-    this._super(...arguments);
-  },
-
-  beforeModel(transition) {
-    if (!this.get('session.isAuthenticated') && isNone(localStorage.getItem('rsa-post-auth-redirect'))) {
-      localStorage.setItem('rsa-post-auth-redirect', transition.targetName);
-    }
-
-    this._super(...arguments);
-  },
-
-  model() {
+  model(params, transition) {
     localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);
     this.set('i18n.locale', config.i18n.defaultLocale);
 
@@ -165,7 +137,29 @@ export default Route.extend(AuthenticatedRouteMixin, {
       });
     });
 
-    return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]);
+    return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).then(() => {
+      const redirect = localStorage.getItem('rsa-post-auth-redirect');
+      const key = this.get('landingPage.selected.key');
+
+      if (redirect) {
+        localStorage.removeItem('rsa-post-auth-redirect');
+      }
+
+      if (redirect && redirect != transition.targetName) {
+        this.transitionTo(redirect);
+      } else if (transition.targetName === 'protected.index') {
+        switch (key) {
+          case '/investigate':
+            this.transitionTo(key);
+            break;
+          case '/respond':
+            this.transitionTo(key);
+            break;
+          default:
+            window.location.href = key;
+        }
+      }
+    });
   },
 
   actions: {
