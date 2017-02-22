@@ -84,7 +84,7 @@ public class UserTaggingJob extends FortscaleJob {
 	private void saveResult(boolean success) {
 		if (resultsId != null) {
 			userTaggingTaskPersistenceService.writeTaskResults(UserTaggingTaskPersistencyServiceImpl.RESULTS_KEY_NAME,
-					"resultsId", success);
+					resultsId, success);
 		}
 	}
 
