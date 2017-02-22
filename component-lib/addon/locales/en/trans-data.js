@@ -21,15 +21,13 @@ export default {
     username: 'Username',
     password: 'Password',
     login: 'Login',
+    loggingIn: 'Logging In',
     logout: 'Logout',
     lostPasswordLink: 'Lost Password?',
-    genericError: 'Error: Please try again',
-    unAuthorized: 'Invalid credentials',
-    badCredentials: 'Invalid credentials',
+    genericError: 'Authentication error. Please try again.',
     userLocked: 'User account is locked',
     userDisabled: 'User account is disabled',
     userExpired: 'User account has expired',
-    authServerNotFound: 'There was an error while authenticating your credentials.',
     lostPassword: {
       title: 'Lost Password Recovery',
       description: 'Please submit your username.'

@@ -71,6 +71,7 @@ Router.map(function() {
       this.route('inputs');
       this.route('sliders');
       this.route('datetime');
+      this.route('errors');
     });
 
     this.route('nav', function() {

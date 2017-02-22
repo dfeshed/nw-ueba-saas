@@ -29,7 +29,6 @@
           class="js-test-login-username-input"
           label=(t 'login.username')
           isError=hasError
-          errorMessage=(t errorMessage)
           value=username}}
 
         {{rsa-form-input
@@ -39,13 +38,23 @@
           isError=hasError
           value=password}}
 
+        {{#if errorMessage}}
+          <div class="form-error-message">
+            {{t errorMessage}}
+          </div>
+        {{/if}}
+
         {{#rsa-form-button
           type="submit"
           class="js-test-login-submit-button"
           isDisabled=isLoginDisabled
           isFullWidth=true
           style="primary"}}
-          {{t "login.login"}}
+          {{#if isAuthenticating}}
+            {{t 'login.loggingIn'}}
+          {{else}}
+            {{t "login.login"}}
+          {{/if}}
         {{/rsa-form-button}}
 
         <span class="version">{{version}}</span>

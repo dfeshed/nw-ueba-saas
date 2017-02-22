@@ -102,11 +102,15 @@ input:-webkit-autofill:active {
       color: $formInputErrorLabelColor;
     }
 
-    .error-icon {
-      position: absolute;
-      right: rsa-whitespace(less);
-      top: 1.75rem;
-      color: $formInputErrorIconColor;
+    .input-error {
+      @include rsa-font(paragraph, small);
+      padding-left: rsa-whitespace(less);
+      color: rsa-color(gray, lightest);
+
+      i {
+        vertical-align: middle;
+        margin-right: rsa-whitespace(least);
+      }
     }
   }
 
@@ -121,17 +125,15 @@ input:-webkit-autofill:active {
       width: calc(((100% / 12) * 3) - 2px);
     }
 
-    &.is-error {
-      .error-icon {
-        top: 2rem;
-      }
-    }
-
     input, textarea {
       float: right;
       box-sizing: border-box;
       width: calc(((100% / 12) * 9) - 2px);
       display: inline-block;
+    }
+
+    .input-error {
+      padding-left: calc(((100% / 12) * 3) - 2px + #{rsa-whitespace(less)});
     }
   }
 }

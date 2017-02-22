@@ -21,15 +21,13 @@ export default {
     username: 'ja_Username',
     password: 'ja_Password',
     login: 'ja_Login',
+    loggingIn: 'ja_Logging In',
     logout: 'ja_Logout',
     lostPasswordLink: 'ja_Lost Password?',
-    genericError: 'ja_Error: Please try again',
-    unAuthorized: 'ja_Invalid credentials',
-    badCredentials: 'ja_Invalid credentials',
+    genericError: 'ja_Authentication error. Please try again.',
     userLocked: 'ja_User account is locked',
     userDisabled: 'ja_User account is disabled',
     userExpired: 'ja_User account has expired',
-    authServerNotFound: 'ja_There was an error while authenticating your credentials.',
     lostPassword: {
       title: 'ja_Lost Password Recovery',
       description: 'ja_Please submit your username.'

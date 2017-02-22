@@ -1,11 +1,5 @@
 <span class="rsa-form-label">
   {{label}}
-  
-  {{#if isError}}
-    {{#if errorMessage}}
-      {{rsa-icon name="report-problem-triangle" title=errorMessage class="error-icon" size='large'}}
-    {{/if}}
-  {{/if}}
 </span>
 
 {{input
@@ -13,3 +7,9 @@
   value=value
   placeholder=placeholder
   disabled=resolvedDisabled}}
+
+{{#if errorMessage}}
+  <div class="input-error">
+    {{errorMessage}}
+  </div>
+{{/if}}

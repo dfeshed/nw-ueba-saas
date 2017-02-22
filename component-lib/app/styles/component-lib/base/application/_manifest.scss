@@ -19,7 +19,7 @@ $applicationModalCloseLinkColor: rsa-color(gray, lightest);
 
 $applicationLoginTypeColor: rsa-color(gray, lighter);
 $applicationLoginWidth: 25rem;
-$applicationLoginBackgroundColor: rsa-color(gray, darkest, $rsa-translucent);
+$applicationLoginBackgroundColor: rsa-color(gray, darkest, $rsa-somewhat-opaque);
 $applicationLoginBorderColor: rsa-color(gray, darker);
 $applicationLoginErrorBorderColor: rsa-color(red);
 $applicationLoginHeaderBackgroundColor: rsa-color(gray, darker);

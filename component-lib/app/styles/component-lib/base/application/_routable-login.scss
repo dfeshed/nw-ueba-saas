@@ -13,6 +13,10 @@
   right:0;
   bottom:0;
 
+  .form-error-message {
+    text-align: center;
+  }
+
   .eula-content {
     margin-bottom: rsa-whitespace(more);
     border: 1px solid rsa-color(gray);

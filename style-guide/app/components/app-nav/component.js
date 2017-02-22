@@ -84,6 +84,7 @@ export default Component.extend({
         { name: 'Buttons', link: 'buttons' },
         { name: 'Checkboxes', link: 'checkboxes' },
         { name: 'Date/Time', link: 'datetime' },
+        { name: 'Errors', link: 'errors' },
         { name: 'Radios', link: 'radios' },
         { name: 'Selects', link: 'selects' },
         { name: 'Sliders', link: 'sliders' },

@@ -6,12 +6,11 @@
 
 import Ember from 'ember';
 import layout from './template';
-
+import computed, { readOnly, alias, notEmpty, equal } from 'ember-computed-decorators';
 
 const {
   getOwner,
   Component,
-  computed,
   run,
   typeOf,
   inject: {
@@ -59,26 +58,34 @@ export default Component.extend({
 
   username: null,
 
-  displayEula: computed({
-    get() {
-      return isEmpty(localStorage.getItem(this.get('eulaKey')));
+  @computed('eulaKey')
+  displayEula: {
+    get(eulaKey) {
+      return isEmpty(localStorage.getItem(eulaKey));
     },
-    set(key, value) {
-      localStorage.setItem(this.get('eulaKey'), true);
+    set(value, eulaKey) {
+      localStorage.setItem(eulaKey, true);
       return value;
     }
-  }),
+  },
 
-  isLoginDisabled: computed('username', 'password', 'status', function() {
-    const uid = this.get('username');
-    const password = this.get('password');
+  @notEmpty('errorMessage')
+  hasError: false,
+
+  @equal('status', _STATUS.WAIT)
+  isAuthenticating: false,
+
+  @computed('username', 'password', 'status')
+  isLoginDisabled: (uid, password, status) => {
     const uidFails = (typeOf(uid) !== 'string') || (uid.trim().length === 0);
     const pwFails = (typeOf(password) !== 'string') || (password.trim().length === 0);
+    const waiting = status === _STATUS.WAIT;
+    return (uidFails || pwFails || waiting);
+  },
 
-    return (uidFails || pwFails || (this.get('status') === _STATUS.WAIT));
-  }),
-
-  version: computed.readOnly('appVersion.version'),
+  @readOnly
+  @alias('appVersion.version')
+  version: null,
 
   authenticate() {
     // Update status to that UI can indicate that a login is in progress.
@@ -109,9 +116,7 @@ export default Component.extend({
           const exception = message.error_description;
 
           if (exception) {
-            if (exception.includes('Bad credentials')) {
-              errorMessage = 'login.badCredentials';
-            } else if (exception.includes('locked')) {
+            if (exception.includes('locked')) {
               errorMessage = 'login.userLocked';
             } else if (exception.includes('disabled')) {
               errorMessage = 'login.userDisabled';

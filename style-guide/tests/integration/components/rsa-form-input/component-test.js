@@ -36,7 +36,7 @@ test('sets the label', function(assert) {
 
 test('sets the errorMessage', function(assert) {
   this.render(hbs `{{rsa-form-input label='foo' isError=true errorMessage='Bar'}}`);
-  const error = this.$().find('.error-icon').first().attr('title').trim();
+  const error = this.$().find('.input-error').first().text().trim();
   assert.equal(error, 'Bar');
 });
 
