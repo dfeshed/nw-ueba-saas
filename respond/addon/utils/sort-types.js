@@ -4,36 +4,116 @@
  */
 const SORT_TYPES = [
   {
-    id: 1,
-    name: 'SCORE',
-    sortField: 'riskScore',
+    name: 'ALERT_COUNT_DESC',
+    sortField: 'alertCount',
     isDescending: true,
-    label: 'Score',
-    labelKey: 'respond.incidents.sort.score'
+    label: 'Alerts (descending)',
+    labelKey: 'respond.incidents.sort.alertsCountDescending'
   },
   {
-    id: 2,
-    name: 'STATUS',
-    sortField: 'statusSort',
-    isDescending: true,
-    label: 'Status',
-    labelKey: 'respond.incidents.sort.status'
+    name: 'ALERT_COUNT_ASC',
+    sortField: 'alertCount',
+    isDescending: false,
+    label: 'Alerts (ascending)',
+    labelKey: 'respond.incidents.sort.alertsCountAscending'
   },
   {
-    id: 3,
-    name: 'NEWEST',
+    name: 'ASSIGNEE_DESC',
+    sortField: 'assignee.lastName',
+    isDescending: true,
+    label: 'Assignee (descending)',
+    labelKey: 'respond.incidents.sort.assigneeDescending'
+  },
+  {
+    name: 'ASSIGNEE_ASC',
+    sortField: 'assignee.lastName',
+    isDescending: false,
+    label: 'Assignee (ascending)',
+    labelKey: 'respond.incidents.sort.assigneeAscending'
+  },
+  {
+    name: 'CREATED_DESC',
     sortField: 'created',
     isDescending: true,
-    label: 'Newest',
-    labelKey: 'respond.incidents.sort.newest'
+    label: 'Created (descending)',
+    labelKey: 'respond.incidents.sort.createdDescending'
   },
   {
-    id: 4,
-    name: 'OLDEST',
+    name: 'CREATED_ASC',
     sortField: 'created',
     isDescending: false,
-    label: 'Oldest',
-    labelKey: 'respond.incidents.sort.oldest'
+    label: 'Created (ascending)',
+    labelKey: 'respond.incidents.sort.createdAscending'
+  },
+  {
+    name: 'ID_DESC',
+    sortField: 'created',
+    isDescending: true,
+    label: 'ID (descending)',
+    labelKey: 'respond.incidents.sort.idDescending'
+  },
+  {
+    name: 'ID_ASC',
+    sortField: 'created',
+    isDescending: false,
+    label: 'Created (ascending)',
+    labelKey: 'respond.incidents.sort.idAscending'
+  },
+  {
+    name: 'NAME_DESC',
+    sortField: 'name',
+    isDescending: true,
+    label: 'Name (descending)',
+    labelKey: 'respond.incidents.sort.nameDescending'
+  },
+  {
+    name: 'NAME_ASC',
+    sortField: 'name',
+    isDescending: false,
+    label: 'Name (ascending)',
+    labelKey: 'respond.incidents.sort.nameAscending'
+  },
+  {
+    name: 'PRIORITY_DESC',
+    sortField: 'priority',
+    isDescending: true,
+    label: 'Priority (descending)',
+    labelKey: 'respond.incidents.sort.priorityDescending'
+  },
+  {
+    name: 'PRIORITY_ASC',
+    sortField: 'priority',
+    isDescending: false,
+    label: 'Priority (ascending)',
+    labelKey: 'respond.incidents.sort.priorityAscending'
+  },
+  {
+    name: 'SCORE_DESC',
+    sortField: 'riskScore',
+    isDescending: true,
+    label: 'Score (descending)',
+    labelKey: 'respond.incidents.sort.scoreDescending'
+  },
+  {
+    name: 'SCORE_ASC',
+    sortField: 'riskScore',
+    isDescending: false,
+    label: 'Score (ascending)',
+    labelKey: 'respond.incidents.sort.scoreAscending'
+  },
+  {
+    name: 'STATUS_DESC',
+    sortField: 'statusSort',
+    isDescending: true,
+    label: 'Status (descending)',
+    labelKey: 'respond.incidents.sort.statusDescending'
+  },
+  {
+    name: 'STATUS_ASC',
+    sortField: 'statusSort',
+    isDescending: false,
+    label: 'Status (ascending)',
+    labelKey: 'respond.incidents.sort.statusAscending'
   }
 ];
 

@@ -4,7 +4,7 @@ const common = require('../../common');
 
 module.exports = function(environment) {
 
-  const socketUrl = common.determineSocketUrl(environment, '/response/socket');
+  const socketUrl = common.determineSocketUrl(environment, '/api/response/socket');
 
   return {
     incidents: {

@@ -1,6 +1,7 @@
 import Ember from 'ember';
 import Application from '../../app';
 import config from '../../config/environment';
+import './redux-async-helpers';
 
 const { assign, run } = Ember;
 

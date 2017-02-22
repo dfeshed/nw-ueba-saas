@@ -1,0 +1,87 @@
+$zoneBorderColor: rsa-color(gray, darker, $rsa-nearly-transparent);
+$filterPanelMinWidth: 400px;
+
+page.respond-engine {
+  min-height: 100vh;
+  color: rsa-color(gray, lightest);
+}
+.respond-engine {
+  .rsa-respond-incidents {
+    overflow: hidden;
+    @include rsa-vendor-prefix(transition-property, background-color, color);
+    @include rsa-vendor-prefix(transition-duration, 0.3s);
+
+    .main-zone {
+      overflow: hidden;
+      flex-wrap: nowrap;
+    }
+
+    .toolbar-zone {
+      min-height: 40px;
+      max-height: 40px;
+      border-bottom: 1px solid $zoneBorderColor;
+    }
+
+    .filter-zone {
+      min-width: 0;
+      max-width: 0;
+      padding: 0;
+      overflow: hidden;
+      @include rsa-vendor-prefix(transition-property, max-width, min-width, padding);
+      @include rsa-vendor-prefix(transition-duration, 0.3s);
+    }
+
+    &.show-more-filters {
+      .filter-zone {
+        border-right: 1px solid $zoneBorderColor;
+        max-width: 25%;
+        min-width: $filterPanelMinWidth;
+        padding: rsa-whitespace();
+        overflow: auto;
+        overflow-x: hidden;
+      }
+    }
+
+    .incidents-zone {
+      width: 100vw;
+
+      .incidents-footer {
+        max-height: 40px;
+        background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
+        color: rsa-color(gray, lightest);
+        border-top: 1px solid $zoneBorderColor;
+      }
+    }
+
+    &.show-more-filters {
+      .incidents-zone {
+        width: calc(100vw - #{$filterPanelMinWidth});
+      }
+    }
+  }
+}
+
+// Temporary background icons as placeholder content
+.respond-engine {
+
+  .incident-placeholder {
+    .background-icon {
+      font-size: 14rem;
+      color: rsa-color(green);
+    }
+    .placeholder-id {
+      font-size: 2rem;
+      color: rsa-color(orange);
+      border: 1px solid rsa-color(orange);
+      border-radius: 4px;
+      padding: rsa-whitespace();
+      margin-left: rsa-whitespace(more);
+    }
+  }
+  .rsa-respond-incidents {
+    .filter-zone .background-icon {
+      font-size: 7rem;
+      color: rsa-color(green);
+    }
+  }
+}

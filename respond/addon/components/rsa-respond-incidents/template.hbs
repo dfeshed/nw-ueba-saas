@@ -1,0 +1,39 @@
+<box fit class="toolbar-zone">
+  {{rsa-respond-incidents/incidents-toolbar
+    isAltThemeActive=isAltThemeActive
+    isMoreFiltersActive=isFilterPanelOpen
+    isInSelectMode=isInSelectMode
+    incidentsSelected=incidentsSelected
+    toggleIsInSelectMode=(action "toggleIsInSelectMode")
+    toggleFilterPanel=(action "toggleFilterPanel")
+    toggleTheme=(action "toggleTheme")
+  }}
+</box>
+<hbox class="main-zone">
+  <vbox class="filter-zone">
+    <centered>
+      <div class="background-icon">
+        {{rsa-icon name='filter-22'}}
+      </div>
+    </centered>
+  </vbox>
+  <vbox class="incidents-zone">
+    <box class="incidents-main">
+      <box class="incidents-body">
+        {{rsa-respond-incidents/incidents-table
+                isInSelectMode=isInSelectMode
+                incidentsSelected=incidentsSelected
+                incidents=(readonly incidents)
+                incidentsStatus=(readonly incidentsStatus)
+                viewIncidentDetails=(action "select")
+        }}
+      </box>
+      <box class="incidents-footer">
+        {{#if (eq incidentsStatus "completed") }}
+          <centered>{{showingIncidentsMessage}}</centered>
+        {{/if}}
+      </box>
+    </box>
+
+  </vbox>
+</hbox>

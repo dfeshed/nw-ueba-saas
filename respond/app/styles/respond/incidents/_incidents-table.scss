@@ -1,0 +1,61 @@
+.rsa-respond-incidents-table {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  .rsa-data-table,
+  .rsa-data-table-body,
+  .rsa-data-table-body-rows,
+  .rsa-data-table-body .no-results {
+    height: 100%;
+    font-size: 2rem;
+  }
+
+  .rsa-data-table-header {
+    border-bottom: 1px solid rsa-color(gray, dark);
+  }
+
+  .rsa-data-table-body-row {
+    cursor: pointer;
+  }
+
+  &:not(.is-in-select-mode) {
+    .rsa-data-table-header-row {
+      position: relative;
+      left: calc(1rem + 0.25rem);
+      right: calc(1rem + 0.25rem);
+    }
+
+    .rsa-data-table-header-row .rsa-data-table-header-cell:first-child,
+    .rsa-data-table-body-row .rsa-data-table-body-cell:first-child {
+      @include rsa-vendor-prefix(transition-property, max-width, padding);
+      @include rsa-vendor-prefix(transition-duration, 0.3s);
+      max-width: 0;
+      padding: 0;
+    }
+  }
+  &.is-in-select-mode {
+    .rsa-data-table-header-row .rsa-data-table-header-cell:first-child,
+    .rsa-data-table-body-row .rsa-data-table-body-cell:first-child {
+      @include rsa-vendor-prefix(transition-property, max-width, padding);
+      @include rsa-vendor-prefix(transition-duration, 0.3s);
+    }
+  }
+
+  .rsa-incident-selected {
+    color: rsa-color(blue, base);
+  }
+
+  .rsa-data-table-body-cell {
+    .rsa-content-label {
+      padding: 0 rsa-whitespace(least);
+      width: 100%;
+      text-align: center;
+    }
+    .number-type {
+      text-align: right;
+    }
+  }
+}

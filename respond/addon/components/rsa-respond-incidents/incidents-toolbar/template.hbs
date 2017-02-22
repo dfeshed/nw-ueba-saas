@@ -1,0 +1,43 @@
+{{#liquid-bind isInSelectMode use=(if isInSelectMode "toUp" "toDown") as |currentIsInSelectMode|}}
+  {{#if currentIsInSelectMode}}
+    <section class="rsa-incidents-toolbar__selections-counter">
+      {{selectionCount}} selected
+    </section>
+    <section class="rsa-incidents-toolbar__selections-btns">
+      <button class="rsa-button" {{action "handleToggleIsInSelectMode"}}>Done</button>
+    </section>
+  {{else}}
+    <section class="rsa-respond-incidents-toolbar__filters">
+      <hbox>
+        <div class="toolbar-button more-filters-button" {{action "handleToggleFilterPanel"}}>
+          {{rsa-icon name='filter-22'}}
+        </div>
+        <div class="toolbar-button color-theme" {{action "handleToggleColorTheme"}}>
+          {{rsa-icon name='photos-images_camera-night-mode'}}
+        </div>
+      </hbox>
+    </section>
+
+    <section class="rsa-respond-incidents-toolbar__views">
+      <label class="rsa-power-select-label">{{t 'respond.incidents.sort.label'}}</label>
+      {{#power-select
+              options=(readonly sortOptions)
+              selected=(readonly selectedSortOption)
+              onchange=(action "handleSortChange")
+              searchEnabled=true
+              searchField="label"
+              matchTriggerWidth=false
+      as |option|}}
+        {{option.label}}
+      {{/power-select}}
+    </section>
+
+    <section class="rsa-respond-incidents-toolbar__btns">
+      <button class="rsa-button" {{action "handleToggleIsInSelectMode"}}>Edit</button>
+    </section>
+  {{/if}}
+{{/liquid-bind}}
+
+
+
+

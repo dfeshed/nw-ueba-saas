@@ -47,7 +47,10 @@ export default {
   requestDestination: '/ws/response/incidents',
   message(/* frame */) {
     return {
-      data
+      data,
+      meta: {
+        total: 1099
+      }
     };
   }
 };

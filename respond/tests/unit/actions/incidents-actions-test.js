@@ -14,7 +14,8 @@ const initialState = {
   incidentsSelected: [],
   isInSelectMode: false,
   isFilerPanelOpen: false,
-  incidentsSort: SORT_TYPES_BY_NAME.SCORE.name,
+  incidentsTotal: null,
+  incidentsSort: SORT_TYPES_BY_NAME.SCORE_DESC.name,
   incidentFilters: {
     cannedFilter: CANNED_FILTER_TYPES_BY_NAME.ALL.name
   }
@@ -62,12 +63,22 @@ test('When FETCH_INCIDENTS succeeds, the incidents array and incidentsStatus upd
   const initState = copy(initialState);
   const incidents = [{ testing: 123 }];
   const incidentsStatus = 'completed';
+  const incidentsTotal = 1000;
   const expectedEndState = {
     ...initState,
+    incidentsTotal,
     incidentsStatus,
     incidents
   };
-  const action = makePackAction(LIFECYCLE.SUCCESS, { type: ACTION_TYPES.FETCH_INCIDENTS, payload: { data: incidents } });
+
+  const action = makePackAction(LIFECYCLE.SUCCESS, {
+    type: ACTION_TYPES.FETCH_INCIDENTS,
+    payload: {
+      data: incidents,
+      meta: {
+        total: 1000 }
+    }
+  });
   const endState = incidentsReducer(initState, action);
   assert.deepEqual(endState, expectedEndState);
 });

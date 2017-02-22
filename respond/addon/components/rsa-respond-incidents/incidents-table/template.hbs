@@ -1,0 +1,51 @@
+{{#rsa-data-table
+  items=(readonly incidents)
+  lazy=(readonly useLazyRendering)
+  onRowClick=(action "handleRowClickAction")
+  columnsConfig=(readonly columns)}}
+
+  {{#rsa-data-table/header translateTitles=true as |column|}}
+    {{#if column.headerComponentClass}}
+      {{component column.headerComponentClass
+        item=(readonly item)
+        index=(readonly index)
+        column=(readonly column)}}
+    {{else}}
+      {{t column.title}}
+    {{/if}}
+  {{/rsa-data-table/header}}
+
+  {{#if (eq incidentsStatus 'wait')}}
+    <centered>
+      {{rsa-loader size='larger'}}
+    </centered>
+
+  {{else}}
+    {{#rsa-data-table/body noResultsMessage=noResultsMessage as |item index column|}}
+      {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
+
+        {{#if (eq column.dataType "date")}}
+          {{rsa-content-datetime timestamp=(get item column.field) displayTime=true}}
+        {{else if (eq column.dataType "number")}}
+          <div class="number-type">{{get item column.field}}</div>
+        {{else if (and (eq column.dataType "checkbox") (contains item incidentsSelected)) }}
+          <centered>
+            {{rsa-icon name="check-2" class="rsa-incident-selected" size="large"}}
+          </centered>
+        {{else if (eq column.field "priority")}}
+          {{rsa-content-label
+            size="small"
+            label=(concat (get item 'priority') " (" (get item 'riskScore') ")")
+            isInverted=true
+            style=(priority-to-content-style (get item column.field))
+          }}
+        {{else if (eq column.field "assignee")}}
+          {{get item "assignee.firstName"}} {{get item "assignee.lastName"}}
+        {{else}}
+          {{get item column.field}}
+        {{/if}}
+      {{/rsa-data-table/body-cell}}
+    {{/rsa-data-table/body}}
+  {{/if}}
+
+{{/rsa-data-table}}

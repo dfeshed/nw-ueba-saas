@@ -39,6 +39,21 @@ const FilterQuery = EmberObject.extend({
       return filter;
     });
   },
+
+  /**
+   * Maximum number of records returned by the filter query
+   * @property limit
+   * @public
+   */
+  limit: 1000,
+
+  @computed('limit')
+  stream(limit) {
+    return {
+      limit
+    };
+  },
+
   /*
    * Init() bootstraps the filters property so that it is created instance by instance, and not on the
    * Object Prototype
@@ -46,7 +61,7 @@ const FilterQuery = EmberObject.extend({
   init() {
     this._super(...arguments);
     this.set('_filters', A([]));
-    this.addSortBy(SORT_TYPES_BY_NAME.SCORE.sortField, SORT_TYPES_BY_NAME.SCORE.isDescending);
+    this.addSortBy(SORT_TYPES_BY_NAME.SCORE_DESC.sortField, SORT_TYPES_BY_NAME.SCORE_DESC.isDescending);
   },
 
   /**
@@ -273,11 +288,13 @@ const FilterQuery = EmberObject.extend({
   toJSON() {
     const sort = [this.get('sort')];
     assert('Sort cannot be left undefined', isPresent(sort));
-    const filters = this.get('filters');
+    const filter = this.get('filters');
+    const stream = this.get('stream');
 
     return {
-      filter: filters,
-      sort
+      filter,
+      sort,
+      stream
     };
   }
 });

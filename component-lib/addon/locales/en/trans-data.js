@@ -299,6 +299,7 @@ export default {
     }
   },
   respond: {
+    title: 'Respond',
     timeframeOptions: {
       lastHour: 'Last hour',
       lastTwelveHours: 'Last 12 hours',
@@ -310,6 +311,7 @@ export default {
       allTime: 'All time'
     },
     incidents: {
+      label: 'Incidents',
       precannedFilters: {
         all: 'All Incidents',
         assignedToMe: 'Assigned to me',
@@ -317,10 +319,40 @@ export default {
         unassigned: 'Unassigned'
       },
       sort: {
-        score: 'Score',
-        oldest: 'Oldest',
-        newest: 'Newest',
-        status: 'Status'
+        label: 'Sort by',
+        alertsCountDescending: 'Alert Count (descending)',
+        alertsCountAscending: 'Alert Count (ascending)',
+        assigneeDescending: 'Assginee (descending)',
+        assigneeAscending: 'Assginee (ascending)',
+        scoreAscending: 'Risk Score (ascending)',
+        scoreDescending: 'Risk Score (descending)',
+        createdAscending: 'Created (ascending)',
+        createdDescending: 'Created (descending)',
+        statusAscending: 'Status (ascending)',
+        statusDescending: 'Status (descending)',
+        idAscending: 'ID (ascending)',
+        idDescending: 'ID (descending)',
+        nameAscending: 'Name (ascending)',
+        nameDescending: 'Name (descending)',
+        priorityAscending: 'Priority (ascending)',
+        priorityDescending: 'Priority (descending)'
+      },
+      list: {
+        select: 'Select',
+        id: 'ID',
+        name: 'Name',
+        createdDate: 'Created',
+        status: 'Status',
+        priority: 'Priority (score)',
+        riskScore: 'Risk Score',
+        assignee: 'Assignee',
+        alertCount: 'Alerts',
+        sources: 'Source',
+        noResultsMessage: 'No matching Incidents were found'
+      },
+      footer: {
+        showing: 'Showing',
+        outOf: 'out of'
       }
     }
   },

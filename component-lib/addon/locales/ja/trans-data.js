@@ -299,6 +299,7 @@ export default {
     }
   },
   respond: {
+    title: 'ja_Respond',
     timeframeOptions: {
       lastHour: 'ja_Last hour',
       lastTwelveHours: 'ja_Last 12 hours',
@@ -310,6 +311,7 @@ export default {
       allTime: 'ja_All time'
     },
     incidents: {
+      label: 'ja_Incidents',
       precannedFilters: {
         all: 'ja_All Incidents',
         assignedToMe: 'ja_Assigned to me',
@@ -317,10 +319,40 @@ export default {
         unassigned: 'ja_Unassigned'
       },
       sort: {
-        score: 'ja_Score',
-        oldest: 'ja_Oldest',
-        newest: 'ja_Newest',
-        status: 'ja_Status'
+        label: 'ja_Sort by',
+        alertsCountDescending: 'ja_Alert Count (descending)',
+        alertsCountAscending: 'ja_Alert Count (ascending)',
+        assigneeDescending: 'ja_Assginee (descending)',
+        assigneeAscending: 'ja_Assginee (ascending)',
+        scoreAscending: 'ja_Risk Score (ascending)',
+        scoreDescending: 'ja_Risk Score (descending)',
+        createdAscending: 'ja_Created (ascending)',
+        createdDescending: 'ja_Created (descending)',
+        statusAscending: 'ja_Status (ascending)',
+        statusDescending: 'ja_Status (descending)',
+        idAscending: 'ja_ID (ascending)',
+        idDescending: 'ja_ID (descending)',
+        nameAscending: 'ja_Name (ascending)',
+        nameDescending: 'ja_Name (descending)',
+        priorityAscending: 'ja_Priority (ascending)',
+        priorityDescending: 'ja_Priority (descending)'
+      },
+      list: {
+        select: 'ja_Select',
+        id: 'ja_ID',
+        name: 'ja_Name',
+        createdDate: 'ja_Created',
+        status: 'ja_Status',
+        priority: 'ja_Priority (score)',
+        riskScore: 'ja_Risk Score',
+        assignee: 'ja_Assignee',
+        alertCount: 'ja_Alerts',
+        sources: 'ja_Source',
+        noResultsMessage: 'ja_No matching Incidents were found'
+      },
+      footer: {
+        showing: 'ja_Showing',
+        outOf: 'ja_out of'
       }
     }
   },

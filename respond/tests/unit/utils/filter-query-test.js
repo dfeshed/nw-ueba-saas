@@ -6,9 +6,13 @@ import { module, test } from 'qunit';
 module('Unit | Utility | FilterQuery');
 
 const defaultSort = [{
-  field: SORT_TYPES_BY_NAME.SCORE.sortField,
+  field: SORT_TYPES_BY_NAME.SCORE_DESC.sortField,
   descending: true
 }];
+
+const defaultStream = {
+  limit: 1000
+};
 
 test('An FilterQuery object can be created', function(assert) {
   const query = FilterQuery.create();
@@ -19,21 +23,23 @@ test('JSON structure is correct for FilterQuery object with default settings', f
   const queryJson = FilterQuery.create().toJSON();
   const expectedJson = {
     filter: [],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(queryJson, expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
 
 test('Calling sortBy() properly changes the sort information in the json', function(assert) {
   const query = FilterQuery.create();
-  const { sortField, isDescending } = SORT_TYPES_BY_NAME.NEWEST;
+  const { sortField, isDescending } = SORT_TYPES_BY_NAME.STATUS_DESC;
   query.addSortBy(sortField, isDescending);
   const expectedJson = {
     filter: [],
     sort: [{
-      field: SORT_TYPES_BY_NAME.NEWEST.sortField,
-      descending: SORT_TYPES_BY_NAME.NEWEST.isDescending
-    }]
+      field: SORT_TYPES_BY_NAME.STATUS_DESC.sortField,
+      descending: SORT_TYPES_BY_NAME.STATUS_DESC.isDescending
+    }],
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -51,7 +57,8 @@ test('Calling addFilter() properly adds the filter to the filters array', functi
         value
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -69,7 +76,8 @@ test('Calling addFilter() twice with the same field adds merges the values', fun
         values: ['ASSIGNED', 'OLD']
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -84,7 +92,8 @@ test('Calling addFilter() with either an empty (i.e., null or undefined) field o
 
   const expectedJson = {
     filter: [],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -103,7 +112,8 @@ test('Calling addSinceWhenFilter() creates the proper range query', function(ass
         }
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -123,7 +133,8 @@ test('Calling addSinceWhenFilter() twice removes the first filter and adds the s
         }
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -145,7 +156,8 @@ test('Calling addRangeFilter() adds the proper range filter object', function(as
         }
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -162,7 +174,8 @@ test('Calling addHasAnyValueFilter() produces the expected query', function(asse
         isNull: false
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -179,7 +192,8 @@ test('Calling addHasNoValueFilter() produces the expected query', function(asser
         isNull: true
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -197,7 +211,8 @@ test('Calling removeFilter() produces the expected query', function(assert) {
         value: 'Meiske'
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
 });
@@ -221,7 +236,8 @@ test('Calling addFilters() produces the expected query', function(assert) {
         value: 'New Orleans'
       }
     ],
-    sort: defaultSort
+    sort: defaultSort,
+    stream: defaultStream
   };
 
   assert.deepEqual(query.toJSON(), expectedJson, 'FilterQuery.toJSON() should return expected json when no additional filters are added');
