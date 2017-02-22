@@ -2,6 +2,8 @@ package fortscale.collection.jobs.tagging;
 
 import fortscale.collection.jobs.FortscaleJob;
 import fortscale.services.UserTagService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -32,6 +34,10 @@ public class UserTaggingJob extends FortscaleJob {
 	
 	@Autowired
 	private UserTagService userTagService;
+	private String resultsId;
+
+	@Autowired
+	private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
 
 	@Override
 	protected void getJobParameters(JobExecutionContext jobExecutionContext) throws JobExecutionException {
@@ -41,6 +47,9 @@ public class UserTaggingJob extends FortscaleJob {
 			logger.info("Given 'useFile' parameter is useFile={}", useFileAsString);
 			useFile = Boolean.parseBoolean(useFileAsString);
 		}
+
+		// random generated ID for deployment wizard fetch and ETL results
+		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 	}
 
 	@Override
@@ -60,6 +69,7 @@ public class UserTaggingJob extends FortscaleJob {
 			try {
 				updateFromFile();
 			} catch (IOException e) {
+				saveResult(false);
 				throw new JobExecutionException(e);
 			}
 		}
@@ -68,14 +78,21 @@ public class UserTaggingJob extends FortscaleJob {
 			userTagService.update();
 		}
 
+		saveResult(true);
 	}
 
-
+	private void saveResult(boolean success) {
+		if (resultsId != null) {
+			userTaggingTaskPersistenceService.writeTaskResults(UserTaggingTaskPersistencyServiceImpl.RESULTS_KEY_NAME,
+					"resultsId", success);
+		}
+	}
 
 
 	private void updateFromFile() throws IOException, JobExecutionException {
 		if (StringUtils.isEmpty(customTagFilePath)) {
 			logger.error("Job failed. Empty customTagFilePath.");
+			saveResult(false);
 			return;
 		}
 		File tagsFile = new File(customTagFilePath);
@@ -106,6 +123,7 @@ public class UserTaggingJob extends FortscaleJob {
 			}
 			logger.info("tags loaded");
 		} else {
+			saveResult(false);
 			logger.error("Custom tag list file not accessible in path {}", customTagFilePath);
 		}
 	}
