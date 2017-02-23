@@ -10,7 +10,7 @@ export default {
     title: 'Monitor',
     details: 'Monitor contents go here.'
   },
-  respond: {
+  responded: {
     title: 'Respond',
     details: 'Respond contents go here.',
     myQueue: 'Incident Queue',

@@ -30,7 +30,7 @@ export default Component.extend({
       if (total === count) {
         return count;
       } else {
-        const filteredCount = this.get('i18n').t('respond.myFilteredQueue', { filteredCount: count, totalCount: total });
+        const filteredCount = this.get('i18n').t('responded.myFilteredQueue', { filteredCount: count, totalCount: total });
         return filteredCount;
       }
     }

@@ -25,8 +25,8 @@ export default Mixin.create({
    * @private
    */
   displayFlashErrorLoadingModel(modelName, isWarning = true) {
-    const i18nKey = 'respond.errors.unableToLoadModel';
-    const options = { model: this.get('i18n').t(`respond.models.${modelName}`) };
+    const i18nKey = 'responded.errors.unableToLoadModel';
+    const options = { model: this.get('i18n').t(`responded.models.${modelName}`) };
     if (isWarning) {
       this.displayWarningFlashMessage(i18nKey, options);
     } else {
@@ -98,7 +98,7 @@ export default Mixin.create({
    * @private
    */
   displayFatalUnexpectedError() {
-    this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('respond.errors.unexpected')));
+    this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('responded.errors.unexpected')));
   },
 
   /**
@@ -106,6 +106,6 @@ export default Mixin.create({
    * @private
    */
   displayFatalTimeoutError() {
-    this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('respond.errors.timeout')));
+    this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('responded.errors.timeout')));
   }
 });

@@ -2,7 +2,7 @@ import Ember from 'ember';
 import { incidentStatusIds, incStatus } from 'sa/incident/constants';
 import IncidentsCube from 'sa/utils/cube/incidents';
 import PersistenceHelper from 'sa/components/rsa-respond/landing-page/respond-index/list-view/persistence-helper';
-import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
+import NotificationHelper from 'sa/protected/responded/mixins/notificationHelper';
 
 const {
   Route,
@@ -32,7 +32,7 @@ export default Route.extend(NotificationHelper, {
   persistenceHelper: PersistenceHelper.create(),
 
   title() {
-    return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('respond.myQueue') });
+    return this.get('i18n').t('pageTitle', { section: this.get('i18n').t('responded.myQueue') });
   },
 
   /*
@@ -427,7 +427,7 @@ export default Route.extend(NotificationHelper, {
      */
     gotoIncidentDetail(json) {
       if (json && json.id) {
-        this.transitionTo('protected.respond.incident', json.id);
+        this.transitionTo('protected.responded.incident', json.id);
       }
     },
 

@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import { viewType } from 'sa/protected/respond/index/route';
+import { viewType } from 'sa/protected/responded/index/route';
 
 const {
   Component

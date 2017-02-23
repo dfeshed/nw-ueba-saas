@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
+import NotificationHelper from 'sa/protected/responded/mixins/notificationHelper';
 
 const {
   Route,
@@ -45,7 +45,7 @@ export default Route.extend(NotificationHelper, {
   model(params, transition) {
     const alerts = [];
     if (params.detail_id !== 'catalyst') {
-      const incidentModel = this.modelFor('protected.respond.incident');
+      const incidentModel = this.modelFor('protected.responded.incident');
       if (!isEmpty(incidentModel.indicators)) {
         const allIndicators = incidentModel ? incidentModel.indicators : [];
         const indicator = allIndicators.findBy('indicator.id', params.detail_id);
@@ -58,7 +58,7 @@ export default Route.extend(NotificationHelper, {
           method: 'stream',
           modelName: 'storyline',
           query: {
-            filter: [{ field: '_id', value: transition.params['protected.respond.incident'].incident_id }],
+            filter: [{ field: '_id', value: transition.params['protected.responded.incident'].incident_id }],
             sort: [{ field: 'alert.timeStamp', descending: true }]
           },
           onResponse: ({ data }) => {
@@ -87,7 +87,7 @@ export default Route.extend(NotificationHelper, {
         method: 'stream',
         modelName: 'alerts',
         query: {
-          filter: [{ field: 'incidentId', value: transition.params['protected.respond.incident'].incident_id }],
+          filter: [{ field: 'incidentId', value: transition.params['protected.responded.incident'].incident_id }],
           sort
         },
         onResponse: ({ data }) => {
@@ -146,7 +146,7 @@ export default Route.extend(NotificationHelper, {
 
     willTransition(transition) {
       // Handle back button click.
-      if (transition.targetName === 'protected.respond.incident.index') {
+      if (transition.targetName === 'protected.responded.incident.index') {
         // Event overview panel is removed. Update local storage state.
         this.send('saveEventOverviewPanelState');
       }
@@ -163,7 +163,7 @@ export default Route.extend(NotificationHelper, {
       this.set('layoutService.panelC', 'half');
       this.set('layoutService.panelD', 'half');
       this.set('layoutService.journalPanel', 'hidden');
-      const parentModel = this.modelFor('protected.respond.incident');
+      const parentModel = this.modelFor('protected.responded.incident');
       set(parentModel, 'events', []);
       this.request.streamRequest({
         method: 'stream',

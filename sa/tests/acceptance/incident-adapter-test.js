@@ -16,7 +16,7 @@ moduleForAcceptance('Acceptance | Incident adapter', {
 
 
 test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
-  visit('/');
+  visit('/responded');
 
   const router = EmberObject.create({
     currentRouteName: null
@@ -36,7 +36,7 @@ test('it can redirect calls to a socket and get a response from a mock server', 
 });
 
 test('it can redirect calls to a socket and get a response from a mock server', function(assert) {
-  visit('/');
+  visit('/responded');
 
   const router = EmberObject.create({
     currentRouteName: null

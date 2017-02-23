@@ -53,7 +53,7 @@ export default Ember$.extend({}, BaseSelectors, {
       'carouselItems': 'div[class=rsa-carousel__visible-items] div[class^=rsa-incident-content-card]',
       'incidentTile': 'div[class=rsa-carousel__visible-items] span[class=rsa-incident-tile-created-date]',
       'url': '/respond',
-      'path': 'protected.respond.index',
+      'path': 'protected.responded.index',
       'updateIndLbl': '.rsa-update-indicator__label',
       'rsaLoader': '.rsa-loader',
       'rsaActiveElmCheck': 'is-active',

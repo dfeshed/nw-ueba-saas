@@ -3,6 +3,7 @@
 const common = require('../../../common');
 const investigateConfigGen = require('../../../investigate').socketRouteGenerator;
 const contextConfigGen = require('../../../context').socketRouteGenerator;
+const respondConfigGen = require('../../../respond').socketRouteGenerator;
 const responseConfigGen = require('./response');
 const adminConfigGen = require('./administration');
 const testConfigGen = require('./test');
@@ -11,7 +12,8 @@ const testConfigGen = require('./test');
 const configGenerators = [
   testConfigGen,
   investigateConfigGen,
-  responseConfigGen,
+  responseConfigGen, // old / deprecated / will be removed soon
+  respondConfigGen, // new official respond
   contextConfigGen,
   adminConfigGen
 ];

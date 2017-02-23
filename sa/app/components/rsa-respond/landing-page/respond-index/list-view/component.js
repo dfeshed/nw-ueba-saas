@@ -1,6 +1,6 @@
 import Ember from 'ember';
 import IncidentHelper from 'sa/incident/helpers';
-import { viewType } from 'sa/protected/respond/index/route';
+import { viewType } from 'sa/protected/responded/index/route';
 import IncidentConstants from 'sa/incident/constants';
 import computed, { equal } from 'ember-computed-decorators';
 import { availableColumnsConfig, replayConfig, persistenceConfig, storageKey } from './config';

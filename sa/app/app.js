@@ -26,6 +26,17 @@ const App = Application.extend({
           'i18n'
         ]
       }
+    },
+    respond: {
+      dependencies: {
+        services: [
+          '-document',
+          'dateFormat',
+          'timeFormat',
+          'timezone',
+          'i18n'
+        ]
+      }
     }
   },
 

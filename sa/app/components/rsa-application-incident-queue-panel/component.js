@@ -101,12 +101,12 @@ export default Component.extend({
       onError: (error) => {
         this.set('loadingData', false);
         Logger.error(`Error loading incidents. Error: ${error}`);
-        this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('respond.errors.unexpected')));
+        this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('responded.errors.unexpected')));
       },
       onTimeout: () => {
         this.set('loadingData', false);
         Logger.warn('Timeout loading incidents.');
-        this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('respond.errors.timeout')));
+        this.get('fatalErrors').logError(htmlSafe(this.get('i18n').t('responded.errors.timeout')));
       }
     });
   },

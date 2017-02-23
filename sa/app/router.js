@@ -28,12 +28,16 @@ Router.map(function() {
     this.route('monitor');
 
     if (config.featureFlags['show-respond-route']) {
-      this.route('respond', function() {
+      this.route('responded', function() {
         this.route('incident', { path: '/incident/:incident_id' }, function() {
           this.route('details', { path: '/details/:detail_id' }, function() {
           });
         });
       });
+    }
+
+    if (config.featureFlags['show-respond-route']) {
+      this.mount('respond');
     }
 
     if (config.featureFlags['show-investigate-route']) {

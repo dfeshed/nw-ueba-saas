@@ -1,5 +1,5 @@
 import Ember from 'ember';
-import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
+import NotificationHelper from 'sa/protected/responded/mixins/notificationHelper';
 
 const {
   Route,
@@ -28,7 +28,7 @@ export default Route.extend(NotificationHelper, {
 
   title(tokens) {
     return this.get('i18n').t('pageTitle', {
-      section: this.get('i18n').t('respond.incidentDetails.titleWithId', {
+      section: this.get('i18n').t('responded.incidentDetails.titleWithId', {
         id: tokens[0]
       })
     });

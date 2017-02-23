@@ -15,7 +15,7 @@ moduleForAcceptance('Acceptance | application adapter', {
 });
 
 test('it can redirect calls to a socket and get a response from a mock server 1', function(assert) {
-  visit('/');
+  visit('/responded');
 
   const router = EmberObject.create({
     currentRouteName: null
@@ -35,7 +35,7 @@ test('it can redirect calls to a socket and get a response from a mock server 1'
 });
 
 test('it can redirect calls to a socket and get a response from a mock server 2', function(assert) {
-  visit('/');
+  visit('/responded');
 
   const router = EmberObject.create({
     currentRouteName: null
@@ -54,7 +54,7 @@ test('it can redirect calls to a socket and get a response from a mock server 2'
 });
 
 test('it can redirect calls to a socket and get a response from a mock server 3', function(assert) {
-  visit('/');
+  visit('/responded');
 
   const router = EmberObject.create({
     currentRouteName: null

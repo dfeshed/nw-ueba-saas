@@ -53,7 +53,7 @@ test('disable respond feature flag, visiting /respond and check DOM ', function(
 
 skip('ensure journal-trigger is added on the respond incident route', function(assert) {
   assert.expect(1);
-  visit('/respond');
+  visit('/responded');
   andThen(function() {
     click('.rsa-incident-tile:first-of-type');
 
@@ -70,7 +70,7 @@ test('enable respond feature flag, visiting /respond and check DOM ', function(a
 
   withFeature('show-respond-route');
 
-  visit('/respond');
+  visit('/responded');
 
   andThen(function() {
     assert.equal(find('.rsa-header-nav-respond').length, 1, '.rsa-header-nav-respond should be in dom');
@@ -85,7 +85,7 @@ skip('Landing Page card components should be displayed on load by default', func
   };
 
   withFeature('show-respond-route');
-  visit('/respond');
+  visit('/responded');
   andThen(function() {
 
     assert.equal(currentPath(), selectors.pages.respond.path);
@@ -114,7 +114,7 @@ skip('Landing Page card components should be displayed on load by default', func
 
 skip('Selectors should be visible on click', function(assert) {
   assert.expect(3);
-  visit('/respond');
+  visit('/responded');
   andThen(function() {
     setTimeout(function() {
       let el = find(selectors.pages.respond.card.incTile.editButton);
@@ -137,7 +137,7 @@ skip('Selectors should be visible on click', function(assert) {
 });
 
 skip('User should be able to set Status, Assignee and Priority', function(assert) {
-  visit('/respond');
+  visit('/responded');
   andThen(() => {
     setTimeout(function() {
       const editBtn = find(selectors.pages.respond.card.incTile.editButton).first();
@@ -179,7 +179,7 @@ skip('User should be able to set Status, Assignee and Priority', function(assert
   and uncomment this test.*/
 skip('Toggle list button renders incidents list view with right number of columns', function(assert) {
 
-  visit('/respond');
+  visit('/responded');
   andThen(() => {
     const listViewBtn = find(selectors.pages.respond.listViewBtn);
     click(listViewBtn);

@@ -14,7 +14,7 @@
       {{#rsa-data-table lazy=true items=incidents columnsConfig=customColumnConfig}}
         {{#rsa-data-table/body as |item index column|}}
           {{#rsa-data-table/body-cell item=item column=column index=index}}
-            {{#link-to 'protected.respond.incident' item.id click=(action 'gotoIncidentDetail')}}
+            {{#link-to 'protected.responded.incident' item.id click=(action 'gotoIncidentDetail')}}
               {{#rsa-content-card class="rsa-incident-content-card small-size"}}
                 {{rsa-respond/landing-page/incident-tile incident=item size='small' mode='queue'}}
               {{/rsa-content-card}}

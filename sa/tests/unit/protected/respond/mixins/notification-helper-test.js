@@ -1,10 +1,10 @@
 import Ember from 'ember';
-import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
+import NotificationHelper from 'sa/protected/responded/mixins/notificationHelper';
 import { module, test } from 'qunit';
 
 const { Object: EmberObject } = Ember;
 
-module('Unit | Mixin | protected/respond/mixins/notificationHelper');
+module('Unit | Mixin | protected/responded/mixins/notificationHelper');
 
 test('Public methods are present', function(assert) {
   const containerObject = EmberObject.extend(NotificationHelper);
@@ -22,11 +22,11 @@ test('Public methods are present', function(assert) {
 
 // import Ember from 'ember';
 // import { moduleFor, test } from 'ember-qunit';
-// import NotificationHelper from 'sa/protected/respond/mixins/notificationHelper';
+// import NotificationHelper from 'sa/protected/responded/mixins/notificationHelper';
 
 // const { Object: EmberObject, getOwner } = Ember;
 
-// moduleFor('mixin:sa/protected/respond/mixins/notificationHelper', 'Unit | Mixin | protected/respond/mixins/notificationHelper', {
+// moduleFor('mixin:sa/protected/responded/mixins/notificationHelper', 'Unit | Mixin | protected/responded/mixins/notificationHelper', {
 //   needs: ['service:i18n', 'service:fatalErrors', 'service:flashMessages'],
 
 //   subject() {
