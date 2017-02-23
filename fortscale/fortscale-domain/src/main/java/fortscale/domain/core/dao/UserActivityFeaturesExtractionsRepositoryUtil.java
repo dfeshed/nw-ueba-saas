@@ -33,7 +33,7 @@ import static org.springframework.data.mongodb.core.aggregation.Aggregation.*;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 
-@Component("userActivityFeaturesExtractiionsRepositoryUtil")
+@Component("userActivityFeaturesExtractionsRepositoryUtil")
 public class UserActivityFeaturesExtractionsRepositoryUtil {
 
 
