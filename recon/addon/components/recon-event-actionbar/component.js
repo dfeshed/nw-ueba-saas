@@ -15,7 +15,13 @@ const reconEventActionbar = Component.extend({
   classNames: ['recon-event-actionbar'],
 
   @computed('view')
-  isTextView: (view) => view === RECON_VIEW_TYPES_BY_NAME.TEXT.code
+  isTextView: (view) => view === RECON_VIEW_TYPES_BY_NAME.TEXT.code,
+
+  @computed('view')
+  isFileView: (view) => view === RECON_VIEW_TYPES_BY_NAME.FILE.code,
+
+  @computed('view')
+  isPacketView: (view) => view === RECON_VIEW_TYPES_BY_NAME.PACKET.code
 });
 
 export default connect(stateToComputed)(reconEventActionbar);

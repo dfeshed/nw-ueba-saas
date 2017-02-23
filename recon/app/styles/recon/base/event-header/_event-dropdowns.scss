@@ -12,6 +12,7 @@
     }
   }
   
+  .export-logs-button,
   .export-files-button {
     .rsa-loader {
       display: inline-block;
@@ -23,6 +24,7 @@
     }
   }
 
+  .export-logs-iframe,
   .export-files-iframe {
     display: none;
   }

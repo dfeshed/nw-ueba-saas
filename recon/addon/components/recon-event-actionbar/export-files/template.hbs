@@ -1,26 +1,11 @@
 {{#unless isLog}}
   {{#rsa-form-button
     class="export-files-button"
-    defaultAction=(action 'launchDownload')
-    isDisabled=isExportDisabled
+    defaultAction=(action 'extract')
+    isDisabled=isDisabled
   }}
-    {{#if isExportInProgress}}{{rsa-loader size="small"}}{{/if}}
-    {{exportCaption}}
+    {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
+    {{caption}}
   {{/rsa-form-button}}
-
-  {{! todo: Once UX is finalized, we can insert a modal here (if desired) with rsa-application-modal }}
-  {{!#if showModal}}
-
-    {{!#rsa-application-modal
-      eventId='recon-download-name-form'
-      label="Extract File(s)"
-      autoOpen=true
-      onClose=(action 'closeModal')
-    }}
-      {{! <div class='modal-content'> Modal Content </div> }}
-    {{!/rsa-application-modal}}
-
-  {{!/if}}
-
-  <iframe class="export-files-iframe js-export-files-iframe"></iframe>
+  <iframe src="{{iframeSrc}}" class="export-files-iframe js-export-files-iframe"></iframe>
 {{/unless}}

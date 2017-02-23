@@ -1,8 +1,9 @@
 import Ember from 'ember';
 import * as ACTION_TYPES from './types';
-import { fetchFileExtractJobId } from './fetch';
+import { fetchExtractJobId } from './fetch';
 
 const {
+  A,
   Logger,
   isArray
 } = Ember;
@@ -30,15 +31,15 @@ const selectHeaderItem = (headerItems, item) => {
   return v;
 };
 
-const createFilename = (deviceName, session, files) => {
-  let fn;
-  if (deviceName && session && isArray(files)) {
-    fn = `${deviceName}_SID${session}_FC${files.length}`;
+const createFilename = (deviceName, session, files = []) => {
+  let fileName = `${deviceName}_SID${session}`;
+  if (files.length) {
+    fileName += `_FC${files.length}`;
   }
-  return fn;
+  return fileName;
 };
 
-const downloadFiles = () => {
+const extractFiles = (type = 'FILES') => {
   return (dispatch, getState) => {
     const {
       recon: {
@@ -50,21 +51,19 @@ const downloadFiles = () => {
         }
       }
     } = getState();
-
-    const selectedFileNames = (files || [])
-      .filterBy('selected', true)
-      .map((file) => file.fileName);
-
     const deviceName = selectHeaderItem(headerItems, 'device');
     const session = selectHeaderItem(headerItems, 'session');
+    const selectedFileNames = (files || A([]))
+      .filterBy('selected', true)
+      .map((file) => file.fileName);
     const filename = createFilename(deviceName, session, selectedFileNames);
 
     dispatch({
       type: ACTION_TYPES.FILE_EXTRACT_JOB_ID_RETRIEVE,
-      promise: fetchFileExtractJobId(endpointId, eventId, selectedFileNames, filename),
+      promise: fetchExtractJobId(endpointId, eventId, type, filename, selectedFileNames),
       meta: {
         onFailure(response) {
-          Logger.error('Error fetching job id for file extraction', { endpointId, eventId }, response);
+          Logger.error('Error fetching job id for extraction', { endpointId, eventId }, response);
         }
       }
     });
@@ -83,7 +82,7 @@ const hidePacketTooltip = () => ({ type: ACTION_TYPES.HIDE_PACKET_TOOLTIP });
 export {
   deselectAllFiles,
   selectAllFiles,
-  downloadFiles,
+  extractFiles,
   didDownloadFiles,
   fileSelected,
   showPacketTooltip,

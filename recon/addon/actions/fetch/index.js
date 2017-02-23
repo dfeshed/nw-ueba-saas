@@ -4,7 +4,7 @@ import fetchReconFiles from './files';
 import fetchPacketData from './packets';
 import fetchTextData from './text';
 import { fetchLanguage, fetchAliases } from './dictionaries';
-import fetchFileExtractJobId from './file-extract';
+import fetchExtractJobId from './file-extract';
 import fetchNotifications from './notifications';
 
 export {
@@ -16,5 +16,5 @@ export {
   fetchLanguage,
   fetchAliases,
   fetchNotifications,
-  fetchFileExtractJobId
+  fetchExtractJobId
 };

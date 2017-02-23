@@ -203,16 +203,10 @@ const data = handleActions({
     fileExtractStatus: 'success',
     fileExtractLink: payload.link
   }),
-  [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state, { payload }) => {
-    // if the currently downloaded job matches the job in the current state,
-    // reset the state; otherwise, no-op
-    return ((payload && payload.link) === state.fileExtractLink) ? {
-      ...state,
-      ...fileExtractInitialState
-    } : {
-      ...state
-    };
-  },
+  [ACTION_TYPES.FILE_EXTRACT_JOB_DOWNLOADED]: (state) => ({
+    ...state,
+    ...fileExtractInitialState
+  }),
   [ACTION_TYPES.NOTIFICATION_INIT_SUCCESS]: (state, { payload }) => ({
     ...state,
     stopNotifications: payload.cancelFn

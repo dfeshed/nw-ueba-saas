@@ -1,13 +1,14 @@
 <grid>
   <hbox class="dropdowns">
-
-    {{recon-event-actionbar/export-files}}
-
-    {{#rsa-form-button}}Export PCAP{{/rsa-form-button}}
-
+    {{#if isPacketView }}
+      {{#rsa-form-button isDisabled=true}}Export PCAP{{/rsa-form-button}}
+    {{/if}}
+    {{#if isFileView }}
+      {{recon-event-actionbar/export-files}}
+    {{/if}}
     {{#if isTextView }}
+      {{recon-event-actionbar/export-logs}}
       {{recon-event-actionbar/decode-text}}
     {{/if}}
-
   </hbox>
 </grid>

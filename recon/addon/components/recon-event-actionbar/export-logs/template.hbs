@@ -1,0 +1,11 @@
+{{#if isLog}}
+  {{#rsa-form-button
+    class="export-logs-button"
+    defaultAction=(action 'extract')
+    isDisabled=isDownloading
+  }}
+    {{#if isDownloading}}{{rsa-loader size="small"}}{{/if}}
+    {{caption}}
+  {{/rsa-form-button}}
+  <iframe src="{{iframeSrc}}" class="export-logs-iframe js-export-logs-iframe"></iframe>
+{{/if}}
