@@ -1,6 +1,8 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.core.dao.UserRepository;
 import fortscale.services.AlertsService;
