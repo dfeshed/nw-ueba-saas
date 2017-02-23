@@ -24,7 +24,6 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
 
     private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
     private final String SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX ="system_setup_ad.execution_start_time";
-
     private final ApplicationConfigurationService applicationConfigurationService;
 
     @Autowired
@@ -35,7 +34,7 @@ public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
     @Override
     public Map<String, String> getTaskResults(String resultsKey) {
         Map<String, String> taskResults = new HashMap<>();
-        logger.error("**** getting result for key {}", resultsKey);
+        logger.info("getting result for key {}", resultsKey);
         ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
         if (queryResult == null) {
             logger.error("No result found for result key {}", resultsKey);

@@ -48,7 +48,7 @@ public class UserTaggingJob extends FortscaleJob {
 			useFile = Boolean.parseBoolean(useFileAsString);
 		}
 
-		// random generated ID for deployment wizard fetch and ETL results
+		// random generated ID for deployment wizard user tagging results
 		resultsId = jobDataMapExtension.getJobDataMapStringValue(map, "resultsId", false);
 	}
 

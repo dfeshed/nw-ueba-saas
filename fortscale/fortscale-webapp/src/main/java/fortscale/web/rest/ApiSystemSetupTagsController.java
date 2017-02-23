@@ -13,6 +13,7 @@ import fortscale.utils.logging.annotation.LogException;
 import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
+import fortscale.web.rest.Utils.TaskAction;
 import fortscale.web.services.UserTaggingTaskService;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
 import org.apache.commons.lang.StringUtils;
@@ -152,7 +153,7 @@ public class ApiSystemSetupTagsController extends BaseController {
             final boolean executedSuccessfully = userTaggingTaskService.executeTasks(simpMessagingTemplate, DESTINATION_TASK_RESPONSE);
             if (executedSuccessfully) {
                 lastUserTaggingExecutionStartTime = System.currentTimeMillis();
-                simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, "EXECUTE");
+                simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, TaskAction.EXECUTE);
                 return new ResponseEntity<>(new ResponseEntityMessage("User tagging is running."), HttpStatus.OK);
             }
             else {
@@ -176,7 +177,7 @@ public class ApiSystemSetupTagsController extends BaseController {
                 lastUserTaggingExecutionStartTime = null;
                 final String message = "User tagging execution has been cancelled successfully";
                 logger.debug(message);
-                simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, "CANCEL");
+                simpMessagingTemplate.convertAndSend(DESTINATION_ACTIONS, TaskAction.CANCEL);
                 return new ResponseEntity<>(new ResponseEntityMessage(message), HttpStatus.OK);
             }
             else {
@@ -233,7 +234,7 @@ public class ApiSystemSetupTagsController extends BaseController {
             return lastExecutionStartTime;
         }
 
-        public boolean getRunning() {
+        public boolean isRunning() {
             return isRunning;
         }
     }
