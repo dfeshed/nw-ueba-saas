@@ -87,7 +87,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     @Override
     public Boolean isMonitorFileDaily() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY, Boolean.class);
+        return Boolean.valueOf(applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY, Boolean.class));
     }
 
     private static class UserTaggingResult{
