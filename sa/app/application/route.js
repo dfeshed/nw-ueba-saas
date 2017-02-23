@@ -2,7 +2,6 @@ import $ from 'jquery';
 import Ember from 'ember';
 import ApplicationRouteMixin from 'ember-simple-auth/mixins/application-route-mixin';
 import csrfToken from 'component-lib/mixins/csrf-token';
-import { isEmpty, isNone } from 'ember-utils';
 import Route from 'ember-route';
 import RSVP from 'rsvp';
 import service from 'ember-service/inject';
@@ -23,22 +22,12 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
   },
 
   beforeModel(transition) {
-    if (!this.get('session.isAuthenticated') &&
-      isNone(localStorage.getItem('rsa-post-auth-redirect')) &&
-      transition.targetName !== 'login'
-    ) {
+    if (!this.get('session.isAuthenticated') && transition.targetName !== 'login') {
       localStorage.setItem('rsa-post-auth-redirect', transition.targetName);
     }
 
     this._super(...arguments);
   },
-
-  _initialize: function() {
-    const session = this.get('session').get('session');
-    if (session) {
-      session.addObserver('content.authenticated', this, this._checkFully);
-    }
-  }.on('init'),
 
   actions: {
     back() {
@@ -53,16 +42,6 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
     },
     logout() {
       this._logout();
-    }
-  },
-
-  _checkFully() {
-    const isRedirecting = localStorage.getItem('_redirecting');
-    const query = window.location.search;
-    if (!this.get('session.isAuthenticated') && typeof query !== 'undefined' && query.indexOf('?next=') == 0 && isRedirecting == null) {
-      localStorage.setItem('_redirecting', 'true');
-    } else {
-      localStorage.removeItem('_redirecting');
     }
   },
 
@@ -115,15 +94,7 @@ export default Route.extend(ApplicationRouteMixin, csrfToken, {
 
   sessionAuthenticated() {
     this._setupUserTimeout();
-    const isRedirecting = localStorage.getItem('_redirecting');
-    if (!isEmpty(isRedirecting)) {
-      // invoke redirect
-      localStorage.removeItem('_redirecting');
-      const query = window.location.search;
-      window.location = query.substring(6);
-    } else {
-      this._super(...arguments);
-    }
+    this._super(...arguments);
   },
 
   sessionInvalidated() {

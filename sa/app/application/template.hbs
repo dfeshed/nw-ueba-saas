@@ -16,7 +16,7 @@
   {{/each}}
 </ul>
 
-{{#if isFullyAuthenticated}}
+{{#if authenticatedAndPageFound}}
   {{#rsa-application-header version=version title=title}}
     {{#if features.showRespondRoute}}
       {{#if accessControl.hasRespondAccess}}

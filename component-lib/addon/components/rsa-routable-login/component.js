@@ -108,6 +108,12 @@ export default Component.extend({
             status: _STATUS.SUCCESS,
             errorMessage: null
           });
+
+          const query = window.location.search;
+
+          if (!isEmpty(query)) {
+            window.location = window.location.search.substring(6);
+          }
         },
 
         // Auth failed

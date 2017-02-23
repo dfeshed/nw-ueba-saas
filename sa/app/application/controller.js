@@ -15,15 +15,13 @@ export default Controller.extend({
 
   accessControl: service(),
 
-  isFullyAuthenticated: computed('session.isAuthenticated', 'currentPath', function() {
+  authenticatedAndPageFound: computed('session.isAuthenticated', 'currentPath', function() {
     const path = this.get('currentPath');
 
     if (!this.get('session.isAuthenticated') || path === 'not-found') {
       return false;
+    } else {
+      return true;
     }
-
-    const query = window.location.search;
-    const isRedirecting = localStorage.getItem('_redirecting');
-    return !(typeof query !== 'undefined' && query.indexOf('?next=') == 0 && isRedirecting == null && path !== 'login');
   })
 });
