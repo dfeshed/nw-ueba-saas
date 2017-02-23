@@ -72,19 +72,19 @@ const TitlebarComponent = Component.extend({
   * Processes RECON_VIEWS and setings selected flag for
   * the one currently chosen
   *
-  * @return {boolean}  Whether icons should be disabled
+  * @return {array}  array of objects
   * @public
   */
   @computed('currentReconView')
   reconViewsConfig({ code }) {
-    return RECON_VIEW_TYPES.map((viewType) => {
-      const disabled = this.get('isLog') && (viewType.name === 'PACKET' || viewType.name === 'FILE');
+    const reconViews = RECON_VIEW_TYPES.map((viewType) => {
       return {
         ...viewType,
-        disabled,
         selected: viewType.code === code
       };
     });
+    // Don't show the recon view that is currently chosen on the page again in the drop-down
+    return reconViews.filter((item) => (item.code !== code));
   },
 
   /**

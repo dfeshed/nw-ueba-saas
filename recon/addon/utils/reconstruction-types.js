@@ -24,7 +24,7 @@ const RECON_VIEW_TYPES = [{
   name: 'TEXT',
   label: 'Text View',
   component: 'recon-event-detail/text-content',
-  dataKey: 'text-content'
+  dataKey: 'textContent'
 }
 ];
 

@@ -100,15 +100,12 @@ test('all views enabled for network sessions', function(assert) {
   });
 });
 
-test('everything but text is disabled for logs', function(assert) {
-  assert.expect(3);
-  new DataHelper(this.get('redux')).setEventTypeToLog();
+test('just text view exists for log events', function(assert) {
+  assert.expect(1);
+  new DataHelper(this.get('redux')).setEventTypeToLog().setViewToText();
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    clickTrigger();
-    assert.ok($('.ember-power-select-option:contains("Packet View")').attr('aria-disabled') === 'true', 'Packet View is disabled');
-    assert.ok($('.ember-power-select-option:contains("File View")').attr('aria-disabled') === 'true', 'File View is disabled');
-    assert.ok($('.ember-power-select-option:contains("Text View")').attr('aria-disabled') !== 'true', 'Text View is enabled');
+    assert.equal(this.$().text().trim(), 'Text View');
   });
 });
 

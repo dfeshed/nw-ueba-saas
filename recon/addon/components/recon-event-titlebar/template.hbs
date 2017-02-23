@@ -1,12 +1,16 @@
 <hbox class='heading'>
-  {{#power-select
-    triggerClass='recon-view-selector'
-    onchange=(action 'findNewReconstructionView')
-    options=reconViewsConfig
-    placeholder=displayTitle
-    searchEnabled=false as |option|}}
-    {{option.label}}
-  {{/power-select}}
+  {{#unless isLog}}
+    {{#power-select
+      triggerClass='recon-view-selector'
+      onchange=(action 'findNewReconstructionView')
+      options=reconViewsConfig
+      placeholder=displayTitle
+      searchEnabled=false as |option|}}
+      {{option.label}}
+    {{/power-select}}
+  {{else}}
+    {{displayTitle}}
+  {{/unless}}
 </hbox>
 
 {{rsa-icon
