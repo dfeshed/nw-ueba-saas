@@ -19,8 +19,9 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     public static final String RESULTS_KEY_SUCCESS = "success";
     public static final String RESULTS_KEY_NAME = "user_tagging";
 
-    private final String SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME_PREFIX ="system_setup_user_tagging.last_execution_time";
-    private final String SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME_PREFIX ="system_setup_user_tagging.execution_start_time";
+    private final String SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME ="system_setup_user_tagging.last_execution_time";
+    private final String SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME ="system_setup_user_tagging.execution_start_time";
+    private final String SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY ="system_setup_user_tagging.monitor_file_daily";
 
     private final ApplicationConfigurationService applicationConfigurationService;
 
@@ -52,26 +53,27 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
         return taskResults;
     }
 
-    public void writeTaskResults(String taskTypeName, String resultsId, boolean result) {
+    public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag) {
         String resultsKey = createResultKey(resultsId);
         logger.debug("Inserting status to application configuration in key {}", resultsKey);
-        applicationConfigurationService.insertConfigItem(resultsKey, RESULTS_KEY_SUCCESS + RESULTS_DELIMITER + result);
+        UserTaggingResult userTaggingResult = new UserTaggingResult(result, deltaPerTag);
+        applicationConfigurationService.insertConfigItemAsObject(resultsKey, userTaggingResult);
     }
 
     public Long getLastExecutionTime() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME_PREFIX, Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME, Long.class);
     }
 
     public void setLastExecutionTime(Long lastExecutionTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME_PREFIX, lastExecutionTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME, lastExecutionTime);
     }
 
     public Long getExecutionStartTime() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME_PREFIX, Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME, Long.class);
     }
 
     public void setExecutionStartTime(Long executionStartTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME_PREFIX, executionStartTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME, executionStartTime);
     }
 
     @Override
@@ -81,5 +83,20 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     private String createResultKey(String resultsId) {
         return  String.format("%s%s%s", RESULTS_KEY_NAME, applicationConfigurationService.getKeyDelimiter(),resultsId);
+    }
+
+    @Override
+    public Boolean isMonitorFileDaily() {
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_MONITOR_FILE_DAILY, Boolean.class);
+    }
+
+    private static class UserTaggingResult{
+        private boolean success;
+        private Map<String, Long> usersAffected;
+
+        public UserTaggingResult(boolean success, Map<String, Long> usersAffected) {
+            this.success = success;
+            this.usersAffected = usersAffected;
+        }
     }
 }

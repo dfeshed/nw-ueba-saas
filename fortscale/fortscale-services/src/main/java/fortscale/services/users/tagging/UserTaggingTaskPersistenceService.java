@@ -8,7 +8,7 @@ public interface UserTaggingTaskPersistenceService {
 
     Map<String, String> getTaskResults(String resultsKey);
 
-    void writeTaskResults(String taskName, String resultsId, boolean result);
+    void writeTaskResults(String taskName, String resultsId, boolean result, Map<String, Long> deltaPerTag);
 
     Long getLastExecutionTime();
 
@@ -19,4 +19,6 @@ public interface UserTaggingTaskPersistenceService {
     void setExecutionStartTime(Long executionStartTime);
 
     String createResultKey(UUID resultsId);
+
+    Boolean isMonitorFileDaily();
 }
