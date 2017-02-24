@@ -1,0 +1,53 @@
+<box fit class="connector">
+  {{rsa-respond/risk-score score=item.indicator.alert.severity}}
+</box>
+<box fill class="content">
+
+  {{! Header includes: source, indicator type, timestamp, events count}}
+  <hbox nowrap justify="between" align="start" class="header">
+    <box fill class="source-and-type">
+      <p class="source">{{indicator/source item.indicator}}</p>
+      {{#if item.isCatalyst}}
+        <p class="catalyst">
+          <span>Incident Catalyst</span>
+        </p>
+      {{else}}
+        <p class="related">
+          <label>Related to Catalyst by:</label>
+          <span>
+            {{#each item.matched as |match|}}
+              {{#if match}}
+                <span class="entity">{{match}}</span>
+              {{/if}}
+            {{/each}}
+          </span>
+        </p>
+        {{#if item.indicator.partOfIncident}}
+          <p class="incident">
+            <label>From Incident:</label>
+            <span>{{item.indicator.incidentId}}</span>
+          </p>
+        {{/if}}
+      {{/if}}
+    </box>
+    <box fit class="time-and-num-events">
+      <p class="time">{{rsa-content-datetime timestamp=item.time displayAsTimeAgo=false displayDate=true displayTime=true}}</p>
+      <p class="num-events">{{item.numEvents}} {{if (eq item.numEvents 1) 'event' 'events'}}</p>
+    </box>
+  </hbox>
+
+  {{! Body includes: name, enrichments list}}
+  <box class="body">
+    <h3>{{item.name}}</h3>
+
+    {{#with enrichments as |ens|}}
+      <ul class="enrichment-list">
+        {{#each ens as |en|}}
+          <li class="enrichment">
+            {{enrichment/desc en.key score=en.score}}
+          </li>
+        {{/each}}
+      </ul>
+    {{/with}}
+  </box>
+</box>

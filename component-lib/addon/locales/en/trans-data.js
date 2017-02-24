@@ -355,6 +355,36 @@ export default {
         noResultsMessage: 'No matching Incidents were found'
       },
       footer: 'Showing {{count}} out of {{total}} incidents'
+    },
+    enrichment: {
+      uniformTimeIntervals: 'The time intervals between communication events are very uniform.',
+      newDomainToEnvironment: 'Domain is relatively new to the environment.',
+      rareDomainInEnvironment: 'The domain is rare in this environment.',
+      newDomainRegistration: 'Domain is relatively new based on the registration date: {{score}} days ago',
+      domainRegistrationExpires: 'The domain registration will expire relatively soon: {{score}} days',
+      rareUserAgent: 'A high percentage of hosts connecting to the domain are using a rare or no user agent.',
+      noReferers: 'A high percentage of hosts connecting to the domain are not utilizing referrers.',
+      highNumberServersAccessed: 'Abnormally high number of servers accessed today.',
+      highNumberNewServersAccessed: 'Accessed an abnormally high number of new servers today.',
+      highNumberNewDevicesAccessed: 'Accessed an abnormally high number of new devices this week.',
+      highNumberFailedLogins: 'Abnormally high number of servers with failed logins today.',
+      passTheHash: 'Potential "pass the hash" attack indicated by a new device followed by a new server.',
+      rareLogonType: 'Accessed using a Windows logon type they have rarely used in the past.',
+      authFromRareDevice: 'Authenticated from a rare device.',
+      authFromRareLocation: 'Accessed from a rare location.',
+      authFromRareServiceProvider: 'Accessed using a rare service provider.',
+      authFromNewServiceProvider: 'Accessed using a new service provider.',
+      highNumberVPNFailedLogins: 'High number of VPN login failures.'
+    },
+    sources: {
+      'C2-Packet': 'User Entity Behavioral Analytics',
+      'C2-Log': 'User Entity Behavioral Analytics',
+      'UBA-WinAuth': 'User Entity Behavioral Analytics',
+      UbaCisco: 'User Entity Behavioral Analytics',
+      ESA: 'Event Stream Analytics',
+      ModuleIOC: 'Endpoint',
+      ECAT: 'Endpoint',
+      generic: 'NetWitness'
     }
   },
   context: {

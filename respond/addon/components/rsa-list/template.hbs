@@ -1,0 +1,10 @@
+{{#each statefulWrappedItems as |wrappedItem|}}
+  {{component itemComponentClass
+    item=wrappedItem.data
+    isSelected=wrappedItem.isSelected
+    isInSelectMode=isInSelectMode
+    clickAction=singleSelectAction
+    shiftClickAction=toggleSelectAction
+    ctrlClickAction=toggleSelectAction
+  }}
+{{/each}}

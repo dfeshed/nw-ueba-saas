@@ -355,6 +355,36 @@ export default {
         noResultsMessage: 'ja_No matching Incidents were found'
       },
       footer: 'Showing {{count}} out of {{total}} incidents'
+    },
+    enrichment: {
+      uniformTimeIntervals: 'ja_The time intervals between communication events are very uniform.',
+      newDomainToEnvironment: 'ja_Domain is relatively new to the environment.',
+      rareDomainInEnvironment: 'ja_The domain is rare in this environment.',
+      newDomainRegistration: 'ja_Domain is relatively new based on the registration date: {{score}} days ago',
+      domainRegistrationExpires: 'ja_The domain registration will expire relatively soon: {{score}} days',
+      rareUserAgent: 'ja_A high percentage of hosts connecting to the domain are using a rare or no user agent.',
+      noReferers: 'ja_A high percentage of hosts connecting to the domain are not utilizing referrers.',
+      highNumberServersAccessed: 'ja_Abnormally high number of servers accessed today.',
+      highNumberNewServersAccessed: 'ja_Accessed an abnormally high number of new servers today.',
+      highNumberNewDevicesAccessed: 'ja_Accessed an abnormally high number of new devices this week.',
+      highNumberFailedLogins: 'ja_Abnormally high number of servers with failed logins today.',
+      passTheHash: 'ja_Potential "pass the hash" attack indicated by a new device followed by a new server.',
+      rareLogonType: 'ja_Accessed using a Windows logon type they have rarely used in the past.',
+      authFromRareDevice: 'ja_Authenticated from a rare device.',
+      authFromRareLocation: 'ja_Accessed from a rare location.',
+      authFromRareServiceProvider: 'ja_Accessed using a rare service provider.',
+      authFromNewServiceProvider: 'ja_Accessed using a new service provider.',
+      highNumberVPNFailedLogins: 'ja_High number of VPN login failures.'
+    },
+    sources: {
+      'C2-Packet': 'ja_User Entity Behavioral Analytics',
+      'C2-Log': 'ja_User Entity Behavioral Analytics',
+      'UBA-WinAuth': 'ja_User Entity Behavioral Analytics',
+      UbaCisco: 'ja_User Entity Behavioral Analytics',
+      ESA: 'ja_Event Stream Analytics',
+      ModuleIOC: 'ja_Endpoint',
+      ECAT: 'ja_Endpoint',
+      generic: 'ja_NetWitness'
     }
   },
   context: {
