@@ -21,17 +21,23 @@
     </centered>
 
   {{else}}
-    {{#rsa-data-table/body noResultsMessage=noResultsMessage as |item index column|}}
+    {{#rsa-data-table/body
+      noResultsMessage=(t 'respond.incidents.list.noResultsMessage')
+      as |item index column|}}
+
       {{#rsa-data-table/body-cell item=item column=column columnWidth=column.width}}
 
         {{#if (eq column.dataType "date")}}
           {{rsa-content-datetime timestamp=(get item column.field) displayTime=true}}
+
         {{else if (eq column.dataType "number")}}
           <div class="number-type">{{get item column.field}}</div>
+
         {{else if (and (eq column.dataType "checkbox") (contains item incidentsSelected)) }}
           <centered>
             {{rsa-icon name="check-2" class="rsa-incident-selected" size="large"}}
           </centered>
+
         {{else if (eq column.field "priority")}}
           {{rsa-content-label
             size="small"
@@ -39,8 +45,10 @@
             isInverted=true
             style=(priority-to-content-style (get item column.field))
           }}
+
         {{else if (eq column.field "assignee")}}
           {{get item "assignee.firstName"}} {{get item "assignee.lastName"}}
+
         {{else}}
           {{get item column.field}}
         {{/if}}

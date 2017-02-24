@@ -141,15 +141,13 @@ const incidents = reduxActions.handleActions({
     }
   })),
 
-  [ACTION_TYPES.UPDATE_SELECTED_CANNED_FILTER]: persist((state, { payload }) => {
-    return {
-      ...state,
-      incidentsFilters: {
-        ...state.incidentsFilters,
-        cannedFilter: payload
-      }
-    };
-  })
+  [ACTION_TYPES.UPDATE_SELECTED_CANNED_FILTER]: persist((state, { payload }) => ({
+    ...state,
+    incidentsFilters: {
+      ...state.incidentsFilters,
+      cannedFilter: payload
+    }
+  }))
 }, initialState);
 
 export default incidents;

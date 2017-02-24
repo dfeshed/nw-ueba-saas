@@ -322,8 +322,8 @@ export default {
         label: 'Sort by',
         alertsCountDescending: 'Alert Count (descending)',
         alertsCountAscending: 'Alert Count (ascending)',
-        assigneeDescending: 'Assginee (descending)',
-        assigneeAscending: 'Assginee (ascending)',
+        assigneeDescending: 'Assignee (descending)',
+        assigneeAscending: 'Assignee (ascending)',
         scoreAscending: 'Risk Score (ascending)',
         scoreDescending: 'Risk Score (descending)',
         createdAscending: 'Created (ascending)',
@@ -350,10 +350,7 @@ export default {
         sources: 'Source',
         noResultsMessage: 'No matching Incidents were found'
       },
-      footer: {
-        showing: 'Showing',
-        outOf: 'out of'
-      }
+      footer: 'Showing {{count}} out of {{total}} incidents'
     }
   },
   context: {

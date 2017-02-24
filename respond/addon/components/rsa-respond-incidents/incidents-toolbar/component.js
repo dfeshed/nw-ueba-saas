@@ -3,9 +3,14 @@ import connect from 'ember-redux/components/connect';
 import * as DataActions from 'respond/actions/data-creators';
 import { CANNED_FILTER_TYPES } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES } from 'respond/utils/sort-types';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 
-const { inject: { service }, Component, Logger, K } = Ember;
+const {
+  inject: { service },
+  Component,
+  Logger,
+  K
+} = Ember;
 
 const stateToComputed = ({ respond: { incidents } }) => {
   const { incidentsFilters, incidentsSort } = incidents;
@@ -74,10 +79,13 @@ const IncidentsToolbar = Component.extend({
     return CANNED_FILTER_TYPES.map(this._resolveOptionLabel());
   },
 
-  @computed('incidentsSelected')
-  selectionCount(incidentsSelected) {
-    return incidentsSelected.length;
-  },
+  /**
+   * The number of currently selected incidents (when in select-mode)
+   * @public
+   * @property selectionCount
+   */
+  @alias('incidentsSelected.length')
+  selectionCount: null,
 
   /**
    * The currently selected canned filter (object reference) that is looked up using the known, currently selected

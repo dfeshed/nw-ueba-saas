@@ -1,18 +1,13 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import computed, { gt } from 'ember-computed-decorators';
+import { gt, alias } from 'ember-computed-decorators';
 import * as DataActions from 'respond/actions/data-creators';
-import {
-  TOGGLE_INCIDENT_SELECTED,
-  TOGGLE_SELECT_MODE,
-  TOGGLE_THEME,
-  TOGGLE_FILTER_PANEL } from 'respond/actions/types';
+import * as UIStateActions from 'respond/actions/ui-state-creators';
 
 const {
   Component,
   inject: { service }
 } = Ember;
-
 
 /**
  * Container component that is responsible for orchestrating Respond Incidents layout and top-level components.
@@ -25,10 +20,8 @@ const Incidents = Component.extend({
   redux: service(),
   i18n: service(),
 
-  @computed('incidents')
-  incidentCount(incidents) {
-    return incidents.length;
-  },
+  @alias('incidents.length')
+  incidentsCount: null,
 
   /**
    * True if there is one or more incidents
@@ -36,12 +29,6 @@ const Incidents = Component.extend({
    * @public
    */
   @gt('incidentsTotal', 0) hasResults: false,
-
-  @computed('incidentsTotal', 'incidentCount', 'i18n')
-  showingIncidentsMessage(incidentsTotal, incidentsCount, i18n) {
-    return `${i18n.t('respond.incidents.footer.showing')} ${incidentsCount} ${i18n.t('respond.incidents.footer.outOf')}
-            ${incidentsTotal} ${i18n.t('respond.incidents.label')}`;
-  },
 
   loadIncidentsData: function() {
     this.get('redux').dispatch(DataActions.getIncidents());
@@ -62,33 +49,16 @@ const stateToComputed = ({ respond: { incidents } }) => {
 
 const dispatchToActions = (dispatch) => {
   return {
+    toggleFilterPanel: () => dispatch(UIStateActions.toggleFilterPanel()),
+    toggleIsInSelectMode: () => dispatch(UIStateActions.toggleIsInSelectMode()),
+    toggleTheme: () => dispatch(UIStateActions.toggleTheme()),
+
     select(incident) {
       if (this.get('isInSelectMode')) {
-        dispatch({
-          type: TOGGLE_INCIDENT_SELECTED,
-          payload: incident
-        });
+        dispatch(UIStateActions.toggleIncidentSelected(incident));
       } else {
         this.sendAction('viewIncidentDetails', incident.id);
       }
-    },
-
-    toggleIsInSelectMode() {
-      dispatch({
-        type: TOGGLE_SELECT_MODE
-      });
-    },
-
-    toggleFilterPanel() {
-      dispatch({
-        type: TOGGLE_FILTER_PANEL
-      });
-    },
-
-    toggleTheme() {
-      dispatch({
-        type: TOGGLE_THEME
-      });
     }
   };
 };

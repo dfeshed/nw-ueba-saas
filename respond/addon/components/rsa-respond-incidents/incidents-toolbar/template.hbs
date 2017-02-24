@@ -21,13 +21,14 @@
     <section class="rsa-respond-incidents-toolbar__views">
       <label class="rsa-power-select-label">{{t 'respond.incidents.sort.label'}}</label>
       {{#power-select
-              options=(readonly sortOptions)
-              selected=(readonly selectedSortOption)
-              onchange=(action "handleSortChange")
-              searchEnabled=true
-              searchField="label"
-              matchTriggerWidth=false
-      as |option|}}
+        options=(readonly sortOptions)
+        selected=(readonly selectedSortOption)
+        onchange=(action "handleSortChange")
+        searchEnabled=true
+        searchField="label"
+        matchTriggerWidth=false
+        as |option|}}
+
         {{option.label}}
       {{/power-select}}
     </section>

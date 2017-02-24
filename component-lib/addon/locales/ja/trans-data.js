@@ -322,8 +322,8 @@ export default {
         label: 'ja_Sort by',
         alertsCountDescending: 'ja_Alert Count (descending)',
         alertsCountAscending: 'ja_Alert Count (ascending)',
-        assigneeDescending: 'ja_Assginee (descending)',
-        assigneeAscending: 'ja_Assginee (ascending)',
+        assigneeDescending: 'ja_Assignee (descending)',
+        assigneeAscending: 'ja_Assignee (ascending)',
         scoreAscending: 'ja_Risk Score (ascending)',
         scoreDescending: 'ja_Risk Score (descending)',
         createdAscending: 'ja_Created (ascending)',
@@ -350,10 +350,7 @@ export default {
         sources: 'ja_Source',
         noResultsMessage: 'ja_No matching Incidents were found'
       },
-      footer: {
-        showing: 'ja_Showing',
-        outOf: 'ja_out of'
-      }
+      footer: 'Showing {{count}} out of {{total}} incidents'
     }
   },
   context: {

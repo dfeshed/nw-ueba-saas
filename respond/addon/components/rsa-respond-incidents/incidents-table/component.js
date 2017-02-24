@@ -1,9 +1,9 @@
 import Ember from 'ember';
 import columnConfig from './columns';
-import computed from 'ember-computed-decorators';
+
 const {
-    Component,
-    inject: { service }
+  Component,
+  inject: { service }
 } = Ember;
 
 /**
@@ -17,15 +17,22 @@ const IncidentsTable = Component.extend({
   useLazyRendering: true,
   i18n: service(),
 
+  /**
+   * Whether the user is in bulk-edit selection mode, which allows the user to select the rows in the incidents table
+   * @property isInSelectMode
+   * @public
+   */
   isInSelectMode: false,
 
+  /**
+   * The list of incident objects that are currently selected (when the user is in select mode
+   * @public
+   * @property incidentsSelected
+   */
   incidentsSelected: [],
 
-  @computed('i18n')
-  noResultsMessage(i18n) {
-    return i18n.t('respond.incidents.list.noResultsMessage');
-  },
-
+  // On-init handler to set the column configuration on the instance at creation time rather than on the prototype
+  // via .extend({})
   initializeColumns: function() {
     this.set('columns', columnConfig);
   }.on('init'),

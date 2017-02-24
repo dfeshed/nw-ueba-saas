@@ -75,14 +75,14 @@ const SORT_TYPES = [
   },
   {
     name: 'PRIORITY_DESC',
-    sortField: 'priority',
+    sortField: 'prioritySort',
     isDescending: true,
     label: 'Priority (descending)',
     labelKey: 'respond.incidents.sort.priorityDescending'
   },
   {
     name: 'PRIORITY_ASC',
-    sortField: 'priority',
+    sortField: 'prioritySort',
     isDescending: false,
     label: 'Priority (ascending)',
     labelKey: 'respond.incidents.sort.priorityAscending'

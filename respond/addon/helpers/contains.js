@@ -16,12 +16,12 @@ export function contains([value, collection]) {
   let doesContain = false;
 
   assert(
-      'You must provide both a value and a collection to the contains helper',
-      !isNone(value) && !isNone(collection)
+    'You must provide both a value and a collection to the contains helper',
+    !isNone(value) && !isNone(collection)
   );
   assert(
-      'The second parameter to "contains" must be an object or an array',
-      isEqual(collectionType, 'array') || isEqual(collectionType, 'object')
+    'The second parameter to "contains" must be an object or an array',
+    isEqual(collectionType, 'array') || isEqual(collectionType, 'object')
   );
 
   if (isEqual(collectionType, 'array') && collection.indexOf(value) > -1) {

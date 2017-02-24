@@ -21,16 +21,16 @@
     <box class="incidents-main">
       <box class="incidents-body">
         {{rsa-respond-incidents/incidents-table
-                isInSelectMode=isInSelectMode
-                incidentsSelected=incidentsSelected
-                incidents=(readonly incidents)
-                incidentsStatus=(readonly incidentsStatus)
-                viewIncidentDetails=(action "select")
+          isInSelectMode=isInSelectMode
+          incidentsSelected=incidentsSelected
+          incidents=(readonly incidents)
+          incidentsStatus=(readonly incidentsStatus)
+          viewIncidentDetails=(action "select")
         }}
       </box>
       <box class="incidents-footer">
         {{#if (eq incidentsStatus "completed") }}
-          <centered>{{showingIncidentsMessage}}</centered>
+          <centered>{{t 'respond.incidents.footer' count=incidentsCount total=incidentsTotal}}</centered>
         {{/if}}
       </box>
     </box>

@@ -11,11 +11,7 @@ module.exports = function(environment) {
       socketUrl,
       query: {
         subscriptionDestination: '/user/queue/incidents',
-        requestDestination: '/ws/response/incidents',
-      },
-      storyline: {
-        subscriptionDestination: '/user/queue/incident/storyline',
-        requestDestination: '/ws/response/incident/storyline'
+        requestDestination: '/ws/response/incidents'
       },
       notify: {
         subscriptionDestination: '/topic/incidents/owner/%@',
