@@ -1,15 +1,14 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import computed from 'ember-computed-decorators';
+import computed, { alias } from 'ember-computed-decorators';
 import { decodeText } from 'recon/actions/data-creators';
+import { isNotHttpData } from 'recon/selectors/meta-selectors';
 import layout from './template';
 
-const { Component, isArray } = Ember;
+const { Component } = Ember;
 
-const HTTP_DATA = 80;
-
-const stateToComputed = ({ recon: { data } }) => ({
-  meta: data.meta
+const stateToComputed = ({ recon }) => ({
+  isNotHttpData: isNotHttpData(recon)
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -20,12 +19,8 @@ const DecodeTextComponent = Component.extend({
   layout,
   isDecoded: true,
 
-  @computed('meta')
-  isDisabled: (meta) => {
-    meta = isArray(meta) ? meta : [];
-    const service = meta.find((d) => d[0] === 'service');
-    return (service && service[1] === HTTP_DATA) ? false : true;
-  },
+  @alias('isNotHttpData')
+  isDisabled: null,
 
   @computed('isDecoded')
   caption: (isDecoded) => isDecoded ? 'Compress' : 'Decompress',

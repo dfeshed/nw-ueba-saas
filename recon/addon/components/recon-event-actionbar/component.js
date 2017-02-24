@@ -1,27 +1,20 @@
 import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
-import computed from 'ember-computed-decorators';
-import { RECON_VIEW_TYPES_BY_NAME } from 'recon/utils/reconstruction-types';
+import { isTextView, isFileView, isPacketView } from 'recon/selectors/type-selectors';
 import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ recon: { data } }) => ({
-  view: data.currentReconView.code
+const stateToComputed = ({ recon, recon: { data } }) => ({
+  view: data.currentReconView.code,
+  isTextView: isTextView(recon),
+  isFileView: isFileView(recon),
+  isPacketView: isPacketView(recon)
 });
 
 const reconEventActionbar = Component.extend({
   layout,
-  classNames: ['recon-event-actionbar'],
-
-  @computed('view')
-  isTextView: (view) => view === RECON_VIEW_TYPES_BY_NAME.TEXT.code,
-
-  @computed('view')
-  isFileView: (view) => view === RECON_VIEW_TYPES_BY_NAME.FILE.code,
-
-  @computed('view')
-  isPacketView: (view) => view === RECON_VIEW_TYPES_BY_NAME.PACKET.code
+  classNames: ['recon-event-actionbar']
 });
 
 export default connect(stateToComputed)(reconEventActionbar);

@@ -2054,9 +2054,9 @@ ember-cli-htmlbars-inline-precompile@^0.3.3:
     ember-cli-htmlbars "^1.0.0"
     hash-for-dep "^1.0.2"
 
-ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.1.0:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.0.tgz#0d6bd1e8fa94d00edbe438f15dd59d1700a544d1"
+ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.3, ember-cli-htmlbars@^1.1.0, ember-cli-htmlbars@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.1.tgz#8776cf59796dac8f32e8625fc6d1ea45ffa55de1"
   dependencies:
     broccoli-persistent-filter "^1.0.3"
     ember-cli-version-checker "^1.0.2"
@@ -2064,9 +2064,9 @@ ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.1.0
     json-stable-stringify "^1.0.0"
     strip-bom "^2.0.0"
 
-ember-cli-htmlbars@^1.0.3, ember-cli-htmlbars@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.1.tgz#8776cf59796dac8f32e8625fc6d1ea45ffa55de1"
+ember-cli-htmlbars@^1.0.10:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.0.tgz#0d6bd1e8fa94d00edbe438f15dd59d1700a544d1"
   dependencies:
     broccoli-persistent-filter "^1.0.3"
     ember-cli-version-checker "^1.0.2"
@@ -2552,6 +2552,13 @@ ember-redux@2.0.0:
   resolved "https://registry.npmjs.org/ember-redux/-/ember-redux-2.0.0.tgz#8a370f75fd3af19596f47c934adb4ce3e4352ac5"
   dependencies:
     ember-cli-babel "^5.1.7"
+
+ember-reselect-shim@0.1.0:
+  version "0.1.0"
+  resolved "https://registry.npmjs.org/ember-reselect-shim/-/ember-reselect-shim-0.1.0.tgz#44e19e738709711c9067073d83ab696cefaadac1"
+  dependencies:
+    broccoli-merge-trees "^1.1.4"
+    ember-cli-babel "^5.1.9"
 
 ember-resolver@^2.0.3:
   version "2.1.0"
@@ -5877,6 +5884,10 @@ requireindex@~1.1.0:
 requires-port@1.x.x:
   version "1.0.0"
   resolved "https://registry.npmjs.org/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+
+reselect@2.5.4:
+  version "2.5.4"
+  resolved "https://registry.npmjs.org/reselect/-/reselect-2.5.4.tgz#b7d23fdf00b83fa7ad0279546f8dbbbd765c7047"
 
 resolve-dir@^0.1.0:
   version "0.1.1"

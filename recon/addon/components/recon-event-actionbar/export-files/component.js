@@ -2,17 +2,18 @@ import Ember from 'ember';
 import connect from 'ember-redux/components/connect';
 import computed, { filterBy } from 'ember-computed-decorators';
 import * as InteractionActions from 'recon/actions/interaction-creators';
-import ReconEventTypes from 'recon/mixins/recon-event-types';
 import ReconExport from 'recon/mixins/recon-export';
+import { isLogEvent } from 'recon/selectors/event-type-selectors';
 import layout from './template';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ recon: { data } }) => ({
+const stateToComputed = ({ recon, recon: { data } }) => ({
   files: data.files,
   status: data.fileExtractStatus,
   extractLink: data.fileExtractLink,
-  eventType: data.eventType
+  eventType: data.eventType,
+  isLogEvent: isLogEvent(recon)
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -20,7 +21,7 @@ const dispatchToActions = (dispatch) => ({
   didDownloadFiles: () => dispatch(InteractionActions.didDownloadFiles())
 });
 
-const ExportFilesComponent = Component.extend(ReconEventTypes, ReconExport, {
+const ExportFilesComponent = Component.extend(ReconExport, {
   layout,
 
   @computed('isDownloading', 'selectedFiles.length')

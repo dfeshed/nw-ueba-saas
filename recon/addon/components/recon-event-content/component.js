@@ -1,8 +1,7 @@
 import Ember from 'ember';
 import computed from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
-
-import { RECON_VIEW_TYPES_BY_NAME } from '../../utils/reconstruction-types';
+import { isPacketView } from 'recon/selectors/type-selectors';
 import layout from './template';
 
 const {
@@ -12,12 +11,13 @@ const {
   }
 } = Ember;
 
-const stateToComputed = ({ recon: { data } }) => ({
+const stateToComputed = ({ recon, recon: { data } }) => ({
   currentReconView: data.currentReconView,
   contentError: data.contentError,
   contentLoading: data.contentLoading,
   headerLoading: data.headerLoading,
-  eventId: data.eventId
+  eventId: data.eventId,
+  isPacketView: isPacketView(recon)
 });
 
 const EventContentComponent = Component.extend({
@@ -49,8 +49,8 @@ const EventContentComponent = Component.extend({
    *
    * @public
    */
-  @computed('currentReconView', 'contentLoading', 'headerLoading')
-  isLoading({ code }, contentLoading, headerLoading) {
+  @computed('isPacketView', 'contentLoading', 'headerLoading')
+  isLoading(isPacketView, contentLoading, headerLoading) {
     // if content is loading, its loading
     if (contentLoading) {
       return true;
@@ -58,7 +58,7 @@ const EventContentComponent = Component.extend({
 
     // if content is not loading, and its not the packet view,
     // we aren't waiting for anything anymore
-    if (code !== RECON_VIEW_TYPES_BY_NAME.PACKET.code) {
+    if (!isPacketView) {
       return false;
     }
 

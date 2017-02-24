@@ -3,22 +3,25 @@ import computed, { or } from 'ember-computed-decorators';
 import connect from 'ember-redux/components/connect';
 
 import layout from './template';
-import { RECON_VIEW_TYPES, RECON_VIEW_TYPES_BY_NAME } from '../../utils/reconstruction-types';
-import * as VisualActions from '../../actions/visual-creators';
-import * as DataActions from '../../actions/data-creators';
+import { RECON_VIEW_TYPES } from 'recon/utils/reconstruction-types';
+import * as VisualActions from 'recon/actions/visual-creators';
+import * as DataActions from 'recon/actions/data-creators';
+import { isLogEvent } from 'recon/selectors/event-type-selectors';
+import { lacksPackets } from 'recon/selectors/type-selectors';
 
 const { Component } = Ember;
 
-const stateToComputed = ({ recon: { visuals, data } }) => ({
+const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
   currentReconView: data.currentReconView,
-  eventType: data.eventType,
   index: data.index,
   isHeaderOpen: visuals.isHeaderOpen,
   isRequestShown: visuals.isRequestShown,
   isResponseShown: visuals.isResponseShown,
   isMetaShown: visuals.isMetaShown,
   isReconExpanded: visuals.isReconExpanded,
-  total: data.total
+  total: data.total,
+  isLogEvent: isLogEvent(recon),
+  lacksPackets: lacksPackets(recon)
 });
 
 const dispatchToActions = (dispatch) => ({
@@ -37,36 +40,16 @@ const TitlebarComponent = Component.extend({
   classNameBindings: [':recon-event-titlebar'],
 
   /**
-  * Determines if we should disable packet related icons
-  * @return {boolean}  Whether icons should be disabled
-  * @public
-  */
-  @computed('currentReconView')
-  disablePacketIcons({ code }) {
-    return code !== RECON_VIEW_TYPES_BY_NAME.PACKET.code &&
-    code !== RECON_VIEW_TYPES_BY_NAME.TEXT.code;
-  },
-
-  /**
    * Determines if we should disable the request/response toggles
-   * @param {boolean} disablePacketIcons Whether icons are already disabled or not
-   * @param {boolean} isLog Whether the event is a log or not
+   * @param {boolean} lacksPackets Whether or not the event does not have packets
+   *   If no packets, then on request/response
+   * @param {boolean} isLogEvent Whether the event is a log or not, log events
+   *   do not have request/response
    * @returns {boolean} Whether icons should be disabled
    * @public
    */
-  @or('disablePacketIcons', 'isLog')
+  @or('lacksPackets', 'isLogEvent')
   disableRequestResponseToggles: null,
-
-  /**
-   * Check if eventType is 'LOG'
-   * @param {object} eventType The event type object
-   * @returns {boolean} Log or not
-   * @public
-   */
-  @computed('eventType')
-  isLog(eventType) {
-    return eventType && eventType.name === 'LOG';
-  },
 
   /**
   * Processes RECON_VIEWS and setings selected flag for
