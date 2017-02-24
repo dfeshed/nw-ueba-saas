@@ -8,7 +8,7 @@ module.exports = {
   name: projectName,
   options: {
     nodeAssets: {
-      'clipboard': {
+      clipboard: {
         srcDir: 'dist',
         import: ['clipboard.js']
       },
@@ -17,12 +17,30 @@ module.exports = {
       },
       'pikaday-time': {
         import: ['pikaday.js', 'css/pikaday.css']
+      },
+      'redux-actions': {
+        import: [{
+          path: 'dist/redux-actions.js',
+          using: [{ transformation: 'amd', as: 'redux-actions' }]
+        }]
+      },
+      tether: {
+        srcDir: 'dist',
+        import: ['js/tether.js']
       }
     }
   },
 
   // See ../common.js for details on this function
   isDevelopingAddon: isDevelopingAddon(projectName),
+
+  // Needed because of this https://github.com/cibernox/ember-power-select/issues/145
+  contentFor: function(type, config) {
+    var emberPowerSelect = this.addons.filter(function(addon) {
+      return addon.name === 'ember-power-select';
+    })[0]
+    return emberPowerSelect.contentFor(type, config);
+  },
 
   /**
    * Imports assets (fonts, graphics, etc) into the consuming app.

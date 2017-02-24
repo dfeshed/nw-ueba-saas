@@ -2052,14 +2052,6 @@ ember-ajax@^2.4.1:
   dependencies:
     ember-cli-babel "^5.1.5"
 
-ember-basic-dropdown@^0.17.1:
-  version "0.17.1"
-  resolved "https://registry.npmjs.org/ember-basic-dropdown/-/ember-basic-dropdown-0.17.1.tgz#7bbbe06bad283ec5810dce613fc3ac4b3d634933"
-  dependencies:
-    ember-cli-babel "^5.1.10"
-    ember-cli-htmlbars "^1.1.0"
-    ember-wormhole "0.4.1"
-
 ember-cli-app-version@^2.0.0:
   version "2.0.1"
   resolved "https://registry.npmjs.org/ember-cli-app-version/-/ember-cli-app-version-2.0.1.tgz#64cbe581a9abaf98afd60e9cf60fdec460766c9b"
@@ -2128,14 +2120,6 @@ ember-cli-eslint@3.0.0:
     rsvp "^3.2.1"
     walk-sync "^0.3.0"
 
-ember-cli-flash@1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/ember-cli-flash/-/ember-cli-flash-1.4.0.tgz#0a831b406e98a0f62027e2706cbe581a1bf4f608"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-    ember-cli-htmlbars "^1.0.3"
-    ember-runtime-enumerable-includes-polyfill "^1.0.1"
-
 ember-cli-get-component-path-option@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/ember-cli-get-component-path-option/-/ember-cli-get-component-path-option-1.0.0.tgz#0d7b595559e2f9050abed804f1d8eff1b08bc771"
@@ -2153,9 +2137,9 @@ ember-cli-htmlbars-inline-precompile@^0.3.3:
     ember-cli-htmlbars "^1.0.0"
     hash-for-dep "^1.0.2"
 
-ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.0.3:
-  version "1.1.0"
-  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.0.tgz#0d6bd1e8fa94d00edbe438f15dd59d1700a544d1"
+ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.1.tgz#8776cf59796dac8f32e8625fc6d1ea45ffa55de1"
   dependencies:
     broccoli-persistent-filter "^1.0.3"
     ember-cli-version-checker "^1.0.2"
@@ -2163,9 +2147,9 @@ ember-cli-htmlbars@^1.0.0, ember-cli-htmlbars@^1.0.10, ember-cli-htmlbars@^1.0.3
     json-stable-stringify "^1.0.0"
     strip-bom "^2.0.0"
 
-ember-cli-htmlbars@^1.1.0, ember-cli-htmlbars@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.1.tgz#8776cf59796dac8f32e8625fc6d1ea45ffa55de1"
+ember-cli-htmlbars@^1.0.10:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/ember-cli-htmlbars/-/ember-cli-htmlbars-1.1.0.tgz#0d6bd1e8fa94d00edbe438f15dd59d1700a544d1"
   dependencies:
     broccoli-persistent-filter "^1.0.3"
     ember-cli-version-checker "^1.0.2"
@@ -2221,7 +2205,7 @@ ember-cli-moment-shim@3.0.0:
     moment "^2.13.0"
     moment-timezone "^0.5.0"
 
-ember-cli-node-assets@0.1.6, ember-cli-node-assets@^0.1.1:
+ember-cli-node-assets@0.1.6:
   version "0.1.6"
   resolved "https://registry.npmjs.org/ember-cli-node-assets/-/ember-cli-node-assets-0.1.6.tgz#6488a2949048c801ad6d9e33753c7bce32fc1146"
   dependencies:
@@ -2342,12 +2326,6 @@ ember-cli-version-checker@^1.0.2, ember-cli-version-checker@^1.1.4, ember-cli-ve
   dependencies:
     semver "^4.2.2"
 
-ember-cli-version-checker@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/ember-cli-version-checker/-/ember-cli-version-checker-1.2.0.tgz#caa286b77d1b485df5d2f62c67a6f19aa8b582c4"
-  dependencies:
-    semver "^5.3.0"
-
 ember-cli-windows-addon@1.3.1:
   version "1.3.1"
   resolved "https://registry.npmjs.org/ember-cli-windows-addon/-/ember-cli-windows-addon-1.3.1.tgz#efb91d421ee56734273329c06d0fe1452ca6a0da"
@@ -2464,20 +2442,6 @@ ember-code-snippet@1.8.0:
     glob "^4.0.4"
     highlight.js "^9.5.0"
 
-ember-computed-decorators@0.2.2:
-  version "0.2.2"
-  resolved "https://registry.npmjs.org/ember-computed-decorators/-/ember-computed-decorators-0.2.2.tgz#7c934a575c55ac3a18b6aaeb7cd2cbe149bc9b34"
-  dependencies:
-    ember-cli-babel "^5.1.5"
-
-ember-concurrency@^0.7.15:
-  version "0.7.15"
-  resolved "https://registry.npmjs.org/ember-concurrency/-/ember-concurrency-0.7.15.tgz#a35577e20220e9ddc93b0b801dbb9fd7554aca49"
-  dependencies:
-    ember-cli-babel "^5.1.5"
-    ember-getowner-polyfill "1.0.1"
-    ember-maybe-import-regenerator "^0.1.4"
-
 ember-d3@0.3.0:
   version "0.3.0"
   resolved "https://registry.npmjs.org/ember-d3/-/ember-d3-0.3.0.tgz#853f98110607a41fd8caff06652251d260403f5b"
@@ -2535,34 +2499,9 @@ ember-export-application-global@^1.0.5:
   dependencies:
     ember-cli-babel "^5.1.10"
 
-ember-get-config@0.1.11:
-  version "0.1.11"
-  resolved "https://registry.npmjs.org/ember-get-config/-/ember-get-config-0.1.11.tgz#d5c9833f83b5245bea9ad0782ece4d885ba7e21d"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-
-ember-getowner-polyfill@1.0.1:
-  version "1.0.1"
-  resolved "https://registry.npmjs.org/ember-getowner-polyfill/-/ember-getowner-polyfill-1.0.1.tgz#f60a31d25d642461dac4b4746184afaf7f5084ae"
-  dependencies:
-    ember-cli-babel "^5.1.5"
-
-ember-getowner-polyfill@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/ember-getowner-polyfill/-/ember-getowner-polyfill-1.1.1.tgz#6bb6603827dd2f8f33be2434570a86cc9e5273ff"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-    ember-cli-version-checker "^1.2.0"
-
 ember-inflector@1.9.6, ember-inflector@^1.9.4:
   version "1.9.6"
   resolved "https://registry.npmjs.org/ember-inflector/-/ember-inflector-1.9.6.tgz#574b093664ade6c66e84185d788ec99ed29741af"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-
-ember-invoke-action@^1.4.0:
-  version "1.4.0"
-  resolved "https://registry.npmjs.org/ember-invoke-action/-/ember-invoke-action-1.4.0.tgz#2899854bd755f9331ca86c902bf6d4dbf8bdfcb3"
   dependencies:
     ember-cli-babel "^5.1.6"
 
@@ -2570,50 +2509,17 @@ ember-load-initializers@^0.5.1:
   version "0.5.1"
   resolved "https://registry.npmjs.org/ember-load-initializers/-/ember-load-initializers-0.5.1.tgz#76e3db23c111dbdcd3ae6f687036bf0b56be0cbe"
 
-ember-maybe-import-regenerator@^0.1.4:
-  version "0.1.4"
-  resolved "https://registry.npmjs.org/ember-maybe-import-regenerator/-/ember-maybe-import-regenerator-0.1.4.tgz#bd3af07d91f797ea899852734b3e0ad8f510b03a"
-  dependencies:
-    broccoli-funnel "^1.0.1"
-    broccoli-merge-trees "^1.0.0"
-    ember-cli-babel "^5.1.6"
-    regenerator-runtime "^0.9.5"
-
 ember-moment@7.0.3:
   version "7.0.3"
   resolved "https://registry.npmjs.org/ember-moment/-/ember-moment-7.0.3.tgz#2b55d5cbc2e56ae0822554346ebc610d0d290cd2"
   dependencies:
     ember-cli-babel "^5.1.6"
 
-ember-new-computed@^1.0.2:
-  version "1.0.3"
-  resolved "https://registry.npmjs.org/ember-new-computed/-/ember-new-computed-1.0.3.tgz#592af8a778e0260ce7e812687c3aedface1622bf"
-  dependencies:
-    ember-cli-babel "^5.1.5"
-
-ember-power-select@1.0.0:
-  version "1.0.0"
-  resolved "https://registry.npmjs.org/ember-power-select/-/ember-power-select-1.0.0.tgz#f53cbcbcb00fd77c68b78d0719b635a9f172548d"
-  dependencies:
-    ember-basic-dropdown "^0.17.1"
-    ember-cli-babel "^5.1.10"
-    ember-cli-htmlbars "^1.1.1"
-    ember-concurrency "^0.7.15"
-    ember-text-measurer "^0.3.3"
-    ember-truth-helpers "^1.2.0"
-
 ember-qunit@^0.4.18:
   version "0.4.22"
   resolved "https://registry.npmjs.org/ember-qunit/-/ember-qunit-0.4.22.tgz#bc389798e1a4a933f542863025e2fb91d856da49"
   dependencies:
     ember-test-helpers "^0.5.32"
-
-ember-radio-button@1.1.1:
-  version "1.1.1"
-  resolved "https://registry.npmjs.org/ember-radio-button/-/ember-radio-button-1.1.1.tgz#e5ae8361ff032a4f1be91a810295e196eb2acf97"
-  dependencies:
-    ember-cli-babel "^5.1.7"
-    ember-cli-htmlbars "^1.0.10"
 
 ember-resolver@^2.0.3:
   version "2.1.0"
@@ -2622,20 +2528,13 @@ ember-resolver@^2.0.3:
     ember-cli-babel "^5.1.3"
     ember-cli-version-checker "^1.1.4"
 
-ember-route-action-helper@2.0.2:
-  version "2.0.2"
-  resolved "https://registry.npmjs.org/ember-route-action-helper/-/ember-route-action-helper-2.0.2.tgz#6ca3f6189062f657c0c7a447e0ba12362152790f"
-  dependencies:
-    ember-cli-babel "^5.1.7"
-    ember-getowner-polyfill "^1.1.1"
-
 ember-router-generator@^1.0.0:
   version "1.2.2"
   resolved "https://registry.npmjs.org/ember-router-generator/-/ember-router-generator-1.2.2.tgz#62dac1f63e873553e6d4c7e32da6589e577bcf63"
   dependencies:
     recast "^0.11.3"
 
-ember-runtime-enumerable-includes-polyfill@^1.0.0, ember-runtime-enumerable-includes-polyfill@^1.0.1:
+ember-runtime-enumerable-includes-polyfill@^1.0.0:
   version "1.0.2"
   resolved "https://registry.npmjs.org/ember-runtime-enumerable-includes-polyfill/-/ember-runtime-enumerable-includes-polyfill-1.0.2.tgz#90f557b09a38e75fda0355b3f95adc6d77ffb756"
   dependencies:
@@ -2651,15 +2550,6 @@ ember-sinon@0.6.0:
     ember-cli-babel "^5.1.7"
     sinon "^1.17.6"
 
-ember-sortable@1.9.1:
-  version "1.9.1"
-  resolved "https://registry.npmjs.org/ember-sortable/-/ember-sortable-1.9.1.tgz#e5053866a7547c1ce369700a43cb570f8ac84519"
-  dependencies:
-    ember-cli-babel "^5.1.7"
-    ember-cli-htmlbars "^1.0.10"
-    ember-invoke-action "^1.4.0"
-    ember-new-computed "^1.0.2"
-
 ember-string-ishtmlsafe-polyfill@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/ember-string-ishtmlsafe-polyfill/-/ember-string-ishtmlsafe-polyfill-1.0.1.tgz#b40a8c98663be5c16d16f31dc686102bb655abbd"
@@ -2671,26 +2561,6 @@ ember-test-helpers@^0.5.32:
   resolved "https://registry.npmjs.org/ember-test-helpers/-/ember-test-helpers-0.5.34.tgz#c8439108d1cba1d7d838c212208a5c4061471b83"
   dependencies:
     klassy "^0.1.3"
-
-ember-tether@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.npmjs.org/ember-tether/-/ember-tether-0.3.1.tgz#dd30195aeeed78aad44a211011f0647924708c8d"
-  dependencies:
-    ember-cli-babel "^5.0.0"
-    ember-cli-node-assets "^0.1.1"
-    tether "^1.3.2"
-
-ember-text-measurer@^0.3.3:
-  version "0.3.3"
-  resolved "https://registry.npmjs.org/ember-text-measurer/-/ember-text-measurer-0.3.3.tgz#0762809a71c2e1f2e60ab00c53c6eb1b63c9f963"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-
-ember-truth-helpers@1.2.0, ember-truth-helpers@^1.2.0:
-  version "1.2.0"
-  resolved "https://registry.npmjs.org/ember-truth-helpers/-/ember-truth-helpers-1.2.0.tgz#e63cffeaa8211882ae61a958816fded3790d065b"
-  dependencies:
-    ember-cli-babel "^5.1.5"
 
 ember-try-config@^2.0.1:
   version "2.1.0"
@@ -2720,20 +2590,6 @@ ember-try@^0.2.6:
     rsvp "^3.0.17"
     semver "^5.1.0"
     sync-exec "^0.6.2"
-
-ember-wormhole@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.npmjs.org/ember-wormhole/-/ember-wormhole-0.4.1.tgz#55fafaad20a650d21f6583a0e59c060a65338111"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-    ember-cli-htmlbars "^1.0.3"
-
-ember-wormhole@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.npmjs.org/ember-wormhole/-/ember-wormhole-0.5.1.tgz#f2a6fff13b1c037ffa83b2c9291d8b5978878e5b"
-  dependencies:
-    ember-cli-babel "^5.1.6"
-    ember-cli-htmlbars "^1.0.3"
 
 encodeurl@~1.0.1:
   version "1.0.1"
@@ -6030,7 +5886,7 @@ sass-lint@^1.3.1:
     path-is-absolute "^1.0.0"
     util "^0.10.3"
 
-"semver@2 >=2.2.1 || 3.x || 4 || 5", "semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", "semver@^2.3.0 || 3.x || 4 || 5", semver@^5.1.0, semver@^5.1.1, semver@^5.3.0, semver@~5.3.0:
+"semver@2 >=2.2.1 || 3.x || 4 || 5", "semver@2 || 3 || 4 || 5", "semver@2.x || 3.x || 4 || 5", "semver@^2.3.0 || 3.x || 4 || 5", semver@^5.1.0, semver@^5.1.1, semver@~5.3.0:
   version "5.3.0"
   resolved "https://registry.npmjs.org/semver/-/semver-5.3.0.tgz#9b2ce5d3de02d17c6012ad326aa6b4d0cf54f94f"
 
@@ -6542,10 +6398,6 @@ testem@^1.8.1:
     styled_string "0.0.1"
     tap-parser "^1.1.3"
     xmldom "^0.1.19"
-
-tether@^1.3.2:
-  version "1.3.7"
-  resolved "https://registry.npmjs.org/tether/-/tether-1.3.7.tgz#65578104741694f9672c808eae04a9adae7b0304"
 
 text-table@~0.2.0:
   version "0.2.0"
