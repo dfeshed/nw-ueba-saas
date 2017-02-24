@@ -17,6 +17,7 @@ module.exports = function(environment) {
     rootURL: '/',
     locationType: 'auto',
     dateFormatDefault: 'MM/dd/yyyy',
+    adminServerAvailable: false,
     timeFormatDefault: 'HR24',
     timezoneDefault: 'UTC',
     landingPageDefault: '/respond',
@@ -151,6 +152,8 @@ module.exports = function(environment) {
   if (environment === 'production') {
     // Tweak feature flags for production here
     // ENV.featureFlags['show-respond-route'] = false;
+    ENV.adminServerAvailable = true;
+
   }
 
   return ENV;

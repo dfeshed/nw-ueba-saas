@@ -4,7 +4,6 @@
  * @public
  */
 import Ember from 'ember';
-import { cancel, later } from 'ember-runloop';
 import Route from 'ember-route';
 import RSVP from 'rsvp';
 import service from 'ember-service/inject';
@@ -58,108 +57,94 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  model(params, transition) {
+  model() {
     localStorage.setItem('rsa-i18n-default-locale', config.i18n.defaultLocale);
     this.set('i18n.locale', config.i18n.defaultLocale);
 
-    const permissionsPromise = new RSVP.Promise((resolve, reject) => {
-      const forceResolve = later(() => {
-        resolve();
-      }, 3500);
-
-      this.request.promiseRequest({
-        method: 'getPermissions',
-        modelName: 'permissions',
-        query: {}
-      }).then((response) => {
-        this.set('accessControl.roles', response.data);
-        cancel(forceResolve);
-        resolve();
-      }).catch((error) => {
-        Logger.error('Error loading permissions', error);
-        reject(error);
-      });
-    });
-
-    const timezonesPromise = new RSVP.Promise((resolve, reject) => {
-      const forceResolve = later(() => {
-        resolve();
-      }, 3500);
-
-      this.request.promiseRequest({
-        method: 'getTimezones',
-        modelName: 'timezones',
-        query: {}
-      }).then((response) => {
-        this.set('timezone.options', response.data);
-        cancel(forceResolve);
-        resolve();
-      }).catch((error) => {
-        Logger.error('Error loading timezones', error);
-        reject(error);
-      });
-    });
-
-    const preferencesPromise = new RSVP.Promise((resolve, reject) => {
-      const forceResolve = later(() => {
-        resolve();
-      }, 3500);
-
-      // Fetch user preferences
-      this.request.promiseRequest({
-        method: 'getPreference',
-        modelName: 'preferences',
-        query: {}
-      }).then((response) => {
-        const {
-          userLocale,
-          dateFormat,
-          timeFormat,
-          timeZone,
-          defaultComponentUrl
-        } = response.data;
-
-        localStorage.setItem('rsa-i18n-default-locale', userLocale.replace(/_/, '-').toLowerCase());
-
-        this.setProperties({
-          'i18n.locale': userLocale.replace(/_/, '-').toLowerCase(),
-          'dateFormat.selected': dateFormat,
-          'timeFormat.selected': timeFormat,
-          'timezone.selected': timeZone,
-          'landingPage.selected': defaultComponentUrl
+    if (config.adminServerAvailable) {
+      const permissionsPromise = new RSVP.Promise((resolve, reject) => {
+        this.request.promiseRequest({
+          method: 'getPermissions',
+          modelName: 'permissions',
+          query: {}
+        }).then((response) => {
+          this.set('accessControl.roles', response.data);
+          resolve();
+        }).catch((error) => {
+          Logger.error('Error loading permissions', error);
+          reject(error);
         });
-
-        cancel(forceResolve);
-        resolve();
-      }).catch((error) => {
-        Logger.error('Error loading preferences', error);
-        reject(error);
       });
-    });
 
-    return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).then(() => {
-      const redirect = localStorage.getItem('rsa-post-auth-redirect');
-      const key = this.get('landingPage.selected.key');
+      const timezonesPromise = new RSVP.Promise((resolve, reject) => {
+        this.request.promiseRequest({
+          method: 'getTimezones',
+          modelName: 'timezones',
+          query: {}
+        }).then((response) => {
+          this.set('timezone.options', response.data);
+          resolve();
+        }).catch((error) => {
+          Logger.error('Error loading timezones', error);
+          reject(error);
+        });
+      });
 
-      if (redirect) {
-        localStorage.removeItem('rsa-post-auth-redirect');
+      const preferencesPromise = new RSVP.Promise((resolve, reject) => {
+        // Fetch user preferences
+        this.request.promiseRequest({
+          method: 'getPreference',
+          modelName: 'preferences',
+          query: {}
+        }).then((response) => {
+          const {
+            userLocale,
+            dateFormat,
+            timeFormat,
+            timeZone,
+            defaultComponentUrl
+          } = response.data;
+
+          localStorage.setItem('rsa-i18n-default-locale', userLocale.replace(/_/, '-').toLowerCase());
+
+          this.setProperties({
+            'i18n.locale': userLocale.replace(/_/, '-').toLowerCase(),
+            'dateFormat.selected': dateFormat,
+            'timeFormat.selected': timeFormat,
+            'timezone.selected': timeZone,
+            'landingPage.selected': defaultComponentUrl
+          });
+
+          resolve();
+        }).catch((error) => {
+          Logger.error('Error loading preferences', error);
+          reject(error);
+        });
+      });
+
+      return RSVP.all([preferencesPromise, timezonesPromise, permissionsPromise]).catch(() => {
+        Logger.error('There was an issue loading your profile. Please try again.');
+      });
+    }
+  },
+
+  afterModel(model, transition) {
+    const redirect = localStorage.getItem('rsa-post-auth-redirect');
+    const key = this.get('landingPage.selected.key');
+
+    if (redirect && redirect != transition.targetName) {
+      this.transitionTo(redirect);
+      localStorage.removeItem('rsa-post-auth-redirect');
+    } else if (transition.targetName === 'protected.index') {
+      switch (key) {
+        case '/investigate':
+          this.transitionTo(key);
+          break;
+        case '/respond':
+          this.transitionTo(key);
+          break;
       }
-
-      if (redirect && redirect != transition.targetName) {
-        this.transitionTo(redirect);
-      } else if (transition.targetName === 'protected.index') {
-        switch (key) {
-          case '/investigate':
-            this.transitionTo(key);
-            break;
-          case '/respond':
-            this.transitionTo(key);
-            break;
-          default:
-            window.location.href = key;
-        }
-      }
-    });
+    }
   },
 
   actions: {

@@ -1,14 +1,9 @@
-import Ember from 'ember';
 import { A } from 'ember-array/utils';
 import computed, { alias } from 'ember-computed';
 import { isNone } from 'ember-utils';
 import Service from 'ember-service';
 import service from 'ember-service/inject';
 import config from 'ember-get-config';
-
-const {
-  Logger
-} = Ember;
 
 export default Service.extend({
 
@@ -80,7 +75,10 @@ export default Service.extend({
         }
       }
     }).catch(() => {
-      Logger.error('Error updating preferences');
+      this.get('flashMessages').error(this.get('i18n').t('userPreferences.landingPageError'), {
+        iconName: 'delete-1',
+        iconStyle: 'filled'
+      });
     });
   },
 

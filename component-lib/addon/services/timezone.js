@@ -7,8 +7,7 @@ const {
   inject: {
     service
   },
-  isNone,
-  Logger
+  isNone
 } = Ember;
 
 export default Service.extend({
@@ -27,7 +26,10 @@ export default Service.extend({
         }
       }
     }).catch(() => {
-      Logger.error('Error updating preferences');
+      this.get('flashMessages').error(this.get('i18n').t('userPreferences.timezoneError'), {
+        iconName: 'delete-1',
+        iconStyle: 'filled'
+      });
     });
   },
 

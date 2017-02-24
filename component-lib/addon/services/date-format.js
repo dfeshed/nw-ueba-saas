@@ -7,8 +7,7 @@ const {
     service
   },
   isNone,
-  computed,
-  Logger
+  computed
 } = Ember;
 
 export default Service.extend({
@@ -16,6 +15,8 @@ export default Service.extend({
   request: service(),
 
   moment: service(),
+
+  i18n: service(),
 
   options: [{
     key: 'MM/dd/yyyy',
@@ -41,7 +42,10 @@ export default Service.extend({
         }
       }
     }).catch(() => {
-      Logger.error('Error updating preferences');
+      this.get('flashMessages').error(this.get('i18n').t('userPreferences.dateFormatError'), {
+        iconName: 'delete-1',
+        iconStyle: 'filled'
+      });
     });
   },
 

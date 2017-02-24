@@ -47,6 +47,10 @@ export default {
     email: 'ja_Email',
     language: 'ja_Language',
     timeZone: 'ja_Time Zone',
+    dateFormatError: 'ja_There was an error attempting to save your Date Format selection. Please try again. If this issue persists, please contact your system admin.',
+    landingPageError: 'ja_There was an error attempting to save your Default Landing Page selection. Please try again. If this issue persists, please contact your system admin.',
+    timeFormatError: 'ja_There was an error attempting to save your Time Format selection. Please try again. If this issue persists, please contact your system admin.',
+    timezoneError: 'ja_There was an error attempting to save your Time Zone selection. Please try again. If this issue persists, please contact your system admin.',
     dateFormat: {
       label: 'ja_Date Format',
       dayFirst: 'ja_DD/MM/YYYY',
