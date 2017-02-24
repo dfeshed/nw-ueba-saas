@@ -155,6 +155,8 @@ export default Route.extend(AuthenticatedRouteMixin, {
           case '/respond':
             this.transitionTo(key);
             break;
+          default:
+            window.location.href = key;
         }
       }
     });
