@@ -320,8 +320,8 @@ export default {
       },
       sort: {
         label: 'ja_Sort by',
-        alertsCountDescending: 'ja_Alert Count (descending)',
-        alertsCountAscending: 'ja_Alert Count (ascending)',
+        alertsCountDescending: 'ja_Alerts (descending)',
+        alertsCountAscending: 'ja_Alerts (ascending)',
         assigneeDescending: 'ja_Assignee (descending)',
         assigneeAscending: 'ja_Assignee (ascending)',
         scoreAscending: 'ja_Risk Score (ascending)',
