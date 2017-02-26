@@ -129,7 +129,11 @@ public class UserTaggingJob extends FortscaleJob {
 				}else {
 					delta = usersAfter;
 				}
-				changedUsers.put(tag, delta);
+
+				// If changed
+				if (delta != 0) {
+					changedUsers.put(tag, delta);
+				}
 			}
 		}
 		return changedUsers;
