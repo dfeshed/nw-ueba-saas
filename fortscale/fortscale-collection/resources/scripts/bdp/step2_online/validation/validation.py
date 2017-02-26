@@ -172,10 +172,12 @@ def block_until_everything_is_validated(logger,
 
 def _validate_everything(logger, host, start_time_epoch, end_time_epoch, timeout, polling_interval, data_sources):
     logger.info('validating ' + time_utils.interval_to_str(start_time_epoch, end_time_epoch) + '...')
-    is_valid = validate_all_buckets_synced(logger=logger,
-                                           host=host,
-                                           start_time_epoch=None,
-                                           end_time_epoch=end_time_epoch)
+    end_time_list = mongo_stats.get_unsynced_buckets_distinct_end_time(host)
+    if len(end_time_list)<=10:
+        logger.info('currently the unsynced buckets distinct end times are: ' + str(end_time_list))
+    else:
+        logger.info('currently the amount of unsynced buckets distinct end times is: ' + str(len(end_time_list)))
+    is_valid = end_time_list != None and len(end_time_list)<=2
     if is_valid:
         if not validate_no_missing_events(logger=logger,
                                           host=host,

@@ -319,7 +319,7 @@ public class AggregatedFeatureEventsMongoStore implements ScoredEventsCounterRea
 
 		if(!queryResult.isEmpty())
 		{
-			long maxStartDate = queryResult.stream().max(Comparator.comparingLong(AggrEvent::getStartTimeUnix)).get().getStartTimeUnix();
+			long maxStartDate = queryResult.get(0).getStartTimeUnix();
 			return Instant.ofEpochSecond(maxStartDate);
 		}
 		return null;
