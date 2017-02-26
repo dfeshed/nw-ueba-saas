@@ -96,11 +96,10 @@ public class ApiSystemSetupTagsController extends BaseController {
         for (Tag tag: tags) {
             tag.setRules(sanitizeRules(tag.getRules()));
             if (!tagService.updateTag(tag)) {
-                return new ResponseEntity<>(new ResponseEntityMessage("failed to update tag"), HttpStatus.INTERNAL_SERVER_ERROR);
+                return new ResponseEntity<>(new ResponseEntityMessage("failed to update tag "+tag.getDisplayName()), HttpStatus.INTERNAL_SERVER_ERROR);
                 //if update was successful and tag is no longer active - remove that tag from all users
             } else if (tag.getDeleted()) {
-                String tagName = tag.getName();
-                userTagService.removeTagFromAllUsers(tagName);
+                return new ResponseEntity<>(new ResponseEntityMessage("Can't delete deleted tag "+tag.getDisplayName()), HttpStatus.BAD_REQUEST);
             }
         }
         return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.ACCEPTED);
