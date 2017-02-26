@@ -357,10 +357,10 @@
           "normalized_username_dlpmail_hourly.number_of_alerted_event_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.number_of_classified_event_dlpmail_hourly",
           "normalized_username_dlpmail_hourly.number_of_outbound_event_dlpmail_hourly",
-          "normalized_username_dlpmail_daily.number_of_email_attachment_event_dlpmail_hourly",
-          "normalized_username_dlpmail_daily.number_of_distinct_email_recipient_dlpmail_hourly",
-          "normalized_username_dlpmail_daily.number_of_sent_mail_event_dlpmail_hourly",
-          "normalized_username_dlpmail_daily.sum_of_file_size_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_email_attachment_event_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_distinct_email_recipient_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.number_of_sent_mail_event_dlpmail_hourly",
+          "normalized_username_dlpmail_hourly.sum_of_file_size_dlpmail_hourly",
 
 
           "normalized_username_kerberos_logins_hourly.sum_of_highest_scores_over_normalized_src_machine_kerberos_logins_hourly",
@@ -672,7 +672,7 @@
           "normalized_username_vpn_session_hourly.sum_of_scores_rate_vpn_session_hourly",
           "normalized_username_prnlog_hourly.number_of_total_pages_prnlog_hourly",
           "normalized_username_prnlog_hourly.sum_of_file_size_prnlog_hourly",
-          "normalized_username_dlpmail_daily.sum_of_file_size_dlpmail_hourly"
+          "normalized_username_dlpmail_hourly.sum_of_file_size_dlpmail_hourly"
         ]
       },
       "entityEventFunction": {
