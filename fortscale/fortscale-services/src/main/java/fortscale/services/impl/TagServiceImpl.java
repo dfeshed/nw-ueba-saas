@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 
 @Service("tagService")
@@ -25,6 +26,13 @@ public class TagServiceImpl implements TagService {
 
 	@Autowired
 	private UserService userService;
+
+
+	@PostConstruct
+	public void afterInit(){
+		this.verifyDeletedTagsNotExistsOnAnyUser();
+	}
+
 
 	@Override
 	public List<Tag> getAllTags(boolean includeDeleted) {
@@ -99,5 +107,14 @@ public class TagServiceImpl implements TagService {
 		userService.removeTagFromAllUsers(tagName);
 		return  true;
 	}
+
+	private void verifyDeletedTagsNotExistsOnAnyUser(){
+		for (Tag t : tagRepository.findAll()){
+			if (t.getDeleted()){
+				userService.removeTagFromAllUsers(t.getName());
+			}
+		}
+	}
+
 
 }
