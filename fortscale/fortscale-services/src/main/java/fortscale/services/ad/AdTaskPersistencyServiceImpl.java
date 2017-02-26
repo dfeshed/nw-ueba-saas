@@ -8,6 +8,7 @@ import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -20,10 +21,16 @@ public class AdTaskPersistencyServiceImpl extends BaseTaskPersistencyService imp
 
     private final String SYSTEM_SETUP_AD_LAST_EXECUTION_TIME_PREFIX ="system_setup_ad.last_execution_time";
     private final String SYSTEM_SETUP_AD_EXECUTION_START_TIME_PREFIX ="system_setup_ad.execution_start_time";
+    private final ApplicationConfigurationService applicationConfigurationService;
 
     @Autowired
     public AdTaskPersistencyServiceImpl(ApplicationConfigurationService applicationConfigurationService) {
-        super(applicationConfigurationService);
+        this.applicationConfigurationService = applicationConfigurationService;
+    }
+
+    @Override
+    public Map<String, String> getTaskResults(String resultsKey) {
+        return BaseTaskPersistencyService.getTaskResults(resultsKey, applicationConfigurationService);
     }
 
     public void writeTaskResults(String dataSource, String taskTypeName, String resultsId, boolean result) {

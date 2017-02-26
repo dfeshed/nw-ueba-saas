@@ -2,7 +2,6 @@ package fortscale.services;
 
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.utils.logging.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,19 +9,12 @@ import java.util.Map;
 /**
  * Created by alexp on 26/02/2017.
  */
-public abstract class BaseTaskPersistencyService {
+public class BaseTaskPersistencyService {
     private static final Logger logger = Logger.getLogger(BaseTaskPersistencyService.class);
     public static final String RESULTS_DELIMITER = "=";
     public static final String RESULTS_KEY_SUCCESS = "success";
 
-    protected final ApplicationConfigurationService applicationConfigurationService;
-
-    @Autowired
-    public BaseTaskPersistencyService(ApplicationConfigurationService applicationConfigurationService) {
-        this.applicationConfigurationService = applicationConfigurationService;
-    }
-
-    public Map<String, String> getTaskResults(String resultsKey) {
+    public static Map<String, String> getTaskResults(String resultsKey, ApplicationConfigurationService applicationConfigurationService) {
         Map<String, String> taskResults = new HashMap<>();
         logger.info("getting result for key {}", resultsKey);
         ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);

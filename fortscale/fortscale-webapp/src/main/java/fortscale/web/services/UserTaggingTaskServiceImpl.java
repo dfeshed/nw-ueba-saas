@@ -16,7 +16,7 @@ import java.util.concurrent.TimeUnit;
  * Created by alexp on 16/02/2017.
  */
 @Service
-public class UserTaggingTaskServiceImpl implements UserTaggingTaskService {
+public class UserTaggingTaskServiceImpl implements TaskService {
     private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
     private ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;

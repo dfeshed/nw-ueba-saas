@@ -14,7 +14,7 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.rest.Utils.TaskAction;
-import fortscale.web.services.UserTaggingTaskService;
+import fortscale.web.services.TaskService;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     private final TagService tagService;
     private final UserTagService userTagService;
     private final ActiveDirectoryService activeDirectoryService;
-    private UserTaggingTaskService userTaggingTaskService;
+    private TaskService userTaggingTaskService;
     private SimpMessagingTemplate simpMessagingTemplate;
     private Long lastUserTaggingExecutionStartTime;
     private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
@@ -54,7 +54,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @Autowired
     public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, ActiveDirectoryService activeDirectoryService,
-                                        UserTaggingTaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
+                                        TaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
                                         UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.tagService = tagService;
         this.userTagService = userTagService;
