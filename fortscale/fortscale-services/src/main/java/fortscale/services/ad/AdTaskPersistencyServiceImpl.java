@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Service
-public class AdTaskPersistencyServiceImpl extends BaseTaskPersistencyService implements AdTaskPersistencyService {
+public class AdTaskPersistencyServiceImpl implements AdTaskPersistencyService {
 
     private static final Logger logger = Logger.getLogger(AdTaskPersistencyServiceImpl.class);
 
@@ -36,7 +36,7 @@ public class AdTaskPersistencyServiceImpl extends BaseTaskPersistencyService imp
     public void writeTaskResults(String dataSource, String taskTypeName, String resultsId, boolean result) {
         String resultsKey = createResultKey(dataSource, taskTypeName, resultsId);
         logger.debug("Inserting status to application configuration in key {}", resultsKey);
-        applicationConfigurationService.insertConfigItem(resultsKey, RESULTS_KEY_SUCCESS + RESULTS_DELIMITER + result);
+        applicationConfigurationService.insertConfigItem(resultsKey, BaseTaskPersistencyService.RESULTS_KEY_SUCCESS + BaseTaskPersistencyService.RESULTS_DELIMITER + result);
     }
 
     public Long getLastExecutionTime(AdTaskType adTaskType, AdObject.AdObjectType dataSource) {
