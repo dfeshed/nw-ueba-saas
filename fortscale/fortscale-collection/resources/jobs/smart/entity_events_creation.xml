@@ -22,6 +22,7 @@
 					<key>retries</key>
 					<value>10</value>
 				</entry>
+
 				<entry>
 					<key>fortscale.model.build.control.input.topic</key>
 					<value>${fortscale.model.build.entityEvents.control.input.topic}</value>

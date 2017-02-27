@@ -58,6 +58,21 @@
     "wame-event-scorer#date_time_unix.normalized_username.wame.scorer": "date_time_score",
     "wame-event-scorer#action_type.normalized_username.wame.scorer": "action_type_score",
 
+
+    "dlpmail-event-scorer": "eventscore",
+    "dlpmail-event-scorer#date_time_unix.normalized_username.dlpmail.scorer": "date_time_score",
+    "dlpmail-event-scorer#normalizedSrcMachineScorer": "normalized_src_machine_score",
+    "dlpmail-event-scorer#application.normalized_username.dlpmail.scorer": "application_score",
+    "dlpmail-event-scorer#email_sender.normalized_username.dlpmail.scorer": "email_sender_score",
+    "dlpmail-event-scorer#DestFileSizeScorer": "detail_file_size_score",
+    "dlpmail-event-scorer#hasAlertScorer": "has_alert_event_score",
+    "dlpmail-event-scorer#hasSrcClassScorer": "has_src_classification_score",
+    "dlpmail-event-scorer#isOutboundScorer": "outbound_score",
+    "dlpmail-event-scorer#email_recipient_domain.normalized_username.dlpmail.scorer": "email_recipient_domain_score",
+
+
+
+
     "distinct_number_of_countries.normalized_username.crmsf.daily.scorer": "${fortscale.smart.f.field.score}",
     "number_of_failed.normalized_username.crmsf.hourly.scorer": "${fortscale.smart.f.field.score}",
     "number_of_successful.normalized_username.crmsf.hourly.scorer": "${fortscale.smart.f.field.score}",
@@ -131,6 +146,30 @@
 
     "number_of_events.normalized_username.wame.hourly.scorer": "${fortscale.smart.f.field.score}",
     "number_of_events.normalized_username.wame.daily.scorer": "${fortscale.smart.f.field.score}",
+
+    "number_of_distinct_normalized_src_machine_dlpmail_hourly_scorer": "${fortscale.smart.f.field.score}",
+    "number_of_application_dlpmail_hourly_scorer": "${fortscale.smart.f.field.score}",
+    "number_of_alerted_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_classified_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_outbound_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_email_attachment_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_distinct_email_recipient_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_sent_mail_event_dlpmail_hourly_scorer":"${fortscale.smart.f.field.score}",
+    "sum_of_file_size.normalized_username.dlpmail.hourly.scorer":"${fortscale.smart.f.field.score}",
+
+
+    "number_of_distinct_normalized_src_machine_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_distinct_application_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_alerted_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_classified_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_outbound_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_email_attachment_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_distinct_email_recipient_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "number_of_sent_mail_event_dlpmail_daily_scorer":"${fortscale.smart.f.field.score}",
+    "sum_of_file_size.normalized_username.dlpmail.daily.scorer":"${fortscale.smart.f.field.score}",
+
+
+
 
     "entity_event.normalized_username.daily.mapper": "${fortscale.smart.f.field.score}",
     "entity_event.normalized_username.daily.mapper#entity_event.normalized_username.daily.scorer": "unreduced_score",
