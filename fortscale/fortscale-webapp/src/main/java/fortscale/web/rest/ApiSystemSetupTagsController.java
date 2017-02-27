@@ -147,7 +147,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    @RequestMapping("/run_user_tagging" )
+    @RequestMapping("/run_tagging_task" )
     public ResponseEntity<ResponseEntityMessage> runUserTagging() {
         try {
             logger.debug("Executing user tagging");
@@ -170,7 +170,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
 
-    @RequestMapping("/stop_user_tagging" )
+    @RequestMapping("/stop_tagging_task" )
     public ResponseEntity<ResponseEntityMessage> cancelUserTaggingExecution() {
         try {
             logger.debug("Cancelling user tagging execution");
@@ -193,7 +193,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/user_tagging_status")
+    @RequestMapping(method = RequestMethod.GET,value = "/tagging_task_status")
     @LogException
     public UserTaggingExecutionStatus getJobStatus() {
         if (isRunning()){
