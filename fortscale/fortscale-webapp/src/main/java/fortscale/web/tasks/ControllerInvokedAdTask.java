@@ -17,9 +17,7 @@ import java.util.*;
 
 import static fortscale.domain.ad.AdTaskType.*;
 
-
-
-public class ControllerInvokedAdTask implements Runnable {
+public class ControllerInvokedAdTask extends  BasicControllerInvokedTask implements Runnable {
 
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
@@ -38,7 +36,10 @@ public class ControllerInvokedAdTask implements Runnable {
     protected AdTaskType currentAdTaskType;
     protected List<ControllerInvokedAdTask> followingTasks = new ArrayList<>();
 
-    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService, SimpMessagingTemplate simpMessagingTemplate, String responseDestination, ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
+    public ControllerInvokedAdTask(ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService,
+                                   SimpMessagingTemplate simpMessagingTemplate, String responseDestination,
+                                   ActiveDirectoryService activeDirectoryService,
+                                   AdTaskPersistencyService adTaskPersistencyService, AdObjectType dataSource) {
         this.executorService = executorService;
         this.simpMessagingTemplate = simpMessagingTemplate;
         this.responseDestination = responseDestination;
@@ -107,26 +108,6 @@ public class ControllerInvokedAdTask implements Runnable {
         }
     }
 
-    private void notifyTaskStart() {
-        if (!executorService.markTaskActive(this)) {
-            logger.warn("Tried to add task {} but the task already exists.", this);
-        }
-        else {
-            logger.debug("added running task {} to active tasks", this);
-        }
-    }
-
-
-    private void notifyTaskDone() {
-        if (!executorService.markTaskInactive(this)) {
-            logger.warn("Tried to remove task {} but task doesn't exist.", this);
-        }
-        else {
-            logger.debug("Removed running task {} from active tasks", this);
-        }
-    }
-
-
     /**
      * Runs a new process with the given arguments. This method is BLOCKING.
      * @param adTaskType the type of task to run (fetch/etl)
@@ -144,7 +125,7 @@ public class ControllerInvokedAdTask implements Runnable {
         /* run task */
         final String jobName = dataSourceName + "_" + adTaskType.toString();
         logger.info("Running AD task {} with ID {}", jobName, resultsId);
-        if (!runCollectionJob(jobName, resultsId)) {
+        if (!runCollectionJob(jobName, resultsId, AD_JOB_GROUP)) {
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
@@ -161,7 +142,8 @@ public class ControllerInvokedAdTask implements Runnable {
         /* process results and understand if task finished successfully */
         final String success = taskResults.get(AdTaskPersistencyServiceImpl.RESULTS_KEY_SUCCESS);
         if (success == null) {
-            logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed", adTaskType, dataSourceName);
+            logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed",
+                    adTaskType, dataSourceName);
             notifyTaskDone();
             return new AdTaskResponse(adTaskType, false, -1, dataSource, -1L);
         }
@@ -173,57 +155,6 @@ public class ControllerInvokedAdTask implements Runnable {
         notifyTaskDone();
         final long lastExecutionTime = System.currentTimeMillis();
         return new AdTaskResponse(adTaskType, Boolean.valueOf(success), objectsCount, dataSource, lastExecutionTime);
-    }
-
-    /**
-     * This method creates a new PROCESS and runs the given collection job
-     * @param jobName the collection job name for the task (example User_Fetch AD)
-     * @param resultsId the random id that will be given to this job execution results in application configuration
-     * @return true if the execution finished successfully, false otherwise
-     */
-    private boolean runCollectionJob(String jobName, UUID resultsId) {
-        Process process;
-        try {
-            final String scriptPath = ApiActiveDirectoryController.COLLECTION_TARGET_DIR + "/resources/scripts/runAdTask.sh"; // this scripts runs the fetch/etl
-            final ArrayList<String> arguments = new ArrayList<>(Arrays.asList("/usr/bin/sudo", "-u", "cloudera", scriptPath, jobName, AD_JOB_GROUP, "resultsId="+resultsId));
-            final ProcessBuilder processBuilder = new ProcessBuilder(arguments).redirectErrorStream(true);
-            processBuilder.directory(new File(ApiActiveDirectoryController.COLLECTION_TARGET_DIR));
-            processBuilder.redirectErrorStream(true);
-            logger.debug("Starting process with arguments {}", arguments);
-            process = processBuilder.start();
-        } catch (IOException e) {
-            logger.error("Execution of task {} has failed.", jobName, e);
-            return false;
-        }
-        int status;
-        try {
-            status = process.waitFor();
-        } catch (InterruptedException e) {
-            if (process.isAlive()) {
-                logger.error("Killing the process forcibly");
-                process.destroyForcibly();
-            }
-            logger.error("Execution of task {} has failed. Task has been interrupted", jobName, e);
-            return false;
-        }
-
-        if (status != 0) {
-            try {
-                String processOutput = IOUtils.toString(process.getInputStream());
-                final int length = processOutput.length();
-                if (length > 1000) {
-                    processOutput = processOutput.substring(length - 1000, length); // getting last 1000 chars to not overload the log file
-                }
-                logger.error("Error stream for job {} = \n{}", jobName, processOutput);
-            } catch (IOException e) {
-                logger.warn("Failed to get error stream from process for job {}", jobName);
-            }
-            logger.error("Execution of task {} has finished with status {}. Execution failed", jobName, status);
-            return false;
-        }
-
-        logger.debug("Execution of task {} has finished with status {}", jobName, status);
-        return true;
     }
 
     @Override
@@ -247,10 +178,15 @@ public class ControllerInvokedAdTask implements Runnable {
                 '}';
     }
 
+    @Override
+    protected ActivityMonitoringExecutorService getActivityMonitoringExecutorService() {
+        return executorService;
+    }
 
 
     /**
-     * This class represents an ADTask response to the controller that executed it containing various information the controller needs to return the UI
+     * This class represents an ADTask response to the controller that executed it containing various information the
+     * controller needs to return the UI
      */
     public static class AdTaskResponse {
         private AdTaskType taskType;
@@ -259,7 +195,8 @@ public class ControllerInvokedAdTask implements Runnable {
         private AdObjectType dataSource;
         private Long lastExecutionTime;
 
-        public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, AdObjectType dataSource, Long lastExecutionTime) {
+        public AdTaskResponse(AdTaskType taskType, boolean success, long objectsCount, AdObjectType dataSource,
+                              Long lastExecutionTime) {
             this.taskType = taskType;
             this.success = success;
             this.objectsCount = objectsCount;
@@ -315,7 +252,8 @@ public class ControllerInvokedAdTask implements Runnable {
         private final Long executionStartTime;
         private final Long objectsCount;
 
-        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime, Long executionStartTime, Long objectsCount) {
+        public AdTaskStatus(AdTaskType runningMode, AdObjectType datasource, Long lastExecutionFinishTime,
+                            Long executionStartTime, Long objectsCount) {
             this.runningMode = runningMode;
             this.datasource = datasource;
             this.lastExecutionFinishTime = lastExecutionFinishTime;

@@ -1,12 +1,9 @@
 package fortscale.web.services;
 
-
 import fortscale.domain.ad.AdObject;
-import fortscale.services.ActiveDirectoryService;
-import fortscale.services.ad.AdTaskPersistencyService;
+import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
 import fortscale.utils.logging.Logger;
-import fortscale.web.tasks.CompoundControllerInvokedAdTask;
-import fortscale.web.tasks.ControllerInvokedAdTask;
+import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
@@ -15,33 +12,34 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Service(value = "AdTaskServiceImpl")
-public class AdTaskServiceImpl implements TaskService {
+/**
+ * Created by alexp on 16/02/2017.
+ */
+@Service
+public class UserTaggingTaskServiceImpl implements TaskService {
+    private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
-    private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
-
-    private ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
-    private ActiveDirectoryService activeDirectoryService;
-    private AdTaskPersistencyService adTaskPersistencyService;
+    private ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;
+    private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
-    private AdTaskServiceImpl() {
+    private UserTaggingTaskServiceImpl() {
         initExecutorService();
     }
 
     @Autowired
-    public AdTaskServiceImpl(ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService) {
-        this.activeDirectoryService = activeDirectoryService;
-        this.adTaskPersistencyService = adTaskPersistencyService;
+    public UserTaggingTaskServiceImpl(UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
+        this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
         initExecutorService();
     }
 
+    @Override
     public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
         initExecutorService();
         if (executorService.tryExecute()) {
             try {
-                logger.info("Starting Active Directory fetch and ETL");
-                final List<ControllerInvokedAdTask> adTasks = createAdTasks(simpMessagingTemplate, responseDestination);
+                logger.info("Starting user tagging");
+                final List<ControllerInvokedUserTaggingTask> adTasks = createTaggingTask(simpMessagingTemplate, responseDestination);
                 executorService.executeTasks(adTasks);
                 return true;
             } finally {
@@ -72,7 +70,7 @@ public class AdTaskServiceImpl implements TaskService {
         }
     }
 
-    public Set<ControllerInvokedAdTask> getActiveTasks() {
+    public Set<ControllerInvokedUserTaggingTask> getActiveTasks() {
         return executorService.getActiveTasks();
     }
 
@@ -91,20 +89,9 @@ public class AdTaskServiceImpl implements TaskService {
         }
     }
 
-
-    private List<ControllerInvokedAdTask> createAdTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
-        final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
-        for (AdObject.AdObjectType dataSource : dataSources) {
-            if (dataSource != AdObject.AdObjectType.USER_THUMBNAIL) { //user thumbnail job shouldn't run initially
-                final ControllerInvokedAdTask currTask = new ControllerInvokedAdTask(executorService, simpMessagingTemplate, responseDestination, activeDirectoryService, adTaskPersistencyService, dataSource);
-                if (currTask.getDataSource() == AdObject.AdObjectType.USER) { //user thumbnail job should run after user job
-                    currTask.addFollowingTask(new CompoundControllerInvokedAdTask(executorService, simpMessagingTemplate, responseDestination, activeDirectoryService, adTaskPersistencyService, AdObject.AdObjectType.USER_THUMBNAIL));
-                }
-                tasks.add(currTask);
-            }
-        }
-
+    private List<ControllerInvokedUserTaggingTask> createTaggingTask(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
+        final List<ControllerInvokedUserTaggingTask> tasks = new ArrayList<>();
+        tasks.add(new ControllerInvokedUserTaggingTask(executorService, simpMessagingTemplate, responseDestination, userTaggingTaskPersistenceService));
         return tasks;
     }
-
 }
