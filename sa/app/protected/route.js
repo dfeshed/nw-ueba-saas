@@ -136,11 +136,7 @@ export default Route.extend(AuthenticatedRouteMixin, {
       this.transitionTo(redirect);
       localStorage.removeItem('rsa-post-auth-redirect');
     } else if (transition.targetName === 'protected.index') {
-      if (this._hasAccessToKey(key)) {
-        this.transitionTo(key);
-      } else {
-        window.location.href = '/unified/dashboard';
-      }
+      this._checkAccessAndTransition(key);
     }
   },
 
@@ -153,8 +149,17 @@ export default Route.extend(AuthenticatedRouteMixin, {
     }
   },
 
-  _hasAccessToKey(key) {
-    return (key === '/investigate' && this.get('accessControl.hasInvestigateAccess')) ||
-      (key === '/respond' && this.get('accessControl.hasRespondAccess'));
+  _checkAccessAndTransition(key) {
+    if ((key === '/investigate' && this.get('accessControl.hasInvestigateAccess')) ||
+      (key === '/respond' && this.get('accessControl.hasRespondAccess'))) {
+      this.transitionTo(key);
+    } else if ((key === this.get('accessControl.adminUrl') && this.get('accessControl.hasAdminAccess')) ||
+      (key === this.get('accessControl.configUrl') && this.get('accessControl.hasConfigAccess')) ||
+      (key === '/investigation' && this.get('accessControl.hasInvestigateAccess')) ||
+      (key === '/unified' && this.get('accessControl.hasMonitorAccess'))) {
+      window.location.href = key;
+    } else {
+      window.location.href = '/unified';
+    }
   }
 });
