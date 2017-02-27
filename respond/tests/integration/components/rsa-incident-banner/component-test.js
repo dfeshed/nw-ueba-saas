@@ -1,7 +1,7 @@
 import { moduleForComponent, test } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import engineResolverFor from '../../../helpers/engine-resolver';
-import info from '../../data/incident';
+import info from '../../../data/incident';
 
 moduleForComponent('rsa-incident-banner', 'Integration | Component | Incident Banner', {
   integration: true,

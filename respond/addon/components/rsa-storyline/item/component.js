@@ -1,4 +1,4 @@
-import ListItem from 'respond/components/list/item/component';
+import ListItem from 'respond/components/rsa-list/item/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import EnrichmentsToDisplay from './enrichments-to-display';
@@ -10,10 +10,19 @@ import EnrichmentsToDisplay from './enrichments-to-display';
  * @public
  */
 export default ListItem.extend({
-  tagName: 'hbox',
+  tagName: 'vbox',
   classNames: ['rsa-storyline-item'],
   classNameBindings: ['item.indicator.isCatalyst:is-catalyst', 'item.isHidden:is-hidden'],
   layout,
+
+  // Is `true` if the indicator is part of some other incident besides this one.
+  // Used to determine whether to show a link to some other incident.
+  // Note: `item.indicator.partOfIncident` will be true if the indicator is a catalyst for *this* incident; so ignore
+  // that cas, because we don't need to show a link to the current incident we are already viewing!
+  @computed('item.indicator.partOfIncident', 'item.isCatalyst')
+  isPartOfOtherIncident(partOfIncident, isCatalyst) {
+    return !!partOfIncident && !isCatalyst;
+  },
 
   /**
    * Configurable minimum enrichment score required in order to display an enrichment in this component's DOM.
@@ -53,7 +62,7 @@ export default ListItem.extend({
    * @type {{ key: string, score: number }[]}
    * @public
    */
-  @computed('item.enrichments', 'enrichmentThreshold', 'enrichmentKeys')
+  @computed('item.indicator.enrichments', 'enrichmentThreshold', 'enrichmentKeys')
   enrichments(hash, threshold, keys) {
     if (!hash) {
       return [];

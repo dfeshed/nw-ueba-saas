@@ -1,17 +1,17 @@
-<box fit class="connector">
-  {{rsa-respond/risk-score score=item.indicator.alert.severity}}
-</box>
-<box fill class="content">
+<hbox class="header">
 
-  {{! Header includes: source, indicator type, timestamp, events count}}
-  <hbox nowrap justify="between" align="start" class="header">
+  <box fit class="connector">
+    <div class="line"></div>
+  </box>
+
+  <hbox fill nowrap justify="between" align="start" class="content">
     <box fill class="source-and-type">
-      <p class="source">{{indicator/source item.indicator}}</p>
+
       {{#if item.isCatalyst}}
-        <p class="catalyst">
-          <span>Incident Catalyst</span>
-        </p>
+        {{!Catalyst}}
+        <p class="catalyst">Incident Catalyst</p>
       {{else}}
+        {{!Related entities}}
         <p class="related">
           <label>Related to Catalyst by:</label>
           <span>
@@ -22,24 +22,42 @@
             {{/each}}
           </span>
         </p>
-        {{#if item.indicator.partOfIncident}}
-          <p class="incident">
-            <label>From Incident:</label>
-            <span>{{item.indicator.incidentId}}</span>
-          </p>
-        {{/if}}
       {{/if}}
-    </box>
-    <box fit class="time-and-num-events">
-      <p class="time">{{rsa-content-datetime timestamp=item.time displayAsTimeAgo=false displayDate=true displayTime=true}}</p>
-      <p class="num-events">{{item.numEvents}} {{if (eq item.numEvents 1) 'event' 'events'}}</p>
-    </box>
-  </hbox>
 
-  {{! Body includes: name, enrichments list}}
-  <box class="body">
+      {{!Source}}
+      <p class="source">
+        <label>Source:</label>
+        <span>{{indicator/source item.indicator}}</span>
+      </p>
+    </box>
+
+    {{!Indicator time + event count}}
+    <vbox fit nowrap align="end" class="time-and-num-events">
+      <p class="time">{{rsa-content-datetime timestamp=item.time displayAsTimeAgo=false displayDate=true displayTime=true}}</p>
+      <p class="num-events">{{item.events.length}} {{if (eq item.events.length 1) 'event' 'events'}}</p>
+    </vbox>
+  </hbox>
+</hbox>
+
+<hbox class="main">
+  <box fit class="connector">
+    <div class="severity">{{item.indicator.alert.severity}}</div>
+    <div class="line"></div>
+  </box>
+
+  <box fill nowrap justify="between" align="start" class="content">
+    {{!Display name}}
     <h3>{{item.name}}</h3>
 
+    {{!Related incident (only for indicators from OTHER incidents)}}
+    {{#if isPartOfOtherIncident}}
+      <p class="incident">
+        <label>Part of Incident:</label>
+        <span>{{#link-to 'incident' item.indicator.incidentId}}{{item.indicator.incidentId}}{{/link-to}}</span>
+      </p>
+    {{/if}}
+
+    {{!Enrichments list}}
     {{#with enrichments as |ens|}}
       <ul class="enrichment-list">
         {{#each ens as |en|}}
@@ -50,4 +68,4 @@
       </ul>
     {{/with}}
   </box>
-</box>
+</hbox>

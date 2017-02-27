@@ -1,0 +1,23 @@
+<box fit class="rsa-incident-explorer__header">
+  {{! toolbar coming soon}}
+  <centered>
+    {{incidentId}}: {{info.name}}
+  </centered>
+</box>
+<box class="rsa-incident-explorer__main" >
+  {{#if (eq storylineStatus 'wait')}}
+    <centered class="wait">
+      {{rsa-loader size='larger'}}
+    </centered>
+  {{else if (eq storylineStatus 'error')}}
+    <centered vertical class="error">
+      {{rsa-icon name="signal-warning" size="larger"}}
+      <h3>Unable to load incident</h3>
+      <p>{{#link-to 'incidents'}}Back to Incidents{{/link-to}}</p>
+    </centered>
+  {{else}}
+    {{rsa-storyline}}
+  {{/if}}
+</box>
+
+

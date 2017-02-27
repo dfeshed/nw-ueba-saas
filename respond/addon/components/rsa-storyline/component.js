@@ -1,4 +1,16 @@
-import List from 'respond/components/list/component';
+import List from 'respond/components/rsa-list/component';
+import connect from 'ember-redux/components/connect';
+import { storypoints } from 'respond/selectors/storyline';
+
+const stateToComputed = ({ respond }) => {
+  return {
+    items: storypoints(respond)
+  };
+};
+
+const dispatchToActions = (/* dispatch */) => {
+  return {};  /* nothing yet, coming soon! */
+};
 
 /**
  * @class Storyline component
@@ -6,7 +18,10 @@ import List from 'respond/components/list/component';
  * storypoint objects.  @see respond/util/storypoint/ for more details.
  * @public
  */
-export default List.extend({
+const Storyline = List.extend({
   classNames: 'rsa-storyline',
-  itemComponentClass: 'rsa-storyline/item'
+  itemComponentClass: 'rsa-storyline/item',
+  items: null
 });
+
+export default connect(stateToComputed, dispatchToActions)(Storyline);

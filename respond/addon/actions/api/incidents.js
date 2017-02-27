@@ -4,6 +4,7 @@ import { promiseRequest } from 'streaming-data/services/data-access/requests';
 import { CANNED_FILTER_TYPES_BY_NAME } from 'respond/utils/canned-filter-types';
 import { SORT_TYPES_BY_NAME } from 'respond/utils/sort-types';
 import FilterQuery from 'respond/utils/filter-query';
+import Indicator from 'respond/utils/indicator/indicator';
 
 const {
   Object: EmberObject,
@@ -183,6 +184,13 @@ IncidentsAPI.reopenClass({
    * Executes a websocket storyline fetch call and returns a Promise. Promise should resolve to the storyline details/info
    * for the incident ID supplied to the method
    *
+   * The server returns a `data` object which has only a single property `relatedIndicators[]`, which is the actual
+   * storyline array we want. So we flatten/discard the top-level object here and re-assign `data` to the array directly.
+   *
+   * Also, each member of that `relatedIndicators[]` is an object with several properties, including `indicator`.
+   * Each `indicator` property points to an ugly JSON object that we wrap in a util class here in order to give it a
+   * friendly access API downstream.
+   *
    * @method getStoryline
    * @public
    * @param incidentId The ID of the incident
@@ -197,7 +205,19 @@ IncidentsAPI.reopenClass({
       method: 'queryRecord',
       modelName: 'storyline',
       query: query.toJSON()
-    });
+    })
+      .then((response) => {
+        const { data: { relatedIndicators = [] } } = response;
+
+        // flatten `data` by one level
+        response.data = relatedIndicators;
+
+        // wrap the `indicator` attr of each array member
+        relatedIndicators.forEach((item) => {
+          item.indicator = Indicator.create(item.indicator);
+        });
+        return response;
+      });
   },
 
   /**
