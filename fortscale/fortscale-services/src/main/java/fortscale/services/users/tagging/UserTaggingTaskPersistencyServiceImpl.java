@@ -44,19 +44,19 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     public Long getLastExecutionTime() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME_PREFIX, Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME, Long.class);
     }
 
     public void setLastExecutionTime(Long lastExecutionTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME_PREFIX, lastExecutionTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME, lastExecutionTime);
     }
 
     public Long getExecutionStartTime() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME_PREFIX, Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME, Long.class);
     }
 
     public void setExecutionStartTime(Long executionStartTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME_PREFIX, executionStartTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME, executionStartTime);
     }
 
     @Override
