@@ -18,12 +18,6 @@ module.exports = {
       'pikaday-time': {
         import: ['pikaday.js', 'css/pikaday.css']
       },
-      'redux-actions': {
-        import: [{
-          path: 'dist/redux-actions.js',
-          using: [{ transformation: 'amd', as: 'redux-actions' }]
-        }]
-      },
       tether: {
         srcDir: 'dist',
         import: ['js/tether.js']

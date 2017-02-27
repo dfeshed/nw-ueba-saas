@@ -35,11 +35,6 @@
     "ember-math-helpers": "2.0.5",
     "ember-power-select": "1.5.0-beta.0",
     "ember-radio-button": "1.1.1",
-    "ember-redux": "2.1.0",
-    "ember-redux-pack-shim": "0.0.3",
-    "ember-redux-shim": "1.1.0",
-    "ember-redux-thunk-shim": "1.1.2",
-    "ember-reselect-shim": "0.1.0",
     "ember-route-action-helper": "1.0.0",
     "ember-simple-auth": "1.1.0",
     "ember-sortable": "1.9.1",
@@ -51,11 +46,6 @@
     "liquid-fire": "0.26.6",
     "nouislider": "^8.0.1",
     "pikaday-time": "1.4.1",
-    "redux": "3.6.0",
-    "redux-actions": "^1.2.0",
-    "redux-pack": "0.1.4",
-    "redux-thunk": "2.2.0",
-    "reselect": "2.5.4",
     "tether": "^1.4.0"
   },
   "devDependencies": {
