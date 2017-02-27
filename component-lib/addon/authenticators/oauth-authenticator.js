@@ -31,6 +31,10 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
 
   session: service(),
 
+  flashMessages: service(),
+
+  i18n: service(),
+
   _addListeners: function() {
     const session = this.get('session');
 
@@ -114,6 +118,13 @@ export default OAuth2PasswordGrant.extend(csrfToken, oauthToken, {
       }
       this.makeRequest(serverTokenEndpoint, data).then((response, status, jqXHR) => {
         run(() => {
+          if (response.user.expiryUserNotify) {
+            this.get('flashMessages').warning(this.get('i18n').t('login.changePasswordSoon'), {
+              iconName: 'report-problem-circle',
+              sticky: true
+            });
+          }
+
           const csrfKey = this.get('csrfLocalstorageKey');
 
           const csrf = jqXHR.getResponseHeader('X-CSRF-TOKEN') || null;
