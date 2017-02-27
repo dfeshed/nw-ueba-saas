@@ -1,0 +1,13 @@
+.rsa-stat-sign {
+  padding: 0 rsa-whitespace();
+  text-align: center;
+
+  &__caption {
+    @include rsa-font(navigation,small);
+    color: rsa-color(gray, light);
+  }
+
+  &__body {
+    @include rsa-font(body,small);
+  }
+}

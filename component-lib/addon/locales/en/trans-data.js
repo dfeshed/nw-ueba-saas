@@ -356,6 +356,16 @@ export default {
       },
       footer: 'Showing {{count}} out of {{total}} incidents'
     },
+    incident: {
+      created: 'Created',
+      status: 'Status',
+      priority: 'Priority',
+      riskScore: 'Risk Score',
+      assignee: 'Assignee',
+      alertCount: 'Alerts',
+      sealed: 'Sealed',
+      sealsAt: 'Seals At'
+    },
     enrichment: {
       uniformTimeIntervals: 'The time intervals between communication events are very uniform.',
       newDomainToEnvironment: 'Domain is relatively new to the environment.',
@@ -385,6 +395,24 @@ export default {
       ModuleIOC: 'Endpoint',
       ECAT: 'Endpoint',
       generic: 'NetWitness'
+    },
+    status: {
+      0: 'New',
+      1: 'Assigned',
+      2: 'In Progress',
+      3: 'Remediation Requested',
+      4: 'Remediation Complete',
+      5: 'Closed',
+      6: 'False Positive'
+    },
+    priority: {
+      0: 'Low',
+      1: 'Medium',
+      2: 'High',
+      3: 'Critical'
+    },
+    assignee: {
+      none: '(Unassigned)'
     }
   },
   context: {

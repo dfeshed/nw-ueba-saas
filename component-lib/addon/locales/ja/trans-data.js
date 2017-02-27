@@ -356,6 +356,16 @@ export default {
       },
       footer: 'Showing {{count}} out of {{total}} incidents'
     },
+    incident: {
+      created: 'ja_Created',
+      status: 'ja_Status',
+      priority: 'ja_Priority',
+      riskScore: 'ja_Risk Score',
+      assignee: 'ja_Assignee',
+      alertCount: 'ja_Alerts',
+      sealed: 'ja_Sealed',
+      sealsAt: 'ja_Seals At'
+    },
     enrichment: {
       uniformTimeIntervals: 'ja_The time intervals between communication events are very uniform.',
       newDomainToEnvironment: 'ja_Domain is relatively new to the environment.',
@@ -385,6 +395,24 @@ export default {
       ModuleIOC: 'ja_Endpoint',
       ECAT: 'ja_Endpoint',
       generic: 'ja_NetWitness'
+    },
+    status: {
+      0: 'ja_New',
+      1: 'ja_Assigned',
+      2: 'ja_In Progress',
+      3: 'ja_Remediation Requested',
+      4: 'ja_Remediation Complete',
+      5: 'ja_Closed',
+      6: 'ja_False Positive'
+    },
+    priority: {
+      0: 'ja_Low',
+      1: 'ja_Medium',
+      2: 'ja_High',
+      3: 'ja_Critical'
+    },
+    assignee: {
+      none: 'ja_(Unassigned)'
     }
   },
   context: {

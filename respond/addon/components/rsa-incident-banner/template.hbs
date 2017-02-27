@@ -1,0 +1,82 @@
+<hbox align="center" class="rsa-incident-toolbar__header">
+
+  {{! Score + id + name of incident}}
+  <hbox fill nowrap class="rsa-incident-toolbar__header-title" title="{{concat incidentId ': ' info.name}}">
+    <span class="id">{{incidentId}}:</span>
+    <span class="name">{{info.name}}</span>
+  </hbox>
+
+  {{! Notable field values. }}
+  <hbox fit justify="end" align="stretch" class="rsa-incident-toolbar__header-stats">
+
+    {{! Risk score}}
+    {{#rsa-stat-sign class="risk-score" caption=(t 'respond.incident.riskScore')}}
+      {{info.riskScore}}
+    {{/rsa-stat-sign}}
+
+    {{! Created time}}
+    {{#rsa-stat-sign class="created" caption=(t 'respond.incident.created')}}
+      {{rsa-content-datetime timestamp=info.created asTimeAgo=false displayTime=true displayDate=true}}
+    {{/rsa-stat-sign}}
+
+    {{#if info.timeWindowExpiration}}
+
+      {{! We have an expiration date, so display that alongside the Sealed status (boolean)}}
+      {{#rsa-stat-sign class="sealed has-expiration" caption=(t (if info.sealed 'respond.incident.sealed' 'respond.incident.sealsAt'))}}
+        {{rsa-content-datetime timestamp=info.timeWindowExpiration asTimeAgo=false displayTime=true displayDate=true}}
+      {{/rsa-stat-sign}}
+
+    {{else}}
+
+      {{! We don't have an expiration date, so just display the Sealed status (boolean)}}
+      {{#rsa-stat-sign class="sealed has-no-expiration" caption=(t 'respond.incident.sealed')}}
+        {{if info.sealed 'Yes' 'No'}}
+      {{/rsa-stat-sign}}
+
+    {{/if}}
+
+    {{! Assignee (readonly for now, eventually will be editable) }}
+    {{#rsa-stat-sign class="assignee" caption=(t 'respond.incident.assignee')}}
+      {{#if info.assignee}}
+        {{or info.assignee.name info.assignee.id}}
+      {{else}}
+        {{t 'respond.assignee.none'}}
+      {{/if}}
+      {{assignee.name}}
+    {{/rsa-stat-sign}}
+
+    {{! Status (readonly for now, eventually will be editable) }}
+    {{#rsa-stat-sign class="status" caption=(t 'respond.incident.status')}}
+      {{t (concat 'respond.status.' info.statusSort)}}
+    {{/rsa-stat-sign}}
+
+    {{! Priority (readonly for now, eventually will be editable) }}
+    {{#rsa-stat-sign class="priority" caption=(t 'respond.incident.priority')}}
+      {{t (concat 'respond.priority.' info.prioritySort)}}
+    {{/rsa-stat-sign}}
+  </hbox>
+</hbox>
+<section class="rsa-incident-toolbar__body">
+
+  {{! Created by (rule name or user name)}}
+  <p class="by">
+    <label>{{if info.createdFromRule 'Rule' 'By'}}:</label>
+    <span>{{info.createdBy}}</span>
+  </p>
+
+  {{! Sources ("Event Stream Analysis", "ECAT", etc)}}
+  <p class="sources">
+    <label>Sources:</label>
+    {{#each info.sources as |source|}}
+      <span class="source">{{source}}</span>
+    {{/each}}
+  </p>
+
+  {{! Categories ("Malware", "C2", etc)}}
+  <p class="categories">
+    <label>Categories:</label>
+    {{#each info.categories as |category|}}
+      <span class="category">{{category}}</span>
+    {{/each}}
+  </p>
+</section>
