@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-@Service
+@Service(value = "AdTaskServiceImpl")
 public class AdTaskServiceImpl implements TaskService {
 
     private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);

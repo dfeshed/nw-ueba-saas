@@ -18,6 +18,7 @@ import fortscale.web.services.TaskService;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -54,7 +55,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @Autowired
     public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, ActiveDirectoryService activeDirectoryService,
-                                        TaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
+                                        @Qualifier(value = "AdTaskServiceImpl") TaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
                                         UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.tagService = tagService;
         this.userTagService = userTagService;
