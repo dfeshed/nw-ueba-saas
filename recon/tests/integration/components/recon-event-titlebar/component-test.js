@@ -83,7 +83,7 @@ test('title renders', function(assert) {
   new DataHelper(this.get('redux')).initializeData(initializeData);
   this.render(hbs`{{recon-event-titlebar}}`);
   return wait().then(() => {
-    assert.equal(this.$('.ember-power-select-trigger').text().trim(), `${RECON_VIEW_TYPES_BY_NAME.PACKET.label} (26 of 555)`);
+    assert.equal(this.$('.ember-power-select-trigger').text().trim(), RECON_VIEW_TYPES_BY_NAME.PACKET.label);
   });
 });
 

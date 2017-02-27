@@ -13,13 +13,11 @@ const { Component } = Ember;
 
 const stateToComputed = ({ recon, recon: { visuals, data } }) => ({
   currentReconView: data.currentReconView,
-  index: data.index,
   isHeaderOpen: visuals.isHeaderOpen,
   isRequestShown: visuals.isRequestShown,
   isResponseShown: visuals.isResponseShown,
   isMetaShown: visuals.isMetaShown,
   isReconExpanded: visuals.isReconExpanded,
-  total: data.total,
   isLogEvent: isLogEvent(recon),
   lacksPackets: lacksPackets(recon)
 });
@@ -37,7 +35,8 @@ const dispatchToActions = (dispatch) => ({
 const TitlebarComponent = Component.extend({
   layout,
   tagName: 'hbox',
-  classNameBindings: [':recon-event-titlebar'],
+  classNameBindings: ['isReconExpanded:recon-is-expanded'],
+  classNames: ['recon-event-titlebar'],
 
   /**
    * Determines if we should disable the request/response toggles
@@ -58,31 +57,17 @@ const TitlebarComponent = Component.extend({
   * @return {array}  array of objects
   * @public
   */
+  @computed('reconViewsConfigFull')
+  reconViewsConfig: (viewsConf) => viewsConf.filter((vc) => !vc.selected),
+
   @computed('currentReconView')
-  reconViewsConfig({ code }) {
-    const reconViews = RECON_VIEW_TYPES.map((viewType) => {
+  reconViewsConfigFull({ code }) {
+    return RECON_VIEW_TYPES.map((viewType) => {
       return {
         ...viewType,
         selected: viewType.code === code
       };
     });
-    // Don't show the recon view that is currently chosen on the page again in the drop-down
-    return reconViews.filter((item) => (item.code !== code));
-  },
-
-  /**
-   * Dynamically builds the recon type selection prompt.
-   * Adds 1 to index as it is 0 based.
-   *
-   * @type {string} The title to display
-   * @public
-   */
-  @computed('currentReconView', 'index', 'total')
-  displayTitle: ({ label }, index, total) => {
-    if (index != null) {
-      label = `${label} (${index + 1} of ${total})`;
-    }
-    return label;
   },
 
   @computed('isReconExpanded')

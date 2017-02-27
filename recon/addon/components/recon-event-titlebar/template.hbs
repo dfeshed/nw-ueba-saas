@@ -1,17 +1,31 @@
 <hbox class='heading'>
   {{#unless isLogEvent}}
-    {{#power-select
-      triggerClass='recon-view-selector'
-      onchange=(action 'findNewReconstructionView')
-      options=reconViewsConfig
-      placeholder=displayTitle
-      searchEnabled=false as |option|}}
-      {{option.label}}
-    {{/power-select}}
+    <div class="heading-select">
+      {{#power-select
+        triggerClass='recon-view-selector'
+        onchange=(action 'findNewReconstructionView')
+        options=reconViewsConfig
+        placeholder=currentReconView.label
+        searchEnabled=false as |option|}}
+        {{option.label}}
+      {{/power-select}}
+    </div>
+    <div class="rsa-nav-tab-group heading-tabs">
+      {{#each reconViewsConfigFull as |viewConfig|}}
+        {{#rsa-nav-tab
+          align='left'
+          isActive=viewConfig.selected
+          click=(action 'findNewReconstructionView' viewConfig)
+        }}
+          <div class="label">{{viewConfig.label}}</div>
+        {{/rsa-nav-tab}}
+      {{/each}}
+    </div>
   {{else}}
-    {{displayTitle}}
+    {{currentReconView.label}}
   {{/unless}}
 </hbox>
+
 
 {{rsa-icon
   active=isHeaderOpen

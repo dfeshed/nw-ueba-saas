@@ -49,6 +49,12 @@
           top: 10px;
         }
       }
+
+      .rsa-nav-tab.is-left-aligned-primary {
+        margin: 0 1rem 0 1rem;
+        padding: .5rem .1rem;
+      }
+
     }
 
     .header-toggle {
@@ -64,6 +70,46 @@
         color: rsa-color(gray, dark);
         cursor: default;
       }
+    }
+  }
+}
+
+.recon-event-titlebar {
+  @media (min-width: 1351px) {
+    .heading-select {
+      display: none;
+    }
+    .heading-tabs {
+      display: inherit;
+    }
+  }
+
+  @media (max-width: 1350px) {
+    .heading-select {
+      display: block;
+    }
+    .heading-tabs {
+      display: none;
+    }
+  }
+}
+
+.recon-is-expanded {
+  @media (min-width: 951px) {
+    .heading-select {
+      display: none;
+    }
+    .heading-tabs {
+      display: inherit;
+    }
+  }
+
+  @media (max-width: 950px) {
+    .heading-select {
+      display: block;
+    }
+    .heading-tabs {
+      display: none;
     }
   }
 }
