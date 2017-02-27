@@ -13,7 +13,7 @@ import java.util.*;
 
 import static fortscale.domain.ad.AdTaskType.*;
 
-public class ControllerInvokedAdTask extends  BasicControllerInvokedTask implements Runnable {
+public class ControllerInvokedAdTask extends BaseControllerInvokedTask implements Runnable {
 
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);

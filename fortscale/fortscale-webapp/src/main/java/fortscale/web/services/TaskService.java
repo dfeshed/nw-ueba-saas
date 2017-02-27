@@ -2,13 +2,13 @@ package fortscale.web.services;
 
 
 import fortscale.utils.logging.Logger;
-import fortscale.web.tasks.BasicControllerInvokedTask;
+import fortscale.web.tasks.BaseControllerInvokedTask;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
-public abstract class TaskService<T extends BasicControllerInvokedTask> {
+public abstract class TaskService<T extends BaseControllerInvokedTask> {
     private static final Logger logger = Logger.getLogger(TaskService.class);
 
     public abstract boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination);
