@@ -14,10 +14,11 @@ import fortscale.web.BaseController;
 import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ResponseEntityMessage;
 import fortscale.web.rest.Utils.TaskAction;
-import fortscale.web.services.UserTaggingTaskService;
+import fortscale.web.services.TaskService;
 import fortscale.web.tasks.ControllerInvokedUserTaggingTask;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -46,7 +47,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     private final TagService tagService;
     private final UserTagService userTagService;
     private final ActiveDirectoryService activeDirectoryService;
-    private UserTaggingTaskService userTaggingTaskService;
+    private TaskService userTaggingTaskService;
     private SimpMessagingTemplate simpMessagingTemplate;
     private Long lastUserTaggingExecutionStartTime;
     private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
@@ -54,7 +55,7 @@ public class ApiSystemSetupTagsController extends BaseController {
 
     @Autowired
     public ApiSystemSetupTagsController(TagService tagService, UserTagService userTagService, ActiveDirectoryService activeDirectoryService,
-                                        UserTaggingTaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
+                                        @Qualifier(value = "AdTaskServiceImpl") TaskService userTaggingTaskService, SimpMessagingTemplate simpMessagingTemplate,
                                         UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.tagService = tagService;
         this.userTagService = userTagService;
@@ -146,7 +147,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    @RequestMapping("/run_user_tagging" )
+    @RequestMapping("/run_tagging_task" )
     public ResponseEntity<ResponseEntityMessage> runUserTagging() {
         try {
             logger.debug("Executing user tagging");
@@ -169,7 +170,7 @@ public class ApiSystemSetupTagsController extends BaseController {
     }
 
 
-    @RequestMapping("/stop_user_tagging" )
+    @RequestMapping("/stop_tagging_task" )
     public ResponseEntity<ResponseEntityMessage> cancelUserTaggingExecution() {
         try {
             logger.debug("Cancelling user tagging execution");
@@ -192,7 +193,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         }
     }
 
-    @RequestMapping(method = RequestMethod.GET,value = "/user_tagging_status")
+    @RequestMapping(method = RequestMethod.GET,value = "/tagging_task_status")
     @LogException
     public UserTaggingExecutionStatus getJobStatus() {
         if (isRunning()){

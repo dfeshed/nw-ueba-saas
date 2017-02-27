@@ -1,7 +1,7 @@
 package fortscale.web.tasks;
 
+import fortscale.services.BaseTaskPersistencyService;
 import fortscale.services.users.tagging.UserTaggingTaskPersistenceService;
-import fortscale.services.users.tagging.UserTaggingTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
 import fortscale.web.services.ActivityMonitoringExecutorService;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -92,7 +92,7 @@ public class ControllerInvokedUserTaggingTask extends BasicControllerInvokedTask
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(UserTaggingTaskPersistencyServiceImpl.RESULTS_KEY_SUCCESS);
+        final String success = taskResults.get(BaseTaskPersistencyService.RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} . success status is missing. Task Failed", USER_TAGGING_JOB_NAME);
             notifyTaskDone();

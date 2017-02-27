@@ -2,6 +2,7 @@ package fortscale.services.users.tagging;
 
 import fortscale.domain.core.ApplicationConfiguration;
 import fortscale.services.ApplicationConfigurationService;
+import fortscale.services.BaseTaskPersistencyService;
 import fortscale.utils.logging.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -32,25 +33,7 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
 
     @Override
     public Map<String, String> getTaskResults(String resultsKey) {
-        Map<String, String> taskResults = new HashMap<>();
-        logger.info("getting result for key {}", resultsKey);
-        ApplicationConfiguration queryResult = applicationConfigurationService.getApplicationConfiguration(resultsKey);
-        if (queryResult == null) {
-            logger.error("No result found for result key {}", resultsKey);
-            taskResults.put(RESULTS_KEY_SUCCESS, Boolean.FALSE.toString());
-            return taskResults;
-        }
-
-        final String taskExecutionResult = queryResult.getValue();
-        final String[] split = taskExecutionResult.split(RESULTS_DELIMITER);
-        final String key = split[0];
-        final String value = split[1];
-        taskResults.put(key, value);
-        if (applicationConfigurationService.delete(resultsKey) == 0) {
-            logger.warn("Failed to delete query result with key {}.", resultsKey);
-        }
-
-        return taskResults;
+        return BaseTaskPersistencyService.getTaskResults(resultsKey, applicationConfigurationService);
     }
 
     public void writeTaskResults(String taskTypeName, String resultsId, boolean result, Map<String, Long> deltaPerTag) {
@@ -61,19 +44,19 @@ public class UserTaggingTaskPersistencyServiceImpl implements UserTaggingTaskPer
     }
 
     public Long getLastExecutionTime() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME, Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME_PREFIX, Long.class);
     }
 
     public void setLastExecutionTime(Long lastExecutionTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME, lastExecutionTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_LAST_EXECUTION_TIME_PREFIX, lastExecutionTime);
     }
 
     public Long getExecutionStartTime() {
-        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME, Long.class);
+        return applicationConfigurationService.getApplicationConfigurationAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME_PREFIX, Long.class);
     }
 
     public void setExecutionStartTime(Long executionStartTime) {
-        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME, executionStartTime);
+        applicationConfigurationService.updateConfigItemAsObject(SYSTEM_SETUP_USER_TAGGING_EXECUTION_START_TIME_PREFIX, executionStartTime);
     }
 
     @Override
