@@ -22,7 +22,7 @@
 
     .request-response {
       color: rsa-color(blue);
-      width: $packet-offsets-width;
+      width: 100%;
 
       .rsa-icon {
         padding-right: rsa-whitespace(less);
@@ -33,6 +33,11 @@
         font-size: 0.85rem;
         letter-spacing: 1px;
       }
+    }
+
+    .justify-response {
+      justify-content: flex-end;
+      margin-right: rsa-whitespace(less);
     }
 
     .packet-details {
