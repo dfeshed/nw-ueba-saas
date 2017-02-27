@@ -11,6 +11,7 @@ public enum AlertFeedback {
 	None ("NONE", "No Feedback"),
 	Approved ("APPROVED", "Actual Risk"),
 	Rejected("REJECTED", "No Risk");
+	
 
 	private String upperCaseValue;
 	private String prettyValue;

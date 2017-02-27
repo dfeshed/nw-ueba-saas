@@ -3,6 +3,12 @@ package fortscale.web.rest;
 import au.com.bytecode.opencsv.CSVWriter;
 import fortscale.domain.analyst.AnalystAuth;
 import fortscale.domain.core.*;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.alert.analystfeedback.AnalystCommentFeedback;
+import fortscale.domain.core.alert.analystfeedback.AnalystFeedback;
+import fortscale.domain.core.alert.analystfeedback.AnalystRiskFeedback;
 import fortscale.domain.core.dao.rest.Alerts;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
@@ -16,15 +22,13 @@ import fortscale.web.beans.DataBean;
 import fortscale.web.beans.ValueCountBean;
 import fortscale.web.beans.request.AlertFilterHelperImpl;
 import fortscale.domain.rest.AlertRestFilter;
-import fortscale.web.beans.request.CommentRequest;
-import fortscale.web.exceptions.InvalidParameterException;
+import fortscale.web.beans.request.AlertUpdateStatusRequest;
+import fortscale.web.beans.request.CommentFeedbackRequest;
 import fortscale.web.rest.Utils.ResourceNotFoundException;
-import fortscale.web.rest.Utils.Shay;
 import fortscale.web.rest.entities.AlertStatisticsEntity;
 import io.swagger.annotations.*;
 import org.apache.commons.lang.StringUtils;
 import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
@@ -306,7 +310,7 @@ public class ApiAlertController extends BaseController {
 		return toReturn;
 	}
 
-	private void validateUserName(HttpSession session, String analystUserName){
+	private String getAnalystUserName(HttpSession session){
 		SecurityContextImpl securityContext = (SecurityContextImpl)(session.getAttribute("SPRING_SECURITY_CONTEXT"));
 
 		if (securityContext.getAuthentication()==null){
@@ -327,75 +331,78 @@ public class ApiAlertController extends BaseController {
 			throw new RuntimeException("User is not logged in");
 		}
 
-		if (!analystName.equals(analystUserName)){
-			throw new RuntimeException("User cannot send comment in behalf of other user");
-		}
-
-
-
+		return analystName;
 	}
 
-	@ApiOperation(value = "Add new comment on the alert", notes = "The comment include the analyst details, date, and text", response = Comment.class)
+	@ApiOperation(value = "Add new comment on the alert", notes = "The comment include the analyst details, date, and text", response = AnalystCommentFeedback.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Successful retrieval of user detail", response = Comment.class),
+			@ApiResponse(code = 200, message = "Successful retrieval of user detail", response = AnalystCommentFeedback.class),
 			@ApiResponse(code = 400, message = "Analyst name different the username"),
-			@ApiResponse(code = 404, message = "Alert Not Found")}
-
-	)
-	@ApiParam(name="Comment", value="Comment details", required = true)
-	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE) @LogException @ResponseBody
-	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id, @RequestBody @Valid CommentRequest request) {
-
-		long timeStamp = System.currentTimeMillis();
+			@ApiResponse(code = 404, message = "Alert Not Found")})
+	@ApiParam(name = "AnalystCommentFeedback", value = "AnalystCommentFeedback details", required = true)
+	@RequestMapping(method = RequestMethod.POST, value = "/{id}/comments", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@LogException
+	@ResponseBody
+	public ResponseEntity<?> addComment(HttpServletRequest httpRequest, @PathVariable String id,
+										@RequestBody @Valid CommentFeedbackRequest request) {
 		Alert alert = alertsService.getAlertById(id);
-
+		String analystName = null;
 
 		try {
-			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
-		} catch (Exception e){
-			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
+			analystName = getAnalystUserName(httpRequest.getSession());
+		} catch (Exception e) {
+			return new ResponseEntity(e, HttpStatus.BAD_REQUEST);
 		}
 
-		if (alert == null){
+		if (alert == null) {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.NOT_FOUND);
 		}
 
-		Comment c= alert.addComment(request.getAnalystUserName(), request.getCommentText(), timeStamp);
+		AnalystCommentFeedback comment = new AnalystCommentFeedback(analystName, request.getCommentText(),
+				System.currentTimeMillis());
+
+		alert.addAnalystFeedback(comment);
 
 
 		alertsService.saveAlertInRepository(alert);
-	return new ResponseEntity(c,HttpStatus.CREATED);
+		return new ResponseEntity(comment, HttpStatus.CREATED);
 	}
 
-	@RequestMapping(method = RequestMethod.PATCH, value = "{id}/comments/{commentId}") @LogException @ResponseBody
+	@RequestMapping(method = RequestMethod.PATCH, value = "{id}/comments/{commentId}")
+	@LogException
+	@ResponseBody
 	public ResponseEntity updateComment(HttpServletRequest httpRequest, @PathVariable String id, @PathVariable String commentId,
-			@RequestBody @Valid CommentRequest request) {
-		long timeStamp = System.currentTimeMillis();
+										@RequestBody @Valid CommentFeedbackRequest request) {
 		Alert alert = alertsService.getAlertById(id);
-
+		String analystName = null;
 		try {
-			validateUserName(httpRequest.getSession(), request.getAnalystUserName());
-		} catch (Exception e){
+			analystName = getAnalystUserName(httpRequest.getSession());
+		} catch (Exception e) {
 			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
 
-		if (alert == null){
+		if (alert == null) {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
 		}
+		AnalystFeedback analystFeedback = alert.getAnalystFeedback(commentId);
 
-		Comment oldComment = alert.getComment(commentId);
-		if (oldComment == null){
+		if (analystFeedback == null) {
 			return new ResponseEntity("Alert doesn't have comment with id " + commentId, HttpStatus.BAD_REQUEST);
 		}
 
+		if (!(analystFeedback instanceof AnalystCommentFeedback)){
+			return new ResponseEntity("Cannot update analyst feedback other then comment", HttpStatus.BAD_REQUEST);
+		}
+
+		AnalystCommentFeedback oldComment = (AnalystCommentFeedback) analystFeedback;
+
 		if (!oldComment.getCommentText().equals(request.getCommentText())) {
 			oldComment.setCommentText(request.getCommentText());
-			oldComment.setAnalystUserName(request.getAnalystUserName());
-			oldComment.setUpdateDate(timeStamp);
+			oldComment.setAnalystUserName(analystName);
 			alertsService.saveAlertInRepository(alert);
 		}
 
-		return new ResponseEntity(oldComment,HttpStatus.OK);
+		return new ResponseEntity(oldComment, HttpStatus.OK);
 	}
 
 	@RequestMapping(method = RequestMethod.DELETE, value = "{id}/comments/{commentId}")
@@ -404,12 +411,21 @@ public class ApiAlertController extends BaseController {
 	public ResponseEntity deleteComment(@PathVariable String id, @PathVariable String commentId) {
 		Alert alert = alertsService.getAlertById(id);
 
-		if (alert == null){
+		if (alert == null) {
 			return new ResponseEntity("Alert id doesn't exist " + id, HttpStatus.BAD_REQUEST);
 		}
 
-		Comment commentToDelete = alert.getComment(commentId);
-		alert.getComments().remove(commentToDelete);
+		AnalystFeedback analystFeedback = alert.getAnalystFeedback(commentId);
+
+		if (analystFeedback== null){
+			return new ResponseEntity(String.format("No comment with id {} on alert {}", commentId, id) , HttpStatus.BAD_REQUEST);
+		}
+
+		if (!(analystFeedback instanceof AnalystCommentFeedback)){
+			return new ResponseEntity("Cannot update analyst feedback other then comment", HttpStatus.BAD_REQUEST);
+		}
+
+		alert.getAnalystFeedback().remove(analystFeedback);
 		alertsService.saveAlertInRepository(alert);
 
 		return new ResponseEntity(HttpStatus.OK);
@@ -475,38 +491,32 @@ public class ApiAlertController extends BaseController {
 		return toReturn;
 	}
 
-	/**
+	/***
 	 * API to update alert status
-	 * @param body
-	 * @return
+	 * @param id
+	 * @param request
+	 * @throws JSONException
 	 */
 	@RequestMapping(value="{id}", method = RequestMethod.PATCH)
 	@LogException
-	public void updateStatus(@PathVariable String id, @RequestBody String body) throws JSONException {
+	public ResponseEntity<?> updateStatus(HttpServletRequest httpRequest, @PathVariable String id,
+										  @Valid @RequestBody AlertUpdateStatusRequest request){
+		// Getting the relevant alert
 		Alert alert = alertsService.getAlertById(id);
-		JSONObject params = new JSONObject(body);
-		boolean alertUpdated = false;
-		if (params.has("status")) {
-			String status = params.getString("status");
-			AlertStatus alertStatus = AlertStatus.getByStringCaseInsensitive(status);
-			if (alertStatus == null) {
-				throw new InvalidParameterException("Invalid AlertStatus: " + status);
-			}
-			alert.setStatus(alertStatus);
-			alertUpdated = true;
+		String analystUserName = null;
+
+		if (alert == null){
+			return new ResponseEntity(String.format("Alert with id {} not found", id), HttpStatus.BAD_REQUEST);
 		}
-		if (params.has("feedback")) {
-			String feedback = params.getString("feedback");
-			AlertFeedback alertFeedback = AlertFeedback.getByStringCaseInsensitive(feedback);
-			if (alertFeedback == null) {
-				throw new InvalidParameterException("Invalid AlertFeedback: " + feedback);
-			}
-			alert.setFeedback(alertFeedback);
-			alertUpdated = true;
+
+		try {
+			analystUserName = getAnalystUserName(httpRequest.getSession());
+		} catch (Exception e) {
+			return new ResponseEntity(e.getMessage(), HttpStatus.BAD_REQUEST);
 		}
-		if (alertUpdated) {
-            alertsService.saveAlertInRepository(alert);
-		}
+
+		AnalystRiskFeedback analystRiskFeedback = alertsService.updateAlertStatus(alert, request.getStatus(), request.getFeedback(), analystUserName);
+		return new ResponseEntity(analystRiskFeedback, HttpStatus.OK);
 	}
 
 
@@ -532,17 +542,4 @@ public class ApiAlertController extends BaseController {
         return result;
     }
 
-
-    /**
-     * A URL for checking the controller
-     * @return
-     */
-    @RequestMapping(value="/shay", method=RequestMethod.GET)
-    @ResponseBody
-    public DataBean<Shay> shay(@Valid Shay s){
-
-        DataBean<Shay> response = new DataBean<>();
-        response.setData(s);
-        return response;
-    }
 }

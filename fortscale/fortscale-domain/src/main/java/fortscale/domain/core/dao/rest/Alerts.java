@@ -1,5 +1,6 @@
 package fortscale.domain.core.dao.rest;
 
+
 import fortscale.domain.core.Alert;
 
 import java.io.Serializable;

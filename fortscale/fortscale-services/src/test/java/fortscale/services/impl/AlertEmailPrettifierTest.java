@@ -1,6 +1,9 @@
 package fortscale.services.impl;
 
 import fortscale.domain.core.*;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.services.LocalizationService;
 import org.junit.Before;
 import org.junit.Test;

@@ -52,6 +52,9 @@ import static fortscale.utils.ConversionUtils.*;
 	@Value("${vpn.ip.pool.topic.name}")
 	private String vpnIpPoolTopic;
 
+	@Value("${vpnsession.create.vpn.session.with.no.open.event}")
+	protected boolean createVpnSessionWithNoOpenEvent;
+
 	Boolean isResolveIp;
 	Boolean dropCloseEventWhenOpenMissingAndSessionDataIsNeeded;
 
@@ -155,6 +158,7 @@ import static fortscale.utils.ConversionUtils.*;
 			return event;
 		}
 
+		Boolean closedSessionWithOpen = false;
 		/**
 		 * when <code>addSessionData</code> is false: if there is a close session event without an open event we drop this session
 		 * if true: we can create a session without the stat session event as we have all attributes in the close session event.
@@ -171,10 +175,11 @@ import static fortscale.utils.ConversionUtils.*;
 					logger.warn("return the close event as is");
 					++metrics.droppedClosedEvents;
 					return event;
-				} else if (isResolveIp) {
+				} else if (isResolveIp && !createVpnSessionWithNoOpenEvent) {
 					cleanSourceIpInfoFromEvent(event);
 				}
 			} else {
+				closedSessionWithOpen = true;
 				addOpenSessionDataToRecord(vpnSessionUpdateConfig, event, vpnOpenSession);
 			}
 		}
@@ -189,9 +194,9 @@ import static fortscale.utils.ConversionUtils.*;
 			++metrics.openSessions;
 		} else {
 			//update and get the completed session ( the session with the closed and start , duration etc ...)
-			VpnSession completedSession = vpnService.updateCloseVpnSession(vpnSession);
+			VpnSession completedSession = vpnService.updateCloseVpnSession(vpnSession, createVpnSessionWithNoOpenEvent);
 
-			if (completedSession != null ) {
+			if (completedSession != null && closedSessionWithOpen) {
 				//update the Computer login with the session closed (in case the local ip have resolving during the session)
 				computerLoginEventRepository.updateResolvingExpireDueToVPNSessionEnd(completedSession.getLocalIp(), completedSession.getCreatedAtEpoch(), completedSession.getClosedAtEpoch());
 
@@ -201,8 +206,6 @@ import static fortscale.utils.ConversionUtils.*;
 			else {
 				++metrics.completedSessions;
 			}
-
-
 		}
 
 		return event;
