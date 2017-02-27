@@ -136,13 +136,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
       this.transitionTo(redirect);
       localStorage.removeItem('rsa-post-auth-redirect');
     } else if (transition.targetName === 'protected.index') {
-      switch (key) {
-        case '/investigate':
-          this.transitionTo(key);
-          break;
-        case '/respond':
-          this.transitionTo(key);
-          break;
+      if (this._hasAccessToKey(key)) {
+        this.transitionTo(key);
+      } else {
+        window.location.href = '/unified/dashboard';
       }
     }
   },
@@ -154,5 +151,10 @@ export default Route.extend(AuthenticatedRouteMixin, {
         entityType: undefined
       });
     }
+  },
+
+  _hasAccessToKey(key) {
+    return (key === '/investigate' && this.get('accessControl.hasInvestigateAccess')) ||
+      (key === '/respond' && this.get('accessControl.hasRespondAccess'));
   }
 });
