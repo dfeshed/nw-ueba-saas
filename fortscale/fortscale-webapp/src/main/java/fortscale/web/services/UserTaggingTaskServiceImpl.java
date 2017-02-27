@@ -10,13 +10,12 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by alexp on 16/02/2017.
  */
 @Service
-public class UserTaggingTaskServiceImpl implements TaskService {
+public class UserTaggingTaskServiceImpl extends TaskService {
     private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
     private ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;
@@ -51,30 +50,7 @@ public class UserTaggingTaskServiceImpl implements TaskService {
         }
     }
 
-    public boolean cancelAllTasks(long terminationTimeout) {
-        if (executorService.isHasActiveTasks()) {
-            logger.info("Attempting to kill all running threads {}", executorService.getActiveTasks());
-            executorService.shutdownNow();
-            try {
-                executorService.awaitTermination(terminationTimeout, TimeUnit.SECONDS);
-                return true;
-            } catch (InterruptedException e) {
-                final String msg = "Failed to await termination of running threads.";
-                logger.error(msg);
-                return false;
-            }
-        } else {
-            final String msg = "Attempted to cancel threads was made but there are no running tasks.";
-            logger.warn(msg);
-            return false;
-        }
-    }
-
-    public Set<ControllerInvokedUserTaggingTask> getActiveTasks() {
-        return executorService.getActiveTasks();
-    }
-
-    private void initExecutorService() {
+    protected void initExecutorService() {
         if (executorService != null && !executorService.isShutdown()) {
             return; // use the already working executor service
         }
@@ -87,6 +63,11 @@ public class UserTaggingTaskServiceImpl implements TaskService {
                     }),
                     dataSources.size());
         }
+    }
+
+    @Override
+    ActivityMonitoringExecutorService getExecuterService() {
+        return executorService;
     }
 
     private List<ControllerInvokedUserTaggingTask> createTaggingTask(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {

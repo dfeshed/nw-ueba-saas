@@ -13,10 +13,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 @Service(value = "AdTaskServiceImpl")
-public class AdTaskServiceImpl implements TaskService {
+public class AdTaskServiceImpl extends TaskService {
 
     private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
 
@@ -53,30 +52,7 @@ public class AdTaskServiceImpl implements TaskService {
         }
     }
 
-    public boolean cancelAllTasks(long terminationTimeout) {
-        if (executorService.isHasActiveTasks()) {
-            logger.info("Attempting to kill all running threads {}", executorService.getActiveTasks());
-            executorService.shutdownNow();
-            try {
-                executorService.awaitTermination(terminationTimeout, TimeUnit.SECONDS);
-                return true;
-            } catch (InterruptedException e) {
-                final String msg = "Failed to await termination of running threads.";
-                logger.error(msg);
-                return false;
-            }
-        } else {
-            final String msg = "Attempted to cancel threads was made but there are no running tasks.";
-            logger.warn(msg);
-            return false;
-        }
-    }
-
-    public Set<ControllerInvokedAdTask> getActiveTasks() {
-        return executorService.getActiveTasks();
-    }
-
-    private void initExecutorService() {
+    protected void initExecutorService() {
         if (executorService != null && !executorService.isShutdown()) {
             return; // use the already working executor service
         }
@@ -91,6 +67,10 @@ public class AdTaskServiceImpl implements TaskService {
         }
     }
 
+    @Override
+    ActivityMonitoringExecutorService getExecuterService() {
+        return executorService;
+    }
 
     private List<ControllerInvokedAdTask> createAdTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
         final List<ControllerInvokedAdTask> tasks = new ArrayList<>();
