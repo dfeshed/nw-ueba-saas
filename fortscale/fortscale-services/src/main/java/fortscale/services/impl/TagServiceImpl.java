@@ -5,6 +5,7 @@ import fortscale.domain.core.dao.TagRepository;
 import fortscale.services.TagService;
 import fortscale.services.UserService;
 import fortscale.utils.logging.Logger;
+import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -110,7 +111,7 @@ public class TagServiceImpl implements TagService {
 
 	private void verifyDeletedTagsNotExistsOnAnyUser(){
 		for (Tag t : tagRepository.findAll()){
-			if (t.getDeleted()){
+			if (BooleanUtils.isFalse(t.getDeleted())){ //If false => if not true and not null
 				userService.removeTagFromAllUsers(t.getName());
 			}
 		}
