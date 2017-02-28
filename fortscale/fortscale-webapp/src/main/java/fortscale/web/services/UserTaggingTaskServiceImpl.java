@@ -48,20 +48,6 @@ public class UserTaggingTaskServiceImpl extends TaskService {
         }
     }
 
-    protected void initExecutorService(int threadPoolSize) {
-        if (executorService != null && !executorService.isShutdown()) {
-            return; // use the already working executor service
-        } else {
-            executorService = new ActivityMonitoringExecutorServiceImpl<>(
-                    Executors.newFixedThreadPool(dataSources.size(), runnable -> {
-                        Thread thread = new Thread(runnable);
-                        thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-                        return thread;
-                    }),
-                    dataSources.size());
-        }
-    }
-
     private List<ControllerInvokedUserTaggingTask> createTaggingTask(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
         final List<ControllerInvokedUserTaggingTask> tasks = new ArrayList<>();
         tasks.add(new ControllerInvokedUserTaggingTask(executorService, simpMessagingTemplate, responseDestination, userTaggingTaskPersistenceService));
