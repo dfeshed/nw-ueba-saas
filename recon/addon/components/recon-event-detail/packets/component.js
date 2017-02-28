@@ -21,10 +21,26 @@ const PacketReconComponent = Component.extend(ReconPager, {
   layout,
   classNames: ['recon-event-detail-packets'],
 
-  @computed('packets.[]', 'isRequestShown', 'isResponseShown')
-  visiblePackets(packets = [], isRequestShown, isResponseShown) {
-    return packets.filter(({ side }) => {
-      return (side === 'request' && isRequestShown) || (side === 'response' && isResponseShown);
+  // Not filtering packets out because we need to maintain
+  // the placeholders/count of the packets, so just preserving
+  // spot in array with null
+  @computed('packets', 'isRequestShown', 'isResponseShown')
+  packetsToView(packets = [], isRequestShown, isResponseShown) {
+
+    // if showing it all, do not iterate, just return them all
+    if (isRequestShown && isResponseShown) {
+      return packets;
+    }
+
+    return packets.map((packet) => {
+      const showPacket =
+        (packet.side === 'request' && isRequestShown) ||
+        (packet.side === 'response' && isResponseShown);
+      if (showPacket) {
+        return packet;
+      } else {
+        return null;
+      }
     });
   }
 });

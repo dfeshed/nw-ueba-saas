@@ -1,11 +1,13 @@
 <div class="scroll-box">
-  {{#each visiblePackets as |packet index|}}
-    {{recon-event-detail/single-packet
-      index=index
-      packet=packet
-      packetFields=packetFields
-      tooltipData=tooltipData
-    }}
+  {{#each packetsToView as |packet index|}}
+    {{#if packet}}
+      {{recon-event-detail/single-packet
+        index=index
+        packet=packet
+        packetFields=packetFields
+        tooltipData=tooltipData
+      }}
+    {{/if}}
   {{/each}}
 </div>
 {{recon-pager
