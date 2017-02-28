@@ -7,13 +7,14 @@ const {
 
 // Generates a user-friendly name for a given indicator's source.
 export function indicatorSource(i18n, { originalHeaders }) {
-  const { device_product, model_name } = originalHeaders;
-
   // eslint-disable-next-line camelcase
-  return i18n.t(`respond.sources.${model_name}`, {
+  let { device_product: device = '', model_name: model = '' } = originalHeaders;
+  device = device.replace(/\s/g, '-');
+  model = model.replace(/\s/g, '-');
+
+  return i18n.t(`respond.sources.${model}`, {
     default: [
-      // eslint-disable-next-line camelcase
-      `respond.sources.${device_product}`,
+      `respond.sources.${device}`,
       'respond.sources.generic'
     ]
   });

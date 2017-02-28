@@ -1,7 +1,10 @@
+import Ember from 'ember';
 import ListItem from 'respond/components/rsa-list/item/component';
 import layout from './template';
 import computed from 'ember-computed-decorators';
 import EnrichmentsToDisplay from './enrichments-to-display';
+
+const { isEmpty } = Ember;
 
 /**
  * @class Storyline Item component
@@ -71,5 +74,10 @@ export default ListItem.extend({
         .map((key) => ({ key, score: hash[key] || 0 }))
         .filter((obj) => (obj.score > threshold));
     }
+  },
+
+  @computed('item.matched')
+  resolvedMatched(matched = []) {
+    return matched.reject(isEmpty);
   }
 });

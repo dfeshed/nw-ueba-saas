@@ -4,18 +4,18 @@
     <div class="line"></div>
   </box>
 
-  <hbox fill nowrap justify="between" align="start" class="content">
+  <hbox fill nowrap justify="between" align="end" class="content">
     <box fill class="source-and-type">
 
       {{#if item.isCatalyst}}
         {{!Catalyst}}
         <p class="catalyst">Incident Catalyst</p>
-      {{else}}
+      {{else if resolvedMatched.length}}
         {{!Related entities}}
         <p class="related">
           <label>Related to Catalyst by:</label>
           <span>
-            {{#each item.matched as |match|}}
+            {{#each resolvedMatched as |match|}}
               {{#if match}}
                 <span class="entity">{{match}}</span>
               {{/if}}

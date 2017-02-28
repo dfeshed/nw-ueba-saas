@@ -18,18 +18,18 @@ const SORT_TYPES = [
     labelKey: 'respond.incidents.sort.alertsCountAscending'
   },
   {
-    name: 'ASSIGNEE_DESC',
-    sortField: 'assignee.lastName',
-    isDescending: true,
-    label: 'Assignee (descending)',
-    labelKey: 'respond.incidents.sort.assigneeDescending'
-  },
-  {
     name: 'ASSIGNEE_ASC',
     sortField: 'assignee.lastName',
     isDescending: false,
     label: 'Assignee (ascending)',
     labelKey: 'respond.incidents.sort.assigneeAscending'
+  },
+  {
+    name: 'ASSIGNEE_DESC',
+    sortField: 'assignee.lastName',
+    isDescending: true,
+    label: 'Assignee (descending)',
+    labelKey: 'respond.incidents.sort.assigneeDescending'
   },
   {
     name: 'CREATED_DESC',
@@ -46,13 +46,6 @@ const SORT_TYPES = [
     labelKey: 'respond.incidents.sort.createdAscending'
   },
   {
-    name: 'ID_DESC',
-    sortField: 'created',
-    isDescending: true,
-    label: 'ID (descending)',
-    labelKey: 'respond.incidents.sort.idDescending'
-  },
-  {
     name: 'ID_ASC',
     sortField: 'created',
     isDescending: false,
@@ -60,11 +53,11 @@ const SORT_TYPES = [
     labelKey: 'respond.incidents.sort.idAscending'
   },
   {
-    name: 'NAME_DESC',
-    sortField: 'name',
+    name: 'ID_DESC',
+    sortField: 'created',
     isDescending: true,
-    label: 'Name (descending)',
-    labelKey: 'respond.incidents.sort.nameDescending'
+    label: 'ID (descending)',
+    labelKey: 'respond.incidents.sort.idDescending'
   },
   {
     name: 'NAME_ASC',
@@ -72,6 +65,13 @@ const SORT_TYPES = [
     isDescending: false,
     label: 'Name (ascending)',
     labelKey: 'respond.incidents.sort.nameAscending'
+  },
+  {
+    name: 'NAME_DESC',
+    sortField: 'name',
+    isDescending: true,
+    label: 'Name (descending)',
+    labelKey: 'respond.incidents.sort.nameDescending'
   },
   {
     name: 'PRIORITY_DESC',
@@ -102,18 +102,18 @@ const SORT_TYPES = [
     labelKey: 'respond.incidents.sort.scoreAscending'
   },
   {
-    name: 'STATUS_DESC',
-    sortField: 'statusSort',
-    isDescending: true,
-    label: 'Status (descending)',
-    labelKey: 'respond.incidents.sort.statusDescending'
-  },
-  {
     name: 'STATUS_ASC',
     sortField: 'statusSort',
     isDescending: false,
     label: 'Status (ascending)',
     labelKey: 'respond.incidents.sort.statusAscending'
+  },
+  {
+    name: 'STATUS_DESC',
+    sortField: 'statusSort',
+    isDescending: true,
+    label: 'Status (descending)',
+    labelKey: 'respond.incidents.sort.statusDescending'
   }
 ];
 

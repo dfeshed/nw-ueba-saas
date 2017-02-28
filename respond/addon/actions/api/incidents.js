@@ -198,7 +198,7 @@ IncidentsAPI.reopenClass({
    */
   getStoryline(incidentId) {
     const query = FilterQuery.create()
-      .addSortBy('event.timestamp', false)
+      .addSortBy('event.timestamp', false)  // TODO: ask backend if 'indicator.timestamp' is supported
       .addFilter('_id', incidentId);
 
     return promiseRequest({
@@ -207,15 +207,19 @@ IncidentsAPI.reopenClass({
       query: query.toJSON()
     })
       .then((response) => {
-        const { data: { relatedIndicators = [] } } = response;
-
-        // flatten `data` by one level
-        response.data = relatedIndicators;
+        let { data: { relatedIndicators = [] } } = response;
 
         // wrap the `indicator` attr of each array member
         relatedIndicators.forEach((item) => {
           item.indicator = Indicator.create(item.indicator);
         });
+
+        // sort by the indicator timestamps (ascending)
+        relatedIndicators = relatedIndicators.sortBy('indicator.timestamp');
+
+        // flatten `data` by one level
+        response.data = relatedIndicators;
+
         return response;
       });
   },
