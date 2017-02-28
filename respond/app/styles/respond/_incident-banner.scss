@@ -1,4 +1,4 @@
-.rsa-incident-toolbar {
+.rsa-incident-banner {
 
   &__header {
     line-height: 1.35;
@@ -16,6 +16,10 @@
     &-stats {
       .rsa-stat-sign {
         border-left: 1px solid rsa-color(gray,dark);
+
+        &:last-of-type {
+          border-right: 1px solid rsa-color(gray,dark);
+        }
       }
     }
   }

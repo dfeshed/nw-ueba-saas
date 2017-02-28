@@ -3,6 +3,9 @@ import reduxActions from 'redux-actions';
 import { handle } from 'redux-pack';
 
 const initialState = {
+  // id of the incident that owns `info` & `storyline`
+  id: null,
+
   // incident details
   info: null,
 
@@ -13,10 +16,26 @@ const initialState = {
   storyline: null,
 
   // either 'wait', 'error' or 'completed'
-  storylineStatus: false
+  storylineStatus: null
 };
 
 const incident = reduxActions.handleActions({
+
+  [ACTION_TYPES.INITIALIZE_INCIDENT]: (state, { payload }) => {
+    // payload is the new incident id
+    if (payload === state.id) {
+
+      // incident id is unchanged, so no need to change state
+      return state;
+    } else {
+
+      // reset state for a new incident id
+      return {
+        ...initialState,
+        id: payload
+      };
+    }
+  },
 
   [ACTION_TYPES.FETCH_INCIDENT_DETAILS]: (state, action) => {
     return handle(state, action, {

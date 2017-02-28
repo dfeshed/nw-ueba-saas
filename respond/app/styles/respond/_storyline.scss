@@ -41,11 +41,15 @@ $storylineSeverityOffset: -1 * $storylineSeverityRadius + $storylineHeadingSize 
         padding-right: rsa-whitespace(least);
       }
       span {
-        .entity:not(:last-of-type) {
-          /* Adds comma and padding after each entity name except last */
-          padding-right: rsa-whitespace(less);
-          &::after {
-            content: ',';
+        .entity {
+          text-transform: none;
+          
+          &:not(:last-of-type) {
+            /* Adds comma and padding after each entity name except last */
+            padding-right: rsa-whitespace(less);
+            &::after {
+              content: ',';
+            }
           }
         }
       }

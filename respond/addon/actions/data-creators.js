@@ -47,6 +47,31 @@ const getIncident = (incidentId) => {
 };
 
 /**
+ * Action creator for resetting the `respond.incident` state to a given incident id.
+ * If the given id matches the id currently in state, exits. Otherwise, reinitializes that state
+ * and kicks off the fetching of its info + storyline.
+ *
+ * @param {string} incidentId
+ * @returns {function(*, *)}
+ * @public
+ */
+const initializeIncident = (incidentId) => {
+  return (dispatch, getState) => {
+    const wasIncidentId = getState().respond.incident.id;
+    if (wasIncidentId !== incidentId) {
+      dispatch({
+        type: ACTION_TYPES.INITIALIZE_INCIDENT,
+        payload: incidentId
+      });
+      if (incidentId) {
+        dispatch(getIncident(incidentId));
+        dispatch(getStoryline(incidentId));
+      }
+    }
+  };
+};
+
+/**
  * Action creator for deleting an incident
  * @public
  * @method deleteIncident
@@ -356,5 +381,6 @@ export {
   createJournalEntry,
   deleteJournalEntry,
   updateIncidentFilters,
-  sortBy
+  sortBy,
+  initializeIncident
 };

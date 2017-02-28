@@ -1,24 +1,28 @@
 import Ember from 'ember';
+import connect from 'ember-redux/components/connect';
 
-const { Component } = Ember;
+const {
+  Component
+} = Ember;
 
-export default Component.extend({
+const stateToComputed = ({ respond: { incident } }) => {
+  return {
+    info: incident.info
+  };
+};
+
+const IncidentBanner = Component.extend({
   classNames: [ 'rsa-incident-banner' ],
-
-  /**
-   * ID of the incident we are displaying.
-   * @type {string}
-   * @public
-   */
-  incidentId: null,
 
   /**
    * Incident summary data fetched from server.
    *
-   * Includes top-level incident properties (e.g., name, priority, status, created) but not the storyline nor alerts list.
+   * Includes top-level incident properties (e.g., id, name, priority, status, created) but not the storyline nor alerts list.
    *
    * @type {object}
    * @public
    */
   info: null
 });
+
+export default connect(stateToComputed)(IncidentBanner);

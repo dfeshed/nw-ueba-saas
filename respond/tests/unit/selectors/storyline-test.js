@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import StoryPoint from 'respond/utils/storypoint/storypoint';
 import { storypoints } from 'respond/selectors/storyline';
-import storyline from '../../data/storyline';
+import { storyline } from '../../server/data';
 
 module('Unit | Mixin | storyline selector');
 
@@ -9,7 +9,7 @@ test('storypoints selector works', function(assert) {
 
   const state = {
     incident: {
-      storyline
+      storyline: storyline.relatedIndicators
     }
   };
 

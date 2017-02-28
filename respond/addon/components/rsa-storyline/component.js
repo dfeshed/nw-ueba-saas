@@ -8,10 +8,6 @@ const stateToComputed = ({ respond }) => {
   };
 };
 
-const dispatchToActions = (/* dispatch */) => {
-  return {};  /* nothing yet, coming soon! */
-};
-
 /**
  * @class Storyline component
  * A subclass of List component which uses `storyline/item` components to render an array of
@@ -24,4 +20,4 @@ const Storyline = List.extend({
   items: null
 });
 
-export default connect(stateToComputed, dispatchToActions)(Storyline);
+export default connect(stateToComputed)(Storyline);

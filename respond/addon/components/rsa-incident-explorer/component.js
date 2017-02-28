@@ -7,14 +7,10 @@ const {
 
 const stateToComputed = ({ respond: { incident } }) => {
   return {
-    info: incident.info,
+    incidentId: incident.id,
     infoStatus: incident.infoStatus,
     storylineStatus: incident.storylineStatus
   };
-};
-
-const dispatchToActions = (/* dispatch */) => {
-  return {};  /* nothing yet, coming soon! */
 };
 
 const IncidentExplorer = Component.extend({
@@ -27,13 +23,6 @@ const IncidentExplorer = Component.extend({
    * @public
    */
   incidentId: null,
-
-  /**
-   * Data model of an incident. Contains top-level incident info (id, name, priority, status, etc) but not alerts list.
-   * @type {object}
-   * @public
-   */
-  info: null,
 
   /**
    * Status of the server request for `info`.
@@ -53,4 +42,4 @@ const IncidentExplorer = Component.extend({
   storylineStatus: null
 });
 
-export default connect(stateToComputed, dispatchToActions)(IncidentExplorer);
+export default connect(stateToComputed)(IncidentExplorer);

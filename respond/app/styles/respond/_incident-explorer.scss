@@ -1,14 +1,18 @@
 .rsa-incident-explorer {
   &__header {
     background-color: rsa-color(gray, darker, $rsa-somewhat-opaque);
-    padding: rsa-whitespace(less) rsa-whitespace();
+    padding: rsa-whitespace(less) rsa-whitespace() rsa-whitespace();
   }
   &__main {
     overflow-y: auto;
-
-    > .error {
+  }
+  &__status {
+    &.error {
       .rsa-icon {
         color: rsa-color(amber);
+      }
+      p {
+        @include rsa-font(paragraph, small);
       }
       a {
         color: rsa-color(blue,light);

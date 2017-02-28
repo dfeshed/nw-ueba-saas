@@ -1,17 +1,22 @@
-<hbox align="center" class="rsa-incident-toolbar__header">
+<hbox align="center" nowrap class="rsa-incident-banner__header">
 
   {{! Score + id + name of incident}}
-  <hbox fill nowrap class="rsa-incident-toolbar__header-title" title="{{concat incidentId ': ' info.name}}">
-    <span class="id">{{incidentId}}:</span>
+  <hbox fill nowrap class="rsa-incident-banner__header-title" title="{{concat info.id ': ' info.name}}">
+    <span class="id">{{info.id}}:</span>
     <span class="name">{{info.name}}</span>
   </hbox>
 
   {{! Notable field values. }}
-  <hbox fit justify="end" align="stretch" class="rsa-incident-toolbar__header-stats">
+  <hbox fit justify="end" align="stretch" class="rsa-incident-banner__header-stats">
 
     {{! Risk score}}
     {{#rsa-stat-sign class="risk-score" caption=(t 'respond.incident.riskScore')}}
       {{info.riskScore}}
+    {{/rsa-stat-sign}}
+
+    {{! Alert count}}
+    {{#rsa-stat-sign class="alert-count" caption=(t 'respond.incident.alertCount')}}
+      {{info.alertCount}}
     {{/rsa-stat-sign}}
 
     {{! Created time}}
@@ -56,7 +61,7 @@
     {{/rsa-stat-sign}}
   </hbox>
 </hbox>
-<section class="rsa-incident-toolbar__body">
+<section class="rsa-incident-banner__body">
 
   {{! Created by (rule name or user name)}}
   <p class="by">
