@@ -102,7 +102,7 @@ public class EntityEventAccumulatorJobTest {
     private EntityEventAccumulatorJob job;
 
     @Test
-    public void contextText() {
+    public void contextTest() {
         AccumulatorManagerParams accumulatorManagerParams = new AccumulatorManagerParams();
         accumulatorManagerParams.setFrom(ACCUMULATION_FROM_DATE_INSTANT);
         accumulatorManagerParams.setTo(ACCUMULATION_TO_DATE_INSTANT);

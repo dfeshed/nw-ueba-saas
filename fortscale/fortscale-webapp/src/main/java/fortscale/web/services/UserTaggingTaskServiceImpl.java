@@ -10,32 +10,30 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Created by alexp on 16/02/2017.
  */
 @Service
-public class UserTaggingTaskServiceImpl implements TaskService {
+public class UserTaggingTaskServiceImpl extends TaskService {
     private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
-    private ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;
     private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
     private UserTaggingTaskServiceImpl() {
-        initExecutorService();
+        initExecutorService(1);
     }
 
     @Autowired
     public UserTaggingTaskServiceImpl(UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
-        initExecutorService();
+        initExecutorService(1);
     }
 
     @Override
     public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
-        initExecutorService();
+        initExecutorService(1);
         if (executorService.tryExecute()) {
             try {
                 logger.info("Starting user tagging");
@@ -45,40 +43,15 @@ public class UserTaggingTaskServiceImpl implements TaskService {
             } finally {
                 executorService.markEndExecution();
             }
-        }
-        else {
-            return false;
-        }
-    }
-
-    public boolean cancelAllTasks(long terminationTimeout) {
-        if (executorService.isHasActiveTasks()) {
-            logger.info("Attempting to kill all running threads {}", executorService.getActiveTasks());
-            executorService.shutdownNow();
-            try {
-                executorService.awaitTermination(terminationTimeout, TimeUnit.SECONDS);
-                return true;
-            } catch (InterruptedException e) {
-                final String msg = "Failed to await termination of running threads.";
-                logger.error(msg);
-                return false;
-            }
         } else {
-            final String msg = "Attempted to cancel threads was made but there are no running tasks.";
-            logger.warn(msg);
             return false;
         }
     }
 
-    public Set<ControllerInvokedUserTaggingTask> getActiveTasks() {
-        return executorService.getActiveTasks();
-    }
-
-    private void initExecutorService() {
+    protected void initExecutorService(int threadPoolSize) {
         if (executorService != null && !executorService.isShutdown()) {
             return; // use the already working executor service
-        }
-        else {
+        } else {
             executorService = new ActivityMonitoringExecutorServiceImpl<>(
                     Executors.newFixedThreadPool(dataSources.size(), runnable -> {
                         Thread thread = new Thread(runnable);

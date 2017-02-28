@@ -14,9 +14,9 @@ import java.util.UUID;
 /**
  * Created by alexp on 16/02/2017.
  */
-public abstract class BasicControllerInvokedTask {
+public abstract class BaseControllerInvokedTask {
 
-    private static final Logger logger = Logger.getLogger(BasicControllerInvokedTask.class);
+    private static final Logger logger = Logger.getLogger(BaseControllerInvokedTask.class);
 
     /**
      * This method creates a new PROCESS and runs the given collection job

@@ -3,21 +3,17 @@ package fortscale.web.tasks;
 import fortscale.domain.ad.AdObject.AdObjectType;
 import fortscale.domain.ad.AdTaskType;
 import fortscale.services.ActiveDirectoryService;
+import fortscale.services.BaseTaskPersistencyService;
 import fortscale.services.ad.AdTaskPersistencyService;
-import fortscale.services.ad.AdTaskPersistencyServiceImpl;
 import fortscale.utils.logging.Logger;
-import fortscale.web.rest.ApiActiveDirectoryController;
 import fortscale.web.services.ActivityMonitoringExecutorService;
-import org.apache.commons.io.IOUtils;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 import static fortscale.domain.ad.AdTaskType.*;
 
-public class ControllerInvokedAdTask extends  BasicControllerInvokedTask implements Runnable {
+public class ControllerInvokedAdTask extends BaseControllerInvokedTask implements Runnable {
 
 
     private static final Logger logger = Logger.getLogger(ControllerInvokedAdTask.class);
@@ -140,7 +136,7 @@ public class ControllerInvokedAdTask extends  BasicControllerInvokedTask impleme
         }
 
         /* process results and understand if task finished successfully */
-        final String success = taskResults.get(AdTaskPersistencyServiceImpl.RESULTS_KEY_SUCCESS);
+        final String success = taskResults.get(BaseTaskPersistencyService.RESULTS_KEY_SUCCESS);
         if (success == null) {
             logger.error("Invalid output for task {} for data source {}. success status is missing. Task Failed",
                     adTaskType, dataSourceName);
