@@ -6,21 +6,21 @@ import fortscale.web.tasks.BaseControllerInvokedTask;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 
 import java.util.Set;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 public abstract class TaskService<T extends BaseControllerInvokedTask> {
     private static final Logger logger = Logger.getLogger(TaskService.class);
+    protected ActivityMonitoringExecutorServiceImpl executorService;
 
     public abstract boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination);
-    abstract void initExecutorService();
-    abstract  ActivityMonitoringExecutorService<T> getExecuterService();
 
     public boolean cancelAllTasks(long terminationTimeout) {
-        if (getExecuterService().isHasActiveTasks()) {
-            logger.info("Attempting to kill all running threads {}", getExecuterService().getActiveTasks());
-            getExecuterService().shutdownNow();
+        if (executorService.isHasActiveTasks()) {
+            logger.info("Attempting to kill all running threads {}", executorService.getActiveTasks());
+            executorService.shutdownNow();
             try {
-                getExecuterService().awaitTermination(terminationTimeout, TimeUnit.SECONDS);
+                executorService.awaitTermination(terminationTimeout, TimeUnit.SECONDS);
                 return true;
             } catch (InterruptedException e) {
                 final String msg = "Failed to await termination of running threads.";
@@ -34,7 +34,21 @@ public abstract class TaskService<T extends BaseControllerInvokedTask> {
         }
     }
 
+    protected void initExecutorService(int threadPoolSize) {
+        if (executorService != null && !executorService.isShutdown()) {
+            return; // use the already working executor service
+        } else {
+            executorService = new ActivityMonitoringExecutorServiceImpl<>(
+                    Executors.newFixedThreadPool(threadPoolSize, runnable -> {
+                        Thread thread = new Thread(runnable);
+                        thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
+                        return thread;
+                    }),
+                    threadPoolSize);
+        }
+    }
+
     public Set<T> getActiveTasks() {
-        return getExecuterService().getActiveTasks();
+        return executorService.getActiveTasks();
     }
 }

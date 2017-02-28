@@ -18,23 +18,22 @@ import java.util.concurrent.Executors;
 public class UserTaggingTaskServiceImpl extends TaskService {
     private static final Logger logger = Logger.getLogger(UserTaggingTaskServiceImpl.class);
 
-    private ActivityMonitoringExecutorService<ControllerInvokedUserTaggingTask> executorService;
     private UserTaggingTaskPersistenceService userTaggingTaskPersistenceService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
     private UserTaggingTaskServiceImpl() {
-        initExecutorService();
+        initExecutorService(1);
     }
 
     @Autowired
     public UserTaggingTaskServiceImpl(UserTaggingTaskPersistenceService userTaggingTaskPersistenceService) {
         this.userTaggingTaskPersistenceService = userTaggingTaskPersistenceService;
-        initExecutorService();
+        initExecutorService(1);
     }
 
     @Override
     public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
-        initExecutorService();
+        initExecutorService(1);
         if (executorService.tryExecute()) {
             try {
                 logger.info("Starting user tagging");
@@ -44,17 +43,15 @@ public class UserTaggingTaskServiceImpl extends TaskService {
             } finally {
                 executorService.markEndExecution();
             }
-        }
-        else {
+        } else {
             return false;
         }
     }
 
-    protected void initExecutorService() {
+    protected void initExecutorService(int threadPoolSize) {
         if (executorService != null && !executorService.isShutdown()) {
             return; // use the already working executor service
-        }
-        else {
+        } else {
             executorService = new ActivityMonitoringExecutorServiceImpl<>(
                     Executors.newFixedThreadPool(dataSources.size(), runnable -> {
                         Thread thread = new Thread(runnable);
@@ -63,11 +60,6 @@ public class UserTaggingTaskServiceImpl extends TaskService {
                     }),
                     dataSources.size());
         }
-    }
-
-    @Override
-    ActivityMonitoringExecutorService getExecuterService() {
-        return executorService;
     }
 
     private List<ControllerInvokedUserTaggingTask> createTaggingTask(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {

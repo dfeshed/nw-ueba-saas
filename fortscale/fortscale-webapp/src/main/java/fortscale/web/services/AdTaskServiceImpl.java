@@ -12,31 +12,29 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.concurrent.Executors;
 
 @Service(value = "AdTaskServiceImpl")
 public class AdTaskServiceImpl extends TaskService {
 
     private static final Logger logger = Logger.getLogger(AdTaskServiceImpl.class);
 
-    private ActivityMonitoringExecutorService<ControllerInvokedAdTask> executorService;
     private ActiveDirectoryService activeDirectoryService;
     private AdTaskPersistencyService adTaskPersistencyService;
     private final Set<AdObject.AdObjectType> dataSources = new HashSet<>(Arrays.asList(AdObject.AdObjectType.values()));
 
     private AdTaskServiceImpl() {
-        initExecutorService();
+        initExecutorService(1);
     }
 
     @Autowired
     public AdTaskServiceImpl(ActiveDirectoryService activeDirectoryService, AdTaskPersistencyService adTaskPersistencyService) {
         this.activeDirectoryService = activeDirectoryService;
         this.adTaskPersistencyService = adTaskPersistencyService;
-        initExecutorService();
+        initExecutorService(1);
     }
 
     public boolean executeTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
-        initExecutorService();
+        initExecutorService(1);
         if (executorService.tryExecute()) {
             try {
                 logger.info("Starting Active Directory fetch and ETL");
@@ -46,30 +44,9 @@ public class AdTaskServiceImpl extends TaskService {
             } finally {
                 executorService.markEndExecution();
             }
-        }
-        else {
+        } else {
             return false;
         }
-    }
-
-    protected void initExecutorService() {
-        if (executorService != null && !executorService.isShutdown()) {
-            return; // use the already working executor service
-        }
-        else {
-            executorService = new ActivityMonitoringExecutorServiceImpl<>(
-                    Executors.newFixedThreadPool(dataSources.size(), runnable -> {
-                        Thread thread = new Thread(runnable);
-                        thread.setUncaughtExceptionHandler((exceptionThrowingThread, e) -> logger.error("Thread {} threw an uncaught exception", exceptionThrowingThread.getName(), e));
-                        return thread;
-                    }),
-                    dataSources.size());
-        }
-    }
-
-    @Override
-    ActivityMonitoringExecutorService getExecuterService() {
-        return executorService;
     }
 
     private List<ControllerInvokedAdTask> createAdTasks(SimpMessagingTemplate simpMessagingTemplate, String responseDestination) {
