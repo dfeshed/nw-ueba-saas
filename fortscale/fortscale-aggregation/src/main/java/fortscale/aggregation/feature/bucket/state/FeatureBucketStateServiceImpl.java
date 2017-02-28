@@ -50,10 +50,12 @@ public class FeatureBucketStateServiceImpl implements FeatureBucketStateService 
 
             // When the last event date is before the last synced date - shouldn't happen
             } else {
-                logger.warn(
-                        String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
-                                getFeatureBucketState().getLastSyncedEventDate(), lastEventDate));
                 shouldSave = false;
+                if(featureBucketState.getLastSyncedEventDate().isAfter(lastEventDate)) {
+                    logger.warn(
+                            String.format("Trying to update last daily aggregation with with smaller date. The saved date is - %s, trying to save - %s",
+                                    getFeatureBucketState().getLastSyncedEventDate(), lastEventDate));
+                }
             }
         }
 

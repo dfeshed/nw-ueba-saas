@@ -6,13 +6,10 @@ import fortscale.aggregation.util.MongoDbUtilService;
 import fortscale.common.metrics.PersistenceTaskStoreMetrics;
 import fortscale.domain.core.EntityEvent;
 import fortscale.entity.event.translator.EntityEventTranslationService;
-
-import fortscale.utils.logging.Logger;
 import fortscale.utils.MongoStoreUtils;
-
+import fortscale.utils.logging.Logger;
 import fortscale.utils.mongodb.FIndex;
 import fortscale.utils.monitoring.stats.StatsService;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
@@ -218,9 +215,9 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 	}
 
 
-	public List<EntityEvent> findEntityEventsByStartTimeRange(Instant from, Instant to, String featureName) {
+	public List<EntityEvent> findEntityEventsByEndTimeRange(Instant from, Instant to, String featureName) {
 
-		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to.getEpochSecond());
+		Criteria startTimeCriteria = Criteria.where(EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME).gte(from.getEpochSecond()).lt(to.getEpochSecond());
 		Query query = new Query(startTimeCriteria);
 
 
@@ -239,18 +236,18 @@ public class EntityEventMongoStore  implements ScoredEventsCounterReader {
 				.collect(Collectors.toList());
 	}
 
-	public Instant getLastEntityEventStartTime(String featureName) {
+	public Instant getLastEntityEventEndTime(String featureName) {
 		Query query = new Query();
 		Sort sort = new Sort(Sort.Direction.DESC,
-				EntityEvent.ENTITY_EVENT_START_TIME_UNIX_FIELD_NAME);
+				EntityEvent.ENTITY_EVENT_END_TIME_UNIX_FIELD_NAME);
 		query.with(sort);
 		query.limit(1);
 		List<EntityEvent> queryResult = findEntityEvents(featureName, query);
 
 		if(!queryResult.isEmpty())
 		{
-			long maxStartDate = queryResult.stream().max(Comparator.comparingLong(EntityEvent::getStart_time_unix)).get().getStart_time_unix();
-			return Instant.ofEpochSecond(maxStartDate);
+			long maxEndDate = queryResult.get(0).getEnd_time_unix();
+			return Instant.ofEpochSecond(maxEndDate);
 		}
 		return null;
 

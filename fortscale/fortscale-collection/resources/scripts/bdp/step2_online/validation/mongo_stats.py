@@ -64,6 +64,22 @@ def get_sum_from_mongo(host, collection_name, start_time_epoch, end_time_epoch):
     ])
     return dict((entry['startTime'], int(entry['sum'])) for entry in query_res)
 
+def get_unsynced_buckets_distinct_end_time(host):
+    collection_name="FeatureBucketMetadata"
+    collection = mongo.get_db(host)[collection_name]
+    query_res = mongo.aggregate(collection, [
+        {
+            '$match': {
+                'isSynced':False
+            }
+        },
+        {
+            '$group': {
+                '_id':'$endTime'
+            }
+        }
+    ])
+    return query_res
 
 def all_buckets_synced(host, start_time_epoch, end_time_epoch, use_start_time):
     return mongo.get_db(host).FeatureBucketMetadata.find_one({
