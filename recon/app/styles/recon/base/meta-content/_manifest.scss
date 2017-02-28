@@ -1,6 +1,7 @@
 .recon-meta-content {
   background-color: rsa-color(gray, darkest, $rsa-somewhat-opaque);
   padding: rsa-whitespace();
+  margin-bottom: 2.8rem;
   .meta-heading {
     @include rsa-font(header, large);
     color: rsa-color(white);
