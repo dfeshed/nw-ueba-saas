@@ -1,5 +1,6 @@
 package fortscale.services;
 
+
 import fortscale.domain.core.Alert;
 
 /**

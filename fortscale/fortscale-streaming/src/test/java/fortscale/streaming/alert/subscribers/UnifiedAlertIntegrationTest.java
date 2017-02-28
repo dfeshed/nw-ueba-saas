@@ -1,8 +1,9 @@
 package fortscale.streaming.alert.subscribers;
 
-import fortscale.aggregation.feature.event.AggrEvent;
-import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.domain.core.*;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertStatus;
+import fortscale.domain.core.AlertTimeframe;
 import fortscale.streaming.alert.event.wrappers.EnrichedFortscaleEvent;
 
 
@@ -86,7 +87,7 @@ public class UnifiedAlertIntegrationTest {
 
         //Verify flow
         unifiedAlertIntegrationTestHelper.assertCreateIndicatorListApplicableForDecider(expected, expected);
-        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "normalized_username_hourly",AlertTimeframe.Hourly);
+        unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, "normalized_username_hourly", AlertTimeframe.Hourly);
         unifiedAlertIntegrationTestHelper.assertScoreDecider(expected, 50,AlertTimeframe.Hourly);
 
 

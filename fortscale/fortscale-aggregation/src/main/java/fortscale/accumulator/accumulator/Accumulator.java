@@ -35,12 +35,12 @@ public interface Accumulator {
     Instant getLastAccumulatedEventStartTime(String featureName);
 
     /**
-     * searches for the last source event start time
+     * searches for the last source event day
      * used to determine till when to accumulate
      * @param featureName
-     * @return returns null if no events found, last start time otherwise
+     * @return null if no events found, last event day (start of day) otherwise
      */
-    Instant getLastSourceEventStartTime(String featureName);
+    Instant getLastSourceEventDay(String featureName);
 
     /**
      *

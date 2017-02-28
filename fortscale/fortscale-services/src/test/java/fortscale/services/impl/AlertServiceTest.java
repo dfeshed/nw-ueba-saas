@@ -5,7 +5,6 @@ import fortscale.domain.core.Severity;
 import fortscale.domain.core.dao.AlertsRepository;
 import fortscale.domain.dto.DailySeveiryConuntDTO;
 import fortscale.domain.dto.DateRange;
-import fortscale.domain.dto.SeveritiesCountDTO;
 import fortscale.services.UserService;
 import org.junit.Assert;
 import org.junit.Before;
@@ -15,7 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -5,6 +5,9 @@ import fortscale.aggregation.feature.event.AggrEventEvidenceFilteringStrategyEnu
 import fortscale.aggregation.feature.event.AggrFeatureEventBuilderService;
 import fortscale.aggregation.feature.event.AggregatedFeatureEventsConfService;
 import fortscale.domain.core.*;
+import fortscale.domain.core.Alert;
+import fortscale.domain.core.AlertFeedback;
+import fortscale.domain.core.AlertStatus;
 import fortscale.domain.dto.DateRange;
 import fortscale.services.*;
 import fortscale.streaming.alert.subscribers.evidence.filter.EvidenceFilter;
