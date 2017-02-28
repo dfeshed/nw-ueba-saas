@@ -105,7 +105,7 @@ public class ApiSystemSetupTagsController extends BaseController {
         return new ResponseEntity<>(new ResponseEntityMessage(SUCCESSFUL_RESPONSE), HttpStatus.ACCEPTED);
     }
 
-    @RequestMapping(value="{id}", method=RequestMethod.DELETE)
+    @RequestMapping(value="/{name}", method=RequestMethod.DELETE)
     @LogException
     public ResponseEntity<ResponseEntityMessage> deleteTag(@PathVariable String name) {
         if (StringUtils.isBlank(name)){
