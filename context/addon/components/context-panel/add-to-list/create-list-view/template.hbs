@@ -1,0 +1,30 @@
+<div class='rsa-context-tree-table__createList'>
+  <hbox class='rsa-context-tree-table create-list-header'>
+    {{t 'context.addToList.create' }}
+  </hbox>
+  <hbox class='rsa-context-tree-table list-name'>
+    {{t 'context.addToList.name'}}
+  </hbox>
+  <hbox>
+    {{rsa-form-input
+      placeholder=(t 'context.addToList.listName')
+      value=name
+      isSuccess=true
+      focusOut=(action 'checkListName' name)
+      isError=isError
+      errorMessage=errorMessage}}
+  </hbox>
+  <hbox>
+    {{rsa-form-textarea value=description label=(t 'context.addToList.descriptionTitle') }}
+  </hbox>
+  <hbox>
+    <vbox class="rsa-context-tree-table__button">
+      {{#rsa-form-button isFullWidth=true  click=(action 'cancelList') }}{{t 'context.addToList.cancel'}}{{/rsa-form-button}}
+    </vbox>
+    <vbox>
+      {{#rsa-form-button style='primary' isFullWidth=true click=(action 'appendList') isDisabled=isDisabled}}
+        {{t 'context.addToList.save'}}
+      {{/rsa-form-button}}
+    </vbox>
+  </hbox>
+</div>

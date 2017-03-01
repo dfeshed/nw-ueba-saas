@@ -22,6 +22,24 @@ module.exports = function(environment) {
         cancelDestination: '/ws/administration/context/cancel'
       }
     },
+    'list': {
+      socketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/administration/context/list',
+        requestDestination: '/ws/administration/context/list',
+        cancelDestination: '/ws/administration/context/cancel'
+      }
+    },
+    'save-entries':{
+      socketUrl,
+      stream: {
+        defaultStreamLimit: 100000,
+        subscriptionDestination: '/user/queue/administration/context/list/save',
+        requestDestination: '/ws/administration/context/list/save',
+        cancelDestination: '/ws/administration/context/cancel'
+      }
+    },
     'related-entity': {
       socketUrl,
       stream: {

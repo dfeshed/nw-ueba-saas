@@ -58,7 +58,9 @@ export default [{
     },
     {
       field: 'Add To List',
-      title: 'context.toolbar.addToList'
+      title: 'context.toolbar.addToList',
+      componentName: 'add-to-list'
+
     }
   ]
 },
@@ -107,7 +109,8 @@ export default [{
     },
     {
       field: 'Add To List',
-      title: 'context.toolbar.addToList'
+      title: 'context.toolbar.addToList',
+      componentName: 'add-to-list'
     }
   ]
 },
@@ -172,7 +175,8 @@ export default [{
     },
     {
       field: 'Add To List',
-      title: 'context.toolbar.addToList'
+      title: 'context.toolbar.addToList',
+      componentName: 'add-to-list'
     }
   ]
 },
@@ -232,7 +236,8 @@ export default [{
     },
     {
       field: 'Add To List',
-      title: 'context.toolbar.addToList'
+      title: 'context.toolbar.addToList',
+      componentName: 'add-to-list'
     }
   ]
 },
@@ -277,7 +282,8 @@ export default [{
     },
     {
       field: 'Add To List',
-      title: 'context.toolbar.addToList'
+      title: 'context.toolbar.addToList',
+      componentName: 'add-to-list'
     }
   ]
 },
@@ -327,7 +333,8 @@ export default [{
     },
     {
       field: 'Add To List',
-      title: 'context.toolbar.addToList'
+      title: 'context.toolbar.addToList',
+      componentName: 'add-to-list'
     }
   ]
 },
@@ -378,7 +385,8 @@ export default [{
     },
     {
       field: 'Add To List',
-      title: 'context.toolbar.addToList'
+      title: 'context.toolbar.addToList',
+      componentName: 'add-to-list'
     }
   ]
 }

@@ -7,6 +7,11 @@
 </div>
 <hbox class="rsa-context-panel-header__tab">
   {{#each toolbar as | buttons | }}
-    {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
+    {{#if (eq buttons.componentName 'add-to-list')}}
+      {{context-panel/add-to-list entityId=model.lookupKey entityType=model.meta}}
+    {{else}}
+      {{#rsa-form-button}}{{t buttons.title}}{{/rsa-form-button}}
+    {{/if}}
   {{/each}}
 </hbox>
+

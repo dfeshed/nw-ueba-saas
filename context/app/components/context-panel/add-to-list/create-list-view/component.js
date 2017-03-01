@@ -1,0 +1,1 @@
+export { default } from 'context/components/context-panel/add-to-list/create-list-view/component';

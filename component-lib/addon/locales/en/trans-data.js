@@ -458,6 +458,22 @@ export default {
       machineStatus: 'Machine Status',
       ipAddress: 'IPAddress'
     },
+    addToList: {
+      title: 'Add to List',
+      create: 'Create New List',
+      metaValue: 'Meta Value',
+      newList: 'Create New List',
+      tabAll: 'All',
+      tabSelected: 'Selected',
+      tabUnselected: 'Unselected',
+      cancel: 'Cancel',
+      save: 'Save',
+      name: 'List Name',
+      listTitle: 'List',
+      descriptionTitle: 'Description',
+      filter: 'Filter Results',
+      listName: 'Enter List Name'
+    },
     ADdata: {
       title: 'User Information',
       employeeID: 'employeeID',
@@ -615,6 +631,8 @@ export default {
       error: 'Error processing stream call for context lookup.',
       dataSource: 'Error processing stream call for data source.',
       noData: 'No context data present for this DataSource.',
+      listDuplicateName: 'List name already exists!',
+      listValidName: 'Enter valid list name!',
       'datasource.query.not.supported': 'Context data is query not supported for given meta.',
       'transport.http.read.failed': 'Context data is not available as the data source is down.',
       'transport.ad.read.failed': 'Context data is not available as the data source is not reachable.',

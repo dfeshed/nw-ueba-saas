@@ -1,5 +1,12 @@
 .rsa-context-tree-table {
 
+  .rsa-nav-tab.is-left-aligned-primary{
+    padding: rsa-whitespace(base) rsa-whitespace(least);
+    margin: 0rem rsa-whitespace(less);
+    display: inline-block;
+    white-space: nowrap;
+  }
+
   .button {
     background:none!important;
     border:none;
@@ -53,6 +60,97 @@
 
   }
 
+  &__header_button{
+    padding: rsa-whitespace(less);
+    .rsa-form-button {
+      margin-left: rsa-whitespace(less);
+      font-size: rsa-whitespace();
+    }
+  }
+
+  &__createList-button{
+    border-bottom: 1px solid rsa-color(gray);
+    padding: rsa-whitespace(less);
+
+    .rsa-form-button{
+      color: rsa-color(blue, dark)!important;
+    }
+    .rsa-icon {
+      float: right;
+    }
+    .plusIcon {
+      float: left;
+    }
+  }
+
+  &__button{
+    padding-right: rsa-whitespace(less);
+  }
+
+  &__listPanel{
+    width: 35%;
+  }
+
+
+  &__createList{
+    .rsa-form-input textarea, .rsa-form-textarea textarea {
+      min-height: 12rem;
+      width: 288%;
+      max-height: 12rem;
+      max-width: 499px;
+    }
+
+    .create-list-header{
+      @include rsa-font(default, large);
+      text-transform: capitalize;
+      padding-bottom: 5%;
+    }
+    .list-name{
+      @include rsa-font(header, small);
+      color:rsa-color(gray, light);
+    }
+
+    .rsa-form-button{
+      width:90%;
+    }
+    .rsa-form-textarea {
+      padding-bottom: 12%;
+      padding-top: 5%;
+      padding-top: 5%;
+
+    }
+    .rsa-form-input{
+      width:100%;
+
+    }
+  }
+  &__addtoListBox, &__createList{
+    padding: rsa-whitespace();
+    max-width: 100%;
+    width: 500px;
+    height:400px;
+
+    .rsa-nav-tab.is-left-aligned-primary{
+      padding: rsa-whitespace(base) rsa-whitespace(less);
+      margin: 0rem rsa-whitespace(least);
+      display: inline-block;
+      white-space: nowrap;
+      @include rsa-font(header);
+    }
+  }
+
+  /*&__filter-button{
+    color: rsa-color(grey);
+
+    .rsa-context-tree-table__filter {
+      border-bottom: 1px solid rsa-color(grey);
+      padding: rsa-whitespace() rsa-whitespace();
+    }
+    .rsa-icon {
+      padding: 0 rsa-whitespace(less);
+    }
+  }*/
+
   &__table_header{
     padding: rsa-whitespace(less);
     margin: 0.5rem 0;
@@ -62,6 +160,15 @@
     padding-left:rsa-whitespace(more);
     border-bottom: 1px solid rsa-color(black);
   }
+
+  &__listDetails{
+    @include rsa-font(default, small);
+    margin: 0.5rem 0;
+    color: rsa-color(gray, lighter);
+    height: 180px;
+    overflow: auto;
+  }
+
 
   &__content-header,&__content-text {
     white-space: nowrap;
@@ -84,6 +191,35 @@
     padding-top: rsa-whitespace(less);
     padding-bottom: rsa-whitespace(less);
     border-bottom: 1px solid rsa-color(black, null, $rsa-nearly-transparent);
+  }
+
+  &__columntitle {
+    @include rsa-font(header,small);
+    padding-top: rsa-whitespace(more);
+    padding-bottom: rsa-whitespace(less);
+    border-bottom: 1px solid rsa-color(black);
+  }
+
+  &__checkbox {
+    padding-top: rsa-whitespace(less);
+    padding-bottom: rsa-whitespace(less);
+    border-bottom: 1px solid rsa-color(black);
+    padding-left: rsa-whitespace(less);
+  }
+
+  .rsa-nav-tab{
+    .is-left-aligned-primary {
+      flex-grow: 0;
+      padding: .5rem 0.2rem;
+      margin: .7rem;
+    }}
+  .rsa-nav-tab-group{
+    .is-left-aligned-primary {
+      flex-grow: 0;
+      padding: .5rem 0.2rem;
+      margin: .7rem;
+    }
+
   }
 
 }

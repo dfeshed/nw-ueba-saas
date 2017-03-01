@@ -1,0 +1,77 @@
+{{#rsa-application-modal label=(t 'context.addToList.title') eventId='addToList'}}
+  {{#rsa-form-button class='modal-trigger' click=(action 'getAllList' entityValue)}}
+    {{t 'context.addToList.title'}}
+  {{/rsa-form-button}}
+
+  <div class='modal-content'>
+    {{#if createList}}
+      <div class="rsa-context-tree-table__addtoListBox">
+        {{rsa-form-input isReadOnly=true label=(t 'context.addToList.metaValue') placeholder=entityId}}
+        {{#rsa-form-button  class="rsa-context-tree-table__createList-button" isIconOnly=true isFullWidth=true click=(action 'createList')}}
+          <div  align="left">
+            {{rsa-icon name="information-circle" style="lined" size='small' class="plusIcon"}}&nbsp;
+            {{t 'context.addToList.newList'}}
+            {{rsa-icon name="arrow-right-12" size='small'}}
+          </div>
+        {{/rsa-form-button}}
+        <div>
+          <hbox>
+            <vbox xs="8">
+              <hbox>
+                {{#rsa-nav-tab isActive=(eq active "all") click=(action 'activate' 'all')}}
+                  {{t 'context.addToList.tabAll'}}
+                {{/rsa-nav-tab}}
+                {{#rsa-nav-tab isActive=(eq active "selected") click=(action 'activate' 'selected')}}
+                  {{t 'context.addToList.tabSelected'}}
+                {{/rsa-nav-tab}}
+                {{#rsa-nav-tab isActive=(eq active "unselected") click=(action 'activate' 'unselected')}}
+                  {{t 'context.addToList.tabUnselected'}}
+                {{/rsa-nav-tab}}
+              </hbox>
+            </vbox>
+            <vbox xs="4">
+              {{rsa-form-input  placeholder=(t 'context.addToList.filter') value=model.filterStr}}
+            </vbox>
+          </hbox>
+        </div>
+
+        <div>
+          <hbox>
+            <vbox xs="5" class="rsa-context-tree-table__columntitle">
+              {{t 'context.addToList.listTitle'}}
+            </vbox>
+            <vbox xs="7" class="rsa-context-tree-table__columntitle">
+              {{t 'context.addToList.descriptionTitle'}}
+            </vbox>
+          </hbox>
+        </div>
+
+        <div class="rsa-context-tree-table__listDetails">
+          {{#each (list-tab active getFilteredList) as |row|}}
+            <hbox>
+              <vbox xs="1" class="rsa-context-tree-table__checkbox">
+                {{rsa-form-checkbox
+                  checked=row.enabled
+                  click=(action 'toggleCheckbox' row)}}
+              </vbox>
+              <vbox xs="4" class="rsa-context-tree-table__checkbox">{{row.name}}</vbox>
+              <vbox xs="7" class="rsa-context-tree-table__checkbox">{{row.description}}</vbox>
+            </hbox>
+          {{/each}}
+        </div>
+        <div>
+          <hbox>
+            <vbox class="rsa-context-tree-table__button">
+              {{#rsa-form-button isFullWidth=true click=(action 'closeList')}}{{t 'context.addToList.cancel'}}{{/rsa-form-button}}
+            </vbox>
+            <vbox>
+              {{#rsa-form-button style='primary' isFullWidth=true click=(action 'saveList')}}{{t 'context.addToList.save'}}{{/rsa-form-button}}
+            </vbox>
+          </hbox>
+        </div>
+      </div>
+    {{else}}
+      {{context-panel/add-to-list/create-list-view createList=createList model=model}}
+    {{/if}}
+  </div>
+{{/rsa-application-modal}}
