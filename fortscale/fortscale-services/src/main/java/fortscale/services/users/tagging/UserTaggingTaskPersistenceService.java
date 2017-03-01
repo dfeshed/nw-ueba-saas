@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface UserTaggingTaskPersistenceService {
-    Map<String, String> getTaskResults(String resultsKey);
+    UserTaggingTaskPersistencyServiceImpl.UserTaggingResult getTaskResults(String resultsKey);
 
     void writeTaskResults(String taskName, String resultsId, boolean result, Map<String, Long> deltaPerTag);
 
