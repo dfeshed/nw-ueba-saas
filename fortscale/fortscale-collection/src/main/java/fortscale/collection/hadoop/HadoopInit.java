@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import org.apache.hadoop.conf.Configuration;
 
 @Component
 public class HadoopInit implements InitializingBean{
@@ -139,7 +138,7 @@ public class HadoopInit implements InitializingBean{
 		final Path path = new Path(location);
 		if(!hadoopFs.exists(path)){
 			final boolean mkdirs = hadoopFs.mkdirs(path);
-			System.out.println();
+			System.out.println(mkdirs);
 		}
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
