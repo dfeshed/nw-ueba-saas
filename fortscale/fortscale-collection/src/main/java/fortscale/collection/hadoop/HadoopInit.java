@@ -137,8 +137,7 @@ public class HadoopInit implements InitializingBean{
 	private void createTable(String tableName, String fields, String partition, String delimiter, String location) throws IOException{
 		final Path path = new Path(location);
 		if(!hadoopFs.exists(path)){
-			final boolean mkdirs = hadoopFs.mkdirs(path);
-			System.out.println(mkdirs);
+			hadoopFs.mkdirs(path);
 		}
 		try{
 			impalaClient.createTable(tableName, fields, partition, delimiter, location, true);
